@@ -21,7 +21,7 @@ import java.util.ArrayList;
 
 public class InternalOseeTypesParser extends AbstractInternalContentAssistParser {
     public static final String[] tokenNames = new String[] {
-        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'0'", "'1'", "'2'", "'3'", "'4'", "'5'", "'6'", "'7'", "'8'", "'9'", "'DefaultAttributeDataProvider'", "'UriAttributeDataProvider'", "'MappedAttributeDataProvider'", "'unlimited'", "'DefaultAttributeTaggerProvider'", "'BooleanAttribute'", "'CompressedContentAttribute'", "'DateAttribute'", "'EnumeratedAttribute'", "'FloatingPointAttribute'", "'IntegerAttribute'", "'JavaObjectAttribute'", "'StringAttribute'", "'WordAttribute'", "'Lexicographical_Ascending'", "'Lexicographical_Descending'", "'Unordered'", "'ONE_TO_MANY'", "'MANY_TO_MANY'", "'MANY_TO_ONE'", "'import'", "'.'", "'abstract'", "'artifactType'", "'{'", "'}'", "'extends'", "'attribute'", "'attributeType'", "'dataProvider'", "'min'", "'max'", "'taggerId'", "'enumType'", "'description'", "'defaultValue'", "'fileExtension'", "'oseeEnumType'", "'relationType'", "'sideAName'", "'sideAArtifactType'", "'sideBName'", "'sideBArtifactType'", "'defaultOrderType'", "'multiplicity'"
+        "<invalid>", "<EOR>", "<DOWN>", "<UP>", "RULE_ID", "RULE_STRING", "RULE_INT", "RULE_ML_COMMENT", "RULE_SL_COMMENT", "RULE_WS", "RULE_ANY_OTHER", "'0'", "'1'", "'2'", "'3'", "'4'", "'5'", "'6'", "'7'", "'8'", "'9'", "'DefaultAttributeDataProvider'", "'UriAttributeDataProvider'", "'MappedAttributeDataProvider'", "'unlimited'", "'DefaultAttributeTaggerProvider'", "'BooleanAttribute'", "'CompressedContentAttribute'", "'DateAttribute'", "'EnumeratedAttribute'", "'FloatingPointAttribute'", "'IntegerAttribute'", "'JavaObjectAttribute'", "'StringAttribute'", "'WordAttribute'", "'Lexicographical_Ascending'", "'Lexicographical_Descending'", "'Unordered'", "'ONE_TO_MANY'", "'MANY_TO_MANY'", "'MANY_TO_ONE'", "'import'", "'.'", "'abstract'", "'artifactType'", "'{'", "'}'", "'extends'", "'attribute'", "'attributeType'", "'dataProvider'", "'min'", "'max'", "'taggerId'", "'enumType'", "'description'", "'defaultValue'", "'fileExtension'", "'oseeEnumType'", "'entry'", "'relationType'", "'sideAName'", "'sideAArtifactType'", "'sideBName'", "'sideBArtifactType'", "'defaultOrderType'", "'multiplicity'"
     };
     public static final int RULE_ID=4;
     public static final int RULE_STRING=5;
@@ -853,20 +853,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
     // $ANTLR end ruleOseeEnumType
 
 
-    // $ANTLR start entryRuleOseeEnum
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:337:1: entryRuleOseeEnum : ruleOseeEnum EOF ;
-    public final void entryRuleOseeEnum() throws RecognitionException {
+    // $ANTLR start entryRuleOseeEnumEntry
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:337:1: entryRuleOseeEnumEntry : ruleOseeEnumEntry EOF ;
+    public final void entryRuleOseeEnumEntry() throws RecognitionException {
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:337:19: ( ruleOseeEnum EOF )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:338:1: ruleOseeEnum EOF
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:337:24: ( ruleOseeEnumEntry EOF )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:338:1: ruleOseeEnumEntry EOF
             {
-             before(grammarAccess.getOseeEnumRule()); 
-            pushFollow(FOLLOW_ruleOseeEnum_in_entryRuleOseeEnum677);
-            ruleOseeEnum();
+             before(grammarAccess.getOseeEnumEntryRule()); 
+            pushFollow(FOLLOW_ruleOseeEnumEntry_in_entryRuleOseeEnumEntry677);
+            ruleOseeEnumEntry();
             _fsp--;
 
-             after(grammarAccess.getOseeEnumRule()); 
-            match(input,EOF,FOLLOW_EOF_in_entryRuleOseeEnum684); 
+             after(grammarAccess.getOseeEnumEntryRule()); 
+            match(input,EOF,FOLLOW_EOF_in_entryRuleOseeEnumEntry684); 
 
             }
 
@@ -879,34 +879,34 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
         }
         return ;
     }
-    // $ANTLR end entryRuleOseeEnum
+    // $ANTLR end entryRuleOseeEnumEntry
 
 
-    // $ANTLR start ruleOseeEnum
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:345:1: ruleOseeEnum : ( ( rule__OseeEnum__Group__0 ) ) ;
-    public final void ruleOseeEnum() throws RecognitionException {
+    // $ANTLR start ruleOseeEnumEntry
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:345:1: ruleOseeEnumEntry : ( ( rule__OseeEnumEntry__Group__0 ) ) ;
+    public final void ruleOseeEnumEntry() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:349:2: ( ( ( rule__OseeEnum__Group__0 ) ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:350:1: ( ( rule__OseeEnum__Group__0 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:349:2: ( ( ( rule__OseeEnumEntry__Group__0 ) ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:350:1: ( ( rule__OseeEnumEntry__Group__0 ) )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:350:1: ( ( rule__OseeEnum__Group__0 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:351:1: ( rule__OseeEnum__Group__0 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:350:1: ( ( rule__OseeEnumEntry__Group__0 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:351:1: ( rule__OseeEnumEntry__Group__0 )
             {
-             before(grammarAccess.getOseeEnumAccess().getGroup()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:352:1: ( rule__OseeEnum__Group__0 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:352:2: rule__OseeEnum__Group__0
+             before(grammarAccess.getOseeEnumEntryAccess().getGroup()); 
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:352:1: ( rule__OseeEnumEntry__Group__0 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:352:2: rule__OseeEnumEntry__Group__0
             {
-            pushFollow(FOLLOW_rule__OseeEnum__Group__0_in_ruleOseeEnum711);
-            rule__OseeEnum__Group__0();
+            pushFollow(FOLLOW_rule__OseeEnumEntry__Group__0_in_ruleOseeEnumEntry711);
+            rule__OseeEnumEntry__Group__0();
             _fsp--;
 
 
             }
 
-             after(grammarAccess.getOseeEnumAccess().getGroup()); 
+             after(grammarAccess.getOseeEnumEntryAccess().getGroup()); 
 
             }
 
@@ -925,7 +925,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
         }
         return ;
     }
-    // $ANTLR end ruleOseeEnum
+    // $ANTLR end ruleOseeEnumEntry
 
 
     // $ANTLR start entryRuleRelationType
@@ -1300,7 +1300,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
                 alt3=1;
                 }
                 break;
-            case 59:
+            case 60:
                 {
                 alt3=2;
                 }
@@ -2232,7 +2232,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
                 int alt11=2;
                 int LA11_0 = input.LA(1);
 
-                if ( ((LA11_0>=43 && LA11_0<=44)||LA11_0==49||(LA11_0>=58 && LA11_0<=59)) ) {
+                if ( ((LA11_0>=43 && LA11_0<=44)||LA11_0==49||LA11_0==58||LA11_0==60) ) {
                     alt11=1;
                 }
 
@@ -4528,36 +4528,36 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__OseeEnumType__Group__3
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1807:1: rule__OseeEnumType__Group__3 : ( ( rule__OseeEnumType__EnumsAssignment_3 )* ) rule__OseeEnumType__Group__4 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1807:1: rule__OseeEnumType__Group__3 : ( ( rule__OseeEnumType__EnumEntriesAssignment_3 )* ) rule__OseeEnumType__Group__4 ;
     public final void rule__OseeEnumType__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1811:1: ( ( ( rule__OseeEnumType__EnumsAssignment_3 )* ) rule__OseeEnumType__Group__4 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1812:1: ( ( rule__OseeEnumType__EnumsAssignment_3 )* ) rule__OseeEnumType__Group__4
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1811:1: ( ( ( rule__OseeEnumType__EnumEntriesAssignment_3 )* ) rule__OseeEnumType__Group__4 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1812:1: ( ( rule__OseeEnumType__EnumEntriesAssignment_3 )* ) rule__OseeEnumType__Group__4
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1812:1: ( ( rule__OseeEnumType__EnumsAssignment_3 )* )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1813:1: ( rule__OseeEnumType__EnumsAssignment_3 )*
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1812:1: ( ( rule__OseeEnumType__EnumEntriesAssignment_3 )* )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1813:1: ( rule__OseeEnumType__EnumEntriesAssignment_3 )*
             {
-             before(grammarAccess.getOseeEnumTypeAccess().getEnumsAssignment_3()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1814:1: ( rule__OseeEnumType__EnumsAssignment_3 )*
+             before(grammarAccess.getOseeEnumTypeAccess().getEnumEntriesAssignment_3()); 
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1814:1: ( rule__OseeEnumType__EnumEntriesAssignment_3 )*
             loop21:
             do {
                 int alt21=2;
                 int LA21_0 = input.LA(1);
 
-                if ( (LA21_0==RULE_STRING) ) {
+                if ( (LA21_0==59) ) {
                     alt21=1;
                 }
 
 
                 switch (alt21) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1814:2: rule__OseeEnumType__EnumsAssignment_3
+            	    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1814:2: rule__OseeEnumType__EnumEntriesAssignment_3
             	    {
-            	    pushFollow(FOLLOW_rule__OseeEnumType__EnumsAssignment_3_in_rule__OseeEnumType__Group__33678);
-            	    rule__OseeEnumType__EnumsAssignment_3();
+            	    pushFollow(FOLLOW_rule__OseeEnumType__EnumEntriesAssignment_3_in_rule__OseeEnumType__Group__33678);
+            	    rule__OseeEnumType__EnumEntriesAssignment_3();
             	    _fsp--;
 
 
@@ -4569,7 +4569,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
                 }
             } while (true);
 
-             after(grammarAccess.getOseeEnumTypeAccess().getEnumsAssignment_3()); 
+             after(grammarAccess.getOseeEnumTypeAccess().getEnumEntriesAssignment_3()); 
 
             }
 
@@ -4632,36 +4632,27 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
     // $ANTLR end rule__OseeEnumType__Group__4
 
 
-    // $ANTLR start rule__OseeEnum__Group__0
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1854:1: rule__OseeEnum__Group__0 : ( ( rule__OseeEnum__NameAssignment_0 ) ) rule__OseeEnum__Group__1 ;
-    public final void rule__OseeEnum__Group__0() throws RecognitionException {
+    // $ANTLR start rule__OseeEnumEntry__Group__0
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1854:1: rule__OseeEnumEntry__Group__0 : ( 'entry' ) rule__OseeEnumEntry__Group__1 ;
+    public final void rule__OseeEnumEntry__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1858:1: ( ( ( rule__OseeEnum__NameAssignment_0 ) ) rule__OseeEnum__Group__1 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1859:1: ( ( rule__OseeEnum__NameAssignment_0 ) ) rule__OseeEnum__Group__1
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1858:1: ( ( 'entry' ) rule__OseeEnumEntry__Group__1 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1859:1: ( 'entry' ) rule__OseeEnumEntry__Group__1
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1859:1: ( ( rule__OseeEnum__NameAssignment_0 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1860:1: ( rule__OseeEnum__NameAssignment_0 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1859:1: ( 'entry' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1860:1: 'entry'
             {
-             before(grammarAccess.getOseeEnumAccess().getNameAssignment_0()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1861:1: ( rule__OseeEnum__NameAssignment_0 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1861:2: rule__OseeEnum__NameAssignment_0
-            {
-            pushFollow(FOLLOW_rule__OseeEnum__NameAssignment_0_in_rule__OseeEnum__Group__03762);
-            rule__OseeEnum__NameAssignment_0();
-            _fsp--;
-
+             before(grammarAccess.getOseeEnumEntryAccess().getEntryKeyword_0()); 
+            match(input,59,FOLLOW_59_in_rule__OseeEnumEntry__Group__03763); 
+             after(grammarAccess.getOseeEnumEntryAccess().getEntryKeyword_0()); 
 
             }
 
-             after(grammarAccess.getOseeEnumAccess().getNameAssignment_0()); 
-
-            }
-
-            pushFollow(FOLLOW_rule__OseeEnum__Group__1_in_rule__OseeEnum__Group__03771);
-            rule__OseeEnum__Group__1();
+            pushFollow(FOLLOW_rule__OseeEnumEntry__Group__1_in_rule__OseeEnumEntry__Group__03773);
+            rule__OseeEnumEntry__Group__1();
             _fsp--;
 
 
@@ -4679,24 +4670,74 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
         }
         return ;
     }
-    // $ANTLR end rule__OseeEnum__Group__0
+    // $ANTLR end rule__OseeEnumEntry__Group__0
 
 
-    // $ANTLR start rule__OseeEnum__Group__1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1872:1: rule__OseeEnum__Group__1 : ( ( rule__OseeEnum__OrdinalAssignment_1 )? ) ;
-    public final void rule__OseeEnum__Group__1() throws RecognitionException {
+    // $ANTLR start rule__OseeEnumEntry__Group__1
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1874:1: rule__OseeEnumEntry__Group__1 : ( ( rule__OseeEnumEntry__NameAssignment_1 ) ) rule__OseeEnumEntry__Group__2 ;
+    public final void rule__OseeEnumEntry__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1876:1: ( ( ( rule__OseeEnum__OrdinalAssignment_1 )? ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1877:1: ( ( rule__OseeEnum__OrdinalAssignment_1 )? )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1878:1: ( ( ( rule__OseeEnumEntry__NameAssignment_1 ) ) rule__OseeEnumEntry__Group__2 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1879:1: ( ( rule__OseeEnumEntry__NameAssignment_1 ) ) rule__OseeEnumEntry__Group__2
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1877:1: ( ( rule__OseeEnum__OrdinalAssignment_1 )? )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1878:1: ( rule__OseeEnum__OrdinalAssignment_1 )?
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1879:1: ( ( rule__OseeEnumEntry__NameAssignment_1 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1880:1: ( rule__OseeEnumEntry__NameAssignment_1 )
             {
-             before(grammarAccess.getOseeEnumAccess().getOrdinalAssignment_1()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1879:1: ( rule__OseeEnum__OrdinalAssignment_1 )?
+             before(grammarAccess.getOseeEnumEntryAccess().getNameAssignment_1()); 
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1881:1: ( rule__OseeEnumEntry__NameAssignment_1 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1881:2: rule__OseeEnumEntry__NameAssignment_1
+            {
+            pushFollow(FOLLOW_rule__OseeEnumEntry__NameAssignment_1_in_rule__OseeEnumEntry__Group__13801);
+            rule__OseeEnumEntry__NameAssignment_1();
+            _fsp--;
+
+
+            }
+
+             after(grammarAccess.getOseeEnumEntryAccess().getNameAssignment_1()); 
+
+            }
+
+            pushFollow(FOLLOW_rule__OseeEnumEntry__Group__2_in_rule__OseeEnumEntry__Group__13810);
+            rule__OseeEnumEntry__Group__2();
+            _fsp--;
+
+
+            }
+
+        }
+        catch (RecognitionException re) {
+            reportError(re);
+            recover(input,re);
+        }
+        finally {
+
+            	restoreStackSize(stackSize);
+
+        }
+        return ;
+    }
+    // $ANTLR end rule__OseeEnumEntry__Group__1
+
+
+    // $ANTLR start rule__OseeEnumEntry__Group__2
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1892:1: rule__OseeEnumEntry__Group__2 : ( ( rule__OseeEnumEntry__OrdinalAssignment_2 )? ) ;
+    public final void rule__OseeEnumEntry__Group__2() throws RecognitionException {
+
+        		int stackSize = keepStackSize();
+            
+        try {
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1896:1: ( ( ( rule__OseeEnumEntry__OrdinalAssignment_2 )? ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1897:1: ( ( rule__OseeEnumEntry__OrdinalAssignment_2 )? )
+            {
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1897:1: ( ( rule__OseeEnumEntry__OrdinalAssignment_2 )? )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1898:1: ( rule__OseeEnumEntry__OrdinalAssignment_2 )?
+            {
+             before(grammarAccess.getOseeEnumEntryAccess().getOrdinalAssignment_2()); 
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1899:1: ( rule__OseeEnumEntry__OrdinalAssignment_2 )?
             int alt22=2;
             int LA22_0 = input.LA(1);
 
@@ -4705,10 +4746,10 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
             }
             switch (alt22) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1879:2: rule__OseeEnum__OrdinalAssignment_1
+                    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1899:2: rule__OseeEnumEntry__OrdinalAssignment_2
                     {
-                    pushFollow(FOLLOW_rule__OseeEnum__OrdinalAssignment_1_in_rule__OseeEnum__Group__13799);
-                    rule__OseeEnum__OrdinalAssignment_1();
+                    pushFollow(FOLLOW_rule__OseeEnumEntry__OrdinalAssignment_2_in_rule__OseeEnumEntry__Group__23838);
+                    rule__OseeEnumEntry__OrdinalAssignment_2();
                     _fsp--;
 
 
@@ -4717,7 +4758,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
             }
 
-             after(grammarAccess.getOseeEnumAccess().getOrdinalAssignment_1()); 
+             after(grammarAccess.getOseeEnumEntryAccess().getOrdinalAssignment_2()); 
 
             }
 
@@ -4736,29 +4777,29 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
         }
         return ;
     }
-    // $ANTLR end rule__OseeEnum__Group__1
+    // $ANTLR end rule__OseeEnumEntry__Group__2
 
 
     // $ANTLR start rule__RelationType__Group__0
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1893:1: rule__RelationType__Group__0 : ( 'relationType' ) rule__RelationType__Group__1 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1915:1: rule__RelationType__Group__0 : ( 'relationType' ) rule__RelationType__Group__1 ;
     public final void rule__RelationType__Group__0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1897:1: ( ( 'relationType' ) rule__RelationType__Group__1 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1898:1: ( 'relationType' ) rule__RelationType__Group__1
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1919:1: ( ( 'relationType' ) rule__RelationType__Group__1 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1920:1: ( 'relationType' ) rule__RelationType__Group__1
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1898:1: ( 'relationType' )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1899:1: 'relationType'
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1920:1: ( 'relationType' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1921:1: 'relationType'
             {
              before(grammarAccess.getRelationTypeAccess().getRelationTypeKeyword_0()); 
-            match(input,59,FOLLOW_59_in_rule__RelationType__Group__03839); 
+            match(input,60,FOLLOW_60_in_rule__RelationType__Group__03880); 
              after(grammarAccess.getRelationTypeAccess().getRelationTypeKeyword_0()); 
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__1_in_rule__RelationType__Group__03849);
+            pushFollow(FOLLOW_rule__RelationType__Group__1_in_rule__RelationType__Group__03890);
             rule__RelationType__Group__1();
             _fsp--;
 
@@ -4781,23 +4822,23 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1913:1: rule__RelationType__Group__1 : ( ( rule__RelationType__NameAssignment_1 ) ) rule__RelationType__Group__2 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1935:1: rule__RelationType__Group__1 : ( ( rule__RelationType__NameAssignment_1 ) ) rule__RelationType__Group__2 ;
     public final void rule__RelationType__Group__1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1917:1: ( ( ( rule__RelationType__NameAssignment_1 ) ) rule__RelationType__Group__2 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1918:1: ( ( rule__RelationType__NameAssignment_1 ) ) rule__RelationType__Group__2
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1939:1: ( ( ( rule__RelationType__NameAssignment_1 ) ) rule__RelationType__Group__2 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1940:1: ( ( rule__RelationType__NameAssignment_1 ) ) rule__RelationType__Group__2
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1918:1: ( ( rule__RelationType__NameAssignment_1 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1919:1: ( rule__RelationType__NameAssignment_1 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1940:1: ( ( rule__RelationType__NameAssignment_1 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1941:1: ( rule__RelationType__NameAssignment_1 )
             {
              before(grammarAccess.getRelationTypeAccess().getNameAssignment_1()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1920:1: ( rule__RelationType__NameAssignment_1 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1920:2: rule__RelationType__NameAssignment_1
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1942:1: ( rule__RelationType__NameAssignment_1 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1942:2: rule__RelationType__NameAssignment_1
             {
-            pushFollow(FOLLOW_rule__RelationType__NameAssignment_1_in_rule__RelationType__Group__13877);
+            pushFollow(FOLLOW_rule__RelationType__NameAssignment_1_in_rule__RelationType__Group__13918);
             rule__RelationType__NameAssignment_1();
             _fsp--;
 
@@ -4808,7 +4849,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__2_in_rule__RelationType__Group__13886);
+            pushFollow(FOLLOW_rule__RelationType__Group__2_in_rule__RelationType__Group__13927);
             rule__RelationType__Group__2();
             _fsp--;
 
@@ -4831,25 +4872,25 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__2
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1931:1: rule__RelationType__Group__2 : ( '{' ) rule__RelationType__Group__3 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1953:1: rule__RelationType__Group__2 : ( '{' ) rule__RelationType__Group__3 ;
     public final void rule__RelationType__Group__2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1935:1: ( ( '{' ) rule__RelationType__Group__3 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1936:1: ( '{' ) rule__RelationType__Group__3
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1957:1: ( ( '{' ) rule__RelationType__Group__3 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1958:1: ( '{' ) rule__RelationType__Group__3
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1936:1: ( '{' )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1937:1: '{'
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1958:1: ( '{' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1959:1: '{'
             {
              before(grammarAccess.getRelationTypeAccess().getLeftCurlyBracketKeyword_2()); 
-            match(input,45,FOLLOW_45_in_rule__RelationType__Group__23915); 
+            match(input,45,FOLLOW_45_in_rule__RelationType__Group__23956); 
              after(grammarAccess.getRelationTypeAccess().getLeftCurlyBracketKeyword_2()); 
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__3_in_rule__RelationType__Group__23925);
+            pushFollow(FOLLOW_rule__RelationType__Group__3_in_rule__RelationType__Group__23966);
             rule__RelationType__Group__3();
             _fsp--;
 
@@ -4872,25 +4913,25 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__3
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1951:1: rule__RelationType__Group__3 : ( 'sideAName' ) rule__RelationType__Group__4 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1973:1: rule__RelationType__Group__3 : ( 'sideAName' ) rule__RelationType__Group__4 ;
     public final void rule__RelationType__Group__3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1955:1: ( ( 'sideAName' ) rule__RelationType__Group__4 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1956:1: ( 'sideAName' ) rule__RelationType__Group__4
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1977:1: ( ( 'sideAName' ) rule__RelationType__Group__4 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1978:1: ( 'sideAName' ) rule__RelationType__Group__4
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1956:1: ( 'sideAName' )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1957:1: 'sideAName'
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1978:1: ( 'sideAName' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1979:1: 'sideAName'
             {
              before(grammarAccess.getRelationTypeAccess().getSideANameKeyword_3()); 
-            match(input,60,FOLLOW_60_in_rule__RelationType__Group__33954); 
+            match(input,61,FOLLOW_61_in_rule__RelationType__Group__33995); 
              after(grammarAccess.getRelationTypeAccess().getSideANameKeyword_3()); 
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__4_in_rule__RelationType__Group__33964);
+            pushFollow(FOLLOW_rule__RelationType__Group__4_in_rule__RelationType__Group__34005);
             rule__RelationType__Group__4();
             _fsp--;
 
@@ -4913,23 +4954,23 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__4
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1971:1: rule__RelationType__Group__4 : ( ( rule__RelationType__SideANameAssignment_4 ) ) rule__RelationType__Group__5 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1993:1: rule__RelationType__Group__4 : ( ( rule__RelationType__SideANameAssignment_4 ) ) rule__RelationType__Group__5 ;
     public final void rule__RelationType__Group__4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1975:1: ( ( ( rule__RelationType__SideANameAssignment_4 ) ) rule__RelationType__Group__5 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1976:1: ( ( rule__RelationType__SideANameAssignment_4 ) ) rule__RelationType__Group__5
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1997:1: ( ( ( rule__RelationType__SideANameAssignment_4 ) ) rule__RelationType__Group__5 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1998:1: ( ( rule__RelationType__SideANameAssignment_4 ) ) rule__RelationType__Group__5
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1976:1: ( ( rule__RelationType__SideANameAssignment_4 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1977:1: ( rule__RelationType__SideANameAssignment_4 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1998:1: ( ( rule__RelationType__SideANameAssignment_4 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1999:1: ( rule__RelationType__SideANameAssignment_4 )
             {
              before(grammarAccess.getRelationTypeAccess().getSideANameAssignment_4()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1978:1: ( rule__RelationType__SideANameAssignment_4 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1978:2: rule__RelationType__SideANameAssignment_4
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2000:1: ( rule__RelationType__SideANameAssignment_4 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2000:2: rule__RelationType__SideANameAssignment_4
             {
-            pushFollow(FOLLOW_rule__RelationType__SideANameAssignment_4_in_rule__RelationType__Group__43992);
+            pushFollow(FOLLOW_rule__RelationType__SideANameAssignment_4_in_rule__RelationType__Group__44033);
             rule__RelationType__SideANameAssignment_4();
             _fsp--;
 
@@ -4940,7 +4981,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__5_in_rule__RelationType__Group__44001);
+            pushFollow(FOLLOW_rule__RelationType__Group__5_in_rule__RelationType__Group__44042);
             rule__RelationType__Group__5();
             _fsp--;
 
@@ -4963,25 +5004,25 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__5
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1989:1: rule__RelationType__Group__5 : ( 'sideAArtifactType' ) rule__RelationType__Group__6 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2011:1: rule__RelationType__Group__5 : ( 'sideAArtifactType' ) rule__RelationType__Group__6 ;
     public final void rule__RelationType__Group__5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1993:1: ( ( 'sideAArtifactType' ) rule__RelationType__Group__6 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1994:1: ( 'sideAArtifactType' ) rule__RelationType__Group__6
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2015:1: ( ( 'sideAArtifactType' ) rule__RelationType__Group__6 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2016:1: ( 'sideAArtifactType' ) rule__RelationType__Group__6
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1994:1: ( 'sideAArtifactType' )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:1995:1: 'sideAArtifactType'
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2016:1: ( 'sideAArtifactType' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2017:1: 'sideAArtifactType'
             {
              before(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeKeyword_5()); 
-            match(input,61,FOLLOW_61_in_rule__RelationType__Group__54030); 
+            match(input,62,FOLLOW_62_in_rule__RelationType__Group__54071); 
              after(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeKeyword_5()); 
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__6_in_rule__RelationType__Group__54040);
+            pushFollow(FOLLOW_rule__RelationType__Group__6_in_rule__RelationType__Group__54081);
             rule__RelationType__Group__6();
             _fsp--;
 
@@ -5004,23 +5045,23 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__6
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2009:1: rule__RelationType__Group__6 : ( ( rule__RelationType__SideAArtifactTypeAssignment_6 ) ) rule__RelationType__Group__7 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2031:1: rule__RelationType__Group__6 : ( ( rule__RelationType__SideAArtifactTypeAssignment_6 ) ) rule__RelationType__Group__7 ;
     public final void rule__RelationType__Group__6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2013:1: ( ( ( rule__RelationType__SideAArtifactTypeAssignment_6 ) ) rule__RelationType__Group__7 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2014:1: ( ( rule__RelationType__SideAArtifactTypeAssignment_6 ) ) rule__RelationType__Group__7
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2035:1: ( ( ( rule__RelationType__SideAArtifactTypeAssignment_6 ) ) rule__RelationType__Group__7 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2036:1: ( ( rule__RelationType__SideAArtifactTypeAssignment_6 ) ) rule__RelationType__Group__7
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2014:1: ( ( rule__RelationType__SideAArtifactTypeAssignment_6 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2015:1: ( rule__RelationType__SideAArtifactTypeAssignment_6 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2036:1: ( ( rule__RelationType__SideAArtifactTypeAssignment_6 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2037:1: ( rule__RelationType__SideAArtifactTypeAssignment_6 )
             {
              before(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeAssignment_6()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2016:1: ( rule__RelationType__SideAArtifactTypeAssignment_6 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2016:2: rule__RelationType__SideAArtifactTypeAssignment_6
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2038:1: ( rule__RelationType__SideAArtifactTypeAssignment_6 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2038:2: rule__RelationType__SideAArtifactTypeAssignment_6
             {
-            pushFollow(FOLLOW_rule__RelationType__SideAArtifactTypeAssignment_6_in_rule__RelationType__Group__64068);
+            pushFollow(FOLLOW_rule__RelationType__SideAArtifactTypeAssignment_6_in_rule__RelationType__Group__64109);
             rule__RelationType__SideAArtifactTypeAssignment_6();
             _fsp--;
 
@@ -5031,7 +5072,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__7_in_rule__RelationType__Group__64077);
+            pushFollow(FOLLOW_rule__RelationType__Group__7_in_rule__RelationType__Group__64118);
             rule__RelationType__Group__7();
             _fsp--;
 
@@ -5054,25 +5095,25 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__7
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2027:1: rule__RelationType__Group__7 : ( 'sideBName' ) rule__RelationType__Group__8 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2049:1: rule__RelationType__Group__7 : ( 'sideBName' ) rule__RelationType__Group__8 ;
     public final void rule__RelationType__Group__7() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2031:1: ( ( 'sideBName' ) rule__RelationType__Group__8 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2032:1: ( 'sideBName' ) rule__RelationType__Group__8
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2053:1: ( ( 'sideBName' ) rule__RelationType__Group__8 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2054:1: ( 'sideBName' ) rule__RelationType__Group__8
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2032:1: ( 'sideBName' )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2033:1: 'sideBName'
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2054:1: ( 'sideBName' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2055:1: 'sideBName'
             {
              before(grammarAccess.getRelationTypeAccess().getSideBNameKeyword_7()); 
-            match(input,62,FOLLOW_62_in_rule__RelationType__Group__74106); 
+            match(input,63,FOLLOW_63_in_rule__RelationType__Group__74147); 
              after(grammarAccess.getRelationTypeAccess().getSideBNameKeyword_7()); 
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__8_in_rule__RelationType__Group__74116);
+            pushFollow(FOLLOW_rule__RelationType__Group__8_in_rule__RelationType__Group__74157);
             rule__RelationType__Group__8();
             _fsp--;
 
@@ -5095,23 +5136,23 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__8
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2047:1: rule__RelationType__Group__8 : ( ( rule__RelationType__SideBNameAssignment_8 ) ) rule__RelationType__Group__9 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2069:1: rule__RelationType__Group__8 : ( ( rule__RelationType__SideBNameAssignment_8 ) ) rule__RelationType__Group__9 ;
     public final void rule__RelationType__Group__8() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2051:1: ( ( ( rule__RelationType__SideBNameAssignment_8 ) ) rule__RelationType__Group__9 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2052:1: ( ( rule__RelationType__SideBNameAssignment_8 ) ) rule__RelationType__Group__9
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2073:1: ( ( ( rule__RelationType__SideBNameAssignment_8 ) ) rule__RelationType__Group__9 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2074:1: ( ( rule__RelationType__SideBNameAssignment_8 ) ) rule__RelationType__Group__9
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2052:1: ( ( rule__RelationType__SideBNameAssignment_8 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2053:1: ( rule__RelationType__SideBNameAssignment_8 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2074:1: ( ( rule__RelationType__SideBNameAssignment_8 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2075:1: ( rule__RelationType__SideBNameAssignment_8 )
             {
              before(grammarAccess.getRelationTypeAccess().getSideBNameAssignment_8()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2054:1: ( rule__RelationType__SideBNameAssignment_8 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2054:2: rule__RelationType__SideBNameAssignment_8
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2076:1: ( rule__RelationType__SideBNameAssignment_8 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2076:2: rule__RelationType__SideBNameAssignment_8
             {
-            pushFollow(FOLLOW_rule__RelationType__SideBNameAssignment_8_in_rule__RelationType__Group__84144);
+            pushFollow(FOLLOW_rule__RelationType__SideBNameAssignment_8_in_rule__RelationType__Group__84185);
             rule__RelationType__SideBNameAssignment_8();
             _fsp--;
 
@@ -5122,7 +5163,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__9_in_rule__RelationType__Group__84153);
+            pushFollow(FOLLOW_rule__RelationType__Group__9_in_rule__RelationType__Group__84194);
             rule__RelationType__Group__9();
             _fsp--;
 
@@ -5145,25 +5186,25 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__9
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2065:1: rule__RelationType__Group__9 : ( 'sideBArtifactType' ) rule__RelationType__Group__10 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2087:1: rule__RelationType__Group__9 : ( 'sideBArtifactType' ) rule__RelationType__Group__10 ;
     public final void rule__RelationType__Group__9() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2069:1: ( ( 'sideBArtifactType' ) rule__RelationType__Group__10 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2070:1: ( 'sideBArtifactType' ) rule__RelationType__Group__10
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2091:1: ( ( 'sideBArtifactType' ) rule__RelationType__Group__10 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2092:1: ( 'sideBArtifactType' ) rule__RelationType__Group__10
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2070:1: ( 'sideBArtifactType' )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2071:1: 'sideBArtifactType'
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2092:1: ( 'sideBArtifactType' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2093:1: 'sideBArtifactType'
             {
              before(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeKeyword_9()); 
-            match(input,63,FOLLOW_63_in_rule__RelationType__Group__94182); 
+            match(input,64,FOLLOW_64_in_rule__RelationType__Group__94223); 
              after(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeKeyword_9()); 
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__10_in_rule__RelationType__Group__94192);
+            pushFollow(FOLLOW_rule__RelationType__Group__10_in_rule__RelationType__Group__94233);
             rule__RelationType__Group__10();
             _fsp--;
 
@@ -5186,23 +5227,23 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__10
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2085:1: rule__RelationType__Group__10 : ( ( rule__RelationType__SideBArtifactTypeAssignment_10 ) ) rule__RelationType__Group__11 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2107:1: rule__RelationType__Group__10 : ( ( rule__RelationType__SideBArtifactTypeAssignment_10 ) ) rule__RelationType__Group__11 ;
     public final void rule__RelationType__Group__10() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2089:1: ( ( ( rule__RelationType__SideBArtifactTypeAssignment_10 ) ) rule__RelationType__Group__11 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2090:1: ( ( rule__RelationType__SideBArtifactTypeAssignment_10 ) ) rule__RelationType__Group__11
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2111:1: ( ( ( rule__RelationType__SideBArtifactTypeAssignment_10 ) ) rule__RelationType__Group__11 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2112:1: ( ( rule__RelationType__SideBArtifactTypeAssignment_10 ) ) rule__RelationType__Group__11
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2090:1: ( ( rule__RelationType__SideBArtifactTypeAssignment_10 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2091:1: ( rule__RelationType__SideBArtifactTypeAssignment_10 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2112:1: ( ( rule__RelationType__SideBArtifactTypeAssignment_10 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2113:1: ( rule__RelationType__SideBArtifactTypeAssignment_10 )
             {
              before(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeAssignment_10()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2092:1: ( rule__RelationType__SideBArtifactTypeAssignment_10 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2092:2: rule__RelationType__SideBArtifactTypeAssignment_10
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2114:1: ( rule__RelationType__SideBArtifactTypeAssignment_10 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2114:2: rule__RelationType__SideBArtifactTypeAssignment_10
             {
-            pushFollow(FOLLOW_rule__RelationType__SideBArtifactTypeAssignment_10_in_rule__RelationType__Group__104220);
+            pushFollow(FOLLOW_rule__RelationType__SideBArtifactTypeAssignment_10_in_rule__RelationType__Group__104261);
             rule__RelationType__SideBArtifactTypeAssignment_10();
             _fsp--;
 
@@ -5213,7 +5254,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__11_in_rule__RelationType__Group__104229);
+            pushFollow(FOLLOW_rule__RelationType__Group__11_in_rule__RelationType__Group__104270);
             rule__RelationType__Group__11();
             _fsp--;
 
@@ -5236,25 +5277,25 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__11
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2103:1: rule__RelationType__Group__11 : ( 'defaultOrderType' ) rule__RelationType__Group__12 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2125:1: rule__RelationType__Group__11 : ( 'defaultOrderType' ) rule__RelationType__Group__12 ;
     public final void rule__RelationType__Group__11() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2107:1: ( ( 'defaultOrderType' ) rule__RelationType__Group__12 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2108:1: ( 'defaultOrderType' ) rule__RelationType__Group__12
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2129:1: ( ( 'defaultOrderType' ) rule__RelationType__Group__12 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2130:1: ( 'defaultOrderType' ) rule__RelationType__Group__12
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2108:1: ( 'defaultOrderType' )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2109:1: 'defaultOrderType'
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2130:1: ( 'defaultOrderType' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2131:1: 'defaultOrderType'
             {
              before(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeKeyword_11()); 
-            match(input,64,FOLLOW_64_in_rule__RelationType__Group__114258); 
+            match(input,65,FOLLOW_65_in_rule__RelationType__Group__114299); 
              after(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeKeyword_11()); 
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__12_in_rule__RelationType__Group__114268);
+            pushFollow(FOLLOW_rule__RelationType__Group__12_in_rule__RelationType__Group__114309);
             rule__RelationType__Group__12();
             _fsp--;
 
@@ -5277,23 +5318,23 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__12
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2123:1: rule__RelationType__Group__12 : ( ( rule__RelationType__DefaultOrderTypeAssignment_12 ) ) rule__RelationType__Group__13 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2145:1: rule__RelationType__Group__12 : ( ( rule__RelationType__DefaultOrderTypeAssignment_12 ) ) rule__RelationType__Group__13 ;
     public final void rule__RelationType__Group__12() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2127:1: ( ( ( rule__RelationType__DefaultOrderTypeAssignment_12 ) ) rule__RelationType__Group__13 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2128:1: ( ( rule__RelationType__DefaultOrderTypeAssignment_12 ) ) rule__RelationType__Group__13
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2149:1: ( ( ( rule__RelationType__DefaultOrderTypeAssignment_12 ) ) rule__RelationType__Group__13 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2150:1: ( ( rule__RelationType__DefaultOrderTypeAssignment_12 ) ) rule__RelationType__Group__13
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2128:1: ( ( rule__RelationType__DefaultOrderTypeAssignment_12 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2129:1: ( rule__RelationType__DefaultOrderTypeAssignment_12 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2150:1: ( ( rule__RelationType__DefaultOrderTypeAssignment_12 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2151:1: ( rule__RelationType__DefaultOrderTypeAssignment_12 )
             {
              before(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeAssignment_12()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2130:1: ( rule__RelationType__DefaultOrderTypeAssignment_12 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2130:2: rule__RelationType__DefaultOrderTypeAssignment_12
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2152:1: ( rule__RelationType__DefaultOrderTypeAssignment_12 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2152:2: rule__RelationType__DefaultOrderTypeAssignment_12
             {
-            pushFollow(FOLLOW_rule__RelationType__DefaultOrderTypeAssignment_12_in_rule__RelationType__Group__124296);
+            pushFollow(FOLLOW_rule__RelationType__DefaultOrderTypeAssignment_12_in_rule__RelationType__Group__124337);
             rule__RelationType__DefaultOrderTypeAssignment_12();
             _fsp--;
 
@@ -5304,7 +5345,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__13_in_rule__RelationType__Group__124305);
+            pushFollow(FOLLOW_rule__RelationType__Group__13_in_rule__RelationType__Group__124346);
             rule__RelationType__Group__13();
             _fsp--;
 
@@ -5327,25 +5368,25 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__13
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2141:1: rule__RelationType__Group__13 : ( 'multiplicity' ) rule__RelationType__Group__14 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2163:1: rule__RelationType__Group__13 : ( 'multiplicity' ) rule__RelationType__Group__14 ;
     public final void rule__RelationType__Group__13() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2145:1: ( ( 'multiplicity' ) rule__RelationType__Group__14 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2146:1: ( 'multiplicity' ) rule__RelationType__Group__14
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2167:1: ( ( 'multiplicity' ) rule__RelationType__Group__14 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2168:1: ( 'multiplicity' ) rule__RelationType__Group__14
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2146:1: ( 'multiplicity' )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2147:1: 'multiplicity'
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2168:1: ( 'multiplicity' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2169:1: 'multiplicity'
             {
              before(grammarAccess.getRelationTypeAccess().getMultiplicityKeyword_13()); 
-            match(input,65,FOLLOW_65_in_rule__RelationType__Group__134334); 
+            match(input,66,FOLLOW_66_in_rule__RelationType__Group__134375); 
              after(grammarAccess.getRelationTypeAccess().getMultiplicityKeyword_13()); 
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__14_in_rule__RelationType__Group__134344);
+            pushFollow(FOLLOW_rule__RelationType__Group__14_in_rule__RelationType__Group__134385);
             rule__RelationType__Group__14();
             _fsp--;
 
@@ -5368,23 +5409,23 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__14
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2161:1: rule__RelationType__Group__14 : ( ( rule__RelationType__MultiplicityAssignment_14 ) ) rule__RelationType__Group__15 ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2183:1: rule__RelationType__Group__14 : ( ( rule__RelationType__MultiplicityAssignment_14 ) ) rule__RelationType__Group__15 ;
     public final void rule__RelationType__Group__14() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2165:1: ( ( ( rule__RelationType__MultiplicityAssignment_14 ) ) rule__RelationType__Group__15 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2166:1: ( ( rule__RelationType__MultiplicityAssignment_14 ) ) rule__RelationType__Group__15
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2187:1: ( ( ( rule__RelationType__MultiplicityAssignment_14 ) ) rule__RelationType__Group__15 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2188:1: ( ( rule__RelationType__MultiplicityAssignment_14 ) ) rule__RelationType__Group__15
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2166:1: ( ( rule__RelationType__MultiplicityAssignment_14 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2167:1: ( rule__RelationType__MultiplicityAssignment_14 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2188:1: ( ( rule__RelationType__MultiplicityAssignment_14 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2189:1: ( rule__RelationType__MultiplicityAssignment_14 )
             {
              before(grammarAccess.getRelationTypeAccess().getMultiplicityAssignment_14()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2168:1: ( rule__RelationType__MultiplicityAssignment_14 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2168:2: rule__RelationType__MultiplicityAssignment_14
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2190:1: ( rule__RelationType__MultiplicityAssignment_14 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2190:2: rule__RelationType__MultiplicityAssignment_14
             {
-            pushFollow(FOLLOW_rule__RelationType__MultiplicityAssignment_14_in_rule__RelationType__Group__144372);
+            pushFollow(FOLLOW_rule__RelationType__MultiplicityAssignment_14_in_rule__RelationType__Group__144413);
             rule__RelationType__MultiplicityAssignment_14();
             _fsp--;
 
@@ -5395,7 +5436,7 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
             }
 
-            pushFollow(FOLLOW_rule__RelationType__Group__15_in_rule__RelationType__Group__144381);
+            pushFollow(FOLLOW_rule__RelationType__Group__15_in_rule__RelationType__Group__144422);
             rule__RelationType__Group__15();
             _fsp--;
 
@@ -5418,20 +5459,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__Group__15
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2179:1: rule__RelationType__Group__15 : ( '}' ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2201:1: rule__RelationType__Group__15 : ( '}' ) ;
     public final void rule__RelationType__Group__15() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2183:1: ( ( '}' ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2184:1: ( '}' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2205:1: ( ( '}' ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2206:1: ( '}' )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2184:1: ( '}' )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2185:1: '}'
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2206:1: ( '}' )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2207:1: '}'
             {
              before(grammarAccess.getRelationTypeAccess().getRightCurlyBracketKeyword_15()); 
-            match(input,46,FOLLOW_46_in_rule__RelationType__Group__154410); 
+            match(input,46,FOLLOW_46_in_rule__RelationType__Group__154451); 
              after(grammarAccess.getRelationTypeAccess().getRightCurlyBracketKeyword_15()); 
 
             }
@@ -5455,20 +5496,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__OseeTypeModel__ImportsAssignment_0
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2230:1: rule__OseeTypeModel__ImportsAssignment_0 : ( ruleImport ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2252:1: rule__OseeTypeModel__ImportsAssignment_0 : ( ruleImport ) ;
     public final void rule__OseeTypeModel__ImportsAssignment_0() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2234:1: ( ( ruleImport ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2235:1: ( ruleImport )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2256:1: ( ( ruleImport ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2257:1: ( ruleImport )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2235:1: ( ruleImport )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2236:1: ruleImport
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2257:1: ( ruleImport )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2258:1: ruleImport
             {
              before(grammarAccess.getOseeTypeModelAccess().getImportsImportParserRuleCall_0_0()); 
-            pushFollow(FOLLOW_ruleImport_in_rule__OseeTypeModel__ImportsAssignment_04477);
+            pushFollow(FOLLOW_ruleImport_in_rule__OseeTypeModel__ImportsAssignment_04518);
             ruleImport();
             _fsp--;
 
@@ -5495,20 +5536,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__OseeTypeModel__TypesAssignment_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2245:1: rule__OseeTypeModel__TypesAssignment_1 : ( ruleOseeType ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2267:1: rule__OseeTypeModel__TypesAssignment_1 : ( ruleOseeType ) ;
     public final void rule__OseeTypeModel__TypesAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2249:1: ( ( ruleOseeType ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2250:1: ( ruleOseeType )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2271:1: ( ( ruleOseeType ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2272:1: ( ruleOseeType )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2250:1: ( ruleOseeType )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2251:1: ruleOseeType
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2272:1: ( ruleOseeType )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2273:1: ruleOseeType
             {
              before(grammarAccess.getOseeTypeModelAccess().getTypesOseeTypeParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleOseeType_in_rule__OseeTypeModel__TypesAssignment_14508);
+            pushFollow(FOLLOW_ruleOseeType_in_rule__OseeTypeModel__TypesAssignment_14549);
             ruleOseeType();
             _fsp--;
 
@@ -5535,20 +5576,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__Import__ImportURIAssignment_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2260:1: rule__Import__ImportURIAssignment_1 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2282:1: rule__Import__ImportURIAssignment_1 : ( RULE_STRING ) ;
     public final void rule__Import__ImportURIAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2264:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2265:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2286:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2287:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2265:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2266:1: RULE_STRING
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2287:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2288:1: RULE_STRING
             {
              before(grammarAccess.getImportAccess().getImportURISTRINGTerminalRuleCall_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Import__ImportURIAssignment_14539); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__Import__ImportURIAssignment_14580); 
              after(grammarAccess.getImportAccess().getImportURISTRINGTerminalRuleCall_1_0()); 
 
             }
@@ -5572,20 +5613,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__ArtifactType__NameAssignment_2
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2275:1: rule__ArtifactType__NameAssignment_2 : ( ruleQUALIFIED_NAME ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2297:1: rule__ArtifactType__NameAssignment_2 : ( ruleQUALIFIED_NAME ) ;
     public final void rule__ArtifactType__NameAssignment_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2279:1: ( ( ruleQUALIFIED_NAME ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2280:1: ( ruleQUALIFIED_NAME )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2301:1: ( ( ruleQUALIFIED_NAME ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2302:1: ( ruleQUALIFIED_NAME )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2280:1: ( ruleQUALIFIED_NAME )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2281:1: ruleQUALIFIED_NAME
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2302:1: ( ruleQUALIFIED_NAME )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2303:1: ruleQUALIFIED_NAME
             {
              before(grammarAccess.getArtifactTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_2_0()); 
-            pushFollow(FOLLOW_ruleQUALIFIED_NAME_in_rule__ArtifactType__NameAssignment_24570);
+            pushFollow(FOLLOW_ruleQUALIFIED_NAME_in_rule__ArtifactType__NameAssignment_24611);
             ruleQUALIFIED_NAME();
             _fsp--;
 
@@ -5612,24 +5653,24 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__ArtifactType__SuperArtifactTypeAssignment_3_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2290:1: rule__ArtifactType__SuperArtifactTypeAssignment_3_1 : ( ( RULE_ID ) ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2312:1: rule__ArtifactType__SuperArtifactTypeAssignment_3_1 : ( ( RULE_ID ) ) ;
     public final void rule__ArtifactType__SuperArtifactTypeAssignment_3_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2294:1: ( ( ( RULE_ID ) ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2295:1: ( ( RULE_ID ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2316:1: ( ( ( RULE_ID ) ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2317:1: ( ( RULE_ID ) )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2295:1: ( ( RULE_ID ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2296:1: ( RULE_ID )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2317:1: ( ( RULE_ID ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2318:1: ( RULE_ID )
             {
              before(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypeArtifactTypeCrossReference_3_1_0()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2297:1: ( RULE_ID )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2298:1: RULE_ID
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2319:1: ( RULE_ID )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2320:1: RULE_ID
             {
              before(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypeArtifactTypeIDTerminalRuleCall_3_1_0_1()); 
-            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__ArtifactType__SuperArtifactTypeAssignment_3_14605); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__ArtifactType__SuperArtifactTypeAssignment_3_14646); 
              after(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypeArtifactTypeIDTerminalRuleCall_3_1_0_1()); 
 
             }
@@ -5657,20 +5698,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__ArtifactType__ValidAttributeTypesAssignment_5
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2309:1: rule__ArtifactType__ValidAttributeTypesAssignment_5 : ( ruleAttributeTypeRef ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2331:1: rule__ArtifactType__ValidAttributeTypesAssignment_5 : ( ruleAttributeTypeRef ) ;
     public final void rule__ArtifactType__ValidAttributeTypesAssignment_5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2313:1: ( ( ruleAttributeTypeRef ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2314:1: ( ruleAttributeTypeRef )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2335:1: ( ( ruleAttributeTypeRef ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2336:1: ( ruleAttributeTypeRef )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2314:1: ( ruleAttributeTypeRef )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2315:1: ruleAttributeTypeRef
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2336:1: ( ruleAttributeTypeRef )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2337:1: ruleAttributeTypeRef
             {
              before(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAttributeTypeRefParserRuleCall_5_0()); 
-            pushFollow(FOLLOW_ruleAttributeTypeRef_in_rule__ArtifactType__ValidAttributeTypesAssignment_54640);
+            pushFollow(FOLLOW_ruleAttributeTypeRef_in_rule__ArtifactType__ValidAttributeTypesAssignment_54681);
             ruleAttributeTypeRef();
             _fsp--;
 
@@ -5697,24 +5738,24 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__AttributeTypeRef__ValidAttributeTypeAssignment_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2324:1: rule__AttributeTypeRef__ValidAttributeTypeAssignment_1 : ( ( RULE_ID ) ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2346:1: rule__AttributeTypeRef__ValidAttributeTypeAssignment_1 : ( ( RULE_ID ) ) ;
     public final void rule__AttributeTypeRef__ValidAttributeTypeAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2328:1: ( ( ( RULE_ID ) ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2329:1: ( ( RULE_ID ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2350:1: ( ( ( RULE_ID ) ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2351:1: ( ( RULE_ID ) )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2329:1: ( ( RULE_ID ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2330:1: ( RULE_ID )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2351:1: ( ( RULE_ID ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2352:1: ( RULE_ID )
             {
              before(grammarAccess.getAttributeTypeRefAccess().getValidAttributeTypeAttributeTypeCrossReference_1_0()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2331:1: ( RULE_ID )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2332:1: RULE_ID
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2353:1: ( RULE_ID )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2354:1: RULE_ID
             {
              before(grammarAccess.getAttributeTypeRefAccess().getValidAttributeTypeAttributeTypeIDTerminalRuleCall_1_0_1()); 
-            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__AttributeTypeRef__ValidAttributeTypeAssignment_14675); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__AttributeTypeRef__ValidAttributeTypeAssignment_14716); 
              after(grammarAccess.getAttributeTypeRefAccess().getValidAttributeTypeAttributeTypeIDTerminalRuleCall_1_0_1()); 
 
             }
@@ -5742,20 +5783,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__AttributeType__NameAssignment_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2343:1: rule__AttributeType__NameAssignment_1 : ( ruleQUALIFIED_NAME ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2365:1: rule__AttributeType__NameAssignment_1 : ( ruleQUALIFIED_NAME ) ;
     public final void rule__AttributeType__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2347:1: ( ( ruleQUALIFIED_NAME ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2348:1: ( ruleQUALIFIED_NAME )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2369:1: ( ( ruleQUALIFIED_NAME ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2370:1: ( ruleQUALIFIED_NAME )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2348:1: ( ruleQUALIFIED_NAME )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2349:1: ruleQUALIFIED_NAME
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2370:1: ( ruleQUALIFIED_NAME )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2371:1: ruleQUALIFIED_NAME
             {
              before(grammarAccess.getAttributeTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleQUALIFIED_NAME_in_rule__AttributeType__NameAssignment_14710);
+            pushFollow(FOLLOW_ruleQUALIFIED_NAME_in_rule__AttributeType__NameAssignment_14751);
             ruleQUALIFIED_NAME();
             _fsp--;
 
@@ -5782,20 +5823,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__AttributeType__BaseAttributeTypeAssignment_2_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2358:1: rule__AttributeType__BaseAttributeTypeAssignment_2_1 : ( ruleAttributeBaseType ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2380:1: rule__AttributeType__BaseAttributeTypeAssignment_2_1 : ( ruleAttributeBaseType ) ;
     public final void rule__AttributeType__BaseAttributeTypeAssignment_2_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2362:1: ( ( ruleAttributeBaseType ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2363:1: ( ruleAttributeBaseType )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2384:1: ( ( ruleAttributeBaseType ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2385:1: ( ruleAttributeBaseType )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2363:1: ( ruleAttributeBaseType )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2364:1: ruleAttributeBaseType
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2385:1: ( ruleAttributeBaseType )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2386:1: ruleAttributeBaseType
             {
              before(grammarAccess.getAttributeTypeAccess().getBaseAttributeTypeAttributeBaseTypeParserRuleCall_2_1_0()); 
-            pushFollow(FOLLOW_ruleAttributeBaseType_in_rule__AttributeType__BaseAttributeTypeAssignment_2_14741);
+            pushFollow(FOLLOW_ruleAttributeBaseType_in_rule__AttributeType__BaseAttributeTypeAssignment_2_14782);
             ruleAttributeBaseType();
             _fsp--;
 
@@ -5822,23 +5863,23 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__AttributeType__DataProviderAssignment_5
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2373:1: rule__AttributeType__DataProviderAssignment_5 : ( ( rule__AttributeType__DataProviderAlternatives_5_0 ) ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2395:1: rule__AttributeType__DataProviderAssignment_5 : ( ( rule__AttributeType__DataProviderAlternatives_5_0 ) ) ;
     public final void rule__AttributeType__DataProviderAssignment_5() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2377:1: ( ( ( rule__AttributeType__DataProviderAlternatives_5_0 ) ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2378:1: ( ( rule__AttributeType__DataProviderAlternatives_5_0 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2399:1: ( ( ( rule__AttributeType__DataProviderAlternatives_5_0 ) ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2400:1: ( ( rule__AttributeType__DataProviderAlternatives_5_0 ) )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2378:1: ( ( rule__AttributeType__DataProviderAlternatives_5_0 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2379:1: ( rule__AttributeType__DataProviderAlternatives_5_0 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2400:1: ( ( rule__AttributeType__DataProviderAlternatives_5_0 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2401:1: ( rule__AttributeType__DataProviderAlternatives_5_0 )
             {
              before(grammarAccess.getAttributeTypeAccess().getDataProviderAlternatives_5_0()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2380:1: ( rule__AttributeType__DataProviderAlternatives_5_0 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2380:2: rule__AttributeType__DataProviderAlternatives_5_0
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2402:1: ( rule__AttributeType__DataProviderAlternatives_5_0 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2402:2: rule__AttributeType__DataProviderAlternatives_5_0
             {
-            pushFollow(FOLLOW_rule__AttributeType__DataProviderAlternatives_5_0_in_rule__AttributeType__DataProviderAssignment_54772);
+            pushFollow(FOLLOW_rule__AttributeType__DataProviderAlternatives_5_0_in_rule__AttributeType__DataProviderAssignment_54813);
             rule__AttributeType__DataProviderAlternatives_5_0();
             _fsp--;
 
@@ -5868,20 +5909,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__AttributeType__MinAssignment_7
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2389:1: rule__AttributeType__MinAssignment_7 : ( ruleDIGITS ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2411:1: rule__AttributeType__MinAssignment_7 : ( ruleDIGITS ) ;
     public final void rule__AttributeType__MinAssignment_7() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2393:1: ( ( ruleDIGITS ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2394:1: ( ruleDIGITS )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2415:1: ( ( ruleDIGITS ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2416:1: ( ruleDIGITS )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2394:1: ( ruleDIGITS )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2395:1: ruleDIGITS
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2416:1: ( ruleDIGITS )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2417:1: ruleDIGITS
             {
              before(grammarAccess.getAttributeTypeAccess().getMinDIGITSParserRuleCall_7_0()); 
-            pushFollow(FOLLOW_ruleDIGITS_in_rule__AttributeType__MinAssignment_74805);
+            pushFollow(FOLLOW_ruleDIGITS_in_rule__AttributeType__MinAssignment_74846);
             ruleDIGITS();
             _fsp--;
 
@@ -5908,23 +5949,23 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__AttributeType__MaxAssignment_9
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2404:1: rule__AttributeType__MaxAssignment_9 : ( ( rule__AttributeType__MaxAlternatives_9_0 ) ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2426:1: rule__AttributeType__MaxAssignment_9 : ( ( rule__AttributeType__MaxAlternatives_9_0 ) ) ;
     public final void rule__AttributeType__MaxAssignment_9() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2408:1: ( ( ( rule__AttributeType__MaxAlternatives_9_0 ) ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2409:1: ( ( rule__AttributeType__MaxAlternatives_9_0 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2430:1: ( ( ( rule__AttributeType__MaxAlternatives_9_0 ) ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2431:1: ( ( rule__AttributeType__MaxAlternatives_9_0 ) )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2409:1: ( ( rule__AttributeType__MaxAlternatives_9_0 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2410:1: ( rule__AttributeType__MaxAlternatives_9_0 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2431:1: ( ( rule__AttributeType__MaxAlternatives_9_0 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2432:1: ( rule__AttributeType__MaxAlternatives_9_0 )
             {
              before(grammarAccess.getAttributeTypeAccess().getMaxAlternatives_9_0()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2411:1: ( rule__AttributeType__MaxAlternatives_9_0 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2411:2: rule__AttributeType__MaxAlternatives_9_0
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2433:1: ( rule__AttributeType__MaxAlternatives_9_0 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2433:2: rule__AttributeType__MaxAlternatives_9_0
             {
-            pushFollow(FOLLOW_rule__AttributeType__MaxAlternatives_9_0_in_rule__AttributeType__MaxAssignment_94836);
+            pushFollow(FOLLOW_rule__AttributeType__MaxAlternatives_9_0_in_rule__AttributeType__MaxAssignment_94877);
             rule__AttributeType__MaxAlternatives_9_0();
             _fsp--;
 
@@ -5954,23 +5995,23 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__AttributeType__TaggerIdAssignment_10_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2420:1: rule__AttributeType__TaggerIdAssignment_10_1 : ( ( rule__AttributeType__TaggerIdAlternatives_10_1_0 ) ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2442:1: rule__AttributeType__TaggerIdAssignment_10_1 : ( ( rule__AttributeType__TaggerIdAlternatives_10_1_0 ) ) ;
     public final void rule__AttributeType__TaggerIdAssignment_10_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2424:1: ( ( ( rule__AttributeType__TaggerIdAlternatives_10_1_0 ) ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2425:1: ( ( rule__AttributeType__TaggerIdAlternatives_10_1_0 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2446:1: ( ( ( rule__AttributeType__TaggerIdAlternatives_10_1_0 ) ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2447:1: ( ( rule__AttributeType__TaggerIdAlternatives_10_1_0 ) )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2425:1: ( ( rule__AttributeType__TaggerIdAlternatives_10_1_0 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2426:1: ( rule__AttributeType__TaggerIdAlternatives_10_1_0 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2447:1: ( ( rule__AttributeType__TaggerIdAlternatives_10_1_0 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2448:1: ( rule__AttributeType__TaggerIdAlternatives_10_1_0 )
             {
              before(grammarAccess.getAttributeTypeAccess().getTaggerIdAlternatives_10_1_0()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2427:1: ( rule__AttributeType__TaggerIdAlternatives_10_1_0 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2427:2: rule__AttributeType__TaggerIdAlternatives_10_1_0
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2449:1: ( rule__AttributeType__TaggerIdAlternatives_10_1_0 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2449:2: rule__AttributeType__TaggerIdAlternatives_10_1_0
             {
-            pushFollow(FOLLOW_rule__AttributeType__TaggerIdAlternatives_10_1_0_in_rule__AttributeType__TaggerIdAssignment_10_14869);
+            pushFollow(FOLLOW_rule__AttributeType__TaggerIdAlternatives_10_1_0_in_rule__AttributeType__TaggerIdAssignment_10_14910);
             rule__AttributeType__TaggerIdAlternatives_10_1_0();
             _fsp--;
 
@@ -6000,24 +6041,24 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__AttributeType__EnumTypeAssignment_11_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2436:1: rule__AttributeType__EnumTypeAssignment_11_1 : ( ( RULE_ID ) ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2458:1: rule__AttributeType__EnumTypeAssignment_11_1 : ( ( RULE_ID ) ) ;
     public final void rule__AttributeType__EnumTypeAssignment_11_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2440:1: ( ( ( RULE_ID ) ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2441:1: ( ( RULE_ID ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2462:1: ( ( ( RULE_ID ) ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2463:1: ( ( RULE_ID ) )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2441:1: ( ( RULE_ID ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2442:1: ( RULE_ID )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2463:1: ( ( RULE_ID ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2464:1: ( RULE_ID )
             {
              before(grammarAccess.getAttributeTypeAccess().getEnumTypeOseeEnumTypeCrossReference_11_1_0()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2443:1: ( RULE_ID )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2444:1: RULE_ID
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2465:1: ( RULE_ID )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2466:1: RULE_ID
             {
              before(grammarAccess.getAttributeTypeAccess().getEnumTypeOseeEnumTypeIDTerminalRuleCall_11_1_0_1()); 
-            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__AttributeType__EnumTypeAssignment_11_14906); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__AttributeType__EnumTypeAssignment_11_14947); 
              after(grammarAccess.getAttributeTypeAccess().getEnumTypeOseeEnumTypeIDTerminalRuleCall_11_1_0_1()); 
 
             }
@@ -6045,20 +6086,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__AttributeType__DescriptionAssignment_12_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2455:1: rule__AttributeType__DescriptionAssignment_12_1 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2477:1: rule__AttributeType__DescriptionAssignment_12_1 : ( RULE_STRING ) ;
     public final void rule__AttributeType__DescriptionAssignment_12_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2459:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2460:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2481:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2482:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2460:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2461:1: RULE_STRING
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2482:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2483:1: RULE_STRING
             {
              before(grammarAccess.getAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_12_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__AttributeType__DescriptionAssignment_12_14941); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__AttributeType__DescriptionAssignment_12_14982); 
              after(grammarAccess.getAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_12_1_0()); 
 
             }
@@ -6082,20 +6123,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__AttributeType__DefaultValueAssignment_13_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2470:1: rule__AttributeType__DefaultValueAssignment_13_1 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2492:1: rule__AttributeType__DefaultValueAssignment_13_1 : ( RULE_STRING ) ;
     public final void rule__AttributeType__DefaultValueAssignment_13_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2474:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2475:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2496:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2497:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2475:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2476:1: RULE_STRING
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2497:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2498:1: RULE_STRING
             {
              before(grammarAccess.getAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_13_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__AttributeType__DefaultValueAssignment_13_14972); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__AttributeType__DefaultValueAssignment_13_15013); 
              after(grammarAccess.getAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_13_1_0()); 
 
             }
@@ -6119,20 +6160,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__AttributeType__FileExtensionAssignment_14_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2485:1: rule__AttributeType__FileExtensionAssignment_14_1 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2507:1: rule__AttributeType__FileExtensionAssignment_14_1 : ( RULE_STRING ) ;
     public final void rule__AttributeType__FileExtensionAssignment_14_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2489:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2490:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2511:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2512:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2490:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2491:1: RULE_STRING
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2512:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2513:1: RULE_STRING
             {
              before(grammarAccess.getAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_14_1_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__AttributeType__FileExtensionAssignment_14_15003); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__AttributeType__FileExtensionAssignment_14_15044); 
              after(grammarAccess.getAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_14_1_0()); 
 
             }
@@ -6156,20 +6197,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__OseeEnumType__NameAssignment_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2500:1: rule__OseeEnumType__NameAssignment_1 : ( ruleQUALIFIED_NAME ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2522:1: rule__OseeEnumType__NameAssignment_1 : ( ruleQUALIFIED_NAME ) ;
     public final void rule__OseeEnumType__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2504:1: ( ( ruleQUALIFIED_NAME ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2505:1: ( ruleQUALIFIED_NAME )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2526:1: ( ( ruleQUALIFIED_NAME ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2527:1: ( ruleQUALIFIED_NAME )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2505:1: ( ruleQUALIFIED_NAME )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2506:1: ruleQUALIFIED_NAME
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2527:1: ( ruleQUALIFIED_NAME )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2528:1: ruleQUALIFIED_NAME
             {
              before(grammarAccess.getOseeEnumTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleQUALIFIED_NAME_in_rule__OseeEnumType__NameAssignment_15034);
+            pushFollow(FOLLOW_ruleQUALIFIED_NAME_in_rule__OseeEnumType__NameAssignment_15075);
             ruleQUALIFIED_NAME();
             _fsp--;
 
@@ -6195,25 +6236,25 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
     // $ANTLR end rule__OseeEnumType__NameAssignment_1
 
 
-    // $ANTLR start rule__OseeEnumType__EnumsAssignment_3
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2515:1: rule__OseeEnumType__EnumsAssignment_3 : ( ruleOseeEnum ) ;
-    public final void rule__OseeEnumType__EnumsAssignment_3() throws RecognitionException {
+    // $ANTLR start rule__OseeEnumType__EnumEntriesAssignment_3
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2537:1: rule__OseeEnumType__EnumEntriesAssignment_3 : ( ruleOseeEnumEntry ) ;
+    public final void rule__OseeEnumType__EnumEntriesAssignment_3() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2519:1: ( ( ruleOseeEnum ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2520:1: ( ruleOseeEnum )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2541:1: ( ( ruleOseeEnumEntry ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2542:1: ( ruleOseeEnumEntry )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2520:1: ( ruleOseeEnum )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2521:1: ruleOseeEnum
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2542:1: ( ruleOseeEnumEntry )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2543:1: ruleOseeEnumEntry
             {
-             before(grammarAccess.getOseeEnumTypeAccess().getEnumsOseeEnumParserRuleCall_3_0()); 
-            pushFollow(FOLLOW_ruleOseeEnum_in_rule__OseeEnumType__EnumsAssignment_35065);
-            ruleOseeEnum();
+             before(grammarAccess.getOseeEnumTypeAccess().getEnumEntriesOseeEnumEntryParserRuleCall_3_0()); 
+            pushFollow(FOLLOW_ruleOseeEnumEntry_in_rule__OseeEnumType__EnumEntriesAssignment_35106);
+            ruleOseeEnumEntry();
             _fsp--;
 
-             after(grammarAccess.getOseeEnumTypeAccess().getEnumsOseeEnumParserRuleCall_3_0()); 
+             after(grammarAccess.getOseeEnumTypeAccess().getEnumEntriesOseeEnumEntryParserRuleCall_3_0()); 
 
             }
 
@@ -6232,25 +6273,25 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
         }
         return ;
     }
-    // $ANTLR end rule__OseeEnumType__EnumsAssignment_3
+    // $ANTLR end rule__OseeEnumType__EnumEntriesAssignment_3
 
 
-    // $ANTLR start rule__OseeEnum__NameAssignment_0
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2530:1: rule__OseeEnum__NameAssignment_0 : ( RULE_STRING ) ;
-    public final void rule__OseeEnum__NameAssignment_0() throws RecognitionException {
+    // $ANTLR start rule__OseeEnumEntry__NameAssignment_1
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2552:1: rule__OseeEnumEntry__NameAssignment_1 : ( RULE_STRING ) ;
+    public final void rule__OseeEnumEntry__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2534:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2535:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2556:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2557:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2535:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2536:1: RULE_STRING
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2557:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2558:1: RULE_STRING
             {
-             before(grammarAccess.getOseeEnumAccess().getNameSTRINGTerminalRuleCall_0_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__OseeEnum__NameAssignment_05096); 
-             after(grammarAccess.getOseeEnumAccess().getNameSTRINGTerminalRuleCall_0_0()); 
+             before(grammarAccess.getOseeEnumEntryAccess().getNameSTRINGTerminalRuleCall_1_0()); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__OseeEnumEntry__NameAssignment_15137); 
+             after(grammarAccess.getOseeEnumEntryAccess().getNameSTRINGTerminalRuleCall_1_0()); 
 
             }
 
@@ -6269,28 +6310,28 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
         }
         return ;
     }
-    // $ANTLR end rule__OseeEnum__NameAssignment_0
+    // $ANTLR end rule__OseeEnumEntry__NameAssignment_1
 
 
-    // $ANTLR start rule__OseeEnum__OrdinalAssignment_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2545:1: rule__OseeEnum__OrdinalAssignment_1 : ( ruleDIGITS ) ;
-    public final void rule__OseeEnum__OrdinalAssignment_1() throws RecognitionException {
+    // $ANTLR start rule__OseeEnumEntry__OrdinalAssignment_2
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2567:1: rule__OseeEnumEntry__OrdinalAssignment_2 : ( ruleDIGITS ) ;
+    public final void rule__OseeEnumEntry__OrdinalAssignment_2() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2549:1: ( ( ruleDIGITS ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2550:1: ( ruleDIGITS )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2571:1: ( ( ruleDIGITS ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2572:1: ( ruleDIGITS )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2550:1: ( ruleDIGITS )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2551:1: ruleDIGITS
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2572:1: ( ruleDIGITS )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2573:1: ruleDIGITS
             {
-             before(grammarAccess.getOseeEnumAccess().getOrdinalDIGITSParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleDIGITS_in_rule__OseeEnum__OrdinalAssignment_15127);
+             before(grammarAccess.getOseeEnumEntryAccess().getOrdinalDIGITSParserRuleCall_2_0()); 
+            pushFollow(FOLLOW_ruleDIGITS_in_rule__OseeEnumEntry__OrdinalAssignment_25168);
             ruleDIGITS();
             _fsp--;
 
-             after(grammarAccess.getOseeEnumAccess().getOrdinalDIGITSParserRuleCall_1_0()); 
+             after(grammarAccess.getOseeEnumEntryAccess().getOrdinalDIGITSParserRuleCall_2_0()); 
 
             }
 
@@ -6309,24 +6350,24 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
         }
         return ;
     }
-    // $ANTLR end rule__OseeEnum__OrdinalAssignment_1
+    // $ANTLR end rule__OseeEnumEntry__OrdinalAssignment_2
 
 
     // $ANTLR start rule__RelationType__NameAssignment_1
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2560:1: rule__RelationType__NameAssignment_1 : ( ruleQUALIFIED_NAME ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2582:1: rule__RelationType__NameAssignment_1 : ( ruleQUALIFIED_NAME ) ;
     public final void rule__RelationType__NameAssignment_1() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2564:1: ( ( ruleQUALIFIED_NAME ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2565:1: ( ruleQUALIFIED_NAME )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2586:1: ( ( ruleQUALIFIED_NAME ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2587:1: ( ruleQUALIFIED_NAME )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2565:1: ( ruleQUALIFIED_NAME )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2566:1: ruleQUALIFIED_NAME
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2587:1: ( ruleQUALIFIED_NAME )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2588:1: ruleQUALIFIED_NAME
             {
              before(grammarAccess.getRelationTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_1_0()); 
-            pushFollow(FOLLOW_ruleQUALIFIED_NAME_in_rule__RelationType__NameAssignment_15158);
+            pushFollow(FOLLOW_ruleQUALIFIED_NAME_in_rule__RelationType__NameAssignment_15199);
             ruleQUALIFIED_NAME();
             _fsp--;
 
@@ -6353,20 +6394,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__SideANameAssignment_4
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2575:1: rule__RelationType__SideANameAssignment_4 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2597:1: rule__RelationType__SideANameAssignment_4 : ( RULE_STRING ) ;
     public final void rule__RelationType__SideANameAssignment_4() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2579:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2580:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2601:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2602:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2580:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2581:1: RULE_STRING
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2602:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2603:1: RULE_STRING
             {
              before(grammarAccess.getRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_4_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__RelationType__SideANameAssignment_45189); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__RelationType__SideANameAssignment_45230); 
              after(grammarAccess.getRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_4_0()); 
 
             }
@@ -6390,24 +6431,24 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__SideAArtifactTypeAssignment_6
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2590:1: rule__RelationType__SideAArtifactTypeAssignment_6 : ( ( RULE_ID ) ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2612:1: rule__RelationType__SideAArtifactTypeAssignment_6 : ( ( RULE_ID ) ) ;
     public final void rule__RelationType__SideAArtifactTypeAssignment_6() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2594:1: ( ( ( RULE_ID ) ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2595:1: ( ( RULE_ID ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2616:1: ( ( ( RULE_ID ) ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2617:1: ( ( RULE_ID ) )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2595:1: ( ( RULE_ID ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2596:1: ( RULE_ID )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2617:1: ( ( RULE_ID ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2618:1: ( RULE_ID )
             {
              before(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeArtifactTypeCrossReference_6_0()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2597:1: ( RULE_ID )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2598:1: RULE_ID
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2619:1: ( RULE_ID )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2620:1: RULE_ID
             {
              before(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeArtifactTypeIDTerminalRuleCall_6_0_1()); 
-            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__RelationType__SideAArtifactTypeAssignment_65224); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__RelationType__SideAArtifactTypeAssignment_65265); 
              after(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeArtifactTypeIDTerminalRuleCall_6_0_1()); 
 
             }
@@ -6435,20 +6476,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__SideBNameAssignment_8
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2609:1: rule__RelationType__SideBNameAssignment_8 : ( RULE_STRING ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2631:1: rule__RelationType__SideBNameAssignment_8 : ( RULE_STRING ) ;
     public final void rule__RelationType__SideBNameAssignment_8() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2613:1: ( ( RULE_STRING ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2614:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2635:1: ( ( RULE_STRING ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2636:1: ( RULE_STRING )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2614:1: ( RULE_STRING )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2615:1: RULE_STRING
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2636:1: ( RULE_STRING )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2637:1: RULE_STRING
             {
              before(grammarAccess.getRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_8_0()); 
-            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__RelationType__SideBNameAssignment_85259); 
+            match(input,RULE_STRING,FOLLOW_RULE_STRING_in_rule__RelationType__SideBNameAssignment_85300); 
              after(grammarAccess.getRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_8_0()); 
 
             }
@@ -6472,24 +6513,24 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__SideBArtifactTypeAssignment_10
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2624:1: rule__RelationType__SideBArtifactTypeAssignment_10 : ( ( RULE_ID ) ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2646:1: rule__RelationType__SideBArtifactTypeAssignment_10 : ( ( RULE_ID ) ) ;
     public final void rule__RelationType__SideBArtifactTypeAssignment_10() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2628:1: ( ( ( RULE_ID ) ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2629:1: ( ( RULE_ID ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2650:1: ( ( ( RULE_ID ) ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2651:1: ( ( RULE_ID ) )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2629:1: ( ( RULE_ID ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2630:1: ( RULE_ID )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2651:1: ( ( RULE_ID ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2652:1: ( RULE_ID )
             {
              before(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeArtifactTypeCrossReference_10_0()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2631:1: ( RULE_ID )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2632:1: RULE_ID
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2653:1: ( RULE_ID )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2654:1: RULE_ID
             {
              before(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeArtifactTypeIDTerminalRuleCall_10_0_1()); 
-            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__RelationType__SideBArtifactTypeAssignment_105294); 
+            match(input,RULE_ID,FOLLOW_RULE_ID_in_rule__RelationType__SideBArtifactTypeAssignment_105335); 
              after(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeArtifactTypeIDTerminalRuleCall_10_0_1()); 
 
             }
@@ -6517,23 +6558,23 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__DefaultOrderTypeAssignment_12
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2643:1: rule__RelationType__DefaultOrderTypeAssignment_12 : ( ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 ) ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2665:1: rule__RelationType__DefaultOrderTypeAssignment_12 : ( ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 ) ) ;
     public final void rule__RelationType__DefaultOrderTypeAssignment_12() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2647:1: ( ( ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 ) ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2648:1: ( ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2669:1: ( ( ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 ) ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2670:1: ( ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 ) )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2648:1: ( ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2649:1: ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2670:1: ( ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2671:1: ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 )
             {
              before(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeAlternatives_12_0()); 
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2650:1: ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2650:2: rule__RelationType__DefaultOrderTypeAlternatives_12_0
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2672:1: ( rule__RelationType__DefaultOrderTypeAlternatives_12_0 )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2672:2: rule__RelationType__DefaultOrderTypeAlternatives_12_0
             {
-            pushFollow(FOLLOW_rule__RelationType__DefaultOrderTypeAlternatives_12_0_in_rule__RelationType__DefaultOrderTypeAssignment_125329);
+            pushFollow(FOLLOW_rule__RelationType__DefaultOrderTypeAlternatives_12_0_in_rule__RelationType__DefaultOrderTypeAssignment_125370);
             rule__RelationType__DefaultOrderTypeAlternatives_12_0();
             _fsp--;
 
@@ -6563,20 +6604,20 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
 
 
     // $ANTLR start rule__RelationType__MultiplicityAssignment_14
-    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2659:1: rule__RelationType__MultiplicityAssignment_14 : ( ruleRelationMultiplicityEnum ) ;
+    // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2681:1: rule__RelationType__MultiplicityAssignment_14 : ( ruleRelationMultiplicityEnum ) ;
     public final void rule__RelationType__MultiplicityAssignment_14() throws RecognitionException {
 
         		int stackSize = keepStackSize();
             
         try {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2663:1: ( ( ruleRelationMultiplicityEnum ) )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2664:1: ( ruleRelationMultiplicityEnum )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2685:1: ( ( ruleRelationMultiplicityEnum ) )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2686:1: ( ruleRelationMultiplicityEnum )
             {
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2664:1: ( ruleRelationMultiplicityEnum )
-            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2665:1: ruleRelationMultiplicityEnum
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2686:1: ( ruleRelationMultiplicityEnum )
+            // ../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g:2687:1: ruleRelationMultiplicityEnum
             {
              before(grammarAccess.getRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_14_0()); 
-            pushFollow(FOLLOW_ruleRelationMultiplicityEnum_in_rule__RelationType__MultiplicityAssignment_145362);
+            pushFollow(FOLLOW_ruleRelationMultiplicityEnum_in_rule__RelationType__MultiplicityAssignment_145403);
             ruleRelationMultiplicityEnum();
             _fsp--;
 
@@ -6635,9 +6676,9 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
     public static final BitSet FOLLOW_ruleOseeEnumType_in_entryRuleOseeEnumType617 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleOseeEnumType624 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__OseeEnumType__Group__0_in_ruleOseeEnumType651 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleOseeEnum_in_entryRuleOseeEnum677 = new BitSet(new long[]{0x0000000000000000L});
-    public static final BitSet FOLLOW_EOF_in_entryRuleOseeEnum684 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__OseeEnum__Group__0_in_ruleOseeEnum711 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleOseeEnumEntry_in_entryRuleOseeEnumEntry677 = new BitSet(new long[]{0x0000000000000000L});
+    public static final BitSet FOLLOW_EOF_in_entryRuleOseeEnumEntry684 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__OseeEnumEntry__Group__0_in_ruleOseeEnumEntry711 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_ruleRelationType_in_entryRuleRelationType737 = new BitSet(new long[]{0x0000000000000000L});
     public static final BitSet FOLLOW_EOF_in_entryRuleRelationType744 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__RelationType__Group__0_in_ruleRelationType771 = new BitSet(new long[]{0x0000000000000002L});
@@ -6681,9 +6722,9 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
     public static final BitSet FOLLOW_38_in_rule__RelationMultiplicityEnum__Alternatives1642 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_39_in_rule__RelationMultiplicityEnum__Alternatives1663 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_40_in_rule__RelationMultiplicityEnum__Alternatives1684 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__OseeTypeModel__ImportsAssignment_0_in_rule__OseeTypeModel__Group__01721 = new BitSet(new long[]{0x0C021A0000000002L});
+    public static final BitSet FOLLOW_rule__OseeTypeModel__ImportsAssignment_0_in_rule__OseeTypeModel__Group__01721 = new BitSet(new long[]{0x14021A0000000002L});
     public static final BitSet FOLLOW_rule__OseeTypeModel__Group__1_in_rule__OseeTypeModel__Group__01731 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__OseeTypeModel__TypesAssignment_1_in_rule__OseeTypeModel__Group__11759 = new BitSet(new long[]{0x0C02180000000002L});
+    public static final BitSet FOLLOW_rule__OseeTypeModel__TypesAssignment_1_in_rule__OseeTypeModel__Group__11759 = new BitSet(new long[]{0x1402180000000002L});
     public static final BitSet FOLLOW_41_in_rule__Import__Group__01799 = new BitSet(new long[]{0x0000000000000020L});
     public static final BitSet FOLLOW_rule__Import__Group__1_in_rule__Import__Group__01809 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__Import__ImportURIAssignment_1_in_rule__Import__Group__11837 = new BitSet(new long[]{0x0000000000000002L});
@@ -6765,72 +6806,74 @@ public class InternalOseeTypesParser extends AbstractInternalContentAssistParser
     public static final BitSet FOLLOW_rule__OseeEnumType__Group__1_in_rule__OseeEnumType__Group__03574 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_rule__OseeEnumType__NameAssignment_1_in_rule__OseeEnumType__Group__13602 = new BitSet(new long[]{0x0000200000000000L});
     public static final BitSet FOLLOW_rule__OseeEnumType__Group__2_in_rule__OseeEnumType__Group__13611 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_45_in_rule__OseeEnumType__Group__23640 = new BitSet(new long[]{0x0000400000000020L});
+    public static final BitSet FOLLOW_45_in_rule__OseeEnumType__Group__23640 = new BitSet(new long[]{0x0800400000000000L});
     public static final BitSet FOLLOW_rule__OseeEnumType__Group__3_in_rule__OseeEnumType__Group__23650 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__OseeEnumType__EnumsAssignment_3_in_rule__OseeEnumType__Group__33678 = new BitSet(new long[]{0x0000400000000020L});
+    public static final BitSet FOLLOW_rule__OseeEnumType__EnumEntriesAssignment_3_in_rule__OseeEnumType__Group__33678 = new BitSet(new long[]{0x0800400000000000L});
     public static final BitSet FOLLOW_rule__OseeEnumType__Group__4_in_rule__OseeEnumType__Group__33688 = new BitSet(new long[]{0x0000000000000002L});
     public static final BitSet FOLLOW_46_in_rule__OseeEnumType__Group__43717 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__OseeEnum__NameAssignment_0_in_rule__OseeEnum__Group__03762 = new BitSet(new long[]{0x00000000001FF802L});
-    public static final BitSet FOLLOW_rule__OseeEnum__Group__1_in_rule__OseeEnum__Group__03771 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__OseeEnum__OrdinalAssignment_1_in_rule__OseeEnum__Group__13799 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_59_in_rule__RelationType__Group__03839 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__1_in_rule__RelationType__Group__03849 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationType__NameAssignment_1_in_rule__RelationType__Group__13877 = new BitSet(new long[]{0x0000200000000000L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__2_in_rule__RelationType__Group__13886 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_45_in_rule__RelationType__Group__23915 = new BitSet(new long[]{0x1000000000000000L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__3_in_rule__RelationType__Group__23925 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_60_in_rule__RelationType__Group__33954 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__4_in_rule__RelationType__Group__33964 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationType__SideANameAssignment_4_in_rule__RelationType__Group__43992 = new BitSet(new long[]{0x2000000000000000L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__5_in_rule__RelationType__Group__44001 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_61_in_rule__RelationType__Group__54030 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__6_in_rule__RelationType__Group__54040 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationType__SideAArtifactTypeAssignment_6_in_rule__RelationType__Group__64068 = new BitSet(new long[]{0x4000000000000000L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__7_in_rule__RelationType__Group__64077 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_62_in_rule__RelationType__Group__74106 = new BitSet(new long[]{0x0000000000000020L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__8_in_rule__RelationType__Group__74116 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationType__SideBNameAssignment_8_in_rule__RelationType__Group__84144 = new BitSet(new long[]{0x8000000000000000L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__9_in_rule__RelationType__Group__84153 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_63_in_rule__RelationType__Group__94182 = new BitSet(new long[]{0x0000000000000010L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__10_in_rule__RelationType__Group__94192 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationType__SideBArtifactTypeAssignment_10_in_rule__RelationType__Group__104220 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000001L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__11_in_rule__RelationType__Group__104229 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_64_in_rule__RelationType__Group__114258 = new BitSet(new long[]{0x0000003800000010L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__12_in_rule__RelationType__Group__114268 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationType__DefaultOrderTypeAssignment_12_in_rule__RelationType__Group__124296 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__13_in_rule__RelationType__Group__124305 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_65_in_rule__RelationType__Group__134334 = new BitSet(new long[]{0x000001C000000000L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__14_in_rule__RelationType__Group__134344 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationType__MultiplicityAssignment_14_in_rule__RelationType__Group__144372 = new BitSet(new long[]{0x0000400000000000L});
-    public static final BitSet FOLLOW_rule__RelationType__Group__15_in_rule__RelationType__Group__144381 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_46_in_rule__RelationType__Group__154410 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleImport_in_rule__OseeTypeModel__ImportsAssignment_04477 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleOseeType_in_rule__OseeTypeModel__TypesAssignment_14508 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__Import__ImportURIAssignment_14539 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleQUALIFIED_NAME_in_rule__ArtifactType__NameAssignment_24570 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__ArtifactType__SuperArtifactTypeAssignment_3_14605 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAttributeTypeRef_in_rule__ArtifactType__ValidAttributeTypesAssignment_54640 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__AttributeTypeRef__ValidAttributeTypeAssignment_14675 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleQUALIFIED_NAME_in_rule__AttributeType__NameAssignment_14710 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleAttributeBaseType_in_rule__AttributeType__BaseAttributeTypeAssignment_2_14741 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeType__DataProviderAlternatives_5_0_in_rule__AttributeType__DataProviderAssignment_54772 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleDIGITS_in_rule__AttributeType__MinAssignment_74805 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeType__MaxAlternatives_9_0_in_rule__AttributeType__MaxAssignment_94836 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__AttributeType__TaggerIdAlternatives_10_1_0_in_rule__AttributeType__TaggerIdAssignment_10_14869 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__AttributeType__EnumTypeAssignment_11_14906 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__AttributeType__DescriptionAssignment_12_14941 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__AttributeType__DefaultValueAssignment_13_14972 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__AttributeType__FileExtensionAssignment_14_15003 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleQUALIFIED_NAME_in_rule__OseeEnumType__NameAssignment_15034 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleOseeEnum_in_rule__OseeEnumType__EnumsAssignment_35065 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__OseeEnum__NameAssignment_05096 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleDIGITS_in_rule__OseeEnum__OrdinalAssignment_15127 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleQUALIFIED_NAME_in_rule__RelationType__NameAssignment_15158 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__RelationType__SideANameAssignment_45189 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__RelationType__SideAArtifactTypeAssignment_65224 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_STRING_in_rule__RelationType__SideBNameAssignment_85259 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_RULE_ID_in_rule__RelationType__SideBArtifactTypeAssignment_105294 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_rule__RelationType__DefaultOrderTypeAlternatives_12_0_in_rule__RelationType__DefaultOrderTypeAssignment_125329 = new BitSet(new long[]{0x0000000000000002L});
-    public static final BitSet FOLLOW_ruleRelationMultiplicityEnum_in_rule__RelationType__MultiplicityAssignment_145362 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_59_in_rule__OseeEnumEntry__Group__03763 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_rule__OseeEnumEntry__Group__1_in_rule__OseeEnumEntry__Group__03773 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__OseeEnumEntry__NameAssignment_1_in_rule__OseeEnumEntry__Group__13801 = new BitSet(new long[]{0x00000000001FF802L});
+    public static final BitSet FOLLOW_rule__OseeEnumEntry__Group__2_in_rule__OseeEnumEntry__Group__13810 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__OseeEnumEntry__OrdinalAssignment_2_in_rule__OseeEnumEntry__Group__23838 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_60_in_rule__RelationType__Group__03880 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__1_in_rule__RelationType__Group__03890 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationType__NameAssignment_1_in_rule__RelationType__Group__13918 = new BitSet(new long[]{0x0000200000000000L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__2_in_rule__RelationType__Group__13927 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_45_in_rule__RelationType__Group__23956 = new BitSet(new long[]{0x2000000000000000L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__3_in_rule__RelationType__Group__23966 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_61_in_rule__RelationType__Group__33995 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__4_in_rule__RelationType__Group__34005 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationType__SideANameAssignment_4_in_rule__RelationType__Group__44033 = new BitSet(new long[]{0x4000000000000000L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__5_in_rule__RelationType__Group__44042 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_62_in_rule__RelationType__Group__54071 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__6_in_rule__RelationType__Group__54081 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationType__SideAArtifactTypeAssignment_6_in_rule__RelationType__Group__64109 = new BitSet(new long[]{0x8000000000000000L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__7_in_rule__RelationType__Group__64118 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_63_in_rule__RelationType__Group__74147 = new BitSet(new long[]{0x0000000000000020L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__8_in_rule__RelationType__Group__74157 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationType__SideBNameAssignment_8_in_rule__RelationType__Group__84185 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000001L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__9_in_rule__RelationType__Group__84194 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_64_in_rule__RelationType__Group__94223 = new BitSet(new long[]{0x0000000000000010L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__10_in_rule__RelationType__Group__94233 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationType__SideBArtifactTypeAssignment_10_in_rule__RelationType__Group__104261 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__11_in_rule__RelationType__Group__104270 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_65_in_rule__RelationType__Group__114299 = new BitSet(new long[]{0x0000003800000010L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__12_in_rule__RelationType__Group__114309 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationType__DefaultOrderTypeAssignment_12_in_rule__RelationType__Group__124337 = new BitSet(new long[]{0x0000000000000000L,0x0000000000000004L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__13_in_rule__RelationType__Group__124346 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_66_in_rule__RelationType__Group__134375 = new BitSet(new long[]{0x000001C000000000L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__14_in_rule__RelationType__Group__134385 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationType__MultiplicityAssignment_14_in_rule__RelationType__Group__144413 = new BitSet(new long[]{0x0000400000000000L});
+    public static final BitSet FOLLOW_rule__RelationType__Group__15_in_rule__RelationType__Group__144422 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_46_in_rule__RelationType__Group__154451 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleImport_in_rule__OseeTypeModel__ImportsAssignment_04518 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleOseeType_in_rule__OseeTypeModel__TypesAssignment_14549 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__Import__ImportURIAssignment_14580 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleQUALIFIED_NAME_in_rule__ArtifactType__NameAssignment_24611 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__ArtifactType__SuperArtifactTypeAssignment_3_14646 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAttributeTypeRef_in_rule__ArtifactType__ValidAttributeTypesAssignment_54681 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__AttributeTypeRef__ValidAttributeTypeAssignment_14716 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleQUALIFIED_NAME_in_rule__AttributeType__NameAssignment_14751 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleAttributeBaseType_in_rule__AttributeType__BaseAttributeTypeAssignment_2_14782 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeType__DataProviderAlternatives_5_0_in_rule__AttributeType__DataProviderAssignment_54813 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleDIGITS_in_rule__AttributeType__MinAssignment_74846 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeType__MaxAlternatives_9_0_in_rule__AttributeType__MaxAssignment_94877 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__AttributeType__TaggerIdAlternatives_10_1_0_in_rule__AttributeType__TaggerIdAssignment_10_14910 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__AttributeType__EnumTypeAssignment_11_14947 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__AttributeType__DescriptionAssignment_12_14982 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__AttributeType__DefaultValueAssignment_13_15013 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__AttributeType__FileExtensionAssignment_14_15044 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleQUALIFIED_NAME_in_rule__OseeEnumType__NameAssignment_15075 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleOseeEnumEntry_in_rule__OseeEnumType__EnumEntriesAssignment_35106 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__OseeEnumEntry__NameAssignment_15137 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleDIGITS_in_rule__OseeEnumEntry__OrdinalAssignment_25168 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleQUALIFIED_NAME_in_rule__RelationType__NameAssignment_15199 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__RelationType__SideANameAssignment_45230 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__RelationType__SideAArtifactTypeAssignment_65265 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_STRING_in_rule__RelationType__SideBNameAssignment_85300 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_RULE_ID_in_rule__RelationType__SideBArtifactTypeAssignment_105335 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_rule__RelationType__DefaultOrderTypeAlternatives_12_0_in_rule__RelationType__DefaultOrderTypeAssignment_125370 = new BitSet(new long[]{0x0000000000000002L});
+    public static final BitSet FOLLOW_ruleRelationMultiplicityEnum_in_rule__RelationType__MultiplicityAssignment_145403 = new BitSet(new long[]{0x0000000000000002L});
 
 }

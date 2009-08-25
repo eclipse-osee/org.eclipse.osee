@@ -65,7 +65,7 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAttributeTypeAccess().getGroup_13(), "rule__AttributeType__Group_13__0");
 					put(grammarAccess.getAttributeTypeAccess().getGroup_14(), "rule__AttributeType__Group_14__0");
 					put(grammarAccess.getOseeEnumTypeAccess().getGroup(), "rule__OseeEnumType__Group__0");
-					put(grammarAccess.getOseeEnumAccess().getGroup(), "rule__OseeEnum__Group__0");
+					put(grammarAccess.getOseeEnumEntryAccess().getGroup(), "rule__OseeEnumEntry__Group__0");
 					put(grammarAccess.getRelationTypeAccess().getGroup(), "rule__RelationType__Group__0");
 					put(grammarAccess.getOseeTypeModelAccess().getImportsAssignment_0(), "rule__OseeTypeModel__ImportsAssignment_0");
 					put(grammarAccess.getOseeTypeModelAccess().getTypesAssignment_1(), "rule__OseeTypeModel__TypesAssignment_1");
@@ -85,9 +85,9 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAttributeTypeAccess().getDefaultValueAssignment_13_1(), "rule__AttributeType__DefaultValueAssignment_13_1");
 					put(grammarAccess.getAttributeTypeAccess().getFileExtensionAssignment_14_1(), "rule__AttributeType__FileExtensionAssignment_14_1");
 					put(grammarAccess.getOseeEnumTypeAccess().getNameAssignment_1(), "rule__OseeEnumType__NameAssignment_1");
-					put(grammarAccess.getOseeEnumTypeAccess().getEnumsAssignment_3(), "rule__OseeEnumType__EnumsAssignment_3");
-					put(grammarAccess.getOseeEnumAccess().getNameAssignment_0(), "rule__OseeEnum__NameAssignment_0");
-					put(grammarAccess.getOseeEnumAccess().getOrdinalAssignment_1(), "rule__OseeEnum__OrdinalAssignment_1");
+					put(grammarAccess.getOseeEnumTypeAccess().getEnumEntriesAssignment_3(), "rule__OseeEnumType__EnumEntriesAssignment_3");
+					put(grammarAccess.getOseeEnumEntryAccess().getNameAssignment_1(), "rule__OseeEnumEntry__NameAssignment_1");
+					put(grammarAccess.getOseeEnumEntryAccess().getOrdinalAssignment_2(), "rule__OseeEnumEntry__OrdinalAssignment_2");
 					put(grammarAccess.getRelationTypeAccess().getNameAssignment_1(), "rule__RelationType__NameAssignment_1");
 					put(grammarAccess.getRelationTypeAccess().getSideANameAssignment_4(), "rule__RelationType__SideANameAssignment_4");
 					put(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeAssignment_6(), "rule__RelationType__SideAArtifactTypeAssignment_6");
