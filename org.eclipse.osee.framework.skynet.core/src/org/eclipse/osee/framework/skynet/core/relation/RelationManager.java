@@ -50,9 +50,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
  * @author Ryan D. Brooks
  */
 public class RelationManager {
+   // Indexed by ArtifactKey so that map does not hold strong reference to artifact which allows it to be garbage collected
    // the branch is accounted for because Artifact.equals includes the branch in the comparison
-   private static final CompositeKeyHashMap<Artifact, RelationType, List<RelationLink>> relationsByType =
-         new CompositeKeyHashMap<Artifact, RelationType, List<RelationLink>>(1024);
+   private static final CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>> relationsByType =
+         new CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>>(1024);
 
    private static final String[] DELETED =
          new String[] {
@@ -64,8 +65,16 @@ public class RelationManager {
 
    private static RelationOrdering relationOrdering = new RelationOrdering();
 
+   private static final ThreadLocal<ArtifactKey> threadLocalKey = new ThreadLocal<ArtifactKey>() {
+
+      @Override
+      protected ArtifactKey initialValue() {
+         return new ArtifactKey(0, 0);
+      }
+   };
+
    private synchronized static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType, boolean includeDeleted) {
-      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
+      List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
       Set<RelationLink> relations = new HashSet<RelationLink>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
@@ -155,7 +164,8 @@ public class RelationManager {
             ArtifactCache.getActive(relation.getArtifactId(relationSide), relation.getBranch(relationSide));
 
       if (artifact != null) {
-         List<RelationLink> artifactsRelations = getFlattenedList(relationsByType.getValues(artifact));
+         List<RelationLink> artifactsRelations =
+               getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
          if (artifactsRelations == null) {
             artifactsRelations = new CopyOnWriteArrayList<RelationLink>();
          }
@@ -174,10 +184,11 @@ public class RelationManager {
 
          artifactsRelations.add(relation);
 
-         List<RelationLink> selectedRelations = relationsByType.get(artifact, relation.getRelationType());
+         List<RelationLink> selectedRelations =
+               relationsByType.get(threadLocalKey.get().getKey(artifact), relation.getRelationType());
          if (selectedRelations == null) {
             selectedRelations = new CopyOnWriteArrayList<RelationLink>();
-            relationsByType.put(artifact, relation.getRelationType(), selectedRelations);
+            relationsByType.put(new ArtifactKey(artifact), relation.getRelationType(), selectedRelations);
          }
          if (selectedRelations.contains(relation)) {
             OseeLog.log(Activator.class, Level.SEVERE, String.format(
@@ -205,9 +216,9 @@ public class RelationManager {
    private synchronized static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
       List<RelationLink> selectedRelations = null;
       if (relationType == null) {
-         selectedRelations = getFlattenedList(relationsByType.getValues(artifact));
+         selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
       } else {
-         selectedRelations = relationsByType.get(artifact, relationType);
+         selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
       }
 
       if (selectedRelations == null) {
@@ -299,12 +310,13 @@ public class RelationManager {
             List<RelationLink> selectedRelations = null;
 
             if (relationEnums.length == 0) {
-               selectedRelations = getFlattenedList(relationsByType.getValues(artifact));
+               selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
                addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, selectedRelations,
                      RelationSide.OPPOSITE);
             } else {
                for (IRelationEnumeration relationEnum : relationEnums) {
-                  selectedRelations = relationsByType.get(artifact, relationEnum.getRelationType());
+                  selectedRelations =
+                        relationsByType.get(threadLocalKey.get().getKey(artifact), relationEnum.getRelationType());
                   addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, selectedRelations,
                         relationEnum.getSide());
                }
@@ -392,7 +404,7 @@ public class RelationManager {
    }
 
    public synchronized static int getRelatedArtifactsCount(Artifact artifact, RelationType relationType, RelationSide relationSide) {
-      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
+      List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
 
       int artifactCount = 0;
       if (selectedRelations != null) {
@@ -419,11 +431,12 @@ public class RelationManager {
     */
    public synchronized static void prepareRelationsForReload(Artifact artifact) {
       // weakness:  references held to links by other applications will continue to exist.
-      relationsByType.removeValues(artifact);
+      relationsByType.removeValues(threadLocalKey.get().getKey(artifact));
    }
 
    public synchronized static boolean hasDirtyLinks(Artifact artifact) {
-      List<RelationLink> selectedRelations = getFlattenedList(relationsByType.getValues(artifact));
+      List<RelationLink> selectedRelations =
+            getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
       if (selectedRelations == null) {
          return false;
       }
@@ -439,7 +452,8 @@ public class RelationManager {
     * Return what relation is dirty otherwise null
     */
    public synchronized static String reportHasDirtyLinks(Artifact artifact) {
-      List<RelationLink> selectedRelations = getFlattenedList(relationsByType.getValues(artifact));
+      List<RelationLink> selectedRelations =
+            getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (relation.isDirty()) {
@@ -463,9 +477,9 @@ public class RelationManager {
    public synchronized static void persistRelationsFor(SkynetTransaction transaction, Artifact artifact, RelationType relationType) throws OseeCoreException {
       List<RelationLink> selectedRelations;
       if (relationType == null) {
-         selectedRelations = getFlattenedList(relationsByType.getValues(artifact));
+         selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
       } else {
-         selectedRelations = relationsByType.get(artifact, relationType);
+         selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
       }
 
       if (selectedRelations != null) {
@@ -476,7 +490,8 @@ public class RelationManager {
                try {
                   Artifact artifactOnOtherSide = relation.getArtifactOnOtherSide(artifact);
                   List<RelationLink> otherSideRelations =
-                        relationsByType.get(artifactOnOtherSide, relation.getRelationType());
+                        relationsByType.get(threadLocalKey.get().getKey(artifactOnOtherSide),
+                              relation.getRelationType());
                   for (int i = 0; i < otherSideRelations.size(); i++) {
                      if (relation.equals(otherSideRelations.get(i))) {
                         if (i + 1 < otherSideRelations.size()) {
@@ -501,7 +516,8 @@ public class RelationManager {
    }
 
    public synchronized static List<RelationLink> getRelationsAll(Artifact artifact, boolean includeDeleted) {
-      List<RelationLink> selectedRelations = getFlattenedList(relationsByType.getValues(artifact));
+      List<RelationLink> selectedRelations =
+            getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
 
       if (selectedRelations == null) {
          return Collections.emptyList();
@@ -517,7 +533,7 @@ public class RelationManager {
    }
 
    public synchronized static List<RelationLink> getRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) {
-      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
+      List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
       if (selectedRelations == null) {
          return Collections.emptyList();
       }
@@ -616,7 +632,8 @@ public class RelationManager {
    }
 
    public synchronized static void deleteRelationsAll(Artifact artifact, boolean reorderRelations) throws OseeCoreException {
-      List<RelationLink> selectedRelations = getFlattenedList(relationsByType.getValues(artifact));
+      List<RelationLink> selectedRelations =
+            getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
       Set<Pair<RelationType, RelationSide>> typesToUpdate = new HashSet<Pair<RelationType, RelationSide>>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
@@ -637,7 +654,7 @@ public class RelationManager {
    }
 
    public synchronized static void deleteRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
-      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
+      List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (relationSide == null) {
@@ -664,7 +681,7 @@ public class RelationManager {
     * @throws OseeCoreException
     */
    public synchronized static void revertRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
-      List<RelationLink> selectedRelations = relationsByType.get(artifact, relationType);
+      List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
             if (relationSide == null) {
@@ -684,7 +701,8 @@ public class RelationManager {
     * @throws OseeDataStoreException
     */
    public synchronized static void purgeRelationsFor(Artifact artifact) throws OseeDataStoreException {
-      Collection<RelationLink> links = getFlattenedList(relationsByType.getValues(artifact));
+      Collection<RelationLink> links =
+            getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
       if (!links.isEmpty()) {
          List<Object[]> batchArgs = new ArrayList<Object[]>(links.size());
          String PURGE_RELATION = "delete from osee_relation_link WHERE rel_link_id = ?";
@@ -744,7 +762,7 @@ public class RelationManager {
    }
 
    private static RelationLink getRelationLink(Artifact artifactA, Artifact artifactB, RelationType relationType) throws OseeCoreException {
-      List<RelationLink> relationLinks = relationsByType.get(artifactA, relationType);
+      List<RelationLink> relationLinks = relationsByType.get(threadLocalKey.get().getKey(artifactA), relationType);
       for (RelationLink relation : relationLinks) {
          if (relation.getArtifactB().equals(artifactB)) {
             return relation;
@@ -758,8 +776,46 @@ public class RelationManager {
       return relationOrdering.getRegisteredRelationOrderIds();
    }
 
-   public static void deCache(Artifact artifact) {
-      relationsByType.removeValues(artifact);
-      artifact.setLinksLoaded(false);
+   private static class ArtifactKey {
+      int artId;
+      int branchId;
+
+      public ArtifactKey(Artifact artifact) {
+         this.artId = artifact.getArtId();
+         this.branchId = artifact.getBranch().getBranchId();
+      }
+
+      public ArtifactKey(int artId, int branchId) {
+         this.artId = artId;
+         this.branchId = branchId;
+      }
+
+      public ArtifactKey getKey(Artifact artifact) {
+         this.artId = artifact.getArtId();
+         this.branchId = artifact.getBranch().getBranchId();
+         return this;
+      }
+
+      @Override
+      public int hashCode() {
+         final int prime = 31;
+         int result = 1;
+         result = prime * result + artId;
+         result = prime * result + branchId;
+         return result;
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+         if (this == obj) return true;
+         if (obj == null) return false;
+         if (getClass() != obj.getClass()) return false;
+         ArtifactKey other = (ArtifactKey) obj;
+         if (artId != other.artId) return false;
+         if (branchId != other.branchId) return false;
+         return true;
+      }
+
    }
+
 }
