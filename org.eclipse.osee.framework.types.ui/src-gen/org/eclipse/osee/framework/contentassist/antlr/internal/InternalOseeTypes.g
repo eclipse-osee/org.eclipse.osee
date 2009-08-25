@@ -388,6 +388,25 @@ finally {
 
 
 
+// Rule RelationMultiplicityEnum
+ruleRelationMultiplicityEnum
+    @init {
+		int stackSize = keepStackSize();
+    }
+:
+(
+{ before(grammarAccess.getRelationMultiplicityEnumAccess().getAlternatives()); }
+(rule__RelationMultiplicityEnum__Alternatives)
+{ after(grammarAccess.getRelationMultiplicityEnumAccess().getAlternatives()); }
+)
+
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+
+
 rule__DIGITS__Alternatives
     @init {
 		int stackSize = keepStackSize();
@@ -728,33 +747,30 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__RelationType__MultiplicityAlternatives_14_0
+rule__RelationMultiplicityEnum__Alternatives
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getRelationTypeAccess().getMultiplicityOneToManyKeyword_14_0_0()); }
-
-	'one-to-many' 
-
-{ after(grammarAccess.getRelationTypeAccess().getMultiplicityOneToManyKeyword_14_0_0()); }
+{ before(grammarAccess.getRelationMultiplicityEnumAccess().getONE_TO_MANYEnumLiteralDeclaration_0()); }
+(	'ONE_TO_MANY' 
+)
+{ after(grammarAccess.getRelationMultiplicityEnumAccess().getONE_TO_MANYEnumLiteralDeclaration_0()); }
 )
 
     |(
-{ before(grammarAccess.getRelationTypeAccess().getMultiplicityManyToManyKeyword_14_0_1()); }
-
-	'many-to-many' 
-
-{ after(grammarAccess.getRelationTypeAccess().getMultiplicityManyToManyKeyword_14_0_1()); }
+{ before(grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_MANYEnumLiteralDeclaration_1()); }
+(	'MANY_TO_MANY' 
+)
+{ after(grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_MANYEnumLiteralDeclaration_1()); }
 )
 
     |(
-{ before(grammarAccess.getRelationTypeAccess().getMultiplicityManyToOneKeyword_14_0_2()); }
-
-	'many-to-one' 
-
-{ after(grammarAccess.getRelationTypeAccess().getMultiplicityManyToOneKeyword_14_0_2()); }
+{ before(grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_ONEEnumLiteralDeclaration_2()); }
+(	'MANY_TO_ONE' 
+)
+{ after(grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_ONEEnumLiteralDeclaration_2()); }
 )
 
 ;
@@ -1026,9 +1042,9 @@ rule__ArtifactType__Group__5
     }
 :
 (
-{ before(grammarAccess.getArtifactTypeAccess().getValidTypesAssignment_5()); }
-(rule__ArtifactType__ValidTypesAssignment_5)*
-{ after(grammarAccess.getArtifactTypeAccess().getValidTypesAssignment_5()); }
+{ before(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAssignment_5()); }
+(rule__ArtifactType__ValidAttributeTypesAssignment_5)*
+{ after(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAssignment_5()); }
 )
 
 	rule__ArtifactType__Group__6
@@ -2290,14 +2306,14 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__ArtifactType__ValidTypesAssignment_5
+rule__ArtifactType__ValidAttributeTypesAssignment_5
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getArtifactTypeAccess().getValidTypesAttributeTypeRefParserRuleCall_5_0()); }
-	ruleAttributeTypeRef{ after(grammarAccess.getArtifactTypeAccess().getValidTypesAttributeTypeRefParserRuleCall_5_0()); }
+{ before(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAttributeTypeRefParserRuleCall_5_0()); }
+	ruleAttributeTypeRef{ after(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAttributeTypeRefParserRuleCall_5_0()); }
 )
 
 ;
@@ -2646,9 +2662,8 @@ rule__RelationType__MultiplicityAssignment_14
     }
 :
 (
-{ before(grammarAccess.getRelationTypeAccess().getMultiplicityAlternatives_14_0()); }
-(rule__RelationType__MultiplicityAlternatives_14_0)
-{ after(grammarAccess.getRelationTypeAccess().getMultiplicityAlternatives_14_0()); }
+{ before(grammarAccess.getRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_14_0()); }
+	ruleRelationMultiplicityEnum{ after(grammarAccess.getRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_14_0()); }
 )
 
 ;

@@ -11,7 +11,9 @@ import org.eclipse.osee.framework.oseeTypes.Model;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.types.bridge.Activator;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.OseeData;
+import org.eclipse.osee.framework.types.bridge.internal.Activator;
 
 public class OseeToTextModelOperation extends AbstractOperation {
 	private final java.net.URI resource;
@@ -30,19 +32,11 @@ public class OseeToTextModelOperation extends AbstractOperation {
 		// TypeValidityManager.getAttributeTypesFromArtifactType(artifactType,
 		// branch);
 
-		OseeTypesStandaloneSetup.doSetup();
-		
-		// Create Model from OSEE Data
-		Model model = null;
-
-		URI uri = URI.createURI(resource.toASCIIString());
-		ResourceSet resourceSet = new ResourceSetImpl();
-		Resource resource = resourceSet.createResource(uri);
+	
 		// Write Model to File;
 
 		// model.
 		// resource.save(outputStream, options);
-
 	}
 
 }

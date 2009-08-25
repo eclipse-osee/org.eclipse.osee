@@ -162,6 +162,7 @@ public interface RelationType extends OseeType
 
   /**
    * Returns the value of the '<em><b>Multiplicity</b></em>' attribute.
+   * The literals are from the enumeration {@link org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum}.
    * <!-- begin-user-doc -->
    * <p>
    * If the meaning of the '<em>Multiplicity</em>' attribute isn't clear,
@@ -169,21 +170,23 @@ public interface RelationType extends OseeType
    * </p>
    * <!-- end-user-doc -->
    * @return the value of the '<em>Multiplicity</em>' attribute.
-   * @see #setMultiplicity(String)
+   * @see org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum
+   * @see #setMultiplicity(RelationMultiplicityEnum)
    * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getRelationType_Multiplicity()
    * @model
    * @generated
    */
-  String getMultiplicity();
+  RelationMultiplicityEnum getMultiplicity();
 
   /**
    * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getMultiplicity <em>Multiplicity</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @param value the new value of the '<em>Multiplicity</em>' attribute.
+   * @see org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum
    * @see #getMultiplicity()
    * @generated
    */
-  void setMultiplicity(String value);
+  void setMultiplicity(RelationMultiplicityEnum value);
 
 } // RelationType

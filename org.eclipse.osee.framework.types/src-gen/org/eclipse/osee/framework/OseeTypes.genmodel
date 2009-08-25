@@ -9,6 +9,11 @@
     editorPluginID="org.eclipse.osee.framework.types.editor">
   <genPackages prefix="OseeTypes" basePackage="org.eclipse.osee.framework" disposableProviderFactory="true"
       ecorePackage="OseeTypes.ecore#/">
+    <genEnums typeSafeEnumCompatible="false" ecoreEnum="OseeTypes.ecore#//RelationMultiplicityEnum">
+      <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/ONE_TO_MANY"/>
+      <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/MANY_TO_MANY"/>
+      <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/MANY_TO_ONE"/>
+    </genEnums>
     <genClasses ecoreClass="OseeTypes.ecore#//Model">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//Model/imports"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//Model/types"/>
@@ -21,7 +26,7 @@
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//ArtifactType">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/superArtifactType"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/validTypes"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/validAttributeTypes"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//AttributeTypeRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//AttributeTypeRef/validAttributeType"/>

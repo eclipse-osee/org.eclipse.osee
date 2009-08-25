@@ -5,17 +5,18 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.types.bridge.operations.TextModelToOseeOperation;
-import org.eclipse.ui.IImportWizard;
+import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.types.bridge.operations.OseeExcelImportOperation;
+import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
-public class OseeTypesImportWizard extends Wizard implements IImportWizard {
-   private ResourceSelectionPage mainPage;
+public class NewOseeTypesFileWizard extends Wizard implements INewWizard {
+   private NewOseeTypesFilePage mainPage;
 
-   public OseeTypesImportWizard() {
+   public NewOseeTypesFileWizard() {
       super();
-      // setDialogSettings(Activator.getInstance().getDialogSettings());
-      setWindowTitle("OSEE Types Import Wizard");
+      setDialogSettings(Activator.getDefault().getDialogSettings());
+      setWindowTitle("New OSEE Types File");
       setNeedsProgressMonitor(true);
 
       setHelpAvailable(true);
@@ -23,22 +24,21 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public boolean performFinish() {
-      File file = mainPage.getFile();
+      File sourceFile = mainPage.getSourceFile();
+      File destination = mainPage.getDestinationFile();
 
-      IOperation operation = new TextModelToOseeOperation(file.toURI());
+      IOperation operation = new OseeExcelImportOperation(sourceFile, destination);
       Operations.executeAsJob(operation, true);
       return true;
    }
 
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
-      // TODO Auto-generated method stub
-
    }
 
    @Override
    public void addPages() {
-      mainPage = new ResourceSelectionPage(getWindowTitle());
+      mainPage = new NewOseeTypesFilePage(getWindowTitle());
       addPage(mainPage);
    }
 

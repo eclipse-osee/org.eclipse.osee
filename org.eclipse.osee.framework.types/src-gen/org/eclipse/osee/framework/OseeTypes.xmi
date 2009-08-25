@@ -63,7 +63,7 @@
       </type>
       <alternatives xsi:type="xtext:Alternatives">
         <groups xsi:type="xtext:RuleCall" rule="/0/@rules.5"/>
-        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.11"/>
+        <groups xsi:type="xtext:RuleCall" rule="/0/@rules.12"/>
         <groups xsi:type="xtext:RuleCall" rule="/0/@rules.7"/>
         <groups xsi:type="xtext:RuleCall" rule="/0/@rules.9"/>
       </alternatives>
@@ -90,7 +90,7 @@
           </tokens>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
-        <tokens xsi:type="xtext:Assignment" cardinality="*" feature="validTypes" operator="+=">
+        <tokens xsi:type="xtext:Assignment" cardinality="*" feature="validAttributeTypes" operator="+=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.6"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
@@ -235,6 +235,25 @@
         </tokens>
       </alternatives>
     </rules>
+    <rules xsi:type="xtext:EnumRule" name="RelationMultiplicityEnum">
+      <type metamodel="/0/@metamodelDeclarations.0">
+        <classifier xsi:type="ecore:EEnum" href="http://www.eclipse.org/osee/framework/OseeTypes#//RelationMultiplicityEnum"/>
+      </type>
+      <alternatives xsi:type="xtext:Alternatives">
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/osee/framework/OseeTypes#//RelationMultiplicityEnum/ONE_TO_MANY"/>
+          <literal value="ONE_TO_MANY"/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/osee/framework/OseeTypes#//RelationMultiplicityEnum/MANY_TO_MANY"/>
+          <literal value="MANY_TO_MANY"/>
+        </groups>
+        <groups xsi:type="xtext:EnumLiteralDeclaration">
+          <enumLiteral href="http://www.eclipse.org/osee/framework/OseeTypes#//RelationMultiplicityEnum/MANY_TO_ONE"/>
+          <literal value="MANY_TO_ONE"/>
+        </groups>
+      </alternatives>
+    </rules>
     <rules xsi:type="xtext:ParserRule" name="RelationType">
       <type metamodel="/0/@metamodelDeclarations.0">
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//RelationType"/>
@@ -282,11 +301,7 @@
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="multiplicity"/>
         <tokens xsi:type="xtext:Assignment" feature="multiplicity" operator="=">
-          <terminal xsi:type="xtext:Alternatives">
-            <groups xsi:type="xtext:Keyword" value="one-to-many"/>
-            <groups xsi:type="xtext:Keyword" value="many-to-many"/>
-            <groups xsi:type="xtext:Keyword" value="many-to-one"/>
-          </terminal>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.11"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
       </alternatives>

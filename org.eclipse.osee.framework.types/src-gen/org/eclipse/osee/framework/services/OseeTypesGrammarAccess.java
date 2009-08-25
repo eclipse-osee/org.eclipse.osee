@@ -190,17 +190,17 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		private final CrossReference cSuperArtifactTypeArtifactTypeCrossReference_3_1_0 = (CrossReference)cSuperArtifactTypeAssignment_3_1.eContents().get(0);
 		private final RuleCall cSuperArtifactTypeArtifactTypeIDTerminalRuleCall_3_1_0_1 = (RuleCall)cSuperArtifactTypeArtifactTypeCrossReference_3_1_0.eContents().get(1);
 		private final Keyword cLeftCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
-		private final Assignment cValidTypesAssignment_5 = (Assignment)cGroup.eContents().get(5);
-		private final RuleCall cValidTypesAttributeTypeRefParserRuleCall_5_0 = (RuleCall)cValidTypesAssignment_5.eContents().get(0);
+		private final Assignment cValidAttributeTypesAssignment_5 = (Assignment)cGroup.eContents().get(5);
+		private final RuleCall cValidAttributeTypesAttributeTypeRefParserRuleCall_5_0 = (RuleCall)cValidAttributeTypesAssignment_5.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		
 		//ArtifactType:
 		//  "abstract"? "artifactType" name=QUALIFIED_NAME ("extends" superArtifactType=[
-		//  ArtifactType])? "{" validTypes+=AttributeTypeRef* "}";
+		//  ArtifactType])? "{" validAttributeTypes+=AttributeTypeRef* "}";
 		public ParserRule getRule() { return rule; }
 
 		//"abstract"? "artifactType" name=QUALIFIED_NAME ("extends" superArtifactType=[
-		//ArtifactType])? "{" validTypes+=AttributeTypeRef* "}"
+		//ArtifactType])? "{" validAttributeTypes+=AttributeTypeRef* "}"
 		public Group getGroup() { return cGroup; }
 
 		//"abstract"?
@@ -233,11 +233,11 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		//"{"
 		public Keyword getLeftCurlyBracketKeyword_4() { return cLeftCurlyBracketKeyword_4; }
 
-		//validTypes+=AttributeTypeRef*
-		public Assignment getValidTypesAssignment_5() { return cValidTypesAssignment_5; }
+		//validAttributeTypes+=AttributeTypeRef*
+		public Assignment getValidAttributeTypesAssignment_5() { return cValidAttributeTypesAssignment_5; }
 
 		//AttributeTypeRef
-		public RuleCall getValidTypesAttributeTypeRefParserRuleCall_5_0() { return cValidTypesAttributeTypeRefParserRuleCall_5_0; }
+		public RuleCall getValidAttributeTypesAttributeTypeRefParserRuleCall_5_0() { return cValidAttributeTypesAttributeTypeRefParserRuleCall_5_0; }
 
 		//"}"
 		public Keyword getRightCurlyBracketKeyword_6() { return cRightCurlyBracketKeyword_6; }
@@ -639,10 +639,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		private final RuleCall cDefaultOrderTypeIDTerminalRuleCall_12_0_3 = (RuleCall)cDefaultOrderTypeAlternatives_12_0.eContents().get(3);
 		private final Keyword cMultiplicityKeyword_13 = (Keyword)cGroup.eContents().get(13);
 		private final Assignment cMultiplicityAssignment_14 = (Assignment)cGroup.eContents().get(14);
-		private final Alternatives cMultiplicityAlternatives_14_0 = (Alternatives)cMultiplicityAssignment_14.eContents().get(0);
-		private final Keyword cMultiplicityOneToManyKeyword_14_0_0 = (Keyword)cMultiplicityAlternatives_14_0.eContents().get(0);
-		private final Keyword cMultiplicityManyToManyKeyword_14_0_1 = (Keyword)cMultiplicityAlternatives_14_0.eContents().get(1);
-		private final Keyword cMultiplicityManyToOneKeyword_14_0_2 = (Keyword)cMultiplicityAlternatives_14_0.eContents().get(2);
+		private final RuleCall cMultiplicityRelationMultiplicityEnumEnumRuleCall_14_0 = (RuleCall)cMultiplicityAssignment_14.eContents().get(0);
 		private final Keyword cRightCurlyBracketKeyword_15 = (Keyword)cGroup.eContents().get(15);
 		
 		//RelationType:
@@ -650,16 +647,14 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		//  "sideAArtifactType" sideAArtifactType=[ArtifactType] "sideBName" sideBName=STRING
 		//  "sideBArtifactType" sideBArtifactType=[ArtifactType] "defaultOrderType"
 		//  defaultOrderType=( "Lexicographical_Ascending" | "Lexicographical_Descending" |
-		//  "Unordered" | ID ) "multiplicity" multiplicity=( "one-to-many" | "many-to-many" |
-		//  "many-to-one" ) "}";
+		//  "Unordered" | ID ) "multiplicity" multiplicity=RelationMultiplicityEnum "}";
 		public ParserRule getRule() { return rule; }
 
 		//"relationType" name=QUALIFIED_NAME "{" "sideAName" sideAName=STRING
 		//"sideAArtifactType" sideAArtifactType=[ArtifactType] "sideBName" sideBName=STRING
 		//"sideBArtifactType" sideBArtifactType=[ArtifactType] "defaultOrderType"
 		//defaultOrderType=( "Lexicographical_Ascending" | "Lexicographical_Descending" |
-		//"Unordered" | ID ) "multiplicity" multiplicity=( "one-to-many" | "many-to-many" |
-		//"many-to-one" ) "}"
+		//"Unordered" | ID ) "multiplicity" multiplicity=RelationMultiplicityEnum "}"
 		public Group getGroup() { return cGroup; }
 
 		//"relationType"
@@ -741,25 +736,52 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		//"multiplicity"
 		public Keyword getMultiplicityKeyword_13() { return cMultiplicityKeyword_13; }
 
-		//multiplicity=( "one-to-many" | "many-to-many" | "many-to-one" )
+		//multiplicity=RelationMultiplicityEnum
 		public Assignment getMultiplicityAssignment_14() { return cMultiplicityAssignment_14; }
 
-		//"one-to-many"|"many-to-many"|"many-to-one"
-		public Alternatives getMultiplicityAlternatives_14_0() { return cMultiplicityAlternatives_14_0; }
-
-		//"one-to-many"
-		public Keyword getMultiplicityOneToManyKeyword_14_0_0() { return cMultiplicityOneToManyKeyword_14_0_0; }
-
-		//"many-to-many"
-		public Keyword getMultiplicityManyToManyKeyword_14_0_1() { return cMultiplicityManyToManyKeyword_14_0_1; }
-
-		//"many-to-one"
-		public Keyword getMultiplicityManyToOneKeyword_14_0_2() { return cMultiplicityManyToOneKeyword_14_0_2; }
+		//RelationMultiplicityEnum
+		public RuleCall getMultiplicityRelationMultiplicityEnumEnumRuleCall_14_0() { return cMultiplicityRelationMultiplicityEnumEnumRuleCall_14_0; }
 
 		//"}"
 		public Keyword getRightCurlyBracketKeyword_15() { return cRightCurlyBracketKeyword_15; }
 	}
 	
+	
+	public class RelationMultiplicityEnumElements implements IEnumRuleAccess {
+		private final EnumRule rule = (EnumRule) GrammarUtil.findRuleForName(getGrammar(), "RelationMultiplicityEnum");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final EnumLiteralDeclaration cONE_TO_MANYEnumLiteralDeclaration_0 = (EnumLiteralDeclaration)cAlternatives.eContents().get(0);
+		private final Keyword cONE_TO_MANYONE_TO_MANYKeyword_0_0 = (Keyword)cONE_TO_MANYEnumLiteralDeclaration_0.eContents().get(0);
+		private final EnumLiteralDeclaration cMANY_TO_MANYEnumLiteralDeclaration_1 = (EnumLiteralDeclaration)cAlternatives.eContents().get(1);
+		private final Keyword cMANY_TO_MANYMANY_TO_MANYKeyword_1_0 = (Keyword)cMANY_TO_MANYEnumLiteralDeclaration_1.eContents().get(0);
+		private final EnumLiteralDeclaration cMANY_TO_ONEEnumLiteralDeclaration_2 = (EnumLiteralDeclaration)cAlternatives.eContents().get(2);
+		private final Keyword cMANY_TO_ONEMANY_TO_ONEKeyword_2_0 = (Keyword)cMANY_TO_ONEEnumLiteralDeclaration_2.eContents().get(0);
+		
+		//enum RelationMultiplicityEnum:
+		//  ONE_TO_MANY | MANY_TO_MANY | MANY_TO_ONE;
+		public EnumRule getRule() { return rule; }
+
+		//ONE_TO_MANY | MANY_TO_MANY | MANY_TO_ONE
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//ONE_TO_MANY
+		public EnumLiteralDeclaration getONE_TO_MANYEnumLiteralDeclaration_0() { return cONE_TO_MANYEnumLiteralDeclaration_0; }
+
+		//"ONE_TO_MANY"
+		public Keyword getONE_TO_MANYONE_TO_MANYKeyword_0_0() { return cONE_TO_MANYONE_TO_MANYKeyword_0_0; }
+
+		//MANY_TO_MANY
+		public EnumLiteralDeclaration getMANY_TO_MANYEnumLiteralDeclaration_1() { return cMANY_TO_MANYEnumLiteralDeclaration_1; }
+
+		//"MANY_TO_MANY"
+		public Keyword getMANY_TO_MANYMANY_TO_MANYKeyword_1_0() { return cMANY_TO_MANYMANY_TO_MANYKeyword_1_0; }
+
+		//MANY_TO_ONE
+		public EnumLiteralDeclaration getMANY_TO_ONEEnumLiteralDeclaration_2() { return cMANY_TO_ONEEnumLiteralDeclaration_2; }
+
+		//"MANY_TO_ONE"
+		public Keyword getMANY_TO_ONEMANY_TO_ONEKeyword_2_0() { return cMANY_TO_ONEMANY_TO_ONEKeyword_2_0; }
+	}
 	
 	private ModelElements pModel;
 	private ImportElements pImport;
@@ -772,6 +794,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	private AttributeBaseTypeElements pAttributeBaseType;
 	private OseeEnumTypeElements pOseeEnumType;
 	private OseeEnumElements pOseeEnum;
+	private RelationMultiplicityEnumElements unknownRuleRelationMultiplicityEnum;
 	private RelationTypeElements pRelationType;
 	
 	private final GrammarProvider grammarProvider;
@@ -847,7 +870,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 
 	//ArtifactType:
 	//  "abstract"? "artifactType" name=QUALIFIED_NAME ("extends" superArtifactType=[
-	//  ArtifactType])? "{" validTypes+=AttributeTypeRef* "}";
+	//  ArtifactType])? "{" validAttributeTypes+=AttributeTypeRef* "}";
 	public ArtifactTypeElements getArtifactTypeAccess() {
 		return (pArtifactType != null) ? pArtifactType : (pArtifactType = new ArtifactTypeElements());
 	}
@@ -914,13 +937,22 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		return getOseeEnumAccess().getRule();
 	}
 
+	//enum RelationMultiplicityEnum:
+	//  ONE_TO_MANY | MANY_TO_MANY | MANY_TO_ONE;
+	public RelationMultiplicityEnumElements getRelationMultiplicityEnumAccess() {
+		return (unknownRuleRelationMultiplicityEnum != null) ? unknownRuleRelationMultiplicityEnum : (unknownRuleRelationMultiplicityEnum = new RelationMultiplicityEnumElements());
+	}
+	
+	public EnumRule getRelationMultiplicityEnumRule() {
+		return getRelationMultiplicityEnumAccess().getRule();
+	}
+
 	//RelationType:
 	//  "relationType" name=QUALIFIED_NAME "{" "sideAName" sideAName=STRING
 	//  "sideAArtifactType" sideAArtifactType=[ArtifactType] "sideBName" sideBName=STRING
 	//  "sideBArtifactType" sideBArtifactType=[ArtifactType] "defaultOrderType"
 	//  defaultOrderType=( "Lexicographical_Ascending" | "Lexicographical_Descending" |
-	//  "Unordered" | ID ) "multiplicity" multiplicity=( "one-to-many" | "many-to-many" |
-	//  "many-to-one" ) "}";
+	//  "Unordered" | ID ) "multiplicity" multiplicity=RelationMultiplicityEnum "}";
 	public RelationTypeElements getRelationTypeAccess() {
 		return (pRelationType != null) ? pRelationType : (pRelationType = new RelationTypeElements());
 	}

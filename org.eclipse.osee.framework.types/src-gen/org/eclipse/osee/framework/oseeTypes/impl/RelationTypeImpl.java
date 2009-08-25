@@ -15,6 +15,7 @@ import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
 
 /**
@@ -125,7 +126,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * @generated
    * @ordered
    */
-  protected static final String MULTIPLICITY_EDEFAULT = null;
+  protected static final RelationMultiplicityEnum MULTIPLICITY_EDEFAULT = RelationMultiplicityEnum.ONE_TO_MANY;
 
   /**
    * The cached value of the '{@link #getMultiplicity() <em>Multiplicity</em>}' attribute.
@@ -135,7 +136,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * @generated
    * @ordered
    */
-  protected String multiplicity = MULTIPLICITY_EDEFAULT;
+  protected RelationMultiplicityEnum multiplicity = MULTIPLICITY_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -318,7 +319,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getMultiplicity()
+  public RelationMultiplicityEnum getMultiplicity()
   {
     return multiplicity;
   }
@@ -328,10 +329,10 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setMultiplicity(String newMultiplicity)
+  public void setMultiplicity(RelationMultiplicityEnum newMultiplicity)
   {
-    String oldMultiplicity = multiplicity;
-    multiplicity = newMultiplicity;
+    RelationMultiplicityEnum oldMultiplicity = multiplicity;
+    multiplicity = newMultiplicity == null ? MULTIPLICITY_EDEFAULT : newMultiplicity;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__MULTIPLICITY, oldMultiplicity, multiplicity));
   }
@@ -390,7 +391,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
         setDefaultOrderType((String)newValue);
         return;
       case OseeTypesPackage.RELATION_TYPE__MULTIPLICITY:
-        setMultiplicity((String)newValue);
+        setMultiplicity((RelationMultiplicityEnum)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -449,7 +450,7 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
       case OseeTypesPackage.RELATION_TYPE__DEFAULT_ORDER_TYPE:
         return DEFAULT_ORDER_TYPE_EDEFAULT == null ? defaultOrderType != null : !DEFAULT_ORDER_TYPE_EDEFAULT.equals(defaultOrderType);
       case OseeTypesPackage.RELATION_TYPE__MULTIPLICITY:
-        return MULTIPLICITY_EDEFAULT == null ? multiplicity != null : !MULTIPLICITY_EDEFAULT.equals(multiplicity);
+        return multiplicity != MULTIPLICITY_EDEFAULT;
     }
     return super.eIsSet(featureID);
   }

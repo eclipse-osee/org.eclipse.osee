@@ -17,7 +17,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArtifactType" eSuperTypes="#//OseeType">
     <eStructuralFeatures xsi:type="ecore:EReference" name="superArtifactType" eType="#//ArtifactType"/>
-    <eStructuralFeatures xsi:type="ecore:EReference" name="validTypes" upperBound="-1"
+    <eStructuralFeatures xsi:type="ecore:EReference" name="validAttributeTypes" upperBound="-1"
         eType="#//AttributeTypeRef" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AttributeTypeRef">
@@ -42,12 +42,17 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordinal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EEnum" name="RelationMultiplicityEnum">
+    <eLiterals name="ONE_TO_MANY" literal="ONE_TO_MANY"/>
+    <eLiterals name="MANY_TO_MANY" value="1" literal="MANY_TO_MANY"/>
+    <eLiterals name="MANY_TO_ONE" value="2" literal="MANY_TO_ONE"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RelationType" eSuperTypes="#//OseeType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sideAName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sideAArtifactType" eType="#//ArtifactType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sideBName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sideBArtifactType" eType="#//ArtifactType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="defaultOrderType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiplicity" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="multiplicity" eType="#//RelationMultiplicityEnum"/>
   </eClassifiers>
 </ecore:EPackage>

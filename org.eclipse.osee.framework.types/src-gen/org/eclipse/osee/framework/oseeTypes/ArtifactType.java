@@ -17,7 +17,7 @@ import org.eclipse.emf.common.util.EList;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactType <em>Super Artifact Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidTypes <em>Valid Types</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidAttributeTypes <em>Valid Attribute Types</em>}</li>
  * </ul>
  * </p>
  *
@@ -54,19 +54,19 @@ public interface ArtifactType extends OseeType
   void setSuperArtifactType(ArtifactType value);
 
   /**
-   * Returns the value of the '<em><b>Valid Types</b></em>' containment reference list.
+   * Returns the value of the '<em><b>Valid Attribute Types</b></em>' containment reference list.
    * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef}.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Valid Types</em>' containment reference list isn't clear,
+   * If the meaning of the '<em>Valid Attribute Types</em>' containment reference list isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Valid Types</em>' containment reference list.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_ValidTypes()
+   * @return the value of the '<em>Valid Attribute Types</em>' containment reference list.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_ValidAttributeTypes()
    * @model containment="true"
    * @generated
    */
-  EList<AttributeTypeRef> getValidTypes();
+  EList<AttributeTypeRef> getValidAttributeTypes();
 
 } // ArtifactType

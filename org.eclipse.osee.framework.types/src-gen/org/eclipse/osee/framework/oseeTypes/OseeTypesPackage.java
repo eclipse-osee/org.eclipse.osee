@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.oseeTypes;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -182,13 +183,13 @@ public interface OseeTypesPackage extends EPackage
   int ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE = OSEE_TYPE_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Valid Types</b></em>' containment reference list.
+   * The feature id for the '<em><b>Valid Attribute Types</b></em>' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ARTIFACT_TYPE__VALID_TYPES = OSEE_TYPE_FEATURE_COUNT + 1;
+  int ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES = OSEE_TYPE_FEATURE_COUNT + 1;
 
   /**
    * The number of structural features of the '<em>Artifact Type</em>' class.
@@ -492,6 +493,16 @@ public interface OseeTypesPackage extends EPackage
    */
   int RELATION_TYPE_FEATURE_COUNT = OSEE_TYPE_FEATURE_COUNT + 6;
 
+  /**
+   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum <em>Relation Multiplicity Enum</em>}' enum.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum
+   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getRelationMultiplicityEnum()
+   * @generated
+   */
+  int RELATION_MULTIPLICITY_ENUM = 9;
+
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.Model <em>Model</em>}'.
@@ -589,15 +600,15 @@ public interface OseeTypesPackage extends EPackage
   EReference getArtifactType_SuperArtifactType();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidTypes <em>Valid Types</em>}'.
+   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidAttributeTypes <em>Valid Attribute Types</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Valid Types</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidTypes()
+   * @return the meta object for the containment reference list '<em>Valid Attribute Types</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidAttributeTypes()
    * @see #getArtifactType()
    * @generated
    */
-  EReference getArtifactType_ValidTypes();
+  EReference getArtifactType_ValidAttributeTypes();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef <em>Attribute Type Ref</em>}'.
@@ -859,6 +870,16 @@ public interface OseeTypesPackage extends EPackage
   EAttribute getRelationType_Multiplicity();
 
   /**
+   * Returns the meta object for enum '{@link org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum <em>Relation Multiplicity Enum</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for enum '<em>Relation Multiplicity Enum</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum
+   * @generated
+   */
+  EEnum getRelationMultiplicityEnum();
+
+  /**
    * Returns the factory that creates the instances of the model.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -962,12 +983,12 @@ public interface OseeTypesPackage extends EPackage
     EReference ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE = eINSTANCE.getArtifactType_SuperArtifactType();
 
     /**
-     * The meta object literal for the '<em><b>Valid Types</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Valid Attribute Types</b></em>' containment reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
-    EReference ARTIFACT_TYPE__VALID_TYPES = eINSTANCE.getArtifactType_ValidTypes();
+    EReference ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES = eINSTANCE.getArtifactType_ValidAttributeTypes();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeRefImpl <em>Attribute Type Ref</em>}' class.
@@ -1170,6 +1191,16 @@ public interface OseeTypesPackage extends EPackage
      * @generated
      */
     EAttribute RELATION_TYPE__MULTIPLICITY = eINSTANCE.getRelationType_Multiplicity();
+
+    /**
+     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum <em>Relation Multiplicity Enum</em>}' enum.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum
+     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getRelationMultiplicityEnum()
+     * @generated
+     */
+    EEnum RELATION_MULTIPLICITY_ENUM = eINSTANCE.getRelationMultiplicityEnum();
 
   }
 

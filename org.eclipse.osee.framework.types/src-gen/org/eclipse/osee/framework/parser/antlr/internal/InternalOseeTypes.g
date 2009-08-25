@@ -26,6 +26,7 @@ import org.eclipse.xtext.parser.impl.*;
 import org.eclipse.xtext.parsetree.*;
 import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.common.util.Enumerator;
 import org.eclipse.xtext.parser.antlr.AbstractInternalAntlrParser;
 import org.eclipse.xtext.parser.antlr.XtextTokenStream;
 import org.eclipse.xtext.parser.antlr.XtextTokenStream.HiddenTokens;
@@ -443,9 +444,9 @@ ruleArtifactType returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeAccess().getValidTypesAttributeTypeRefParserRuleCall_5_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAttributeTypeRefParserRuleCall_5_0(), currentNode); 
 	    }
-	    lv_validTypes_6=ruleAttributeTypeRef 
+	    lv_validAttributeTypes_6=ruleAttributeTypeRef 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getArtifactTypeRule().getType().getClassifier());
@@ -453,7 +454,7 @@ ruleArtifactType returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		add($current, "validTypes", lv_validTypes_6, "AttributeTypeRef", currentNode);
+	       		add($current, "validAttributeTypes", lv_validAttributeTypes_6, "AttributeTypeRef", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -1233,36 +1234,23 @@ ruleRelationType returns [EObject current=null]
     }
 (	
 	
-	    lv_multiplicity_14=('one-to-many' 
-    {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getMultiplicityOneToManyKeyword_14_0_0(), "multiplicity"); 
-    }
-
-
-    |'many-to-many' 
-    {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getMultiplicityManyToManyKeyword_14_0_1(), "multiplicity"); 
-    }
-
-
-    |'many-to-one' 
-    {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getMultiplicityManyToOneKeyword_14_0_2(), "multiplicity"); 
-    }
-
-)
- 
+	    
+	    { 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_14_0(), currentNode); 
+	    }
+	    lv_multiplicity_14=ruleRelationMultiplicityEnum 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getRelationTypeRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode, $current);
+	            associateNodeWithAstElement(currentNode.getParent(), $current);
 	        }
 	        
 	        try {
-	       		set($current, "multiplicity", /* lv_multiplicity_14 */ input.LT(-1), null, lastConsumedNode);
+	       		set($current, "multiplicity", lv_multiplicity_14, "RelationMultiplicityEnum", lastConsumedNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
+	        currentNode = currentNode.getParent();
 	    }
 	
 )'}' 
@@ -1272,6 +1260,33 @@ ruleRelationType returns [EObject current=null]
 );
 
 
+
+
+
+// Rule RelationMultiplicityEnum
+ruleRelationMultiplicityEnum returns [Enumerator current=null] 
+    @init { setCurrentLookahead(); resetLookahead(); }
+    @after { resetLookahead(); 
+    	lastConsumedNode = currentNode;
+    }:
+((	'ONE_TO_MANY' 
+	{
+        $current = grammarAccess.getRelationMultiplicityEnumAccess().getONE_TO_MANYEnumLiteralDeclaration_0().getEnumLiteral().getInstance();
+        createLeafNode(grammarAccess.getRelationMultiplicityEnumAccess().getONE_TO_MANYEnumLiteralDeclaration_0(), null); 
+    }
+)
+    |(	'MANY_TO_MANY' 
+	{
+        $current = grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_MANYEnumLiteralDeclaration_1().getEnumLiteral().getInstance();
+        createLeafNode(grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_MANYEnumLiteralDeclaration_1(), null); 
+    }
+)
+    |(	'MANY_TO_ONE' 
+	{
+        $current = grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_ONEEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
+        createLeafNode(grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_ONEEnumLiteralDeclaration_2(), null); 
+    }
+));
 
 
 

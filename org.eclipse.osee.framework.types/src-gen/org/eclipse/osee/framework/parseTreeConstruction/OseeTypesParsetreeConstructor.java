@@ -421,12 +421,12 @@ protected class OseeType_OseeEnumTypeParserRuleCall_3 extends RuleCallToken {
  *
  * ArtifactType:
  *   "abstract"? "artifactType" name=QUALIFIED_NAME ("extends" superArtifactType=[
- *   ArtifactType])? "{" validTypes+=AttributeTypeRef* "}";
+ *   ArtifactType])? "{" validAttributeTypes+=AttributeTypeRef* "}";
  *
  **/
 
 // "abstract"? "artifactType" name=QUALIFIED_NAME ("extends" superArtifactType=[
-// ArtifactType])? "{" validTypes+=AttributeTypeRef* "}"
+// ArtifactType])? "{" validAttributeTypes+=AttributeTypeRef* "}"
 protected class ArtifactType_Group extends GroupToken {
 	
 	public ArtifactType_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -596,15 +596,15 @@ protected class ArtifactType_LeftCurlyBracketKeyword_4 extends KeywordToken  {
 		
 }
 
-// validTypes+=AttributeTypeRef*
-protected class ArtifactType_ValidTypesAssignment_5 extends AssignmentToken  {
+// validAttributeTypes+=AttributeTypeRef*
+protected class ArtifactType_ValidAttributeTypesAssignment_5 extends AssignmentToken  {
 	
-	public ArtifactType_ValidTypesAssignment_5(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public ArtifactType_ValidAttributeTypesAssignment_5(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getArtifactTypeAccess().getValidTypesAssignment_5();
+		return grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAssignment_5();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -615,13 +615,13 @@ protected class ArtifactType_ValidTypesAssignment_5 extends AssignmentToken  {
 	}	
 		
 	protected IInstanceDescription tryConsumeVal() {
-		if((value = current.getConsumable("validTypes",false)) == null) return null;
-		IInstanceDescription obj = current.cloneAndConsume("validTypes");
+		if((value = current.getConsumable("validAttributeTypes",false)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("validAttributeTypes");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getAttributeTypeRefRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getArtifactTypeAccess().getValidTypesAttributeTypeRefParserRuleCall_5_0(); 
+				element = grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAttributeTypeRefParserRuleCall_5_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -632,7 +632,7 @@ protected class ArtifactType_ValidTypesAssignment_5 extends AssignmentToken  {
 	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
 		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new ArtifactType_ValidTypesAssignment_5(parent, next, actIndex, consumed);
+			case 0: return new ArtifactType_ValidAttributeTypesAssignment_5(parent, next, actIndex, consumed);
 			case 1: return new ArtifactType_LeftCurlyBracketKeyword_4(parent, next, actIndex, consumed);
 			default: return null;
 		}	
@@ -652,7 +652,7 @@ protected class ArtifactType_RightCurlyBracketKeyword_6 extends KeywordToken  {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new ArtifactType_ValidTypesAssignment_5(parent, this, 0, inst);
+			case 0: return new ArtifactType_ValidAttributeTypesAssignment_5(parent, this, 0, inst);
 			case 1: return new ArtifactType_LeftCurlyBracketKeyword_4(parent, this, 1, inst);
 			default: return null;
 		}	
@@ -1792,8 +1792,7 @@ protected class OseeEnum_OrdinalAssignment_1 extends AssignmentToken  {
  *   "sideAArtifactType" sideAArtifactType=[ArtifactType] "sideBName" sideBName=STRING
  *   "sideBArtifactType" sideBArtifactType=[ArtifactType] "defaultOrderType"
  *   defaultOrderType=( "Lexicographical_Ascending" | "Lexicographical_Descending" |
- *   "Unordered" | ID ) "multiplicity" multiplicity=( "one-to-many" | "many-to-many" |
- *   "many-to-one" ) "}";
+ *   "Unordered" | ID ) "multiplicity" multiplicity=RelationMultiplicityEnum "}";
  *
  **/
 
@@ -1801,8 +1800,7 @@ protected class OseeEnum_OrdinalAssignment_1 extends AssignmentToken  {
 // "sideAArtifactType" sideAArtifactType=[ArtifactType] "sideBName" sideBName=STRING
 // "sideBArtifactType" sideBArtifactType=[ArtifactType] "defaultOrderType"
 // defaultOrderType=( "Lexicographical_Ascending" | "Lexicographical_Descending" |
-// "Unordered" | ID ) "multiplicity" multiplicity=( "one-to-many" | "many-to-many" |
-// "many-to-one" ) "}"
+// "Unordered" | ID ) "multiplicity" multiplicity=RelationMultiplicityEnum "}"
 protected class RelationType_Group extends GroupToken {
 	
 	public RelationType_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -2193,7 +2191,7 @@ protected class RelationType_MultiplicityKeyword_13 extends KeywordToken  {
 		
 }
 
-// multiplicity=( "one-to-many" | "many-to-many" | "many-to-one" )
+// multiplicity=RelationMultiplicityEnum
 protected class RelationType_MultiplicityAssignment_14 extends AssignmentToken  {
 	
 	public RelationType_MultiplicityAssignment_14(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -2214,19 +2212,9 @@ protected class RelationType_MultiplicityAssignment_14 extends AssignmentToken  
 	protected IInstanceDescription tryConsumeVal() {
 		if((value = current.getConsumable("multiplicity",true)) == null) return null;
 		IInstanceDescription obj = current.cloneAndConsume("multiplicity");
-		if("one-to-many".equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
-			type = AssignmentType.KW;
-			element = grammarAccess.getRelationTypeAccess().getMultiplicityOneToManyKeyword_14_0_0();
-			return obj;
-		}
-		if("many-to-many".equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
-			type = AssignmentType.KW;
-			element = grammarAccess.getRelationTypeAccess().getMultiplicityManyToManyKeyword_14_0_1();
-			return obj;
-		}
-		if("many-to-one".equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
-			type = AssignmentType.KW;
-			element = grammarAccess.getRelationTypeAccess().getMultiplicityManyToOneKeyword_14_0_2();
+		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
+			type = AssignmentType.ERC;
+			element = grammarAccess.getRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_14_0();
 			return obj;
 		}
 		return null;

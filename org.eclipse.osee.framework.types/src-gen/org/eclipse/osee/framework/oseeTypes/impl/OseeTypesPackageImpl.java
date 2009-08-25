@@ -8,6 +8,7 @@ package org.eclipse.osee.framework.oseeTypes.impl;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EEnum;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
 
 /**
@@ -95,6 +97,13 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * @generated
    */
   private EClass relationTypeEClass = null;
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  private EEnum relationMultiplicityEnumEEnum = null;
 
   /**
    * Creates an instance of the model <b>Package</b>, registered with
@@ -254,7 +263,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EReference getArtifactType_ValidTypes()
+  public EReference getArtifactType_ValidAttributeTypes()
   {
     return (EReference)artifactTypeEClass.getEStructuralFeatures().get(1);
   }
@@ -504,6 +513,16 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
+  public EEnum getRelationMultiplicityEnum()
+  {
+    return relationMultiplicityEnumEEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public OseeTypesFactory getOseeTypesFactory()
   {
     return (OseeTypesFactory)getEFactoryInstance();
@@ -541,7 +560,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
 
     artifactTypeEClass = createEClass(ARTIFACT_TYPE);
     createEReference(artifactTypeEClass, ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE);
-    createEReference(artifactTypeEClass, ARTIFACT_TYPE__VALID_TYPES);
+    createEReference(artifactTypeEClass, ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES);
 
     attributeTypeRefEClass = createEClass(ATTRIBUTE_TYPE_REF);
     createEReference(attributeTypeRefEClass, ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE);
@@ -571,6 +590,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     createEReference(relationTypeEClass, RELATION_TYPE__SIDE_BARTIFACT_TYPE);
     createEAttribute(relationTypeEClass, RELATION_TYPE__DEFAULT_ORDER_TYPE);
     createEAttribute(relationTypeEClass, RELATION_TYPE__MULTIPLICITY);
+
+    // Create enums
+    relationMultiplicityEnumEEnum = createEEnum(RELATION_MULTIPLICITY_ENUM);
   }
 
   /**
@@ -620,7 +642,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
 
     initEClass(artifactTypeEClass, ArtifactType.class, "ArtifactType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getArtifactType_SuperArtifactType(), this.getArtifactType(), null, "superArtifactType", null, 0, 1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getArtifactType_ValidTypes(), this.getAttributeTypeRef(), null, "validTypes", null, 0, -1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getArtifactType_ValidAttributeTypes(), this.getAttributeTypeRef(), null, "validAttributeTypes", null, 0, -1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(attributeTypeRefEClass, AttributeTypeRef.class, "AttributeTypeRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getAttributeTypeRef_ValidAttributeType(), this.getAttributeType(), null, "validAttributeType", null, 0, 1, AttributeTypeRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -649,7 +671,13 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     initEAttribute(getRelationType_SideBName(), ecorePackage.getEString(), "sideBName", null, 0, 1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getRelationType_SideBArtifactType(), this.getArtifactType(), null, "sideBArtifactType", null, 0, 1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getRelationType_DefaultOrderType(), ecorePackage.getEString(), "defaultOrderType", null, 0, 1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEAttribute(getRelationType_Multiplicity(), ecorePackage.getEString(), "multiplicity", null, 0, 1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getRelationType_Multiplicity(), this.getRelationMultiplicityEnum(), "multiplicity", null, 0, 1, RelationType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+    // Initialize enums and add enum literals
+    initEEnum(relationMultiplicityEnumEEnum, RelationMultiplicityEnum.class, "RelationMultiplicityEnum");
+    addEEnumLiteral(relationMultiplicityEnumEEnum, RelationMultiplicityEnum.ONE_TO_MANY);
+    addEEnumLiteral(relationMultiplicityEnumEEnum, RelationMultiplicityEnum.MANY_TO_MANY);
+    addEEnumLiteral(relationMultiplicityEnumEEnum, RelationMultiplicityEnum.MANY_TO_ONE);
 
     // Create resource
     createResource(eNS_URI);

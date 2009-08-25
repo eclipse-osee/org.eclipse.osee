@@ -38,7 +38,7 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onArtifactType(String namespace, String name) throws OseeCoreException {
+   public void onArtifactType(String namespace, String name, String superArtifactTypeName) throws OseeCoreException {
       ArtifactDataType artifactDataType = new ArtifactDataType(namespace, name, null);
 
       this.dataTypeSource.add(artifactDataType);

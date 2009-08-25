@@ -1,0 +1,333 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.types.bridge.operations;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
+import org.eclipse.osee.framework.oseeTypes.ArtifactType;
+import org.eclipse.osee.framework.oseeTypes.AttributeType;
+import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
+import org.eclipse.osee.framework.oseeTypes.Model;
+import org.eclipse.osee.framework.oseeTypes.OseeEnum;
+import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
+import org.eclipse.osee.framework.oseeTypes.OseeType;
+import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
+import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum;
+import org.eclipse.osee.framework.oseeTypes.RelationType;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeExtensionManager;
+import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
+import org.eclipse.osee.framework.skynet.core.importing.IOseeDataTypeProcessor;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class ExcelToEMFModel implements IOseeDataTypeProcessor {
+   private final OseeTypesFactory factory;
+   private final Map<String, Model> oseeModels;
+   private Model currentModel;
+   private final OseeTypesPackage oseeTypesPackage;
+
+   public ExcelToEMFModel(Map<String, Model> oseeModels) {
+      this.factory = OseeTypesFactory.eINSTANCE;
+      this.oseeTypesPackage = OseeTypesPackage.eINSTANCE;
+      this.oseeModels = oseeModels;
+   }
+
+   public void createModel(String name) {
+      currentModel = factory.createModel();
+      oseeModels.put(name, currentModel);
+   }
+
+   private Model getCurrentModel() {
+      return currentModel;
+   }
+
+   private String toQualifiedName(String namespace, String name) {
+      StringBuilder builder = new StringBuilder();
+      if (Strings.isValid(namespace)) {
+         namespace = namespace.replaceAll(" ", "_");
+         builder.append(namespace);
+         if (!namespace.endsWith(".")) {
+            builder.append(".");
+         }
+      }
+      builder.append(name.replaceAll(" ", "_"));
+      return builder.toString();
+
+   }
+
+   private OseeType getObject(String name) {
+      for (OseeType oseeTypes : getCurrentModel().getTypes()) {
+         if (name.equals(oseeTypes.getName())) {
+            return oseeTypes;
+         }
+      }
+      return null;
+   }
+
+   @Override
+   public void onArtifactType(String namespace, String name, String superArtifactTypeName) throws OseeCoreException {
+      String id = toQualifiedName(namespace, name);
+      OseeType types = getObject(id);
+      if (types == null) {
+         ArtifactType artifactType = factory.createArtifactType();
+         artifactType.setName(id);
+         getCurrentModel().getTypes().add(artifactType);
+
+         if (superArtifactTypeName != null) {
+            ArtifactType superArtifactType = (ArtifactType) getObject(superArtifactTypeName);
+            if (superArtifactType == null) {
+               onArtifactType(namespace, superArtifactTypeName, null);
+               superArtifactType = (ArtifactType) getObject(superArtifactTypeName);
+            }
+            artifactType.setSuperArtifactType(superArtifactType);
+         }
+      }
+   }
+
+   @Override
+   public void onAttributeType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrence, int maxOccurrence, String toolTipText, String taggerId) throws OseeCoreException {
+      String id = toQualifiedName(namespace, name);
+      OseeType types = getObject(id);
+      if (types == null) {
+         AttributeType attributeType = factory.createAttributeType();
+         attributeType.setName(id);
+         attributeType.setBaseAttributeType(Lib.getExtension(attributeBaseType));
+         attributeType.setDataProvider(Lib.getExtension(attributeProviderTypeName));
+         attributeType.setMin(String.valueOf(minOccurrence));
+
+         String maxValue;
+         if (maxOccurrence == Integer.MAX_VALUE) {
+            maxValue = "unlimited";
+         } else {
+            maxValue = String.valueOf(maxOccurrence);
+         }
+         attributeType.setMax(maxValue);
+
+         if (Strings.isValid(fileTypeExtension)) {
+            attributeType.setFileExtension(fileTypeExtension);
+         }
+         if (Strings.isValid(defaultValue)) {
+            attributeType.setDefaultValue(defaultValue);
+         }
+         if (Strings.isValid(toolTipText)) {
+            attributeType.setDescription(toolTipText);
+         }
+         if (Strings.isValid(taggerId)) {
+            attributeType.setTaggerId(taggerId);
+         }
+
+         OseeEnumType enumType =
+               getEnumType(attributeBaseType, attributeProviderTypeName, namespace, name, validityXml);
+         if (enumType != null) {
+            attributeType.setEnumType(enumType);
+         }
+         getCurrentModel().getTypes().add(attributeType);
+      }
+   }
+
+   @Override
+   public boolean doesArtifactSuperTypeExist(String artifactSuperTypeName) throws OseeCoreException {
+      return getObject(artifactSuperTypeName) != null;
+   }
+
+   @Override
+   public void onAttributeValidity(String attributeName, String artifactSuperTypeName, Collection<String> concreteTypes) throws OseeCoreException {
+      ArtifactType superArtifactType = (ArtifactType) getObject(toQualifiedName("", artifactSuperTypeName));
+      AttributeType attributeType = (AttributeType) getObject(toQualifiedName("", attributeName));
+
+      if (superArtifactType == null || attributeType == null) {
+         throw new OseeStateException(String.format("Type Missing: %s - %s", artifactSuperTypeName, attributeName));
+      }
+      AttributeTypeRef reference = factory.createAttributeTypeRef();
+      reference.setValidAttributeType(attributeType);
+      superArtifactType.getValidAttributeTypes().add(reference);
+   }
+
+   @Override
+   public void onRelationType(String namespace, String name, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) throws OseeCoreException {
+      String id = toQualifiedName(namespace, name);
+      OseeType types = getObject(id);
+      if (types == null) {
+         RelationType relationType = factory.createRelationType();
+         relationType.setName(id);
+         relationType.setSideAName(sideAName);
+         relationType.setSideBName(sideBName);
+
+         String arranger;
+         if ("Yes".equals(ordered)) {
+            arranger = "Lexicographical_Ascending";
+         } else {
+            arranger = "Unordered";
+         }
+         relationType.setDefaultOrderType(arranger);
+         getCurrentModel().getTypes().add(relationType);
+      }
+   }
+
+   @Override
+   public void onRelationValidity(String artifactTypeName, String relationTypeName, int sideAMax, int sideBMax) throws OseeCoreException {
+      RelationType relationType = (RelationType) getObject(toQualifiedName("", relationTypeName));
+      ArtifactType artifactType = (ArtifactType) getObject(toQualifiedName("", artifactTypeName));
+
+      if (sideAMax > 0) {
+         relationType.setSideAArtifactType(artifactType);
+      }
+      if (sideBMax > 0) {
+         relationType.setSideBArtifactType(artifactType);
+      }
+
+      RelationMultiplicityEnum multiplicity = relationType.getMultiplicity();
+      if (sideAMax == Integer.MAX_VALUE && sideBMax == 1) {
+         multiplicity = RelationMultiplicityEnum.ONE_TO_MANY;
+
+      } else if (sideAMax == 1 && sideBMax == Integer.MAX_VALUE) {
+         multiplicity = RelationMultiplicityEnum.MANY_TO_ONE;
+
+      } else if (sideAMax == Integer.MAX_VALUE && sideBMax == Integer.MAX_VALUE) {
+         multiplicity = RelationMultiplicityEnum.MANY_TO_MANY;
+      } else {
+         System.out.println("None detected - " + relationTypeName);
+      }
+
+      if (multiplicity != null && !multiplicity.equals(relationType.getMultiplicity())) {
+         relationType.setMultiplicity(multiplicity);
+      } else {
+         System.out.println("Null multiplicity - " + relationTypeName);
+      }
+   }
+
+   private static void checkEnumTypeName(String enumTypeName) throws OseeCoreException {
+      if (!Strings.isValid(enumTypeName)) {
+         throw new OseeArgumentException("Osee Enum Type Name cannot be null.");
+      }
+   }
+
+   private OseeEnumType getEnumType(String attributeBaseType, String attributeProviderTypeName, String namespace, String name, String validityXml) throws OseeCoreException {
+      Class<? extends Attribute<?>> baseAttributeClass =
+            AttributeExtensionManager.getAttributeClassFor(attributeBaseType);
+
+      OseeEnumType oseeEnumType = null;
+      if (EnumeratedAttribute.class.isAssignableFrom(baseAttributeClass)) {
+         createEnumTypeFromXml(toQualifiedName(namespace, name) + "Enum", validityXml);
+      }
+      return oseeEnumType;
+   }
+
+   private OseeEnumType createEnumTypeFromXml(String attributeTypeName, String xmlDefinition) throws OseeCoreException {
+      List<Pair<String, Integer>> entries = new ArrayList<Pair<String, Integer>>();
+      String enumTypeName = "";
+
+      if (!Strings.isValid(xmlDefinition)) {
+         throw new OseeArgumentException("The enum xml definition must not be null or empty");
+      }
+
+      Document document;
+      try {
+         document = Jaxp.readXmlDocument(xmlDefinition);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+      enumTypeName = attributeTypeName;
+      Element choicesElement = document.getDocumentElement();
+      NodeList enumerations = choicesElement.getChildNodes();
+      Set<String> choices = new LinkedHashSet<String>();
+
+      for (int i = 0; i < enumerations.getLength(); i++) {
+         Node node = enumerations.item(i);
+         if (node.getNodeName().equalsIgnoreCase("Enum")) {
+            choices.add(node.getTextContent());
+         } else {
+            throw new OseeArgumentException("Validity Xml not of excepted enum format");
+         }
+      }
+
+      int ordinal = 0;
+      for (String choice : choices) {
+         entries.add(new Pair<String, Integer>(choice, ordinal++));
+      }
+
+      return createEnumType(enumTypeName, entries);
+   }
+
+   private OseeEnumType createEnumType(String enumTypeName, List<Pair<String, Integer>> entries) throws OseeCoreException {
+      checkEnumTypeName(enumTypeName);
+      checkEntryIntegrity(enumTypeName, entries);
+
+      OseeEnumType oseeEnumType = null;
+
+      OseeType types = getObject(enumTypeName);
+      if (types == null) {
+         oseeEnumType = factory.createOseeEnumType();
+         oseeEnumType.setName(enumTypeName);
+
+         for (Pair<String, Integer> entry : entries) {
+            OseeEnum oseeEnum = factory.createOseeEnum();
+            oseeEnum.setName(entry.getFirst());
+            oseeEnum.setOrdinal(String.valueOf(entry.getSecond()));
+            oseeEnumType.getEnums().add(oseeEnum);
+         }
+         getCurrentModel().getTypes().add(oseeEnumType);
+      } else {
+         oseeEnumType = (OseeEnumType) types;
+      }
+      return oseeEnumType;
+   }
+
+   private static void checkEntryIntegrity(String enumTypeName, List<Pair<String, Integer>> entries) throws OseeCoreException {
+      if (entries == null) {
+         throw new OseeArgumentException(String.format("Osee Enum Type [%s] had null entries", enumTypeName));
+      }
+
+      //      if (entries.size() <= 0) throw new OseeArgumentException(String.format("Osee Enum Type [%s] had 0 entries",
+      //            enumTypeName));
+      Map<String, Integer> values = new HashMap<String, Integer>();
+      for (Pair<String, Integer> entry : entries) {
+         String name = entry.getFirst();
+         int ordinal = entry.getSecond();
+         if (!Strings.isValid(name)) {
+            throw new OseeArgumentException("Enum entry name cannot be null");
+         }
+         if (ordinal < 0) {
+            throw new OseeArgumentException("Enum entry ordinal cannot be of negative value");
+         }
+         if (values.containsKey(name)) {
+            throw new OseeArgumentException(String.format("Unique enum entry name violation - [%s] already exists.",
+                  name));
+         }
+         if (values.containsValue(ordinal)) {
+            throw new OseeArgumentException(String.format("Unique enum entry ordinal violation - [%s] already exists.",
+                  ordinal));
+         }
+         values.put(name, ordinal);
+      }
+   }
+
+}

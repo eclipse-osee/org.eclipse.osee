@@ -49,7 +49,7 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAttributeTypeAccess().getTaggerIdAlternatives_10_1_0(), "rule__AttributeType__TaggerIdAlternatives_10_1_0");
 					put(grammarAccess.getAttributeBaseTypeAccess().getAlternatives(), "rule__AttributeBaseType__Alternatives");
 					put(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeAlternatives_12_0(), "rule__RelationType__DefaultOrderTypeAlternatives_12_0");
-					put(grammarAccess.getRelationTypeAccess().getMultiplicityAlternatives_14_0(), "rule__RelationType__MultiplicityAlternatives_14_0");
+					put(grammarAccess.getRelationMultiplicityEnumAccess().getAlternatives(), "rule__RelationMultiplicityEnum__Alternatives");
 					put(grammarAccess.getModelAccess().getGroup(), "rule__Model__Group__0");
 					put(grammarAccess.getImportAccess().getGroup(), "rule__Import__Group__0");
 					put(grammarAccess.getQUALIFIED_NAMEAccess().getGroup(), "rule__QUALIFIED_NAME__Group__0");
@@ -72,7 +72,7 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getImportAccess().getImportURIAssignment_1(), "rule__Import__ImportURIAssignment_1");
 					put(grammarAccess.getArtifactTypeAccess().getNameAssignment_2(), "rule__ArtifactType__NameAssignment_2");
 					put(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypeAssignment_3_1(), "rule__ArtifactType__SuperArtifactTypeAssignment_3_1");
-					put(grammarAccess.getArtifactTypeAccess().getValidTypesAssignment_5(), "rule__ArtifactType__ValidTypesAssignment_5");
+					put(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAssignment_5(), "rule__ArtifactType__ValidAttributeTypesAssignment_5");
 					put(grammarAccess.getAttributeTypeRefAccess().getValidAttributeTypeAssignment_1(), "rule__AttributeTypeRef__ValidAttributeTypeAssignment_1");
 					put(grammarAccess.getAttributeTypeAccess().getNameAssignment_1(), "rule__AttributeType__NameAssignment_1");
 					put(grammarAccess.getAttributeTypeAccess().getBaseAttributeTypeAssignment_2_1(), "rule__AttributeType__BaseAttributeTypeAssignment_2_1");

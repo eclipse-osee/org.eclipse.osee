@@ -8,7 +8,10 @@
             id="org.eclipse.osee.framework.types.bridge.osee.types.import"
             name="Osee Types Import">
       </wizard>
-      <category id="org.eclipse.osee.define.import.category" name="OSEE">
+      <category
+            id="org.eclipse.osee.define.import.category1"
+            name="OSEE"
+            parentCategory="org.eclipse.osee.define.import.category">
       </category>
    </extension>
    <extension
@@ -18,7 +21,23 @@
             id="org.eclipse.osee.framework.types.bridge.osee.types.export"
             name="Osee Types Export">
       </wizard>
-           <category id="org.eclipse.osee.framework.ui.skynet.export" name="OSEE">
+           <category
+                 id="org.eclipse.osee.framework.ui.skynet.export"
+                 name="OSEE"
+                 parentCategory="org.eclipse.osee.framework.ui.skynet.export">
      </category>
+   </extension>
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.osee.framework.new"
+            name="OSEE">
+      </category>
+      <wizard
+            category="org.eclipse.osee.framework.new"
+            class="org.eclipse.osee.framework.types.bridge.wizards.NewOseeTypesFileWizard"
+            id="org.eclipse.osee.framework.types.bridge.NewOseeTypesFile"
+            name="New Osee Types">
+      </wizard>
    </extension>
 </plugin>

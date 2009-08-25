@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getSuperArtifactType <em>Super Artifact Type</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getValidTypes <em>Valid Types</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getValidAttributeTypes <em>Valid Attribute Types</em>}</li>
  * </ul>
  * </p>
  *
@@ -52,14 +52,14 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
   protected ArtifactType superArtifactType;
 
   /**
-   * The cached value of the '{@link #getValidTypes() <em>Valid Types</em>}' containment reference list.
+   * The cached value of the '{@link #getValidAttributeTypes() <em>Valid Attribute Types</em>}' containment reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getValidTypes()
+   * @see #getValidAttributeTypes()
    * @generated
    * @ordered
    */
-  protected EList<AttributeTypeRef> validTypes;
+  protected EList<AttributeTypeRef> validAttributeTypes;
 
   /**
    * <!-- begin-user-doc -->
@@ -130,13 +130,13 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<AttributeTypeRef> getValidTypes()
+  public EList<AttributeTypeRef> getValidAttributeTypes()
   {
-    if (validTypes == null)
+    if (validAttributeTypes == null)
     {
-      validTypes = new EObjectContainmentEList<AttributeTypeRef>(AttributeTypeRef.class, this, OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES);
+      validAttributeTypes = new EObjectContainmentEList<AttributeTypeRef>(AttributeTypeRef.class, this, OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES);
     }
-    return validTypes;
+    return validAttributeTypes;
   }
 
   /**
@@ -149,8 +149,8 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES:
-        return ((InternalEList<?>)getValidTypes()).basicRemove(otherEnd, msgs);
+      case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+        return ((InternalEList<?>)getValidAttributeTypes()).basicRemove(otherEnd, msgs);
     }
     return super.eInverseRemove(otherEnd, featureID, msgs);
   }
@@ -168,8 +168,8 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
       case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE:
         if (resolve) return getSuperArtifactType();
         return basicGetSuperArtifactType();
-      case OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES:
-        return getValidTypes();
+      case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+        return getValidAttributeTypes();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -188,9 +188,9 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
       case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE:
         setSuperArtifactType((ArtifactType)newValue);
         return;
-      case OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES:
-        getValidTypes().clear();
-        getValidTypes().addAll((Collection<? extends AttributeTypeRef>)newValue);
+      case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+        getValidAttributeTypes().clear();
+        getValidAttributeTypes().addAll((Collection<? extends AttributeTypeRef>)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -209,8 +209,8 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
       case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE:
         setSuperArtifactType((ArtifactType)null);
         return;
-      case OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES:
-        getValidTypes().clear();
+      case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+        getValidAttributeTypes().clear();
         return;
     }
     super.eUnset(featureID);
@@ -228,8 +228,8 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
     {
       case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE:
         return superArtifactType != null;
-      case OseeTypesPackage.ARTIFACT_TYPE__VALID_TYPES:
-        return validTypes != null && !validTypes.isEmpty();
+      case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
+        return validAttributeTypes != null && !validAttributeTypes.isEmpty();
     }
     return super.eIsSet(featureID);
   }

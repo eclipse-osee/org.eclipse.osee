@@ -17,7 +17,7 @@ OseeType:
 
 ArtifactType:
 	'abstract'? 'artifactType' name=QUALIFIED_NAME ('extends' superArtifactType=[ArtifactType])? '{'
-	    (validTypes+=AttributeTypeRef)*
+	    (validAttributeTypes+=(AttributeTypeRef))*
 	'}';
 
 AttributeTypeRef:
@@ -46,6 +46,10 @@ OseeEnumType:
 OseeEnum:
 	name=STRING (ordinal=DIGITS)?;
 
+enum RelationMultiplicityEnum :  
+ONE_TO_MANY | MANY_TO_MANY | MANY_TO_ONE
+;
+
 RelationType:
 	'relationType' name=QUALIFIED_NAME '{'
 		'sideAName' sideAName=STRING
@@ -53,5 +57,5 @@ RelationType:
 		'sideBName' sideBName=STRING
 		'sideBArtifactType' sideBArtifactType=[ArtifactType]
 		'defaultOrderType' defaultOrderType=('Lexicographical_Ascending' | 'Lexicographical_Descending' | 'Unordered' | ID )
-		'multiplicity' multiplicity=('one-to-many' | 'many-to-many' | 'many-to-one')
+		'multiplicity' multiplicity=RelationMultiplicityEnum
 	'}';
