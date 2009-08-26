@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
@@ -162,7 +163,6 @@ public class PurgeDbTransaction extends DbTransaction {
             for (Attribute<?> attr : art.internalGetAttributes()) {
                attr.markAsPurged();
             }
-            ArtifactCache.deCache(art);
          }
 
          // Kick Local and Remote Events

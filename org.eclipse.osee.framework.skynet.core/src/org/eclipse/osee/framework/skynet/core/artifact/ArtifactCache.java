@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -28,41 +30,27 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
  */
 public class ArtifactCache {
    // The keys for this are <artId, transactionId>
-   private static final CompositeKeyHashMap<Integer, Integer, Artifact> historicalArtifactIdCache =
-         new CompositeKeyHashMap<Integer, Integer, Artifact>();
-   private static final CompositeKeyHashMap<String, Integer, Artifact> historicalArtifactGuidCache =
-         new CompositeKeyHashMap<String, Integer, Artifact>();
+   private static final CompositeKeyHashMap<Integer, Integer, Object> historicalArtifactIdCache =
+         new CompositeKeyHashMap<Integer, Integer, Object>();
+   private static final CompositeKeyHashMap<String, Integer, Object> historicalArtifactGuidCache =
+         new CompositeKeyHashMap<String, Integer, Object>();
 
-   private static final CompositeKeyHashMap<Integer, Integer, Artifact> artifactIdCache =
-         new CompositeKeyHashMap<Integer, Integer, Artifact>(2000);
+   private static final CompositeKeyHashMap<Integer, Integer, Object> artifactIdCache =
+         new CompositeKeyHashMap<Integer, Integer, Object>(2000);
 
-   private static final CompositeKeyHashMap<String, Integer, Artifact> artifactGuidCache =
-         new CompositeKeyHashMap<String, Integer, Artifact>(2000);
+   private static final CompositeKeyHashMap<String, Integer, Object> artifactGuidCache =
+         new CompositeKeyHashMap<String, Integer, Object>(2000);
 
-   private static final CompositeKeyHashMap<String, Branch, Artifact> keyedArtifactCache =
-         new CompositeKeyHashMap<String, Branch, Artifact>(10);
+   private static final CompositeKeyHashMap<String, Branch, Object> keyedArtifactCache =
+         new CompositeKeyHashMap<String, Branch, Object>(10);
 
-   private static final HashCollection<String, Artifact> staticIdArtifactCache =
-         new HashCollection<String, Artifact>(true, HashSet.class, 100);
+   private static final HashCollection<String, Object> staticIdArtifactCache =
+         new HashCollection<String, Object>(true, HashSet.class, 100);
 
-   private static final HashCollection<ArtifactType, Artifact> byArtifactTypeCache =
-         new HashCollection<ArtifactType, Artifact>();
+   private static final HashCollection<ArtifactType, Object> byArtifactTypeCache =
+         new HashCollection<ArtifactType, Object>();
 
-   private static final List<ArtifactType> eternalArtifactTypes = new ArrayList<ArtifactType>();
-
-   public synchronized static void deCache(Artifact artifact) throws OseeCoreException {
-      if (eternalArtifactTypes.contains(artifact.getArtifactType())) {
-         return;
-      }
-      if (artifact.isInDb()) {
-         historicalArtifactIdCache.remove(artifact.getArtId(), artifact.getTransactionNumber());
-         historicalArtifactGuidCache.remove(artifact.getGuid(), artifact.getTransactionNumber());
-      }
-      artifactIdCache.remove(artifact.getArtId(), artifact.getBranch().getBranchId());
-      artifactGuidCache.remove(artifact.getGuid(), artifact.getBranch().getBranchId());
-      byArtifactTypeCache.removeValue(artifact.getArtifactType(), artifact);
-      deCacheStaticIds(artifact);
-   }
+   private static final Set<ArtifactType> eternalArtifactTypes = new HashSet<ArtifactType>();
 
    public static List<Artifact> getArtifactsByName(ArtifactType artifactType, String name) {
       List<Artifact> arts = new ArrayList<Artifact>();
@@ -77,13 +65,29 @@ public class ArtifactCache {
    public static Collection<Artifact> getDirtyArtifacts() throws OseeCoreException {
       Set<Artifact> dirtyArts = new HashSet<Artifact>();
       // ArtifactIdCache is the master cache - no need to check other caches
-      for (Entry<Pair<Integer, Integer>, Artifact> entry : artifactIdCache.entrySet()) {
-         if (entry.getValue().isDirty()) {
-            dirtyArts.add(entry.getValue());
-         }
+      for (Entry<Pair<Integer, Integer>, Object> entry : artifactIdCache.entrySet()) {
+    	 Artifact art = getArtifact(entry.getValue());
+    	 if(art != null){
+	         if (art.isDirty()) {
+	            dirtyArts.add(art);
+	         }
+    	 }
       }
       return dirtyArts;
    }
+   
+   private static Artifact getArtifact(Object obj){
+	   if(obj != null){
+		   if (obj instanceof Artifact){
+			   return (Artifact)obj;
+		   } else if (obj instanceof WeakReference){
+			   WeakReference<Artifact> art = (WeakReference<Artifact>)obj;
+			   return art.get();
+		   }
+	   }
+	   return null;
+   }
+   
 
    /**
     * Cache the artifact so that we can avoid creating duplicate instances of an artifact
@@ -92,17 +96,26 @@ public class ArtifactCache {
     * @throws OseeCoreException
     */
    synchronized static void cache(Artifact artifact) throws OseeCoreException {
+	  Object obj = getCacheObject(artifact);
       if (artifact.isHistorical()) {
-         historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), artifact);
-         historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), artifact);
+         historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), obj);
+         historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), obj);
       } else {
-         artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), artifact);
-         artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), artifact);
-         byArtifactTypeCache.put(artifact.getArtifactType(), artifact);
+         artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), obj);
+         artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), obj);
+         byArtifactTypeCache.put(artifact.getArtifactType(), obj);
       }
       cacheByStaticId(artifact);
    }
 
+   private static Object getCacheObject(Artifact artifact){
+	  if(eternalArtifactTypes.contains(artifact.getArtifactType())){
+		  return artifact;
+	  } else {
+		  return new WeakReference<Artifact>(artifact);
+	  }
+   }
+   
    synchronized static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
       for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
          cacheByStaticId(staticId, artifact);
@@ -110,7 +123,7 @@ public class ArtifactCache {
    }
 
    public synchronized static void cacheByStaticId(String staticId, Artifact artifact) {
-      staticIdArtifactCache.put(staticId, artifact);
+      staticIdArtifactCache.put(staticId, getCacheObject(artifact));
    }
 
    public synchronized static void cacheByStaticId(Artifact artifact) throws OseeCoreException {
@@ -119,26 +132,15 @@ public class ArtifactCache {
       }
    }
 
-   public synchronized static void deCacheStaticIds(Artifact artifact) throws OseeCoreException {
-      Set<String> staticIds = new HashSet<String>();
-      for (String staticId : staticIdArtifactCache.keySet()) {
-         if (staticIdArtifactCache.getValues(staticId).contains(artifact)) {
-            staticIds.add(staticId);
-         }
-      }
-      for (String staticId : staticIds) {
-         staticIdArtifactCache.removeValue(staticId, artifact);
-      }
-   }
-
    public synchronized static Collection<Artifact> getArtifactsByStaticId(String staticId) {
       Set<Artifact> artifacts = new HashSet<Artifact>();
-      Collection<Artifact> cachedArts = staticIdArtifactCache.getValues(staticId);
+      Collection<Object> cachedArts = staticIdArtifactCache.getValues(staticId);
       if (cachedArts == null) {
          return artifacts;
       }
-      for (Artifact artifact : cachedArts) {
-         if (!artifact.isDeleted()) {
+      for (Object obj : cachedArts) {
+    	 Artifact artifact = getArtifact(obj); 
+         if (artifact != null && !artifact.isDeleted()) {
             artifacts.add(artifact);
          }
       }
@@ -147,12 +149,13 @@ public class ArtifactCache {
 
    public synchronized static Collection<Artifact> getArtifactsByStaticId(String staticId, Branch branch) {
       Set<Artifact> artifacts = new HashSet<Artifact>();
-      Collection<Artifact> cachedArts = staticIdArtifactCache.getValues(staticId);
+      Collection<Object> cachedArts = staticIdArtifactCache.getValues(staticId);
       if (cachedArts == null) {
          return artifacts;
       }
-      for (Artifact artifact : cachedArts) {
-         if (!artifact.isDeleted() && artifact.getBranch().equals(branch)) {
+      for (Object obj : cachedArts) {
+    	 Artifact artifact = getArtifact(obj);
+         if (artifact != null && !artifact.isDeleted() && artifact.getBranch().equals(branch)) {
             artifacts.add(artifact);
          }
       }
@@ -160,18 +163,23 @@ public class ArtifactCache {
    }
 
    public synchronized static Artifact getHistorical(Integer artId, Integer transactionNumber) {
-      return historicalArtifactIdCache.get(artId, transactionNumber);
+	  return getArtifact(historicalArtifactIdCache.get(artId, transactionNumber));
    }
 
    public synchronized static Artifact getHistorical(String guid, Integer transactionNumber) {
-      return historicalArtifactGuidCache.get(guid, transactionNumber);
+	  return getArtifact(historicalArtifactGuidCache.get(guid, transactionNumber));
    }
 
    public synchronized static List<Artifact> getArtifactsByType(ArtifactType artifactType) {
       List<Artifact> items = new ArrayList<Artifact>();
-      Collection<Artifact> cachedItems = byArtifactTypeCache.getValues(artifactType);
+      Collection<Object> cachedItems = byArtifactTypeCache.getValues(artifactType);
       if (cachedItems != null) {
-         items.addAll(cachedItems);
+    	 for(Object obj:cachedItems){
+    		 Artifact artifact = getArtifact(obj);
+    		 if(artifact != null){
+    			 items.add(artifact);
+    		 }
+    	 }
       }
       return items;
    }
@@ -199,7 +207,7 @@ public class ArtifactCache {
     * @param branchId
     */
    public synchronized static Artifact getActive(Integer artId, Integer branchId) {
-      return artifactIdCache.get(artId, branchId);
+	   return getArtifact(artifactIdCache.get(artId, branchId));
    }
 
    /**
@@ -210,7 +218,7 @@ public class ArtifactCache {
     * @param branchId
     */
    public synchronized static Artifact getActive(String artGuid, Integer branchId) {
-      return artifactGuidCache.get(artGuid, branchId);
+	   return getArtifact(artifactGuidCache.get(artGuid, branchId));
    }
 
    /**
@@ -220,7 +228,7 @@ public class ArtifactCache {
     * @param branch
     */
    public synchronized static Artifact getByTextId(String key, Branch branch) {
-      return keyedArtifactCache.get(key, branch);
+      return getArtifact(keyedArtifactCache.get(key, branch));
    }
 
    /**
@@ -230,9 +238,11 @@ public class ArtifactCache {
     * @param artifact
     */
    public synchronized static Artifact cacheByTextId(String key, Artifact artifact) {
-      return keyedArtifactCache.put(key, artifact.getBranch(), artifact);
+      return getArtifact(keyedArtifactCache.put(key, artifact.getBranch(), getCacheObject(artifact)));
    }
 
+
+   
    /**
     * Register artifact types that should never be decached
     * 
@@ -241,4 +251,5 @@ public class ArtifactCache {
    public static synchronized void registerEternalArtifactType(ArtifactType artifactType) {
       eternalArtifactTypes.add(artifactType);
    }
+   
 }

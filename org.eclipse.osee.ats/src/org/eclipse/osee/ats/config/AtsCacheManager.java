@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -61,11 +62,6 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       OseeEventManager.addListener(this);
    }
 
-   public static void deCache(Artifact artifact) throws OseeCoreException {
-      ArtifactCache.deCacheStaticIds(artifact);
-      ArtifactCache.deCache(artifact);
-   }
-
    public static List<Artifact> getArtifactsByName(ArtifactType artifactType, String name) {
       AtsBulkLoadCache.run(true);
       return ArtifactCache.getArtifactsByName(artifactType, name);
@@ -99,7 +95,6 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       try {
          for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-            ArtifactCache.deCache(artifact);
             if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
                   WorkPageDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
                   WorkFlowDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
@@ -116,7 +111,6 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       for (Artifact artifact : transData.cacheDeletedArtifacts) {
-         deCache(artifact);
          if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
                WorkPageDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
                WorkFlowDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
