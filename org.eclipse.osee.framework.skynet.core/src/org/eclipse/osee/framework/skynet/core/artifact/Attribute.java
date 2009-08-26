@@ -16,6 +16,7 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -181,7 +182,7 @@ public abstract class Attribute<T> {
    }
 
    protected void markAsChanged(ModificationType modificationType) throws OseeStateException {
-      dirty = true;
+	  setDirtyFlag(true);
       this.modificationType = modificationType;
 
       if (modificationType != ModificationType.ARTIFACT_DELETED) {
@@ -197,11 +198,23 @@ public abstract class Attribute<T> {
    }
 
    public void setNotDirty() {
-      dirty = false;
+      setDirtyFlag(false);
+   }
+   
+   private void setDirtyFlag(boolean dirty) {
+	  this.dirty = dirty;
+	  try {
+		 Artifact artifact = getArtifact();
+		 ArtifactCache.updateCachedArtifact(artifact.getArtId(), artifact.getBranch().getBranchId());
+	  } catch (OseeStateException ex) {
+		 OseeLog.log(Attribute.class, Level.SEVERE, ex.toString(), ex);
+	  } catch (OseeCoreException ex) {
+		 OseeLog.log(Attribute.class, Level.SEVERE, ex.toString(), ex);
+	  }
    }
 
    public Artifact getArtifact() throws OseeStateException {
-      if (artifactRef == null) {
+      if (artifactRef.get() == null) {
          throw new OseeStateException("Artifact has been garbage collected");
       }
       return artifactRef.get();
@@ -284,7 +297,7 @@ public abstract class Attribute<T> {
 
    public void markAsPurged() {
       modificationType = ModificationType.DELETED;
-      dirty = false;
+      setDirtyFlag(false);
    }
 
    /**

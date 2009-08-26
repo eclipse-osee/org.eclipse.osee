@@ -71,10 +71,11 @@ public class ArtifactCache {
 	         if (art.isDirty()) {
 	            dirtyArts.add(art);
 	         }
-    	 }
+    	 } 
       }
       return dirtyArts;
    }
+   
    
    private static Artifact getArtifact(Object obj){
 	   if(obj != null){
@@ -111,9 +112,42 @@ public class ArtifactCache {
    private static Object getCacheObject(Artifact artifact){
 	  if(eternalArtifactTypes.contains(artifact.getArtifactType())){
 		  return artifact;
+	  } else if (artifact.isDirty()){
+		  return artifact;
 	  } else {
 		  return new WeakReference<Artifact>(artifact);
 	  }
+   }
+   
+   /**
+    * This method is called by attributes and relations when their dirty state changes.
+    * This way, when an artifact is dirty we can hold onto a strong reference and when it
+    * is not dirty we can have a weak reference.
+    * 
+    * @param artId
+    * @param branchId
+    * @throws OseeCoreException
+    */
+   public static void updateCachedArtifact(int artId, int branchId) throws OseeCoreException{
+	   Object obj = artifactIdCache.get(artId, branchId);
+	   if(obj != null){
+		   if (obj instanceof Artifact){
+			   Artifact artifact = (Artifact)obj;
+			   if(!artifact.isDirty() && !eternalArtifactTypes.contains(artifact.getArtifactType())){
+				   cache(artifact);
+			   }
+		   } else if (obj instanceof WeakReference){
+			   WeakReference<Artifact> art = (WeakReference<Artifact>)obj;
+			   Artifact artifact = art.get();
+			   if(artifact != null && artifact.isDirty()){
+				   cache(artifact);
+			   }
+		   }
+	   }
+//	   Artifact artifact = getActive(artId, branchId);
+//	   if(artifact != null){
+//		   cache(artifact);
+//	   }
    }
    
    synchronized static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {

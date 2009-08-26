@@ -11,12 +11,15 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -318,13 +321,25 @@ public class RelationLink {
    }
 
    public void setNotDirty() {
-      dirty = false;
+	   setDirtyFlag(false);
    }
 
    public void setDirty() {
-      dirty = true;
+	   setDirtyFlag(true);
    }
 
+   private void setDirtyFlag(boolean dirty) {
+	  this.dirty = dirty;
+	  try {
+		 ArtifactCache.updateCachedArtifact(aArtifactId, aBranch.getBranchId());
+		 ArtifactCache.updateCachedArtifact(bArtifactId, bBranch.getBranchId());
+	  } catch (OseeStateException ex) {
+		 OseeLog.log(RelationLink.class, Level.SEVERE, ex.toString(), ex);
+	  } catch (OseeCoreException ex) {
+		 OseeLog.log(RelationLink.class, Level.SEVERE, ex.toString(), ex);
+	  }
+   }
+   
    public boolean isVersionControlled() {
       return true;
    }
