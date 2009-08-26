@@ -93,6 +93,7 @@ public class DatabaseInitializationOperation {
             try {
                processTask();
             } catch (Exception ex) {
+               OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
                throw new OseeWrappedException(ex);
             } finally {
                System.out.println(String.format("Database Configurationg completed in [%s] ms",
