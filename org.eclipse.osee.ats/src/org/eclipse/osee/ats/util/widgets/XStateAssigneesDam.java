@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -42,7 +43,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
    }
 
    public StateMachineArtifact getSma() throws OseeStateException {
-      if (smaRef == null) {
+      if (smaRef.get() == null) {
          throw new OseeStateException("Artifact has been garbage collected");
       }
       return smaRef.get();

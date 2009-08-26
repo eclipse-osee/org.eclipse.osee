@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
@@ -89,7 +90,7 @@ public class ATSLog {
    }
 
    public Artifact getArtifact() throws OseeStateException {
-      if (artifactRef == null) {
+      if (artifactRef.get() == null) {
          throw new OseeStateException("Artifact has been garbage collected");
       }
       return artifactRef.get();

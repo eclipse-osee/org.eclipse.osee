@@ -14,6 +14,7 @@ import java.lang.ref.WeakReference;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -40,7 +41,7 @@ public class XDecisionOptions {
    }
 
    public StateMachineArtifact getSma() throws OseeStateException {
-      if (smaRef == null) {
+      if (smaRef.get() == null) {
          throw new OseeStateException("Artifact has been garbage collected");
       }
       return smaRef.get();

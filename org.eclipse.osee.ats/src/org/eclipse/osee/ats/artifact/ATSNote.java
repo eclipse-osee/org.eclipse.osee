@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -44,7 +45,7 @@ public class ATSNote {
    }
 
    public Artifact getArtifact() throws OseeStateException {
-      if (artifactRef == null) {
+      if (artifactRef.get() == null) {
          throw new OseeStateException("Artifact has been garbage collected");
       }
       return artifactRef.get();
