@@ -19,7 +19,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.InvalidRegistryObjectException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.BaseCredentialProvider;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.core.data.OseeCredential;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -92,8 +92,8 @@ public class DatabaseInitializationOperation {
 
             try {
                processTask();
-            } catch (Throwable ex) {
-               OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, ex);
+            } catch (Exception ex) {
+               throw new OseeWrappedException(ex);
             } finally {
                System.out.println(String.format("Database Configurationg completed in [%s] ms",
                      Lib.getElapseString(startTime)));
@@ -106,7 +106,7 @@ public class DatabaseInitializationOperation {
       }
    }
 
-   private void processTask() throws InvalidRegistryObjectException {
+   private void processTask() throws Exception {
       OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Begin Database Initialization...");
 
       for (String pointId : getDbInitTasks()) {
@@ -116,11 +116,7 @@ public class DatabaseInitializationOperation {
          } else {
             String extsionPointId = extension.getExtensionPointUniqueIdentifier();
             if (dbInitExtensionPointId.equals(extsionPointId)) {
-               try {
-                  runDbInitTasks(extension);
-               } catch (Throwable th) {
-                  OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, th);
-               }
+               runDbInitTasks(extension);
             } else {
                OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE,
                      "Unknown extension id [" + extsionPointId + "] from extension [" + pointId + "]");
