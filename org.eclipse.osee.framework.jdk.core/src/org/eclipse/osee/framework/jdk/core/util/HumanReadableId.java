@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 /**
  * @author Ryan D. Brooks
  */
-public class HumanReadableId {
+public final class HumanReadableId {
    /**
     * 5 character human readable identifier where the first and last characters are in the range [A-Z0-9] except 'I' and
     * 'O' and the middle three characters have the same range as above with the additional restrictions of 'A', 'E', 'U'
