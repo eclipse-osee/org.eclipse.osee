@@ -24,6 +24,8 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn branchName =
          new XViewerColumn("framework.branch.branchName", "Branch Name", 250, SWT.LEFT, true, SortDataType.String,
                false, null);
+   public static XViewerColumn branchType =
+         new XViewerColumn("framework.branch.type", "Type", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn timeStamp =
          new XViewerColumn("framework.branch.itemType", "Time Stamp", 150, SWT.LEFT, true, SortDataType.String, false,
                null);
@@ -36,8 +38,6 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
                SortDataType.String, false, null);
    public static XViewerColumn branchState =
          new XViewerColumn("framework.branch.state", "State", 100, SWT.LEFT, false, SortDataType.String, false, null);
-   public static XViewerColumn branchType =
-         new XViewerColumn("framework.branch.type", "Type", 100, SWT.LEFT, false, SortDataType.String, false, null);
    public static XViewerColumn branchGuid =
          new XViewerColumn("framework.branch.guid", "Branch GUID", 200, SWT.LEFT, false, SortDataType.String, false,
                null);
@@ -54,7 +54,7 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
 
    public BranchXViewerFactory() {
       super(NAMESPACE);
-      registerColumns(branchName, timeStamp, author, comment, associatedArtifact, branchState, branchType,
+      registerColumns(branchName, branchType, timeStamp, author, comment, associatedArtifact, branchState,
             parentBranch, branchId, branchGuid, archivedState);
    }
 
