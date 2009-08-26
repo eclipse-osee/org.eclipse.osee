@@ -26,7 +26,7 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
    }
 
    @Override
-   protected void extractFromSource(URI source, RoughArtifactCollector collector) throws Exception {
+   protected void extractFromSource(URI source, RoughArtifactCollector collector) {
       String extension = Lib.getExtension(source.toASCIIString());
       String name = Lib.removeExtension(new File(source).getName());
 

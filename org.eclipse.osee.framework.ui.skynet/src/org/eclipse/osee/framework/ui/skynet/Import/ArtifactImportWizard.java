@@ -132,6 +132,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
          subOps.add(new ArtifactValidationCheckOperation(children, false));
          subOps.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
          Operations.executeAsJob(new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps), true);
+         // Operations.executeWork(new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps), true);
       }
       return true;
    }

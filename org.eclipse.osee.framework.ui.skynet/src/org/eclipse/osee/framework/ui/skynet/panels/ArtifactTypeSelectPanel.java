@@ -30,8 +30,8 @@ import org.eclipse.swt.widgets.Shell;
 public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<ArtifactType> {
 
    private Collection<ArtifactType> artifactTypes;
-   private final String title = "Import as Artifact Type";
-   private final String message = "Select what artifact type data should be imported as.";
+   private static final String title = "Import as Artifact Type";
+   private static final String message = "Select what artifact type data should be imported as.";
 
    public ArtifactTypeSelectPanel() {
       super(new ArtifactTypeLabelProvider(), new ArrayContentProvider());
@@ -39,6 +39,10 @@ public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<ArtifactTyp
 
    public void setAllowedArtifactTypes(Collection<ArtifactType> artifactTypes) {
       this.artifactTypes = artifactTypes;
+      if (!artifactTypes.contains(getSelected())) {
+         this.setSelected(null);
+         this.updateCurrentItemWidget();
+      }
    }
 
    @Override

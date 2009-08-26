@@ -98,7 +98,7 @@ public abstract class AbstractItemSelectPanel<T> {
       updateCurrentItemWidget();
    }
 
-   private void updateCurrentItemWidget() {
+   protected void updateCurrentItemWidget() {
       if (currentItemWidget != null && Widgets.isAccessible(currentItemWidget.getControl())) {
          T object = getSelected();
          if (object == null) {
@@ -112,6 +112,9 @@ public abstract class AbstractItemSelectPanel<T> {
                input = new Object[] {object};
             }
             currentItemWidget.setInput(input);
+            currentItemWidget.getTable().layout();
+         } else {
+            currentItemWidget.setInput(new Object[] {});
             currentItemWidget.getTable().layout();
          }
       }

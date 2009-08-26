@@ -134,11 +134,12 @@ public class ArtifactExtractorTest {
    @org.junit.Test
    public void testFileFilter() throws IOException {
       FileFilter filter = extractor.getFileFilter();
+      boolean success = true;
       for (TestData testData : getFileTestData()) {
          File file = new File(testData.getFile());
          try {
             if (testData.getFile().endsWith(File.separator)) {
-               file.mkdirs();
+               success &= file.mkdirs();
             } else {
                Lib.writeStringToFile("test", file);
             }
@@ -146,8 +147,12 @@ public class ArtifactExtractorTest {
             Assert.assertEquals(String.format("%s [%s]", testData.getMessage(), testData.getFile()),
                   testData.getExpected(), actual);
          } finally {
-            file.delete();
+            success &= file.delete();
          }
+      }
+
+      if (!success) {
+         throw new IOException();
       }
    }
 
@@ -199,7 +204,7 @@ public class ArtifactExtractorTest {
       return data;
    }
 
-   private final class ParseTestData {
+   private static final class ParseTestData {
       private final String message;
       private final String sourceData;
       private final String expectedData;
@@ -229,7 +234,7 @@ public class ArtifactExtractorTest {
       }
    }
 
-   private final class TestData {
+   private static final class TestData {
       private final String message;
       private final String file;
       private final boolean expected;

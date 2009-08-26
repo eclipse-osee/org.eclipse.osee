@@ -51,10 +51,6 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
 
    /**
     * used recursively when originally passed a directory, thus an array of files is accepted
-    * 
-    * @param files
-    * @param parentArtifact
-    * @throws Exception
     */
    private void extractArtifacts(IProgressMonitor monitor, double workPercentage, File[] files, RoughArtifactCollector collector, RoughArtifact parentArtifact) throws OseeCoreException {
       int workAmount = calculateWork(workPercentage);

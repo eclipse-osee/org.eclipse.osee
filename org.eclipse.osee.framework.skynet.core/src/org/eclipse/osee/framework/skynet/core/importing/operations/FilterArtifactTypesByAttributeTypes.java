@@ -40,11 +40,6 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
       this.collector = collector;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see
-    * org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
-    */
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Set<String> names = new HashSet<String>();

@@ -12,7 +12,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.operation.IRunnableWithProgress;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -123,6 +122,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    public void handleEvent(Event arg0) {
       updateWidgetEnablements();
       updateExtractedElements();
+      updatePageCompletion();
    }
 
    @Override
@@ -172,13 +172,13 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
 
    private void createParserSelectionArea(Composite parent) {
       Group composite = new Group(parent, SWT.NONE);
-      composite.setText("Select an source artifact extractor");
+      composite.setText("Select a source artifact extractor");
       composite.setToolTipText("Select the method to be used for importing the selected file or directory");
       composite.setLayout(new GridLayout(1, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      parserSelectPanel.createControl(composite);
       parserSelectPanel.addListener(this);
+      parserSelectPanel.createControl(composite);
    }
 
    private void createArtifactTypeSelectArea(Composite parent) {
@@ -220,6 +220,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
             widgetEnabledHelper(composite, wasSelected);
          }
       });
+      widgetEnabledHelper(composite, false);
    }
 
    private void widgetEnabledHelper(Control control, boolean isEnabled) {
@@ -268,10 +269,18 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    }
 
    @Override
-   public boolean isPageComplete() {
-      return getSourceFile() != null && //
-      getArtifactParser() != null && //
-      getDestinationArtifact() != null && //
+   protected boolean validateSourceGroup() {
+      return getSourceFile() != null;
+   }
+
+   @Override
+   protected boolean validateDestinationGroup() {
+      return getDestinationArtifact() != null;
+   }
+
+   @Override
+   protected boolean validateOptionsGroup() {
+      return getArtifactParser() != null && //
       selectionLatch.areSelectionsValid() && !selectionLatch.hasChanged() && //
       getArtifactType() != null;
    }
@@ -312,6 +321,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
             }
          }
          updateExistingArtifacts.setSelection(settings.getBoolean("is.update.existing.selected"));
+
       }
    }
 
@@ -345,8 +355,6 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    private synchronized void updateExtractedElements() {
       selectionLatch.setCurrentValues(getDestinationArtifact(), getSourceFile(), getArtifactParser());
       if (selectionLatch.areSelectionsValid()) {
-         //         && selectionLatch.hasChanged()) {
-         //      }
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Artifact need to be extracted from from source");
          selectionLatch.latch();
 
@@ -385,15 +393,16 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       }
 
       IStatus status = operation.getStatus();
-      if (!status.isOK()) {
-         ErrorDialog.openError(getContainer().getShell(), operation.getName(), null, // no special message
-               status);
-         return false;
+      if (status.isOK()) {
+         setErrorMessage(null);
+      } else {
+         setErrorMessage(status.getChildren()[0].getMessage());
       }
+
       return true;
    }
 
-   private final class SelectionLatch {
+   private static final class SelectionLatch {
       protected final SelectionData lastSelected;
       protected final SelectionData currentSelected;
 
@@ -423,7 +432,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       }
    }
 
-   private final class SelectionData {
+   private static final class SelectionData {
       protected Artifact destinationArtifact;
       protected File sourceFile;
       protected IArtifactExtractor extractor;
