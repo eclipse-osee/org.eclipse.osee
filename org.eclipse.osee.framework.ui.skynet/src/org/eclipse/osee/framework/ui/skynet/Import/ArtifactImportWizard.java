@@ -17,14 +17,12 @@ import java.util.List;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -32,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.importing.operations.CompleteArtifactImportOperation;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughToRealArtifactOperation;
 import org.eclipse.osee.framework.skynet.core.importing.resolvers.IArtifactImportResolver;
@@ -114,12 +113,24 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
             getResolver(opName, mainPage.getArtifactType(), mainPage.isUpdateExistingSelected(),
                   mainPage.getNoneChangingAttributes());
 
+      List<Artifact> children = new ArrayList<Artifact>();
+      try {
+         children = destinationArtifact.getDescendants();
+      } catch (OseeCoreException ex) {
+         String msg =
+               String.format("Unable to get artifact children: artifact:[%s] branch:[%s]",
+                     destinationArtifact.getGuid(), destinationArtifact.getBranch().getGuid());
+         ErrorDialog.openError(getContainer().getShell(), opName, null, new Status(IStatus.ERROR,
+               SkynetGuiPlugin.PLUGIN_ID, msg, ex));
+      }
+
       if (transaction != null && resolver != null) {
          RoughArtifactCollector roughItems = mainPage.getCollectedArtifacts();
 
          List<IOperation> subOps = new ArrayList<IOperation>();
          subOps.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, roughItems, resolver));
-         subOps.add(new CompleteImportOperation(transaction, destinationArtifact));
+         subOps.add(new ArtifactValidationCheckOperation(children, false));
+         subOps.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
          Operations.executeAsJob(new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps), true);
       }
       return true;
@@ -146,27 +157,5 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
                SkynetGuiPlugin.PLUGIN_ID, msg, ex));
       }
       return resolver;
-   }
-   private final static class CompleteImportOperation extends AbstractOperation {
-      private final Artifact destinationArtifact;
-      private final SkynetTransaction transaction;
-
-      public CompleteImportOperation(SkynetTransaction transaction, Artifact destinationArtifact) {
-         super("Commit & Verify import", SkynetGuiPlugin.PLUGIN_ID);
-         this.destinationArtifact = destinationArtifact;
-         this.transaction = transaction;
-      }
-
-      @Override
-      protected void doWork(IProgressMonitor monitor) throws Exception {
-         monitor.setTaskName("Validate artifacts");
-         IOperation subOperation = new ArtifactValidationCheckOperation(destinationArtifact.getDescendants(), false);
-         doSubWork(subOperation, monitor, 0.50);
-
-         monitor.setTaskName("Commit transaction");
-         destinationArtifact.persistAttributesAndRelations(transaction);
-         transaction.execute();
-         monitor.worked(calculateWork(0.50));
-      }
    }
 }

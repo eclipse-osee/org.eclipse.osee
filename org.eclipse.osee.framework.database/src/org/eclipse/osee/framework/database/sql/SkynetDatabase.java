@@ -40,7 +40,7 @@ public class SkynetDatabase {
    public static final Table BRANCH_TABLE_ACL = new Table("OSEE_BRANCH_ACL");
 
    public static final Table BRANCH_DELETE_HELPER = new Table("OSEE_BRANCH_DELETE_HELPER");
-   public static final Table VALID_ATTRIBUTES_TABLE = new Table("OSEE_VALID_ATTRIBUTES");
+
    public static final Table PERMISSION_TABLE = new Table("OSEE_PERMISSION");
    public static final Table SEQUENCE_TABLE = new Table("OSEE_SEQUENCE");
    public static final Table OSEE_INFO_TABLE = new Table("OSEE_INFO");
