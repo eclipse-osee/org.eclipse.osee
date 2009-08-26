@@ -38,7 +38,7 @@ public class DbOseeDataTypeProcessor implements IOseeDataTypeProcessor {
 
    @Override
    public void onArtifactType(String namespace, String artifactTypeName, String superArtifactTypeName) throws OseeCoreException {
-      ArtifactTypeManager.createType(namespace, artifactTypeName, artifactTypeName);
+      ArtifactTypeManager.createType(namespace, artifactTypeName, superArtifactTypeName);
    }
 
    @Override

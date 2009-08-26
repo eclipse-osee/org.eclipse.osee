@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -286,9 +285,6 @@ public class ExcelOseeTypeDataParser {
             CompositeKeyHashMap<String, String, Pair<Integer, Integer>> keyMap =
                   new CompositeKeyHashMap<String, String, Pair<Integer, Integer>>();
             for (ValidityRow row : validityArray) {
-               dataTypeProcessor.onRelationValidity(row.artifactSuperTypeName, row.relationTypeName, row.sideAmax,
-                     row.sideBmax);
-
                concreteTypes.clear();
                for (String artifactTypeName : determineConcreteTypes(row.artifactSuperTypeName, concreteTypes)) {
                   String relationType = row.relationTypeName;
