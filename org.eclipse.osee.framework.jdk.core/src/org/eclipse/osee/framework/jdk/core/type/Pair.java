@@ -29,51 +29,18 @@ public class Pair<T, K> implements Serializable {
       return first;
    }
 
-   /**
-    * Use getFirst() 
-    */
-   @Deprecated
-   public T getKey() {
-	  return first;
-   }
-   
    public K getSecond() {
       return second;
-   }
-
-   /**
-    * Use getSecond() 
-    */
-   @Deprecated
-   public K getValue() {
-	  return second;
    }
    
    public void setFirst(T key) {
       this.first = key;
    }
 
-   /**
-    * Use setFirst(T key) 
-    */
-   @Deprecated
-   public void setKey(T key) {
-      this.first = key;
-   }
-
-   
    public void setSecond(K value) {
       this.second = value;
    }
 
-   /**
-    * Use setSecond(T key) 
-    */
-   @Deprecated
-   public void setValue(K value) {
-	  this.second = value;
-   }
-   
    public void setBoth(T first, K second) {
       this.first = first;
       this.second = second;
@@ -119,5 +86,37 @@ public class Pair<T, K> implements Serializable {
          result = prime * result;
       }
       return result;
+   }
+
+   /**
+    * @use getFirst()
+    */
+   @Deprecated
+   public T getKey() {
+      return first;
+   }
+
+   /**
+    * @use getSecond()
+    */
+   @Deprecated
+   public K getValue() {
+      return second;
+   }
+
+   /**
+    * @use setFirst(T key)
+    */
+   @Deprecated
+   public void setKey(T key) {
+      this.first = key;
+   }
+
+   /**
+    * @use setSecond(T key)
+    */
+   @Deprecated
+   public void setValue(K value) {
+      this.second = value;
    }
 }
