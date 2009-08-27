@@ -123,29 +123,25 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
          }
 
          Branch branch = getSelection();
-         try {
-            if (branch != null && branch.hasParentBranch()) {
-               String lastBranchSelected = Integer.toString(branch.getBranchId());
+         if (branch != null && branch.hasParentBranch()) {
+            String lastBranchSelected = Integer.toString(branch.getBranchId());
 
-               List<String> history = new ArrayList<String>(Arrays.asList(branchIds));
-               history.remove(lastBranchSelected);
-               history.add(0, lastBranchSelected);
-               if (history.size() > COMBO_HISTORY_LENGTH) {
-                  history.remove(COMBO_HISTORY_LENGTH);
-               }
-               branchIds = new String[history.size()];
-               history.toArray(branchIds);
-
-               settings.put(TestRunStorageKey.BRANCH_IDS, branchIds);
-               settings.put(TestRunStorageKey.SELECTED_BRANCH_ID, lastBranchSelected);
-               try {
-                  settings.save(this.getClass().getName());
-               } catch (IOException ex) {
-                  OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
-               }
+            List<String> history = new ArrayList<String>(Arrays.asList(branchIds));
+            history.remove(lastBranchSelected);
+            history.add(0, lastBranchSelected);
+            if (history.size() > COMBO_HISTORY_LENGTH) {
+               history.remove(COMBO_HISTORY_LENGTH);
             }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+            branchIds = new String[history.size()];
+            history.toArray(branchIds);
+
+            settings.put(TestRunStorageKey.BRANCH_IDS, branchIds);
+            settings.put(TestRunStorageKey.SELECTED_BRANCH_ID, lastBranchSelected);
+            try {
+               settings.save(this.getClass().getName());
+            } catch (IOException ex) {
+               OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+            }
          }
       }
    }

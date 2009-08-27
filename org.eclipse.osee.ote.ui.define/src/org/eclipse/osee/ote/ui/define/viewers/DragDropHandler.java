@@ -111,7 +111,7 @@ public class DragDropHandler {
 
    }
 
-   private void performDrop(DropTargetEvent e) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   private void performDrop(DropTargetEvent e) throws OseeCoreException {
       Object object = e.data;
       if (object instanceof ArtifactData) {
          handleArtifactDrops((ArtifactData) object);
@@ -165,7 +165,7 @@ public class DragDropHandler {
 
    }
 
-   private void handleArtifactDrops(ArtifactData artifactData) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   private void handleArtifactDrops(ArtifactData artifactData) throws OseeCoreException {
       Artifact[] artifactsDropped = artifactData.getArtifacts();
       Set<Artifact> artifactsToAdd = new HashSet<Artifact>();
       for (Artifact artifact : artifactsDropped) {

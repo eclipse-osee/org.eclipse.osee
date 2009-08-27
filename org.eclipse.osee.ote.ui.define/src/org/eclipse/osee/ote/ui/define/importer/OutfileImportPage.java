@@ -32,7 +32,6 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -269,18 +268,14 @@ public class OutfileImportPage extends WizardDataTransferPage {
    protected boolean validateDestinationGroup() {
       boolean toReturn = super.validateDestinationGroup();
       Branch branch = branchSelect.getData();
-      try {
-         if (branch == null) {
-            setMessage(null);
-            setErrorMessage("Please select a working branch. Cannot import into a null branch.");
-            toReturn &= false;
-         } else if (!branch.hasParentBranch()) {
-            setMessage(null);
-            setErrorMessage("Please select a working branch. Cannot import into a top-level branch.");
-            toReturn &= false;
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+      if (branch == null) {
+         setMessage(null);
+         setErrorMessage("Please select a working branch. Cannot import into a null branch.");
+         toReturn &= false;
+      } else if (!branch.hasParentBranch()) {
+         setMessage(null);
+         setErrorMessage("Please select a working branch. Cannot import into a top-level branch.");
+         toReturn &= false;
       }
       return toReturn;
    }
@@ -306,21 +301,17 @@ public class OutfileImportPage extends WizardDataTransferPage {
          }
 
          Branch branch = branchSelect.getData();
-         try {
-            if (branch != null && branch.hasParentBranch() != false) {
-               String lastBranchSelected = Integer.toString(branch.getBranchId());
-               branchIds = addToHistory(branchIds, lastBranchSelected);
+         if (branch != null && branch.hasParentBranch()) {
+            String lastBranchSelected = Integer.toString(branch.getBranchId());
+            branchIds = addToHistory(branchIds, lastBranchSelected);
 
-               settings.put(TestRunStorageKey.BRANCH_IDS, branchIds);
-               settings.put(TestRunStorageKey.SELECTED_BRANCH_ID, lastBranchSelected);
-               try {
-                  settings.save(this.getClass().getName());
-               } catch (IOException ex) {
-                  OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
-               }
+            settings.put(TestRunStorageKey.BRANCH_IDS, branchIds);
+            settings.put(TestRunStorageKey.SELECTED_BRANCH_ID, lastBranchSelected);
+            try {
+               settings.save(this.getClass().getName());
+            } catch (IOException ex) {
+               OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
             }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
          }
       }
    }
