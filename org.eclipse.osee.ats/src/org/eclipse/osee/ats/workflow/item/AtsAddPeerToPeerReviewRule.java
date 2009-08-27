@@ -35,14 +35,19 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
 
    public static String ID = "atsAddPeerToPeerReview";
    public static enum PeerToPeerParameter {
-      title, forState, reviewBlockingType, assignees, location, description
+      title, forState, forEvent, reviewBlockingType, assignees, location, description
    };
 
    public AtsAddPeerToPeerReviewRule() {
-      super(ID, ID);
+      this(ID, ID);
+   }
+
+   public AtsAddPeerToPeerReviewRule(String name, String id) {
+      super(name, id);
       setDescription("Work Page and Team Definition Option: PeerToPeer Review will be auto-created based on WorkData attribute values.");
-      setPeerToPeerParameterValue(this, PeerToPeerParameter.reviewBlockingType, "Transition");
+      setPeerToPeerParameterValue(this, PeerToPeerParameter.reviewBlockingType, "Commit");
       setPeerToPeerParameterValue(this, PeerToPeerParameter.forState, "Implement");
+      setPeerToPeerParameterValue(this, PeerToPeerParameter.forEvent, StateEventType.CreateBranch.name());
       try {
          setPeerToPeerParameterValue(this, PeerToPeerParameter.assignees, "<99999997>");
       } catch (Exception ex) {
@@ -63,7 +68,7 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
     * 
     * @param atsAddPeerToPeerReviewRule
     * @param smaMgr
-    * @param transaction 
+    * @param transaction
     * @return review
     * @throws OseeCoreException
     */
@@ -78,7 +83,8 @@ public class AtsAddPeerToPeerReviewRule extends WorkRuleDefinition {
       }
       PeerToPeerReviewArtifact peerArt =
             ReviewManager.createNewPeerToPeerReview(smaMgr.getSma(), title, getValueOrDefault(smaMgr,
-                  atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState), UserManager.getUser(), new Date(), transaction);
+                  atsAddPeerToPeerReviewRule, PeerToPeerParameter.forState), UserManager.getUser(), new Date(),
+                  transaction);
       String desc = getValueOrDefault(smaMgr, atsAddPeerToPeerReviewRule, PeerToPeerParameter.description);
       if (desc != null && !desc.equals("")) {
          peerArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
