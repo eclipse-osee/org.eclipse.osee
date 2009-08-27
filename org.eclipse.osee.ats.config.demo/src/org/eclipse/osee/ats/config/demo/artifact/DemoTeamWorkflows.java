@@ -28,9 +28,6 @@ public class DemoTeamWorkflows implements IAtsTeamWorkflow {
 
    private static List<String> workflowArtifactNames;
 
-   /**
-    * 
-    */
    public DemoTeamWorkflows() {
    }
 
