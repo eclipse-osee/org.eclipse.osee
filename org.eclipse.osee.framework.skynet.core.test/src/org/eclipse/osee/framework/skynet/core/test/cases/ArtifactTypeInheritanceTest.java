@@ -36,13 +36,12 @@ public class ArtifactTypeInheritanceTest {
       allTypes.remove(baseArtifactType);
 
       Collection<ArtifactType> descendantTypes = ArtifactTypeManager.getDescendants(baseArtifactType, true);
-      Collection<ArtifactType> types = Collections.setIntersection(allTypes, descendantTypes);
+      Collection<ArtifactType> types = Collections.setComplement(allTypes, descendantTypes);
       Assert.assertTrue(String.format("%s are not descendants of [%s]", types, baseArtifactType), types.isEmpty());
    }
 
    @org.junit.Test
    public void testAttributeTypesOfDescendants() throws OseeCoreException {
-      //      ArtifactType baseArtifactType = ArtifactTypeManager.getType("Artifact");
       for (ArtifactType baseArtifactType : ArtifactTypeManager.getAllTypes()) {
          Collection<AttributeType> attributeTypes =
                TypeValidityManager.getAttributeTypesFromArtifactType(baseArtifactType,
@@ -53,7 +52,7 @@ public class ArtifactTypeInheritanceTest {
                   TypeValidityManager.getAttributeTypesFromArtifactType(artifactType,
                         BranchManager.getSystemRootBranch());
             Collection<AttributeType> complement = Collections.setComplement(attributeTypes, childAttributeTypes);
-            Assert.assertTrue(String.format("[%s] did not inherit %s ", complement), complement.isEmpty());
+            Assert.assertTrue(String.format("[%s] did not inherit %s ", artifactType.getName(), complement), complement.isEmpty());
          }
       }
    }
