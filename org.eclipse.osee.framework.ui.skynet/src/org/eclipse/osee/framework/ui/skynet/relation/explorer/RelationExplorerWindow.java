@@ -114,11 +114,11 @@ public class RelationExplorerWindow {
       needWindow = true;
    }
 
-   public void createArtifactInformationBox() throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public void createArtifactInformationBox() throws OseeCoreException {
       drawWindow();
    }
 
-   private void drawWindow() throws OseeTypeDoesNotExist, OseeDataStoreException {
+   private void drawWindow() throws OseeCoreException {
       shell = new Shell(SWT.ON_TOP | SWT.APPLICATION_MODAL | SWT.TITLE | SWT.MIN | SWT.MAX | SWT.RESIZE);
 
       // Setup Title
