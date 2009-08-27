@@ -20,11 +20,12 @@ OseeType:
 
 ArtifactType:
 	'abstract'? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactType=[ArtifactType|NAME_REFERENCE])? '{'
+		('branchGuid' branchGuid=STRING)?
 	    (validAttributeTypes+=(AttributeTypeRef))*
 	'}';
 
 AttributeTypeRef:
-	'attribute' validAttributeType=[AttributeType|NAME_REFERENCE];
+	'attribute' validAttributeType=[AttributeType|NAME_REFERENCE] ('branchGuid' branchGuid=STRING)?;
 	
 AttributeType:
 		'attributeType' name=NAME_REFERENCE ('extends' baseAttributeType=AttributeBaseType) '{'
