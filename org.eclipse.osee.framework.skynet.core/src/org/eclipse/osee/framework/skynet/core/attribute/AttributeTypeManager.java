@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -303,5 +304,10 @@ public class AttributeTypeManager {
 
       ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, attributeTypeId);
       ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_TYPE, attributeTypeId);
+   }
+
+   public static Collection<AttributeType> getValidAttributeTypes(Branch branch) throws OseeCoreException {
+      // TODO Filter by Branch
+      return getAllTypes();
    }
 }
