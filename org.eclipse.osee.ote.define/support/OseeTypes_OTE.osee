@@ -1,12 +1,19 @@
+import "platform:/resource/org.eclipse.osee.framework.skynet.core/support/OseeTypes_framework.osee"
 
-artifactType "Test Unit" {
+abstract artifactType "Test Unit" extends "Artifact" {
 }
 
-artifactType "Test Run Disposition" {
+artifactType "Test Case" extends "Test Unit" {
+}
+
+artifactType "Test Support" extends "Test Unit" {
+}
+
+artifactType "Test Run Disposition" extends "Artifact" {
    attribute "Disposition"
 }
 
-artifactType "Test Run" {
+artifactType "Test Run" extends "Artifact" {
    attribute "Test Script GUID"
    attribute "Test Script URL"
    attribute "Outfile URL"
@@ -36,9 +43,6 @@ artifactType "Test Run" {
    attribute "Build Id"
    attribute "Checksum"
    attribute "Extension"
-}
-
-artifactType "Test Support" {
 }
 
 attributeType "Outfile URL" extends StringAttribute {
@@ -238,7 +242,7 @@ attributeType "Disposition" extends StringAttribute {
    max 1 description "Disposition"
 }
 
-relationType "Test Script to Run Relation" {
+relationType "Test Case to Run Relation" {
    sideAName "Test Case"
    sideAArtifactType "Test Case"
    sideBName "Test Run"

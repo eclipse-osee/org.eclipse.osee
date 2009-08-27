@@ -1,0 +1,385 @@
+import "platform:/resource/org.eclipse.osee.ats/support/OseeTypes_ATS.osee"
+
+artifactType "Demo Code Team Workflow" extends "Team Workflow" {
+   attribute "demo.code.Change Type"
+   attribute "demo.code.Action"
+   attribute "demo.code.Category"
+   attribute "demo.code.Close Detection"
+   attribute "demo.code.Code Change Req"
+   attribute "demo.code.CSCI"
+   attribute "demo.code.Defect Code"
+   attribute "demo.code.Detection"
+   attribute "demo.code.Include Build"
+   attribute "demo.code.LOC Affected"
+   attribute "demo.code.Originating Build"
+   attribute "demo.code.Req Doc"
+   attribute "demo.code.Subsystem"
+   attribute "demo.code.Test Build"
+   attribute "demo.code.Test Mode"
+   attribute "demo.code.Test Notes"
+   attribute "demo.code.Test Script"
+   attribute "demo.code.Volume"
+   attribute "demo.code.Verify Date"
+   attribute "demo.code.Verifyer"
+   attribute "demo.code.Verify Note"
+   attribute "demo.code.Verify Detection"
+   attribute "demo.code.Hold Start"
+   attribute "demo.code.Hold End"
+   attribute "demo.code.Verify Mode"
+   attribute "demo.code.Verified Build"
+   attribute "demo.code.Peer Review Reqd"
+   attribute "demo.code.Peer Review Id"
+   attribute "demo.code.Ref PCR"
+   attribute "demo.code.References"
+   attribute "demo.code.Requirement Id"
+   attribute "demo.code.Dup CPCR No"
+   attribute "demo.code.Dup CSCI"
+   attribute "demo.code.Dup CPCR Type"
+   attribute "demo.code.Dup of CPCR no seq"
+   attribute "demo.code.Librarian"
+   attribute "demo.code.Promote Date"
+   attribute "demo.code.Authorization Notes"
+   attribute "demo.code.Rework Letter"
+   attribute "demo.code.Problem No"
+   attribute "demo.code.DP Effectivity"
+   attribute "demo.code.SP Effectivity"
+   attribute "demo.code.WP Effectivity"
+}
+
+artifactType "Demo Req Team Workflow" extends "Team Workflow" {
+}
+
+artifactType "Demo Test Team Workflow" extends "Team Workflow" {
+}
+
+oseeEnumType "demo.code.Category.enum" {
+   entry "Code Problem"
+   entry "Design/Implementation"
+   entry "Comment Change Only"
+   entry "Non-Mission"
+   entry "Workaround"
+}
+
+attributeType "demo.code.Category" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "demo.code.Category.enum"
+}
+
+attributeType "demo.code.Close Detection" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Code Change Req" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.CSCI" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+oseeEnumType "demo.code.Defect Code.enum" {
+   entry "CL01 - Requirements Implemented Incorrectly"
+   entry "CL02 - Initialization Error"
+   entry "CL03 - Out of Range Error"
+   entry "CL04 - Data Conversion Error"
+   entry "CL05 - Buffer Sizing Error"
+   entry "CL06 - Timing Problem"
+   entry "CL07 - Interface Error"
+   entry "CL08 - Logic Control Error"
+   entry "CL09 - TYPO"
+   entry "CL10 - Multiple Code Logic Problems"
+   entry "CL99 - Other Code Logic Problem"
+   entry "NC01 - Requirement Error"
+   entry "NC02 - Test Script Error"
+   entry "NC03 - CTE Error"
+   entry "NC04 - Hardware Error"
+   entry "NC99 - Other NON-CODE Problem"
+   entry "SV01 - Coding Standard Violation"
+   entry "TE01 - Compiler/Linker/Assembler Problem"
+   entry "TE02 - APEX Problem"
+   entry "TE99 - Other Tool Error"
+}
+
+attributeType "demo.code.Defect Code" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "demo.code.Defect Code.enum"
+}
+
+oseeEnumType "demo.code.Detection.enum" {
+   entry "Test Script(s)"
+   entry "Inspection (Test)"
+   entry "Hot Bench"
+   entry "Aircraft"
+   entry "Peer Review"
+   entry "TRAX Issue"
+   entry "Other"
+}
+
+attributeType "demo.code.Detection" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "demo.code.Detection.enum"
+}
+
+attributeType "demo.code.Include Build" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.LOC Affected" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Originating Build" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+oseeEnumType "demo.code.Req Doc.enum" {
+   entry "Unknown"
+   entry "SubDD"
+   entry "CSID"
+   entry "SRS"
+   entry "Other"
+}
+
+attributeType "demo.code.Req Doc" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "demo.code.Req Doc.enum"
+}
+
+attributeType "demo.code.Subsystem" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Test Build" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Test Mode" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Test Notes" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Test Script" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Change Type" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Action" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Volume" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Verify Date" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Verifyer" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Verify Note" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Verify Detection" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Hold Start" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Hold End" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Verify Mode" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Verified Build" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Peer Review Reqd" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Peer Review Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Ref PCR" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.References" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Requirement Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Dup CPCR No" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Dup CSCI" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Dup CPCR Type" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Dup of CPCR no seq" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Librarian" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Promote Date" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Authorization Notes" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Rework Letter" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Problem No" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.DP Effectivity" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.SP Effectivity" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.WP Effectivity" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}

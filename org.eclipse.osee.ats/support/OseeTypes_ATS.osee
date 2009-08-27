@@ -1,3 +1,5 @@
+import "platform:/resource/org.eclipse.osee.framework.skynet.core/support/OseeTypes_framework.osee"
+
 artifactType "PeerToPeer Review" extends "Artifact" {
    attribute "ats.Description"
    attribute "ats.Need By"
