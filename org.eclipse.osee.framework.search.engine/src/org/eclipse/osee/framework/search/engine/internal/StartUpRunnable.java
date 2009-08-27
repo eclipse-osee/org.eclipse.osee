@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
  * @author Roberto E. Escobar
  */
 final class StartUpRunnable extends TimerTask {
-   private ISearchEngineTagger tagger;
+   private final ISearchEngineTagger tagger;
 
    StartUpRunnable(ISearchEngineTagger tagger) {
       this.tagger = tagger;
