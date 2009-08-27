@@ -32,6 +32,9 @@ public class RoughArtifactCollector {
    }
 
    public void reset() {
+      if (parentRoughArtifact != null) {
+         parentRoughArtifact.clear();
+      }
       roughArtifacts.clear();
       roughRelations.clear();
    }

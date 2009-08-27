@@ -39,7 +39,8 @@ public class ArtifactTypeSelectPanel extends AbstractItemSelectPanel<ArtifactTyp
 
    public void setAllowedArtifactTypes(Collection<ArtifactType> artifactTypes) {
       this.artifactTypes = artifactTypes;
-      if (!artifactTypes.contains(getSelected())) {
+      ArtifactType currentSelection = getSelected();
+      if (!artifactTypes.contains(currentSelection)) {
          this.setSelected(null);
          this.updateCurrentItemWidget();
       }

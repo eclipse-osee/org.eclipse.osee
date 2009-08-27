@@ -20,12 +20,11 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 
 /**
  * @author Roberto E. Escobar
@@ -34,6 +33,7 @@ public class ArtifactExtractorSelectPanel {
 
    private Combo extractorCombo;
    private Combo delegateCombo;
+   private Text parserInformation;
    private final ArtifactExtractorContributionManager importContributionManager;
    private final Set<Listener> listeners;
    private IArtifactExtractor selectedParser;
@@ -77,17 +77,10 @@ public class ArtifactExtractorSelectPanel {
       extractorCombo = new Combo(composite, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
       extractorCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
-      Group delegateGroup = new Group(parent.getParent(), SWT.NONE);
-      delegateGroup.setText("Select an additional extractor option");
-      delegateGroup.setToolTipText("Select an additional extractor option");
-      delegateGroup.setLayout(new GridLayout(1, false));
-      delegateGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-      delegateCombo = new Combo(delegateGroup, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
+      delegateCombo = new Combo(composite, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
       delegateCombo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       extractorCombo.addSelectionListener(new SelectionAdapter() {
-
          @Override
          public void widgetSelected(SelectionEvent e) {
             handleExtractorSelection();
@@ -100,6 +93,13 @@ public class ArtifactExtractorSelectPanel {
             handleDelegateSelection();
          }
       });
+
+      parserInformation = new Text(parent, SWT.MULTI | SWT.H_SCROLL | SWT.WRAP);
+      GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+      gd.heightHint = 30;
+      gd.widthHint = 50;
+      parserInformation.setLayoutData(gd);
+      parserInformation.setEditable(false);
 
       populateData();
    }
@@ -125,10 +125,10 @@ public class ArtifactExtractorSelectPanel {
          }
       }
       if (extractor != null) {
-         extractorCombo.setToolTipText(extractor.getDescription());
+         parserInformation.setText(extractor.getDescription());
          setArtifactExtractor(extractor);
       } else {
-         extractorCombo.setToolTipText("Select an source artifact extractor");
+         parserInformation.setText("Select a source artifact extractor");
       }
 
       java.util.List<IArtifactExtractorDelegate> delegates = importContributionManager.getDelegates(extractor);

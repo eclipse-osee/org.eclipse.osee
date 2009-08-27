@@ -41,6 +41,17 @@ public class RoughArtifact {
       this.roughArtifactKind = roughArtifactKind;
    }
 
+   public void clear() {
+      this.attributes.clear();
+      this.children.clear();
+      this.uriAttributes.clear();
+      humandReadableId = null;
+      guid = null;
+      number = null;
+      roughParent = null;
+      primaryArtifactType = null;
+   }
+
    public RoughArtifact(RoughArtifactKind roughArtifactKind, String name) {
       this(roughArtifactKind);
       addAttribute("Name", name);
@@ -145,4 +156,5 @@ public class RoughArtifact {
    public void setPrimaryArtifactType(ArtifactType primaryArtifactType) {
       this.primaryArtifactType = primaryArtifactType;
    }
+
 }

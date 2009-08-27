@@ -98,7 +98,7 @@ public abstract class AbstractArtifactExtractor implements IArtifactExtractor {
    private void connectParentChildRelationsFor(RoughArtifactCollector collector, RoughArtifact parent) {
       // find all children and then save them in order
       for (RoughArtifact otherRoughArtifact : collector.getRoughArtifacts()) {
-         if (parent != otherRoughArtifact) { // don't compare to self
+         if (!parent.equals(otherRoughArtifact)) { // don't compare to self
             if (parent.isChild(otherRoughArtifact)) {
                parent.addChild(otherRoughArtifact);
             }

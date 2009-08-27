@@ -1,8 +1,13 @@
-/*
- * Created on Aug 13, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
@@ -53,6 +58,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 
 /**
@@ -149,13 +155,10 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    }
 
    private void createDestinationArtifactSelectArea(Composite parent) {
-      Group composite = new Group(parent, SWT.NONE);
-      composite.setText("Select parent artifact");
-      composite.setToolTipText("Select parent artifact");
-      composite.setLayout(new GridLayout(1, false));
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      Label selectParentInstructions = new Label(parent, SWT.NONE);
+      selectParentInstructions.setText("Select parent artifact:");
 
-      artifactSelectPanel.createControl(composite);
+      artifactSelectPanel.createControl(parent);
       artifactSelectPanel.addListener(this);
    }
 
@@ -172,23 +175,21 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
 
    private void createParserSelectionArea(Composite parent) {
       Group composite = new Group(parent, SWT.NONE);
-      composite.setText("Select a source artifact extractor");
-      composite.setToolTipText("Select the method to be used for importing the selected file or directory");
+      composite.setText("Select Parser");
       composite.setLayout(new GridLayout(1, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      Label selectParserInstructions = new Label(composite, SWT.NONE);
+      selectParserInstructions.setText("Select the method to be used for importing the selected file or directory:");
 
       parserSelectPanel.addListener(this);
       parserSelectPanel.createControl(composite);
    }
 
    private void createArtifactTypeSelectArea(Composite parent) {
-      Group delegateGroup = new Group(parent, SWT.NONE);
-      delegateGroup.setText("Select artifact type to import data as");
-      delegateGroup.setToolTipText("Select artifact type to import data as");
-      delegateGroup.setLayout(new GridLayout(1, false));
-      delegateGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      Label selectArtifactTypeInstructions = new Label(parent, SWT.NONE);
+      selectArtifactTypeInstructions.setText("Select artifact type for imported data:");
 
-      artifactTypeSelectPanel.createControl(delegateGroup);
+      artifactTypeSelectPanel.createControl(parent);
       artifactTypeSelectPanel.addListener(this);
    }
 
@@ -368,6 +369,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
          ops.add(new SourceToRoughArtifactOperation(extractor, sourceFile, collector));
          ops.add(new FilterArtifactTypesByAttributeTypes(destinationArtifact.getBranch(), collector,
                selectedArtifactTypes));
+         selectedArtifactTypes.clear();
          if (executeOperation(new CompositeOperation("Extracting data from source", SkynetGuiPlugin.PLUGIN_ID, ops))) {
             OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Extracted items from: " + sourceFile.getAbsoluteFile());
             artifactTypeSelectPanel.setAllowedArtifactTypes(selectedArtifactTypes);

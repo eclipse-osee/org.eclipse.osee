@@ -17,12 +17,14 @@ import java.util.List;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -95,49 +97,49 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public boolean performFinish() {
-      Artifact destinationArtifact = mainPage.getDestinationArtifact();
-      String opName = "Importing Artifacts onto: " + destinationArtifact;
+      final Artifact destinationArtifact = mainPage.getDestinationArtifact();
+      final String opName = "Importing Artifacts onto: " + destinationArtifact;
+      final RoughArtifactCollector roughItems = mainPage.getCollectedArtifacts();
+      final IArtifactImportResolver resolver = getResolver();
 
-      SkynetTransaction transaction = null;
-      try {
-         transaction = new SkynetTransaction(destinationArtifact.getBranch());
-      } catch (OseeCoreException ex) {
-         String msg =
-               String.format("Unable to create transaction for: artifact:[%s] branch:[%s]",
-                     destinationArtifact.getGuid(), destinationArtifact.getBranch().getGuid());
-         ErrorDialog.openError(getContainer().getShell(), opName, null, new Status(IStatus.ERROR,
-               SkynetGuiPlugin.PLUGIN_ID, msg, ex));
-      }
+      Operations.executeAsJob(new AbstractOperation(opName, SkynetGuiPlugin.PLUGIN_ID) {
+         @Override
+         protected void doWork(IProgressMonitor monitor) throws Exception {
+            SkynetTransaction transaction = null;
+            try {
+               transaction = new SkynetTransaction(destinationArtifact.getBranch());
+            } catch (OseeCoreException ex) {
+               reportError("Unable to create transaction for: artifact:[%s] branch:[%s]",
+                     destinationArtifact.getGuid(), destinationArtifact.getBranch().getGuid(), ex);
+            }
+            List<Artifact> children = new ArrayList<Artifact>();
+            try {
+               children = destinationArtifact.getDescendants();
+            } catch (OseeCoreException ex) {
+               reportError("Unable to get artifact children: artifact:[%s] branch:[%s]", destinationArtifact.getGuid(),
+                     destinationArtifact.getBranch().getGuid(), ex);
+            }
+            List<IOperation> subOps = new ArrayList<IOperation>();
+            subOps.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, roughItems, resolver));
+            subOps.add(new ArtifactValidationCheckOperation(children, false));
+            subOps.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
+            IOperation ret = new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps);
+            Operations.executeWork(ret, monitor, -1);
+            Operations.checkForErrorStatus(ret.getStatus());
+         }
 
-      IArtifactImportResolver resolver =
-            getResolver(opName, mainPage.getArtifactType(), mainPage.isUpdateExistingSelected(),
-                  mainPage.getNoneChangingAttributes());
+         private void reportError(String message, String arg1, String arg2, Exception ex) throws Exception {
+            throw new Exception(String.format(message, arg1, arg2), ex);
+         }
 
-      List<Artifact> children = new ArrayList<Artifact>();
-      try {
-         children = destinationArtifact.getDescendants();
-      } catch (OseeCoreException ex) {
-         String msg =
-               String.format("Unable to get artifact children: artifact:[%s] branch:[%s]",
-                     destinationArtifact.getGuid(), destinationArtifact.getBranch().getGuid());
-         ErrorDialog.openError(getContainer().getShell(), opName, null, new Status(IStatus.ERROR,
-               SkynetGuiPlugin.PLUGIN_ID, msg, ex));
-      }
-
-      if (transaction != null && resolver != null) {
-         RoughArtifactCollector roughItems = mainPage.getCollectedArtifacts();
-
-         List<IOperation> subOps = new ArrayList<IOperation>();
-         subOps.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, roughItems, resolver));
-         subOps.add(new ArtifactValidationCheckOperation(children, false));
-         subOps.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
-         Operations.executeAsJob(new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps), true);
-         // Operations.executeWork(new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps), true);
-      }
+      }, true);
       return true;
    }
 
-   private IArtifactImportResolver getResolver(String opName, ArtifactType primaryArtifactType, boolean isUpdateExistingArtifactsSelected, Collection<AttributeType> noneChangingAttributes) {
+   private IArtifactImportResolver getResolver() {
+      ArtifactType primaryArtifactType = mainPage.getArtifactType();
+      boolean isUpdateExistingArtifactsSelected = mainPage.isUpdateExistingSelected();
+      Collection<AttributeType> noneChangingAttributes = mainPage.getNoneChangingAttributes();
       IArtifactImportResolver resolver = null;
       try {
          ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
@@ -154,7 +156,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
                String.format("Unable to create an artifact resolver for [%s]", primaryArtifactType,
                      isUpdateExistingArtifactsSelected ? String.format("using %s as identifiers",
                            noneChangingAttributes) : "");
-         ErrorDialog.openError(getContainer().getShell(), opName, null, new Status(IStatus.ERROR,
+         ErrorDialog.openError(getContainer().getShell(), "Artifact Import", null, new Status(IStatus.ERROR,
                SkynetGuiPlugin.PLUGIN_ID, msg, ex));
       }
       return resolver;
