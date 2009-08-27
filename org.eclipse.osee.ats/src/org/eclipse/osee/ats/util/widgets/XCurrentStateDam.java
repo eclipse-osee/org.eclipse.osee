@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -43,6 +44,7 @@ public class XCurrentStateDam extends XStateAssigneesDam {
    @Override
    public void setState(SMAState state) throws OseeCoreException {
       getSma().setSoleAttributeValue(attributeTypeName, state.toXml());
+      StateManager.updateAssigneeRelations(getSma().getSmaMgr());
    }
 
    public void updateMetrics(double additionalHours, int percentComplete, boolean logMetrics) throws OseeCoreException {

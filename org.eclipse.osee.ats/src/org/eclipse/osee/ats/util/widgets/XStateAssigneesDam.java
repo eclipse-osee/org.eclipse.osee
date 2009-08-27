@@ -16,10 +16,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.StateManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -127,6 +127,7 @@ public abstract class XStateAssigneesDam extends XTextDam {
          }
          // Else, doesn't exist yet, create
          getSma().addAttribute(attributeTypeName, state.toXml());
+         StateManager.updateAssigneeRelations(getSma().getSmaMgr());
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, "Error setting state data for " + getSma().getGuid(), ex);
       }

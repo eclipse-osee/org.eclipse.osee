@@ -84,8 +84,6 @@ public class StateManager {
     * The "UnAssigned" user is no longer related due to the performance and event service issues with having a single
     * user related to > 5000 items. Since these relations are only used for searching, no need to have them for
     * "UnAssigned".
-    * 
-    * @throws OseeCoreException
     */
    public static void updateAssigneeRelations(SMAManager smaMgr) throws OseeCoreException {
       Collection<User> assignees = smaMgr.getStateMgr().getAssignees();
@@ -192,7 +190,6 @@ public class StateManager {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.setAssignees(assignees);
       putState(state);
-      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -206,7 +203,6 @@ public class StateManager {
       SMAState state = getSMAState(stateName, false);
       state.setAssignee(assignee);
       putState(state);
-      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -219,7 +215,6 @@ public class StateManager {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.setAssignee(assignee);
       putState(state);
-      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -234,7 +229,6 @@ public class StateManager {
       SMAState state = getSMAState(stateName, false);
       state.removeAssignee(assignee);
       putState(state);
-      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -247,7 +241,6 @@ public class StateManager {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.removeAssignee(assignee);
       putState(state);
-      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -260,7 +253,6 @@ public class StateManager {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.addAssignee(assignee);
       putState(state);
-      updateAssigneeRelations(smaMgr);
    }
 
    /**
@@ -273,7 +265,6 @@ public class StateManager {
       SMAState state = getSMAState(getCurrentStateName(), false);
       state.clearAssignees();
       putState(state);
-      updateAssigneeRelations(smaMgr);
    }
 
    public boolean isStateVisited(String name) throws OseeCoreException {
@@ -323,7 +314,6 @@ public class StateManager {
          }
       }
       currentStateDam.setState(smaState);
-      updateAssigneeRelations(smaMgr);
    }
 
    private void putState(SMAState state) throws OseeCoreException {
@@ -331,7 +321,6 @@ public class StateManager {
          currentStateDam.setState(state);
       else
          stateDam.setState(state);
-      updateAssigneeRelations(smaMgr);
    }
 
    public Collection<String> getVisitedStateNames() throws OseeCoreException {
