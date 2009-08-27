@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.jdt.core.classpathContainerInitializer">
+      <classpathContainerInitializer
+            class="org.eclipse.osee.ote.container.OteClasspathContainerInitializer"
+            id="org.eclipse.osee.ote.container.classpathContainerInitializer">
+      </classpathContainerInitializer>
+   </extension>
+
+</plugin>
