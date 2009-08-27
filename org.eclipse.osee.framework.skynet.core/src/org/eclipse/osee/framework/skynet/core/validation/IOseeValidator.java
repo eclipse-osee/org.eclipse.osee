@@ -23,7 +23,7 @@ public interface IOseeValidator {
 
    public int getQualityOfService();
 
-   public boolean isApplicable(Artifact artifact, AttributeType attributeType);
+   public boolean isApplicable(Artifact artifact, AttributeType attributeType) throws OseeCoreException;
 
    public IStatus validate(Artifact artifact, AttributeType attributeType, Object proposedObject) throws OseeCoreException;
 }

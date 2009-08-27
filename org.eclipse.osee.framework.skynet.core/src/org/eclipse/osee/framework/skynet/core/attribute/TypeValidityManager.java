@@ -83,8 +83,7 @@ public class TypeValidityManager {
    }
 
    public static Collection<ArtifactType> getArtifactTypesFromAttributeType(String requestedAttributeType, Branch branch) throws OseeCoreException {
-      
-      
+
       return getArtifactTypesFromAttributeType(AttributeTypeManager.getType(requestedAttributeType), branch);
    }
 
@@ -193,9 +192,6 @@ public class TypeValidityManager {
       return AttributeTypeManager.getAllTypes();
    }
 
-   
-   
-   
    public static Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws OseeCoreException {
       if (false) { // TODO: Filter Types By Branch
          ensurePopulated();

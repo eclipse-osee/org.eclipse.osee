@@ -106,9 +106,29 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    }
 
    /**
+    * Determines if this artifact type is equal to or a subclass of the artifact type referenced
+    * by otherType
+    * 
+    * @param otherType artifact type to check against
+    * @return whether this artifact type inherits from otherType
+    */
+   public boolean isOfType(ArtifactType otherType) {
+      boolean result = false;
+      if (otherType != null) {
+         if (this.equals(otherType)) {
+            result = true;
+         } else if (this.hasSuperArtifactType()) {
+            result = this.getSuperArtifactType().isOfType(otherType);
+         }
+      }
+      return result;
+   }
+
+   /**
     * determines if this artifact type is equal to or a subclass of the artifact type referenced by artifactTypeName
     * 
     * @return true if compatible
+    * @deprecated {@link #isOfType(ArtifactType)}
     */
    public boolean isTypeCompatible(String artifactTypeName) {
       return name.equals(artifactTypeName);

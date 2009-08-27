@@ -53,9 +53,14 @@ public class TestRunOperator {
    }
 
    private void checkForType(Artifact artifact) throws OseeArgumentException {
-      if (!artifact.isOfType(OTE_SKYNET_ARTIFACTS.TEST_RUN.getName())) {
-         throw new OseeArgumentException(String.format("Unable to operate on type [%s]. Only [%s] allowed.",
-               artifact.getArtifactTypeName(), OTE_SKYNET_ARTIFACTS.TEST_RUN.getName()));
+      try {
+         if (!artifact.isOfType(OTE_SKYNET_ARTIFACTS.TEST_RUN.getName())) {
+            throw new OseeArgumentException(String.format("Unable to operate on type [%s]. Only [%s] allowed.",
+                  artifact.getArtifactTypeName(), OTE_SKYNET_ARTIFACTS.TEST_RUN.getName()));
+         }
+      } catch (OseeCoreException e) {
+         // TODO Auto-generated catch block
+         e.printStackTrace();
       }
    }
 
@@ -175,8 +180,7 @@ public class TestRunOperator {
 
    public void createTestScriptSoftLink() throws OseeCoreException {
       Artifact testScript =
-            getTestScriptFetcher().searchForUniqueArtifactMatching("Name", artifact.getName(),
-                  artifact.getBranch());
+            getTestScriptFetcher().searchForUniqueArtifactMatching("Name", artifact.getName(), artifact.getBranch());
       if (testScript != null) {
          artifact.setSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.TEST_SCRIPT_GUID.getName(), testScript.getGuid());
       }

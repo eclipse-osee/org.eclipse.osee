@@ -28,6 +28,8 @@ import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
@@ -179,7 +181,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       return traceType.equalsIgnoreCase("USES");
    }
 
-   private IRelationEnumeration getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) {
+   private IRelationEnumeration getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) throws OseeTypeDoesNotExist, OseeDataStoreException {
       if (traceUnitArtifact.isOfType(Requirements.ABSTRACT_TEST_UNIT)) {
          if (isUsesTraceType(traceType)) {
             return CoreRelationEnumeration.Uses__TestUnit;

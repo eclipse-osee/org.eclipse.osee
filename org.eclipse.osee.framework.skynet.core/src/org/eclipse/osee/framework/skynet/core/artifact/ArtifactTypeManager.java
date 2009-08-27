@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -321,17 +320,17 @@ public class ArtifactTypeManager {
       ChangeArtifactType.changeArtifactType(artifacts, artifactType);
    }
 
-   public static Collection<ArtifactType> getDescendants(ArtifactType artifactType) throws OseeCoreException {
+   public static Collection<ArtifactType> getDescendants(ArtifactType artifactType) throws OseeDataStoreException, OseeTypeDoesNotExist {
       return getDescendants(artifactType, false);
    }
 
-   public static Collection<ArtifactType> getDescendants(ArtifactType artifactType, boolean recurse) throws OseeCoreException {
+   public static Collection<ArtifactType> getDescendants(ArtifactType artifactType, boolean recurse) throws OseeDataStoreException, OseeTypeDoesNotExist {
       Set<ArtifactType> children = new HashSet<ArtifactType>();
       getDescendants(artifactType, children, recurse);
       return children;
    }
 
-   private static void getDescendants(ArtifactType parentType, Collection<ArtifactType> children, boolean recurse) throws OseeCoreException {
+   private static void getDescendants(ArtifactType parentType, Collection<ArtifactType> children, boolean recurse) throws OseeDataStoreException, OseeTypeDoesNotExist {
       for (ArtifactType itemToCheck : getAllTypes()) {
          if (parentType.equals(itemToCheck.getSuperArtifactType())) {
             children.add(itemToCheck);

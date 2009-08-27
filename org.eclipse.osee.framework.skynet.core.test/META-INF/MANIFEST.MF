@@ -10,4 +10,5 @@ Require-Bundle: org.junit4,
 Export-Package: org.eclipse.osee.framework.skynet.core.test,
  org.eclipse.osee.framework.skynet.core.test.cases,
  org.eclipse.osee.framework.skynet.core.test.util
-Import-Package: org.eclipse.osee.framework.core.enums
+Import-Package: org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.jdk.core.util

@@ -28,6 +28,8 @@ import org.eclipse.jface.util.LocalSelectionTransfer;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
@@ -69,7 +71,11 @@ public class DragDropHandler {
       dropTarget.addDropListener(new DropTargetAdapter() {
 
          public void drop(DropTargetEvent event) {
-            performDrop(event);
+            try {
+               performDrop(event);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(OteUiDefinePlugin.class, Level.SEVERE, ex);
+            }
          }
 
          public void dragOver(DropTargetEvent event) {
@@ -105,7 +111,7 @@ public class DragDropHandler {
 
    }
 
-   private void performDrop(DropTargetEvent e) {
+   private void performDrop(DropTargetEvent e) throws OseeTypeDoesNotExist, OseeDataStoreException {
       Object object = e.data;
       if (object instanceof ArtifactData) {
          handleArtifactDrops((ArtifactData) object);
@@ -159,7 +165,7 @@ public class DragDropHandler {
 
    }
 
-   private void handleArtifactDrops(ArtifactData artifactData) {
+   private void handleArtifactDrops(ArtifactData artifactData) throws OseeTypeDoesNotExist, OseeDataStoreException {
       Artifact[] artifactsDropped = artifactData.getArtifacts();
       Set<Artifact> artifactsToAdd = new HashSet<Artifact>();
       for (Artifact artifact : artifactsDropped) {
