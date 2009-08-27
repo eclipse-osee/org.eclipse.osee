@@ -24,11 +24,12 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -80,9 +81,9 @@ public class SkyWalkerOptions {
    }
 
    public String getExtendedName(Artifact artifact) throws OseeCoreException {
-      if (getSelectedShowAttributeTypes().size() == 0)
+      if (getSelectedShowAttributeTypes().size() == 0) {
          return "";
-      else {
+      } else {
          StringBuffer sb = new StringBuffer();
          for (AttributeType attributeType : getSelectedShowAttributeTypes()) {
             if (artifact.getAttributeCount(attributeType.getName()) > 0) {
@@ -98,7 +99,7 @@ public class SkyWalkerOptions {
       if (artTypes == null) {
          artTypes = new HashMap<ArtifactType, Boolean>();
          try {
-            for (ArtifactType descriptor : TypeValidityManager.getValidArtifactTypes(artifact.getBranch())) {
+            for (ArtifactType descriptor : ArtifactTypeManager.getValidArtifactTypes(artifact.getBranch())) {
                artTypes.put(descriptor, true);
             }
          } catch (Exception ex) {
@@ -111,7 +112,7 @@ public class SkyWalkerOptions {
       if (showAttributes == null) {
          showAttributes = new HashMap<AttributeType, Boolean>();
          try {
-            for (AttributeType descriptor : TypeValidityManager.getValidAttributeTypes(artifact.getBranch())) {
+            for (AttributeType descriptor : AttributeTypeManager.getValidAttributeTypes(artifact.getBranch())) {
                showAttributes.put(descriptor, false);
             }
          } catch (OseeCoreException ex) {
@@ -242,12 +243,12 @@ public class SkyWalkerOptions {
          layouts = new HashMap<AbstractLayoutAlgorithm, String>();
 
          RadialLayoutAlgorithm radLayout = new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-         radLayout.setRangeToLayout((-90 * Math.PI) / 360, (90 * Math.PI) / 360);
+         radLayout.setRangeToLayout(-90 * Math.PI / 360, 90 * Math.PI / 360);
          defaultLayout = radLayout;
          layouts.put(radLayout, "Radial - Right (default)");
 
          radLayout = new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
-         radLayout.setRangeToLayout(0, (180 * Math.PI) / 360);
+         radLayout.setRangeToLayout(0, 180 * Math.PI / 360);
          layouts.put(radLayout, RADIAL_DOWN_LAYOUT);
 
          layouts.put(new RadialLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING), "Radial - Full");
@@ -268,7 +269,9 @@ public class SkyWalkerOptions {
 
    public AbstractLayoutAlgorithm getLayout(String layoutName) {
       for (Entry<AbstractLayoutAlgorithm, String> entry : layouts.entrySet()) {
-         if (entry.getValue().equals(layoutName)) return entry.getKey();
+         if (entry.getValue().equals(layoutName)) {
+            return entry.getKey();
+         }
       }
       return defaultLayout;
    }
@@ -285,7 +288,9 @@ public class SkyWalkerOptions {
     * @param artifact the artifact to set
     */
    public void setArtifact(Artifact artifact) {
-      if (this.artifact == artifact) return;
+      if (this.artifact == artifact) {
+         return;
+      }
       this.artifact = artifact;
       loadArtTypes();
       loadRelTypes();
@@ -294,17 +299,23 @@ public class SkyWalkerOptions {
    }
 
    public boolean isValidArtifactType(ArtifactType type) {
-      if (!isFilterEnabled()) return true;
+      if (!isFilterEnabled()) {
+         return true;
+      }
       return getSelectedArtTypes().contains(type);
    }
 
    public boolean isValidRelationType(RelationType type) {
-      if (!isFilterEnabled()) return true;
+      if (!isFilterEnabled()) {
+         return true;
+      }
       return getSelectedRelTypes().contains(type);
    }
 
    public boolean isValidRelationLinkDescriptorSide(RelationLinkDescriptorSide side) {
-      if (!isFilterEnabled()) return true;
+      if (!isFilterEnabled()) {
+         return true;
+      }
       return getSelectedRelTypes().contains(side);
    }
 
@@ -319,7 +330,9 @@ public class SkyWalkerOptions {
     * @param levels the levels to set
     */
    public void setLevels(int levels) {
-      if (this.levels == levels) return;
+      if (this.levels == levels) {
+         return;
+      }
       this.levels = levels;
       notifyListeners(ModType.Level);
    }
@@ -335,20 +348,24 @@ public class SkyWalkerOptions {
     * @param filterByArtType the filterByArtType to set
     */
    public void setFilterEnabled(boolean enable) {
-      if (this.filterEnabled == enable) return;
+      if (this.filterEnabled == enable) {
+         return;
+      }
       this.filterEnabled = enable;
       notifyListeners(ModType.FilterEnabled);
    }
 
    private void notifyListeners(ModType... modType) {
-      for (ISkyWalkerOptionsChangeListener listener : listeners)
+      for (ISkyWalkerOptionsChangeListener listener : listeners) {
          listener.modified(modType);
+      }
    }
 
    public void setSelectedRelTypes(Object[] selected) {
       List<Object> selList = new ArrayList<Object>();
-      for (Object obj : selected)
+      for (Object obj : selected) {
          selList.add(obj);
+      }
       for (Entry<Object, Boolean> entry : relTypes.entrySet()) {
          entry.setValue(selList.contains(entry.getKey()));
       }
@@ -357,8 +374,9 @@ public class SkyWalkerOptions {
 
    public void setSelectedShowAttributes(Object[] selected) {
       List<Object> selList = new ArrayList<Object>();
-      for (Object obj : selected)
+      for (Object obj : selected) {
          selList.add(obj);
+      }
       for (Entry<AttributeType, Boolean> entry : showAttributes.entrySet()) {
          entry.setValue(selList.contains(entry.getKey()));
       }
@@ -374,48 +392,73 @@ public class SkyWalkerOptions {
 
    public Set<ArtifactType> getSelectedArtTypes() {
       Set<ArtifactType> selected = new HashSet<ArtifactType>();
-      if (artTypes == null) return selected;
-      for (ArtifactType desc : artTypes.keySet())
-         if (artTypes.get(desc)) selected.add(desc);
+      if (artTypes == null) {
+         return selected;
+      }
+      for (ArtifactType desc : artTypes.keySet()) {
+         if (artTypes.get(desc)) {
+            selected.add(desc);
+         }
+      }
       return selected;
    }
 
    public Set<Object> getSelectedRelTypes() {
       Set<Object> selected = new HashSet<Object>();
-      if (relTypes == null) return selected;
-      for (Object desc : relTypes.keySet())
-         if (relTypes.get(desc)) selected.add(desc);
+      if (relTypes == null) {
+         return selected;
+      }
+      for (Object desc : relTypes.keySet()) {
+         if (relTypes.get(desc)) {
+            selected.add(desc);
+         }
+      }
       return selected;
    }
 
    public Set<AttributeType> getSelectedShowAttributeTypes() {
       Set<AttributeType> selected = new HashSet<AttributeType>();
-      if (showAttributes == null) return selected;
-      for (AttributeType desc : showAttributes.keySet())
-         if (showAttributes.get(desc)) selected.add(desc);
+      if (showAttributes == null) {
+         return selected;
+      }
+      for (AttributeType desc : showAttributes.keySet()) {
+         if (showAttributes.get(desc)) {
+            selected.add(desc);
+         }
+      }
       return selected;
    }
 
    public Set<ArtifactType> getAllArtTypes() {
-      if (artTypes == null) return new HashSet<ArtifactType>();
+      if (artTypes == null) {
+         return new HashSet<ArtifactType>();
+      }
       return artTypes.keySet();
    }
 
    public Set<Object> getAllRelTypes() {
-      if (relTypes == null) return new HashSet<Object>();
+      if (relTypes == null) {
+         return new HashSet<Object>();
+      }
       return relTypes.keySet();
    }
 
    public Set<AttributeType> getAllShowAttributes() {
-      if (showAttributes == null) return new HashSet<AttributeType>();
+      if (showAttributes == null) {
+         return new HashSet<AttributeType>();
+      }
       return showAttributes.keySet();
    }
 
    public Set<RelationType> getAllRelationLinkDescriptorTypes() {
-      if (relTypes == null) return new HashSet<RelationType>();
+      if (relTypes == null) {
+         return new HashSet<RelationType>();
+      }
       Set<RelationType> descs = new HashSet<RelationType>();
       for (Object obj : relTypes.keySet()) {
-         if (obj instanceof RelationType) descs.add((RelationType) obj);
+         if (obj instanceof RelationType) {
+            descs.add((RelationType) obj);
+         }
       }
       return descs;
    }
@@ -424,7 +467,9 @@ public class SkyWalkerOptions {
     * @param layout the layout to set
     */
    public void setLayout(AbstractLayoutAlgorithm layout) {
-      if (this.layout == layout) return;
+      if (this.layout == layout) {
+         return;
+      }
       this.layout = layout;
       notifyListeners(ModType.Layout);
    }
@@ -440,7 +485,9 @@ public class SkyWalkerOptions {
     * @param linkName the linkName to set
     */
    public void setLinkName(LinkName linkName) {
-      if (this.linkName == linkName) return;
+      if (this.linkName == linkName) {
+         return;
+      }
       this.linkName = linkName;
       notifyListeners(ModType.Link_Name);
    }
