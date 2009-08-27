@@ -26,8 +26,8 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
@@ -76,7 +76,7 @@ public class ArtifactSelectWizardPage extends WizardPage {
          gd.heightHint = 300;
          gd.widthHint = 200;
          artTypeList.getControl().setLayoutData(gd);
-         artTypeList.setInput(TypeValidityManager.getValidArtifactTypes(AtsUtil.getAtsBranch()));
+         artTypeList.setInput(ArtifactTypeManager.getValidArtifactTypes(AtsUtil.getAtsBranch()));
          artTypeList.addSelectionChangedListener(new ISelectionChangedListener() {
             public void selectionChanged(SelectionChangedEvent event) {
                IStructuredSelection selection = (IStructuredSelection) event.getSelection();
@@ -153,7 +153,8 @@ public class ArtifactSelectWizardPage extends WizardPage {
       public String getText(Object arg0) {
          Artifact art = (Artifact) arg0;
          if (showArtData)
-            return String.format("%s - (%s  %s  %s)", art.getName(), art.getArtId(), art.getHumanReadableId(), art.getGuid());
+            return String.format("%s - (%s  %s  %s)", art.getName(), art.getArtId(), art.getHumanReadableId(),
+                  art.getGuid());
          else
             return art.getName();
       }
