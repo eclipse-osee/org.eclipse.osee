@@ -181,7 +181,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       return traceType.equalsIgnoreCase("USES");
    }
 
-   private IRelationEnumeration getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   private IRelationEnumeration getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) throws OseeCoreException {
       if (traceUnitArtifact.isOfType(Requirements.ABSTRACT_TEST_UNIT)) {
          if (isUsesTraceType(traceType)) {
             return CoreRelationEnumeration.Uses__TestUnit;
