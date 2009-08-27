@@ -42,12 +42,12 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -567,7 +567,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
             try {
-               Collection<ArtifactType> data = TypeValidityManager.getValidArtifactTypes(branchSelect.getData());
+               Collection<ArtifactType> data = ArtifactTypeManager.getValidArtifactTypes(branchSelect.getData());
                List<ArtifactType> descriptors = new ArrayList<ArtifactType>();
                for (ArtifactType descriptor : new ArrayList<ArtifactType>(data)) {
                   if (!descriptor.getName().equals("Root Artifact")) {
