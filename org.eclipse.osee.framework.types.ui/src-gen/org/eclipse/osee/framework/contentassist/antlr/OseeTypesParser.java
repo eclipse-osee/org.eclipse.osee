@@ -42,7 +42,6 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 		if (nameMappings == null) {
 			nameMappings = new HashMap<AbstractElement, String>() {
 				{
-					put(grammarAccess.getDIGITSAccess().getAlternatives(), "rule__DIGITS__Alternatives");
 					put(grammarAccess.getOseeTypeAccess().getAlternatives(), "rule__OseeType__Alternatives");
 					put(grammarAccess.getAttributeTypeAccess().getDataProviderAlternatives_5_0(), "rule__AttributeType__DataProviderAlternatives_5_0");
 					put(grammarAccess.getAttributeTypeAccess().getMaxAlternatives_9_0(), "rule__AttributeType__MaxAlternatives_9_0");
