@@ -186,7 +186,8 @@ public final class ArtifactLoader {
          boolean historical = transactionId != null;
 
          List<Object[]> insertParameters = new LinkedList<Object[]>();
-         for (int artId : artIds) {
+
+         for (int artId : org.eclipse.osee.framework.jdk.core.util.Collections.unique(artIds)) {
             insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
                   historical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }

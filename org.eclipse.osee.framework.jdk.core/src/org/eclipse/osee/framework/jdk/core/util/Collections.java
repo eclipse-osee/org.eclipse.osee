@@ -90,6 +90,12 @@ public class Collections {
       return result;
    }
 
+   public static <A> Collection<A> unique(Collection<A> collection) {
+      Set<A> result = new HashSet<A>();
+      result.addAll(collection);
+      return result;
+   }
+
    /**
     * The resultant set is those elements in superSet which are not in the subSet
     * 
