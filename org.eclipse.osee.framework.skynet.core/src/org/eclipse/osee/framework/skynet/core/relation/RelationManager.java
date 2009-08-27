@@ -155,13 +155,10 @@ public class RelationManager {
 
    /**
     * Store the newly instantiated relation from the perspective of relationSide in its appropriate order
-    * 
-    * @param relation
-    * @param relationSide
     */
-   public synchronized static void manageRelation(RelationLink relation, RelationSide relationSide) {
+   public synchronized static void manageRelation(RelationLink newRelation, RelationSide relationSide) {
       Artifact artifact =
-            ArtifactCache.getActive(relation.getArtifactId(relationSide), relation.getBranch(relationSide));
+            ArtifactCache.getActive(newRelation.getArtifactId(relationSide), newRelation.getBranch(relationSide));
 
       if (artifact != null) {
          List<RelationLink> artifactsRelations =
@@ -169,12 +166,12 @@ public class RelationManager {
          if (artifactsRelations == null) {
             artifactsRelations = new CopyOnWriteArrayList<RelationLink>();
          }
-         if (artifactsRelations.contains(relation)) {
+         if (artifactsRelations.contains(newRelation)) {
             // Log error cause this should never happen;  only one relation link object should be created 
-            for (RelationLink link : artifactsRelations) {
-               if (link.equals(relation) && link != relation) {
+            for (RelationLink relation : artifactsRelations) {
+               if (relation.equals(newRelation) && relation != newRelation) {
                   OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                        "Duplicate relation objects for same relation for Relation [%s] Artifact (%s)[%s]", link,
+                        "Duplicate relation objects for same relation for Relation [%s] Artifact (%s)[%s]", relation,
                         artifact.getArtId(), artifact.getName()));
                }
             }
@@ -182,20 +179,20 @@ public class RelationManager {
             return;
          }
 
-         artifactsRelations.add(relation);
+         artifactsRelations.add(newRelation);
 
          List<RelationLink> selectedRelations =
-               relationsByType.get(threadLocalKey.get().getKey(artifact), relation.getRelationType());
+               relationsByType.get(threadLocalKey.get().getKey(artifact), newRelation.getRelationType());
          if (selectedRelations == null) {
             selectedRelations = new CopyOnWriteArrayList<RelationLink>();
-            relationsByType.put(new ArtifactKey(artifact), relation.getRelationType(), selectedRelations);
+            relationsByType.put(new ArtifactKey(artifact), newRelation.getRelationType(), selectedRelations);
          }
-         if (selectedRelations.contains(relation)) {
+         if (selectedRelations.contains(newRelation)) {
             OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                  "Duplicate relationByType objects for same relation for Relation [%s] Artifact (%s)[%s]", relation,
-                  artifact.getArtId(), artifact.getName()));
+                  "Duplicate relationByType objects for same relation for Relation [%s] Artifact (%s)[%s]",
+                  newRelation, artifact.getArtId(), artifact.getName()));
          }
-         selectedRelations.add(relation);
+         selectedRelations.add(newRelation);
       }
    }
 
