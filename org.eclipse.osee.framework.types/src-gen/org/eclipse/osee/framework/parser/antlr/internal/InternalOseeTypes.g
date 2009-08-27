@@ -177,6 +177,36 @@ ruleImport returns [EObject current=null]
 
 
 
+// Entry rule entryRuleNAME_REFERENCE
+entryRuleNAME_REFERENCE returns [String current=null] :
+	{ currentNode = createCompositeNode(grammarAccess.getNAME_REFERENCERule(), currentNode); } 
+	 iv_ruleNAME_REFERENCE=ruleNAME_REFERENCE 
+	 { $current=$iv_ruleNAME_REFERENCE.current.getText(); }  
+	 EOF 
+;
+
+// Rule NAME_REFERENCE
+ruleNAME_REFERENCE returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] 
+    @init { setCurrentLookahead(); resetLookahead(); 
+    }
+    @after { resetLookahead(); 
+	    lastConsumedNode = currentNode;
+	    lastConsumedDatatypeToken = $current;
+    }:
+    this_STRING_0=RULE_STRING    {
+		$current.merge(this_STRING_0);
+    }
+
+    { 
+    createLeafNode(grammarAccess.getNAME_REFERENCEAccess().getSTRINGTerminalRuleCall(), null); 
+    }
+
+    ;
+
+
+
+
+
 // Entry rule entryRuleQUALIFIED_NAME
 entryRuleQUALIFIED_NAME returns [String current=null] :
 	{ currentNode = createCompositeNode(grammarAccess.getQUALIFIED_NAMERule(), currentNode); } 
@@ -214,98 +244,6 @@ ruleQUALIFIED_NAME returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRule
     createLeafNode(grammarAccess.getQUALIFIED_NAMEAccess().getIDTerminalRuleCall_1_1(), null); 
     }
 )*)
-    ;
-
-
-
-
-
-// Entry rule entryRuleDIGITS
-entryRuleDIGITS returns [String current=null] :
-	{ currentNode = createCompositeNode(grammarAccess.getDIGITSRule(), currentNode); } 
-	 iv_ruleDIGITS=ruleDIGITS 
-	 { $current=$iv_ruleDIGITS.current.getText(); }  
-	 EOF 
-;
-
-// Rule DIGITS
-ruleDIGITS returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] 
-    @init { setCurrentLookahead(); resetLookahead(); 
-    }
-    @after { resetLookahead(); 
-	    lastConsumedNode = currentNode;
-	    lastConsumedDatatypeToken = $current;
-    }:
-(
-	kw='0' 
-    {
-        $current.merge(kw);
-        createLeafNode(grammarAccess.getDIGITSAccess().getDigitZeroKeyword_0(), null); 
-    }
-
-    |
-	kw='1' 
-    {
-        $current.merge(kw);
-        createLeafNode(grammarAccess.getDIGITSAccess().getDigitOneKeyword_1(), null); 
-    }
-
-    |
-	kw='2' 
-    {
-        $current.merge(kw);
-        createLeafNode(grammarAccess.getDIGITSAccess().getDigitTwoKeyword_2(), null); 
-    }
-
-    |
-	kw='3' 
-    {
-        $current.merge(kw);
-        createLeafNode(grammarAccess.getDIGITSAccess().getDigitThreeKeyword_3(), null); 
-    }
-
-    |
-	kw='4' 
-    {
-        $current.merge(kw);
-        createLeafNode(grammarAccess.getDIGITSAccess().getDigitFourKeyword_4(), null); 
-    }
-
-    |
-	kw='5' 
-    {
-        $current.merge(kw);
-        createLeafNode(grammarAccess.getDIGITSAccess().getDigitFiveKeyword_5(), null); 
-    }
-
-    |
-	kw='6' 
-    {
-        $current.merge(kw);
-        createLeafNode(grammarAccess.getDIGITSAccess().getDigitSixKeyword_6(), null); 
-    }
-
-    |
-	kw='7' 
-    {
-        $current.merge(kw);
-        createLeafNode(grammarAccess.getDIGITSAccess().getDigitSevenKeyword_7(), null); 
-    }
-
-    |
-	kw='8' 
-    {
-        $current.merge(kw);
-        createLeafNode(grammarAccess.getDIGITSAccess().getDigitEightKeyword_8(), null); 
-    }
-
-    |
-	kw='9' 
-    {
-        $current.merge(kw);
-        createLeafNode(grammarAccess.getDIGITSAccess().getDigitNineKeyword_9(), null); 
-    }
-)+
     ;
 
 
@@ -399,9 +337,9 @@ ruleArtifactType returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_2_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeAccess().getNameNAME_REFERENCEParserRuleCall_2_0(), currentNode); 
 	    }
-	    lv_name_2=ruleQUALIFIED_NAME 
+	    lv_name_2=ruleNAME_REFERENCE 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getArtifactTypeRule().getType().getClassifier());
@@ -409,7 +347,7 @@ ruleArtifactType returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		set($current, "name", lv_name_2, "QUALIFIED_NAME", currentNode);
+	       		set($current, "name", lv_name_2, "NAME_REFERENCE", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -429,10 +367,12 @@ ruleArtifactType returns [EObject current=null]
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
         }
-	RULE_ID
-	{
-		createLeafNode(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypeArtifactTypeCrossReference_3_1_0(), "superArtifactType"); 
-	}
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypeArtifactTypeCrossReference_3_1_0(), currentNode); 
+	    }
+		ruleNAME_REFERENCE		{ 
+	        currentNode = currentNode.getParent();
+	    }
 
 		// TODO assign feature to currentNode
 	
@@ -499,10 +439,12 @@ ruleAttributeTypeRef returns [EObject current=null]
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
         }
-	RULE_ID
-	{
-		createLeafNode(grammarAccess.getAttributeTypeRefAccess().getValidAttributeTypeAttributeTypeCrossReference_1_0(), "validAttributeType"); 
-	}
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeRefAccess().getValidAttributeTypeAttributeTypeCrossReference_1_0(), currentNode); 
+	    }
+		ruleNAME_REFERENCE		{ 
+	        currentNode = currentNode.getParent();
+	    }
 
 		// TODO assign feature to currentNode
 	
@@ -535,9 +477,9 @@ ruleAttributeType returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getNameNAME_REFERENCEParserRuleCall_1_0(), currentNode); 
 	    }
-	    lv_name_1=ruleQUALIFIED_NAME 
+	    lv_name_1=ruleNAME_REFERENCE 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getAttributeTypeRule().getType().getClassifier());
@@ -545,7 +487,7 @@ ruleAttributeType returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		set($current, "name", lv_name_1, "QUALIFIED_NAME", currentNode);
+	       		set($current, "name", lv_name_1, "NAME_REFERENCE", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -632,23 +574,22 @@ ruleAttributeType returns [EObject current=null]
     }
 (	
 	
-	    
-	    { 
-	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getMinDIGITSParserRuleCall_7_0(), currentNode); 
-	    }
-	    lv_min_8=ruleDIGITS 
+	    lv_min_8=	RULE_WHOLE_NUM_STR
+	{
+		createLeafNode(grammarAccess.getAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_7_0(), "min"); 
+	}
+ 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getAttributeTypeRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode.getParent(), $current);
+	            associateNodeWithAstElement(currentNode, $current);
 	        }
 	        
 	        try {
-	       		set($current, "min", lv_min_8, "DIGITS", currentNode);
+	       		set($current, "min", lv_min_8, "WHOLE_NUM_STR", lastConsumedNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
-	        currentNode = currentNode.getParent();
 	    }
 	
 )'max' 
@@ -657,12 +598,10 @@ ruleAttributeType returns [EObject current=null]
     }
 (	
 	
-	    lv_max_10=(	{ 
-        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getMaxDIGITSParserRuleCall_9_0_0(), currentNode); 
-    }
-	ruleDIGITS	{ 
-        currentNode = currentNode.getParent();
-    }
+	    lv_max_10=(	RULE_WHOLE_NUM_STR
+	{
+		createLeafNode(grammarAccess.getAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_9_0_0(), "max"); 
+	}
 
     |'unlimited' 
     {
@@ -730,10 +669,12 @@ ruleAttributeType returns [EObject current=null]
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
         }
-	RULE_ID
-	{
-		createLeafNode(grammarAccess.getAttributeTypeAccess().getEnumTypeOseeEnumTypeCrossReference_11_1_0(), "enumType"); 
-	}
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getEnumTypeOseeEnumTypeCrossReference_11_1_0(), currentNode); 
+	    }
+		ruleNAME_REFERENCE		{ 
+	        currentNode = currentNode.getParent();
+	    }
 
 		// TODO assign feature to currentNode
 	
@@ -939,9 +880,9 @@ ruleOseeEnumType returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getOseeEnumTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getOseeEnumTypeAccess().getNameNAME_REFERENCEParserRuleCall_1_0(), currentNode); 
 	    }
-	    lv_name_1=ruleQUALIFIED_NAME 
+	    lv_name_1=ruleNAME_REFERENCE 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getOseeEnumTypeRule().getType().getClassifier());
@@ -949,7 +890,7 @@ ruleOseeEnumType returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		set($current, "name", lv_name_1, "QUALIFIED_NAME", currentNode);
+	       		set($current, "name", lv_name_1, "NAME_REFERENCE", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -1032,23 +973,22 @@ ruleOseeEnumEntry returns [EObject current=null]
 	
 )(	
 	
-	    
-	    { 
-	        currentNode=createCompositeNode(grammarAccess.getOseeEnumEntryAccess().getOrdinalDIGITSParserRuleCall_2_0(), currentNode); 
-	    }
-	    lv_ordinal_2=ruleDIGITS 
+	    lv_ordinal_2=	RULE_WHOLE_NUM_STR
+	{
+		createLeafNode(grammarAccess.getOseeEnumEntryAccess().getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0(), "ordinal"); 
+	}
+ 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getOseeEnumEntryRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode.getParent(), $current);
+	            associateNodeWithAstElement(currentNode, $current);
 	        }
 	        
 	        try {
-	       		set($current, "ordinal", lv_ordinal_2, "DIGITS", currentNode);
+	       		set($current, "ordinal", lv_ordinal_2, "WHOLE_NUM_STR", lastConsumedNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
-	        currentNode = currentNode.getParent();
 	    }
 	
 )?);
@@ -1080,9 +1020,9 @@ ruleRelationType returns [EObject current=null]
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getNameNAME_REFERENCEParserRuleCall_1_0(), currentNode); 
 	    }
-	    lv_name_1=ruleQUALIFIED_NAME 
+	    lv_name_1=ruleNAME_REFERENCE 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getRelationTypeRule().getType().getClassifier());
@@ -1090,7 +1030,7 @@ ruleRelationType returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		set($current, "name", lv_name_1, "QUALIFIED_NAME", currentNode);
+	       		set($current, "name", lv_name_1, "NAME_REFERENCE", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -1138,10 +1078,12 @@ ruleRelationType returns [EObject current=null]
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
         }
-	RULE_ID
-	{
-		createLeafNode(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeArtifactTypeCrossReference_6_0(), "sideAArtifactType"); 
-	}
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeArtifactTypeCrossReference_6_0(), currentNode); 
+	    }
+		ruleNAME_REFERENCE		{ 
+	        currentNode = currentNode.getParent();
+	    }
 
 		// TODO assign feature to currentNode
 	
@@ -1182,10 +1124,12 @@ ruleRelationType returns [EObject current=null]
 	            associateNodeWithAstElement(currentNode, $current);
 	        }
         }
-	RULE_ID
-	{
-		createLeafNode(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeArtifactTypeCrossReference_10_0(), "sideBArtifactType"); 
-	}
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeArtifactTypeCrossReference_10_0(), currentNode); 
+	    }
+		ruleNAME_REFERENCE		{ 
+	        currentNode = currentNode.getParent();
+	    }
 
 		// TODO assign feature to currentNode
 	
@@ -1290,9 +1234,17 @@ ruleRelationMultiplicityEnum returns [Enumerator current=null]
         $current = grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_ONEEnumLiteralDeclaration_2().getEnumLiteral().getInstance();
         createLeafNode(grammarAccess.getRelationMultiplicityEnumAccess().getMANY_TO_ONEEnumLiteralDeclaration_2(), null); 
     }
+)
+    |(	'ONE_TO_ONE' 
+	{
+        $current = grammarAccess.getRelationMultiplicityEnumAccess().getONE_TO_ONEEnumLiteralDeclaration_3().getEnumLiteral().getInstance();
+        createLeafNode(grammarAccess.getRelationMultiplicityEnumAccess().getONE_TO_ONEEnumLiteralDeclaration_3(), null); 
+    }
 ));
 
 
+
+RULE_WHOLE_NUM_STR : ('0'..'9')+;
 
 RULE_ID : '^'? ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 

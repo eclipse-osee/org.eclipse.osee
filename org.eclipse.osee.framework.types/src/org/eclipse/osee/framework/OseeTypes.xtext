@@ -12,26 +12,27 @@ Import :
 	
 terminal WHOLE_NUM_STR: ('0'..'9')+;
 
+NAME_REFERENCE: STRING;
 QUALIFIED_NAME : ID ('.' ID)*;
 
 OseeType:
 	ArtifactType | RelationType | AttributeType | OseeEnumType;
 
 ArtifactType:
-	'abstract'? 'artifactType' name=STRING ('extends' superArtifactType=[ArtifactType|STRING])? '{'
+	'abstract'? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactType=[ArtifactType|NAME_REFERENCE])? '{'
 	    (validAttributeTypes+=(AttributeTypeRef))*
 	'}';
 
 AttributeTypeRef:
-	'attribute' validAttributeType=[AttributeType|STRING];
+	'attribute' validAttributeType=[AttributeType|NAME_REFERENCE];
 	
 AttributeType:
-		'attributeType' name=STRING ('extends' baseAttributeType=AttributeBaseType) '{'
+		'attributeType' name=NAME_REFERENCE ('extends' baseAttributeType=AttributeBaseType) '{'
 		'dataProvider' dataProvider = ('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | 'MappedAttributeDataProvider' | QUALIFIED_NAME)
 		'min' min=WHOLE_NUM_STR
 		'max' max=(WHOLE_NUM_STR | 'unlimited')
 		('taggerId' taggerId = ('DefaultAttributeTaggerProvider' | QUALIFIED_NAME))?
-		('enumType' enumType = [OseeEnumType|STRING])?
+		('enumType' enumType = [OseeEnumType|NAME_REFERENCE])?
 		('description' description = STRING)?
 		('defaultValue' defaultValue = STRING)?
 		('fileExtension' fileExtension = STRING)?
@@ -41,7 +42,7 @@ AttributeBaseType:
 	'BooleanAttribute' | 'CompressedContentAttribute' | 'DateAttribute' | 'EnumeratedAttribute' | 'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' | 'WordAttribute' | QUALIFIED_NAME;
 
 OseeEnumType:
-	'oseeEnumType' name=STRING '{' 
+	'oseeEnumType' name=NAME_REFERENCE '{' 
 		(enumEntries+=OseeEnumEntry)*
 	'}';
 
@@ -53,11 +54,11 @@ ONE_TO_MANY | MANY_TO_MANY | MANY_TO_ONE | ONE_TO_ONE
 ;
 
 RelationType:
-	'relationType' name=STRING '{'
+	'relationType' name=NAME_REFERENCE '{'
 		'sideAName' sideAName=STRING
-		'sideAArtifactType' sideAArtifactType=[ArtifactType|STRING]
+		'sideAArtifactType' sideAArtifactType=[ArtifactType|NAME_REFERENCE]
 		'sideBName' sideBName=STRING
-		'sideBArtifactType' sideBArtifactType=[ArtifactType|STRING]
+		'sideBArtifactType' sideBArtifactType=[ArtifactType|NAME_REFERENCE]
 		'defaultOrderType' defaultOrderType=('Lexicographical_Ascending' | 'Lexicographical_Descending' | 'Unordered' | ID )
 		'multiplicity' multiplicity=RelationMultiplicityEnum
 	'}';

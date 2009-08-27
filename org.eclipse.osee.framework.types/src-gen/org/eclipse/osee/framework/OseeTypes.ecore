@@ -46,6 +46,7 @@
     <eLiterals name="ONE_TO_MANY" literal="ONE_TO_MANY"/>
     <eLiterals name="MANY_TO_MANY" value="1" literal="MANY_TO_MANY"/>
     <eLiterals name="MANY_TO_ONE" value="2" literal="MANY_TO_ONE"/>
+    <eLiterals name="ONE_TO_ONE" value="3" literal="ONE_TO_ONE"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RelationType" eSuperTypes="#//OseeType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sideAName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

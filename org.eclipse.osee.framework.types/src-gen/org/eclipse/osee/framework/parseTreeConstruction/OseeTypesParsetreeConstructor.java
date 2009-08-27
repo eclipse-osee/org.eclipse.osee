@@ -420,13 +420,13 @@ protected class OseeType_OseeEnumTypeParserRuleCall_3 extends RuleCallToken {
 /************ begin Rule ArtifactType ****************
  *
  * ArtifactType:
- *   "abstract"? "artifactType" name=QUALIFIED_NAME ("extends" superArtifactType=[
- *   ArtifactType])? "{" validAttributeTypes+=AttributeTypeRef* "}";
+ *   "abstract"? "artifactType" name=NAME_REFERENCE ("extends" superArtifactType=[
+ *   ArtifactType|NAME_REFERENCE])? "{" validAttributeTypes+=AttributeTypeRef* "}";
  *
  **/
 
-// "abstract"? "artifactType" name=QUALIFIED_NAME ("extends" superArtifactType=[
-// ArtifactType])? "{" validAttributeTypes+=AttributeTypeRef* "}"
+// "abstract"? "artifactType" name=NAME_REFERENCE ("extends" superArtifactType=[
+// ArtifactType|NAME_REFERENCE])? "{" validAttributeTypes+=AttributeTypeRef* "}"
 protected class ArtifactType_Group extends GroupToken {
 	
 	public ArtifactType_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -469,7 +469,7 @@ protected class ArtifactType_ArtifactTypeKeyword_1 extends KeywordToken  {
 		
 }
 
-// name=QUALIFIED_NAME
+// name=NAME_REFERENCE
 protected class ArtifactType_NameAssignment_2 extends AssignmentToken  {
 	
 	public ArtifactType_NameAssignment_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -492,7 +492,7 @@ protected class ArtifactType_NameAssignment_2 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("name");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.DRC;
-			element = grammarAccess.getArtifactTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_2_0();
+			element = grammarAccess.getArtifactTypeAccess().getNameNAME_REFERENCEParserRuleCall_2_0();
 			return obj;
 		}
 		return null;
@@ -500,7 +500,7 @@ protected class ArtifactType_NameAssignment_2 extends AssignmentToken  {
 
 }
 
-// ("extends" superArtifactType=[ArtifactType])?
+// ("extends" superArtifactType=[ArtifactType|NAME_REFERENCE])?
 protected class ArtifactType_Group_3 extends GroupToken {
 	
 	public ArtifactType_Group_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -540,7 +540,7 @@ protected class ArtifactType_ExtendsKeyword_3_0 extends KeywordToken  {
 		
 }
 
-// superArtifactType=[ArtifactType]
+// superArtifactType=[ArtifactType|NAME_REFERENCE]
 protected class ArtifactType_SuperArtifactTypeAssignment_3_1 extends AssignmentToken  {
 	
 	public ArtifactType_SuperArtifactTypeAssignment_3_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -667,11 +667,11 @@ protected class ArtifactType_RightCurlyBracketKeyword_6 extends KeywordToken  {
 /************ begin Rule AttributeTypeRef ****************
  *
  * AttributeTypeRef:
- *   "attribute" validAttributeType=[AttributeType];
+ *   "attribute" validAttributeType=[AttributeType|NAME_REFERENCE];
  *
  **/
 
-// "attribute" validAttributeType=[AttributeType]
+// "attribute" validAttributeType=[AttributeType|NAME_REFERENCE]
 protected class AttributeTypeRef_Group extends GroupToken {
 	
 	public AttributeTypeRef_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -714,7 +714,7 @@ protected class AttributeTypeRef_AttributeKeyword_0 extends KeywordToken  {
 		
 }
 
-// validAttributeType=[AttributeType]
+// validAttributeType=[AttributeType|NAME_REFERENCE]
 protected class AttributeTypeRef_ValidAttributeTypeAssignment_1 extends AssignmentToken  {
 	
 	public AttributeTypeRef_ValidAttributeTypeAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -755,23 +755,23 @@ protected class AttributeTypeRef_ValidAttributeTypeAssignment_1 extends Assignme
 /************ begin Rule AttributeType ****************
  *
  * AttributeType:
- *   "attributeType" name=QUALIFIED_NAME ("extends" baseAttributeType=AttributeBaseType)
+ *   "attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
  *   "{" "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
  *   "UriAttributeDataProvider" | "MappedAttributeDataProvider" | QUALIFIED_NAME ) "min" min
- *   =DIGITS "max" max=( DIGITS | "unlimited" ) ("taggerId" taggerId=(
+ *   =WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=(
  *   "DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? ("enumType" enumType=[
- *   OseeEnumType])? ("description" description=STRING)? ("defaultValue" defaultValue=
- *   STRING)? ("fileExtension" fileExtension=STRING)? "}";
+ *   OseeEnumType|NAME_REFERENCE])? ("description" description=STRING)? ("defaultValue"
+ *   defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}";
  *
  **/
 
-// "attributeType" name=QUALIFIED_NAME ("extends" baseAttributeType=AttributeBaseType)
+// "attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
 // "{" "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
 // "UriAttributeDataProvider" | "MappedAttributeDataProvider" | QUALIFIED_NAME ) "min" min
-// =DIGITS "max" max=( DIGITS | "unlimited" ) ("taggerId" taggerId=(
+// =WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=(
 // "DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? ("enumType" enumType=[
-// OseeEnumType])? ("description" description=STRING)? ("defaultValue" defaultValue=
-// STRING)? ("fileExtension" fileExtension=STRING)? "}"
+// OseeEnumType|NAME_REFERENCE])? ("description" description=STRING)? ("defaultValue"
+// defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}"
 protected class AttributeType_Group extends GroupToken {
 	
 	public AttributeType_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -814,7 +814,7 @@ protected class AttributeType_AttributeTypeKeyword_0 extends KeywordToken  {
 		
 }
 
-// name=QUALIFIED_NAME
+// name=NAME_REFERENCE
 protected class AttributeType_NameAssignment_1 extends AssignmentToken  {
 	
 	public AttributeType_NameAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -837,7 +837,7 @@ protected class AttributeType_NameAssignment_1 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("name");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.DRC;
-			element = grammarAccess.getAttributeTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_1_0();
+			element = grammarAccess.getAttributeTypeAccess().getNameNAME_REFERENCEParserRuleCall_1_0();
 			return obj;
 		}
 		return null;
@@ -1024,7 +1024,7 @@ protected class AttributeType_MinKeyword_6 extends KeywordToken  {
 		
 }
 
-// min=DIGITS
+// min=WHOLE_NUM_STR
 protected class AttributeType_MinAssignment_7 extends AssignmentToken  {
 	
 	public AttributeType_MinAssignment_7(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1045,9 +1045,9 @@ protected class AttributeType_MinAssignment_7 extends AssignmentToken  {
 	protected IInstanceDescription tryConsumeVal() {
 		if((value = current.getConsumable("min",true)) == null) return null;
 		IInstanceDescription obj = current.cloneAndConsume("min");
-		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
-			type = AssignmentType.DRC;
-			element = grammarAccess.getAttributeTypeAccess().getMinDIGITSParserRuleCall_7_0();
+		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
+			type = AssignmentType.LRC;
+			element = grammarAccess.getAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_7_0();
 			return obj;
 		}
 		return null;
@@ -1075,7 +1075,7 @@ protected class AttributeType_MaxKeyword_8 extends KeywordToken  {
 		
 }
 
-// max=( DIGITS | "unlimited" )
+// max=( WHOLE_NUM_STR | "unlimited" )
 protected class AttributeType_MaxAssignment_9 extends AssignmentToken  {
 	
 	public AttributeType_MaxAssignment_9(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1101,9 +1101,9 @@ protected class AttributeType_MaxAssignment_9 extends AssignmentToken  {
 			element = grammarAccess.getAttributeTypeAccess().getMaxUnlimitedKeyword_9_0_1();
 			return obj;
 		}
-		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
-			type = AssignmentType.DRC;
-			element = grammarAccess.getAttributeTypeAccess().getMaxDIGITSParserRuleCall_9_0_0();
+		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
+			type = AssignmentType.LRC;
+			element = grammarAccess.getAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_9_0_0();
 			return obj;
 		}
 		return null;
@@ -1188,7 +1188,7 @@ protected class AttributeType_TaggerIdAssignment_10_1 extends AssignmentToken  {
 }
 
 
-// ("enumType" enumType=[OseeEnumType])?
+// ("enumType" enumType=[OseeEnumType|NAME_REFERENCE])?
 protected class AttributeType_Group_11 extends GroupToken {
 	
 	public AttributeType_Group_11(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1229,7 +1229,7 @@ protected class AttributeType_EnumTypeKeyword_11_0 extends KeywordToken  {
 		
 }
 
-// enumType=[OseeEnumType]
+// enumType=[OseeEnumType|NAME_REFERENCE]
 protected class AttributeType_EnumTypeAssignment_11_1 extends AssignmentToken  {
 	
 	public AttributeType_EnumTypeAssignment_11_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1522,11 +1522,11 @@ protected class AttributeType_RightCurlyBracketKeyword_15 extends KeywordToken  
 /************ begin Rule OseeEnumType ****************
  *
  * OseeEnumType:
- *   "oseeEnumType" name=QUALIFIED_NAME "{" enumEntries+=OseeEnumEntry* "}";
+ *   "oseeEnumType" name=NAME_REFERENCE "{" enumEntries+=OseeEnumEntry* "}";
  *
  **/
 
-// "oseeEnumType" name=QUALIFIED_NAME "{" enumEntries+=OseeEnumEntry* "}"
+// "oseeEnumType" name=NAME_REFERENCE "{" enumEntries+=OseeEnumEntry* "}"
 protected class OseeEnumType_Group extends GroupToken {
 	
 	public OseeEnumType_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1569,7 +1569,7 @@ protected class OseeEnumType_OseeEnumTypeKeyword_0 extends KeywordToken  {
 		
 }
 
-// name=QUALIFIED_NAME
+// name=NAME_REFERENCE
 protected class OseeEnumType_NameAssignment_1 extends AssignmentToken  {
 	
 	public OseeEnumType_NameAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1592,7 +1592,7 @@ protected class OseeEnumType_NameAssignment_1 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("name");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.DRC;
-			element = grammarAccess.getOseeEnumTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_1_0();
+			element = grammarAccess.getOseeEnumTypeAccess().getNameNAME_REFERENCEParserRuleCall_1_0();
 			return obj;
 		}
 		return null;
@@ -1691,11 +1691,11 @@ protected class OseeEnumType_RightCurlyBracketKeyword_4 extends KeywordToken  {
 /************ begin Rule OseeEnumEntry ****************
  *
  * OseeEnumEntry:
- *   "entry" name=STRING ordinal=DIGITS?;
+ *   "entry" name=STRING ordinal=WHOLE_NUM_STR?;
  *
  **/
 
-// "entry" name=STRING ordinal=DIGITS?
+// "entry" name=STRING ordinal=WHOLE_NUM_STR?
 protected class OseeEnumEntry_Group extends GroupToken {
 	
 	public OseeEnumEntry_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1770,7 +1770,7 @@ protected class OseeEnumEntry_NameAssignment_1 extends AssignmentToken  {
 
 }
 
-// ordinal=DIGITS?
+// ordinal=WHOLE_NUM_STR?
 protected class OseeEnumEntry_OrdinalAssignment_2 extends AssignmentToken  {
 	
 	public OseeEnumEntry_OrdinalAssignment_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1791,9 +1791,9 @@ protected class OseeEnumEntry_OrdinalAssignment_2 extends AssignmentToken  {
 	protected IInstanceDescription tryConsumeVal() {
 		if((value = current.getConsumable("ordinal",false)) == null) return null;
 		IInstanceDescription obj = current.cloneAndConsume("ordinal");
-		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
-			type = AssignmentType.DRC;
-			element = grammarAccess.getOseeEnumEntryAccess().getOrdinalDIGITSParserRuleCall_2_0();
+		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
+			type = AssignmentType.LRC;
+			element = grammarAccess.getOseeEnumEntryAccess().getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0();
 			return obj;
 		}
 		return null;
@@ -1808,19 +1808,21 @@ protected class OseeEnumEntry_OrdinalAssignment_2 extends AssignmentToken  {
 /************ begin Rule RelationType ****************
  *
  * RelationType:
- *   "relationType" name=QUALIFIED_NAME "{" "sideAName" sideAName=STRING
- *   "sideAArtifactType" sideAArtifactType=[ArtifactType] "sideBName" sideBName=STRING
- *   "sideBArtifactType" sideBArtifactType=[ArtifactType] "defaultOrderType"
- *   defaultOrderType=( "Lexicographical_Ascending" | "Lexicographical_Descending" |
- *   "Unordered" | ID ) "multiplicity" multiplicity=RelationMultiplicityEnum "}";
+ *   "relationType" name=NAME_REFERENCE "{" "sideAName" sideAName=STRING
+ *   "sideAArtifactType" sideAArtifactType=[ArtifactType|NAME_REFERENCE] "sideBName"
+ *   sideBName=STRING "sideBArtifactType" sideBArtifactType=[ArtifactType|
+ *   NAME_REFERENCE] "defaultOrderType" defaultOrderType=( "Lexicographical_Ascending" |
+ *   "Lexicographical_Descending" | "Unordered" | ID ) "multiplicity" multiplicity=
+ *   RelationMultiplicityEnum "}";
  *
  **/
 
-// "relationType" name=QUALIFIED_NAME "{" "sideAName" sideAName=STRING
-// "sideAArtifactType" sideAArtifactType=[ArtifactType] "sideBName" sideBName=STRING
-// "sideBArtifactType" sideBArtifactType=[ArtifactType] "defaultOrderType"
-// defaultOrderType=( "Lexicographical_Ascending" | "Lexicographical_Descending" |
-// "Unordered" | ID ) "multiplicity" multiplicity=RelationMultiplicityEnum "}"
+// "relationType" name=NAME_REFERENCE "{" "sideAName" sideAName=STRING
+// "sideAArtifactType" sideAArtifactType=[ArtifactType|NAME_REFERENCE] "sideBName"
+// sideBName=STRING "sideBArtifactType" sideBArtifactType=[ArtifactType|
+// NAME_REFERENCE] "defaultOrderType" defaultOrderType=( "Lexicographical_Ascending" |
+// "Lexicographical_Descending" | "Unordered" | ID ) "multiplicity" multiplicity=
+// RelationMultiplicityEnum "}"
 protected class RelationType_Group extends GroupToken {
 	
 	public RelationType_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1863,7 +1865,7 @@ protected class RelationType_RelationTypeKeyword_0 extends KeywordToken  {
 		
 }
 
-// name=QUALIFIED_NAME
+// name=NAME_REFERENCE
 protected class RelationType_NameAssignment_1 extends AssignmentToken  {
 	
 	public RelationType_NameAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1886,7 +1888,7 @@ protected class RelationType_NameAssignment_1 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("name");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.DRC;
-			element = grammarAccess.getRelationTypeAccess().getNameQUALIFIED_NAMEParserRuleCall_1_0();
+			element = grammarAccess.getRelationTypeAccess().getNameNAME_REFERENCEParserRuleCall_1_0();
 			return obj;
 		}
 		return null;
@@ -1985,7 +1987,7 @@ protected class RelationType_SideAArtifactTypeKeyword_5 extends KeywordToken  {
 		
 }
 
-// sideAArtifactType=[ArtifactType]
+// sideAArtifactType=[ArtifactType|NAME_REFERENCE]
 protected class RelationType_SideAArtifactTypeAssignment_6 extends AssignmentToken  {
 	
 	public RelationType_SideAArtifactTypeAssignment_6(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -2090,7 +2092,7 @@ protected class RelationType_SideBArtifactTypeKeyword_9 extends KeywordToken  {
 		
 }
 
-// sideBArtifactType=[ArtifactType]
+// sideBArtifactType=[ArtifactType|NAME_REFERENCE]
 protected class RelationType_SideBArtifactTypeAssignment_10 extends AssignmentToken  {
 	
 	public RelationType_SideBArtifactTypeAssignment_10(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
