@@ -126,6 +126,10 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (smaMgr.isInTransition()) return;
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (smaMgr.getSma().isDeleted()) {
+         OseeEventManager.removeListener(this);
+         return;
+      }
       // Since SMAEditor is refreshed when a sibling workflow is changed, need to refresh this
       // list of actionable items when a sibling changes
       for (TeamWorkFlowArtifact teamWf : smaMgr.getSma().getParentActionArtifact().getTeamWorkFlowArtifacts()) {
@@ -148,8 +152,8 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
 
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListener(this);
+      super.dispose();
    }
 
 }

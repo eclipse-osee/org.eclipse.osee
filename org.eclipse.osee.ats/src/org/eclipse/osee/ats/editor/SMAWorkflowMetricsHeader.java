@@ -85,12 +85,9 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
          return;
       }
       try {
-         if (!percentLabel.isDisposed())
-            percentLabel.setText(String.valueOf(smaMgr.getSma().getPercentCompleteSMATotal()));
-         if (estHoursLabel != null && !estHoursLabel.isDisposed())
-            estHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(smaMgr.getSma().getEstimatedHoursTotal())));
-         if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed())
-            hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(smaMgr.getSma().getHoursSpentSMATotal())));
+         if (!percentLabel.isDisposed()) percentLabel.setText(String.valueOf(smaMgr.getSma().getPercentCompleteSMATotal()));
+         if (estHoursLabel != null && !estHoursLabel.isDisposed()) estHoursLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(smaMgr.getSma().getEstimatedHoursTotal())));
+         if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) hoursSpentLabel.setText(String.valueOf(AtsUtil.doubleToI18nString(smaMgr.getSma().getHoursSpentSMATotal())));
          if (hoursSpentLabel != null && !hoursSpentLabel.isDisposed()) {
             Result result = smaMgr.getSma().isWorldViewRemainHoursValid();
             if (result.isFalse())
@@ -108,10 +105,12 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (smaMgr.isInTransition())
+      if (smaMgr.isInTransition()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (smaMgr.getSma().isDeleted()) {
+         OseeEventManager.removeListener(this);
          return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId())
-         return;
+      }
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -126,8 +125,8 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
 
    @Override
    public void dispose() {
-      super.dispose();
       OseeEventManager.removeListener(this);
+      super.dispose();
    }
 
 }

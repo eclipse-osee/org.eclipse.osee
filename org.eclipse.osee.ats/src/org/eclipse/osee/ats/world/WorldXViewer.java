@@ -113,6 +113,10 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
+      if (thisXViewer.getTree().isDisposed()) {
+         OseeEventManager.removeListener(this);
+         return;
+      }
       try {
          if (loadedArtifacts.getLoadedArtifacts().isEmpty()) {
             return;
@@ -129,6 +133,10 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    @Override
    public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) {
+      if (thisXViewer.getTree().isDisposed()) {
+         OseeEventManager.removeListener(this);
+         return;
+      }
       try {
          if (loadedArtifacts.getLoadedArtifacts().size() == 0) {
             return;
@@ -150,6 +158,10 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
+      if (thisXViewer.getTree().isDisposed()) {
+         OseeEventManager.removeListener(this);
+         return;
+      }
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) {
          return;
       }
@@ -182,6 +194,10 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
             arts.addAll(transData.cacheRelationChangedArtifacts);
             arts.addAll(transData.cacheRelationDeletedArtifacts);
             for (Artifact art : arts) {
+               // Don't refresh deleted artifacts
+               if (art.isDeleted()) {
+                  continue;
+               }
                if (art instanceof IWorldViewArtifact) {
                   refresh(art);
                   // If parent is loaded and child changed, refresh parent
