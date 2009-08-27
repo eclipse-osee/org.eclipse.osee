@@ -24,20 +24,17 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 public class DataTypeElementPropertySource extends ModelPropertySource {
 
    protected final PropertyId idName;
-   protected final PropertyId idNamespace;
    protected final PropertyId idUniqueId;
 
    public DataTypeElementPropertySource(String categoryName, Object dataType) {
       super(dataType);
       idUniqueId = new PropertyId(categoryName, "UniqueId");
       idName = new PropertyId(categoryName, "Name");
-      idNamespace = new PropertyId(categoryName, "Namespace");
    }
 
    protected void addPropertyDescriptors(List<IPropertyDescriptor> list) {
       list.add(new ReadOnlyPropertyDescriptor(idUniqueId));
       list.add(new StringPropertyDescriptor(idName));
-      list.add(new StringPropertyDescriptor(idNamespace));
    }
 
    protected DataType getDataTypeElement() {
@@ -45,33 +42,37 @@ public class DataTypeElementPropertySource extends ModelPropertySource {
    }
 
    public Object getPropertyValue(Object id) {
-      if (id == idUniqueId) return ReadOnlyPropertyDescriptor.fromModel(getDataTypeElement().getUniqueId());
-      if (id == idName) return StringPropertyDescriptor.fromModel(getDataTypeElement().getName());
-      if (id == idNamespace) return StringPropertyDescriptor.fromModel(getDataTypeElement().getNamespace());
+      if (id == idUniqueId)
+         return ReadOnlyPropertyDescriptor.fromModel(getDataTypeElement().getUniqueId());
+      if (id == idName)
+         return StringPropertyDescriptor.fromModel(getDataTypeElement().getName());
       return null;
    }
 
    public boolean isPropertyResettable(Object id) {
-      return id == idName || id == idNamespace;
+      return id == idName;
    }
 
    public boolean isPropertySet(Object id) {
-      if (id == idUniqueId) return true;
-      if (id == idName) return getDataTypeElement().getName() != null;
-      if (id == idNamespace) return getDataTypeElement().getNamespace() != null;
+      if (id == idUniqueId)
+         return true;
+      if (id == idName)
+         return getDataTypeElement().getName() != null;
       return false;
    }
 
    public void resetPropertyValue(Object id) {
-      if (id == idUniqueId) return;
-      if (id == idName) getDataTypeElement().setName(null);
-      if (id == idNamespace) getDataTypeElement().setNamespace(null);
+      if (id == idUniqueId)
+         return;
+      if (id == idName)
+         getDataTypeElement().setName(null);
    }
 
    public void setPropertyValue(Object id, Object value) {
-      if (id == idUniqueId) return;
-      if (id == idName) getDataTypeElement().setName(StringPropertyDescriptor.toModel(value));
-      if (id == idNamespace) getDataTypeElement().setNamespace(StringPropertyDescriptor.toModel(value));
+      if (id == idUniqueId)
+         return;
+      if (id == idName)
+         getDataTypeElement().setName(StringPropertyDescriptor.toModel(value));
    }
 
 }

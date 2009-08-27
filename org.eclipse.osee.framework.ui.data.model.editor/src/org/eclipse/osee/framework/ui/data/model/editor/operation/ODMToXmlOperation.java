@@ -70,7 +70,7 @@ public class ODMToXmlOperation {
       }
       HashCollection<String, ArtifactDataType> typesByNamespace = new HashCollection<String, ArtifactDataType>();
       for (ArtifactDataType type : dataTypes) {
-         typesByNamespace.put(type.getNamespace(), type);
+         typesByNamespace.put("default", type);
       }
       for (String key : typesByNamespace.keySet()) {
          Collection<ArtifactDataType> types = typesByNamespace.getValues(key);

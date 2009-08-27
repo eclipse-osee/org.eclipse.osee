@@ -18,11 +18,11 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IOseeDataTypeProcessor {
 
-   public void onAttributeType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException;
+   public void onAttributeType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String attributeName, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException;
 
-   public void onArtifactType(String namespace, String artifactTypeName, String superArtifactTypeName) throws OseeCoreException;
+   public void onArtifactType(boolean isAbstract, String artifactTypeName, String superArtifactTypeName) throws OseeCoreException;
 
-   public void onRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) throws OseeCoreException;
+   public void onRelationType(String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) throws OseeCoreException;
 
    public void onAttributeValidity(String attributeName, String artifactSuperTypeName, Collection<String> concreteTypes) throws OseeCoreException;
 

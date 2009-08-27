@@ -56,7 +56,8 @@ public class TextModelToOseeOperation extends AbstractOperation {
       if (superType != null) {
          superTypeId = superType.getName();
       }
-      ArtifactTypeManager.createType("", artifactType.getName(), superTypeId);
+      // TODO: Figure out abstract setting in model
+      ArtifactTypeManager.createType(false, artifactType.getName(), superTypeId);
    }
 
    private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {
@@ -81,7 +82,6 @@ public class TextModelToOseeOperation extends AbstractOperation {
             attributeType.getBaseAttributeType(), // 
             attributeType.getDataProvider(), // 
             attributeType.getFileExtension(), //
-            "", //
             attributeType.getName(), //
             attributeType.getDefaultValue(), //
             String.valueOf(enumTypeId), //
@@ -92,8 +92,7 @@ public class TextModelToOseeOperation extends AbstractOperation {
    }
 
    private void handleRelationType(RelationType relationType) throws OseeCoreException {
-      RelationTypeManager.createRelationType("", //
-            relationType.getName(), //
+      RelationTypeManager.createRelationType(relationType.getName(), //
             relationType.getSideAName(), //
             relationType.getSideBName(), //
             "", //

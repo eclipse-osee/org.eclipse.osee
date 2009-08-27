@@ -43,7 +43,7 @@ public class ArtifactTypeContentProvider implements ITreeContentProvider {
                topLevel.add(artifact);
             }
          }
-         data.add(new PackageModel(artifacts.get(0).getNamespace(), topLevel));
+         data.add(new PackageModel(topLevel));
          return data.toArray();
       }
       if (element instanceof PackageModel) {

@@ -69,7 +69,7 @@ public class OseeDataTypeDatastore {
       return relationDataTypes;
    }
 
-   public static List<ArtifactDataType> getArtifactDataTypes() throws OseeDataStoreException {
+   public static List<ArtifactDataType> getArtifactDataTypes() throws OseeCoreException {
       List<ArtifactDataType> artifactDataTypes = new ArrayList<ArtifactDataType>();
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          ArtifactDataType artifactDataType =
@@ -125,18 +125,11 @@ public class OseeDataTypeDatastore {
 
    public static HashCollection<String, String> getArtifactInheritance() throws OseeCoreException {
       HashCollection<String, String> toReturn = new HashCollection<String, String>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         chStmt.runPreparedQuery(2000, "select * from osee_artifact_type_inheritance");
-         while (chStmt.next()) {
-            try {
-               toReturn.put(chStmt.getString("art_type_ancestor_id"), chStmt.getString("art_type_descendant_id"));
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
+      for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
+         if (artifactType.hasSuperArtifactType()) {
+            toReturn.put(String.valueOf(artifactType.getSuperArtifactType().getArtTypeId()),
+                  String.valueOf(artifactType.getArtTypeId()));
          }
-      } finally {
-         chStmt.close();
       }
       return toReturn;
    }

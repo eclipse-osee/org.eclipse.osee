@@ -27,7 +27,6 @@ public class AttributeType implements Comparable<AttributeType> {
    private final Class<? extends Attribute<?>> baseAttributeClass;
    private final Class<? extends IAttributeDataProvider> providerAttributeClass;
    private final int attrTypeId;
-   private final String namespace;
    private final String name;
    private final String defaultValue;
    private final int oseeEnumTypeId;
@@ -49,7 +48,7 @@ public class AttributeType implements Comparable<AttributeType> {
     * @param maxOccurrences
     * @param tipText
     */
-   protected AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, int oseeEnumTypeId, int minOccurrences, int maxOccurrences, String tipText, String taggerId) {
+   protected AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String name, String defaultValue, int oseeEnumTypeId, int minOccurrences, int maxOccurrences, String tipText, String taggerId) {
       if (minOccurrences < 0) {
          throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
       }
@@ -60,7 +59,6 @@ public class AttributeType implements Comparable<AttributeType> {
       this.attrTypeId = attrTypeId;
       this.baseAttributeClass = baseAttributeClass;
       this.providerAttributeClass = providerAttributeClass;
-      this.namespace = namespace == null ? "" : namespace;
       this.name = name;
       this.defaultValue = defaultValue;
       this.oseeEnumTypeId = oseeEnumTypeId;
@@ -114,13 +112,6 @@ public class AttributeType implements Comparable<AttributeType> {
    }
 
    /**
-    * @return the namespace
-    */
-   public String getNamespace() {
-      return namespace;
-   }
-
-   /**
     * @return Returns the tipText.
     */
    public String getTipText() {
@@ -149,7 +140,6 @@ public class AttributeType implements Comparable<AttributeType> {
       final int prime = 31;
       int result = 1;
       result = prime * result + (name == null ? 0 : name.hashCode());
-      result = prime * result + (namespace == null ? 0 : namespace.hashCode());
       return result;
    }
 
@@ -170,13 +160,6 @@ public class AttributeType implements Comparable<AttributeType> {
             return false;
          }
       } else if (!name.equals(other.name)) {
-         return false;
-      }
-      if (namespace == null) {
-         if (other.namespace != null) {
-            return false;
-         }
-      } else if (!namespace.equals(other.namespace)) {
          return false;
       }
       return true;

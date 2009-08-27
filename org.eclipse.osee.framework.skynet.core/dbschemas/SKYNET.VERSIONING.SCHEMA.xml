@@ -67,25 +67,14 @@
 
 	<Table name="OSEE_ARTIFACT_TYPE" schema="OSEE" tablespace="osee_data">
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="NAMESPACE" limits="120" type="VARCHAR" />
+		<Column id="SUPER_ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="IS_ABSTRACT" defaultValue="not null" type="INTEGER" />
 		<Column id="NAME" defaultValue="not null" limits="75" type="VARCHAR" />
 	    <Column id="IMAGE" type="BLOB" />
 		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_AR_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID" />
 		<Index id="OSEE_ARTIFACT_TYPE_N_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="NAME"/>
 		</Index>
-	</Table>
-
-	<Table name="OSEE_ARTIFACT_TYPE_INHERITANCE" schema="OSEE" tablespace="osee_data">
-		<Column id="ART_TYPE_ANCESTOR_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="ART_TYPE_DESCENDANT_ID" defaultValue="not null" type="INTEGER" />
-		<Constraint schema="OSEE" id="OSEE_ART_TYPE_INHERIT_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ANCESTOR_ID, ART_TYPE_DESCENDANT_ID" />
-		<Constraint schema="OSEE" id="OSEE_ART_INHERIT_PARENT_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ANCESTOR_ID">
-			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" onDelete="CASCADE" />
-		</Constraint>
-		<Constraint schema="OSEE" id="OSEE_ART_INHERIT_CHILD_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_DESCENDANT_ID">
-			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" onDelete="CASCADE" />
-		</Constraint>
 	</Table>
 
 	<Table name="OSEE_ATTRIBUTE" schema="OSEE" tablespace="osee_data">
@@ -149,7 +138,6 @@
 		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="FILE_TYPE_EXTENSION" limits="20" type="VARCHAR" />
-		<Column id="NAMESPACE" limits="120" type="VARCHAR" />
 		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Column id="DEFAULT_VALUE" limits="2000" type="VARCHAR" />
 		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="INTEGER" />
@@ -244,7 +232,6 @@
 	
 	<Table name="OSEE_RELATION_LINK_TYPE" schema="OSEE" tablespace="osee_data">
 		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="NAMESPACE" limits="120" type="VARCHAR" />
 		<Column id="TYPE_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Column id="A_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Column id="B_NAME" defaultValue="not null" limits="50" type="VARCHAR" />

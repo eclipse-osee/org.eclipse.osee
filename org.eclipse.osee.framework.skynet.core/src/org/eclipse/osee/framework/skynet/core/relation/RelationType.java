@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
  */
 public class RelationType implements Comparable<RelationType> {
    private final int relationTypeId;
-   private final String namespace;
    private final String typeName;
    private final String sideAName;
    private final String sideBName;
@@ -27,10 +26,9 @@ public class RelationType implements Comparable<RelationType> {
    private final String ordered;
    private final String defaultOrderTypeGuid;
 
-   public RelationType(int linkTypeId, String namespace, String typeName, String sideAName, String sideBName, String aToBPhrasing, String bToAPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) {
+   public RelationType(int linkTypeId, String typeName, String sideAName, String sideBName, String aToBPhrasing, String bToAPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) {
       super();
       this.relationTypeId = linkTypeId;
-      this.namespace = namespace == null ? "" : namespace;
       this.typeName = typeName;
       this.sideAName = sideAName;
       this.sideBName = sideBName;
@@ -53,10 +51,6 @@ public class RelationType implements Comparable<RelationType> {
     */
    public String getBToAPhrasing() {
       return bToAPhrasing;
-   }
-
-   public String getNamespace() {
-      return namespace;
    }
 
    /**

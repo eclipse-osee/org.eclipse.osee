@@ -37,14 +37,15 @@ public class DbOseeDataTypeProcessor implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onArtifactType(String namespace, String artifactTypeName, String superArtifactTypeName) throws OseeCoreException {
-      ArtifactTypeManager.createType(namespace, artifactTypeName, superArtifactTypeName);
+   public void onArtifactType(boolean isAbstract, String artifactTypeName, String superArtifactTypeName) throws OseeCoreException {
+      ArtifactTypeManager.createType(isAbstract, artifactTypeName, superArtifactTypeName);
    }
 
    @Override
-   public void onAttributeType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String attributeName, String defaultValue, String validityXml, int minOccurrence, int maxOccurrence, String tipText, String taggerId) throws OseeCoreException {
-      AttributeTypeManager.createType(attributeBaseType, attributeProviderTypeName, fileTypeExtension, namespace,
-            attributeName, defaultValue, validityXml, minOccurrence, maxOccurrence, tipText, taggerId);
+   public void onAttributeType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String attributeName, String defaultValue, String validityXml, int minOccurrence, int maxOccurrence, String tipText, String taggerId) throws OseeCoreException {
+      AttributeTypeManager.createType(attributeBaseType, attributeProviderTypeName, fileTypeExtension, attributeName,
+            defaultValue, validityXml, minOccurrence, maxOccurrence, tipText, taggerId);
+
    }
 
    @Override
@@ -59,9 +60,9 @@ public class DbOseeDataTypeProcessor implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderIdGuid) throws OseeCoreException {
-      RelationTypeManager.createRelationType(namespace, relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
-            shortName, ordered, defaultOrderIdGuid);
+   public void onRelationType(String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderIdGuid) throws OseeCoreException {
+      RelationTypeManager.createRelationType(relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing, shortName,
+            ordered, defaultOrderIdGuid);
    }
 
    @Override

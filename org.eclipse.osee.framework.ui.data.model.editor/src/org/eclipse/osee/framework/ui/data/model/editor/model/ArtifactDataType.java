@@ -34,15 +34,15 @@ public class ArtifactDataType extends DataType {
    private Set<ArtifactDataType> subTypes;
 
    public ArtifactDataType() {
-      this(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, null);
+      this(EMPTY_STRING, EMPTY_STRING, null);
    }
 
-   public ArtifactDataType(String namespace, String name, Image imageName) {
-      this(EMPTY_STRING, namespace, name, imageName);
+   public ArtifactDataType(String name, Image imageName) {
+      this(EMPTY_STRING, name, imageName);
    }
 
-   public ArtifactDataType(String uniqueId, String namespace, String name, Image image) {
-      super(uniqueId, namespace, name);
+   public ArtifactDataType(String uniqueId, String name, Image image) {
+      super(uniqueId, name);
       this.image = image;
       this.attributes = new TypeManager<AttributeDataType>();
       this.relations = new TypeManager<RelationDataType>();

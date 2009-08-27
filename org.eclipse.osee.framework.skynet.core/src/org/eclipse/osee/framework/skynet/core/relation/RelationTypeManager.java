@@ -38,10 +38,10 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class RelationTypeManager {
    private static final String SELECT_LINK_TYPES = "SELECT * FROM osee_relation_link_type";
    private static final String INSERT_RELATION_LINK_TYPE =
-         "INSERT INTO osee_relation_link_type (rel_link_type_id, namespace, type_name, a_name, b_name, ab_phrasing, ba_phrasing, short_name, user_ordered, default_order_type_guid) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+         "INSERT INTO osee_relation_link_type (rel_link_type_id, type_name, a_name, b_name, ab_phrasing, ba_phrasing, short_name, user_ordered, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?)";
 
    private static final String INSERT_VALID_RELATION =
-         "INSERT INTO osee_valid_relations (art_type_id, rel_link_type_id, side_a_max, side_b_max, branch_id) VALUES (?, ?, ?, ?, ?)";
+         "INSERT INTO osee_valid_relations (art_type_id, rel_link_type_id, side_a_max, side_b_max, branch_id) VALUES (?,?,?,?,?)";
 
    private final HashMap<String, RelationType> nameToTypeMap = new HashMap<String, RelationType>();
    private final HashMap<Integer, RelationType> idToTypeMap = new HashMap<Integer, RelationType>();
@@ -65,7 +65,7 @@ public class RelationTypeManager {
    }
 
    /**
-    * @return all Relation types in the datastore
+    * @return all Relation types
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist
     */
@@ -102,26 +102,22 @@ public class RelationTypeManager {
       return relationType;
    }
 
-   public static RelationType getType(String namespace, String typeName) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public static RelationType getType(String typeName) throws OseeTypeDoesNotExist, OseeDataStoreException {
       ensurePopulated();
-      RelationType relationType = instance.nameToTypeMap.get(namespace + typeName);
+      RelationType relationType = instance.nameToTypeMap.get(typeName);
       if (relationType == null) {
-         throw new OseeTypeDoesNotExist("The relation type: \"" + namespace + typeName + "\" does not exist");
+         throw new OseeTypeDoesNotExist("The relation type [" + typeName + "] does not exist");
       }
       return relationType;
    }
 
-   public static boolean typeExists(String namespace, String name) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static boolean typeExists(String name) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ensurePopulated();
-      return instance.nameToTypeMap.get(namespace + name) != null;
-   }
-
-   public static RelationType getType(String typeName) throws OseeTypeDoesNotExist, OseeDataStoreException {
-      return getType("", typeName);
+      return instance.nameToTypeMap.get(name) != null;
    }
 
    private void cache(RelationType relationType) {
-      nameToTypeMap.put(relationType.getNamespace() + relationType.getTypeName(), relationType);
+      nameToTypeMap.put(relationType.getTypeName(), relationType);
       idToTypeMap.put(relationType.getRelationTypeId(), relationType);
    }
 
@@ -145,10 +141,10 @@ public class RelationTypeManager {
 
          while (chStmt.next()) {
             RelationType relationType =
-                  new RelationType(chStmt.getInt("rel_link_type_id"), chStmt.getString("namespace"),
-                        chStmt.getString("type_name"), chStmt.getString("a_name"), chStmt.getString("b_name"),
-                        chStmt.getString("ab_phrasing"), chStmt.getString("ba_phrasing"),
-                        chStmt.getString("short_name"), chStmt.getString("user_ordered"), chStmt.getString("default_order_type_guid"));
+                  new RelationType(chStmt.getInt("rel_link_type_id"), chStmt.getString("type_name"),
+                        chStmt.getString("a_name"), chStmt.getString("b_name"), chStmt.getString("ab_phrasing"),
+                        chStmt.getString("ba_phrasing"), chStmt.getString("short_name"),
+                        chStmt.getString("user_ordered"), chStmt.getString("default_order_type_guid"));
             cache(relationType);
          }
          loadLinkValidities();
@@ -197,9 +193,9 @@ public class RelationTypeManager {
     * @param shortName An abbreviated name to display for the link type.
     * @throws OseeCoreException
     */
-   public static RelationType createRelationType(String namespace, String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String orderTypeGuid) throws OseeCoreException {
-      if (typeExists(namespace, relationTypeName)) {
-         return getType(namespace, relationTypeName);
+   public static RelationType createRelationType(String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String orderTypeGuid) throws OseeCoreException {
+      if (typeExists(relationTypeName)) {
+         return getType(relationTypeName);
       }
       if (!Strings.isValid(relationTypeName)) {
          throw new IllegalArgumentException("The relationName can not be null or empty");
@@ -222,12 +218,12 @@ public class RelationTypeManager {
 
       int relationTypeId = SequenceManager.getNextRelationTypeId();
 
-      ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, relationTypeId, namespace, relationTypeName,
-            sideAName, sideBName, abPhrasing, baPhrasing, shortName, ordered, orderTypeGuid);
+      ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, relationTypeId, relationTypeName, sideAName,
+            sideBName, abPhrasing, baPhrasing, shortName, ordered, orderTypeGuid);
 
       RelationType relationType =
-            new RelationType(relationTypeId, namespace, relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
-                  shortName, ordered, orderTypeGuid);
+            new RelationType(relationTypeId, relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing, shortName,
+                  ordered, orderTypeGuid);
       instance.cache(relationType);
       return relationType;
    }

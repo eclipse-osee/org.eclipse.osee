@@ -19,21 +19,19 @@ public class DataType extends NodeModel {
    private static final String DEFAULT_NAMESPACE = "default";
    protected static final String EMPTY_STRING = "";
    private String name;
-   private String namespace;
    private String uniqueId;
 
    public DataType() {
-      this(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING);
+      this(EMPTY_STRING, EMPTY_STRING);
    }
 
-   public DataType(String namespace, String name) {
-      this(EMPTY_STRING, namespace, name);
+   public DataType(String name) {
+      this(EMPTY_STRING, name);
    }
 
-   public DataType(String typeId, String namespace, String name) {
+   public DataType(String typeId, String name) {
       super();
       this.uniqueId = typeId;
-      this.namespace = namespace;
       this.name = name;
    }
 
@@ -50,23 +48,6 @@ public class DataType extends NodeModel {
    public void setName(String name) {
       if (this.name != name) {
          this.name = Strings.isValid(name) ? name.trim() : name;
-         fireModelEvent();
-      }
-   }
-
-   /**
-    * @return the namespace
-    */
-   public String getNamespace() {
-      return !Strings.isValid(namespace) ? DEFAULT_NAMESPACE : namespace;
-   }
-
-   /**
-    * @param namespace the namespace to set
-    */
-   public void setNamespace(String namespace) {
-      if (this.namespace != namespace) {
-         this.namespace = Strings.isValid(namespace) ? namespace.trim() : DEFAULT_NAMESPACE;
          fireModelEvent();
       }
    }
@@ -89,7 +70,7 @@ public class DataType extends NodeModel {
    public boolean equals(Object obj) {
       if (obj instanceof DataType) {
          DataType other = (DataType) obj;
-         return objectEquals(getNamespace(), other.getNamespace()) && objectEquals(getName(), other.getName());
+         return objectEquals(getName(), other.getName());
       }
       return false;
    }
@@ -109,6 +90,6 @@ public class DataType extends NodeModel {
    }
 
    public String toString() {
-      return String.format("%s:%s", getNamespace(), getName());
+      return getName();
    }
 }

@@ -28,12 +28,12 @@ public class AttributeDataType extends DataType {
    private String providerAttributeClass;
 
    public AttributeDataType() {
-      this(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 0, 0, EMPTY_STRING,
-            EMPTY_STRING, EMPTY_STRING, -1);
+      this(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, 0, 0, EMPTY_STRING, EMPTY_STRING,
+            EMPTY_STRING, -1);
    }
 
-   public AttributeDataType(String typeId, String namespace, String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, int enumTypeId) {
-      super(typeId, namespace, name);
+   public AttributeDataType(String typeId, String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, int enumTypeId) {
+      super(typeId, name);
       this.baseAttributeClass = baseAttributeClass;
       this.defaultValue = defaultValue;
       this.fileTypeExtension = fileTypeExtension;
@@ -45,9 +45,9 @@ public class AttributeDataType extends DataType {
       this.enumTypeId = enumTypeId;
    }
 
-   public AttributeDataType(String namespace, String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, int enumTypeId) {
-      this(EMPTY_STRING, namespace, name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence,
-            minOccurrence, providerAttributeClass, taggerId, toolTipText, enumTypeId);
+   public AttributeDataType(String name, String baseAttributeClass, String defaultValue, String fileTypeExtension, int maxOccurrence, int minOccurrence, String providerAttributeClass, String taggerId, String toolTipText, int enumTypeId) {
+      this(EMPTY_STRING, name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence, minOccurrence,
+            providerAttributeClass, taggerId, toolTipText, enumTypeId);
    }
 
    /**

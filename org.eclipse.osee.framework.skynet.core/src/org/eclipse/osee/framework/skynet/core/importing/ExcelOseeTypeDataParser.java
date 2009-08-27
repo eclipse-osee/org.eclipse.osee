@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -126,8 +127,13 @@ public class ExcelOseeTypeDataParser {
          if (isDone) {
             return;
          }
+
          if (tableIterator.hasNext()) {
-            currentTable = tableIterator.next();
+            Table nextTable = tableIterator.next();
+            if (Table.ARTIFACT_TYPE_TABLE.equals(currentTable) && Table.ATTRIBUTE_TYPE_TABLE.equals(nextTable)) {
+               createArtifactTypes();
+            }
+            currentTable = nextTable;
          } else {
             throw new IllegalArgumentException(
                   "Encountered row past end of last expected table: " + Arrays.deepToString(headerRow));
@@ -161,6 +167,62 @@ public class ExcelOseeTypeDataParser {
          }
       }
 
+      private void createArtifactTypes() {
+         try {
+            ensureAllSuperTypesInheritFromArtifact();
+
+            List<String> items = new ArrayList<String>();
+            items.addAll(superTypeMap.keySet());
+
+            Collections.sort(items, new Comparator<String>() {
+
+               @Override
+               public int compare(String o1, String o2) {
+                  Collection<String> child1 = superTypeMap.getValues(o1);
+                  Collection<String> child2 = superTypeMap.getValues(o2);
+                  int result;
+                  if (child1 == null && child2 == null) {
+                     result = 0;
+                  } else if (child1 == null && child2 != null) {
+                     result = 1;
+                  } else if (child1 != null && child2 == null) {
+                     result = -1;
+                  } else {
+                     result = child2.size() - child1.size();
+                  }
+                  return result;
+               }
+            });
+
+            for (String key : items) {
+               if ("Artifact".equals(key)) {
+                  dataTypeProcessor.onArtifactType(false, key, null);
+               }
+               Collection<String> descendants = superTypeMap.getValues(key);
+               if (descendants != null) {
+                  for (String name : descendants) {
+                     dataTypeProcessor.onArtifactType(false, name, key);
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(ExcelOseeTypeDataParser.class, Level.SEVERE, String.format("ResourceName: [%s]",
+                  getResourceName()), ex);
+         }
+      }
+
+      private void addArtifactType(String[] row) throws Exception {
+         if (debugRows) {
+            System.out.println("  addArtifactType => " + row[0] + "," + row[1]);
+         }
+         String artifactTypeName = row[0];
+         String superTypeName = row[1];
+
+         if (!artifactTypeName.equals("Artifact")) {
+            superTypeMap.put(superTypeName, artifactTypeName);
+         }
+      }
+
       private void addRelationType(String[] row) throws Exception {
          if (debugRows) {
             System.out.println("   addRelationType => " + row[0] + "," + row[1]);
@@ -181,21 +243,8 @@ public class ExcelOseeTypeDataParser {
             }
          }
 
-         dataTypeProcessor.onRelationType("", relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing,
-               shortName, ordered, defaultOrderTypeGuid);
-      }
-
-      private void addArtifactType(String[] row) throws Exception {
-         if (debugRows) {
-            System.out.println("  addArtifactType => " + row[0] + "," + row[1]);
-         }
-         String artifactTypeName = row[0];
-         String superTypeName = row[1];
-
-         if (!artifactTypeName.equals("Artifact")) {
-            superTypeMap.put(superTypeName, artifactTypeName);
-         }
-         dataTypeProcessor.onArtifactType("", artifactTypeName, superTypeName);
+         dataTypeProcessor.onRelationType(relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing, shortName,
+               ordered, defaultOrderTypeGuid);
       }
 
       private void addAttributeType(String[] row) throws Exception {
@@ -213,7 +262,7 @@ public class ExcelOseeTypeDataParser {
          int maxOccurrence = getQuantity(row[8]);
          String tipText = row[9];
 
-         dataTypeProcessor.onAttributeType(attrBaseType, attrProviderType, fileTypeExtension, "", attributeName,
+         dataTypeProcessor.onAttributeType(attrBaseType, attrProviderType, fileTypeExtension, attributeName,
                defaultValue, validityXml, minOccurrence, maxOccurrence, tipText, taggerId);
       }
 

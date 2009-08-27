@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.data.model.editor.input;
 
 import java.util.Collection;
-
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
@@ -38,18 +37,18 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onArtifactType(String namespace, String name, String superArtifactTypeName) throws OseeCoreException {
-      ArtifactDataType artifactDataType = new ArtifactDataType(namespace, name, null);
+   public void onArtifactType(boolean isAbstract, String artifactTypeName, String superArtifactTypeName) throws OseeCoreException {
+      ArtifactDataType artifactDataType = new ArtifactDataType(artifactTypeName, null);
 
       this.dataTypeSource.add(artifactDataType);
    }
 
    @Override
-   public void onAttributeType(String baseAttributeClass, String providerAttributeClass, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrence, int maxOccurrence, String toolTipText, String taggerId) throws OseeCoreException {
-      OseeEnumType enumType = OseeEnumTypeManager.getUniqueType(namespace + name);
+   public void onAttributeType(String baseAttributeClass, String providerAttributeClass, String fileTypeExtension, String name, String defaultValue, String validityXml, int minOccurrence, int maxOccurrence, String toolTipText, String taggerId) throws OseeCoreException {
+      OseeEnumType enumType = OseeEnumTypeManager.getUniqueType(name);
       int enumTypeId = enumType.getEnumTypeId();
       AttributeDataType attributeDataType =
-            new AttributeDataType(namespace, name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence,
+            new AttributeDataType(name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence,
                   minOccurrence, providerAttributeClass, taggerId, toolTipText, enumTypeId);
 
       // Create attribute provider and base attribute classes here ?? 
@@ -62,10 +61,10 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onRelationType(String namespace, String name, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) throws OseeCoreException {
+   public void onRelationType(String name, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) throws OseeCoreException {
       RelationDataType relationDataType =
-            new RelationDataType(namespace, name, abPhrasing, baPhrasing, Boolean.valueOf(ordered), shortName,
-                  sideAName, sideBName);
+            new RelationDataType("", name, abPhrasing, baPhrasing, Boolean.valueOf(ordered), shortName, sideAName,
+                  sideBName);
 
       this.dataTypeSource.add(relationDataType);
    }
@@ -77,5 +76,4 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    public DataTypeSource getODMModel() {
       return dataTypeSource;
    }
-
 }

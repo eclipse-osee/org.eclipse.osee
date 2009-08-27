@@ -40,7 +40,7 @@ public class AttributeTypeManager {
    private static final String SELECT_ATTRIBUTE_TYPES =
          "SELECT * FROM osee_attribute_type aty1, osee_attribute_base_type aby1, osee_attribute_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
    private static final String INSERT_ATTRIBUTE_TYPE =
-         "INSERT INTO osee_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, namespace, name, default_value, enum_type_id, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+         "INSERT INTO osee_attribute_type (attr_type_id, attr_base_type_id, attr_provider_type_id, file_type_extension, name, default_value, enum_type_id, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?)";
    private static final String INSERT_BASE_ATTRIBUTE_TYPE =
          "INSERT INTO osee_attribute_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
    private static final String INSERT_ATTRIBUTE_PROVIDER_TYPE =
@@ -124,8 +124,8 @@ public class AttributeTypeManager {
                      AttributeExtensionManager.getAttributeProviderClassFor(baseProviderClassString);
                AttributeType type =
                      new AttributeType(chStmt.getInt("attr_type_id"), baseAttributeClass, providerAttributeClass,
-                           chStmt.getString("file_type_extension"), chStmt.getString("namespace"),
-                           chStmt.getString("name"), chStmt.getString("default_value"), chStmt.getInt("enum_type_id"),
+                           chStmt.getString("file_type_extension"), chStmt.getString("name"),
+                           chStmt.getString("default_value"), chStmt.getInt("enum_type_id"),
                            chStmt.getInt("min_occurence"), chStmt.getInt("max_occurence"),
                            chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
                cache(type);
@@ -154,25 +154,23 @@ public class AttributeTypeManager {
       return taggableTypes;
    }
 
-   public static boolean typeExists(String namespace, String name) throws OseeDataStoreException {
+   public static boolean typeExists(String name) throws OseeDataStoreException {
       ensurePopulated();
-      return instance.nameToTypeMap.get(namespace + name) != null;
+      return instance.nameToTypeMap.get(name) != null;
    }
 
    /**
-    * @param namespace
     * @param name
-    * @return the attribute type with the given name and namespace or throws an OseeTypeDoesNotExist if it does not
+    * @return the attribute type with the given name or throws an OseeTypeDoesNotExist if it does not
     *         exist.
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist
     */
-   public static AttributeType getType(String namespace, String name) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static AttributeType getType(String name) throws OseeDataStoreException, OseeTypeDoesNotExist {
       ensurePopulated();
-      AttributeType attributeType = instance.nameToTypeMap.get(namespace + name);
+      AttributeType attributeType = instance.nameToTypeMap.get(name);
       if (attributeType == null) {
-         throw new OseeTypeDoesNotExist(
-               "Attribute Type with namespace \"" + namespace + "\" and name \"" + name + "\" does not exist.");
+         throw new OseeTypeDoesNotExist("Attribute Type with name [" + name + "] does not exist.");
       }
       return attributeType;
    }
@@ -195,31 +193,22 @@ public class AttributeTypeManager {
    }
 
    /**
-    * @param attrTypeId
-    * @return the attribute type with the given name or throws an IllegalArgumentException if it does not exist.
-    * @throws OseeTypeDoesNotExist
-    */
-   public static AttributeType getType(String name) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      return getType("", name);
-   }
-
-   /**
     * Cache a newly created type.
     * 
     * @param attributeType
     */
    public void cache(AttributeType attributeType) {
-      nameToTypeMap.put(attributeType.getNamespace() + attributeType.getName(), attributeType);
+      nameToTypeMap.put(attributeType.getName(), attributeType);
       idToTypeMap.put(attributeType.getAttrTypeId(), attributeType);
    }
 
-   public static AttributeType createType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String namespace, String name, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
+   public static AttributeType createType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String attributeTypeName, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
       if (minOccurrences > 0 && defaultValue == null) {
          throw new OseeArgumentException(
-               "DefaultValue must be set for attribute namespace \"" + namespace + "\" and name \"" + name + "\" with minOccurrences " + minOccurrences);
+               "DefaultValue must be set for attribute [" + attributeTypeName + "] with minOccurrences " + minOccurrences);
       }
-      if (typeExists(namespace, name)) {
-         return getType(namespace, name);
+      if (typeExists(attributeTypeName)) {
+         return getType(attributeTypeName);
       }
 
       Class<? extends Attribute<?>> baseAttributeClass =
@@ -233,19 +222,19 @@ public class AttributeTypeManager {
 
       int enumTypeId;
       if (EnumeratedAttribute.class.isAssignableFrom(baseAttributeClass)) {
-         enumTypeId = OseeEnumTypeManager.createEnumTypeFromXml(namespace + name, validityXml).getEnumTypeId();
+         enumTypeId = OseeEnumTypeManager.createEnumTypeFromXml(attributeTypeName, validityXml).getEnumTypeId();
       } else {
          enumTypeId = OseeEnumTypeManager.getDefaultEnumTypeId();
       }
 
       ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, attrTypeId, attrBaseTypeId, attrProviderTypeId,
             fileTypeExtension == null ? SQL3DataType.VARCHAR : fileTypeExtension,
-            namespace == null ? SQL3DataType.VARCHAR : namespace, name,
+            attributeTypeName == null ? SQL3DataType.VARCHAR : attributeTypeName,
             defaultValue == null ? SQL3DataType.VARCHAR : defaultValue, enumTypeId, minOccurrences, maxOccurrences,
             tipText == null ? SQL3DataType.VARCHAR : tipText, taggerId == null ? SQL3DataType.VARCHAR : taggerId);
       AttributeType attributeType =
-            new AttributeType(attrTypeId, baseAttributeClass, providerAttributeClass, fileTypeExtension, namespace,
-                  name, defaultValue, enumTypeId, minOccurrences, maxOccurrences, tipText, taggerId);
+            new AttributeType(attrTypeId, baseAttributeClass, providerAttributeClass, fileTypeExtension,
+                  attributeTypeName, defaultValue, enumTypeId, minOccurrences, maxOccurrences, tipText, taggerId);
       instance.cache(attributeType);
       return attributeType;
    }

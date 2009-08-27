@@ -23,16 +23,15 @@ public class RelationDataType extends DataType {
    private boolean ordered;
 
    public RelationDataType() {
-      this(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, false, EMPTY_STRING, EMPTY_STRING,
-            EMPTY_STRING);
+      this(EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING, false, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING);
    }
 
-   public RelationDataType(String namespace, String name, String aToBPhrase, String bToAPhrase, boolean ordered, String shortName, String sideAName, String sideBName) {
-      this(EMPTY_STRING, namespace, name, aToBPhrase, bToAPhrase, ordered, shortName, sideAName, sideBName);
+   public RelationDataType(String name, String aToBPhrase, String bToAPhrase, boolean ordered, String shortName, String sideAName, String sideBName) {
+      this(EMPTY_STRING, name, aToBPhrase, bToAPhrase, ordered, shortName, sideAName, sideBName);
    }
 
-   public RelationDataType(String typeId, String namespace, String name, String aToBPhrase, String bToAPhrase, boolean ordered, String shortName, String sideAName, String sideBName) {
-      super(typeId, namespace, name);
+   public RelationDataType(String typeId, String name, String aToBPhrase, String bToAPhrase, boolean ordered, String shortName, String sideAName, String sideBName) {
+      super(typeId, name);
       this.aToBPhrase = aToBPhrase;
       this.bToAPhrase = bToAPhrase;
       this.ordered = ordered;

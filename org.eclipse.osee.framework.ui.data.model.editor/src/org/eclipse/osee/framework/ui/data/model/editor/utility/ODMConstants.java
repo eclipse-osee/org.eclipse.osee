@@ -26,11 +26,7 @@ public class ODMConstants {
 
    public static final Font HEADER_FONT = JFaceResources.getTextFont();
 
-   public static String getNamespace(DataType dataType) {
-      return String.format("<<%s>>", dataType.getNamespace());
-   }
-
    public static String getDataTypeText(DataType dataType) {
-      return String.format("%s:%s", getNamespace(dataType), dataType.getName());
+      return dataType.getName();
    }
 }

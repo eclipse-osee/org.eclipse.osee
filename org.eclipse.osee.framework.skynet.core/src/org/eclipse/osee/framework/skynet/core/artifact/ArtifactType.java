@@ -17,6 +17,7 @@ import java.io.ObjectStreamException;
 import java.io.Serializable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 
 /**
@@ -32,13 +33,26 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    private static final long serialVersionUID = 1L;
    private final int artTypeId;
    private String name;
-   private final String namespace;
+   private final ArtifactType superArtifactType;
+   private final boolean isAbstract;
 
-   ArtifactType(int artTypeId, String namespace, String name) throws OseeDataStoreException {
+   ArtifactType(boolean isAbstract, int artTypeId, String name, ArtifactType superArtifactType) {
       this.artTypeId = artTypeId;
       this.name = name;
-      this.namespace = namespace == null ? "" : namespace;
-      ArtifactTypeManager.cache(this);
+      this.superArtifactType = superArtifactType;
+      this.isAbstract = isAbstract;
+   }
+
+   public boolean isAbstract() {
+      return isAbstract;
+   }
+
+   public ArtifactType getSuperArtifactType() {
+      return superArtifactType;
+   }
+
+   public boolean hasSuperArtifactType() {
+      return getSuperArtifactType() != null;
    }
 
    /**
@@ -149,13 +163,6 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
       }
    }
 
-   /**
-    * @return the namespace
-    */
-   public String getNamespace() {
-      return namespace;
-   }
-
    public int compareTo(ArtifactType artifactType) {
       if (artifactType == null) {
          return -1;
@@ -168,22 +175,23 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
       final int prime = 31;
       int result = 1;
       result = prime * result + name.hashCode();
-      result = prime * result + namespace.hashCode();
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) return true;
-      if (obj == null) return false;
-      if (getClass() != obj.getClass()) return false;
+      if (this == obj)
+         return true;
+      if (obj == null)
+         return false;
+      if (getClass() != obj.getClass())
+         return false;
       final ArtifactType other = (ArtifactType) obj;
       if (name == null) {
-         if (other.name != null) return false;
-      } else if (!name.equals(other.name)) return false;
-      if (namespace == null) {
-         if (other.namespace != null) return false;
-      } else if (!namespace.equals(other.namespace)) return false;
+         if (other.name != null)
+            return false;
+      } else if (!name.equals(other.name))
+         return false;
       return true;
    }
 

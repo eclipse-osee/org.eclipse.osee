@@ -59,9 +59,6 @@ public class ArtifactTypeLabelProvider implements ILabelProvider {
       if (element instanceof DataTypeSource) {
          return ((DataTypeSource) element).getSourceId();
       }
-      if (element instanceof PackageModel) {
-         return ((PackageModel) element).getNamespace();
-      }
       if (element instanceof ArtifactDataType) {
          return ((ArtifactDataType) element).getName();
       }

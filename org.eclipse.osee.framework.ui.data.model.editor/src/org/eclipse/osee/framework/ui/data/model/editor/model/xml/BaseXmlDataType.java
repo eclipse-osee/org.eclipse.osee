@@ -50,7 +50,6 @@ public abstract class BaseXmlDataType<T extends DataType> {
    }
 
    protected void writeIdAttributes(XMLStreamWriter writer, DataType dataType) throws XMLStreamException {
-      writer.writeAttribute("namespace", dataType.getNamespace());
       writer.writeAttribute("name", dataType.getName());
    }
 
@@ -65,7 +64,6 @@ public abstract class BaseXmlDataType<T extends DataType> {
 
    protected void populateFromAttributes(T dataType, String tag, Map<String, String> attributes) throws XMLStreamException {
       if (tag.equals(getElementName())) {
-         dataType.setNamespace(attributes.get("namespace"));
          dataType.setName(attributes.get("name"));
       }
    }

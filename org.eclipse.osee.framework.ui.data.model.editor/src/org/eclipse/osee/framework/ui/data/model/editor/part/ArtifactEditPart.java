@@ -39,7 +39,6 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.RelationDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.RelationLinkModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel;
 import org.eclipse.osee.framework.ui.data.model.editor.model.helper.ContainerModel.ContainerType;
-import org.eclipse.osee.framework.ui.data.model.editor.utility.ODMConstants;
 
 /**
  * @author Roberto E. Escobar
@@ -89,29 +88,27 @@ public class ArtifactEditPart extends DataTypeEditPart {
          children.add(new ContainerModel(model, ContainerType.INHERITED_RELATIONS));
          children.add(new ContainerModel(model, ContainerType.LOCAL_RELATIONS));
       }
-      //      checkInheritance();
+//      checkInheritance();
       return children;
    }
 
-   //   private void checkInheritance() {
-   //      //      ArtifactDataType model = getArtifactDataType();
-   //
-   //      //      for (ArtifactDataType key : toRemove) {
-   //      //         InheritanceLinkModel link = inheritanceMap.remove(key);
-   //      //         if (link != null) {
-   //      //            children.remove(link);
-   //      //         }
-   //      //      }
-   //   }
+//   private void checkInheritance() {
+//      ArtifactDataType model = getArtifactDataType();
+//
+//      for (ArtifactDataType key : toRemove) {
+//         InheritanceLinkModel link = inheritanceMap.remove(key);
+//         if (link != null) {
+//            children.remove(link);
+//         }
+//      }
+//   }
 
    protected void refreshVisuals() {
       super.refreshVisuals();
       ArtifactTypeFigure artifactTypeFigure = ((ArtifactTypeFigure) getFigure());
       artifactTypeFigure.setHeaderIcon(getArtifactDataType().getImage());
-      ((Label) artifactTypeFigure.getNamespaceFigure()).setText(ODMConstants.getNamespace(getArtifactDataType()));
       ((Label) artifactTypeFigure.getNameFigure()).setText(getArtifactDataType().getName());
 
-      artifactTypeFigure.getNamespaceFigure().setFont(null);
       artifactTypeFigure.getNameFigure().setFont(null);
 
       getFigure().setBackgroundColor(ColorConstants.white);

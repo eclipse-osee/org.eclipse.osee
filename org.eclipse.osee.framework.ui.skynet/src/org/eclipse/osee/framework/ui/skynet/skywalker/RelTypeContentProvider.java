@@ -26,16 +26,14 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
  */
 public class RelTypeContentProvider implements ITreeContentProvider {
 
-   /**
-    * 
-    */
    public RelTypeContentProvider() {
       super();
    }
 
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof Collection) return ((Collection) parentElement).toArray();
+      if (parentElement instanceof Collection)
+         return ((Collection) parentElement).toArray();
       if (parentElement instanceof RelationType) {
          return new Object[] {new RelationLinkDescriptorSide((RelationType) parentElement, true),
                new RelationLinkDescriptorSide((RelationType) parentElement, false)};
@@ -102,7 +100,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
       @Override
       public String getTypeName() {
          try {
-            return getRelationType().getNamespace();
+            return getRelationType().getTypeName();
          } catch (Exception ex) {
             return ex.getLocalizedMessage();
          }

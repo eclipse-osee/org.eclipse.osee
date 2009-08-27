@@ -17,26 +17,10 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
  * @author Roberto E. Escobar
  */
 public class PackageModel {
-   private String namespace;
    private List<ArtifactDataType> artifacts;
 
-   public PackageModel(String namespace, List<ArtifactDataType> artifacts) {
-      this.namespace = namespace;
+   public PackageModel(List<ArtifactDataType> artifacts) {
       this.artifacts = artifacts;
-   }
-
-   /**
-    * @return the namespace
-    */
-   public String getNamespace() {
-      return namespace;
-   }
-
-   /**
-    * @param namespace the namespace to set
-    */
-   public void setNamespace(String namespace) {
-      this.namespace = namespace;
    }
 
    /**
