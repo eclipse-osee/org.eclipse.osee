@@ -67,7 +67,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
    }
 
    private String toQualifiedName(String name) {
-      return name.replaceAll(" ", "_");
+      return "\"" + name + "\"";
    }
 
    private OseeType getObject(String name, Class<? extends OseeType> classToLookFor) {
@@ -134,8 +134,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
             attributeType.setTaggerId(taggerId);
          }
 
-         OseeEnumType enumType =
-               getEnumType(attributeBaseType, attributeProviderTypeName, name, validityXml);
+         OseeEnumType enumType = getEnumType(attributeBaseType, attributeProviderTypeName, name, validityXml);
          if (enumType != null) {
             attributeType.setEnumType(enumType);
          }
@@ -234,9 +233,13 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
 
       OseeEnumType oseeEnumType = null;
       if (EnumeratedAttribute.class.isAssignableFrom(baseAttributeClass)) {
-         createEnumTypeFromXml(toQualifiedName(name) + "Enum", validityXml);
+         createEnumTypeFromXml(toQualifiedEnumName(name), validityXml);
       }
       return oseeEnumType;
+   }
+
+   private String toQualifiedEnumName(String name) {
+      return "\"" + name + ".enum\"";
    }
 
    private OseeEnumType createEnumTypeFromXml(String attributeTypeName, String xmlDefinition) throws OseeCoreException {
