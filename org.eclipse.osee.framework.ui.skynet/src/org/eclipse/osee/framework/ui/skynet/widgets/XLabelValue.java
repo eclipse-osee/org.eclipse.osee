@@ -142,6 +142,7 @@ public abstract class XLabelValue extends XWidget {
    public void setValueText(String valueText) {
       this.valueText = valueText;
       if (valueLabel != null && !valueLabel.isDisposed()) {
+         valueLabel.setText(this.valueText);
          valueLabel.update();
          valueLabel.getParent().update();
       }

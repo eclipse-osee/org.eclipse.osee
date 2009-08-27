@@ -95,40 +95,7 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
       createWidgets(managedForm, destroyableComposite, horizontalSpan);
 
       try {
-         // If ATS Admin, allow right-click to auto-complete tasks
-         if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
-            labelWidget.addListener(SWT.MouseUp, new Listener() {
-               @Override
-               public void handleEvent(Event event) {
-                  if (event.button == 3) {
-                     if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Auto Complete Reviews",
-                           "ATS Admin\n\nAuto Complete Reviews?")) {
-                        return;
-                     }
-                     try {
-                        SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-                        for (ReviewSMArtifact revArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
-                           if (!revArt.getSmaMgr().isCancelledOrCompleted()) {
-                              if (revArt.getSmaMgr().getStateMgr().isUnAssigned()) {
-                                 revArt.getSmaMgr().getStateMgr().setAssignee(UserManager.getUser());
-                              }
-                              Result result =
-                                    revArt.getSmaMgr().transitionToCompleted("", transaction,
-                                          TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
-                              if (result.isFalse()) {
-                                 result.popup();
-                                 return;
-                              }
-                           }
-                        }
-                        transaction.execute();
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                     }
-                  }
-               }
-            });
-         }
+         addAdminRightClickOption();
          Collection<ReviewSMArtifact> revArts = smaMgr.getReviewManager().getReviews(forStateName);
          if (revArts.size() == 0) {
             setValueText("No Reviews Created");
@@ -310,12 +277,45 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue#dispose()
-    */
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
    }
 
+   public void addAdminRightClickOption() throws OseeCoreException {
+      // If ATS Admin, allow right-click to auto-complete tasks
+      if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
+         labelWidget.addListener(SWT.MouseUp, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               if (event.button == 3) {
+                  if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Auto Complete Reviews",
+                        "ATS Admin\n\nAuto Complete Reviews?")) {
+                     return;
+                  }
+                  try {
+                     SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+                     for (ReviewSMArtifact revArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
+                        if (!revArt.getSmaMgr().isCancelledOrCompleted()) {
+                           if (revArt.getSmaMgr().getStateMgr().isUnAssigned()) {
+                              revArt.getSmaMgr().getStateMgr().setAssignee(UserManager.getUser());
+                           }
+                           Result result =
+                                 revArt.getSmaMgr().transitionToCompleted("", transaction,
+                                       TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
+                           if (result.isFalse()) {
+                              result.popup();
+                              return;
+                           }
+                        }
+                     }
+                     transaction.execute();
+                  } catch (OseeCoreException ex) {
+                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                  }
+               }
+            }
+         });
+      }
+   }
 }

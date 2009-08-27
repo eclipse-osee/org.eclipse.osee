@@ -51,46 +51,7 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
       setFillHorizontally(true);
       OseeEventManager.addListener(this);
       createWidgets(managedForm, composite, horizontalSpan);
-
-      try {
-         // If ATS Admin, allow right-click to auto-complete tasks
-         if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
-            labelWidget.addListener(SWT.MouseUp, new Listener() {
-               @Override
-               public void handleEvent(Event event) {
-                  if (event.button == 3) {
-                     if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Auto Complete Tasks",
-                           "ATS Admin\n\nAuto Complete Tasks?")) {
-                        return;
-                     }
-                     try {
-                        SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-                        for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts(forStateName)) {
-                           if (!taskArt.getSmaMgr().isCancelledOrCompleted()) {
-                              if (taskArt.getSmaMgr().getStateMgr().isUnAssigned()) {
-                                 taskArt.getSmaMgr().getStateMgr().setAssignee(UserManager.getUser());
-                              }
-                              Result result =
-                                    taskArt.getSmaMgr().transitionToCompleted("", transaction,
-                                          TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
-                              if (result.isFalse()) {
-                                 result.popup();
-                                 return;
-                              }
-                           }
-                        }
-                        transaction.execute();
-                     } catch (OseeCoreException ex) {
-                        OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                     }
-                  }
-               }
-            });
-         }
-
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      addAdminRightClickOption();
    }
 
    @Override
@@ -102,9 +63,6 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue#refresh()
-    */
    @Override
    public void refresh() {
       if (managedForm == null || managedForm.getForm() == null || managedForm.getForm().isDisposed()) {
@@ -148,12 +106,50 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XLabelValue#dispose()
-    */
    @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
    }
 
+   public void addAdminRightClickOption() {
+      try {
+         // If ATS Admin, allow right-click to auto-complete tasks
+         if (AtsUtil.isAtsAdmin() && !AtsUtil.isProductionDb()) {
+            labelWidget.addListener(SWT.MouseUp, new Listener() {
+               @Override
+               public void handleEvent(Event event) {
+                  if (event.button == 3) {
+                     if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Auto Complete Tasks",
+                           "ATS Admin\n\nAuto Complete Tasks?")) {
+                        return;
+                     }
+                     try {
+                        SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+                        for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts(forStateName)) {
+                           if (!taskArt.getSmaMgr().isCancelledOrCompleted()) {
+                              if (taskArt.getSmaMgr().getStateMgr().isUnAssigned()) {
+                                 taskArt.getSmaMgr().getStateMgr().setAssignee(UserManager.getUser());
+                              }
+                              Result result =
+                                    taskArt.getSmaMgr().transitionToCompleted("", transaction,
+                                          TransitionOption.OverrideTransitionValidityCheck, TransitionOption.Persist);
+                              if (result.isFalse()) {
+                                 result.popup();
+                                 return;
+                              }
+                           }
+                        }
+                        transaction.execute();
+                     } catch (OseeCoreException ex) {
+                        OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+                     }
+                  }
+               }
+            });
+         }
+
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
 }
