@@ -2,34 +2,36 @@ grammar org.eclipse.osee.framework.OseeTypes with org.eclipse.xtext.common.Termi
 
 generate oseeTypes "http://www.eclipse.org/osee/framework/OseeTypes"
 
+
 OseeTypeModel :
 	(imports+=Import)*
 	(types+=OseeType)*;
 
 Import :
 	'import' importURI=STRING;
+	
+terminal WHOLE_NUM_STR: ('0'..'9')+;
 
 QUALIFIED_NAME : ID ('.' ID)*;
-DIGITS : ('0'|'1'|'2'|'3'|'4'|'5'|'6'|'7'|'8'|'9')+;
 
 OseeType:
 	ArtifactType | RelationType | AttributeType | OseeEnumType;
 
 ArtifactType:
-	'abstract'? 'artifactType' name=QUALIFIED_NAME ('extends' superArtifactType=[ArtifactType])? '{'
+	'abstract'? 'artifactType' name=STRING ('extends' superArtifactType=[ArtifactType|STRING])? '{'
 	    (validAttributeTypes+=(AttributeTypeRef))*
 	'}';
 
 AttributeTypeRef:
-	'attribute' validAttributeType=[AttributeType];
+	'attribute' validAttributeType=[AttributeType|STRING];
 	
 AttributeType:
-		'attributeType' name=QUALIFIED_NAME ('extends' baseAttributeType=AttributeBaseType) '{'
+		'attributeType' name=STRING ('extends' baseAttributeType=AttributeBaseType) '{'
 		'dataProvider' dataProvider = ('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | 'MappedAttributeDataProvider' | QUALIFIED_NAME)
-		'min' min=DIGITS
-		'max' max=(DIGITS | 'unlimited')
+		'min' min=WHOLE_NUM_STR
+		'max' max=(WHOLE_NUM_STR | 'unlimited')
 		('taggerId' taggerId = ('DefaultAttributeTaggerProvider' | QUALIFIED_NAME))?
-		('enumType' enumType = [OseeEnumType])?
+		('enumType' enumType = [OseeEnumType|STRING])?
 		('description' description = STRING)?
 		('defaultValue' defaultValue = STRING)?
 		('fileExtension' fileExtension = STRING)?
@@ -39,23 +41,23 @@ AttributeBaseType:
 	'BooleanAttribute' | 'CompressedContentAttribute' | 'DateAttribute' | 'EnumeratedAttribute' | 'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' | 'WordAttribute' | QUALIFIED_NAME;
 
 OseeEnumType:
-	'oseeEnumType' name=QUALIFIED_NAME '{' 
+	'oseeEnumType' name=STRING '{' 
 		(enumEntries+=OseeEnumEntry)*
 	'}';
 
 OseeEnumEntry:
-	'entry' name=STRING (ordinal=DIGITS)?;
+	'entry' name=STRING (ordinal=WHOLE_NUM_STR)?;
 
 enum RelationMultiplicityEnum :  
-ONE_TO_MANY | MANY_TO_MANY | MANY_TO_ONE
+ONE_TO_MANY | MANY_TO_MANY | MANY_TO_ONE | ONE_TO_ONE
 ;
 
 RelationType:
-	'relationType' name=QUALIFIED_NAME '{'
+	'relationType' name=STRING '{'
 		'sideAName' sideAName=STRING
-		'sideAArtifactType' sideAArtifactType=[ArtifactType]
+		'sideAArtifactType' sideAArtifactType=[ArtifactType|STRING]
 		'sideBName' sideBName=STRING
-		'sideBArtifactType' sideBArtifactType=[ArtifactType]
+		'sideBArtifactType' sideBArtifactType=[ArtifactType|STRING]
 		'defaultOrderType' defaultOrderType=('Lexicographical_Ascending' | 'Lexicographical_Descending' | 'Unordered' | ID )
 		'multiplicity' multiplicity=RelationMultiplicityEnum
 	'}';
