@@ -119,9 +119,7 @@ public class AtsUtil implements IAtsLib {
          if (ArtifactTypeManager.getType(GoalArtifact.ARTIFACT_NAME) != null) {
             return goalEnabled;
          }
-      } catch (OseeTypeDoesNotExist ex) {
-         // do nothing
-      } catch (OseeDataStoreException ex) {
+      } catch (OseeCoreException ex) {
          // do nothing
       }
       return false;
