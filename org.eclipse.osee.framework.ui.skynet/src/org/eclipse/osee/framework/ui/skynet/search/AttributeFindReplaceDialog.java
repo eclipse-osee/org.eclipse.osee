@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -99,7 +99,7 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void setInputs() {
       try {
-         cmbAttributeDescriptors.setInput(TypeValidityManager.getValidAttributeTypes(branch).toArray(
+         cmbAttributeDescriptors.setInput(AttributeTypeManager.getValidAttributeTypes(branch).toArray(
                AttributeType.EMPTY_ARRAY));
          cmbAttributeDescriptors.getCombo().select(0);
       } catch (OseeCoreException ex) {
