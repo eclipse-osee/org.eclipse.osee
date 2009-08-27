@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -69,7 +70,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @param guid
     * @param humanReadableId
     * @param branch
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    public ActionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
@@ -566,7 +567,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
       // Add new aias
       for (ActionableItemArtifact aia : diag.getChecked()) {
-         Result result = addActionableItemToTeamsOrAddTeams(aia, transaction);
+         Result result = addActionableItemToTeamsOrAddTeams(aia, UserManager.getUser(), transaction);
          sb.append(result.getText());
       }
       // Remove unchecked aias
@@ -583,7 +584,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return new Result(true, sb.toString());
    }
 
-   public Result addActionableItemToTeamsOrAddTeams(ActionableItemArtifact aia, SkynetTransaction transaction) throws OseeCoreException {
+   public Result addActionableItemToTeamsOrAddTeams(ActionableItemArtifact aia, User originator, SkynetTransaction transaction) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (TeamDefinitionArtifact tda : TeamDefinitionArtifact.getImpactedTeamDefs(Arrays.asList(aia))) {
          boolean teamExists = false;
@@ -605,7 +606,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             }
          }
          if (!teamExists) {
-            createTeamWorkflow(tda, Arrays.asList(aia), tda.getLeads(), transaction);
+            TeamWorkFlowArtifact teamArt = createTeamWorkflow(tda, Arrays.asList(aia), tda.getLeads(), transaction);
+            if (originator != null) {
+               teamArt.getSmaMgr().getLog().setOriginator(originator);
+            }
             sb.append(aia.getName() + " => added team workflow \"" + tda.getName() + "\"\n");
          }
       }
@@ -662,8 +666,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsUtil.getAtsBranch());
       else
          teamArt =
-               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsUtil.getAtsBranch(), guid,
-                     hrid);
+               (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsUtil.getAtsBranch(), guid, hrid);
       setArtifactIdentifyData(this, teamArt);
 
       teamArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
