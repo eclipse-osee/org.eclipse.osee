@@ -1,0 +1,257 @@
+
+artifactType "Test Unit" {
+}
+
+artifactType "Test Run Disposition" {
+   attribute "Disposition"
+}
+
+artifactType "Test Run" {
+   attribute "Test Script GUID"
+   attribute "Test Script URL"
+   attribute "Outfile URL"
+   attribute "User ID"
+   attribute "Revision"
+   attribute "Modified Flag"
+   attribute "Last Author"
+   attribute "Last Modified Date"
+   attribute "OS Architecture"
+   attribute "OS Name"
+   attribute "OS Version"
+   attribute "OSEE Version"
+   attribute "OSEE Server Title"
+   attribute "OSEE Server Jar Version"
+   attribute "Processor ID"
+   attribute "Start Date"
+   attribute "End Date"
+   attribute "Elapsed Date"
+   attribute "Ran In Batch Mode"
+   attribute "Is Batch Mode Allowed"
+   attribute "Passed"
+   attribute "Failed"
+   attribute "Total Test Points"
+   attribute "Script Aborted"
+   attribute "Last Date Uploaded"
+   attribute "Qualification Level"
+   attribute "Build Id"
+   attribute "Checksum"
+   attribute "Extension"
+}
+
+artifactType "Test Support" {
+}
+
+attributeType "Outfile URL" extends StringAttribute {
+   dataProvider MappedAttributeDataProvider
+   min 1
+   max 1 description "Test Run Content"
+   defaultValue "\"\"" fileExtension "tmo"
+}
+
+attributeType "Test Script URL" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Url of the test script used"
+}
+
+attributeType "Revision" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Version"
+}
+
+attributeType "Modified Flag" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "File Modification Flag from Repository"
+}
+
+attributeType "Last Author" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "Last Author"
+}
+
+attributeType "Last Modified Date" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Last Modified"
+}
+
+attributeType "OS Architecture" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "OS Architecture"
+}
+
+attributeType "OS Name" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "OS Name"
+}
+
+attributeType "OS Version" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "OS Version"
+}
+
+attributeType "OSEE Version" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "OSEE Version"
+}
+
+attributeType "OSEE Server Title" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "OSEE Server Title"
+}
+
+attributeType "OSEE Server Jar Version" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "OSEE Server Jar Version"
+}
+
+attributeType "Processor ID" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Processor ID"
+}
+
+attributeType "Start Date" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Start Date"
+}
+
+attributeType "End Date" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Stop Date"
+}
+
+attributeType "Elapsed Date" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Time Elapsed from the start to the end of the script"
+}
+
+attributeType "Passed" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 description "Number of test points that passed"
+   defaultValue "0"
+}
+
+attributeType "Failed" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 description "Number of test points that failed"
+   defaultValue "0"
+}
+
+attributeType "Total Test Points" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 description "Total test points"
+   defaultValue "0"
+}
+
+attributeType "Script Aborted" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "Test Abort status"
+   defaultValue "yes"
+}
+
+attributeType "Test Script GUID" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Test Case GUID"
+}
+
+attributeType "Ran In Batch Mode" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 description "Run was performed as part of a batch"
+   defaultValue "no"
+}
+
+attributeType "Is Batch Mode Allowed" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 description "Whether Test Script is allowed to run as part of a batch"
+   defaultValue "yes"
+}
+
+attributeType "User ID" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description
+   "Id of the user who ran the test"
+}
+
+attributeType "Last Date Uploaded" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Last time outfile was uploaded"
+}
+
+attributeType "Qualification Level" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "Qualification level"
+   defaultValue "DEVELOPMENT"
+}
+
+attributeType "Build Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "Build Id"
+   defaultValue "unknown"
+}
+
+attributeType "Checksum" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Test Case Checksum"
+}
+
+attributeType "Extension" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 description "Outfile Extension"
+   defaultValue "tmo"
+}
+
+attributeType "Disposition" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Disposition"
+}
+
+relationType "Test Script to Run Relation" {
+   sideAName "Test Case"
+   sideAArtifactType "Test Case"
+   sideBName "Test Run"
+   sideBArtifactType "Test Run"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Uses" {
+   sideAName "requirement"
+   sideAArtifactType "Requirement"
+   sideBName "Test Unit"
+   sideBArtifactType "Test Unit"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}

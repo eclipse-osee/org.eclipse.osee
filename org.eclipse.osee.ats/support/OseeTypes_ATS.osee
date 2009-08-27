@@ -1,0 +1,688 @@
+artifactType "PeerToPeer Review" extends "Artifact" {
+   attribute "ats.Description"
+   attribute "ats.Need By"
+   attribute "ats.Blocking Review"
+   attribute "ats.Resolution"
+   attribute "ats.State"
+   attribute "ats.Current State"
+   attribute "ats.Log"
+   attribute "ats.State Notes"
+   attribute "ats.SMA Note"
+   attribute "ats.Related To State"
+   attribute "ats.Review Defect"
+   attribute "ats.Estimated Release Date"
+   attribute "ats.Estimated Completion Date"
+   attribute "ats.Location"
+   attribute "ats.Authors"
+   attribute "ats.Role"
+   attribute "ats.Legacy PCR Id"
+   attribute "ats.Actionable Item"
+   attribute "ats.Estimated Hours"
+   attribute "ats.Review Blocks"
+}
+
+artifactType "Action" extends "Artifact" {
+   attribute "ats.User Community"
+   attribute "ats.Actionable Item"
+   attribute "ats.Change Type"
+   attribute "ats.Description"
+   attribute "ats.Need By"
+   attribute "ats.Priority"
+   attribute "ats.Validation Required"
+}
+
+artifactType "Decision Review" extends "Artifact" {
+   attribute "ats.Review Blocks"
+   attribute "ats.Actionable Item"
+   attribute "ats.Description"
+   attribute "ats.Estimated Hours"
+   attribute "ats.Need By"
+   attribute "ats.Estimated Release Date"
+   attribute "ats.Estimated Completion Date"
+   attribute "ats.Decision Review Options"
+   attribute "ats.Decision"
+   attribute "ats.Blocking Review"
+   attribute "ats.Resolution"
+   attribute "ats.State"
+   attribute "ats.Current State"
+   attribute "ats.Log"
+   attribute "ats.State Notes"
+   attribute "ats.SMA Note"
+   attribute "ats.Related To State"
+   attribute "ats.Role"
+   attribute "ats.Legacy PCR Id"
+}
+
+artifactType "Team Definition" extends "Artifact" {
+   attribute "ats.Man Days Needed"
+   attribute "ats.Description"
+   attribute "ats.Full Name"
+   attribute "ats.Team Uses Versions"
+   attribute "ats.Require Targeted Version"
+   attribute "ats.Parent Branch Id"
+   attribute "ats.Active"
+   attribute "ats.Actionable"
+   attribute "ats.Allow Create Branch"
+   attribute "ats.Allow Commit Branch"
+}
+
+artifactType "Task" extends "Artifact" {
+   attribute "ats.Uses Resolution Options"
+   attribute "ats.Log"
+   attribute "ats.State Notes"
+   attribute "ats.SMA Note"
+   attribute "ats.Work Package"
+   attribute "ats.Category"
+   attribute "ats.Category2"
+   attribute "ats.Category3"
+   attribute "ats.Current State"
+   attribute "ats.Description"
+   attribute "ats.Estimated Hours"
+   attribute "ats.Resolution"
+   attribute "ats.Estimated Release Date"
+   attribute "ats.Estimated Completion Date"
+   attribute "ats.Release Date"
+   attribute "ats.State"
+   attribute "ats.Related To State"
+}
+
+artifactType "Actionable Item" extends "Artifact" {
+   attribute "ats.Active"
+   attribute "ats.Actionable"
+   attribute "ats.Description"
+}
+
+artifactType "Version" extends "Artifact" {
+   attribute "ats.Released"
+   attribute "ats.Description"
+   attribute "ats.Full Name"
+   attribute "ats.Next Version"
+   attribute "ats.Estimated Release Date"
+   attribute "ats.Release Date"
+   attribute "ats.Parent Branch Id"
+   attribute "ats.Allow Create Branch"
+   attribute "ats.Allow Commit Branch"
+}
+
+artifactType "Goal" extends "Artifact" {
+   attribute "ats.Weekly Benefit"
+   attribute "ats.Percent Rework"
+   attribute "ats.Legacy PCR Id"
+   attribute "ats.Log"
+   attribute "ats.State Notes"
+   attribute "ats.SMA Note"
+   attribute "ats.Work Package"
+   attribute "ats.Category"
+   attribute "ats.Category2"
+   attribute "ats.Category3"
+   attribute "ats.User Community"
+   attribute "ats.Change Type"
+   attribute "ats.Current State"
+   attribute "ats.Team Definition"
+   attribute "ats.Description"
+   attribute "ats.Estimated Hours"
+   attribute "ats.Need By"
+   attribute "ats.Priority"
+   attribute "ats.Problem"
+   attribute "ats.Proposed Resolution"
+   attribute "ats.Estimated Release Date"
+   attribute "ats.Estimated Completion Date"
+   attribute "ats.Release Date"
+   attribute "ats.Resolution"
+   attribute "ats.State"
+}
+
+artifactType "Team Workflow" extends "Artifact" {
+   attribute "ats.Weekly Benefit"
+   attribute "ats.Branch Metrics"
+   attribute "ats.Percent Rework"
+   attribute "ats.Parent Branch Id"
+   attribute "ats.Branch Id"
+   attribute "ats.Transaction Id"
+   attribute "ats.Legacy PCR Id"
+   attribute "ats.Log"
+   attribute "ats.State Notes"
+   attribute "ats.SMA Note"
+   attribute "ats.Work Package"
+   attribute "ats.Category"
+   attribute "ats.Category2"
+   attribute "ats.Category3"
+   attribute "ats.Actionable Item"
+   attribute "ats.User Community"
+   attribute "ats.Change Type"
+   attribute "ats.Current State"
+   attribute "ats.Team Definition"
+   attribute "ats.Description"
+   attribute "ats.Estimated Hours"
+   attribute "ats.Need By"
+   attribute "ats.Priority"
+   attribute "ats.Problem"
+   attribute "ats.Proposed Resolution"
+   attribute "ats.Estimated Release Date"
+   attribute "ats.Estimated Completion Date"
+   attribute "ats.Release Date"
+   attribute "ats.Resolution"
+   attribute "ats.State"
+   attribute "ats.Validation Required"
+}
+
+attributeType "ats.Validation Required" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Active" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   defaultValue "yes"
+}
+
+attributeType "ats.Uses Resolution Options" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Released" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Next Version" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Team Uses Versions" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Require Targeted Version" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Blocking Review" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Actionable" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "yes"
+}
+
+attributeType "ats.Allow Create Branch" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "yes"
+}
+
+attributeType "ats.Allow Commit Branch" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "yes"
+}
+
+attributeType "ats.Need By" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Estimated Release Date" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Estimated Completion Date" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Release Date" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+oseeEnumType "ats.Review Blocks.enum" {
+   entry "None"
+   entry "Transition"
+   entry "Commit"
+}
+
+attributeType "ats.Review Blocks" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "ats.Review Blocks.enum"
+}
+
+oseeEnumType "ats.Priority.enum" {
+   entry "1"
+   entry "2"
+   entry "3"
+   entry "4"
+   entry "5"
+}
+
+attributeType "ats.Priority" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "ats.Priority.enum"
+}
+
+oseeEnumType "ats.Change Type.enum" {
+   entry "Improvement"
+   entry "Problem"
+   entry "Support"
+}
+
+attributeType "ats.Change Type" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "ats.Change Type.enum"
+}
+
+oseeEnumType "ats.User Community.enum" {
+   entry "Program_1"
+   entry "Program_2"
+   entry "Tools"
+   entry "Processes"
+   entry "Other"
+}
+
+attributeType "ats.User Community" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+   enumType "ats.User Community.enum"
+}
+
+attributeType "ats.Estimated Hours" extends FloatingPointAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "0.0"
+}
+
+attributeType "ats.Weekly Benefit" extends FloatingPointAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "0"
+}
+
+attributeType "ats.Man Days Needed" extends FloatingPointAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "0.0"
+}
+
+attributeType "ats.Branch Id" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Parent Branch Id" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Transaction Id" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Percent Rework" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Branch Metrics" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.State" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Current State" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Problem" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+}
+
+attributeType "ats.Proposed Resolution" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Resolution" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+}
+
+attributeType "ats.Description" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+}
+
+attributeType "ats.Full Name" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Actionable Item" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+attributeType "ats.Team Definition" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Log" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider fileExtension "xml"
+}
+
+attributeType "ats.State Notes" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 fileExtension "xml"
+}
+
+attributeType "ats.Related To State" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.SMA Note" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Work Package" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Category" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Category2" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Category3" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Legacy PCR Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Decision Review Options" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Decision" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Review Defect" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+attributeType "ats.Location" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+}
+
+attributeType "ats.Authors" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Role" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+relationType "TeamLead" {
+   sideAName "Artifact"
+   sideAArtifactType "Team Definition"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamMember" {
+   sideAName "Artifact"
+   sideAArtifactType "Team Definition"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "PrivilegedMember" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamActionableItem" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "Actionable Item"
+   sideBArtifactType "Actionable Item"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "ActionToWorkflow" {
+   sideAName "Action"
+   sideAArtifactType "Action"
+   sideBName "Team Workflow"
+   sideBArtifactType "Lba SW Design Team Workflow"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "SmaToTask" {
+   sideAName "Artifact"
+   sideAArtifactType "Artifact"
+   sideBName "Task"
+   sideBArtifactType "Task"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamWorkflowTargetedForVersion" {
+   sideAName "Team Workflow"
+   sideAArtifactType "Lba SW Design Team Workflow"
+   sideBName "Version"
+   sideBArtifactType "Version"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamDefinitionToVersion" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "Version"
+   sideBArtifactType "Version"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamDefinitionToWorkflowDiagram" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "General Document"
+   sideBArtifactType "General Document"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamDefinitionToTaskWorkflowDiagram" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "General Document"
+   sideBArtifactType "General Document"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamDefinitionToDecisionReviewWorkflowDiagram" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "General Document"
+   sideBArtifactType "General Document"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamDefinitionToPeerToPeerReviewWorkflowDiagram" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "General Document"
+   sideBArtifactType "General Document"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamWorkflowToReview" {
+   sideAName "Team Workflow"
+   sideAArtifactType "Lba SW Design Team Workflow"
+   sideBName "Decision Review"
+   sideBArtifactType "PeerToPeer Review"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "SubscribedUser" {
+   sideAName "Artifact"
+   sideAArtifactType "Artifact"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "FavoriteUser" {
+   sideAName "Artifact"
+   sideAArtifactType "Artifact"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "ParallelVersion" {
+   sideAName "Parent"
+   sideAArtifactType "Version"
+   sideBName "Child"
+   sideBArtifactType "Version"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Goal" {
+   sideAName "Goal"
+   sideAArtifactType "Goal"
+   sideBName "Member"
+   sideBArtifactType "Artifact"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity ONE_TO_MANY
+}
