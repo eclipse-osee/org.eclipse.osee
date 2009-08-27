@@ -82,7 +82,7 @@ public class WordOutlineExtractor extends AbstractArtifactExtractor {
 
    @Override
    public String getDescription() {
-      return "Extract data from a Word XML file with an outline, making an artifact for each outline numbered section";
+      return "Extract data from a Word XML file with an outline, making an artifact for each outline numbered section.";
    }
 
    @Override

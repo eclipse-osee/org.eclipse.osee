@@ -43,7 +43,7 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
    private static final Pattern guidPattern = Pattern.compile("(\\d*);(.*)");
 
    public String getDescription() {
-      return "Extract each row as an artifact - header <section #, atrribute1, atrribute2 ...>";
+      return "Extract each row as an artifact header <Section #, Attribute 1, Attribute 2, ...>";
    }
 
    public FileFilter getFileFilter() {

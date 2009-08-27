@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifact
 public class NativeDocumentExtractor extends AbstractArtifactExtractor {
 
    public String getDescription() {
-      return "Extract the content of each native document as one artifact";
+      return "Extract the content of each native document as one artifact.";
    }
 
    @Override

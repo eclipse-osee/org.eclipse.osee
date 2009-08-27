@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifact
 
 public class WholeWordDocumentExtractor extends AbstractArtifactExtractor {
    public String getDescription() {
-      return "Extract all the content of each Word XML document as one artifact";
+      return "Extract all the content of each Word XML document as one artifact.";
    }
 
    @Override
