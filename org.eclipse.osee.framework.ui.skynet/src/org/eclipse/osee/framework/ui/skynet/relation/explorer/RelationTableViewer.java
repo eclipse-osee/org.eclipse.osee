@@ -25,8 +25,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -65,9 +65,7 @@ public class RelationTableViewer {
     */
    public RelationTableViewer(Table validTable, Table invalidTable, Branch branch) {
       try {
-         fullDescriptorList =
-               new ArrayList<ArtifactType>(
-                     TypeValidityManager.getValidArtifactTypes(branch));
+         fullDescriptorList = new ArrayList<ArtifactType>(ArtifactTypeManager.getValidArtifactTypes(branch));
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -223,8 +221,10 @@ public class RelationTableViewer {
    class RelationContentProvider implements IStructuredContentProvider, IArtifactListViewer {
 
       public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-         if (newInput != null) artifactList.addChangeListener(this);
-         if (oldInput != null) artifactList.removeChangeListener(this);
+         if (newInput != null)
+            artifactList.addChangeListener(this);
+         if (oldInput != null)
+            artifactList.removeChangeListener(this);
       }
 
       public void dispose() {

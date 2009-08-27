@@ -74,12 +74,8 @@ public class MergeCompoundContributionItem extends CompoundContributionItem {
                try {
                   Collection<Integer> destBranches =
                         ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getBranchId());
-                  try {
-                     if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getBranchId())) {
-                        destBranches.add(selectedBranch.getParentBranch().getBranchId());
-                     }
-                  } catch (BranchDoesNotExist ex) {
-                     destBranches.add(0);
+                  if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getBranchId())) {
+                     destBranches.add(selectedBranch.getParentBranch().getBranchId());
                   }
 
                   String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.mergeManager";
@@ -102,24 +98,23 @@ public class MergeCompoundContributionItem extends CompoundContributionItem {
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(Integer branchId, String commandId) throws OseeDataStoreException, BranchDoesNotExist{
+   private CommandContributionItem createCommand(Integer branchId, String commandId) throws OseeDataStoreException, BranchDoesNotExist {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put(BranchView.BRANCH_ID, Integer.toString(branchId));
       CommandContributionItem contributionItem;
-      String label =
-            branchId == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branchId).getName();
+      String label = branchId == 0 ? "Can't Merge a Root Branch" : BranchManager.getBranch(branchId).getName();
 
       contributionItem =
             new CommandContributionItem(new CommandContributionItemParameter(
-                  PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, parameters,
-                  null, null, null, label, null, null, SWT.NONE, null, false));
-      
+                  PlatformUI.getWorkbench().getActiveWorkbenchWindow(), label, commandId, parameters, null, null, null,
+                  label, null, null, SWT.NONE, null, false));
+
       return contributionItem;
    }
-   
+
    private Command configCommandParameter(String commandId) {
       Command command = commandService.getCommand(commandId);
-      
+
       try {
          command.define(command.getName(), "", commandService.getCategory("org.eclipse.debug.ui.category.run"),
                BRANCH_PARAMETER_DEF);
