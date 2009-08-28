@@ -32,7 +32,12 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.ArtifactDecorator;
+import org.eclipse.osee.framework.ui.skynet.ArtifactLabelProvider;
+import org.eclipse.osee.framework.ui.skynet.ArtifactViewerSorter;
+import org.eclipse.osee.framework.ui.skynet.util.filteredTree.SimpleCheckFilteredTreeDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -73,15 +78,35 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                         }
                      }
                   }
-                  if (addedArts.size() > 0) {
+                  if (addedArts.size() == 1) {
                      Displays.ensureInDisplayThread(new Runnable() {
                         @Override
                         public void run() {
-                           if (addedArts.size() < 3 || MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
-                                 "Open Change Reports",
-                                 "Opening " + addedArts.size() + " Change Reports?\n\n(may want to run this off-hours)")) {
-                              for (Artifact art : addedArts) {
-                                 ((StateMachineArtifact) art).getSmaMgr().getBranchMgr().showChangeReport();
+                           for (Artifact art : addedArts) {
+                              ((StateMachineArtifact) art).getSmaMgr().getBranchMgr().showChangeReport();
+                           }
+                        }
+                     });
+                  } else if (addedArts.size() > 0) {
+                     Displays.ensureInDisplayThread(new Runnable() {
+                        @Override
+                        public void run() {
+                           ArtifactDecorator artDecorator = new ArtifactDecorator("");
+                           artDecorator.addActions(null, null);
+                           artDecorator.setShowArtBranch(true);
+                           artDecorator.setShowArtType(true);
+                           SimpleCheckFilteredTreeDialog dialog =
+                                 new SimpleCheckFilteredTreeDialog("Select Available Change Reports",
+                                       "Select available Change Reports to run.", new ArrayTreeContentProvider(),
+                                       new ArtifactLabelProvider(artDecorator), new ArtifactViewerSorter(), 0,
+                                       Integer.MAX_VALUE);
+                           dialog.setInput(addedArts);
+                           if (dialog.open() == 0) {
+                              if (dialog.getResult().length == 0) {
+                                 return;
+                              }
+                              for (Object obj : dialog.getResult()) {
+                                 ((StateMachineArtifact) obj).getSmaMgr().getBranchMgr().showChangeReport();
                               }
                            }
                         }
