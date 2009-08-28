@@ -74,6 +74,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Ryan D. Brooks
  */
 public class BranchManager {
+   private static final int NULL_PARENT_BRANCH_ID = -1;
+
    private static final BranchManager instance = new BranchManager();
 
    private static final String READ_BRANCH_TABLE =
@@ -338,7 +340,7 @@ public class BranchManager {
                "Branch inheritance error detected - ancestor[%s] = descendant[%s]", parentBranchId, branchId));
       }
 
-      if (parentBranchId != -1) {
+      if (parentBranchId != NULL_PARENT_BRANCH_ID) {
          try {
             parentBranch = BranchManager.getBranch(parentBranchId);
          } catch (BranchDoesNotExist ex1) {
@@ -684,7 +686,8 @@ public class BranchManager {
    }
 
    public static Branch createSystemRootBranch() throws OseeCoreException {
-      return HttpBranchCreation.createFullBranch(BranchType.SYSTEM_ROOT, 1, 1, "System Root Branch", null, null);
+      return HttpBranchCreation.createFullBranch(BranchType.SYSTEM_ROOT, 1, NULL_PARENT_BRANCH_ID,
+            "System Root Branch", null, null);
    }
 
    public static List<Branch> getBaselineBranches() throws OseeCoreException {
