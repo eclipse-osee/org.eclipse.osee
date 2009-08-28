@@ -52,7 +52,7 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
    public static final String COMMON_BRANCH_CONFIG_ID = "Common";
    private final String branchGuid;
    private final int branchId;
-   private final int parentBranchId;
+   private final Branch parentBranch;
    private TransactionId parentTransactionId;
    private final int parentTransactionIdNumber;
    private String branchName;
@@ -67,11 +67,11 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
    private Branch destBranch;
    private BranchState branchState;
 
-   public Branch(String branchName, String branchGuid, int branchId, int parentBranchId, int parentTransactionIdNumber, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
+   public Branch(String branchName, String branchGuid, int branchId, Branch parentBranch, int parentTransactionIdNumber, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
       this.branchId = branchId;
       this.branchGuid = branchGuid;
       this.branchName = branchName;
-      this.parentBranchId = parentBranchId;
+      this.parentBranch = parentBranch;
       this.parentTransactionIdNumber = parentTransactionIdNumber;
       this.archived = archived;
       this.authorId = authorId;
@@ -163,20 +163,24 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       return getName();
    }
 
-   public Branch getParentBranch() throws OseeCoreException {
-      return BranchManager.getBranch(getParentBranchId());
+   public Branch getParentBranch() {
+      return parentBranch;
    }
 
-   public boolean hasParentBranch() throws OseeCoreException {
+   public boolean hasParentBranch() {
+      return getParentBranch() != null;
+   }
+
+   public boolean hasTopLevelBranch() {
       return !isTopLevelBranch();
    }
 
    /**
     * @return the top level branch that is an ancestor of this branch (which could be itself)
     */
-   public Branch getTopLevelBranch() throws OseeCoreException {
+   public Branch getTopLevelBranch() {
       Branch branchCursor = this;
-      while (branchCursor.hasParentBranch()) {
+      while (branchCursor.hasTopLevelBranch()) {
          branchCursor = branchCursor.getParentBranch();
       }
       return branchCursor;
@@ -228,18 +232,15 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       List<Branch> ancestors = new LinkedList<Branch>();
       Branch branchCursor = this;
       ancestors.add(branchCursor);
-      while (branchCursor.hasParentBranch()) {
+      while (branchCursor.hasTopLevelBranch()) {
          branchCursor = branchCursor.getParentBranch();
          ancestors.add(branchCursor);
       }
       return ancestors;
    }
 
-   /**
-    * @return Returns the parentBranchId.
-    */
    public int getParentBranchId() {
-      return parentBranchId;
+      return hasParentBranch() ? getParentBranch().getBranchId() : -1;
    }
 
    public void archive() throws OseeCoreException {
@@ -337,8 +338,8 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       return branchType.equals(BranchType.SYSTEM_ROOT);
    }
 
-   public boolean isTopLevelBranch() throws OseeCoreException {
-      return getParentBranch() != null && getParentBranch().getBranchType().equals(BranchType.SYSTEM_ROOT);
+   public boolean isTopLevelBranch() {
+      return getParentBranch() != null && getParentBranch().isSystemRootBranch();
    }
 
    public BranchType getBranchType() {

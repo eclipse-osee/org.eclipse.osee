@@ -76,7 +76,7 @@ public class BranchManager {
    private static final BranchManager instance = new BranchManager();
 
    private static final String READ_BRANCH_TABLE =
-         "SELECT * FROM osee_branch br1, osee_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
+         "SELECT * FROM osee_branch br1, osee_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type = " + TransactionDetailsType.Baselined.getId() + " order by parent_branch_id asc";
    private static final String READ_MERGE_BRANCHES =
          "SELECT m1.* FROM osee_merge m1, osee_tx_details txd1 WHERE m1.merge_branch_id = txd1.branch_id and txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
    private static final String SELECT_BRANCH_TRANSACTION =
@@ -197,7 +197,7 @@ public class BranchManager {
       return branches.iterator().next();
    }
 
-   public static Collection<Branch> getBranchesByName(String branchName) throws OseeDataStoreException {
+   public static Collection<Branch> getBranchesByName(String branchName) throws OseeDataStoreException, BranchDoesNotExist {
       instance.ensurePopulatedCache(false);
       List<Branch> branches = null;
       for (Branch branch : instance.branchCache.values()) {
@@ -223,11 +223,11 @@ public class BranchManager {
       return instance.branchGuidCache.get(guid);
    }
 
-   public static boolean branchExists(String branchName) throws OseeDataStoreException {
+   public static boolean branchExists(String branchName) throws OseeDataStoreException, BranchDoesNotExist {
       return !getBranchesByName(branchName).isEmpty();
    }
 
-   private synchronized void ensurePopulatedCache(boolean forceRead) throws OseeDataStoreException {
+   private synchronized void ensurePopulatedCache(boolean forceRead) throws OseeDataStoreException, BranchDoesNotExist {
       if (forceRead || branchCache.size() == 0) {
          // The branch cache can not be cleared here because applications may contain branch references.
 
@@ -325,9 +325,24 @@ public class BranchManager {
       }
    }
 
-   public static Branch createBranchObject(String branchName, String branchGuid, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
+   private static String getParentBranchError(int branchId, String branchName, int parentBranchId) {
+      return String.format("Parent Branch id:[%s] not found for Branch: id[%s] name[%s]", parentBranchId, branchId,
+            branchName);
+   }
+
+   public static Branch createBranchObject(String branchName, String branchGuid, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) throws BranchDoesNotExist {
+      Branch parentBranch = null;
+      if (parentBranchId != -1 && !BranchType.SYSTEM_ROOT.equals(branchType)) {
+         try {
+            parentBranch = BranchManager.getBranch(parentBranchId);
+         } catch (BranchDoesNotExist ex1) {
+            throw new BranchDoesNotExist(getParentBranchError(branchId, branchName, parentBranchId), ex1);
+         } catch (OseeCoreException ex2) {
+            throw new BranchDoesNotExist(getParentBranchError(branchId, branchName, parentBranchId), ex2);
+         }
+      }
       Branch branch =
-            new Branch(branchName, branchGuid, branchId, parentBranchId, parentTransactionId, archived, authorId,
+            new Branch(branchName, branchGuid, branchId, parentBranch, parentTransactionId, archived, authorId,
                   creationDate, creationComment, associatedArtifactId, branchType, branchState);
       instance.branchCache.put(branchId, branch);
       return branch;
@@ -339,9 +354,9 @@ public class BranchManager {
     * @param rSet
     * @return
     * @throws OseeDataStoreException
-    * @throws OseeCoreException
+    * @throws BranchDoesNotExist
     */
-   private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+   private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException, BranchDoesNotExist {
       return createBranchObject(chStmt.getString("branch_name"), chStmt.getString("branch_guid"),
             chStmt.getInt("branch_id"), chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"),
             chStmt.getInt("archived") == 1, chStmt.getInt("author"), chStmt.getTimestamp("time"),
