@@ -105,11 +105,6 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    protected void initializeSMA() {
-//      try {
-////         smaMgr = new SMAManager(this);
-//      } catch (OseeCoreException ex) {
-//         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-//      }
       initalizePreSaveCache();
    }
 
