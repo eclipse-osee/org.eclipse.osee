@@ -83,7 +83,7 @@ public final class UserManager {
       return users;
    }
 
-   private static List<User> getFromCache() throws OseeTypeDoesNotExist, OseeDataStoreException {
+   private static List<User> getFromCache() throws OseeCoreException {
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(ArtifactTypeManager.getType(User.ARTIFACT_NAME)));
    }
 
