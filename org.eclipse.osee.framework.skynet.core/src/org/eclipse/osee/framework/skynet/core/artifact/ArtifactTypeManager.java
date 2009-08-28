@@ -174,6 +174,11 @@ public class ArtifactTypeManager {
       return artifactType;
    }
 
+   public static Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws OseeCoreException {
+      // TODO: Filter Types By Branch
+      return ArtifactTypeManager.getAllTypes();
+   }
+
    /**
     * Get a new instance of type artifactTypeName
     * 

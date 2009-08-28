@@ -16,7 +16,6 @@ import java.util.LinkedList;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -80,11 +79,6 @@ public class TypeValidityManager {
       } finally {
          chStmt.close();
       }
-   }
-
-   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(String requestedAttributeType, Branch branch) throws OseeCoreException {
-
-      return getArtifactTypesFromAttributeType(AttributeTypeManager.getType(requestedAttributeType), branch);
    }
 
    /**
@@ -192,18 +186,7 @@ public class TypeValidityManager {
       return AttributeTypeManager.getAllTypes();
    }
 
-   public static Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws OseeCoreException {
-      if (false) { // TODO: Filter Types By Branch
-         ensurePopulated();
-         Branch topLevelBranch = branch.getTopLevelBranch();
-         Collection<ArtifactType> artifactTypes = instance.branchToartifactTypeMap.getValues(topLevelBranch);
-         if (artifactTypes == null) {
-            throw new OseeArgumentException(
-                  "There are no valid artifact types available for the branch " + topLevelBranch);
-         }
-         return artifactTypes;
-      } else {
-         return ArtifactTypeManager.getAllTypes();
-      }
+   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(String requestedAttributeType, Branch branch) throws OseeCoreException {
+      return getArtifactTypesFromAttributeType(AttributeTypeManager.getType(requestedAttributeType), branch);
    }
 }

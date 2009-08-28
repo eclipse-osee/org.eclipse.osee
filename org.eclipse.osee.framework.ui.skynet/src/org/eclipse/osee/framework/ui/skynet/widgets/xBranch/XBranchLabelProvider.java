@@ -118,11 +118,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       } else if (cCol.equals(BranchXViewerFactory.branchGuid)) {
          return String.valueOf(branch.getGuid());
       } else if (cCol.equals(BranchXViewerFactory.parentBranch)) {
-         try {
-            return branch.getParentBranch().getName();
-         } catch (OseeCoreException ex) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-         }
+         return branch.hasParentBranch() ? branch.getParentBranch().getName() : "none";
       }
       return "";
    }
@@ -134,7 +130,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          columnText = String.valueOf(transaction.getTransactionNumber());
       }
       if (cCol.equals(BranchXViewerFactory.timeStamp)) {
-         columnText =  new SimpleDateFormat("MM/dd/yyyy hh:mm a").format((transaction.getTime()));
+         columnText = new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(transaction.getTime());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
          columnText = UserManager.getUserNameById(transaction.getAuthorArtId());
       } else if (cCol.equals(BranchXViewerFactory.comment)) {
