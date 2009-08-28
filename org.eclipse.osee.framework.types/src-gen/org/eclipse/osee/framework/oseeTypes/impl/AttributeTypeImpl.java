@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getBaseAttributeType <em>Base Attribute Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getOverride <em>Override</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getDataProvider <em>Data Provider</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getMin <em>Min</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeImpl#getMax <em>Max</em>}</li>
@@ -59,6 +60,16 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
    * @ordered
    */
   protected String baseAttributeType = BASE_ATTRIBUTE_TYPE_EDEFAULT;
+
+  /**
+   * The cached value of the '{@link #getOverride() <em>Override</em>}' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOverride()
+   * @generated
+   * @ordered
+   */
+  protected AttributeType override;
 
   /**
    * The default value of the '{@link #getDataProvider() <em>Data Provider</em>}' attribute.
@@ -252,6 +263,49 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     baseAttributeType = newBaseAttributeType;
     if (eNotificationRequired())
       eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE, oldBaseAttributeType, baseAttributeType));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AttributeType getOverride()
+  {
+    if (override != null && override.eIsProxy())
+    {
+      InternalEObject oldOverride = (InternalEObject)override;
+      override = (AttributeType)eResolveProxy(oldOverride);
+      if (override != oldOverride)
+      {
+        if (eNotificationRequired())
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE, oldOverride, override));
+      }
+    }
+    return override;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AttributeType basicGetOverride()
+  {
+    return override;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setOverride(AttributeType newOverride)
+  {
+    AttributeType oldOverride = override;
+    override = newOverride;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE, oldOverride, override));
   }
 
   /**
@@ -470,6 +524,9 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     {
       case OseeTypesPackage.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
         return getBaseAttributeType();
+      case OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE:
+        if (resolve) return getOverride();
+        return basicGetOverride();
       case OseeTypesPackage.ATTRIBUTE_TYPE__DATA_PROVIDER:
         return getDataProvider();
       case OseeTypesPackage.ATTRIBUTE_TYPE__MIN:
@@ -503,6 +560,9 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     {
       case OseeTypesPackage.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
         setBaseAttributeType((String)newValue);
+        return;
+      case OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE:
+        setOverride((AttributeType)newValue);
         return;
       case OseeTypesPackage.ATTRIBUTE_TYPE__DATA_PROVIDER:
         setDataProvider((String)newValue);
@@ -545,6 +605,9 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
       case OseeTypesPackage.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
         setBaseAttributeType(BASE_ATTRIBUTE_TYPE_EDEFAULT);
         return;
+      case OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE:
+        setOverride((AttributeType)null);
+        return;
       case OseeTypesPackage.ATTRIBUTE_TYPE__DATA_PROVIDER:
         setDataProvider(DATA_PROVIDER_EDEFAULT);
         return;
@@ -585,6 +648,8 @@ public class AttributeTypeImpl extends OseeTypeImpl implements AttributeType
     {
       case OseeTypesPackage.ATTRIBUTE_TYPE__BASE_ATTRIBUTE_TYPE:
         return BASE_ATTRIBUTE_TYPE_EDEFAULT == null ? baseAttributeType != null : !BASE_ATTRIBUTE_TYPE_EDEFAULT.equals(baseAttributeType);
+      case OseeTypesPackage.ATTRIBUTE_TYPE__OVERRIDE:
+        return override != null;
       case OseeTypesPackage.ATTRIBUTE_TYPE__DATA_PROVIDER:
         return DATA_PROVIDER_EDEFAULT == null ? dataProvider != null : !DATA_PROVIDER_EDEFAULT.equals(dataProvider);
       case OseeTypesPackage.ATTRIBUTE_TYPE__MIN:

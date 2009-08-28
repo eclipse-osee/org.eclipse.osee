@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeRefImpl#getValidAttributeType <em>Valid Attribute Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeRefImpl#getBranchGuid <em>Branch Guid</em>}</li>
  * </ul>
  * </p>
  *
@@ -42,6 +43,26 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
    * @ordered
    */
   protected AttributeType validAttributeType;
+
+  /**
+   * The default value of the '{@link #getBranchGuid() <em>Branch Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getBranchGuid()
+   * @generated
+   * @ordered
+   */
+  protected static final String BRANCH_GUID_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getBranchGuid() <em>Branch Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getBranchGuid()
+   * @generated
+   * @ordered
+   */
+  protected String branchGuid = BRANCH_GUID_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -112,6 +133,29 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getBranchGuid()
+  {
+    return branchGuid;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setBranchGuid(String newBranchGuid)
+  {
+    String oldBranchGuid = branchGuid;
+    branchGuid = newBranchGuid;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID, oldBranchGuid, branchGuid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -120,6 +164,8 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
       case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
         if (resolve) return getValidAttributeType();
         return basicGetValidAttributeType();
+      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID:
+        return getBranchGuid();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -136,6 +182,9 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
     {
       case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
         setValidAttributeType((AttributeType)newValue);
+        return;
+      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID:
+        setBranchGuid((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -154,6 +203,9 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
       case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
         setValidAttributeType((AttributeType)null);
         return;
+      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID:
+        setBranchGuid(BRANCH_GUID_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -170,8 +222,27 @@ public class AttributeTypeRefImpl extends MinimalEObjectImpl.Container implement
     {
       case OseeTypesPackage.ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE:
         return validAttributeType != null;
+      case OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID:
+        return BRANCH_GUID_EDEFAULT == null ? branchGuid != null : !BRANCH_GUID_EDEFAULT.equals(branchGuid);
     }
     return super.eIsSet(featureID);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  @Override
+  public String toString()
+  {
+    if (eIsProxy()) return super.toString();
+
+    StringBuffer result = new StringBuffer(super.toString());
+    result.append(" (branchGuid: ");
+    result.append(branchGuid);
+    result.append(')');
+    return result.toString();
   }
 
 } //AttributeTypeRefImpl

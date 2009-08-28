@@ -19,7 +19,8 @@ OseeType:
 	ArtifactType | RelationType | AttributeType | OseeEnumType;
 
 ArtifactType:
-	'abstract'? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactTypes+=ArtifactSuperTypes)? '{'
+	(abstract?='abstract')? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactTypes+=ArtifactSuperTypes)? ('overrides' override=[ArtifactType|NAME_REFERENCE])? '{'
+		typeGuid=STRING?
 	    (validAttributeTypes+=AttributeTypeRef)*
 	'}';
 
@@ -30,7 +31,8 @@ AttributeTypeRef:
 	'attribute' validAttributeType=[AttributeType|NAME_REFERENCE] ('branchGuid' branchGuid=STRING)?;
 	
 AttributeType:
-		'attributeType' name=NAME_REFERENCE ('extends' baseAttributeType=AttributeBaseType) '{'
+		typeGuid=STRING?
+		'attributeType' name=NAME_REFERENCE ('extends' baseAttributeType=AttributeBaseType) ('overrides' override=[AttributeType|NAME_REFERENCE])? '{'
 		'dataProvider' dataProvider = ('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | 'MappedAttributeDataProvider' | QUALIFIED_NAME)
 		'min' min=WHOLE_NUM_STR
 		'max' max=(WHOLE_NUM_STR | 'unlimited')
@@ -45,7 +47,8 @@ AttributeBaseType:
 	'BooleanAttribute' | 'CompressedContentAttribute' | 'DateAttribute' | 'EnumeratedAttribute' | 'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' | 'WordAttribute' | QUALIFIED_NAME;
 
 OseeEnumType:
-	'oseeEnumType' name=NAME_REFERENCE '{' 
+	'oseeEnumType' name=NAME_REFERENCE ('overrides' override=[OseeEnumType|NAME_REFERENCE])? '{'
+		typeGuid=STRING?
 		(enumEntries+=OseeEnumEntry)*
 	'}';
 
@@ -57,7 +60,8 @@ ONE_TO_ONE | ONE_TO_MANY | MANY_TO_ONE | MANY_TO_MANY
 ;
 
 RelationType:
-	'relationType' name=NAME_REFERENCE '{'
+	'relationType' name=NAME_REFERENCE ('overrides' override=[RelationType|NAME_REFERENCE])? '{'
+		typeGuid=STRING?
 		'sideAName' sideAName=STRING
 		'sideAArtifactType' sideAArtifactType=[ArtifactType|NAME_REFERENCE]
 		'sideBName' sideBName=STRING

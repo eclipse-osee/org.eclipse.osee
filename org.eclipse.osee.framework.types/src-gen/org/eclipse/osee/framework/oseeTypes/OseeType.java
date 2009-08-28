@@ -17,6 +17,7 @@ import org.eclipse.emf.ecore.EObject;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeType#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeType#getTypeGuid <em>Type Guid</em>}</li>
  * </ul>
  * </p>
  *
@@ -51,5 +52,31 @@ public interface OseeType extends EObject
    * @generated
    */
   void setName(String value);
+
+  /**
+   * Returns the value of the '<em><b>Type Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Type Guid</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Type Guid</em>' attribute.
+   * @see #setTypeGuid(String)
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeType_TypeGuid()
+   * @model
+   * @generated
+   */
+  String getTypeGuid();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.OseeType#getTypeGuid <em>Type Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Type Guid</em>' attribute.
+   * @see #getTypeGuid()
+   * @generated
+   */
+  void setTypeGuid(String value);
 
 } // OseeType

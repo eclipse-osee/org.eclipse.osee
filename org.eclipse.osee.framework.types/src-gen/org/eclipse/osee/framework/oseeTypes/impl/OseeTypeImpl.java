@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
  * The following features are implemented:
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeTypeImpl#getName <em>Name</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeTypeImpl#getTypeGuid <em>Type Guid</em>}</li>
  * </ul>
  * </p>
  *
@@ -50,6 +51,26 @@ public class OseeTypeImpl extends MinimalEObjectImpl.Container implements OseeTy
    * @ordered
    */
   protected String name = NAME_EDEFAULT;
+
+  /**
+   * The default value of the '{@link #getTypeGuid() <em>Type Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTypeGuid()
+   * @generated
+   * @ordered
+   */
+  protected static final String TYPE_GUID_EDEFAULT = null;
+
+  /**
+   * The cached value of the '{@link #getTypeGuid() <em>Type Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getTypeGuid()
+   * @generated
+   * @ordered
+   */
+  protected String typeGuid = TYPE_GUID_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
@@ -100,6 +121,29 @@ public class OseeTypeImpl extends MinimalEObjectImpl.Container implements OseeTy
    * <!-- end-user-doc -->
    * @generated
    */
+  public String getTypeGuid()
+  {
+    return typeGuid;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setTypeGuid(String newTypeGuid)
+  {
+    String oldTypeGuid = typeGuid;
+    typeGuid = newTypeGuid;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_TYPE__TYPE_GUID, oldTypeGuid, typeGuid));
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   @Override
   public Object eGet(int featureID, boolean resolve, boolean coreType)
   {
@@ -107,6 +151,8 @@ public class OseeTypeImpl extends MinimalEObjectImpl.Container implements OseeTy
     {
       case OseeTypesPackage.OSEE_TYPE__NAME:
         return getName();
+      case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
+        return getTypeGuid();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -123,6 +169,9 @@ public class OseeTypeImpl extends MinimalEObjectImpl.Container implements OseeTy
     {
       case OseeTypesPackage.OSEE_TYPE__NAME:
         setName((String)newValue);
+        return;
+      case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
+        setTypeGuid((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -141,6 +190,9 @@ public class OseeTypeImpl extends MinimalEObjectImpl.Container implements OseeTy
       case OseeTypesPackage.OSEE_TYPE__NAME:
         setName(NAME_EDEFAULT);
         return;
+      case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
+        setTypeGuid(TYPE_GUID_EDEFAULT);
+        return;
     }
     super.eUnset(featureID);
   }
@@ -157,6 +209,8 @@ public class OseeTypeImpl extends MinimalEObjectImpl.Container implements OseeTy
     {
       case OseeTypesPackage.OSEE_TYPE__NAME:
         return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+      case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
+        return TYPE_GUID_EDEFAULT == null ? typeGuid != null : !TYPE_GUID_EDEFAULT.equals(typeGuid);
     }
     return super.eIsSet(featureID);
   }
@@ -174,6 +228,8 @@ public class OseeTypeImpl extends MinimalEObjectImpl.Container implements OseeTy
     StringBuffer result = new StringBuffer(super.toString());
     result.append(" (name: ");
     result.append(name);
+    result.append(", typeGuid: ");
+    result.append(typeGuid);
     result.append(')');
     return result.toString();
   }

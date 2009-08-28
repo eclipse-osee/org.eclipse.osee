@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.oseeTypes;
  * The following features are supported:
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getBaseAttributeType <em>Base Attribute Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getOverride <em>Override</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getDataProvider <em>Data Provider</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getMin <em>Min</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getMax <em>Max</em>}</li>
@@ -58,6 +59,32 @@ public interface AttributeType extends OseeType
    * @generated
    */
   void setBaseAttributeType(String value);
+
+  /**
+   * Returns the value of the '<em><b>Override</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Override</em>' reference isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Override</em>' reference.
+   * @see #setOverride(AttributeType)
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getAttributeType_Override()
+   * @model
+   * @generated
+   */
+  AttributeType getOverride();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.AttributeType#getOverride <em>Override</em>}' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Override</em>' reference.
+   * @see #getOverride()
+   * @generated
+   */
+  void setOverride(AttributeType value);
 
   /**
    * Returns the value of the '<em><b>Data Provider</b></em>' attribute.

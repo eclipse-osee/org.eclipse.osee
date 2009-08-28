@@ -8,12 +8,15 @@ package org.eclipse.osee.framework.oseeTypes.impl;
 
 import java.util.Collection;
 
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
 import org.eclipse.emf.common.util.EList;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
@@ -29,6 +32,7 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
  * <p>
  * The following features are implemented:
  * <ul>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumTypeImpl#getOverride <em>Override</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumTypeImpl#getEnumEntries <em>Enum Entries</em>}</li>
  * </ul>
  * </p>
@@ -37,6 +41,16 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
  */
 public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
 {
+  /**
+   * The cached value of the '{@link #getOverride() <em>Override</em>}' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #getOverride()
+   * @generated
+   * @ordered
+   */
+  protected OseeEnumType override;
+
   /**
    * The cached value of the '{@link #getEnumEntries() <em>Enum Entries</em>}' containment reference list.
    * <!-- begin-user-doc -->
@@ -66,6 +80,49 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   protected EClass eStaticClass()
   {
     return OseeTypesPackage.Literals.OSEE_ENUM_TYPE;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public OseeEnumType getOverride()
+  {
+    if (override != null && override.eIsProxy())
+    {
+      InternalEObject oldOverride = (InternalEObject)override;
+      override = (OseeEnumType)eResolveProxy(oldOverride);
+      if (override != oldOverride)
+      {
+        if (eNotificationRequired())
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.OSEE_ENUM_TYPE__OVERRIDE, oldOverride, override));
+      }
+    }
+    return override;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public OseeEnumType basicGetOverride()
+  {
+    return override;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setOverride(OseeEnumType newOverride)
+  {
+    OseeEnumType oldOverride = override;
+    override = newOverride;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_ENUM_TYPE__OVERRIDE, oldOverride, override));
   }
 
   /**
@@ -108,6 +165,9 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
+      case OseeTypesPackage.OSEE_ENUM_TYPE__OVERRIDE:
+        if (resolve) return getOverride();
+        return basicGetOverride();
       case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
         return getEnumEntries();
     }
@@ -125,6 +185,9 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
+      case OseeTypesPackage.OSEE_ENUM_TYPE__OVERRIDE:
+        setOverride((OseeEnumType)newValue);
+        return;
       case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
         getEnumEntries().clear();
         getEnumEntries().addAll((Collection<? extends OseeEnumEntry>)newValue);
@@ -143,6 +206,9 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
+      case OseeTypesPackage.OSEE_ENUM_TYPE__OVERRIDE:
+        setOverride((OseeEnumType)null);
+        return;
       case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
         getEnumEntries().clear();
         return;
@@ -160,6 +226,8 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
+      case OseeTypesPackage.OSEE_ENUM_TYPE__OVERRIDE:
+        return override != null;
       case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
         return enumEntries != null && !enumEntries.isEmpty();
     }

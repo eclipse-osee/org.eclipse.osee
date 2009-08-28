@@ -12,71 +12,74 @@ T13 : '.' ;
 T14 : 'abstract' ;
 T15 : 'artifactType' ;
 T16 : 'extends' ;
-T17 : '{' ;
-T18 : '}' ;
-T19 : 'attribute' ;
-T20 : 'attributeType' ;
-T21 : 'dataProvider' ;
-T22 : 'DefaultAttributeDataProvider' ;
-T23 : 'UriAttributeDataProvider' ;
-T24 : 'MappedAttributeDataProvider' ;
-T25 : 'min' ;
-T26 : 'max' ;
-T27 : 'unlimited' ;
-T28 : 'taggerId' ;
-T29 : 'DefaultAttributeTaggerProvider' ;
-T30 : 'enumType' ;
-T31 : 'description' ;
-T32 : 'defaultValue' ;
-T33 : 'fileExtension' ;
-T34 : 'BooleanAttribute' ;
-T35 : 'CompressedContentAttribute' ;
-T36 : 'DateAttribute' ;
-T37 : 'EnumeratedAttribute' ;
-T38 : 'FloatingPointAttribute' ;
-T39 : 'IntegerAttribute' ;
-T40 : 'JavaObjectAttribute' ;
-T41 : 'StringAttribute' ;
-T42 : 'WordAttribute' ;
-T43 : 'oseeEnumType' ;
-T44 : 'entry' ;
-T45 : 'relationType' ;
-T46 : 'sideAName' ;
-T47 : 'sideAArtifactType' ;
-T48 : 'sideBName' ;
-T49 : 'sideBArtifactType' ;
-T50 : 'defaultOrderType' ;
-T51 : 'Lexicographical_Ascending' ;
-T52 : 'Lexicographical_Descending' ;
-T53 : 'Unordered' ;
-T54 : 'multiplicity' ;
-T55 : 'ONE_TO_MANY' ;
-T56 : 'MANY_TO_MANY' ;
-T57 : 'MANY_TO_ONE' ;
+T17 : 'overrides' ;
+T18 : '{' ;
+T19 : '}' ;
+T20 : ',' ;
+T21 : 'attribute' ;
+T22 : 'branchGuid' ;
+T23 : 'attributeType' ;
+T24 : 'dataProvider' ;
+T25 : 'DefaultAttributeDataProvider' ;
+T26 : 'UriAttributeDataProvider' ;
+T27 : 'MappedAttributeDataProvider' ;
+T28 : 'min' ;
+T29 : 'max' ;
+T30 : 'unlimited' ;
+T31 : 'taggerId' ;
+T32 : 'DefaultAttributeTaggerProvider' ;
+T33 : 'enumType' ;
+T34 : 'description' ;
+T35 : 'defaultValue' ;
+T36 : 'fileExtension' ;
+T37 : 'BooleanAttribute' ;
+T38 : 'CompressedContentAttribute' ;
+T39 : 'DateAttribute' ;
+T40 : 'EnumeratedAttribute' ;
+T41 : 'FloatingPointAttribute' ;
+T42 : 'IntegerAttribute' ;
+T43 : 'JavaObjectAttribute' ;
+T44 : 'StringAttribute' ;
+T45 : 'WordAttribute' ;
+T46 : 'oseeEnumType' ;
+T47 : 'entry' ;
+T48 : 'relationType' ;
+T49 : 'sideAName' ;
+T50 : 'sideAArtifactType' ;
+T51 : 'sideBName' ;
+T52 : 'sideBArtifactType' ;
+T53 : 'defaultOrderType' ;
+T54 : 'Lexicographical_Ascending' ;
+T55 : 'Lexicographical_Descending' ;
+T56 : 'Unordered' ;
+T57 : 'multiplicity' ;
 T58 : 'ONE_TO_ONE' ;
+T59 : 'ONE_TO_MANY' ;
+T60 : 'MANY_TO_ONE' ;
+T61 : 'MANY_TO_MANY' ;
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1247
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1520
 RULE_WHOLE_NUM_STR : ('0'..'9')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1249
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1522
 RULE_ID : '^'? ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1251
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1524
 RULE_INT : ('0'..'9')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1253
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1526
 RULE_STRING : ('"' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'"')))* '"'|'\'' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'\'')))* '\'');
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1255
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1528
 RULE_ML_COMMENT : '/*' ( options {greedy=false;} : . )*'*/';
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1257
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1530
 RULE_SL_COMMENT : '//' ~(('\n'|'\r'))* ('\r'? '\n')?;
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1259
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1532
 RULE_WS : (' '|'\t'|'\r'|'\n')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1261
+// $ANTLR src "../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g" 1534
 RULE_ANY_OTHER : .;
 
 

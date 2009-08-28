@@ -232,6 +232,66 @@ attributeType "Disposition" extends StringAttribute {
    max 1 description "Disposition"
 }
 
+attributeType "Execution Date" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Date script was executed"
+}
+
+oseeEnumType "Test Status.enum" {
+   entry "Pass"
+   entry "Fail"
+   entry "Aborted"
+   entry "Exception"
+}
+
+attributeType "Test Status" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "Test Status.enum"
+   description "Test Status"
+   
+}
+
+attributeType "Test Pass" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   defaultValue "0"
+}
+
+attributeType "Test Fail" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   defaultValue "0"
+}
+
+attributeType "Version" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Version"
+}
+
+attributeType "Repository Type" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Repository Type"
+}
+
+attributeType "Modification Flag" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "File Modification Flag from Repository"
+}
+
+attributeType "Test Log" extends CompressedContentAttribute {
+   dataProvider UriAttributeDataProvider
+   min 0
+   max 1 description "Compressed Data" fileExtension "txt"
+}
+
 relationType "Test Case to Run Relation" {
    sideAName "Test Case"
    sideAArtifactType "Test Case"

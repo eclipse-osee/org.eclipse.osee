@@ -14,17 +14,26 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OseeType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="typeGuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ArtifactType" eSuperTypes="#//OseeType">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="superArtifactType" eType="#//ArtifactType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="abstract" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EBoolean"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="superArtifactTypes" upperBound="-1"
+        eType="#//ArtifactSuperTypes" containment="true"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="override" eType="#//ArtifactType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="validAttributeTypes" upperBound="-1"
         eType="#//AttributeTypeRef" containment="true"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="ArtifactSuperTypes">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="artifactSuperType" eType="#//ArtifactType"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AttributeTypeRef">
     <eStructuralFeatures xsi:type="ecore:EReference" name="validAttributeType" eType="#//AttributeType"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="branchGuid" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="AttributeType" eSuperTypes="#//OseeType">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="baseAttributeType" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="override" eType="#//AttributeType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="dataProvider" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="min" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="max" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
@@ -35,6 +44,7 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="fileExtension" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="OseeEnumType" eSuperTypes="#//OseeType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="override" eType="#//OseeEnumType"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="enumEntries" upperBound="-1"
         eType="#//OseeEnumEntry" containment="true"/>
   </eClassifiers>
@@ -43,12 +53,13 @@
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="ordinal" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EEnum" name="RelationMultiplicityEnum">
-    <eLiterals name="ONE_TO_MANY" literal="ONE_TO_MANY"/>
-    <eLiterals name="MANY_TO_MANY" value="1" literal="MANY_TO_MANY"/>
+    <eLiterals name="ONE_TO_ONE" literal="ONE_TO_ONE"/>
+    <eLiterals name="ONE_TO_MANY" value="1" literal="ONE_TO_MANY"/>
     <eLiterals name="MANY_TO_ONE" value="2" literal="MANY_TO_ONE"/>
-    <eLiterals name="ONE_TO_ONE" value="3" literal="ONE_TO_ONE"/>
+    <eLiterals name="MANY_TO_MANY" value="3" literal="MANY_TO_MANY"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="RelationType" eSuperTypes="#//OseeType">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="override" eType="#//RelationType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sideAName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EReference" name="sideAArtifactType" eType="#//ArtifactType"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="sideBName" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>

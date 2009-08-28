@@ -73,6 +73,7 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
       case OseeTypesPackage.IMPORT: return createImport();
       case OseeTypesPackage.OSEE_TYPE: return createOseeType();
       case OseeTypesPackage.ARTIFACT_TYPE: return createArtifactType();
+      case OseeTypesPackage.ARTIFACT_SUPER_TYPES: return createArtifactSuperTypes();
       case OseeTypesPackage.ATTRIBUTE_TYPE_REF: return createAttributeTypeRef();
       case OseeTypesPackage.ATTRIBUTE_TYPE: return createAttributeType();
       case OseeTypesPackage.OSEE_ENUM_TYPE: return createOseeEnumType();
@@ -159,6 +160,17 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
   {
     ArtifactTypeImpl artifactType = new ArtifactTypeImpl();
     return artifactType;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public ArtifactSuperTypes createArtifactSuperTypes()
+  {
+    ArtifactSuperTypesImpl artifactSuperTypes = new ArtifactSuperTypesImpl();
+    return artifactSuperTypes;
   }
 
   /**

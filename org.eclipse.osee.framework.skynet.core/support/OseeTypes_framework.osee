@@ -189,6 +189,10 @@ artifactType "Group Artifact" extends "Artifact" {
 artifactType "User Group" extends "Group Artifact" {
 }
 
+artifactType "Universal Group" extends "Group Artifact" {
+   attribute "Description"
+}
+
 artifactType "Renderer Template" extends "Native Artifact" {
    attribute "Template Match Criteria"
 }
@@ -210,10 +214,6 @@ relationType "Default Hierarchical" {
 }
 
 artifactType "Root Artifact" extends "Artifact" {
-}
-
-artifactType "Universal Group" extends "Group Artifact" {
-   attribute "Description"
 }
 
 artifactType "Folder" extends "Artifact" {
@@ -350,8 +350,6 @@ relationType "Universal Grouping" {
    multiplicity MANY_TO_MANY
 }
 
-/******* Define ********/
-
 abstract artifactType "MS Word" extends "Artifact" {
    attribute "Imported Paragraph Number"
 }
@@ -360,16 +358,16 @@ artifactType "MS Word Whole Document" extends "MS Word" {
    attribute "Whole Word Content"
 }
 
-abstract artifactType "Native Artifact" extends "Artifact" {
-   attribute "File Extension"
-   attribute "Description"
-   attribute "Native Content"
-}
-
 artifactType "MS Word Template" extends "MS Word" {
    attribute "Word Ole Data"
    attribute "Page Type"
    attribute "Word Template Content"
+}
+
+abstract artifactType "Native Artifact" extends "Artifact" {
+   attribute "File Extension"
+   attribute "Description"
+   attribute "Native Content"
 }
 
 attributeType "Content URL" extends StringAttribute {
@@ -393,7 +391,10 @@ artifactType "Requirement" extends "Artifact" {
    attribute "Technical Performance Parameter"
 }
 
-artifactType "Software Requirement" extends "Requirement", "MS Word Template" {
+abstract artifactType "MS Word Template Requirement" extends "Requirement", "MS Word Template" {
+}
+
+artifactType "Software Requirement" extends "MS Word Template Requirement" {
    attribute "Category"
    attribute "Common NAL Requirement"
    attribute "Crew Interface Requirement"
@@ -412,7 +413,7 @@ artifactType "Software Requirement Function" extends "Software Requirement" {
 artifactType "Software Requirement Drawing" extends "Software Requirement" {
 }
 
-artifactType "System Requirement"  extends "Requirement" {	
+artifactType "System Requirement"  extends "MS Word Template Requirement" {	
    attribute "Legacy Id"
    attribute "Level 2 IPT"
    attribute "Level 3 IPT"
@@ -420,17 +421,17 @@ artifactType "System Requirement"  extends "Requirement" {
    attribute "Support IPT"
 }
 
-artifactType "Subsystem Requirement" extends "Requirement" {
+artifactType "Subsystem Requirement" extends "MS Word Template Requirement" {
    attribute "Legacy Id"
    attribute "Verification Level"
    attribute "Verification Event"
 }
 
-artifactType "Interface Requirement" extends "Requirement" {
+artifactType "Interface Requirement" extends "MS Word Template Requirement" {
    attribute "Component"
 }
 
-artifactType "Hardware Requirement" extends "Requirement" {
+artifactType "Hardware Requirement" extends "MS Word Template Requirement" {
 }
 
 abstract artifactType "Function" extends "MS Word Template" {
@@ -530,35 +531,12 @@ attributeType "Training Effectivity" extends BooleanAttribute {
 }
 
 oseeEnumType "Partition.enum" {
-   entry "ACS"
-   entry "ARC201"
-   entry "ARC231"
-   entry "ASE"
-   entry "CDAS"
-   entry "CND"
-   entry "COMM"
-   entry "DIGMAP_L"
-   entry "DIGMAP_R"
-   entry "HM"
-   entry "INST_BAT"
-   entry "INST_DCB"
-   entry "IOP"
-   entry "MP"
-   entry "MPEGP"
-   entry "DVR"
-   entry "MSM"
-   entry "NAV"
-   entry "NCO"
-   entry "REND_H"
-   entry "REND_L"
-   entry "REND_R"
-   entry "REND_T"
-   entry "SFM"
-   entry "SOSCOE"
-   entry "SSRD_GW"
-   entry "USM"
-   entry "VAM"
-   entry "WPS"
+   entry "Aircraft Survivability Equipment"
+   entry "Communication"
+   entry "Contorls and Displays"
+   entry "Flight Control"
+   entry "Input/Output Processor"
+   entry "Navigation"
    entry "Unspecified"
 }
 
@@ -573,26 +551,9 @@ attributeType "Partition" extends EnumeratedAttribute {
 
 oseeEnumType "Subsystem.enum" {
    entry "Aircraft Survivability Equipment"
-   entry "Aircraft Systems Management"
-   entry "Airframe"
-   entry "Architecture"
-   entry "Area Weapon"
-   entry "Armament"
-   entry "Cognitive Decision Aiding"
    entry "Communications"
    entry "Controls and Displays"
    entry "Data Management"
-   entry "Drive Train"
-   entry "Electrical"
-   entry "Flight Controls"
-   entry "Hydraulics"
-   entry "Mission Systems Management"
-   entry "Navigation"
-   entry "Network Centric Operations"
-   entry "Non-MSA Requirements"
-   entry "Propulsion"
-   entry "Sights"
-   entry "Unmanned Systems Management"
    entry "Unspecified"
 }
 
@@ -621,68 +582,6 @@ attributeType "Qualification Method" extends EnumeratedAttribute {
    enumType "Qualification Method.enum"
    description "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software)."
    defaultValue "Unspecified"
-}
-
-/********** OTE ******/
-
-attributeType "Execution Date" extends DateAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1 description "Date script was executed"
-}
-
-oseeEnumType "Test Status.enum" {
-   entry "Pass"
-   entry "Fail"
-   entry "Aborted"
-   entry "Exception"
-}
-
-attributeType "Test Status" extends EnumeratedAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "Test Status.enum"
-   description "Test Status"
-   
-}
-
-attributeType "Test Pass" extends IntegerAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   defaultValue "0"
-}
-
-attributeType "Test Fail" extends IntegerAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   defaultValue "0"
-}
-
-attributeType "Version" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1 description "Version"
-}
-
-attributeType "Repository Type" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1 description "Repository Type"
-}
-
-attributeType "Modification Flag" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1 description "File Modification Flag from Repository"
-}
-
-attributeType "Test Log" extends CompressedContentAttribute {
-   dataProvider UriAttributeDataProvider
-   min 0
-   max 1 description "Compressed Data" fileExtension "txt"
 }
 
 oseeEnumType "Safety Criticality.enum" {
@@ -1058,20 +957,15 @@ attributeType "ROIN" extends StringAttribute {
    "SLATE unique identifier (caution: not guaranteed to be immutable)"
 }
 
-artifactType "Component" {
+artifactType "Component" extends "Artifact" {
    attribute "Developmental"
    attribute "GFE / CFE"
 }
 
-artifactType "Spreadsheet" {
-   attribute "Row"
-   attribute "Summary"
+artifactType "Code Unit" extends "Artifact" {
 }
 
-artifactType "Code Unit" {
-}
-
-artifactType "Safety Assessment" {
+artifactType "Safety Assessment" extends "MS Word Template" {
    attribute "Hazard"
    attribute "AFHA"
    attribute "SFHA"
@@ -1085,18 +979,6 @@ attributeType "Developmental" extends BooleanAttribute {
    min 1
    max 1
    defaultValue "yes"
-}
-
-attributeType "Row" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max unlimited
-}
-
-attributeType "Summary" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
 }
 
 attributeType "Hazard" extends StringAttribute {

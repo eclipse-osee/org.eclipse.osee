@@ -63,6 +63,15 @@ public interface OseeTypesFactory extends EFactory
   ArtifactType createArtifactType();
 
   /**
+   * Returns a new object of class '<em>Artifact Super Types</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Artifact Super Types</em>'.
+   * @generated
+   */
+  ArtifactSuperTypes createArtifactSuperTypes();
+
+  /**
    * Returns a new object of class '<em>Attribute Type Ref</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->

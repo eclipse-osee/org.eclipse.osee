@@ -16,7 +16,9 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactType <em>Super Artifact Type</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#isAbstract <em>Abstract</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactTypes <em>Super Artifact Types</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getOverride <em>Override</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidAttributeTypes <em>Valid Attribute Types</em>}</li>
  * </ul>
  * </p>
@@ -28,30 +30,72 @@ import org.eclipse.emf.common.util.EList;
 public interface ArtifactType extends OseeType
 {
   /**
-   * Returns the value of the '<em><b>Super Artifact Type</b></em>' reference.
+   * Returns the value of the '<em><b>Abstract</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of the '<em>Super Artifact Type</em>' reference isn't clear,
+   * If the meaning of the '<em>Abstract</em>' attribute isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @return the value of the '<em>Super Artifact Type</em>' reference.
-   * @see #setSuperArtifactType(ArtifactType)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_SuperArtifactType()
+   * @return the value of the '<em>Abstract</em>' attribute.
+   * @see #setAbstract(boolean)
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_Abstract()
    * @model
    * @generated
    */
-  ArtifactType getSuperArtifactType();
+  boolean isAbstract();
 
   /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactType <em>Super Artifact Type</em>}' reference.
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#isAbstract <em>Abstract</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Super Artifact Type</em>' reference.
-   * @see #getSuperArtifactType()
+   * @param value the new value of the '<em>Abstract</em>' attribute.
+   * @see #isAbstract()
    * @generated
    */
-  void setSuperArtifactType(ArtifactType value);
+  void setAbstract(boolean value);
+
+  /**
+   * Returns the value of the '<em><b>Super Artifact Types</b></em>' containment reference list.
+   * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.ArtifactSuperTypes}.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Super Artifact Types</em>' containment reference list isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Super Artifact Types</em>' containment reference list.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_SuperArtifactTypes()
+   * @model containment="true"
+   * @generated
+   */
+  EList<ArtifactSuperTypes> getSuperArtifactTypes();
+
+  /**
+   * Returns the value of the '<em><b>Override</b></em>' reference.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Override</em>' reference isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Override</em>' reference.
+   * @see #setOverride(ArtifactType)
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_Override()
+   * @model
+   * @generated
+   */
+  ArtifactType getOverride();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getOverride <em>Override</em>}' reference.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Override</em>' reference.
+   * @see #getOverride()
+   * @generated
+   */
+  void setOverride(ArtifactType value);
 
   /**
    * Returns the value of the '<em><b>Valid Attribute Types</b></em>' containment reference list.

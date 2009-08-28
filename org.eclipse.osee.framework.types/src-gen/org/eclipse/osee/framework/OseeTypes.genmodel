@@ -2,18 +2,18 @@
 <genmodel:GenModel xmi:version="2.0"
     xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
     xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/org.eclipse.osee.framework.types/src-gen"
-    editDirectory="/org.eclipse.osee.framework.types.edit/src-gen" editorDirectory="/org.eclipse.osee.framework.types.editor/src"
+    editDirectory="/org.eclipse.osee.framework.types.edit/src" editorDirectory="/org.eclipse.osee.framework.types.editor/src"
     modelPluginID="org.eclipse.osee.framework.types" forceOverwrite="true" modelName="OseeTypes"
     updateClasspath="false" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
-    testsDirectory="/org.eclipse.osee.framework.types.tests/src-gen" complianceLevel="5.0"
-    copyrightFields="false" editPluginID="org.eclipse.osee.framework.types.edit" editorPluginID="org.eclipse.osee.framework.types.editor">
+    complianceLevel="5.0" copyrightFields="false" editPluginID="org.eclipse.osee.framework.types.edit"
+    editorPluginID="org.eclipse.osee.framework.types.editor">
   <genPackages prefix="OseeTypes" basePackage="org.eclipse.osee.framework" disposableProviderFactory="true"
       ecorePackage="OseeTypes.ecore#/">
     <genEnums typeSafeEnumCompatible="false" ecoreEnum="OseeTypes.ecore#//RelationMultiplicityEnum">
-      <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/ONE_TO_MANY"/>
-      <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/MANY_TO_MANY"/>
-      <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/MANY_TO_ONE"/>
       <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/ONE_TO_ONE"/>
+      <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/ONE_TO_MANY"/>
+      <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/MANY_TO_ONE"/>
+      <genEnumLiterals ecoreEnumLiteral="OseeTypes.ecore#//RelationMultiplicityEnum/MANY_TO_MANY"/>
     </genEnums>
     <genClasses ecoreClass="OseeTypes.ecore#//OseeTypeModel">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//OseeTypeModel/imports"/>
@@ -24,16 +24,24 @@
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//OseeType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeType/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeType/typeGuid"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//ArtifactType">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/superArtifactType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//ArtifactType/abstract"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/superArtifactTypes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/override"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/validAttributeTypes"/>
+    </genClasses>
+    <genClasses ecoreClass="OseeTypes.ecore#//ArtifactSuperTypes">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactSuperTypes/artifactSuperType"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//AttributeTypeRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//AttributeTypeRef/validAttributeType"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeTypeRef/branchGuid"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//AttributeType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/baseAttributeType"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//AttributeType/override"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/dataProvider"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/min"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/max"/>
@@ -44,6 +52,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AttributeType/fileExtension"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//OseeEnumType">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//OseeEnumType/override"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//OseeEnumType/enumEntries"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//OseeEnumEntry">
@@ -51,6 +60,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeEnumEntry/ordinal"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//RelationType">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//RelationType/override"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//RelationType/sideAName"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//RelationType/sideAArtifactType"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//RelationType/sideBName"/>

@@ -125,6 +125,13 @@ public class OseeTypesSwitch<T>
         if (result == null) result = defaultCase(theEObject);
         return result;
       }
+      case OseeTypesPackage.ARTIFACT_SUPER_TYPES:
+      {
+        ArtifactSuperTypes artifactSuperTypes = (ArtifactSuperTypes)theEObject;
+        T result = caseArtifactSuperTypes(artifactSuperTypes);
+        if (result == null) result = defaultCase(theEObject);
+        return result;
+      }
       case OseeTypesPackage.ATTRIBUTE_TYPE_REF:
       {
         AttributeTypeRef attributeTypeRef = (AttributeTypeRef)theEObject;
@@ -227,6 +234,22 @@ public class OseeTypesSwitch<T>
    * @generated
    */
   public T caseArtifactType(ArtifactType object)
+  {
+    return null;
+  }
+
+  /**
+   * Returns the result of interpreting the object as an instance of '<em>Artifact Super Types</em>'.
+   * <!-- begin-user-doc -->
+   * This implementation returns null;
+   * returning a non-null result will terminate the switch.
+   * <!-- end-user-doc -->
+   * @param object the target of the switch.
+   * @return the result of interpreting the object as an instance of '<em>Artifact Super Types</em>'.
+   * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+   * @generated
+   */
+  public T caseArtifactSuperTypes(ArtifactSuperTypes object)
   {
     return null;
   }

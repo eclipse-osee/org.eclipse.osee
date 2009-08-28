@@ -24,6 +24,16 @@ import org.eclipse.emf.common.util.Enumerator;
 public enum RelationMultiplicityEnum implements Enumerator
 {
   /**
+   * The '<em><b>ONE TO ONE</b></em>' literal object.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @see #ONE_TO_ONE_VALUE
+   * @generated
+   * @ordered
+   */
+  ONE_TO_ONE(0, "ONE_TO_ONE", "ONE_TO_ONE"),
+
+  /**
    * The '<em><b>ONE TO MANY</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -31,17 +41,7 @@ public enum RelationMultiplicityEnum implements Enumerator
    * @generated
    * @ordered
    */
-  ONE_TO_MANY(0, "ONE_TO_MANY", "ONE_TO_MANY"),
-
-  /**
-   * The '<em><b>MANY TO MANY</b></em>' literal object.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #MANY_TO_MANY_VALUE
-   * @generated
-   * @ordered
-   */
-  MANY_TO_MANY(1, "MANY_TO_MANY", "MANY_TO_MANY"),
+  ONE_TO_MANY(1, "ONE_TO_MANY", "ONE_TO_MANY"),
 
   /**
    * The '<em><b>MANY TO ONE</b></em>' literal object.
@@ -54,14 +54,29 @@ public enum RelationMultiplicityEnum implements Enumerator
   MANY_TO_ONE(2, "MANY_TO_ONE", "MANY_TO_ONE"),
 
   /**
-   * The '<em><b>ONE TO ONE</b></em>' literal object.
+   * The '<em><b>MANY TO MANY</b></em>' literal object.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #ONE_TO_ONE_VALUE
+   * @see #MANY_TO_MANY_VALUE
    * @generated
    * @ordered
    */
-  ONE_TO_ONE(3, "ONE_TO_ONE", "ONE_TO_ONE");
+  MANY_TO_MANY(3, "MANY_TO_MANY", "MANY_TO_MANY");
+
+  /**
+   * The '<em><b>ONE TO ONE</b></em>' literal value.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of '<em><b>ONE TO ONE</b></em>' literal object isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @see #ONE_TO_ONE
+   * @model
+   * @generated
+   * @ordered
+   */
+  public static final int ONE_TO_ONE_VALUE = 0;
 
   /**
    * The '<em><b>ONE TO MANY</b></em>' literal value.
@@ -76,22 +91,7 @@ public enum RelationMultiplicityEnum implements Enumerator
    * @generated
    * @ordered
    */
-  public static final int ONE_TO_MANY_VALUE = 0;
-
-  /**
-   * The '<em><b>MANY TO MANY</b></em>' literal value.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of '<em><b>MANY TO MANY</b></em>' literal object isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @see #MANY_TO_MANY
-   * @model
-   * @generated
-   * @ordered
-   */
-  public static final int MANY_TO_MANY_VALUE = 1;
+  public static final int ONE_TO_MANY_VALUE = 1;
 
   /**
    * The '<em><b>MANY TO ONE</b></em>' literal value.
@@ -109,19 +109,19 @@ public enum RelationMultiplicityEnum implements Enumerator
   public static final int MANY_TO_ONE_VALUE = 2;
 
   /**
-   * The '<em><b>ONE TO ONE</b></em>' literal value.
+   * The '<em><b>MANY TO MANY</b></em>' literal value.
    * <!-- begin-user-doc -->
    * <p>
-   * If the meaning of '<em><b>ONE TO ONE</b></em>' literal object isn't clear,
+   * If the meaning of '<em><b>MANY TO MANY</b></em>' literal object isn't clear,
    * there really should be more of a description here...
    * </p>
    * <!-- end-user-doc -->
-   * @see #ONE_TO_ONE
+   * @see #MANY_TO_MANY
    * @model
    * @generated
    * @ordered
    */
-  public static final int ONE_TO_ONE_VALUE = 3;
+  public static final int MANY_TO_MANY_VALUE = 3;
 
   /**
    * An array of all the '<em><b>Relation Multiplicity Enum</b></em>' enumerators.
@@ -132,10 +132,10 @@ public enum RelationMultiplicityEnum implements Enumerator
   private static final RelationMultiplicityEnum[] VALUES_ARRAY =
     new RelationMultiplicityEnum[]
     {
-      ONE_TO_MANY,
-      MANY_TO_MANY,
-      MANY_TO_ONE,
       ONE_TO_ONE,
+      ONE_TO_MANY,
+      MANY_TO_ONE,
+      MANY_TO_MANY,
     };
 
   /**
@@ -194,10 +194,10 @@ public enum RelationMultiplicityEnum implements Enumerator
   {
     switch (value)
     {
-      case ONE_TO_MANY_VALUE: return ONE_TO_MANY;
-      case MANY_TO_MANY_VALUE: return MANY_TO_MANY;
-      case MANY_TO_ONE_VALUE: return MANY_TO_ONE;
       case ONE_TO_ONE_VALUE: return ONE_TO_ONE;
+      case ONE_TO_MANY_VALUE: return ONE_TO_MANY;
+      case MANY_TO_ONE_VALUE: return MANY_TO_ONE;
+      case MANY_TO_MANY_VALUE: return MANY_TO_MANY;
     }
     return null;
   }
