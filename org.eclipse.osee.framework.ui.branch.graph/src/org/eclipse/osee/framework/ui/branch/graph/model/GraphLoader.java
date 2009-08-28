@@ -13,9 +13,7 @@ package org.eclipse.osee.framework.ui.branch.graph.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
@@ -136,7 +134,7 @@ public class GraphLoader {
       target.setSourceTx(source);
    }
 
-   private static List<TxData> getTxData(int queryId) throws OseeDataStoreException, BranchDoesNotExist {
+   private static List<TxData> getTxData(int queryId) throws OseeCoreException {
       List<TxData> txDatas = new ArrayList<TxData>();
       ConnectionHandlerStatement chStmt = null;
       try {
