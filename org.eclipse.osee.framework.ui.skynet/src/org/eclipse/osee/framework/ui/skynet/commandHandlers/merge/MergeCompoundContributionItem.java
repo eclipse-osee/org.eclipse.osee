@@ -22,9 +22,7 @@ import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -98,7 +96,7 @@ public class MergeCompoundContributionItem extends CompoundContributionItem {
       return contributionItems.toArray(new IContributionItem[0]);
    }
 
-   private CommandContributionItem createCommand(Integer branchId, String commandId) throws OseeDataStoreException, BranchDoesNotExist {
+   private CommandContributionItem createCommand(Integer branchId, String commandId) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put(BranchView.BRANCH_ID, Integer.toString(branchId));
       CommandContributionItem contributionItem;
