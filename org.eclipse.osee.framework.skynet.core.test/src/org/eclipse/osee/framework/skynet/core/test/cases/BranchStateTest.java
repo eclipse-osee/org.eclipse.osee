@@ -109,7 +109,7 @@ public class BranchStateTest {
    }
 
    @org.junit.Test
-   public void testCommittState() throws OseeCoreException, InterruptedException {
+   public void testCommitState() throws OseeCoreException, InterruptedException {
       Branch mainBranch = BranchManager.getKeyedBranch("SAW_Bld_1");
       String originalBranchName = "Commit State Branch";
       Branch workingBranch = null;
