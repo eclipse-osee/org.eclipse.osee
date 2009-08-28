@@ -86,7 +86,7 @@ public final class InternalChangeManager {
    private void recurseBranches(Branch branch, Artifact artifact, Collection<TransactionId> transactionIds) throws OseeCoreException{
       transactionIds.addAll(getTransactionsPerArtifact(branch, artifact));
       
-      if(branch.getParentBranch() != null && branch.getParentBranchId() != 1){
+      if(branch.getParentBranch() != null && branch.hasParentBranch()){
          recurseBranches(branch.getParentBranch(), artifact, transactionIds);
       }
    }
