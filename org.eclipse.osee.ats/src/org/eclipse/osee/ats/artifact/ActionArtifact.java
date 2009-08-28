@@ -610,6 +610,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             if (originator != null) {
                teamArt.getSmaMgr().getLog().setOriginator(originator);
             }
+            teamArt.persistAttributesAndRelations(transaction);
             sb.append(aia.getName() + " => added team workflow \"" + tda.getName() + "\"\n");
          }
       }
