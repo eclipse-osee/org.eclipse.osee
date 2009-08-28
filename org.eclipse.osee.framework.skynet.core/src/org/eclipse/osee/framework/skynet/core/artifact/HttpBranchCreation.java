@@ -1,4 +1,3 @@
-/*
 /*******************************************************************************
  * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
@@ -9,7 +8,6 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.net.URL;
