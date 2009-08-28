@@ -1,8 +1,5 @@
 import "platform:/resource/org.eclipse.osee.framework.skynet.core/support/OseeTypes_framework.osee"
 
-abstract artifactType "Test Unit" extends "Artifact" {
-}
-
 artifactType "Test Case" extends "Test Unit" {
 }
 
@@ -42,7 +39,7 @@ artifactType "Test Run" extends "Artifact" {
    attribute "Qualification Level"
    attribute "Build Id"
    attribute "Checksum"
-   attribute "Extension"
+   attribute "File Extension"
 }
 
 attributeType "Outfile URL" extends StringAttribute {
@@ -227,13 +224,6 @@ attributeType "Checksum" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Test Case Checksum"
-}
-
-attributeType "Extension" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1 description "Outfile Extension"
-   defaultValue "tmo"
 }
 
 attributeType "Disposition" extends StringAttribute {

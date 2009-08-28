@@ -1,8 +1,8 @@
-/****** Framework ******/
 artifactType "Artifact" {
    attribute "Name"
    attribute "Annotation"
    attribute "Static Id"
+   attribute "Relation Order"
 }
 
 artifactType "Global Preferences" extends "Artifact" {
@@ -16,6 +16,15 @@ attributeType "osee.config.Default Mail Server" extends StringAttribute {
    max 1
    taggerId DefaultAttributeTaggerProvider description
    "fully qualified name of the machice running the SMTP server which will be used by default for sending email"
+}
+
+abstract artifactType "Test Unit" extends "Artifact" {
+}
+
+attributeType "File Extension" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
 }
 
 artifactType "User" extends "Artifact" {
@@ -180,10 +189,8 @@ artifactType "Group Artifact" extends "Artifact" {
 artifactType "User Group" extends "Group Artifact" {
 }
 
-artifactType "Renderer Template" {
+artifactType "Renderer Template" extends "Native Artifact" {
    attribute "Template Match Criteria"
-   attribute "Extension"
-   attribute "Native Content"
 }
 
 attributeType "Template Match Criteria" extends StringAttribute {
@@ -202,29 +209,30 @@ relationType "Default Hierarchical" {
    multiplicity ONE_TO_MANY
 }
 
-
-artifactType "Root Artifact" {
+artifactType "Root Artifact" extends "Artifact" {
 }
 
-artifactType "Universal Group" {
+artifactType "Universal Group" extends "Group Artifact" {
    attribute "Description"
 }
 
-artifactType "Folder" {
+artifactType "Folder" extends "Artifact" {
 }
 
-artifactType "General Data" {
+artifactType "General Data" extends "Artifact" {
    attribute "General String Data"
 }
 
-artifactType "Support Document" {
+artifactType "Support Document" extends "MS Word Template" {
 }
 
-artifactType "General Document" {
+artifactType "General Document" extends "Native Artifact" {
 }
 
-artifactType "Url" {
+artifactType "Url" extends "Artifact" {
    attribute "Description"
+   attribute "Content URL"
+   
 }
 
 attributeType "Name" extends StringAttribute {
@@ -233,6 +241,13 @@ attributeType "Name" extends StringAttribute {
    max 1
    taggerId DefaultAttributeTaggerProvider description "Descriptive Name"
    defaultValue "unnamed"
+}
+
+attributeType "Relation Order" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "Defines relation ordering information"
 }
 
 attributeType "Description" extends StringAttribute {
@@ -345,12 +360,8 @@ artifactType "MS Word Whole Document" extends "MS Word" {
    attribute "Whole Word Content"
 }
 
-abstract artifactType "File Artifact" extends "Artifact" {
-   attribute "Content URL"
-}
-
 abstract artifactType "Native Artifact" extends "Artifact" {
-   attribute "Extension"
+   attribute "File Extension"
    attribute "Description"
    attribute "Native Content"
 }
@@ -382,7 +393,7 @@ artifactType "Requirement" extends "Artifact" {
    attribute "Technical Performance Parameter"
 }
 
-artifactType "Software Requirement" extends "Requirement" {
+artifactType "Software Requirement" extends "Requirement", "MS Word Template" {
    attribute "Category"
    attribute "Common NAL Requirement"
    attribute "Crew Interface Requirement"
@@ -450,7 +461,7 @@ artifactType "Subsystem Design" extends "Design" {
 artifactType "System Design" extends "Design" {
 }
 
-artifactType "Software Design" {
+artifactType "Software Design" extends "Design" {
 }
 
 artifactType "Test Procedure WML" extends "MS Word Whole Document" {
@@ -461,7 +472,7 @@ artifactType "Test Procedure XL" extends "Native Artifact" {
    attribute "Subsystem"
 }
 
-artifactType "Supporting Content" extends "File Artifact" {
+artifactType "Supporting Content" extends "Url" {
 }
 
 attributeType "Common NAL Requirement" extends BooleanAttribute {
@@ -889,43 +900,31 @@ relationType "Specifying" {
    multiplicity ONE_TO_MANY
 }
 
-artifactType "Work Page Definition" {
+abstract artifactType "Work Item Definition" extends "Artifact" {
    attribute "osee.wi.Work Id"
    attribute "osee.wi.Work Type"
    attribute "osee.wi.Work Parent Id"
-   attribute "osee.wi.Work Page Name"
    attribute "osee.wi.Work Data"
    attribute "osee.wi.Work Description"
 }
 
-artifactType "Work Flow Definition" {
-   attribute "osee.wi.Work Id"
-   attribute "osee.wi.Work Type"
-   attribute "osee.wi.Work Parent Id"
-   attribute "osee.wi.Work Data"
+artifactType "Work Page Definition" extends "Work Item Definition" {
+   attribute "osee.wi.Work Page Name"
+}
+
+artifactType "Work Flow Definition" extends "Work Item Definition" {
    attribute "osee.wi.Start Page"
    attribute "osee.wi.Transition"
-   attribute "osee.wi.Work Description"
 }
 
-artifactType "Work Rule Definition" {
-   attribute "osee.wi.Work Id"
-   attribute "osee.wi.Work Type"
-   attribute "osee.wi.Work Parent Id"
-   attribute "osee.wi.Work Data"
-   attribute "osee.wi.Work Description"
+artifactType "Work Rule Definition" extends "Work Item Definition" {
 }
 
-artifactType "XViewer Global Customization" {
+artifactType "Work Widget Definition" extends "Work Item Definition" {
+}
+
+artifactType "XViewer Global Customization" extends "Artifact" {
    attribute "XViewer Customization"
-}
-
-artifactType "Work Widget Definition" {
-   attribute "osee.wi.Work Id"
-   attribute "osee.wi.Work Type"
-   attribute "osee.wi.Work Parent Id"
-   attribute "osee.wi.Work Data"
-   attribute "osee.wi.Work Description"
 }
 
 attributeType "osee.wi.Work Data" extends StringAttribute {
@@ -1012,491 +1011,6 @@ relationType "Supercedes" {
    multiplicity MANY_TO_MANY
 }
 
-artifactType "Demo Code Team Workflow" {
-   attribute "demo.code.Change Type"
-   attribute "demo.code.Action"
-   attribute "demo.code.Category"
-   attribute "demo.code.Close Detection"
-   attribute "demo.code.Code Change Req"
-   attribute "demo.code.CSCI"
-   attribute "demo.code.Defect Code"
-   attribute "demo.code.Detection"
-   attribute "demo.code.Include Build"
-   attribute "demo.code.LOC Affected"
-   attribute "demo.code.Originating Build"
-   attribute "demo.code.Req Doc"
-   attribute "demo.code.Subsystem"
-   attribute "demo.code.Test Build"
-   attribute "demo.code.Test Mode"
-   attribute "demo.code.Test Notes"
-   attribute "demo.code.Test Script"
-   attribute "demo.code.Volume"
-   attribute "demo.code.Verify Date"
-   attribute "demo.code.Verifyer"
-   attribute "demo.code.Verify Note"
-   attribute "demo.code.Verify Detection"
-   attribute "demo.code.Hold Start"
-   attribute "demo.code.Hold End"
-   attribute "demo.code.Verify Mode"
-   attribute "demo.code.Verified Build"
-   attribute "demo.code.Peer Review Reqd"
-   attribute "demo.code.Peer Review Id"
-   attribute "demo.code.Ref PCR"
-   attribute "demo.code.References"
-   attribute "demo.code.Requirement Id"
-   attribute "demo.code.Dup CPCR No"
-   attribute "demo.code.Dup CSCI"
-   attribute "demo.code.Dup CPCR Type"
-   attribute "demo.code.Dup of CPCR no seq"
-   attribute "demo.code.Librarian"
-   attribute "demo.code.Promote Date"
-   attribute "demo.code.Authorization Notes"
-   attribute "demo.code.Rework Letter"
-   attribute "demo.code.Problem No"
-   attribute "demo.code.DP Effectivity"
-   attribute "demo.code.SP Effectivity"
-   attribute "demo.code.WP Effectivity"
-   attribute "ats.Weekly Benefit"
-   attribute "ats.Percent Rework"
-   attribute "ats.Parent Branch Id"
-   attribute "ats.Branch Id"
-   attribute "ats.Transaction Id"
-   attribute "ats.Legacy PCR Id"
-   attribute "ats.Log"
-   attribute "ats.State Notes"
-   attribute "ats.SMA Note"
-   attribute "ats.Work Package"
-   attribute "ats.Category"
-   attribute "ats.Category2"
-   attribute "ats.Category3"
-   attribute "ats.Actionable Item"
-   attribute "ats.User Community"
-   attribute "ats.Change Type"
-   attribute "ats.Current State"
-   attribute "ats.Team Definition"
-   attribute "ats.Description"
-   attribute "ats.Estimated Hours"
-   attribute "ats.Need By"
-   attribute "ats.Priority"
-   attribute "ats.Problem"
-   attribute "ats.Proposed Resolution"
-   attribute "ats.Estimated Release Date"
-   attribute "ats.Release Date"
-   attribute "ats.Resolution"
-   attribute "ats.State"
-   attribute "ats.Validation Required"
-}
-
-artifactType "Demo Req Team Workflow" {
-   attribute "ats.Weekly Benefit"
-   attribute "ats.Percent Rework"
-   attribute "ats.Parent Branch Id"
-   attribute "ats.Branch Id"
-   attribute "ats.Transaction Id"
-   attribute "ats.Legacy PCR Id"
-   attribute "ats.Log"
-   attribute "ats.State Notes"
-   attribute "ats.SMA Note"
-   attribute "ats.Work Package"
-   attribute "ats.Category"
-   attribute "ats.Category2"
-   attribute "ats.Category3"
-   attribute "ats.Actionable Item"
-   attribute "ats.User Community"
-   attribute "ats.Change Type"
-   attribute "ats.Current State"
-   attribute "ats.Team Definition"
-   attribute "ats.Description"
-   attribute "ats.Estimated Hours"
-   attribute "ats.Need By"
-   attribute "ats.Priority"
-   attribute "ats.Problem"
-   attribute "ats.Proposed Resolution"
-   attribute "ats.Estimated Release Date"
-   attribute "ats.Release Date"
-   attribute "ats.Resolution"
-   attribute "ats.State"
-   attribute "ats.Validation Required"
-}
-
-artifactType "Demo Test Team Workflow" {
-   attribute "ats.Weekly Benefit"
-   attribute "ats.Percent Rework"
-   attribute "ats.Parent Branch Id"
-   attribute "ats.Branch Id"
-   attribute "ats.Transaction Id"
-   attribute "ats.Legacy PCR Id"
-   attribute "ats.Log"
-   attribute "ats.State Notes"
-   attribute "ats.SMA Note"
-   attribute "ats.Work Package"
-   attribute "ats.Category"
-   attribute "ats.Category2"
-   attribute "ats.Category3"
-   attribute "ats.Actionable Item"
-   attribute "ats.User Community"
-   attribute "ats.Change Type"
-   attribute "ats.Current State"
-   attribute "ats.Team Definition"
-   attribute "ats.Description"
-   attribute "ats.Estimated Hours"
-   attribute "ats.Need By"
-   attribute "ats.Priority"
-   attribute "ats.Problem"
-   attribute "ats.Proposed Resolution"
-   attribute "ats.Estimated Release Date"
-   attribute "ats.Release Date"
-   attribute "ats.Resolution"
-   attribute "ats.State"
-   attribute "ats.Validation Required"
-}
-
-oseeEnumType "demo.code.Category.enum" {
-   entry "Code Problem"
-   entry "Design/Implementation"
-   entry "Comment Change Only"
-   entry "Non-Mission"
-   entry "Workaround"
-}
-
-attributeType "demo.code.Category" extends EnumeratedAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "demo.code.Category.enum"
-}
-
-attributeType "demo.code.Close Detection" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Code Change Req" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.CSCI" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-oseeEnumType "demo.code.Defect Code.enum" {
-   entry "CL01 - Requirements Implemented Incorrectly"
-   entry "CL02 - Initialization Error"
-   entry "CL03 - Out of Range Error"
-   entry "CL04 - Data Conversion Error"
-   entry "CL05 - Buffer Sizing Error"
-   entry "CL06 - Timing Problem"
-   entry "CL07 - Interface Error"
-   entry "CL08 - Logic Control Error"
-   entry "CL09 - TYPO"
-   entry "CL10 - Multiple Code Logic Problems"
-   entry "CL99 - Other Code Logic Problem"
-   entry "NC01 - Requirement Error"
-   entry "NC02 - Test Script Error"
-   entry "NC03 - CTE Error"
-   entry "NC04 - Hardware Error"
-   entry "NC99 - Other NON-CODE Problem"
-   entry "SV01 - Coding Standard Violation"
-   entry "TE01 - Compiler/Linker/Assembler Problem"
-   entry "TE02 - APEX Problem"
-   entry "TE99 - Other Tool Error"
-}
-
-attributeType "demo.code.Defect Code" extends EnumeratedAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "demo.code.Defect Code.enum"
-}
-
-oseeEnumType "demo.code.Detection.enum" {
-   entry "Test Script(s)"
-   entry "Inspection (Test)"
-   entry "Hot Bench"
-   entry "Aircraft"
-   entry "Peer Review"
-   entry "TRAX Issue"
-   entry "Other"
-}
-
-attributeType "demo.code.Detection" extends EnumeratedAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "demo.code.Detection.enum"
-}
-
-attributeType "demo.code.Include Build" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.LOC Affected" extends IntegerAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Originating Build" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-oseeEnumType "demo.code.Req Doc.enum" {
-   entry "Unknown"
-   entry "SubDD"
-   entry "CSID"
-   entry "SRS"
-   entry "Other"
-}
-
-attributeType "demo.code.Req Doc" extends EnumeratedAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   enumType "demo.code.Req Doc.enum"
-}
-
-attributeType "demo.code.Subsystem" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Test Build" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Test Mode" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Test Notes" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Test Script" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Change Type" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Action" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Volume" extends IntegerAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Verify Date" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Verifyer" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Verify Note" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Verify Detection" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Hold Start" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Hold End" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Verify Mode" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Verified Build" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Peer Review Reqd" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Peer Review Id" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Ref PCR" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.References" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Requirement Id" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Dup CPCR No" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Dup CSCI" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Dup CPCR Type" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Dup of CPCR no seq" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Librarian" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Promote Date" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Authorization Notes" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider
-}
-
-attributeType "demo.code.Rework Letter" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.Problem No" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.DP Effectivity" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.SP Effectivity" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "demo.code.WP Effectivity" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-artifactType "Test Case" {
-}
-
-artifactType "Narrative" {
-   attribute "Level 2 IPT"
-   attribute "Level 3 IPT"
-   attribute "Legacy Id"
-   attribute "Support IPT"
-   attribute "Level 2 IPT"
-   attribute "Level 3 IPT"
-   attribute "ROIN"
-   attribute "Support IPT"
-}
-
 artifactType "Test Procedure" {
 }
 
@@ -1520,7 +1034,7 @@ relationType "Qualification" {
    sideAName "requirement"
    sideAArtifactType "Requirement"
    sideBName "test"
-   sideBArtifactType "Test Case"
+   sideBArtifactType "Test Unit"
    defaultOrderType Unordered
    multiplicity ONE_TO_MANY
 }
@@ -1534,7 +1048,7 @@ relationType "Supporting Info" {
    multiplicity MANY_TO_MANY
 }
 
-artifactType "Heading" {
+artifactType "Heading" extends "MS Word Template" {
 }
 
 attributeType "ROIN" extends StringAttribute {
