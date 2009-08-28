@@ -16,8 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -37,10 +36,9 @@ public class ArtifactGuis {
     * Returns all the other branches this artifact has been editted on, besides modifications to program branch.
     * 
     * @param artifact
-    * @throws OseeDataStoreException
-    * @throws BranchDoesNotExist
+    * @throws OseeCoreException
     */
-   private static Collection<Branch> getOtherEdittedBranches(Artifact artifact) throws OseeDataStoreException, BranchDoesNotExist {
+   private static Collection<Branch> getOtherEdittedBranches(Artifact artifact) throws OseeCoreException {
       Collection<Branch> otherBranches = new LinkedList<Branch>();
 
       // Can only be on other branches it has already been saved
@@ -61,8 +59,10 @@ public class ArtifactGuis {
       return otherBranches;
    }
 
-   public static boolean checkOtherEdit(List<Artifact> artifacts) throws OseeDataStoreException, BranchDoesNotExist {
-      if (artifacts.size() == 0) throw new IllegalArgumentException("you must pass at least one artifact");
+   public static boolean checkOtherEdit(List<Artifact> artifacts) throws OseeCoreException {
+      if (artifacts.size() == 0) {
+         throw new IllegalArgumentException("you must pass at least one artifact");
+      }
 
       boolean goAhead = true;
 
@@ -75,15 +75,19 @@ public class ArtifactGuis {
          StringBuilder sb = new StringBuilder();
 
          sb.append("The artifact");
-         if (artifacts.size() > 1) sb.append('s');
+         if (artifacts.size() > 1) {
+            sb.append('s');
+         }
          sb.append(" about to be editted ");
-         if (artifacts.size() > 1)
+         if (artifacts.size() > 1) {
             sb.append("have");
-         else
+         } else {
             sb.append("has");
+         }
          sb.append(" already been modified on the following branches:");
-         for (Branch branch : otherBranches)
+         for (Branch branch : otherBranches) {
             sb.append("\n\t" + branch.getName());
+         }
          sb.append("\n\nDo you still want to proceed?");
 
          synchronized (sb) {
@@ -91,8 +95,9 @@ public class ArtifactGuis {
             AskQuestion question = new AskQuestion(sb, "Confirm Edit", sb.toString());
             Displays.ensureInDisplayThread(question);
             try {
-               while (!question.done)
+               while (!question.done) {
                   sb.wait();
+               }
             } catch (InterruptedException e) {
             }
             goAhead = question.isYes();
@@ -104,9 +109,9 @@ public class ArtifactGuis {
 
    private static class AskQuestion implements Runnable {
 
-      private Object notifee;
-      private String title;
-      private String question;
+      private final Object notifee;
+      private final String title;
+      private final String question;
       private boolean yes;
       private boolean done;
 
