@@ -135,7 +135,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
    }
 
-   private static void populateArtifactAccessControlList() throws OseeDataStoreException, OseeTypeDoesNotExist {
+   private static void populateArtifactAccessControlList() throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
