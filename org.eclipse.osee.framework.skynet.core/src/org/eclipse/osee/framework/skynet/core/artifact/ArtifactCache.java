@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
-
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -106,7 +105,7 @@ public class ArtifactCache {
          artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), obj);
          byArtifactTypeCache.put(artifact.getArtifactType(), obj);
       }
-      cacheByStaticId(artifact);
+//      cacheByStaticId(artifact);
    }
 
    private static Object getCacheObject(Artifact artifact){
