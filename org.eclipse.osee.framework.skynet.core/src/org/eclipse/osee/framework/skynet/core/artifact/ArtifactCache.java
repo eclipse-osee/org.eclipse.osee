@@ -105,7 +105,6 @@ public class ArtifactCache {
          artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), obj);
          byArtifactTypeCache.put(artifact.getArtifactType(), obj);
       }
-//      cacheByStaticId(artifact);
    }
 
    private static Object getCacheObject(Artifact artifact){
