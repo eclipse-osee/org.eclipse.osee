@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -197,7 +198,7 @@ public class BranchManager {
       return branches.iterator().next();
    }
 
-   public static Collection<Branch> getBranchesByName(String branchName) throws OseeDataStoreException, BranchDoesNotExist {
+   public static Collection<Branch> getBranchesByName(String branchName) throws OseeCoreException {
       instance.ensurePopulatedCache(false);
       List<Branch> branches = null;
       for (Branch branch : instance.branchCache.values()) {
@@ -223,11 +224,11 @@ public class BranchManager {
       return instance.branchGuidCache.get(guid);
    }
 
-   public static boolean branchExists(String branchName) throws OseeDataStoreException, BranchDoesNotExist {
+   public static boolean branchExists(String branchName) throws OseeCoreException {
       return !getBranchesByName(branchName).isEmpty();
    }
 
-   private synchronized void ensurePopulatedCache(boolean forceRead) throws OseeDataStoreException, BranchDoesNotExist {
+   private synchronized void ensurePopulatedCache(boolean forceRead) throws OseeCoreException {
       if (forceRead || branchCache.size() == 0) {
          // The branch cache can not be cleared here because applications may contain branch references.
 
@@ -330,9 +331,14 @@ public class BranchManager {
             branchName);
    }
 
-   public static Branch createBranchObject(String branchName, String branchGuid, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) throws BranchDoesNotExist {
+   public static Branch createBranchObject(String branchName, String branchGuid, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) throws BranchDoesNotExist, OseeInvalidInheritanceException {
       Branch parentBranch = null;
-      if (parentBranchId != -1 && !BranchType.SYSTEM_ROOT.equals(branchType)) {
+      if (parentBranchId == branchId) {
+         throw new OseeInvalidInheritanceException(String.format(
+               "Branch inheritance error detected - ancestor[%s] = descendant[%s]", parentBranchId, branchId));
+      }
+
+      if (parentBranchId != -1) {
          try {
             parentBranch = BranchManager.getBranch(parentBranchId);
          } catch (BranchDoesNotExist ex1) {
@@ -355,8 +361,9 @@ public class BranchManager {
     * @return
     * @throws OseeDataStoreException
     * @throws BranchDoesNotExist
+    * @throws OseeInvalidInheritanceException
     */
-   private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException, BranchDoesNotExist {
+   private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException, BranchDoesNotExist, OseeInvalidInheritanceException {
       return createBranchObject(chStmt.getString("branch_name"), chStmt.getString("branch_guid"),
             chStmt.getInt("branch_id"), chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"),
             chStmt.getInt("archived") == 1, chStmt.getInt("author"), chStmt.getTimestamp("time"),
@@ -399,7 +406,7 @@ public class BranchManager {
       return mergeBranch;
    }
 
-   public static Branch getBranch(Integer branchId) throws OseeDataStoreException, BranchDoesNotExist {
+   public static Branch getBranch(Integer branchId) throws OseeCoreException {
       // Always exception for invalid id's, they won't ever be found in the
       // database or cache.
       if (branchId == null) {
@@ -792,7 +799,7 @@ public class BranchManager {
       instance.keynameBranchMap.put(keyname.toLowerCase(), branch);
    }
 
-   public static Branch getKeyedBranch(String keyname) throws OseeArgumentException, BranchDoesNotExist, OseeDataStoreException {
+   public static Branch getKeyedBranch(String keyname) throws OseeCoreException {
       if (keyname == null) {
          throw new OseeArgumentException("keyname can not be null");
       }
