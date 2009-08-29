@@ -18,21 +18,18 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeEnumType {
-
-   private final int enumTypeId;
-   private final String enumTypeName;
+public class OseeEnumType extends BaseOseeType {
 
    private final List<OseeEnumEntry> enumSet;
    private boolean isDeleted;
 
-   protected OseeEnumType(int enumTypeId, String enumTypeName) {
-      this.enumTypeId = enumTypeId;
-      this.enumTypeName = enumTypeName;
+   public OseeEnumType(String guid, String enumTypeName) {
+      super(guid, enumTypeName);
       this.enumSet = new ArrayList<OseeEnumEntry>();
       this.isDeleted = false;
    }
@@ -41,15 +38,15 @@ public class OseeEnumType {
       this.isDeleted = deleted;
    }
 
-   protected synchronized void internalAddEnum(String name, int ordinal) throws OseeArgumentException {
+   protected synchronized void internalAddEnum(String guid, String name, int ordinal) throws OseeArgumentException {
       checkEnumEntryName(name);
       checkOrdinal(ordinal);
-      OseeEnumEntry entry = new OseeEnumEntry(name, ordinal);
+      OseeEnumEntry entry = new OseeEnumEntry(guid, name, ordinal);
       enumSet.add(entry);
    }
 
-   protected void internalAddEnum(Pair<String, Integer> entry) throws OseeArgumentException {
-      internalAddEnum(entry.getFirst(), entry.getSecond());
+   protected void internalAddEnum(String guid, Pair<String, Integer> entry) throws OseeArgumentException {
+      internalAddEnum(guid, entry.getFirst(), entry.getSecond());
    }
 
    protected synchronized void internalRemoveEnums(OseeEnumEntry... entries) {
@@ -77,14 +74,6 @@ public class OseeEnumType {
       return values;
    }
 
-   public int getEnumTypeId() {
-      return enumTypeId;
-   }
-
-   public String getEnumTypeName() {
-      return enumTypeName;
-   }
-
    private synchronized OseeEnumEntry valueOfAllowNullReturn(String entryName) {
       if (entryName != null) {
          for (OseeEnumEntry entry : enumSet) {
@@ -108,7 +97,7 @@ public class OseeEnumType {
    public synchronized OseeEnumEntry valueOf(String entryName) throws OseeArgumentException {
       OseeEnumEntry toReturn = valueOfAllowNullReturn(entryName);
       if (toReturn == null) {
-         throw new OseeArgumentException(String.format("No enum const [%s].[%s]", getEnumTypeName(), entryName));
+         throw new OseeArgumentException(String.format("No enum const [%s].[%s]", getName(), entryName));
       }
       return toReturn;
    }
@@ -116,7 +105,7 @@ public class OseeEnumType {
    public synchronized OseeEnumEntry valueOf(int ordinal) throws OseeArgumentException {
       OseeEnumEntry toReturn = valueOfAllowNullReturn(ordinal);
       if (toReturn == null) {
-         throw new OseeArgumentException(String.format("No enum const [%s] - ordinal [%s]", getEnumTypeName(), ordinal));
+         throw new OseeArgumentException(String.format("No enum const [%s] - ordinal [%s]", getName(), ordinal));
       }
       return toReturn;
    }
@@ -145,37 +134,34 @@ public class OseeEnumType {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof OseeEnumType) {
-         final OseeEnumType other = (OseeEnumType) obj;
-         boolean result = true;
-         if (other.getEnumTypeName() != null && getEnumTypeName() != null) {
-            result &= other.getEnumTypeName().equals(getEnumTypeName());
-         } else {
-            result &= other.getEnumTypeName() == null && getEnumTypeName() == null;
-         }
-         return result && getEnumTypeId() == other.getEnumTypeId();
+         return super.equals(obj);
       }
       return false;
    }
 
    @Override
    public int hashCode() {
-      final int prime = 37;
-      int result = prime * 17 + (getEnumTypeName() != null ? getEnumTypeName().hashCode() : 0);
-      return prime * result + getEnumTypeId();
+      return super.hashCode();
    }
 
    @Override
    public String toString() {
-      return enumTypeName;
+      return getName();
    }
 
    public final class OseeEnumEntry implements Comparable<OseeEnumEntry> {
+      private final String guid;
       private final int ordinal;
       private final String name;
 
-      private OseeEnumEntry(String name, int ordinal) {
+      private OseeEnumEntry(String guid, String name, int ordinal) {
          this.name = name;
+         this.guid = guid;
          this.ordinal = ordinal;
+      }
+
+      public String getGuid() {
+         return guid;
       }
 
       public String name() {
@@ -187,11 +173,11 @@ public class OseeEnumType {
       }
 
       public String getEnumTypeName() {
-         return OseeEnumType.this.getEnumTypeName();
+         return OseeEnumType.this.getName();
       }
 
       public int getEnumTypeId() {
-         return OseeEnumType.this.getEnumTypeId();
+         return OseeEnumType.this.getTypeId();
       }
 
       public OseeEnumType getDeclaringClass() {

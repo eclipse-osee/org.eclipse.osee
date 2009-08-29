@@ -10,10 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 
 /**
@@ -22,20 +21,19 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeData
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class AttributeType implements Comparable<AttributeType> {
+public class AttributeType extends BaseOseeType implements Comparable<AttributeType> {
    public static final AttributeType[] EMPTY_ARRAY = new AttributeType[0];
    private final Class<? extends Attribute<?>> baseAttributeClass;
    private final Class<? extends IAttributeDataProvider> providerAttributeClass;
-   private int attrTypeId;
-   private final String name;
    private final String defaultValue;
-   private final int oseeEnumTypeId;
+   private final OseeEnumType oseeEnumType;
    private final int maxOccurrences;
    private final int minOccurrences;
    private final String tipText;
    private final String fileTypeExtension;
    private final String taggerId;
-   private final String guid;
+   private final String baseAttributeTypeId;
+   private final String attributeProviderNameId;
 
    /**
     * Create a dynamic attribute descriptor. Descriptors can be acquired for application use from the
@@ -49,20 +47,20 @@ public class AttributeType implements Comparable<AttributeType> {
     * @param maxOccurrences
     * @param tipText
     */
-   public AttributeType(String guid, String name, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, int oseeEnumTypeId, int minOccurrences, int maxOccurrences, String tipText, String taggerId) {
+   public AttributeType(String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String tipText, String taggerId) {
+      super(guid, name);
       if (minOccurrences < 0) {
          throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
       }
       if (maxOccurrences < minOccurrences) {
          throw new IllegalArgumentException("maxOccurences can not be less than minOccurences");
       }
-      this.attrTypeId = -1;
-      this.guid = guid;
+      this.baseAttributeTypeId = baseAttributeTypeId;
+      this.attributeProviderNameId = attributeProviderNameId;
       this.baseAttributeClass = baseAttributeClass;
       this.providerAttributeClass = providerAttributeClass;
-      this.name = name;
       this.defaultValue = defaultValue;
-      this.oseeEnumTypeId = oseeEnumTypeId;
+      this.oseeEnumType = oseeEnumType;
       this.maxOccurrences = maxOccurrences;
       this.minOccurrences = minOccurrences;
       this.tipText = tipText;
@@ -70,21 +68,12 @@ public class AttributeType implements Comparable<AttributeType> {
       this.taggerId = taggerId;
    }
 
-   public void setAttrTypeId(int attrTypeId) {
-      if (getAttrTypeId() == -1) {
-         this.attrTypeId = attrTypeId;
-      }
+   public String getBaseAttributeTypeId() {
+      return baseAttributeTypeId;
    }
 
-   public String getGuid() {
-      return guid;
-   }
-
-   /**
-    * @return Returns the attrTypeId.
-    */
-   public int getAttrTypeId() {
-      return attrTypeId;
+   public String getAttributeProviderId() {
+      return attributeProviderNameId;
    }
 
    /**
@@ -115,72 +104,46 @@ public class AttributeType implements Comparable<AttributeType> {
       return minOccurrences;
    }
 
-   /**
-    * @return Returns the name.
-    */
-   public String getName() {
-      return name;
-   }
-
-   /**
-    * @return Returns the tipText.
-    */
-   public String getTipText() {
+   public String getDescription() {
       return tipText;
    }
 
    public int getOseeEnumTypeId() {
-      return oseeEnumTypeId;
+      return oseeEnumType == null ? OseeEnumTypeManager.getDefaultEnumTypeId() : oseeEnumType.getTypeId();
    }
 
-   public OseeEnumType getOseeEnumType() throws OseeDataStoreException, OseeTypeDoesNotExist {
-      return OseeEnumTypeManager.getType(oseeEnumTypeId);
+   public OseeEnumType getOseeEnumType() {
+      return oseeEnumType;
    }
 
    @Override
    public String toString() {
-      return name;
+      return getName();
    }
 
    public String getFileTypeExtension() {
       return fileTypeExtension;
    }
 
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + (name == null ? 0 : name.hashCode());
+   public int compareTo(AttributeType other) {
+      int result = -1;
+      if (other != null && other.getName() != null && getName() != null) {
+         result = getName().compareTo(other.getName());
+      }
       return result;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
+      if (obj instanceof AttributeType) {
+         return super.equals(obj);
       }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      final AttributeType other = (AttributeType) obj;
-      if (name == null) {
-         if (other.name != null) {
-            return false;
-         }
-      } else if (!name.equals(other.name)) {
-         return false;
-      }
-      return true;
+      return false;
    }
 
-   public int compareTo(AttributeType attributeType) {
-      if (attributeType == null) {
-         return -1;
-      }
-      return name.compareTo(attributeType.name);
+   @Override
+   public int hashCode() {
+      return super.hashCode();
    }
 
    /**

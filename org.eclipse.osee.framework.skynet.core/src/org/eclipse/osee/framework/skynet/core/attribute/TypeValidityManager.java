@@ -92,8 +92,8 @@ public class TypeValidityManager {
     */
    public static void persistAttributeValidity(ArtifactType artifactType, AttributeType attributeType, Branch branch) throws OseeCoreException {
       if (!isValid(artifactType, attributeType, branch)) {
-         ConnectionHandler.runPreparedUpdate(INSERT_VALID_ATTRIBUTE, artifactType.getArtTypeId(),
-               attributeType.getAttrTypeId(), branch.getBranchId());
+         ConnectionHandler.runPreparedUpdate(INSERT_VALID_ATTRIBUTE, artifactType.getTypeId(),
+               attributeType.getTypeId(), branch.getBranchId());
 
          instance.cacheAttributeValidity(artifactType, attributeType, branch);
       }

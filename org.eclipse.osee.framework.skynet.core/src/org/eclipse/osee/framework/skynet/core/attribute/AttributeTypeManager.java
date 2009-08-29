@@ -18,13 +18,18 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache.OseeTypeCacheData;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -35,13 +40,7 @@ public class AttributeTypeManager {
    private static final String SELECT_ATTRIBUTE_MOD_TYPE =
          "SELECT mod_type FROM osee_txs txs, osee_tx_details txd WHERE txs.gamma_id = ? and txs.transaction_id = txd.transaction_id AND branch_id = ? AND tx_current IN (1,2)";
 
-   private static final AttributeTypeManager instance = new AttributeTypeManager();
-
    private AttributeTypeManager() {
-   }
-
-   private static synchronized void ensurePopulated() throws OseeCoreException {
-      OseeTypeManager.getCache().ensureAttributeTypePopulated();
    }
 
    /**
@@ -91,8 +90,7 @@ public class AttributeTypeManager {
    }
 
    public static Collection<AttributeType> getAllTypes() throws OseeCoreException {
-      ensurePopulated();
-      return OseeTypeManager.getCache().getAllAttributeTypes();
+      return OseeTypeManager.getCache().getAttributeTypeData().getAllTypes();
    }
 
    public static Collection<AttributeType> getTaggableTypes() throws OseeCoreException {
@@ -106,8 +104,21 @@ public class AttributeTypeManager {
    }
 
    public static boolean typeExists(String name) throws OseeCoreException {
-      ensurePopulated();
-      return OseeTypeManager.getCache().getAttributeTypeByName(name) != null;
+      return OseeTypeManager.getCache().getAttributeTypeData().getTypeByName(name) != null;
+   }
+
+   /**
+    * @return Returns the attribute type matching the guid
+    * @param guid attribute type guid to match
+    * @throws OseeDataStoreException
+    * @throws OseeTypeDoesNotExist
+    */
+   public static AttributeType getTypeByGuid(String guid) throws OseeCoreException {
+      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeData().getTypeByGuid(guid);
+      if (attributeType == null) {
+         throw new OseeTypeDoesNotExist("Attribute Type [" + guid + "] is not available.");
+      }
+      return attributeType;
    }
 
    /**
@@ -117,8 +128,7 @@ public class AttributeTypeManager {
     * @throws OseeCoreException
     */
    public static AttributeType getType(String name) throws OseeCoreException {
-      ensurePopulated();
-      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeByName(name);
+      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeData().getTypeByName(name);
       if (attributeType == null) {
          throw new OseeTypeDoesNotExist("Attribute Type with name [" + name + "] does not exist.");
       }
@@ -132,50 +142,12 @@ public class AttributeTypeManager {
     * @throws OseeCoreException
     */
    public static AttributeType getType(int attrTypeId) throws OseeCoreException {
-      ensurePopulated();
-      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeById(attrTypeId);
+      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeData().getTypeById(attrTypeId);
       if (attributeType == null) {
          throw new OseeTypeDoesNotExist("Attribute type: " + attrTypeId + " is not available.");
       }
 
       return attributeType;
-   }
-
-   public static AttributeType createType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String attributeTypeName, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
-      //      if (minOccurrences > 0 && defaultValue == null) {
-      //         throw new OseeArgumentException(
-      //               "DefaultValue must be set for attribute [" + attributeTypeName + "] with minOccurrences " + minOccurrences);
-      //      }
-      //      if (typeExists(attributeTypeName)) {
-      //         return getType(attributeTypeName);
-      //      }
-      //
-      //      Class<? extends Attribute<?>> baseAttributeClass =
-      //            AttributeExtensionManager.getAttributeClassFor(attributeBaseType);
-      //      Class<? extends IAttributeDataProvider> providerAttributeClass =
-      //            AttributeExtensionManager.getAttributeProviderClassFor(attributeProviderTypeName);
-      //
-      //      int attrTypeId = SequenceManager.getNextAttributeTypeId();
-      //      int attrBaseTypeId = instance.getOrCreateAttributeBaseType(attributeBaseType);
-      //      int attrProviderTypeId = instance.getOrCreateAttributeProviderType(attributeProviderTypeName);
-      //
-      //      int enumTypeId;
-      //      if (EnumeratedAttribute.class.isAssignableFrom(baseAttributeClass)) {
-      //         enumTypeId = OseeEnumTypeManager.createEnumTypeFromXml(attributeTypeName, validityXml).getEnumTypeId();
-      //      } else {
-      //         enumTypeId = OseeEnumTypeManager.getDefaultEnumTypeId();
-      //      }
-      //
-      //      ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, attrTypeId, attrBaseTypeId, attrProviderTypeId,
-      //            fileTypeExtension == null ? SQL3DataType.VARCHAR : fileTypeExtension,
-      //            attributeTypeName == null ? SQL3DataType.VARCHAR : attributeTypeName,
-      //            defaultValue == null ? SQL3DataType.VARCHAR : defaultValue, enumTypeId, minOccurrences, maxOccurrences,
-      //            tipText == null ? SQL3DataType.VARCHAR : tipText, taggerId == null ? SQL3DataType.VARCHAR : taggerId);
-      //      AttributeType attributeType =
-      //            new AttributeType(attrTypeId, baseAttributeClass, providerAttributeClass, fileTypeExtension,
-      //                  attributeTypeName, defaultValue, enumTypeId, minOccurrences, maxOccurrences, tipText, taggerId);
-      //      instance.cache(attributeType);
-      return null;
    }
 
    public static Set<String> getEnumerationValues(AttributeType attributeType) {
@@ -196,17 +168,41 @@ public class AttributeTypeManager {
          "select count(1) FROM osee_attribute where attr_type_id = ?";
    private static final String DELETE_ATTRIBUTE_TYPE = "delete from osee_attribute_type where attr_type_id = ?";
 
-   public static void purgeAttributeType(AttributeType attributeType) throws OseeCoreException {
-      int attributeTypeId = attributeType.getAttrTypeId();
-      int attributeCount = ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ATTRIBUTE_OCCURRENCE, attributeTypeId);
-
+   public static void purgeAttributeType(final AttributeType attributeType) throws OseeCoreException {
+      int attributeCount =
+            ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ATTRIBUTE_OCCURRENCE, attributeType.getTypeId());
       if (attributeCount != 0) {
          throw new OseeArgumentException(
                "Can not delete attribute type " + attributeType.getName() + " because there are " + attributeCount + " existing attributes of this type.");
       }
 
-      ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, attributeTypeId);
-      ConnectionHandler.runPreparedUpdate(DELETE_ATTRIBUTE_TYPE, attributeTypeId);
+      new DbTransaction() {
+         @Override
+         protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
+            int attributeTypeId = attributeType.getTypeId();
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_VALID_ATTRIBUTE, attributeTypeId);
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_ATTRIBUTE_TYPE, attributeTypeId);
+         }
+      };
    }
 
+   public static AttributeType createType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
+      OseeTypeCacheData<AttributeType> dataCache = OseeTypeManager.getCache().getAttributeTypeData();
+      AttributeType attributeType = dataCache.getTypeByGuid(guid);
+      if (attributeType == null) {
+         Class<? extends Attribute<?>> baseAttributeClass =
+               AttributeExtensionManager.getAttributeClassFor(baseAttributeTypeId);
+         Class<? extends IAttributeDataProvider> providerAttributeClass =
+               AttributeExtensionManager.getAttributeProviderClassFor(attributeProviderNameId);
+         attributeType =
+               OseeTypeManager.getTypeFactory().createAttributeType(guid, typeName, baseAttributeTypeId,
+                     attributeProviderNameId, baseAttributeClass, providerAttributeClass, fileTypeExtension,
+                     defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
+      } else {
+         // UPDATE VALUES HERE
+      }
+      dataCache.cacheType(attributeType);
+      dataCache.storeAllModified();
+      return attributeType;
+   }
 }
