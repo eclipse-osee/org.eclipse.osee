@@ -35,8 +35,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -244,7 +242,7 @@ public class ResourceManipulation extends AbstractBlam {
     * @return
     */
    private byte[] fixBytes(int startByte, int initialByte, byte[] goodBytes, byte[] finalVersion, byte[] originalData) {
-      byte[] fixed = new byte[(initialByte - startByte) + goodBytes.length + finalVersion.length];
+      byte[] fixed = new byte[initialByte - startByte + goodBytes.length + finalVersion.length];
       int count = 0;
       for (byte byt : finalVersion) {
          fixed[count] = byt;
@@ -269,7 +267,7 @@ public class ResourceManipulation extends AbstractBlam {
     * @return
     */
    private byte[] addTail(int startByte, byte[] finalVersion, byte[] originalData) {
-      byte[] fixed = new byte[(originalData.length - startByte) + finalVersion.length];
+      byte[] fixed = new byte[originalData.length - startByte + finalVersion.length];
       int count = 0;
       for (byte byt : finalVersion) {
          fixed[count] = byt;
@@ -282,7 +280,7 @@ public class ResourceManipulation extends AbstractBlam {
       return fixed;
    }
 
-   private ArrayList<AttrData> loadAttrData() throws OseeDataStoreException, OseeTypeDoesNotExist {
+   private ArrayList<AttrData> loadAttrData() throws OseeCoreException {
       ArrayList<AttrData> attrData = new ArrayList<AttrData>();
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
@@ -458,6 +456,7 @@ public class ResourceManipulation extends AbstractBlam {
       }
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }

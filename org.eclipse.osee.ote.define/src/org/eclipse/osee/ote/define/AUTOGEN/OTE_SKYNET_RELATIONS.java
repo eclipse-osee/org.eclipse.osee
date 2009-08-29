@@ -11,8 +11,7 @@
 package org.eclipse.osee.ote.define.AUTOGEN;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -37,7 +36,7 @@ public enum OTE_SKYNET_RELATIONS implements IRelationEnumeration {
       return relationSide.isSideA();
    }
 
-   public String getSideName() throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public String getSideName() throws OseeCoreException {
       return getRelationType().getSideName(relationSide);
    }
 
@@ -48,7 +47,7 @@ public enum OTE_SKYNET_RELATIONS implements IRelationEnumeration {
       return typeName;
    }
 
-   public RelationType getRelationType() throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public RelationType getRelationType() throws OseeCoreException {
       return RelationTypeManager.getType(typeName);
    }
 

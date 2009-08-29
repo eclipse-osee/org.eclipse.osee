@@ -12,8 +12,6 @@
 package org.eclipse.osee.framework.ui.skynet.render;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -26,10 +24,9 @@ public class UrlRenderer extends DefaultArtifactRenderer {
 
    /**
     * @param applicableArtifactTypes
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
+    * @throws OseeCoreException
     */
-   public UrlRenderer() throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public UrlRenderer() throws OseeCoreException {
       super();
       contentUrlType = AttributeTypeManager.getType("Content URL");
    }
@@ -39,6 +36,7 @@ public class UrlRenderer extends DefaultArtifactRenderer {
       return new UrlRenderer();
    }
 
+   @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
       for (AttributeType attributeType : artifact.getAttributeTypes()) {
          if (attributeType.equals(contentUrlType)) {

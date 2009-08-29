@@ -11,14 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.Import;
 
 import java.io.File;
-import java.io.FileInputStream;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.jdk.core.util.io.ExtensionFilter;
-import org.eclipse.osee.framework.skynet.core.importing.DbOseeDataTypeProcessor;
-import org.eclipse.osee.framework.skynet.core.importing.ExcelOseeTypeDataParser;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -36,10 +33,10 @@ public class ImportMetaJob extends Job {
    @Override
    public IStatus run(IProgressMonitor monitor) {
       try {
-         ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(new DbOseeDataTypeProcessor());
+         //         ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(new DbOseeDataTypeProcessor());
          if (file.isFile()) {
             monitor.beginTask("Importing " + file.getName(), 2);
-            importer.extractTypesFromSheet(file.getName(), new FileInputStream(file));
+            //            importer.extractTypesFromSheet(file.getName(), new FileInputStream(file));
             monitor.worked(1);
          } else if (file.isDirectory()) {
             File[] children = file.listFiles(new ExtensionFilter(".xml"));
@@ -51,7 +48,7 @@ public class ImportMetaJob extends Job {
                }
 
                monitor.subTask(childFile.getName());
-               importer.extractTypesFromSheet(file.getName(), new FileInputStream(childFile));
+               //               importer.extractTypesFromSheet(file.getName(), new FileInputStream(childFile));
                monitor.worked(1);
             }
          }
@@ -61,7 +58,7 @@ public class ImportMetaJob extends Job {
          }
 
          monitor.subTask("Finalizing");
-         importer.finish();
+         //         importer.finish();
          monitor.done();
          return Status.OK_STATUS;
       } catch (Exception ex) {

@@ -34,8 +34,6 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -177,7 +175,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
 
    }
 
-   private ArrayList<AttrData> loadAttrData() throws OseeDataStoreException, OseeTypeDoesNotExist {
+   private ArrayList<AttrData> loadAttrData() throws OseeCoreException {
       ArrayList<AttrData> attrData = new ArrayList<AttrData>();
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
@@ -366,6 +364,7 @@ public class FixTemplateContentArtifacts extends AbstractBlam {
       }
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin.Health");
    }

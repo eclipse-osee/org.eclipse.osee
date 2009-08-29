@@ -23,7 +23,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomizations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -84,7 +83,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       }
    }
 
-   public static List<XViewerColumn> getAllAttributeColumns() throws OseeDataStoreException {
+   public static List<XViewerColumn> getAllAttributeColumns() throws OseeCoreException {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
       for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
          columns.add(getAttributeColumn(attributeType));

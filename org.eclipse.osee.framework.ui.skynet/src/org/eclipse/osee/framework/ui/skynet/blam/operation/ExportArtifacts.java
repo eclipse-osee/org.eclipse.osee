@@ -19,8 +19,6 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
@@ -49,6 +47,7 @@ public class ExportArtifacts extends AbstractBlam {
       return "Export Artifacts";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       init();
 
@@ -116,7 +115,7 @@ public class ExportArtifacts extends AbstractBlam {
       Arrays.sort(attributeColumns);
    }
 
-   private void init() throws IOException, OseeDataStoreException, OseeTypeDoesNotExist {
+   private void init() throws IOException, OseeCoreException {
       nameAttributeType = AttributeTypeManager.getType("Name");
       charBak = new CharBackedInputStream();
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
@@ -132,6 +131,7 @@ public class ExportArtifacts extends AbstractBlam {
       return "Select parameters below and click the play button at the top right.";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Util");
    }

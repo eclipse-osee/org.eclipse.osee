@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -43,7 +41,7 @@ public class OseeDataTypeDatastore {
    private OseeDataTypeDatastore() {
    }
 
-   public static List<AttributeDataType> getAttributeTypes() throws OseeDataStoreException {
+   public static List<AttributeDataType> getAttributeTypes() throws OseeCoreException {
       List<AttributeDataType> attributeDataTypes = new ArrayList<AttributeDataType>();
       for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
          AttributeDataType attributeDataType =
@@ -57,7 +55,7 @@ public class OseeDataTypeDatastore {
       return attributeDataTypes;
    }
 
-   public static List<RelationDataType> getRelationDataTypes() throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static List<RelationDataType> getRelationDataTypes() throws OseeCoreException {
       List<RelationDataType> relationDataTypes = new ArrayList<RelationDataType>();
       for (RelationType relationType : RelationTypeManager.getAllTypes()) {
          RelationDataType relationDataType =
