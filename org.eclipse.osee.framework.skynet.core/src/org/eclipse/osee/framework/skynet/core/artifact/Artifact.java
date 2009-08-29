@@ -230,7 +230,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return RelationManager.getRelatedArtifact(this, relationEnum);
    }
 
-   public int getRelatedArtifactsCount(IRelationEnumeration relationEnum) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public int getRelatedArtifactsCount(IRelationEnumeration relationEnum) throws OseeCoreException {
       return RelationManager.getRelatedArtifactsCount(this, relationEnum.getRelationType(), relationEnum.getSide());
    }
 
