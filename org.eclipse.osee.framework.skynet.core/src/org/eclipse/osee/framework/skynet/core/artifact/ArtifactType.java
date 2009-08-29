@@ -15,7 +15,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -32,17 +31,35 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    private String name;
    private final boolean isAbstract;
    private final ArtifactFactoryManager factoryManager;
-   private final ArrayList<ArtifactType> superTypes = new ArrayList<ArtifactType>(1);
+   private final OseeTypeCache cache;
+   private final String guid;
 
-   public ArtifactType(boolean isAbstract, String name, ArtifactFactoryManager factoryManager) {
+   public ArtifactType(String guid, String name, boolean isAbstract, ArtifactFactoryManager factoryManager, OseeTypeCache cache) {
+      this.artTypeId = -1;
+      this.guid = guid;
       this.name = name;
       this.isAbstract = isAbstract;
       this.factoryManager = factoryManager;
+      this.cache = cache;
+   }
+
+   public void setArtTypeId(int artTypeId) {
+      if (getArtTypeId() == -1) {
+         this.artTypeId = artTypeId;
+      }
+   }
+
+   public String getGuid() {
+      return guid;
    }
 
    public void addSuperType(ArtifactType superType) {
-      superTypes.add(superType);
+      cache.add(superType);
    }
+
+   //   public Collection<ArtifactType> getDescendants(boolean recurse) throws OseeCoreException {
+   //      return cacheAccessor.getDescendants(this, recurse);
+   //   }
 
    public boolean isValidAttributeType(AttributeType attributeType, Branch branch) throws OseeCoreException {
       return getAttributeTypes(branch).contains(attributeType);
