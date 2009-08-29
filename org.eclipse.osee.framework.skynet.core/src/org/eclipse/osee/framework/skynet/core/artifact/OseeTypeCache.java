@@ -307,5 +307,9 @@ public class OseeTypeCache {
       protected void storeItems(Collection<OseeEnumType> items) throws OseeCoreException {
          dataAccessor.storeOseeEnumType(items);
       }
+
+      public void cacheEnumEntries() {
+
+      }
    }
 }

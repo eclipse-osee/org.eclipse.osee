@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -19,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
+import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache;
 
 /**
  * @author Roberto E. Escobar
@@ -27,15 +29,72 @@ public class OseeEnumType extends BaseOseeType {
 
    private final List<OseeEnumEntry> enumSet;
    private boolean isDeleted;
+   private final OseeTypeCache cache;
 
-   public OseeEnumType(String guid, String enumTypeName) {
+   public OseeEnumType(String guid, String enumTypeName, OseeTypeCache cache) {
       super(guid, enumTypeName);
       this.enumSet = new ArrayList<OseeEnumEntry>();
       this.isDeleted = false;
+      this.cache = cache;
    }
 
    protected void internalSetDeleted(boolean deleted) {
       this.isDeleted = deleted;
+   }
+
+   public void removeEntry(OseeEnumEntry entry) {
+      // TODO implement this
+      //      checkNull(entries);
+      //      if (entries.length > 0) {
+      //         final List<OseeEnumEntry> itemsToRemove = Arrays.asList(entries);
+      //         final List<Pair<String, Integer>> newEntries = new ArrayList<Pair<String, Integer>>();
+      //         for (OseeEnumEntry entry : enumType.values()) {
+      //            if (!itemsToRemove.contains(entry)) {
+      //               newEntries.add(entry.asPair());
+      //            }
+      //         }
+      //         UpdateEnumTx updateEnumTx = new UpdateEnumTx(enumType, newEntries);
+      //         updateEnumTx.execute();
+      //
+      //         enumType.internalRemoveEnums(entries);
+      //         // TODO Signal to other clients - Event here 
+      //      }
+   }
+
+   public void addEntries(List<Pair<String, Integer>> entries) {
+      final List<Pair<String, Integer>> newEntries = getCombinedEntries(this, entries);
+      cache.getEnumTypeData().cacheType(this);
+      // TODO FIx this - may nee to add a persist call to this class?
+      //      UpdateEnumTx updateEnumTx = new UpdateEnumTx(this, newEntries);
+      //      updateEnumTx.execute();
+      //
+      //      boolean wasCreated = false;
+      //      if (getTypeById(oseeEnumType.getTypeId()) == null) {
+      //         cacheType(oseeEnumType);
+      //         wasCreated = true;
+      //      }
+      //      for (Pair<String, Integer> entry : entries) {
+      //         oseeEnumType.internalAddEnum(entry);
+      //      }
+      //      // TODO Signal to other clients - Event here
+      //      if (wasCreated) {
+      //         // TODO Signal newly created - Event here
+      //      }
+   }
+
+   private List<Pair<String, Integer>> getCombinedEntries(final OseeEnumType enumType, final List<Pair<String, Integer>> entries) {
+      final List<Pair<String, Integer>> combinedList = new ArrayList<Pair<String, Integer>>();
+      if (entries != null) {
+         combinedList.addAll(entries);
+      }
+      for (OseeEnumEntry entry : enumType.values()) {
+         combinedList.add(entry.asPair());
+      }
+      return combinedList;
+   }
+
+   public void addEntries(Pair<String, Integer>... entries) {
+      addEntries(Arrays.asList(entries));
    }
 
    protected synchronized void internalAddEnum(String guid, String name, int ordinal) throws OseeArgumentException {

@@ -1,9 +1,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.util.List;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
@@ -17,5 +15,5 @@ public interface IOseeTypeFactory {
 
    public RelationType createRelationType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException;
 
-   public OseeEnumType createEnumType(String guid, String name, List<Pair<String, Integer>> entries) throws OseeCoreException;
+   public OseeEnumType createEnumType(String guid, String name, OseeTypeCache oseeTypeCache) throws OseeCoreException;
 }

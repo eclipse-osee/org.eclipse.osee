@@ -12,19 +12,26 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeExtensionManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -350,9 +357,6 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
       return attrBaseTypeId;
    }
 
-   private static final String INSERT_ENUM_TYPE =
-         "insert into osee_enum_type (ENUM_TYPE_ID, ENUM_TYPE_GUID, ENUM_TYPE_NAME) values (?,?,?)";
-
    private static final String INSERT_ENUM_TYPE_DEF =
          "insert into osee_enum_type_def (ENUM_TYPE_ID, ENUM_ENTRY_GUID, NAME, ORDINAL) values (?,?,?)";
 
@@ -372,7 +376,8 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                String currentEnumTypeGuid = chStmt.getString("enum_type_guid");
                if (lastEnumTypeId != currentEnumTypeId) {
                   List<Pair<String, Integer>> items = new ArrayList<Pair<String, Integer>>();
-                  factory.createEnumType(currentEnumTypeGuid, chStmt.getString("enum_type_name"), items);
+                  oseeEnumType = factory.createEnumType(currentEnumTypeGuid, chStmt.getString("enum_type_name"), cache);
+                  oseeEnumType.addEntries(items);
                   oseeEnumType.setTypeId(currentEnumTypeId);
                   cache.getEnumTypeData().cacheType(oseeEnumType);
                   lastEnumTypeId = currentEnumTypeId;
@@ -400,4 +405,67 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    private Object[] toArray(OseeEnumEntry type) throws OseeDataStoreException {
       return new Object[] {type.getEnumTypeId(), type.getGuid(), type.getEnumTypeName(), type.ordinal()};
    }
+
+   private static final class UpdateEnumTx extends DbTransaction {
+      private static final String DELETE_ENUM_TYPE_ENTRIES = "delete from osee_enum_type_def where enum_type_id = ?";
+      private static final String INSERT_ENUM_TYPE =
+            "insert into osee_enum_type (ENUM_TYPE_ID, ENUM_TYPE_GUID, ENUM_TYPE_NAME) values (?,?,?)";
+
+      private final List<Pair<String, Integer>> entries;
+      private final OseeEnumType enumType;
+
+      public UpdateEnumTx(final OseeEnumType enumType, final List<Pair<String, Integer>> entries) throws OseeCoreException {
+         super();
+         this.enumType = enumType;
+         this.entries = entries;
+      }
+
+      @Override
+      protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
+         if (enumType == null) {
+            throw new OseeStateException("OseeEnumType can not be null");
+         }
+         checkEntryIntegrity(enumType.getName(), entries);
+
+         Integer oseeEnumTypeId = enumType.getTypeId();
+         List<Object[]> data = new ArrayList<Object[]>();
+         for (Pair<String, Integer> entry : entries) {
+            data.add(new Object[] {oseeEnumTypeId, entry.getFirst(), entry.getSecond()});
+         }
+         ConnectionHandler.runPreparedUpdate(connection, DELETE_ENUM_TYPE_ENTRIES, oseeEnumTypeId);
+         if (!data.isEmpty()) {
+            ConnectionHandler.runBatchUpdate(connection, INSERT_ENUM_TYPE_DEF, data);
+         }
+      }
+   };
+
+   private static void checkEntryIntegrity(String enumTypeName, List<Pair<String, Integer>> entries) throws OseeCoreException {
+      if (entries == null) {
+         throw new OseeArgumentException(String.format("Osee Enum Type [%s] had null entries", enumTypeName));
+      }
+
+      //      if (entries.size() <= 0) throw new OseeArgumentException(String.format("Osee Enum Type [%s] had 0 entries",
+      //            enumTypeName));
+      Map<String, Integer> values = new HashMap<String, Integer>();
+      for (Pair<String, Integer> entry : entries) {
+         String name = entry.getFirst();
+         int ordinal = entry.getSecond();
+         if (!Strings.isValid(name)) {
+            throw new OseeArgumentException("Enum entry name cannot be null");
+         }
+         if (ordinal < 0) {
+            throw new OseeArgumentException("Enum entry ordinal cannot be of negative value");
+         }
+         if (values.containsKey(name)) {
+            throw new OseeArgumentException(String.format("Unique enum entry name violation - [%s] already exists.",
+                  name));
+         }
+         if (values.containsValue(ordinal)) {
+            throw new OseeArgumentException(String.format("Unique enum entry ordinal violation - [%s] already exists.",
+                  ordinal));
+         }
+         values.put(name, ordinal);
+      }
+   }
+
 }

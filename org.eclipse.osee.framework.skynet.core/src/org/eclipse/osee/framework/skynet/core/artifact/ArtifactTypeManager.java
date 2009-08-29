@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache.OseeTypeCacheData;
+import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 
@@ -273,7 +273,7 @@ public class ArtifactTypeManager {
    }
 
    public static ArtifactType createType(String guid, boolean isAbstract, String artifactTypeName) throws OseeCoreException {
-      OseeTypeCacheData<ArtifactType> dataCache = OseeTypeManager.getCache().getArtifactTypeData();
+      ArtifactTypeCache dataCache = OseeTypeManager.getCache().getArtifactTypeData();
       ArtifactType artifactType = dataCache.getTypeByGuid(guid);
       if (artifactType == null) {
          artifactType =
