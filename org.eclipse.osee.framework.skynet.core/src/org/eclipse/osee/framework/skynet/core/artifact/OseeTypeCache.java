@@ -14,28 +14,26 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 public class OseeTypeCache {
 
-   private final HashMap<String, RelationType> nameToRelationTypeMap = new HashMap<String, RelationType>();
-   private final HashMap<Integer, RelationType> idToRelationTypeMap = new HashMap<Integer, RelationType>();
-   private final HashMap<String, RelationType> guidToRelationTypeMap = new HashMap<String, RelationType>();
-
-   private final HashMap<String, AttributeType> nameToAttributeTypeMap = new HashMap<String, AttributeType>();
-   private final HashMap<Integer, AttributeType> idToAttributeTypeMap = new HashMap<Integer, AttributeType>();
-   private final HashMap<String, AttributeType> guidToAttributeTypeMap = new HashMap<String, AttributeType>();
-
-   private final HashMap<String, ArtifactType> nameToArtifactTypeMap = new HashMap<String, ArtifactType>();
-   private final HashMap<Integer, ArtifactType> idToArtifactTypeMap = new HashMap<Integer, ArtifactType>();
-   private final HashMap<String, ArtifactType> guidToArtifactTypeMap = new HashMap<String, ArtifactType>();
+   private final ArtifactTypeCache artifactCache = new ArtifactTypeCache();
+   private final AttributeTypeCache attributeCache = new AttributeTypeCache();
+   private final RelationTypeCache relationCache = new RelationTypeCache();
+   private final OseeEnumTypeCache oseeEnumTypeCache = new OseeEnumTypeCache();
 
    private final HashCollection<ArtifactType, ArtifactType> artifactTypeToSuperTypeMap =
          new HashCollection<ArtifactType, ArtifactType>();
@@ -51,26 +49,24 @@ public class OseeTypeCache {
       this.factory = factory;
    }
 
-   public void cacheArtifactType(ArtifactType artifactType) {
-      nameToArtifactTypeMap.put(artifactType.getName(), artifactType);
-      idToArtifactTypeMap.put(artifactType.getArtTypeId(), artifactType);
-      guidToArtifactTypeMap.put(artifactType.getGuid(), artifactType);
+   public ArtifactTypeCache getArtifactTypeData() {
+      return artifactCache;
    }
 
-   public void cacheArtifactTypeInheritance(ArtifactType artifactType, ArtifactType superType) {
+   public AttributeTypeCache getAttributeTypeData() {
+      return attributeCache;
+   }
+
+   public RelationTypeCache getRelationTypeData() {
+      return relationCache;
+   }
+
+   public OseeEnumTypeCache getEnumTypeData() {
+      return oseeEnumTypeCache;
+   }
+
+   public void cacheArtifactTypeInheritance(ArtifactType artifactType, Collection<ArtifactType> superType) {
       artifactTypeToSuperTypeMap.put(artifactType, superType);
-   }
-
-   public void cacheAttributeType(AttributeType attributeType) {
-      nameToAttributeTypeMap.put(attributeType.getName(), attributeType);
-      idToAttributeTypeMap.put(attributeType.getAttrTypeId(), attributeType);
-      guidToAttributeTypeMap.put(attributeType.getGuid(), attributeType);
-   }
-
-   public void cacheRelationType(RelationType relationType) {
-      nameToRelationTypeMap.put(relationType.getTypeName(), relationType);
-      idToRelationTypeMap.put(relationType.getRelationTypeId(), relationType);
-      guidToRelationTypeMap.put(relationType.getGuid(), relationType);
    }
 
    public void cacheTypeValidity(ArtifactType artifactType, AttributeType attributeType, Branch branch) {
@@ -93,42 +89,6 @@ public class OseeTypeCache {
       }
    }
 
-   public Collection<ArtifactType> getAllArtifactTypes() {
-      return new ArrayList<ArtifactType>(idToArtifactTypeMap.values());
-   }
-
-   public Collection<AttributeType> getAllAttributeTypes() {
-      return new ArrayList<AttributeType>(idToAttributeTypeMap.values());
-   }
-
-   public Collection<RelationType> getAllRelationTypes() {
-      return new ArrayList<RelationType>(idToRelationTypeMap.values());
-   }
-
-   public ArtifactType getArtifactTypeById(int artTypeId) {
-      return idToArtifactTypeMap.get(artTypeId);
-   }
-
-   public ArtifactType getArtifactTypeByName(String artifactTypeName) {
-      return nameToArtifactTypeMap.get(artifactTypeName);
-   }
-
-   public AttributeType getAttributeTypeById(int artTypeId) {
-      return idToAttributeTypeMap.get(artTypeId);
-   }
-
-   public AttributeType getAttributeTypeByName(String artifactTypeName) {
-      return nameToAttributeTypeMap.get(artifactTypeName);
-   }
-
-   public RelationType getRelationTypeById(int artTypeId) {
-      return idToRelationTypeMap.get(artTypeId);
-   }
-
-   public RelationType getRelationTypeByName(String artifactTypeName) {
-      return nameToRelationTypeMap.get(artifactTypeName);
-   }
-
    public Collection<ArtifactType> getArtifactSuperType(ArtifactType artifactType) {
       Collection<ArtifactType> types = new HashSet<ArtifactType>();
       Collection<ArtifactType> stored = artifactTypeToSuperTypeMap.getValues(artifactType);
@@ -136,6 +96,29 @@ public class OseeTypeCache {
          types.addAll(stored);
       }
       return types;
+   }
+
+   public void addArtifactSuperType(ArtifactType artifactType, Set<ArtifactType> superTypes) throws OseeCoreException {
+      ensurePopulated();
+      if (artifactType == null) {
+         throw new OseeArgumentException("artifactType cannot be null");
+      }
+      if (superTypes.isEmpty() || superTypes == null) {
+         if (!getArtifactTypeData().getTypeByName("Artifact").equals(artifactType)) {
+            throw new OseeInvalidInheritanceException(String.format(
+                  "Attempting to set [%s] as the root inheritance object - only [Artifact] is allowed", artifactType));
+         }
+      }
+      if (superTypes.contains(artifactType)) {
+         throw new OseeInvalidInheritanceException(String.format(
+               "Circular inheritance detected for artifact type [%s]", artifactType));
+      }
+      Collection<ArtifactType> existingSuperTypes = artifactTypeToSuperTypeMap.getValues(artifactType);
+      if (existingSuperTypes != null) {
+
+      }
+      OseeTypeManager.getDataTypeAccessor().storeTypeInheritance(artifactType, superTypes);
+      OseeTypeManager.getCache().cacheArtifactTypeInheritance(artifactType, superTypes);
    }
 
    public Collection<AttributeType> getAttributeTypes(ArtifactType artifactType) {
@@ -183,29 +166,146 @@ public class OseeTypeCache {
       }
    }
 
-   public synchronized void ensureCachePopulated() throws OseeCoreException {
-      if (idToArtifactTypeMap.isEmpty()) {
+   private synchronized void ensurePopulated() throws OseeCoreException {
+      getArtifactTypeData().ensureTypeCachePopulated();
+      //      getEnumTypeData().ensureTypeCachePopulated();
+      getAttributeTypeData().ensureTypeCachePopulated();
+      ensureTypeValidityPopulated();
+      getRelationTypeData().ensureTypeCachePopulated();
+   }
+
+   void ensureTypeValidityPopulated() throws OseeCoreException {
+      if (artifactToAttributeMap.isEmpty()) {
          dataAccessor.loadAllArtifactTypes(this, factory);
       }
-      if (artifactToAttributeMap.isEmpty()) {
-         dataAccessor.loadAllTypeValidity(this, factory);
+   }
+
+   public abstract class OseeTypeCacheData<T extends BaseOseeType> {
+      private final HashMap<String, T> nameToTypeMap = new HashMap<String, T>();
+      private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
+      private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
+      private final List<T> dirtyItems = new ArrayList<T>();
+
+      private OseeTypeCacheData() {
       }
-      if (idToAttributeTypeMap.isEmpty()) {
-         dataAccessor.loadAllAttributeTypes(this, factory);
+
+      public void cacheType(T type) {
+         nameToTypeMap.put(type.getName(), type);
+         guidToTypeMap.put(type.getGuid(), type);
+         if (type.getTypeId() == BaseOseeType.UNPERSISTTED_VALUE) {
+            idToTypeMap.put(type.getTypeId(), type);
+         } else {
+            dirtyItems.add(type);
+         }
+         //TODO Add Update Here
+      }
+
+      protected void ensureTypeCachePopulated() throws OseeCoreException {
+         if (guidToTypeMap.isEmpty()) {
+            dataAccessor.loadAllRelationTypes(OseeTypeCache.this, factory);
+         }
+      }
+
+      public Collection<T> getAllTypes() throws OseeCoreException {
+         ensurePopulated();
+         return new ArrayList<T>(guidToTypeMap.values());
+      }
+
+      public T getTypeById(int typeId) throws OseeCoreException {
+         ensurePopulated();
+         return idToTypeMap.get(typeId);
+      }
+
+      public T getTypeByName(String typeName) throws OseeCoreException {
+         ensurePopulated();
+         return nameToTypeMap.get(typeName);
+      }
+
+      public T getTypeByGuid(String typeGuid) throws OseeCoreException {
+         ensurePopulated();
+         return guidToTypeMap.get(typeGuid);
+      }
+
+      private Collection<T> getDirtyTypes() throws OseeCoreException {
+         return dirtyItems;
+      }
+
+      public void storeAllModified() throws OseeCoreException {
+         Collection<T> items = getDirtyTypes();
+         synchronized (items) {
+            storeItems(items);
+            items.clear();
+         }
+      }
+
+      protected abstract void storeItems(Collection<T> items) throws OseeCoreException;
+
+      public void storeByGuid(Collection<String> guids) throws OseeCoreException {
+         List<T> items = new ArrayList<T>();
+         for (String guid : guids) {
+            T type = getTypeByGuid(guid);
+            if (type == null) {
+               throw new OseeTypeDoesNotExist(String.format("Item was not found [%s]", guid));
+            }
+            items.add(type);
+         }
+         if (!items.isEmpty()) {
+            storeItems(items);
+         }
+      }
+
+      public boolean existsByGuid(String guid) throws OseeCoreException {
+         return guidToTypeMap.containsKey(guid);
+      }
+
+      public abstract void reloadCache() throws OseeCoreException;
+   }
+
+   public final class ArtifactTypeCache extends OseeTypeCacheData<ArtifactType> {
+      @Override
+      public void reloadCache() throws OseeCoreException {
+         dataAccessor.loadAllArtifactTypes(OseeTypeCache.this, factory);
+      }
+
+      @Override
+      protected void storeItems(Collection<ArtifactType> items) throws OseeCoreException {
+         dataAccessor.storeArtifactType(items);
       }
    }
 
-   synchronized public void ensureTypeValidityPopulated() throws OseeCoreException {
+   public final class AttributeTypeCache extends OseeTypeCacheData<AttributeType> {
+      @Override
+      public void reloadCache() throws OseeCoreException {
+         dataAccessor.loadAllAttributeTypes(OseeTypeCache.this, factory);
+      }
 
+      @Override
+      protected void storeItems(Collection<AttributeType> items) throws OseeCoreException {
+         dataAccessor.storeAttributeType(items);
+      }
    }
 
-   synchronized public void ensureAttributeTypePopulated() throws OseeCoreException {
+   public final class RelationTypeCache extends OseeTypeCacheData<RelationType> {
+      @Override
+      public void reloadCache() throws OseeCoreException {
+         dataAccessor.loadAllRelationTypes(OseeTypeCache.this, factory);
+      }
 
+      @Override
+      protected void storeItems(Collection<RelationType> items) throws OseeCoreException {
+         dataAccessor.storeRelationType(items);
+      }
    }
 
-   synchronized public void ensureRelationTypePopulated() throws OseeCoreException {
-      if (idToRelationTypeMap.isEmpty()) {
-         dataAccessor.loadAllRelationTypes(this, factory);
+   public final class OseeEnumTypeCache extends OseeTypeCacheData<OseeEnumType> {
+      @Override
+      public void reloadCache() throws OseeCoreException {
+         dataAccessor.loadAllOseeEnumTypes(OseeTypeCache.this, factory);
+      }
+
+      @Override
+      protected void storeItems(Collection<OseeEnumType> items) throws OseeCoreException {
+         dataAccessor.storeOseeEnumType(items);
       }
    }
 }

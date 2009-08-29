@@ -10,11 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.ObjectStreamException;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -25,41 +20,30 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 /**
  * @author Robert A. Fisher
  */
-public class ArtifactType implements Serializable, Comparable<ArtifactType> {
-   private static final long serialVersionUID = 1L;
-   private int artTypeId;
-   private String name;
+public class ArtifactType extends BaseOseeType implements Comparable<ArtifactType> {
    private final boolean isAbstract;
    private final ArtifactFactoryManager factoryManager;
    private final OseeTypeCache cache;
-   private final String guid;
 
    public ArtifactType(String guid, String name, boolean isAbstract, ArtifactFactoryManager factoryManager, OseeTypeCache cache) {
-      this.artTypeId = -1;
-      this.guid = guid;
-      this.name = name;
+      super(guid, name);
       this.isAbstract = isAbstract;
       this.factoryManager = factoryManager;
       this.cache = cache;
    }
 
-   public void setArtTypeId(int artTypeId) {
-      if (getArtTypeId() == -1) {
-         this.artTypeId = artTypeId;
-      }
+   public Collection<ArtifactType> getSuperArtifactTypes() {
+      return cache.getArtifactSuperType(this);
    }
 
-   public String getGuid() {
-      return guid;
+   public boolean hasSuperArtifactTypes() {
+      Collection<ArtifactType> superTypes = getSuperArtifactTypes();
+      return superTypes != null && !superTypes.isEmpty();
    }
 
-   public void addSuperType(ArtifactType superType) {
-      cache.add(superType);
+   public void addSuperType(Set<ArtifactType> superType) throws OseeCoreException {
+      cache.addArtifactSuperType(this, superType);
    }
-
-   //   public Collection<ArtifactType> getDescendants(boolean recurse) throws OseeCoreException {
-   //      return cacheAccessor.getDescendants(this, recurse);
-   //   }
 
    public boolean isValidAttributeType(AttributeType attributeType, Branch branch) throws OseeCoreException {
       return getAttributeTypes(branch).contains(attributeType);
@@ -73,9 +57,9 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
 
    private void populateInheritedAttributeTypes(ArtifactType currentType, Branch branch, Collection<AttributeType> attributeTypes) throws OseeCoreException {
       if (branch != null) {
-         attributeTypes.addAll(cacheAccessor.getAttributeTypesFor(currentType, branch));
+         attributeTypes.addAll(cache.getAttributeTypes(currentType, branch));
       } else {
-         attributeTypes.addAll(cacheAccessor.getAttributeTypesFor(currentType));
+         //         attributeTypes.addAll(cache.getAttributeTypesFor(currentType));
       }
       System.out.println("currentType : " + currentType.getName() + " " + attributeTypes);
       if (hasSuperArtifactTypes()) {
@@ -89,15 +73,6 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
 
    public boolean isAbstract() {
       return isAbstract;
-   }
-
-   public Collection<ArtifactType> getSuperArtifactTypes() {
-      return superTypes;
-   }
-
-   public boolean hasSuperArtifactTypes() throws OseeCoreException {
-      Collection<ArtifactType> superTypes = getSuperArtifactTypes();
-      return superTypes != null && !superTypes.isEmpty();
    }
 
    /**
@@ -130,24 +105,10 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    }
 
    /**
-    * @return Returns the artTypeId.
-    */
-   public int getArtTypeId() {
-      return artTypeId;
-   }
-
-   /**
     * @return Returns the factory.
     */
    public ArtifactFactory getFactory() throws OseeCoreException {
-      return factoryManager.getFactory(name);
-   }
-
-   /**
-    * @return Returns the name.
-    */
-   public String getName() {
-      return name;
+      return factoryManager.getFactory(getName());
    }
 
    /**
@@ -183,77 +144,28 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
 
    @Override
    public String toString() {
-      return name;
+      return getName();
    }
 
-   /**
-    * Only store the identifying data since a manager controls this object.
-    * 
-    * @param stream
-    * @throws IOException
-    */
-   private void writeObject(ObjectOutputStream stream) throws IOException {
-      stream.writeObject(name);
-   }
-
-   /**
-    * Initialize as a dumb object for portraying the object needed
-    * 
-    * @param stream
-    * @throws IOException
-    * @throws ClassNotFoundException
-    */
-   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-      name = (String) stream.readObject();
-   }
-
-   /**
-    * @return The ArtifactSubtypeDescriptor associated with the name and transactionId from this dumb object
-    * @throws ObjectStreamException
-    */
-   private Object readResolve() throws ObjectStreamException {
-      try {
-         return ArtifactTypeManager.getType(name);
-      } catch (OseeCoreException e) {
-         throw new RuntimeException("Error while resolving descriptor", e);
+   public int compareTo(ArtifactType other) {
+      int result = -1;
+      if (other != null && other.getName() != null && getName() != null) {
+         result = getName().compareTo(other.getName());
       }
-   }
-
-   public int compareTo(ArtifactType artifactType) {
-      if (artifactType == null) {
-         return -1;
-      }
-      return name.compareTo(artifactType.name);
-   }
-
-   @Override
-   public int hashCode() {
-      final int prime = 31;
-      int result = 1;
-      result = prime * result + name.hashCode();
       return result;
    }
 
    @Override
+   public int hashCode() {
+      return super.hashCode();
+   }
+
+   @Override
    public boolean equals(Object obj) {
-      if (this == obj) {
-         return true;
+      if (obj instanceof ArtifactType) {
+         return super.equals(obj);
       }
-      if (obj == null) {
-         return false;
-      }
-      if (getClass() != obj.getClass()) {
-         return false;
-      }
-      final ArtifactType other = (ArtifactType) obj;
-      if (name == null) {
-         if (other.name != null) {
-            return false;
-         }
-      } else if (!name.equals(other.name)) {
-         return false;
-      }
-      return true;
+      return false;
    }
 
 }

@@ -175,7 +175,7 @@ public class RelationChanged extends Change {
 
    @Override
    public String getItemTypeName() {
-      return relationType.getTypeName();
+      return relationType.getName();
    }
 
    @Override
@@ -195,7 +195,7 @@ public class RelationChanged extends Change {
 
    @Override
    public int getItemTypeId() {
-      return relationType.getRelationTypeId();
+      return relationType.getTypeId();
    }
 
    @Override

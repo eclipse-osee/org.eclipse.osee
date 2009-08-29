@@ -32,11 +32,11 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
 
    public OrphanArtifactSearch(ArtifactType aritfactType) throws OseeCoreException {
       this.aritfactType = aritfactType;
-      this.relationTypeId = RelationTypeManager.getType("Default Hierarchical").getRelationTypeId();
+      this.relationTypeId = RelationTypeManager.getType("Default Hierarchical").getTypeId();
    }
 
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
-      dataList.add(aritfactType.getArtTypeId());
+      dataList.add(aritfactType.getTypeId());
       dataList.add(branch.getBranchId());
       dataList.add(relationTypeId);
 

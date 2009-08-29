@@ -109,7 +109,7 @@ public class WordUtil {
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, attributeDescriptor.getAttrTypeId(), branch.getBranchId());
+         chStmt.runPreparedQuery(SELECT_WORD_VALUES, artId, attributeDescriptor.getTypeId(), branch.getBranchId());
 
          List<Pair<String, Integer>> values = new LinkedList<Pair<String, Integer>>();
          while (chStmt.next()) {

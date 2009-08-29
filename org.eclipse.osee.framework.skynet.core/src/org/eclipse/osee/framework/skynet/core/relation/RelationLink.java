@@ -144,7 +144,7 @@ public class RelationLink {
          if (setDirty) {
             try {
                OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Deleted, this,
-                     getABranch(), relationType.getTypeName());
+                     getABranch(), relationType.getName());
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -255,7 +255,7 @@ public class RelationLink {
       if (notify) {
          try {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.RationaleMod, this,
-                  getABranch(), relationType.getTypeName());
+                  getABranch(), relationType.getName());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -296,7 +296,7 @@ public class RelationLink {
    @Override
    public String toString() {
       return String.format("%s id[%d] modType[%s] [%s]: aId[%d] aOrder[%d] <--> bId[%s] bOrder[%d]",
-            relationType.getTypeName(), relationId, getModificationType(), (isDirty() ? "dirty" : "not dirty"),
+            relationType.getName(), relationId, getModificationType(), (isDirty() ? "dirty" : "not dirty"),
             aArtifactId, aOrder, bArtifactId, bOrder);
    }
 

@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.importing;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.StringWriter;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -25,7 +24,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.osgi.framework.Bundle;
@@ -65,9 +63,6 @@ public class OseeTypesImport {
       } catch (SAXException ex) {
          throw new OseeWrappedException(ex);
       }
-      StringWriter writer = new StringWriter();
-      ArtifactTypeManager.printInheritanceTree(writer);
-      System.out.println(writer.toString());
    }
 
    /**

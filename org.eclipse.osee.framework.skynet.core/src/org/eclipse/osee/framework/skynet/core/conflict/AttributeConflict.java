@@ -231,7 +231,7 @@ public class AttributeConflict extends Conflict {
       return attrId;
    }
 
-   public int getAttrTypeId() {
+   public int getTypeId() {
       return attrTypeId;
    }
 

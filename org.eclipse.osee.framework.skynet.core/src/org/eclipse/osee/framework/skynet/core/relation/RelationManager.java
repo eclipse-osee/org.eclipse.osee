@@ -105,7 +105,7 @@ public class RelationManager {
 
       if (relationLink == null) {
          throw new OseeArgumentException(
-               "A relation link of type: " + relationType.getTypeName() + "does exist in the cache between a artifact: " + aArtifactId + " and b artifact:" + bArtifactId);
+               "A relation link of type: " + relationType.getName() + "does exist in the cache between a artifact: " + aArtifactId + " and b artifact:" + bArtifactId);
       }
 
       return relationLink;
@@ -353,11 +353,11 @@ public class RelationManager {
          //(SELECT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current = 3)"
          if (relationEnum.getSide().equals(RelationSide.SIDE_B)) {
             ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_B, queryId, SQL3DataType.INTEGER,
-                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getRelationTypeId(),
+                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getTypeId(),
                   artifact.getArtId());
          } else {
             ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_A, queryId, SQL3DataType.INTEGER,
-                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getRelationTypeId(),
+                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getTypeId(),
                   artifact.getArtId());
          }
 
@@ -579,7 +579,7 @@ public class RelationManager {
 
          try {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Added, relation,
-                  relation.getABranch(), relationType.getTypeName());
+                  relation.getABranch(), relationType.getName());
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
@@ -608,12 +608,12 @@ public class RelationManager {
     */
    private static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, int artifactCount) throws OseeCoreException {
       ArtifactType allowedType = relationType.getArtifactType(relationSide);
-      if (artifact.getArtifactType().isOfType(allowedType)) {
+      if (artifact.getArtifactType().inheritsFrom(allowedType)) {
          throw new OseeArgumentException(
                String.format(
                      "Artifact [%s] of type [%s] does not belong on side [%s] of relation [%s] - only artifacts of type [%s] are allowed",
                      artifact.getName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
-                     relationType.getTypeName(), allowedType));
+                     relationType.getName(), allowedType));
       }
 
       int nextCount = getRelatedArtifactsCount(artifact, relationType, relationSide) + 1;
@@ -623,7 +623,7 @@ public class RelationManager {
                String.format(
                      "Artifact [%s] of type [%s] cannot be added to [%s] of relation [%s] because doing so would exceed the side maximum of [%s] for this artifact type",
                      artifact.getName(), artifact.getArtifactTypeName(), relationSide.toString(),
-                     relationType.getTypeName(), multiplicity.asLimitLabel(relationSide)));
+                     relationType.getName(), multiplicity.asLimitLabel(relationSide)));
       }
    }
 
@@ -744,7 +744,7 @@ public class RelationManager {
       }
 
       OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Added, relation,
-            relation.getBranch(), relation.getRelationType().getTypeName());
+            relation.getBranch(), relation.getRelationType().getName());
    }
 
    /**
@@ -775,7 +775,7 @@ public class RelationManager {
          }
       }
       throw new OseeCoreException(String.format("Unable to find a relation link for type[%s] artA[%s] artB[%s]",
-            relationType.getTypeName(), artifactA.getName(), artifactB.getName()));
+            relationType.getName(), artifactA.getName(), artifactB.getName()));
    }
 
    public static List<RelationOrderId> getRelationOrderTypes() {

@@ -14,7 +14,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
 class Unordered implements RelationOrder {
 
@@ -33,7 +32,7 @@ class Unordered implements RelationOrder {
          String value = artifact.getOrInitializeSoleAttributeValue("Relation Order");
          RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(value);
          List<String> list = Collections.emptyList();
-         relationOrderXmlProcessor.putOrderList(type.getTypeName(), getOrderId(), side, list);
+         relationOrderXmlProcessor.putOrderList(type.getName(), getOrderId(), side, list);
          artifact.setSoleAttributeFromString("Relation Order", relationOrderXmlProcessor.getAsXmlString());
       }
    }

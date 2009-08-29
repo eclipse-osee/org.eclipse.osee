@@ -51,8 +51,9 @@ public class ArtifactChanged extends Change {
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
-      if (adapter == null)
+      if (adapter == null) {
          throw new IllegalArgumentException("adapter can not be null");
+      }
 
       try {
          if (adapter.isInstance(getArtifact())) {
@@ -80,7 +81,7 @@ public class ArtifactChanged extends Change {
 
    @Override
    public int getItemTypeId() {
-      return getArtifactType().getArtTypeId();
+      return getArtifactType().getTypeId();
    }
 
    @Override

@@ -14,14 +14,12 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
 
 /**
  * @author Robert A. Fisher
  */
-public class RelationType implements Comparable<RelationType> {
-   private int relationTypeId;
-   private final String guid;
-   private final String typeName;
+public class RelationType extends BaseOseeType implements Comparable<RelationType> {
    private final String sideAName;
    private final String sideBName;
    private final RelationTypeMultiplicity multiplicity;
@@ -32,10 +30,7 @@ public class RelationType implements Comparable<RelationType> {
    private final String defaultOrderTypeGuid;
 
    public RelationType(String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
-      super();
-      this.relationTypeId = -1;
-      this.guid = guid;
-      this.typeName = relationTypeName;
+      super(guid, relationTypeName);
       this.sideAName = sideAName;
       this.sideBName = sideBName;
       this.artifactTypeSideA = artifactTypeSideA;
@@ -44,16 +39,6 @@ public class RelationType implements Comparable<RelationType> {
 
       this.isOrdered = isOrdered;
       this.defaultOrderTypeGuid = defaultOrderTypeGuid;
-   }
-
-   public void setRelationTypeId(int relationTypeId) {
-      if (getRelationTypeId() == -1) {
-         this.relationTypeId = relationTypeId;
-      }
-   }
-
-   public String getGuid() {
-      return guid;
    }
 
    public RelationTypeMultiplicity getMultiplicity() {
@@ -70,10 +55,6 @@ public class RelationType implements Comparable<RelationType> {
 
    public ArtifactType getArtifactType(RelationSide relationSide) {
       return relationSide == RelationSide.SIDE_A ? getArtifactTypeSideA() : getArtifactTypeSideB();
-   }
-
-   public String getTypeName() {
-      return typeName;
    }
 
    public String getSideName(RelationSide relationSide) {
@@ -102,30 +83,30 @@ public class RelationType implements Comparable<RelationType> {
       return getSideAName().equals(sideName);
    }
 
-   public int compareTo(RelationType descriptor) {
-      return typeName.compareTo(descriptor.getTypeName());
+   public int compareTo(RelationType other) {
+      int result = -1;
+      if (other != null && other.getName() != null && getName() != null) {
+         result = getName().compareTo(other.getName());
+      }
+      return result;
    }
 
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof RelationType) {
-         return relationTypeId == ((RelationType) obj).relationTypeId;
+         return super.equals(obj);
       }
       return false;
    }
 
    @Override
    public int hashCode() {
-      return 17 * relationTypeId;
+      return super.hashCode();
    }
 
    @Override
    public String toString() {
-      return String.format("[%s]: [%s] <--> [%s]", getTypeName(), getSideAName(), getSideBName());
-   }
-
-   public int getRelationTypeId() {
-      return relationTypeId;
+      return String.format("[%s]: [%s] <--> [%s]", getName(), getSideAName(), getSideBName());
    }
 
    public boolean isOrdered() {

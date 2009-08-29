@@ -14,11 +14,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache.OseeTypeCacheData;
 
 /**
  * @author Ryan D. Brooks
@@ -27,10 +29,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeManager;
 public class RelationTypeManager {
 
    private RelationTypeManager() {
-   }
-
-   private static synchronized void ensurePopulated() throws OseeCoreException {
-      OseeTypeManager.getCache().ensureRelationTypePopulated();
    }
 
    public static List<RelationType> getValidTypes(ArtifactType artifactType, Branch branch) throws OseeCoreException {
@@ -51,7 +49,7 @@ public class RelationTypeManager {
    public static int getRelationSideMax(RelationType relationType, ArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
       int toReturn = 0;
       ArtifactType allowedType = relationType.getArtifactType(relationSide);
-      if (artifactType.isOfType(allowedType)) {
+      if (artifactType.inheritsFrom(allowedType)) {
          toReturn = relationType.getMultiplicity().getLimit(relationSide);
       }
       return toReturn;
@@ -71,13 +69,11 @@ public class RelationTypeManager {
     * @throws OseeCoreException
     */
    public static Collection<RelationType> getAllTypes() throws OseeCoreException {
-      ensurePopulated();
-      return OseeTypeManager.getCache().getAllRelationTypes();
+      return OseeTypeManager.getCache().getRelationTypeData().getAllTypes();
    }
 
    public static RelationType getType(int relationTypeId) throws OseeCoreException {
-      ensurePopulated();
-      RelationType relationType = OseeTypeManager.getCache().getRelationTypeById(relationTypeId);
+      RelationType relationType = OseeTypeManager.getCache().getRelationTypeData().getTypeById(relationTypeId);
       if (relationType == null) {
          throw new OseeTypeDoesNotExist("The relation with type id[" + relationTypeId + "] does not exist");
       }
@@ -85,8 +81,7 @@ public class RelationTypeManager {
    }
 
    public static RelationType getType(String typeName) throws OseeCoreException {
-      ensurePopulated();
-      RelationType relationType = OseeTypeManager.getCache().getRelationTypeByName(typeName);
+      RelationType relationType = OseeTypeManager.getCache().getRelationTypeData().getTypeByName(typeName);
       if (relationType == null) {
          throw new OseeTypeDoesNotExist("The relation type [" + typeName + "] does not exist");
       }
@@ -94,34 +89,21 @@ public class RelationTypeManager {
    }
 
    public static boolean typeExists(String name) throws OseeCoreException {
-      ensurePopulated();
-      return OseeTypeManager.getCache().getRelationTypeByName(name) != null;
+      return OseeTypeManager.getCache().getRelationTypeData().getTypeByName(name) != null;
    }
 
-   /**
-    * Persist a new relation link type. If the <code>relationTypeName</code> is already in the database, then nothing is
-    * done.
-    * 
-    * @param relationTypeName The type name of the relation link to define.
-    * @param sideAName The name for the 'a' side of the relation.
-    * @param sideBName The name for the 'b' side of the relation.
-    * @param abPhrasing The phrasing appropriate from the 'a' side to the 'b' side.
-    * @param baPhrasing The phrasing appropriate from the 'b' side to the 'a' side.
-    * @param shortName An abbreviated name to display for the link type.
-    * @throws OseeCoreException
-    */
-   public static RelationType createRelationType(String guid, String relationTypeName, String sideAName, String sideBName, String artifactTypeSideA, String artifactTypeSideB, String multiplicity, boolean isUserOrdered, String orderTypeGuid) throws OseeCoreException {
-      RelationType relationType;
-      if (!typeExists(relationTypeName)) {
-         relationType = null;
-         //               OseeTypeManager.getTypeFactory().createRelationType(guid, relationTypeName, sideAName, sideBName,
-         //                     artifactTypeSideA, artifactTypeSideB, multiplicity, isUserOrdered, orderTypeGuid);
-         OseeTypeManager.getDataTypeAccessor().storeRelationType(relationType);
-         OseeTypeManager.getCache().cacheRelationType(relationType);
+   public static RelationType createRelationType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {
+      OseeTypeCacheData<RelationType> dataCache = OseeTypeManager.getCache().getRelationTypeData();
+      RelationType relationType = dataCache.getTypeByGuid(guid);
+      if (relationType == null) {
+         relationType =
+               OseeTypeManager.getTypeFactory().createRelationType(guid, typeName, sideAName, sideBName,
+                     artifactTypeSideA, artifactTypeSideB, multiplicity, isUserOrdered, defaultOrderTypeGuid);
       } else {
-         // TODO: Check if anything valuable is different and update it
-         relationType = getType(relationTypeName);
+         // UPDATE VALUES HERE
       }
+      dataCache.cacheType(relationType);
+      dataCache.storeAllModified();
       return relationType;
    }
 }

@@ -40,18 +40,18 @@ class Lexicographical implements RelationOrder {
    public void setOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
       String value = artifact.getOrInitializeSoleAttributeValue("Relation Order");
       RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(value);
-      String guid = relationOrderXmlProcessor.findRelationOrderGuid(type.getTypeName(), side);
+      String guid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
       boolean isTypeToSetDefault = type.getDefaultOrderTypeGuid().equals(getOrderId().getGuid());
       if(guid == null && isTypeToSetDefault){//nothing has been saved for this type/side pair and it's the default
          return;
       } else if(guid != null && guid.equals(getOrderId().getGuid())){//already saved as this type
          return;
       } else if(guid != null && isTypeToSetDefault){//going back to the default type
-         relationOrderXmlProcessor.removeOrder(type.getTypeName(), getOrderId(), side);
+         relationOrderXmlProcessor.removeOrder(type.getName(), getOrderId(), side);
       }
       List<String> list = Collections.emptyList();
       if(!isTypeToSetDefault){
-         relationOrderXmlProcessor.putOrderList(type.getTypeName(), getOrderId(), side, list);
+         relationOrderXmlProcessor.putOrderList(type.getName(), getOrderId(), side, list);
       }
       if(relationOrderXmlProcessor.hasEntries()){
          artifact.setSoleAttributeFromString("Relation Order", relationOrderXmlProcessor.getAsXmlString());

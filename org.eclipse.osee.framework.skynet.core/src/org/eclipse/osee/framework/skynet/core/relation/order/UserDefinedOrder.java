@@ -16,26 +16,28 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-class UserDefinedOrder implements RelationOrder{
+class UserDefinedOrder implements RelationOrder {
 
    @Override
    public void sort(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
-      if(relatives != null && relatives.size() > 1){
+      if (relatives != null && relatives.size() > 1) {
          Attribute<String> attribute = artifact.getSoleAttribute("Relation Order");
-         if(attribute != null){
-            RelationOrderXmlProcessor relationOrderXmlProcessor= new RelationOrderXmlProcessor(attribute.getValue());
-            String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getTypeName(), side);
-            if(relationOrderGuid != null){
-               List<String> list = relationOrderXmlProcessor.findOrderList(type.getTypeName(), side, relationOrderGuid);
-               if(list != null){
+         if (attribute != null) {
+            RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(attribute.getValue());
+            String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
+            if (relationOrderGuid != null) {
+               List<String> list = relationOrderXmlProcessor.findOrderList(type.getName(), side, relationOrderGuid);
+               if (list != null) {
                   orderRelatives(relatives, list);
                } else {
-                  throw new OseeCoreException(String.format("Unable to find an order list for UserDefinedOrder artifact[%s] RelationType[%s] RelationSide[%s]", artifact.getGuid(), type.getTypeName(), side.name()));
+                  throw new OseeCoreException(
+                        String.format(
+                              "Unable to find an order list for UserDefinedOrder artifact[%s] RelationType[%s] RelationSide[%s]",
+                              artifact.getGuid(), type.getName(), side.name()));
                }
             }
-         }   
+         }
       }
    }
 
@@ -50,17 +52,17 @@ class UserDefinedOrder implements RelationOrder{
 
    @Override
    public void setOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
-      if(relatives.size() > 0){
+      if (relatives.size() > 0) {
          String value = artifact.getOrInitializeSoleAttributeValue("Relation Order");
-         RelationOrderXmlProcessor relationOrderXmlProcessor= new RelationOrderXmlProcessor(value);
-         relationOrderXmlProcessor.putOrderList(type.getTypeName(), getOrderId(), side, toGuidList(relatives));
+         RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(value);
+         relationOrderXmlProcessor.putOrderList(type.getName(), getOrderId(), side, toGuidList(relatives));
          artifact.setSoleAttributeFromString("Relation Order", relationOrderXmlProcessor.getAsXmlString());
       }
    }
 
-   private List<String> toGuidList(List<Artifact> relatives){
+   private List<String> toGuidList(List<Artifact> relatives) {
       List<String> guids = new ArrayList<String>(relatives.size());
-      for(Artifact art:relatives){
+      for (Artifact art : relatives) {
          guids.add(art.getGuid());
       }
       return guids;

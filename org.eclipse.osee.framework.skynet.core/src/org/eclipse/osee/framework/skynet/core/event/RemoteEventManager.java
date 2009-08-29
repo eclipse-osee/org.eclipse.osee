@@ -154,10 +154,10 @@ public class RemoteEventManager {
       }
       /*
        * This will enable a testing loopback that will take the kicked remote events and
-       * loop them back as if they came from an external client.  It will allow for the testing
-       * of the OEM -> REM -> OEM processing.  In addition, this onEvent is put in a non-display
+       * loop them back as if they came from an external client. It will allow for the testing
+       * of the OEM -> REM -> OEM processing. In addition, this onEvent is put in a non-display
        * thread which will test that all handling by applications is properly handled by doing
-       * all processing and then kicking off display-thread when need to update ui.  SessionId needs
+       * all processing and then kicking off display-thread when need to update ui. SessionId needs
        * to be modified so this client doesn't think the events came from itself.
        */
       if (InternalEventManager.enableRemoteEventLoopback) {
@@ -617,45 +617,45 @@ public class RemoteEventManager {
                //            }
                //TODO Maybe just send a link change refresh event
                if (event instanceof NetworkRelationLinkOrderModifiedEvent) {
-//                  RelationLink relation =
-//                        RelationManager.getLoadedRelation(event.getRelId(), event.getArtAId(), event.getArtBId(),
-//                              branch, branch);
-//                  if (relation != null) {
-//                     RelationEventType relationEventType = null;
-//                     boolean aOrderChanged =
-//                           ((NetworkRelationLinkOrderModifiedEvent) event).getAOrder() != relation.getAOrder();
-//                     boolean bOrderChanged =
-//                           ((NetworkRelationLinkOrderModifiedEvent) event).getBOrder() != relation.getBOrder();
-//                     if (aOrderChanged) {
-//                        relation.setAOrder(((NetworkRelationLinkOrderModifiedEvent) event).getAOrder());
-//                        if (bArtifactLoaded) {
-//                           RelationManager.sortRelations(bArtifact, relation.getRelationType(),
-//                                 new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
-//                        }
-//                        relationEventType = RelationEventType.ReOrdered;
-//                     }
-//                     if (bOrderChanged) {
-//                        relation.setBOrder(((NetworkRelationLinkOrderModifiedEvent) event).getBOrder());
-//                        if (aArtifactLoaded) {
-//                           RelationManager.sortRelations(aArtifact, relation.getRelationType(),
-//                                 new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
-//                        }
-//                        relationEventType = RelationEventType.ReOrdered;
-//                     }
-//                     if (relation.getRationale().equals(((NetworkRelationLinkOrderModifiedEvent) event).getRationale())) {
-//                        relation.setRationale(((NetworkRelationLinkOrderModifiedEvent) event).getRationale(), false);
-//                        relationEventType = RelationEventType.RationaleMod;
-//                     }
-//                     if (relationEventType == null) {
-//                        OseeLog.log(Activator.class, Level.SEVERE,
-//                              "Link Modified Type Can Not Be Determined; Event Ignored.  " + event);
-//                     } else {
-//                        relation.setNotDirty();
-//
-//                        xModifiedEvents.add(new RelationModifiedEvent(sender, relationEventType, relation,
-//                              relation.getBranch(), relation.getRelationType().getTypeName()));
-//                     }
-//                  }
+                  //                  RelationLink relation =
+                  //                        RelationManager.getLoadedRelation(event.getRelId(), event.getArtAId(), event.getArtBId(),
+                  //                              branch, branch);
+                  //                  if (relation != null) {
+                  //                     RelationEventType relationEventType = null;
+                  //                     boolean aOrderChanged =
+                  //                           ((NetworkRelationLinkOrderModifiedEvent) event).getAOrder() != relation.getAOrder();
+                  //                     boolean bOrderChanged =
+                  //                           ((NetworkRelationLinkOrderModifiedEvent) event).getBOrder() != relation.getBOrder();
+                  //                     if (aOrderChanged) {
+                  //                        relation.setAOrder(((NetworkRelationLinkOrderModifiedEvent) event).getAOrder());
+                  //                        if (bArtifactLoaded) {
+                  //                           RelationManager.sortRelations(bArtifact, relation.getRelationType(),
+                  //                                 new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                  //                        }
+                  //                        relationEventType = RelationEventType.ReOrdered;
+                  //                     }
+                  //                     if (bOrderChanged) {
+                  //                        relation.setBOrder(((NetworkRelationLinkOrderModifiedEvent) event).getBOrder());
+                  //                        if (aArtifactLoaded) {
+                  //                           RelationManager.sortRelations(aArtifact, relation.getRelationType(),
+                  //                                 new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                  //                        }
+                  //                        relationEventType = RelationEventType.ReOrdered;
+                  //                     }
+                  //                     if (relation.getRationale().equals(((NetworkRelationLinkOrderModifiedEvent) event).getRationale())) {
+                  //                        relation.setRationale(((NetworkRelationLinkOrderModifiedEvent) event).getRationale(), false);
+                  //                        relationEventType = RelationEventType.RationaleMod;
+                  //                     }
+                  //                     if (relationEventType == null) {
+                  //                        OseeLog.log(Activator.class, Level.SEVERE,
+                  //                              "Link Modified Type Can Not Be Determined; Event Ignored.  " + event);
+                  //                     } else {
+                  //                        relation.setNotDirty();
+                  //
+                  //                        xModifiedEvents.add(new RelationModifiedEvent(sender, relationEventType, relation,
+                  //                              relation.getBranch(), relation.getRelationType().getName()));
+                  //                     }
+                  //                  }
                } else if (event instanceof NetworkRelationLinkDeletedEvent) {
                   RelationLink relation =
                         RelationManager.getLoadedRelation(event.getRelId(), event.getArtAId(), event.getArtBId(),
@@ -664,7 +664,7 @@ public class RemoteEventManager {
                      relation.internalRemoteEventDelete();
 
                      xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.Deleted, relation,
-                           relation.getBranch(), relation.getRelationType().getTypeName()));
+                           relation.getBranch(), relation.getRelationType().getName()));
                   }
                } else if (event instanceof NetworkNewRelationLinkEvent) {
                   RelationLink relation =
@@ -680,17 +680,17 @@ public class RemoteEventManager {
                                  ((NetworkNewRelationLinkEvent) event).getBOrder(), ModificationType.NEW);
                      RelationManager.manageRelation(relation, RelationSide.SIDE_A);
                      RelationManager.manageRelation(relation, RelationSide.SIDE_B);
-//                     if (bArtifactLoaded) {
-//                        RelationManager.sortRelations(bArtifact, relation.getRelationType(),
-//                              new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
-//                     }
-//                     if (aArtifactLoaded) {
-//                        RelationManager.sortRelations(aArtifact, relation.getRelationType(),
-//                              new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
-//                     }
+                     //                     if (bArtifactLoaded) {
+                     //                        RelationManager.sortRelations(bArtifact, relation.getRelationType(),
+                     //                              new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                     //                     }
+                     //                     if (aArtifactLoaded) {
+                     //                        RelationManager.sortRelations(aArtifact, relation.getRelationType(),
+                     //                              new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
+                     //                     }
 
                      xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.Added, relation,
-                           relation.getBranch(), relation.getRelationType().getTypeName()));
+                           relation.getBranch(), relation.getRelationType().getName()));
                   }
                }
             }

@@ -11,7 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -19,11 +22,15 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SequenceManager;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeExtensionManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -72,7 +79,11 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    }
 
    @Override
-   public void storeTypeInheritance(List<Object[]> datas) throws OseeCoreException {
+   public void storeTypeInheritance(ArtifactType artifactType, Set<ArtifactType> superTypes) throws OseeCoreException {
+      List<Object[]> datas = new ArrayList<Object[]>();
+      for (ArtifactType superType : superTypes) {
+         datas.add(new Object[] {artifactType.getTypeId(), superType.getTypeId()});
+      }
       ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE_INHERITANCE, datas);
    }
 
@@ -82,7 +93,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    }
 
    @Override
-   public void loadAllTypeValidity(OseeTypeCache cache, IOseeTypeFactory artifactTypeFactory) throws OseeCoreException {
+   public void loadAllTypeValidity(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_ATTRIBUTE_VALIDITY);
@@ -101,7 +112,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
       }
    }
 
-   public void loadAllArtifactTypes(OseeTypeCache cache, IOseeTypeFactory artifactTypeFactory) throws OseeCoreException {
+   public void loadAllArtifactTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(SELECT_ARTIFACT_TYPES);
@@ -110,10 +121,10 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
             try {
                boolean isAbstract = chStmt.getInt("is_abstract") == ABSTRACT_TYPE_INDICATOR;
                ArtifactType artifactType =
-                     artifactTypeFactory.createArtifactType(chStmt.getString("art_type_guid"), isAbstract,
-                           chStmt.getString("name"));
-               artifactType.setArtTypeId(chStmt.getInt("art_type_id"));
-               cache.cacheArtifactType(artifactType);
+                     factory.createArtifactType(chStmt.getString("art_type_guid"), isAbstract,
+                           chStmt.getString("name"), cache);
+               artifactType.setTypeId(chStmt.getInt("art_type_id"));
+               cache.getArtifactTypeData().cacheType(artifactType);
             } catch (OseeDataStoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -125,31 +136,38 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
       ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
       try {
          chStmt2.runPreparedQuery(SELECT_ARTIFACT_TYPE_INHERITANCE);
+         int previousBaseId = -1;
+         Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
          while (chStmt2.next()) {
             int artTypeId = chStmt.getInt("art_type_id");
             int superArtTypeId = chStmt.getInt("super_art_type_id");
-
-            ArtifactType superArtifactType = null;
-            if (superArtTypeId != NULL_SUPER_ARTIFACT_TYPE) {
-               superArtifactType = cache.getArtifactTypeById(artTypeId);
-            }
-            ArtifactType artifactType = cache.getArtifactTypeById(artTypeId);
-            if (artifactType == null) {
-               throw new OseeInvalidInheritanceException(String.format("ArtifactType [%s] inherit from [%s] is null",
-                     artTypeId, superArtTypeId));
-            }
             if (artTypeId == superArtTypeId) {
                throw new OseeInvalidInheritanceException(String.format(
                      "Circular inheritance detected artifact type [%s] inherits from [%s]", artTypeId, superArtTypeId));
             }
-            cache.cacheArtifactTypeInheritance(artifactType, superArtifactType);
+            ArtifactType superArtifactType = null;
+            if (superArtTypeId != NULL_SUPER_ARTIFACT_TYPE) {
+               superArtifactType = cache.getArtifactTypeData().getTypeById(artTypeId);
+            }
+            superTypes.add(superArtifactType);
+
+            if (previousBaseId != artTypeId) {
+               ArtifactType artifactType = cache.getArtifactTypeData().getTypeById(artTypeId);
+               if (artifactType == null) {
+                  throw new OseeInvalidInheritanceException(String.format(
+                        "ArtifactType [%s] inherit from [%s] is null", artTypeId, superArtTypeId));
+               }
+               cache.cacheArtifactTypeInheritance(artifactType, superTypes);
+               superTypes.clear();
+               previousBaseId = artTypeId;
+            }
          }
       } finally {
          chStmt2.close();
       }
    }
 
-   public void loadAllAttributeTypes(OseeTypeCache cache, IOseeTypeFactory artifactTypeFactory) throws OseeCoreException {
+   public void loadAllAttributeTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
@@ -164,14 +182,16 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                Class<? extends IAttributeDataProvider> providerAttributeClass =
                      AttributeExtensionManager.getAttributeProviderClassFor(baseProviderClassString);
 
+               int enumTypeId = chStmt.getInt("enum_type_id");
+               OseeEnumType enumType = cache.getEnumTypeData().getTypeById(enumTypeId);
                AttributeType attributeType =
-                     artifactTypeFactory.createAttributeType(chStmt.getString("attr_type_guid"),
-                           chStmt.getString("name"), baseAttributeClass, providerAttributeClass,
-                           chStmt.getString("file_type_extension"), chStmt.getString("default_value"),
-                           chStmt.getInt("enum_type_id"), chStmt.getInt("min_occurence"),
-                           chStmt.getInt("max_occurence"), chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
-               attributeType.setAttrTypeId(chStmt.getInt("attr_type_id"));
-               cache.cacheAttributeType(attributeType);
+                     factory.createAttributeType(chStmt.getString("attr_type_guid"), chStmt.getString("name"),
+                           baseClassString, baseProviderClassString, baseAttributeClass, providerAttributeClass,
+                           chStmt.getString("file_type_extension"), chStmt.getString("default_value"), enumType,
+                           chStmt.getInt("min_occurence"), chStmt.getInt("max_occurence"),
+                           chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
+               attributeType.setTypeId(chStmt.getInt("attr_type_id"));
+               cache.getAttributeTypeData().cacheType(attributeType);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -182,7 +202,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    }
 
    @Override
-   public void loadAllRelationTypes(OseeTypeCache cache, IOseeTypeFactory artifactTypeFactory) throws OseeCoreException {
+   public void loadAllRelationTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
@@ -199,12 +219,12 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                if (multiplicity != null) {
                   boolean isUserOrdered = USER_ORDERED.equalsIgnoreCase(chStmt.getString("user_ordered"));
                   RelationType relationType =
-                        artifactTypeFactory.createRelationType(chStmt.getString("rel_link_type_guid_id"),
-                              relationTypeName, chStmt.getString("a_name"), chStmt.getString("b_name"),
-                              artifactTypeSideA, artifactTypeSideB, multiplicity, isUserOrdered,
+                        factory.createRelationType(chStmt.getString("rel_link_type_guid_id"), relationTypeName,
+                              chStmt.getString("a_name"), chStmt.getString("b_name"), artifactTypeSideA,
+                              artifactTypeSideB, multiplicity, isUserOrdered,
                               chStmt.getString("default_order_type_guid"));
-                  relationType.setRelationTypeId(chStmt.getInt("rel_link_type_id"));
-                  cache.cacheRelationType(relationType);
+                  relationType.setTypeId(chStmt.getInt("rel_link_type_id"));
+                  cache.getRelationTypeData().cacheType(relationType);
                } else {
                   OseeLog.log(Activator.class, Level.SEVERE, String.format("Multiplicity was null for [%s][%s]",
                         relationTypeName, relationTypeId));
@@ -219,98 +239,81 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    }
 
    @Override
-   public void storeArtifactType(ArtifactType... artifactTypes) throws OseeCoreException {
-      if (artifactTypes != null) {
-         if (artifactTypes.length == 1) {
-            ArtifactType type = artifactTypes[0];
-            ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, type.getArtTypeId(), type.getName(),
-                  type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR);
+   public void storeArtifactType(Collection<ArtifactType> types) throws OseeCoreException {
+      if (types != null) {
+         if (types.size() == 1) {
+            ArtifactType type = types.iterator().next();
+            type.setTypeId(SequenceManager.getNextArtifactTypeId());
+            ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, toArray(type));
          } else {
-            List<Object[]> types = new ArrayList<Object[]>();
-            for (ArtifactType type : artifactTypes) {
-               types.add(new Object[] {type.getArtTypeId(), type.getName(),
-                     type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR});
+            List<Object[]> datas = new ArrayList<Object[]>();
+            for (ArtifactType type : types) {
+               type.setTypeId(SequenceManager.getNextArtifactTypeId());
+               datas.add(toArray(type));
             }
-            ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE, types);
+            ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE, datas);
          }
       }
    }
 
    @Override
-   public void storeRelationType(RelationType... relationTypes) throws OseeCoreException {
-      if (relationTypes != null) {
-         if (relationTypes.length == 1) {
-            RelationType type = relationTypes[0];
-            ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, type.getRelationTypeId(),
-                  type.getTypeName(), type.getSideAName(), type.getSideBName(),
-                  type.getArtifactTypeSideA().getArtTypeId(), type.getArtifactTypeSideB().getArtTypeId(),
-                  type.getMultiplicity().getValue(), type.isOrdered() ? USER_ORDERED : NOT_USER_ORDERED,
-                  type.getDefaultOrderTypeGuid());
+   public void storeRelationType(Collection<RelationType> types) throws OseeCoreException {
+      if (types != null) {
+         if (types.size() == 1) {
+            RelationType type = types.iterator().next();
+            type.setTypeId(SequenceManager.getNextRelationTypeId());
+            ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, toArray(type));
          } else {
-            List<Object[]> types = new ArrayList<Object[]>();
-            for (RelationType type : relationTypes) {
-               types.add(new Object[] {type.getRelationTypeId(), type.getTypeName(), type.getSideAName(),
-                     type.getSideBName(), type.getArtifactTypeSideA().getArtTypeId(),
-                     type.getArtifactTypeSideB().getArtTypeId(), type.getMultiplicity().getValue(),
-                     type.isOrdered() ? USER_ORDERED : NOT_USER_ORDERED, type.getDefaultOrderTypeGuid()});
+            List<Object[]> datas = new ArrayList<Object[]>();
+            for (RelationType type : types) {
+               type.setTypeId(SequenceManager.getNextRelationTypeId());
+               datas.add(toArray(type));
             }
-            ConnectionHandler.runBatchUpdate(INSERT_RELATION_LINK_TYPE, types);
+            ConnectionHandler.runBatchUpdate(INSERT_RELATION_LINK_TYPE, datas);
          }
       }
    }
 
    @Override
-   public void storeAttributeType(AttributeType... artifactTypes) throws OseeCoreException {
-      if (artifactTypes != null) {
-         if (artifactTypes.length == 1) {
-            AttributeType type = artifactTypes[0];
-            type.setAttrTypeId(SequenceManager.getNextArtifactTypeId());
-            //            ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, type.getAttrTypeId(), type.getName(),
-            //                  type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR);
+   public void storeAttributeType(Collection<AttributeType> types) throws OseeCoreException {
+      if (types != null) {
+         if (types.size() == 1) {
+            AttributeType type = types.iterator().next();
+            type.setTypeId(SequenceManager.getNextAttributeTypeId());
+            ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, toArray(type));
          } else {
-            List<Object[]> types = new ArrayList<Object[]>();
-            //            for (AttributeType type : artifactTypes) {
-            //               types.add(new Object[] {type.getArtTypeId(), type.getName(),
-            //                     type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR});
-            //            }
-            ConnectionHandler.runBatchUpdate(INSERT_ATTRIBUTE_TYPE, types);
+            List<Object[]> datas = new ArrayList<Object[]>();
+            for (AttributeType type : types) {
+               type.setTypeId(SequenceManager.getNextAttributeTypeId());
+               datas.add(new Object[] {toArray(type)});
+            }
+            ConnectionHandler.runBatchUpdate(INSERT_ATTRIBUTE_TYPE, datas);
          }
       }
-
    }
 
-   public static AttributeType createType(String attributeBaseType, String attributeProviderTypeName, String fileTypeExtension, String attributeTypeName, String defaultValue, String validityXml, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
-      //      if (minOccurrences > 0 && defaultValue == null) {
-      //         throw new OseeArgumentException(
-      //               "DefaultValue must be set for attribute [" + attributeTypeName + "] with minOccurrences " + minOccurrences);
-      //      }
-      //      if (typeExists(attributeTypeName)) {
-      //         return getType(attributeTypeName);
-      //      }
-      //
-      //      Class<? extends Attribute<?>> baseAttributeClass =
-      //            AttributeExtensionManager.getAttributeClassFor(attributeBaseType);
-      //      Class<? extends IAttributeDataProvider> providerAttributeClass =
-      //            AttributeExtensionManager.getAttributeProviderClassFor(attributeProviderTypeName);
-      //
-      //      int attrTypeId = SequenceManager.getNextAttributeTypeId();
-      //      int attrBaseTypeId = getOrCreateAttributeBaseType(attributeBaseType);
-      //      int attrProviderTypeId = getOrCreateAttributeProviderType(attributeProviderTypeName);
-      //
-      //      int enumTypeId;
-      //      if (EnumeratedAttribute.class.isAssignableFrom(baseAttributeClass)) {
-      //         enumTypeId = OseeEnumTypeManager.createEnumTypeFromXml(attributeTypeName, validityXml).getEnumTypeId();
-      //      } else {
-      //         enumTypeId = OseeEnumTypeManager.getDefaultEnumTypeId();
-      //      }
-      //
-      //      ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, attrTypeId, attrBaseTypeId, attrProviderTypeId,
-      //            fileTypeExtension == null ? SQL3DataType.VARCHAR : fileTypeExtension,
-      //            attributeTypeName == null ? SQL3DataType.VARCHAR : attributeTypeName,
-      //            defaultValue == null ? SQL3DataType.VARCHAR : defaultValue, enumTypeId, minOccurrences, maxOccurrences,
-      //            tipText == null ? SQL3DataType.VARCHAR : tipText, taggerId == null ? SQL3DataType.VARCHAR : taggerId);
-      //      return attributeType;
-      return null;
+   private Object[] toArray(ArtifactType type) throws OseeDataStoreException {
+      return new Object[] {type.getTypeId(), type.getName(),
+            type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR};
+   }
+
+   private Object[] toArray(RelationType type) throws OseeDataStoreException {
+      return new Object[] {type.getTypeId(), type.getName(), type.getSideAName(), type.getSideBName(),
+            type.getArtifactTypeSideA().getTypeId(), type.getArtifactTypeSideB().getTypeId(),
+            type.getMultiplicity().getValue(), type.isOrdered() ? USER_ORDERED : NOT_USER_ORDERED,
+            type.getDefaultOrderTypeGuid()};
+   }
+
+   private Object[] toArray(AttributeType type) throws OseeDataStoreException {
+      int attrBaseTypeId = getOrCreateAttributeBaseType(type.getBaseAttributeTypeId());
+      int attrProviderTypeId = getOrCreateAttributeProviderType(type.getAttributeProviderId());
+      return new Object[] {type.getTypeId(), attrBaseTypeId, attrProviderTypeId,
+            type.getFileTypeExtension() == null ? SQL3DataType.VARCHAR : type.getFileTypeExtension(),
+            type.getName() == null ? SQL3DataType.VARCHAR : type.getName(),
+            type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(), type.getOseeEnumTypeId(),
+            type.getMinOccurrences(), type.getMaxOccurrences(),
+            type.getDescription() == null ? SQL3DataType.VARCHAR : type.getDescription(),
+            type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId()};
    }
 
    private int getOrCreateAttributeProviderType(String attrProviderExtension) throws OseeDataStoreException {
@@ -347,4 +350,54 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
       return attrBaseTypeId;
    }
 
+   private static final String INSERT_ENUM_TYPE =
+         "insert into osee_enum_type (ENUM_TYPE_ID, ENUM_TYPE_GUID, ENUM_TYPE_NAME) values (?,?,?)";
+
+   private static final String INSERT_ENUM_TYPE_DEF =
+         "insert into osee_enum_type_def (ENUM_TYPE_ID, ENUM_ENTRY_GUID, NAME, ORDINAL) values (?,?,?)";
+
+   private static final String QUERY_ENUM =
+         "select oet.enum_type_name, oet.enum_type_guid, oetd.* from osee_enum_type oet, osee_enum_type_def oetd where oet.enum_type_id = oetd.enum_type_id order by oetd.enum_type_id, oetd.ordinal";
+
+   @Override
+   public void loadAllOseeEnumTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try {
+         chStmt.runPreparedQuery(QUERY_ENUM);
+         OseeEnumType oseeEnumType = null;
+         int lastEnumTypeId = -1;
+         while (chStmt.next()) {
+            try {
+               int currentEnumTypeId = chStmt.getInt("enum_type_id");
+               String currentEnumTypeGuid = chStmt.getString("enum_type_guid");
+               if (lastEnumTypeId != currentEnumTypeId) {
+                  List<Pair<String, Integer>> items = new ArrayList<Pair<String, Integer>>();
+                  factory.createEnumType(currentEnumTypeGuid, chStmt.getString("enum_type_name"), items);
+                  oseeEnumType.setTypeId(currentEnumTypeId);
+                  cache.getEnumTypeData().cacheType(oseeEnumType);
+                  lastEnumTypeId = currentEnumTypeId;
+               }
+               //               oseeEnumType.internalAddEnum(chStmt.getString("name"), chStmt.getInt("ordinal"));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      } finally {
+         chStmt.close();
+      }
+   }
+
+   @Override
+   public void storeOseeEnumType(Collection<OseeEnumType> oseeEnumType) throws OseeCoreException {
+      // TODO Auto-generated method stub
+
+   }
+
+   private Object[] toArray(OseeEnumType type) throws OseeDataStoreException {
+      return new Object[] {type.getTypeId(), type.getGuid(), type.getName()};
+   }
+
+   private Object[] toArray(OseeEnumEntry type) throws OseeDataStoreException {
+      return new Object[] {type.getEnumTypeId(), type.getGuid(), type.getEnumTypeName(), type.ordinal()};
+   }
 }

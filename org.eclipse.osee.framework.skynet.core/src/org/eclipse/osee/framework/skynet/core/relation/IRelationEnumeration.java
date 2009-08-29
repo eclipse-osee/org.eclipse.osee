@@ -18,7 +18,7 @@ public interface IRelationEnumeration {
 
    String getSideName() throws OseeCoreException;
 
-   public String getTypeName();
+   public String getName();
 
    public RelationType getRelationType() throws OseeCoreException;
 

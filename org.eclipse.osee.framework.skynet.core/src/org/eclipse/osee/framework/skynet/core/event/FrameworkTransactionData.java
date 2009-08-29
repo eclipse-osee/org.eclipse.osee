@@ -146,7 +146,7 @@ public class FrameworkTransactionData {
       Set<Integer> artIds = new HashSet<Integer>();
       for (ArtifactTransactionModifiedEvent modEvent : xModifiedEvents) {
          if (modEvent instanceof ArtifactModifiedEvent) {
-            if (artifactModTypes.contains(artifactModType) && ((ArtifactModifiedEvent) modEvent).unloadedArtifact.getArtifactTypeId() == artifactType.getArtTypeId()) {
+            if (artifactModTypes.contains(artifactModType) && ((ArtifactModifiedEvent) modEvent).unloadedArtifact.getArtifactTypeId() == artifactType.getTypeId()) {
                artIds.add(((ArtifactModifiedEvent) modEvent).unloadedArtifact.getArtifactId());
             }
          }
@@ -169,7 +169,7 @@ public class FrameworkTransactionData {
          for (LoadedRelation loadedRelation : loadedRelations) {
             // If given artId is artA
             if (loadedRelation.getArtifactA() != null && loadedRelation.getArtifactA().getArtId() == artId) {
-               if (loadedRelation.getRelationType().getRelationTypeId() == relationTypeId) {
+               if (loadedRelation.getRelationType().getTypeId() == relationTypeId) {
                   if (loadedRelation.getArtifactB() != null) {
                      artifacts.add(loadedRelation.getArtifactB());
                   } else {
@@ -179,7 +179,7 @@ public class FrameworkTransactionData {
             }
             // If given artId is ArtB
             if (loadedRelation.getArtifactB() != null && loadedRelation.getArtifactB().getArtId() == artId) {
-               if (loadedRelation.getRelationType().getRelationTypeId() == relationTypeId) {
+               if (loadedRelation.getRelationType().getTypeId() == relationTypeId) {
                   if (loadedRelation.getArtifactA() != null) {
                      artifacts.add(loadedRelation.getArtifactA());
                   } else {

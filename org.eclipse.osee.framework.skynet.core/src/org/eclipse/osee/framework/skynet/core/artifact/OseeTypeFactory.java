@@ -10,11 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
@@ -23,49 +29,84 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
  */
 public class OseeTypeFactory implements IOseeTypeFactory {
    private final ArtifactFactoryManager factoryManager;
-   private final IArtifactTypeDataAccess artifactTypeDataAccess;
 
    public OseeTypeFactory() {
       this.factoryManager = new ArtifactFactoryManager();
-      this.artifactTypeDataAccess = null;
+   }
+
+   private String createGuidIfNeeded(String guid) {
+      return guid == null ? GUID.create() : guid;
    }
 
    @Override
-   public ArtifactType createArtifactType(String guid, boolean isAbstract, String artifactTypeName) throws OseeCoreException {
-      return new ArtifactType(guid, artifactTypeName, isAbstract, factoryManager, artifactTypeDataAccess);
+   public ArtifactType createArtifactType(String guid, boolean isAbstract, String artifactTypeName, OseeTypeCache oseeTypeCache) throws OseeCoreException {
+      return new ArtifactType(createGuidIfNeeded(guid), artifactTypeName, isAbstract, factoryManager, oseeTypeCache);
    }
 
    @Override
-   public AttributeType createAttributeType(String guid, String name, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, int oseeEnumTypeId, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
-      return new AttributeType(guid, name, baseAttributeClass, providerAttributeClass, fileTypeExtension, defaultValue,
-            oseeEnumTypeId, minOccurrences, maxOccurrences, tipText, taggerId);
+   public AttributeType createAttributeType(String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
+      if (!Strings.isValid(guid)) {
+         throw new OseeArgumentException("The guid can not be null or empty");
+      }
+      if (baseAttributeClass == null) {
+         throw new OseeArgumentException("The baseAttributeClass can not be null or empty");
+      }
+      if (providerAttributeClass == null) {
+         throw new OseeArgumentException("The providerAttributeClass can not be null or empty");
+      }
+      if (!Strings.isValid(baseAttributeTypeId)) {
+         throw new OseeArgumentException("The baseAttributeTypeId can not be null or empty");
+      }
+      if (!Strings.isValid(attributeProviderNameId)) {
+         throw new OseeArgumentException("The attributeProviderNameId can not be null or empty");
+      }
+      if (minOccurrences > 0 && defaultValue == null) {
+         throw new OseeArgumentException(
+               "DefaultValue must be set for attribute [" + name + "] with minOccurrences " + minOccurrences);
+      }
+      return new AttributeType(createGuidIfNeeded(guid), name, baseAttributeTypeId, attributeProviderNameId,
+            baseAttributeClass, providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType, minOccurrences,
+            maxOccurrences, tipText, taggerId);
    }
 
    @Override
    public RelationType createRelationType(String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {
-      if (!Strings.isValid(relationTypeName)) {
-         throw new IllegalArgumentException("The relationName can not be null or empty");
+      if (!Strings.isValid(guid)) {
+         throw new OseeArgumentException("The guid can not be null or empty");
       }
       if (!Strings.isValid(sideAName)) {
-         throw new IllegalArgumentException("The sideAName can not be null or empty");
+         throw new OseeArgumentException("The sideAName can not be null or empty");
       }
       if (!Strings.isValid(sideBName)) {
-         throw new IllegalArgumentException("The sideBName can not be null or empty");
+         throw new OseeArgumentException("The sideBName can not be null or empty");
       }
-      //      if (!Strings.isValid(artifactTypeSideA)) {
-      //         throw new IllegalArgumentException("The artifactTypeSideA can not be null or empty");
-      //      }
-      //      if (!Strings.isValid(artifactTypeSideB)) {
-      //         throw new IllegalArgumentException("The artifactTypeSideB can not be null or empty");
-      //      }
-      //      RelationTypeMultiplicity multiplicityEnum = RelationTypeMultiplicity.getFromString(multiplicity);
-      //      if (multiplicityEnum == null) {
-      //         throw new IllegalArgumentException("The multiplicity can not be null or empty");
-      //      }
-      //      ArtifactType artTypeIdA = ArtifactTypeManager.getType(artifactTypeSideA);
-      //      ArtifactType artTypeIdB = ArtifactTypeManager.getType(artifactTypeSideB);
+      if (artifactTypeSideA == null) {
+         throw new OseeArgumentException("The artifactTypeSideA can not be null or empty");
+      }
+      if (artifactTypeSideB == null) {
+         throw new OseeArgumentException("The artifactTypeSideB can not be null or empty");
+      }
+      if (multiplicity == null) {
+         throw new OseeArgumentException("Multiplicity can not be null or empty");
+      }
+      return new RelationType(createGuidIfNeeded(guid), relationTypeName, sideAName, sideBName, artifactTypeSideA,
+            artifactTypeSideB, multiplicity, isUserOrdered, defaultOrderTypeGuid);
+   }
 
-      return new RelationType(guid, relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB,
-            multiplicity, isUserOrdered, defaultOrderTypeGuid);
+   @Override
+   public OseeEnumType createEnumType(String guid, String enumTypeName, List<Pair<String, Integer>> entries) throws OseeCoreException {
+      if (!Strings.isValid(guid)) {
+         throw new OseeArgumentException("The guid can not be null or empty");
+      }
+      // TODO add GUID to OseeEnumTypes;
+      return OseeEnumTypeManager.createEnumType(createGuidIfNeeded(guid), enumTypeName, entries);
+
+      //      int enumTypeId;
+      //      if (EnumeratedAttribute.class.isAssignableFrom(baseAttributeClass)) {
+      //         enumTypeId = OseeEnumTypeManager.createEnumTypeFromXml(attributeTypeName, validityXml).getEnumTypeId();
+      //      } else {
+      //         enumTypeId = OseeEnumTypeManager.getDefaultEnumTypeId();
+      //      }
+      //      return null;
    }
 }

@@ -130,12 +130,14 @@
 	</Table>
 	
 	<Table name="OSEE_ENUM_TYPE" schema="OSEE" tablespace="osee_data">
+		<Column id="ENUM_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
 		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ENUM_TYPE_NAME" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_PK" type="PRIMARY KEY" appliesTo="ENUM_TYPE_ID" />
 	</Table>
 	
 	<Table name="OSEE_ENUM_TYPE_DEF" schema="OSEE" tablespace="osee_data">
+		<Column id="ENUM_ENTRY_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
 		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="INTEGER" />		
 		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Column id="ORDINAL" defaultValue="not null" type="INTEGER" />

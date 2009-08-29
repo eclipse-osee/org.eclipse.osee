@@ -67,7 +67,7 @@ public class UnloadedRelation {
    /**
     * @return the relationTypeId
     */
-   public int getRelationTypeId() {
+   public int getTypeId() {
       return relationTypeId;
    }
 

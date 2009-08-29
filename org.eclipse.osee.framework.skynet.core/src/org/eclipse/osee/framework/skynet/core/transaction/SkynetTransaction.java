@@ -274,7 +274,7 @@ public class SkynetTransaction extends DbTransaction {
       // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch 
       if (attributeType.getMaxOccurrences() == 1) {
          try {
-            chStmt.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getAttrTypeId(), artifact.getArtId(),
+            chStmt.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getTypeId(), artifact.getArtId(),
                   artifact.getBranch().getBranchId());
 
             if (chStmt.next()) {

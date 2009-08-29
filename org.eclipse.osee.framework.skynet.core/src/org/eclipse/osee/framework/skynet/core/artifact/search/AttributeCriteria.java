@@ -139,7 +139,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       if (attributeType != null) {
          builder.append(attrAlias);
          builder.append(".attr_type_id=? AND ");
-         builder.addParameter(attributeType.getAttrTypeId());
+         builder.addParameter(attributeType.getTypeId());
       }
       if (value != null) {
          builder.append(attrAlias);

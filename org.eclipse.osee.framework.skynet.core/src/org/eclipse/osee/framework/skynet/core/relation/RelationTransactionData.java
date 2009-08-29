@@ -48,7 +48,7 @@ public class RelationTransactionData extends BaseTransactionData {
       super.addInsertToBatch(transaction);
       if (!useExistingBackingData()) {
          internalAddInsertToBatch(transaction, 4, INSERT_INTO_RELATION_TABLE, relation.getRelationId(),
-               relation.getRelationType().getRelationTypeId(), relation.getAArtifactId(), relation.getBArtifactId(),
+               relation.getRelationType().getTypeId(), relation.getAArtifactId(), relation.getBArtifactId(),
                relation.getRationale(), relation.getAOrder(), relation.getBOrder(), getGammaId());
       }
    }
@@ -83,6 +83,6 @@ public class RelationTransactionData extends BaseTransactionData {
       RelationEventType relationEventType =
             getModificationType().isDeleted() ? RelationEventType.Deleted : RelationEventType.Added;
       events.add(new RelationModifiedEvent(new Sender(this.getClass().getName()), relationEventType, relation,
-            relation.getBranch(), relation.getRelationType().getTypeName()));
+            relation.getBranch(), relation.getRelationType().getName()));
    }
 }

@@ -60,7 +60,7 @@ public class RelationOrdering {
       Attribute<String> attribute = artifact.getSoleAttribute("Relation Order");
       if (attribute != null) {
          RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(attribute.getValue());
-         String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getTypeName(), side);
+         String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
          if (relationOrderGuid != null) {
             return relationOrderGuid;
          }
@@ -77,7 +77,7 @@ public class RelationOrdering {
       Attribute<String> attribute = artifact.getSoleAttribute("Relation Order");
       if (attribute != null) {
          RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(attribute.getValue());
-         String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getTypeName(), side);
+         String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
          if (relationOrderGuid != null) {
             RelationOrder order = getRelationOrder(relationOrderGuid);
             if (order != null) {

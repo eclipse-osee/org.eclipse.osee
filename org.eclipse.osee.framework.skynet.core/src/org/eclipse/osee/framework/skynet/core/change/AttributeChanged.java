@@ -93,7 +93,7 @@ public class AttributeChanged extends Change {
    /**
     * @return the attrTypeId
     */
-   public int getAttrTypeId() {
+   public int getTypeId() {
       return attrTypeId;
    }
 
