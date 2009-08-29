@@ -377,26 +377,45 @@ ruleArtifactType returns [EObject current=null]
     }
 (	
 	
-	    
-	    { 
-	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesArtifactSuperTypesParserRuleCall_3_1_0(), currentNode); 
-	    }
-	    lv_superArtifactTypes_4=ruleArtifactSuperTypes 
-	    {
-	        if ($current==null) {
+		
+		{
+			if ($current==null) {
 	            $current = factory.create(grammarAccess.getArtifactTypeRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode.getParent(), $current);
+	            associateNodeWithAstElement(currentNode, $current);
 	        }
-	        
-	        try {
-	       		add($current, "superArtifactTypes", lv_superArtifactTypes_4, "ArtifactSuperTypes", currentNode);
-	        } catch (ValueConverterException vce) {
-				handleValueConverterException(vce);
-	        }
+        }
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesArtifactTypeCrossReference_3_1_0(), currentNode); 
+	    }
+		ruleNAME_REFERENCE		{ 
 	        currentNode = currentNode.getParent();
 	    }
+
+		// TODO assign feature to currentNode
 	
-))?('overrides' 
+)(',' 
+    {
+        createLeafNode(grammarAccess.getArtifactTypeAccess().getCommaKeyword_3_2_0(), null); 
+    }
+(	
+	
+		
+		{
+			if ($current==null) {
+	            $current = factory.create(grammarAccess.getArtifactTypeRule().getType().getClassifier());
+	            associateNodeWithAstElement(currentNode, $current);
+	        }
+        }
+		{ 
+	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesArtifactTypeCrossReference_3_2_1_0(), currentNode); 
+	    }
+		ruleNAME_REFERENCE		{ 
+	        currentNode = currentNode.getParent();
+	    }
+
+		// TODO assign feature to currentNode
+	
+))*)?('overrides' 
     {
         createLeafNode(grammarAccess.getArtifactTypeAccess().getOverridesKeyword_4_0(), null); 
     }
@@ -424,7 +443,7 @@ ruleArtifactType returns [EObject current=null]
     }
 (	
 	
-	    lv_typeGuid_8=	RULE_STRING
+	    lv_typeGuid_10=	RULE_STRING
 	{
 		createLeafNode(grammarAccess.getArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_6_0(), "typeGuid"); 
 	}
@@ -436,7 +455,7 @@ ruleArtifactType returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		set($current, "typeGuid", lv_typeGuid_8, "STRING", lastConsumedNode);
+	       		set($current, "typeGuid", lv_typeGuid_10, "STRING", lastConsumedNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -448,7 +467,7 @@ ruleArtifactType returns [EObject current=null]
 	    { 
 	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAttributeTypeRefParserRuleCall_7_0(), currentNode); 
 	    }
-	    lv_validAttributeTypes_9=ruleAttributeTypeRef 
+	    lv_validAttributeTypes_11=ruleAttributeTypeRef 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getArtifactTypeRule().getType().getClassifier());
@@ -456,7 +475,7 @@ ruleArtifactType returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		add($current, "validAttributeTypes", lv_validAttributeTypes_9, "AttributeTypeRef", currentNode);
+	       		add($current, "validAttributeTypes", lv_validAttributeTypes_11, "AttributeTypeRef", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -468,67 +487,6 @@ ruleArtifactType returns [EObject current=null]
         createLeafNode(grammarAccess.getArtifactTypeAccess().getRightCurlyBracketKeyword_8(), null); 
     }
 );
-
-
-
-
-
-// Entry rule entryRuleArtifactSuperTypes
-entryRuleArtifactSuperTypes returns [EObject current=null] :
-	{ currentNode = createCompositeNode(grammarAccess.getArtifactSuperTypesRule(), currentNode); }
-	 iv_ruleArtifactSuperTypes=ruleArtifactSuperTypes 
-	 { $current=$iv_ruleArtifactSuperTypes.current; } 
-	 EOF 
-;
-
-// Rule ArtifactSuperTypes
-ruleArtifactSuperTypes returns [EObject current=null] 
-    @init { EObject temp=null; setCurrentLookahead(); resetLookahead(); 
-    }
-    @after { resetLookahead(); 
-    	lastConsumedNode = currentNode;
-    }:
-((	
-	
-		
-		{
-			if ($current==null) {
-	            $current = factory.create(grammarAccess.getArtifactSuperTypesRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode, $current);
-	        }
-        }
-		{ 
-	        currentNode=createCompositeNode(grammarAccess.getArtifactSuperTypesAccess().getArtifactSuperTypeArtifactTypeCrossReference_0_0(), currentNode); 
-	    }
-		ruleNAME_REFERENCE		{ 
-	        currentNode = currentNode.getParent();
-	    }
-
-		// TODO assign feature to currentNode
-	
-)(',' 
-    {
-        createLeafNode(grammarAccess.getArtifactSuperTypesAccess().getCommaKeyword_1_0(), null); 
-    }
-(	
-	
-		
-		{
-			if ($current==null) {
-	            $current = factory.create(grammarAccess.getArtifactSuperTypesRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode, $current);
-	        }
-        }
-		{ 
-	        currentNode=createCompositeNode(grammarAccess.getArtifactSuperTypesAccess().getArtifactSuperTypeArtifactTypeCrossReference_1_1_0(), currentNode); 
-	    }
-		ruleNAME_REFERENCE		{ 
-	        currentNode = currentNode.getParent();
-	    }
-
-		// TODO assign feature to currentNode
-	
-))*);
 
 
 

@@ -307,23 +307,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * Currently this method provides support for quasi artifact type inheritance
     * 
     * @param artifactType
-    * @return whether this artifact's type or any of its super-types are the specified type
+    * @return whether this artifact's type or any of its super-types (any ancestor type) are the specified type
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist
     */
-   public boolean isOfType(String artifactType) throws OseeCoreException {
-      //      if (true) {
-      //         if (artifactType.equals(Requirements.ABSTRACT_TEST_UNIT) && Requirements.ALL_TEST_UNIT_TYPES.contains(getArtifactTypeName())) {
-      //            return true;
-      //         }
-      //         if (artifactType.equals(Requirements.ABSTRACT_SOFTWARE_REQUIREMENT) && Requirements.ALL_SOFTWARES_REQUIREMENT_TYPES.contains(getArtifactTypeName())) {
-      //            return true;
-      //         }
-      //         return getArtifactTypeName().equals(artifactType);
-      //      } else {
-      ArtifactType otherType = ArtifactTypeManager.getType(artifactType);
-      return this.getArtifactType().isOfType(otherType);
-      //      }
+   public boolean isOfType(String artifactTypeName) throws OseeCoreException {
+      return artifactType.inheritsFrom(artifactTypeName);
    }
 
    @Override

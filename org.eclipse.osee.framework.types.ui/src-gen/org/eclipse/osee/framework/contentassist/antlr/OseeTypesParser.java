@@ -55,9 +55,8 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getQUALIFIED_NAMEAccess().getGroup_1(), "rule__QUALIFIED_NAME__Group_1__0");
 					put(grammarAccess.getArtifactTypeAccess().getGroup(), "rule__ArtifactType__Group__0");
 					put(grammarAccess.getArtifactTypeAccess().getGroup_3(), "rule__ArtifactType__Group_3__0");
+					put(grammarAccess.getArtifactTypeAccess().getGroup_3_2(), "rule__ArtifactType__Group_3_2__0");
 					put(grammarAccess.getArtifactTypeAccess().getGroup_4(), "rule__ArtifactType__Group_4__0");
-					put(grammarAccess.getArtifactSuperTypesAccess().getGroup(), "rule__ArtifactSuperTypes__Group__0");
-					put(grammarAccess.getArtifactSuperTypesAccess().getGroup_1(), "rule__ArtifactSuperTypes__Group_1__0");
 					put(grammarAccess.getAttributeTypeRefAccess().getGroup(), "rule__AttributeTypeRef__Group__0");
 					put(grammarAccess.getAttributeTypeRefAccess().getGroup_2(), "rule__AttributeTypeRef__Group_2__0");
 					put(grammarAccess.getAttributeTypeAccess().getGroup(), "rule__AttributeType__Group__0");
@@ -79,11 +78,10 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getArtifactTypeAccess().getAbstractAssignment_0(), "rule__ArtifactType__AbstractAssignment_0");
 					put(grammarAccess.getArtifactTypeAccess().getNameAssignment_2(), "rule__ArtifactType__NameAssignment_2");
 					put(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesAssignment_3_1(), "rule__ArtifactType__SuperArtifactTypesAssignment_3_1");
+					put(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesAssignment_3_2_1(), "rule__ArtifactType__SuperArtifactTypesAssignment_3_2_1");
 					put(grammarAccess.getArtifactTypeAccess().getOverrideAssignment_4_1(), "rule__ArtifactType__OverrideAssignment_4_1");
 					put(grammarAccess.getArtifactTypeAccess().getTypeGuidAssignment_6(), "rule__ArtifactType__TypeGuidAssignment_6");
 					put(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAssignment_7(), "rule__ArtifactType__ValidAttributeTypesAssignment_7");
-					put(grammarAccess.getArtifactSuperTypesAccess().getArtifactSuperTypeAssignment_0(), "rule__ArtifactSuperTypes__ArtifactSuperTypeAssignment_0");
-					put(grammarAccess.getArtifactSuperTypesAccess().getArtifactSuperTypeAssignment_1_1(), "rule__ArtifactSuperTypes__ArtifactSuperTypeAssignment_1_1");
 					put(grammarAccess.getAttributeTypeRefAccess().getValidAttributeTypeAssignment_1(), "rule__AttributeTypeRef__ValidAttributeTypeAssignment_1");
 					put(grammarAccess.getAttributeTypeRefAccess().getBranchGuidAssignment_2_1(), "rule__AttributeTypeRef__BranchGuidAssignment_2_1");
 					put(grammarAccess.getAttributeTypeAccess().getTypeGuidAssignment_0(), "rule__AttributeType__TypeGuidAssignment_0");

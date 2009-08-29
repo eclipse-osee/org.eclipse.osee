@@ -15,6 +15,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.ObjectStreamException;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,32 +24,24 @@ import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryMa
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 
 /**
- * Description of an Artifact sub-type. The descriptor can be used to create new artifacts that are of the type of this
- * descriptor. <br/>
- * <br/>
- * Descriptors can be acquired from the configuration manager.
- * 
- * @see org.eclipse.osee.framework.skynet.core.attribute.ConfigurationPersistenceManager
  * @author Robert A. Fisher
  */
 public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    private static final long serialVersionUID = 1L;
-   private final int artTypeId;
+   private int artTypeId;
    private String name;
    private final boolean isAbstract;
    private final ArtifactFactoryManager factoryManager;
-   private final IArtifactTypeDataAccess cacheAccessor;
+   private final ArrayList<ArtifactType> superTypes = new ArrayList<ArtifactType>(1);
 
-   public ArtifactType(boolean isAbstract, int artTypeId, String name, ArtifactFactoryManager factoryManager, IArtifactTypeDataAccess cacheAccessor) {
-      this.artTypeId = artTypeId;
+   public ArtifactType(boolean isAbstract, String name, ArtifactFactoryManager factoryManager) {
       this.name = name;
       this.isAbstract = isAbstract;
       this.factoryManager = factoryManager;
-      this.cacheAccessor = cacheAccessor;
    }
 
-   public Collection<ArtifactType> getDescendants(boolean recurse) throws OseeCoreException {
-      return cacheAccessor.getDescendants(this, recurse);
+   public void addSuperType(ArtifactType superType) {
+      superTypes.add(superType);
    }
 
    public boolean isValidAttributeType(AttributeType attributeType, Branch branch) throws OseeCoreException {
@@ -81,8 +74,8 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
       return isAbstract;
    }
 
-   public Collection<ArtifactType> getSuperArtifactTypes() throws OseeCoreException {
-      return cacheAccessor.getArtifactSuperTypesFor(this);
+   public Collection<ArtifactType> getSuperArtifactTypes() {
+      return superTypes;
    }
 
    public boolean hasSuperArtifactTypes() throws OseeCoreException {
@@ -141,50 +134,34 @@ public class ArtifactType implements Serializable, Comparable<ArtifactType> {
    }
 
    /**
-    * Determines if this artifact type is equal to or a subclass of the artifact type referenced
-    * by otherType
+    * Determines if this artifact type equals, or is a sub-type of,
+    * the artifact type specified by the <code>otherType</code> parameter.
+    * 
+    * @param otherType artifact type to check against
+    * @return whether this artifact type inherits from otherType
+    */
+   public boolean inheritsFrom(ArtifactType otherType) {
+      if (this.equals(otherType)) {
+         return true;
+      }
+      for (ArtifactType superType : getSuperArtifactTypes()) {
+         if (superType.inheritsFrom(otherType)) {
+            return true;
+         }
+      }
+      return false;
+   }
+
+   /**
+    * Determines if this artifact type equals, or is a sub-type of,
+    * the artifact type specified by the <code>otherType</code> parameter.
     * 
     * @param otherType artifact type to check against
     * @return whether this artifact type inherits from otherType
     * @throws OseeCoreException
     */
-   public boolean isOfType(ArtifactType otherType) throws OseeCoreException {
-      boolean inheritsFrom = false;
-      if (otherType != null) {
-         if (this.equals(otherType)) {
-            inheritsFrom = true;
-         } else if (this.hasSuperArtifactTypes()) {
-            for (ArtifactType superType : this.getSuperArtifactTypes()) {
-               inheritsFrom = superType.isOfType(otherType);
-               if (inheritsFrom) {
-                  break;
-               }
-            }
-         }
-      }
-      return inheritsFrom;
-   }
-
-   /**
-    * determines if this artifact type is equal to or a subclass of the artifact type referenced by artifactTypeName
-    * 
-    * @return true if compatible
-    * @deprecated {@link #isOfType(ArtifactType)}
-    */
-   @Deprecated
-   public boolean isTypeCompatible(String artifactTypeName) {
-      return name.equals(artifactTypeName);
-   }
-
-   /**
-    * Determine if this is the descriptor that produces the same type of artifact as an already existing artifact.
-    * 
-    * @param artifact The artifact to compare against.
-    * @return <b>true</b> if and only if this descriptor will give you the same type of artifact.
-    * @throws OseeCoreException
-    */
-   public boolean canProduceArtifact(Artifact artifact) throws OseeCoreException {
-      return artifact.getArtTypeId() == artTypeId && getFactory() != null;
+   public boolean inheritsFrom(String artifactTypeName) throws OseeCoreException {
+      return inheritsFrom(ArtifactTypeManager.getType(artifactTypeName));
    }
 
    @Override

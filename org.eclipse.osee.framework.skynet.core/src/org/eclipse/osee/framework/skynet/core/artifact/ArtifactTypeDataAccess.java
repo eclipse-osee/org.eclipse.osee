@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 /**
  * @author Roberto E. Escobar
  */
+@Deprecated
 public final class ArtifactTypeDataAccess implements IArtifactTypeDataAccess {
    private final OseeTypeCache oseeTypeCache;
    private final IOseeTypeDataAccessor dataAccessor;
@@ -80,6 +81,13 @@ public final class ArtifactTypeDataAccess implements IArtifactTypeDataAccess {
    public Collection<ArtifactType> getArtifactSuperTypesFor(ArtifactType artifactType) throws OseeCoreException {
       dataAccessor.ensureArtifactTypePopulated();
       return oseeTypeCache.getArtifactSuperType(artifactType);
+   }
+
+   @Override
+   public void setArtifactSuperTypeFor(ArtifactType artifactType, Collection<ArtifactType> superTypes) {
+      // ADD CHECKS before caching 
+
+      oseeTypeCache.cacheArtifactTypeInheritance(artifactType, superType);
    }
 
    @Override

@@ -201,7 +201,7 @@ public interface OseeTypesPackage extends EPackage
   int ARTIFACT_TYPE__ABSTRACT = OSEE_TYPE_FEATURE_COUNT + 0;
 
   /**
-   * The feature id for the '<em><b>Super Artifact Types</b></em>' containment reference list.
+   * The feature id for the '<em><b>Super Artifact Types</b></em>' reference list.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
@@ -237,34 +237,6 @@ public interface OseeTypesPackage extends EPackage
   int ARTIFACT_TYPE_FEATURE_COUNT = OSEE_TYPE_FEATURE_COUNT + 4;
 
   /**
-   * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactSuperTypesImpl <em>Artifact Super Types</em>}' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see org.eclipse.osee.framework.oseeTypes.impl.ArtifactSuperTypesImpl
-   * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getArtifactSuperTypes()
-   * @generated
-   */
-  int ARTIFACT_SUPER_TYPES = 4;
-
-  /**
-   * The feature id for the '<em><b>Artifact Super Type</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ARTIFACT_SUPER_TYPES__ARTIFACT_SUPER_TYPE = 0;
-
-  /**
-   * The number of structural features of the '<em>Artifact Super Types</em>' class.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ARTIFACT_SUPER_TYPES_FEATURE_COUNT = 1;
-
-  /**
    * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeRefImpl <em>Attribute Type Ref</em>}' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -272,7 +244,7 @@ public interface OseeTypesPackage extends EPackage
    * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getAttributeTypeRef()
    * @generated
    */
-  int ATTRIBUTE_TYPE_REF = 5;
+  int ATTRIBUTE_TYPE_REF = 4;
 
   /**
    * The feature id for the '<em><b>Valid Attribute Type</b></em>' reference.
@@ -309,7 +281,7 @@ public interface OseeTypesPackage extends EPackage
    * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getAttributeType()
    * @generated
    */
-  int ATTRIBUTE_TYPE = 6;
+  int ATTRIBUTE_TYPE = 5;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -436,7 +408,7 @@ public interface OseeTypesPackage extends EPackage
    * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeEnumType()
    * @generated
    */
-  int OSEE_ENUM_TYPE = 7;
+  int OSEE_ENUM_TYPE = 6;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -491,7 +463,7 @@ public interface OseeTypesPackage extends EPackage
    * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getOseeEnumEntry()
    * @generated
    */
-  int OSEE_ENUM_ENTRY = 8;
+  int OSEE_ENUM_ENTRY = 7;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -528,7 +500,7 @@ public interface OseeTypesPackage extends EPackage
    * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getRelationType()
    * @generated
    */
-  int RELATION_TYPE = 9;
+  int RELATION_TYPE = 8;
 
   /**
    * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -628,7 +600,7 @@ public interface OseeTypesPackage extends EPackage
    * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getRelationMultiplicityEnum()
    * @generated
    */
-  int RELATION_MULTIPLICITY_ENUM = 10;
+  int RELATION_MULTIPLICITY_ENUM = 9;
 
 
   /**
@@ -738,10 +710,10 @@ public interface OseeTypesPackage extends EPackage
   EAttribute getArtifactType_Abstract();
 
   /**
-   * Returns the meta object for the containment reference list '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactTypes <em>Super Artifact Types</em>}'.
+   * Returns the meta object for the reference list '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactTypes <em>Super Artifact Types</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @return the meta object for the containment reference list '<em>Super Artifact Types</em>'.
+   * @return the meta object for the reference list '<em>Super Artifact Types</em>'.
    * @see org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactTypes()
    * @see #getArtifactType()
    * @generated
@@ -769,27 +741,6 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    */
   EReference getArtifactType_ValidAttributeTypes();
-
-  /**
-   * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.ArtifactSuperTypes <em>Artifact Super Types</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for class '<em>Artifact Super Types</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.ArtifactSuperTypes
-   * @generated
-   */
-  EClass getArtifactSuperTypes();
-
-  /**
-   * Returns the meta object for the reference '{@link org.eclipse.osee.framework.oseeTypes.ArtifactSuperTypes#getArtifactSuperType <em>Artifact Super Type</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the reference '<em>Artifact Super Type</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.ArtifactSuperTypes#getArtifactSuperType()
-   * @see #getArtifactSuperTypes()
-   * @generated
-   */
-  EReference getArtifactSuperTypes_ArtifactSuperType();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.AttributeTypeRef <em>Attribute Type Ref</em>}'.
@@ -1216,7 +1167,7 @@ public interface OseeTypesPackage extends EPackage
     EAttribute ARTIFACT_TYPE__ABSTRACT = eINSTANCE.getArtifactType_Abstract();
 
     /**
-     * The meta object literal for the '<em><b>Super Artifact Types</b></em>' containment reference list feature.
+     * The meta object literal for the '<em><b>Super Artifact Types</b></em>' reference list feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -1238,24 +1189,6 @@ public interface OseeTypesPackage extends EPackage
      * @generated
      */
     EReference ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES = eINSTANCE.getArtifactType_ValidAttributeTypes();
-
-    /**
-     * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactSuperTypesImpl <em>Artifact Super Types</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see org.eclipse.osee.framework.oseeTypes.impl.ArtifactSuperTypesImpl
-     * @see org.eclipse.osee.framework.oseeTypes.impl.OseeTypesPackageImpl#getArtifactSuperTypes()
-     * @generated
-     */
-    EClass ARTIFACT_SUPER_TYPES = eINSTANCE.getArtifactSuperTypes();
-
-    /**
-     * The meta object literal for the '<em><b>Artifact Super Type</b></em>' reference feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EReference ARTIFACT_SUPER_TYPES__ARTIFACT_SUPER_TYPE = eINSTANCE.getArtifactSuperTypes_ArtifactSuperType();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.AttributeTypeRefImpl <em>Attribute Type Ref</em>}' class.

@@ -14,7 +14,6 @@ import org.eclipse.emf.ecore.EReference;
 
 import org.eclipse.emf.ecore.impl.EPackageImpl;
 
-import org.eclipse.osee.framework.oseeTypes.ArtifactSuperTypes;
 import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.AttributeType;
 import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
@@ -63,13 +62,6 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * @generated
    */
   private EClass artifactTypeEClass = null;
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  private EClass artifactSuperTypesEClass = null;
 
   /**
    * <!-- begin-user-doc -->
@@ -304,26 +296,6 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
   public EReference getArtifactType_ValidAttributeTypes()
   {
     return (EReference)artifactTypeEClass.getEStructuralFeatures().get(3);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EClass getArtifactSuperTypes()
-  {
-    return artifactSuperTypesEClass;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public EReference getArtifactSuperTypes_ArtifactSuperType()
-  {
-    return (EReference)artifactSuperTypesEClass.getEStructuralFeatures().get(0);
   }
 
   /**
@@ -663,9 +635,6 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     createEReference(artifactTypeEClass, ARTIFACT_TYPE__OVERRIDE);
     createEReference(artifactTypeEClass, ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES);
 
-    artifactSuperTypesEClass = createEClass(ARTIFACT_SUPER_TYPES);
-    createEReference(artifactSuperTypesEClass, ARTIFACT_SUPER_TYPES__ARTIFACT_SUPER_TYPE);
-
     attributeTypeRefEClass = createEClass(ATTRIBUTE_TYPE_REF);
     createEReference(attributeTypeRefEClass, ATTRIBUTE_TYPE_REF__VALID_ATTRIBUTE_TYPE);
     createEAttribute(attributeTypeRefEClass, ATTRIBUTE_TYPE_REF__BRANCH_GUID);
@@ -751,12 +720,9 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
 
     initEClass(artifactTypeEClass, ArtifactType.class, "ArtifactType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getArtifactType_Abstract(), ecorePackage.getEBoolean(), "abstract", null, 0, 1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-    initEReference(getArtifactType_SuperArtifactTypes(), this.getArtifactSuperTypes(), null, "superArtifactTypes", null, 0, -1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEReference(getArtifactType_SuperArtifactTypes(), this.getArtifactType(), null, "superArtifactTypes", null, 0, -1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, !IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getArtifactType_Override(), this.getArtifactType(), null, "override", null, 0, 1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEReference(getArtifactType_ValidAttributeTypes(), this.getAttributeTypeRef(), null, "validAttributeTypes", null, 0, -1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-
-    initEClass(artifactSuperTypesEClass, ArtifactSuperTypes.class, "ArtifactSuperTypes", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEReference(getArtifactSuperTypes_ArtifactSuperType(), this.getArtifactType(), null, "artifactSuperType", null, 0, 1, ArtifactSuperTypes.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(attributeTypeRefEClass, AttributeTypeRef.class, "AttributeTypeRef", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getAttributeTypeRef_ValidAttributeType(), this.getAttributeType(), null, "validAttributeType", null, 0, 1, AttributeTypeRef.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

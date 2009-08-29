@@ -99,11 +99,6 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
         return createArtifactTypeAdapter();
       }
       @Override
-      public Adapter caseArtifactSuperTypes(ArtifactSuperTypes object)
-      {
-        return createArtifactSuperTypesAdapter();
-      }
-      @Override
       public Adapter caseAttributeTypeRef(AttributeTypeRef object)
       {
         return createAttributeTypeRefAdapter();
@@ -206,21 +201,6 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createArtifactTypeAdapter()
-  {
-    return null;
-  }
-
-  /**
-   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.ArtifactSuperTypes <em>Artifact Super Types</em>}'.
-   * <!-- begin-user-doc -->
-   * This default implementation returns null so that we can easily ignore cases;
-   * it's useful to ignore a case when inheritance will catch all the cases anyway.
-   * <!-- end-user-doc -->
-   * @return the new adapter.
-   * @see org.eclipse.osee.framework.oseeTypes.ArtifactSuperTypes
-   * @generated
-   */
-  public Adapter createArtifactSuperTypesAdapter()
   {
     return null;
   }

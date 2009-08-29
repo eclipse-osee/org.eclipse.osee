@@ -126,7 +126,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
             accessControlListCache.put(subjectId, branchAccessObject, permission);
             objectToSubjectCache.put(branchAccessObject, subjectId);
 
-            if (ArtifactTypeManager.getType(subjectArtifactTypeId).isTypeCompatible("User Group")) {
+            if (ArtifactTypeManager.getType(subjectArtifactTypeId).inheritsFrom("User Group")) {
                populateGroupMembers(subjectId);
             }
          }
@@ -154,7 +154,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                AccessObject accessObject = ArtifactAccessObject.getArtifactAccessObject(objectId, branchId);
                cacheAccessObject(objectId, subjectId, permission, accessObject);
 
-               if (ArtifactTypeManager.getType(subjectArtifactTypeId).isTypeCompatible("User Group")) {
+               if (ArtifactTypeManager.getType(subjectArtifactTypeId).inheritsFrom("User Group")) {
                   populateGroupMembers(subjectId);
                }
             }

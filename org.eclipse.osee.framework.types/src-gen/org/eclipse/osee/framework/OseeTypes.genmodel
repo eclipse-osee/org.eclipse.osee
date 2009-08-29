@@ -28,12 +28,9 @@
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//ArtifactType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//ArtifactType/abstract"/>
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/superArtifactTypes"/>
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/superArtifactTypes"/>
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/override"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactType/validAttributeTypes"/>
-    </genClasses>
-    <genClasses ecoreClass="OseeTypes.ecore#//ArtifactSuperTypes">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//ArtifactSuperTypes/artifactSuperType"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//AttributeTypeRef">
       <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//AttributeTypeRef/validAttributeType"/>

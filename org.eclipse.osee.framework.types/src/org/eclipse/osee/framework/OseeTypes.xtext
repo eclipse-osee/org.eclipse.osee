@@ -19,13 +19,10 @@ OseeType:
 	ArtifactType | RelationType | AttributeType | OseeEnumType;
 
 ArtifactType:
-	(abstract?='abstract')? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactTypes+=ArtifactSuperTypes)? ('overrides' override=[ArtifactType|NAME_REFERENCE])? '{'
+	(abstract?='abstract')? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactTypes+=[ArtifactType|NAME_REFERENCE] (',' superArtifactTypes+=[ArtifactType|NAME_REFERENCE])*)? ('overrides' override=[ArtifactType|NAME_REFERENCE])? '{'
 		typeGuid=STRING?
 	    (validAttributeTypes+=AttributeTypeRef)*
 	'}';
-
-ArtifactSuperTypes:
-	 artifactSuperType=[ArtifactType|NAME_REFERENCE] (',' artifactSuperType=[ArtifactType|NAME_REFERENCE])*;
 
 AttributeTypeRef:
 	'attribute' validAttributeType=[AttributeType|NAME_REFERENCE] ('branchGuid' branchGuid=STRING)?;

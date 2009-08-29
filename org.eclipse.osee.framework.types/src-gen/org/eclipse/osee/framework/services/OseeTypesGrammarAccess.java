@@ -148,7 +148,13 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
 		private final Keyword cExtendsKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
 		private final Assignment cSuperArtifactTypesAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
-		private final RuleCall cSuperArtifactTypesArtifactSuperTypesParserRuleCall_3_1_0 = (RuleCall)cSuperArtifactTypesAssignment_3_1.eContents().get(0);
+		private final CrossReference cSuperArtifactTypesArtifactTypeCrossReference_3_1_0 = (CrossReference)cSuperArtifactTypesAssignment_3_1.eContents().get(0);
+		private final RuleCall cSuperArtifactTypesArtifactTypeNAME_REFERENCEParserRuleCall_3_1_0_1 = (RuleCall)cSuperArtifactTypesArtifactTypeCrossReference_3_1_0.eContents().get(1);
+		private final Group cGroup_3_2 = (Group)cGroup_3.eContents().get(2);
+		private final Keyword cCommaKeyword_3_2_0 = (Keyword)cGroup_3_2.eContents().get(0);
+		private final Assignment cSuperArtifactTypesAssignment_3_2_1 = (Assignment)cGroup_3_2.eContents().get(1);
+		private final CrossReference cSuperArtifactTypesArtifactTypeCrossReference_3_2_1_0 = (CrossReference)cSuperArtifactTypesAssignment_3_2_1.eContents().get(0);
+		private final RuleCall cSuperArtifactTypesArtifactTypeNAME_REFERENCEParserRuleCall_3_2_1_0_1 = (RuleCall)cSuperArtifactTypesArtifactTypeCrossReference_3_2_1_0.eContents().get(1);
 		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
 		private final Keyword cOverridesKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
 		private final Assignment cOverrideAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
@@ -163,12 +169,14 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		
 		//ArtifactType:
 		//  abstract?="abstract"? "artifactType" name=NAME_REFERENCE ("extends"
-		//  superArtifactTypes+=ArtifactSuperTypes)? ("overrides" override=[ArtifactType|
+		//  superArtifactTypes+=[ArtifactType|NAME_REFERENCE] ("," superArtifactTypes+=[
+		//  ArtifactType|NAME_REFERENCE])*)? ("overrides" override=[ArtifactType|
 		//  NAME_REFERENCE])? "{" typeGuid=STRING? validAttributeTypes+=AttributeTypeRef* "}";
 		public ParserRule getRule() { return rule; }
 
 		//abstract?="abstract"? "artifactType" name=NAME_REFERENCE ("extends"
-		//superArtifactTypes+=ArtifactSuperTypes)? ("overrides" override=[ArtifactType|
+		//superArtifactTypes+=[ArtifactType|NAME_REFERENCE] ("," superArtifactTypes+=[
+		//ArtifactType|NAME_REFERENCE])*)? ("overrides" override=[ArtifactType|
 		//NAME_REFERENCE])? "{" typeGuid=STRING? validAttributeTypes+=AttributeTypeRef* "}"
 		public Group getGroup() { return cGroup; }
 
@@ -187,17 +195,36 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		//NAME_REFERENCE
 		public RuleCall getNameNAME_REFERENCEParserRuleCall_2_0() { return cNameNAME_REFERENCEParserRuleCall_2_0; }
 
-		//("extends" superArtifactTypes+=ArtifactSuperTypes)?
+		//("extends" superArtifactTypes+=[ArtifactType|NAME_REFERENCE] (","
+		//superArtifactTypes+=[ArtifactType|NAME_REFERENCE])*)?
 		public Group getGroup_3() { return cGroup_3; }
 
 		//"extends"
 		public Keyword getExtendsKeyword_3_0() { return cExtendsKeyword_3_0; }
 
-		//superArtifactTypes+=ArtifactSuperTypes
+		//superArtifactTypes+=[ArtifactType|NAME_REFERENCE]
 		public Assignment getSuperArtifactTypesAssignment_3_1() { return cSuperArtifactTypesAssignment_3_1; }
 
-		//ArtifactSuperTypes
-		public RuleCall getSuperArtifactTypesArtifactSuperTypesParserRuleCall_3_1_0() { return cSuperArtifactTypesArtifactSuperTypesParserRuleCall_3_1_0; }
+		//[ArtifactType|NAME_REFERENCE]
+		public CrossReference getSuperArtifactTypesArtifactTypeCrossReference_3_1_0() { return cSuperArtifactTypesArtifactTypeCrossReference_3_1_0; }
+
+		//NAME_REFERENCE
+		public RuleCall getSuperArtifactTypesArtifactTypeNAME_REFERENCEParserRuleCall_3_1_0_1() { return cSuperArtifactTypesArtifactTypeNAME_REFERENCEParserRuleCall_3_1_0_1; }
+
+		//("," superArtifactTypes+=[ArtifactType|NAME_REFERENCE])*
+		public Group getGroup_3_2() { return cGroup_3_2; }
+
+		//","
+		public Keyword getCommaKeyword_3_2_0() { return cCommaKeyword_3_2_0; }
+
+		//superArtifactTypes+=[ArtifactType|NAME_REFERENCE]
+		public Assignment getSuperArtifactTypesAssignment_3_2_1() { return cSuperArtifactTypesAssignment_3_2_1; }
+
+		//[ArtifactType|NAME_REFERENCE]
+		public CrossReference getSuperArtifactTypesArtifactTypeCrossReference_3_2_1_0() { return cSuperArtifactTypesArtifactTypeCrossReference_3_2_1_0; }
+
+		//NAME_REFERENCE
+		public RuleCall getSuperArtifactTypesArtifactTypeNAME_REFERENCEParserRuleCall_3_2_1_0_1() { return cSuperArtifactTypesArtifactTypeNAME_REFERENCEParserRuleCall_3_2_1_0_1; }
 
 		//("overrides" override=[ArtifactType|NAME_REFERENCE])?
 		public Group getGroup_4() { return cGroup_4; }
@@ -231,52 +258,6 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 
 		//"}"
 		public Keyword getRightCurlyBracketKeyword_8() { return cRightCurlyBracketKeyword_8; }
-	}
-
-	public class ArtifactSuperTypesElements implements IParserRuleAccess {
-		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "ArtifactSuperTypes");
-		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Assignment cArtifactSuperTypeAssignment_0 = (Assignment)cGroup.eContents().get(0);
-		private final CrossReference cArtifactSuperTypeArtifactTypeCrossReference_0_0 = (CrossReference)cArtifactSuperTypeAssignment_0.eContents().get(0);
-		private final RuleCall cArtifactSuperTypeArtifactTypeNAME_REFERENCEParserRuleCall_0_0_1 = (RuleCall)cArtifactSuperTypeArtifactTypeCrossReference_0_0.eContents().get(1);
-		private final Group cGroup_1 = (Group)cGroup.eContents().get(1);
-		private final Keyword cCommaKeyword_1_0 = (Keyword)cGroup_1.eContents().get(0);
-		private final Assignment cArtifactSuperTypeAssignment_1_1 = (Assignment)cGroup_1.eContents().get(1);
-		private final CrossReference cArtifactSuperTypeArtifactTypeCrossReference_1_1_0 = (CrossReference)cArtifactSuperTypeAssignment_1_1.eContents().get(0);
-		private final RuleCall cArtifactSuperTypeArtifactTypeNAME_REFERENCEParserRuleCall_1_1_0_1 = (RuleCall)cArtifactSuperTypeArtifactTypeCrossReference_1_1_0.eContents().get(1);
-		
-		//ArtifactSuperTypes:
-		//  artifactSuperType=[ArtifactType|NAME_REFERENCE] ("," artifactSuperType=[
-		//  ArtifactType|NAME_REFERENCE])*;
-		public ParserRule getRule() { return rule; }
-
-		//artifactSuperType=[ArtifactType|NAME_REFERENCE] ("," artifactSuperType=[
-		//ArtifactType|NAME_REFERENCE])*
-		public Group getGroup() { return cGroup; }
-
-		//artifactSuperType=[ArtifactType|NAME_REFERENCE]
-		public Assignment getArtifactSuperTypeAssignment_0() { return cArtifactSuperTypeAssignment_0; }
-
-		//[ArtifactType|NAME_REFERENCE]
-		public CrossReference getArtifactSuperTypeArtifactTypeCrossReference_0_0() { return cArtifactSuperTypeArtifactTypeCrossReference_0_0; }
-
-		//NAME_REFERENCE
-		public RuleCall getArtifactSuperTypeArtifactTypeNAME_REFERENCEParserRuleCall_0_0_1() { return cArtifactSuperTypeArtifactTypeNAME_REFERENCEParserRuleCall_0_0_1; }
-
-		//("," artifactSuperType=[ArtifactType|NAME_REFERENCE])*
-		public Group getGroup_1() { return cGroup_1; }
-
-		//","
-		public Keyword getCommaKeyword_1_0() { return cCommaKeyword_1_0; }
-
-		//artifactSuperType=[ArtifactType|NAME_REFERENCE]
-		public Assignment getArtifactSuperTypeAssignment_1_1() { return cArtifactSuperTypeAssignment_1_1; }
-
-		//[ArtifactType|NAME_REFERENCE]
-		public CrossReference getArtifactSuperTypeArtifactTypeCrossReference_1_1_0() { return cArtifactSuperTypeArtifactTypeCrossReference_1_1_0; }
-
-		//NAME_REFERENCE
-		public RuleCall getArtifactSuperTypeArtifactTypeNAME_REFERENCEParserRuleCall_1_1_0_1() { return cArtifactSuperTypeArtifactTypeNAME_REFERENCEParserRuleCall_1_1_0_1; }
 	}
 
 	public class AttributeTypeRefElements implements IParserRuleAccess {
@@ -948,7 +929,6 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	private QUALIFIED_NAMEElements pQUALIFIED_NAME;
 	private OseeTypeElements pOseeType;
 	private ArtifactTypeElements pArtifactType;
-	private ArtifactSuperTypesElements pArtifactSuperTypes;
 	private AttributeTypeRefElements pAttributeTypeRef;
 	private AttributeTypeElements pAttributeType;
 	private AttributeBaseTypeElements pAttributeBaseType;
@@ -1036,7 +1016,8 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 
 	//ArtifactType:
 	//  abstract?="abstract"? "artifactType" name=NAME_REFERENCE ("extends"
-	//  superArtifactTypes+=ArtifactSuperTypes)? ("overrides" override=[ArtifactType|
+	//  superArtifactTypes+=[ArtifactType|NAME_REFERENCE] ("," superArtifactTypes+=[
+	//  ArtifactType|NAME_REFERENCE])*)? ("overrides" override=[ArtifactType|
 	//  NAME_REFERENCE])? "{" typeGuid=STRING? validAttributeTypes+=AttributeTypeRef* "}";
 	public ArtifactTypeElements getArtifactTypeAccess() {
 		return (pArtifactType != null) ? pArtifactType : (pArtifactType = new ArtifactTypeElements());
@@ -1044,17 +1025,6 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	
 	public ParserRule getArtifactTypeRule() {
 		return getArtifactTypeAccess().getRule();
-	}
-
-	//ArtifactSuperTypes:
-	//  artifactSuperType=[ArtifactType|NAME_REFERENCE] ("," artifactSuperType=[
-	//  ArtifactType|NAME_REFERENCE])*;
-	public ArtifactSuperTypesElements getArtifactSuperTypesAccess() {
-		return (pArtifactSuperTypes != null) ? pArtifactSuperTypes : (pArtifactSuperTypes = new ArtifactSuperTypesElements());
-	}
-	
-	public ParserRule getArtifactSuperTypesRule() {
-		return getArtifactSuperTypesAccess().getRule();
 	}
 
 	//AttributeTypeRef:

@@ -40,6 +40,7 @@ public class TextModelToOseeOperation extends AbstractOperation {
       //      }
       if (!model.getTypes().isEmpty()) {
          double workPercentage = 1.0 / model.getTypes().size();
+
          for (OseeType type : model.getTypes()) {
             if (type instanceof ArtifactType) {
                handleArtifactType((ArtifactType) type);
@@ -50,18 +51,29 @@ public class TextModelToOseeOperation extends AbstractOperation {
             }
             monitor.worked(calculateWork(workPercentage));
          }
+
+         // second pass to handle cross references
+         for (OseeType type : model.getTypes()) {
+            if (type instanceof ArtifactType) {
+               handleArtifactTypeCrossRef((ArtifactType) type);
+            }
+         }
+      }
+   }
+
+   /**
+    * @param type
+    */
+   private void handleArtifactTypeCrossRef(ArtifactType artifactType) {
+      String superTypeId = "";
+
+      for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
+         // TODO set in type manager
       }
    }
 
    private void handleArtifactType(ArtifactType artifactType) throws OseeCoreException {
-      String superTypeId = "";
-      ArtifactType superType = artifactType.getSuperArtifactType();
-      if (superType != null) {
-         superTypeId = superType.getName();
-      }
-      String guid = "";
-      // TODO: Figure out abstract setting in model
-      ArtifactTypeManager.createType(guid, false, artifactType.getName());
+      ArtifactTypeManager.createType(artifactType.getTypeGuid(), artifactType.isAbstract(), artifactType.getName());
    }
 
    private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {

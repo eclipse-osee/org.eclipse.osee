@@ -36,12 +36,11 @@ protected class ThisRootNode extends RootToken {
 			case 1: return new Import_Group(this, this, 1, inst);
 			case 2: return new OseeType_Alternatives(this, this, 2, inst);
 			case 3: return new ArtifactType_Group(this, this, 3, inst);
-			case 4: return new ArtifactSuperTypes_Group(this, this, 4, inst);
-			case 5: return new AttributeTypeRef_Group(this, this, 5, inst);
-			case 6: return new AttributeType_Group(this, this, 6, inst);
-			case 7: return new OseeEnumType_Group(this, this, 7, inst);
-			case 8: return new OseeEnumEntry_Group(this, this, 8, inst);
-			case 9: return new RelationType_Group(this, this, 9, inst);
+			case 4: return new AttributeTypeRef_Group(this, this, 4, inst);
+			case 5: return new AttributeType_Group(this, this, 5, inst);
+			case 6: return new OseeEnumType_Group(this, this, 6, inst);
+			case 7: return new OseeEnumEntry_Group(this, this, 7, inst);
+			case 8: return new RelationType_Group(this, this, 8, inst);
 			default: return null;
 		}	
 	}	
@@ -422,13 +421,15 @@ protected class OseeType_OseeEnumTypeParserRuleCall_3 extends RuleCallToken {
  *
  * ArtifactType:
  *   abstract?="abstract"? "artifactType" name=NAME_REFERENCE ("extends"
- *   superArtifactTypes+=ArtifactSuperTypes)? ("overrides" override=[ArtifactType|
+ *   superArtifactTypes+=[ArtifactType|NAME_REFERENCE] ("," superArtifactTypes+=[
+ *   ArtifactType|NAME_REFERENCE])*)? ("overrides" override=[ArtifactType|
  *   NAME_REFERENCE])? "{" typeGuid=STRING? validAttributeTypes+=AttributeTypeRef* "}";
  *
  **/
 
 // abstract?="abstract"? "artifactType" name=NAME_REFERENCE ("extends"
-// superArtifactTypes+=ArtifactSuperTypes)? ("overrides" override=[ArtifactType|
+// superArtifactTypes+=[ArtifactType|NAME_REFERENCE] ("," superArtifactTypes+=[
+// ArtifactType|NAME_REFERENCE])*)? ("overrides" override=[ArtifactType|
 // NAME_REFERENCE])? "{" typeGuid=STRING? validAttributeTypes+=AttributeTypeRef* "}"
 protected class ArtifactType_Group extends GroupToken {
 	
@@ -534,7 +535,8 @@ protected class ArtifactType_NameAssignment_2 extends AssignmentToken  {
 
 }
 
-// ("extends" superArtifactTypes+=ArtifactSuperTypes)?
+// ("extends" superArtifactTypes+=[ArtifactType|NAME_REFERENCE] (","
+// superArtifactTypes+=[ArtifactType|NAME_REFERENCE])*)?
 protected class ArtifactType_Group_3 extends GroupToken {
 	
 	public ArtifactType_Group_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -547,7 +549,8 @@ protected class ArtifactType_Group_3 extends GroupToken {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new ArtifactType_SuperArtifactTypesAssignment_3_1(parent, this, 0, inst);
+			case 0: return new ArtifactType_Group_3_2(parent, this, 0, inst);
+			case 1: return new ArtifactType_SuperArtifactTypesAssignment_3_1(parent, this, 1, inst);
 			default: return null;
 		}	
 	}	
@@ -574,7 +577,7 @@ protected class ArtifactType_ExtendsKeyword_3_0 extends KeywordToken  {
 		
 }
 
-// superArtifactTypes+=ArtifactSuperTypes
+// superArtifactTypes+=[ArtifactType|NAME_REFERENCE]
 protected class ArtifactType_SuperArtifactTypesAssignment_3_1 extends AssignmentToken  {
 	
 	public ArtifactType_SuperArtifactTypesAssignment_3_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -587,7 +590,82 @@ protected class ArtifactType_SuperArtifactTypesAssignment_3_1 extends Assignment
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new ArtifactSuperTypes_Group(this, this, 0, inst);
+			case 0: return new ArtifactType_ExtendsKeyword_3_0(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("superArtifactTypes",true)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("superArtifactTypes");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IInstanceDescription param = getDescr((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesArtifactTypeCrossReference_3_1_0().getType().getClassifier())) {
+				type = AssignmentType.CR;
+				element = grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesArtifactTypeCrossReference_3_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+// ("," superArtifactTypes+=[ArtifactType|NAME_REFERENCE])*
+protected class ArtifactType_Group_3_2 extends GroupToken {
+	
+	public ArtifactType_Group_3_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Group getGrammarElement() {
+		return grammarAccess.getArtifactTypeAccess().getGroup_3_2();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new ArtifactType_SuperArtifactTypesAssignment_3_2_1(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+}
+
+// ","
+protected class ArtifactType_CommaKeyword_3_2_0 extends KeywordToken  {
+	
+	public ArtifactType_CommaKeyword_3_2_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Keyword getGrammarElement() {
+		return grammarAccess.getArtifactTypeAccess().getCommaKeyword_3_2_0();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new ArtifactType_Group_3_2(parent, this, 0, inst);
+			case 1: return new ArtifactType_SuperArtifactTypesAssignment_3_1(parent, this, 1, inst);
+			default: return null;
+		}	
+	}	
+		
+}
+
+// superArtifactTypes+=[ArtifactType|NAME_REFERENCE]
+protected class ArtifactType_SuperArtifactTypesAssignment_3_2_1 extends AssignmentToken  {
+	
+	public ArtifactType_SuperArtifactTypesAssignment_3_2_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesAssignment_3_2_1();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new ArtifactType_CommaKeyword_3_2_0(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -595,26 +673,19 @@ protected class ArtifactType_SuperArtifactTypesAssignment_3_1 extends Assignment
 	protected IInstanceDescription tryConsumeVal() {
 		if((value = current.getConsumable("superArtifactTypes",false)) == null) return null;
 		IInstanceDescription obj = current.cloneAndConsume("superArtifactTypes");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getArtifactSuperTypesRule().getType().getClassifier())) {
-				type = AssignmentType.PRC;
-				element = grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesArtifactSuperTypesParserRuleCall_3_1_0(); 
-				consumed = obj;
-				return param;
+			if(param.isInstanceOf(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesArtifactTypeCrossReference_3_2_1_0().getType().getClassifier())) {
+				type = AssignmentType.CR;
+				element = grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesArtifactTypeCrossReference_3_2_1_0(); 
+				return obj;
 			}
 		}
 		return null;
 	}
 
-	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
-		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
-		switch(index) {
-			case 0: return new ArtifactType_ExtendsKeyword_3_0(parent, next, actIndex, consumed);
-			default: return null;
-		}	
-	}	
 }
+
 
 
 // ("overrides" override=[ArtifactType|NAME_REFERENCE])?
@@ -814,153 +885,6 @@ protected class ArtifactType_RightCurlyBracketKeyword_8 extends KeywordToken  {
 
 
 /************ end Rule ArtifactType ****************/
-
-
-/************ begin Rule ArtifactSuperTypes ****************
- *
- * ArtifactSuperTypes:
- *   artifactSuperType=[ArtifactType|NAME_REFERENCE] ("," artifactSuperType=[
- *   ArtifactType|NAME_REFERENCE])*;
- *
- **/
-
-// artifactSuperType=[ArtifactType|NAME_REFERENCE] ("," artifactSuperType=[
-// ArtifactType|NAME_REFERENCE])*
-protected class ArtifactSuperTypes_Group extends GroupToken {
-	
-	public ArtifactSuperTypes_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Group getGrammarElement() {
-		return grammarAccess.getArtifactSuperTypesAccess().getGroup();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new ArtifactSuperTypes_Group_1(parent, this, 0, inst);
-			case 1: return new ArtifactSuperTypes_ArtifactSuperTypeAssignment_0(parent, this, 1, inst);
-			default: return null;
-		}	
-	}	
-		
-	public IInstanceDescription tryConsume() {
-		if(!current.isInstanceOf(grammarAccess.getArtifactSuperTypesRule().getType().getClassifier())) return null;
-		return tryConsumeVal();
-	}
-}
-
-// artifactSuperType=[ArtifactType|NAME_REFERENCE]
-protected class ArtifactSuperTypes_ArtifactSuperTypeAssignment_0 extends AssignmentToken  {
-	
-	public ArtifactSuperTypes_ArtifactSuperTypeAssignment_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Assignment getGrammarElement() {
-		return grammarAccess.getArtifactSuperTypesAccess().getArtifactSuperTypeAssignment_0();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			default: return parent.createParentFollower(this, index, index, inst);
-		}	
-	}	
-		
-	protected IInstanceDescription tryConsumeVal() {
-		if((value = current.getConsumable("artifactSuperType",true)) == null) return null;
-		IInstanceDescription obj = current.cloneAndConsume("artifactSuperType");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getArtifactSuperTypesAccess().getArtifactSuperTypeArtifactTypeCrossReference_0_0().getType().getClassifier())) {
-				type = AssignmentType.CR;
-				element = grammarAccess.getArtifactSuperTypesAccess().getArtifactSuperTypeArtifactTypeCrossReference_0_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-// ("," artifactSuperType=[ArtifactType|NAME_REFERENCE])*
-protected class ArtifactSuperTypes_Group_1 extends GroupToken {
-	
-	public ArtifactSuperTypes_Group_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Group getGrammarElement() {
-		return grammarAccess.getArtifactSuperTypesAccess().getGroup_1();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new ArtifactSuperTypes_ArtifactSuperTypeAssignment_1_1(parent, this, 0, inst);
-			default: return null;
-		}	
-	}	
-		
-}
-
-// ","
-protected class ArtifactSuperTypes_CommaKeyword_1_0 extends KeywordToken  {
-	
-	public ArtifactSuperTypes_CommaKeyword_1_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Keyword getGrammarElement() {
-		return grammarAccess.getArtifactSuperTypesAccess().getCommaKeyword_1_0();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new ArtifactSuperTypes_Group_1(parent, this, 0, inst);
-			case 1: return new ArtifactSuperTypes_ArtifactSuperTypeAssignment_0(parent, this, 1, inst);
-			default: return null;
-		}	
-	}	
-		
-}
-
-// artifactSuperType=[ArtifactType|NAME_REFERENCE]
-protected class ArtifactSuperTypes_ArtifactSuperTypeAssignment_1_1 extends AssignmentToken  {
-	
-	public ArtifactSuperTypes_ArtifactSuperTypeAssignment_1_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Assignment getGrammarElement() {
-		return grammarAccess.getArtifactSuperTypesAccess().getArtifactSuperTypeAssignment_1_1();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new ArtifactSuperTypes_CommaKeyword_1_0(parent, this, 0, inst);
-			default: return null;
-		}	
-	}	
-		
-	protected IInstanceDescription tryConsumeVal() {
-		if((value = current.getConsumable("artifactSuperType",false)) == null) return null;
-		IInstanceDescription obj = current.cloneAndConsume("artifactSuperType");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getArtifactSuperTypesAccess().getArtifactSuperTypeArtifactTypeCrossReference_1_1_0().getType().getClassifier())) {
-				type = AssignmentType.CR;
-				element = grammarAccess.getArtifactSuperTypesAccess().getArtifactSuperTypeArtifactTypeCrossReference_1_1_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-
-
-/************ end Rule ArtifactSuperTypes ****************/
 
 
 /************ begin Rule AttributeTypeRef ****************
