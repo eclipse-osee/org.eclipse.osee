@@ -11,63 +11,47 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public enum CoreRelationEnumeration implements IRelationEnumeration {
 
-   Users_Artifact(true, "Users"), Users_User(false, "Users"),
+   Users_Artifact(true, "Users"),
+   Users_User(false, "Users"),
 
    // Define relations
-   Supercedes_Supercedes(true, "Supercedes"),
-   Supercedes_Superceded(false, "Supercedes"),
+   Supercedes_Supercedes(true, "Supercedes"), Supercedes_Superceded(false, "Supercedes"),
    AddressesIssues_AddressesIssues(true, "Addresses Issues"),
-   AddressesIssues_IssuedArtifact(false, "Addresses Issues"),
-   SupportingInfo_SupportedBy(true, "Supporting Info"),
+   AddressesIssues_IssuedArtifact(false, "Addresses Issues"), SupportingInfo_SupportedBy(true, "Supporting Info"),
    SupportingInfo_SupportingInfo(false, "Supporting Info"),
 
    DEFAULT_STYLESHEET__RENDERER(true, "Default Stylesheet"),
-   DEFAULT_STYLESHEET__STYLESHEET(false, "Default Stylesheet"),
-   REQUIREMENT_TRACE__HIGHER_LEVEL(true, "Requirement Trace"),
-   REQUIREMENT_TRACE__LOWER_LEVEL(false, "Requirement Trace"),
-   DEFAULT_HIERARCHICAL__CHILD(false, "Default Hierarchical"),
-   DEFAULT_HIERARCHICAL__PARENT(true, "Default Hierarchical"),
+   DEFAULT_STYLESHEET__STYLESHEET(false, "Default Stylesheet"), REQUIREMENT_TRACE__HIGHER_LEVEL(true,
+         "Requirement Trace"), REQUIREMENT_TRACE__LOWER_LEVEL(false, "Requirement Trace"), DEFAULT_HIERARCHICAL__CHILD(
+         false, "Default Hierarchical"), DEFAULT_HIERARCHICAL__PARENT(true, "Default Hierarchical"),
 
-   Dependency__Dependency(false, "Dependency"),
-   Dependency__Artifact(true, "Dependency"),
+   Dependency__Dependency(false, "Dependency"), Dependency__Artifact(true, "Dependency"),
 
-   TeamMember_Team(true, "TeamMember"),
-   TeamMember_Member(false, "TeamMember"),
+   TeamMember_Team(true, "TeamMember"), TeamMember_Member(false, "TeamMember"),
 
-   WorkItem__Parent(true, "Work Item"),
-   WorkItem__Child(false, "Work Item"),
+   WorkItem__Parent(true, "Work Item"), WorkItem__Child(false, "Work Item"),
 
-   Design__Design(false, "Design"),
-   Design__Requirement(true, "Design"),
+   Design__Design(false, "Design"), Design__Requirement(true, "Design"),
 
-   UNIVERSAL_GROUPING__MEMBERS(false, "Universal Grouping"),
-   UNIVERSAL_GROUPING__GROUP(true, "Universal Grouping"),
+   UNIVERSAL_GROUPING__MEMBERS(false, "Universal Grouping"), UNIVERSAL_GROUPING__GROUP(true, "Universal Grouping"),
 
-   ALLOCATION__REQUIREMENT(true, "Allocation"),
-   ALLOCATION__COMPONENT(false, "Allocation"),
-   Validation__Requirement(true, "Validation"),
-   Validation__Validator(false, "Validation"),
+   ALLOCATION__REQUIREMENT(true, "Allocation"), ALLOCATION__COMPONENT(false, "Allocation"), Validation__Requirement(
+         true, "Validation"), Validation__Validator(false, "Validation"),
 
-   Verification__Requirement(true, "Verification"),
-   Verification__Verifier(false, "Verification"),
+   Verification__Requirement(true, "Verification"), Verification__Verifier(false, "Verification"),
 
-   Uses__Requirement(true, "Uses"),
-   Uses__TestUnit(false, "Uses"),
+   Uses__Requirement(true, "Uses"), Uses__TestUnit(false, "Uses"),
 
-   CodeRequirement_Requirement(false, "Code-Requirement"),
-   CodeRequirement_CodeUnit(true, "Code-Requirement"),
+   CodeRequirement_Requirement(false, "Code-Requirement"), CodeRequirement_CodeUnit(true, "Code-Requirement"),
 
    TestConfigurationRelation_TestScript(true, "Test Configuration Relation"),
-   TestConfigurationRelation_TestConfiguration(false, "Test Configuration Relation"),
-   RunByRelation_User(true, "Run By Relation"),
-   RunByRelation_TestRun(false, "Run By Relation"),
-   TestRunConfigRelation_TestConfiguration(true, "Test Run Config Relation"),
-   TestRunConfigRelation_TestRun(false, "Test Run Config Relation");
+   TestConfigurationRelation_TestConfiguration(false, "Test Configuration Relation"), RunByRelation_User(true,
+         "Run By Relation"), RunByRelation_TestRun(false, "Run By Relation"), TestRunConfigRelation_TestConfiguration(
+         true, "Test Run Config Relation"), TestRunConfigRelation_TestRun(false, "Test Run Config Relation");
 
    private RelationSide relationSide;
    private String typeName;
@@ -85,7 +69,7 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
       return relationSide.isSideA();
    }
 
-   public String getSideName() throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public String getSideName() throws OseeCoreException {
       return getRelationType().getSideName(relationSide);
    }
 
@@ -96,7 +80,7 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
       return typeName;
    }
 
-   public RelationType getRelationType() throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public RelationType getRelationType() throws OseeCoreException {
       return RelationTypeManager.getType(typeName);
    }
 

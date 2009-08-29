@@ -26,8 +26,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
@@ -98,11 +97,10 @@ public class WordUtil {
     * 
     * @throws IllegalArgumentException if branch is null
     * @return returns true if some addressing was removed, otherwise false
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
+    * @throws OseeCoreException
     * @throws Exception
     */
-   public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static boolean revertNonusefulWordChanges(int artId, Branch branch, String table) throws OseeCoreException {
       if (branch == null) {
          throw new IllegalArgumentException("branch can not be null");
       }

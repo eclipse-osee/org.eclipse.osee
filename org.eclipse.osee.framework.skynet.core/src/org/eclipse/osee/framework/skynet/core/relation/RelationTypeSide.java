@@ -12,9 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
@@ -36,7 +34,7 @@ public class RelationTypeSide implements IRelationEnumeration {
       this(type, side, null);
    }
 
-   public RelationTypeSide(String typeName, String sideName) throws OseeTypeDoesNotExist, OseeDataStoreException, OseeArgumentException {
+   public RelationTypeSide(String typeName, String sideName) throws OseeCoreException {
       this.type = RelationTypeManager.getType(typeName);
       this.side = type.isSideAName(sideName) ? RelationSide.SIDE_A : RelationSide.SIDE_B;
       this.artifact = null;

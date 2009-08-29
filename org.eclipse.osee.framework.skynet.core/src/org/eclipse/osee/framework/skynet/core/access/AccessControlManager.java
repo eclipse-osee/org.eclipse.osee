@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -164,7 +163,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
    }
 
-   private static void populateGroupMembers(Integer groupId) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   private static void populateGroupMembers(Integer groupId) throws OseeCoreException {
       if (!groupToSubjectsCache.containsKey(groupId)) {
          Integer groupMember;
 
@@ -403,7 +402,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
    }
 
-   private static void cacheAccessControlData(AccessControlData data) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   private static void cacheAccessControlData(AccessControlData data) throws OseeCoreException {
       AccessObject accessObject = data.getObject();
       int subjectId = data.getSubject().getArtId();
       PermissionEnum permission = data.getPermission();

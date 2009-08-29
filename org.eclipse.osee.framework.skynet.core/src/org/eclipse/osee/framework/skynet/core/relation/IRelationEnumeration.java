@@ -11,17 +11,16 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public interface IRelationEnumeration {
    boolean isSideA();
 
-   String getSideName() throws OseeTypeDoesNotExist, OseeDataStoreException;
+   String getSideName() throws OseeCoreException;
 
    public String getTypeName();
 
-   public RelationType getRelationType() throws OseeTypeDoesNotExist, OseeDataStoreException;
+   public RelationType getRelationType() throws OseeCoreException;
 
    public boolean isThisType(RelationLink link);
 

@@ -19,7 +19,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
  * @author Robert A. Fisher
  */
 public class RelationType implements Comparable<RelationType> {
-   private final int relationTypeId;
+   private int relationTypeId;
+   private final String guid;
    private final String typeName;
    private final String sideAName;
    private final String sideBName;
@@ -27,21 +28,32 @@ public class RelationType implements Comparable<RelationType> {
    private final ArtifactType artifactTypeSideA;
    private final ArtifactType artifactTypeSideB;
 
-   private final String ordered;
+   private final boolean isOrdered;
    private final String defaultOrderTypeGuid;
 
-   public RelationType(int linkTypeId, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String ordered, String defaultOrderTypeGuid) {
+   public RelationType(String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
       super();
-      this.relationTypeId = linkTypeId;
-      this.typeName = typeName;
+      this.relationTypeId = -1;
+      this.guid = guid;
+      this.typeName = relationTypeName;
       this.sideAName = sideAName;
       this.sideBName = sideBName;
       this.artifactTypeSideA = artifactTypeSideA;
       this.artifactTypeSideB = artifactTypeSideB;
       this.multiplicity = multiplicity;
 
-      this.ordered = ordered;
+      this.isOrdered = isOrdered;
       this.defaultOrderTypeGuid = defaultOrderTypeGuid;
+   }
+
+   public void setRelationTypeId(int relationTypeId) {
+      if (getRelationTypeId() == -1) {
+         this.relationTypeId = relationTypeId;
+      }
+   }
+
+   public String getGuid() {
+      return guid;
    }
 
    public RelationTypeMultiplicity getMultiplicity() {
@@ -117,7 +129,7 @@ public class RelationType implements Comparable<RelationType> {
    }
 
    public boolean isOrdered() {
-      return ordered.equalsIgnoreCase("Yes");
+      return isOrdered;
    }
 
    public String getDefaultOrderTypeGuid() {

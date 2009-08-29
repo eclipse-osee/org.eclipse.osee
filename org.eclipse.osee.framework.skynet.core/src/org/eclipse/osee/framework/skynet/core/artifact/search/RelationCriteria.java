@@ -11,8 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
@@ -25,17 +24,16 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
    private String txsAlias;
    private String txdAlias;
    private String relAlias;
-   private int artifactId;
+   private final int artifactId;
 
    /**
     * Constructor for search criteria that follows the relation link ending on the given side
     * 
     * @param relationEnum the side to start following the link from
     * @param value
-    * @throws OseeDataStoreException
-    * @throws OseeTypeDoesNotExist
+    * @throws OseeCoreException
     */
-   public RelationCriteria(IRelationEnumeration relationEnum) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public RelationCriteria(IRelationEnumeration relationEnum) throws OseeCoreException {
       this(relationEnum.getRelationType(), relationEnum.getSide());
    }
 
@@ -80,7 +78,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
 
    @Override
    public void addJoinArtId(ArtifactQueryBuilder builder, boolean left) {
-      boolean useArtA = (relationSide == RelationSide.SIDE_A) ^ left;
+      boolean useArtA = relationSide == RelationSide.SIDE_A ^ left;
       builder.append(relAlias);
       builder.append(useArtA ? ".a_art_id" : ".b_art_id");
    }

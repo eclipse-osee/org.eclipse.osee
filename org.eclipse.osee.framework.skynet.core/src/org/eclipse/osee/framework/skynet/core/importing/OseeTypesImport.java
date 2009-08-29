@@ -80,7 +80,7 @@ public class OseeTypesImport {
     * @throws OseeCoreException
     */
    private static void runSkynetDbTypesImport(List<IExtension> skynetDbTypesExtensions) throws IOException, SAXException, OseeCoreException {
-      ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(new DbOseeDataTypeProcessor(), false);
+      //      ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(new DbOseeDataTypeProcessor(), false);
       for (IExtension extension : skynetDbTypesExtensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
          for (IConfigurationElement el : elements) {
@@ -94,7 +94,7 @@ public class OseeTypesImport {
                   InputStream inputStream = null;
                   try {
                      inputStream = url.openStream();
-                     importer.extractTypesFromSheet(url.getPath(), inputStream);
+                     //                     importer.extractTypesFromSheet(url.getPath(), inputStream);
                   } finally {
                      if (inputStream != null) {
                         inputStream.close();
@@ -104,6 +104,6 @@ public class OseeTypesImport {
             }
          }
       }
-      importer.finish();
+      //      importer.finish();
    }
 }

@@ -13,40 +13,28 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.core.SequenceManager;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeManager;
 
 /**
  * @author Ryan D. Brooks
  * @author Andrew M. Finkbeiner
  */
 public class RelationTypeManager {
-   private static final String SELECT_LINK_TYPES = "SELECT * FROM osee_relation_link_type";
-   private static final String INSERT_RELATION_LINK_TYPE =
-         "INSERT INTO osee_relation_link_type (rel_link_type_id, type_name, a_name, b_name, a_art_type_id, b_art_type_id, multiplicity, user_ordered, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?)";
-
-   private static final RelationTypeManager instance = new RelationTypeManager();
-   private final OseeTypeCache oseeTypeCache;
 
    private RelationTypeManager() {
    }
 
+   private static synchronized void ensurePopulated() throws OseeCoreException {
+      OseeTypeManager.getCache().ensureRelationTypePopulated();
+   }
+
    public static List<RelationType> getValidTypes(ArtifactType artifactType, Branch branch) throws OseeCoreException {
-      Collection<RelationType> relationTypes = instance.idToTypeMap.values();
+      Collection<RelationType> relationTypes = getAllTypes();
       List<RelationType> validRelationTypes = new ArrayList<RelationType>();
       for (RelationType relationType : relationTypes) {
          int sideAMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_A);
@@ -72,93 +60,42 @@ public class RelationTypeManager {
    /**
     * @param branch
     * @return all the relation types that are valid for the given branch
-    * @throws OseeDataStoreException
-    * @throws OseeTypeDoesNotExist
+    * @throws OseeCoreException
     */
-   public static List<RelationType> getValidTypes(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static Collection<RelationType> getValidTypes(Branch branch) throws OseeCoreException {
       return getAllTypes();
    }
 
    /**
     * @return all Relation types
-    * @throws OseeDataStoreException
-    * @throws OseeTypeDoesNotExist
+    * @throws OseeCoreException
     */
-   public static List<RelationType> getAllTypes() throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static Collection<RelationType> getAllTypes() throws OseeCoreException {
       ensurePopulated();
-      return new ArrayList<RelationType>(instance.idToTypeMap.values());
+      return OseeTypeManager.getCache().getAllRelationTypes();
    }
 
-   public static RelationType getType(int relationTypeId) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public static RelationType getType(int relationTypeId) throws OseeCoreException {
       ensurePopulated();
-      RelationType relationType = instance.idToTypeMap.get(relationTypeId);
+      RelationType relationType = OseeTypeManager.getCache().getRelationTypeById(relationTypeId);
       if (relationType == null) {
          throw new OseeTypeDoesNotExist("The relation with type id[" + relationTypeId + "] does not exist");
       }
       return relationType;
    }
 
-   public static RelationType getType(String typeName) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public static RelationType getType(String typeName) throws OseeCoreException {
       ensurePopulated();
-      RelationType relationType = instance.nameToTypeMap.get(typeName);
+      RelationType relationType = OseeTypeManager.getCache().getRelationTypeByName(typeName);
       if (relationType == null) {
          throw new OseeTypeDoesNotExist("The relation type [" + typeName + "] does not exist");
       }
       return relationType;
    }
 
-   public static boolean typeExists(String name) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public static boolean typeExists(String name) throws OseeCoreException {
       ensurePopulated();
-      return instance.nameToTypeMap.get(name) != null;
-   }
-
-   private void cache(RelationType relationType) {
-      nameToTypeMap.put(relationType.getTypeName(), relationType);
-      idToTypeMap.put(relationType.getRelationTypeId(), relationType);
-   }
-
-   public void refreshCache() throws OseeDataStoreException, OseeTypeDoesNotExist {
-      nameToTypeMap.clear();
-      idToTypeMap.clear();
-      populateCache();
-   }
-
-   private static synchronized void ensurePopulated() throws OseeDataStoreException, OseeTypeDoesNotExist {
-      if (instance.idToTypeMap.isEmpty()) {
-         instance.populateCache();
-      }
-   }
-
-   private void populateCache() throws OseeDataStoreException, OseeTypeDoesNotExist {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-
-      try {
-         chStmt.runPreparedQuery(SELECT_LINK_TYPES);
-
-         while (chStmt.next()) {
-            try {
-               String relationTypeName = chStmt.getString("type_name");
-               int relationTypeId = chStmt.getInt("rel_link_type_id");
-               ArtifactType artifactTypeSideA = ArtifactTypeManager.getType(chStmt.getInt("a_art_type_id"));
-               ArtifactType artifactTypeSideB = ArtifactTypeManager.getType(chStmt.getInt("b_art_type_id"));
-               RelationTypeMultiplicity multiplicity =
-                     RelationTypeMultiplicity.getRelationMultiplicity(chStmt.getInt("multiplicity"));
-               if (multiplicity == null) {
-                  throw new OseeCoreException(String.format("Multiplicity was null for [%s][%s]", relationTypeName,
-                        relationTypeId));
-               }
-               RelationType relationType =
-                     new RelationType(chStmt.getInt("rel_link_type_id"), relationTypeName, chStmt.getString("a_name"),
-                           chStmt.getString("b_name"), artifactTypeSideA, artifactTypeSideB, multiplicity,
-                           chStmt.getString("user_ordered"), chStmt.getString("default_order_type_guid"));
-               cache(relationType);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
-      } finally {
-         chStmt.close();
-      }
+      return OseeTypeManager.getCache().getRelationTypeByName(name) != null;
    }
 
    /**
@@ -173,44 +110,18 @@ public class RelationTypeManager {
     * @param shortName An abbreviated name to display for the link type.
     * @throws OseeCoreException
     */
-   public static RelationType createRelationType(String relationTypeName, String sideAName, String sideBName, String artifactTypeSideA, String artifactTypeSideB, String multiplicity, String ordered, String orderTypeGuid) throws OseeCoreException {
-      if (typeExists(relationTypeName)) {
-         return getType(relationTypeName);
+   public static RelationType createRelationType(String guid, String relationTypeName, String sideAName, String sideBName, String artifactTypeSideA, String artifactTypeSideB, String multiplicity, boolean isUserOrdered, String orderTypeGuid) throws OseeCoreException {
+      RelationType relationType;
+      if (!typeExists(relationTypeName)) {
+         relationType = null;
+         //               OseeTypeManager.getTypeFactory().createRelationType(guid, relationTypeName, sideAName, sideBName,
+         //                     artifactTypeSideA, artifactTypeSideB, multiplicity, isUserOrdered, orderTypeGuid);
+         OseeTypeManager.getDataTypeAccessor().storeRelationType(relationType);
+         OseeTypeManager.getCache().cacheRelationType(relationType);
+      } else {
+         // TODO: Check if anything valuable is different and update it
+         relationType = getType(relationTypeName);
       }
-      if (!Strings.isValid(relationTypeName)) {
-         throw new IllegalArgumentException("The relationName can not be null or empty");
-      }
-      if (!Strings.isValid(sideAName)) {
-         throw new IllegalArgumentException("The sideAName can not be null or empty");
-      }
-      if (!Strings.isValid(sideBName)) {
-         throw new IllegalArgumentException("The sideBName can not be null or empty");
-      }
-      if (!Strings.isValid(artifactTypeSideA)) {
-         throw new IllegalArgumentException("The artifactTypeSideA can not be null or empty");
-      }
-
-      if (!Strings.isValid(artifactTypeSideB)) {
-         throw new IllegalArgumentException("The artifactTypeSideB can not be null or empty");
-      }
-
-      RelationTypeMultiplicity multiplicityEnum = RelationTypeMultiplicity.getFromString(multiplicity);
-      if (multiplicityEnum == null) {
-         throw new IllegalArgumentException("The multiplicity can not be null or empty");
-      }
-      ArtifactType artTypeIdA = ArtifactTypeManager.getType(artifactTypeSideA);
-      ArtifactType artTypeIdB = ArtifactTypeManager.getType(artifactTypeSideB);
-
-      int relationTypeId = SequenceManager.getNextRelationTypeId();
-
-      ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, relationTypeId, relationTypeName, sideAName,
-            sideBName, artTypeIdA.getArtTypeId(), artTypeIdB.getArtTypeId(), multiplicityEnum.getValue(), ordered,
-            orderTypeGuid);
-
-      RelationType relationType =
-            new RelationType(relationTypeId, relationTypeName, sideAName, sideBName, artTypeIdA, artTypeIdB,
-                  multiplicityEnum, ordered, orderTypeGuid);
-      instance.cache(relationType);
       return relationType;
    }
 }

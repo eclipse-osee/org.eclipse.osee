@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -24,7 +25,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
  */
 public class AttributeCriteria extends AbstractArtifactSearchCriteria {
 
-   private AttributeType attributeType;
+   private final AttributeType attributeType;
    private String value;
    private Collection<String> values;
    private String txsAlias;
@@ -40,10 +41,9 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param attributeType
     * @param value to search; supports % wildcard
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
+    * @throws OseeCoreException
     */
-   public AttributeCriteria(String attributeTypeName, String value) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public AttributeCriteria(String attributeTypeName, String value) throws OseeCoreException {
       this(attributeTypeName, value, false);
    }
 
@@ -57,10 +57,9 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param attributeTypeName
     * @param value
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
+    * @throws OseeCoreException
     */
-   public AttributeCriteria(String attributeTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public AttributeCriteria(String attributeTypeName) throws OseeCoreException {
       this(attributeTypeName, null, false);
    }
 
@@ -71,10 +70,9 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param attributeTypeName
     * @param values
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
+    * @throws OseeCoreException
     */
-   public AttributeCriteria(String attributeTypeName, Collection<String> values) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public AttributeCriteria(String attributeTypeName, Collection<String> values) throws OseeCoreException {
       this(toAttributeType(attributeTypeName), null, values, false, Operator.EQUAL);
    }
 
@@ -86,10 +84,9 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * 
     * @param attributeTypeName
     * @param values
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
+    * @throws OseeCoreException
     */
-   public AttributeCriteria(String attributeTypeName, Collection<String> values, Operator operator) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public AttributeCriteria(String attributeTypeName, Collection<String> values, Operator operator) throws OseeCoreException {
       this(toAttributeType(attributeTypeName), null, values, false, operator);
    }
 
@@ -100,14 +97,13 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
     * @param attributeTypeName
     * @param value to search; supports % wildcard
     * @param historical if true will search on any branch and any attribute revision
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
+    * @throws OseeCoreException
     */
-   public AttributeCriteria(String attributeTypeName, String value, boolean historical) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public AttributeCriteria(String attributeTypeName, String value, boolean historical) throws OseeCoreException {
       this(toAttributeType(attributeTypeName), value, null, historical, Operator.EQUAL);
    }
 
-   private static AttributeType toAttributeType(String attributeTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   private static AttributeType toAttributeType(String attributeTypeName) throws OseeCoreException {
       return attributeTypeName == null ? null : AttributeTypeManager.getType(attributeTypeName);
    }
 
@@ -213,6 +209,7 @@ public class AttributeCriteria extends AbstractArtifactSearchCriteria {
       return strB.toString();
    }
 
+   @Override
    public void cleanUp() throws OseeDataStoreException {
       if (joinQuery != null) {
          joinQuery.delete();

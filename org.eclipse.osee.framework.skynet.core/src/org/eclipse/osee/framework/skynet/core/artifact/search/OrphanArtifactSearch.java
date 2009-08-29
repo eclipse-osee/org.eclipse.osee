@@ -13,8 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.sql.SkynetDatabase;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -32,7 +30,7 @@ public class OrphanArtifactSearch implements ISearchPrimitive {
    private final ArtifactType aritfactType;
    private final int relationTypeId;
 
-   public OrphanArtifactSearch(ArtifactType aritfactType) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public OrphanArtifactSearch(ArtifactType aritfactType) throws OseeCoreException {
       this.aritfactType = aritfactType;
       this.relationTypeId = RelationTypeManager.getType("Default Hierarchical").getRelationTypeId();
    }

@@ -26,7 +26,7 @@ public class AttributeType implements Comparable<AttributeType> {
    public static final AttributeType[] EMPTY_ARRAY = new AttributeType[0];
    private final Class<? extends Attribute<?>> baseAttributeClass;
    private final Class<? extends IAttributeDataProvider> providerAttributeClass;
-   private final int attrTypeId;
+   private int attrTypeId;
    private final String name;
    private final String defaultValue;
    private final int oseeEnumTypeId;
@@ -35,6 +35,7 @@ public class AttributeType implements Comparable<AttributeType> {
    private final String tipText;
    private final String fileTypeExtension;
    private final String taggerId;
+   private final String guid;
 
    /**
     * Create a dynamic attribute descriptor. Descriptors can be acquired for application use from the
@@ -48,15 +49,15 @@ public class AttributeType implements Comparable<AttributeType> {
     * @param maxOccurrences
     * @param tipText
     */
-   protected AttributeType(int attrTypeId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String name, String defaultValue, int oseeEnumTypeId, int minOccurrences, int maxOccurrences, String tipText, String taggerId) {
+   public AttributeType(String guid, String name, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, int oseeEnumTypeId, int minOccurrences, int maxOccurrences, String tipText, String taggerId) {
       if (minOccurrences < 0) {
          throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
       }
       if (maxOccurrences < minOccurrences) {
          throw new IllegalArgumentException("maxOccurences can not be less than minOccurences");
       }
-
-      this.attrTypeId = attrTypeId;
+      this.attrTypeId = -1;
+      this.guid = guid;
       this.baseAttributeClass = baseAttributeClass;
       this.providerAttributeClass = providerAttributeClass;
       this.name = name;
@@ -67,6 +68,16 @@ public class AttributeType implements Comparable<AttributeType> {
       this.tipText = tipText;
       this.fileTypeExtension = fileTypeExtension != null ? fileTypeExtension : "";
       this.taggerId = taggerId;
+   }
+
+   public void setAttrTypeId(int attrTypeId) {
+      if (getAttrTypeId() == -1) {
+         this.attrTypeId = attrTypeId;
+      }
+   }
+
+   public String getGuid() {
+      return guid;
    }
 
    /**
