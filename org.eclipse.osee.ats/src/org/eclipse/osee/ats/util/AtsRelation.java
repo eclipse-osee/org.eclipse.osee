@@ -11,8 +11,7 @@
 package org.eclipse.osee.ats.util;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -63,27 +62,23 @@ public enum AtsRelation implements IRelationEnumeration {
    TeamDefinitionToDecisionReviewWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToDecisionReviewWorkflowDiagram"),
    TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToDecisionReviewWorkflowDiagram"),
    //
-   TeamDefinitionToPeerToPeerReviewWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToPeerToPeerReviewWorkflowDiagram"),
-   TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToPeerToPeerReviewWorkflowDiagram"),
+   TeamDefinitionToPeerToPeerReviewWorkflowDiagram_TeamDefinition(true,
+         "TeamDefinitionToPeerToPeerReviewWorkflowDiagram"),
+   TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram(false,
+         "TeamDefinitionToPeerToPeerReviewWorkflowDiagram"),
    //
    TeamWorkflowToReview_Team(true, "TeamWorkflowToReview"),
    TeamWorkflowToReview_Review(false, "TeamWorkflowToReview"),
    //
-   Supercedes_Supercedes(true, "Supercedes"),
-   Supercedes_Superceded(false, "Supercedes"),
+   Supercedes_Supercedes(true, "Supercedes"), Supercedes_Superceded(false, "Supercedes"),
    AddressesIssues_AddressesIssues(true, "Addresses Issues"),
-   AddressesIssues_IssuedArtifact(false, "Addresses Issues"),
-   SupportingInfo_SupportedBy(true, "Supporting Info"),
+   AddressesIssues_IssuedArtifact(false, "Addresses Issues"), SupportingInfo_SupportedBy(true, "Supporting Info"),
    SupportingInfo_SupportingInfo(false, "Supporting Info"),
    //
-   WorkItem__Parent(true, "Work Item"),
-   WorkItem__Child(false, "Work Item"),
+   WorkItem__Parent(true, "Work Item"), WorkItem__Child(false, "Work Item"),
    //   
-   Dependency__Dependency(false, "Dependency"),
-   Dependency__Artifact(true, "Dependency"),
-   SubscribedUser_Artifact(true, "SubscribedUser"),
-   SubscribedUser_User(false, "SubscribedUser"),
-   FavoriteUser_Artifact(true, "FavoriteUser"),
+   Dependency__Dependency(false, "Dependency"), Dependency__Artifact(true, "Dependency"), SubscribedUser_Artifact(true,
+         "SubscribedUser"), SubscribedUser_User(false, "SubscribedUser"), FavoriteUser_Artifact(true, "FavoriteUser"),
    FavoriteUser_User(false, "FavoriteUser");
 
    private final RelationSide relationSide;
@@ -102,7 +97,7 @@ public enum AtsRelation implements IRelationEnumeration {
       return relationSide.isSideA();
    }
 
-   public String getSideName() throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public String getSideName() throws OseeCoreException {
       return getRelationType().getSideName(relationSide);
    }
 
@@ -113,7 +108,7 @@ public enum AtsRelation implements IRelationEnumeration {
       return typeName;
    }
 
-   public RelationType getRelationType() throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public RelationType getRelationType() throws OseeCoreException {
       return RelationTypeManager.getType(typeName);
    }
 
