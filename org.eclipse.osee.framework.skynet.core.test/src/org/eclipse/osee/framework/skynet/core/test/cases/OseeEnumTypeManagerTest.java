@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
@@ -72,7 +73,7 @@ public class OseeEnumTypeManagerTest {
          entries.add(new Pair<String, Integer>(entryNames[index], entryOrdinals[index]));
       }
 
-      OseeEnumTypeManager.createEnumType(enumTypeName, entries);
+      OseeEnumTypeManager.createEnumType(GUID.create(), enumTypeName, entries);
       OseeEnumType actual = OseeEnumTypeManager.getUniqueType(enumTypeName);
       try {
          checkOseeEnumType(enumTypeName, entryNames, entryOrdinals, actual);
@@ -173,7 +174,7 @@ public class OseeEnumTypeManagerTest {
       assertTrue(OseeEnumTypeManager.getAllTypeNames(true).contains(enumTypeName));
       assertTrue(OseeEnumTypeManager.getAllTypes(true).contains(oseeEnumType));
 
-      OseeEnumType actual = OseeEnumTypeManager.getType(oseeEnumType.getEnumTypeId(), true);
+      OseeEnumType actual = OseeEnumTypeManager.getType(oseeEnumType.getTypeId(), true);
       assertEquals(oseeEnumType, actual);
 
       actual = OseeEnumTypeManager.getUniqueType(enumTypeName, true);
@@ -186,7 +187,7 @@ public class OseeEnumTypeManagerTest {
       boolean wasTestedAtLeastOnce = false;
       for (OseeEnumType type : types) {
          for (AttributeType attrType : AttributeTypeManager.getAllTypes()) {
-            if (attrType.getOseeEnumTypeId() == type.getEnumTypeId()) {
+            if (attrType.getOseeEnumTypeId() == type.getTypeId()) {
                // Found an enum that is in use;
                wasTestedAtLeastOnce = true;
                try {
@@ -204,22 +205,22 @@ public class OseeEnumTypeManagerTest {
    private void checkOseeEnumTypeDeleted(OseeEnumType actual) throws OseeDataStoreException {
       assertTrue(actual.isDeleted());
       try {
-         OseeEnumTypeManager.getType(actual.getEnumTypeId());
+         OseeEnumTypeManager.getType(actual.getTypeId());
       } catch (Exception ex) {
          assertTrue(ex instanceof OseeTypeDoesNotExist);
       }
       try {
-         OseeEnumTypeManager.getUniqueType(actual.getEnumTypeName());
+         OseeEnumTypeManager.getUniqueType(actual.getName());
       } catch (Exception ex) {
          assertTrue(ex instanceof OseeTypeDoesNotExist);
       }
 
       assertTrue(!OseeEnumTypeManager.getAllTypes().contains(actual));
-      assertTrue(!OseeEnumTypeManager.getAllTypeNames().contains(actual.getEnumTypeName()));
+      assertTrue(!OseeEnumTypeManager.getAllTypeNames().contains(actual.getName()));
    }
 
    private void checkOseeEnumType(String expectedName, String[] expectedEntries, Integer[] expectedOrdinals, OseeEnumType actualEnumType) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      assertEquals(expectedName, actualEnumType.getEnumTypeName());
+      assertEquals(expectedName, actualEnumType.getName());
       OseeEnumEntry[] enumEntries = actualEnumType.values();
       assertEquals(expectedEntries.length, enumEntries.length);
       for (int index = 0; index < expectedEntries.length && index < expectedOrdinals.length; index++) {
@@ -231,8 +232,8 @@ public class OseeEnumTypeManagerTest {
       assertEquals(expectedName, entry.name());
       assertEquals(expectedOrdinal, entry.ordinal());
       assertEquals(parent, entry.getDeclaringClass());
-      assertEquals(parent.getEnumTypeId(), entry.getEnumTypeId());
-      assertEquals(parent.getEnumTypeName(), entry.getEnumTypeName());
+      assertEquals(parent.getTypeId(), entry.getEnumTypeId());
+      assertEquals(parent.getName(), entry.getEnumTypeName());
       OseeEnumEntry[] expected = parent.values();
       OseeEnumEntry[] actual = entry.values();
       assertEquals(expected.length, actual.length);

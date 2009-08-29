@@ -207,8 +207,8 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
       try {
          for (RelationType linkDescriptor : RelationTypeManager.getValidTypes(getSelectedBranch())) {
-            relationTypeList.add(linkDescriptor.getTypeName());
-            relationTypeList.setData(linkDescriptor.getTypeName(), linkDescriptor);
+            relationTypeList.add(linkDescriptor.getName());
+            relationTypeList.setData(linkDescriptor.getName(), linkDescriptor);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

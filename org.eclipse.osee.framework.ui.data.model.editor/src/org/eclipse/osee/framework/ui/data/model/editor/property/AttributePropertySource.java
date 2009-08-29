@@ -79,71 +79,137 @@ public class AttributePropertySource extends ModelPropertySource {
 
    @Override
    public boolean isPropertySet(Object id) {
-      if (id == idDefaultValue) return getDataTypeElement().getDefaultValue() != null;
-      if (id == idEnumType) return getDataTypeElement().getEnumTypeId() != -1;
-      if (id == idToolTipText) return getDataTypeElement().getToolTipText() != null;
-      if (id == idFileTypeExtension) return getDataTypeElement().getFileTypeExtension() != null;
-      if (id == idTaggerId) return getDataTypeElement().getTaggerId() != null;
-      if (id == idMinOccurrence) return getDataTypeElement().getMinOccurrence() != -1;
-      if (id == idMaxOccurrence) return getDataTypeElement().getMaxOccurrence() != -1;
-      if (id == idBaseAttributeClass) return getDataTypeElement().getBaseAttributeClass() != null;
-      if (id == idProviderAttributeClass) return getDataTypeElement().getProviderAttributeClass() != null;
+      if (id == idDefaultValue) {
+         return getDataTypeElement().getDefaultValue() != null;
+      }
+      if (id == idEnumType) {
+         return getDataTypeElement().getEnumTypeId() != -1;
+      }
+      if (id == idToolTipText) {
+         return getDataTypeElement().getToolTipText() != null;
+      }
+      if (id == idFileTypeExtension) {
+         return getDataTypeElement().getFileTypeExtension() != null;
+      }
+      if (id == idTaggerId) {
+         return getDataTypeElement().getTaggerId() != null;
+      }
+      if (id == idMinOccurrence) {
+         return getDataTypeElement().getMinOccurrence() != -1;
+      }
+      if (id == idMaxOccurrence) {
+         return getDataTypeElement().getMaxOccurrence() != -1;
+      }
+      if (id == idBaseAttributeClass) {
+         return getDataTypeElement().getBaseAttributeClass() != null;
+      }
+      if (id == idProviderAttributeClass) {
+         return getDataTypeElement().getProviderAttributeClass() != null;
+      }
       return false;
    }
 
    @Override
    public Object getPropertyValue(Object id) {
-      if (id == idDefaultValue) return StringPropertyDescriptor.fromModel(getDataTypeElement().getDefaultValue());
+      if (id == idDefaultValue) {
+         return StringPropertyDescriptor.fromModel(getDataTypeElement().getDefaultValue());
+      }
       if (id == idEnumType) {
          int enumTypeId = getDataTypeElement().getEnumTypeId();
          try {
-            return EnumeratedAttributeValuesPropertyDescriptor.fromModel(OseeEnumTypeManager.getType(enumTypeId).getEnumTypeName());
+            return EnumeratedAttributeValuesPropertyDescriptor.fromModel(OseeEnumTypeManager.getType(enumTypeId).getName());
          } catch (OseeCoreException ex) {
             return -1;
          }
       }
-      if (id == idToolTipText) return StringPropertyDescriptor.fromModel(getDataTypeElement().getToolTipText());
-      if (id == idFileTypeExtension) return StringPropertyDescriptor.fromModel(getDataTypeElement().getFileTypeExtension());
-      if (id == idTaggerId) return StringPropertyDescriptor.fromModel(getDataTypeElement().getTaggerId());
-      if (id == idMinOccurrence) return IntegerPropertyDescriptor.fromModel(getDataTypeElement().getMinOccurrence());
-      if (id == idMaxOccurrence) return IntegerPropertyDescriptor.fromModel(getDataTypeElement().getMaxOccurrence());
-      if (id == idBaseAttributeClass) return AttributeBaseClassPropertyDescriptor.fromModel(getDataTypeElement().getBaseAttributeClass());
-      if (id == idProviderAttributeClass) return AttributeProviderPropertyDescriptor.fromModel(getDataTypeElement().getProviderAttributeClass());
+      if (id == idToolTipText) {
+         return StringPropertyDescriptor.fromModel(getDataTypeElement().getToolTipText());
+      }
+      if (id == idFileTypeExtension) {
+         return StringPropertyDescriptor.fromModel(getDataTypeElement().getFileTypeExtension());
+      }
+      if (id == idTaggerId) {
+         return StringPropertyDescriptor.fromModel(getDataTypeElement().getTaggerId());
+      }
+      if (id == idMinOccurrence) {
+         return IntegerPropertyDescriptor.fromModel(getDataTypeElement().getMinOccurrence());
+      }
+      if (id == idMaxOccurrence) {
+         return IntegerPropertyDescriptor.fromModel(getDataTypeElement().getMaxOccurrence());
+      }
+      if (id == idBaseAttributeClass) {
+         return AttributeBaseClassPropertyDescriptor.fromModel(getDataTypeElement().getBaseAttributeClass());
+      }
+      if (id == idProviderAttributeClass) {
+         return AttributeProviderPropertyDescriptor.fromModel(getDataTypeElement().getProviderAttributeClass());
+      }
       return false;
    }
 
    @Override
    public void resetPropertyValue(Object id) {
-      if (id == idDefaultValue) getDataTypeElement().setDefaultValue(null);
-      if (id == idEnumType) getDataTypeElement().setEnumTypeId(0);
-      if (id == idToolTipText) getDataTypeElement().setToolTipText(null);
-      if (id == idFileTypeExtension) getDataTypeElement().setFileTypeExtension(null);
-      if (id == idTaggerId) getDataTypeElement().setTaggerId(null);
-      if (id == idMinOccurrence) getDataTypeElement().setMinOccurrence(-1);
-      if (id == idMaxOccurrence) getDataTypeElement().setMaxOccurrence(-1);
-      if (id == idBaseAttributeClass) getDataTypeElement().setBaseAttributeClass(null);
-      if (id == idProviderAttributeClass) getDataTypeElement().setProviderAttributeClass(null);
+      if (id == idDefaultValue) {
+         getDataTypeElement().setDefaultValue(null);
+      }
+      if (id == idEnumType) {
+         getDataTypeElement().setEnumTypeId(0);
+      }
+      if (id == idToolTipText) {
+         getDataTypeElement().setToolTipText(null);
+      }
+      if (id == idFileTypeExtension) {
+         getDataTypeElement().setFileTypeExtension(null);
+      }
+      if (id == idTaggerId) {
+         getDataTypeElement().setTaggerId(null);
+      }
+      if (id == idMinOccurrence) {
+         getDataTypeElement().setMinOccurrence(-1);
+      }
+      if (id == idMaxOccurrence) {
+         getDataTypeElement().setMaxOccurrence(-1);
+      }
+      if (id == idBaseAttributeClass) {
+         getDataTypeElement().setBaseAttributeClass(null);
+      }
+      if (id == idProviderAttributeClass) {
+         getDataTypeElement().setProviderAttributeClass(null);
+      }
    }
 
    @Override
    public void setPropertyValue(Object id, Object value) {
-      if (id == idDefaultValue) getDataTypeElement().setDefaultValue(StringPropertyDescriptor.toModel(value));
+      if (id == idDefaultValue) {
+         getDataTypeElement().setDefaultValue(StringPropertyDescriptor.toModel(value));
+      }
       if (id == idEnumType) {
          String enumTypeName = EnumeratedAttributeValuesPropertyDescriptor.toModel(value);
          try {
-            getDataTypeElement().setEnumTypeId(OseeEnumTypeManager.getUniqueType(enumTypeName).getEnumTypeId());
+            getDataTypeElement().setEnumTypeId(OseeEnumTypeManager.getUniqueType(enumTypeName).getTypeId());
          } catch (OseeCoreException ex) {
             OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
          }
       }
-      if (id == idToolTipText) getDataTypeElement().setToolTipText(StringPropertyDescriptor.toModel(value));
-      if (id == idFileTypeExtension) getDataTypeElement().setFileTypeExtension(StringPropertyDescriptor.toModel(value));
-      if (id == idTaggerId) getDataTypeElement().setTaggerId(StringPropertyDescriptor.toModel(value));
-      if (id == idMinOccurrence) getDataTypeElement().setMinOccurrence(IntegerPropertyDescriptor.toModel(value));
-      if (id == idMaxOccurrence) getDataTypeElement().setMaxOccurrence(IntegerPropertyDescriptor.toModel(value));
-      if (id == idBaseAttributeClass) getDataTypeElement().setBaseAttributeClass(
-            AttributeBaseClassPropertyDescriptor.toModel(value));
-      if (id == idProviderAttributeClass) getDataTypeElement().setProviderAttributeClass(
-            AttributeProviderPropertyDescriptor.toModel(value));
+      if (id == idToolTipText) {
+         getDataTypeElement().setToolTipText(StringPropertyDescriptor.toModel(value));
+      }
+      if (id == idFileTypeExtension) {
+         getDataTypeElement().setFileTypeExtension(StringPropertyDescriptor.toModel(value));
+      }
+      if (id == idTaggerId) {
+         getDataTypeElement().setTaggerId(StringPropertyDescriptor.toModel(value));
+      }
+      if (id == idMinOccurrence) {
+         getDataTypeElement().setMinOccurrence(IntegerPropertyDescriptor.toModel(value));
+      }
+      if (id == idMaxOccurrence) {
+         getDataTypeElement().setMaxOccurrence(IntegerPropertyDescriptor.toModel(value));
+      }
+      if (id == idBaseAttributeClass) {
+         getDataTypeElement().setBaseAttributeClass(AttributeBaseClassPropertyDescriptor.toModel(value));
+      }
+      if (id == idProviderAttributeClass) {
+         getDataTypeElement().setProviderAttributeClass(AttributeProviderPropertyDescriptor.toModel(value));
+      }
    }
 }

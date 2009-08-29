@@ -137,22 +137,22 @@ public interface OseeTypesPackage extends EPackage
   int OSEE_TYPE = 2;
 
   /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int OSEE_TYPE__NAME = 0;
-
-  /**
    * The feature id for the '<em><b>Type Guid</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int OSEE_TYPE__TYPE_GUID = 1;
+  int OSEE_TYPE__TYPE_GUID = 0;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OSEE_TYPE__NAME = 1;
 
   /**
    * The number of structural features of the '<em>Osee Type</em>' class.
@@ -174,15 +174,6 @@ public interface OseeTypesPackage extends EPackage
   int ARTIFACT_TYPE = 3;
 
   /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ARTIFACT_TYPE__NAME = OSEE_TYPE__NAME;
-
-  /**
    * The feature id for the '<em><b>Type Guid</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -190,6 +181,15 @@ public interface OseeTypesPackage extends EPackage
    * @ordered
    */
   int ARTIFACT_TYPE__TYPE_GUID = OSEE_TYPE__TYPE_GUID;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ARTIFACT_TYPE__NAME = OSEE_TYPE__NAME;
 
   /**
    * The feature id for the '<em><b>Abstract</b></em>' attribute.
@@ -284,15 +284,6 @@ public interface OseeTypesPackage extends EPackage
   int ATTRIBUTE_TYPE = 5;
 
   /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int ATTRIBUTE_TYPE__NAME = OSEE_TYPE__NAME;
-
-  /**
    * The feature id for the '<em><b>Type Guid</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -300,6 +291,15 @@ public interface OseeTypesPackage extends EPackage
    * @ordered
    */
   int ATTRIBUTE_TYPE__TYPE_GUID = OSEE_TYPE__TYPE_GUID;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ATTRIBUTE_TYPE__NAME = OSEE_TYPE__NAME;
 
   /**
    * The feature id for the '<em><b>Base Attribute Type</b></em>' attribute.
@@ -411,15 +411,6 @@ public interface OseeTypesPackage extends EPackage
   int OSEE_ENUM_TYPE = 6;
 
   /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int OSEE_ENUM_TYPE__NAME = OSEE_TYPE__NAME;
-
-  /**
    * The feature id for the '<em><b>Type Guid</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -427,6 +418,15 @@ public interface OseeTypesPackage extends EPackage
    * @ordered
    */
   int OSEE_ENUM_TYPE__TYPE_GUID = OSEE_TYPE__TYPE_GUID;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OSEE_ENUM_TYPE__NAME = OSEE_TYPE__NAME;
 
   /**
    * The feature id for the '<em><b>Override</b></em>' reference.
@@ -503,15 +503,6 @@ public interface OseeTypesPackage extends EPackage
   int RELATION_TYPE = 8;
 
   /**
-   * The feature id for the '<em><b>Name</b></em>' attribute.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   * @ordered
-   */
-  int RELATION_TYPE__NAME = OSEE_TYPE__NAME;
-
-  /**
    * The feature id for the '<em><b>Type Guid</b></em>' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -519,6 +510,15 @@ public interface OseeTypesPackage extends EPackage
    * @ordered
    */
   int RELATION_TYPE__TYPE_GUID = OSEE_TYPE__TYPE_GUID;
+
+  /**
+   * The feature id for the '<em><b>Name</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int RELATION_TYPE__NAME = OSEE_TYPE__NAME;
 
   /**
    * The feature id for the '<em><b>Override</b></em>' reference.
@@ -667,17 +667,6 @@ public interface OseeTypesPackage extends EPackage
   EClass getOseeType();
 
   /**
-   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.OseeType#getName <em>Name</em>}'.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @return the meta object for the attribute '<em>Name</em>'.
-   * @see org.eclipse.osee.framework.oseeTypes.OseeType#getName()
-   * @see #getOseeType()
-   * @generated
-   */
-  EAttribute getOseeType_Name();
-
-  /**
    * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.OseeType#getTypeGuid <em>Type Guid</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -687,6 +676,17 @@ public interface OseeTypesPackage extends EPackage
    * @generated
    */
   EAttribute getOseeType_TypeGuid();
+
+  /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.OseeType#getName <em>Name</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Name</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeType#getName()
+   * @see #getOseeType()
+   * @generated
+   */
+  EAttribute getOseeType_Name();
 
   /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType <em>Artifact Type</em>}'.
@@ -1133,20 +1133,20 @@ public interface OseeTypesPackage extends EPackage
     EClass OSEE_TYPE = eINSTANCE.getOseeType();
 
     /**
-     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    EAttribute OSEE_TYPE__NAME = eINSTANCE.getOseeType_Name();
-
-    /**
      * The meta object literal for the '<em><b>Type Guid</b></em>' attribute feature.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      */
     EAttribute OSEE_TYPE__TYPE_GUID = eINSTANCE.getOseeType_TypeGuid();
+
+    /**
+     * The meta object literal for the '<em><b>Name</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute OSEE_TYPE__NAME = eINSTANCE.getOseeType_Name();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl <em>Artifact Type</em>}' class.

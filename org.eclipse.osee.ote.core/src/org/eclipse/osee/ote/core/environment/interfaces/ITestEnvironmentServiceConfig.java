@@ -26,7 +26,7 @@ public interface ITestEnvironmentServiceConfig {
    /**
 	 * 
 	 */
-   public String getTypeName();
+   public String getName();
 
    public TestServerMode getMode();
 

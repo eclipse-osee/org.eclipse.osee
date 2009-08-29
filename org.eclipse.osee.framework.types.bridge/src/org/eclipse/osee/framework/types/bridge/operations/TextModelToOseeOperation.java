@@ -1,21 +1,27 @@
 package org.eclipse.osee.framework.types.bridge.operations;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.AttributeType;
+import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
@@ -32,54 +38,75 @@ public class TextModelToOseeOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       OseeTypeModel model = OseeTypeModelUtil.loadModel(resource);
-      EcoreUtil.getAllContents(model, true);
-
       //      for (Import importEntry : model.getImports()) {
       //         System.out.println("Import: " + importEntry.getImportURI());
       //         OseeTypeModel importedModel = OseeTypeModelUtil.loadModel(new URI(importEntry.getImportURI()));
       //      }
       if (!model.getTypes().isEmpty()) {
-         double workPercentage = 1.0 / model.getTypes().size();
+         double workPercentage = 1.0 / model.getTypes().size() * 2.0;
 
          for (OseeType type : model.getTypes()) {
             if (type instanceof ArtifactType) {
                handleArtifactType((ArtifactType) type);
             } else if (type instanceof AttributeType) {
                handleAttributeType((AttributeType) type);
-            } else if (type instanceof RelationType) {
-               handleRelationType((RelationType) type);
             }
             monitor.worked(calculateWork(workPercentage));
          }
 
          // second pass to handle cross references
-         for (OseeType type : model.getTypes()) {
-            if (type instanceof ArtifactType) {
-               handleArtifactTypeCrossRef((ArtifactType) type);
+         for (OseeType type1 : model.getTypes()) {
+            if (type1 instanceof ArtifactType) {
+               handleArtifactTypeCrossRef((ArtifactType) type1);
+            } else if (type1 instanceof RelationType) {
+               handleRelationType((RelationType) type1);
             }
+            monitor.worked(calculateWork(workPercentage));
          }
       }
    }
 
    /**
     * @param type
+    * @throws OseeCoreException
     */
-   private void handleArtifactTypeCrossRef(ArtifactType artifactType) {
-      String superTypeId = "";
+   private void handleArtifactTypeCrossRef(ArtifactType artifactType) throws OseeCoreException {
+      Set<org.eclipse.osee.framework.skynet.core.artifact.ArtifactType> superTypes =
+            new HashSet<org.eclipse.osee.framework.skynet.core.artifact.ArtifactType>();
+      org.eclipse.osee.framework.skynet.core.artifact.ArtifactType targetArtifactType =
+            ArtifactTypeManager.getTypeByGuid(artifactType.getTypeGuid());
 
       for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
-         // TODO set in type manager
+         superTypes.add(ArtifactTypeManager.getTypeByGuid(superType.getTypeGuid()));
+      }
+      targetArtifactType.addSuperType(superTypes);
+
+      HashCollection<Branch, org.eclipse.osee.framework.skynet.core.attribute.AttributeType> items =
+            new HashCollection<Branch, org.eclipse.osee.framework.skynet.core.attribute.AttributeType>();
+      for (AttributeTypeRef attributeTypeRef : artifactType.getValidAttributeTypes()) {
+         AttributeType attributeType = attributeTypeRef.getValidAttributeType();
+         Branch branch;
+         String branchGuid = attributeTypeRef.getBranchGuid();
+         if (branchGuid == null) {
+            branch = BranchManager.getSystemRootBranch();
+         } else {
+            branch = BranchManager.getBranchByGuid(branchGuid);
+         }
+         items.put(branch, AttributeTypeManager.getType(attributeType.getTypeGuid()));
+      }
+
+      for (Branch branch : items.keySet()) {
+         ArtifactTypeManager.setAttributeTypes(targetArtifactType, items.getValues(), branch);
       }
    }
 
    private void handleArtifactType(ArtifactType artifactType) throws OseeCoreException {
-      ArtifactTypeManager.createType(artifactType.getTypeGuid(), artifactType.isAbstract(), artifactType.getName());
+      artifactType.setTypeGuid(ArtifactTypeManager.createType(artifactType.getTypeGuid(), artifactType.isAbstract(),
+            artifactType.getName()).getGuid());
    }
 
-   private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {
-      OseeEnumType enumType = attributeType.getEnumType();
-
-      int enumTypeId = OseeEnumTypeManager.getDefaultEnumTypeId();
+   private org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType getOseeEnumTypes(OseeEnumType enumType) throws OseeCoreException {
+      org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType toReturn = null;
       if (enumType != null) {
          List<Pair<String, Integer>> entries = new ArrayList<Pair<String, Integer>>();
          int lastOrdinal = 0;
@@ -91,38 +118,44 @@ public class TextModelToOseeOperation extends AbstractOperation {
             entries.add(new Pair<String, Integer>(enumEntry.getName(), lastOrdinal));
             lastOrdinal++;
          }
-         enumTypeId = OseeEnumTypeManager.createEnumType(enumType.getName(), entries).getEnumTypeId();
+         toReturn = OseeEnumTypeManager.createEnumType(enumType.getTypeGuid(), enumType.getName(), entries);
+         if (toReturn != null) {
+            enumType.setTypeGuid(toReturn.getGuid());
+         }
       }
+      return toReturn;
+   }
 
-      AttributeTypeManager.createType(//
+   private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {
+      attributeType.setTypeGuid(AttributeTypeManager.createType(attributeType.getTypeGuid(), //
+            attributeType.getName(), //
             attributeType.getBaseAttributeType(), // 
             attributeType.getDataProvider(), // 
             attributeType.getFileExtension(), //
-            attributeType.getName(), //
             attributeType.getDefaultValue(), //
-            String.valueOf(enumTypeId), //
+            getOseeEnumTypes(attributeType.getEnumType()), //
             Integer.parseInt(attributeType.getMin()), //
             Integer.parseInt(attributeType.getMax()), //
             attributeType.getDescription(), //
-            attributeType.getTaggerId());
+            attributeType.getTaggerId()).getGuid());
    }
 
    private void handleRelationType(RelationType relationType) throws OseeCoreException {
-      RelationTypeManager.createRelationType(relationType.getName(), //
+      RelationTypeMultiplicity multiplicity =
+            RelationTypeMultiplicity.getFromString(relationType.getMultiplicity().name());
+      relationType.setTypeGuid(RelationTypeManager.createRelationType(relationType.getTypeGuid(),
+            relationType.getName(), //
             relationType.getSideAName(), //
             relationType.getSideBName(), //
-            relationType.getSideAArtifactType().getName(), //
-            relationType.getSideBArtifactType().getName(), //
-            relationType.getMultiplicity().name(), //
+            ArtifactTypeManager.getType(relationType.getSideAArtifactType().getName()), //
+            ArtifactTypeManager.getType(relationType.getSideBArtifactType().getName()), //
+            multiplicity, //
             isOrdered(relationType.getDefaultOrderType()),//
-            "");
+            ""// TODO missing defaultOrderGUID
+      ).getGuid());
    }
 
-   private String isOrdered(String orderType) {
-      String result = "No";
-      if ("Unordered".equals(orderType)) {
-         result = "Yes";
-      }
-      return result;
+   private boolean isOrdered(String orderType) {
+      return "Unordered".equalsIgnoreCase(orderType);
    }
 }

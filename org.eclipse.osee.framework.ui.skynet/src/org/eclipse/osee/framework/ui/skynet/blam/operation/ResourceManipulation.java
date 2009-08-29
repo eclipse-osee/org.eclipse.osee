@@ -286,7 +286,7 @@ public class ResourceManipulation extends AbstractBlam {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(GET_ATTRS_TEST,
-               AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT).getAttrTypeId());
+               AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT).getTypeId());
          while (chStmt.next()) {
             attrData.add(new AttrData(chStmt.getString("gamma_Id"), chStmt.getString("human_readable_id"),
                   chStmt.getString("uri")));

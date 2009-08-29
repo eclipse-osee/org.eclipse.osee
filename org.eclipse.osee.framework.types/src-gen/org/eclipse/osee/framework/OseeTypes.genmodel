@@ -23,8 +23,8 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//Import/importURI"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//OseeType">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeType/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeType/typeGuid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeType/name"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//ArtifactType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//ArtifactType/abstract"/>

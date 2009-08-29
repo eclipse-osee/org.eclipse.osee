@@ -52,7 +52,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
 
       @Override
       public String toString() {
-         return (sideA ? desc.getSideAName() : desc.getSideBName()) + " - " + desc.getTypeName();
+         return (sideA ? desc.getSideAName() : desc.getSideBName()) + " - " + desc.getName();
       }
 
       /**
@@ -98,9 +98,9 @@ public class RelTypeContentProvider implements ITreeContentProvider {
       }
 
       @Override
-      public String getTypeName() {
+      public String getName() {
          try {
-            return getRelationType().getTypeName();
+            return getRelationType().getName();
          } catch (Exception ex) {
             return ex.getLocalizedMessage();
          }
@@ -108,7 +108,7 @@ public class RelTypeContentProvider implements ITreeContentProvider {
 
       @Override
       public boolean isThisType(RelationLink link) {
-         return link.getRelationType().getTypeName().equals(getTypeName());
+         return link.getRelationType().getName().equals(getName());
       }
 
    }

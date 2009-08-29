@@ -42,7 +42,7 @@ public class LexicographicalRelationSort extends AbstractBlam {
       }
       transaction.execute();
       /*  OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationModType.ReOrdered, relation,
-              relation.getABranch(), relationType.getTypeName());*/
+              relation.getABranch(), relationType.getName());*/
    }
 
    @Override

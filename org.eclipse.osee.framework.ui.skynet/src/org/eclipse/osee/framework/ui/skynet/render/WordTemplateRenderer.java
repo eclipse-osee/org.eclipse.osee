@@ -415,7 +415,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          if (presentationType == PresentationType.SPECIALIZED_EDIT) {
             WordTemplateProcessor.writeXMLMetaDataWrapper(wordMl,
                   WordTemplateProcessor.elementNameFor(attributeTypeName), "ns0:guid=\"" + artifact.getGuid() + "\"",
-                  "ns0:attrId=\"" + wordTempConAttr.getAttributeType().getAttrTypeId() + "\"", value);
+                  "ns0:attrId=\"" + wordTempConAttr.getAttributeType().getTypeId() + "\"", value);
          } else {
             wordMl.addWordMl(value);
          }

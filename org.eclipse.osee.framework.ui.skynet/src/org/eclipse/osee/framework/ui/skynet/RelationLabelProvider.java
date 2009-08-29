@@ -53,7 +53,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          return side.getSideName() + " has [" + side.getRelationType().getMultiplicity().asLimitLabel(side.getSide()) + "] " + (side.isSideA() ? side.getRelationType().getSideBName() : side.getRelationType().getSideAName()) + " \"" + artifact.getName() + "\"";
       } else if (element instanceof RelationType) {
          if (columnIndex == 0) {
-            return ((RelationType) element).getTypeName();
+            return ((RelationType) element).getName();
          }
       } else if (element instanceof RelationLink) {
          RelationLink link = (RelationLink) element;

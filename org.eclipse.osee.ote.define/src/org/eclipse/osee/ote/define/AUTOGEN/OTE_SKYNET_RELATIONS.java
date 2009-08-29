@@ -43,7 +43,7 @@ public enum OTE_SKYNET_RELATIONS implements IRelationEnumeration {
    /**
     * @return Returns the typeName.
     */
-   public String getTypeName() {
+   public String getName() {
       return typeName;
    }
 
@@ -52,7 +52,7 @@ public enum OTE_SKYNET_RELATIONS implements IRelationEnumeration {
    }
 
    public boolean isThisType(RelationLink link) {
-      return link.getRelationType().getTypeName().equals(typeName);
+      return link.getRelationType().getName().equals(typeName);
    }
 
    @Override

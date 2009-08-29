@@ -41,7 +41,7 @@ public final class WordAttributeTypeAttributeHandler implements ITemplateAttribu
          if (false) {
             WordTemplateProcessor.writeXMLMetaDataWrapper(wordMl,
                   WordTemplateProcessor.elementNameFor(attributeType.getName()),
-                  "ns0:guid=\"" + artifact.getGuid() + "\"", "ns0:attrId=\"" + attributeType.getAttrTypeId() + "\"",
+                  "ns0:guid=\"" + artifact.getGuid() + "\"", "ns0:attrId=\"" + attributeType.getTypeId() + "\"",
                   attribute.toString());
          } else {
             wordMl.addWordMl(Xml.escape(attribute.toString()));

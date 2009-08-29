@@ -150,7 +150,7 @@ public class AttributesComposite extends Composite {
 
             if (selected instanceof Attribute<?>) {
                Attribute<?> attribute = (Attribute<?>) selected;
-               String tipText = attribute.getAttributeType().getTipText();
+               String tipText = attribute.getAttributeType().getDescription();
                if (tipText != null && !tipText.equals("null")) {
                   helpText.setText(tipText);
                } else {

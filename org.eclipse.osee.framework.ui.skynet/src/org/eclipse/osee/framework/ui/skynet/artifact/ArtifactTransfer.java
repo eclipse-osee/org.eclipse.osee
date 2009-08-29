@@ -83,14 +83,17 @@ public class ArtifactTransfer extends ByteArrayTransfer {
       return instance;
    }
 
+   @Override
    protected int[] getTypeIds() {
       return new int[] {TYPEID};
    }
 
+   @Override
    protected String[] getTypeNames() {
       return new String[] {TYPE_NAME};
    }
 
+   @Override
    protected void javaToNative(Object data, TransferData transferData) {
       if (!(data instanceof ArtifactData)) {
          return;
@@ -127,6 +130,7 @@ public class ArtifactTransfer extends ByteArrayTransfer {
       }
    }
 
+   @Override
    public ArtifactData nativeToJava(TransferData transferData) {
       /**
        * The resource serialization format is: (int) number of artifacts Then, the following for each resource: (int)
@@ -134,21 +138,26 @@ public class ArtifactTransfer extends ByteArrayTransfer {
        */
 
       byte[] bytes = (byte[]) super.nativeToJava(transferData);
-      if (bytes == null) return null;
+      if (bytes == null) {
+         return null;
+      }
       DataInputStream in = new DataInputStream(new ByteArrayInputStream(bytes));
       try {
          int count = in.readInt();
          Artifact[] artifacts = new Artifact[count];
-         for (int i = 0; i < count; i++)
+         for (int i = 0; i < count; i++) {
             artifacts[i] = readArtifact(in);
+         }
          int urlLength = in.readInt();
          int sourceLength = in.readInt();
          String url = "";
-         for (int x = 0; x < urlLength; x++)
+         for (int x = 0; x < urlLength; x++) {
             url += in.readChar();
+         }
          String source = "";
-         for (int x = 0; x < sourceLength; x++)
+         for (int x = 0; x < sourceLength; x++) {
             source += in.readChar();
+         }
          return new ArtifactData(artifacts, url, source);
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

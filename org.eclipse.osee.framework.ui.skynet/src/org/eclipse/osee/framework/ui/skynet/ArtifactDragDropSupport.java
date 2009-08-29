@@ -28,6 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
@@ -181,10 +183,11 @@ public class ArtifactDragDropSupport {
          try {
             artifact = ArtifactQuery.getArtifactFromAttribute("Content URL", location, branch);
          } catch (ArtifactDoesNotExist ex) {
+            AttributeType attributeType = AttributeTypeManager.getType("Content URL");
             Collection<ArtifactType> artifactTypes =
-                  ArtifactTypeManager.getArtifactTypesFromAttributeType("Content URL", branch);
+                  ArtifactTypeManager.getArtifactTypesFromAttributeType(attributeType, branch);
             ArtifactTypeDialog dialog =
-                  new ArtifactTypeDialog(shell, "Artifact Descriptor", null,
+                  new ArtifactTypeDialog(shell, "Artifact Types", null,
                         "No Artifact could be found for this file. To create one, please select an artfact type.",
                         MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0, artifactTypes);
 
