@@ -151,26 +151,56 @@ public class OseeTypeCache {
       return attributeTypes;
    }
 
+   /**
+    * Takes branch hierarchy and artifact type hierarchy into account when determining valid attribute types
+    * 
+    * @param artifactType
+    * @param branch
+    * @return all attribute types that are valid for artifacts of the specified type on the specified branch
+    */
    public Collection<AttributeType> getAttributeTypes(ArtifactType artifactType, Branch branch) {
-      return artifactToAttributeMap.get(branch, artifactType);
+      HashSet<AttributeType> attributeTypes = new HashSet<AttributeType>();
+      getAttributeTypes(attributeTypes, artifactType, branch);
+      return attributeTypes;
    }
 
-   synchronized public void ensureArtifactTypePopulated() throws OseeCoreException {
+   private void getAttributeTypes(HashSet<AttributeType> attributeTypes, ArtifactType artifactType, Branch branch) {
+      Branch branchCursor = branch;
+      while (true) {
+         Collection<AttributeType> items = artifactToAttributeMap.get(branch, artifactType);
+         if (items != null) {
+            attributeTypes.addAll(items);
+         }
+         if (branchCursor.isSystemRootBranch()) {
+            break;
+         } else {
+            branchCursor = branchCursor.getParentBranch();
+         }
+      }
+
+      for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
+         getAttributeTypes(attributeTypes, superType, branch);
+      }
+   }
+
+   public synchronized void ensureCachePopulated() throws OseeCoreException {
       if (idToArtifactTypeMap.isEmpty()) {
          dataAccessor.loadAllArtifactTypes(this, factory);
+      }
+      if (artifactToAttributeMap.isEmpty()) {
+         dataAccessor.loadAllTypeValidity(this, factory);
+      }
+      if (idToAttributeTypeMap.isEmpty()) {
+         dataAccessor.loadAllAttributeTypes(this, factory);
       }
    }
 
    synchronized public void ensureTypeValidityPopulated() throws OseeCoreException {
-      if (artifactToAttributeMap.isEmpty()) {
-         dataAccessor.loadAllArtifactTypes(this, factory);
-      }
+
    }
 
    synchronized public void ensureAttributeTypePopulated() throws OseeCoreException {
-      if (idToAttributeTypeMap.isEmpty()) {
-         dataAccessor.loadAllAttributeTypes(this, factory);
-      }
+
    }
 
    synchronized public void ensureRelationTypePopulated() throws OseeCoreException {
