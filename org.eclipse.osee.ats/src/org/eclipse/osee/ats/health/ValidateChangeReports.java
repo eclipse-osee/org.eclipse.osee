@@ -286,7 +286,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sb.append(AXml.addTagData("rat", change.getRationale()));
       sb.append(AXml.addTagData("aOrdr", String.valueOf(change.getLinkOrder())));
       sb.append(AXml.addTagData("bOrdr", String.valueOf(change.getBLinkOrder())));
-      sb.append(AXml.addTagData("relTId", String.valueOf(change.getRelationType().getRelationTypeId())));
+      sb.append(AXml.addTagData("relTId", String.valueOf(change.getRelationType().getTypeId())));
       sb.append(AXml.addTagData("hist", String.valueOf(change.isHistorical())));
       return AXml.addTagData("RelChg", sb.toString());
    }
@@ -317,7 +317,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sb.append(AXml.addTagData("cType", String.valueOf(change.getChangeType().name())));
       sb.append(AXml.addTagData("aModType", String.valueOf(change.getArtModType().name())));
       sb.append(AXml.addTagData("attrId", String.valueOf(change.getAttrId())));
-      sb.append(AXml.addTagData("attrTId", String.valueOf(change.getAttrTypeId())));
+      sb.append(AXml.addTagData("attrTId", String.valueOf(change.getTypeId())));
       sb.append(AXml.addTagData("hist", String.valueOf(change.isHistorical())));
       return AXml.addTagData("AttrChg", sb.toString());
    }

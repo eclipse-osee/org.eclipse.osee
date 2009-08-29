@@ -36,7 +36,7 @@ public class ArtifactTraceCount extends AbstractArtifactRelationReport {
       header.add("Name");
       header.add("Type");
       for (IRelationEnumeration relation : getRelationsToCheck()) {
-         header.add(relation.getTypeName() + " Trace Count");
+         header.add(relation.getName() + " Trace Count");
       }
       header.add("Subsystem");
       return header.toArray(new String[header.size()]);

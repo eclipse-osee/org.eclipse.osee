@@ -462,7 +462,7 @@ public class TaskXViewer extends WorldXViewer {
                   // Add any new tasks related to parent sma
                   Collection<Artifact> artifacts =
                         transData.getRelatedArtifacts(parentSma.getArtId(),
-                              AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
+                              AtsRelation.SmaToTask_Task.getRelationType().getTypeId(),
                               AtsUtil.getAtsBranch().getBranchId(), transData.cacheAddedRelations);
                   if (artifacts.size() > 0) {
                      ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).add(artifacts);
@@ -471,7 +471,7 @@ public class TaskXViewer extends WorldXViewer {
                   // Remove any tasks related to parent sma
                   artifacts =
                         transData.getRelatedArtifacts(parentSma.getArtId(),
-                              AtsRelation.SmaToTask_Task.getRelationType().getRelationTypeId(),
+                              AtsRelation.SmaToTask_Task.getRelationType().getTypeId(),
                               AtsUtil.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
                   if (artifacts.size() > 0) {
                      ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).removeAll(artifacts);

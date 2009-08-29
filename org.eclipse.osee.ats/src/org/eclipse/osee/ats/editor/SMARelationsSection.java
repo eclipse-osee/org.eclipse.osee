@@ -121,19 +121,19 @@ public class SMARelationsSection extends SectionPart {
       @Override
       public boolean select(Viewer viewer, Object parentElement, Object element) {
          if (element instanceof RelationType) {
-            return !filteredRelationTypeNames.contains(((RelationType) element).getTypeName());
+            return !filteredRelationTypeNames.contains(((RelationType) element).getName());
          }
          return true;
       }
    };
 
    private static List<String> filteredRelationTypeNames =
-         Arrays.asList(AtsRelation.ActionToWorkflow_Action.getTypeName(), AtsRelation.SmaToTask_Sma.getTypeName(),
-               AtsRelation.TeamActionableItem_ActionableItem.getTypeName(),
-               AtsRelation.TeamWorkflowTargetedForVersion_Version.getTypeName(),
-               AtsRelation.TeamLead_Lead.getTypeName(), AtsRelation.TeamMember_Member.getTypeName(),
-               AtsRelation.TeamWorkflowToReview_Review.getTypeName(), AtsRelation.WorkItem__Child.getTypeName(),
-               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getTypeName(),
-               CoreRelationEnumeration.Users_Artifact.getTypeName());
+         Arrays.asList(AtsRelation.ActionToWorkflow_Action.getName(), AtsRelation.SmaToTask_Sma.getName(),
+               AtsRelation.TeamActionableItem_ActionableItem.getName(),
+               AtsRelation.TeamWorkflowTargetedForVersion_Version.getName(),
+               AtsRelation.TeamLead_Lead.getName(), AtsRelation.TeamMember_Member.getName(),
+               AtsRelation.TeamWorkflowToReview_Review.getName(), AtsRelation.WorkItem__Child.getName(),
+               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getName(),
+               CoreRelationEnumeration.Users_Artifact.getName());
 
 }

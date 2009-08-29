@@ -121,7 +121,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
 
             // Don't process link if onlyShowRel is populated and doesn't contain link name
             if (onlyShowRelations.size() > 0) {
-               if (!onlyShowRelations.contains(link.getRelationType().getTypeName())) {
+               if (!onlyShowRelations.contains(link.getRelationType().getName())) {
                   continue;
                }
                x++;
@@ -140,14 +140,14 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
             }
             if (!otherArt.isDeleted()) {
                ArtifactHyperItem ahi = new ArtifactHyperItem(otherArt);
-               String tip = link.getRelationType().getTypeName();
+               String tip = link.getRelationType().getName();
                if (!link.getRationale().equals("")) {
                   tip += "(" + link.getRationale() + ")";
                }
                ahi.setRelationToolTip(tip);
                String label =
                      (isShowOrder() ? "(" + thisOrder + ") " : "") + Strings.truncate(
-                           link.getRelationType().getTypeName(), 20) + (isShowOrder() ? "(" + otherOrder + ") " : "");
+                           link.getRelationType().getName(), 20) + (isShowOrder() ? "(" + otherOrder + ") " : "");
                if (!link.getRationale().equals("")) {
                   label += "(" + link.getRationale() + ")";
                }
