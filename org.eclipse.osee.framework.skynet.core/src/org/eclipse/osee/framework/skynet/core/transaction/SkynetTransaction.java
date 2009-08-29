@@ -20,6 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -46,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedE
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
 
 /**

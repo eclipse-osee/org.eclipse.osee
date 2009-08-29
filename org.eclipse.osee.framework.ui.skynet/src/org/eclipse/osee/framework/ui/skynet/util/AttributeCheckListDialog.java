@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.ArtifactTreeContentProvider;
 import org.eclipse.swt.SWT;
@@ -110,7 +110,7 @@ public class AttributeCheckListDialog extends SelectionDialog {
       });
       try {
          if (branch != null){
-            treeViewer.setInput(TypeValidityManager.getValidAttributeTypes(branch));
+            treeViewer.setInput(AttributeTypeManager.getValidAttributeTypes(branch));
          } else {
             treeViewer.setInput(selectedAttributes);
          }

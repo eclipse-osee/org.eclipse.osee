@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -98,12 +97,10 @@ public class ChangeArtifactType {
     * @param artifact
     * @param descriptor
     */
-   private static void processAttributes(Artifact artifact, ArtifactType descriptor) throws OseeCoreException {
+   private static void processAttributes(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
       attributesToPurge = new LinkedList<Attribute<?>>();
 
-      Collection<AttributeType> attributeTypes =
-            TypeValidityManager.getAttributeTypesFromArtifactType(descriptor, artifact.getBranch());
-
+      Collection<AttributeType> attributeTypes = artifactType.getAttributeTypes(artifact.getBranch());
       for (AttributeType attributeType : artifact.getAttributeTypes()) {
          if (!attributeTypes.contains(attributeType)) {
             attributesToPurge.addAll(artifact.getAttributes(attributeType.getName()));
@@ -117,8 +114,9 @@ public class ChangeArtifactType {
     * 
     * @param artifact
     * @param artifactType
+    * @throws OseeCoreException
     */
-   private static void processRelations(Artifact artifact, ArtifactType artifactType) {
+   private static void processRelations(Artifact artifact, ArtifactType artifactType) throws OseeCoreException {
       relationsToDelete = new LinkedList<RelationLink>();
 
       for (RelationLink link : artifact.getRelationsAll(false)) {

@@ -14,11 +14,11 @@ package org.eclipse.osee.framework.ui.skynet.skywalker;
 import java.util.Collection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**

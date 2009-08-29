@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -46,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
@@ -764,8 +764,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
                Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
                for (Artifact artifactToMove : artifactsToMove) {
-                  artifact.setRelationOrder(targetLink.getOther(), isFeedbackAfter,
-                        targetLink.getRelationType().getRelationTypeSide(targetLink.getRelationSide()), artifactToMove);
+                  artifact.setRelationOrder(targetLink.getOther(), isFeedbackAfter, new RelationTypeSide(
+                        targetLink.getRelationType(), targetLink.getRelationSide()), artifactToMove);
                }
                treeViewer.refresh();
                editor.onDirtied();

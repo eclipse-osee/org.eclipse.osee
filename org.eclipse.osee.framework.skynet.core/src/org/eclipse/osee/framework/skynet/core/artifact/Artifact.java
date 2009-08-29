@@ -64,7 +64,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnot
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
@@ -77,7 +76,6 @@ import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.osgi.framework.Bundle;
 
 public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessControllable {
@@ -313,20 +311,19 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist
     */
-   public boolean isOfType(String artifactType) throws OseeTypeDoesNotExist, OseeDataStoreException {
-      if (true) {
-         if (artifactType.equals(Requirements.ABSTRACT_TEST_UNIT) && Requirements.ALL_TEST_UNIT_TYPES.contains(getArtifactTypeName())) {
-            return true;
-         }
-         if (artifactType.equals(Requirements.ABSTRACT_SOFTWARE_REQUIREMENT) && Requirements.ALL_SOFTWARES_REQUIREMENT_TYPES.contains(getArtifactTypeName())) {
-            return true;
-         }
-         return getArtifactTypeName().equals(artifactType);
-      } else {
-         // TODO enable once artifact inheritance working
-         ArtifactType otherType = ArtifactTypeManager.getType(artifactType);
-         return this.getArtifactType().isOfType(otherType);
-      }
+   public boolean isOfType(String artifactType) throws OseeCoreException {
+      //      if (true) {
+      //         if (artifactType.equals(Requirements.ABSTRACT_TEST_UNIT) && Requirements.ALL_TEST_UNIT_TYPES.contains(getArtifactTypeName())) {
+      //            return true;
+      //         }
+      //         if (artifactType.equals(Requirements.ABSTRACT_SOFTWARE_REQUIREMENT) && Requirements.ALL_SOFTWARES_REQUIREMENT_TYPES.contains(getArtifactTypeName())) {
+      //            return true;
+      //         }
+      //         return getArtifactTypeName().equals(artifactType);
+      //      } else {
+      ArtifactType otherType = ArtifactTypeManager.getType(artifactType);
+      return this.getArtifactType().isOfType(otherType);
+      //      }
    }
 
    @Override
@@ -526,8 +523,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * @throws BranchDoesNotExist
     */
    public boolean isAttributeTypeValid(String attributeName) throws OseeCoreException {
-      return TypeValidityManager.getAttributeTypesFromArtifactType(getArtifactType(), branch).contains(
-            AttributeTypeManager.getType(attributeName));
+      AttributeType attributeType = AttributeTypeManager.getType(attributeName);
+      return getArtifactType().isValidAttributeType(attributeType, branch);
    }
 
    /**
@@ -642,7 +639,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    public Collection<AttributeType> getAttributeTypes() throws OseeCoreException {
-      return TypeValidityManager.getAttributeTypesFromArtifactType(getArtifactType(), branch);
+      return getArtifactType().getAttributeTypes(branch);
    }
 
    public <T> Attribute<T> getSoleAttribute(String attributeTypeName) throws OseeCoreException {
@@ -1001,8 +998,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       ensureAttributesLoaded();
       if (!isAttributeTypeValid(attributeTypeName)) {
          throw new OseeStateException(String.format(
-               "Artifact Type [%s] guid [%s] does not have the attribute type 'Name' which is required.",
-               getArtifactTypeName(), getGuid()));
+               "Artifact[%s] type definition error - Attribute Type [%s] is not a part of Artifact Type [%s]",
+               attributeTypeName, getArtifactTypeName(), getGuid()));
       }
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isOfType(attributeTypeName)) {

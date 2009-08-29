@@ -23,10 +23,8 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
@@ -37,6 +35,7 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChanged;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
@@ -76,21 +75,21 @@ public final class InternalChangeManager {
       Branch branch = artifact.getBranch();
       ArrayList<TransactionId> transactionIds = new ArrayList<TransactionId>();
       recurseBranches(branch, artifact, transactionIds);
-      
+
       for (TransactionId transactionId : transactionIds) {
          changes.addAll(getChanges(null, transactionId, monitor, artifact));
       }
       return changes;
    }
 
-   private void recurseBranches(Branch branch, Artifact artifact, Collection<TransactionId> transactionIds) throws OseeCoreException{
+   private void recurseBranches(Branch branch, Artifact artifact, Collection<TransactionId> transactionIds) throws OseeCoreException {
       transactionIds.addAll(getTransactionsPerArtifact(branch, artifact));
-      
-      if(branch.getParentBranch() != null && branch.hasParentBranch()){
+
+      if (branch.getParentBranch() != null && branch.hasTopLevelBranch()) {
          recurseBranches(branch.getParentBranch(), artifact, transactionIds);
       }
    }
-   
+
    private Collection<TransactionId> getTransactionsPerArtifact(Branch branch, Artifact artifact) throws OseeCoreException {
       Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
 
@@ -226,8 +225,9 @@ public final class InternalChangeManager {
             ModificationType modificationType = ModificationType.getMod(chStmt.getInt("mod_type"));
 
             ArtifactChanged artifactChanged =
-                  new ArtifactChanged(sourceBranch, chStmt.getInt("art_type_id"), chStmt.getInt("gamma_id"), artId,
-                        toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, !hasBranch);
+                  new ArtifactChanged(sourceBranch, ArtifactTypeManager.getType(chStmt.getInt("art_type_id")),
+                        chStmt.getInt("gamma_id"), artId, toTransactionId, fromTransactionId, modificationType,
+                        ChangeType.OUTGOING, !hasBranch);
 
             //We do not want to display artifacts that were new and then deleted
             //The only was this could happen is if the artifact was in here twice
@@ -307,10 +307,11 @@ public final class InternalChangeManager {
                artIds.add(aArtId);
                artIds.add(bArtId);
 
-               changes.add(new RelationChanged(sourceBranch, chStmt.getInt("art_type_id"), chStmt.getInt("gamma_id"),
-                     aArtId, toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, bArtId,
-                     relLinkId, rationale, chStmt.getInt("a_order"), chStmt.getInt("b_order"),
-                     RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")), !hasBranch));
+               changes.add(new RelationChanged(sourceBranch, ArtifactTypeManager.getType(chStmt.getInt("art_type_id")),
+                     chStmt.getInt("gamma_id"), aArtId, toTransactionId, fromTransactionId, modificationType,
+                     ChangeType.OUTGOING, bArtId, relLinkId, rationale, chStmt.getInt("a_order"),
+                     chStmt.getInt("b_order"), RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")),
+                     !hasBranch));
             }
          }
          if (DEBUG) {
@@ -378,7 +379,7 @@ public final class InternalChangeManager {
       loadAttributeWasValues(sourceBranch, transactionId, artIds, monitor, attributesWasValueCache, hasBranch);
    }
 
-   private void loadIsValues(Branch sourceBranch, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds, IStatusMonitor monitor, Map<Integer, Change> attributesWasValueCache, Map<Integer, ModificationType> artModTypes, Set<Integer> modifiedArtifacts, ConnectionHandlerStatement chStmt, boolean hasBranch, long time, TransactionId fromTransactionId, TransactionId toTransactionId, boolean hasSpecificArtifact) throws OseeDataStoreException, OseeArgumentException, OseeTypeDoesNotExist {
+   private void loadIsValues(Branch sourceBranch, Set<Integer> artIds, ArrayList<Change> changes, Set<Integer> newAndDeletedArtifactIds, IStatusMonitor monitor, Map<Integer, Change> attributesWasValueCache, Map<Integer, ModificationType> artModTypes, Set<Integer> modifiedArtifacts, ConnectionHandlerStatement chStmt, boolean hasBranch, long time, TransactionId fromTransactionId, TransactionId toTransactionId, boolean hasSpecificArtifact) throws OseeCoreException {
       ModificationType artModType;
       AttributeChanged attributeChanged;
 
@@ -406,8 +407,9 @@ public final class InternalChangeManager {
                // NEW or DELETED and these chnages are not for a specific artifact
                if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId) && !hasSpecificArtifact) {
                   ArtifactChanged artifactChanged =
-                        new ArtifactChanged(sourceBranch, artTypeId, -1, artId, toTransactionId, fromTransactionId,
-                              ModificationType.MODIFIED, ChangeType.OUTGOING, !hasBranch);
+                        new ArtifactChanged(sourceBranch, ArtifactTypeManager.getType(artTypeId), -1, artId,
+                              toTransactionId, fromTransactionId, ModificationType.MODIFIED, ChangeType.OUTGOING,
+                              !hasBranch);
 
                   changes.add(artifactChanged);
                   modifiedArtifacts.add(artId);
@@ -419,9 +421,9 @@ public final class InternalChangeManager {
                }
 
                attributeChanged =
-                     new AttributeChanged(sourceBranch, artTypeId, sourceGamma, artId, toTransactionId,
-                           fromTransactionId, modificationType, ChangeType.OUTGOING, isValue, "", attrId, attrTypeId,
-                           artModType, !hasBranch);
+                     new AttributeChanged(sourceBranch, ArtifactTypeManager.getType(artTypeId), sourceGamma, artId,
+                           toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, isValue, "",
+                           attrId, attrTypeId, artModType, !hasBranch);
 
                changes.add(attributeChanged);
                attributesWasValueCache.put(attrId, attributeChanged);

@@ -1,0 +1,7 @@
+#Wed Aug 26 21:36:29 MST 2009
+eclipse.preferences.version=1
+gmf_dashboard/domainGenerationModel=platform\:/resource/org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/OseeTypes.genmodel
+gmf_dashboard/generationModel=platform\:/resource/org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/OseeTypes.gmfgen
+gmf_dashboard/graphicalDefinitionModel=platform\:/resource/org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/OseeTypes.gmfgraph
+gmf_dashboard/mappingModel=platform\:/resource/org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/OseeTypes.gmfmap
+gmf_dashboard/toolingDefinitionModel=platform\:/resource/org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/OseeTypes.gmftool

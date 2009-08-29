@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -52,8 +53,8 @@ public class AttributeChanged extends Change {
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
     */
-   public AttributeChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
+   public AttributeChanged(Branch branch, ArtifactType artType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical);
       this.isValue = isValue;
       this.wasValue = wasValue;

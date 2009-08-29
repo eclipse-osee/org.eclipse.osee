@@ -3,6 +3,7 @@ package org.eclipse.osee.framework.types.bridge.operations;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.ecore.util.EcoreUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -31,6 +32,8 @@ public class TextModelToOseeOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       OseeTypeModel model = OseeTypeModelUtil.loadModel(resource);
+      EcoreUtil.getAllContents(model, true);
+
       //      for (Import importEntry : model.getImports()) {
       //         System.out.println("Import: " + importEntry.getImportURI());
       //         OseeTypeModel importedModel = OseeTypeModelUtil.loadModel(new URI(importEntry.getImportURI()));
@@ -56,8 +59,9 @@ public class TextModelToOseeOperation extends AbstractOperation {
       if (superType != null) {
          superTypeId = superType.getName();
       }
+      String guid = "";
       // TODO: Figure out abstract setting in model
-      ArtifactTypeManager.createType(false, artifactType.getName(), superTypeId);
+      ArtifactTypeManager.createType(guid, false, artifactType.getName());
    }
 
    private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {
@@ -95,9 +99,9 @@ public class TextModelToOseeOperation extends AbstractOperation {
       RelationTypeManager.createRelationType(relationType.getName(), //
             relationType.getSideAName(), //
             relationType.getSideBName(), //
-            "", //
-            "", //
-            "", //
+            relationType.getSideAArtifactType().getName(), //
+            relationType.getSideBArtifactType().getName(), //
+            relationType.getMultiplicity().name(), //
             isOrdered(relationType.getDefaultOrderType()),//
             "");
    }

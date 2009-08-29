@@ -66,8 +66,8 @@
 	</Table>
 
 	<Table name="OSEE_ARTIFACT_TYPE" schema="OSEE" tablespace="osee_data">
+		<Column id="ART_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
 		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="SUPER_ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="IS_ABSTRACT" defaultValue="not null" type="INTEGER" />
 		<Column id="NAME" defaultValue="not null" limits="75" type="VARCHAR" />
 	    <Column id="IMAGE" type="BLOB" />
@@ -75,6 +75,18 @@
 		<Index id="OSEE_ARTIFACT_TYPE_N_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="NAME"/>
 		</Index>
+	</Table>
+
+	<Table name="OSEE_ARTIFACT_TYPE_INHERITANCE" schema="OSEE" tablespace="osee_data">
+		<Column id="ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="SUPER_ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_ART_TYPE_INHERIT_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID, SUPER_ART_TYPE_ID" />
+		<Constraint schema="OSEE" id="OSEE_ART_TYPE_ITEM_FK" type="FOREIGN KEY" appliesTo="ART_TYPE_ID">
+			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" onDelete="CASCADE" />
+		</Constraint>
+		<Constraint schema="OSEE" id="OSEE_ART_SUPER_TYPE_FK" type="FOREIGN KEY" appliesTo="SUPER_ART_TYPE_ID">
+			<References schema="OSEE" table="OSEE_ARTIFACT_TYPE" column="ART_TYPE_ID" onDelete="CASCADE" />
+		</Constraint>
 	</Table>
 
 	<Table name="OSEE_ATTRIBUTE" schema="OSEE" tablespace="osee_data">
@@ -134,6 +146,7 @@
 	</Table>
 	
 	<Table name="OSEE_ATTRIBUTE_TYPE" schema="OSEE" tablespace="osee_data">
+		<Column id="ATTR_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
 		<Column id="ATTR_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTR_BASE_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ATTR_PROVIDER_TYPE_ID" defaultValue="not null" type="INTEGER" />
@@ -231,13 +244,14 @@
 	</Table>
 	
 	<Table name="OSEE_RELATION_LINK_TYPE" schema="OSEE" tablespace="osee_data">
+		<Column id="REL_LINK_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
 		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="TYPE_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Column id="A_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
 		<Column id="B_NAME" defaultValue="not null" limits="50" type="VARCHAR" />
-		<Column id="AB_PHRASING" defaultValue="not null" limits="50" type="VARCHAR" />
-		<Column id="BA_PHRASING" defaultValue="not null" limits="50" type="VARCHAR" />
-		<Column id="SHORT_NAME" defaultValue="not null" limits="20" type="VARCHAR" />
+		<Column id="A_ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="B_ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="MULTIPLICITY" defaultValue="not null" type="INTEGER" />
 		<Column id="USER_ORDERED" defaultValue="not null" limits="5" type="VARCHAR" />
 		<Column id="DEFAULT_ORDER_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />

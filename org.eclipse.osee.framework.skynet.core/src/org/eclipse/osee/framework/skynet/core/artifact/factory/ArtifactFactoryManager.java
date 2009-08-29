@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Ryan D. Brooks
  * @author Donald G. Dunne
  */
-public class ArtifactFactoryManager {
+public final class ArtifactFactoryManager {
    private static final String ARTIFACT_FACTORY_EXTENSION = "ArtifactFactory";
    private static final String EXTENSION_ID = Activator.PLUGIN_ID + "." + ARTIFACT_FACTORY_EXTENSION;
    private static final String CLASSNAME_ATTRIBUTE = "classname";
@@ -32,7 +32,10 @@ public class ArtifactFactoryManager {
 
    private static final DefaultArtifactFactory defaultArtifactFactory = new DefaultArtifactFactory();
 
-   public static ArtifactFactory getFactory(String artifactTypeName) throws OseeCoreException {
+   public ArtifactFactoryManager() {
+   }
+
+   public ArtifactFactory getFactory(String artifactTypeName) throws OseeCoreException {
       ArtifactFactory responsibleFactory = null;
       for (ArtifactFactory factory : getFactories()) {
          if (factory.isResponsibleFor(artifactTypeName)) {
@@ -53,11 +56,11 @@ public class ArtifactFactoryManager {
       return getDefaultArtifactFactory();
    }
 
-   private static ArtifactFactory getDefaultArtifactFactory() {
+   private ArtifactFactory getDefaultArtifactFactory() {
       return defaultArtifactFactory;
    }
 
-   private synchronized static List<ArtifactFactory> getFactories() {
+   private synchronized List<ArtifactFactory> getFactories() {
       return extensionDefinedObjects.getObjects();
    }
 }

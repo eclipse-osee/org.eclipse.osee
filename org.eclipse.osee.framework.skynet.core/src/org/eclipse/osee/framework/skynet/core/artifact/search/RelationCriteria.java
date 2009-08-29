@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**

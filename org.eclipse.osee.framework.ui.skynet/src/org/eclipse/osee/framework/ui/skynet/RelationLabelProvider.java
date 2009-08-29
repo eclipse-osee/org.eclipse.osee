@@ -50,7 +50,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    public String getColumnText(Object element, int columnIndex) {
       if (element instanceof RelationTypeSide && columnIndex == 0) {
          RelationTypeSide side = (RelationTypeSide) element;
-         return side.getSideName() + " \"" + (side.isSideA() ? side.getRelationType().getAToBPhrasing() : side.getRelationType().getBToAPhrasing()) + "\" " + (side.isSideA() ? side.getRelationType().getSideBName() : side.getRelationType().getSideAName()) + " \"" + artifact.getName() + "\"";
+         return side.getSideName() + " has [" + side.getRelationType().getMultiplicity().asLimitLabel(side.getSide()) + "] " + (side.isSideA() ? side.getRelationType().getSideBName() : side.getRelationType().getSideAName()) + " \"" + artifact.getName() + "\"";
       } else if (element instanceof RelationType) {
          if (columnIndex == 0) {
             return ((RelationType) element).getTypeName();
@@ -69,13 +69,15 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
       } else if (element instanceof WrapperForRelationLink) {
          WrapperForRelationLink wrapper = (WrapperForRelationLink) element;
          if (columnIndex == 0) {
-               return wrapper.getOther().getName();
+            return wrapper.getOther().getName();
          } else if (columnIndex == 1) {
             String rationale = "";
-            try{
-               rationale = RelationManager.getRelationRationale(wrapper.getArtifactA(), wrapper.getArtifactB(), wrapper.getRelationType());
-            } catch (OseeCoreException ex){
-               
+            try {
+               rationale =
+                     RelationManager.getRelationRationale(wrapper.getArtifactA(), wrapper.getArtifactB(),
+                           wrapper.getRelationType());
+            } catch (OseeCoreException ex) {
+
             }
             return rationale;
          }

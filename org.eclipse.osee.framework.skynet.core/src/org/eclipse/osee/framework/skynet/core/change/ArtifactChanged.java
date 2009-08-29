@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -28,21 +29,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
  */
 public class ArtifactChanged extends Change {
 
-   /**
-    * @param artTypeId
-    * @param artName
-    * @param sourceGamma
-    * @param artId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param modType
-    * @param changeType
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
-    */
-   public ArtifactChanged(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      super(branch, artTypeId, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
-            isHistorical);
+   public ArtifactChanged(Branch branch, ArtifactType artType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType, isHistorical);
    }
 
    @Override
@@ -63,16 +51,15 @@ public class ArtifactChanged extends Change {
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
-      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+      if (adapter == null)
+         throw new IllegalArgumentException("adapter can not be null");
 
       try {
          if (adapter.isInstance(getArtifact())) {
             return getArtifact();
-         }
-         else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
+         } else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
             return getToTransactionId();
-         }
-         else if (adapter.isInstance(this)) {
+         } else if (adapter.isInstance(this)) {
             return this;
          }
       } catch (OseeCoreException ex) {

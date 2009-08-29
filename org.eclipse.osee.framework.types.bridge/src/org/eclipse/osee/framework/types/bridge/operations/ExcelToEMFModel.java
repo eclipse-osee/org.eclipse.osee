@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -82,23 +83,31 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onArtifactType(boolean isAbstract, String name, String superArtifactTypeName) throws OseeCoreException {
+   public void onArtifactTypeInheritance(String ancestor, Collection<String> descendants) throws OseeCoreException {
+      ArtifactType ancestorType = (ArtifactType) getObject(ancestor, ArtifactType.class);
+      if (ancestorType == null) {
+         throw new OseeInvalidInheritanceException("Ancestor [%s]");
+      }
+
+      //      if (superArtifactTypeName != null) {
+      //         ArtifactType superArtifactType = (ArtifactType) getObject(superArtifactTypeName, ArtifactType.class);
+      //         if (superArtifactType == null) {
+      //            boolean isAbstractSuper = false;
+      //            onArtifactType(isAbstractSuper, superArtifactTypeName, null);
+      //            superArtifactType = (ArtifactType) getObject(superArtifactTypeName, ArtifactType.class);
+      //         }
+      //         artifactType.setSuperArtifactType(superArtifactType);
+      //      }
+   }
+
+   @Override
+   public void onArtifactType(boolean isAbstract, String name) throws OseeCoreException {
       String id = toQualifiedName(name);
       OseeType types = getObject(id, ArtifactType.class);
       if (types == null) {
          ArtifactType artifactType = factory.createArtifactType();
          artifactType.setName(id);
          getCurrentModel().getTypes().add(artifactType);
-
-         if (superArtifactTypeName != null) {
-            ArtifactType superArtifactType = (ArtifactType) getObject(superArtifactTypeName, ArtifactType.class);
-            if (superArtifactType == null) {
-               boolean isAbstractSuper = false;
-               onArtifactType(isAbstractSuper, superArtifactTypeName, null);
-               superArtifactType = (ArtifactType) getObject(superArtifactTypeName, ArtifactType.class);
-            }
-            artifactType.setSuperArtifactType(superArtifactType);
-         }
       }
    }
 
@@ -154,10 +163,8 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
       AttributeType attributeType = (AttributeType) getObject(toQualifiedName(attributeName), AttributeType.class);
 
       if (superArtifactType == null && "Artifact".equals(artifactSuperTypeName)) {
-         onArtifactType(false, "Artifact", null);
+         onArtifactType(false, "Artifact");
          superArtifactType = (ArtifactType) getObject(toQualifiedName(artifactSuperTypeName), ArtifactType.class);
-         System.out.println();
-         System.out.println(superArtifactType);
       }
 
       if (superArtifactType == null || attributeType == null) {
@@ -169,7 +176,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onRelationType(String name, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) throws OseeCoreException {
+   public void onRelationType(String name, String sideAName, String sideBName, String artifactTypeSideA, String artifactTypeSideB, String multiplicity, String ordered, String defaultOrderTypeGuid) throws OseeCoreException {
       String id = toQualifiedName(name);
       OseeType types = getObject(id, RelationType.class);
       if (types == null) {
@@ -210,6 +217,8 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
 
       } else if (sideAMax == Integer.MAX_VALUE && sideBMax == Integer.MAX_VALUE) {
          multiplicity = RelationMultiplicityEnum.MANY_TO_MANY;
+      } else if (sideAMax == 1 && sideBMax == 1) {
+         multiplicity = RelationMultiplicityEnum.ONE_TO_ONE;
       } else {
          System.out.println("None detected - " + relationTypeName);
       }
@@ -331,4 +340,8 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
       }
    }
 
+   @Override
+   public void onFinish() throws OseeCoreException {
+
+   }
 }

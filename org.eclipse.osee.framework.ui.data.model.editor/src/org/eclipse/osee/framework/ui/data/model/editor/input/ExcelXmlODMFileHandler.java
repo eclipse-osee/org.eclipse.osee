@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.ui.data.model.editor.model.DataTypeSource;
 public class ExcelXmlODMFileHandler implements IOseeDataTypeHandler {
 
    public DataTypeSource toODMDataTypeSource(IPath file) throws OseeCoreException {
-      OseeDataTypeConverter converter = new OseeDataTypeConverter(file.toPortableString());
+      OseeDataTypeConverter converter = new OseeDataTypeConverter(new DataTypeSource(file.toPortableString()));
       InputStream inputStream = null;
       try {
          inputStream = new BufferedInputStream(FileLocator.openStream(null, file, false));

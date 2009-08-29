@@ -51,7 +51,7 @@ public abstract class Change implements IAdaptable {
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
     */
-   public Change(Branch branch, int artTypeId, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public Change(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
@@ -60,7 +60,7 @@ public abstract class Change implements IAdaptable {
       this.fromTransactionId = fromTransactionId;
       this.modType = modType;
       this.changeType = changeType;
-      this.artifactType = ArtifactTypeManager.getType(artTypeId);
+      this.artifactType = artifactType;
       this.isHistorical = isHistorical;
    }
 
@@ -208,7 +208,7 @@ public abstract class Change implements IAdaptable {
    public abstract String getName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist;
 
    public abstract String getItemKind();
-   
+
    public abstract int getItemId();
 
    /**

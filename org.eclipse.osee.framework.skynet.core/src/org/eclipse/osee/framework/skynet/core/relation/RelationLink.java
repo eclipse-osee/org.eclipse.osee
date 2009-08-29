@@ -11,15 +11,15 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -270,43 +270,27 @@ public class RelationLink {
       return relationType.getSideName(getSide(artifact));
    }
 
-   @Deprecated
-   public String getSidePhrasingFor(Artifact artifact) {
-      try {
-         return processArtifactSidePhrasing(artifact, false);
-      } catch (OseeCoreException ex) {
-         return "Unknown - " + ex.getLocalizedMessage();
-      }
+   public String getSidePhrasingFor(Artifact artifact) throws OseeCoreException {
+      return getSidePhrasingFor(artifact, false);
    }
 
-   @Deprecated
    public String getSidePhrasingForOtherArtifact(Artifact artifact) throws OseeCoreException {
-      return processArtifactSidePhrasing(artifact, true);
+      return getSidePhrasingFor(artifact, true);
    }
 
-   @Deprecated
-   private String processArtifactSidePhrasing(Artifact artifact, boolean otherArtifact) throws OseeCoreException {
-      String sideName = "";
-
+   private String getSidePhrasingFor(Artifact artifact, boolean isOtherArtifact) throws OseeCoreException {
+      RelationSide side;
       if (artifact == getArtifact(RelationSide.SIDE_A)) {
-
-         if (otherArtifact) {
-            sideName = relationType.getBToAPhrasing();
-         } else {
-            sideName = relationType.getAToBPhrasing();
-         }
+         side = RelationSide.SIDE_A;
       } else if (artifact == getArtifact(RelationSide.SIDE_B)) {
-
-         if (otherArtifact) {
-            sideName = relationType.getAToBPhrasing();
-         } else {
-            sideName = relationType.getBToAPhrasing();
-         }
+         side = RelationSide.SIDE_B;
       } else {
-         throw new IllegalArgumentException("Link does not contain the artifact.");
+         throw new OseeArgumentException("Link does not contain the artifact.");
       }
-
-      return sideName;
+      if (isOtherArtifact) {
+         side = side.oppositeSide();
+      }
+      return "has (" + getRelationType().getMultiplicity().asLimitLabel(side) + ")";
    }
 
    @Override
@@ -321,25 +305,25 @@ public class RelationLink {
    }
 
    public void setNotDirty() {
-	   setDirtyFlag(false);
+      setDirtyFlag(false);
    }
 
    public void setDirty() {
-	   setDirtyFlag(true);
+      setDirtyFlag(true);
    }
 
    private void setDirtyFlag(boolean dirty) {
-	  this.dirty = dirty;
-	  try {
-		 ArtifactCache.updateCachedArtifact(aArtifactId, aBranch.getBranchId());
-		 ArtifactCache.updateCachedArtifact(bArtifactId, bBranch.getBranchId());
-	  } catch (OseeStateException ex) {
-		 OseeLog.log(RelationLink.class, Level.SEVERE, ex.toString(), ex);
-	  } catch (OseeCoreException ex) {
-		 OseeLog.log(RelationLink.class, Level.SEVERE, ex.toString(), ex);
-	  }
+      this.dirty = dirty;
+      try {
+         ArtifactCache.updateCachedArtifact(aArtifactId, aBranch.getBranchId());
+         ArtifactCache.updateCachedArtifact(bArtifactId, bBranch.getBranchId());
+      } catch (OseeStateException ex) {
+         OseeLog.log(RelationLink.class, Level.SEVERE, ex.toString(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(RelationLink.class, Level.SEVERE, ex.toString(), ex);
+      }
    }
-   
+
    public boolean isVersionControlled() {
       return true;
    }

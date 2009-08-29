@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IMemento;
@@ -93,7 +93,7 @@ public class SkynetViews {
     */
    public static List<AttributeType> loadAttrTypesFromPreferenceStore(String preferenceKey, Branch branch) throws OseeCoreException {
       List<AttributeType> attributeDescriptors = new LinkedList<AttributeType>();
-      Collection<AttributeType> descriptors = TypeValidityManager.getValidAttributeTypes(branch);
+      Collection<AttributeType> descriptors = AttributeTypeManager.getValidAttributeTypes(branch);
 
       IPreferenceStore preferenceStore = SkynetGuiPlugin.getInstance().getPreferenceStore();
       for (String attributeType : preferenceStore.getString(preferenceKey).split("\\|")) {

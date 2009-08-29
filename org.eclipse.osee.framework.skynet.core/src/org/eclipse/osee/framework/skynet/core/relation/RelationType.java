@@ -10,7 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 
 /**
  * @author Robert A. Fisher
@@ -20,48 +23,49 @@ public class RelationType implements Comparable<RelationType> {
    private final String typeName;
    private final String sideAName;
    private final String sideBName;
-   private final String aToBPhrasing;
-   private final String bToAPhrasing;
-   private final String shortName;
+   private final RelationTypeMultiplicity multiplicity;
+   private final ArtifactType artifactTypeSideA;
+   private final ArtifactType artifactTypeSideB;
+
    private final String ordered;
    private final String defaultOrderTypeGuid;
 
-   public RelationType(int linkTypeId, String typeName, String sideAName, String sideBName, String aToBPhrasing, String bToAPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) {
+   public RelationType(int linkTypeId, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String ordered, String defaultOrderTypeGuid) {
       super();
       this.relationTypeId = linkTypeId;
       this.typeName = typeName;
       this.sideAName = sideAName;
       this.sideBName = sideBName;
-      this.aToBPhrasing = aToBPhrasing;
-      this.bToAPhrasing = bToAPhrasing;
-      this.shortName = shortName;
+      this.artifactTypeSideA = artifactTypeSideA;
+      this.artifactTypeSideB = artifactTypeSideB;
+      this.multiplicity = multiplicity;
+
       this.ordered = ordered;
       this.defaultOrderTypeGuid = defaultOrderTypeGuid;
    }
 
-   /**
-    * @return Returns the aToBPhrasing.
-    */
-   public String getAToBPhrasing() {
-      return aToBPhrasing;
+   public RelationTypeMultiplicity getMultiplicity() {
+      return multiplicity;
    }
 
-   /**
-    * @return Returns the bToAPhrasing.
-    */
-   public String getBToAPhrasing() {
-      return bToAPhrasing;
+   public ArtifactType getArtifactTypeSideA() {
+      return artifactTypeSideA;
    }
 
-   /**
-    * @return Returns the name.
-    */
+   public ArtifactType getArtifactTypeSideB() {
+      return artifactTypeSideB;
+   }
+
+   public ArtifactType getArtifactType(RelationSide relationSide) {
+      return relationSide == RelationSide.SIDE_A ? getArtifactTypeSideA() : getArtifactTypeSideB();
+   }
+
    public String getTypeName() {
       return typeName;
    }
 
    public String getSideName(RelationSide relationSide) {
-      return relationSide == RelationSide.SIDE_A ? sideAName : sideBName;
+      return relationSide == RelationSide.SIDE_A ? getSideAName() : getSideBName();
    }
 
    /**
@@ -78,19 +82,12 @@ public class RelationType implements Comparable<RelationType> {
       return sideBName;
    }
 
-   /**
-    * @return Returns the shortName.
-    */
-   public String getShortName() {
-      return shortName;
-   }
-
    public boolean isSideAName(String sideName) throws OseeArgumentException {
-      if (!sideAName.equals(sideName) && !sideBName.equals(sideName)) {
+      if (!getSideAName().equals(sideName) && !getSideBName().equals(sideName)) {
          throw new OseeArgumentException("sideName does not match either of the available side names");
       }
 
-      return sideAName.equals(sideName);
+      return getSideAName().equals(sideName);
    }
 
    public int compareTo(RelationType descriptor) {
@@ -112,15 +109,11 @@ public class RelationType implements Comparable<RelationType> {
 
    @Override
    public String toString() {
-      return typeName + " " + sideAName + " <--> " + sideBName;
+      return String.format("[%s]: [%s] <--> [%s]", getTypeName(), getSideAName(), getSideBName());
    }
 
    public int getRelationTypeId() {
       return relationTypeId;
-   }
-
-   public RelationTypeSide getRelationTypeSide(RelationSide relationSide) {
-      return new RelationTypeSide(this, relationSide);
    }
 
    public boolean isOrdered() {

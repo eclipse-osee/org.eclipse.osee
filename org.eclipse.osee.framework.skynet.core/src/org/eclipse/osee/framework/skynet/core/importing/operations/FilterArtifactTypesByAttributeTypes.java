@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -57,8 +56,7 @@ public class FilterArtifactTypesByAttributeTypes extends AbstractOperation {
          }
       }
       for (ArtifactType artifactType : ArtifactTypeManager.getValidArtifactTypes(branch)) {
-         Collection<AttributeType> attributeType =
-               TypeValidityManager.getAttributeTypesFromArtifactType(artifactType, branch);
+         Collection<AttributeType> attributeType = artifactType.getAttributeTypes(branch);
          if (Collections.setComplement(requiredTypes, attributeType).isEmpty()) {
             selectedArtifactTypes.add(artifactType);
          }

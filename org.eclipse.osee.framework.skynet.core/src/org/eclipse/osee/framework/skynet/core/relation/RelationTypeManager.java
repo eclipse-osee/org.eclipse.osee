@@ -12,23 +12,22 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SequenceManager;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -38,20 +37,36 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class RelationTypeManager {
    private static final String SELECT_LINK_TYPES = "SELECT * FROM osee_relation_link_type";
    private static final String INSERT_RELATION_LINK_TYPE =
-         "INSERT INTO osee_relation_link_type (rel_link_type_id, type_name, a_name, b_name, ab_phrasing, ba_phrasing, short_name, user_ordered, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?)";
+         "INSERT INTO osee_relation_link_type (rel_link_type_id, type_name, a_name, b_name, a_art_type_id, b_art_type_id, multiplicity, user_ordered, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?)";
 
-   private static final String INSERT_VALID_RELATION =
-         "INSERT INTO osee_valid_relations (art_type_id, rel_link_type_id, side_a_max, side_b_max, branch_id) VALUES (?,?,?,?,?)";
-
-   private final HashMap<String, RelationType> nameToTypeMap = new HashMap<String, RelationType>();
-   private final HashMap<Integer, RelationType> idToTypeMap = new HashMap<Integer, RelationType>();
-   private final CompositeKeyHashMap<RelationType, ArtifactType, Pair<Integer, Integer>> validityMap =
-         new CompositeKeyHashMap<RelationType, ArtifactType, Pair<Integer, Integer>>(300);
-
-   private static final String SELECT_LINK_VALIDITY = "SELECT * FROM osee_valid_relations";
    private static final RelationTypeManager instance = new RelationTypeManager();
+   private final OseeTypeCache oseeTypeCache;
 
    private RelationTypeManager() {
+   }
+
+   public static List<RelationType> getValidTypes(ArtifactType artifactType, Branch branch) throws OseeCoreException {
+      Collection<RelationType> relationTypes = instance.idToTypeMap.values();
+      List<RelationType> validRelationTypes = new ArrayList<RelationType>();
+      for (RelationType relationType : relationTypes) {
+         int sideAMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_A);
+         int sideBMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_B);
+         boolean onSideA = sideBMax > 0;
+         boolean onSideB = sideAMax > 0;
+         if (onSideA || onSideB) {
+            validRelationTypes.add(relationType);
+         }
+      }
+      return validRelationTypes;
+   }
+
+   public static int getRelationSideMax(RelationType relationType, ArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
+      int toReturn = 0;
+      ArtifactType allowedType = relationType.getArtifactType(relationSide);
+      if (artifactType.isOfType(allowedType)) {
+         toReturn = relationType.getMultiplicity().getLimit(relationSide);
+      }
+      return toReturn;
    }
 
    /**
@@ -74,30 +89,11 @@ public class RelationTypeManager {
       return new ArrayList<RelationType>(instance.idToTypeMap.values());
    }
 
-   public static List<RelationType> getValidTypes(ArtifactType artifactType, Branch branch) {
-      Collection<RelationType> relationTypes = instance.idToTypeMap.values();
-      List<RelationType> validRelationTypes = new ArrayList<RelationType>();
-      for (RelationType relationType : relationTypes) {
-         int sideAMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_A);
-         int sideBMax = getRelationSideMax(relationType, artifactType, RelationSide.SIDE_B);
-         boolean onSideA = sideBMax > 0;
-         boolean onSideB = sideAMax > 0;
-         if (onSideA || onSideB) {
-            validRelationTypes.add(relationType);
-         }
-      }
-      return validRelationTypes;
-   }
-
    public static RelationType getType(int relationTypeId) throws OseeTypeDoesNotExist, OseeDataStoreException {
       ensurePopulated();
-      return internalGetType(relationTypeId);
-   }
-
-   private static RelationType internalGetType(int relationTypeId) throws OseeTypeDoesNotExist {
       RelationType relationType = instance.idToTypeMap.get(relationTypeId);
       if (relationType == null) {
-         throw new OseeTypeDoesNotExist("The relation with type id: " + relationTypeId + " does not exist");
+         throw new OseeTypeDoesNotExist("The relation with type id[" + relationTypeId + "] does not exist");
       }
       return relationType;
    }
@@ -140,40 +136,24 @@ public class RelationTypeManager {
          chStmt.runPreparedQuery(SELECT_LINK_TYPES);
 
          while (chStmt.next()) {
-            RelationType relationType =
-                  new RelationType(chStmt.getInt("rel_link_type_id"), chStmt.getString("type_name"),
-                        chStmt.getString("a_name"), chStmt.getString("b_name"), chStmt.getString("ab_phrasing"),
-                        chStmt.getString("ba_phrasing"), chStmt.getString("short_name"),
-                        chStmt.getString("user_ordered"), chStmt.getString("default_order_type_guid"));
-            cache(relationType);
-         }
-         loadLinkValidities();
-      } finally {
-         chStmt.close();
-      }
-   }
-
-   public static int getRelationSideMax(RelationType relationType, ArtifactType artifactType, RelationSide relationSide) {
-      Pair<Integer, Integer> pair = instance.validityMap.get(relationType, artifactType);
-      if (pair == null) {
-         return 0;
-      }
-      return relationSide == RelationSide.SIDE_A ? pair.getFirst() : pair.getSecond();
-   }
-
-   private void loadLinkValidities() throws OseeDataStoreException, OseeTypeDoesNotExist {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         chStmt.runPreparedQuery(2000, SELECT_LINK_VALIDITY);
-
-         while (chStmt.next()) {
             try {
-               RelationType relationType = internalGetType(chStmt.getInt("rel_link_type_id"));
-               ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
-               validityMap.put(relationType, artifactType, new Pair<Integer, Integer>(chStmt.getInt("side_a_max"),
-                     chStmt.getInt("side_b_max")));
-            } catch (OseeCoreException exception) {
-               OseeLog.log(Activator.class, Level.SEVERE, exception);
+               String relationTypeName = chStmt.getString("type_name");
+               int relationTypeId = chStmt.getInt("rel_link_type_id");
+               ArtifactType artifactTypeSideA = ArtifactTypeManager.getType(chStmt.getInt("a_art_type_id"));
+               ArtifactType artifactTypeSideB = ArtifactTypeManager.getType(chStmt.getInt("b_art_type_id"));
+               RelationTypeMultiplicity multiplicity =
+                     RelationTypeMultiplicity.getRelationMultiplicity(chStmt.getInt("multiplicity"));
+               if (multiplicity == null) {
+                  throw new OseeCoreException(String.format("Multiplicity was null for [%s][%s]", relationTypeName,
+                        relationTypeId));
+               }
+               RelationType relationType =
+                     new RelationType(chStmt.getInt("rel_link_type_id"), relationTypeName, chStmt.getString("a_name"),
+                           chStmt.getString("b_name"), artifactTypeSideA, artifactTypeSideB, multiplicity,
+                           chStmt.getString("user_ordered"), chStmt.getString("default_order_type_guid"));
+               cache(relationType);
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       } finally {
@@ -193,7 +173,7 @@ public class RelationTypeManager {
     * @param shortName An abbreviated name to display for the link type.
     * @throws OseeCoreException
     */
-   public static RelationType createRelationType(String relationTypeName, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String orderTypeGuid) throws OseeCoreException {
+   public static RelationType createRelationType(String relationTypeName, String sideAName, String sideBName, String artifactTypeSideA, String artifactTypeSideB, String multiplicity, String ordered, String orderTypeGuid) throws OseeCoreException {
       if (typeExists(relationTypeName)) {
          return getType(relationTypeName);
       }
@@ -206,50 +186,31 @@ public class RelationTypeManager {
       if (!Strings.isValid(sideBName)) {
          throw new IllegalArgumentException("The sideBName can not be null or empty");
       }
-      if (!Strings.isValid(abPhrasing)) {
-         throw new IllegalArgumentException("The abPhrasing can not be null or empty");
+      if (!Strings.isValid(artifactTypeSideA)) {
+         throw new IllegalArgumentException("The artifactTypeSideA can not be null or empty");
       }
-      if (!Strings.isValid(baPhrasing)) {
-         throw new IllegalArgumentException("The baPhrasing can not be null or empty");
+
+      if (!Strings.isValid(artifactTypeSideB)) {
+         throw new IllegalArgumentException("The artifactTypeSideB can not be null or empty");
       }
-      if (!Strings.isValid(shortName)) {
-         throw new IllegalArgumentException("The shortName can not be null or empty");
+
+      RelationTypeMultiplicity multiplicityEnum = RelationTypeMultiplicity.getFromString(multiplicity);
+      if (multiplicityEnum == null) {
+         throw new IllegalArgumentException("The multiplicity can not be null or empty");
       }
+      ArtifactType artTypeIdA = ArtifactTypeManager.getType(artifactTypeSideA);
+      ArtifactType artTypeIdB = ArtifactTypeManager.getType(artifactTypeSideB);
 
       int relationTypeId = SequenceManager.getNextRelationTypeId();
 
       ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, relationTypeId, relationTypeName, sideAName,
-            sideBName, abPhrasing, baPhrasing, shortName, ordered, orderTypeGuid);
+            sideBName, artTypeIdA.getArtTypeId(), artTypeIdB.getArtTypeId(), multiplicityEnum.getValue(), ordered,
+            orderTypeGuid);
 
       RelationType relationType =
-            new RelationType(relationTypeId, relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing, shortName,
-                  ordered, orderTypeGuid);
+            new RelationType(relationTypeId, relationTypeName, sideAName, sideBName, artTypeIdA, artTypeIdB,
+                  multiplicityEnum, ordered, orderTypeGuid);
       instance.cache(relationType);
       return relationType;
-   }
-
-   /**
-    * @param branch
-    * @param artTypeId
-    * @param relLinkTypeId
-    * @param sideAMax
-    * @param sideBMax
-    * @throws OseeDataStoreException
-    * @throws OseeArgumentException
-    */
-   public static void createRelationLinkValidity(Branch branch, ArtifactType artifactType, RelationType relationType, int sideAMax, int sideBMax) throws OseeDataStoreException, OseeArgumentException {
-      if (sideAMax < 0) {
-         throw new OseeArgumentException("The sideAMax can no be negative");
-      }
-      if (sideBMax < 0) {
-         throw new OseeArgumentException("The sideBMax can no be negative");
-      }
-
-      Pair<Integer, Integer> entry = instance.validityMap.get(relationType, artifactType);
-      if (entry == null) {
-         ConnectionHandler.runPreparedUpdate(INSERT_VALID_RELATION, artifactType.getArtTypeId(),
-               relationType.getRelationTypeId(), sideAMax, sideBMax, branch.getBranchId());
-         instance.validityMap.put(relationType, artifactType, new Pair<Integer, Integer>(sideAMax, sideBMax));
-      }
    }
 }

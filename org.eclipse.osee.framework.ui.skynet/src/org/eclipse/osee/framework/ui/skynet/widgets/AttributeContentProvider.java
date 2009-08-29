@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
@@ -33,7 +33,7 @@ public class AttributeContentProvider implements ITreeContentProvider {
          ArrayList<Object> descriptors = new ArrayList<Object>();
 
          try {
-            for (AttributeType descriptor : TypeValidityManager.getValidAttributeTypes((Branch) parentElement)) {
+            for (AttributeType descriptor : AttributeTypeManager.getValidAttributeTypes((Branch) parentElement)) {
                descriptors.add((Object) descriptor);
             }
          } catch (Exception ex) {

@@ -21,6 +21,8 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -584,14 +586,14 @@ public class RelationManager {
       }
    }
 
-   public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeArgumentException {
+   public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
       // For now, relations can not be cross branch.  Ensure that both artifacts are on same branch
       // TODO Fix this when fix cross branching (not writing or reading from db correctly)
       //      if (!artifactA.getBranch().equals(artifactB.getBranch())) {
       //         throw new OseeArgumentException("Cross branch linking is not yet supported.");
       //      }
-      ensureSideWillSupport(artifactA, relationType, RelationSide.SIDE_A, artifactA.getArtifactType(), 1);
-      ensureSideWillSupport(artifactB, relationType, RelationSide.SIDE_B, artifactB.getArtifactType(), 1);
+      ensureSideWillSupport(artifactA, relationType, RelationSide.SIDE_A, 1);
+      ensureSideWillSupport(artifactB, relationType, RelationSide.SIDE_B, 1);
    }
 
    /**
@@ -604,20 +606,24 @@ public class RelationManager {
     * @param artifactCount
     * @throws OseeArgumentException
     */
-   public static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, ArtifactType artifactType, int artifactCount) throws OseeArgumentException {
-      int maxCount = RelationTypeManager.getRelationSideMax(relationType, artifactType, relationSide);
-      int usedCount = getRelatedArtifactsCount(artifact, relationType, relationSide.oppositeSide());
-
-      if (maxCount == 0) {
-         throw new OseeArgumentException(String.format(
-               "Artifact \"%s\" of type \"%s\" does not belong on side \"%s\" of relation \"%s\"", artifact.getName(),
-               artifact.getArtifactTypeName(), relationType.getSideName(relationSide), relationType.getTypeName()));
-      } else if (maxCount == 1 && usedCount + artifactCount > maxCount) {
+   private static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, int artifactCount) throws OseeCoreException {
+      ArtifactType allowedType = relationType.getArtifactType(relationSide);
+      if (artifact.getArtifactType().isOfType(allowedType)) {
          throw new OseeArgumentException(
                String.format(
-                     "Artifact \"%s\" of type \"%s\" can not be added to \"%s\" of relation \"%s\" because doing so would exceed the side maximum of %d for this artifact type",
+                     "Artifact [%s] of type [%s] does not belong on side [%s] of relation [%s] - only artifacts of type [%s] are allowed",
+                     artifact.getName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
+                     relationType.getTypeName(), allowedType));
+      }
+
+      int nextCount = getRelatedArtifactsCount(artifact, relationType, relationSide) + 1;
+      RelationTypeMultiplicity multiplicity = relationType.getMultiplicity();
+      if (!multiplicity.isWithinLimit(relationSide, nextCount)) {
+         throw new OseeArgumentException(
+               String.format(
+                     "Artifact [%s] of type [%s] cannot be added to [%s] of relation [%s] because doing so would exceed the side maximum of [%s] for this artifact type",
                      artifact.getName(), artifact.getArtifactTypeName(), relationSide.toString(),
-                     relationType.getTypeName(), maxCount));
+                     relationType.getTypeName(), multiplicity.asLimitLabel(relationSide)));
       }
    }
 
@@ -807,12 +813,22 @@ public class RelationManager {
 
       @Override
       public boolean equals(Object obj) {
-         if (this == obj) return true;
-         if (obj == null) return false;
-         if (getClass() != obj.getClass()) return false;
+         if (this == obj) {
+            return true;
+         }
+         if (obj == null) {
+            return false;
+         }
+         if (getClass() != obj.getClass()) {
+            return false;
+         }
          ArtifactKey other = (ArtifactKey) obj;
-         if (artId != other.artId) return false;
-         if (branchId != other.branchId) return false;
+         if (artId != other.artId) {
+            return false;
+         }
+         if (branchId != other.branchId) {
+            return false;
+         }
          return true;
       }
 

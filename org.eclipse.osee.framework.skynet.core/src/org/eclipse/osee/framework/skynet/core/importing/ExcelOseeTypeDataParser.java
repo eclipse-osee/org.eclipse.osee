@@ -92,6 +92,7 @@ public class ExcelOseeTypeDataParser {
          superTypeMap = new HashCollection<String, String>(false, HashSet.class);
          validityArray = new ArrayList<ValidityRow>();
          attributeMapRows = new ArrayList<AttributeRow>();
+
       }
 
       public void reset() {
@@ -107,20 +108,8 @@ public class ExcelOseeTypeDataParser {
          this.name = name;
       }
 
-      public void processEmptyRow() {
-      }
-
-      public void processCommentRow(String[] row) {
-      }
-
       public void reachedEndOfWorksheet() {
          isDone = true;
-      }
-
-      public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
-      }
-
-      public void foundStartOfWorksheet(String sheetName) {
       }
 
       public void processHeaderRow(String[] headerRow) {
@@ -131,7 +120,7 @@ public class ExcelOseeTypeDataParser {
          if (tableIterator.hasNext()) {
             Table nextTable = tableIterator.next();
             if (Table.ARTIFACT_TYPE_TABLE.equals(currentTable) && Table.ATTRIBUTE_TYPE_TABLE.equals(nextTable)) {
-               createArtifactTypes();
+               createArtifactTypeInheritance();
             }
             currentTable = nextTable;
          } else {
@@ -167,13 +156,12 @@ public class ExcelOseeTypeDataParser {
          }
       }
 
-      private void createArtifactTypes() {
+      private void createArtifactTypeInheritance() {
          try {
             ensureAllSuperTypesInheritFromArtifact();
 
             List<String> items = new ArrayList<String>();
             items.addAll(superTypeMap.keySet());
-
             Collections.sort(items, new Comparator<String>() {
 
                @Override
@@ -195,14 +183,13 @@ public class ExcelOseeTypeDataParser {
             });
 
             for (String key : items) {
-               if ("Artifact".equals(key)) {
-                  dataTypeProcessor.onArtifactType(false, key, null);
-               }
+               dataTypeProcessor.onArtifactType(false, key);
                Collection<String> descendants = superTypeMap.getValues(key);
                if (descendants != null) {
-                  for (String name : descendants) {
-                     dataTypeProcessor.onArtifactType(false, name, key);
+                  for (String descendant : descendants) {
+                     dataTypeProcessor.onArtifactType(false, descendant);
                   }
+                  dataTypeProcessor.onArtifactTypeInheritance(key, descendants);
                }
             }
          } catch (Exception ex) {
@@ -229,10 +216,10 @@ public class ExcelOseeTypeDataParser {
          }
          String relationTypeName = row[0];
          String sideAName = row[1];
-         String abPhrasing = row[2];
+         //         String abPhrasing = row[2];
          String sideBName = row[3];
-         String baPhrasing = row[4];
-         String shortName = row[5];
+         //         String baPhrasing = row[4];
+         //         String shortName = row[5];
          String ordered = row[6];
          String defaultOrderTypeGuid = row[7];
          if (defaultOrderTypeGuid == null) {
@@ -242,9 +229,8 @@ public class ExcelOseeTypeDataParser {
                defaultOrderTypeGuid = RelationOrderBaseTypes.UNORDERED.getGuid();
             }
          }
-
-         dataTypeProcessor.onRelationType(relationTypeName, sideAName, sideBName, abPhrasing, baPhrasing, shortName,
-               ordered, defaultOrderTypeGuid);
+         dataTypeProcessor.onRelationType(relationTypeName, sideAName, sideBName, "", "", "", ordered,
+               defaultOrderTypeGuid);
       }
 
       private void addAttributeType(String[] row) throws Exception {
@@ -326,6 +312,7 @@ public class ExcelOseeTypeDataParser {
             }
          }
          processRelationValidity();
+         dataTypeProcessor.onFinish();
       }
 
       private void processRelationValidity() throws OseeCoreException {
@@ -350,7 +337,6 @@ public class ExcelOseeTypeDataParser {
                   }
                }
             }
-
             for (Entry<Pair<String, String>, Pair<Integer, Integer>> entry : keyMap.entrySet()) {
                String artifactTypeName = entry.getKey().getFirst();
                String relationTypeName = entry.getKey().getSecond();
@@ -365,6 +351,18 @@ public class ExcelOseeTypeDataParser {
                      row.sideBmax);
             }
          }
+      }
+
+      public void processEmptyRow() {
+      }
+
+      public void processCommentRow(String[] row) {
+      }
+
+      public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
+      }
+
+      public void foundStartOfWorksheet(String sheetName) {
       }
    }
 

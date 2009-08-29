@@ -61,9 +61,8 @@ public class OseeDataTypeDatastore {
       List<RelationDataType> relationDataTypes = new ArrayList<RelationDataType>();
       for (RelationType relationType : RelationTypeManager.getAllTypes()) {
          RelationDataType relationDataType =
-               new RelationDataType(String.valueOf(relationType.getRelationTypeId()), relationType.getTypeName(),
-                     relationType.getAToBPhrasing(), relationType.getBToAPhrasing(), relationType.isOrdered(),
-                     relationType.getShortName(), relationType.getSideAName(), relationType.getSideBName());
+               new RelationDataType(String.valueOf(relationType.getRelationTypeId()), relationType.getTypeName(), "",
+                     "", relationType.isOrdered(), "", relationType.getSideAName(), relationType.getSideBName());
          relationDataTypes.add(relationDataType);
       }
       return relationDataTypes;
@@ -126,9 +125,10 @@ public class OseeDataTypeDatastore {
    public static HashCollection<String, String> getArtifactInheritance() throws OseeCoreException {
       HashCollection<String, String> toReturn = new HashCollection<String, String>();
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
-         if (artifactType.hasSuperArtifactType()) {
-            toReturn.put(String.valueOf(artifactType.getSuperArtifactType().getArtTypeId()),
-                  String.valueOf(artifactType.getArtTypeId()));
+         if (artifactType.hasSuperArtifactTypes()) {
+            for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
+               toReturn.put(String.valueOf(superType.getArtTypeId()), String.valueOf(artifactType.getArtTypeId()));
+            }
          }
       }
       return toReturn;

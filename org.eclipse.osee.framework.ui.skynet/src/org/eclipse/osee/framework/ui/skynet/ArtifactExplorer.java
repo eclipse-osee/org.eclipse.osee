@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -64,7 +65,6 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.Cha
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;

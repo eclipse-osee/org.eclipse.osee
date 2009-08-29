@@ -4,13 +4,12 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 
 public class ArtifactTypeInheritanceTest {
 
@@ -35,7 +34,7 @@ public class ArtifactTypeInheritanceTest {
       Set<ArtifactType> allTypes = new HashSet<ArtifactType>(ArtifactTypeManager.getAllTypes());
       allTypes.remove(baseArtifactType);
 
-      Collection<ArtifactType> descendantTypes = ArtifactTypeManager.getDescendants(baseArtifactType, true);
+      Collection<ArtifactType> descendantTypes = baseArtifactType.getDescendants(true);
       Collection<ArtifactType> types = Collections.setComplement(allTypes, descendantTypes);
       Assert.assertTrue(String.format("%s are not descendants of [%s]", types, baseArtifactType), types.isEmpty());
    }
@@ -44,15 +43,13 @@ public class ArtifactTypeInheritanceTest {
    public void testAttributeTypesOfDescendants() throws OseeCoreException {
       for (ArtifactType baseArtifactType : ArtifactTypeManager.getAllTypes()) {
          Collection<AttributeType> attributeTypes =
-               TypeValidityManager.getAttributeTypesFromArtifactType(baseArtifactType,
-                     BranchManager.getSystemRootBranch());
-
-         for (ArtifactType artifactType : ArtifactTypeManager.getDescendants(baseArtifactType)) {
+               baseArtifactType.getAttributeTypes(BranchManager.getSystemRootBranch());
+         for (ArtifactType artifactType : baseArtifactType.getDescendants(false)) {
             Collection<AttributeType> childAttributeTypes =
-                  TypeValidityManager.getAttributeTypesFromArtifactType(artifactType,
-                        BranchManager.getSystemRootBranch());
+                  artifactType.getAttributeTypes(BranchManager.getSystemRootBranch());
             Collection<AttributeType> complement = Collections.setComplement(attributeTypes, childAttributeTypes);
-            Assert.assertTrue(String.format("[%s] did not inherit %s ", artifactType.getName(), complement), complement.isEmpty());
+            Assert.assertTrue(String.format("[%s] did not inherit %s ", artifactType.getName(), complement),
+                  complement.isEmpty());
          }
       }
    }

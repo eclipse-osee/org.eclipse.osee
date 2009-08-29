@@ -80,7 +80,7 @@ public class OseeTypesImport {
     * @throws OseeCoreException
     */
    private static void runSkynetDbTypesImport(List<IExtension> skynetDbTypesExtensions) throws IOException, SAXException, OseeCoreException {
-      ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(new DbOseeDataTypeProcessor());
+      ExcelOseeTypeDataParser importer = new ExcelOseeTypeDataParser(new DbOseeDataTypeProcessor(), false);
       for (IExtension extension : skynetDbTypesExtensions) {
          IConfigurationElement[] elements = extension.getConfigurationElements();
          for (IConfigurationElement el : elements) {

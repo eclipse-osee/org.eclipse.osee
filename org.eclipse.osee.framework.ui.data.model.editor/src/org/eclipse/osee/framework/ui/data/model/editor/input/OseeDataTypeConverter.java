@@ -27,8 +27,8 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
 
    private final DataTypeSource dataTypeSource;
 
-   public OseeDataTypeConverter(String sourceId) {
-      this.dataTypeSource = new DataTypeSource(sourceId);
+   public OseeDataTypeConverter(DataTypeSource dataTypeSource) {
+      this.dataTypeSource = dataTypeSource;
    }
 
    @Override
@@ -37,10 +37,15 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onArtifactType(boolean isAbstract, String artifactTypeName, String superArtifactTypeName) throws OseeCoreException {
+   public void onArtifactType(boolean isAbstract, String artifactTypeName) throws OseeCoreException {
       ArtifactDataType artifactDataType = new ArtifactDataType(artifactTypeName, null);
 
       this.dataTypeSource.add(artifactDataType);
+   }
+
+   @Override
+   public void onArtifactTypeInheritance(String ancestor, Collection<String> descendants) throws OseeCoreException {
+
    }
 
    @Override
@@ -61,10 +66,9 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    }
 
    @Override
-   public void onRelationType(String name, String sideAName, String sideBName, String abPhrasing, String baPhrasing, String shortName, String ordered, String defaultOrderTypeGuid) throws OseeCoreException {
+   public void onRelationType(String name, String sideAName, String sideBName, String artifactTypeSideA, String artifactTypeSideB, String multiplicity, String ordered, String defaultOrderTypeGuid) throws OseeCoreException {
       RelationDataType relationDataType =
-            new RelationDataType("", name, abPhrasing, baPhrasing, Boolean.valueOf(ordered), shortName, sideAName,
-                  sideBName);
+            new RelationDataType("", name, "", "", Boolean.valueOf(ordered), "", sideAName, sideBName);
 
       this.dataTypeSource.add(relationDataType);
    }
@@ -76,4 +80,10 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    public DataTypeSource getODMModel() {
       return dataTypeSource;
    }
+
+   @Override
+   public void onFinish() throws OseeCoreException {
+
+   }
+
 }

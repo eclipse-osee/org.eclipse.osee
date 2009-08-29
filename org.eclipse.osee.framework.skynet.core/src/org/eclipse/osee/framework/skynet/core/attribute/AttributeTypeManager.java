@@ -15,7 +15,6 @@ import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ATTRIBUTE_P
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -53,17 +53,15 @@ public class AttributeTypeManager {
    private static final String SELECT_ATTRIBUTE_MOD_TYPE =
          "SELECT mod_type FROM osee_txs txs, osee_tx_details txd WHERE txs.gamma_id = ? and txs.transaction_id = txd.transaction_id AND branch_id = ? AND tx_current IN (1,2)";
 
-   private final HashMap<String, AttributeType> nameToTypeMap;
-   private final HashMap<Integer, AttributeType> idToTypeMap;
    private static final AttributeTypeManager instance = new AttributeTypeManager();
+   private OseeTypeCache oseeTypeCache;
 
    private AttributeTypeManager() {
-      this.nameToTypeMap = new HashMap<String, AttributeType>();
-      this.idToTypeMap = new HashMap<Integer, AttributeType>();
+
    }
 
    private static synchronized void ensurePopulated() throws OseeDataStoreException {
-      if (instance.idToTypeMap.size() == 0) {
+      if (instance.idToTypeMap.isEmpty()) {
          instance.populateCache();
       }
    }

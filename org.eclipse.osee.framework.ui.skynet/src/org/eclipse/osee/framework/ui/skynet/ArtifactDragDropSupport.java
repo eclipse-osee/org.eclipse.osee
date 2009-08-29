@@ -17,18 +17,18 @@ import java.util.Collection;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.WorkspaceURL;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
@@ -43,11 +43,11 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class ArtifactDragDropSupport {
 
-   public static void performDragDrop(DropTargetEvent e, RelationExplorerWindow window, Shell shell) {
+   public static void performDragDrop(DropTargetEvent e, RelationExplorerWindow window, Shell shell) throws OseeCoreException {
       performDragDrop(e, null, window, shell);
    }
 
-   private static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window, Shell shell) {
+   private static void performDragDrop(DropTargetEvent e, Artifact[] artifacts, RelationExplorerWindow window, Shell shell) throws OseeCoreException {
 
       if (ArtifactTransfer.getInstance().isSupportedType(e.currentDataType)) {
 
@@ -65,7 +65,7 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   private static void ensureLinkValidity(RelationTypeSide group, Artifact artifact) throws OseeArgumentException {
+   private static void ensureLinkValidity(RelationTypeSide group, Artifact artifact) throws OseeCoreException {
       RelationType relationType = group.getRelationType();
       Artifact otherArtifact = group.getArtifact();
 
@@ -74,7 +74,7 @@ public class ArtifactDragDropSupport {
       RelationManager.ensureRelationCanBeAdded(relationType, artifactA, artifactB);
    }
 
-   private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) {
+   private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) throws OseeCoreException {
       RelationTypeSide group = window.getRelationGroup();
       RelationSide relationSide = group.getSide();
       RelationType relationType = group.getRelationType();
@@ -136,7 +136,7 @@ public class ArtifactDragDropSupport {
             try {
                ensureLinkValidity(group, artifact);
                window.addValid(artifact);
-            } catch (OseeArgumentException ex) {
+            } catch (OseeCoreException ex) {
                window.addInvalid(artifact.getName(), ex.getMessage());
             }
 
@@ -169,7 +169,7 @@ public class ArtifactDragDropSupport {
       try {
          ensureLinkValidity(group, artifact);
          window.addValid(artifact);
-      } catch (OseeArgumentException ex) {
+      } catch (OseeCoreException ex) {
          window.addInvalid(artifact.getName(), ex.getMessage());
       }
    }
@@ -182,7 +182,7 @@ public class ArtifactDragDropSupport {
             artifact = ArtifactQuery.getArtifactFromAttribute("Content URL", location, branch);
          } catch (ArtifactDoesNotExist ex) {
             Collection<ArtifactType> artifactTypes =
-                  TypeValidityManager.getArtifactTypesFromAttributeType("Content URL", branch);
+                  ArtifactTypeManager.getArtifactTypesFromAttributeType("Content URL", branch);
             ArtifactTypeDialog dialog =
                   new ArtifactTypeDialog(shell, "Artifact Descriptor", null,
                         "No Artifact could be found for this file. To create one, please select an artfact type.",

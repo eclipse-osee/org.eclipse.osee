@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -56,8 +57,8 @@ public class RelationChanged extends Change {
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
     */
-   public RelationChanged(Branch branch, int aArtTypeId, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      super(branch, aArtTypeId, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType,
+   public RelationChanged(Branch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
+      super(branch, aArtType, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;

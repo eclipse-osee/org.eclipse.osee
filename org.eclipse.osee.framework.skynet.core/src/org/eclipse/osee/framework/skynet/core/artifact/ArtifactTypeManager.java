@@ -18,21 +18,19 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.core.SequenceManager;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.TypeValidityManager;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 
 /**
  * Contains methods specific to artifact types. All artifact methods will eventually be moved from the
@@ -41,59 +39,87 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Donald G. Dunne
  */
 public class ArtifactTypeManager {
-   private static final int ABSTRACT_TYPE_INDICATOR = 1;
-   private static final int CONCRETE_TYPE_INDICATOR = 0;
-   private static final int NULL_SUPER_ARTIFACT_TYPE = -1;
-
-   private static final String SELECT_ARTIFACT_TYPES = "SELECT * FROM osee_artifact_type order by super_art_type_id";
-   private static final String INSERT_ARTIFACT_TYPE =
-         "INSERT INTO osee_artifact_type (art_type_id, name, is_abstract, super_art_type_id) VALUES (?,?,?,?)";
 
    private static final ArtifactTypeManager instance = new ArtifactTypeManager();
 
-   private final HashMap<String, ArtifactType> nameToTypeMap = new HashMap<String, ArtifactType>();
-   private final HashMap<Integer, ArtifactType> idToTypeMap = new HashMap<Integer, ArtifactType>();
+   private final IArtifactTypeDataAccess artifactTypeDataAccess;
+   private final IOseeTypeDataAccessor dataAccessor;
+   private final OseeTypeCache oseeTypeCache;
+   private final IOseeTypeFactory artifactTypefactory;
 
    private ArtifactTypeManager() {
+      oseeTypeCache = new OseeTypeCache();
+      artifactTypefactory = new OseeTypeFactory(oseeTypeCache);
+      dataAccessor = new OseeTypeDatabaseAccessor(oseeTypeCache, artifactTypefactory);
+      artifactTypeDataAccess = new ArtifactTypeDataAccess(dataAccessor, oseeTypeCache);
    }
 
-   public void refreshCache() throws OseeDataStoreException, OseeTypeDoesNotExist {
-      nameToTypeMap.clear();
-      idToTypeMap.clear();
-      populateCache();
+   private static void ensureArtifactTypePopulated() throws OseeCoreException {
+      instance.dataAccessor.ensureArtifactTypePopulated();
    }
 
-   private static synchronized void ensurePopulated() throws OseeDataStoreException, OseeTypeDoesNotExist {
-      if (instance.idToTypeMap.size() == 0) {
-         instance.populateCache();
+   public static Collection<ArtifactType> getArtifactTypesFromAttributeType(String requestedAttributeType, Branch branch) throws OseeCoreException {
+      List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
+      AttributeType attributeType = AttributeTypeManager.getType(requestedAttributeType);
+      for (ArtifactType artifactType : getAllTypes()) {
+         if (artifactType.getAttributeTypes(branch).contains(attributeType)) {
+            artifactTypes.add(artifactType);
+         }
       }
+      return artifactTypes;
    }
 
-   private void populateCache() throws OseeDataStoreException, OseeTypeDoesNotExist {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+   public static Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws OseeCoreException {
+      // TODO Filter artifact types by branch
+      return ArtifactTypeManager.getAllTypes();
+   }
 
-      try {
-         chStmt.runPreparedQuery(SELECT_ARTIFACT_TYPES);
-
-         while (chStmt.next()) {
-            try {
-               ArtifactType superArtifactType = null;
-               int superArtifactTypeId = chStmt.getInt("super_art_type_id");
-               if (superArtifactTypeId > NULL_SUPER_ARTIFACT_TYPE) {
-                  superArtifactType = ArtifactTypeManager.getType(superArtifactTypeId);
-               }
-               boolean isAbstract = chStmt.getInt("is_abstract") == ABSTRACT_TYPE_INDICATOR;
-               ArtifactType artifactType =
-                     new ArtifactType(isAbstract, chStmt.getInt("art_type_id"), chStmt.getString("name"),
-                           superArtifactType);
-               ArtifactTypeManager.cache(artifactType);
-            } catch (OseeDataStoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+   public static void createInheritance(String superType, Collection<String> descendants) throws OseeCoreException {
+      ensureArtifactTypePopulated();
+      ArtifactType superArtifactType = getType(superType);
+      List<Object[]> typeDescendants = new ArrayList<Object[]>();
+      Set<ArtifactType> artTypeDescendats = new HashSet<ArtifactType>();
+      for (String descendant : descendants) {
+         ArtifactType artTypeDescendant = getType(descendant);
+         if (superArtifactType.equals(artTypeDescendant)) {
+            throw new OseeInvalidInheritanceException(String.format(
+                  "Circular inheritance detected artifact type [%s] inherits from [%s]", artTypeDescendant,
+                  superArtifactType));
+         }
+         if (!inheritanceExists(artTypeDescendant, superArtifactType)) {
+            if (artTypeDescendats.add(artTypeDescendant)) {
+               typeDescendants.add(new Object[] {artTypeDescendant.getArtTypeId(), superArtifactType.getArtTypeId()});
             }
          }
-      } finally {
-         chStmt.close();
       }
+      if (!typeDescendants.isEmpty()) {
+         instance.dataAccessor.storeTypeInheritance(typeDescendants);
+         for (ArtifactType artifactType : artTypeDescendats) {
+            instance.oseeTypeCache.cacheArtifactTypeInheritance(artifactType, superArtifactType);
+         }
+      }
+   }
+
+   public static boolean inheritanceExists(ArtifactType artifactType, ArtifactType superArtifactType) throws OseeCoreException {
+      ensureArtifactTypePopulated();
+      boolean exists = false;
+      if (artifactType.hasSuperArtifactTypes()) {
+         exists = artifactType.getSuperArtifactTypes().contains(superArtifactType);
+      }
+      return exists;
+   }
+
+   public static ArtifactType createType(String guid, boolean isAbstract, String artifactTypeName) throws OseeCoreException {
+      ArtifactType artifactType;
+      if (!typeExists(artifactTypeName)) {
+         artifactType = instance.dataAccessor.createArtifactType(guid, isAbstract, artifactTypeName);
+         instance.dataAccessor.storeArtifactType(artifactType);
+         instance.oseeTypeCache.cacheArtifactType(artifactType);
+      } else {
+         // TODO: Check if anything valuable is different and update it
+         artifactType = getType(artifactTypeName);
+      }
+      return artifactType;
    }
 
    /**
@@ -101,30 +127,14 @@ public class ArtifactTypeManager {
     * @throws OseeTypeDoesNotExist
     * @throws OseeCoreException
     */
-   public static Collection<ArtifactType> getAllTypes() throws OseeDataStoreException, OseeTypeDoesNotExist {
-      ensurePopulated();
-      return instance.idToTypeMap.values();
+   public static Collection<ArtifactType> getAllTypes() throws OseeCoreException {
+      ensureArtifactTypePopulated();
+      return instance.oseeTypeCache.getAllArtifactTypes();
    }
 
-   public static boolean typeExists(String name) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      ensurePopulated();
-      return instance.nameToTypeMap.get(name) != null;
-   }
-
-   public static Collection<AttributeType> getAttributeTypes(String artifactTypeName, Branch branch) throws OseeCoreException {
-      return TypeValidityManager.getAttributeTypesFromArtifactType(ArtifactTypeManager.getType(artifactTypeName),
-            branch);
-   }
-
-   /**
-    * Cache a newly created descriptor.
-    * 
-    * @param descriptor The descriptor to cache
-    * @throws IllegalArgumentException if descriptor is null.
-    */
-   static void cache(ArtifactType artifactType) {
-      instance.nameToTypeMap.put(artifactType.getName(), artifactType);
-      instance.idToTypeMap.put(artifactType.getArtTypeId(), artifactType);
+   public static boolean typeExists(String name) throws OseeCoreException {
+      ensureArtifactTypePopulated();
+      return instance.oseeTypeCache.getArtifactTypeByName(name) != null;
    }
 
    /**
@@ -133,10 +143,9 @@ public class ArtifactTypeManager {
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist
     */
-   public static ArtifactType getType(String name) throws OseeTypeDoesNotExist, OseeDataStoreException {
-      ensurePopulated();
-      ArtifactType artifactType = instance.nameToTypeMap.get(name);
-
+   public static ArtifactType getType(String name) throws OseeCoreException {
+      ensureArtifactTypePopulated();
+      ArtifactType artifactType = instance.oseeTypeCache.getArtifactTypeByName(name);
       if (artifactType == null) {
          throw new OseeTypeDoesNotExist("Artifact type [" + name + "] is not available.");
       }
@@ -151,7 +160,7 @@ public class ArtifactTypeManager {
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist if any name in the artifactTypeNames does not match
     */
-   public static List<ArtifactType> getTypes(Iterable<String> artifactTypeNames) throws OseeTypeDoesNotExist, OseeDataStoreException {
+   public static List<ArtifactType> getTypes(Iterable<String> artifactTypeNames) throws OseeCoreException {
       List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
       for (String artifactTypeName : artifactTypeNames) {
          artifactTypes.add(getType(artifactTypeName));
@@ -163,20 +172,15 @@ public class ArtifactTypeManager {
     * @return Returns the descriptor with a particular name, null if it does not exist.
     * @throws OseeTypeDoesNotExist
     */
-   public static ArtifactType getType(int artTypeId) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      ensurePopulated();
+   public static ArtifactType getType(int artTypeId) throws OseeCoreException {
+      ensureArtifactTypePopulated();
 
-      ArtifactType artifactType = instance.idToTypeMap.get(artTypeId);
+      ArtifactType artifactType = instance.oseeTypeCache.getArtifactTypeById(artTypeId);
 
       if (artifactType == null) {
          throw new OseeTypeDoesNotExist("Atrifact type: " + artTypeId + " is not available.");
       }
       return artifactType;
-   }
-
-   public static Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws OseeCoreException {
-      // TODO: Filter Types By Branch
-      return ArtifactTypeManager.getAllTypes();
    }
 
    /**
@@ -187,7 +191,7 @@ public class ArtifactTypeManager {
     * @throws OseeCoreException
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch) throws OseeCoreException {
-      return ArtifactTypeManager.getType(artifactTypeName).makeNewArtifact(branch);
+      return getType(artifactTypeName).makeNewArtifact(branch);
    }
 
    /**
@@ -213,48 +217,33 @@ public class ArtifactTypeManager {
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
-      return ArtifactTypeManager.getType(artifactTypeName).makeNewArtifact(branch, guid, humandReadableId);
+      return getType(artifactTypeName).makeNewArtifact(branch, guid, humandReadableId);
    }
 
-   public static ArtifactType createType(boolean isAbstract, String artifactTypeName, String superArtifactTypeName) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      ArtifactType artifactType;
-      if (!typeExists(artifactTypeName)) {
-         ArtifactType superArtifactType = null;
-         if (superArtifactTypeName != null) {
-            superArtifactType = getType(superArtifactTypeName);
-         }
-
-         int artTypeId = SequenceManager.getNextArtifactTypeId();
-         artifactType = new ArtifactType(isAbstract, artTypeId, artifactTypeName, superArtifactType);
-         cache(artifactType);
-
-         ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, artTypeId, artifactTypeName,
-               isAbstract ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR,
-               superArtifactType != null ? superArtifactType.getArtTypeId() : NULL_SUPER_ARTIFACT_TYPE);
-      } else {
-
-         // TODO: Check if anything valuable is different and update it
-         artifactType = getType(artifactTypeName);
-      }
-      return artifactType;
-   }
    private static final String DELETE_VALID_REL = "delete from osee_valid_relations where art_type_id = ?";
    private static final String DELETE_VALID_ATTRIBUTE = "delete from osee_valid_attributes where art_type_id = ?";
    private static final String COUNT_ARTIFACT_OCCURRENCE = "select count(1) FROM osee_artifact where art_type_id = ?";
    private static final String DELETE_ARIFACT_TYPE = "delete from osee_artifact_type where art_type_id = ?";
 
-   public static void purgeArtifactType(ArtifactType artifactType) throws OseeCoreException {
-      int artTypeId = artifactType.getArtTypeId();
-      int artifactCount = ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artTypeId);
+   public static void purgeArtifactType(final ArtifactType artifactType) throws OseeCoreException {
+      int artifactCount =
+            ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artifactType.getArtTypeId());
 
       if (artifactCount != 0) {
          throw new OseeArgumentException(
                "Can not delete artifact type " + artifactType.getName() + " because there are " + artifactCount + " existing artifacts of this type.");
       }
+      new DbTransaction() {
 
-      ConnectionHandler.runPreparedUpdate(DELETE_VALID_REL, artTypeId);
-      ConnectionHandler.runPreparedUpdate(DELETE_VALID_ATTRIBUTE, artTypeId);
-      ConnectionHandler.runPreparedUpdate(DELETE_ARIFACT_TYPE, artTypeId);
+         @Override
+         protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
+            int artTypeId = artifactType.getArtTypeId();
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_VALID_REL, artTypeId);
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_VALID_ATTRIBUTE, artTypeId);
+            ConnectionHandler.runPreparedUpdate(connection, DELETE_ARIFACT_TYPE, artTypeId);
+         }
+
+      }.execute();
    }
 
    /**
@@ -285,7 +274,7 @@ public class ArtifactTypeManager {
                changeArtifactType(artifactMap.values(), newArtifactType);
             }
          }
-         ArtifactTypeManager.purgeArtifactType(purgeArtifactType);
+         purgeArtifactType(purgeArtifactType);
       }
    }
 
@@ -316,34 +305,13 @@ public class ArtifactTypeManager {
    }
 
    /**
-    * Changes the descriptor of the artifacts to the provided artifact descriptor
+    * Changes the artifactType of the artifacts to the provided artifact artifactType
     * 
     * @param artifacts
     * @param artifactType
     */
    public static void changeArtifactType(Collection<Artifact> artifacts, ArtifactType artifactType) throws OseeCoreException {
       ChangeArtifactType.changeArtifactType(artifacts, artifactType);
-   }
-
-   public static Collection<ArtifactType> getDescendants(ArtifactType artifactType) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      return getDescendants(artifactType, false);
-   }
-
-   public static Collection<ArtifactType> getDescendants(ArtifactType artifactType, boolean recurse) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      Set<ArtifactType> children = new HashSet<ArtifactType>();
-      getDescendants(artifactType, children, recurse);
-      return children;
-   }
-
-   private static void getDescendants(ArtifactType parentType, Collection<ArtifactType> children, boolean recurse) throws OseeDataStoreException, OseeTypeDoesNotExist {
-      for (ArtifactType itemToCheck : getAllTypes()) {
-         if (parentType.equals(itemToCheck.getSuperArtifactType())) {
-            children.add(itemToCheck);
-            if (recurse) {
-               getDescendants(itemToCheck, children, recurse);
-            }
-         }
-      }
    }
 
    public static void printInheritanceTree(Writer out) throws OseeCoreException {
@@ -357,7 +325,7 @@ public class ArtifactTypeManager {
    }
 
    private static void printInheritanceHelper(ArtifactType artifactType, Writer out) throws Exception {
-      Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getDescendants(artifactType);
+      Collection<ArtifactType> artifactTypes = artifactType.getDescendants(false);
       if (!artifactTypes.isEmpty()) {
          out.write(artifactType.getName());
          out.write("->");
@@ -367,5 +335,9 @@ public class ArtifactTypeManager {
             printInheritanceHelper(child, out);
          }
       }
+   }
+
+   public static void setAttributeTypes(ArtifactType artifactType, Collection<AttributeType> attributeType, Branch branch) throws OseeCoreException {
+      instance.artifactTypeDataAccess.setAttributeTypes(artifactType, attributeType, branch);
    }
 }

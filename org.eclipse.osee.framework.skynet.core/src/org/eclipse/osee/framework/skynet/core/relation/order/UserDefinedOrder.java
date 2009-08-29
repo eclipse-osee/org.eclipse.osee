@@ -8,10 +8,10 @@ package org.eclipse.osee.framework.skynet.core.relation.order;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**

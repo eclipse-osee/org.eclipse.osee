@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -28,9 +29,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -68,7 +69,7 @@ public class MigrateRelationOrder extends AbstractBlam {
    }
 
    private void writeNewOrder(SkynetTransaction transaction, RelationType relationType, Artifact artifact) throws OseeCoreException {
-      IRelationEnumeration relationEnum = relationType.getRelationTypeSide(RelationSide.SIDE_B);
+      IRelationEnumeration relationEnum = new RelationTypeSide(relationType, RelationSide.SIDE_B);
       List<Artifact> relatedArtiafcts = artifact.getRelatedArtifacts(relationEnum);
 
       if (relatedArtiafcts.size() == 1) {
