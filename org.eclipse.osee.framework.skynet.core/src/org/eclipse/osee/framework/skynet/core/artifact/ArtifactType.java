@@ -16,6 +16,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 
 /**
  * @author Robert A. Fisher

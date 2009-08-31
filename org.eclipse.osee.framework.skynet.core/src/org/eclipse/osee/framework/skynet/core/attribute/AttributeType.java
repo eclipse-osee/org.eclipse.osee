@@ -49,12 +49,6 @@ public class AttributeType extends BaseOseeType implements Comparable<AttributeT
     */
    public AttributeType(String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String tipText, String taggerId) {
       super(guid, name);
-      if (minOccurrences < 0) {
-         throw new IllegalArgumentException("minOccurrences must be greater than or equal to zero");
-      }
-      if (maxOccurrences < minOccurrences) {
-         throw new IllegalArgumentException("maxOccurences can not be less than minOccurences");
-      }
       this.baseAttributeTypeId = baseAttributeTypeId;
       this.attributeProviderNameId = attributeProviderNameId;
       this.baseAttributeClass = baseAttributeClass;

@@ -8,13 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.skynet.core.types;
 
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
@@ -57,6 +59,12 @@ public class OseeTypeFactory implements IOseeTypeFactory {
       if (minOccurrences > 0 && defaultValue == null) {
          throw new OseeArgumentException(
                "DefaultValue must be set for attribute [" + name + "] with minOccurrences " + minOccurrences);
+      }
+      if (minOccurrences < 0) {
+         throw new OseeArgumentException("minOccurrences must be greater than or equal to zero");
+      }
+      if (maxOccurrences < minOccurrences) {
+         throw new OseeArgumentException("maxOccurences can not be less than minOccurences");
       }
       return new AttributeType(createGuidIfNeeded(guid), name, baseAttributeTypeId, attributeProviderNameId,
             baseAttributeClass, providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType, minOccurrences,

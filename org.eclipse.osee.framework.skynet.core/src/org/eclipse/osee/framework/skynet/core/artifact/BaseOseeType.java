@@ -18,7 +18,7 @@ public class BaseOseeType {
    }
 
    public final void setTypeId(int uniqueId) {
-      if (this.uniqueId == -1) {
+      if (this.uniqueId == UNPERSISTTED_VALUE) {
          this.uniqueId = uniqueId;
       }
    }

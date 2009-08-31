@@ -17,10 +17,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
-import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 
 /**
  * @author Roberto E. Escobar
@@ -61,7 +62,7 @@ public class OseeEnumType extends BaseOseeType {
       //      }
    }
 
-   public void addEntries(List<Pair<String, Integer>> entries) {
+   public void addEntries(List<Pair<String, Integer>> entries) throws OseeCoreException {
       final List<Pair<String, Integer>> newEntries = getCombinedEntries(this, entries);
       cache.getEnumTypeData().cacheType(this);
       // TODO FIx this - may nee to add a persist call to this class?
@@ -93,7 +94,7 @@ public class OseeEnumType extends BaseOseeType {
       return combinedList;
    }
 
-   public void addEntries(Pair<String, Integer>... entries) {
+   public void addEntries(Pair<String, Integer>... entries) throws OseeCoreException {
       addEntries(Arrays.asList(entries));
    }
 

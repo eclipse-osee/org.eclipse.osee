@@ -24,9 +24,10 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache.ArtifactTypeCache;
 
 /**
  * Contains methods specific to artifact types. All artifact methods will eventually be moved from the

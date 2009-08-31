@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache.OseeTypeCacheData;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache.OseeTypeCacheData;
 
 /**
  * @author Ryan D. Brooks

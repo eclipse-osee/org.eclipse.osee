@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.skynet.core.types;
 
 /**
  * @author Roberto E. Escobar

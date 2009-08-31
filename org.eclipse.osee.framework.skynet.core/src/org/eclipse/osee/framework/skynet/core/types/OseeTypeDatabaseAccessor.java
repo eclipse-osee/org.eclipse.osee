@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.skynet.core.types;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -30,9 +31,15 @@ import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SequenceManager;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeExtensionManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
@@ -95,8 +102,18 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    }
 
    @Override
-   public void storeValidity(List<Object[]> datas) throws OseeCoreException {
-      ConnectionHandler.runBatchUpdate(INSERT_VALID_ATTRIBUTE, datas);
+   public void storeValidity(CompositeKeyHashMap<Branch, ArtifactType, Collection<AttributeType>> validityData) throws OseeCoreException {
+      List<Object[]> datas = new ArrayList<Object[]>();
+      for (Entry<Pair<Branch, ArtifactType>, Collection<AttributeType>> entry : validityData.entrySet()) {
+         Branch branch = entry.getKey().getFirst();
+         ArtifactType artifactType = entry.getKey().getSecond();
+         for (AttributeType attributeType : entry.getValue()) {
+            datas.add(new Object[] {artifactType.getTypeId(), attributeType.getTypeId(), branch.getBranchId()});
+         }
+      }
+      if (!datas.isEmpty()) {
+         ConnectionHandler.runBatchUpdate(INSERT_VALID_ATTRIBUTE, datas);
+      }
    }
 
    @Override

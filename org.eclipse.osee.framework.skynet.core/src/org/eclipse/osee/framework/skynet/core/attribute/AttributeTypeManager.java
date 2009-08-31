@@ -27,10 +27,10 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.OseeTypeCache.OseeTypeCacheData;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache.OseeTypeCacheData;
 
 /**
  * @author Ryan D. Brooks
