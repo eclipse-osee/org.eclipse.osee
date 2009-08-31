@@ -61,6 +61,11 @@ public class RelationType extends BaseOseeType implements Comparable<RelationTyp
       return relationSide == RelationSide.SIDE_A ? getSideAName() : getSideBName();
    }
 
+   public boolean isArtifactTypeAllowed(RelationSide relationSide, ArtifactType artifactType) {
+      ArtifactType allowedType = getArtifactType(relationSide);
+      return artifactType.inheritsFrom(allowedType);
+   }
+
    /**
     * @return Returns the sideAName.
     */

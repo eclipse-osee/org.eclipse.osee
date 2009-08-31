@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -353,12 +352,10 @@ public class RelationManager {
          //(SELECT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current = 3)"
          if (relationEnum.getSide().equals(RelationSide.SIDE_B)) {
             ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_B, queryId, SQL3DataType.INTEGER,
-                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getTypeId(),
-                  artifact.getArtId());
+                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getTypeId(), artifact.getArtId());
          } else {
             ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_A, queryId, SQL3DataType.INTEGER,
-                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getTypeId(),
-                  artifact.getArtId());
+                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getTypeId(), artifact.getArtId());
          }
 
          List<Artifact> deletedArtifacts =
@@ -607,13 +604,12 @@ public class RelationManager {
     * @throws OseeArgumentException
     */
    private static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, int artifactCount) throws OseeCoreException {
-      ArtifactType allowedType = relationType.getArtifactType(relationSide);
-      if (artifact.getArtifactType().inheritsFrom(allowedType)) {
+      if (relationType.isArtifactTypeAllowed(relationSide, artifact.getArtifactType())) {
          throw new OseeArgumentException(
                String.format(
                      "Artifact [%s] of type [%s] does not belong on side [%s] of relation [%s] - only artifacts of type [%s] are allowed",
                      artifact.getName(), artifact.getArtifactTypeName(), relationType.getSideName(relationSide),
-                     relationType.getName(), allowedType));
+                     relationType.getName(), relationType.getArtifactType(relationSide)));
       }
 
       int nextCount = getRelatedArtifactsCount(artifact, relationType, relationSide) + 1;

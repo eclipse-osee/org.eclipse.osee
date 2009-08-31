@@ -48,8 +48,7 @@ public class RelationTypeManager {
 
    public static int getRelationSideMax(RelationType relationType, ArtifactType artifactType, RelationSide relationSide) throws OseeCoreException {
       int toReturn = 0;
-      ArtifactType allowedType = relationType.getArtifactType(relationSide);
-      if (artifactType.inheritsFrom(allowedType)) {
+      if (relationType.isArtifactTypeAllowed(relationSide, artifactType)) {
          toReturn = relationType.getMultiplicity().getLimit(relationSide);
       }
       return toReturn;

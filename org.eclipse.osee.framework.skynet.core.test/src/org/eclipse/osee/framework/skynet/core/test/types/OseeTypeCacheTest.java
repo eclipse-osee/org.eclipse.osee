@@ -11,9 +11,10 @@ import java.util.Set;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -35,17 +36,19 @@ public class OseeTypeCacheTest {
    private static Branch branch1;
    private static Branch branch2;
    private static OseeTypeCache typeCache;
+   private static IOseeTypeFactory factory;
 
    @BeforeClass
    public static void prepareTestData() throws OseeCoreException {
       artifactTypes = new ArrayList<ArtifactType>();
       attributeTypes = new ArrayList<AttributeType>();
       relationTypes = new ArrayList<RelationType>();
+      factory = new OseeTypeFactory();
       branch1 = createBranchHelper("ROOT", "Root Branch", 999, null, BranchType.SYSTEM_ROOT);
       branch2 = createBranchHelper("TEST", "Test Branch", 998, branch1, BranchType.BASELINE);
 
       testAccessor = new TestData(artifactTypes, attributeTypes, relationTypes, branch1, branch2);
-      typeCache = new OseeTypeCache(testAccessor, new OseeTypeFactory());
+      typeCache = new OseeTypeCache(testAccessor, factory);
 
       typeCache.getArtifactTypeData().getAllTypes();
       Assert.assertTrue(testAccessor.isLoadAllArtifactTypes());
@@ -227,7 +230,16 @@ public class OseeTypeCacheTest {
 
    @org.junit.Test
    public void testAddArtifactSuperTypeMethod() throws OseeCoreException {
-      //// TODO
+      ArtifactType artifactType = factory.createArtifactType("myGUID", false, "TestMethodCreated", typeCache);
+      typeCache.getArtifactTypeData().cacheType(artifactType);
+
+      ArtifactType baseType = typeCache.getArtifactTypeData().getTypeByName("BaseArtifactType");
+      Assert.assertFalse(artifactType.inheritsFrom(baseType));
+      Assert.assertEquals(0, artifactType.getSuperArtifactTypes().size());
+
+      artifactType.addSuperType(new HashSet<ArtifactType>(Arrays.asList(baseType)));
+      Assert.assertEquals(1, artifactType.getSuperArtifactTypes().size());
+      Assert.assertTrue(artifactType.inheritsFrom(baseType));
    }
 
    private void checkInheritance(String artTypeGuid, String... superTypeGuids) throws OseeCoreException {
@@ -270,6 +282,47 @@ public class OseeTypeCacheTest {
       checkAttributes("444", branch2, "AAA", "FFF", "CCC", "DDD", "EEE");
       checkAttributes("555", branch2, "AAA", "GGG", "FFF", "CCC", "DDD", "EEE");
       checkAttributes("666", branch2, "AAA", "HHH", "DDD", "CCC", "EEE");
+   }
+
+   public void testRelationTypeSides() throws OseeCoreException {
+      checkRelationTypeSideInheritance("1A", RelationSide.SIDE_A, 1, "111");
+      checkRelationTypeSideInheritance("1A", RelationSide.SIDE_B, 1, "444", "555");
+
+      checkRelationTypeSideInheritance("2B", RelationSide.SIDE_A, 1, "555");
+      checkRelationTypeSideInheritance("2B", RelationSide.SIDE_B, Integer.MAX_VALUE, "000", "111", "222", "333", "444",
+            "555", "666");
+
+      checkRelationTypeSideInheritance("3C", RelationSide.SIDE_A, Integer.MAX_VALUE, "222", "333", "444", "555", "666");
+      checkRelationTypeSideInheritance("3C", RelationSide.SIDE_B, 1, "333", "444", "555", "666");
+
+      checkRelationTypeSideInheritance("4D", RelationSide.SIDE_A, Integer.MAX_VALUE, "666");
+      checkRelationTypeSideInheritance("4D", RelationSide.SIDE_B, Integer.MAX_VALUE, "666");
+   }
+
+   private void checkRelationTypeSideInheritance(String relGuid, RelationSide relationSide, int maxValue, String... artifactTypesAllowed) throws OseeCoreException {
+      RelationType relationType = typeCache.getRelationTypeData().getTypeByGuid(relGuid);
+      Assert.assertNotNull(relationType);
+
+      Assert.assertEquals(maxValue, relationType.getMultiplicity().getLimit(relationSide));
+      Assert.assertEquals(maxValue == Integer.MAX_VALUE ? "n" : "1", relationType.getMultiplicity().asLimitLabel(
+            relationSide));
+
+      List<ArtifactType> allowedTypes = new ArrayList<ArtifactType>();
+      for (String guid : artifactTypesAllowed) {
+         ArtifactType type = typeCache.getArtifactTypeData().getTypeByGuid(guid);
+         Assert.assertNotNull(type);
+         allowedTypes.add(type);
+      }
+
+      for (ArtifactType artifactType : typeCache.getArtifactTypeData().getAllTypes()) {
+         boolean result = relationType.isArtifactTypeAllowed(relationSide, artifactType);
+         if (allowedTypes.contains(artifactType)) {
+            Assert.assertTrue(String.format("ArtifactType [%s] was not allowed", artifactType), result);
+         } else {
+            Assert.assertFalse(String.format("ArtifactType [%s] was allowed even though it should not have been",
+                  artifactType), result);
+         }
+      }
    }
 
    private void checkAttributes(String artTypeGuid, Branch branch, String... attributeGuids) throws OseeCoreException {
@@ -396,22 +449,28 @@ public class OseeTypeCacheTest {
          cache.cacheTypeValidity(artifactCache.getTypeByGuid("666"), attributeCache.getTypeByGuid("HHH"), branch1);
       }
 
+      private RelationType createRelationHelper(OseeTypeCache cache, IOseeTypeFactory factory, String guid, String name, String aGUID, String bGUID, RelationTypeMultiplicity multiplicity) throws OseeCoreException {
+         ArtifactType type1 = cache.getArtifactTypeData().getTypeByGuid(aGUID);
+         ArtifactType type2 = cache.getArtifactTypeData().getTypeByGuid(bGUID);
+         return factory.createRelationType(guid, name, name + "_A", name + "_B", type1, type2, multiplicity, true, "");
+      }
+
       @Override
       public void loadAllRelationTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
          super.loadAllRelationTypes(cache, factory);
-         //         relationTypes.add(factory.createRelationType("REL1", "Relation1", "1-A-Side", "1-B-Side", artifactTypeSideA, artifactTypeSideB, RelationTypeMultiplicity.ONE_TO_ONE,
-         //               false, "");
-         //         int typeId = 300;
-         //         for (RelationType type : relationTypes) {
-         //            type.setTypeId(typeId++);
-         //            cache.getRelationTypeData().cacheType(type);
-         //         }
+         relationTypes.add(createRelationHelper(cache, factory, "1A", "REL_1", "111", "444",
+               RelationTypeMultiplicity.ONE_TO_ONE));
+         relationTypes.add(createRelationHelper(cache, factory, "2B", "REL_2", "555", "000",
+               RelationTypeMultiplicity.ONE_TO_MANY));
+         relationTypes.add(createRelationHelper(cache, factory, "3C", "REL_3", "222", "333",
+               RelationTypeMultiplicity.MANY_TO_ONE));
+         relationTypes.add(createRelationHelper(cache, factory, "4D", "REL_4", "666", "666",
+               RelationTypeMultiplicity.MANY_TO_MANY));
+         int typeId = 300;
+         for (RelationType type : relationTypes) {
+            type.setTypeId(typeId++);
+            cache.getRelationTypeData().cacheType(type);
+         }
       }
-
-      @Override
-      public void storeValidity(CompositeKeyHashMap<Branch, ArtifactType, Collection<AttributeType>> validityData) throws OseeCoreException {
-         super.storeValidity(validityData);
-      }
-
    }
 }
