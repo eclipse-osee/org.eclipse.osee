@@ -107,8 +107,17 @@ public class UserWorldSearchItem {
    }
 
    private Collection<StateMachineArtifact> getOriginatorArtifacts() throws OseeCoreException {
-      return Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
-            "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsUtil.getAtsBranch()));
+      Collection<StateMachineArtifact> originators = new ArrayList<StateMachineArtifact>();
+      Collection<StateMachineArtifact> artifacts =
+            Collections.castAll(ArtifactQuery.getArtifactListFromAttribute(ATSAttributes.LOG_ATTRIBUTE.getStoreName(),
+                  "%type=\"Originated\" userId=\"" + user.getUserId() + "\"%", AtsUtil.getAtsBranch()));
+      // omit historical originators; list current originators
+      for (StateMachineArtifact art : artifacts) {
+         if (art.getWorldViewOriginator().equals(user.getName())) {
+            originators.add(art);
+         }
+      }
+      return originators;
    }
 
    private Collection<StateMachineArtifact> getSubscribedArtifacts() throws OseeCoreException {
