@@ -44,10 +44,12 @@ public class RelationConflict extends Conflict {
       return false;
    }
 
+   @Override
    public ConflictStatus computeStatus() {
       return null;
    }
 
+   @Override
    public int getObjectId() throws OseeCoreException {
       return 0;
    }
@@ -111,6 +113,7 @@ public class RelationConflict extends Conflict {
       return null;
    }
 
+   @Override
    public int getMergeGammaId() throws BranchMergeException {
       throw new BranchMergeException("Relation Conflicts are not implemented yet");
    }

@@ -28,23 +28,12 @@ public class ArtifactConflict extends Conflict {
    private static final String ARTIFACT_MODIFIED = "MODIFIED";
    private final boolean sourceDeleted;
 
-   /**
-    * @param sourceGamma
-    * @param destGamma
-    * @param artId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param transactionType
-    * @param changeType
-    * @param mergeBranch
-    * @param sourceBranch
-    * @param destBranch
-    */
    public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch, int sourceModType, int destModType, int artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
-      sourceDeleted = (sourceModType == ModificationType.DELETED.getValue());
+      sourceDeleted = sourceModType == ModificationType.DELETED.getValue();
    }
 
+   @Override
    public String getArtifactName() throws OseeCoreException {
       if (sourceDeleted) {
          return getDestArtifact().getName();
@@ -55,7 +44,9 @@ public class ArtifactConflict extends Conflict {
 
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
-      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+      if (adapter == null) {
+         throw new IllegalArgumentException("adapter can not be null");
+      }
 
       if (adapter.isInstance(this)) {
          return this;
@@ -69,14 +60,17 @@ public class ArtifactConflict extends Conflict {
       return false;
    }
 
+   @Override
    public ConflictStatus computeStatus() throws OseeCoreException {
-      if (!sourceDeleted)
+      if (!sourceDeleted) {
          return super.computeStatus(getObjectId(), ConflictStatus.NOT_RESOLVABLE);
-      else
+      } else {
          return super.computeStatus(getObjectId(), ConflictStatus.INFORMATIONAL);
+      }
 
    }
 
+   @Override
    public int getObjectId() throws OseeCoreException {
       return getArtifact().getArtId();
    }
@@ -147,6 +141,7 @@ public class ArtifactConflict extends Conflict {
       getSourceArtifact().revert();
    }
 
+   @Override
    public int getMergeGammaId() throws BranchMergeException {
       throw new BranchMergeException("Artifact Conflicts can not be handled they must be reverted on the Source Branch");
    }

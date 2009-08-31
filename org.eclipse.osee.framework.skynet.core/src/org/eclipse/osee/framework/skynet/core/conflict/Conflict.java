@@ -31,8 +31,8 @@ public abstract class Conflict implements IAdaptable {
    protected int sourceGamma;
    protected int destGamma;
    private int artId;
-   private TransactionId toTransactionId;
-   private TransactionId commitTransactionId;
+   private final TransactionId toTransactionId;
+   private final TransactionId commitTransactionId;
    private Artifact artifact;
    private Artifact sourceArtifact;
    private Artifact destArtifact;
@@ -43,15 +43,6 @@ public abstract class Conflict implements IAdaptable {
    private String sourceDiffFile = null;
    private String destDiffFile = null;
 
-   /**
-    * @param sourceGamma
-    * @param destGamma
-    * @param artId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param transactionType
-    * @param changeType
-    */
    public Conflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId commitTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
       super();
       this.sourceGamma = sourceGamma;
@@ -68,10 +59,6 @@ public abstract class Conflict implements IAdaptable {
       this(sourceGamma, destGamma, artId, null, commitTransactionId, mergeBranch, null, destBranch);
    }
 
-   /**
-    * @return the artifact
-    * @throws OseeCoreException
-    */
    public Artifact getArtifact() throws OseeCoreException {
       if (artifact == null) {
          artifact = ArtifactQuery.getArtifactFromId(artId, mergeBranch, true);
@@ -118,58 +105,34 @@ public abstract class Conflict implements IAdaptable {
       return destBranch;
    }
 
-   /**
-    * @return the sourceGamma
-    */
    public int getSourceGamma() {
       return sourceGamma;
    }
 
-   /**
-    * @param sourceGamma the sourceGamma to set
-    */
    public void setSourceGamma(int sourceGamma) {
       this.sourceGamma = sourceGamma;
    }
 
-   /**
-    * @return the destGamma
-    */
    public int getDestGamma() {
       return destGamma;
    }
 
-   /**
-    * @param destGamma the destGamma to set
-    */
    public void setDestGamma(int destGamma) {
       this.destGamma = destGamma;
    }
 
-   /**
-    * @return the artId
-    */
    public int getArtId() {
       return artId;
    }
 
-   /**
-    * @param artId the artId to set
-    */
    public void setArtId(int artId) {
       this.artId = artId;
    }
 
-   /**
-    * @return the toTransactionId
-    */
    public TransactionId getToTransactionId() {
       return toTransactionId;
    }
 
-   /**
-    * @return the toTransactionId
-    */
    public TransactionId getCommitTransactionId() {
       return commitTransactionId;
    }
@@ -186,7 +149,9 @@ public abstract class Conflict implements IAdaptable {
    public ConflictStatus computeStatus(int objectID, ConflictStatus DefaultStatus) throws OseeCoreException {
       ConflictStatus passedStatus = DefaultStatus;
       try {
-         if (sourceEqualsDestination() && mergeEqualsSource()) passedStatus = ConflictStatus.RESOLVED;
+         if (sourceEqualsDestination() && mergeEqualsSource()) {
+            passedStatus = ConflictStatus.RESOLVED;
+         }
       } catch (AttributeDoesNotExist ex) {
       }
       status =
@@ -197,7 +162,9 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public void setStatus(ConflictStatus status) throws OseeCoreException {
-      if (this.status.equals(status)) return;
+      if (this.status.equals(status)) {
+         return;
+      }
       ConflictStatusManager.setStatus(status, sourceGamma, destGamma, mergeBranch.getBranchId());
       this.status = status;
    }
@@ -270,30 +237,18 @@ public abstract class Conflict implements IAdaptable {
       }
    }
 
-   /**
-    * @return the sourceDiffFile
-    */
    public String getSourceDiffFile() {
       return sourceDiffFile;
    }
 
-   /**
-    * @param sourceDiffFile the sourceDiffFile to set
-    */
    public void setSourceDiffFile(String sourceDiffFile) {
       this.sourceDiffFile = sourceDiffFile;
    }
 
-   /**
-    * @return the destDiffFile
-    */
    public String getDestDiffFile() {
       return destDiffFile;
    }
 
-   /**
-    * @param destDiffFile the destDiffFile to set
-    */
    public void setDestDiffFile(String destDiffFile) {
       this.destDiffFile = destDiffFile;
    }

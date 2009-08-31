@@ -20,20 +20,10 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
  * @author Theron Virgin
  */
 public class ArtifactConflictBuilder extends ConflictBuilder {
-   private int sourceModType;
-   private int destModType;
-   private int artTypeId;
+   private final int sourceModType;
+   private final int destModType;
+   private final int artTypeId;
 
-   /**
-    * @param sourceGamma
-    * @param destGamma
-    * @param artId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param transactionType
-    * @param sourceBranch
-    * @param destBranch
-    */
    public ArtifactConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, Branch sourceBranch, Branch destBranch, int sourceModType, int destModType, int artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, sourceBranch, destBranch);
       this.artTypeId = artTypeId;

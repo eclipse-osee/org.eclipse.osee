@@ -28,19 +28,6 @@ public abstract class ConflictBuilder {
    protected Branch sourceBranch;
    protected Branch destBranch;
 
-   /**
-    * @param sourceGamma
-    * @param destGamma
-    * @param artId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param artifact
-    * @param transactionType
-    * @param changeType
-    * @param mergeBranch
-    * @param sourceBranch
-    * @param destBranch
-    */
    public ConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, Branch sourceBranch, Branch destBranch) {
       super();
       this.sourceGamma = sourceGamma;
