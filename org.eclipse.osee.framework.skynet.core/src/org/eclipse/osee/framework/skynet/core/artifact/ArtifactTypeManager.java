@@ -245,30 +245,6 @@ public class ArtifactTypeManager {
       }
    }
 
-   //   public static void printInheritanceTree(Writer out) throws OseeCoreException {
-   //      ArtifactType artifactType = ArtifactTypeManager.getType("Artifact");
-   //      try {
-   //         out.write("Inheritance:\n");
-   //         printInheritanceHelper(artifactType, out);
-   //      } catch (Exception e) {
-   //         throw new OseeWrappedException(e);
-   //      }
-   //   }
-   //
-   //   private static void printInheritanceHelper(ArtifactType artifactType, Writer out) throws Exception {
-   //      Collection<ArtifactType> artifactTypes = null;
-   //      //         artifactType.getDescendants(false);
-   //      if (!artifactTypes.isEmpty()) {
-   //         out.write(artifactType.getName());
-   //         out.write("->");
-   //         out.write(artifactTypes.toString());
-   //         out.write("\n");
-   //         for (ArtifactType child : artifactTypes) {
-   //            printInheritanceHelper(child, out);
-   //         }
-   //      }
-   //   }
-
    public static void setAttributeTypes(ArtifactType artifactType, Collection<AttributeType> attributeTypes, Branch branch) throws OseeCoreException {
       OseeTypeManager.getCache().cacheTypeValidity(artifactType, attributeTypes, branch);
    }

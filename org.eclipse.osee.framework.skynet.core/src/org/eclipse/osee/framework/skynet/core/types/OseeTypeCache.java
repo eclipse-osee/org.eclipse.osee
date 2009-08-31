@@ -25,13 +25,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -57,10 +57,12 @@ public class OseeTypeCache {
 
    private final IOseeTypeDataAccessor dataAccessor;
    private final IOseeTypeFactory factory;
+   private boolean duringPopulate;
 
    public OseeTypeCache(IOseeTypeDataAccessor dataAccessor, IOseeTypeFactory factory) {
       this.dataAccessor = dataAccessor;
       this.factory = factory;
+      this.duringPopulate = false;
    }
 
    private IOseeTypeDataAccessor getDataAccessor() {
@@ -120,7 +122,8 @@ public class OseeTypeCache {
       return types;
    }
 
-   public void addArtifactSuperType(ArtifactType artifactType, Set<ArtifactType> superTypes) throws OseeCoreException {
+   @SuppressWarnings("unchecked")
+   public void addArtifactSuperType(ArtifactType artifactType, Collection<ArtifactType> superTypes) throws OseeCoreException {
       ensurePopulated();
       if (artifactType == null) {
          throw new OseeArgumentException("artifactType cannot be null");
@@ -139,22 +142,9 @@ public class OseeTypeCache {
       if (existingSuperTypes != null) {
 
       }
-      getDataAccessor().storeTypeInheritance(artifactType, superTypes);
+      getDataAccessor().storeTypeInheritance(artifactType, Collections.toSet(superTypes));
       cacheArtifactTypeInheritance(artifactType, superTypes);
    }
-
-   //   public Collection<AttributeType> getAttributeTypes(ArtifactType artifactType) throws OseeCoreException {
-   //      Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
-   //      for (Entry<Pair<Branch, ArtifactType>, Collection<AttributeType>> entries : artifactToAttributeMap.entrySet()) {
-   //         if (artifactType.equals(entries.getKey().getSecond())) {
-   //            Collection<AttributeType> list = entries.getValue();
-   //            if (list != null) {
-   //               attributeTypes.addAll(list);
-   //            }
-   //         }
-   //      }
-   //      return attributeTypes;
-   //   }
 
    /**
     * Takes branch hierarchy and artifact type hierarchy into account when determining valid attribute types
@@ -172,7 +162,7 @@ public class OseeTypeCache {
    private void getAttributeTypes(HashSet<AttributeType> attributeTypes, ArtifactType artifactType, Branch branch) {
       Branch branchCursor = branch;
       while (true) {
-         Collection<AttributeType> items = artifactToAttributeMap.get(branch, artifactType);
+         Collection<AttributeType> items = artifactToAttributeMap.get(branchCursor, artifactType);
          if (items != null) {
             attributeTypes.addAll(items);
          }
@@ -189,11 +179,15 @@ public class OseeTypeCache {
    }
 
    private synchronized void ensurePopulated() throws OseeCoreException {
-      getArtifactTypeData().ensureTypeCachePopulated();
-      getEnumTypeData().ensureTypeCachePopulated();
-      getAttributeTypeData().ensureTypeCachePopulated();
-      ensureTypeValidityPopulated();
-      getRelationTypeData().ensureTypeCachePopulated();
+      if (!duringPopulate) {
+         duringPopulate = true;
+         getArtifactTypeData().ensureTypeCachePopulated();
+         getEnumTypeData().ensureTypeCachePopulated();
+         getAttributeTypeData().ensureTypeCachePopulated();
+         ensureTypeValidityPopulated();
+         getRelationTypeData().ensureTypeCachePopulated();
+         duringPopulate = false;
+      }
    }
 
    void ensureTypeValidityPopulated() throws OseeCoreException {

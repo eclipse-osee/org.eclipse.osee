@@ -119,30 +119,30 @@ public class TestOseeTypeDataAccessor implements IOseeTypeDataAccessor {
    }
 
    @Override
-   public void loadAllArtifactTypes(OseeTypeCache cache, IOseeTypeFactory artifactTypeFactory) throws OseeCoreException {
+   public void loadAllArtifactTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
       Assert.assertNotNull(cache);
-      Assert.assertNotNull(artifactTypeFactory);
+      Assert.assertNotNull(factory);
       setLoadAllArtifactTypes(true);
    }
 
    @Override
-   public void loadAllAttributeTypes(OseeTypeCache cache, IOseeTypeFactory artifactTypeFactory) throws OseeCoreException {
+   public void loadAllAttributeTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
       Assert.assertNotNull(cache);
-      Assert.assertNotNull(artifactTypeFactory);
+      Assert.assertNotNull(factory);
       setLoadAllAttributeTypes(true);
    }
 
    @Override
-   public void loadAllOseeEnumTypes(OseeTypeCache cache, IOseeTypeFactory artifactTypeFactory) throws OseeCoreException {
+   public void loadAllOseeEnumTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
       Assert.assertNotNull(cache);
-      Assert.assertNotNull(artifactTypeFactory);
+      Assert.assertNotNull(factory);
       setLoadAllOseeEnumTypes(true);
    }
 
    @Override
-   public void loadAllRelationTypes(OseeTypeCache cache, IOseeTypeFactory artifactTypeFactory) throws OseeCoreException {
+   public void loadAllRelationTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
       Assert.assertNotNull(cache);
-      Assert.assertNotNull(artifactTypeFactory);
+      Assert.assertNotNull(factory);
       setLoadAllRelationTypes(true);
    }
 

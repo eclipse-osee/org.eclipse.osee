@@ -48,6 +48,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType.OseeEnumEnt
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache.ArtifactTypeCache;
 
 /**
  * @author Roberto E. Escobar
@@ -137,6 +138,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    }
 
    public void loadAllArtifactTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+      ArtifactTypeCache cacheData = cache.getArtifactTypeData();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(SELECT_ARTIFACT_TYPES);
@@ -148,7 +150,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                      factory.createArtifactType(chStmt.getString("art_type_guid"), isAbstract,
                            chStmt.getString("name"), cache);
                artifactType.setTypeId(chStmt.getInt("art_type_id"));
-               cache.getArtifactTypeData().cacheType(artifactType);
+               cacheData.cacheType(artifactType);
             } catch (OseeDataStoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -171,12 +173,12 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
             }
             ArtifactType superArtifactType = null;
             if (superArtTypeId != NULL_SUPER_ARTIFACT_TYPE) {
-               superArtifactType = cache.getArtifactTypeData().getTypeById(artTypeId);
+               superArtifactType = cacheData.getTypeById(artTypeId);
             }
             superTypes.add(superArtifactType);
 
             if (previousBaseId != artTypeId) {
-               ArtifactType artifactType = cache.getArtifactTypeData().getTypeById(artTypeId);
+               ArtifactType artifactType = cacheData.getTypeById(artTypeId);
                if (artifactType == null) {
                   throw new OseeInvalidInheritanceException(String.format(
                         "ArtifactType [%s] inherit from [%s] is null", artTypeId, superArtTypeId));

@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
@@ -52,24 +53,8 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
 
    public Set<AttributeType> getAttributeTypes(Branch branch) throws OseeCoreException {
       Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
-      populateInheritedAttributeTypes(this, branch, attributeTypes);
+      attributeTypes.addAll(cache.getAttributeTypes(this, branch));
       return attributeTypes;
-   }
-
-   private void populateInheritedAttributeTypes(ArtifactType currentType, Branch branch, Collection<AttributeType> attributeTypes) throws OseeCoreException {
-      if (branch != null) {
-         attributeTypes.addAll(cache.getAttributeTypes(currentType, branch));
-      } else {
-         //         attributeTypes.addAll(cache.getAttributeTypesFor(currentType));
-      }
-      System.out.println("currentType : " + currentType.getName() + " " + attributeTypes);
-      if (hasSuperArtifactTypes()) {
-         for (ArtifactType superType : getSuperArtifactTypes()) {
-            if (!currentType.equals(superType)) {
-               populateInheritedAttributeTypes(superType, branch, attributeTypes);
-            }
-         }
-      }
    }
 
    public boolean isAbstract() {
@@ -140,7 +125,11 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
     * @throws OseeCoreException
     */
    public boolean inheritsFrom(String artifactTypeName) throws OseeCoreException {
-      return inheritsFrom(ArtifactTypeManager.getType(artifactTypeName));
+      ArtifactType artifactType = cache.getArtifactTypeData().getTypeByName(artifactTypeName);
+      if (artifactType == null) {
+         throw new OseeTypeDoesNotExist("Artifact type [" + artifactTypeName + "] is not available.");
+      }
+      return inheritsFrom(artifactType);
    }
 
    @Override
