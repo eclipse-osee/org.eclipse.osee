@@ -7,7 +7,6 @@ Bundle-SymbolicName: org.eclipse.osee.framework.types.generator; singleton:=true
 Eclipse-RegisterBuddy: org.eclipse.xtext.log4j
 Bundle-ActivationPolicy: lazy
 Require-Bundle:  org.eclipse.osee.framework.types;visibility:=reexport,
- org.eclipse.xpand;visibility:=reexport,
  org.eclipse.xtend;visibility:=reexport,
  org.eclipse.xtext;visibility:=reexport,
  org.eclipse.emf.mwe.core;visibility:=reexport,
