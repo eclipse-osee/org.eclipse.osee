@@ -217,6 +217,9 @@ public class OseeTypeCache {
       }
 
       public void cacheType(T type) throws OseeCoreException {
+         if (type == null) {
+            throw new OseeArgumentException("Caching a null value is not allowed");
+         }
          nameToTypeMap.put(type.getName(), type);
          guidToTypeMap.put(type.getGuid(), type);
          if (type.getTypeId() != BaseOseeType.UNPERSISTTED_VALUE) {
