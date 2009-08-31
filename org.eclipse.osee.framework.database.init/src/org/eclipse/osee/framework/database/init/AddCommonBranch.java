@@ -40,7 +40,7 @@ public class AddCommonBranch implements IDbInitializationTask {
 
    public void run() throws OseeCoreException {
       Branch systemBranch = BranchManager.createSystemRootBranch();
-      OseeTypesImport.importSkynetDbTypes(getSkynetDbTypeExtensionIds());
+      OseeTypesImport.execute(getSkynetDbTypeExtensionIds());
 
       if (initializeRootArtifacts) {
          ArtifactTypeManager.addArtifact(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, systemBranch,
@@ -53,7 +53,7 @@ public class AddCommonBranch implements IDbInitializationTask {
    }
 
    public List<String> getSkynetDbTypeExtensionIds() {
-      return Arrays.asList("org.eclipse.osee.framework.skynet.core.OseeTypes_CommonBranch",
+      return Arrays.asList("org.eclipse.osee.framework.skynet.core.OseeSystemTypes",
             "org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon", "org.eclipse.osee.ats.OseeTypes_ATS");
    }
 

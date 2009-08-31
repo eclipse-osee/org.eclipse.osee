@@ -21,6 +21,7 @@
    <extension-point id="ArtifactSourceParserDelegate" name="ArtifactSourceParserDelegate" schema="schema/ArtifactSourceParserDelegate.exsd"/>
    <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="schema/ArtifactExtractor.exsd"/>
    <extension-point id="ArtifactExtractorDelegate" name="ArtifactExtractorDelegate" schema="schema/ArtifactExtractorDelegate.exsd"/>
+   <extension-point id="OseeTypesHandler" name="OseeTypesHandler" schema="schema/OseeTypesHandler.exsd"/>
 
        <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
@@ -234,6 +235,14 @@
      <ArtifactExtractorDelegate
            classname="org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate">
      </ArtifactExtractorDelegate>
+  </extension>
+  <extension
+        id="OseeSystemTypes"
+        name="OseeSystemTypes"
+        point="org.eclipse.osee.framework.skynet.core.OseeTypes">
+     <OseeTypes
+           resource="support/OseeTypes_framework.osee">
+     </OseeTypes>
   </extension>        
         
 </plugin>

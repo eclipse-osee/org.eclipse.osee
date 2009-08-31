@@ -6,7 +6,7 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
-import org.eclipse.osee.framework.types.bridge.operations.TextModelToOseeOperation;
+import org.eclipse.osee.framework.types.bridge.operations.XTextToOseeTypeOperation;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -26,7 +26,7 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
    public boolean performFinish() {
       File file = mainPage.getFile();
 
-      IOperation operation = new TextModelToOseeOperation(file.toURI());
+      IOperation operation = new XTextToOseeTypeOperation(file.toURI());
       Operations.executeAsJob(operation, true);
       return true;
    }

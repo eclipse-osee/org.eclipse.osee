@@ -40,4 +40,10 @@
             name="New Osee Types">
       </wizard>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.skynet.core.OseeTypesHandler">
+      <OseeTypesHandler
+            classname="org.eclipse.osee.framework.types.bridge.operations.XtextOseeTypesHandler">
+      </OseeTypesHandler>
+   </extension>
 </plugin>

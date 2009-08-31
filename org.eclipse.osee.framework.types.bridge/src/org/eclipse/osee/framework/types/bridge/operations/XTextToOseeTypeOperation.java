@@ -27,10 +27,10 @@ import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 
-public class TextModelToOseeOperation extends AbstractOperation {
+public class XTextToOseeTypeOperation extends AbstractOperation {
    private final java.net.URI resource;
 
-   public TextModelToOseeOperation(java.net.URI resource) {
+   public XTextToOseeTypeOperation(java.net.URI resource) {
       super("OSEE Text Model to OSEE", Activator.PLUGIN_ID);
       this.resource = resource;
    }

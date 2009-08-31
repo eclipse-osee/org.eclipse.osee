@@ -291,7 +291,7 @@ public class AtsBranchConfigurationTest {
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon");
       skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramBranch");
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoProgram");
-      OseeTypesImport.importSkynetDbTypes(skynetTypeImport);
+      OseeTypesImport.execute(skynetTypeImport);
 
       return BranchManager.createTopLevelBranch(branchName, branchName);
    }

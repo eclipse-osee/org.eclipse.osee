@@ -3,7 +3,7 @@
 <schema targetNamespace="org.eclipse.osee.framework.skynet.core" xmlns="http://www.w3.org/2001/XMLSchema">
 <annotation>
       <appInfo>
-         <meta.schema plugin="org.eclipse.osee.framework.skynet.core" id="OseeTypes" name="OseeTypes"/>
+         <meta.schema plugin="org.eclipse.osee.framework.skynet.core" id="OseeTypesHandler" name="OseeTypesHandler"/>
       </appInfo>
       <documentation>
          [Enter description of this extension point.]
@@ -18,8 +18,7 @@
       </annotation>
       <complexType>
          <sequence>
-            <element ref="ExcelFile" minOccurs="0" maxOccurs="1"/>
-            <element ref="OseeTypes" minOccurs="0" maxOccurs="1"/>
+            <element ref="OseeTypesHandler"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
@@ -28,14 +27,14 @@
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="id" type="string" use="required">
+         <attribute name="id" type="string">
             <annotation>
                <documentation>
                   
                </documentation>
             </annotation>
          </attribute>
-         <attribute name="name" type="string" use="required">
+         <attribute name="name" type="string">
             <annotation>
                <documentation>
                   
@@ -48,30 +47,15 @@
       </complexType>
    </element>
 
-   <element name="ExcelFile">
+   <element name="OseeTypesHandler">
       <complexType>
-         <attribute name="file" type="string" use="required">
+         <attribute name="classname" type="string" use="required">
             <annotation>
                <documentation>
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="resource"/>
-               </appInfo>
-            </annotation>
-         </attribute>
-      </complexType>
-   </element>
-
-   <element name="OseeTypes">
-      <complexType>
-         <attribute name="resource" type="string" use="required">
-            <annotation>
-               <documentation>
-                  
-               </documentation>
-               <appInfo>
-                  <meta.attribute kind="resource"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.framework.skynet.core.importing.IOseeTypesHandler"/>
                </appInfo>
             </annotation>
          </attribute>
@@ -98,7 +82,7 @@
 
    <annotation>
       <appInfo>
-         <meta.section type="apiInfo"/>
+         <meta.section type="apiinfo"/>
       </appInfo>
       <documentation>
          [Enter API information here.]
