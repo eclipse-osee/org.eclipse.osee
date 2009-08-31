@@ -451,7 +451,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
       }
 
       public boolean isValid() {
-         return destinationArtifact != null && sourceFile != null && extractor != null && extractor.isDelegateRequired() ? extractor.hasDelegate() : true;
+         return destinationArtifact != null && sourceFile != null && extractor != null && (extractor.isDelegateRequired() ? extractor.hasDelegate() : true);
       }
    }
 }
