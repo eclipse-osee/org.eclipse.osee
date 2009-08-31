@@ -54,7 +54,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  */
 public class ConflictManagerInternal {
    private static final String CONFLICT_CLEANUP =
-         "DELETE FROM osee_conflict WHERE merge_branch_id = ? AND conflict_id NOT IN ";
+          "DELETE FROM osee_conflict t1 WHERE merge_branch_id = ? and NOT EXISTS (SELECT 'X' FROM osee_join_artifact WHERE query_id = ? and t1.conflict_id = art_id)";
 
    private static final String GET_DESTINATION_BRANCHES =
          "SELECT dest_branch_id FROM osee_merge WHERE source_branch_id = ?";
@@ -406,30 +406,28 @@ public class ConflictManagerInternal {
       int count = 0;
       long time = System.currentTimeMillis();
       monitor.setSubtaskName("Cleaning up old conflict data");
-      if (conflicts != null && conflicts.size() != 0 && branchId != 0) {
-         count = ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP + createData(conflicts), branchId);
+      int queryId = ArtifactLoader.getNewQueryId();
+      
+      try{
+         if (conflicts != null && conflicts.size() != 0 && branchId != 0) {
+            Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+
+            List<Object[]> insertParameters = new LinkedList<Object[]>();
+            for (Conflict conflict : conflicts) {
+               insertParameters.add(new Object[] {queryId, insertTime, conflict.getObjectId(), branchId, SQL3DataType.INTEGER});
+            }
+            ArtifactLoader.insertIntoArtifactJoin(insertParameters);
+            count = ConnectionHandler.runPreparedUpdate(CONFLICT_CLEANUP, branchId, queryId);
+         }
+      }finally{
+         ArtifactLoader.clearQuery(queryId);
       }
+      
       if (DEBUG) {
          System.out.println(String.format("    Cleaned up %d conflicts that are no longer conflicting in %s ", count,
                Lib.getElapseString(time)));
       }
       monitor.updateWork(10);
-   }
-
-   private static String createData(Collection<Conflict> conflicts) throws OseeCoreException {
-      StringBuilder builder = new StringBuilder();
-      builder.append("(");
-      boolean first = true;
-      for (Conflict conflict : conflicts) {
-         if (!first) {
-            builder.append(" , ");
-         } else {
-            first = false;
-         }
-         builder.append(conflict.getObjectId());
-      }
-      builder.append(")");
-      return builder.toString();
    }
 
    public static Collection<Integer> getDestinationBranchesMerged(int sourceBranchId) throws OseeCoreException {
