@@ -129,21 +129,22 @@ public class OseeTypeCache {
          throw new OseeArgumentException("artifactType cannot be null");
       }
       if (superTypes.isEmpty() || superTypes == null) {
-         if (!getArtifactTypeData().getTypeByName("Artifact").equals(artifactType)) {
+         if (!artifactType.getName().equals("Artifact")) {
             throw new OseeInvalidInheritanceException(String.format(
                   "Attempting to set [%s] as the root inheritance object - only [Artifact] is allowed", artifactType));
          }
-      }
-      if (superTypes.contains(artifactType)) {
-         throw new OseeInvalidInheritanceException(String.format(
-               "Circular inheritance detected for artifact type [%s]", artifactType));
-      }
-      Collection<ArtifactType> existingSuperTypes = artifactTypeToSuperTypeMap.getValues(artifactType);
-      if (existingSuperTypes != null) {
+      } else {
+         if (superTypes.contains(artifactType)) {
+            throw new OseeInvalidInheritanceException(String.format(
+                  "Circular inheritance detected for artifact type [%s]", artifactType));
+         }
+         Collection<ArtifactType> existingSuperTypes = artifactTypeToSuperTypeMap.getValues(artifactType);
+         if (existingSuperTypes != null) {
 
+         }
+         getDataAccessor().storeTypeInheritance(artifactType, Collections.toSet(superTypes));
+         cacheArtifactTypeInheritance(artifactType, superTypes);
       }
-      getDataAccessor().storeTypeInheritance(artifactType, Collections.toSet(superTypes));
-      cacheArtifactTypeInheritance(artifactType, superTypes);
    }
 
    /**

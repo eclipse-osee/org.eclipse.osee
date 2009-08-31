@@ -260,7 +260,10 @@ public class ArtifactTypeManager {
          // UPDATE VALUES HERE
       }
       dataCache.cacheType(artifactType);
-      dataCache.storeAllModified();
       return artifactType;
+   }
+
+   public static void persist() throws OseeCoreException {
+      OseeTypeManager.getCache().getArtifactTypeData().storeAllModified();
    }
 }

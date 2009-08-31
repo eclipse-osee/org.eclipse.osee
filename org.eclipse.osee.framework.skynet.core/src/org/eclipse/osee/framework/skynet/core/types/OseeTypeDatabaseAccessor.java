@@ -266,20 +266,13 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
 
    @Override
    public void storeArtifactType(Collection<ArtifactType> types) throws OseeCoreException {
-      if (types != null) {
-         if (types.size() == 1) {
-            ArtifactType type = types.iterator().next();
-            type.setTypeId(SequenceManager.getNextArtifactTypeId());
-            ConnectionHandler.runPreparedUpdate(INSERT_ARTIFACT_TYPE, toArray(type));
-         } else {
-            List<Object[]> datas = new ArrayList<Object[]>();
-            for (ArtifactType type : types) {
-               type.setTypeId(SequenceManager.getNextArtifactTypeId());
-               datas.add(toArray(type));
-            }
-            ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE, datas);
-         }
+      List<Object[]> datas = new ArrayList<Object[]>();
+      for (ArtifactType type : types) {
+         type.setTypeId(SequenceManager.getNextArtifactTypeId());
+         datas.add(new Object[] {type.getTypeId(), type.getGuid(), type.getName(),
+               type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR});
       }
+      ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE, datas);
    }
 
    @Override
@@ -318,11 +311,6 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
       }
    }
 
-   private Object[] toArray(ArtifactType type) throws OseeDataStoreException {
-      return new Object[] {type.getTypeId(), type.getName(),
-            type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR};
-   }
-
    private Object[] toArray(RelationType type) throws OseeDataStoreException {
       return new Object[] {type.getTypeId(), type.getName(), type.getSideAName(), type.getSideBName(),
             type.getArtifactTypeSideA().getTypeId(), type.getArtifactTypeSideB().getTypeId(),
@@ -333,7 +321,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    private Object[] toArray(AttributeType type) throws OseeDataStoreException {
       int attrBaseTypeId = getOrCreateAttributeBaseType(type.getBaseAttributeTypeId());
       int attrProviderTypeId = getOrCreateAttributeProviderType(type.getAttributeProviderId());
-      return new Object[] {type.getTypeId(), attrBaseTypeId, attrProviderTypeId,
+      return new Object[] {type.getTypeId(), type.getGuid(), attrBaseTypeId, attrProviderTypeId,
             type.getFileTypeExtension() == null ? SQL3DataType.VARCHAR : type.getFileTypeExtension(),
             type.getName() == null ? SQL3DataType.VARCHAR : type.getName(),
             type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(), type.getOseeEnumTypeId(),

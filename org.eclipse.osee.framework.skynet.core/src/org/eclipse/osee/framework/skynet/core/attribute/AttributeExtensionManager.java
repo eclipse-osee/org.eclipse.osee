@@ -54,6 +54,9 @@ public class AttributeExtensionManager {
    }
 
    public static Class<? extends Attribute<?>> getAttributeClassFor(String name) throws OseeCoreException {
+      if (!name.contains(".")) {
+         name = Activator.PLUGIN_ID + "." + name;
+      }
       if (instance.attributeTypeClasses == null) {
          instance.attributeTypeClasses = instance.loadExtensions(ATTRIBUTE_TYPE, attributeBaseTypes, CLASS_ID);
       }
@@ -67,6 +70,9 @@ public class AttributeExtensionManager {
    }
 
    public static Class<? extends AbstractAttributeDataProvider> getAttributeProviderClassFor(String name) throws OseeCoreException {
+      if (!name.contains(".")) {
+         name = Activator.PLUGIN_ID + "." + name;
+      }
       if (instance.attributeDataProviderClasses == null) {
          instance.attributeDataProviderClasses =
                instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);

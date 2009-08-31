@@ -64,6 +64,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             monitor.worked(calculateWork(workPercentage));
          }
       }
+      ArtifactTypeManager.persist();
    }
 
    /**
@@ -92,7 +93,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          } else {
             branch = BranchManager.getBranchByGuid(branchGuid);
          }
-         items.put(branch, AttributeTypeManager.getType(attributeType.getTypeGuid()));
+         items.put(branch, AttributeTypeManager.getTypeByGuid(attributeType.getTypeGuid()));
       }
 
       for (Branch branch : items.keySet()) {
@@ -101,8 +102,9 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    }
 
    private void handleArtifactType(ArtifactType artifactType) throws OseeCoreException {
+      String artifactTypeName = artifactType.getName().substring(1, artifactType.getName().length() - 1); // strip off enclosing quotes
       artifactType.setTypeGuid(ArtifactTypeManager.createType(artifactType.getTypeGuid(), artifactType.isAbstract(),
-            artifactType.getName()).getGuid());
+            artifactTypeName).getGuid());
    }
 
    private org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType getOseeEnumTypes(OseeEnumType enumType) throws OseeCoreException {
@@ -128,6 +130,10 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    }
 
    private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {
+      int max = Integer.MAX_VALUE;
+      if (!attributeType.getMax().equals("unlimited")) {
+         max = Integer.parseInt(attributeType.getMax());
+      }
       attributeType.setTypeGuid(AttributeTypeManager.createType(attributeType.getTypeGuid(), //
             attributeType.getName(), //
             attributeType.getBaseAttributeType(), // 
@@ -136,7 +142,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             attributeType.getDefaultValue(), //
             getOseeEnumTypes(attributeType.getEnumType()), //
             Integer.parseInt(attributeType.getMin()), //
-            Integer.parseInt(attributeType.getMax()), //
+            max, //
             attributeType.getDescription(), //
             attributeType.getTaggerId()).getGuid());
    }

@@ -1,6 +1,5 @@
 package org.eclipse.osee.framework.types.bridge.operations;
 
-import java.net.URISyntaxException;
 import java.net.URL;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -17,7 +16,8 @@ public class XtextOseeTypesHandler implements IOseeTypesHandler {
       try {
          IOperation operation = new XTextToOseeTypeOperation(url.toURI());
          Operations.executeWork(operation, monitor, -1);
-      } catch (URISyntaxException ex) {
+         Operations.checkForErrorStatus(operation.getStatus());
+      } catch (Exception ex) {
          throw new OseeWrappedException(ex);
       }
    }
