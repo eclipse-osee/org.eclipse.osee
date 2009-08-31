@@ -171,6 +171,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          managedForm.addPart(new SMAWorkFlowDebugSection(atsBody, toolkit, SWT.NONE, smaMgr));
       }
 
+      atsBody.layout();
       atsBody.setFocus();
       // Jump to scroll location if set
       Integer selection = guidToScrollLocation.get(smaMgr.getSma().getGuid());
