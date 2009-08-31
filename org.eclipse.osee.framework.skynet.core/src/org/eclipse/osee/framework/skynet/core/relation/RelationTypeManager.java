@@ -102,7 +102,10 @@ public class RelationTypeManager {
          // UPDATE VALUES HERE
       }
       dataCache.cacheType(relationType);
-      dataCache.storeAllModified();
       return relationType;
+   }
+
+   public static void persist() throws OseeCoreException {
+      OseeTypeManager.getCache().getRelationTypeData().storeAllModified();
    }
 }

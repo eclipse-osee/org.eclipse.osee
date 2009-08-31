@@ -398,8 +398,8 @@ artifactType "Software Requirement" extends "MS Word Template Requirement" {
    attribute "Category"
    attribute "Common NAL Requirement"
    attribute "Crew Interface Requirement"
-   attribute "CSCI" branchGuid "branchGuid"
-   attribute "Partition" branchGuid "branchGuid"
+   attribute "CSCI"
+   attribute "Partition"
    attribute "System Security Requirement"
    attribute "Training Effectivity"
 }

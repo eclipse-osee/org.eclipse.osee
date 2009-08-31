@@ -1,15 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     Boeing - initial API and implementation
- *******************************************************************************/
-/*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2009 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -142,7 +132,6 @@ public class OseeTypeCache {
          if (existingSuperTypes != null) {
 
          }
-         getDataAccessor().storeTypeInheritance(artifactType, Collections.toSet(superTypes));
          cacheArtifactTypeInheritance(artifactType, superTypes);
       }
    }
@@ -245,7 +234,7 @@ public class OseeTypeCache {
          return guidToTypeMap.get(typeGuid);
       }
 
-      private Collection<T> getDirtyTypes() throws OseeCoreException {
+      protected Collection<T> getDirtyTypes() throws OseeCoreException {
          ensurePopulated();
          return dirtyItems;
       }
@@ -293,6 +282,16 @@ public class OseeTypeCache {
       @Override
       protected void storeItems(Collection<ArtifactType> items) throws OseeCoreException {
          getDataAccessor().storeArtifactType(items);
+      }
+
+      @Override
+      public void storeAllModified() throws OseeCoreException {
+         Collection<ArtifactType> dirtyTypes = getDirtyTypes();
+         super.storeAllModified();
+         for (ArtifactType artifactType : dirtyTypes) {
+            getDataAccessor().storeTypeInheritance(artifactType,
+                  Collections.toSet(artifactType.getSuperArtifactTypes()));
+         }
       }
    }
 

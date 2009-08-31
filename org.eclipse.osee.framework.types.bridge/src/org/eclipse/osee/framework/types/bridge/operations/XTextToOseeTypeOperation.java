@@ -65,6 +65,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          }
       }
       ArtifactTypeManager.persist();
+      RelationTypeManager.persist();
    }
 
    /**
@@ -101,8 +102,12 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       }
    }
 
+   private String getTypeName(String nameReference) {
+      return nameReference.substring(1, nameReference.length() - 1); // strip off enclosing quotes
+   }
+
    private void handleArtifactType(ArtifactType artifactType) throws OseeCoreException {
-      String artifactTypeName = artifactType.getName().substring(1, artifactType.getName().length() - 1); // strip off enclosing quotes
+      String artifactTypeName = getTypeName(artifactType.getName());
       artifactType.setTypeGuid(ArtifactTypeManager.createType(artifactType.getTypeGuid(), artifactType.isAbstract(),
             artifactTypeName).getGuid());
    }
@@ -154,12 +159,11 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             relationType.getName(), //
             relationType.getSideAName(), //
             relationType.getSideBName(), //
-            ArtifactTypeManager.getType(relationType.getSideAArtifactType().getName()), //
-            ArtifactTypeManager.getType(relationType.getSideBArtifactType().getName()), //
+            ArtifactTypeManager.getType(getTypeName(relationType.getSideAArtifactType().getName())), //
+            ArtifactTypeManager.getType(getTypeName(relationType.getSideBArtifactType().getName())), //
             multiplicity, //
             isOrdered(relationType.getDefaultOrderType()),//
-            ""// TODO missing defaultOrderGUID
-      ).getGuid());
+            relationType.getDefaultOrderType()).getGuid());
    }
 
    private boolean isOrdered(String orderType) {
