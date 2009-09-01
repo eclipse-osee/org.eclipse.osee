@@ -48,7 +48,7 @@ public class GUID {
    }
 
    public static boolean isValid(String guid) {
-      return pattern.matcher(guid).matches();
+      return Strings.isValid(guid) && pattern.matcher(guid).matches();
    }
 
    private static byte[] chopMostSignificantByte(long high, long low) {
@@ -72,8 +72,8 @@ public class GUID {
       writeBuffer[14] = (byte) (low >>> 0);
       return writeBuffer;
    }
-   
-   public static void main(String[] args){
+
+   public static void main(String[] args) {
       System.out.println(GUID.create());
    }
 }
