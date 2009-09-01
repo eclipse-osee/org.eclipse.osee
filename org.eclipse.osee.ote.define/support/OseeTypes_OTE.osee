@@ -1,4 +1,4 @@
-import "platform:/resource/org.eclipse.osee.framework.skynet.core/support/OseeTypes_framework.osee"
+import "platform:/resource/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 
 artifactType "Test Case" extends "Test Unit" {
 }
