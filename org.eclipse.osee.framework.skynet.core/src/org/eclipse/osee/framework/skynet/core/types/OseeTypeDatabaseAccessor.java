@@ -277,20 +277,12 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
 
    @Override
    public void storeRelationType(Collection<RelationType> types) throws OseeCoreException {
-      if (types != null) {
-         if (types.size() == 1) {
-            RelationType type = types.iterator().next();
-            type.setTypeId(SequenceManager.getNextRelationTypeId());
-            ConnectionHandler.runPreparedUpdate(INSERT_RELATION_LINK_TYPE, toArray(type));
-         } else {
-            List<Object[]> datas = new ArrayList<Object[]>();
-            for (RelationType type : types) {
-               type.setTypeId(SequenceManager.getNextRelationTypeId());
-               datas.add(toArray(type));
-            }
-            ConnectionHandler.runBatchUpdate(INSERT_RELATION_LINK_TYPE, datas);
-         }
+      List<Object[]> datas = new ArrayList<Object[]>();
+      for (RelationType type : types) {
+         type.setTypeId(SequenceManager.getNextRelationTypeId());
+         datas.add(toArray(type));
       }
+      ConnectionHandler.runBatchUpdate(INSERT_RELATION_LINK_TYPE, datas);
    }
 
    @Override
@@ -304,7 +296,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
             List<Object[]> datas = new ArrayList<Object[]>();
             for (AttributeType type : types) {
                type.setTypeId(SequenceManager.getNextAttributeTypeId());
-               datas.add(new Object[] {toArray(type)});
+               datas.add(toArray(type));
             }
             ConnectionHandler.runBatchUpdate(INSERT_ATTRIBUTE_TYPE, datas);
          }
@@ -312,7 +304,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    }
 
    private Object[] toArray(RelationType type) throws OseeDataStoreException {
-      return new Object[] {type.getTypeId(), type.getName(), type.getSideAName(), type.getSideBName(),
+      return new Object[] {type.getTypeId(), type.getGuid(), type.getName(), type.getSideAName(), type.getSideBName(),
             type.getArtifactTypeSideA().getTypeId(), type.getArtifactTypeSideB().getTypeId(),
             type.getMultiplicity().getValue(), type.isOrdered() ? USER_ORDERED : NOT_USER_ORDERED,
             type.getDefaultOrderTypeGuid()};

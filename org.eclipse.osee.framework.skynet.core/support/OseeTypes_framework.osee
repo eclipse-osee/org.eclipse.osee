@@ -465,7 +465,7 @@ artifactType "System Design" extends "Design" {
 artifactType "Software Design" extends "Design" {
 }
 
-artifactType "Test Procedure" {
+artifactType "Test Procedure" extends "Artifact" {
    attribute "Subsystem"
 }
 

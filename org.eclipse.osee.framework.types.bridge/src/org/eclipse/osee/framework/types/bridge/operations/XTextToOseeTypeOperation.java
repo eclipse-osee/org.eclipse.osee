@@ -65,6 +65,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          }
       }
       ArtifactTypeManager.persist();
+      AttributeTypeManager.persist();
       RelationTypeManager.persist();
    }
 
@@ -140,7 +141,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          max = Integer.parseInt(attributeType.getMax());
       }
       attributeType.setTypeGuid(AttributeTypeManager.createType(attributeType.getTypeGuid(), //
-            attributeType.getName(), //
+            getTypeName(attributeType.getName()), //
             attributeType.getBaseAttributeType(), // 
             attributeType.getDataProvider(), // 
             attributeType.getFileExtension(), //
@@ -156,7 +157,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       RelationTypeMultiplicity multiplicity =
             RelationTypeMultiplicity.getFromString(relationType.getMultiplicity().name());
       relationType.setTypeGuid(RelationTypeManager.createRelationType(relationType.getTypeGuid(),
-            relationType.getName(), //
+            getTypeName(relationType.getName()), //
             relationType.getSideAName(), //
             relationType.getSideBName(), //
             ArtifactTypeManager.getType(getTypeName(relationType.getSideAArtifactType().getName())), //

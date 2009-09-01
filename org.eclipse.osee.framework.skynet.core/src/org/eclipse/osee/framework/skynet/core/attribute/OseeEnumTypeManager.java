@@ -154,7 +154,6 @@ public class OseeEnumTypeManager {
          oseeEnumType.addEntries(entries);
       }
       dataCache.cacheType(oseeEnumType);
-      dataCache.storeAllModified();
       return null;
    }
 

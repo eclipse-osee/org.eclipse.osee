@@ -604,7 +604,7 @@ public class RelationManager {
     * @throws OseeArgumentException
     */
    private static void ensureSideWillSupport(Artifact artifact, RelationType relationType, RelationSide relationSide, int artifactCount) throws OseeCoreException {
-      if (relationType.isArtifactTypeAllowed(relationSide, artifact.getArtifactType())) {
+      if (!relationType.isArtifactTypeAllowed(relationSide, artifact.getArtifactType())) {
          throw new OseeArgumentException(
                String.format(
                      "Artifact [%s] of type [%s] does not belong on side [%s] of relation [%s] - only artifacts of type [%s] are allowed",
@@ -612,9 +612,11 @@ public class RelationManager {
                      relationType.getName(), relationType.getArtifactType(relationSide)));
       }
 
-      int nextCount = getRelatedArtifactsCount(artifact, relationType, relationSide) + 1;
+      // ensure that we can add artifactCount number or artifacts to the side opposite this artifact
+      int nextCount = getRelatedArtifactsCount(artifact, relationType, relationSide.oppositeSide());
+      nextCount += artifactCount;
       RelationTypeMultiplicity multiplicity = relationType.getMultiplicity();
-      if (!multiplicity.isWithinLimit(relationSide, nextCount)) {
+      if (!multiplicity.isWithinLimit(relationSide.oppositeSide(), nextCount)) {
          throw new OseeArgumentException(
                String.format(
                      "Artifact [%s] of type [%s] cannot be added to [%s] of relation [%s] because doing so would exceed the side maximum of [%s] for this artifact type",

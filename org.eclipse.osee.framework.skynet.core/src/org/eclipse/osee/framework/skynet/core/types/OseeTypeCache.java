@@ -243,6 +243,9 @@ public class OseeTypeCache {
          Collection<T> items = getDirtyTypes();
          synchronized (items) {
             storeItems(items);
+            for (T type : items) {
+               cacheType(type);
+            }
             items.clear();
          }
       }

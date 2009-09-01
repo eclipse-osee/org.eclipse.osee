@@ -1,63 +1,54 @@
 import "platform:/resource/org.eclipse.osee.framework.skynet.core/support/OseeTypes_framework.osee"
 
-artifactType "PeerToPeer Review" extends "Artifact" {
-   attribute "ats.Description"
-   attribute "ats.Need By"
-   attribute "ats.Blocking Review"
-   attribute "ats.Resolution"
-   attribute "ats.State"
-   attribute "ats.Current State"
-   attribute "ats.Log"
-   attribute "ats.State Notes"
-   attribute "ats.SMA Note"
-   attribute "ats.Related To State"
-   attribute "ats.Review Defect"
-   attribute "ats.Estimated Release Date"
-   attribute "ats.Estimated Completion Date"
-   attribute "ats.Location"
-   attribute "ats.Authors"
-   attribute "ats.Role"
-   attribute "ats.Legacy PCR Id"
-   attribute "ats.Actionable Item"
-   attribute "ats.Estimated Hours"
-   attribute "ats.Review Blocks"
+artifactType "ats.Release" extends "Artifact"  {
+   attribute "ats.Released"
 }
 
-artifactType "Action" extends "Artifact" {
+abstract artifactType "ats.Ats Artifact" extends "Artifact" {
+   attribute "ats.Description"
+}
+
+artifactType "ats.Review" extends "ats.Ats Artifact"  {
+   attribute "ats.Actionable Item"
+   attribute "ats.Blocking Review"
+   attribute "ats.Current State"
+   attribute "ats.Estimated Completion Date"
+   attribute "ats.Estimated Hours"
+   attribute "ats.Estimated Release Date"
+   attribute "ats.Legacy PCR Id"
+   attribute "ats.Log"
+   attribute "ats.Need By"
+   attribute "ats.Related To State"
+   attribute "ats.Resolution"
+   attribute "ats.Review Blocks"
+   attribute "ats.Role"
+   attribute "ats.SMA Note"
+   attribute "ats.State Notes"
+   attribute "ats.State"
+}
+
+artifactType "PeerToPeer Review" extends "ats.Review" {
+   attribute "ats.Authors"
+   attribute "ats.Location"
+   attribute "ats.Review Defect"
+}
+
+artifactType "Decision Review" extends "ats.Review" {
+   attribute "ats.Decision Review Options"
+   attribute "ats.Decision"
+}
+
+artifactType "Action" extends "ats.Ats Artifact"  {
    attribute "ats.User Community"
    attribute "ats.Actionable Item"
    attribute "ats.Change Type"
-   attribute "ats.Description"
    attribute "ats.Need By"
    attribute "ats.Priority"
    attribute "ats.Validation Required"
 }
 
-artifactType "Decision Review" extends "Artifact" {
-   attribute "ats.Review Blocks"
-   attribute "ats.Actionable Item"
-   attribute "ats.Description"
-   attribute "ats.Estimated Hours"
-   attribute "ats.Need By"
-   attribute "ats.Estimated Release Date"
-   attribute "ats.Estimated Completion Date"
-   attribute "ats.Decision Review Options"
-   attribute "ats.Decision"
-   attribute "ats.Blocking Review"
-   attribute "ats.Resolution"
-   attribute "ats.State"
-   attribute "ats.Current State"
-   attribute "ats.Log"
-   attribute "ats.State Notes"
-   attribute "ats.SMA Note"
-   attribute "ats.Related To State"
-   attribute "ats.Role"
-   attribute "ats.Legacy PCR Id"
-}
-
-artifactType "Team Definition" extends "Artifact" {
+artifactType "Team Definition" extends "ats.Ats Artifact" {
    attribute "ats.Man Days Needed"
-   attribute "ats.Description"
    attribute "ats.Full Name"
    attribute "ats.Team Uses Versions"
    attribute "ats.Require Targeted Version"
@@ -68,103 +59,63 @@ artifactType "Team Definition" extends "Artifact" {
    attribute "ats.Allow Commit Branch"
 }
 
-artifactType "Task" extends "Artifact" {
-   attribute "ats.Uses Resolution Options"
-   attribute "ats.Log"
-   attribute "ats.State Notes"
-   attribute "ats.SMA Note"
-   attribute "ats.Work Package"
-   attribute "ats.Category"
-   attribute "ats.Category2"
-   attribute "ats.Category3"
-   attribute "ats.Current State"
-   attribute "ats.Description"
-   attribute "ats.Estimated Hours"
-   attribute "ats.Resolution"
-   attribute "ats.Estimated Release Date"
-   attribute "ats.Estimated Completion Date"
-   attribute "ats.Release Date"
-   attribute "ats.State"
-   attribute "ats.Related To State"
-}
-
-artifactType "Actionable Item" extends "Artifact" {
+artifactType "Actionable Item" extends "ats.Ats Artifact"  {
    attribute "ats.Active"
    attribute "ats.Actionable"
-   attribute "ats.Description"
 }
 
-artifactType "Version" extends "Artifact" {
-   attribute "ats.Released"
-   attribute "ats.Description"
+artifactType "Version" extends "ats.Ats Artifact" {
+   attribute "ats.Allow Commit Branch"
+   attribute "ats.Allow Create Branch"
+   attribute "ats.Estimated Release Date"
    attribute "ats.Full Name"
    attribute "ats.Next Version"
-   attribute "ats.Estimated Release Date"
-   attribute "ats.Release Date"
    attribute "ats.Parent Branch Id"
-   attribute "ats.Allow Create Branch"
-   attribute "ats.Allow Commit Branch"
+   attribute "ats.Release Date"
+   attribute "ats.Released"
 }
 
-artifactType "Goal" extends "Artifact" {
-   attribute "ats.Weekly Benefit"
-   attribute "ats.Percent Rework"
-   attribute "ats.Legacy PCR Id"
-   attribute "ats.Log"
-   attribute "ats.State Notes"
-   attribute "ats.SMA Note"
+abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
    attribute "ats.Work Package"
    attribute "ats.Category"
    attribute "ats.Category2"
    attribute "ats.Category3"
-   attribute "ats.User Community"
-   attribute "ats.Change Type"
    attribute "ats.Current State"
-   attribute "ats.Team Definition"
-   attribute "ats.Description"
-   attribute "ats.Estimated Hours"
-   attribute "ats.Need By"
-   attribute "ats.Priority"
-   attribute "ats.Problem"
-   attribute "ats.Proposed Resolution"
-   attribute "ats.Estimated Release Date"
    attribute "ats.Estimated Completion Date"
+   attribute "ats.Estimated Hours"
+   attribute "ats.Estimated Release Date"
+   attribute "ats.Log"
    attribute "ats.Release Date"
    attribute "ats.Resolution"
+   attribute "ats.SMA Note"
+   attribute "ats.State Notes"
    attribute "ats.State"
 }
 
-artifactType "Team Workflow" extends "Artifact" {
+abstract artifactType "Goal" extends "ats.State Machine" {
    attribute "ats.Weekly Benefit"
-   attribute "ats.Branch Metrics"
-   attribute "ats.Percent Rework"
-   attribute "ats.Parent Branch Id"
-   attribute "ats.Branch Id"
-   attribute "ats.Transaction Id"
+   attribute "ats.Change Type"
    attribute "ats.Legacy PCR Id"
-   attribute "ats.Log"
-   attribute "ats.State Notes"
-   attribute "ats.SMA Note"
-   attribute "ats.Work Package"
-   attribute "ats.Category"
-   attribute "ats.Category2"
-   attribute "ats.Category3"
+   attribute "ats.Need By"
+   attribute "ats.Percent Rework"
+   attribute "ats.Priority"
+   attribute "ats.Problem"
+   attribute "ats.Proposed Resolution"
+   attribute "ats.Team Definition"
+   attribute "ats.User Community"
+}
+
+artifactType "Task" extends "ats.State Machine" {
+   attribute "ats.Related To State"
+   attribute "ats.Uses Resolution Options"
+}
+
+artifactType "Team Workflow" extends "Goal" {
    attribute "ats.Actionable Item"
-   attribute "ats.User Community"
-   attribute "ats.Change Type"
-   attribute "ats.Current State"
-   attribute "ats.Team Definition"
-   attribute "ats.Description"
-   attribute "ats.Estimated Hours"
-   attribute "ats.Need By"
-   attribute "ats.Priority"
-   attribute "ats.Problem"
-   attribute "ats.Proposed Resolution"
-   attribute "ats.Estimated Release Date"
-   attribute "ats.Estimated Completion Date"
-   attribute "ats.Release Date"
-   attribute "ats.Resolution"
-   attribute "ats.State"
+   attribute "ats.Branch Id"
+   attribute "ats.Branch Metrics"
+   attribute "ats.Parent Branch Id"
+   attribute "ats.Transaction Id"
    attribute "ats.Validation Required"
 }
 
@@ -537,7 +488,7 @@ attributeType "ats.Role" extends StringAttribute {
 }
 
 relationType "TeamLead" {
-   sideAName "Artifact"
+   sideAName "Team Definition"
    sideAArtifactType "Team Definition"
    sideBName "User"
    sideBArtifactType "User"
@@ -546,7 +497,7 @@ relationType "TeamLead" {
 }
 
 relationType "TeamMember" {
-   sideAName "Artifact"
+   sideAName "Team Definition"
    sideAArtifactType "Team Definition"
    sideBName "User"
    sideBArtifactType "User"
@@ -576,14 +527,14 @@ relationType "ActionToWorkflow" {
    sideAName "Action"
    sideAArtifactType "Action"
    sideBName "Team Workflow"
-   sideBArtifactType "Lba SW Design Team Workflow"
+   sideBArtifactType "Team Workflow"
    defaultOrderType Unordered
    multiplicity ONE_TO_MANY
 }
 
 relationType "SmaToTask" {
-   sideAName "Artifact"
-   sideAArtifactType "Artifact"
+   sideAName "State Machine Artifact"
+   sideAArtifactType "ats.Ats Artifact"
    sideBName "Task"
    sideBArtifactType "Task"
    defaultOrderType Lexicographical_Ascending
@@ -592,7 +543,7 @@ relationType "SmaToTask" {
 
 relationType "TeamWorkflowTargetedForVersion" {
    sideAName "Team Workflow"
-   sideAArtifactType "Lba SW Design Team Workflow"
+   sideAArtifactType "Team Workflow"
    sideBName "Version"
    sideBArtifactType "Version"
    defaultOrderType Unordered
@@ -646,9 +597,9 @@ relationType "TeamDefinitionToPeerToPeerReviewWorkflowDiagram" {
 
 relationType "TeamWorkflowToReview" {
    sideAName "Team Workflow"
-   sideAArtifactType "Lba SW Design Team Workflow"
-   sideBName "Decision Review"
-   sideBArtifactType "PeerToPeer Review"
+   sideAArtifactType "Team Workflow"
+   sideBName "Review"
+   sideBArtifactType "ats.Review"
    defaultOrderType Unordered
    multiplicity ONE_TO_MANY
 }
@@ -684,7 +635,7 @@ relationType "Goal" {
    sideAName "Goal"
    sideAArtifactType "Goal"
    sideBName "Member"
-   sideBArtifactType "Artifact"
+   sideBArtifactType "ats.Ats Artifact"
    defaultOrderType Lexicographical_Ascending
    multiplicity ONE_TO_MANY
 }

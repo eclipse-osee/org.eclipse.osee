@@ -202,7 +202,11 @@ public class AttributeTypeManager {
          // UPDATE VALUES HERE
       }
       dataCache.cacheType(attributeType);
-      dataCache.storeAllModified();
       return attributeType;
+   }
+
+   public static void persist() throws OseeCoreException {
+      OseeTypeManager.getCache().getAttributeTypeData().storeAllModified();
+      //OseeTypeManager.getCache().getEnumTypeData().storeAllModified();
    }
 }

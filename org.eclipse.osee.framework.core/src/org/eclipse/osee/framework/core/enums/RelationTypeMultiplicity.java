@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -58,7 +60,7 @@ public enum RelationTypeMultiplicity {
       return value;
    }
 
-   public String asLimitLabel(RelationSide side) {
+   public String asLimitLabel(RelationSide side) throws OseeCoreException {
       String toReturn;
       switch (side) {
          case SIDE_A:
@@ -68,13 +70,12 @@ public enum RelationTypeMultiplicity {
             toReturn = getSideBLimitLabel();
             break;
          default:
-            toReturn = "unknown";
-            break;
+            throw new OseeArgumentException("Expecting SIDE_A or SIDE_B");
       }
       return toReturn;
    }
 
-   public int getLimit(RelationSide side) {
+   public int getLimit(RelationSide side) throws OseeCoreException {
       int limit = -1;
       switch (side) {
          case SIDE_A:
@@ -84,12 +85,12 @@ public enum RelationTypeMultiplicity {
             limit = getSideBLimit();
             break;
          default:
-            break;
+            throw new OseeArgumentException("Expecting SIDE_A or SIDE_B");
       }
       return limit;
    }
 
-   public boolean isWithinLimit(RelationSide side, int nextCount) {
+   public boolean isWithinLimit(RelationSide side, int nextCount) throws OseeCoreException {
       int limit = getLimit(side);
       boolean result;
       if (limit == Integer.MAX_VALUE) {
