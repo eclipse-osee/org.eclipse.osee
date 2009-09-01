@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -122,12 +121,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
    }
 
    private void createProgramBranch(String branchName) throws OseeCoreException {
-
-      List<String> skynetTypeImport = new ArrayList<String>();
-      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon");
-      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramBranch");
-      skynetTypeImport.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoProgram");
-      OseeTypesImport.execute(skynetTypeImport);
+      OseeTypesImport.execute(Arrays.asList("org.eclipse.osee.ats.config.demo.OseeTypes_Demo",
+            "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework"));
 
       BranchManager.createTopLevelBranch(branchName, branchName, null);
    }
