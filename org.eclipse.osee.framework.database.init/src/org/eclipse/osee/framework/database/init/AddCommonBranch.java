@@ -64,8 +64,8 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
    protected abstract void registerRequiredOseeTypes(Collection<String> registeredTypes);
 
    private void registerFrameworkOseeTypes(Collection<String> registeredTypes) {
-      registeredTypes.add("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework");
-      registeredTypes.add("org.eclipse.osee.ats.OseeTypes_ATS");
+      //registeredTypes.add("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework");
+      //registeredTypes.add("org.eclipse.osee.ats.OseeTypes_ATS");
    }
 
    public boolean canRun() {

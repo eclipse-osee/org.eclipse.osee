@@ -52,6 +52,6 @@ public class AddCommonBranchForAtsDemo extends AddCommonBranch {
       //      types.add("org.eclipse.osee.framework.skynet.core.OseeTypes_CommonBranch");
       //      types.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon");
       //      types.add("org.eclipse.osee.ats.OseeTypes_ATS");
-      registeredTypes.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoCommon");
+      registeredTypes.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoTemp");
    }
 }
