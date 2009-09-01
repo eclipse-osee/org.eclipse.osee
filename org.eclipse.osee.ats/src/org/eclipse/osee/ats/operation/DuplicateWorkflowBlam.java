@@ -55,8 +55,12 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEditorMenuItem {
 
    private static String TEAM_WORKFLOW = "Team Workflow (drop here)";
-   private static String CREATE_NEW_ACTION =
-         "Create New Action (Creates new action in start state with current assignees)";
+   private static String DUPLICATE_WORKFLOW =
+         "Duplicate Workflow - creates carbon copy with all fields and assignees intact.";
+   private static String CREATE_NEW_WORFLOW_IN_START_STATE =
+         "Create new Workflow - creates new workflow in start state with current assignees.";
+   private static String DUPLICATE_TASKS = "Duplicate Tasks - only valid for Duplicate Workflow";
+   private static String DUPLICATE_METHOD = "Duplicate Method";
    private Collection<? extends TaskableStateMachineArtifact> defaultTeamWorkflows;
 
    public DuplicateWorkflowBlam() throws IOException {
@@ -68,11 +72,17 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
          public void run() {
             try {
                List<Artifact> artifacts = variableMap.getArtifacts(TEAM_WORKFLOW);
-               boolean duplicateTasks = variableMap.getBoolean("Duplicate Tasks");
-               boolean createNewWorkflow = variableMap.getBoolean(CREATE_NEW_ACTION);
+               boolean duplicateTasks = variableMap.getBoolean(DUPLICATE_TASKS);
+               boolean createNewWorkflow =
+                     variableMap.getString(DUPLICATE_METHOD).equals(CREATE_NEW_WORFLOW_IN_START_STATE);
+               boolean duplicateWorkflow = variableMap.getString(DUPLICATE_METHOD).equals(DUPLICATE_WORKFLOW);
 
                if (artifacts.size() == 0) {
                   AWorkbench.popup("ERROR", "Must drag in Team Workflow to duplicate.");
+                  return;
+               }
+               if (!createNewWorkflow && !duplicateWorkflow) {
+                  AWorkbench.popup("ERROR", "Please select \"Duplicate Method\".");
                   return;
                }
                if (duplicateTasks && createNewWorkflow) {
@@ -171,9 +181,9 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
    public String getXWidgetsXml() {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"" + TEAM_WORKFLOW + "\" />" +
       //
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Duplicate Tasks\" defaultValue=\"true\"/>" +
+      "<XWidget xwidgetType=\"XCombo(" + CREATE_NEW_WORFLOW_IN_START_STATE + "," + DUPLICATE_WORKFLOW + ")\" required=\"true\" displayName=\"" + DUPLICATE_METHOD + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
       //
-      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + CREATE_NEW_ACTION + "\" defaultValue=\"false\"/>" +
+      "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + DUPLICATE_TASKS + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
       //
       "</xWidgets>";
    }

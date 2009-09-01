@@ -84,7 +84,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private final XFormToolkit toolkit;
    private static String ORIGINATOR = "Originator:";
    private Label origLabel;
-   private final List<AtsWorkPage> pages = new ArrayList<AtsWorkPage>();
+   private final List<AtsWorkPage> atsWorkPages = new ArrayList<AtsWorkPage>();
    private AtsWorkPage currentAtsWorkPage;
    private ScrolledForm scrolledForm;
    private final Integer HEADER_COMP_COLUMNS = 4;
@@ -97,6 +97,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private SMAWorkflowMetricsHeader workflowMetricsHeader;
    private SMADetailsSection smaDetailsSection;
    private SMARelationsSection smaRelationsSection;
+   private SMAOperationsSection smaOperationsSection;
    private SMAGoalMembersSection smaGoalMembersSection;
 
    public SMAWorkFlowTab(SMAManager smaMgr) {
@@ -129,7 +130,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          createAnnotationsHeader(headerComp, toolkit);
 
          sections.clear();
-         pages.clear();
+         atsWorkPages.clear();
 
          if (SMARelationsHyperlinkComposite.relationExists(smaMgr.getSma())) {
             smaRelationsComposite = new SMARelationsHyperlinkComposite(atsBody, toolkit, SWT.NONE);
@@ -153,7 +154,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             managedForm.addPart(section);
             control = section.getMainComp();
             sections.add(section);
-            pages.add(atsWorkPage);
+            atsWorkPages.add(atsWorkPage);
          }
       }
       if (smaMgr.getSma() instanceof GoalArtifact) {
@@ -163,6 +164,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
       smaRelationsSection = new SMARelationsSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
       managedForm.addPart(smaRelationsSection);
+
+      smaOperationsSection = new SMAOperationsSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
+      managedForm.addPart(smaOperationsSection);
 
       smaDetailsSection = new SMADetailsSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
       managedForm.addPart(smaDetailsSection);
@@ -313,7 +317,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    public String getHtml() throws OseeCoreException {
       StringBuffer htmlSb = new StringBuffer();
-      for (WorkPage wPage : pages) {
+      for (WorkPage wPage : atsWorkPages) {
          AtsWorkPage page = (AtsWorkPage) wPage;
          StringBuffer notesSb = new StringBuffer();
          for (NoteItem note : smaMgr.getNotes().getNoteItems()) {
@@ -549,7 +553,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    public List<AtsWorkPage> getPages() {
-      return pages;
+      return atsWorkPages;
    }
 
    public List<SMAWorkFlowSection> getSections() {
