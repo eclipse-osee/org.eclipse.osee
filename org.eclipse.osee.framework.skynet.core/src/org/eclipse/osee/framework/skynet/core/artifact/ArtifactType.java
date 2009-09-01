@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
  * @author Robert A. Fisher
  */
 public class ArtifactType extends BaseOseeType implements Comparable<ArtifactType> {
-   private final boolean isAbstract;
+   private boolean isAbstract;
    private final ArtifactFactoryManager factoryManager;
    private final OseeTypeCache cache;
 
@@ -158,4 +158,7 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
       return false;
    }
 
+   public void setAbstract(boolean isAbstract) {
+      this.isAbstract = isAbstract;
+   }
 }

@@ -22,33 +22,38 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeData
  * @author Ryan D. Brooks
  */
 public class AttributeType extends BaseOseeType implements Comparable<AttributeType> {
-   public static final AttributeType[] EMPTY_ARRAY = new AttributeType[0];
-   private final Class<? extends Attribute<?>> baseAttributeClass;
-   private final Class<? extends IAttributeDataProvider> providerAttributeClass;
-   private final String defaultValue;
-   private final OseeEnumType oseeEnumType;
-   private final int maxOccurrences;
-   private final int minOccurrences;
-   private final String tipText;
-   private final String fileTypeExtension;
-   private final String taggerId;
-   private final String baseAttributeTypeId;
-   private final String attributeProviderNameId;
+   private Class<? extends Attribute<?>> baseAttributeClass;
+   private Class<? extends IAttributeDataProvider> providerAttributeClass;
+   private String defaultValue;
+   private OseeEnumType oseeEnumType;
+   private int maxOccurrences;
+   private int minOccurrences;
+   private String description;
+   private String fileTypeExtension;
+   private String taggerId;
+   private String baseAttributeTypeId;
+   private String attributeProviderNameId;
 
    /**
     * Create a dynamic attribute descriptor. Descriptors can be acquired for application use from the
     * <code>ConfigurationPersistenceManager</code>.
     * 
     * @param baseAttributeClass
-    * @param name
+    * @param typeName
     * @param defaultValue
     * @param validityXml
     * @param minOccurrences
     * @param maxOccurrences
     * @param tipText
     */
-   public AttributeType(String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String tipText, String taggerId) {
-      super(guid, name);
+   public AttributeType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
+      super(guid, typeName);
+      setFields(typeName, baseAttributeTypeId, attributeProviderNameId, baseAttributeClass, providerAttributeClass,
+            fileTypeExtension, defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
+   }
+
+   public void setFields(String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
+      setName(name);
       this.baseAttributeTypeId = baseAttributeTypeId;
       this.attributeProviderNameId = attributeProviderNameId;
       this.baseAttributeClass = baseAttributeClass;
@@ -57,7 +62,7 @@ public class AttributeType extends BaseOseeType implements Comparable<AttributeT
       this.oseeEnumType = oseeEnumType;
       this.maxOccurrences = maxOccurrences;
       this.minOccurrences = minOccurrences;
-      this.tipText = tipText;
+      this.description = description;
       this.fileTypeExtension = fileTypeExtension != null ? fileTypeExtension : "";
       this.taggerId = taggerId;
    }
@@ -99,7 +104,7 @@ public class AttributeType extends BaseOseeType implements Comparable<AttributeT
    }
 
    public String getDescription() {
-      return tipText;
+      return description;
    }
 
    public int getOseeEnumTypeId() {

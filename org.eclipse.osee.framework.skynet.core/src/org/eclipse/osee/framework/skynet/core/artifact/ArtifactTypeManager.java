@@ -257,7 +257,9 @@ public class ArtifactTypeManager {
                OseeTypeManager.getTypeFactory().createArtifactType(guid, isAbstract, artifactTypeName,
                      OseeTypeManager.getCache());
       } else {
-         // UPDATE VALUES HERE
+         dataCache.decacheType(artifactType);
+         artifactType.setName(artifactTypeName);
+         artifactType.setAbstract(isAbstract);
       }
       dataCache.cacheType(artifactType);
       return artifactType;

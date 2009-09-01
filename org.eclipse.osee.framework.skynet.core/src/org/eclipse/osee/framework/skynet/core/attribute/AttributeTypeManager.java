@@ -189,17 +189,21 @@ public class AttributeTypeManager {
    public static AttributeType createType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
       OseeTypeCacheData<AttributeType> dataCache = OseeTypeManager.getCache().getAttributeTypeData();
       AttributeType attributeType = dataCache.getTypeByGuid(guid);
+      Class<? extends Attribute<?>> baseAttributeClass =
+            AttributeExtensionManager.getAttributeClassFor(baseAttributeTypeId);
+      Class<? extends IAttributeDataProvider> providerAttributeClass =
+            AttributeExtensionManager.getAttributeProviderClassFor(attributeProviderNameId);
+
       if (attributeType == null) {
-         Class<? extends Attribute<?>> baseAttributeClass =
-               AttributeExtensionManager.getAttributeClassFor(baseAttributeTypeId);
-         Class<? extends IAttributeDataProvider> providerAttributeClass =
-               AttributeExtensionManager.getAttributeProviderClassFor(attributeProviderNameId);
          attributeType =
                OseeTypeManager.getTypeFactory().createAttributeType(guid, typeName, baseAttributeTypeId,
                      attributeProviderNameId, baseAttributeClass, providerAttributeClass, fileTypeExtension,
                      defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
       } else {
-         // UPDATE VALUES HERE
+         dataCache.decacheType(attributeType);
+         attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, baseAttributeClass,
+               providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType, minOccurrences, maxOccurrences,
+               description, taggerId);
       }
       dataCache.cacheType(attributeType);
       return attributeType;

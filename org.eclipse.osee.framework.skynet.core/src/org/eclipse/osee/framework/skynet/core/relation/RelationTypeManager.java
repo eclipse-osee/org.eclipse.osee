@@ -99,7 +99,8 @@ public class RelationTypeManager {
                OseeTypeManager.getTypeFactory().createRelationType(guid, typeName, sideAName, sideBName,
                      artifactTypeSideA, artifactTypeSideB, multiplicity, isUserOrdered, defaultOrderTypeGuid);
       } else {
-         // UPDATE VALUES HERE
+         dataCache.decacheType(relationType);
+
       }
       dataCache.cacheType(relationType);
       return relationType;

@@ -64,6 +64,9 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    private static final String INSERT_ARTIFACT_TYPE =
          "insert into osee_artifact_type (art_type_id, art_type_guid, name, is_abstract) VALUES (?,?,?,?)";
 
+   private static final String UPDATE_ARTIFACT_TYPE =
+         "update osee_artifact_type SET name = ?, is_abstract = ? where art_type_id = ?";
+
    private static final String SELECT_ARTIFACT_TYPE_INHERITANCE =
          "select * from osee_artifact_type_inheritance order by super_art_type_id, art_type_id";
    private static final String INSERT_ARTIFACT_TYPE_INHERITANCE =
@@ -266,13 +269,23 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
 
    @Override
    public void storeArtifactType(Collection<ArtifactType> types) throws OseeCoreException {
-      List<Object[]> datas = new ArrayList<Object[]>();
+      List<Object[]> insertData = new ArrayList<Object[]>();
+      List<Object[]> updateData = new ArrayList<Object[]>();
       for (ArtifactType type : types) {
-         type.setTypeId(SequenceManager.getNextArtifactTypeId());
-         datas.add(new Object[] {type.getTypeId(), type.getGuid(), type.getName(),
-               type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR});
+         switch (type.getModificationType()) {
+            case NEW:
+               type.setTypeId(SequenceManager.getNextArtifactTypeId());
+               insertData.add(new Object[] {type.getTypeId(), type.getGuid(), type.getName(),
+                     type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR});
+               break;
+            case MODIFIED:
+               updateData.add(new Object[] {type.getName(), type.isAbstract(), type.getTypeId()});
+            default:
+
+         }
       }
-      ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE, datas);
+      ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE, insertData);
+      ConnectionHandler.runBatchUpdate(UPDATE_ARTIFACT_TYPE, updateData);
    }
 
    @Override

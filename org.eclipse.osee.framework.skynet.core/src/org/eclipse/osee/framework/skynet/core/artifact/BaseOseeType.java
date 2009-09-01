@@ -1,25 +1,34 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+
 public class BaseOseeType {
    public final static int UNPERSISTTED_VALUE = Integer.MIN_VALUE;
 
-   private final String name;
+   private String name;
    private final String guid;
    private int uniqueId;
+   private boolean dirty;
+   private ModificationType modificationType;
 
    protected BaseOseeType(String guid, String name) {
       this.name = name;
       this.guid = guid;
       this.uniqueId = UNPERSISTTED_VALUE;
+      this.dirty = true;
+      this.modificationType = ModificationType.NEW;
    }
 
    public final int getTypeId() {
       return uniqueId;
    }
 
-   public final void setTypeId(int uniqueId) {
+   public final void setTypeId(int uniqueId) throws OseeStateException {
       if (this.uniqueId == UNPERSISTTED_VALUE) {
          this.uniqueId = uniqueId;
+      } else {
+         throw new OseeStateException("can not change the type id once it has been set");
       }
    }
 
@@ -66,4 +75,33 @@ public class BaseOseeType {
       return true;
    }
 
+   /**
+    * Sets the type name in memory, but does not persist to the datastore
+    */
+   public void setName(String name) {
+      dirty = true;
+      this.name = name;
+   }
+
+   /**
+    * @return the dirty
+    */
+   public boolean isDirty() {
+      return dirty;
+   }
+
+   /**
+    * @param dirty the dirty to set
+    */
+   public void setDirty(boolean dirty) {
+      this.dirty = dirty;
+   }
+
+   public ModificationType getModificationType() {
+      return modificationType;
+   }
+
+   public void setModificationType(ModificationType modificationType) {
+      this.modificationType = modificationType;
+   }
 }

@@ -21,7 +21,7 @@ attributeType "osee.config.Default Mail Server" extends StringAttribute {
 abstract artifactType "Test Unit" extends "Artifact" {
 }
 
-attributeType "File Extension" extends StringAttribute {
+attributeType "Extension" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -365,7 +365,7 @@ artifactType "MS Word Template" extends "MS Word" {
 }
 
 abstract artifactType "Native Artifact" extends "Artifact" {
-   attribute "File Extension"
+   attribute "Extension"
    attribute "Description"
    attribute "Native Content"
 }

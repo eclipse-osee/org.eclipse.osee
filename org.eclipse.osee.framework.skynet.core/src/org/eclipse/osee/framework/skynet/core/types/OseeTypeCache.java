@@ -190,7 +190,6 @@ public class OseeTypeCache {
       private final HashMap<String, T> nameToTypeMap = new HashMap<String, T>();
       private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
       private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
-      private final List<T> dirtyItems = new ArrayList<T>();
 
       private OseeTypeCacheData() {
       }
@@ -198,6 +197,15 @@ public class OseeTypeCache {
       public boolean existsByGuid(String guid) throws OseeCoreException {
          ensurePopulated();
          return guidToTypeMap.containsKey(guid);
+      }
+
+      public void decacheType(T type) throws OseeCoreException {
+         if (type == null) {
+            throw new OseeArgumentException("Caching a null value is not allowed");
+         }
+         nameToTypeMap.remove(type.getName());
+         guidToTypeMap.remove(type.getGuid());
+         idToTypeMap.remove(type.getTypeId());
       }
 
       public void cacheType(T type) throws OseeCoreException {
@@ -208,10 +216,7 @@ public class OseeTypeCache {
          guidToTypeMap.put(type.getGuid(), type);
          if (type.getTypeId() != BaseOseeType.UNPERSISTTED_VALUE) {
             idToTypeMap.put(type.getTypeId(), type);
-         } else {
-            dirtyItems.add(type);
          }
-         //TODO Add Update Here
       }
 
       public Collection<T> getAllTypes() throws OseeCoreException {
@@ -236,17 +241,23 @@ public class OseeTypeCache {
 
       protected Collection<T> getDirtyTypes() throws OseeCoreException {
          ensurePopulated();
+         Collection<T> dirtyItems = new ArrayList<T>();
+         for (T type : idToTypeMap.values()) {
+            if (type.isDirty()) {
+               dirtyItems.add(type);
+            }
+         }
          return dirtyItems;
       }
 
       public void storeAllModified() throws OseeCoreException {
          Collection<T> items = getDirtyTypes();
-         synchronized (items) {
+         synchronized (idToTypeMap) {
             storeItems(items);
             for (T type : items) {
-               cacheType(type);
+               idToTypeMap.put(type.getTypeId(), type);
+               type.setDirty(false);
             }
-            items.clear();
          }
       }
 

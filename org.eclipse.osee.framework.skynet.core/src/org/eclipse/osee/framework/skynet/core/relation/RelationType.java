@@ -20,17 +20,21 @@ import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
  * @author Robert A. Fisher
  */
 public class RelationType extends BaseOseeType implements Comparable<RelationType> {
-   private final String sideAName;
-   private final String sideBName;
-   private final RelationTypeMultiplicity multiplicity;
-   private final ArtifactType artifactTypeSideA;
-   private final ArtifactType artifactTypeSideB;
-
-   private final boolean isOrdered;
-   private final String defaultOrderTypeGuid;
+   private String sideAName;
+   private String sideBName;
+   private RelationTypeMultiplicity multiplicity;
+   private ArtifactType artifactTypeSideA;
+   private ArtifactType artifactTypeSideB;
+   private boolean isOrdered;
+   private String defaultOrderTypeGuid;
 
    public RelationType(String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
       super(guid, relationTypeName);
+      setFields(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, isOrdered,
+            defaultOrderTypeGuid);
+   }
+
+   public void setFields(String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
       this.sideAName = sideAName;
       this.sideBName = sideBName;
       this.artifactTypeSideA = artifactTypeSideA;
@@ -39,6 +43,7 @@ public class RelationType extends BaseOseeType implements Comparable<RelationTyp
 
       this.isOrdered = isOrdered;
       this.defaultOrderTypeGuid = defaultOrderTypeGuid;
+
    }
 
    public RelationTypeMultiplicity getMultiplicity() {

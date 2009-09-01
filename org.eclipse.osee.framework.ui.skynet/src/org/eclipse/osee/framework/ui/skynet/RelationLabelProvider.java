@@ -50,7 +50,13 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    public String getColumnText(Object element, int columnIndex) {
       if (element instanceof RelationTypeSide && columnIndex == 0) {
          RelationTypeSide side = (RelationTypeSide) element;
-         return side.getSideName() + " has [" + side.getRelationType().getMultiplicity().asLimitLabel(side.getSide()) + "] " + (side.isSideA() ? side.getRelationType().getSideBName() : side.getRelationType().getSideAName()) + " \"" + artifact.getName() + "\"";
+         String sideDescription;
+         try {
+            sideDescription = " has [" + side.getRelationType().getMultiplicity().asLimitLabel(side.getSide()) + "] ";
+         } catch (OseeCoreException ex) {
+            sideDescription = ex.getLocalizedMessage();
+         }
+         return side.getSideName() + sideDescription + (side.isSideA() ? side.getRelationType().getSideBName() : side.getRelationType().getSideAName()) + " \"" + artifact.getName() + "\"";
       } else if (element instanceof RelationType) {
          if (columnIndex == 0) {
             return ((RelationType) element).getName();

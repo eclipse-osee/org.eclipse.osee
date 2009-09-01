@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.ui.skynet.search;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
@@ -62,8 +63,8 @@ public class AttributeFindReplaceDialog extends Dialog {
    private Text txtFindRegEx;
    private Text txtReplaceStr;
    private Branch branch;
-   
-   private List<Artifact> artifacts;
+
+   private final List<Artifact> artifacts;
 
    public AttributeFindReplaceDialog(Shell parentShell, List<Artifact> artifacts) {
       super(parentShell);
@@ -99,8 +100,8 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void setInputs() {
       try {
-         cmbAttributeDescriptors.setInput(AttributeTypeManager.getValidAttributeTypes(branch).toArray(
-               AttributeType.EMPTY_ARRAY));
+         Collection<AttributeType> attributeTypes = AttributeTypeManager.getValidAttributeTypes(branch);
+         cmbAttributeDescriptors.setInput(attributeTypes.toArray(new AttributeType[attributeTypes.size()]));
          cmbAttributeDescriptors.getCombo().select(0);
       } catch (OseeCoreException ex) {
          cmbAttributeDescriptors.setInput(new Object[] {ex});
@@ -147,7 +148,7 @@ public class AttributeFindReplaceDialog extends Dialog {
 
    private void checkEnabled() {
       boolean enable =
-            (cmbAttributeDescriptors.getInput() instanceof AttributeType[]) && (txtFindRegEx.getText().length() > 0) && (!artifacts.isEmpty());
+            cmbAttributeDescriptors.getInput() instanceof AttributeType[] && txtFindRegEx.getText().length() > 0 && !artifacts.isEmpty();
 
       getButton(IDialogConstants.OK_ID).setEnabled(enable);
    }
@@ -207,10 +208,11 @@ public class AttributeFindReplaceDialog extends Dialog {
       }
 
       public String getText(Object element) {
-         if (element instanceof AttributeType)
+         if (element instanceof AttributeType) {
             return ((AttributeType) element).getName();
-         else
+         } else {
             return element.toString();
+         }
       }
 
       public void addListener(ILabelProviderListener listener) {
