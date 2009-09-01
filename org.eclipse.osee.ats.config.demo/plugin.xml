@@ -35,8 +35,8 @@
       </DatabaseInitializationTask>
    </extension>
    <extension
-         id="OseeTypes_DemoCommon"
-         name="OseeTypes_DemoCommon"
+         id="OseeTypes_Demo"
+         name="OseeTypes_Demo"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
       <OseeTypes
             resource="support/OseeTypes_Demo.osee">
@@ -59,6 +59,14 @@
       <ArtifactImageProvider
             class="org.eclipse.osee.ats.config.demo.DemoArtifactImageProvider">
       </ArtifactImageProvider>
+   </extension>
+   <extension
+         id="OseeTypes_DemoTemp"
+         name="OseeTypes_DemoTemp"
+         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
+      <OseeTypes
+            resource="support/OseeTypes_DemoTemp.osee">
+      </OseeTypes>
    </extension>
 
 </plugin>

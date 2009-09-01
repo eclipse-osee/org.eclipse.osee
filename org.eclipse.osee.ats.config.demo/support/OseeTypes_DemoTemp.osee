@@ -1,0 +1,2081 @@
+import "platform:/resource/org.eclipse.osee.ats/support/OseeTypes_ATS.osee"
+
+artifactType "Demo Code Team Workflow" extends "Team Workflow" {
+   attribute "demo.code.Change Type"
+   attribute "demo.code.Action"
+   attribute "demo.code.Category"
+   attribute "demo.code.Close Detection"
+   attribute "demo.code.Code Change Req"
+   attribute "demo.code.CSCI"
+   attribute "demo.code.Defect Code"
+   attribute "demo.code.Detection"
+   attribute "demo.code.Include Build"
+   attribute "demo.code.LOC Affected"
+   attribute "demo.code.Originating Build"
+   attribute "demo.code.Req Doc"
+   attribute "demo.code.Subsystem"
+   attribute "demo.code.Test Build"
+   attribute "demo.code.Test Mode"
+   attribute "demo.code.Test Notes"
+   attribute "demo.code.Test Script"
+   attribute "demo.code.Volume"
+   attribute "demo.code.Verify Date"
+   attribute "demo.code.Verifyer"
+   attribute "demo.code.Verify Note"
+   attribute "demo.code.Verify Detection"
+   attribute "demo.code.Hold Start"
+   attribute "demo.code.Hold End"
+   attribute "demo.code.Verify Mode"
+   attribute "demo.code.Verified Build"
+   attribute "demo.code.Peer Review Reqd"
+   attribute "demo.code.Peer Review Id"
+   attribute "demo.code.Ref PCR"
+   attribute "demo.code.References"
+   attribute "demo.code.Requirement Id"
+   attribute "demo.code.Dup CPCR No"
+   attribute "demo.code.Dup CSCI"
+   attribute "demo.code.Dup CPCR Type"
+   attribute "demo.code.Dup of CPCR no seq"
+   attribute "demo.code.Librarian"
+   attribute "demo.code.Promote Date"
+   attribute "demo.code.Authorization Notes"
+   attribute "demo.code.Rework Letter"
+   attribute "demo.code.Problem No"
+   attribute "demo.code.DP Effectivity"
+   attribute "demo.code.SP Effectivity"
+   attribute "demo.code.WP Effectivity"
+}
+
+artifactType "Demo Req Team Workflow" extends "Team Workflow" {
+}
+
+artifactType "Demo Test Team Workflow" extends "Team Workflow" {
+}
+
+oseeEnumType "demo.code.Category.enum" {
+   entry "Code Problem"
+   entry "Design/Implementation"
+   entry "Comment Change Only"
+   entry "Non-Mission"
+   entry "Workaround"
+}
+
+attributeType "demo.code.Category" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "demo.code.Category.enum"
+}
+
+attributeType "demo.code.Close Detection" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Code Change Req" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.CSCI" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+oseeEnumType "demo.code.Defect Code.enum" {
+   entry "CL01 - Requirements Implemented Incorrectly"
+   entry "CL02 - Initialization Error"
+   entry "CL03 - Out of Range Error"
+   entry "CL04 - Data Conversion Error"
+   entry "CL05 - Buffer Sizing Error"
+   entry "CL06 - Timing Problem"
+   entry "CL07 - Interface Error"
+   entry "CL08 - Logic Control Error"
+   entry "CL09 - TYPO"
+   entry "CL10 - Multiple Code Logic Problems"
+   entry "CL99 - Other Code Logic Problem"
+   entry "NC01 - Requirement Error"
+   entry "NC02 - Test Script Error"
+   entry "NC03 - CTE Error"
+   entry "NC04 - Hardware Error"
+   entry "NC99 - Other NON-CODE Problem"
+   entry "SV01 - Coding Standard Violation"
+   entry "TE01 - Compiler/Linker/Assembler Problem"
+   entry "TE02 - APEX Problem"
+   entry "TE99 - Other Tool Error"
+}
+
+attributeType "demo.code.Defect Code" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "demo.code.Defect Code.enum"
+}
+
+oseeEnumType "demo.code.Detection.enum" {
+   entry "Test Script(s)"
+   entry "Inspection (Test)"
+   entry "Hot Bench"
+   entry "Aircraft"
+   entry "Peer Review"
+   entry "TRAX Issue"
+   entry "Other"
+}
+
+attributeType "demo.code.Detection" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "demo.code.Detection.enum"
+}
+
+attributeType "demo.code.Include Build" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.LOC Affected" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Originating Build" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+oseeEnumType "demo.code.Req Doc.enum" {
+   entry "Unknown"
+   entry "SubDD"
+   entry "CSID"
+   entry "SRS"
+   entry "Other"
+}
+
+attributeType "demo.code.Req Doc" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "demo.code.Req Doc.enum"
+}
+
+attributeType "demo.code.Subsystem" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Test Build" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Test Mode" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Test Notes" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Test Script" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Change Type" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Action" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Volume" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Verify Date" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Verifyer" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Verify Note" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Verify Detection" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Hold Start" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Hold End" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Verify Mode" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Verified Build" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Peer Review Reqd" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Peer Review Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Ref PCR" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.References" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Requirement Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Dup CPCR No" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Dup CSCI" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Dup CPCR Type" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Dup of CPCR no seq" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Librarian" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Promote Date" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Authorization Notes" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "demo.code.Rework Letter" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.Problem No" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.DP Effectivity" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.SP Effectivity" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "demo.code.WP Effectivity" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+
+artifactType "ats.Release" extends "Artifact"  {
+   attribute "ats.Released"
+}
+
+abstract artifactType "ats.Ats Artifact" extends "Artifact" {
+   attribute "ats.Description"
+}
+
+artifactType "ats.Review" extends "ats.Ats Artifact"  {
+   attribute "ats.Actionable Item"
+   attribute "ats.Blocking Review"
+   attribute "ats.Current State"
+   attribute "ats.Estimated Completion Date"
+   attribute "ats.Estimated Hours"
+   attribute "ats.Estimated Release Date"
+   attribute "ats.Legacy PCR Id"
+   attribute "ats.Log"
+   attribute "ats.Need By"
+   attribute "ats.Related To State"
+   attribute "ats.Resolution"
+   attribute "ats.Review Blocks"
+   attribute "ats.Role"
+   attribute "ats.SMA Note"
+   attribute "ats.State Notes"
+   attribute "ats.State"
+}
+
+artifactType "PeerToPeer Review" extends "ats.Review" {
+   attribute "ats.Authors"
+   attribute "ats.Location"
+   attribute "ats.Review Defect"
+}
+
+artifactType "Decision Review" extends "ats.Review" {
+   attribute "ats.Decision Review Options"
+   attribute "ats.Decision"
+}
+
+artifactType "Action" extends "ats.Ats Artifact"  {
+   attribute "ats.User Community"
+   attribute "ats.Actionable Item"
+   attribute "ats.Change Type"
+   attribute "ats.Need By"
+   attribute "ats.Priority"
+   attribute "ats.Validation Required"
+}
+
+artifactType "Team Definition" extends "ats.Ats Artifact" {
+   attribute "ats.Man Days Needed"
+   attribute "ats.Full Name"
+   attribute "ats.Team Uses Versions"
+   attribute "ats.Require Targeted Version"
+   attribute "ats.Parent Branch Id"
+   attribute "ats.Active"
+   attribute "ats.Actionable"
+   attribute "ats.Allow Create Branch"
+   attribute "ats.Allow Commit Branch"
+}
+
+artifactType "Actionable Item" extends "ats.Ats Artifact"  {
+   attribute "ats.Active"
+   attribute "ats.Actionable"
+}
+
+artifactType "Version" extends "ats.Ats Artifact" {
+   attribute "ats.Allow Commit Branch"
+   attribute "ats.Allow Create Branch"
+   attribute "ats.Estimated Release Date"
+   attribute "ats.Full Name"
+   attribute "ats.Next Version"
+   attribute "ats.Parent Branch Id"
+   attribute "ats.Release Date"
+   attribute "ats.Released"
+}
+
+abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
+   attribute "ats.Work Package"
+   attribute "ats.Category"
+   attribute "ats.Category2"
+   attribute "ats.Category3"
+   attribute "ats.Current State"
+   attribute "ats.Estimated Completion Date"
+   attribute "ats.Estimated Hours"
+   attribute "ats.Estimated Release Date"
+   attribute "ats.Log"
+   attribute "ats.Release Date"
+   attribute "ats.Resolution"
+   attribute "ats.SMA Note"
+   attribute "ats.State Notes"
+   attribute "ats.State"
+}
+
+abstract artifactType "Goal" extends "ats.State Machine" {
+   attribute "ats.Weekly Benefit"
+   attribute "ats.Change Type"
+   attribute "ats.Legacy PCR Id"
+   attribute "ats.Need By"
+   attribute "ats.Percent Rework"
+   attribute "ats.Priority"
+   attribute "ats.Problem"
+   attribute "ats.Proposed Resolution"
+   attribute "ats.Team Definition"
+   attribute "ats.User Community"
+}
+
+artifactType "Task" extends "ats.State Machine" {
+   attribute "ats.Related To State"
+   attribute "ats.Uses Resolution Options"
+}
+
+artifactType "Team Workflow" extends "Goal" {
+   attribute "ats.Actionable Item"
+   attribute "ats.Branch Id"
+   attribute "ats.Branch Metrics"
+   attribute "ats.Parent Branch Id"
+   attribute "ats.Transaction Id"
+   attribute "ats.Validation Required"
+}
+
+attributeType "ats.Validation Required" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Active" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   defaultValue "yes"
+}
+
+attributeType "ats.Uses Resolution Options" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Released" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Next Version" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Team Uses Versions" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Require Targeted Version" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Blocking Review" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Actionable" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "yes"
+}
+
+attributeType "ats.Allow Create Branch" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "yes"
+}
+
+attributeType "ats.Allow Commit Branch" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "yes"
+}
+
+attributeType "ats.Need By" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Estimated Release Date" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Estimated Completion Date" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Release Date" extends DateAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+oseeEnumType "ats.Review Blocks.enum" {
+   entry "None"
+   entry "Transition"
+   entry "Commit"
+}
+
+attributeType "ats.Review Blocks" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "ats.Review Blocks.enum"
+}
+
+oseeEnumType "ats.Priority.enum" {
+   entry "1"
+   entry "2"
+   entry "3"
+   entry "4"
+   entry "5"
+}
+
+attributeType "ats.Priority" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "ats.Priority.enum"
+}
+
+oseeEnumType "ats.Change Type.enum" {
+   entry "Improvement"
+   entry "Problem"
+   entry "Support"
+}
+
+attributeType "ats.Change Type" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   enumType "ats.Change Type.enum"
+}
+
+oseeEnumType "ats.User Community.enum" {
+   entry "Program_1"
+   entry "Program_2"
+   entry "Tools"
+   entry "Processes"
+   entry "Other"
+}
+
+attributeType "ats.User Community" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+   enumType "ats.User Community.enum"
+}
+
+attributeType "ats.Estimated Hours" extends FloatingPointAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "0.0"
+}
+
+attributeType "ats.Weekly Benefit" extends FloatingPointAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "0"
+}
+
+attributeType "ats.Man Days Needed" extends FloatingPointAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "0.0"
+}
+
+attributeType "ats.Branch Id" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Parent Branch Id" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Transaction Id" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Percent Rework" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Branch Metrics" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.State" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Current State" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Problem" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+}
+
+attributeType "ats.Proposed Resolution" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Resolution" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+}
+
+attributeType "ats.Description" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+}
+
+attributeType "ats.Full Name" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Actionable Item" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+attributeType "ats.Team Definition" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Log" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider fileExtension "xml"
+}
+
+attributeType "ats.State Notes" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 fileExtension "xml"
+}
+
+attributeType "ats.Related To State" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.SMA Note" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Work Package" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Category" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Category2" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Category3" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Legacy PCR Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Decision Review Options" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Decision" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "ats.Review Defect" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+attributeType "ats.Location" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+}
+
+attributeType "ats.Authors" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "ats.Role" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+relationType "TeamLead" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamMember" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "PrivilegedMember" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamActionableItem" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "Actionable Item"
+   sideBArtifactType "Actionable Item"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "ActionToWorkflow" {
+   sideAName "Action"
+   sideAArtifactType "Action"
+   sideBName "Team Workflow"
+   sideBArtifactType "Team Workflow"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "SmaToTask" {
+   sideAName "State Machine Artifact"
+   sideAArtifactType "ats.Ats Artifact"
+   sideBName "Task"
+   sideBArtifactType "Task"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamWorkflowTargetedForVersion" {
+   sideAName "Team Workflow"
+   sideAArtifactType "Team Workflow"
+   sideBName "Version"
+   sideBArtifactType "Version"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamDefinitionToVersion" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "Version"
+   sideBArtifactType "Version"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamDefinitionToWorkflowDiagram" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "General Document"
+   sideBArtifactType "General Document"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamDefinitionToTaskWorkflowDiagram" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "General Document"
+   sideBArtifactType "General Document"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamDefinitionToDecisionReviewWorkflowDiagram" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "General Document"
+   sideBArtifactType "General Document"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamDefinitionToPeerToPeerReviewWorkflowDiagram" {
+   sideAName "Team Definition"
+   sideAArtifactType "Team Definition"
+   sideBName "General Document"
+   sideBArtifactType "General Document"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "TeamWorkflowToReview" {
+   sideAName "Team Workflow"
+   sideAArtifactType "Team Workflow"
+   sideBName "Review"
+   sideBArtifactType "ats.Review"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "SubscribedUser" {
+   sideAName "Artifact"
+   sideAArtifactType "Artifact"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "FavoriteUser" {
+   sideAName "Artifact"
+   sideAArtifactType "Artifact"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "ParallelVersion" {
+   sideAName "Parent"
+   sideAArtifactType "Version"
+   sideBName "Child"
+   sideBArtifactType "Version"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Goal" {
+   sideAName "Goal"
+   sideAArtifactType "Goal"
+   sideBName "Member"
+   sideBArtifactType "ats.Ats Artifact"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity ONE_TO_MANY
+}
+
+artifactType "Artifact" {
+   attribute "Name"
+   attribute "Annotation"
+   attribute "Static Id"
+   attribute "Relation Order"
+}
+
+artifactType "Global Preferences" extends "Artifact" {
+   attribute "Dictionary"
+   attribute "osee.config.Default Mail Server"
+}
+
+attributeType "osee.config.Default Mail Server" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description
+   "fully qualified name of the machice running the SMTP server which will be used by default for sending email"
+}
+
+abstract artifactType "Test Unit" extends "Artifact" {
+}
+
+attributeType "Extension" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+artifactType "User" extends "Artifact" {
+   attribute "Active"
+   attribute "City"
+   attribute "Company Title"
+   attribute "Company"
+   attribute "Country"
+   attribute "Dictionary"
+   attribute "Email"
+   attribute "Favorite Branch"
+   attribute "Fax Phone"
+   attribute "Mobile Phone"
+   attribute "Notes"
+   attribute "Phone"
+   attribute "State"
+   attribute "Street"
+   attribute "User Id"
+   attribute "User Settings"
+   attribute "Website"
+   attribute "XViewer Customization"
+   attribute "XViewer Defaults"
+   attribute "Zip"
+}
+
+attributeType "Active" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   defaultValue "yes"
+}
+
+attributeType "Company" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Company Title" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "City" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Street" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "State" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Zip" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Country" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "User Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Favorite Branch" extends IntegerAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+   defaultValue "0"
+}
+
+attributeType "User Settings" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 fileExtension "xml"
+}
+
+attributeType "XViewer Customization" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited fileExtension "xml"
+}
+
+attributeType "XViewer Defaults" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+attributeType "Phone" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "Mobile Phone" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "Fax Phone" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "Email" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Dictionary" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "Website" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "Notes" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+   taggerId DefaultAttributeTaggerProvider
+}
+
+
+artifactType "Group Artifact" extends "Artifact" {
+}
+
+artifactType "User Group" extends "Group Artifact" {
+}
+
+artifactType "Universal Group" extends "Group Artifact" {
+   attribute "Description"
+}
+
+artifactType "Renderer Template" extends "Native Artifact" {
+   attribute "Template Match Criteria"
+}
+
+attributeType "Template Match Criteria" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited description
+   "Criteria that determines what template is selected ie: \'Render Artifact PresentationType Option\'"
+}
+
+relationType "Default Hierarchical" {
+   sideAName "parent"
+   sideAArtifactType "Artifact"
+   sideBName "child"
+   sideBArtifactType "Artifact"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity ONE_TO_MANY
+}
+
+artifactType "Root Artifact" extends "Artifact" {
+}
+
+artifactType "Folder" extends "Artifact" {
+}
+
+artifactType "General Data" extends "Artifact" {
+   attribute "General String Data"
+}
+
+artifactType "Support Document" extends "MS Word Template" {
+}
+
+artifactType "General Document" extends "Native Artifact" {
+}
+
+artifactType "Url" extends "Artifact" {
+   attribute "Description"
+   attribute "Content URL"
+   
+}
+
+attributeType "Name" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "Descriptive Name"
+   defaultValue "unnamed"
+}
+
+attributeType "Relation Order" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider description "Defines relation ordering information"
+}
+
+attributeType "Description" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+oseeEnumType "Page Type.enum" {
+   entry "Portrait"
+   entry "Landscape"
+}
+
+attributeType "Page Type" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   enumType "Page Type.enum"
+   description "Page Type: Landscape/Portrait"
+   defaultValue "Portrait"
+}
+
+attributeType "Word Ole Data" extends StringAttribute {
+   dataProvider UriAttributeDataProvider
+   min 0
+   max 1 description "Word Ole Data" fileExtension "xml"
+}
+
+attributeType "Workflow Definition" extends StringAttribute {
+   dataProvider UriAttributeDataProvider
+   min 0
+   max 1 description "xml definition of a Blam Workflow" fileExtension "vue"
+}
+
+attributeType "Annotation" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "Static Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+attributeType "General String Data" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+attributeType "Native Content" extends CompressedContentAttribute {
+   dataProvider UriAttributeDataProvider
+   min 0
+   max 1 description "content that will be edited by a native program"
+   fileExtension "bin"
+}
+
+attributeType "Word Template Content" extends WordAttribute {
+   dataProvider UriAttributeDataProvider
+   min 0
+   max 1
+   taggerId XmlAttributeTaggerProvider description
+   "value must comply with WordML xml schema"
+   defaultValue
+   "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"
+   fileExtension "xml"
+}
+
+attributeType "Whole Word Content" extends WordAttribute {
+   dataProvider UriAttributeDataProvider
+   min 0
+   max 1
+   taggerId XmlAttributeTaggerProvider description
+   "value must comply with WordML xml schema"
+   defaultValue
+   "<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?><?mso-application progid=\'Word.Document\'?><w:wordDocument xmlns:w=\'http://schemas.microsoft.com/office/word/2003/wordml\' xmlns:v=\'urn:schemas-microsoft-com:vml\' xmlns:w10=\'urn:schemas-microsoft-com:office:word\' xmlns:sl=\'http://schemas.microsoft.com/schemaLibrary/2003/core\' xmlns:aml=\'http://schemas.microsoft.com/aml/2001/core\' xmlns:wx=\'http://schemas.microsoft.com/office/word/2003/auxHint\' xmlns:o=\'urn:schemas-microsoft-com:office:office\' xmlns:dt=\'uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\' xmlns:wsp=\'http://schemas.microsoft.com/office/word/2003/wordml/sp2\' xmlns:ns0=\'http://www.w3.org/2001/XMLSchema\' xmlns:ns1=\'http://eclipse.org/artifact.xsd\' xmlns:st1=\'urn:schemas-microsoft-com:office:smarttags\' w:macrosPresent=\'no\' w:embeddedObjPresent=\'no\' w:ocxPresent=\'no\' xml:space=\'preserve\'><w:body></w:body></w:wordDocument>"
+   fileExtension "xml"
+}
+
+relationType "Dependency" {
+   sideAName "artifact"
+   sideAArtifactType "Artifact"
+   sideBName "dependency"
+   sideBArtifactType "Artifact"
+   defaultOrderType Unordered
+   multiplicity MANY_TO_MANY
+}
+
+relationType "Universal Grouping" {
+   sideAName "group"
+   sideAArtifactType "Universal Group"
+   sideBName "members"
+   sideBArtifactType "Artifact"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity MANY_TO_MANY
+}
+
+abstract artifactType "MS Word" extends "Artifact" {
+   attribute "Imported Paragraph Number"
+}
+
+artifactType "MS Word Whole Document" extends "MS Word" {
+   attribute "Whole Word Content"
+}
+
+artifactType "MS Word Template" extends "MS Word" {
+   attribute "Word Ole Data"
+   attribute "Page Type"
+   attribute "Word Template Content"
+}
+
+abstract artifactType "Native Artifact" extends "Artifact" {
+   attribute "Extension"
+   attribute "Description"
+   attribute "Native Content"
+}
+
+attributeType "Content URL" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "Imported Paragraph Number" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description
+   "This is the corresponding section number from the outline of document from which this artifact was imported"
+}
+
+artifactType "Requirement" extends "Artifact" {
+   attribute "Development Assurance Level"
+   attribute "Qualification Method"
+   attribute "Safety Criticality"
+   attribute "Subsystem"
+   attribute "Technical Performance Parameter"
+}
+
+abstract artifactType "Abstract Software Requirement" extends "Requirement" {
+   attribute "CSCI"
+   attribute "Partition"
+   attribute "Crew Interface Requirement"
+   attribute "Category"
+   attribute "Common NAL Requirement"
+   attribute "System Security Requirement"
+   attribute "Training Effectivity"
+}
+
+artifactType "Software Requirement" extends "MS Word Template", "Abstract Software Requirement" {
+}
+
+artifactType "Software Requirement Procedure" extends "Software Requirement" {
+}
+
+artifactType "Software Requirement Function" extends "Software Requirement" {
+}
+
+artifactType "Software Requirement Drawing" extends "Software Requirement" {
+}
+
+artifactType "System Requirement" extends "Requirement", "MS Word Template" {
+   attribute "Legacy Id"
+   attribute "Level 2 IPT"
+   attribute "Level 3 IPT"
+   attribute "ROIN"
+   attribute "Support IPT"
+}
+
+artifactType "Subsystem Requirement" extends "Requirement", "MS Word Template" {
+   attribute "Legacy Id"
+   attribute "Verification Level"
+   attribute "Verification Event"
+}
+
+artifactType "Interface Requirement" extends "Requirement", "MS Word Template" {
+   attribute "Component"
+}
+
+artifactType "Hardware Requirement" extends "Requirement", "MS Word Template" {
+}
+
+abstract artifactType "Function" extends "MS Word Template" {
+   attribute "Safety Criticality"
+}
+
+artifactType "System Function" extends "Function" {
+}
+
+artifactType "Subsystem Function" extends "Function" {
+}
+
+artifactType "Test Information Sheet" extends "MS Word Template" {
+   attribute "TIS Test Number"
+   attribute "TIS Test Type"
+   attribute "TIS Test Category"
+}
+
+artifactType "Design" extends "MS Word Template" {
+   attribute "Development Assurance Level"
+   attribute "Safety Criticality"
+}
+
+artifactType "Subsystem Design" extends "Design" {
+   attribute "Subsystem"
+}
+
+artifactType "System Design" extends "Design" {
+}
+
+artifactType "Software Design" extends "Design" {
+}
+
+artifactType "Test Procedure" extends "Artifact" {
+   attribute "Subsystem"
+}
+
+artifactType "Test Procedure WML" extends "Test Procedure", "MS Word Whole Document" {
+}
+
+artifactType "Test Procedure XL" extends "Test Procedure", "Native Artifact" {
+}
+
+artifactType "Supporting Content" extends "Url" {
+}
+
+attributeType "Common NAL Requirement" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 
+   description "Requirement that is common to all NCORE (Networked Common Operating Real-time Environment) Application Layers"
+   defaultValue "no"
+}
+
+attributeType "Crew Interface Requirement" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "Legacy Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description
+   "SLATE unique identifier (caution: not guaranteed to be immutable)"
+}
+
+attributeType "Level 2 IPT" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Level 2 Integrated Product Team"
+}
+
+attributeType "Level 3 IPT" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Level 3 Integrated Product Team"
+}
+
+attributeType "Support IPT" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Support Integrated Product Team"
+}
+
+attributeType "System Security Requirement" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "Training Effectivity" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+oseeEnumType "Partition.enum" {
+   entry "Aircraft Survivability Equipment"
+   entry "Communication"
+   entry "Contorls and Displays"
+   entry "Flight Control"
+   entry "Input/Output Processor"
+   entry "Navigation"
+   entry "Unspecified"
+}
+
+attributeType "Partition" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max unlimited
+   taggerId DefaultAttributeTaggerProvider
+   enumType "Partition.enum"
+   defaultValue "Unspecified"
+}
+
+oseeEnumType "Subsystem.enum" {
+   entry "Aircraft Survivability Equipment"
+   entry "Communications"
+   entry "Controls and Displays"
+   entry "Data Management"
+   entry "Unspecified"
+}
+
+attributeType "Subsystem" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   enumType "Subsystem.enum"
+   defaultValue "Unspecified"
+}
+
+oseeEnumType "Qualification Method.enum" {
+   entry "Demonstration"
+   entry "Test"
+   entry "Analysis"
+   entry "Inspection"
+   entry "Special Qualification"
+   entry "Legacy"
+   entry "Unspecified"
+}
+
+attributeType "Qualification Method" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max unlimited
+   enumType "Qualification Method.enum"
+   description "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software)."
+   defaultValue "Unspecified"
+}
+
+oseeEnumType "Safety Criticality.enum" {
+   entry "I"
+   entry "II"
+   entry "III"
+   entry "IV"
+   entry "V"
+}
+
+attributeType "Safety Criticality" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   enumType "Safety Criticality.enum"
+   description "Criticality Classification"
+   defaultValue "V"
+}
+
+oseeEnumType "Verification Level.enum" {
+   entry "System (Aircraft)"
+   entry "Subsystem (AIL)"
+   entry "Component"
+   entry "Unspecified"
+}
+
+attributeType "Verification Level" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   enumType "Verification Level.enum"
+   defaultValue "Unspecified"
+}
+
+attributeType "TIS Test Number" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description "Test Number"
+}
+
+oseeEnumType "TIS Test Type.enum" {
+   entry "AIL"
+   entry "FLT"
+   entry "GND"
+}
+
+attributeType "TIS Test Type" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max unlimited
+   enumType "TIS Test Type.enum"
+   description "TIS Test Type"
+   defaultValue "GND"
+}
+
+oseeEnumType "TIS Test Category.enum" {
+   entry "SPEC_COMP"
+   entry "DEV"
+   entry "USG"
+}
+
+attributeType "TIS Test Category" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1 
+   enumType "TIS Test Category.enum"
+   description "TIS Test Category"
+   defaultValue "DEV"
+}
+
+oseeEnumType "Development Assurance Level.enum" {
+   entry "A"
+   entry "B"
+   entry "C"
+   entry "D"
+   entry "E"
+}
+
+attributeType "Development Assurance Level" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   enumType "Development Assurance Level.enum"
+   description "Development Assurance Level"
+   defaultValue "E"
+}
+
+attributeType "Category" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "Technical Performance Parameter" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   defaultValue "no"
+}
+
+oseeEnumType "Verification Event.enum" {
+   entry "Unspecified"
+   entry "AIL Test"
+   entry "Ground Test"
+   entry "Flight Test"
+   entry "Analysis Report"
+}
+
+attributeType "Verification Event" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   enumType "Verification Event.enum"
+   defaultValue "Unspecified"
+}
+
+oseeEnumType "Component.enum" {
+   entry "Top level product component"
+   entry "Unspecified"
+}
+
+attributeType "Component" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   enumType "Component.enum"
+   defaultValue "Unspecified"
+}
+
+relationType "Allocation" {
+   sideAName "requirement"
+   sideAArtifactType "Requirement"
+   sideBName "component"
+   sideBArtifactType "Component"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Code-Requirement" {
+   sideAName "code"
+   sideAArtifactType "Code Unit"
+   sideBName "requirement"
+   sideBArtifactType "Requirement"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Component-Requirement" {
+   sideAName "component"
+   sideAArtifactType "Component"
+   sideBName "requirement"
+   sideBArtifactType "Requirement"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Design" {
+   sideAName "requirement"
+   sideAArtifactType "Requirement"
+   sideBName "design"
+   sideBArtifactType "Design"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Verification" {
+   sideAName "requirement"
+   sideAArtifactType "Requirement"
+   sideBName "verifier"
+   sideBArtifactType "Test Unit"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Verification Procedure" {
+   sideAName "test plan sheet"
+   sideAArtifactType "Test Information Sheet"
+   sideBName "test procedure"
+   sideBArtifactType "Test Procedure"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Requirement Trace" {
+   sideAName "higher-level requirement"
+   sideAArtifactType "Requirement"
+   sideBName "lower-level requirement"
+   sideBArtifactType "Requirement"
+   defaultOrderType Unordered
+   multiplicity MANY_TO_MANY
+}
+
+relationType "Validation" {
+   sideAName "requirement"
+   sideAArtifactType "Requirement"
+   sideBName "validator"
+   sideBArtifactType "Artifact"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Specifying" {
+   sideAName "function"
+   sideAArtifactType "Subsystem Function"
+   sideBName "requirement"
+   sideBArtifactType "Requirement"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+abstract artifactType "Work Item Definition" extends "Artifact" {
+   attribute "osee.wi.Work Id"
+   attribute "osee.wi.Work Type"
+   attribute "osee.wi.Work Parent Id"
+   attribute "osee.wi.Work Data"
+   attribute "osee.wi.Work Description"
+}
+
+artifactType "Work Page Definition" extends "Work Item Definition" {
+   attribute "osee.wi.Work Page Name"
+}
+
+artifactType "Work Flow Definition" extends "Work Item Definition" {
+   attribute "osee.wi.Start Page"
+   attribute "osee.wi.Transition"
+}
+
+artifactType "Work Rule Definition" extends "Work Item Definition" {
+}
+
+artifactType "Work Widget Definition" extends "Work Item Definition" {
+}
+
+artifactType "XViewer Global Customization" extends "Artifact" {
+   attribute "XViewer Customization"
+}
+
+attributeType "osee.wi.Work Data" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited fileExtension "xml"
+}
+
+attributeType "osee.wi.Work Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "osee.wi.Work Type" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "osee.wi.Work Description" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "osee.wi.Work Parent Id" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "osee.wi.Work Page Name" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+attributeType "osee.wi.Transition" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+}
+
+attributeType "osee.wi.Start Page" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+relationType "Work Item" {
+   sideAName "Parent"
+   sideAArtifactType "Artifact"
+   sideBName "Child"
+   sideBArtifactType "Artifact"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity MANY_TO_MANY
+}
+
+relationType "User Grouping" {
+   sideAName "group"
+   sideAArtifactType "User Group"
+   sideBName "users"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Users" {
+   sideAName "Artifact"
+   sideAArtifactType "Artifact"
+   sideBName "User"
+   sideBArtifactType "User"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Supercedes" {
+   sideAName "supercedes"
+   sideAArtifactType "Artifact"
+   sideBName "superceded by"
+   sideBArtifactType "Artifact"
+   defaultOrderType Unordered
+   multiplicity MANY_TO_MANY
+}
+
+oseeEnumType "CSCI.enum" {
+   entry "Navigation"
+   entry "Sights"
+   entry "Visual"
+   entry "Interface"
+   entry "Unspecified"
+}
+
+attributeType "CSCI" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max unlimited
+   enumType "CSCI.enum"
+   defaultValue "Unspecified"
+}
+
+relationType "Qualification" {
+   sideAName "requirement"
+   sideAArtifactType "Requirement"
+   sideBName "test"
+   sideBArtifactType "Test Unit"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Supporting Info" {
+   sideAName "is supported by"
+   sideAArtifactType "Artifact"
+   sideBName "supporting info"
+   sideBArtifactType "Artifact"
+   defaultOrderType Unordered
+   multiplicity MANY_TO_MANY
+}
+
+artifactType "Heading" extends "MS Word Template" {
+}
+
+attributeType "ROIN" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1 description
+   "SLATE unique identifier (caution: not guaranteed to be immutable)"
+}
+
+artifactType "Component" extends "Artifact" {
+   attribute "Developmental"
+   attribute "GFE / CFE"
+}
+
+artifactType "Code Unit" extends "Artifact" {
+}
+
+artifactType "Safety Assessment" extends "MS Word Template" {
+   attribute "Hazard"
+   attribute "AFHA"
+   attribute "SFHA"
+   attribute "Hazard Severity"
+   attribute "Safety Objective"
+   attribute "FTA Results"
+}
+
+attributeType "Developmental" extends BooleanAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   defaultValue "yes"
+}
+
+attributeType "Hazard" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "AFHA" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "SFHA" extends StringAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+oseeEnumType "Hazard Severity.enum" {
+   entry "Catastrophic, I"
+   entry "Severe-Major, II"
+   entry "Critical, II"
+   entry "Major, III"
+   entry "Marginal, III"
+   entry "Minor, IV"
+   entry "Negligible, IV"
+   entry "No Effect, V"
+   entry "Unspecified"
+}
+
+attributeType "Hazard Severity" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   enumType "Hazard Severity.enum"
+}
+
+attributeType "Safety Objective" extends FloatingPointAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+attributeType "FTA Results" extends FloatingPointAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+}
+
+oseeEnumType "GFE / CFE.enum" {
+   entry "CFE"
+   entry "GFE"
+   entry "Unspecified"
+}
+
+attributeType "GFE / CFE" extends EnumeratedAttribute {
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   taggerId DefaultAttributeTaggerProvider
+   enumType "GFE / CFE.enum"
+   defaultValue "Unspecified"
+}
+
+relationType "Functional decomposition " {
+   sideAName "higher-level component"
+   sideAArtifactType "Component"
+   sideBName "lower-level component"
+   sideBArtifactType "Component"
+   defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
