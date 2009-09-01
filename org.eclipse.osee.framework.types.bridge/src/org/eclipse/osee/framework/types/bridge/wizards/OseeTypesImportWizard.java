@@ -26,7 +26,7 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
    public boolean performFinish() {
       File file = mainPage.getFile();
 
-      IOperation operation = new XTextToOseeTypeOperation(file.toURI());
+      IOperation operation = new XTextToOseeTypeOperation(null, file.toURI());
       Operations.executeAsJob(operation, true);
       return true;
    }

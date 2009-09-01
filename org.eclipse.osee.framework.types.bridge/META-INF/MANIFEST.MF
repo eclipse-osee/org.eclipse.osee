@@ -14,8 +14,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.emf;bundle-version="2.5.0",
  org.eclipse.core.resources;bundle-version="3.5.0",
  com.google.guice;bundle-version="1.0.1",
-  org.eclipse.osee.framework.skynet.core;bundle-version="0.4.0",
- org.eclipse.xtext;bundle-version="0.7.2"
+ org.eclipse.osee.framework.skynet.core;bundle-version="0.4.0",
+ org.eclipse.xtext;bundle-version="0.7.2",
+ org.eclipse.xtext.ui.core;bundle-version="0.7.2",
+ org.eclipse.osee.framework.plugin.core;bundle-version="0.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.enums,

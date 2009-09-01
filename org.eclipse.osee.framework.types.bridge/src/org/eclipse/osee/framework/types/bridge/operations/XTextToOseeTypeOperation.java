@@ -29,15 +29,18 @@ import org.eclipse.osee.framework.types.bridge.internal.Activator;
 
 public class XTextToOseeTypeOperation extends AbstractOperation {
    private final java.net.URI resource;
+   private final Object context;
 
-   public XTextToOseeTypeOperation(java.net.URI resource) {
+   public XTextToOseeTypeOperation(Object context, java.net.URI resource) {
       super("OSEE Text Model to OSEE", Activator.PLUGIN_ID);
       this.resource = resource;
+      this.context = context;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      OseeTypeModel model = OseeTypeModelUtil.loadModel(resource);
+      System.out.println("In here");
+      OseeTypeModel model = OseeTypeModelUtil.loadModel(context, resource);
       //      for (Import importEntry : model.getImports()) {
       //         System.out.println("Import: " + importEntry.getImportURI());
       //         OseeTypeModel importedModel = OseeTypeModelUtil.loadModel(new URI(importEntry.getImportURI()));
@@ -80,11 +83,11 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             ArtifactTypeManager.getTypeByGuid(artifactType.getTypeGuid());
 
       for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
-
          superTypes.add(ArtifactTypeManager.getType(getTypeName(superType.getName())));
       }
-      targetArtifactType.addSuperType(superTypes);
-
+      if (!superTypes.isEmpty()) {
+         targetArtifactType.addSuperType(superTypes);
+      }
       HashCollection<Branch, org.eclipse.osee.framework.skynet.core.attribute.AttributeType> items =
             new HashCollection<Branch, org.eclipse.osee.framework.skynet.core.attribute.AttributeType>();
       for (AttributeTypeRef attributeTypeRef : artifactType.getValidAttributeTypes()) {
@@ -105,7 +108,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    }
 
    private String getTypeName(String nameReference) {
-      return nameReference.substring(1, nameReference.length() - 1); // strip off enclosing quotes
+      return nameReference != null ? nameReference.substring(1, nameReference.length() - 1) : nameReference; // strip off enclosing quotes
    }
 
    private void handleArtifactType(ArtifactType artifactType) throws OseeCoreException {
