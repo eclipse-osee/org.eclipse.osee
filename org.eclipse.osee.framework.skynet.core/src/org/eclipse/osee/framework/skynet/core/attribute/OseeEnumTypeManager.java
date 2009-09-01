@@ -157,6 +157,10 @@ public class OseeEnumTypeManager {
       return null;
    }
 
+   public static void persist() throws OseeCoreException {
+      OseeTypeManager.getCache().getEnumTypeData().storeAllModified();
+   }
+
    public static OseeEnumType createEnumTypeFromXml(String attributeTypeName, String xmlDefinition) throws OseeCoreException {
       List<Pair<String, Integer>> entries = new ArrayList<Pair<String, Integer>>();
       String enumTypeName = "";
