@@ -17,11 +17,17 @@
    <extension-point id="ClientLoopbackCmd" name="ClientLoopbackCmd" schema="schema/ClientLoopbackCmd.exsd"/>
    <extension-point id="CommitActions" name="CommitActions" schema="schema/CommitActions.exsd"/>
    <extension-point id="OseeValidator" name="OseeValidator" schema="schema/OseeValidator.exsd"/>
-   <extension-point id="ArtifactSourceParser" name="ArtifactSourceParser" schema="schema/ArtifactSourceParser.exsd"/>
-   <extension-point id="ArtifactSourceParserDelegate" name="ArtifactSourceParserDelegate" schema="schema/ArtifactSourceParserDelegate.exsd"/>
    <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="schema/ArtifactExtractor.exsd"/>
    <extension-point id="ArtifactExtractorDelegate" name="ArtifactExtractorDelegate" schema="schema/ArtifactExtractorDelegate.exsd"/>
    <extension-point id="OseeTypesHandler" name="OseeTypesHandler" schema="schema/OseeTypesHandler.exsd"/>
+  <extension
+        id="OseeTypes_Framework"
+        name="OseeTypes_Framework"
+        point="org.eclipse.osee.framework.skynet.core.OseeTypes">
+     <OseeTypes
+           resource="support/OseeTypes_Framework.osee">
+     </OseeTypes>
+  </extension>
 
        <extension
             point="org.eclipse.osee.framework.skynet.core.ArtifactFactory">
