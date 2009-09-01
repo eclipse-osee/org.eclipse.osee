@@ -13,11 +13,9 @@ package org.eclipse.osee.ats.test.cases;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -288,11 +286,8 @@ public class AtsBranchConfigurationTest {
    }
 
    private Branch createRootBranch(String branchName) throws Exception {
-      List<String> skynetTypeImport = new ArrayList<String>();
-      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon");
-      skynetTypeImport.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramBranch");
-      skynetTypeImport.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoProgram");
-      OseeTypesImport.execute(skynetTypeImport);
+      OseeTypesImport.execute(Arrays.asList("org.eclipse.osee.ats.config.demo.OseeTypes_Demo",
+            "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework"));
 
       return BranchManager.createTopLevelBranch(branchName, branchName, null);
    }

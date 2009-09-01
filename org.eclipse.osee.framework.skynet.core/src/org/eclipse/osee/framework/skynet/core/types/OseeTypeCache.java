@@ -242,7 +242,7 @@ public class OseeTypeCache {
       protected Collection<T> getDirtyTypes() throws OseeCoreException {
          ensurePopulated();
          Collection<T> dirtyItems = new ArrayList<T>();
-         for (T type : idToTypeMap.values()) {
+         for (T type : guidToTypeMap.values()) {
             if (type.isDirty()) {
                dirtyItems.add(type);
             }
