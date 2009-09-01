@@ -74,12 +74,13 @@ public class OseeTypesImport {
          for (IConfigurationElement el : elements) {
             if (el.getName().equals("OseeTypes")) {
                String resource = el.getAttribute("resource");
-               URL url = getResource(el.getContributor().getName(), resource);
+               Bundle bundle = Platform.getBundle(el.getContributor().getName());
+               URL url = bundle.getEntry(resource);
                OseeLog.log(Activator.class, Level.INFO, String.format("Importing [%s] from [%s]", resource,
                      url != null ? url.getPath() : "url was null"));
                IOseeTypesHandler handler = getHandler(resource, url);
                if (handler != null) {
-                  handler.execute(new NullProgressMonitor(), url);
+                  handler.execute(new NullProgressMonitor(), bundle, url);
                } else {
                   OseeLog.log(Activator.class, Level.SEVERE,
                         String.format("Unable to find handler for [%s] - handlers - %s", resource,
@@ -104,9 +105,4 @@ public class OseeTypesImport {
       return toReturn;
    }
 
-   private URL getResource(String bundleName, String resource) {
-      Bundle bundle = Platform.getBundle(bundleName);
-      URL url = bundle.getEntry(resource);
-      return url;
-   }
 }

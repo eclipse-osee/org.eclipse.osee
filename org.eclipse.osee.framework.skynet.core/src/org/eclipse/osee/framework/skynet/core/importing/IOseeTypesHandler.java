@@ -8,6 +8,6 @@ public interface IOseeTypesHandler {
 
    boolean isApplicable(String resource, URL url);
 
-   void execute(IProgressMonitor monitor, URL url) throws OseeCoreException;
+   void execute(IProgressMonitor monitor, Object context, URL url) throws OseeCoreException;
 
 }
