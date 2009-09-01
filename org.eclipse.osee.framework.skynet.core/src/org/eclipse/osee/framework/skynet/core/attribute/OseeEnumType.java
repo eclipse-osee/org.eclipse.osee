@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 /**
  * @author Roberto E. Escobar
  */
-public class OseeEnumType extends BaseOseeType {
+public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumType> {
 
    private final List<OseeEnumEntry> enumSet;
    private boolean isDeleted;
@@ -37,6 +37,15 @@ public class OseeEnumType extends BaseOseeType {
       this.enumSet = new ArrayList<OseeEnumEntry>();
       this.isDeleted = false;
       this.cache = cache;
+   }
+
+   @Override
+   public int compareTo(OseeEnumType other) {
+      int result = -1;
+      if (other != null && other.getName() != null && getName() != null) {
+         result = getName().compareTo(other.getName());
+      }
+      return result;
    }
 
    protected void internalSetDeleted(boolean deleted) {
@@ -286,4 +295,5 @@ public class OseeEnumType extends BaseOseeType {
          return this.ordinal() - other.ordinal();
       }
    }
+
 }

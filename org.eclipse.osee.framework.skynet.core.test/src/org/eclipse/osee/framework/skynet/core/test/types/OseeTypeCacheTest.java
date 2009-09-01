@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -48,6 +49,7 @@ public class OseeTypeCacheTest {
    private static List<ArtifactType> artifactTypes;
    private static List<AttributeType> attributeTypes;
    private static List<RelationType> relationTypes;
+   private static List<OseeEnumType> oseeEnumTypes;
    private static TestOseeTypeDataAccessor testAccessor;
    private static Branch branch1;
    private static Branch branch2;
@@ -59,11 +61,12 @@ public class OseeTypeCacheTest {
       artifactTypes = new ArrayList<ArtifactType>();
       attributeTypes = new ArrayList<AttributeType>();
       relationTypes = new ArrayList<RelationType>();
+      oseeEnumTypes = new ArrayList<OseeEnumType>();
       factory = new OseeTypeFactory();
       branch1 = createBranchHelper("ROOT", "Root Branch", 999, null, BranchType.SYSTEM_ROOT);
       branch2 = createBranchHelper("TEST", "Test Branch", 998, branch1, BranchType.BASELINE);
 
-      testAccessor = new TestData(artifactTypes, attributeTypes, relationTypes, branch1, branch2);
+      testAccessor = new TestData(artifactTypes, attributeTypes, relationTypes, oseeEnumTypes, branch1, branch2);
       typeCache = new OseeTypeCache(testAccessor, factory);
 
       typeCache.getArtifactTypeData().getAllTypes();
@@ -199,6 +202,49 @@ public class OseeTypeCacheTest {
    public void testCacheRelationTypesByName() throws OseeCoreException {
       for (RelationType expected : relationTypes) {
          RelationType actual = typeCache.getRelationTypeData().getTypeByName(expected.getName());
+         Assert.assertEquals(expected, actual);
+      }
+   }
+
+   @org.junit.Test
+   public void testAllOseeEnumTypes() throws OseeCoreException {
+      List<OseeEnumType> actualTypes = new ArrayList<OseeEnumType>(typeCache.getEnumTypeData().getAllTypes());
+      java.util.Collections.sort(actualTypes);
+      java.util.Collections.sort(oseeEnumTypes);
+      Assert.assertEquals(oseeEnumTypes.size(), actualTypes.size());
+      for (int index = 0; index < oseeEnumTypes.size(); index++) {
+         Assert.assertEquals(oseeEnumTypes.get(index), actualTypes.get(index));
+      }
+   }
+
+   @org.junit.Test
+   public void testOseeEnumTypesExistByGuid() throws OseeCoreException {
+      for (OseeEnumType expected : oseeEnumTypes) {
+         Assert.assertTrue(typeCache.getEnumTypeData().existsByGuid(expected.getGuid()));
+      }
+      Assert.assertFalse(typeCache.getEnumTypeData().existsByGuid("notExist"));
+   }
+
+   @org.junit.Test
+   public void testCacheOseeEnumTypesByGuid() throws OseeCoreException {
+      for (OseeEnumType expected : oseeEnumTypes) {
+         OseeEnumType actual = typeCache.getEnumTypeData().getTypeByGuid(expected.getGuid());
+         Assert.assertEquals(expected, actual);
+      }
+   }
+
+   @org.junit.Test
+   public void testCacheOseeEnumTypesById() throws OseeCoreException {
+      for (OseeEnumType expected : oseeEnumTypes) {
+         OseeEnumType actual = typeCache.getEnumTypeData().getTypeById(expected.getTypeId());
+         Assert.assertEquals(expected, actual);
+      }
+   }
+
+   @org.junit.Test
+   public void testCacheOseeEnumTypesByName() throws OseeCoreException {
+      for (OseeEnumType expected : oseeEnumTypes) {
+         OseeEnumType actual = typeCache.getEnumTypeData().getTypeByName(expected.getName());
          Assert.assertEquals(expected, actual);
       }
    }
@@ -376,13 +422,15 @@ public class OseeTypeCacheTest {
       private final List<ArtifactType> artifactTypes;
       private final List<AttributeType> attributeTypes;
       private final List<RelationType> relationTypes;
+      private final List<OseeEnumType> oseeEnumTypes;
       private final Branch branch1;
       private final Branch branch2;
 
-      public TestData(List<ArtifactType> artifactTypes, List<AttributeType> attributeTypes, List<RelationType> relationTypes, Branch branch1, Branch branch2) {
+      public TestData(List<ArtifactType> artifactTypes, List<AttributeType> attributeTypes, List<RelationType> relationTypes, List<OseeEnumType> oseeEnumTypes, Branch branch1, Branch branch2) {
          this.artifactTypes = artifactTypes;
          this.attributeTypes = attributeTypes;
          this.relationTypes = relationTypes;
+         this.oseeEnumTypes = oseeEnumTypes;
          this.branch1 = branch1;
          this.branch2 = branch2;
       }
@@ -486,6 +534,21 @@ public class OseeTypeCacheTest {
          for (RelationType type : relationTypes) {
             type.setTypeId(typeId++);
             cache.getRelationTypeData().cacheType(type);
+         }
+      }
+
+      @Override
+      public void loadAllOseeEnumTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+         super.loadAllOseeEnumTypes(cache, factory);
+         oseeEnumTypes.add(factory.createEnumType("E1", "Enum1", cache));
+         oseeEnumTypes.add(factory.createEnumType("E2", "Enum2", cache));
+         oseeEnumTypes.add(factory.createEnumType("E3", "Enum3", cache));
+         oseeEnumTypes.add(factory.createEnumType("E4", "Enum4", cache));
+         oseeEnumTypes.add(factory.createEnumType("E5", "Enum5", cache));
+         int typeId = 400;
+         for (OseeEnumType type : oseeEnumTypes) {
+            type.setTypeId(typeId++);
+            cache.getEnumTypeData().cacheType(type);
          }
       }
    }
