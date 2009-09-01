@@ -256,7 +256,7 @@ public class OseeTypeCache {
             storeItems(items);
             for (T type : items) {
                idToTypeMap.put(type.getTypeId(), type);
-               type.setDirty(false);
+               type.persist();
             }
          }
       }

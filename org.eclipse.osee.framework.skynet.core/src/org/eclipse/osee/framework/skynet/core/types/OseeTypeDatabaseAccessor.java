@@ -80,6 +80,9 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
          "SELECT * FROM osee_attribute_type aty1, osee_attribute_base_type aby1, osee_attribute_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
    private static final String INSERT_ATTRIBUTE_TYPE =
          "INSERT INTO osee_attribute_type (attr_type_id, attr_type_guid, attr_base_type_id, attr_provider_type_id, file_type_extension, name, default_value, enum_type_id, min_occurence, max_occurence, tip_text, tagger_id) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)";
+   private static final String UPDATE_ATTRIBUTE_TYPE =
+         "update osee_attribute_type SET attr_base_type_id=?, attr_provider_type_id=?, file_type_extension=?, name=?, default_value=?, enum_type_id=?, min_occurence=?, max_occurence=?, tip_text=?, tagger_id=? where attr_type_id = ?";
+
    private static final String INSERT_BASE_ATTRIBUTE_TYPE =
          "INSERT INTO osee_attribute_base_type (attr_base_type_id, attribute_class) VALUES (?, ?)";
    private static final String INSERT_ATTRIBUTE_PROVIDER_TYPE =
@@ -90,8 +93,10 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
          "SELECT attr_provider_type_id FROM osee_attribute_provider_type WHERE attribute_provider_class = ?";
 
    private static final String SELECT_LINK_TYPES = "SELECT * FROM osee_relation_link_type";
-   private static final String INSERT_RELATION_LINK_TYPE =
+   private static final String INSERT_RELATION_TYPE =
          "INSERT INTO osee_relation_link_type (rel_link_type_id, rel_link_type_guid, type_name, a_name, b_name, a_art_type_id, b_art_type_id, multiplicity, user_ordered, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?,?)";
+   private static final String UPDATE_RELATION_TYPE =
+         "update osee_relation_link_type SET type_name=?, a_name=?, b_name=?, a_art_type_id=?, b_art_type_id=?, multiplicity=?, default_order_type_guid=? where rel_link_type_id = ?";
 
    public OseeTypeDatabaseAccessor() {
    }
@@ -290,40 +295,59 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
 
    @Override
    public void storeRelationType(Collection<RelationType> types) throws OseeCoreException {
-      List<Object[]> datas = new ArrayList<Object[]>();
+
+      List<Object[]> insertData = new ArrayList<Object[]>();
+      List<Object[]> updateData = new ArrayList<Object[]>();
       for (RelationType type : types) {
-         type.setTypeId(SequenceManager.getNextRelationTypeId());
-         datas.add(toArray(type));
+         switch (type.getModificationType()) {
+            case NEW:
+               type.setTypeId(SequenceManager.getNextRelationTypeId());
+               insertData.add(toInsertValues(type));
+               break;
+            case MODIFIED:
+               updateData.add(toUpdateValues(type));
+            default:
+
+         }
       }
-      ConnectionHandler.runBatchUpdate(INSERT_RELATION_LINK_TYPE, datas);
+      ConnectionHandler.runBatchUpdate(INSERT_RELATION_TYPE, insertData);
+      ConnectionHandler.runBatchUpdate(UPDATE_RELATION_TYPE, updateData);
    }
 
    @Override
    public void storeAttributeType(Collection<AttributeType> types) throws OseeCoreException {
-      if (types != null) {
-         if (types.size() == 1) {
-            AttributeType type = types.iterator().next();
-            type.setTypeId(SequenceManager.getNextAttributeTypeId());
-            ConnectionHandler.runPreparedUpdate(INSERT_ATTRIBUTE_TYPE, toArray(type));
-         } else {
-            List<Object[]> datas = new ArrayList<Object[]>();
-            for (AttributeType type : types) {
+      List<Object[]> insertData = new ArrayList<Object[]>();
+      List<Object[]> updateData = new ArrayList<Object[]>();
+      for (AttributeType type : types) {
+         switch (type.getModificationType()) {
+            case NEW:
                type.setTypeId(SequenceManager.getNextAttributeTypeId());
-               datas.add(toArray(type));
-            }
-            ConnectionHandler.runBatchUpdate(INSERT_ATTRIBUTE_TYPE, datas);
+               insertData.add(toInsertValues(type));
+               break;
+            case MODIFIED:
+               updateData.add(toUpdateValues(type));
+            default:
+
          }
       }
+      ConnectionHandler.runBatchUpdate(INSERT_ATTRIBUTE_TYPE, insertData);
+      ConnectionHandler.runBatchUpdate(UPDATE_ATTRIBUTE_TYPE, updateData);
    }
 
-   private Object[] toArray(RelationType type) throws OseeDataStoreException {
+   private Object[] toInsertValues(RelationType type) throws OseeDataStoreException {
       return new Object[] {type.getTypeId(), type.getGuid(), type.getName(), type.getSideAName(), type.getSideBName(),
             type.getArtifactTypeSideA().getTypeId(), type.getArtifactTypeSideB().getTypeId(),
             type.getMultiplicity().getValue(), type.isOrdered() ? USER_ORDERED : NOT_USER_ORDERED,
             type.getDefaultOrderTypeGuid()};
    }
 
-   private Object[] toArray(AttributeType type) throws OseeDataStoreException {
+   private Object[] toUpdateValues(RelationType type) throws OseeDataStoreException {
+      return new Object[] {type.getName(), type.getSideAName(), type.getSideBName(),
+            type.getArtifactTypeSideA().getTypeId(), type.getArtifactTypeSideB().getTypeId(),
+            type.getMultiplicity().getValue(), type.getDefaultOrderTypeGuid(), type.getTypeId()};
+   }
+
+   private Object[] toInsertValues(AttributeType type) throws OseeDataStoreException {
       int attrBaseTypeId = getOrCreateAttributeBaseType(type.getBaseAttributeTypeId());
       int attrProviderTypeId = getOrCreateAttributeProviderType(type.getAttributeProviderId());
       return new Object[] {type.getTypeId(), type.getGuid(), attrBaseTypeId, attrProviderTypeId,
@@ -333,6 +357,18 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
             type.getMinOccurrences(), type.getMaxOccurrences(),
             type.getDescription() == null ? SQL3DataType.VARCHAR : type.getDescription(),
             type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId()};
+   }
+
+   private Object[] toUpdateValues(AttributeType type) throws OseeDataStoreException {
+      int attrBaseTypeId = getOrCreateAttributeBaseType(type.getBaseAttributeTypeId());
+      int attrProviderTypeId = getOrCreateAttributeProviderType(type.getAttributeProviderId());
+      return new Object[] {attrBaseTypeId, attrProviderTypeId,
+            type.getFileTypeExtension() == null ? SQL3DataType.VARCHAR : type.getFileTypeExtension(),
+            type.getName() == null ? SQL3DataType.VARCHAR : type.getName(),
+            type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(), type.getOseeEnumTypeId(),
+            type.getMinOccurrences(), type.getMaxOccurrences(),
+            type.getDescription() == null ? SQL3DataType.VARCHAR : type.getDescription(),
+            type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId(), type.getTypeId()};
    }
 
    private int getOrCreateAttributeProviderType(String attrProviderExtension) throws OseeDataStoreException {

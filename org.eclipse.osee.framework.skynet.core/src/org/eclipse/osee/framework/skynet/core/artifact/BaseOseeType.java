@@ -90,18 +90,15 @@ public class BaseOseeType {
       return dirty;
    }
 
-   /**
-    * @param dirty the dirty to set
-    */
-   public void setDirty(boolean dirty) {
-      this.dirty = dirty;
-   }
-
    public ModificationType getModificationType() {
       return modificationType;
    }
 
    public void setModificationType(ModificationType modificationType) {
       this.modificationType = modificationType;
+   }
+
+   public void persist() {
+      dirty = false;
    }
 }
