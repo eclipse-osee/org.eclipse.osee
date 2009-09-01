@@ -391,17 +391,17 @@ artifactType "Requirement" extends "Artifact" {
    attribute "Technical Performance Parameter"
 }
 
-abstract artifactType "MS Word Template Requirement" extends "Requirement", "MS Word Template" {
-}
-
-artifactType "Software Requirement" extends "MS Word Template Requirement" {
-   attribute "Category"
-   attribute "Common NAL Requirement"
-   attribute "Crew Interface Requirement"
+abstract artifactType "Abstract Software Requirement" extends "Requirement" {
    attribute "CSCI"
    attribute "Partition"
+   attribute "Crew Interface Requirement"
+   attribute "Category"
+   attribute "Common NAL Requirement"
    attribute "System Security Requirement"
    attribute "Training Effectivity"
+}
+
+artifactType "Software Requirement" extends "MS Word Template", "Abstract Software Requirement" {
 }
 
 artifactType "Software Requirement Procedure" extends "Software Requirement" {
@@ -413,7 +413,7 @@ artifactType "Software Requirement Function" extends "Software Requirement" {
 artifactType "Software Requirement Drawing" extends "Software Requirement" {
 }
 
-artifactType "System Requirement"  extends "MS Word Template Requirement" {	
+artifactType "System Requirement" extends "Requirement", "MS Word Template" {
    attribute "Legacy Id"
    attribute "Level 2 IPT"
    attribute "Level 3 IPT"
@@ -421,17 +421,17 @@ artifactType "System Requirement"  extends "MS Word Template Requirement" {
    attribute "Support IPT"
 }
 
-artifactType "Subsystem Requirement" extends "MS Word Template Requirement" {
+artifactType "Subsystem Requirement" extends "Requirement", "MS Word Template" {
    attribute "Legacy Id"
    attribute "Verification Level"
    attribute "Verification Event"
 }
 
-artifactType "Interface Requirement" extends "MS Word Template Requirement" {
+artifactType "Interface Requirement" extends "Requirement", "MS Word Template" {
    attribute "Component"
 }
 
-artifactType "Hardware Requirement" extends "MS Word Template Requirement" {
+artifactType "Hardware Requirement" extends "Requirement", "MS Word Template" {
 }
 
 abstract artifactType "Function" extends "MS Word Template" {
