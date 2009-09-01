@@ -22,6 +22,7 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
 import org.eclipse.osee.framework.oseeTypes.ArtifactType;
@@ -63,25 +64,71 @@ public class ArtifactTypeItemProvider
       if (itemPropertyDescriptors == null) {
          super.getPropertyDescriptors(object);
 
-         addSuperArtifactTypePropertyDescriptor(object);
+         addAbstractPropertyDescriptor(object);
+         addSuperArtifactTypesPropertyDescriptor(object);
+         addOverridePropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
 
    /**
-    * This adds a property descriptor for the Super Artifact Type feature.
+    * This adds a property descriptor for the Abstract feature.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected void addSuperArtifactTypePropertyDescriptor(Object object) {
+   protected void addAbstractPropertyDescriptor(Object object) {
       itemPropertyDescriptors.add
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_ArtifactType_superArtifactType_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_ArtifactType_superArtifactType_feature", "_UI_ArtifactType_type"),
-             OseeTypesPackage.Literals.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPE,
+             getString("_UI_ArtifactType_abstract_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_ArtifactType_abstract_feature", "_UI_ArtifactType_type"),
+             OseeTypesPackage.Literals.ARTIFACT_TYPE__ABSTRACT,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
+             null,
+             null));
+   }
+
+   /**
+    * This adds a property descriptor for the Super Artifact Types feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addSuperArtifactTypesPropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_ArtifactType_superArtifactTypes_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_ArtifactType_superArtifactTypes_feature", "_UI_ArtifactType_type"),
+             OseeTypesPackage.Literals.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES,
+             true,
+             false,
+             true,
+             null,
+             null,
+             null));
+   }
+
+   /**
+    * This adds a property descriptor for the Override feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addOverridePropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_ArtifactType_override_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_ArtifactType_override_feature", "_UI_ArtifactType_type"),
+             OseeTypesPackage.Literals.ARTIFACT_TYPE__OVERRIDE,
              true,
              false,
              true,
@@ -157,6 +204,9 @@ public class ArtifactTypeItemProvider
       updateChildren(notification);
 
       switch (notification.getFeatureID(ArtifactType.class)) {
+         case OseeTypesPackage.ARTIFACT_TYPE__ABSTRACT:
+            fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+            return;
          case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
             return;

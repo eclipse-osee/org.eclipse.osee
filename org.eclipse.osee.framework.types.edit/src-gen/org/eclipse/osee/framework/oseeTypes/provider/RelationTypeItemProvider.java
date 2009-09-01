@@ -61,6 +61,7 @@ public class RelationTypeItemProvider
       if (itemPropertyDescriptors == null) {
          super.getPropertyDescriptors(object);
 
+         addOverridePropertyDescriptor(object);
          addSideANamePropertyDescriptor(object);
          addSideAArtifactTypePropertyDescriptor(object);
          addSideBNamePropertyDescriptor(object);
@@ -69,6 +70,28 @@ public class RelationTypeItemProvider
          addMultiplicityPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
+   }
+
+   /**
+    * This adds a property descriptor for the Override feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addOverridePropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_RelationType_override_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_RelationType_override_feature", "_UI_RelationType_type"),
+             OseeTypesPackage.Literals.RELATION_TYPE__OVERRIDE,
+             true,
+             false,
+             true,
+             null,
+             null,
+             null));
    }
 
    /**

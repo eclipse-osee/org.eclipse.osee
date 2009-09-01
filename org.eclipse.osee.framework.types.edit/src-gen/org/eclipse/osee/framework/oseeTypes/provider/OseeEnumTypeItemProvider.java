@@ -15,6 +15,7 @@ import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EStructuralFeature;
 
+import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
 import org.eclipse.emf.edit.provider.IItemLabelProvider;
 import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
@@ -62,8 +63,31 @@ public class OseeEnumTypeItemProvider
       if (itemPropertyDescriptors == null) {
          super.getPropertyDescriptors(object);
 
+         addOverridePropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
+   }
+
+   /**
+    * This adds a property descriptor for the Override feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addOverridePropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_OseeEnumType_override_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_OseeEnumType_override_feature", "_UI_OseeEnumType_type"),
+             OseeTypesPackage.Literals.OSEE_ENUM_TYPE__OVERRIDE,
+             true,
+             false,
+             true,
+             null,
+             null,
+             null));
    }
 
    /**

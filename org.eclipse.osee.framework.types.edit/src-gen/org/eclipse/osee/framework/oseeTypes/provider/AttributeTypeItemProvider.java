@@ -62,6 +62,7 @@ public class AttributeTypeItemProvider
          super.getPropertyDescriptors(object);
 
          addBaseAttributeTypePropertyDescriptor(object);
+         addOverridePropertyDescriptor(object);
          addDataProviderPropertyDescriptor(object);
          addMinPropertyDescriptor(object);
          addMaxPropertyDescriptor(object);
@@ -92,6 +93,28 @@ public class AttributeTypeItemProvider
              false,
              false,
              ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
+   }
+
+   /**
+    * This adds a property descriptor for the Override feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addOverridePropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_AttributeType_override_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_AttributeType_override_feature", "_UI_AttributeType_type"),
+             OseeTypesPackage.Literals.ATTRIBUTE_TYPE__OVERRIDE,
+             true,
+             false,
+             true,
+             null,
              null,
              null));
    }

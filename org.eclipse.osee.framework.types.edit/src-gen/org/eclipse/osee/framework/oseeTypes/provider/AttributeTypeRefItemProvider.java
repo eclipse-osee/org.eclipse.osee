@@ -22,8 +22,11 @@ import org.eclipse.emf.edit.provider.IItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
+import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
 import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 
+import org.eclipse.emf.edit.provider.ViewerNotification;
+import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 
 /**
@@ -62,6 +65,7 @@ public class AttributeTypeRefItemProvider
          super.getPropertyDescriptors(object);
 
          addValidAttributeTypePropertyDescriptor(object);
+         addBranchGuidPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
@@ -89,6 +93,28 @@ public class AttributeTypeRefItemProvider
    }
 
    /**
+    * This adds a property descriptor for the Branch Guid feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addBranchGuidPropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_AttributeTypeRef_branchGuid_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_AttributeTypeRef_branchGuid_feature", "_UI_AttributeTypeRef_type"),
+             OseeTypesPackage.Literals.ATTRIBUTE_TYPE_REF__BRANCH_GUID,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
+   }
+
+   /**
     * This returns AttributeTypeRef.gif.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
@@ -107,7 +133,10 @@ public class AttributeTypeRefItemProvider
     */
    @Override
    public String getText(Object object) {
-      return getString("_UI_AttributeTypeRef_type");
+      String label = ((AttributeTypeRef)object).getBranchGuid();
+      return label == null || label.length() == 0 ?
+         getString("_UI_AttributeTypeRef_type") :
+         getString("_UI_AttributeTypeRef_type") + " " + label;
    }
 
    /**
@@ -120,6 +149,12 @@ public class AttributeTypeRefItemProvider
    @Override
    public void notifyChanged(Notification notification) {
       updateChildren(notification);
+
+      switch (notification.getFeatureID(AttributeTypeRef.class)) {
+         case OseeTypesPackage.ATTRIBUTE_TYPE_REF__BRANCH_GUID:
+            fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+            return;
+      }
       super.notifyChanged(notification);
    }
 

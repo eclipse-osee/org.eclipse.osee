@@ -65,6 +65,7 @@ public class OseeTypeItemProvider
          super.getPropertyDescriptors(object);
 
          addNamePropertyDescriptor(object);
+         addTypeGuidPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
@@ -83,6 +84,28 @@ public class OseeTypeItemProvider
              getString("_UI_OseeType_name_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_OseeType_name_feature", "_UI_OseeType_type"),
              OseeTypesPackage.Literals.OSEE_TYPE__NAME,
+             true,
+             false,
+             false,
+             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             null,
+             null));
+   }
+
+   /**
+    * This adds a property descriptor for the Type Guid feature.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected void addTypeGuidPropertyDescriptor(Object object) {
+      itemPropertyDescriptors.add
+         (createItemPropertyDescriptor
+            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
+             getResourceLocator(),
+             getString("_UI_OseeType_typeGuid_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_OseeType_typeGuid_feature", "_UI_OseeType_type"),
+             OseeTypesPackage.Literals.OSEE_TYPE__TYPE_GUID,
              true,
              false,
              false,
@@ -129,6 +152,7 @@ public class OseeTypeItemProvider
 
       switch (notification.getFeatureID(OseeType.class)) {
          case OseeTypesPackage.OSEE_TYPE__NAME:
+         case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }
