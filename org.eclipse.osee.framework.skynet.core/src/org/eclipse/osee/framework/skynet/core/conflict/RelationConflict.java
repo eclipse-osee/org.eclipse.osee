@@ -23,18 +23,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
  */
 public class RelationConflict extends Conflict {
 
-   /**
-    * @param sourceGamma
-    * @param destGamma
-    * @param artId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param transactionType
-    * @param changeType
-    * @param mergeBranch
-    * @param sourceBranch
-    * @param destBranch
-    */
    public RelationConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
    }

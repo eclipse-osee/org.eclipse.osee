@@ -64,23 +64,6 @@ public class AttributeConflict extends Conflict {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
-   /**
-    * @param sourceGamma
-    * @param destGamma
-    * @param artId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param modType
-    * @param changeType
-    * @param sourceValue
-    * @param destValue
-    * @param sourceContent
-    * @param destContent
-    * @param image
-    * @param attrId
-    * @param attrTypeId
-    * @throws OseeCoreException
-    */
    public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
@@ -385,25 +368,15 @@ public class AttributeConflict extends Conflict {
 
    @Override
    public void computeEqualsValues() throws OseeCoreException {
-      if (getMergeObject() == null || getSourceObject() == null) {
-         mergeEqualsSource = false;
-      } else {
-         mergeEqualsSource = compareObjects(getMergeObject(), getSourceObject());
-      }
-      if (getMergeObject() == null || getDestObject() == null) {
-         mergeEqualsDest = false;
-      } else {
-         mergeEqualsDest = compareObjects(getMergeObject(), getDestObject());
-      }
-
-      if (getSourceObject() == null || getDestObject() == null) {
-         sourceEqualsDest = false;
-      } else {
-         sourceEqualsDest = compareObjects(getSourceObject(), getDestObject());
-      }
+      mergeEqualsSource = compareObjects(getMergeObject(), getSourceObject());
+      mergeEqualsDest = compareObjects(getMergeObject(), getDestObject());
+      sourceEqualsDest = compareObjects(getSourceObject(), getDestObject());
    }
 
    private boolean compareObjects(Object obj1, Object obj2) throws OseeCoreException {
+      if (obj1 == null || obj2 == null) {
+         return false;
+      }
       if (obj1 instanceof InputStream && obj2 instanceof InputStream) {
          InputStream inputStream1 = (InputStream) obj1;
          InputStream inputStream2 = (InputStream) obj2;
