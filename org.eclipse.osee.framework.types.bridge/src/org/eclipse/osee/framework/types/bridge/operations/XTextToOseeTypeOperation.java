@@ -80,7 +80,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             ArtifactTypeManager.getTypeByGuid(artifactType.getTypeGuid());
 
       for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
-         superTypes.add(ArtifactTypeManager.getTypeByGuid(superType.getTypeGuid()));
+
+         superTypes.add(ArtifactTypeManager.getType(getTypeName(superType.getName())));
       }
       targetArtifactType.addSuperType(superTypes);
 

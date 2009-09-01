@@ -6,9 +6,9 @@
          id="OseeTypesOTE"
          name="OseeTypesOTE"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <ExcelFile
-            file="support/OseeTypes_OTE.xml">
-      </ExcelFile>
+      <OseeTypes
+            resource="support/OseeTypes_OTE.osee">
+      </OseeTypes>
    </extension>
    <extension
          id="MappedAttributeDataProvider"

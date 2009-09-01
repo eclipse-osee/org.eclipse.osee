@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -84,24 +85,9 @@ public class OseeTypesImport {
                         String.format("Unable to find handler for [%s] - handlers - %s", resource,
                               this.extensionObjects.getObjects()));
                }
+            } else {
+               throw new OseeArgumentException("expecting a single xml element called OseeTypes");
             }
-            //            else if (el.getName().equals("ExcelFile")) {
-            //               String resource = el.getAttribute("file");
-            //               URL url = getResource(el.getContributor().getName(), resource);
-            //               OseeLog.log(Activator.class, Level.INFO, String.format("Importing [%s] from [%s]", resource,
-            //                     url != null ? url.getPath() : "url was null"));
-            //               if (url != null) {
-            //                  InputStream inputStream = null;
-            //                  try {
-            //                     inputStream = url.openStream();
-            //                     //                     importer.extractTypesFromSheet(url.getPath(), inputStream);
-            //                  } finally {
-            //                     if (inputStream != null) {
-            //                        inputStream.close();
-            //                     }
-            //                  }
-            //               }
-            //            }
          }
       }
       //      importer.finish();

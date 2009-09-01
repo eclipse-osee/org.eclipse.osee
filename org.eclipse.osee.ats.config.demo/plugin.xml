@@ -38,9 +38,9 @@
          id="OseeTypes_DemoCommon"
          name="OseeTypes_DemoCommon"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <ExcelFile
-            file="support/OseeTypes_DemoCommon.xml">
-      </ExcelFile>
+      <OseeTypes
+            resource="support/OseeTypes_Demo.osee">
+      </OseeTypes>
    </extension>
    <extension
          point="org.eclipse.osee.ats.AtsTeamWorkflow">
@@ -53,14 +53,6 @@
       <ArtifactFactory
             classname="org.eclipse.osee.ats.config.demo.artifact.DemoArtifactFactory">
       </ArtifactFactory>
-   </extension>
-   <extension
-         id="OseeTypes_DemoProgram"
-         name="OseeTypes_DemoProgram"
-         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <ExcelFile
-            file="support/OseeTypes_DemoProgram.xml">
-      </ExcelFile>
    </extension>
    <extension
          point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">

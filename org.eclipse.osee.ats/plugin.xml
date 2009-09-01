@@ -167,8 +167,9 @@
          id="OseeTypes_ATS"
          name="OseeTypes_ATS"
          point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <ExcelFile
-            file="support/OseeTypes_ATS.xml"/>
+      <OseeTypes
+            resource="support/OseeTypes_ATS.osee">
+      </OseeTypes>
    </extension>
    <extension
          id="TaskMetrics"

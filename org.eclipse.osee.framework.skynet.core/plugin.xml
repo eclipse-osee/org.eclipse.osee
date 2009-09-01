@@ -30,30 +30,6 @@
          </ArtifactFactory>
       </extension>
       <extension
-            id="OseeTypes_CommonBranch"
-            name="OseeTypes_Common Branch"
-            point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-         <ExcelFile
-               file="support/OseeTypes_CommonBranch.xml">
-         </ExcelFile>
-      </extension>
-      <extension
-            id="OseeTypes_ProgramBranch"
-            name="OseeTypes_Program Branch"
-            point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-         <ExcelFile
-               file="support/OseeTypes_ProgramBranch.xml">
-         </ExcelFile>
-      </extension>
-      <extension
-            id="OseeTypes_ProgramAndCommon"
-            name="OseeTypes_ProgramAndCommon"
-            point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-         <ExcelFile
-               file="support/OseeTypes_ProgramAndCommon.xml">
-         </ExcelFile>
-      </extension>
-      <extension
             id="SkynetSchemaDefinition"
             name="SkynetSchemaDefinition"
             point="org.eclipse.osee.framework.skynet.core.OseeDbSchema">
@@ -236,13 +212,5 @@
            classname="org.eclipse.osee.framework.skynet.core.importing.parsers.WordOutlineExtractorDelegate">
      </ArtifactExtractorDelegate>
   </extension>
-  <extension
-        id="OseeSystemTypes"
-        name="OseeSystemTypes"
-        point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-     <OseeTypes
-           resource="support/OseeTypes_framework.osee">
-     </OseeTypes>
-  </extension>        
         
 </plugin>

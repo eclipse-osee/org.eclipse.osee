@@ -19,7 +19,7 @@
       <complexType>
          <sequence>
             <element ref="ExcelFile" minOccurs="0" maxOccurs="1"/>
-            <element ref="OseeTypes" minOccurs="0" maxOccurs="1"/>
+            <element ref="OseeTypes"/>
          </sequence>
          <attribute name="point" type="string" use="required">
             <annotation>
