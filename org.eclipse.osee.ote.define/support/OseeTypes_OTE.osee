@@ -39,7 +39,7 @@ artifactType "Test Run" extends "Artifact" {
    attribute "Qualification Level"
    attribute "Build Id"
    attribute "Checksum"
-   attribute "File Extension"
+   attribute "Extension"
 }
 
 attributeType "Outfile URL" extends StringAttribute {
