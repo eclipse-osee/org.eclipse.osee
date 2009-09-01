@@ -11,9 +11,9 @@
 
 package org.eclipse.osee.framework.database.init;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -41,7 +41,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
 
    public void run() throws OseeCoreException {
       Branch systemBranch = BranchManager.createSystemRootBranch();
-      List<String> registeredTypes = new ArrayList<String>();
+      Set<String> registeredTypes = new HashSet<String>();
       registerFrameworkOseeTypes(registeredTypes);
       registerRequiredOseeTypes(registeredTypes);
       OseeTypesImport.execute(registeredTypes);
