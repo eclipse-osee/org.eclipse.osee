@@ -77,8 +77,9 @@ public class AtsBranchConfigurationTest {
 
    @Before
    public void testSetup() throws Exception {
-      if (AtsUtil.isProductionDb()) throw new IllegalStateException(
-            "BranchConfigThroughTeamDefTest should not be run on production DB");
+      if (AtsUtil.isProductionDb()) {
+         throw new IllegalStateException("BranchConfigThroughTeamDefTest should not be run on production DB");
+      }
       AtsBulkLoadCache.run(true);
    }
 
@@ -293,7 +294,7 @@ public class AtsBranchConfigurationTest {
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoProgram");
       OseeTypesImport.execute(skynetTypeImport);
 
-      return BranchManager.createTopLevelBranch(branchName, branchName);
+      return BranchManager.createTopLevelBranch(branchName, branchName, null);
    }
 
    private void cleanupBranchTest(TestType testType) throws Exception {

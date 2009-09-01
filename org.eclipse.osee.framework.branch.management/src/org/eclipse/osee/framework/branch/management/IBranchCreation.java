@@ -16,5 +16,5 @@ import org.eclipse.osee.framework.core.enums.BranchType;
  * @author Andrew M Finkbeiner
  */
 public interface IBranchCreation {
-   public int createBranch(BranchType branchType, int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName) throws Exception;
+   public int createBranch(BranchType branchType, int parentTransactionId, int parentBranchId, String branchGuid, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName) throws Exception;
 }

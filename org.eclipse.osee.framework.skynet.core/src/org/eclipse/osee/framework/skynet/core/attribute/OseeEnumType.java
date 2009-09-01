@@ -65,7 +65,7 @@ public class OseeEnumType extends BaseOseeType {
    public void addEntries(List<Pair<String, Integer>> entries) throws OseeCoreException {
       final List<Pair<String, Integer>> newEntries = getCombinedEntries(this, entries);
       cache.getEnumTypeData().cacheType(this);
-      // TODO FIx this - may nee to add a persist call to this class?
+      // TODO Fix this - may need to add a persist call to this class?
       //      UpdateEnumTx updateEnumTx = new UpdateEnumTx(this, newEntries);
       //      updateEnumTx.execute();
       //

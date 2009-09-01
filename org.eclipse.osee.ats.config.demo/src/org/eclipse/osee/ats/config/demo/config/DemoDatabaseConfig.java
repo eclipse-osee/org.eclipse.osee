@@ -129,7 +129,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       skynetTypeImport.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoProgram");
       OseeTypesImport.execute(skynetTypeImport);
 
-      BranchManager.createTopLevelBranch(branchName, branchName);
+      BranchManager.createTopLevelBranch(branchName, branchName, null);
    }
 
    private void createVersionArtifacts() throws OseeCoreException {

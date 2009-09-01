@@ -621,7 +621,7 @@ public class BranchManager {
     */
    public static Branch createWorkingBranch(TransactionId parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       return HttpBranchCreation.createFullBranch(BranchType.WORKING, parentTransactionId.getTransactionNumber(),
-            parentTransactionId.getBranchId(), childBranchName, null, associatedArtifact);
+            parentTransactionId.getBranchId(), childBranchName, null, null, associatedArtifact);
    }
 
    /**
@@ -643,10 +643,6 @@ public class BranchManager {
     * @param childBranchName
     * @throws OseeCoreException
     */
-   public static Branch createBaselineBranch(TransactionId parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
-      return HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getTransactionNumber(),
-            parentTransactionId.getBranchId(), childBranchName, null, associatedArtifact);
-   }
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
@@ -657,7 +653,8 @@ public class BranchManager {
     */
    public static Branch createBaselineBranch(Branch parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(parentBranch);
-      return createBaselineBranch(parentTransactionId, childBranchName, associatedArtifact);
+      return HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getTransactionNumber(),
+            parentTransactionId.getBranchId(), childBranchName, null, null, associatedArtifact);
    }
 
    /**
@@ -672,13 +669,12 @@ public class BranchManager {
     * @see BranchManager#intializeBranch
     * @see BranchManager#getKeyedBranch(String)
     */
-   public static Branch createTopLevelBranch(String branchName, String staticBranchName) throws OseeCoreException {
+   public static Branch createTopLevelBranch(String branchName, String staticBranchName, String branchGuid) throws OseeCoreException {
       Branch systemRootBranch = BranchManager.getSystemRootBranch();
       TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(systemRootBranch);
-
       Branch branch =
             HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getTransactionNumber(),
-                  systemRootBranch.getBranchId(), branchName, staticBranchName, null);
+                  systemRootBranch.getBranchId(), branchName, staticBranchName, branchGuid, null);
       if (staticBranchName != null) {
          setKeyedBranchInCache(staticBranchName, branch);
       }
@@ -687,7 +683,7 @@ public class BranchManager {
 
    public static Branch createSystemRootBranch() throws OseeCoreException {
       return HttpBranchCreation.createFullBranch(BranchType.SYSTEM_ROOT, 1, NULL_PARENT_BRANCH_ID,
-            "System Root Branch", null, null);
+            "System Root Branch", null, null, null);
    }
 
    public static List<Branch> getBaselineBranches() throws OseeCoreException {

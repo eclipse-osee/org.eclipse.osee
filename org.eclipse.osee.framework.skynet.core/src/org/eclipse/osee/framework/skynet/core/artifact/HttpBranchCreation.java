@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -47,9 +48,12 @@ public class HttpBranchCreation {
     * @see BranchManager#createRootBranch(String, String, int)
     * @see BranchManager#getKeyedBranch(String)
     */
-   public static Branch createFullBranch(BranchType branchType, int parentTransactionNumber, int parentBranchId, String branchName, String staticBranchName, Artifact associatedArtifact) throws OseeCoreException {
+   public static Branch createFullBranch(BranchType branchType, int parentTransactionNumber, int parentBranchId, String branchName, String staticBranchName, String branchGuid, Artifact associatedArtifact) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
+      if (GUID.isValid(branchGuid)) {
+         parameters.put("branchGuid", branchGuid);
+      }
       parameters.put("branchName", branchName);
       parameters.put("function", "createFullBranch");
       parameters.put("authorId", getAuthorId());

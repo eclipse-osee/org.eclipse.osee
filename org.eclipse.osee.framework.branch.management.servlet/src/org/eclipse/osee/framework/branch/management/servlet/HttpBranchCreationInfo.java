@@ -26,8 +26,10 @@ class HttpBranchCreationInfo {
    private final int authorId;
    private final String staticBranchName;
    private final BranchType branchType;
+   private final String branchGuid;
 
    public HttpBranchCreationInfo(HttpServletRequest req) throws OseeArgumentException {
+      branchGuid = req.getParameter("branchGuid");
       String parentBranchIdStr = req.getParameter("parentBranchId");
       if (parentBranchIdStr == null) {
          throw new OseeArgumentException("A 'parentBranchId' parameter must be specified");
@@ -116,6 +118,13 @@ class HttpBranchCreationInfo {
     */
    public BranchType getBranchType() {
       return branchType;
+   }
+
+   /**
+    * @return the branchGuid
+    */
+   public String getBranchGuid() {
+      return branchGuid;
    }
 
    /**

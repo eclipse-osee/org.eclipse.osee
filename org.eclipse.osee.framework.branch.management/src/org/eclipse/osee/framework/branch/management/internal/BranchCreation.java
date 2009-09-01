@@ -41,14 +41,13 @@ public class BranchCreation implements IBranchCreation {
    private static final String INSERT_TX_DETAILS =
          "INSERT INTO osee_TX_DETAILS ( branch_id, transaction_id, OSEE_COMMENT, time, author, tx_type ) VALUES ( ?, ?, ?, ?, ?, ?)";
 
-   public int createBranch(BranchType branchType, int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName) throws Exception {
+   public int createBranch(BranchType branchType, int parentTransactionId, int parentBranchId, String branchGuid, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName) throws Exception {
       CreateBranchTx createBranchTx =
-            new CreateBranchTx(branchType, parentTransactionId, parentBranchId, childBranchName, creationComment,
-                  associatedArtifactId, authorId, staticBranchName);
+            new CreateBranchTx(branchType, parentTransactionId, parentBranchId, branchGuid, childBranchName,
+                  creationComment, associatedArtifactId, authorId, staticBranchName);
       createBranchTx.execute();
       return createBranchTx.getNewBranchId();
    }
-
    public static class CreateBranchTx extends DbTransaction {
       protected String childBranchName;
       protected int parentBranchId;
@@ -60,8 +59,9 @@ public class BranchCreation implements IBranchCreation {
       protected final BranchType branchType;
       private final int parentTransactionId;
       private final String staticBranchName;
+      private final String branchGuid;
 
-      public CreateBranchTx(BranchType branchType, int parentTransactionId, int parentBranchId, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName) throws OseeCoreException {
+      public CreateBranchTx(BranchType branchType, int parentTransactionId, int parentBranchId, String branchGuid, String childBranchName, String creationComment, int associatedArtifactId, int authorId, String staticBranchName) throws OseeCoreException {
          this.parentBranchId = parentBranchId;
          this.childBranchName = childBranchName;
          this.associatedArtifactId = associatedArtifactId;
@@ -70,6 +70,7 @@ public class BranchCreation implements IBranchCreation {
          this.branchType = branchType;
          this.parentTransactionId = parentTransactionId;
          this.staticBranchName = staticBranchName;
+         this.branchGuid = branchGuid;
       }
 
       public int getNewBranchId() {
@@ -80,8 +81,8 @@ public class BranchCreation implements IBranchCreation {
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          branchId =
-               initializeBranch(connection, childBranchName, parentBranchId, parentTransactionId, authorId, timestamp,
-                     creationComment, associatedArtifactId, branchType, BranchState.CREATED);
+               initializeBranch(connection, branchGuid, childBranchName, parentBranchId, parentTransactionId, authorId,
+                     timestamp, creationComment, associatedArtifactId, branchType, BranchState.CREATED);
          int newTransactionNumber = SequenceManager.getNextTransactionId();
          ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, branchId, newTransactionNumber,
                creationComment, timestamp, authorId, 1);
@@ -91,10 +92,13 @@ public class BranchCreation implements IBranchCreation {
          success = true;
       }
 
-      private int initializeBranch(OseeConnection connection, String branchName, int parentBranchId, int parentTransactionId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) throws OseeDataStoreException, OseeArgumentException {
+      private int initializeBranch(OseeConnection connection, String branchGuid, String branchName, int parentBranchId, int parentTransactionId, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) throws OseeDataStoreException, OseeArgumentException {
          int branchId = SequenceManager.getNextBranchId();
-         String branchGuid = GUID.create();
-         ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, branchGuid, branchName,
+         String guid = branchGuid;
+         if (!GUID.isValid(branchGuid)) {
+            guid = GUID.create();
+         }
+         ConnectionHandler.runPreparedUpdate(connection, BRANCH_TABLE_INSERT, branchId, guid, branchName,
                parentBranchId, parentTransactionId, 0, associatedArtifactId, branchType.getValue(),
                branchState.getValue());
          return branchId;

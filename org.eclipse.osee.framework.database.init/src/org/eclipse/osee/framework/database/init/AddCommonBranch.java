@@ -49,7 +49,7 @@ public class AddCommonBranch implements IDbInitializationTask {
                OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME).persistAttributesAndRelations();
       }
 
-      BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID);
+      BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID, null);
    }
 
    public List<String> getSkynetDbTypeExtensionIds() {
