@@ -28,10 +28,6 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
    }
 
    public void addDbInitChoice(GroupSelection groupSelection) {
-      addDemoDbInitChoice(groupSelection);
-   }
-
-   public void addDemoDbInitChoice(GroupSelection groupSelection) {
       List<String> dbInitTasks = new ArrayList<String>();
       dbInitTasks.add("org.eclipse.osee.ats.config.demo.AddCommonBranchForAtsDemo");
       dbInitTasks.add("org.eclipse.osee.framework.database.init.SimpleTemplateProviderTask");
@@ -40,5 +36,4 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
 
       groupSelection.addChoice("OSEE Demo Database", dbInitTasks, false);
    }
-
 }

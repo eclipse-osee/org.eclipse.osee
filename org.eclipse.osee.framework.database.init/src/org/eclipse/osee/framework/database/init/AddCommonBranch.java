@@ -11,7 +11,8 @@
 
 package org.eclipse.osee.framework.database.init;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -27,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.importing.OseeTypesImport;
  * 
  * @author Donald G. Dunne
  */
-public class AddCommonBranch implements IDbInitializationTask {
+public abstract class AddCommonBranch implements IDbInitializationTask {
    private final boolean initializeRootArtifacts;
 
    public AddCommonBranch() {
@@ -40,7 +41,10 @@ public class AddCommonBranch implements IDbInitializationTask {
 
    public void run() throws OseeCoreException {
       Branch systemBranch = BranchManager.createSystemRootBranch();
-      OseeTypesImport.execute(getSkynetDbTypeExtensionIds());
+      List<String> registeredTypes = new ArrayList<String>();
+      registerFrameworkOseeTypes(registeredTypes);
+      registerRequiredOseeTypes(registeredTypes);
+      OseeTypesImport.execute(registeredTypes);
 
       if (initializeRootArtifacts) {
          ArtifactTypeManager.addArtifact(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, systemBranch,
@@ -52,9 +56,16 @@ public class AddCommonBranch implements IDbInitializationTask {
       BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID, null);
    }
 
-   public List<String> getSkynetDbTypeExtensionIds() {
-      return Arrays.asList("org.eclipse.osee.framework.skynet.core.OseeSystemTypes",
-            "org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon", "org.eclipse.osee.ats.OseeTypes_ATS");
+   /**
+    * Clients should register custom OSEE Types by implementing this method
+    * 
+    * @param registeredTypes
+    */
+   protected abstract void registerRequiredOseeTypes(Collection<String> registeredTypes);
+
+   private void registerFrameworkOseeTypes(Collection<String> registeredTypes) {
+      registeredTypes.add("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework");
+      registeredTypes.add("org.eclipse.osee.ats.OseeTypes_ATS");
    }
 
    public boolean canRun() {
