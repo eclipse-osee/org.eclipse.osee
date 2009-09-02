@@ -28,7 +28,6 @@ public class DemoDbActionData {
    public final String[] actionableItems;
    public final DefaultTeamState toState;
    public final Integer[] userCommunityIndecies;
-   public String[] configuredUserCommunities;
    public final String[] prefixTitles;
    private final CreateReview[] createReviews;
    public enum CreateReview {
@@ -46,14 +45,12 @@ public class DemoDbActionData {
    }
 
    public Set<String> getUserCommunities() {
-      if (configuredUserCommunities == null) {
-         configuredUserCommunities =
-               UserCommunity.getInstance().getUserCommunityNames().toArray(
-                     new String[UserCommunity.getInstance().getUserCommunityNames().size()]);
-      }
+      String[] configuredUserCommunities = UserCommunity.getInstance().getUserCommunityNames().toArray(new String[] {});
       Set<String> userComms = new HashSet<String>();
-      for (Integer index : userCommunityIndecies)
+
+      for (Integer index : userCommunityIndecies) {
          userComms.add(configuredUserCommunities[index]);
+      }
       return userComms;
    }
 
@@ -61,7 +58,9 @@ public class DemoDbActionData {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (String str : actionableItems) {
          for (ActionableItemArtifact aia : ActionableItemArtifact.getActionableItems()) {
-            if (str.equals(aia.getName())) aias.add(aia);
+            if (str.equals(aia.getName())) {
+               aias.add(aia);
+            }
          }
       }
       return aias;
