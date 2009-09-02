@@ -36,8 +36,8 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
    }
 
    public void run() throws OseeCoreException {
-      Branch systemBranch = BranchManager.createSystemRootBranch();
       if (initializeRootArtifacts) {
+         Branch systemBranch = BranchManager.getSystemRootBranch();
          ArtifactTypeManager.addArtifact(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, systemBranch,
                OseeSystemArtifacts.DEFAULT_HIERARCHY_ROOT_NAME).persistAttributesAndRelations();
          ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, systemBranch,

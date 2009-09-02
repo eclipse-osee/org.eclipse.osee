@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.osgi.framework.Bundle;
 
@@ -82,6 +83,9 @@ public class DbBootstrapTask implements IDbInitializationTask {
       OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
       populateSequenceTable();
       addDefaultPermissions();
+
+      // Create System Root
+      BranchManager.createSystemRootBranch();
 
       if (configuration == null) {
          throw new OseeStateException("configuration information must be provided");
