@@ -76,7 +76,7 @@ public class BaseOseeType {
    }
 
    /**
-    * Sets the type name in memory, but does not persist to the datastore
+    * Sets the type name in memory, but does not persist to the data store
     */
    public void setName(String name) {
       dirty = true;

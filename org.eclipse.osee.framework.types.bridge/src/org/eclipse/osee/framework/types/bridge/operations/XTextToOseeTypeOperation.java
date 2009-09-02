@@ -130,11 +130,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             entries.add(new Pair<String, Integer>(enumEntry.getName(), lastOrdinal));
             lastOrdinal++;
          }
-         toReturn = OseeEnumTypeManager.createEnumType(enumType.getTypeGuid(), enumType.getName());
-         if (toReturn != null) {
-            toReturn.addEntries(entries);
-            enumType.setTypeGuid(toReturn.getGuid());
-         }
+         toReturn = OseeEnumTypeManager.createEnumType(enumType.getTypeGuid(), enumType.getName(), entries);
       }
       return toReturn;
    }

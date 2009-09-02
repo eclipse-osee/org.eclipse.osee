@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.test.types;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider;
@@ -213,7 +213,7 @@ public class OseeTypeCacheTest {
       java.util.Collections.sort(oseeEnumTypes);
       Assert.assertEquals(oseeEnumTypes.size(), actualTypes.size());
       for (int index = 0; index < oseeEnumTypes.size(); index++) {
-         Assert.assertEquals(oseeEnumTypes.get(index), actualTypes.get(index));
+         TestOseeTypesUtil.checkEnumType(oseeEnumTypes.get(index), actualTypes.get(index));
       }
    }
 
@@ -229,7 +229,7 @@ public class OseeTypeCacheTest {
    public void testCacheOseeEnumTypesByGuid() throws OseeCoreException {
       for (OseeEnumType expected : oseeEnumTypes) {
          OseeEnumType actual = typeCache.getEnumTypeData().getTypeByGuid(expected.getGuid());
-         Assert.assertEquals(expected, actual);
+         TestOseeTypesUtil.checkEnumType(expected, actual);
       }
    }
 
@@ -237,7 +237,7 @@ public class OseeTypeCacheTest {
    public void testCacheOseeEnumTypesById() throws OseeCoreException {
       for (OseeEnumType expected : oseeEnumTypes) {
          OseeEnumType actual = typeCache.getEnumTypeData().getTypeById(expected.getTypeId());
-         Assert.assertEquals(expected, actual);
+         TestOseeTypesUtil.checkEnumType(expected, actual);
       }
    }
 
@@ -245,7 +245,7 @@ public class OseeTypeCacheTest {
    public void testCacheOseeEnumTypesByName() throws OseeCoreException {
       for (OseeEnumType expected : oseeEnumTypes) {
          OseeEnumType actual = typeCache.getEnumTypeData().getTypeByName(expected.getName());
-         Assert.assertEquals(expected, actual);
+         TestOseeTypesUtil.checkEnumType(expected, actual);
       }
    }
 
@@ -268,13 +268,13 @@ public class OseeTypeCacheTest {
 
    @org.junit.Test
    public void testArtifactInheritance() throws OseeCoreException {
-      checkInheritance("000", "000");// inherits from returns true if comparing against itself
-      checkInheritance("111", "000");
-      checkInheritance("222", "000");
-      checkInheritance("333", "000", "222");
-      checkInheritance("444", "000", "222", "333");
-      checkInheritance("555", "000", "444", "333", "222");
-      checkInheritance("666", "000", "333", "222");
+      TestOseeTypesUtil.checkInheritance(typeCache, "000", "000");// inherits from returns true if comparing against itself
+      TestOseeTypesUtil.checkInheritance(typeCache, "111", "000");
+      TestOseeTypesUtil.checkInheritance(typeCache, "222", "000");
+      TestOseeTypesUtil.checkInheritance(typeCache, "333", "000", "222");
+      TestOseeTypesUtil.checkInheritance(typeCache, "444", "000", "222", "333");
+      TestOseeTypesUtil.checkInheritance(typeCache, "555", "000", "444", "333", "222");
+      TestOseeTypesUtil.checkInheritance(typeCache, "666", "000", "333", "222");
    }
 
    @org.junit.Test
@@ -304,113 +304,39 @@ public class OseeTypeCacheTest {
       Assert.assertTrue(artifactType.inheritsFrom(baseType));
    }
 
-   private void checkInheritance(String artTypeGuid, String... superTypeGuids) throws OseeCoreException {
-      ArtifactType target = typeCache.getArtifactTypeData().getTypeByGuid(artTypeGuid);
-      Assert.assertNotNull(target);
-
-      List<ArtifactType> expectedSuperTypes = new ArrayList<ArtifactType>();
-      for (String superTyperGuid : superTypeGuids) {
-         ArtifactType superArtifactType = typeCache.getArtifactTypeData().getTypeByGuid(superTyperGuid);
-         Assert.assertNotNull(superArtifactType);
-         expectedSuperTypes.add(superArtifactType);
-      }
-
-      for (ArtifactType testAgainstType : typeCache.getArtifactTypeData().getAllTypes()) {
-         boolean result = target.inheritsFrom(testAgainstType);
-         if (expectedSuperTypes.contains(testAgainstType) || target.equals(testAgainstType)) {
-            Assert.assertTrue(String.format("[%s] does not inherit from [%s]", target.getName(),
-                  testAgainstType.getName()), result);
-         } else {
-            Assert.assertFalse(String.format("[%s] should not inherit from [%s]", target.getName(),
-                  testAgainstType.getName()), result);
-         }
-      }
-   }
-
    @org.junit.Test
    public void testInheritedAttributeTypes() throws OseeCoreException {
-      checkAttributes("000", branch1, "AAA");
-      checkAttributes("111", branch1, "AAA", "BBB");
-      checkAttributes("222", branch1, "AAA", "CCC");
-      checkAttributes("333", branch1, "AAA", "DDD", "CCC");
-      checkAttributes("444", branch1, "AAA", "FFF", "CCC", "DDD");
-      checkAttributes("555", branch1, "AAA", "GGG", "FFF", "CCC", "DDD");
-      checkAttributes("666", branch1, "AAA", "HHH", "DDD", "CCC");
+      TestOseeTypesUtil.checkAttributes(typeCache, "000", branch1, "AAA");
+      TestOseeTypesUtil.checkAttributes(typeCache, "111", branch1, "AAA", "BBB");
+      TestOseeTypesUtil.checkAttributes(typeCache, "222", branch1, "AAA", "CCC");
+      TestOseeTypesUtil.checkAttributes(typeCache, "333", branch1, "AAA", "DDD", "CCC");
+      TestOseeTypesUtil.checkAttributes(typeCache, "444", branch1, "AAA", "FFF", "CCC", "DDD");
+      TestOseeTypesUtil.checkAttributes(typeCache, "555", branch1, "AAA", "GGG", "FFF", "CCC", "DDD");
+      TestOseeTypesUtil.checkAttributes(typeCache, "666", branch1, "AAA", "HHH", "DDD", "CCC");
 
-      checkAttributes("000", branch2, "AAA");
-      checkAttributes("111", branch2, "AAA", "BBB");
-      checkAttributes("222", branch2, "AAA", "CCC");
-      checkAttributes("333", branch2, "AAA", "DDD", "CCC", "EEE"); // EEE only visible on branch2
-      checkAttributes("444", branch2, "AAA", "FFF", "CCC", "DDD", "EEE");
-      checkAttributes("555", branch2, "AAA", "GGG", "FFF", "CCC", "DDD", "EEE");
-      checkAttributes("666", branch2, "AAA", "HHH", "DDD", "CCC", "EEE");
+      TestOseeTypesUtil.checkAttributes(typeCache, "000", branch2, "AAA");
+      TestOseeTypesUtil.checkAttributes(typeCache, "111", branch2, "AAA", "BBB");
+      TestOseeTypesUtil.checkAttributes(typeCache, "222", branch2, "AAA", "CCC");
+      TestOseeTypesUtil.checkAttributes(typeCache, "333", branch2, "AAA", "DDD", "CCC", "EEE"); // EEE only visible on branch2
+      TestOseeTypesUtil.checkAttributes(typeCache, "444", branch2, "AAA", "FFF", "CCC", "DDD", "EEE");
+      TestOseeTypesUtil.checkAttributes(typeCache, "555", branch2, "AAA", "GGG", "FFF", "CCC", "DDD", "EEE");
+      TestOseeTypesUtil.checkAttributes(typeCache, "666", branch2, "AAA", "HHH", "DDD", "CCC", "EEE");
    }
 
    public void testRelationTypeSides() throws OseeCoreException {
-      checkRelationTypeSideInheritance("1A", RelationSide.SIDE_A, 1, "111");
-      checkRelationTypeSideInheritance("1A", RelationSide.SIDE_B, 1, "444", "555");
+      TestOseeTypesUtil.checkInheritance(typeCache, "1A", RelationSide.SIDE_A, 1, "111");
+      TestOseeTypesUtil.checkInheritance(typeCache, "1A", RelationSide.SIDE_B, 1, "444", "555");
 
-      checkRelationTypeSideInheritance("2B", RelationSide.SIDE_A, 1, "555");
-      checkRelationTypeSideInheritance("2B", RelationSide.SIDE_B, Integer.MAX_VALUE, "000", "111", "222", "333", "444",
+      TestOseeTypesUtil.checkInheritance(typeCache, "2B", RelationSide.SIDE_A, 1, "555");
+      TestOseeTypesUtil.checkInheritance(typeCache, "2B", RelationSide.SIDE_B, Integer.MAX_VALUE, "000", "111", "222",
+            "333", "444", "555", "666");
+
+      TestOseeTypesUtil.checkInheritance(typeCache, "3C", RelationSide.SIDE_A, Integer.MAX_VALUE, "222", "333", "444",
             "555", "666");
+      TestOseeTypesUtil.checkInheritance(typeCache, "3C", RelationSide.SIDE_B, 1, "333", "444", "555", "666");
 
-      checkRelationTypeSideInheritance("3C", RelationSide.SIDE_A, Integer.MAX_VALUE, "222", "333", "444", "555", "666");
-      checkRelationTypeSideInheritance("3C", RelationSide.SIDE_B, 1, "333", "444", "555", "666");
-
-      checkRelationTypeSideInheritance("4D", RelationSide.SIDE_A, Integer.MAX_VALUE, "666");
-      checkRelationTypeSideInheritance("4D", RelationSide.SIDE_B, Integer.MAX_VALUE, "666");
-   }
-
-   private void checkRelationTypeSideInheritance(String relGuid, RelationSide relationSide, int maxValue, String... artifactTypesAllowed) throws OseeCoreException {
-      RelationType relationType = typeCache.getRelationTypeData().getTypeByGuid(relGuid);
-      Assert.assertNotNull(relationType);
-
-      Assert.assertEquals(maxValue, relationType.getMultiplicity().getLimit(relationSide));
-      Assert.assertEquals(maxValue == Integer.MAX_VALUE ? "n" : "1", relationType.getMultiplicity().asLimitLabel(
-            relationSide));
-
-      List<ArtifactType> allowedTypes = new ArrayList<ArtifactType>();
-      for (String guid : artifactTypesAllowed) {
-         ArtifactType type = typeCache.getArtifactTypeData().getTypeByGuid(guid);
-         Assert.assertNotNull(type);
-         allowedTypes.add(type);
-      }
-
-      for (ArtifactType artifactType : typeCache.getArtifactTypeData().getAllTypes()) {
-         boolean result = relationType.isArtifactTypeAllowed(relationSide, artifactType);
-         if (allowedTypes.contains(artifactType)) {
-            Assert.assertTrue(String.format("ArtifactType [%s] was not allowed", artifactType), result);
-         } else {
-            Assert.assertFalse(String.format("ArtifactType [%s] was allowed even though it should not have been",
-                  artifactType), result);
-         }
-      }
-   }
-
-   private void checkAttributes(String artTypeGuid, Branch branch, String... attributeGuids) throws OseeCoreException {
-      ArtifactType artifactType = typeCache.getArtifactTypeData().getTypeByGuid(artTypeGuid);
-      Assert.assertNotNull(artifactType);
-
-      List<AttributeType> expectedAttributes = new ArrayList<AttributeType>();
-      for (String attrGuid : attributeGuids) {
-         AttributeType attributeType = typeCache.getAttributeTypeData().getTypeByGuid(attrGuid);
-         Assert.assertNotNull(attributeType);
-         expectedAttributes.add(attributeType);
-      }
-
-      Collection<AttributeType> actualTypes = artifactType.getAttributeTypes(branch);
-      Assert.assertEquals(String.format("ArtifactType [%s] - incorrect number of attributes actual - %s expected - %s",
-            artTypeGuid, actualTypes, expectedAttributes), expectedAttributes.size(), actualTypes.size());
-
-      Collection<AttributeType> typesNotFound =
-            org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(expectedAttributes, actualTypes);
-      Assert.assertTrue(String.format("Artifact [%s] for branch [%s] did not have the following attributes [%s]",
-            artifactType.getName(), branch.getName(), typesNotFound), typesNotFound.isEmpty());
-
-      typesNotFound =
-            org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(actualTypes, expectedAttributes);
-      Assert.assertTrue(String.format("Artifact [%s] for branch [%s] the following additional attributes [%s]",
-            artifactType.getName(), branch.getName(), typesNotFound), typesNotFound.isEmpty());
+      TestOseeTypesUtil.checkInheritance(typeCache, "4D", RelationSide.SIDE_A, Integer.MAX_VALUE, "666");
+      TestOseeTypesUtil.checkInheritance(typeCache, "4D", RelationSide.SIDE_B, Integer.MAX_VALUE, "666");
    }
 
    private static Branch createBranchHelper(String guid, String name, int id, Branch parentBranch, BranchType branchType) {
@@ -537,14 +463,28 @@ public class OseeTypeCacheTest {
          }
       }
 
+      private OseeEnumType createEnumTypeHelper(OseeTypeCache cache, IOseeTypeFactory factory, String guid, String name, Object... entries) throws OseeCoreException {
+         OseeEnumType type = factory.createEnumType(guid, name, cache);
+         if (entries != null && entries.length > 0) {
+            List<OseeEnumEntry> items = new ArrayList<OseeEnumEntry>();
+            for (int index = 0; index < entries.length; index++) {
+               String itemName = (String) entries[index];
+               Integer ordinal = (Integer) entries[++index];
+               items.add(factory.createEnumEntry(null, itemName, ordinal, cache));
+            }
+            type.setEntries(items);
+         }
+         return type;
+      }
+
       @Override
       public void loadAllOseeEnumTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
          super.loadAllOseeEnumTypes(cache, factory);
-         oseeEnumTypes.add(factory.createEnumType("E1", "Enum1", cache));
-         oseeEnumTypes.add(factory.createEnumType("E2", "Enum2", cache));
-         oseeEnumTypes.add(factory.createEnumType("E3", "Enum3", cache));
-         oseeEnumTypes.add(factory.createEnumType("E4", "Enum4", cache));
-         oseeEnumTypes.add(factory.createEnumType("E5", "Enum5", cache));
+         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E1", "Enum1", "AAA", 1, "BBB", 2, "CCC", 3));
+         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E2", "Enum2", "DDD", 4, "EEE", 5, "FFF", 6));
+         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E3", "Enum3", "GGG", 7, "HHH", 8, "III", 9));
+         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E4", "Enum4", "JJJ", 10, "KKK", 11, "LLL", 12));
+         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E5", "Enum5", "MMM", 1, "NNN", 2, "OOO", 3));
          int typeId = 400;
          for (OseeEnumType type : oseeEnumTypes) {
             type.setTypeId(typeId++);

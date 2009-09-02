@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -24,11 +25,13 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
  */
 public interface IOseeTypeFactory {
 
-   public ArtifactType createArtifactType(String guid, boolean isAbstract, String artifactTypeName, OseeTypeCache oseeTypeCache) throws OseeCoreException;
+   public ArtifactType createArtifactType(String guid, boolean isAbstract, String name, OseeTypeCache oseeTypeCache) throws OseeCoreException;
 
    public AttributeType createAttributeType(String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException;
 
-   public RelationType createRelationType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException;
+   public RelationType createRelationType(String guid, String name, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException;
 
    public OseeEnumType createEnumType(String guid, String name, OseeTypeCache oseeTypeCache) throws OseeCoreException;
+
+   public OseeEnumEntry createEnumEntry(String guid, String name, int ordinal, OseeTypeCache oseeTypeCache) throws OseeCoreException;
 }
