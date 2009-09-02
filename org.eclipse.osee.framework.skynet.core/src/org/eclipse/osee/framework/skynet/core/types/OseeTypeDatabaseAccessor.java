@@ -421,11 +421,15 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
          while (chStmt.next()) {
             try {
                int currentEnumTypeId = chStmt.getInt("enum_type_id");
-               String currentEnumTypeGuid = chStmt.getString("enum_type_guid");
                if (lastEnumTypeId != currentEnumTypeId) {
-                  oseeEnumType = factory.createEnumType(currentEnumTypeGuid, chStmt.getString("enum_type_name"), cache);
+                  if (oseeEnumType != null) {
+                     oseeEnumType.setEntries(oseeEnumEntries);
+                  }
+
+                  oseeEnumType =
+                        factory.createEnumType(chStmt.getString("enum_type_guid"), chStmt.getString("enum_type_name"),
+                              cache);
                   oseeEnumType.setTypeId(currentEnumTypeId);
-                  oseeEnumType.setEntries(oseeEnumEntries);
                   cache.getEnumTypeData().cacheType(oseeEnumType);
                   oseeEnumEntries.clear();
                   lastEnumTypeId = currentEnumTypeId;

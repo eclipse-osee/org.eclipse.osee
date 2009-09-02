@@ -89,6 +89,7 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
          }
       }
       if (toReturn == null) {
+         System.out.println("delete me 23452345" + entryName);
          throw new OseeArgumentException(String.format("No enum const [%s].[%s]", getName(), entryName));
       }
       return toReturn;
