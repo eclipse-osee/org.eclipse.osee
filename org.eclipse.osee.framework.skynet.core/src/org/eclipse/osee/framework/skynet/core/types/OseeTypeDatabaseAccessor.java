@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SequenceManager;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -412,29 +413,23 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
 
    @Override
    public void loadAllOseeEnumTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+      HashCollection<OseeEnumType, OseeEnumEntry> types = new HashCollection<OseeEnumType, OseeEnumEntry>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(SELECT_OSEE_ENUM_TYPES);
          OseeEnumType oseeEnumType = null;
-         List<OseeEnumEntry> oseeEnumEntries = new ArrayList<OseeEnumEntry>();
          int lastEnumTypeId = -1;
          while (chStmt.next()) {
             try {
                int currentEnumTypeId = chStmt.getInt("enum_type_id");
+               String currentEnumTypeGuid = chStmt.getString("enum_type_guid");
                if (lastEnumTypeId != currentEnumTypeId) {
-                  if (oseeEnumType != null) {
-                     oseeEnumType.setEntries(oseeEnumEntries);
-                  }
-
-                  oseeEnumType =
-                        factory.createEnumType(chStmt.getString("enum_type_guid"), chStmt.getString("enum_type_name"),
-                              cache);
+                  oseeEnumType = factory.createEnumType(currentEnumTypeGuid, chStmt.getString("enum_type_name"), cache);
                   oseeEnumType.setTypeId(currentEnumTypeId);
                   cache.getEnumTypeData().cacheType(oseeEnumType);
-                  oseeEnumEntries.clear();
                   lastEnumTypeId = currentEnumTypeId;
                }
-               oseeEnumEntries.add(factory.createEnumEntry(chStmt.getString("enum_entry_guid"),
+               types.put(oseeEnumType, factory.createEnumEntry(chStmt.getString("enum_entry_guid"),
                      chStmt.getString("name"), chStmt.getInt("ordinal"), cache));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -442,6 +437,12 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
          }
       } finally {
          chStmt.close();
+      }
+      for (OseeEnumType oseeEnumType : types.keySet()) {
+         Collection<OseeEnumEntry> oseeEnumEntries = types.getValues(oseeEnumType);
+         if (oseeEnumEntries != null) {
+            oseeEnumType.setEntries(oseeEnumEntries);
+         }
       }
    }
 
