@@ -10,8 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
-import java.util.ArrayList;
-import java.util.List;
+import org.eclipse.osee.framework.database.init.DbInitConfiguration;
 import org.eclipse.osee.framework.database.init.GroupSelection;
 import org.eclipse.osee.framework.database.init.IAddDbInitChoice;
 
@@ -28,12 +27,13 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
    }
 
    public void addDbInitChoice(GroupSelection groupSelection) {
-      List<String> dbInitTasks = new ArrayList<String>();
-      dbInitTasks.add("org.eclipse.osee.ats.config.demo.AddCommonBranchForAtsDemo");
-      dbInitTasks.add("org.eclipse.osee.framework.database.init.SimpleTemplateProviderTask");
-      dbInitTasks.add("org.eclipse.osee.ats.AtsDatabaseConfig");
-      dbInitTasks.add("org.eclipse.osee.ats.config.demo.DemoDatabaseConfig");
+      DbInitConfiguration config = new DbInitConfiguration(false);
+      config.addTask("org.eclipse.osee.ats.config.demo.AddCommonBranchForAtsDemo");
+      config.addTask("org.eclipse.osee.framework.database.init.SimpleTemplateProviderTask");
+      config.addTask("org.eclipse.osee.ats.AtsDatabaseConfig");
+      config.addTask("org.eclipse.osee.ats.config.demo.DemoDatabaseConfig");
 
-      groupSelection.addChoice("OSEE Demo Database", dbInitTasks, false);
+      config.addOseeType("org.eclipse.osee.ats.config.demo.OseeTypes_Demo");
+      groupSelection.addChoice("OSEE Demo Database", config);
    }
 }

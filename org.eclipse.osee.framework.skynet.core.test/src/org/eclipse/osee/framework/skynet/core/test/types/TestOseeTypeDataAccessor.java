@@ -1,12 +1,9 @@
 package org.eclipse.osee.framework.skynet.core.test.types;
 
 import java.util.Collection;
-import java.util.Set;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
@@ -154,12 +151,6 @@ public class TestOseeTypeDataAccessor implements IOseeTypeDataAccessor {
    }
 
    @Override
-   public void storeArtifactType(Collection<ArtifactType> artifactType) throws OseeCoreException {
-      Assert.assertNotNull(artifactType);
-      setStoreArtifactType(true);
-   }
-
-   @Override
    public void storeAttributeType(Collection<AttributeType> attributeType) throws OseeCoreException {
       Assert.assertNotNull(attributeType);
       setStoreAttributeType(true);
@@ -178,15 +169,11 @@ public class TestOseeTypeDataAccessor implements IOseeTypeDataAccessor {
    }
 
    @Override
-   public void storeTypeInheritance(ArtifactType artifactType, Set<ArtifactType> superTypes) throws OseeCoreException {
+   public void storeArtifactType(OseeTypeCache cache, Collection<ArtifactType> artifactType) throws OseeCoreException {
+      Assert.assertNotNull(cache);
       Assert.assertNotNull(artifactType);
-      Assert.assertNotNull(superTypes);
+      setStoreArtifactType(true);
       setStoreTypeInheritance(true);
-   }
-
-   @Override
-   public void storeValidity(CompositeKeyHashMap<Branch, ArtifactType, Collection<AttributeType>> validityData) throws OseeCoreException {
-      Assert.assertNotNull(validityData);
       setStoreTypeValidity(true);
    }
 }

@@ -60,13 +60,5 @@
             class="org.eclipse.osee.ats.config.demo.DemoArtifactImageProvider">
       </ArtifactImageProvider>
    </extension>
-   <extension
-         id="OseeTypes_DemoTemp"
-         name="OseeTypes_DemoTemp"
-         point="org.eclipse.osee.framework.skynet.core.OseeTypes">
-      <OseeTypes
-            resource="support/OseeTypes_DemoTemp.osee">
-      </OseeTypes>
-   </extension>
 
 </plugin>

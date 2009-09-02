@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
  */
 public class GroupSelection {
    private static final GroupSelection instance = new GroupSelection();
-   private final Map<String, List<String>> initGroups = new HashMap<String, List<String>>();
+   private final Map<String, DbInitConfiguration> initGroups = new HashMap<String, DbInitConfiguration>();
 
    private boolean wasInitialized;
 
@@ -54,14 +54,8 @@ public class GroupSelection {
       }
    }
 
-   public void addChoice(String listName, List<String> dbInitTasks, boolean bareBones) {
-      List<String> initTasks = new ArrayList<String>();
-      initTasks.add("org.eclipse.osee.framework.database.init.SkynetDbInit");
-      dbInitTasks.addAll(0, initTasks);
-      dbInitTasks.add("org.eclipse.osee.framework.database.init.PostDbUserCleanUp");
-      dbInitTasks.add("org.eclipse.osee.framework.database.init.SkynetDbBranchDataImport");
-      dbInitTasks.add("org.eclipse.osee.framework.database.init.PostDatabaseInitialization");
-      initGroups.put(listName, dbInitTasks);
+   public void addChoice(String listName, DbInitConfiguration configuration) {
+      initGroups.put(listName, configuration);
    }
 
    public List<String> getChoices() {
@@ -70,7 +64,7 @@ public class GroupSelection {
       return choices;
    }
 
-   public List<String> getDbInitTasksByChoiceEntry(String choice) {
+   public DbInitConfiguration getDbInitConfiguration(String choice) {
       return initGroups.get(choice);
    }
 }

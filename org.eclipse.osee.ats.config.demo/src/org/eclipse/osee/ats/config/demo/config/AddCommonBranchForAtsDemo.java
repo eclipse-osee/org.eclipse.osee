@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.init.AddCommonBranch;
@@ -45,13 +44,5 @@ public class AddCommonBranchForAtsDemo extends AddCommonBranch {
       SystemGroup.OseeAdmin.getArtifact().persistAttributesAndRelations(transaction);
 
       transaction.execute();
-   }
-
-   @Override
-   protected void registerRequiredOseeTypes(Collection<String> registeredTypes) {
-      //      types.add("org.eclipse.osee.framework.skynet.core.OseeTypes_CommonBranch");
-      //      types.add("org.eclipse.osee.framework.skynet.core.OseeTypes_ProgramAndCommon");
-      //      types.add("org.eclipse.osee.ats.OseeTypes_ATS");
-      registeredTypes.add("org.eclipse.osee.ats.config.demo.OseeTypes_DemoTemp");
    }
 }

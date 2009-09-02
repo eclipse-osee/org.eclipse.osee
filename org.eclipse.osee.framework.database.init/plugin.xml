@@ -81,10 +81,10 @@
    	</DatabaseInitializationTask>
 	</extension>
 	<extension
-			id="SkynetDbInit"
+			id="DbBootstrapTask"
          point="org.eclipse.osee.framework.database.init.DatabaseInitializationTask">
    	<DatabaseInitializationTask
-      	   classname="org.eclipse.osee.framework.database.init.SkynetDbInit">
+      	   classname="org.eclipse.osee.framework.database.init.DbBootstrapTask">
    	</DatabaseInitializationTask>
 	</extension>
 

@@ -48,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.importing.OseeTypesImport;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
@@ -286,9 +285,6 @@ public class AtsBranchConfigurationTest {
    }
 
    private Branch createRootBranch(String branchName) throws Exception {
-      OseeTypesImport.execute(Arrays.asList("org.eclipse.osee.ats.config.demo.OseeTypes_Demo",
-            "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework"));
-
       return BranchManager.createTopLevelBranch(branchName, branchName, null);
    }
 

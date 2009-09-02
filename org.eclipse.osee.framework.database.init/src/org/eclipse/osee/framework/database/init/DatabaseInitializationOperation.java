@@ -109,15 +109,15 @@ public class DatabaseInitializationOperation {
 
    private void processTask() throws Exception {
       OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Begin Database Initialization...");
-
-      for (String pointId : getDbInitTasks()) {
+      DbInitConfiguration configuration = getConfiguration();
+      for (String pointId : configuration.getTaskExtensionIds()) {
          IExtension extension = Platform.getExtensionRegistry().getExtension(pointId);
          if (extension == null) {
             OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, "Unable to locate extension [" + pointId + "]");
          } else {
             String extsionPointId = extension.getExtensionPointUniqueIdentifier();
             if (dbInitExtensionPointId.equals(extsionPointId)) {
-               runDbInitTasks(extension);
+               runDbInitTasks(configuration, extension);
             } else {
                OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE,
                      "Unknown extension id [" + extsionPointId + "] from extension [" + pointId + "]");
@@ -132,7 +132,7 @@ public class DatabaseInitializationOperation {
     * 
     * @return initialization task list
     */
-   private List<String> getDbInitTasks() {
+   private DbInitConfiguration getConfiguration() {
       String selectedChoice = null;
       GroupSelection selector = GroupSelection.getInstance();
       List<String> choices = selector.getChoices();
@@ -151,7 +151,7 @@ public class DatabaseInitializationOperation {
       }
       OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("DB Config Choice Selected: [%s]",
             selectedChoice));
-      return selector.getDbInitTasksByChoiceEntry(selectedChoice);
+      return selector.getDbInitConfiguration(selectedChoice);
    }
 
    private static String getInitChoiceFromUser(String message, List<String> choices) {
@@ -186,7 +186,7 @@ public class DatabaseInitializationOperation {
     * @throws IllegalAccessException
     * @throws InstantiationException
     */
-   private static void runDbInitTasks(IExtension extension) throws OseeCoreException, InstantiationException, IllegalAccessException, ClassNotFoundException {
+   private static void runDbInitTasks(DbInitConfiguration configuration, IExtension extension) throws OseeCoreException, InstantiationException, IllegalAccessException, ClassNotFoundException {
       IConfigurationElement[] elements = extension.getConfigurationElements();
       String classname = null;
       String bundleName = null;
@@ -213,6 +213,9 @@ public class DatabaseInitializationOperation {
                extension.getUniqueIdentifier(), Strings.isValid(initRuleClassName) ? initRuleClassName : "Default"));
          if (isExecutionAllowed) {
             IDbInitializationTask task = (IDbInitializationTask) bundle.loadClass(classname).newInstance();
+            if (task instanceof DbBootstrapTask) {
+               ((DbBootstrapTask) task).setConfiguration(configuration);
+            }
             task.run();
          }
       }

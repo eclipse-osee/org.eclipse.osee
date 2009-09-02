@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.core.SequenceManager;
@@ -49,9 +50,15 @@ import org.osgi.framework.Bundle;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class SkynetDbInit implements IDbInitializationTask {
+public class DbBootstrapTask implements IDbInitializationTask {
    private static final String ADD_PERMISSION =
          "INSERT INTO " + PERMISSION_TABLE.columnsForInsert("PERMISSION_ID", "PERMISSION_NAME");
+
+   private DbInitConfiguration configuration;
+
+   public void setConfiguration(DbInitConfiguration configuration) {
+      this.configuration = configuration;
+   }
 
    public void run() throws OseeCoreException {
       DbUtil.setDbInit(true);
@@ -76,7 +83,15 @@ public class SkynetDbInit implements IDbInitializationTask {
       populateSequenceTable();
       addDefaultPermissions();
 
-      //      OseeType
+      if (configuration == null) {
+         throw new OseeStateException("configuration information must be provided");
+      }
+      List<String> oseeTypes = configuration.getOseeTypeExtensionIds();
+      if (oseeTypes.isEmpty()) {
+         throw new OseeStateException("osee types cannot be empty");
+      }
+      OseeTypesSetup oseeTypesSetup = new OseeTypesSetup();
+      oseeTypesSetup.execute(oseeTypes);
    }
 
    private static void initializeApplicationServer() throws OseeCoreException {
