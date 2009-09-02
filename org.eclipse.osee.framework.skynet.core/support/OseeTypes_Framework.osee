@@ -702,13 +702,7 @@ attributeType "Verification Event" extends EnumeratedAttribute {
 }
 
 oseeEnumType "Component.enum" {
-   entry "TADS/PNVS"
-   entry "M-TADS/PNVS"
-   entry "FCR"
-   entry "AMPS"
-   entry "CMWS/ICMD"
-   entry "LBHMMS"
-   entry "Apache Avionics"
+   entry "Top level product component"
    entry "Unspecified"
 }
 
