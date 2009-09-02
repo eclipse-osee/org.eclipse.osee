@@ -179,8 +179,8 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
          int previousBaseId = -1;
          Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
          while (chStmt2.next()) {
-            int artTypeId = chStmt.getInt("art_type_id");
-            int superArtTypeId = chStmt.getInt("super_art_type_id");
+            int artTypeId = chStmt2.getInt("art_type_id");
+            int superArtTypeId = chStmt2.getInt("super_art_type_id");
             if (artTypeId == superArtTypeId) {
                throw new OseeInvalidInheritanceException(String.format(
                      "Circular inheritance detected artifact type [%s] inherits from [%s]", artTypeId, superArtTypeId));
@@ -259,7 +259,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                if (multiplicity != null) {
                   boolean isUserOrdered = USER_ORDERED.equalsIgnoreCase(chStmt.getString("user_ordered"));
                   RelationType relationType =
-                        factory.createRelationType(chStmt.getString("rel_link_type_guid_id"), relationTypeName,
+                        factory.createRelationType(chStmt.getString("rel_link_type_guid"), relationTypeName,
                               chStmt.getString("a_name"), chStmt.getString("b_name"), artifactTypeSideA,
                               artifactTypeSideB, multiplicity, isUserOrdered,
                               chStmt.getString("default_order_type_guid"));
