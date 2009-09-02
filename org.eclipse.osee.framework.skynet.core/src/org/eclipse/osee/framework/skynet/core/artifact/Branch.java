@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -52,7 +53,7 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
    public static final String COMMON_BRANCH_CONFIG_ID = "Common";
    private final String branchGuid;
    private final int branchId;
-   private final Branch parentBranch;
+   private Branch parentBranch;
    private TransactionId parentTransactionId;
    private final int parentTransactionIdNumber;
    private String branchName;
@@ -81,6 +82,14 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       this.associatedArtifact = null;
       this.branchType = branchType;
       this.branchState = branchState;
+   }
+
+   void internalSetBranchParent(Branch parentBranch) throws OseeStateException {
+      if (parentBranch == null) {
+         this.parentBranch = parentBranch;
+      } else {
+         throw new OseeStateException("parent branch cannot be set twice");
+      }
    }
 
    public String getGuid() {

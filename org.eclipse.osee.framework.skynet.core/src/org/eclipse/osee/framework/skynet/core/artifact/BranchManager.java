@@ -79,7 +79,7 @@ public class BranchManager {
    private static final BranchManager instance = new BranchManager();
 
    private static final String READ_BRANCH_TABLE =
-         "SELECT * FROM osee_branch br1, osee_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type = " + TransactionDetailsType.Baselined.getId() + " order by parent_branch_id asc";
+         "SELECT * FROM osee_branch br1, osee_tx_details txd1 WHERE br1.branch_id = txd1.branch_id AND txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
    private static final String READ_MERGE_BRANCHES =
          "SELECT m1.* FROM osee_merge m1, osee_tx_details txd1 WHERE m1.merge_branch_id = txd1.branch_id and txd1.tx_type = " + TransactionDetailsType.Baselined.getId();
    private static final String SELECT_BRANCH_TRANSACTION =
@@ -234,6 +234,8 @@ public class BranchManager {
       if (forceRead || branchCache.size() == 0) {
          // The branch cache can not be cleared here because applications may contain branch references.
 
+         Map<Integer, Branch> parentToChild = new HashMap<Integer, Branch>();
+
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             chStmt.runPreparedQuery(2000, READ_BRANCH_TABLE);
@@ -241,9 +243,22 @@ public class BranchManager {
                Branch cachedBranch = branchCache.get(chStmt.getInt("branch_id"));
 
                if (cachedBranch == null) {
-                  cachedBranch = initializeBranchObject(chStmt);
+                  cachedBranch =
+                        createBranchObject(chStmt.getString("branch_name"), chStmt.getString("branch_guid"),
+                              chStmt.getInt("branch_id"), NULL_PARENT_BRANCH_ID,
+                              chStmt.getInt("parent_transaction_id"), chStmt.getInt("archived") == 1,
+                              chStmt.getInt("author"), chStmt.getTimestamp("time"), chStmt.getString(TXD_COMMENT),
+                              chStmt.getInt("associated_art_id"),
+                              BranchType.getBranchType(chStmt.getInt("branch_type")),
+                              BranchState.getBranchState(chStmt.getInt("branch_state")));
+
+                  Integer parentBranch = chStmt.getInt("parent_branch_id");
+                  if (parentBranch != NULL_PARENT_BRANCH_ID) {
+                     parentToChild.put(parentBranch, cachedBranch);
+                  }
                   branchCache.put(cachedBranch.getBranchId(), cachedBranch);
                   branchGuidCache.put(cachedBranch.getGuid(), cachedBranch);
+
                } else {
                   cachedBranch.setName(chStmt.getString("branch_name"));
                   cachedBranch.setArchived(chStmt.getInt("archived") == 1);
@@ -259,6 +274,15 @@ public class BranchManager {
             chStmt.close();
          }
 
+         // Set Parent Branches
+         for (Entry<Integer, Branch> entry : parentToChild.entrySet()) {
+            Branch parentBranch = branchCache.get(entry.getKey());
+            if (parentBranch == null) {
+               throw new BranchDoesNotExist(String.format("Parent Branch id:[%s] does not exist for child branch [%s]",
+                     entry.getKey(), entry.getValue()));
+            }
+            entry.getValue().internalSetBranchParent(parentBranch);
+         }
          try {
             chStmt.runPreparedQuery(1000, READ_MERGE_BRANCHES);
             while (chStmt.next()) {
@@ -354,24 +378,6 @@ public class BranchManager {
                   creationDate, creationComment, associatedArtifactId, branchType, branchState);
       instance.branchCache.put(branchId, branch);
       return branch;
-   }
-
-   /**
-    * Create a Branch object based on the result set from the READ_BRANCH_TABLE query
-    * 
-    * @param rSet
-    * @return
-    * @throws OseeDataStoreException
-    * @throws BranchDoesNotExist
-    * @throws OseeInvalidInheritanceException
-    */
-   private static Branch initializeBranchObject(ConnectionHandlerStatement chStmt) throws OseeDataStoreException, BranchDoesNotExist, OseeInvalidInheritanceException {
-      return createBranchObject(chStmt.getString("branch_name"), chStmt.getString("branch_guid"),
-            chStmt.getInt("branch_id"), chStmt.getInt("parent_branch_id"), chStmt.getInt("parent_transaction_id"),
-            chStmt.getInt("archived") == 1, chStmt.getInt("author"), chStmt.getTimestamp("time"),
-            chStmt.getString(TXD_COMMENT), chStmt.getInt("associated_art_id"),
-            BranchType.getBranchType(chStmt.getInt("branch_type")),
-            BranchState.getBranchState(chStmt.getInt("branch_state")));
    }
 
    /**
