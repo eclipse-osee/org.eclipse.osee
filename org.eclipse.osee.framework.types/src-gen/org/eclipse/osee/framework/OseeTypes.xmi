@@ -370,18 +370,24 @@
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="defaultOrderType"/>
         <tokens xsi:type="xtext:Assignment" feature="defaultOrderType" operator="=">
-          <terminal xsi:type="xtext:Alternatives">
-            <groups xsi:type="xtext:Keyword" value="Lexicographical_Ascending"/>
-            <groups xsi:type="xtext:Keyword" value="Lexicographical_Descending"/>
-            <groups xsi:type="xtext:Keyword" value="Unordered"/>
-            <groups xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
-          </terminal>
+          <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.14"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="multiplicity"/>
         <tokens xsi:type="xtext:Assignment" feature="multiplicity" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.12"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="}"/>
+      </alternatives>
+    </rules>
+    <rules xsi:type="xtext:ParserRule" name="RelationOrderType">
+      <type metamodel="/1/@metamodelDeclarations.0">
+        <classifier xsi:type="ecore:EDataType" href="http://www.eclipse.org/emf/2002/Ecore#//EString"/>
+      </type>
+      <alternatives xsi:type="xtext:Alternatives">
+        <groups xsi:type="xtext:Keyword" value="Lexicographical_Ascending"/>
+        <groups xsi:type="xtext:Keyword" value="Lexicographical_Descending"/>
+        <groups xsi:type="xtext:Keyword" value="Unordered"/>
+        <groups xsi:type="xtext:RuleCall" rule="/1/@rules.0"/>
       </alternatives>
     </rules>
   </xtext:Grammar>

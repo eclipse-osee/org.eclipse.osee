@@ -1370,41 +1370,23 @@ ruleRelationType returns [EObject current=null]
     }
 (	
 	
-	    lv_defaultOrderType_15=('Lexicographical_Ascending' 
-    {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeLexicographical_AscendingKeyword_14_0_0(), "defaultOrderType"); 
-    }
-
-
-    |'Lexicographical_Descending' 
-    {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeLexicographical_DescendingKeyword_14_0_1(), "defaultOrderType"); 
-    }
-
-
-    |'Unordered' 
-    {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeUnorderedKeyword_14_0_2(), "defaultOrderType"); 
-    }
-
-
-    |	RULE_ID
-	{
-		createLeafNode(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeIDTerminalRuleCall_14_0_3(), "defaultOrderType"); 
-	}
-)
- 
+	    
+	    { 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0(), currentNode); 
+	    }
+	    lv_defaultOrderType_15=ruleRelationOrderType 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getRelationTypeRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode, $current);
+	            associateNodeWithAstElement(currentNode.getParent(), $current);
 	        }
 	        
 	        try {
-	       		set($current, "defaultOrderType", /* lv_defaultOrderType_15 */ input.LT(-1), null, lastConsumedNode);
+	       		set($current, "defaultOrderType", lv_defaultOrderType_15, "RelationOrderType", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
+	        currentNode = currentNode.getParent();
 	    }
 	
 )'multiplicity' 
@@ -1437,6 +1419,57 @@ ruleRelationType returns [EObject current=null]
         createLeafNode(grammarAccess.getRelationTypeAccess().getRightCurlyBracketKeyword_17(), null); 
     }
 );
+
+
+
+
+
+// Entry rule entryRuleRelationOrderType
+entryRuleRelationOrderType returns [String current=null] :
+	{ currentNode = createCompositeNode(grammarAccess.getRelationOrderTypeRule(), currentNode); } 
+	 iv_ruleRelationOrderType=ruleRelationOrderType 
+	 { $current=$iv_ruleRelationOrderType.current.getText(); }  
+	 EOF 
+;
+
+// Rule RelationOrderType
+ruleRelationOrderType returns [AntlrDatatypeRuleToken current=new AntlrDatatypeRuleToken()] 
+    @init { setCurrentLookahead(); resetLookahead(); 
+    }
+    @after { resetLookahead(); 
+	    lastConsumedNode = currentNode;
+	    lastConsumedDatatypeToken = $current;
+    }:
+(
+	kw='Lexicographical_Ascending' 
+    {
+        $current.merge(kw);
+        createLeafNode(grammarAccess.getRelationOrderTypeAccess().getLexicographical_AscendingKeyword_0(), null); 
+    }
+
+    |
+	kw='Lexicographical_Descending' 
+    {
+        $current.merge(kw);
+        createLeafNode(grammarAccess.getRelationOrderTypeAccess().getLexicographical_DescendingKeyword_1(), null); 
+    }
+
+    |
+	kw='Unordered' 
+    {
+        $current.merge(kw);
+        createLeafNode(grammarAccess.getRelationOrderTypeAccess().getUnorderedKeyword_2(), null); 
+    }
+
+    |    this_ID_3=RULE_ID    {
+		$current.merge(this_ID_3);
+    }
+
+    { 
+    createLeafNode(grammarAccess.getRelationOrderTypeAccess().getIDTerminalRuleCall_3(), null); 
+    }
+)
+    ;
 
 
 

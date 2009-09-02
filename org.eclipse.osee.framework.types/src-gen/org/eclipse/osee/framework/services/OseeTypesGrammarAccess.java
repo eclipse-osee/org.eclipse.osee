@@ -738,11 +738,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		private final RuleCall cSideBArtifactTypeArtifactTypeNAME_REFERENCEParserRuleCall_12_0_1 = (RuleCall)cSideBArtifactTypeArtifactTypeCrossReference_12_0.eContents().get(1);
 		private final Keyword cDefaultOrderTypeKeyword_13 = (Keyword)cGroup.eContents().get(13);
 		private final Assignment cDefaultOrderTypeAssignment_14 = (Assignment)cGroup.eContents().get(14);
-		private final Alternatives cDefaultOrderTypeAlternatives_14_0 = (Alternatives)cDefaultOrderTypeAssignment_14.eContents().get(0);
-		private final Keyword cDefaultOrderTypeLexicographical_AscendingKeyword_14_0_0 = (Keyword)cDefaultOrderTypeAlternatives_14_0.eContents().get(0);
-		private final Keyword cDefaultOrderTypeLexicographical_DescendingKeyword_14_0_1 = (Keyword)cDefaultOrderTypeAlternatives_14_0.eContents().get(1);
-		private final Keyword cDefaultOrderTypeUnorderedKeyword_14_0_2 = (Keyword)cDefaultOrderTypeAlternatives_14_0.eContents().get(2);
-		private final RuleCall cDefaultOrderTypeIDTerminalRuleCall_14_0_3 = (RuleCall)cDefaultOrderTypeAlternatives_14_0.eContents().get(3);
+		private final RuleCall cDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0 = (RuleCall)cDefaultOrderTypeAssignment_14.eContents().get(0);
 		private final Keyword cMultiplicityKeyword_15 = (Keyword)cGroup.eContents().get(15);
 		private final Assignment cMultiplicityAssignment_16 = (Assignment)cGroup.eContents().get(16);
 		private final RuleCall cMultiplicityRelationMultiplicityEnumEnumRuleCall_16_0 = (RuleCall)cMultiplicityAssignment_16.eContents().get(0);
@@ -753,18 +749,16 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		//  NAME_REFERENCE])? "{" typeGuid=STRING? "sideAName" sideAName=STRING
 		//  "sideAArtifactType" sideAArtifactType=[ArtifactType|NAME_REFERENCE] "sideBName"
 		//  sideBName=STRING "sideBArtifactType" sideBArtifactType=[ArtifactType|
-		//  NAME_REFERENCE] "defaultOrderType" defaultOrderType=( "Lexicographical_Ascending" |
-		//  "Lexicographical_Descending" | "Unordered" | ID ) "multiplicity" multiplicity=
-		//  RelationMultiplicityEnum "}";
+		//  NAME_REFERENCE] "defaultOrderType" defaultOrderType=RelationOrderType
+		//  "multiplicity" multiplicity=RelationMultiplicityEnum "}";
 		public ParserRule getRule() { return rule; }
 
 		//"relationType" name=NAME_REFERENCE ("overrides" override=[RelationType|
 		//NAME_REFERENCE])? "{" typeGuid=STRING? "sideAName" sideAName=STRING
 		//"sideAArtifactType" sideAArtifactType=[ArtifactType|NAME_REFERENCE] "sideBName"
 		//sideBName=STRING "sideBArtifactType" sideBArtifactType=[ArtifactType|
-		//NAME_REFERENCE] "defaultOrderType" defaultOrderType=( "Lexicographical_Ascending" |
-		//"Lexicographical_Descending" | "Unordered" | ID ) "multiplicity" multiplicity=
-		//RelationMultiplicityEnum "}"
+		//NAME_REFERENCE] "defaultOrderType" defaultOrderType=RelationOrderType
+		//"multiplicity" multiplicity=RelationMultiplicityEnum "}"
 		public Group getGroup() { return cGroup; }
 
 		//"relationType"
@@ -845,24 +839,11 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		//"defaultOrderType"
 		public Keyword getDefaultOrderTypeKeyword_13() { return cDefaultOrderTypeKeyword_13; }
 
-		//defaultOrderType=( "Lexicographical_Ascending" | "Lexicographical_Descending" |
-		//"Unordered" | ID )
+		//defaultOrderType=RelationOrderType
 		public Assignment getDefaultOrderTypeAssignment_14() { return cDefaultOrderTypeAssignment_14; }
 
-		//"Lexicographical_Ascending"|"Lexicographical_Descending"|"Unordered"|ID
-		public Alternatives getDefaultOrderTypeAlternatives_14_0() { return cDefaultOrderTypeAlternatives_14_0; }
-
-		//"Lexicographical_Ascending"
-		public Keyword getDefaultOrderTypeLexicographical_AscendingKeyword_14_0_0() { return cDefaultOrderTypeLexicographical_AscendingKeyword_14_0_0; }
-
-		//"Lexicographical_Descending"
-		public Keyword getDefaultOrderTypeLexicographical_DescendingKeyword_14_0_1() { return cDefaultOrderTypeLexicographical_DescendingKeyword_14_0_1; }
-
-		//"Unordered"
-		public Keyword getDefaultOrderTypeUnorderedKeyword_14_0_2() { return cDefaultOrderTypeUnorderedKeyword_14_0_2; }
-
-		//ID
-		public RuleCall getDefaultOrderTypeIDTerminalRuleCall_14_0_3() { return cDefaultOrderTypeIDTerminalRuleCall_14_0_3; }
+		//RelationOrderType
+		public RuleCall getDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0() { return cDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0; }
 
 		//"multiplicity"
 		public Keyword getMultiplicityKeyword_15() { return cMultiplicityKeyword_15; }
@@ -875,6 +856,34 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 
 		//"}"
 		public Keyword getRightCurlyBracketKeyword_17() { return cRightCurlyBracketKeyword_17; }
+	}
+
+	public class RelationOrderTypeElements implements IParserRuleAccess {
+		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "RelationOrderType");
+		private final Alternatives cAlternatives = (Alternatives)rule.eContents().get(1);
+		private final Keyword cLexicographical_AscendingKeyword_0 = (Keyword)cAlternatives.eContents().get(0);
+		private final Keyword cLexicographical_DescendingKeyword_1 = (Keyword)cAlternatives.eContents().get(1);
+		private final Keyword cUnorderedKeyword_2 = (Keyword)cAlternatives.eContents().get(2);
+		private final RuleCall cIDTerminalRuleCall_3 = (RuleCall)cAlternatives.eContents().get(3);
+		
+		//RelationOrderType returns ecore::EString:
+		//  "Lexicographical_Ascending"|"Lexicographical_Descending"|"Unordered"|ID;
+		public ParserRule getRule() { return rule; }
+
+		//"Lexicographical_Ascending"|"Lexicographical_Descending"|"Unordered"|ID
+		public Alternatives getAlternatives() { return cAlternatives; }
+
+		//"Lexicographical_Ascending"
+		public Keyword getLexicographical_AscendingKeyword_0() { return cLexicographical_AscendingKeyword_0; }
+
+		//"Lexicographical_Descending"
+		public Keyword getLexicographical_DescendingKeyword_1() { return cLexicographical_DescendingKeyword_1; }
+
+		//"Unordered"
+		public Keyword getUnorderedKeyword_2() { return cUnorderedKeyword_2; }
+
+		//ID
+		public RuleCall getIDTerminalRuleCall_3() { return cIDTerminalRuleCall_3; }
 	}
 	
 	
@@ -936,6 +945,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	private OseeEnumEntryElements pOseeEnumEntry;
 	private RelationMultiplicityEnumElements unknownRuleRelationMultiplicityEnum;
 	private RelationTypeElements pRelationType;
+	private RelationOrderTypeElements pRelationOrderType;
 	
 	private final GrammarProvider grammarProvider;
 
@@ -1103,15 +1113,24 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	//  NAME_REFERENCE])? "{" typeGuid=STRING? "sideAName" sideAName=STRING
 	//  "sideAArtifactType" sideAArtifactType=[ArtifactType|NAME_REFERENCE] "sideBName"
 	//  sideBName=STRING "sideBArtifactType" sideBArtifactType=[ArtifactType|
-	//  NAME_REFERENCE] "defaultOrderType" defaultOrderType=( "Lexicographical_Ascending" |
-	//  "Lexicographical_Descending" | "Unordered" | ID ) "multiplicity" multiplicity=
-	//  RelationMultiplicityEnum "}";
+	//  NAME_REFERENCE] "defaultOrderType" defaultOrderType=RelationOrderType
+	//  "multiplicity" multiplicity=RelationMultiplicityEnum "}";
 	public RelationTypeElements getRelationTypeAccess() {
 		return (pRelationType != null) ? pRelationType : (pRelationType = new RelationTypeElements());
 	}
 	
 	public ParserRule getRelationTypeRule() {
 		return getRelationTypeAccess().getRule();
+	}
+
+	//RelationOrderType returns ecore::EString:
+	//  "Lexicographical_Ascending"|"Lexicographical_Descending"|"Unordered"|ID;
+	public RelationOrderTypeElements getRelationOrderTypeAccess() {
+		return (pRelationOrderType != null) ? pRelationOrderType : (pRelationOrderType = new RelationOrderTypeElements());
+	}
+	
+	public ParserRule getRelationOrderTypeRule() {
+		return getRelationOrderTypeAccess().getRule();
 	}
 
 	//terminal ID:

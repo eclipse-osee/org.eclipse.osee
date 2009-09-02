@@ -2330,9 +2330,8 @@ protected class OseeEnumEntry_OrdinalAssignment_2 extends AssignmentToken  {
  *   NAME_REFERENCE])? "{" typeGuid=STRING? "sideAName" sideAName=STRING
  *   "sideAArtifactType" sideAArtifactType=[ArtifactType|NAME_REFERENCE] "sideBName"
  *   sideBName=STRING "sideBArtifactType" sideBArtifactType=[ArtifactType|
- *   NAME_REFERENCE] "defaultOrderType" defaultOrderType=( "Lexicographical_Ascending" |
- *   "Lexicographical_Descending" | "Unordered" | ID ) "multiplicity" multiplicity=
- *   RelationMultiplicityEnum "}";
+ *   NAME_REFERENCE] "defaultOrderType" defaultOrderType=RelationOrderType
+ *   "multiplicity" multiplicity=RelationMultiplicityEnum "}";
  *
  **/
 
@@ -2340,9 +2339,8 @@ protected class OseeEnumEntry_OrdinalAssignment_2 extends AssignmentToken  {
 // NAME_REFERENCE])? "{" typeGuid=STRING? "sideAName" sideAName=STRING
 // "sideAArtifactType" sideAArtifactType=[ArtifactType|NAME_REFERENCE] "sideBName"
 // sideBName=STRING "sideBArtifactType" sideBArtifactType=[ArtifactType|
-// NAME_REFERENCE] "defaultOrderType" defaultOrderType=( "Lexicographical_Ascending" |
-// "Lexicographical_Descending" | "Unordered" | ID ) "multiplicity" multiplicity=
-// RelationMultiplicityEnum "}"
+// NAME_REFERENCE] "defaultOrderType" defaultOrderType=RelationOrderType
+// "multiplicity" multiplicity=RelationMultiplicityEnum "}"
 protected class RelationType_Group extends GroupToken {
 	
 	public RelationType_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -2774,8 +2772,7 @@ protected class RelationType_DefaultOrderTypeKeyword_13 extends KeywordToken  {
 		
 }
 
-// defaultOrderType=( "Lexicographical_Ascending" | "Lexicographical_Descending" |
-// "Unordered" | ID )
+// defaultOrderType=RelationOrderType
 protected class RelationType_DefaultOrderTypeAssignment_14 extends AssignmentToken  {
 	
 	public RelationType_DefaultOrderTypeAssignment_14(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -2796,24 +2793,9 @@ protected class RelationType_DefaultOrderTypeAssignment_14 extends AssignmentTok
 	protected IInstanceDescription tryConsumeVal() {
 		if((value = current.getConsumable("defaultOrderType",true)) == null) return null;
 		IInstanceDescription obj = current.cloneAndConsume("defaultOrderType");
-		if("Lexicographical_Ascending".equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
-			type = AssignmentType.KW;
-			element = grammarAccess.getRelationTypeAccess().getDefaultOrderTypeLexicographical_AscendingKeyword_14_0_0();
-			return obj;
-		}
-		if("Lexicographical_Descending".equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
-			type = AssignmentType.KW;
-			element = grammarAccess.getRelationTypeAccess().getDefaultOrderTypeLexicographical_DescendingKeyword_14_0_1();
-			return obj;
-		}
-		if("Unordered".equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
-			type = AssignmentType.KW;
-			element = grammarAccess.getRelationTypeAccess().getDefaultOrderTypeUnorderedKeyword_14_0_2();
-			return obj;
-		}
-		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
-			type = AssignmentType.LRC;
-			element = grammarAccess.getRelationTypeAccess().getDefaultOrderTypeIDTerminalRuleCall_14_0_3();
+		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
+			type = AssignmentType.DRC;
+			element = grammarAccess.getRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0();
 			return obj;
 		}
 		return null;
@@ -2894,5 +2876,6 @@ protected class RelationType_RightCurlyBracketKeyword_17 extends KeywordToken  {
 
 
 /************ end Rule RelationType ****************/
+
 
 }

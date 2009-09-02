@@ -53,7 +53,7 @@ OseeEnumEntry:
 	'entry' name=STRING (ordinal=WHOLE_NUM_STR)?;
 
 enum RelationMultiplicityEnum :  
-ONE_TO_ONE | ONE_TO_MANY | MANY_TO_ONE | MANY_TO_MANY
+	ONE_TO_ONE | ONE_TO_MANY | MANY_TO_ONE | MANY_TO_MANY
 ;
 
 RelationType:
@@ -63,6 +63,9 @@ RelationType:
 		'sideAArtifactType' sideAArtifactType=[ArtifactType|NAME_REFERENCE]
 		'sideBName' sideBName=STRING
 		'sideBArtifactType' sideBArtifactType=[ArtifactType|NAME_REFERENCE]
-		'defaultOrderType' defaultOrderType=('Lexicographical_Ascending' | 'Lexicographical_Descending' | 'Unordered' | ID )
+		'defaultOrderType' defaultOrderType=RelationOrderType
 		'multiplicity' multiplicity=RelationMultiplicityEnum
 	'}';
+	
+RelationOrderType:
+	'Lexicographical_Ascending' | 'Lexicographical_Descending' | 'Unordered' | ID;

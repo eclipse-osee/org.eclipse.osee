@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -25,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 
 public class XTextToOseeTypeOperation extends AbstractOperation {
@@ -156,18 +158,24 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private void handleRelationType(RelationType relationType) throws OseeCoreException {
       RelationTypeMultiplicity multiplicity =
             RelationTypeMultiplicity.getFromString(relationType.getMultiplicity().name());
-      relationType.setTypeGuid(RelationTypeManager.createRelationType(relationType.getTypeGuid(),
-            getTypeName(relationType.getName()), //
+
+      relationType.setTypeGuid(//
+      RelationTypeManager.createRelationType(relationType.getTypeGuid(), getTypeName(relationType.getName()), //
             relationType.getSideAName(), //
             relationType.getSideBName(), //
             ArtifactTypeManager.getType(getTypeName(relationType.getSideAArtifactType().getName())), //
             ArtifactTypeManager.getType(getTypeName(relationType.getSideBArtifactType().getName())), //
             multiplicity, //
             isOrdered(relationType.getDefaultOrderType()),//
-            relationType.getDefaultOrderType()).getGuid());
+            convertOrderTypeNameToGuid(relationType.getDefaultOrderType())//
+      ).getGuid());
    }
 
    private boolean isOrdered(String orderType) {
       return "Unordered".equalsIgnoreCase(orderType);
+   }
+
+   private String convertOrderTypeNameToGuid(String orderTypeName) throws OseeArgumentException {
+      return RelationOrderBaseTypes.getFromOrderTypeName(orderTypeName.replaceAll("_", " ")).getGuid();
    }
 }

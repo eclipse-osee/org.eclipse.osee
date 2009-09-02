@@ -875,10 +875,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mT54() throws RecognitionException {
         try {
             int _type = T54;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:52:5: ( 'Lexicographical_Ascending' )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:52:7: 'Lexicographical_Ascending'
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:52:5: ( 'multiplicity' )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:52:7: 'multiplicity'
             {
-            match("Lexicographical_Ascending"); 
+            match("multiplicity"); 
 
 
             }
@@ -894,10 +894,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mT55() throws RecognitionException {
         try {
             int _type = T55;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:53:5: ( 'Lexicographical_Descending' )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:53:7: 'Lexicographical_Descending'
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:53:5: ( 'Lexicographical_Ascending' )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:53:7: 'Lexicographical_Ascending'
             {
-            match("Lexicographical_Descending"); 
+            match("Lexicographical_Ascending"); 
 
 
             }
@@ -913,10 +913,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mT56() throws RecognitionException {
         try {
             int _type = T56;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:54:5: ( 'Unordered' )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:54:7: 'Unordered'
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:54:5: ( 'Lexicographical_Descending' )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:54:7: 'Lexicographical_Descending'
             {
-            match("Unordered"); 
+            match("Lexicographical_Descending"); 
 
 
             }
@@ -932,10 +932,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mT57() throws RecognitionException {
         try {
             int _type = T57;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:55:5: ( 'multiplicity' )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:55:7: 'multiplicity'
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:55:5: ( 'Unordered' )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:55:7: 'Unordered'
             {
-            match("multiplicity"); 
+            match("Unordered"); 
 
 
             }
@@ -1027,10 +1027,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_WHOLE_NUM_STR() throws RecognitionException {
         try {
             int _type = RULE_WHOLE_NUM_STR;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1478:20: ( ( '0' .. '9' )+ )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1478:22: ( '0' .. '9' )+
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1511:20: ( ( '0' .. '9' )+ )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1511:22: ( '0' .. '9' )+
             {
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1478:22: ( '0' .. '9' )+
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1511:22: ( '0' .. '9' )+
             int cnt1=0;
             loop1:
             do {
@@ -1044,7 +1044,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                 switch (alt1) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1478:23: '0' .. '9'
+            	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1511:23: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1074,10 +1074,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_ID() throws RecognitionException {
         try {
             int _type = RULE_ID;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1480:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1480:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1513:9: ( ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )* )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1513:11: ( '^' )? ( 'a' .. 'z' | 'A' .. 'Z' | '_' ) ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
             {
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1480:11: ( '^' )?
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1513:11: ( '^' )?
             int alt2=2;
             int LA2_0 = input.LA(1);
 
@@ -1086,7 +1086,7 @@ public class InternalOseeTypesLexer extends Lexer {
             }
             switch (alt2) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1480:11: '^'
+                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1513:11: '^'
                     {
                     match('^'); 
 
@@ -1105,7 +1105,7 @@ public class InternalOseeTypesLexer extends Lexer {
                 recover(mse);    throw mse;
             }
 
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1480:40: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1513:40: ( 'a' .. 'z' | 'A' .. 'Z' | '_' | '0' .. '9' )*
             loop3:
             do {
                 int alt3=2;
@@ -1153,10 +1153,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_INT() throws RecognitionException {
         try {
             int _type = RULE_INT;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1482:10: ( ( '0' .. '9' )+ )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1482:12: ( '0' .. '9' )+
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1515:10: ( ( '0' .. '9' )+ )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1515:12: ( '0' .. '9' )+
             {
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1482:12: ( '0' .. '9' )+
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1515:12: ( '0' .. '9' )+
             int cnt4=0;
             loop4:
             do {
@@ -1170,7 +1170,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                 switch (alt4) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1482:13: '0' .. '9'
+            	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1515:13: '0' .. '9'
             	    {
             	    matchRange('0','9'); 
 
@@ -1200,10 +1200,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_STRING() throws RecognitionException {
         try {
             int _type = RULE_STRING;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1484:13: ( ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' ) )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1484:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1517:13: ( ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' ) )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1517:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
             {
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1484:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1517:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )
             int alt7=2;
             int LA7_0 = input.LA(1);
 
@@ -1215,16 +1215,16 @@ public class InternalOseeTypesLexer extends Lexer {
             }
             else {
                 NoViableAltException nvae =
-                    new NoViableAltException("1484:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )", 7, 0, input);
+                    new NoViableAltException("1517:15: ( '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"' | '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\'' )", 7, 0, input);
 
                 throw nvae;
             }
             switch (alt7) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1484:16: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
+                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1517:16: '\"' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )* '\"'
                     {
                     match('\"'); 
-                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1484:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )*
+                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1517:20: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\"' ) ) )*
                     loop5:
                     do {
                         int alt5=3;
@@ -1240,7 +1240,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                         switch (alt5) {
                     	case 1 :
-                    	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1484:21: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
+                    	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1517:21: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -1257,7 +1257,7 @@ public class InternalOseeTypesLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1484:62: ~ ( ( '\\\\' | '\"' ) )
+                    	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1517:62: ~ ( ( '\\\\' | '\"' ) )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='!')||(input.LA(1)>='#' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -1283,10 +1283,10 @@ public class InternalOseeTypesLexer extends Lexer {
                     }
                     break;
                 case 2 :
-                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1484:82: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\''
+                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1517:82: '\\'' ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )* '\\''
                     {
                     match('\''); 
-                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1484:87: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )*
+                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1517:87: ( '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' ) | ~ ( ( '\\\\' | '\\'' ) ) )*
                     loop6:
                     do {
                         int alt6=3;
@@ -1302,7 +1302,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                         switch (alt6) {
                     	case 1 :
-                    	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1484:88: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
+                    	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1517:88: '\\\\' ( 'b' | 't' | 'n' | 'f' | 'r' | '\"' | '\\'' | '\\\\' )
                     	    {
                     	    match('\\'); 
                     	    if ( input.LA(1)=='\"'||input.LA(1)=='\''||input.LA(1)=='\\'||input.LA(1)=='b'||input.LA(1)=='f'||input.LA(1)=='n'||input.LA(1)=='r'||input.LA(1)=='t' ) {
@@ -1319,7 +1319,7 @@ public class InternalOseeTypesLexer extends Lexer {
                     	    }
                     	    break;
                     	case 2 :
-                    	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1484:129: ~ ( ( '\\\\' | '\\'' ) )
+                    	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1517:129: ~ ( ( '\\\\' | '\\'' ) )
                     	    {
                     	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='&')||(input.LA(1)>='(' && input.LA(1)<='[')||(input.LA(1)>=']' && input.LA(1)<='\uFFFE') ) {
                     	        input.consume();
@@ -1361,12 +1361,12 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_ML_COMMENT() throws RecognitionException {
         try {
             int _type = RULE_ML_COMMENT;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1486:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1486:19: '/*' ( options {greedy=false; } : . )* '*/'
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1519:17: ( '/*' ( options {greedy=false; } : . )* '*/' )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1519:19: '/*' ( options {greedy=false; } : . )* '*/'
             {
             match("/*"); 
 
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1486:24: ( options {greedy=false; } : . )*
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1519:24: ( options {greedy=false; } : . )*
             loop8:
             do {
                 int alt8=2;
@@ -1391,7 +1391,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                 switch (alt8) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1486:52: .
+            	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1519:52: .
             	    {
             	    matchAny(); 
 
@@ -1419,12 +1419,12 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_SL_COMMENT() throws RecognitionException {
         try {
             int _type = RULE_SL_COMMENT;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1488:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1488:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1521:17: ( '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )? )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1521:19: '//' (~ ( ( '\\n' | '\\r' ) ) )* ( ( '\\r' )? '\\n' )?
             {
             match("//"); 
 
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1488:24: (~ ( ( '\\n' | '\\r' ) ) )*
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1521:24: (~ ( ( '\\n' | '\\r' ) ) )*
             loop9:
             do {
                 int alt9=2;
@@ -1437,7 +1437,7 @@ public class InternalOseeTypesLexer extends Lexer {
 
                 switch (alt9) {
             	case 1 :
-            	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1488:24: ~ ( ( '\\n' | '\\r' ) )
+            	    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1521:24: ~ ( ( '\\n' | '\\r' ) )
             	    {
             	    if ( (input.LA(1)>='\u0000' && input.LA(1)<='\t')||(input.LA(1)>='\u000B' && input.LA(1)<='\f')||(input.LA(1)>='\u000E' && input.LA(1)<='\uFFFE') ) {
             	        input.consume();
@@ -1458,7 +1458,7 @@ public class InternalOseeTypesLexer extends Lexer {
                 }
             } while (true);
 
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1488:40: ( ( '\\r' )? '\\n' )?
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1521:40: ( ( '\\r' )? '\\n' )?
             int alt11=2;
             int LA11_0 = input.LA(1);
 
@@ -1467,9 +1467,9 @@ public class InternalOseeTypesLexer extends Lexer {
             }
             switch (alt11) {
                 case 1 :
-                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1488:41: ( '\\r' )? '\\n'
+                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1521:41: ( '\\r' )? '\\n'
                     {
-                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1488:41: ( '\\r' )?
+                    // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1521:41: ( '\\r' )?
                     int alt10=2;
                     int LA10_0 = input.LA(1);
 
@@ -1478,7 +1478,7 @@ public class InternalOseeTypesLexer extends Lexer {
                     }
                     switch (alt10) {
                         case 1 :
-                            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1488:41: '\\r'
+                            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1521:41: '\\r'
                             {
                             match('\r'); 
 
@@ -1508,10 +1508,10 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_WS() throws RecognitionException {
         try {
             int _type = RULE_WS;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1490:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1490:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1523:9: ( ( ' ' | '\\t' | '\\r' | '\\n' )+ )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1523:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             {
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1490:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1523:11: ( ' ' | '\\t' | '\\r' | '\\n' )+
             int cnt12=0;
             loop12:
             do {
@@ -1564,8 +1564,8 @@ public class InternalOseeTypesLexer extends Lexer {
     public final void mRULE_ANY_OTHER() throws RecognitionException {
         try {
             int _type = RULE_ANY_OTHER;
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1492:16: ( . )
-            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1492:18: .
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1525:16: ( . )
+            // ../org.eclipse.osee.framework.types/src-gen/org/eclipse/osee/framework/parser/antlr/internal/InternalOseeTypes.g:1525:18: .
             {
             matchAny(); 
 
@@ -1999,22 +1999,22 @@ public class InternalOseeTypesLexer extends Lexer {
     static final String DFA13_eotS =
         "\1\uffff\1\47\1\uffff\2\47\1\uffff\1\47\2\uffff\25\47\1\116\1\45"+
         "\1\uffff\3\45\2\uffff\1\47\2\uffff\5\47\1\uffff\2\47\2\uffff\33"+
-        "\47\1\uffff\1\116\4\uffff\24\47\1\u008d\1\u008e\43\47\2\uffff\24"+
-        "\47\1\u00c7\36\47\1\u00e8\4\47\1\uffff\40\47\1\uffff\3\47\1\u0110"+
-        "\40\47\1\u0133\2\47\1\uffff\1\u0136\17\47\1\u0147\21\47\1\uffff"+
-        "\1\47\1\u015b\1\uffff\1\u015c\11\47\1\u0166\4\47\1\u016b\1\uffff"+
-        "\13\47\1\u0177\1\u0178\6\47\2\uffff\1\47\1\u0180\7\47\1\uffff\4"+
-        "\47\1\uffff\13\47\2\uffff\3\47\1\u019a\3\47\1\uffff\1\47\1\u019f"+
-        "\6\47\1\u01a6\17\47\1\u01b6\1\uffff\1\u01b7\1\47\1\u01b9\1\u01ba"+
-        "\1\uffff\1\u01bb\5\47\1\uffff\1\u01c1\1\u01c2\11\47\1\u01cc\3\47"+
-        "\2\uffff\1\u01d0\3\uffff\2\47\1\u01d3\2\47\2\uffff\1\u01d6\7\47"+
-        "\1\u01de\1\uffff\3\47\1\uffff\2\47\1\uffff\2\47\1\uffff\7\47\1\uffff"+
-        "\15\47\1\u01fa\3\47\1\u01fe\3\47\1\u0203\3\47\1\u0207\1\47\1\uffff"+
-        "\3\47\1\uffff\4\47\1\uffff\3\47\1\uffff\1\47\1\u0215\1\u0216\12"+
-        "\47\2\uffff\7\47\1\u0228\1\47\1\u022a\7\47\1\uffff\1\47\1\uffff"+
-        "\17\47\1\u0242\7\47\1\uffff\4\47\1\u024e\6\47\1\uffff\2\47\1\u0257"+
-        "\4\47\1\u025c\1\uffff\1\u025d\2\47\1\u0260\2\uffff\1\u0261\1\47"+
-        "\2\uffff\1\47\1\u0264\1\uffff";
+        "\47\1\uffff\1\116\4\uffff\23\47\1\u008c\1\47\1\u008e\42\47\1\uffff"+
+        "\1\47\1\uffff\24\47\1\u00c7\36\47\1\u00e8\4\47\1\uffff\40\47\1\uffff"+
+        "\3\47\1\u0110\40\47\1\u0133\2\47\1\uffff\1\u0136\17\47\1\u0147\21"+
+        "\47\1\uffff\1\47\1\u015b\1\uffff\1\u015c\11\47\1\u0166\4\47\1\u016b"+
+        "\1\uffff\13\47\1\u0177\1\u0178\6\47\2\uffff\1\47\1\u0180\7\47\1"+
+        "\uffff\4\47\1\uffff\13\47\2\uffff\3\47\1\u019a\3\47\1\uffff\1\47"+
+        "\1\u019f\6\47\1\u01a6\17\47\1\u01b6\1\uffff\1\u01b7\1\47\1\u01b9"+
+        "\1\u01ba\1\uffff\1\u01bb\5\47\1\uffff\1\u01c1\1\u01c2\11\47\1\u01cc"+
+        "\3\47\2\uffff\1\u01d0\3\uffff\2\47\1\u01d3\2\47\2\uffff\1\u01d6"+
+        "\7\47\1\u01de\1\uffff\3\47\1\uffff\2\47\1\uffff\2\47\1\uffff\7\47"+
+        "\1\uffff\15\47\1\u01fa\3\47\1\u01fe\3\47\1\u0203\3\47\1\u0207\1"+
+        "\47\1\uffff\3\47\1\uffff\4\47\1\uffff\3\47\1\uffff\1\47\1\u0215"+
+        "\1\u0216\12\47\2\uffff\7\47\1\u0228\1\47\1\u022a\7\47\1\uffff\1"+
+        "\47\1\uffff\17\47\1\u0242\7\47\1\uffff\4\47\1\u024e\6\47\1\uffff"+
+        "\2\47\1\u0257\4\47\1\u025c\1\uffff\1\u025d\2\47\1\u0260\2\uffff"+
+        "\1\u0261\1\47\2\uffff\1\47\1\u0264\1\uffff";
     static final String DFA13_eofS =
         "\u0265\uffff";
     static final String DFA13_minS =
@@ -2022,104 +2022,104 @@ public class InternalOseeTypesLexer extends Lexer {
         "\1\156\1\101\1\141\1\156\1\141\1\151\2\157\1\156\1\154\1\156\1\141"+
         "\1\164\1\157\1\145\1\151\1\145\1\116\1\60\1\101\1\uffff\2\0\1\52"+
         "\2\uffff\1\160\2\uffff\1\163\4\164\1\uffff\2\145\2\uffff\1\141\1"+
-        "\164\2\146\1\164\1\151\1\157\1\160\1\116\1\154\1\170\1\156\1\154"+
+        "\164\2\146\1\164\1\151\1\157\1\160\1\116\1\170\1\154\1\156\1\154"+
         "\1\147\1\154\1\157\1\155\1\165\1\157\1\164\1\166\2\162\1\154\1\144"+
         "\1\170\1\105\1\uffff\1\60\4\uffff\1\157\1\164\1\151\1\162\1\145"+
         "\1\162\1\155\1\162\1\145\1\156\1\141\1\143\2\141\1\145\1\101\1\162"+
-        "\1\160\1\131\1\164\2\60\1\151\1\147\1\145\1\154\1\160\1\155\1\141"+
-        "\1\145\1\141\1\151\1\144\1\141\1\145\1\151\1\137\2\162\1\146\1\151"+
-        "\1\156\1\171\1\124\1\162\1\105\1\143\1\120\1\162\2\165\1\101\1\164"+
-        "\1\144\1\145\1\137\1\151\2\uffff\1\155\1\145\1\105\1\145\1\162\1"+
-        "\145\1\164\1\147\1\117\1\156\1\101\1\164\1\101\1\143\1\124\1\164"+
-        "\2\141\1\142\1\144\1\60\1\171\1\151\1\156\1\150\1\162\1\151\2\154"+
-        "\2\164\1\145\1\144\1\124\1\160\1\151\1\162\1\170\1\141\1\145\1\162"+
-        "\1\151\1\145\1\142\1\147\1\164\1\151\2\101\1\157\1\117\1\60\2\143"+
-        "\1\165\1\163\1\uffff\1\160\1\144\1\165\1\107\1\157\1\160\3\164\2"+
-        "\162\1\101\1\117\1\154\1\164\1\111\1\164\1\156\1\163\1\141\1\156"+
-        "\1\162\1\152\1\101\1\164\1\157\1\162\2\141\1\162\1\147\1\137\1\uffff"+
-        "\3\164\1\60\2\145\1\155\1\165\1\166\1\164\1\117\1\101\1\162\1\151"+
-        "\1\145\1\164\1\137\1\151\1\145\1\144\1\145\1\101\1\163\1\164\1\147"+
-        "\1\101\1\145\1\164\1\162\1\156\1\164\2\155\1\164\1\162\1\115\1\60"+
-        "\1\124\1\145\1\uffff\1\60\1\163\1\124\3\151\1\141\1\162\1\164\1"+
-        "\151\1\142\1\144\1\164\1\115\1\143\1\144\1\60\1\156\1\164\2\145"+
-        "\1\120\1\164\1\143\1\164\1\151\1\124\1\151\2\145\1\151\1\141\1\101"+
-        "\1\116\1\uffff\1\171\1\60\1\uffff\1\60\1\171\2\144\1\157\1\154\1"+
-        "\144\1\164\1\142\1\165\1\60\1\162\1\116\1\101\1\151\1\60\1\uffff"+
-        "\1\163\1\164\2\144\1\157\2\164\1\162\1\142\1\171\1\146\2\60\1\146"+
-        "\1\160\1\116\1\105\1\160\1\171\2\uffff\1\160\1\60\1\145\1\156\1"+
-        "\165\1\145\1\162\1\165\1\164\1\uffff\1\151\1\105\1\116\1\164\1\uffff"+
-        "\1\151\1\162\1\103\1\101\1\151\1\162\1\101\1\151\1\165\1\160\1\141"+
-        "\2\uffff\1\141\1\150\1\131\1\60\1\145\1\160\1\145\1\uffff\1\162"+
-        "\1\60\1\145\1\162\1\151\1\164\1\145\1\142\1\60\1\131\1\171\1\157"+
-        "\1\151\1\157\1\164\1\156\1\151\1\164\1\142\1\164\1\145\2\143\1\151"+
-        "\1\60\1\uffff\1\60\1\145\2\60\1\uffff\1\60\1\124\1\142\1\145\1\104"+
-        "\1\165\1\uffff\2\60\1\156\1\142\1\156\2\164\1\142\1\164\1\165\1"+
-        "\145\1\60\2\164\1\143\2\uffff\1\60\3\uffff\1\171\1\165\1\60\1\141"+
-        "\1\164\2\uffff\1\60\1\165\1\164\1\162\1\101\1\165\1\162\1\164\1"+
-        "\60\1\uffff\2\124\1\141\1\uffff\1\160\1\164\1\uffff\1\164\1\145"+
-        "\1\uffff\1\164\1\145\1\151\2\164\1\151\1\145\1\uffff\2\171\1\154"+
-        "\2\145\1\141\1\104\1\145\1\156\1\142\1\164\1\145\1\142\1\60\2\160"+
-        "\1\137\1\60\1\104\1\120\1\141\1\60\1\164\1\165\1\162\1\60\1\165"+
-        "\1\uffff\2\145\1\101\1\uffff\2\141\1\162\1\164\1\uffff\1\101\1\164"+
-        "\1\151\1\uffff\1\164\2\60\1\163\1\145\1\164\1\147\1\157\1\141\1"+
-        "\164\1\145\1\142\1\145\2\uffff\1\143\1\163\1\141\1\147\1\166\1\120"+
-        "\1\164\1\60\1\165\1\60\1\145\1\143\1\120\1\145\1\151\2\162\1\uffff"+
-        "\1\164\1\uffff\1\156\1\145\2\162\1\144\1\157\1\151\1\145\1\144\1"+
-        "\156\1\157\1\120\1\145\1\166\1\142\1\60\1\151\1\144\1\166\2\162"+
-        "\1\151\1\165\1\uffff\1\156\2\151\1\157\1\60\1\144\1\164\1\147\1"+
-        "\156\1\144\1\166\1\uffff\2\145\1\60\1\147\1\145\1\151\1\162\1\60"+
-        "\1\uffff\1\60\1\162\1\144\1\60\2\uffff\1\60\1\145\2\uffff\1\162"+
-        "\1\60\1\uffff";
+        "\1\160\1\131\1\60\1\164\1\60\1\151\1\147\1\145\1\154\1\160\1\155"+
+        "\1\141\1\145\1\141\1\151\1\144\1\141\1\145\1\151\1\137\2\162\1\146"+
+        "\1\151\1\156\1\171\1\124\1\162\1\105\1\143\1\120\1\162\2\165\1\101"+
+        "\1\164\1\144\1\145\1\137\1\uffff\1\151\1\uffff\1\155\1\145\1\105"+
+        "\1\145\1\162\1\145\1\164\1\147\1\117\1\156\1\101\1\164\1\101\1\143"+
+        "\1\124\1\164\2\141\1\142\1\144\1\60\1\171\1\151\1\156\1\150\1\162"+
+        "\1\151\2\154\2\164\1\145\1\144\1\124\1\160\1\151\1\162\1\170\1\141"+
+        "\1\145\1\162\1\151\1\145\1\142\1\147\1\164\1\151\2\101\1\157\1\117"+
+        "\1\60\2\143\1\165\1\163\1\uffff\1\160\1\144\1\165\1\107\1\157\1"+
+        "\160\3\164\2\162\1\101\1\117\1\154\1\164\1\111\1\164\1\156\1\163"+
+        "\1\141\1\156\1\162\1\152\1\101\1\164\1\157\1\162\2\141\1\162\1\147"+
+        "\1\137\1\uffff\3\164\1\60\2\145\1\155\1\165\1\166\1\164\1\117\1"+
+        "\101\1\162\1\151\1\145\1\164\1\137\1\151\1\145\1\144\1\145\1\101"+
+        "\1\163\1\164\1\147\1\101\1\145\1\164\1\162\1\156\1\164\2\155\1\164"+
+        "\1\162\1\115\1\60\1\124\1\145\1\uffff\1\60\1\163\1\124\3\151\1\141"+
+        "\1\162\1\164\1\151\1\142\1\144\1\164\1\115\1\143\1\144\1\60\1\156"+
+        "\1\164\2\145\1\120\1\164\1\143\1\164\1\151\1\124\1\151\2\145\1\151"+
+        "\1\141\1\101\1\116\1\uffff\1\171\1\60\1\uffff\1\60\1\171\2\144\1"+
+        "\157\1\154\1\144\1\164\1\142\1\165\1\60\1\162\1\116\1\101\1\151"+
+        "\1\60\1\uffff\1\163\1\164\2\144\1\157\2\164\1\162\1\142\1\171\1"+
+        "\146\2\60\1\146\1\160\1\116\1\105\1\160\1\171\2\uffff\1\160\1\60"+
+        "\1\145\1\156\1\165\1\145\1\162\1\165\1\164\1\uffff\1\151\1\105\1"+
+        "\116\1\164\1\uffff\1\151\1\162\1\103\1\101\1\151\1\162\1\101\1\151"+
+        "\1\165\1\160\1\141\2\uffff\1\141\1\150\1\131\1\60\1\145\1\160\1"+
+        "\145\1\uffff\1\162\1\60\1\145\1\162\1\151\1\164\1\145\1\142\1\60"+
+        "\1\131\1\171\1\157\1\151\1\157\1\164\1\156\1\151\1\164\1\142\1\164"+
+        "\1\145\2\143\1\151\1\60\1\uffff\1\60\1\145\2\60\1\uffff\1\60\1\124"+
+        "\1\142\1\145\1\104\1\165\1\uffff\2\60\1\156\1\142\1\156\2\164\1"+
+        "\142\1\164\1\165\1\145\1\60\2\164\1\143\2\uffff\1\60\3\uffff\1\171"+
+        "\1\165\1\60\1\141\1\164\2\uffff\1\60\1\165\1\164\1\162\1\101\1\165"+
+        "\1\162\1\164\1\60\1\uffff\2\124\1\141\1\uffff\1\160\1\164\1\uffff"+
+        "\1\164\1\145\1\uffff\1\164\1\145\1\151\2\164\1\151\1\145\1\uffff"+
+        "\2\171\1\154\2\145\1\141\1\104\1\145\1\156\1\142\1\164\1\145\1\142"+
+        "\1\60\2\160\1\137\1\60\1\104\1\120\1\141\1\60\1\164\1\165\1\162"+
+        "\1\60\1\165\1\uffff\2\145\1\101\1\uffff\2\141\1\162\1\164\1\uffff"+
+        "\1\101\1\164\1\151\1\uffff\1\164\2\60\1\163\1\145\1\164\1\147\1"+
+        "\157\1\141\1\164\1\145\1\142\1\145\2\uffff\1\143\1\163\1\141\1\147"+
+        "\1\166\1\120\1\164\1\60\1\165\1\60\1\145\1\143\1\120\1\145\1\151"+
+        "\2\162\1\uffff\1\164\1\uffff\1\156\1\145\2\162\1\144\1\157\1\151"+
+        "\1\145\1\144\1\156\1\157\1\120\1\145\1\166\1\142\1\60\1\151\1\144"+
+        "\1\166\2\162\1\151\1\165\1\uffff\1\156\2\151\1\157\1\60\1\144\1"+
+        "\164\1\147\1\156\1\144\1\166\1\uffff\2\145\1\60\1\147\1\145\1\151"+
+        "\1\162\1\60\1\uffff\1\60\1\162\1\144\1\60\2\uffff\1\60\1\145\2\uffff"+
+        "\1\162\1\60\1\uffff";
     static final String DFA13_maxS =
         "\1\ufffe\1\155\1\uffff\1\164\1\170\1\uffff\1\166\2\uffff\1\162\2"+
         "\145\1\162\1\141\1\165\1\156\1\141\1\151\2\157\1\156\1\154\1\156"+
         "\1\141\1\164\1\157\1\145\1\151\1\145\1\116\1\71\1\172\1\uffff\2"+
         "\ufffe\1\57\2\uffff\1\160\2\uffff\1\163\3\164\1\165\1\uffff\2\145"+
         "\2\uffff\1\141\1\164\1\163\1\146\1\164\1\151\1\157\1\160\1\116\1"+
-        "\154\1\170\1\156\1\154\1\147\1\154\1\157\1\155\1\165\1\157\1\164"+
+        "\170\1\154\1\156\1\154\1\147\1\154\1\157\1\155\1\165\1\157\1\164"+
         "\1\166\2\162\1\154\1\144\1\170\1\105\1\uffff\1\71\4\uffff\1\157"+
         "\1\164\1\151\1\162\1\145\1\162\1\155\1\162\1\145\1\156\1\141\1\143"+
-        "\2\141\1\145\1\101\1\162\1\160\1\131\1\164\2\172\1\151\1\147\1\145"+
-        "\1\154\1\160\1\155\1\141\1\145\1\141\1\151\1\144\1\141\1\145\1\151"+
-        "\1\137\2\162\1\146\1\151\1\156\1\171\1\124\1\162\1\105\1\143\1\120"+
-        "\1\162\2\165\1\101\1\164\1\144\1\145\1\137\1\151\2\uffff\1\155\1"+
-        "\145\1\105\1\145\1\162\1\145\1\164\1\147\1\117\1\156\1\101\1\164"+
-        "\1\102\1\143\1\124\1\164\2\141\1\142\1\144\1\172\1\171\1\151\1\156"+
-        "\1\150\1\162\1\151\2\154\2\164\1\145\1\144\1\124\1\160\1\151\1\162"+
-        "\1\170\1\141\1\145\1\162\1\151\1\145\1\142\1\147\1\164\1\151\2\116"+
-        "\1\157\1\117\1\172\2\143\1\165\1\163\1\uffff\1\160\1\144\1\165\1"+
-        "\107\1\157\1\160\3\164\2\162\1\101\1\117\1\154\1\164\1\111\1\164"+
-        "\1\156\1\163\1\141\1\156\1\162\1\152\1\101\1\164\1\157\1\162\2\141"+
-        "\1\162\1\147\1\137\1\uffff\3\164\1\172\2\145\1\155\1\165\1\166\1"+
-        "\164\1\126\1\101\1\162\1\151\1\145\1\164\1\137\1\151\1\145\1\144"+
-        "\1\145\1\101\1\163\1\164\1\147\1\101\1\145\1\164\1\162\1\156\1\164"+
-        "\2\155\1\164\1\162\1\117\1\172\1\124\1\145\1\uffff\1\172\1\163\1"+
-        "\124\3\151\1\141\1\162\1\164\1\151\1\142\1\144\1\164\1\117\1\143"+
-        "\1\144\1\172\1\156\1\164\2\145\1\120\1\164\1\143\1\164\1\151\1\124"+
-        "\1\151\2\145\1\151\1\141\1\101\1\116\1\uffff\1\171\1\172\1\uffff"+
-        "\1\172\1\171\2\144\1\157\1\154\1\144\1\164\1\142\1\165\1\172\1\162"+
-        "\1\116\1\101\1\151\1\172\1\uffff\1\163\1\164\2\144\1\157\2\164\1"+
-        "\162\1\142\1\171\1\146\2\172\1\146\1\160\1\116\1\105\1\160\1\171"+
-        "\2\uffff\1\160\1\172\1\145\1\156\1\165\1\145\1\162\1\165\1\164\1"+
-        "\uffff\1\151\1\105\1\116\1\164\1\uffff\1\151\1\162\1\103\1\101\1"+
-        "\151\1\162\1\101\1\151\1\165\1\160\1\141\2\uffff\1\141\1\150\1\131"+
-        "\1\172\1\145\1\160\1\145\1\uffff\1\162\1\172\1\145\1\162\1\151\1"+
-        "\164\1\145\1\142\1\172\1\131\1\171\1\157\1\151\1\157\1\164\1\156"+
-        "\1\151\1\164\1\142\1\164\1\145\2\143\1\151\1\172\1\uffff\1\172\1"+
-        "\145\2\172\1\uffff\1\172\1\124\1\142\1\145\1\104\1\165\1\uffff\2"+
-        "\172\1\156\1\142\1\156\2\164\1\142\1\164\1\165\1\145\1\172\2\164"+
-        "\1\143\2\uffff\1\172\3\uffff\1\171\1\165\1\172\1\141\1\164\2\uffff"+
-        "\1\172\1\165\1\164\1\162\1\101\1\165\1\162\1\164\1\172\1\uffff\2"+
-        "\124\1\141\1\uffff\1\160\1\164\1\uffff\1\164\1\145\1\uffff\1\164"+
-        "\1\145\1\151\2\164\1\151\1\145\1\uffff\2\171\1\154\2\145\1\141\1"+
-        "\104\1\145\1\156\1\142\1\164\1\145\1\142\1\172\2\160\1\137\1\172"+
-        "\1\124\1\120\1\141\1\172\1\164\1\165\1\162\1\172\1\165\1\uffff\2"+
-        "\145\1\104\1\uffff\2\141\1\162\1\164\1\uffff\1\101\1\164\1\151\1"+
-        "\uffff\1\164\2\172\1\163\1\145\1\164\1\147\1\157\1\141\1\164\1\145"+
-        "\1\142\1\145\2\uffff\1\143\1\163\1\141\1\147\1\166\1\120\1\164\1"+
-        "\172\1\165\1\172\1\145\1\143\1\120\1\145\1\151\2\162\1\uffff\1\164"+
-        "\1\uffff\1\156\1\145\2\162\1\144\1\157\1\151\1\145\1\144\1\156\1"+
-        "\157\1\120\1\145\1\166\1\142\1\172\1\151\1\144\1\166\2\162\1\151"+
+        "\2\141\1\145\1\101\1\162\1\160\1\131\1\172\1\164\1\172\1\151\1\147"+
+        "\1\145\1\154\1\160\1\155\1\141\1\145\1\141\1\151\1\144\1\141\1\145"+
+        "\1\151\1\137\2\162\1\146\1\151\1\156\1\171\1\124\1\162\1\105\1\143"+
+        "\1\120\1\162\2\165\1\101\1\164\1\144\1\145\1\137\1\uffff\1\151\1"+
+        "\uffff\1\155\1\145\1\105\1\145\1\162\1\145\1\164\1\147\1\117\1\156"+
+        "\1\101\1\164\1\102\1\143\1\124\1\164\2\141\1\142\1\144\1\172\1\171"+
+        "\1\151\1\156\1\150\1\162\1\151\2\154\2\164\1\145\1\144\1\124\1\160"+
+        "\1\151\1\162\1\170\1\141\1\145\1\162\1\151\1\145\1\142\1\147\1\164"+
+        "\1\151\2\116\1\157\1\117\1\172\2\143\1\165\1\163\1\uffff\1\160\1"+
+        "\144\1\165\1\107\1\157\1\160\3\164\2\162\1\101\1\117\1\154\1\164"+
+        "\1\111\1\164\1\156\1\163\1\141\1\156\1\162\1\152\1\101\1\164\1\157"+
+        "\1\162\2\141\1\162\1\147\1\137\1\uffff\3\164\1\172\2\145\1\155\1"+
+        "\165\1\166\1\164\1\126\1\101\1\162\1\151\1\145\1\164\1\137\1\151"+
+        "\1\145\1\144\1\145\1\101\1\163\1\164\1\147\1\101\1\145\1\164\1\162"+
+        "\1\156\1\164\2\155\1\164\1\162\1\117\1\172\1\124\1\145\1\uffff\1"+
+        "\172\1\163\1\124\3\151\1\141\1\162\1\164\1\151\1\142\1\144\1\164"+
+        "\1\117\1\143\1\144\1\172\1\156\1\164\2\145\1\120\1\164\1\143\1\164"+
+        "\1\151\1\124\1\151\2\145\1\151\1\141\1\101\1\116\1\uffff\1\171\1"+
+        "\172\1\uffff\1\172\1\171\2\144\1\157\1\154\1\144\1\164\1\142\1\165"+
+        "\1\172\1\162\1\116\1\101\1\151\1\172\1\uffff\1\163\1\164\2\144\1"+
+        "\157\2\164\1\162\1\142\1\171\1\146\2\172\1\146\1\160\1\116\1\105"+
+        "\1\160\1\171\2\uffff\1\160\1\172\1\145\1\156\1\165\1\145\1\162\1"+
+        "\165\1\164\1\uffff\1\151\1\105\1\116\1\164\1\uffff\1\151\1\162\1"+
+        "\103\1\101\1\151\1\162\1\101\1\151\1\165\1\160\1\141\2\uffff\1\141"+
+        "\1\150\1\131\1\172\1\145\1\160\1\145\1\uffff\1\162\1\172\1\145\1"+
+        "\162\1\151\1\164\1\145\1\142\1\172\1\131\1\171\1\157\1\151\1\157"+
+        "\1\164\1\156\1\151\1\164\1\142\1\164\1\145\2\143\1\151\1\172\1\uffff"+
+        "\1\172\1\145\2\172\1\uffff\1\172\1\124\1\142\1\145\1\104\1\165\1"+
+        "\uffff\2\172\1\156\1\142\1\156\2\164\1\142\1\164\1\165\1\145\1\172"+
+        "\2\164\1\143\2\uffff\1\172\3\uffff\1\171\1\165\1\172\1\141\1\164"+
+        "\2\uffff\1\172\1\165\1\164\1\162\1\101\1\165\1\162\1\164\1\172\1"+
+        "\uffff\2\124\1\141\1\uffff\1\160\1\164\1\uffff\1\164\1\145\1\uffff"+
+        "\1\164\1\145\1\151\2\164\1\151\1\145\1\uffff\2\171\1\154\2\145\1"+
+        "\141\1\104\1\145\1\156\1\142\1\164\1\145\1\142\1\172\2\160\1\137"+
+        "\1\172\1\124\1\120\1\141\1\172\1\164\1\165\1\162\1\172\1\165\1\uffff"+
+        "\2\145\1\104\1\uffff\2\141\1\162\1\164\1\uffff\1\101\1\164\1\151"+
+        "\1\uffff\1\164\2\172\1\163\1\145\1\164\1\147\1\157\1\141\1\164\1"+
+        "\145\1\142\1\145\2\uffff\1\143\1\163\1\141\1\147\1\166\1\120\1\164"+
+        "\1\172\1\165\1\172\1\145\1\143\1\120\1\145\1\151\2\162\1\uffff\1"+
+        "\164\1\uffff\1\156\1\145\2\162\1\144\1\157\1\151\1\145\1\144\1\156"+
+        "\1\157\1\120\1\145\1\166\1\142\1\172\1\151\1\144\1\166\2\162\1\151"+
         "\1\165\1\uffff\1\156\2\151\1\157\1\172\1\144\1\164\1\147\1\156\1"+
         "\144\1\166\1\uffff\2\145\1\172\1\147\1\145\1\151\1\162\1\172\1\uffff"+
         "\1\172\1\162\1\144\1\172\2\uffff\1\172\1\145\2\uffff\1\162\1\172"+
@@ -2127,15 +2127,15 @@ public class InternalOseeTypesLexer extends Lexer {
     static final String DFA13_acceptS =
         "\2\uffff\1\2\2\uffff\1\6\1\uffff\1\10\1\11\27\uffff\1\64\3\uffff"+
         "\1\71\1\72\1\uffff\1\64\1\2\5\uffff\1\6\2\uffff\1\10\1\11\33\uffff"+
-        "\1\63\1\uffff\1\66\1\70\1\67\1\71\71\uffff\1\22\1\21\70\uffff\1"+
-        "\44\40\uffff\1\1\47\uffff\1\5\42\uffff\1\3\2\uffff\1\26\20\uffff"+
-        "\1\24\23\uffff\1\12\1\7\11\uffff\1\55\4\uffff\1\23\13\uffff\1\46"+
-        "\1\50\7\uffff\1\13\31\uffff\1\57\4\uffff\1\27\6\uffff\1\61\17\uffff"+
-        "\1\60\1\4\1\uffff\1\43\1\15\1\30\5\uffff\1\62\1\56\11\uffff\1\45"+
-        "\3\uffff\1\14\2\uffff\1\34\2\uffff\1\31\7\uffff\1\42\33\uffff\1"+
-        "\41\3\uffff\1\52\4\uffff\1\32\3\uffff\1\37\15\uffff\1\47\1\51\21"+
-        "\uffff\1\35\1\uffff\1\40\27\uffff\1\36\13\uffff\1\17\10\uffff\1"+
-        "\53\4\uffff\1\33\1\54\2\uffff\1\20\1\16\2\uffff\1\25";
+        "\1\63\1\uffff\1\66\1\70\1\67\1\71\70\uffff\1\22\1\uffff\1\21\70"+
+        "\uffff\1\44\40\uffff\1\1\47\uffff\1\5\42\uffff\1\3\2\uffff\1\26"+
+        "\20\uffff\1\24\23\uffff\1\12\1\7\11\uffff\1\56\4\uffff\1\23\13\uffff"+
+        "\1\46\1\50\7\uffff\1\13\31\uffff\1\57\4\uffff\1\27\6\uffff\1\61"+
+        "\17\uffff\1\60\1\4\1\uffff\1\43\1\15\1\30\5\uffff\1\62\1\53\11\uffff"+
+        "\1\45\3\uffff\1\14\2\uffff\1\34\2\uffff\1\31\7\uffff\1\42\33\uffff"+
+        "\1\41\3\uffff\1\52\4\uffff\1\32\3\uffff\1\37\15\uffff\1\47\1\51"+
+        "\21\uffff\1\35\1\uffff\1\40\27\uffff\1\36\13\uffff\1\17\10\uffff"+
+        "\1\54\4\uffff\1\33\1\55\2\uffff\1\20\1\16\2\uffff\1\25";
     static final String DFA13_specialS =
         "\u0265\uffff}>";
     static final String[] DFA13_transitionS = {
@@ -2158,7 +2158,7 @@ public class InternalOseeTypesLexer extends Lexer {
             "\1\67\3\uffff\1\66",
             "\1\71\3\uffff\1\70",
             "\1\73\37\uffff\1\72",
-            "\1\75\7\uffff\1\76\13\uffff\1\74",
+            "\1\74\7\uffff\1\76\13\uffff\1\75",
             "\1\77",
             "\1\100",
             "\1\101",
@@ -2247,8 +2247,8 @@ public class InternalOseeTypesLexer extends Lexer {
             "\1\u0089",
             "\1\u008a",
             "\1\u008b",
-            "\1\u008c",
             "\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32\47",
+            "\1\u008d",
             "\12\47\7\uffff\32\47\4\uffff\1\47\1\uffff\32\47",
             "\1\u008f",
             "\1\u0090",
@@ -2284,8 +2284,8 @@ public class InternalOseeTypesLexer extends Lexer {
             "\1\u00ae",
             "\1\u00af",
             "\1\u00b0",
-            "\1\u00b1",
             "",
+            "\1\u00b1",
             "",
             "\1\u00b2",
             "\1\u00b3",
