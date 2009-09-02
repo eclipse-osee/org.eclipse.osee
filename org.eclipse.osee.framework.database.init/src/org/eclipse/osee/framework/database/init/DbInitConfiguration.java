@@ -29,10 +29,10 @@ public class DbInitConfiguration {
    public List<String> getTaskExtensionIds() {
       List<String> initTasks = new ArrayList<String>();
       initTasks.add("org.eclipse.osee.framework.database.init.DbBootstrapTask");
-      dbInitTasks.addAll(0, dbInitTasks);
-      dbInitTasks.add("org.eclipse.osee.framework.database.init.PostDbUserCleanUp");
-      dbInitTasks.add("org.eclipse.osee.framework.database.init.SkynetDbBranchDataImport");
-      dbInitTasks.add("org.eclipse.osee.framework.database.init.PostDatabaseInitialization");
+      initTasks.addAll(dbInitTasks);
+      initTasks.add("org.eclipse.osee.framework.database.init.PostDbUserCleanUp");
+      initTasks.add("org.eclipse.osee.framework.database.init.SkynetDbBranchDataImport");
+      initTasks.add("org.eclipse.osee.framework.database.init.PostDatabaseInitialization");
       return initTasks;
    }
 
