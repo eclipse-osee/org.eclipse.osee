@@ -51,6 +51,8 @@ public class ArtifactCache {
 
    private static final Set<ArtifactType> eternalArtifactTypes = new HashSet<ArtifactType>();
 
+   private static final Set<Artifact> nomoreWeakReferences = new HashSet<Artifact>();
+
    public static List<Artifact> getArtifactsByName(ArtifactType artifactType, String name) {
       List<Artifact> arts = new ArrayList<Artifact>();
       for (Artifact artifact : getArtifactsByType(artifactType)) {
@@ -65,29 +67,27 @@ public class ArtifactCache {
       Set<Artifact> dirtyArts = new HashSet<Artifact>();
       // ArtifactIdCache is the master cache - no need to check other caches
       for (Entry<Pair<Integer, Integer>, Object> entry : artifactIdCache.entrySet()) {
-    	 Artifact art = getArtifact(entry.getValue());
-    	 if(art != null){
-	         if (art.isDirty()) {
-	            dirtyArts.add(art);
-	         }
-    	 } 
+         Artifact art = getArtifact(entry.getValue());
+         if (art != null) {
+            if (art.isDirty()) {
+               dirtyArts.add(art);
+            }
+         }
       }
       return dirtyArts;
    }
-   
-   
-   private static Artifact getArtifact(Object obj){
-	   if(obj != null){
-		   if (obj instanceof Artifact){
-			   return (Artifact)obj;
-		   } else if (obj instanceof WeakReference){
-			   WeakReference<Artifact> art = (WeakReference<Artifact>)obj;
-			   return art.get();
-		   }
-	   }
-	   return null;
+
+   private static Artifact getArtifact(Object obj) {
+      if (obj != null) {
+         if (obj instanceof Artifact) {
+            return (Artifact) obj;
+         } else if (obj instanceof WeakReference) {
+            WeakReference<Artifact> art = (WeakReference<Artifact>) obj;
+            return art.get();
+         }
+      }
+      return null;
    }
-   
 
    /**
     * Cache the artifact so that we can avoid creating duplicate instances of an artifact
@@ -96,7 +96,8 @@ public class ArtifactCache {
     * @throws OseeCoreException
     */
    synchronized static void cache(Artifact artifact) throws OseeCoreException {
-	  Object obj = getCacheObject(artifact);
+      nomoreWeakReferences.add(artifact); // TODO remove to enable garbage collection
+      Object obj = getCacheObject(artifact);
       if (artifact.isHistorical()) {
          historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), obj);
          historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), obj);
@@ -107,16 +108,16 @@ public class ArtifactCache {
       }
    }
 
-   private static Object getCacheObject(Artifact artifact){
-	  if(eternalArtifactTypes.contains(artifact.getArtifactType())){
-		  return artifact;
-	  } else if (artifact.isDirty()){
-		  return artifact;
-	  } else {
-		  return new WeakReference<Artifact>(artifact);
-	  }
+   private static Object getCacheObject(Artifact artifact) {
+      if (eternalArtifactTypes.contains(artifact.getArtifactType())) {
+         return artifact;
+      } else if (artifact.isDirty()) {
+         return artifact;
+      } else {
+         return new WeakReference<Artifact>(artifact);
+      }
    }
-   
+
    /**
     * This method is called by attributes and relations when their dirty state changes.
     * This way, when an artifact is dirty we can hold onto a strong reference and when it
@@ -126,28 +127,28 @@ public class ArtifactCache {
     * @param branchId
     * @throws OseeCoreException
     */
-   public static void updateCachedArtifact(int artId, int branchId) throws OseeCoreException{
-	   Object obj = artifactIdCache.get(artId, branchId);
-	   if(obj != null){
-		   if (obj instanceof Artifact){
-			   Artifact artifact = (Artifact)obj;
-			   if(!artifact.isDirty() && !eternalArtifactTypes.contains(artifact.getArtifactType())){
-				   cache(artifact);
-			   }
-		   } else if (obj instanceof WeakReference){
-			   WeakReference<Artifact> art = (WeakReference<Artifact>)obj;
-			   Artifact artifact = art.get();
-			   if(artifact != null && artifact.isDirty()){
-				   cache(artifact);
-			   }
-		   }
-	   }
-//	   Artifact artifact = getActive(artId, branchId);
-//	   if(artifact != null){
-//		   cache(artifact);
-//	   }
+   public static void updateCachedArtifact(int artId, int branchId) throws OseeCoreException {
+      Object obj = artifactIdCache.get(artId, branchId);
+      if (obj != null) {
+         if (obj instanceof Artifact) {
+            Artifact artifact = (Artifact) obj;
+            if (!artifact.isDirty() && !eternalArtifactTypes.contains(artifact.getArtifactType())) {
+               cache(artifact);
+            }
+         } else if (obj instanceof WeakReference) {
+            WeakReference<Artifact> art = (WeakReference<Artifact>) obj;
+            Artifact artifact = art.get();
+            if (artifact != null && artifact.isDirty()) {
+               cache(artifact);
+            }
+         }
+      }
+      //	   Artifact artifact = getActive(artId, branchId);
+      //	   if(artifact != null){
+      //		   cache(artifact);
+      //	   }
    }
-   
+
    synchronized static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
       for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
          cacheByStaticId(staticId, artifact);
@@ -171,7 +172,7 @@ public class ArtifactCache {
          return artifacts;
       }
       for (Object obj : cachedArts) {
-    	 Artifact artifact = getArtifact(obj); 
+         Artifact artifact = getArtifact(obj);
          if (artifact != null && !artifact.isDeleted()) {
             artifacts.add(artifact);
          }
@@ -186,7 +187,7 @@ public class ArtifactCache {
          return artifacts;
       }
       for (Object obj : cachedArts) {
-    	 Artifact artifact = getArtifact(obj);
+         Artifact artifact = getArtifact(obj);
          if (artifact != null && !artifact.isDeleted() && artifact.getBranch().equals(branch)) {
             artifacts.add(artifact);
          }
@@ -195,23 +196,23 @@ public class ArtifactCache {
    }
 
    public synchronized static Artifact getHistorical(Integer artId, Integer transactionNumber) {
-	  return getArtifact(historicalArtifactIdCache.get(artId, transactionNumber));
+      return getArtifact(historicalArtifactIdCache.get(artId, transactionNumber));
    }
 
    public synchronized static Artifact getHistorical(String guid, Integer transactionNumber) {
-	  return getArtifact(historicalArtifactGuidCache.get(guid, transactionNumber));
+      return getArtifact(historicalArtifactGuidCache.get(guid, transactionNumber));
    }
 
    public synchronized static List<Artifact> getArtifactsByType(ArtifactType artifactType) {
       List<Artifact> items = new ArrayList<Artifact>();
       Collection<Object> cachedItems = byArtifactTypeCache.getValues(artifactType);
       if (cachedItems != null) {
-    	 for(Object obj:cachedItems){
-    		 Artifact artifact = getArtifact(obj);
-    		 if(artifact != null){
-    			 items.add(artifact);
-    		 }
-    	 }
+         for (Object obj : cachedItems) {
+            Artifact artifact = getArtifact(obj);
+            if (artifact != null) {
+               items.add(artifact);
+            }
+         }
       }
       return items;
    }
@@ -239,7 +240,7 @@ public class ArtifactCache {
     * @param branchId
     */
    public synchronized static Artifact getActive(Integer artId, Integer branchId) {
-	   return getArtifact(artifactIdCache.get(artId, branchId));
+      return getArtifact(artifactIdCache.get(artId, branchId));
    }
 
    /**
@@ -250,7 +251,7 @@ public class ArtifactCache {
     * @param branchId
     */
    public synchronized static Artifact getActive(String artGuid, Integer branchId) {
-	   return getArtifact(artifactGuidCache.get(artGuid, branchId));
+      return getArtifact(artifactGuidCache.get(artGuid, branchId));
    }
 
    /**
@@ -273,8 +274,6 @@ public class ArtifactCache {
       return getArtifact(keyedArtifactCache.put(key, artifact.getBranch(), getCacheObject(artifact)));
    }
 
-
-   
    /**
     * Register artifact types that should never be decached
     * 
@@ -283,5 +282,5 @@ public class ArtifactCache {
    public static synchronized void registerEternalArtifactType(ArtifactType artifactType) {
       eternalArtifactTypes.add(artifactType);
    }
-   
+
 }

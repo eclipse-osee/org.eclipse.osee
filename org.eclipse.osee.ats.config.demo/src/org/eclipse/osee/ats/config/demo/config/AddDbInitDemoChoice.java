@@ -33,6 +33,7 @@ public class AddDbInitDemoChoice implements IAddDbInitChoice {
       config.addTask("org.eclipse.osee.ats.AtsDatabaseConfig");
       config.addTask("org.eclipse.osee.ats.config.demo.DemoDatabaseConfig");
 
+      config.addOseeType("org.eclipse.osee.ote.define.OseeTypesOTE");
       config.addOseeType("org.eclipse.osee.ats.config.demo.OseeTypes_Demo");
       groupSelection.addChoice("OSEE Demo Database", config);
    }

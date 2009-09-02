@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.junit.Assert;
 import org.junit.Before;
 
 /**
@@ -57,9 +58,12 @@ public class MasterTestSuite_DemoDbPopulate {
     * Test method for {@link org.eclipse.osee.ats.config.demo.config.PopulateDemoActions#run()}.
     */
    @org.junit.Test
-   public void testPopulateDemoDb() throws Exception {
-      PopulateDemoActions populateDemoActions = new PopulateDemoActions(null);
-      populateDemoActions.run(false);
+   public void testPopulateDemoDb() {
+      try {
+         PopulateDemoActions populateDemoActions = new PopulateDemoActions(null);
+         populateDemoActions.run(false);
+      } catch (Exception ex) {
+         Assert.assertNull(ex);
+      }
    }
-
 }
