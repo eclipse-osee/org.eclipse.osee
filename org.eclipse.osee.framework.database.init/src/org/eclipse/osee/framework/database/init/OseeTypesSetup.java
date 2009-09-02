@@ -88,14 +88,6 @@ public class OseeTypesSetup {
                         resource, url != null ? url.getPath() : "url was null"));
                   String oseeTypeFragment = Lib.inputStreamToString(url.openStream());
                   oseeTypeFragment = oseeTypeFragment.replaceAll("import\\s+\"", "// import \"");
-                  //                  ChangeSet changeSet = new ChangeSet(oseeTypeFragment);
-                  //
-                  //                  Pattern pattern = Pattern.compile("import\\s+\".*?\"");
-                  //                  Matcher matcher = pattern.matcher(oseeTypeFragment);
-                  //                  while (matcher.matches()) {
-                  //                     changeSet.replace(matcher.start(), matcher.end(), "");
-                  //                  }
-
                   writer.write("\n");
                   writer.write("//////////////     ");
                   writer.write(extension.getUniqueIdentifier());
@@ -122,6 +114,7 @@ public class OseeTypesSetup {
                "Unable to find handler for [%s] - handlers - %s", file.getAbsolutePath(),
                this.extensionObjects.getObjects()));
       }
+      file.delete();
    }
 
    private IOseeTypesHandler getHandler(String resource, URL url) {
