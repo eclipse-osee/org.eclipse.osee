@@ -20,6 +20,15 @@
    <extension-point id="ArtifactExtractor" name="ArtifactExtractor" schema="schema/ArtifactExtractor.exsd"/>
    <extension-point id="ArtifactExtractorDelegate" name="ArtifactExtractorDelegate" schema="schema/ArtifactExtractorDelegate.exsd"/>
    <extension-point id="OseeTypesHandler" name="OseeTypesHandler" schema="schema/OseeTypesHandler.exsd"/>
+   
+      <extension
+         id="MappedAttributeDataProvider"
+         name="MappedAttributeDataProvider"
+         point="org.eclipse.osee.framework.skynet.core.AttributeDataProvider">
+      <BinaryAttributeDataProvider
+            class="org.eclipse.osee.framework.skynet.core.attribute.providers.MappedAttributeDataProvider">
+      </BinaryAttributeDataProvider>
+   </extension>
   <extension
         id="OseeTypes_Framework"
         name="OseeTypes_Framework"

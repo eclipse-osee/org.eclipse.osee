@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.MappedAttributeDataProvider;
 import org.eclipse.osee.ote.define.AUTOGEN.OTE_SKYNET_ARTIFACTS;
 import org.eclipse.osee.ote.define.AUTOGEN.OTE_SKYNET_ATTRIBUTES;
 

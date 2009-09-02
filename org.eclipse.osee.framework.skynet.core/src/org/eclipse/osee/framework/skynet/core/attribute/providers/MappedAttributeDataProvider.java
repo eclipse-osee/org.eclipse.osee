@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ote.define.artifacts;
+package org.eclipse.osee.framework.skynet.core.attribute.providers;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -28,11 +28,9 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.AbstractAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.attribute.providers.ICharacterAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.utils.AttributeURL;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
-import org.eclipse.osee.ote.define.OteDefinePlugin;
 
 /**
  * @author Roberto E. Escobar
@@ -68,12 +66,12 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
 
    private String getOutfileName() throws OseeCoreException {
       StringBuilder builder = new StringBuilder();
-      TestRunOperator operator = new TestRunOperator(getAttribute().getArtifact());
-      builder.append(operator.getDescriptiveName());
+      //TestRunOperator operator = new TestRunOperator(getAttribute().getArtifact());
+      builder.append(getAttribute().getArtifact().getName());
       builder.append(".");
-      builder.append(operator.getChecksum());
-      builder.append(".");
-      String extension = operator.getOutfileExtension();
+      //builder.append(operator.getChecksum());
+      //builder.append(".");
+      String extension = null; //operator.getOutfileExtension();
       if (!Strings.isValid(extension)) {
          extension = getAttribute().getAttributeType().getFileTypeExtension();
       }
@@ -139,7 +137,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
             this.backingFile = requestRemoteFile();
             this.localUri = null;
          } catch (Exception ex) {
-            OseeLog.log(OteDefinePlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       String toReturn = this.localUri;
@@ -172,7 +170,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
       return file;
    }
 
-   protected void setLocalUri(String localUri) {
+   public void setLocalUri(String localUri) {
       this.localUri = localUri;
    }
 
@@ -183,7 +181,7 @@ public class MappedAttributeDataProvider extends AbstractAttributeDataProvider i
    private boolean isFromLocalWorkspace() {
       boolean toReturn = isRemoteUriValid() != true;
       try {
-         toReturn |= new TestRunOperator(getAttribute().getArtifact()).isFromLocalWorkspace();
+         //toReturn |= new TestRunOperator(getAttribute().getArtifact()).isFromLocalWorkspace();
       } catch (Exception ex) {
       }
       return toReturn;

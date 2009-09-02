@@ -11,14 +11,6 @@
       </OseeTypes>
    </extension>
    <extension
-         id="MappedAttributeDataProvider"
-         name="MappedAttributeDataProvider"
-         point="org.eclipse.osee.framework.skynet.core.AttributeDataProvider">
-      <BinaryAttributeDataProvider
-            class="org.eclipse.osee.ote.define.artifacts.MappedAttributeDataProvider">
-      </BinaryAttributeDataProvider>
-   </extension>
-   <extension
          id="OteOutfileParser"
          point="org.eclipse.osee.ote.define.OutfileParser">
       <OutfileParser
