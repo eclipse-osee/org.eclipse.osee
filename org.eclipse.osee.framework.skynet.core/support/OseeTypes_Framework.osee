@@ -726,7 +726,7 @@ relationType "Allocation" {
    sideBName "component"
    sideBArtifactType "Component"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "Code-Requirement" {
@@ -735,7 +735,7 @@ relationType "Code-Requirement" {
    sideBName "requirement"
    sideBArtifactType "Requirement"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "Component-Requirement" {
@@ -753,7 +753,7 @@ relationType "Design" {
    sideBName "design"
    sideBArtifactType "Design"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "Verification" {
@@ -762,7 +762,7 @@ relationType "Verification" {
    sideBName "verifier"
    sideBArtifactType "Test Unit"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "Verification Procedure" {
@@ -771,7 +771,7 @@ relationType "Verification Procedure" {
    sideBName "test procedure"
    sideBArtifactType "Test Procedure"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "Requirement Trace" {
@@ -789,7 +789,7 @@ relationType "Validation" {
    sideBName "validator"
    sideBArtifactType "Artifact"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "Specifying" {
@@ -798,7 +798,7 @@ relationType "Specifying" {
    sideBName "requirement"
    sideBArtifactType "Requirement"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_ONE
 }
 
 abstract artifactType "Work Item Definition" extends "Artifact" {
@@ -891,7 +891,7 @@ relationType "User Grouping" {
    sideBName "users"
    sideBArtifactType "User"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "Users" {
@@ -900,7 +900,7 @@ relationType "Users" {
    sideBName "User"
    sideBArtifactType "User"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "Supercedes" {
@@ -934,7 +934,7 @@ relationType "Qualification" {
    sideBName "test"
    sideBArtifactType "Test Unit"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "Supporting Info" {

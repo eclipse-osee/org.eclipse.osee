@@ -307,5 +307,5 @@ relationType "Uses" {
    sideBName "Test Unit"
    sideBArtifactType "Test Unit"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }

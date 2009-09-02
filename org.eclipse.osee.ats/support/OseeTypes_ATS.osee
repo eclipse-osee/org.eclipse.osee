@@ -511,7 +511,7 @@ relationType "PrivilegedMember" {
    sideBName "User"
    sideBArtifactType "User"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "TeamActionableItem" {
@@ -547,7 +547,7 @@ relationType "TeamWorkflowTargetedForVersion" {
    sideBName "Version"
    sideBArtifactType "Version"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_ONE
 }
 
 relationType "TeamDefinitionToVersion" {
@@ -565,7 +565,7 @@ relationType "TeamDefinitionToWorkflowDiagram" {
    sideBName "General Document"
    sideBArtifactType "General Document"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_ONE
 }
 
 relationType "TeamDefinitionToTaskWorkflowDiagram" {
@@ -574,7 +574,7 @@ relationType "TeamDefinitionToTaskWorkflowDiagram" {
    sideBName "General Document"
    sideBArtifactType "General Document"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_ONE
 }
 
 relationType "TeamDefinitionToDecisionReviewWorkflowDiagram" {
@@ -583,7 +583,7 @@ relationType "TeamDefinitionToDecisionReviewWorkflowDiagram" {
    sideBName "General Document"
    sideBArtifactType "General Document"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_ONE
 }
 
 relationType "TeamDefinitionToPeerToPeerReviewWorkflowDiagram" {
@@ -592,7 +592,7 @@ relationType "TeamDefinitionToPeerToPeerReviewWorkflowDiagram" {
    sideBName "General Document"
    sideBArtifactType "General Document"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_ONE
 }
 
 relationType "TeamWorkflowToReview" {
@@ -601,7 +601,7 @@ relationType "TeamWorkflowToReview" {
    sideBName "Review"
    sideBArtifactType "ats.Review"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "SubscribedUser" {
@@ -610,7 +610,7 @@ relationType "SubscribedUser" {
    sideBName "User"
    sideBArtifactType "User"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "FavoriteUser" {
@@ -619,7 +619,7 @@ relationType "FavoriteUser" {
    sideBName "User"
    sideBArtifactType "User"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "ParallelVersion" {
@@ -628,7 +628,7 @@ relationType "ParallelVersion" {
    sideBName "Child"
    sideBArtifactType "Version"
    defaultOrderType Lexicographical_Ascending
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "Goal" {
@@ -637,5 +637,5 @@ relationType "Goal" {
    sideBName "Member"
    sideBArtifactType "ats.Ats Artifact"
    defaultOrderType Lexicographical_Ascending
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
