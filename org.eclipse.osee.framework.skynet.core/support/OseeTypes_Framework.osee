@@ -551,11 +551,23 @@ attributeType "Partition" extends EnumeratedAttribute {
    defaultValue "Unspecified"
 }
 
-oseeEnumType "Subsystem.enum" {
-   entry "Aircraft Survivability Equipment"
+oseeEnumType "Subsystem.enum" {  
+   entry "Robot_Survivability_Equipment"
+   entry "Robot_Systems_Management"
+   entry "Chasis"
+   entry "Cognitive_Decision_Aiding"
    entry "Communications"
-   entry "Controls and Displays"
-   entry "Data Management"
+   entry "Controls_and_Displays"
+   entry "Data_Management"
+   entry "Drive_Train"
+   entry "Electrical"
+   entry "Controls"
+   entry "Hydraulics"
+   entry "Mission_Systems_Management"
+   entry "Navigation"
+   entry "Propulsion"
+   entry "Sights"
+   entry "Unknown"
    entry "Unspecified"
 }
 
