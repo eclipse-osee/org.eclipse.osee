@@ -10,7 +10,6 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.AttributeType;
@@ -121,21 +120,26 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    }
 
    private org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType getOseeEnumTypes(OseeEnumType enumType) throws OseeCoreException {
-      org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType toReturn = null;
+      org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType = null;
       if (enumType != null) {
-         List<Pair<String, Integer>> entries = new ArrayList<Pair<String, Integer>>();
-         int lastOrdinal = 0;
-         for (OseeEnumEntry enumEntry : enumType.getEnumEntries()) {
-            String ordinal = enumEntry.getOrdinal();
-            if (Strings.isValid(ordinal)) {
-               lastOrdinal = Integer.parseInt(ordinal);
+         oseeEnumType = OseeEnumTypeManager.createEnumType(enumType.getTypeGuid(), enumType.getName());
+         if (oseeEnumType.values().length != enumType.getEnumEntries().size()) {
+            int lastOrdinal = 0;
+            List<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry> entries =
+                  new ArrayList<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry>();
+            for (OseeEnumEntry enumEntry : enumType.getEnumEntries()) {
+               String ordinal = enumEntry.getOrdinal();
+               if (Strings.isValid(ordinal)) {
+                  lastOrdinal = Integer.parseInt(ordinal);
+               }
+               // enumEntry guid set to null but if we had we could modify an existing entry
+               entries.add(OseeEnumTypeManager.createEnumEntry(null, enumEntry.getName(), lastOrdinal));
+               lastOrdinal++;
             }
-            entries.add(new Pair<String, Integer>(enumEntry.getName(), lastOrdinal));
-            lastOrdinal++;
+            oseeEnumType.setEntries(entries);
          }
-         toReturn = OseeEnumTypeManager.createEnumType(enumType.getTypeGuid(), enumType.getName(), entries);
       }
-      return toReturn;
+      return oseeEnumType;
    }
 
    private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {

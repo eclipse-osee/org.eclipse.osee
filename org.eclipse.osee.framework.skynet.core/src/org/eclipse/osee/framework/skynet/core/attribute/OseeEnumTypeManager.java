@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache.OseeEnumTypeCache;
 
@@ -103,20 +102,18 @@ public class OseeEnumTypeManager {
       return -1;
    }
 
-   //   public static 
+   public static OseeEnumEntry createEnumEntry(String guid, String name, int ordinal) throws OseeCoreException {
+      return OseeTypeManager.getTypeFactory().createEnumEntry(guid, name, ordinal, OseeTypeManager.getCache());
+   }
 
-   public static OseeEnumType createEnumType(String guid, String enumTypeName, List<Pair<String, Integer>> entries) throws OseeCoreException {
+   public static OseeEnumType createEnumType(String guid, String enumTypeName) throws OseeCoreException {
       OseeEnumTypeCache dataCache = OseeTypeManager.getCache().getEnumTypeData();
       OseeEnumType oseeEnumType = dataCache.getTypeByGuid(guid);
       if (oseeEnumType == null) {
          oseeEnumType = OseeTypeManager.getTypeFactory().createEnumType(guid, enumTypeName, OseeTypeManager.getCache());
-
-         //         OseeTypeManager.getTypeFactory().createEnumEntry(guid, name, ordinal, oseeTypeCache)
-         //         oseeEnumType.addEntries(entries);
       } else {
          dataCache.decacheType(oseeEnumType);
          oseeEnumType.setName(enumTypeName);
-         //         oseeEnumType.addEntries(entries);
       }
       dataCache.cacheType(oseeEnumType);
       return oseeEnumType;

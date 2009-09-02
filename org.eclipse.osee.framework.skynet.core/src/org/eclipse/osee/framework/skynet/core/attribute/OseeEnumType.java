@@ -102,7 +102,7 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
             org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(oldEntries, newEntries).isEmpty();
       boolean isEmpty2 =
             org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(newEntries, oldEntries).isEmpty();
-      if (!isEmpty1 || !isEmpty2) {
+      if (getModificationType() != ModificationType.NEW && (!isEmpty1 || !isEmpty2)) {
          setModificationType(ModificationType.MODIFIED);
       }
    }

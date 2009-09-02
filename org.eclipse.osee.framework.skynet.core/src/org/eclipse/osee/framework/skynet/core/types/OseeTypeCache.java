@@ -343,7 +343,6 @@ public class OseeTypeCache {
       private final Map<OseeEnumEntry, OseeEnumType> enumEntryToEnumType = new HashMap<OseeEnumEntry, OseeEnumType>();
 
       public void cacheEnumEntries(OseeEnumType oseeEnumType, Collection<OseeEnumEntry> oseeEnumEntries) throws OseeCoreException {
-
          for (OseeEnumEntry entry : oseeEnumEntries) {
             if (entry.getName() == null) {
                throw new OseeArgumentException("EnumEntry name violation - null is not allowed");
@@ -352,15 +351,17 @@ public class OseeTypeCache {
                throw new OseeArgumentException("EnumEntry ordinal must be greater than zero");
             }
             for (OseeEnumEntry existingEntry : oseeEnumEntries) {
-               if (entry.getName().equals(existingEntry.getName())) {
-                  throw new OseeArgumentException(String.format("Unique enumEntry name violation - %s already exists.",
-                        entry));
-               }
-               if (entry.ordinal() == existingEntry.ordinal()) {
-                  throw new OseeArgumentException(
-                        String.format(
-                              "Unique enumEntry ordinal violation - ordinal [%d] is used by existing entry:[%s] and new entry:[%s]",
-                              entry.ordinal(), existingEntry, entry));
+               if (!entry.equals(existingEntry)) {
+                  if (entry.getName().equals(existingEntry.getName())) {
+                     throw new OseeArgumentException(String.format(
+                           "Unique enumEntry name violation - %s already exists.", entry));
+                  }
+                  if (entry.ordinal() == existingEntry.ordinal()) {
+                     throw new OseeArgumentException(
+                           String.format(
+                                 "Unique enumEntry ordinal violation - ordinal [%d] is used by existing entry:[%s] and new entry:[%s]",
+                                 entry.ordinal(), existingEntry, entry));
+                  }
                }
             }
          }

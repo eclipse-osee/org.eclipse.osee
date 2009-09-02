@@ -48,13 +48,7 @@ public class OseeEnumEntry extends BaseOseeType implements Comparable<OseeEnumEn
    public boolean equals(Object object) {
       if (object instanceof OseeEnumEntry) {
          OseeEnumEntry other = (OseeEnumEntry) object;
-         boolean result = super.equals(other);
-         result &= ordinal == other.ordinal;
-         try {
-            result &= getDeclaringClass().equals(other.getDeclaringClass());
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
+         return super.equals(other) && ordinal == other.ordinal;
       }
       return false;
    }
@@ -71,7 +65,11 @@ public class OseeEnumEntry extends BaseOseeType implements Comparable<OseeEnumEn
    public String toString() {
       String className;
       try {
-         className = getDeclaringClass().getName();
+         if (getDeclaringClass() != null) {
+            className = getDeclaringClass().getName();
+         } else {
+            className = "empty";
+         }
       } catch (OseeCoreException ex) {
          className = Lib.exceptionToString(ex);
          OseeLog.log(Activator.class, Level.SEVERE, ex);

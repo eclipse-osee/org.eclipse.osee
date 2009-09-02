@@ -75,6 +75,8 @@ public class SkynetDbInit implements IDbInitializationTask {
       OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
       populateSequenceTable();
       addDefaultPermissions();
+
+      //      OseeType
    }
 
    private static void initializeApplicationServer() throws OseeCoreException {
