@@ -55,7 +55,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
    public static List<String> CommonCachedArtifacts = new ArrayList<String>();
 
    public static void start() {
-      if (DbUtil.isDbInit()) {
+      if (!DbUtil.isDbInit()) {
          new AtsCacheManager();
       }
    }
