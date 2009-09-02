@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -68,12 +69,15 @@ public final class AttributeFileNameToGuidOperation extends BaseServerCommand {
                renameData.add(ins);
                count++;
             }
-         } else
+         } else {
             println(String.format("HRID %s not found; skipping", attr.getHrid()));
+         }
       }
 
       ConnectionHandler.runBatchUpdate(REPLACEMENT_QUERY, renameData);
       println(String.format("Transferred %s items", count));
+      OseeInfo.putValue(OseeInfo.USE_GUID_STORAGE, "TRUE");
+      println(String.format("Flag \"%s\" set", OseeInfo.USE_GUID_STORAGE));
    }
 
    public List<AttrData> getAttributeData() throws OseeDataStoreException, MalformedLocatorException {
@@ -99,7 +103,7 @@ public final class AttributeFileNameToGuidOperation extends BaseServerCommand {
    }
 
    private final class ResourceHelper implements IResource {
-      private IResource source;
+      private final IResource source;
       private URI newLocation;
 
       public ResourceHelper(IResource source, String hrid, String guid) {
@@ -135,10 +139,10 @@ public final class AttributeFileNameToGuidOperation extends BaseServerCommand {
 
    }
    private final class AttrData {
-      private String guid;
-      private int gammaId;
-      private String uri;
-      private String hrid;
+      private final String guid;
+      private final int gammaId;
+      private final String uri;
+      private final String hrid;
       IResourceLocatorManager locatorManager;
       IResourceLocator sourceLocator;
       IResourceLocator deleteLocator;
