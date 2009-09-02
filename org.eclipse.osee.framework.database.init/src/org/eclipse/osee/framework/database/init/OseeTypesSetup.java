@@ -17,7 +17,10 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
@@ -69,6 +72,42 @@ public class OseeTypesSetup {
       } catch (SAXException ex) {
          throw new OseeWrappedException(ex);
       }
+   }
+
+   public Map<String, URL> getOseeTypeExtensions() {
+      Map<String, URL> oseeTypes = new HashMap<String, URL>();
+      for (IConfigurationElement element : ExtensionPoints.getExtensionElements(OSEE_TYPES_EXTENSION_ID, "OseeTypes")) {
+         String resourceName = element.getAttribute("resource");
+         Bundle bundle = Platform.getBundle(element.getContributor().getName());
+         URL url = bundle.getEntry(resourceName);
+         oseeTypes.put(resourceName, url);
+      }
+      return oseeTypes;
+   }
+
+   public File createCombinedFile(Map<String, URL> urls) throws IOException {
+      String userHome = System.getProperty("user.home");
+      File file = new File(userHome, "oseetypes.osee");
+      Writer writer = null;
+      try {
+         writer = new FileWriter(file);
+         for (Entry<String, URL> entry : urls.entrySet()) {
+            URL url = entry.getValue();
+            String oseeTypeFragment = Lib.inputStreamToString(url.openStream());
+            oseeTypeFragment = oseeTypeFragment.replaceAll("import\\s+\"", "// import \"");
+            writer.write("\n");
+            writer.write("//////////////     ");
+            writer.write(entry.getKey());
+            writer.write("\n");
+            writer.write("\n");
+            writer.write(oseeTypeFragment);
+         }
+      } finally {
+         if (writer != null) {
+            writer.close();
+         }
+      }
+      return file;
    }
 
    private void executeTypesImport(List<IExtension> extensionIds) throws IOException, SAXException, OseeCoreException {

@@ -11,7 +11,8 @@ import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
 public class OseeTypesImportWizard extends Wizard implements IImportWizard {
-   private ResourceSelectionPage mainPage;
+   private OseeTypesImportPage mainPage;
+   private IStructuredSelection selection;
 
    public OseeTypesImportWizard() {
       super();
@@ -24,8 +25,7 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public boolean performFinish() {
-      File file = mainPage.getFile();
-
+      File file = mainPage.getTypesToImport();
       IOperation operation = new XTextToOseeTypeOperation(null, file.toURI());
       Operations.executeAsJob(operation, true);
       return true;
@@ -33,14 +33,12 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
-      // TODO Auto-generated method stub
-
+      this.selection = selection;
    }
 
    @Override
    public void addPages() {
-      mainPage = new ResourceSelectionPage(getWindowTitle());
+      mainPage = new OseeTypesImportPage(selection, getWindowTitle());
       addPage(mainPage);
    }
-
 }
