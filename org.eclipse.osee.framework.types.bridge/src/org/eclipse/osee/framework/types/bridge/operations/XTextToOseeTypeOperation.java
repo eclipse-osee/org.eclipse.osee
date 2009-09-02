@@ -72,6 +72,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       ArtifactTypeManager.persist();
       AttributeTypeManager.persist();
       RelationTypeManager.persist();
+      OseeEnumTypeManager.persist();
    }
 
    /**

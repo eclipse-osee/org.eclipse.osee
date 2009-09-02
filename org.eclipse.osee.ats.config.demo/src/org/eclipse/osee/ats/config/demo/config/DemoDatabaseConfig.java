@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.config.demo.config;
 
-import java.util.Arrays;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -33,7 +32,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.importing.OseeTypesImport;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition.WriteType;
@@ -121,9 +119,6 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
    }
 
    private void createProgramBranch(String branchName) throws OseeCoreException {
-      OseeTypesImport.execute(Arrays.asList("org.eclipse.osee.ats.config.demo.OseeTypes_Demo",
-            "org.eclipse.osee.framework.skynet.core.OseeTypes_Framework"));
-
       BranchManager.createTopLevelBranch(branchName, branchName, null);
    }
 

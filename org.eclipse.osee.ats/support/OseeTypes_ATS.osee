@@ -493,7 +493,7 @@ relationType "TeamLead" {
    sideBName "User"
    sideBArtifactType "User"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "TeamMember" {
@@ -502,7 +502,7 @@ relationType "TeamMember" {
    sideBName "User"
    sideBArtifactType "User"
    defaultOrderType Unordered
-   multiplicity ONE_TO_MANY
+   multiplicity MANY_TO_MANY
 }
 
 relationType "PrivilegedMember" {
