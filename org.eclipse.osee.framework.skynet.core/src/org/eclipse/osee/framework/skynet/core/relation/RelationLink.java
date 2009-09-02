@@ -402,6 +402,8 @@ public class RelationLink {
          //
          bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
          //
+         other.modificationType == modificationType &&
+         //
          relationType.equals(other.relationType);
 
          // This should eventually be removed once DB cleanup occurs
@@ -419,6 +421,7 @@ public class RelationLink {
       result = prime * result + bArtifactId;
       result = prime * result + bBranch.hashCode();
       result = prime * result + relationType.hashCode();
+      result = prime * result + modificationType.hashCode();
       return result;
    }
 
