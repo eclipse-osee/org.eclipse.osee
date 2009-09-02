@@ -51,9 +51,6 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
 
    /**
     * Returns work flow definition with the assumption that WorkFlowDefinition workId = pageWorkId minus pageName
-    * 
-    * @return WorkFlowDefinition
-    * @throws OseeCoreException
     */
    public WorkFlowDefinition getWorkFlowDefinitionById() throws OseeCoreException {
       String id = getId().replace("." + pageName, "");
@@ -73,11 +70,6 @@ public class WorkPageDefinition extends WorkItemWithChildrenDefinition {
       }
       return art;
    }
-
-   /**
-    * @return the workItems
-    * @throws OseeCoreException
-    */
 
    public List<WorkItemDefinition> getWorkItemDefinitionsByType(String workType) throws OseeCoreException {
       List<WorkItemDefinition> wids = new ArrayList<WorkItemDefinition>();

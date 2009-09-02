@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.ats;
 
+import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPreSaveCacheRemoteEventHandler;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
@@ -28,6 +29,7 @@ public class AtsPlugin extends OseeUiActivator {
       super();
       pluginInstance = this;
       AtsPreSaveCacheRemoteEventHandler.getInstance();
+      AtsCacheManager.start();
       AtsNotifyUsers.getInstance();
    }
 

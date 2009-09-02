@@ -151,8 +151,6 @@ public class AtsBranchConfigurationTest {
       teamWf.persistAttributesAndRelations(transaction);
       transaction.execute();
 
-      setupWorkPageToHaveCreateCommitWorkItems(teamWf);
-
       SMAEditor.editArtifact(teamWf, true);
       // Verify XWorkingBranch and XCommitManger widgets exist in editor
       try {
@@ -248,7 +246,6 @@ public class AtsBranchConfigurationTest {
       dtwm.transitionTo(DefaultTeamState.Implement, null, false, transaction);
       teamWf.persistAttributesAndRelations(transaction);
       transaction.execute();
-      setupWorkPageToHaveCreateCommitWorkItems(teamWf);
 
       SMAEditor.editArtifact(teamWf, true);
       // Verify XWorkingBranch and XCommitManger widgets exist in editor
@@ -409,17 +406,12 @@ public class AtsBranchConfigurationTest {
    private void setupWorkflowPageToHaveCreateCommitBranchWidgets(String namespace) throws Exception {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Setup new workflow page to have create/commit branch widgets");
       String implementPageId = namespace + ".Implement";
-      WorkItemDefinitionFactory.relateWorkItemDefinitions(implementPageId, XWorkingBranch.WIDGET_ID);
-      WorkItemDefinitionFactory.relateWorkItemDefinitions(implementPageId, XCommitManager.WIDGET_ID);
-   }
-
-   private void setupWorkPageToHaveCreateCommitWorkItems(TeamWorkFlowArtifact teamWf) throws Exception {
-      // need to add the newly configured work items to the implement page....
-      WorkPageDefinition wpd = teamWf.getSmaMgr().getWorkPageDefinition();
-      if (wpd != null) {
-         wpd.addWorkItem(ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName());
-         wpd.addWorkItem(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName());
-      }
+      Artifact implementPageDef = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(implementPageId);
+      implementPageDef.addRelation(AtsRelation.WorkItem__Child,
+            WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName()));
+      implementPageDef.addRelation(AtsRelation.WorkItem__Child,
+            WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName()));
+      implementPageDef.persistAttributesAndRelations();
    }
 
    @After

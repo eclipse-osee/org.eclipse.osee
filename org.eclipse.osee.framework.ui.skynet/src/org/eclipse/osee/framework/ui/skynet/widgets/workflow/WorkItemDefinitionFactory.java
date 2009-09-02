@@ -44,7 +44,6 @@ public class WorkItemDefinitionFactory {
    }
 
    public static void deCache(Artifact artifact) {
-      String itemId = null;
       if (itemIdToWidArtifact.containsValue(artifact)) {
          for (Entry<String, Artifact> entry : itemIdToWidArtifact.entrySet()) {
             if (entry.getValue().equals(artifact)) {
@@ -109,8 +108,8 @@ public class WorkItemDefinitionFactory {
       }
       Artifact parentArt = parentArts.iterator().next();
       List<Artifact> childArts =
-            ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), childWorkflowId,
-                  BranchManager.getCommonBranch());
+            ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
+                  childWorkflowId, BranchManager.getCommonBranch());
       if (childArts == null || childArts.size() == 0) {
          throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
       }
@@ -160,8 +159,8 @@ public class WorkItemDefinitionFactory {
       WorkItemDefinition wid = itemIdToDefinition.get(id);
       if (wid == null) {
          // Attempt to get from DB
-         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
-               BranchManager.getCommonBranch()));
+         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
+               id, BranchManager.getCommonBranch()));
       }
       return itemIdToDefinition.get(id);
    }
@@ -172,8 +171,8 @@ public class WorkItemDefinitionFactory {
       Artifact art = itemIdToWidArtifact.get(id);
       if (art == null) {
          // Attempt to get from DB
-         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(), id,
-               BranchManager.getCommonBranch()));
+         loadDefinitions(ArtifactQuery.getArtifactListFromAttribute(WorkItemAttributes.WORK_ID.getAttributeTypeName(),
+               id, BranchManager.getCommonBranch()));
       }
       return itemIdToWidArtifact.get(id);
    }

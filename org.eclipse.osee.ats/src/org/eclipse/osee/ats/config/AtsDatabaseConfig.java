@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.config;
 
 import org.eclipse.osee.ats.util.AtsFolderUtil;
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.flow.DecisionWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.GoalWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.flow.PeerToPeerWorkflowDefinition;
@@ -44,6 +45,8 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       new SimpleWorkflowDefinition().config(writeType, xResultData);
       new DecisionWorkflowDefinition().config(writeType, xResultData);
       new PeerToPeerWorkflowDefinition().config(writeType, xResultData);
+
+      AtsUtil.getAtsAdminGroup().getGroupArtifact().persistAttributesAndRelations();
 
    }
 

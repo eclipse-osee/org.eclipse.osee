@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.config;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -32,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
@@ -55,7 +55,9 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
    public static List<String> CommonCachedArtifacts = new ArrayList<String>();
 
    public static void start() {
-      new AtsCacheManager();
+      if (DbUtil.isDbInit()) {
+         new AtsCacheManager();
+      }
    }
 
    private AtsCacheManager() {
