@@ -95,8 +95,6 @@ public enum RelationTypeMultiplicity {
       boolean result;
       if (limit == Integer.MAX_VALUE) {
          result = true;
-      } else if (limit <= 0) {
-         result = false;
       } else {
          result = nextCount <= limit;
       }
