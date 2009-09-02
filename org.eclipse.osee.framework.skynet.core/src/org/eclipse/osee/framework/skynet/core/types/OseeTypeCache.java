@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -45,8 +46,8 @@ public class OseeTypeCache {
    private final HashCollection<ArtifactType, ArtifactType> artifactTypeToSuperTypeMap =
          new HashCollection<ArtifactType, ArtifactType>();
 
-   private final CompositeKeyHashMap<Branch, ArtifactType, Collection<AttributeType>> artifactToAttributeMap =
-         new CompositeKeyHashMap<Branch, ArtifactType, Collection<AttributeType>>();
+   private final CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> artifactToAttributeMap =
+         new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
 
    private final IOseeTypeDataAccessor dataAccessor;
    private final IOseeTypeFactory factory;
@@ -87,19 +88,19 @@ public class OseeTypeCache {
    }
 
    public void cacheTypeValidity(ArtifactType artifactType, AttributeType attributeType, Branch branch) throws OseeCoreException {
-      Collection<AttributeType> attributeTypes = artifactToAttributeMap.get(branch, artifactType);
+      Collection<AttributeType> attributeTypes = artifactToAttributeMap.get(artifactType, branch);
       if (attributeTypes == null) {
          attributeTypes = new HashSet<AttributeType>();
-         artifactToAttributeMap.put(branch, artifactType, attributeTypes);
+         artifactToAttributeMap.put(artifactType, branch, attributeTypes);
       }
       attributeTypes.add(attributeType);
    }
 
    public void cacheTypeValidity(ArtifactType artifactType, Collection<AttributeType> attributeTypes, Branch branch) throws OseeCoreException {
-      Collection<AttributeType> cachedItems = artifactToAttributeMap.get(branch, artifactType);
+      Collection<AttributeType> cachedItems = artifactToAttributeMap.get(artifactType, branch);
       if (cachedItems == null) {
          cachedItems = new HashSet<AttributeType>(attributeTypes);
-         artifactToAttributeMap.put(branch, artifactType, cachedItems);
+         artifactToAttributeMap.put(artifactType, branch, cachedItems);
       } else {
          cachedItems.clear();
          cachedItems.addAll(attributeTypes);
@@ -145,7 +146,7 @@ public class OseeTypeCache {
     * @param branch
     * @return all attribute types that are valid for artifacts of the specified type on the specified branch
     */
-   public Collection<AttributeType> getAttributeTypes(ArtifactType artifactType, Branch branch) {
+   public Set<AttributeType> getAttributeTypes(ArtifactType artifactType, Branch branch) {
       HashSet<AttributeType> attributeTypes = new HashSet<AttributeType>();
       getAttributeTypes(attributeTypes, artifactType, branch);
       return attributeTypes;
@@ -154,7 +155,7 @@ public class OseeTypeCache {
    private void getAttributeTypes(HashSet<AttributeType> attributeTypes, ArtifactType artifactType, Branch branch) {
       Branch branchCursor = branch;
       while (true) {
-         Collection<AttributeType> items = artifactToAttributeMap.get(branchCursor, artifactType);
+         Collection<AttributeType> items = artifactToAttributeMap.get(artifactType, branchCursor);
          if (items != null) {
             attributeTypes.addAll(items);
          }
@@ -168,6 +169,10 @@ public class OseeTypeCache {
       for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
          getAttributeTypes(attributeTypes, superType, branch);
       }
+   }
+
+   CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> getArtifactToAttributeMap() {
+      return artifactToAttributeMap;
    }
 
    private synchronized void ensurePopulated() throws OseeCoreException {
@@ -297,18 +302,7 @@ public class OseeTypeCache {
 
       @Override
       protected void storeItems(Collection<ArtifactType> items) throws OseeCoreException {
-         getDataAccessor().storeArtifactType(items);
-      }
-
-      @SuppressWarnings("unchecked")
-      @Override
-      public void storeAllModified() throws OseeCoreException {
-         Collection<ArtifactType> dirtyTypes = getDirtyTypes();
-         super.storeAllModified();
-         for (ArtifactType artifactType : dirtyTypes) {
-            getDataAccessor().storeTypeInheritance(artifactType,
-                  Collections.toSet(artifactType.getSuperArtifactTypes()));
-         }
+         getDataAccessor().storeArtifactType(OseeTypeCache.this, items);
       }
    }
 

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SequenceManager;
-import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -49,7 +48,6 @@ import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache.ArtifactTypeCa
 final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    private static final int ABSTRACT_TYPE_INDICATOR = 1;
    private static final int CONCRETE_TYPE_INDICATOR = 0;
-   private static final int NULL_SUPER_ARTIFACT_TYPE = -1;
    private static final String USER_ORDERED = "Yes";
    private static final String NOT_USER_ORDERED = "No";
 
@@ -108,30 +106,6 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    }
 
    @Override
-   public void storeTypeInheritance(ArtifactType artifactType, Set<ArtifactType> superTypes) throws OseeCoreException {
-      List<Object[]> datas = new ArrayList<Object[]>();
-      for (ArtifactType superType : superTypes) {
-         datas.add(new Object[] {artifactType.getTypeId(), superType.getTypeId()});
-      }
-      ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE_INHERITANCE, datas);
-   }
-
-   @Override
-   public void storeValidity(CompositeKeyHashMap<Branch, ArtifactType, Collection<AttributeType>> validityData) throws OseeCoreException {
-      List<Object[]> datas = new ArrayList<Object[]>();
-      for (Entry<Pair<Branch, ArtifactType>, Collection<AttributeType>> entry : validityData.entrySet()) {
-         Branch branch = entry.getKey().getFirst();
-         ArtifactType artifactType = entry.getKey().getSecond();
-         for (AttributeType attributeType : entry.getValue()) {
-            datas.add(new Object[] {artifactType.getTypeId(), attributeType.getTypeId(), branch.getBranchId()});
-         }
-      }
-      if (!datas.isEmpty()) {
-         ConnectionHandler.runBatchUpdate(INSERT_VALID_ATTRIBUTE, datas);
-      }
-   }
-
-   @Override
    public void loadAllTypeValidity(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
@@ -185,11 +159,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                throw new OseeInvalidInheritanceException(String.format(
                      "Circular inheritance detected artifact type [%s] inherits from [%s]", artTypeId, superArtTypeId));
             }
-            ArtifactType superArtifactType = null;
-            if (superArtTypeId != NULL_SUPER_ARTIFACT_TYPE) {
-               superArtifactType = cacheData.getTypeById(artTypeId);
-            }
-            superTypes.add(superArtifactType);
+            superTypes.add(cacheData.getTypeById(superArtTypeId));
 
             if (previousBaseId != artTypeId) {
                ArtifactType artifactType = cacheData.getTypeById(artTypeId);
@@ -279,7 +249,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    }
 
    @Override
-   public void storeArtifactType(Collection<ArtifactType> types) throws OseeCoreException {
+   public void storeArtifactType(OseeTypeCache cache, Collection<ArtifactType> types) throws OseeCoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> updateData = new ArrayList<Object[]>();
       for (ArtifactType type : types) {
@@ -298,6 +268,33 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
       }
       ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE, insertData);
       ConnectionHandler.runBatchUpdate(UPDATE_ARTIFACT_TYPE, updateData);
+
+      storeArtifactTypeInheritance(types);
+      storeAttributeTypeValidity(cache, types);
+   }
+
+   private void storeArtifactTypeInheritance(Collection<ArtifactType> types) throws OseeDataStoreException {
+      List<Object[]> insertData = new ArrayList<Object[]>();
+      for (ArtifactType type : types) {
+         for (ArtifactType superType : type.getSuperArtifactTypes()) {
+            insertData.add(new Object[] {type.getTypeId(), superType.getTypeId()});
+         }
+      }
+      ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE_INHERITANCE, insertData);
+   }
+
+   private void storeAttributeTypeValidity(OseeTypeCache cache, Collection<ArtifactType> types) throws OseeDataStoreException {
+      List<Object[]> insertData = new ArrayList<Object[]>();
+      for (Entry<Pair<ArtifactType, Branch>, Collection<AttributeType>> entry : cache.getArtifactToAttributeMap().entrySet()) {
+         ArtifactType artifactType = entry.getKey().getFirst();
+         if (types.contains(artifactType)) {
+            Branch branch = entry.getKey().getSecond();
+            for (AttributeType attributeType : entry.getValue()) {
+               insertData.add(new Object[] {artifactType.getTypeId(), attributeType.getTypeId(), branch.getBranchId()});
+            }
+         }
+      }
+      ConnectionHandler.runBatchUpdate(INSERT_VALID_ATTRIBUTE, insertData);
    }
 
    @Override

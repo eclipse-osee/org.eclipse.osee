@@ -68,8 +68,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             monitor.worked(calculateWork(workPercentage));
          }
       }
-      ArtifactTypeManager.persist();
       AttributeTypeManager.persist();
+      ArtifactTypeManager.persist();
       RelationTypeManager.persist();
       OseeEnumTypeManager.persist();
    }

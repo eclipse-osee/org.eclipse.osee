@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -52,9 +51,7 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
    }
 
    public Set<AttributeType> getAttributeTypes(Branch branch) throws OseeCoreException {
-      Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
-      attributeTypes.addAll(cache.getAttributeTypes(this, branch));
-      return attributeTypes;
+      return cache.getAttributeTypes(this, branch);
    }
 
    public boolean isAbstract() {
