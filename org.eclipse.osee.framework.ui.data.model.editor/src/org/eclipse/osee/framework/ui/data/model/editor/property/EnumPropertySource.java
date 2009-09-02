@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.data.model.editor.property;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
@@ -51,7 +50,9 @@ public class EnumPropertySource extends ModelPropertySource {
 
    @Override
    public boolean isPropertySet(Object id) {
-      if (id == idEnumTypeList) return false;
+      if (id == idEnumTypeList) {
+         return false;
+      }
       return false;
    }
 
@@ -60,12 +61,16 @@ public class EnumPropertySource extends ModelPropertySource {
       if (id == idEnumTypeList) {
          int enumTypeId = getDataTypeElement().getEnumTypeId();
          OseeEnumType enumType = null;
+         String descriptor = "";
          try {
             enumType = OseeEnumTypeManager.getType(enumTypeId);
+            if (enumType != null) {
+               descriptor = enumType.valuesAsOrderedStringSet().toString();
+            }
          } catch (OseeCoreException ex) {
             OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
          }
-         return StringPropertyDescriptor.fromModel(enumType != null ? enumType.valuesAsOrderedStringSet().toString() : Strings.emptyString());
+         return StringPropertyDescriptor.fromModel(descriptor);
       }
       return 0;
    }
