@@ -85,7 +85,7 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
    }
 
    void internalSetBranchParent(Branch parentBranch) throws OseeStateException {
-      if (parentBranch == null) {
+      if (this.parentBranch == null) {
          this.parentBranch = parentBranch;
       } else {
          throw new OseeStateException("parent branch cannot be set twice");

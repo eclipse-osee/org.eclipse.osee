@@ -234,7 +234,7 @@ public class BranchManager {
       if (forceRead || branchCache.size() == 0) {
          // The branch cache can not be cleared here because applications may contain branch references.
 
-         Map<Integer, Branch> parentToChild = new HashMap<Integer, Branch>();
+         Map<Branch, Integer> parentToChild = new HashMap<Branch, Integer>();
 
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
@@ -252,9 +252,9 @@ public class BranchManager {
                               BranchType.getBranchType(chStmt.getInt("branch_type")),
                               BranchState.getBranchState(chStmt.getInt("branch_state")));
 
-                  Integer parentBranch = chStmt.getInt("parent_branch_id");
-                  if (parentBranch != NULL_PARENT_BRANCH_ID) {
-                     parentToChild.put(parentBranch, cachedBranch);
+                  Integer parentBranchId = chStmt.getInt("parent_branch_id");
+                  if (parentBranchId != NULL_PARENT_BRANCH_ID) {
+                     parentToChild.put(cachedBranch, parentBranchId);
                   }
                   branchCache.put(cachedBranch.getBranchId(), cachedBranch);
                   branchGuidCache.put(cachedBranch.getGuid(), cachedBranch);
@@ -275,13 +275,13 @@ public class BranchManager {
          }
 
          // Set Parent Branches
-         for (Entry<Integer, Branch> entry : parentToChild.entrySet()) {
-            Branch parentBranch = branchCache.get(entry.getKey());
+         for (Entry<Branch, Integer> entry : parentToChild.entrySet()) {
+            Branch parentBranch = branchCache.get(entry.getValue());
             if (parentBranch == null) {
                throw new BranchDoesNotExist(String.format("Parent Branch id:[%s] does not exist for child branch [%s]",
-                     entry.getKey(), entry.getValue()));
+                     entry.getValue(), entry.getKey()));
             }
-            entry.getValue().internalSetBranchParent(parentBranch);
+            entry.getKey().internalSetBranchParent(parentBranch);
          }
          try {
             chStmt.runPreparedQuery(1000, READ_MERGE_BRANCHES);
