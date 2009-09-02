@@ -51,7 +51,7 @@ public class ArtifactCache {
 
    private static final Set<ArtifactType> eternalArtifactTypes = new HashSet<ArtifactType>();
 
-   private static final Set<Artifact> nomoreWeakReferences = new HashSet<Artifact>();
+   //   private static final Set<Artifact> nomoreWeakReferences = new HashSet<Artifact>();
 
    public static List<Artifact> getArtifactsByName(ArtifactType artifactType, String name) {
       List<Artifact> arts = new ArrayList<Artifact>();
@@ -96,7 +96,7 @@ public class ArtifactCache {
     * @throws OseeCoreException
     */
    synchronized static void cache(Artifact artifact) throws OseeCoreException {
-      nomoreWeakReferences.add(artifact); // TODO remove to enable garbage collection
+      //      nomoreWeakReferences.add(artifact); // TODO remove to enable garbage collection
       Object obj = getCacheObject(artifact);
       if (artifact.isHistorical()) {
          historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), obj);
