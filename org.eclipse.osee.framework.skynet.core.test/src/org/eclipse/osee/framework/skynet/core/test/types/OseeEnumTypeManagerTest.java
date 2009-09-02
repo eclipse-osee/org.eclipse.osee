@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.test.types;
 
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Assert;
@@ -48,6 +49,10 @@ public class OseeEnumTypeManagerTest {
       Assert.assertTrue(testAccessor.isLoadAllOseeEnumTypes());
    }
 
+   @org.junit.Test
+   public void testThis() throws OseeCoreException {
+      assertTrue("Fix this test - These test cases need to be moved into new database types tests - Roberto", false);
+   }
    //   //   @org.junit.Test
    //   //   public void testCreateEnumTypeFromXml() throws OseeCoreException {
    //   //      String enumTypeName = "EnumType1";
