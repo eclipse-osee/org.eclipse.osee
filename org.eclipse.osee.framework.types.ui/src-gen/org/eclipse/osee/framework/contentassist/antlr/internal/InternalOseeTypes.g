@@ -380,6 +380,33 @@ finally {
 
 
 
+// Entry rule entryRuleRelationOrderType
+entryRuleRelationOrderType :
+{ before(grammarAccess.getRelationOrderTypeRule()); }
+	 ruleRelationOrderType
+{ after(grammarAccess.getRelationOrderTypeRule()); } 
+	 EOF 
+;
+
+// Rule RelationOrderType
+ruleRelationOrderType 
+    @init {
+		int stackSize = keepStackSize();
+    }
+ :
+(
+{ before(grammarAccess.getRelationOrderTypeAccess().getAlternatives()); }
+(rule__RelationOrderType__Alternatives)
+{ after(grammarAccess.getRelationOrderTypeAccess().getAlternatives()); }
+)
+
+;
+finally {
+	restoreStackSize(stackSize);
+}
+
+
+
 
 // Rule RelationMultiplicityEnum
 ruleRelationMultiplicityEnum
@@ -610,39 +637,39 @@ finally {
 	restoreStackSize(stackSize);
 }
 
-rule__RelationType__DefaultOrderTypeAlternatives_14_0
+rule__RelationOrderType__Alternatives
     @init {
 		int stackSize = keepStackSize();
     }
 :
 (
-{ before(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeLexicographical_AscendingKeyword_14_0_0()); }
+{ before(grammarAccess.getRelationOrderTypeAccess().getLexicographical_AscendingKeyword_0()); }
 
 	'Lexicographical_Ascending' 
 
-{ after(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeLexicographical_AscendingKeyword_14_0_0()); }
+{ after(grammarAccess.getRelationOrderTypeAccess().getLexicographical_AscendingKeyword_0()); }
 )
 
     |(
-{ before(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeLexicographical_DescendingKeyword_14_0_1()); }
+{ before(grammarAccess.getRelationOrderTypeAccess().getLexicographical_DescendingKeyword_1()); }
 
 	'Lexicographical_Descending' 
 
-{ after(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeLexicographical_DescendingKeyword_14_0_1()); }
+{ after(grammarAccess.getRelationOrderTypeAccess().getLexicographical_DescendingKeyword_1()); }
 )
 
     |(
-{ before(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeUnorderedKeyword_14_0_2()); }
+{ before(grammarAccess.getRelationOrderTypeAccess().getUnorderedKeyword_2()); }
 
 	'Unordered' 
 
-{ after(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeUnorderedKeyword_14_0_2()); }
+{ after(grammarAccess.getRelationOrderTypeAccess().getUnorderedKeyword_2()); }
 )
 
     |(
-{ before(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeIDTerminalRuleCall_14_0_3()); }
+{ before(grammarAccess.getRelationOrderTypeAccess().getIDTerminalRuleCall_3()); }
 	RULE_ID
-{ after(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeIDTerminalRuleCall_14_0_3()); }
+{ after(grammarAccess.getRelationOrderTypeAccess().getIDTerminalRuleCall_3()); }
 )
 
 ;
@@ -3215,9 +3242,8 @@ rule__RelationType__DefaultOrderTypeAssignment_14
     }
 :
 (
-{ before(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeAlternatives_14_0()); }
-(rule__RelationType__DefaultOrderTypeAlternatives_14_0)
-{ after(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeAlternatives_14_0()); }
+{ before(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0()); }
+	ruleRelationOrderType{ after(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0()); }
 )
 
 ;

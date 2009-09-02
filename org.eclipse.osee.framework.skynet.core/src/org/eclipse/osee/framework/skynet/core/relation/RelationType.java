@@ -116,7 +116,7 @@ public class RelationType extends BaseOseeType implements Comparable<RelationTyp
 
    @Override
    public String toString() {
-      return String.format("[%s]: [%s] <--> [%s]", getName(), getSideAName(), getSideBName());
+      return String.format("[%s] <- [%s] -> [%s]", getSideAName(), getName(), getSideBName());
    }
 
    public boolean isOrdered() {

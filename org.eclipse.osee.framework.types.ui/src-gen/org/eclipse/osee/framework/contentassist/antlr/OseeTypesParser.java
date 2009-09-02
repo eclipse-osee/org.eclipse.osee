@@ -47,7 +47,7 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAttributeTypeAccess().getMaxAlternatives_11_0(), "rule__AttributeType__MaxAlternatives_11_0");
 					put(grammarAccess.getAttributeTypeAccess().getTaggerIdAlternatives_12_1_0(), "rule__AttributeType__TaggerIdAlternatives_12_1_0");
 					put(grammarAccess.getAttributeBaseTypeAccess().getAlternatives(), "rule__AttributeBaseType__Alternatives");
-					put(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeAlternatives_14_0(), "rule__RelationType__DefaultOrderTypeAlternatives_14_0");
+					put(grammarAccess.getRelationOrderTypeAccess().getAlternatives(), "rule__RelationOrderType__Alternatives");
 					put(grammarAccess.getRelationMultiplicityEnumAccess().getAlternatives(), "rule__RelationMultiplicityEnum__Alternatives");
 					put(grammarAccess.getOseeTypeModelAccess().getGroup(), "rule__OseeTypeModel__Group__0");
 					put(grammarAccess.getImportAccess().getGroup(), "rule__Import__Group__0");
