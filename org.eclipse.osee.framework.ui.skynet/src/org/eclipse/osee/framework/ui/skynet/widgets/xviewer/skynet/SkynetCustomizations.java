@@ -19,6 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.util.XViewerException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -42,7 +43,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
    public SkynetCustomizations(SkynetXViewerFactory skynetXViewerFactory) throws OseeCoreException {
       this.skynetXViewerFactory = skynetXViewerFactory;
       this.userArtifactDefaults = new SkynetUserArtifactCustomizeDefaults(UserManager.getUser());
-      globalCustomizationsArtifact = GlobalXViewerSettings.getAtsCustomArtifact();
+      globalCustomizationsArtifact = GlobalXViewerSettings.getCustomArtifact();
    }
 
    public List<CustomizeData> getSavedCustDatas() throws OseeCoreException {

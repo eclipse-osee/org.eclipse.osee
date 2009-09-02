@@ -11,12 +11,16 @@
 
 package org.eclipse.osee.framework.database.init;
 
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
  * This class creates the common branch and imports the appropriate skynet types. Class should be extended for plugins
@@ -38,12 +42,27 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       if (initializeRootArtifacts) {
          Branch systemBranch = BranchManager.getSystemRootBranch();
+
          ArtifactTypeManager.addArtifact(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, systemBranch,
                OseeSystemArtifacts.DEFAULT_HIERARCHY_ROOT_NAME).persistAttributesAndRelations();
          ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, systemBranch,
                OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME).persistAttributesAndRelations();
+
+         BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID, null);
+
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+         // Create Default Users
+         for (SystemUser userEnum : SystemUser.values()) {
+            UserManager.createUser(userEnum, transaction);
+         }
+         // Create Global Preferences artifact that lives on common branch
+         OseeSystemArtifacts.createGlobalPreferenceArtifact().persistAttributesAndRelations(transaction);
+
+         // Create XViewer Customization artifact that lives on common branch
+         GlobalXViewerSettings.createCustomArtifact().persistAttributesAndRelations(transaction);
+
+         transaction.execute();
       }
-      BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID, null);
    }
 
    public boolean canRun() {

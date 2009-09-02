@@ -9,16 +9,15 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
+package org.eclipse.osee.framework.skynet.core;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 
 /**
- * This singleton artifact stores the default customizations for ATS XViewers
+ * This singleton artifact stores the default customizations for XViewers
  * 
  * @author Donald G. Dunne
  */
@@ -28,12 +27,12 @@ public final class GlobalXViewerSettings {
    private GlobalXViewerSettings() {
    }
 
-   public static Artifact getAtsCustomArtifact() throws OseeCoreException {
+   public static Artifact getCustomArtifact() throws OseeCoreException {
       return OseeSystemArtifacts.getCachedArtifact(ARTIFACT_TYPE_NAME, ARTIFACT_TYPE_NAME,
             BranchManager.getCommonBranch());
    }
 
-   public static Artifact createAtsCustomArtifact() throws OseeCoreException {
+   public static Artifact createCustomArtifact() throws OseeCoreException {
       return ArtifactTypeManager.addArtifact(ARTIFACT_TYPE_NAME, BranchManager.getCommonBranch(), ARTIFACT_TYPE_NAME);
    }
 }
