@@ -18,4 +18,12 @@
             supportedExtensions="tmo">
       </OutfileParser>
    </extension>
+   <extension
+         id="MappedAttributeDataProvider"
+         name="name"
+         point="org.eclipse.osee.framework.skynet.core.AttributeDataProvider">
+      <BinaryAttributeDataProvider
+            class="org.eclipse.osee.ote.define.MappedAttributeDataProviderOld">
+      </BinaryAttributeDataProvider>
+   </extension>
 </plugin>
