@@ -1,4 +1,4 @@
-import "platform:/resource/org.eclipse.osee.ats/support/OseeTypes_ATS.osee"
+import "platform:/plugin/org.eclipse.osee.ats/support/OseeTypes_ATS.osee"
 
 artifactType "Demo Code Team Workflow" extends "Team Workflow" {
    attribute "demo.code.Change Type"
