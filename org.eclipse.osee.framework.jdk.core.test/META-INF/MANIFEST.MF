@@ -1,9 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JDK Core Test
-Bundle-SymbolicName: org.eclipse.osee.framework.jdk.core.test
+Bundle-SymbolicName: org.eclipse.osee.framework.jdk.core.test;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse.org
 Fragment-Host: org.eclipse.osee.framework.jdk.core;bundle-version="0.4.0"
 Require-Bundle: org.junit4
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.eclipse.osee.framework.jdk.core.test
