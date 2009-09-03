@@ -207,7 +207,7 @@ public abstract class WorkItemDefinition {
       //         System.err.println("Skipping all but atsStatePercentCompleteWeight.DefaultWorkflow - Remove This");
       //         return artifact;
       //      }
-      artifact.setDescriptiveName(getName());
+      artifact.setName(getName());
       if (getParentId() != null && !getParentId().equals("")) {
          artifact.setSoleAttributeValue(WorkItemAttributes.WORK_PARENT_ID.getAttributeTypeName(), getParentId());
       }

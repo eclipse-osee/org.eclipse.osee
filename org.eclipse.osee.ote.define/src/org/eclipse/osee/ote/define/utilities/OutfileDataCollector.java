@@ -52,7 +52,7 @@ public class OutfileDataCollector implements IDataListener {
             }
          }
       }
-      artifact.setDescriptiveName(getField(TestRunField.SCRIPT_NAME.name()));
+      artifact.setName(getField(TestRunField.SCRIPT_NAME.name()));
    }
 
    public String getField(String name) {

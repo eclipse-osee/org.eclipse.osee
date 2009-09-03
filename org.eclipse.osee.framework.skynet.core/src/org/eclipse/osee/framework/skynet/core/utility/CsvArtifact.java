@@ -69,7 +69,7 @@ public class CsvArtifact {
     */
    public static CsvArtifact generateCsvArtifact(String staticId, String artifactName, String csvData, Branch branch) throws OseeCoreException {
       Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch);
-      artifact.setDescriptiveName(artifactName);
+      artifact.setName(artifactName);
       artifact.setSoleAttributeValue("Extension", "csv");
       artifact.setSoleAttributeFromString(CoreAttributes.NATIVE_CONTENT.getName(), csvData);
       StaticIdManager.setSingletonAttributeValue(artifact, staticId);

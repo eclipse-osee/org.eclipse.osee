@@ -40,7 +40,7 @@ public class CsvArtifactTest {
       CsvArtifact csv =
             CsvArtifact.getCsvArtifact(id, BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), true);
       assertEquals(csv.getCsvData(), "");
-      csv.getArtifact().setDescriptiveName(id);
+      csv.getArtifact().setName(id);
       csv.setCsvData(csvData);
       csv.getArtifact().persistAttributes();
    }

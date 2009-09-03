@@ -97,7 +97,7 @@ public class ArtifactClipboard {
             } else {
                Artifact newArtifact = null;
                newArtifact = clipboardArtifact.duplicate(parent.getBranch());
-               newArtifact.setDescriptiveName(dialog.getValue());
+               newArtifact.setName(dialog.getValue());
                parent.addChild(newArtifact);
             }
          } else {

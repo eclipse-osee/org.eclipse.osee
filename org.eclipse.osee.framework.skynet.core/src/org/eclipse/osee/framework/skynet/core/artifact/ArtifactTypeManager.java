@@ -144,7 +144,7 @@ public class ArtifactTypeManager {
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch, String name) throws OseeCoreException {
       Artifact artifact = addArtifact(artifactTypeName, branch);
-      artifact.setDescriptiveName(name);
+      artifact.setName(name);
       return artifact;
    }
 

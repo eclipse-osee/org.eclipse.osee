@@ -318,7 +318,7 @@ public class LoadAIsAndTeamsAction {
             aia =
                   (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
                         AtsUtil.getAtsBranch());
-            aia.setDescriptiveName(page.getName());
+            aia.setName(page.getName());
             for (String staticId : staticIds) {
                StaticIdManager.setSingletonAttributeValue(aia, staticId);
             }

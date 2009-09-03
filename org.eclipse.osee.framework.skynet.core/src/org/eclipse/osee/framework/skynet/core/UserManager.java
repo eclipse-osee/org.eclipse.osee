@@ -241,7 +241,7 @@ public final class UserManager {
       User user = getFromCacheByUserId(userEnum.getUserID());
       if (user != null) {
          // Update user with this enum data
-         user.setDescriptiveName(userEnum.getName());
+         user.setName(userEnum.getName());
          user.setEmail(userEnum.getEmail());
          user.setActive(userEnum.isActive());
       } else {

@@ -53,7 +53,7 @@ public class User extends Artifact implements Serializable {
    }
 
    public void setFieldsBasedon(User u) throws Exception {
-      setDescriptiveName(u.getName());
+      setName(u.getName());
       setPhone(u.getPhone());
       setEmail(u.getEmail());
       setUserID(u.getUserId());

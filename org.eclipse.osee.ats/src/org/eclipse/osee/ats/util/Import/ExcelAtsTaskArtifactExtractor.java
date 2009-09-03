@@ -207,7 +207,7 @@ public class ExcelAtsTaskArtifactExtractor {
                   String str = row[i];
                   if (str != null && !str.equals("")) {
                      monitor.subTask(String.format("Title \"%s\"", str));
-                     taskArt.setDescriptiveName(str);
+                     taskArt.setName(str);
                   }
                } else if (headerRow[i].equalsIgnoreCase("Percent Complete")) {
                   String str = row[i];

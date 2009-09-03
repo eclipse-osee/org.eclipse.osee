@@ -131,7 +131,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
                      teamArt.getActionableItemsDam().getActionableItems(), assignees, transaction,
                      CreateTeamOption.Duplicate_If_Exists);
          if (title != null && !title.equals("")) {
-            newTeamArt.setDescriptiveName(title);
+            newTeamArt.setName(title);
          }
          newTeamArt.persistAttributesAndRelations(transaction);
          newTeamArts.add(newTeamArt);
@@ -148,7 +148,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          TeamWorkFlowArtifact dupArt = (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtil.getAtsBranch());
          if (title != null && !title.equals("")) {
-            dupArt.setDescriptiveName(getDefaultTitle());
+            dupArt.setName(getDefaultTitle());
          }
          dupArt.addRelation(AtsRelation.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
          dupArt.getSmaMgr().getLog().addLog(LogType.Note, null,

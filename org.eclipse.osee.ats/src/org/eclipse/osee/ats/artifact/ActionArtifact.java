@@ -109,7 +109,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          else if (!title.equals(team.getName())) return;
       }
       if (!title.equals(getName())) {
-         setDescriptiveName(title);
+         setName(title);
       }
    }
 
@@ -724,7 +724,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * @param art
     */
    public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, Boolean validationRequired, Date needByDate) throws OseeCoreException {
-      art.setDescriptiveName(title);
+      art.setName(title);
       if (!desc.equals("")) art.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
       art.setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name());
       art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);

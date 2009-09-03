@@ -49,7 +49,7 @@ public class FrameworkTestUtil {
     */
    public static Artifact createSimpleArtifact(String artifactTypeName, String name, Branch branch) throws Exception {
       Artifact softArt = ArtifactTypeManager.addArtifact(artifactTypeName, branch);
-      softArt.setDescriptiveName(name);
+      softArt.setName(name);
       softArt.addAttribute("Subsystem", DemoSubsystems.Electrical.name());
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
       rootArtifact.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, softArt);

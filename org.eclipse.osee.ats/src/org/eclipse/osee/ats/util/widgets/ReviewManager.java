@@ -80,7 +80,7 @@ public class ReviewManager {
                      smaMgr.getSma(),
                      AtsWorkDefinitions.isValidateReviewBlocking(smaMgr.getWorkPageDefinition()) ? ReviewBlockType.Transition : ReviewBlockType.None,
                      true);
-         decRev.setDescriptiveName(VALIDATE_REVIEW_TITLE);
+         decRev.setName(VALIDATE_REVIEW_TITLE);
          decRev.setSoleAttributeValue(ATSAttributes.DECISION_REVIEW_OPTIONS_ATTRIBUTE.getStoreName(),
                "No;Followup;" + getValidateReviewFollowupUsersStr() + "\n" + "Yes;Completed;");
 

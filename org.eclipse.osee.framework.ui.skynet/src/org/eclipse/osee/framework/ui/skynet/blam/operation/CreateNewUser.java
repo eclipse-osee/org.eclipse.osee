@@ -59,7 +59,7 @@ public class CreateNewUser extends AbstractBlam {
          monitor.done();
          return;
       }
-      user.setDescriptiveName(name);
+      user.setName(name);
 
       String userId = variableMap.getString("UserId (unique)");
       if (userId.equals("")) {

@@ -438,7 +438,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     */
    public Artifact addNewChild(ArtifactType artifactType, String name) throws OseeCoreException {
       Artifact child = artifactType.makeNewArtifact(branch);
-      child.setDescriptiveName(name);
+      child.setName(name);
       addChild(child);
       return child;
    }
@@ -1016,7 +1016,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return name;
    }
 
-   public void setDescriptiveName(String name) throws OseeCoreException {
+   public void setName(String name) throws OseeCoreException {
       setSoleAttributeValue("Name", name);
    }
 

@@ -48,7 +48,7 @@ public class NewGoal extends Action {
             String title = ed.getEntry();
             GoalArtifact goalArt =
                   (GoalArtifact) ArtifactTypeManager.addArtifact(GoalArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch());
-            goalArt.setDescriptiveName(title);
+            goalArt.setName(title);
             goalArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
 
             // Initialize state machine
