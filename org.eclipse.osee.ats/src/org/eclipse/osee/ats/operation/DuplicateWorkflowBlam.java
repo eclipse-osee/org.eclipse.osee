@@ -61,7 +61,8 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
          "Create new Workflow - creates new workflow in start state with current assignees.";
    private static String DUPLICATE_TASKS = "Duplicate Tasks - only valid for Duplicate Workflow";
    private static String DUPLICATE_METHOD = "Duplicate Method";
-   private Collection<? extends TaskableStateMachineArtifact> defaultTeamWorkflows;
+   private static String TITLE = "New Title (blank for same title)";
+   private Collection<? extends TeamWorkFlowArtifact> defaultTeamWorkflows;
 
    public DuplicateWorkflowBlam() throws IOException {
    }
@@ -76,6 +77,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
                boolean createNewWorkflow =
                      variableMap.getString(DUPLICATE_METHOD).equals(CREATE_NEW_WORFLOW_IN_START_STATE);
                boolean duplicateWorkflow = variableMap.getString(DUPLICATE_METHOD).equals(DUPLICATE_WORKFLOW);
+               String title = variableMap.getString(TITLE);
 
                if (artifacts.size() == 0) {
                   AWorkbench.popup("ERROR", "Must drag in Team Workflow to duplicate.");
@@ -98,9 +100,9 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
                   AtsUtil.setEmailEnabled(false);
                   Collection<TeamWorkFlowArtifact> teamArts = Collections.castAll(artifacts);
                   if (createNewWorkflow) {
-                     handleCreateNewWorkflow(teamArts);
+                     handleCreateNewWorkflow(teamArts, title);
                   } else {
-                     handleCreateDuplicate(teamArts, duplicateTasks);
+                     handleCreateDuplicate(teamArts, duplicateTasks, title);
                   }
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -116,7 +118,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       });
    }
 
-   private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts) throws OseeCoreException {
+   private void handleCreateNewWorkflow(Collection<TeamWorkFlowArtifact> teamArts, String title) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       for (TeamWorkFlowArtifact teamArt : teamArts) {
@@ -128,6 +130,9 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
                teamArt.getParentActionArtifact().createTeamWorkflow(teamArt.getTeamDefinition(),
                      teamArt.getActionableItemsDam().getActionableItems(), assignees, transaction,
                      CreateTeamOption.Duplicate_If_Exists);
+         if (title != null && !title.equals("")) {
+            newTeamArt.setDescriptiveName(title);
+         }
          newTeamArt.persistAttributesAndRelations(transaction);
          newTeamArts.add(newTeamArt);
       }
@@ -137,11 +142,14 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       }
    }
 
-   private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks) throws OseeCoreException {
+   private void handleCreateDuplicate(Collection<TeamWorkFlowArtifact> teamArts, boolean duplicateTasks, String title) throws OseeCoreException {
       Set<TeamWorkFlowArtifact> newTeamArts = new HashSet<TeamWorkFlowArtifact>();
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       for (TeamWorkFlowArtifact teamArt : teamArts) {
          TeamWorkFlowArtifact dupArt = (TeamWorkFlowArtifact) teamArt.duplicate(AtsUtil.getAtsBranch());
+         if (title != null && !title.equals("")) {
+            dupArt.setDescriptiveName(getDefaultTitle());
+         }
          dupArt.addRelation(AtsRelation.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
          dupArt.getSmaMgr().getLog().addLog(LogType.Note, null,
                "Workflow duplicated from " + teamArt.getHumanReadableId());
@@ -153,9 +161,9 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
                dupArt.addRelation(AtsRelation.SmaToTask_Task, dupTaskArt);
                dupArt.persistAttributes(transaction);
             }
-            dupArt.persistAttributesAndRelations(transaction);
             newTeamArts.add(dupArt);
          }
+         dupArt.persistAttributesAndRelations(transaction);
          // Notify all extension points that workflow is being duplicated in case they need to add, remove
          // attributes or relations
          for (IAtsTeamWorkflow teamExtension : TeamWorkflowExtensions.getInstance().getAtsTeamWorkflowExtensions()) {
@@ -185,18 +193,29 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       //
       "<XWidget xwidgetType=\"XCheckBox\" displayName=\"" + DUPLICATE_TASKS + "\" horizontalLabel=\"true\" defaultValue=\"false\"/>" +
       //
+      "<XWidget xwidgetType=\"XText\" displayName=\"" + TITLE + "\" horizontalLabel=\"true\" defaultValue=\"" + getDefaultTitle() + "\"/>" +
+      //
       "</xWidgets>";
+   }
+
+   /**
+    * Return "Copy of"-title if all titles of workflows are the same, else ""
+    */
+   private String getDefaultTitle() {
+      String title = "";
+      for (TeamWorkFlowArtifact teamArt : defaultTeamWorkflows) {
+         if (title.equals("")) {
+            title = teamArt.getName();
+         } else if (!title.equals(teamArt.getName())) {
+            return "";
+         }
+      }
+      return "Copy of " + title;
    }
 
    @Override
    public String getDescriptionUsage() {
-      return "Duplicates a team workflow in the exact state as it currently is with tasks in their exact state.  " +
-      //
-      "All history will be duplicated.  \"Create New Workflow\" option will create the workflow as an initial workflow as if a new action were created except" +
-      //
-      " the new workflow will be under the same Action.  " +
-      //
-      "\"Create New Workflow\" is not compatible with \"Duplicate Tasks\".";
+      return "Duplicate team workflow(s) as a carbon copy (all fields/states/assignees will be exactly as they are) or as new workflows in start state.";
    }
 
    @Override
@@ -224,7 +243,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
    /**
     * @param defaultTeamWorkflows the defaultTeamWorkflows to set
     */
-   public void setDefaultTeamWorkflows(Collection<? extends TaskableStateMachineArtifact> defaultTeamWorkflows) {
+   public void setDefaultTeamWorkflows(Collection<? extends TeamWorkFlowArtifact> defaultTeamWorkflows) {
       this.defaultTeamWorkflows = defaultTeamWorkflows;
    }
 
