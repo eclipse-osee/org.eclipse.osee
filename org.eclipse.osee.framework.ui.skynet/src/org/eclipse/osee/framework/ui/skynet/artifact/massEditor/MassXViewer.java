@@ -103,8 +103,6 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
 
    public boolean handleAltLeftClick(TreeColumn treeColumn, TreeItem treeItem, boolean persist) {
       super.handleAltLeftClick(treeColumn, treeItem);
-      // System.out.println("Column " + treeColumn.getText() + " item " +
-      // treeItem);
       String colName = treeColumn.getText();
       if (EXTRA_COLUMNS.contains(colName)) {
          AWorkbench.popup("ERROR", "Can't change the field " + colName);
@@ -138,8 +136,6 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
          public void dragSetData(DragSourceEvent event) {
             Collection<Artifact> arts = getSelectedArtifacts();
             if (arts.size() > 0) {
-//               Artifact artifact = arts.iterator().next();
-//               if (artifact.getBranch() == BranchManager.getDefaultBranch()) 
                   event.data = new ArtifactData(arts.toArray(new Artifact[arts.size()]), "", MassArtifactEditor.EDITOR_ID);
                   
             }
@@ -149,8 +145,6 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
             event.doit = false;
             Collection<Artifact> arts = getSelectedArtifacts();
             if (arts.size() > 0) {
-//               Artifact artifact = arts.iterator().next();
-//               if (artifact.getBranch() == BranchManager.getDefaultBranch())
                   event.doit = true;
             }
          }
@@ -184,11 +178,7 @@ public class MassXViewer extends XViewer implements IFrameworkTransactionEventLi
       try {
          if (e.data instanceof ArtifactData) {
             Artifact[] artsToAdd = ((ArtifactData) e.data).getArtifacts();
-            Set<Artifact> arts = new HashSet<Artifact>();
-            arts.addAll(artifacts);
-            for (Artifact art : artsToAdd)
-               arts.add(art);
-            set(arts);
+            add(Arrays.asList(artsToAdd));
          }
          refresh();
       } catch (Exception ex) {

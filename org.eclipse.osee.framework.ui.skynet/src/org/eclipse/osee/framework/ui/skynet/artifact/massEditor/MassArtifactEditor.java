@@ -56,7 +56,6 @@ import org.eclipse.ui.PartInitException;
 public class MassArtifactEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.framework.ui.skynet.massEditor.MassArtifactEditor";
    private int artifactsPageIndex;
-   private Collection<? extends Artifact> artifacts = new HashSet<Artifact>();
    private MassXViewer xViewer;
    private Label branchLabel;
 
@@ -70,7 +69,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    @Override
    public void doSave(IProgressMonitor monitor) {
       try {
-         Artifacts.persistInTransaction(artifacts);
+         Artifacts.persistInTransaction(xViewer.getArtifacts());
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -184,7 +183,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    public void dispose() {
       super.dispose();
 
-      for (Artifact taskArt : artifacts)
+      for (Artifact taskArt : xViewer.getArtifacts())
          try {
             if (taskArt != null && !taskArt.isDeleted() && taskArt.hasDirtyAttributes()) taskArt.reloadAttributesAndRelations();
          } catch (Exception ex) {
@@ -198,7 +197,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
 
    @Override
    public boolean isDirty() {
-      for (Artifact taskArt : artifacts) {
+      for (Artifact taskArt : xViewer.getArtifacts()){
          if (!taskArt.isDeleted() && taskArt.hasDirtyAttributes()) {
             return true;
          }
@@ -213,13 +212,10 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
 
    @Override
    protected void addPages() {
-
       IEditorInput editorInput = getEditorInput();
-      if (editorInput instanceof MassArtifactEditorInput) {
-         MassArtifactEditorInput aei = (MassArtifactEditorInput) editorInput;
-         artifacts = (aei).getArtifacts();
-      } else
+      if (!(editorInput instanceof MassArtifactEditorInput) ){
          throw new IllegalArgumentException("Editor Input not TaskEditorInput");
+      }
 
       if (((MassArtifactEditorInput) editorInput).getName().equals(""))
          setPartName("Mass Artifact Editor");
@@ -289,7 +285,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
     * @return the artifacts
     */
    public Collection<? extends Artifact> getArtifacts() {
-      return artifacts;
+      return xViewer.getArtifacts();
    }
 
    public String getActionDescription() {
