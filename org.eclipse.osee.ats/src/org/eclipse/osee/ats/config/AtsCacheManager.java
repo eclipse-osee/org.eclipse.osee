@@ -55,9 +55,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
    public static List<String> CommonCachedArtifacts = new ArrayList<String>();
 
    public static void start() {
-      if (!DbUtil.isDbInit()) {
-         new AtsCacheManager();
-      }
+      new AtsCacheManager();
    }
 
    private AtsCacheManager() {
@@ -95,6 +93,10 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
 
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
+      if (DbUtil.isDbInit()) {
+         OseeEventManager.removeListener(this);
+         return;
+      }
       try {
          for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
             if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
@@ -111,6 +113,10 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
+      if (DbUtil.isDbInit()) {
+         OseeEventManager.removeListener(this);
+         return;
+      }
       if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
       for (Artifact artifact : transData.cacheDeletedArtifacts) {
          if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
