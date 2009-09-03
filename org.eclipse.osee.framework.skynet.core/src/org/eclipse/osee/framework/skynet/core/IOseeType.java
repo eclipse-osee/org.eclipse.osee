@@ -10,6 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-public interface ISkynetType {
+public interface IOseeType {
    String getName();
 }

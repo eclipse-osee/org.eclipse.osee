@@ -32,7 +32,7 @@ public class Requirements {
    public static String SYSTEM_REQUIREMENTS = "System Requirements";
    public static String SYSTEM_DESIGN = "System Design";
    public static String SYSTEM_FUNCTION = "System Function";
-
+   public static String REQUIREMENT = "Requirement";
    public static String ABSTRACT_SOFTWARE_REQUIREMENT = "Abstract Software Requirement";
 
    public static String SUBSYSTEM_REQUIREMENT = "Subsystem Requirement";

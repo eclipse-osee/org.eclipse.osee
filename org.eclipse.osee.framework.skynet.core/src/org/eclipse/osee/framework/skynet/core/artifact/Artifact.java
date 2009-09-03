@@ -53,6 +53,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetAttributeChange;
+import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -313,6 +314,10 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     */
    public boolean isOfType(String artifactTypeName) throws OseeCoreException {
       return artifactType.inheritsFrom(artifactTypeName);
+   }
+
+   public boolean isOfType(IOseeType oseeType) throws OseeCoreException {
+      return artifactType.inheritsFrom(oseeType.getName());
    }
 
    @Override

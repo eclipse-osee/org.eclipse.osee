@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.AUTOGEN;
 
-import org.eclipse.osee.framework.skynet.core.ISkynetType;
+import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
-public enum OTE_SKYNET_ARTIFACTS implements ISkynetType {
+public enum OTE_SKYNET_ARTIFACTS implements IOseeType {
    TEST_RUN(Requirements.TEST_RUN), TEST_SCRIPT(Requirements.TEST_CASE);
 
    private String name;

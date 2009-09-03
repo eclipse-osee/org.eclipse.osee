@@ -415,10 +415,6 @@ artifactType "Software Requirement Drawing" extends "Software Requirement" {
 
 artifactType "System Requirement" extends "Requirement", "MS Word Template" {
    attribute "Legacy Id"
-   attribute "Level 2 IPT"
-   attribute "Level 3 IPT"
-   attribute "ROIN"
-   attribute "Support IPT"
 }
 
 artifactType "Subsystem Requirement" extends "Requirement", "MS Word Template" {
@@ -500,24 +496,6 @@ attributeType "Legacy Id" extends StringAttribute {
    "SLATE unique identifier (caution: not guaranteed to be immutable)"
 }
 
-attributeType "Level 2 IPT" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1 description "Level 2 Integrated Product Team"
-}
-
-attributeType "Level 3 IPT" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1 description "Level 3 Integrated Product Team"
-}
-
-attributeType "Support IPT" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1 description "Support Integrated Product Team"
-}
-
 attributeType "System Security Requirement" extends BooleanAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -533,9 +511,8 @@ attributeType "Training Effectivity" extends BooleanAttribute {
 }
 
 oseeEnumType "Partition.enum" {
-   entry "Aircraft Survivability Equipment"
+   entry "Graphics Handler"
    entry "Communication"
-   entry "Contorls and Displays"
    entry "Flight Control"
    entry "Input/Output Processor"
    entry "Navigation"
@@ -555,18 +532,12 @@ oseeEnumType "Subsystem.enum" {
    entry "Robot_Survivability_Equipment"
    entry "Robot_Systems_Management"
    entry "Chasis"
-   entry "Cognitive_Decision_Aiding"
    entry "Communications"
-   entry "Controls_and_Displays"
    entry "Data_Management"
-   entry "Drive_Train"
    entry "Electrical"
    entry "Controls"
    entry "Hydraulics"
-   entry "Mission_Systems_Management"
-   entry "Navigation"
-   entry "Propulsion"
-   entry "Sights"
+   entry "Robot Navigation"
    entry "Unknown"
    entry "Unspecified"
 }
@@ -616,8 +587,8 @@ attributeType "Safety Criticality" extends EnumeratedAttribute {
 }
 
 oseeEnumType "Verification Level.enum" {
-   entry "System (Aircraft)"
-   entry "Subsystem (AIL)"
+   entry "System"
+   entry "Subsystem"
    entry "Component"
    entry "Unspecified"
 }
@@ -638,9 +609,8 @@ attributeType "TIS Test Number" extends StringAttribute {
 }
 
 oseeEnumType "TIS Test Type.enum" {
-   entry "AIL"
-   entry "FLT"
-   entry "GND"
+   entry "Stationary Vehicle"
+   entry "In Operation"
 }
 
 attributeType "TIS Test Type" extends EnumeratedAttribute {
@@ -649,7 +619,7 @@ attributeType "TIS Test Type" extends EnumeratedAttribute {
    max unlimited
    enumType "TIS Test Type.enum"
    description "TIS Test Type"
-   defaultValue "GND"
+   defaultValue "Stationary Vehicle"
 }
 
 oseeEnumType "TIS Test Category.enum" {
@@ -699,10 +669,6 @@ attributeType "Technical Performance Parameter" extends BooleanAttribute {
 
 oseeEnumType "Verification Event.enum" {
    entry "Unspecified"
-   entry "AIL Test"
-   entry "Ground Test"
-   entry "Flight Test"
-   entry "Analysis Report"
 }
 
 attributeType "Verification Event" extends EnumeratedAttribute {
@@ -919,10 +885,9 @@ relationType "Supercedes" {
 }
 
 oseeEnumType "CSCI.enum" {
-   entry "Navigation"
-   entry "Sights"
-   entry "Visual"
-   entry "Interface"
+   entry "Framework"
+   entry "Core Unit"
+   entry "Interface Unit"
    entry "Unspecified"
 }
 
@@ -953,13 +918,6 @@ relationType "Supporting Info" {
 }
 
 artifactType "Heading" extends "MS Word Template" {
-}
-
-attributeType "ROIN" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1 description
-   "SLATE unique identifier (caution: not guaranteed to be immutable)"
 }
 
 artifactType "Component" extends "Artifact" {

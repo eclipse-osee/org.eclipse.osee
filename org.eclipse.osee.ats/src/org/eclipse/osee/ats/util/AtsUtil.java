@@ -40,8 +40,6 @@ import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -84,7 +82,7 @@ public class AtsUtil implements IAtsLib {
    private static OseeGroup atsAdminGroup = null;
    private static boolean goalEnabled = false;
    private static final Date today = new Date();
-   public static int MILLISECS_PER_DAY = (1000 * 60 * 60 * 24);
+   public static int MILLISECS_PER_DAY = 1000 * 60 * 60 * 24;
 
    public AtsUtil() {
       super();
@@ -115,6 +113,9 @@ public class AtsUtil implements IAtsLib {
     * @return the enableGoal
     */
    public static boolean isGoalEnabled() {
+      if (true) {
+         return false;
+      }
       try {
          if (ArtifactTypeManager.getType(GoalArtifact.ARTIFACT_NAME) != null) {
             return goalEnabled;

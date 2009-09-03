@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.AUTOGEN;
 
-import org.eclipse.osee.framework.skynet.core.ISkynetType;
+import org.eclipse.osee.framework.skynet.core.IOseeType;
 
-public enum OTE_SKYNET_ATTRIBUTES implements ISkynetType {
+public enum OTE_SKYNET_ATTRIBUTES implements IOseeType {
    BUILD_ID("Build Id"),
    CHECKSUM("Checksum"),
    ELAPSED_DATE("Elapsed Date"),

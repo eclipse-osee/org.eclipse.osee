@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.skynet.core.ISkynetType;
+import org.eclipse.osee.framework.skynet.core.IOseeType;
 
 /**
  * @author Roberto E. Escobar
  */
-public enum CoreAttributes implements ISkynetType {
+public enum CoreAttributes implements IOseeType {
 
    NATIVE_CONTENT("Native Content"),
    NATIVE_EXTENSION("Extension"),
