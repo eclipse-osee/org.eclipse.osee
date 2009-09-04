@@ -15,7 +15,6 @@ package org.eclipse.osee.framework.oseeTypes;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.RelationType#getOverride <em>Override</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideAName <em>Side AName</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideAArtifactType <em>Side AArtifact Type</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.RelationType#getSideBName <em>Side BName</em>}</li>
@@ -31,32 +30,6 @@ package org.eclipse.osee.framework.oseeTypes;
  */
 public interface RelationType extends OseeType
 {
-  /**
-   * Returns the value of the '<em><b>Override</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Override</em>' reference isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Override</em>' reference.
-   * @see #setOverride(RelationType)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getRelationType_Override()
-   * @model
-   * @generated
-   */
-  RelationType getOverride();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.RelationType#getOverride <em>Override</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Override</em>' reference.
-   * @see #getOverride()
-   * @generated
-   */
-  void setOverride(RelationType value);
-
   /**
    * Returns the value of the '<em><b>Side AName</b></em>' attribute.
    * <!-- begin-user-doc -->

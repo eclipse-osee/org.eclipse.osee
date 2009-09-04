@@ -16,7 +16,6 @@ import org.eclipse.emf.common.util.EList;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnumType#getOverride <em>Override</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.OseeEnumType#getEnumEntries <em>Enum Entries</em>}</li>
  * </ul>
  * </p>
@@ -27,32 +26,6 @@ import org.eclipse.emf.common.util.EList;
  */
 public interface OseeEnumType extends OseeType
 {
-  /**
-   * Returns the value of the '<em><b>Override</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Override</em>' reference isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Override</em>' reference.
-   * @see #setOverride(OseeEnumType)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getOseeEnumType_Override()
-   * @model
-   * @generated
-   */
-  OseeEnumType getOverride();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumType#getOverride <em>Override</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Override</em>' reference.
-   * @see #getOverride()
-   * @generated
-   */
-  void setOverride(OseeEnumType value);
-
   /**
    * Returns the value of the '<em><b>Enum Entries</b></em>' containment reference list.
    * The list contents are of type {@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry}.

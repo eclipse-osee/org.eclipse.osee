@@ -45,6 +45,15 @@ public interface OseeTypesFactory extends EFactory
   Import createImport();
 
   /**
+   * Returns a new object of class '<em>Osee Element</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Osee Element</em>'.
+   * @generated
+   */
+  OseeElement createOseeElement();
+
+  /**
    * Returns a new object of class '<em>Osee Type</em>'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -97,6 +106,42 @@ public interface OseeTypesFactory extends EFactory
    * @generated
    */
   OseeEnumEntry createOseeEnumEntry();
+
+  /**
+   * Returns a new object of class '<em>Osee Enum Override</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Osee Enum Override</em>'.
+   * @generated
+   */
+  OseeEnumOverride createOseeEnumOverride();
+
+  /**
+   * Returns a new object of class '<em>Override Option</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Override Option</em>'.
+   * @generated
+   */
+  OverrideOption createOverrideOption();
+
+  /**
+   * Returns a new object of class '<em>Add Enum</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Add Enum</em>'.
+   * @generated
+   */
+  AddEnum createAddEnum();
+
+  /**
+   * Returns a new object of class '<em>Remove Enum</em>'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return a new object of class '<em>Remove Enum</em>'.
+   * @generated
+   */
+  RemoveEnum createRemoveEnum();
 
   /**
    * Returns a new object of class '<em>Relation Type</em>'.

@@ -162,5 +162,10 @@ public abstract class AbstractOseeTypesUiModule extends OseeTypesRuntimeModule {
 		return org.eclipse.osee.framework.contentassist.antlr.OseeTypesParser.class;
 	}
 
+	// contributed by org.eclipse.xtext.ui.generator.projectWizard.SimpleProjectWizardFragment
+	public Class<? extends org.eclipse.xtext.ui.core.wizard.IProjectCreator> bindIProjectCreator() {
+		return org.eclipse.osee.framework.ui.wizard.OseeTypesProjectCreator.class;
+	}
+
 
 }

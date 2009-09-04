@@ -89,6 +89,11 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
         return createImportAdapter();
       }
       @Override
+      public Adapter caseOseeElement(OseeElement object)
+      {
+        return createOseeElementAdapter();
+      }
+      @Override
       public Adapter caseOseeType(OseeType object)
       {
         return createOseeTypeAdapter();
@@ -117,6 +122,26 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
       public Adapter caseOseeEnumEntry(OseeEnumEntry object)
       {
         return createOseeEnumEntryAdapter();
+      }
+      @Override
+      public Adapter caseOseeEnumOverride(OseeEnumOverride object)
+      {
+        return createOseeEnumOverrideAdapter();
+      }
+      @Override
+      public Adapter caseOverrideOption(OverrideOption object)
+      {
+        return createOverrideOptionAdapter();
+      }
+      @Override
+      public Adapter caseAddEnum(AddEnum object)
+      {
+        return createAddEnumAdapter();
+      }
+      @Override
+      public Adapter caseRemoveEnum(RemoveEnum object)
+      {
+        return createRemoveEnumAdapter();
       }
       @Override
       public Adapter caseRelationType(RelationType object)
@@ -171,6 +196,21 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createImportAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.OseeElement <em>Osee Element</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeElement
+   * @generated
+   */
+  public Adapter createOseeElementAdapter()
   {
     return null;
   }
@@ -261,6 +301,66 @@ public class OseeTypesAdapterFactory extends AdapterFactoryImpl
    * @generated
    */
   public Adapter createOseeEnumEntryAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride <em>Osee Enum Override</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumOverride
+   * @generated
+   */
+  public Adapter createOseeEnumOverrideAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.OverrideOption <em>Override Option</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.oseeTypes.OverrideOption
+   * @generated
+   */
+  public Adapter createOverrideOptionAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.AddEnum <em>Add Enum</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.oseeTypes.AddEnum
+   * @generated
+   */
+  public Adapter createAddEnumAdapter()
+  {
+    return null;
+  }
+
+  /**
+   * Creates a new adapter for an object of class '{@link org.eclipse.osee.framework.oseeTypes.RemoveEnum <em>Remove Enum</em>}'.
+   * <!-- begin-user-doc -->
+   * This default implementation returns null so that we can easily ignore cases;
+   * it's useful to ignore a case when inheritance will catch all the cases anyway.
+   * <!-- end-user-doc -->
+   * @return the new adapter.
+   * @see org.eclipse.osee.framework.oseeTypes.RemoveEnum
+   * @generated
+   */
+  public Adapter createRemoveEnumAdapter()
   {
     return null;
   }

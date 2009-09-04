@@ -71,12 +71,17 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
     {
       case OseeTypesPackage.OSEE_TYPE_MODEL: return createOseeTypeModel();
       case OseeTypesPackage.IMPORT: return createImport();
+      case OseeTypesPackage.OSEE_ELEMENT: return createOseeElement();
       case OseeTypesPackage.OSEE_TYPE: return createOseeType();
       case OseeTypesPackage.ARTIFACT_TYPE: return createArtifactType();
       case OseeTypesPackage.ATTRIBUTE_TYPE_REF: return createAttributeTypeRef();
       case OseeTypesPackage.ATTRIBUTE_TYPE: return createAttributeType();
       case OseeTypesPackage.OSEE_ENUM_TYPE: return createOseeEnumType();
       case OseeTypesPackage.OSEE_ENUM_ENTRY: return createOseeEnumEntry();
+      case OseeTypesPackage.OSEE_ENUM_OVERRIDE: return createOseeEnumOverride();
+      case OseeTypesPackage.OVERRIDE_OPTION: return createOverrideOption();
+      case OseeTypesPackage.ADD_ENUM: return createAddEnum();
+      case OseeTypesPackage.REMOVE_ENUM: return createRemoveEnum();
       case OseeTypesPackage.RELATION_TYPE: return createRelationType();
       default:
         throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
@@ -144,6 +149,17 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
    * <!-- end-user-doc -->
    * @generated
    */
+  public OseeElement createOseeElement()
+  {
+    OseeElementImpl oseeElement = new OseeElementImpl();
+    return oseeElement;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public OseeType createOseeType()
   {
     OseeTypeImpl oseeType = new OseeTypeImpl();
@@ -203,6 +219,50 @@ public class OseeTypesFactoryImpl extends EFactoryImpl implements OseeTypesFacto
   {
     OseeEnumEntryImpl oseeEnumEntry = new OseeEnumEntryImpl();
     return oseeEnumEntry;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public OseeEnumOverride createOseeEnumOverride()
+  {
+    OseeEnumOverrideImpl oseeEnumOverride = new OseeEnumOverrideImpl();
+    return oseeEnumOverride;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public OverrideOption createOverrideOption()
+  {
+    OverrideOptionImpl overrideOption = new OverrideOptionImpl();
+    return overrideOption;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public AddEnum createAddEnum()
+  {
+    AddEnumImpl addEnum = new AddEnumImpl();
+    return addEnum;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public RemoveEnum createRemoveEnum()
+  {
+    RemoveEnumImpl removeEnum = new RemoveEnumImpl();
+    return removeEnum;
   }
 
   /**

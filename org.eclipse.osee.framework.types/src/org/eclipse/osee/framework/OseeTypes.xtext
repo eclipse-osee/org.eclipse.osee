@@ -2,10 +2,9 @@ grammar org.eclipse.osee.framework.OseeTypes with org.eclipse.xtext.common.Termi
 
 generate oseeTypes "http://www.eclipse.org/osee/framework/OseeTypes"
 
-
 OseeTypeModel :
 	(imports+=Import)*
-	(types+=OseeType)*;
+	(artifactTypes += ArtifactType | relationTypes += RelationType | attributeTypes += AttributeType | enumTypes += OseeEnumType | enumOverrides += OseeEnumOverride)*;
 
 Import :
 	'import' importURI=STRING;
@@ -15,18 +14,21 @@ terminal WHOLE_NUM_STR: ('0'..'9')+;
 NAME_REFERENCE: STRING;
 QUALIFIED_NAME : ID ('.' ID)*;
 
+OseeElement:
+	OseeEnumOverride | OseeType;
+
 OseeType:
 	ArtifactType | RelationType | AttributeType | OseeEnumType;
 
 ArtifactType:
-	(abstract?='abstract')? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactTypes+=[ArtifactType|NAME_REFERENCE] (',' superArtifactTypes+=[ArtifactType|NAME_REFERENCE])*)? ('overrides' override=[ArtifactType|NAME_REFERENCE])? '{'
+	(abstract?='abstract')? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactTypes+=[ArtifactType|NAME_REFERENCE] (',' superArtifactTypes+=[ArtifactType|NAME_REFERENCE])*)? '{'
 		typeGuid=STRING?
 	    (validAttributeTypes+=AttributeTypeRef)*
 	'}';
 
 AttributeTypeRef:
 	'attribute' validAttributeType=[AttributeType|NAME_REFERENCE] ('branchGuid' branchGuid=STRING)?;
-	
+
 AttributeType:
 		typeGuid=STRING?
 		'attributeType' name=NAME_REFERENCE ('extends' baseAttributeType=AttributeBaseType) ('overrides' override=[AttributeType|NAME_REFERENCE])? '{'
@@ -44,20 +46,31 @@ AttributeBaseType:
 	'BooleanAttribute' | 'CompressedContentAttribute' | 'DateAttribute' | 'EnumeratedAttribute' | 'FloatingPointAttribute' | 'IntegerAttribute' | 'JavaObjectAttribute' | 'StringAttribute' | 'WordAttribute' | QUALIFIED_NAME;
 
 OseeEnumType:
-	'oseeEnumType' name=NAME_REFERENCE ('overrides' override=[OseeEnumType|NAME_REFERENCE])? '{'
+	'oseeEnumType' name=NAME_REFERENCE '{'
 		typeGuid=STRING?
 		(enumEntries+=OseeEnumEntry)*
 	'}';
 
 OseeEnumEntry:
-	'entry' name=STRING (ordinal=WHOLE_NUM_STR)?;
+	'entry' name=NAME_REFERENCE (ordinal=WHOLE_NUM_STR)?;
 
-enum RelationMultiplicityEnum :  
-	ONE_TO_ONE | ONE_TO_MANY | MANY_TO_ONE | MANY_TO_MANY
-;
+OseeEnumOverride:
+	'overrides enum' overridenEnumType = [OseeEnumType|NAME_REFERENCE] '{'
+		(inheritAll ?= 'inheritAll')?
+		(overrideOptions += OverrideOption)*
+	'}';
+
+OverrideOption:	
+	AddEnum | RemoveEnum;
+	
+AddEnum: 
+	overrideOperation ?= 'add' enumEntry = NAME_REFERENCE (ordinal=WHOLE_NUM_STR)?;
+
+RemoveEnum:
+	overrideOperation ?= 'remove' enumEntry = [OseeEnumEntry|NAME_REFERENCE];
 
 RelationType:
-	'relationType' name=NAME_REFERENCE ('overrides' override=[RelationType|NAME_REFERENCE])? '{'
+	'relationType' name=NAME_REFERENCE '{'
 		typeGuid=STRING?
 		'sideAName' sideAName=STRING
 		'sideAArtifactType' sideAArtifactType=[ArtifactType|NAME_REFERENCE]
@@ -67,5 +80,8 @@ RelationType:
 		'multiplicity' multiplicity=RelationMultiplicityEnum
 	'}';
 	
+enum RelationMultiplicityEnum :  
+	ONE_TO_ONE | ONE_TO_MANY | MANY_TO_ONE | MANY_TO_MANY;
+
 RelationOrderType:
 	'Lexicographical_Ascending' | 'Lexicographical_Descending' | 'Unordered' | ID;

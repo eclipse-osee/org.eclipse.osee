@@ -114,4 +114,16 @@
 
 
 
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            category="org.eclipse.xtext.projectwiz"
+            class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.osee.framework.ui.wizard.OseeTypesNewProjectWizard"
+            icon="icons/editor.gif"
+            id="org.eclipse.osee.framework.ui.wizard.OseeTypesNewProjectWizard"
+            name="OseeTypes Project"
+            project="true">
+      </wizard>
+   </extension>
+
 </plugin>

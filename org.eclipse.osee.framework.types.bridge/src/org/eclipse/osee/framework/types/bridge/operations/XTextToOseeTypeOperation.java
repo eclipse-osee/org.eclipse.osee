@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.oseeTypes.AttributeType;
 import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
-import org.eclipse.osee.framework.oseeTypes.OseeType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -70,27 +69,32 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       loadDependencies(targetModel, models);
 
       if (!models.isEmpty()) {
-         double workAmount = 1 / models.size();
+         double workAmount = 1.0 / models.size();
          for (OseeTypeModel model : models) {
-            if (!model.getTypes().isEmpty()) {
-               double workPercentage = workAmount / (model.getTypes().size() * 2.0);
 
-               for (OseeType type : model.getTypes()) {
-                  if (type instanceof ArtifactType) {
-                     handleArtifactType((ArtifactType) type);
-                  } else if (type instanceof AttributeType) {
-                     handleAttributeType((AttributeType) type);
-                  }
+            int count =
+                  model.getArtifactTypes().size() + model.getAttributeTypes().size() + model.getRelationTypes().size() + model.getEnumTypes().size() + model.getEnumOverrides().size();
+            if (count > 0) {
+               double workPercentage = workAmount / count;
+
+               for (ArtifactType type : model.getArtifactTypes()) {
+                  handleArtifactType(type);
+                  monitor.worked(calculateWork(workPercentage));
+               }
+
+               for (AttributeType type : model.getAttributeTypes()) {
+                  handleAttributeType(type);
                   monitor.worked(calculateWork(workPercentage));
                }
 
                // second pass to handle cross references
-               for (OseeType type1 : model.getTypes()) {
-                  if (type1 instanceof ArtifactType) {
-                     handleArtifactTypeCrossRef((ArtifactType) type1);
-                  } else if (type1 instanceof RelationType) {
-                     handleRelationType((RelationType) type1);
-                  }
+               for (ArtifactType type : model.getArtifactTypes()) {
+                  handleArtifactTypeCrossRef(type);
+                  monitor.worked(calculateWork(workPercentage));
+               }
+
+               for (RelationType type : model.getRelationTypes()) {
+                  handleRelationType(type);
                   monitor.worked(calculateWork(workPercentage));
                }
             }

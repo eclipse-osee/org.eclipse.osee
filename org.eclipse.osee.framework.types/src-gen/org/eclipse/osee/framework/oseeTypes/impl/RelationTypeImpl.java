@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.oseeTypes.RelationType;
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getOverride <em>Override</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getSideAName <em>Side AName</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getSideAArtifactType <em>Side AArtifact Type</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RelationTypeImpl#getSideBName <em>Side BName</em>}</li>
@@ -39,16 +38,6 @@ import org.eclipse.osee.framework.oseeTypes.RelationType;
  */
 public class RelationTypeImpl extends OseeTypeImpl implements RelationType
 {
-  /**
-   * The cached value of the '{@link #getOverride() <em>Override</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getOverride()
-   * @generated
-   * @ordered
-   */
-  protected RelationType override;
-
   /**
    * The default value of the '{@link #getSideAName() <em>Side AName</em>}' attribute.
    * <!-- begin-user-doc -->
@@ -168,49 +157,6 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
   protected EClass eStaticClass()
   {
     return OseeTypesPackage.Literals.RELATION_TYPE;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public RelationType getOverride()
-  {
-    if (override != null && override.eIsProxy())
-    {
-      InternalEObject oldOverride = (InternalEObject)override;
-      override = (RelationType)eResolveProxy(oldOverride);
-      if (override != oldOverride)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.RELATION_TYPE__OVERRIDE, oldOverride, override));
-      }
-    }
-    return override;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public RelationType basicGetOverride()
-  {
-    return override;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setOverride(RelationType newOverride)
-  {
-    RelationType oldOverride = override;
-    override = newOverride;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.RELATION_TYPE__OVERRIDE, oldOverride, override));
   }
 
   /**
@@ -401,9 +347,6 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__OVERRIDE:
-        if (resolve) return getOverride();
-        return basicGetOverride();
       case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
         return getSideAName();
       case OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE:
@@ -432,9 +375,6 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__OVERRIDE:
-        setOverride((RelationType)newValue);
-        return;
       case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
         setSideAName((String)newValue);
         return;
@@ -467,9 +407,6 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__OVERRIDE:
-        setOverride((RelationType)null);
-        return;
       case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
         setSideAName(SIDE_ANAME_EDEFAULT);
         return;
@@ -502,8 +439,6 @@ public class RelationTypeImpl extends OseeTypeImpl implements RelationType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.RELATION_TYPE__OVERRIDE:
-        return override != null;
       case OseeTypesPackage.RELATION_TYPE__SIDE_ANAME:
         return SIDE_ANAME_EDEFAULT == null ? sideAName != null : !SIDE_ANAME_EDEFAULT.equals(sideAName);
       case OseeTypesPackage.RELATION_TYPE__SIDE_AARTIFACT_TYPE:

@@ -42,11 +42,14 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 		if (nameMappings == null) {
 			nameMappings = new HashMap<AbstractElement, String>() {
 				{
+					put(grammarAccess.getOseeTypeModelAccess().getAlternatives_1(), "rule__OseeTypeModel__Alternatives_1");
+					put(grammarAccess.getOseeElementAccess().getAlternatives(), "rule__OseeElement__Alternatives");
 					put(grammarAccess.getOseeTypeAccess().getAlternatives(), "rule__OseeType__Alternatives");
 					put(grammarAccess.getAttributeTypeAccess().getDataProviderAlternatives_7_0(), "rule__AttributeType__DataProviderAlternatives_7_0");
 					put(grammarAccess.getAttributeTypeAccess().getMaxAlternatives_11_0(), "rule__AttributeType__MaxAlternatives_11_0");
 					put(grammarAccess.getAttributeTypeAccess().getTaggerIdAlternatives_12_1_0(), "rule__AttributeType__TaggerIdAlternatives_12_1_0");
 					put(grammarAccess.getAttributeBaseTypeAccess().getAlternatives(), "rule__AttributeBaseType__Alternatives");
+					put(grammarAccess.getOverrideOptionAccess().getAlternatives(), "rule__OverrideOption__Alternatives");
 					put(grammarAccess.getRelationOrderTypeAccess().getAlternatives(), "rule__RelationOrderType__Alternatives");
 					put(grammarAccess.getRelationMultiplicityEnumAccess().getAlternatives(), "rule__RelationMultiplicityEnum__Alternatives");
 					put(grammarAccess.getOseeTypeModelAccess().getGroup(), "rule__OseeTypeModel__Group__0");
@@ -56,7 +59,6 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getArtifactTypeAccess().getGroup(), "rule__ArtifactType__Group__0");
 					put(grammarAccess.getArtifactTypeAccess().getGroup_3(), "rule__ArtifactType__Group_3__0");
 					put(grammarAccess.getArtifactTypeAccess().getGroup_3_2(), "rule__ArtifactType__Group_3_2__0");
-					put(grammarAccess.getArtifactTypeAccess().getGroup_4(), "rule__ArtifactType__Group_4__0");
 					put(grammarAccess.getAttributeTypeRefAccess().getGroup(), "rule__AttributeTypeRef__Group__0");
 					put(grammarAccess.getAttributeTypeRefAccess().getGroup_2(), "rule__AttributeTypeRef__Group_2__0");
 					put(grammarAccess.getAttributeTypeAccess().getGroup(), "rule__AttributeType__Group__0");
@@ -68,20 +70,24 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAttributeTypeAccess().getGroup_15(), "rule__AttributeType__Group_15__0");
 					put(grammarAccess.getAttributeTypeAccess().getGroup_16(), "rule__AttributeType__Group_16__0");
 					put(grammarAccess.getOseeEnumTypeAccess().getGroup(), "rule__OseeEnumType__Group__0");
-					put(grammarAccess.getOseeEnumTypeAccess().getGroup_2(), "rule__OseeEnumType__Group_2__0");
 					put(grammarAccess.getOseeEnumEntryAccess().getGroup(), "rule__OseeEnumEntry__Group__0");
+					put(grammarAccess.getOseeEnumOverrideAccess().getGroup(), "rule__OseeEnumOverride__Group__0");
+					put(grammarAccess.getAddEnumAccess().getGroup(), "rule__AddEnum__Group__0");
+					put(grammarAccess.getRemoveEnumAccess().getGroup(), "rule__RemoveEnum__Group__0");
 					put(grammarAccess.getRelationTypeAccess().getGroup(), "rule__RelationType__Group__0");
-					put(grammarAccess.getRelationTypeAccess().getGroup_2(), "rule__RelationType__Group_2__0");
 					put(grammarAccess.getOseeTypeModelAccess().getImportsAssignment_0(), "rule__OseeTypeModel__ImportsAssignment_0");
-					put(grammarAccess.getOseeTypeModelAccess().getTypesAssignment_1(), "rule__OseeTypeModel__TypesAssignment_1");
+					put(grammarAccess.getOseeTypeModelAccess().getArtifactTypesAssignment_1_0(), "rule__OseeTypeModel__ArtifactTypesAssignment_1_0");
+					put(grammarAccess.getOseeTypeModelAccess().getRelationTypesAssignment_1_1(), "rule__OseeTypeModel__RelationTypesAssignment_1_1");
+					put(grammarAccess.getOseeTypeModelAccess().getAttributeTypesAssignment_1_2(), "rule__OseeTypeModel__AttributeTypesAssignment_1_2");
+					put(grammarAccess.getOseeTypeModelAccess().getEnumTypesAssignment_1_3(), "rule__OseeTypeModel__EnumTypesAssignment_1_3");
+					put(grammarAccess.getOseeTypeModelAccess().getEnumOverridesAssignment_1_4(), "rule__OseeTypeModel__EnumOverridesAssignment_1_4");
 					put(grammarAccess.getImportAccess().getImportURIAssignment_1(), "rule__Import__ImportURIAssignment_1");
 					put(grammarAccess.getArtifactTypeAccess().getAbstractAssignment_0(), "rule__ArtifactType__AbstractAssignment_0");
 					put(grammarAccess.getArtifactTypeAccess().getNameAssignment_2(), "rule__ArtifactType__NameAssignment_2");
 					put(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesAssignment_3_1(), "rule__ArtifactType__SuperArtifactTypesAssignment_3_1");
 					put(grammarAccess.getArtifactTypeAccess().getSuperArtifactTypesAssignment_3_2_1(), "rule__ArtifactType__SuperArtifactTypesAssignment_3_2_1");
-					put(grammarAccess.getArtifactTypeAccess().getOverrideAssignment_4_1(), "rule__ArtifactType__OverrideAssignment_4_1");
-					put(grammarAccess.getArtifactTypeAccess().getTypeGuidAssignment_6(), "rule__ArtifactType__TypeGuidAssignment_6");
-					put(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAssignment_7(), "rule__ArtifactType__ValidAttributeTypesAssignment_7");
+					put(grammarAccess.getArtifactTypeAccess().getTypeGuidAssignment_5(), "rule__ArtifactType__TypeGuidAssignment_5");
+					put(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAssignment_6(), "rule__ArtifactType__ValidAttributeTypesAssignment_6");
 					put(grammarAccess.getAttributeTypeRefAccess().getValidAttributeTypeAssignment_1(), "rule__AttributeTypeRef__ValidAttributeTypeAssignment_1");
 					put(grammarAccess.getAttributeTypeRefAccess().getBranchGuidAssignment_2_1(), "rule__AttributeTypeRef__BranchGuidAssignment_2_1");
 					put(grammarAccess.getAttributeTypeAccess().getTypeGuidAssignment_0(), "rule__AttributeType__TypeGuidAssignment_0");
@@ -97,20 +103,26 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAttributeTypeAccess().getDefaultValueAssignment_15_1(), "rule__AttributeType__DefaultValueAssignment_15_1");
 					put(grammarAccess.getAttributeTypeAccess().getFileExtensionAssignment_16_1(), "rule__AttributeType__FileExtensionAssignment_16_1");
 					put(grammarAccess.getOseeEnumTypeAccess().getNameAssignment_1(), "rule__OseeEnumType__NameAssignment_1");
-					put(grammarAccess.getOseeEnumTypeAccess().getOverrideAssignment_2_1(), "rule__OseeEnumType__OverrideAssignment_2_1");
-					put(grammarAccess.getOseeEnumTypeAccess().getTypeGuidAssignment_4(), "rule__OseeEnumType__TypeGuidAssignment_4");
-					put(grammarAccess.getOseeEnumTypeAccess().getEnumEntriesAssignment_5(), "rule__OseeEnumType__EnumEntriesAssignment_5");
+					put(grammarAccess.getOseeEnumTypeAccess().getTypeGuidAssignment_3(), "rule__OseeEnumType__TypeGuidAssignment_3");
+					put(grammarAccess.getOseeEnumTypeAccess().getEnumEntriesAssignment_4(), "rule__OseeEnumType__EnumEntriesAssignment_4");
 					put(grammarAccess.getOseeEnumEntryAccess().getNameAssignment_1(), "rule__OseeEnumEntry__NameAssignment_1");
 					put(grammarAccess.getOseeEnumEntryAccess().getOrdinalAssignment_2(), "rule__OseeEnumEntry__OrdinalAssignment_2");
+					put(grammarAccess.getOseeEnumOverrideAccess().getOverridenEnumTypeAssignment_1(), "rule__OseeEnumOverride__OverridenEnumTypeAssignment_1");
+					put(grammarAccess.getOseeEnumOverrideAccess().getInheritAllAssignment_3(), "rule__OseeEnumOverride__InheritAllAssignment_3");
+					put(grammarAccess.getOseeEnumOverrideAccess().getOverrideOptionsAssignment_4(), "rule__OseeEnumOverride__OverrideOptionsAssignment_4");
+					put(grammarAccess.getAddEnumAccess().getOverrideOperationAssignment_0(), "rule__AddEnum__OverrideOperationAssignment_0");
+					put(grammarAccess.getAddEnumAccess().getEnumEntryAssignment_1(), "rule__AddEnum__EnumEntryAssignment_1");
+					put(grammarAccess.getAddEnumAccess().getOrdinalAssignment_2(), "rule__AddEnum__OrdinalAssignment_2");
+					put(grammarAccess.getRemoveEnumAccess().getOverrideOperationAssignment_0(), "rule__RemoveEnum__OverrideOperationAssignment_0");
+					put(grammarAccess.getRemoveEnumAccess().getEnumEntryAssignment_1(), "rule__RemoveEnum__EnumEntryAssignment_1");
 					put(grammarAccess.getRelationTypeAccess().getNameAssignment_1(), "rule__RelationType__NameAssignment_1");
-					put(grammarAccess.getRelationTypeAccess().getOverrideAssignment_2_1(), "rule__RelationType__OverrideAssignment_2_1");
-					put(grammarAccess.getRelationTypeAccess().getTypeGuidAssignment_4(), "rule__RelationType__TypeGuidAssignment_4");
-					put(grammarAccess.getRelationTypeAccess().getSideANameAssignment_6(), "rule__RelationType__SideANameAssignment_6");
-					put(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeAssignment_8(), "rule__RelationType__SideAArtifactTypeAssignment_8");
-					put(grammarAccess.getRelationTypeAccess().getSideBNameAssignment_10(), "rule__RelationType__SideBNameAssignment_10");
-					put(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeAssignment_12(), "rule__RelationType__SideBArtifactTypeAssignment_12");
-					put(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeAssignment_14(), "rule__RelationType__DefaultOrderTypeAssignment_14");
-					put(grammarAccess.getRelationTypeAccess().getMultiplicityAssignment_16(), "rule__RelationType__MultiplicityAssignment_16");
+					put(grammarAccess.getRelationTypeAccess().getTypeGuidAssignment_3(), "rule__RelationType__TypeGuidAssignment_3");
+					put(grammarAccess.getRelationTypeAccess().getSideANameAssignment_5(), "rule__RelationType__SideANameAssignment_5");
+					put(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeAssignment_7(), "rule__RelationType__SideAArtifactTypeAssignment_7");
+					put(grammarAccess.getRelationTypeAccess().getSideBNameAssignment_9(), "rule__RelationType__SideBNameAssignment_9");
+					put(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeAssignment_11(), "rule__RelationType__SideBArtifactTypeAssignment_11");
+					put(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeAssignment_13(), "rule__RelationType__DefaultOrderTypeAssignment_13");
+					put(grammarAccess.getRelationTypeAccess().getMultiplicityAssignment_15(), "rule__RelationType__MultiplicityAssignment_15");
 				}
 			};
 		}

@@ -18,7 +18,6 @@ import org.eclipse.emf.common.util.EList;
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#isAbstract <em>Abstract</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getSuperArtifactTypes <em>Super Artifact Types</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getOverride <em>Override</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getValidAttributeTypes <em>Valid Attribute Types</em>}</li>
  * </ul>
  * </p>
@@ -70,32 +69,6 @@ public interface ArtifactType extends OseeType
    * @generated
    */
   EList<ArtifactType> getSuperArtifactTypes();
-
-  /**
-   * Returns the value of the '<em><b>Override</b></em>' reference.
-   * <!-- begin-user-doc -->
-   * <p>
-   * If the meaning of the '<em>Override</em>' reference isn't clear,
-   * there really should be more of a description here...
-   * </p>
-   * <!-- end-user-doc -->
-   * @return the value of the '<em>Override</em>' reference.
-   * @see #setOverride(ArtifactType)
-   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getArtifactType_Override()
-   * @model
-   * @generated
-   */
-  ArtifactType getOverride();
-
-  /**
-   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.ArtifactType#getOverride <em>Override</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @param value the new value of the '<em>Override</em>' reference.
-   * @see #getOverride()
-   * @generated
-   */
-  void setOverride(ArtifactType value);
 
   /**
    * Returns the value of the '<em><b>Valid Attribute Types</b></em>' containment reference list.

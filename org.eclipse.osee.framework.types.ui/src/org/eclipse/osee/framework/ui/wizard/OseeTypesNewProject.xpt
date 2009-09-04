@@ -1,0 +1,37 @@
+«IMPORT org::eclipse::osee::framework::ui::wizard»
+
+«DEFINE main FOR OseeTypesProjectInfo»
+«EXPAND model FOR this»
+«EXPAND workflow FOR this»
+«ENDDEFINE»
+
+«DEFINE model FOR OseeTypesProjectInfo»
+«FILE "src/Model.osee"-»
+/*
+ * This is an example model
+ */
+type String
+
+entity Leaf extends Composable {
+  property name: String
+}
+
+entity Composite extends Composable {
+  property content: Composable[]
+}
+
+entity Composable {
+}
+«ENDFILE»
+«ENDDEFINE»
+
+«DEFINE workflow FOR OseeTypesProjectInfo»
+«FILE "src/Generator.mwe"-»
+<workflow>
+	<property name="modelFile" value="Model.osee"/>
+	<property name="targetDir" value="../src-gen"/>
+
+	<workflow file="workflow/OseeTypesGenerator.mwe"/>
+</workflow>
+«ENDFILE»
+«ENDDEFINE»

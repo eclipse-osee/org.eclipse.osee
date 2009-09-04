@@ -12,71 +12,71 @@ import org.eclipse.emf.ecore.EClass;
 
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
-import org.eclipse.osee.framework.oseeTypes.OseeType;
+import org.eclipse.osee.framework.oseeTypes.AddEnum;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Osee Type</b></em>'.
+ * An implementation of the model object '<em><b>Add Enum</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeTypeImpl#getName <em>Name</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeTypeImpl#getTypeGuid <em>Type Guid</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AddEnumImpl#getEnumEntry <em>Enum Entry</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.AddEnumImpl#getOrdinal <em>Ordinal</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class OseeTypeImpl extends OseeElementImpl implements OseeType
+public class AddEnumImpl extends OverrideOptionImpl implements AddEnum
 {
   /**
-   * The default value of the '{@link #getName() <em>Name</em>}' attribute.
+   * The default value of the '{@link #getEnumEntry() <em>Enum Entry</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
+   * @see #getEnumEntry()
    * @generated
    * @ordered
    */
-  protected static final String NAME_EDEFAULT = null;
+  protected static final String ENUM_ENTRY_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+   * The cached value of the '{@link #getEnumEntry() <em>Enum Entry</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getName()
+   * @see #getEnumEntry()
    * @generated
    * @ordered
    */
-  protected String name = NAME_EDEFAULT;
+  protected String enumEntry = ENUM_ENTRY_EDEFAULT;
 
   /**
-   * The default value of the '{@link #getTypeGuid() <em>Type Guid</em>}' attribute.
+   * The default value of the '{@link #getOrdinal() <em>Ordinal</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getTypeGuid()
+   * @see #getOrdinal()
    * @generated
    * @ordered
    */
-  protected static final String TYPE_GUID_EDEFAULT = null;
+  protected static final String ORDINAL_EDEFAULT = null;
 
   /**
-   * The cached value of the '{@link #getTypeGuid() <em>Type Guid</em>}' attribute.
+   * The cached value of the '{@link #getOrdinal() <em>Ordinal</em>}' attribute.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getTypeGuid()
+   * @see #getOrdinal()
    * @generated
    * @ordered
    */
-  protected String typeGuid = TYPE_GUID_EDEFAULT;
+  protected String ordinal = ORDINAL_EDEFAULT;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected OseeTypeImpl()
+  protected AddEnumImpl()
   {
     super();
   }
@@ -89,7 +89,7 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.OSEE_TYPE;
+    return OseeTypesPackage.Literals.ADD_ENUM;
   }
 
   /**
@@ -97,9 +97,9 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getName()
+  public String getEnumEntry()
   {
-    return name;
+    return enumEntry;
   }
 
   /**
@@ -107,12 +107,12 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setName(String newName)
+  public void setEnumEntry(String newEnumEntry)
   {
-    String oldName = name;
-    name = newName;
+    String oldEnumEntry = enumEntry;
+    enumEntry = newEnumEntry;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_TYPE__NAME, oldName, name));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ADD_ENUM__ENUM_ENTRY, oldEnumEntry, enumEntry));
   }
 
   /**
@@ -120,9 +120,9 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
    * <!-- end-user-doc -->
    * @generated
    */
-  public String getTypeGuid()
+  public String getOrdinal()
   {
-    return typeGuid;
+    return ordinal;
   }
 
   /**
@@ -130,12 +130,12 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
    * <!-- end-user-doc -->
    * @generated
    */
-  public void setTypeGuid(String newTypeGuid)
+  public void setOrdinal(String newOrdinal)
   {
-    String oldTypeGuid = typeGuid;
-    typeGuid = newTypeGuid;
+    String oldOrdinal = ordinal;
+    ordinal = newOrdinal;
     if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.OSEE_TYPE__TYPE_GUID, oldTypeGuid, typeGuid));
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ADD_ENUM__ORDINAL, oldOrdinal, ordinal));
   }
 
   /**
@@ -148,10 +148,10 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_TYPE__NAME:
-        return getName();
-      case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
-        return getTypeGuid();
+      case OseeTypesPackage.ADD_ENUM__ENUM_ENTRY:
+        return getEnumEntry();
+      case OseeTypesPackage.ADD_ENUM__ORDINAL:
+        return getOrdinal();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -166,11 +166,11 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_TYPE__NAME:
-        setName((String)newValue);
+      case OseeTypesPackage.ADD_ENUM__ENUM_ENTRY:
+        setEnumEntry((String)newValue);
         return;
-      case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
-        setTypeGuid((String)newValue);
+      case OseeTypesPackage.ADD_ENUM__ORDINAL:
+        setOrdinal((String)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -186,11 +186,11 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_TYPE__NAME:
-        setName(NAME_EDEFAULT);
+      case OseeTypesPackage.ADD_ENUM__ENUM_ENTRY:
+        setEnumEntry(ENUM_ENTRY_EDEFAULT);
         return;
-      case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
-        setTypeGuid(TYPE_GUID_EDEFAULT);
+      case OseeTypesPackage.ADD_ENUM__ORDINAL:
+        setOrdinal(ORDINAL_EDEFAULT);
         return;
     }
     super.eUnset(featureID);
@@ -206,10 +206,10 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_TYPE__NAME:
-        return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-      case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
-        return TYPE_GUID_EDEFAULT == null ? typeGuid != null : !TYPE_GUID_EDEFAULT.equals(typeGuid);
+      case OseeTypesPackage.ADD_ENUM__ENUM_ENTRY:
+        return ENUM_ENTRY_EDEFAULT == null ? enumEntry != null : !ENUM_ENTRY_EDEFAULT.equals(enumEntry);
+      case OseeTypesPackage.ADD_ENUM__ORDINAL:
+        return ORDINAL_EDEFAULT == null ? ordinal != null : !ORDINAL_EDEFAULT.equals(ordinal);
     }
     return super.eIsSet(featureID);
   }
@@ -225,12 +225,12 @@ public class OseeTypeImpl extends OseeElementImpl implements OseeType
     if (eIsProxy()) return super.toString();
 
     StringBuffer result = new StringBuffer(super.toString());
-    result.append(" (name: ");
-    result.append(name);
-    result.append(", typeGuid: ");
-    result.append(typeGuid);
+    result.append(" (enumEntry: ");
+    result.append(enumEntry);
+    result.append(", ordinal: ");
+    result.append(ordinal);
     result.append(')');
     return result.toString();
   }
 
-} //OseeTypeImpl
+} //AddEnumImpl

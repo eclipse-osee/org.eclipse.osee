@@ -34,13 +34,18 @@ protected class ThisRootNode extends RootToken {
 		switch(index) {
 			case 0: return new OseeTypeModel_Group(this, this, 0, inst);
 			case 1: return new Import_Group(this, this, 1, inst);
-			case 2: return new OseeType_Alternatives(this, this, 2, inst);
-			case 3: return new ArtifactType_Group(this, this, 3, inst);
-			case 4: return new AttributeTypeRef_Group(this, this, 4, inst);
-			case 5: return new AttributeType_Group(this, this, 5, inst);
-			case 6: return new OseeEnumType_Group(this, this, 6, inst);
-			case 7: return new OseeEnumEntry_Group(this, this, 7, inst);
-			case 8: return new RelationType_Group(this, this, 8, inst);
+			case 2: return new OseeElement_Alternatives(this, this, 2, inst);
+			case 3: return new OseeType_Alternatives(this, this, 3, inst);
+			case 4: return new ArtifactType_Group(this, this, 4, inst);
+			case 5: return new AttributeTypeRef_Group(this, this, 5, inst);
+			case 6: return new AttributeType_Group(this, this, 6, inst);
+			case 7: return new OseeEnumType_Group(this, this, 7, inst);
+			case 8: return new OseeEnumEntry_Group(this, this, 8, inst);
+			case 9: return new OseeEnumOverride_Group(this, this, 9, inst);
+			case 10: return new OverrideOption_Alternatives(this, this, 10, inst);
+			case 11: return new AddEnum_Group(this, this, 11, inst);
+			case 12: return new RemoveEnum_Group(this, this, 12, inst);
+			case 13: return new RelationType_Group(this, this, 13, inst);
 			default: return null;
 		}	
 	}	
@@ -50,11 +55,15 @@ protected class ThisRootNode extends RootToken {
 /************ begin Rule OseeTypeModel ****************
  *
  * OseeTypeModel:
- *   imports+=Import* types+=OseeType*;
+ *   imports+=Import* (artifactTypes+=ArtifactType|relationTypes+=RelationType|
+ *   attributeTypes+=AttributeType|enumTypes+=OseeEnumType|enumOverrides+=
+ *   OseeEnumOverride)*;
  *
  **/
 
-// imports+=Import* types+=OseeType*
+// imports+=Import* (artifactTypes+=ArtifactType|relationTypes+=RelationType|
+// attributeTypes+=AttributeType|enumTypes+=OseeEnumType|enumOverrides+=
+// OseeEnumOverride)*
 protected class OseeTypeModel_Group extends GroupToken {
 	
 	public OseeTypeModel_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -67,7 +76,7 @@ protected class OseeTypeModel_Group extends GroupToken {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new OseeTypeModel_TypesAssignment_1(parent, this, 0, inst);
+			case 0: return new OseeTypeModel_Alternatives_1(parent, this, 0, inst);
 			case 1: return new OseeTypeModel_ImportsAssignment_0(parent, this, 1, inst);
 			default: return null;
 		}	
@@ -121,32 +130,57 @@ protected class OseeTypeModel_ImportsAssignment_0 extends AssignmentToken  {
 	}	
 }
 
-// types+=OseeType*
-protected class OseeTypeModel_TypesAssignment_1 extends AssignmentToken  {
-	
-	public OseeTypeModel_TypesAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+// (artifactTypes+=ArtifactType|relationTypes+=RelationType|attributeTypes+=
+// AttributeType|enumTypes+=OseeEnumType|enumOverrides+=OseeEnumOverride)*
+protected class OseeTypeModel_Alternatives_1 extends AlternativesToken {
+
+	public OseeTypeModel_Alternatives_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
-	public Assignment getGrammarElement() {
-		return grammarAccess.getOseeTypeModelAccess().getTypesAssignment_1();
+	public Alternatives getGrammarElement() {
+		return grammarAccess.getOseeTypeModelAccess().getAlternatives_1();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new OseeType_Alternatives(this, this, 0, inst);
+			case 0: return new OseeTypeModel_ArtifactTypesAssignment_1_0(parent, this, 0, inst);
+			case 1: return new OseeTypeModel_RelationTypesAssignment_1_1(parent, this, 1, inst);
+			case 2: return new OseeTypeModel_AttributeTypesAssignment_1_2(parent, this, 2, inst);
+			case 3: return new OseeTypeModel_EnumTypesAssignment_1_3(parent, this, 3, inst);
+			case 4: return new OseeTypeModel_EnumOverridesAssignment_1_4(parent, this, 4, inst);
+			default: return null;
+		}	
+	}	
+		
+}
+
+// artifactTypes+=ArtifactType
+protected class OseeTypeModel_ArtifactTypesAssignment_1_0 extends AssignmentToken  {
+	
+	public OseeTypeModel_ArtifactTypesAssignment_1_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getOseeTypeModelAccess().getArtifactTypesAssignment_1_0();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new ArtifactType_Group(this, this, 0, inst);
 			default: return null;
 		}	
 	}	
 		
 	protected IInstanceDescription tryConsumeVal() {
-		if((value = current.getConsumable("types",false)) == null) return null;
-		IInstanceDescription obj = current.cloneAndConsume("types");
+		if((value = current.getConsumable("artifactTypes",true)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("artifactTypes");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getOseeTypeRule().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getArtifactTypeRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getOseeTypeModelAccess().getTypesOseeTypeParserRuleCall_1_0(); 
+				element = grammarAccess.getOseeTypeModelAccess().getArtifactTypesArtifactTypeParserRuleCall_1_0_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -157,12 +191,185 @@ protected class OseeTypeModel_TypesAssignment_1 extends AssignmentToken  {
 	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
 		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new OseeTypeModel_TypesAssignment_1(parent, next, actIndex, consumed);
+			case 0: return new OseeTypeModel_Alternatives_1(parent, next, actIndex, consumed);
 			case 1: return new OseeTypeModel_ImportsAssignment_0(parent, next, actIndex, consumed);
 			default: return parent.createParentFollower(next, actIndex , index - 2, consumed);
 		}	
 	}	
 }
+
+// relationTypes+=RelationType
+protected class OseeTypeModel_RelationTypesAssignment_1_1 extends AssignmentToken  {
+	
+	public OseeTypeModel_RelationTypesAssignment_1_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getOseeTypeModelAccess().getRelationTypesAssignment_1_1();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new RelationType_Group(this, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("relationTypes",true)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("relationTypes");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
+			IInstanceDescription param = getDescr((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getRelationTypeRule().getType().getClassifier())) {
+				type = AssignmentType.PRC;
+				element = grammarAccess.getOseeTypeModelAccess().getRelationTypesRelationTypeParserRuleCall_1_1_0(); 
+				consumed = obj;
+				return param;
+			}
+		}
+		return null;
+	}
+
+	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
+		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
+		switch(index) {
+			case 0: return new OseeTypeModel_Alternatives_1(parent, next, actIndex, consumed);
+			case 1: return new OseeTypeModel_ImportsAssignment_0(parent, next, actIndex, consumed);
+			default: return parent.createParentFollower(next, actIndex , index - 2, consumed);
+		}	
+	}	
+}
+
+// attributeTypes+=AttributeType
+protected class OseeTypeModel_AttributeTypesAssignment_1_2 extends AssignmentToken  {
+	
+	public OseeTypeModel_AttributeTypesAssignment_1_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getOseeTypeModelAccess().getAttributeTypesAssignment_1_2();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new AttributeType_Group(this, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("attributeTypes",true)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("attributeTypes");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
+			IInstanceDescription param = getDescr((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getAttributeTypeRule().getType().getClassifier())) {
+				type = AssignmentType.PRC;
+				element = grammarAccess.getOseeTypeModelAccess().getAttributeTypesAttributeTypeParserRuleCall_1_2_0(); 
+				consumed = obj;
+				return param;
+			}
+		}
+		return null;
+	}
+
+	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
+		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
+		switch(index) {
+			case 0: return new OseeTypeModel_Alternatives_1(parent, next, actIndex, consumed);
+			case 1: return new OseeTypeModel_ImportsAssignment_0(parent, next, actIndex, consumed);
+			default: return parent.createParentFollower(next, actIndex , index - 2, consumed);
+		}	
+	}	
+}
+
+// enumTypes+=OseeEnumType
+protected class OseeTypeModel_EnumTypesAssignment_1_3 extends AssignmentToken  {
+	
+	public OseeTypeModel_EnumTypesAssignment_1_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getOseeTypeModelAccess().getEnumTypesAssignment_1_3();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumType_Group(this, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("enumTypes",true)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("enumTypes");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
+			IInstanceDescription param = getDescr((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getOseeEnumTypeRule().getType().getClassifier())) {
+				type = AssignmentType.PRC;
+				element = grammarAccess.getOseeTypeModelAccess().getEnumTypesOseeEnumTypeParserRuleCall_1_3_0(); 
+				consumed = obj;
+				return param;
+			}
+		}
+		return null;
+	}
+
+	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
+		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
+		switch(index) {
+			case 0: return new OseeTypeModel_Alternatives_1(parent, next, actIndex, consumed);
+			case 1: return new OseeTypeModel_ImportsAssignment_0(parent, next, actIndex, consumed);
+			default: return parent.createParentFollower(next, actIndex , index - 2, consumed);
+		}	
+	}	
+}
+
+// enumOverrides+=OseeEnumOverride
+protected class OseeTypeModel_EnumOverridesAssignment_1_4 extends AssignmentToken  {
+	
+	public OseeTypeModel_EnumOverridesAssignment_1_4(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getOseeTypeModelAccess().getEnumOverridesAssignment_1_4();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumOverride_Group(this, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("enumOverrides",true)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("enumOverrides");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
+			IInstanceDescription param = getDescr((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getOseeEnumOverrideRule().getType().getClassifier())) {
+				type = AssignmentType.PRC;
+				element = grammarAccess.getOseeTypeModelAccess().getEnumOverridesOseeEnumOverrideParserRuleCall_1_4_0(); 
+				consumed = obj;
+				return param;
+			}
+		}
+		return null;
+	}
+
+	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
+		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
+		switch(index) {
+			case 0: return new OseeTypeModel_Alternatives_1(parent, next, actIndex, consumed);
+			case 1: return new OseeTypeModel_ImportsAssignment_0(parent, next, actIndex, consumed);
+			default: return parent.createParentFollower(next, actIndex , index - 2, consumed);
+		}	
+	}	
+}
+
 
 
 /************ end Rule OseeTypeModel ****************/
@@ -253,6 +460,104 @@ protected class Import_ImportURIAssignment_1 extends AssignmentToken  {
 /************ end Rule Import ****************/
 
 
+
+
+/************ begin Rule OseeElement ****************
+ *
+ * OseeElement:
+ *   OseeEnumOverride|OseeType;
+ *
+ **/
+
+// OseeEnumOverride|OseeType
+protected class OseeElement_Alternatives extends AlternativesToken {
+
+	public OseeElement_Alternatives(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Alternatives getGrammarElement() {
+		return grammarAccess.getOseeElementAccess().getAlternatives();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeElement_OseeEnumOverrideParserRuleCall_0(parent, this, 0, inst);
+			case 1: return new OseeElement_OseeTypeParserRuleCall_1(parent, this, 1, inst);
+			default: return null;
+		}	
+	}	
+		
+	public IInstanceDescription tryConsume() {
+		if(!current.isInstanceOf(grammarAccess.getOseeElementRule().getType().getClassifier())) return null;
+		return tryConsumeVal();
+	}
+}
+
+// OseeEnumOverride
+protected class OseeElement_OseeEnumOverrideParserRuleCall_0 extends RuleCallToken {
+	
+	public OseeElement_OseeEnumOverrideParserRuleCall_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public RuleCall getGrammarElement() {
+		return grammarAccess.getOseeElementAccess().getOseeEnumOverrideParserRuleCall_0();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumOverride_Group(this, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if(checkForRecursion(OseeEnumOverride_Group.class, current)) return null;
+		if(!current.isInstanceOf(grammarAccess.getOseeEnumOverrideRule().getType().getClassifier())) return null;
+		return current;
+	}
+	
+	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
+		switch(index) {
+			default: return parent.createParentFollower(next, actIndex , index, inst);
+		}	
+	}	
+}
+
+// OseeType
+protected class OseeElement_OseeTypeParserRuleCall_1 extends RuleCallToken {
+	
+	public OseeElement_OseeTypeParserRuleCall_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public RuleCall getGrammarElement() {
+		return grammarAccess.getOseeElementAccess().getOseeTypeParserRuleCall_1();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeType_Alternatives(this, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if(checkForRecursion(OseeType_Alternatives.class, current)) return null;
+		if(!current.isInstanceOf(grammarAccess.getOseeTypeRule().getType().getClassifier())) return null;
+		return current;
+	}
+	
+	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
+		switch(index) {
+			default: return parent.createParentFollower(next, actIndex , index, inst);
+		}	
+	}	
+}
+
+
+/************ end Rule OseeElement ****************/
 
 
 /************ begin Rule OseeType ****************
@@ -422,15 +727,15 @@ protected class OseeType_OseeEnumTypeParserRuleCall_3 extends RuleCallToken {
  * ArtifactType:
  *   abstract?="abstract"? "artifactType" name=NAME_REFERENCE ("extends"
  *   superArtifactTypes+=[ArtifactType|NAME_REFERENCE] ("," superArtifactTypes+=[
- *   ArtifactType|NAME_REFERENCE])*)? ("overrides" override=[ArtifactType|
- *   NAME_REFERENCE])? "{" typeGuid=STRING? validAttributeTypes+=AttributeTypeRef* "}";
+ *   ArtifactType|NAME_REFERENCE])*)? "{" typeGuid=STRING? validAttributeTypes+=
+ *   AttributeTypeRef* "}";
  *
  **/
 
 // abstract?="abstract"? "artifactType" name=NAME_REFERENCE ("extends"
 // superArtifactTypes+=[ArtifactType|NAME_REFERENCE] ("," superArtifactTypes+=[
-// ArtifactType|NAME_REFERENCE])*)? ("overrides" override=[ArtifactType|
-// NAME_REFERENCE])? "{" typeGuid=STRING? validAttributeTypes+=AttributeTypeRef* "}"
+// ArtifactType|NAME_REFERENCE])*)? "{" typeGuid=STRING? validAttributeTypes+=
+// AttributeTypeRef* "}"
 protected class ArtifactType_Group extends GroupToken {
 	
 	public ArtifactType_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -443,7 +748,7 @@ protected class ArtifactType_Group extends GroupToken {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new ArtifactType_RightCurlyBracketKeyword_8(parent, this, 0, inst);
+			case 0: return new ArtifactType_RightCurlyBracketKeyword_7(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -688,35 +993,15 @@ protected class ArtifactType_SuperArtifactTypesAssignment_3_2_1 extends Assignme
 
 
 
-// ("overrides" override=[ArtifactType|NAME_REFERENCE])?
-protected class ArtifactType_Group_4 extends GroupToken {
+// "{"
+protected class ArtifactType_LeftCurlyBracketKeyword_4 extends KeywordToken  {
 	
-	public ArtifactType_Group_4(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Group getGrammarElement() {
-		return grammarAccess.getArtifactTypeAccess().getGroup_4();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new ArtifactType_OverrideAssignment_4_1(parent, this, 0, inst);
-			default: return null;
-		}	
-	}	
-		
-}
-
-// "overrides"
-protected class ArtifactType_OverridesKeyword_4_0 extends KeywordToken  {
-	
-	public ArtifactType_OverridesKeyword_4_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public ArtifactType_LeftCurlyBracketKeyword_4(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getArtifactTypeAccess().getOverridesKeyword_4_0();
+		return grammarAccess.getArtifactTypeAccess().getLeftCurlyBracketKeyword_4();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -729,77 +1014,20 @@ protected class ArtifactType_OverridesKeyword_4_0 extends KeywordToken  {
 		
 }
 
-// override=[ArtifactType|NAME_REFERENCE]
-protected class ArtifactType_OverrideAssignment_4_1 extends AssignmentToken  {
-	
-	public ArtifactType_OverrideAssignment_4_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Assignment getGrammarElement() {
-		return grammarAccess.getArtifactTypeAccess().getOverrideAssignment_4_1();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new ArtifactType_OverridesKeyword_4_0(parent, this, 0, inst);
-			default: return null;
-		}	
-	}	
-		
-	protected IInstanceDescription tryConsumeVal() {
-		if((value = current.getConsumable("override",false)) == null) return null;
-		IInstanceDescription obj = current.cloneAndConsume("override");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getArtifactTypeAccess().getOverrideArtifactTypeCrossReference_4_1_0().getType().getClassifier())) {
-				type = AssignmentType.CR;
-				element = grammarAccess.getArtifactTypeAccess().getOverrideArtifactTypeCrossReference_4_1_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-
-// "{"
-protected class ArtifactType_LeftCurlyBracketKeyword_5 extends KeywordToken  {
-	
-	public ArtifactType_LeftCurlyBracketKeyword_5(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Keyword getGrammarElement() {
-		return grammarAccess.getArtifactTypeAccess().getLeftCurlyBracketKeyword_5();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new ArtifactType_Group_4(parent, this, 0, inst);
-			case 1: return new ArtifactType_Group_3(parent, this, 1, inst);
-			case 2: return new ArtifactType_NameAssignment_2(parent, this, 2, inst);
-			default: return null;
-		}	
-	}	
-		
-}
-
 // typeGuid=STRING?
-protected class ArtifactType_TypeGuidAssignment_6 extends AssignmentToken  {
+protected class ArtifactType_TypeGuidAssignment_5 extends AssignmentToken  {
 	
-	public ArtifactType_TypeGuidAssignment_6(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public ArtifactType_TypeGuidAssignment_5(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getArtifactTypeAccess().getTypeGuidAssignment_6();
+		return grammarAccess.getArtifactTypeAccess().getTypeGuidAssignment_5();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new ArtifactType_LeftCurlyBracketKeyword_5(parent, this, 0, inst);
+			case 0: return new ArtifactType_LeftCurlyBracketKeyword_4(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -809,7 +1037,7 @@ protected class ArtifactType_TypeGuidAssignment_6 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("typeGuid");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
 			type = AssignmentType.LRC;
-			element = grammarAccess.getArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_6_0();
+			element = grammarAccess.getArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_0();
 			return obj;
 		}
 		return null;
@@ -818,14 +1046,14 @@ protected class ArtifactType_TypeGuidAssignment_6 extends AssignmentToken  {
 }
 
 // validAttributeTypes+=AttributeTypeRef*
-protected class ArtifactType_ValidAttributeTypesAssignment_7 extends AssignmentToken  {
+protected class ArtifactType_ValidAttributeTypesAssignment_6 extends AssignmentToken  {
 	
-	public ArtifactType_ValidAttributeTypesAssignment_7(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public ArtifactType_ValidAttributeTypesAssignment_6(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAssignment_7();
+		return grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAssignment_6();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -842,7 +1070,7 @@ protected class ArtifactType_ValidAttributeTypesAssignment_7 extends AssignmentT
 			IInstanceDescription param = getDescr((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getAttributeTypeRefRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAttributeTypeRefParserRuleCall_7_0(); 
+				element = grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAttributeTypeRefParserRuleCall_6_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -853,30 +1081,30 @@ protected class ArtifactType_ValidAttributeTypesAssignment_7 extends AssignmentT
 	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
 		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new ArtifactType_ValidAttributeTypesAssignment_7(parent, next, actIndex, consumed);
-			case 1: return new ArtifactType_TypeGuidAssignment_6(parent, next, actIndex, consumed);
-			case 2: return new ArtifactType_LeftCurlyBracketKeyword_5(parent, next, actIndex, consumed);
+			case 0: return new ArtifactType_ValidAttributeTypesAssignment_6(parent, next, actIndex, consumed);
+			case 1: return new ArtifactType_TypeGuidAssignment_5(parent, next, actIndex, consumed);
+			case 2: return new ArtifactType_LeftCurlyBracketKeyword_4(parent, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	
 }
 
 // "}"
-protected class ArtifactType_RightCurlyBracketKeyword_8 extends KeywordToken  {
+protected class ArtifactType_RightCurlyBracketKeyword_7 extends KeywordToken  {
 	
-	public ArtifactType_RightCurlyBracketKeyword_8(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public ArtifactType_RightCurlyBracketKeyword_7(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getArtifactTypeAccess().getRightCurlyBracketKeyword_8();
+		return grammarAccess.getArtifactTypeAccess().getRightCurlyBracketKeyword_7();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new ArtifactType_ValidAttributeTypesAssignment_7(parent, this, 0, inst);
-			case 1: return new ArtifactType_TypeGuidAssignment_6(parent, this, 1, inst);
-			case 2: return new ArtifactType_LeftCurlyBracketKeyword_5(parent, this, 2, inst);
+			case 0: return new ArtifactType_ValidAttributeTypesAssignment_6(parent, this, 0, inst);
+			case 1: return new ArtifactType_TypeGuidAssignment_5(parent, this, 1, inst);
+			case 2: return new ArtifactType_LeftCurlyBracketKeyword_4(parent, this, 2, inst);
 			default: return null;
 		}	
 	}	
@@ -1929,13 +2157,13 @@ protected class AttributeType_RightCurlyBracketKeyword_17 extends KeywordToken  
 /************ begin Rule OseeEnumType ****************
  *
  * OseeEnumType:
- *   "oseeEnumType" name=NAME_REFERENCE ("overrides" override=[OseeEnumType|
- *   NAME_REFERENCE])? "{" typeGuid=STRING? enumEntries+=OseeEnumEntry* "}";
+ *   "oseeEnumType" name=NAME_REFERENCE "{" typeGuid=STRING? enumEntries+=OseeEnumEntry*
+ *   "}";
  *
  **/
 
-// "oseeEnumType" name=NAME_REFERENCE ("overrides" override=[OseeEnumType|
-// NAME_REFERENCE])? "{" typeGuid=STRING? enumEntries+=OseeEnumEntry* "}"
+// "oseeEnumType" name=NAME_REFERENCE "{" typeGuid=STRING? enumEntries+=OseeEnumEntry*
+// "}"
 protected class OseeEnumType_Group extends GroupToken {
 	
 	public OseeEnumType_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1948,7 +2176,7 @@ protected class OseeEnumType_Group extends GroupToken {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new OseeEnumType_RightCurlyBracketKeyword_6(parent, this, 0, inst);
+			case 0: return new OseeEnumType_RightCurlyBracketKeyword_5(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2009,35 +2237,15 @@ protected class OseeEnumType_NameAssignment_1 extends AssignmentToken  {
 
 }
 
-// ("overrides" override=[OseeEnumType|NAME_REFERENCE])?
-protected class OseeEnumType_Group_2 extends GroupToken {
+// "{"
+protected class OseeEnumType_LeftCurlyBracketKeyword_2 extends KeywordToken  {
 	
-	public OseeEnumType_Group_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Group getGrammarElement() {
-		return grammarAccess.getOseeEnumTypeAccess().getGroup_2();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new OseeEnumType_OverrideAssignment_2_1(parent, this, 0, inst);
-			default: return null;
-		}	
-	}	
-		
-}
-
-// "overrides"
-protected class OseeEnumType_OverridesKeyword_2_0 extends KeywordToken  {
-	
-	public OseeEnumType_OverridesKeyword_2_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public OseeEnumType_LeftCurlyBracketKeyword_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getOseeEnumTypeAccess().getOverridesKeyword_2_0();
+		return grammarAccess.getOseeEnumTypeAccess().getLeftCurlyBracketKeyword_2();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -2049,76 +2257,20 @@ protected class OseeEnumType_OverridesKeyword_2_0 extends KeywordToken  {
 		
 }
 
-// override=[OseeEnumType|NAME_REFERENCE]
-protected class OseeEnumType_OverrideAssignment_2_1 extends AssignmentToken  {
-	
-	public OseeEnumType_OverrideAssignment_2_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Assignment getGrammarElement() {
-		return grammarAccess.getOseeEnumTypeAccess().getOverrideAssignment_2_1();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new OseeEnumType_OverridesKeyword_2_0(parent, this, 0, inst);
-			default: return null;
-		}	
-	}	
-		
-	protected IInstanceDescription tryConsumeVal() {
-		if((value = current.getConsumable("override",false)) == null) return null;
-		IInstanceDescription obj = current.cloneAndConsume("override");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getOseeEnumTypeAccess().getOverrideOseeEnumTypeCrossReference_2_1_0().getType().getClassifier())) {
-				type = AssignmentType.CR;
-				element = grammarAccess.getOseeEnumTypeAccess().getOverrideOseeEnumTypeCrossReference_2_1_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-
-// "{"
-protected class OseeEnumType_LeftCurlyBracketKeyword_3 extends KeywordToken  {
-	
-	public OseeEnumType_LeftCurlyBracketKeyword_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Keyword getGrammarElement() {
-		return grammarAccess.getOseeEnumTypeAccess().getLeftCurlyBracketKeyword_3();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new OseeEnumType_Group_2(parent, this, 0, inst);
-			case 1: return new OseeEnumType_NameAssignment_1(parent, this, 1, inst);
-			default: return null;
-		}	
-	}	
-		
-}
-
 // typeGuid=STRING?
-protected class OseeEnumType_TypeGuidAssignment_4 extends AssignmentToken  {
+protected class OseeEnumType_TypeGuidAssignment_3 extends AssignmentToken  {
 	
-	public OseeEnumType_TypeGuidAssignment_4(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public OseeEnumType_TypeGuidAssignment_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getOseeEnumTypeAccess().getTypeGuidAssignment_4();
+		return grammarAccess.getOseeEnumTypeAccess().getTypeGuidAssignment_3();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new OseeEnumType_LeftCurlyBracketKeyword_3(parent, this, 0, inst);
+			case 0: return new OseeEnumType_LeftCurlyBracketKeyword_2(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2128,7 +2280,7 @@ protected class OseeEnumType_TypeGuidAssignment_4 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("typeGuid");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
 			type = AssignmentType.LRC;
-			element = grammarAccess.getOseeEnumTypeAccess().getTypeGuidSTRINGTerminalRuleCall_4_0();
+			element = grammarAccess.getOseeEnumTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_0();
 			return obj;
 		}
 		return null;
@@ -2137,14 +2289,14 @@ protected class OseeEnumType_TypeGuidAssignment_4 extends AssignmentToken  {
 }
 
 // enumEntries+=OseeEnumEntry*
-protected class OseeEnumType_EnumEntriesAssignment_5 extends AssignmentToken  {
+protected class OseeEnumType_EnumEntriesAssignment_4 extends AssignmentToken  {
 	
-	public OseeEnumType_EnumEntriesAssignment_5(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public OseeEnumType_EnumEntriesAssignment_4(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getOseeEnumTypeAccess().getEnumEntriesAssignment_5();
+		return grammarAccess.getOseeEnumTypeAccess().getEnumEntriesAssignment_4();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -2161,7 +2313,7 @@ protected class OseeEnumType_EnumEntriesAssignment_5 extends AssignmentToken  {
 			IInstanceDescription param = getDescr((EObject)value);
 			if(param.isInstanceOf(grammarAccess.getOseeEnumEntryRule().getType().getClassifier())) {
 				type = AssignmentType.PRC;
-				element = grammarAccess.getOseeEnumTypeAccess().getEnumEntriesOseeEnumEntryParserRuleCall_5_0(); 
+				element = grammarAccess.getOseeEnumTypeAccess().getEnumEntriesOseeEnumEntryParserRuleCall_4_0(); 
 				consumed = obj;
 				return param;
 			}
@@ -2172,30 +2324,30 @@ protected class OseeEnumType_EnumEntriesAssignment_5 extends AssignmentToken  {
 	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
 		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
 		switch(index) {
-			case 0: return new OseeEnumType_EnumEntriesAssignment_5(parent, next, actIndex, consumed);
-			case 1: return new OseeEnumType_TypeGuidAssignment_4(parent, next, actIndex, consumed);
-			case 2: return new OseeEnumType_LeftCurlyBracketKeyword_3(parent, next, actIndex, consumed);
+			case 0: return new OseeEnumType_EnumEntriesAssignment_4(parent, next, actIndex, consumed);
+			case 1: return new OseeEnumType_TypeGuidAssignment_3(parent, next, actIndex, consumed);
+			case 2: return new OseeEnumType_LeftCurlyBracketKeyword_2(parent, next, actIndex, consumed);
 			default: return null;
 		}	
 	}	
 }
 
 // "}"
-protected class OseeEnumType_RightCurlyBracketKeyword_6 extends KeywordToken  {
+protected class OseeEnumType_RightCurlyBracketKeyword_5 extends KeywordToken  {
 	
-	public OseeEnumType_RightCurlyBracketKeyword_6(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public OseeEnumType_RightCurlyBracketKeyword_5(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getOseeEnumTypeAccess().getRightCurlyBracketKeyword_6();
+		return grammarAccess.getOseeEnumTypeAccess().getRightCurlyBracketKeyword_5();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new OseeEnumType_EnumEntriesAssignment_5(parent, this, 0, inst);
-			case 1: return new OseeEnumType_TypeGuidAssignment_4(parent, this, 1, inst);
-			case 2: return new OseeEnumType_LeftCurlyBracketKeyword_3(parent, this, 2, inst);
+			case 0: return new OseeEnumType_EnumEntriesAssignment_4(parent, this, 0, inst);
+			case 1: return new OseeEnumType_TypeGuidAssignment_3(parent, this, 1, inst);
+			case 2: return new OseeEnumType_LeftCurlyBracketKeyword_2(parent, this, 2, inst);
 			default: return null;
 		}	
 	}	
@@ -2209,11 +2361,11 @@ protected class OseeEnumType_RightCurlyBracketKeyword_6 extends KeywordToken  {
 /************ begin Rule OseeEnumEntry ****************
  *
  * OseeEnumEntry:
- *   "entry" name=STRING ordinal=WHOLE_NUM_STR?;
+ *   "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR?;
  *
  **/
 
-// "entry" name=STRING ordinal=WHOLE_NUM_STR?
+// "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR?
 protected class OseeEnumEntry_Group extends GroupToken {
 	
 	public OseeEnumEntry_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -2257,7 +2409,7 @@ protected class OseeEnumEntry_EntryKeyword_0 extends KeywordToken  {
 		
 }
 
-// name=STRING
+// name=NAME_REFERENCE
 protected class OseeEnumEntry_NameAssignment_1 extends AssignmentToken  {
 	
 	public OseeEnumEntry_NameAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -2278,9 +2430,9 @@ protected class OseeEnumEntry_NameAssignment_1 extends AssignmentToken  {
 	protected IInstanceDescription tryConsumeVal() {
 		if((value = current.getConsumable("name",true)) == null) return null;
 		IInstanceDescription obj = current.cloneAndConsume("name");
-		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
-			type = AssignmentType.LRC;
-			element = grammarAccess.getOseeEnumEntryAccess().getNameSTRINGTerminalRuleCall_1_0();
+		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
+			type = AssignmentType.DRC;
+			element = grammarAccess.getOseeEnumEntryAccess().getNameNAME_REFERENCEParserRuleCall_1_0();
 			return obj;
 		}
 		return null;
@@ -2323,11 +2475,542 @@ protected class OseeEnumEntry_OrdinalAssignment_2 extends AssignmentToken  {
 /************ end Rule OseeEnumEntry ****************/
 
 
+/************ begin Rule OseeEnumOverride ****************
+ *
+ * OseeEnumOverride:
+ *   "overrides enum" overridenEnumType=[OseeEnumType|NAME_REFERENCE] "{" inheritAll?=
+ *   "inheritAll"? overrideOptions+=OverrideOption* "}";
+ *
+ **/
+
+// "overrides enum" overridenEnumType=[OseeEnumType|NAME_REFERENCE] "{" inheritAll?=
+// "inheritAll"? overrideOptions+=OverrideOption* "}"
+protected class OseeEnumOverride_Group extends GroupToken {
+	
+	public OseeEnumOverride_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Group getGrammarElement() {
+		return grammarAccess.getOseeEnumOverrideAccess().getGroup();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumOverride_RightCurlyBracketKeyword_5(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	public IInstanceDescription tryConsume() {
+		if(!current.isInstanceOf(grammarAccess.getOseeEnumOverrideRule().getType().getClassifier())) return null;
+		return tryConsumeVal();
+	}
+}
+
+// "overrides enum"
+protected class OseeEnumOverride_OverridesEnumKeyword_0 extends KeywordToken  {
+	
+	public OseeEnumOverride_OverridesEnumKeyword_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Keyword getGrammarElement() {
+		return grammarAccess.getOseeEnumOverrideAccess().getOverridesEnumKeyword_0();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			default: return parent.createParentFollower(this, index, index, inst);
+		}	
+	}	
+		
+}
+
+// overridenEnumType=[OseeEnumType|NAME_REFERENCE]
+protected class OseeEnumOverride_OverridenEnumTypeAssignment_1 extends AssignmentToken  {
+	
+	public OseeEnumOverride_OverridenEnumTypeAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getOseeEnumOverrideAccess().getOverridenEnumTypeAssignment_1();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumOverride_OverridesEnumKeyword_0(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("overridenEnumType",true)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("overridenEnumType");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IInstanceDescription param = getDescr((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getOseeEnumOverrideAccess().getOverridenEnumTypeOseeEnumTypeCrossReference_1_0().getType().getClassifier())) {
+				type = AssignmentType.CR;
+				element = grammarAccess.getOseeEnumOverrideAccess().getOverridenEnumTypeOseeEnumTypeCrossReference_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+// "{"
+protected class OseeEnumOverride_LeftCurlyBracketKeyword_2 extends KeywordToken  {
+	
+	public OseeEnumOverride_LeftCurlyBracketKeyword_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Keyword getGrammarElement() {
+		return grammarAccess.getOseeEnumOverrideAccess().getLeftCurlyBracketKeyword_2();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumOverride_OverridenEnumTypeAssignment_1(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+}
+
+// inheritAll?="inheritAll"?
+protected class OseeEnumOverride_InheritAllAssignment_3 extends AssignmentToken  {
+	
+	public OseeEnumOverride_InheritAllAssignment_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getOseeEnumOverrideAccess().getInheritAllAssignment_3();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumOverride_LeftCurlyBracketKeyword_2(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("inheritAll",false)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("inheritAll");
+		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
+			type = AssignmentType.KW;
+			element = grammarAccess.getOseeEnumOverrideAccess().getInheritAllInheritAllKeyword_3_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// overrideOptions+=OverrideOption*
+protected class OseeEnumOverride_OverrideOptionsAssignment_4 extends AssignmentToken  {
+	
+	public OseeEnumOverride_OverrideOptionsAssignment_4(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getOseeEnumOverrideAccess().getOverrideOptionsAssignment_4();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OverrideOption_Alternatives(this, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("overrideOptions",false)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("overrideOptions");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::RuleCallImpl
+			IInstanceDescription param = getDescr((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getOverrideOptionRule().getType().getClassifier())) {
+				type = AssignmentType.PRC;
+				element = grammarAccess.getOseeEnumOverrideAccess().getOverrideOptionsOverrideOptionParserRuleCall_4_0(); 
+				consumed = obj;
+				return param;
+			}
+		}
+		return null;
+	}
+
+	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
+		if(value == inst.getDelegate() && !inst.isConsumed()) return null;
+		switch(index) {
+			case 0: return new OseeEnumOverride_OverrideOptionsAssignment_4(parent, next, actIndex, consumed);
+			case 1: return new OseeEnumOverride_InheritAllAssignment_3(parent, next, actIndex, consumed);
+			case 2: return new OseeEnumOverride_LeftCurlyBracketKeyword_2(parent, next, actIndex, consumed);
+			default: return null;
+		}	
+	}	
+}
+
+// "}"
+protected class OseeEnumOverride_RightCurlyBracketKeyword_5 extends KeywordToken  {
+	
+	public OseeEnumOverride_RightCurlyBracketKeyword_5(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Keyword getGrammarElement() {
+		return grammarAccess.getOseeEnumOverrideAccess().getRightCurlyBracketKeyword_5();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumOverride_OverrideOptionsAssignment_4(parent, this, 0, inst);
+			case 1: return new OseeEnumOverride_InheritAllAssignment_3(parent, this, 1, inst);
+			case 2: return new OseeEnumOverride_LeftCurlyBracketKeyword_2(parent, this, 2, inst);
+			default: return null;
+		}	
+	}	
+		
+}
+
+
+/************ end Rule OseeEnumOverride ****************/
+
+
+/************ begin Rule OverrideOption ****************
+ *
+ * OverrideOption:
+ *   AddEnum|RemoveEnum;
+ *
+ **/
+
+// AddEnum|RemoveEnum
+protected class OverrideOption_Alternatives extends AlternativesToken {
+
+	public OverrideOption_Alternatives(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Alternatives getGrammarElement() {
+		return grammarAccess.getOverrideOptionAccess().getAlternatives();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OverrideOption_AddEnumParserRuleCall_0(parent, this, 0, inst);
+			case 1: return new OverrideOption_RemoveEnumParserRuleCall_1(parent, this, 1, inst);
+			default: return null;
+		}	
+	}	
+		
+	public IInstanceDescription tryConsume() {
+		if(!current.isInstanceOf(grammarAccess.getOverrideOptionRule().getType().getClassifier())) return null;
+		return tryConsumeVal();
+	}
+}
+
+// AddEnum
+protected class OverrideOption_AddEnumParserRuleCall_0 extends RuleCallToken {
+	
+	public OverrideOption_AddEnumParserRuleCall_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public RuleCall getGrammarElement() {
+		return grammarAccess.getOverrideOptionAccess().getAddEnumParserRuleCall_0();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new AddEnum_Group(this, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if(checkForRecursion(AddEnum_Group.class, current)) return null;
+		if(!current.isInstanceOf(grammarAccess.getAddEnumRule().getType().getClassifier())) return null;
+		return current;
+	}
+	
+	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
+		switch(index) {
+			default: return parent.createParentFollower(next, actIndex , index, inst);
+		}	
+	}	
+}
+
+// RemoveEnum
+protected class OverrideOption_RemoveEnumParserRuleCall_1 extends RuleCallToken {
+	
+	public OverrideOption_RemoveEnumParserRuleCall_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public RuleCall getGrammarElement() {
+		return grammarAccess.getOverrideOptionAccess().getRemoveEnumParserRuleCall_1();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new RemoveEnum_Group(this, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if(checkForRecursion(RemoveEnum_Group.class, current)) return null;
+		if(!current.isInstanceOf(grammarAccess.getRemoveEnumRule().getType().getClassifier())) return null;
+		return current;
+	}
+	
+	public AbstractToken createParentFollower(AbstractToken next,	int actIndex, int index, IInstanceDescription inst) {
+		switch(index) {
+			default: return parent.createParentFollower(next, actIndex , index, inst);
+		}	
+	}	
+}
+
+
+/************ end Rule OverrideOption ****************/
+
+
+/************ begin Rule AddEnum ****************
+ *
+ * AddEnum:
+ *   overrideOperation?="add" enumEntry=NAME_REFERENCE ordinal=WHOLE_NUM_STR?;
+ *
+ **/
+
+// overrideOperation?="add" enumEntry=NAME_REFERENCE ordinal=WHOLE_NUM_STR?
+protected class AddEnum_Group extends GroupToken {
+	
+	public AddEnum_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Group getGrammarElement() {
+		return grammarAccess.getAddEnumAccess().getGroup();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new AddEnum_OrdinalAssignment_2(parent, this, 0, inst);
+			case 1: return new AddEnum_EnumEntryAssignment_1(parent, this, 1, inst);
+			default: return null;
+		}	
+	}	
+		
+	public IInstanceDescription tryConsume() {
+		if(!current.isInstanceOf(grammarAccess.getAddEnumRule().getType().getClassifier())) return null;
+		return tryConsumeVal();
+	}
+}
+
+// overrideOperation?="add"
+protected class AddEnum_OverrideOperationAssignment_0 extends AssignmentToken  {
+	
+	public AddEnum_OverrideOperationAssignment_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getAddEnumAccess().getOverrideOperationAssignment_0();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			default: return parent.createParentFollower(this, index, index, inst);
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("overrideOperation",true)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("overrideOperation");
+		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
+			type = AssignmentType.KW;
+			element = grammarAccess.getAddEnumAccess().getOverrideOperationAddKeyword_0_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// enumEntry=NAME_REFERENCE
+protected class AddEnum_EnumEntryAssignment_1 extends AssignmentToken  {
+	
+	public AddEnum_EnumEntryAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getAddEnumAccess().getEnumEntryAssignment_1();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new AddEnum_OverrideOperationAssignment_0(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("enumEntry",true)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("enumEntry");
+		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
+			type = AssignmentType.DRC;
+			element = grammarAccess.getAddEnumAccess().getEnumEntryNAME_REFERENCEParserRuleCall_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// ordinal=WHOLE_NUM_STR?
+protected class AddEnum_OrdinalAssignment_2 extends AssignmentToken  {
+	
+	public AddEnum_OrdinalAssignment_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getAddEnumAccess().getOrdinalAssignment_2();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new AddEnum_EnumEntryAssignment_1(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("ordinal",false)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("ordinal");
+		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
+			type = AssignmentType.LRC;
+			element = grammarAccess.getAddEnumAccess().getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+
+/************ end Rule AddEnum ****************/
+
+
+/************ begin Rule RemoveEnum ****************
+ *
+ * RemoveEnum:
+ *   overrideOperation?="remove" enumEntry=[OseeEnumEntry|NAME_REFERENCE];
+ *
+ **/
+
+// overrideOperation?="remove" enumEntry=[OseeEnumEntry|NAME_REFERENCE]
+protected class RemoveEnum_Group extends GroupToken {
+	
+	public RemoveEnum_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Group getGrammarElement() {
+		return grammarAccess.getRemoveEnumAccess().getGroup();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new RemoveEnum_EnumEntryAssignment_1(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	public IInstanceDescription tryConsume() {
+		if(!current.isInstanceOf(grammarAccess.getRemoveEnumRule().getType().getClassifier())) return null;
+		return tryConsumeVal();
+	}
+}
+
+// overrideOperation?="remove"
+protected class RemoveEnum_OverrideOperationAssignment_0 extends AssignmentToken  {
+	
+	public RemoveEnum_OverrideOperationAssignment_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getRemoveEnumAccess().getOverrideOperationAssignment_0();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			default: return parent.createParentFollower(this, index, index, inst);
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("overrideOperation",true)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("overrideOperation");
+		if(Boolean.TRUE.equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
+			type = AssignmentType.KW;
+			element = grammarAccess.getRemoveEnumAccess().getOverrideOperationRemoveKeyword_0_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
+// enumEntry=[OseeEnumEntry|NAME_REFERENCE]
+protected class RemoveEnum_EnumEntryAssignment_1 extends AssignmentToken  {
+	
+	public RemoveEnum_EnumEntryAssignment_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getRemoveEnumAccess().getEnumEntryAssignment_1();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new RemoveEnum_OverrideOperationAssignment_0(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("enumEntry",true)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("enumEntry");
+		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
+			IInstanceDescription param = getDescr((EObject)value);
+			if(param.isInstanceOf(grammarAccess.getRemoveEnumAccess().getEnumEntryOseeEnumEntryCrossReference_1_0().getType().getClassifier())) {
+				type = AssignmentType.CR;
+				element = grammarAccess.getRemoveEnumAccess().getEnumEntryOseeEnumEntryCrossReference_1_0(); 
+				return obj;
+			}
+		}
+		return null;
+	}
+
+}
+
+
+/************ end Rule RemoveEnum ****************/
+
+
 /************ begin Rule RelationType ****************
  *
  * RelationType:
- *   "relationType" name=NAME_REFERENCE ("overrides" override=[RelationType|
- *   NAME_REFERENCE])? "{" typeGuid=STRING? "sideAName" sideAName=STRING
+ *   "relationType" name=NAME_REFERENCE "{" typeGuid=STRING? "sideAName" sideAName=STRING
  *   "sideAArtifactType" sideAArtifactType=[ArtifactType|NAME_REFERENCE] "sideBName"
  *   sideBName=STRING "sideBArtifactType" sideBArtifactType=[ArtifactType|
  *   NAME_REFERENCE] "defaultOrderType" defaultOrderType=RelationOrderType
@@ -2335,8 +3018,7 @@ protected class OseeEnumEntry_OrdinalAssignment_2 extends AssignmentToken  {
  *
  **/
 
-// "relationType" name=NAME_REFERENCE ("overrides" override=[RelationType|
-// NAME_REFERENCE])? "{" typeGuid=STRING? "sideAName" sideAName=STRING
+// "relationType" name=NAME_REFERENCE "{" typeGuid=STRING? "sideAName" sideAName=STRING
 // "sideAArtifactType" sideAArtifactType=[ArtifactType|NAME_REFERENCE] "sideBName"
 // sideBName=STRING "sideBArtifactType" sideBArtifactType=[ArtifactType|
 // NAME_REFERENCE] "defaultOrderType" defaultOrderType=RelationOrderType
@@ -2353,7 +3035,7 @@ protected class RelationType_Group extends GroupToken {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_RightCurlyBracketKeyword_17(parent, this, 0, inst);
+			case 0: return new RelationType_RightCurlyBracketKeyword_16(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2414,35 +3096,15 @@ protected class RelationType_NameAssignment_1 extends AssignmentToken  {
 
 }
 
-// ("overrides" override=[RelationType|NAME_REFERENCE])?
-protected class RelationType_Group_2 extends GroupToken {
+// "{"
+protected class RelationType_LeftCurlyBracketKeyword_2 extends KeywordToken  {
 	
-	public RelationType_Group_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Group getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getGroup_2();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new RelationType_OverrideAssignment_2_1(parent, this, 0, inst);
-			default: return null;
-		}	
-	}	
-		
-}
-
-// "overrides"
-protected class RelationType_OverridesKeyword_2_0 extends KeywordToken  {
-	
-	public RelationType_OverridesKeyword_2_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_LeftCurlyBracketKeyword_2(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getOverridesKeyword_2_0();
+		return grammarAccess.getRelationTypeAccess().getLeftCurlyBracketKeyword_2();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
@@ -2454,76 +3116,20 @@ protected class RelationType_OverridesKeyword_2_0 extends KeywordToken  {
 		
 }
 
-// override=[RelationType|NAME_REFERENCE]
-protected class RelationType_OverrideAssignment_2_1 extends AssignmentToken  {
-	
-	public RelationType_OverrideAssignment_2_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Assignment getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getOverrideAssignment_2_1();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new RelationType_OverridesKeyword_2_0(parent, this, 0, inst);
-			default: return null;
-		}	
-	}	
-		
-	protected IInstanceDescription tryConsumeVal() {
-		if((value = current.getConsumable("override",false)) == null) return null;
-		IInstanceDescription obj = current.cloneAndConsume("override");
-		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
-			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getRelationTypeAccess().getOverrideRelationTypeCrossReference_2_1_0().getType().getClassifier())) {
-				type = AssignmentType.CR;
-				element = grammarAccess.getRelationTypeAccess().getOverrideRelationTypeCrossReference_2_1_0(); 
-				return obj;
-			}
-		}
-		return null;
-	}
-
-}
-
-
-// "{"
-protected class RelationType_LeftCurlyBracketKeyword_3 extends KeywordToken  {
-	
-	public RelationType_LeftCurlyBracketKeyword_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
-		super(parent, next, no, current);
-	}
-	
-	public Keyword getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getLeftCurlyBracketKeyword_3();
-	}
-
-	public AbstractToken createFollower(int index, IInstanceDescription inst) {
-		switch(index) {
-			case 0: return new RelationType_Group_2(parent, this, 0, inst);
-			case 1: return new RelationType_NameAssignment_1(parent, this, 1, inst);
-			default: return null;
-		}	
-	}	
-		
-}
-
 // typeGuid=STRING?
-protected class RelationType_TypeGuidAssignment_4 extends AssignmentToken  {
+protected class RelationType_TypeGuidAssignment_3 extends AssignmentToken  {
 	
-	public RelationType_TypeGuidAssignment_4(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_TypeGuidAssignment_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getTypeGuidAssignment_4();
+		return grammarAccess.getRelationTypeAccess().getTypeGuidAssignment_3();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_LeftCurlyBracketKeyword_3(parent, this, 0, inst);
+			case 0: return new RelationType_LeftCurlyBracketKeyword_2(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2533,7 +3139,7 @@ protected class RelationType_TypeGuidAssignment_4 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("typeGuid");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
 			type = AssignmentType.LRC;
-			element = grammarAccess.getRelationTypeAccess().getTypeGuidSTRINGTerminalRuleCall_4_0();
+			element = grammarAccess.getRelationTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_0();
 			return obj;
 		}
 		return null;
@@ -2542,20 +3148,20 @@ protected class RelationType_TypeGuidAssignment_4 extends AssignmentToken  {
 }
 
 // "sideAName"
-protected class RelationType_SideANameKeyword_5 extends KeywordToken  {
+protected class RelationType_SideANameKeyword_4 extends KeywordToken  {
 	
-	public RelationType_SideANameKeyword_5(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_SideANameKeyword_4(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getSideANameKeyword_5();
+		return grammarAccess.getRelationTypeAccess().getSideANameKeyword_4();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_TypeGuidAssignment_4(parent, this, 0, inst);
-			case 1: return new RelationType_LeftCurlyBracketKeyword_3(parent, this, 1, inst);
+			case 0: return new RelationType_TypeGuidAssignment_3(parent, this, 0, inst);
+			case 1: return new RelationType_LeftCurlyBracketKeyword_2(parent, this, 1, inst);
 			default: return null;
 		}	
 	}	
@@ -2563,19 +3169,19 @@ protected class RelationType_SideANameKeyword_5 extends KeywordToken  {
 }
 
 // sideAName=STRING
-protected class RelationType_SideANameAssignment_6 extends AssignmentToken  {
+protected class RelationType_SideANameAssignment_5 extends AssignmentToken  {
 	
-	public RelationType_SideANameAssignment_6(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_SideANameAssignment_5(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getSideANameAssignment_6();
+		return grammarAccess.getRelationTypeAccess().getSideANameAssignment_5();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_SideANameKeyword_5(parent, this, 0, inst);
+			case 0: return new RelationType_SideANameKeyword_4(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2585,7 +3191,7 @@ protected class RelationType_SideANameAssignment_6 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("sideAName");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
 			type = AssignmentType.LRC;
-			element = grammarAccess.getRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_6_0();
+			element = grammarAccess.getRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_5_0();
 			return obj;
 		}
 		return null;
@@ -2594,19 +3200,19 @@ protected class RelationType_SideANameAssignment_6 extends AssignmentToken  {
 }
 
 // "sideAArtifactType"
-protected class RelationType_SideAArtifactTypeKeyword_7 extends KeywordToken  {
+protected class RelationType_SideAArtifactTypeKeyword_6 extends KeywordToken  {
 	
-	public RelationType_SideAArtifactTypeKeyword_7(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_SideAArtifactTypeKeyword_6(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getSideAArtifactTypeKeyword_7();
+		return grammarAccess.getRelationTypeAccess().getSideAArtifactTypeKeyword_6();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_SideANameAssignment_6(parent, this, 0, inst);
+			case 0: return new RelationType_SideANameAssignment_5(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2614,19 +3220,19 @@ protected class RelationType_SideAArtifactTypeKeyword_7 extends KeywordToken  {
 }
 
 // sideAArtifactType=[ArtifactType|NAME_REFERENCE]
-protected class RelationType_SideAArtifactTypeAssignment_8 extends AssignmentToken  {
+protected class RelationType_SideAArtifactTypeAssignment_7 extends AssignmentToken  {
 	
-	public RelationType_SideAArtifactTypeAssignment_8(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_SideAArtifactTypeAssignment_7(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getSideAArtifactTypeAssignment_8();
+		return grammarAccess.getRelationTypeAccess().getSideAArtifactTypeAssignment_7();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_SideAArtifactTypeKeyword_7(parent, this, 0, inst);
+			case 0: return new RelationType_SideAArtifactTypeKeyword_6(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2636,9 +3242,9 @@ protected class RelationType_SideAArtifactTypeAssignment_8 extends AssignmentTok
 		IInstanceDescription obj = current.cloneAndConsume("sideAArtifactType");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeArtifactTypeCrossReference_8_0().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeArtifactTypeCrossReference_7_0().getType().getClassifier())) {
 				type = AssignmentType.CR;
-				element = grammarAccess.getRelationTypeAccess().getSideAArtifactTypeArtifactTypeCrossReference_8_0(); 
+				element = grammarAccess.getRelationTypeAccess().getSideAArtifactTypeArtifactTypeCrossReference_7_0(); 
 				return obj;
 			}
 		}
@@ -2648,19 +3254,19 @@ protected class RelationType_SideAArtifactTypeAssignment_8 extends AssignmentTok
 }
 
 // "sideBName"
-protected class RelationType_SideBNameKeyword_9 extends KeywordToken  {
+protected class RelationType_SideBNameKeyword_8 extends KeywordToken  {
 	
-	public RelationType_SideBNameKeyword_9(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_SideBNameKeyword_8(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getSideBNameKeyword_9();
+		return grammarAccess.getRelationTypeAccess().getSideBNameKeyword_8();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_SideAArtifactTypeAssignment_8(parent, this, 0, inst);
+			case 0: return new RelationType_SideAArtifactTypeAssignment_7(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2668,19 +3274,19 @@ protected class RelationType_SideBNameKeyword_9 extends KeywordToken  {
 }
 
 // sideBName=STRING
-protected class RelationType_SideBNameAssignment_10 extends AssignmentToken  {
+protected class RelationType_SideBNameAssignment_9 extends AssignmentToken  {
 	
-	public RelationType_SideBNameAssignment_10(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_SideBNameAssignment_9(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getSideBNameAssignment_10();
+		return grammarAccess.getRelationTypeAccess().getSideBNameAssignment_9();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_SideBNameKeyword_9(parent, this, 0, inst);
+			case 0: return new RelationType_SideBNameKeyword_8(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2690,7 +3296,7 @@ protected class RelationType_SideBNameAssignment_10 extends AssignmentToken  {
 		IInstanceDescription obj = current.cloneAndConsume("sideBName");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
 			type = AssignmentType.LRC;
-			element = grammarAccess.getRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_10_0();
+			element = grammarAccess.getRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_9_0();
 			return obj;
 		}
 		return null;
@@ -2699,19 +3305,19 @@ protected class RelationType_SideBNameAssignment_10 extends AssignmentToken  {
 }
 
 // "sideBArtifactType"
-protected class RelationType_SideBArtifactTypeKeyword_11 extends KeywordToken  {
+protected class RelationType_SideBArtifactTypeKeyword_10 extends KeywordToken  {
 	
-	public RelationType_SideBArtifactTypeKeyword_11(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_SideBArtifactTypeKeyword_10(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getSideBArtifactTypeKeyword_11();
+		return grammarAccess.getRelationTypeAccess().getSideBArtifactTypeKeyword_10();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_SideBNameAssignment_10(parent, this, 0, inst);
+			case 0: return new RelationType_SideBNameAssignment_9(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2719,19 +3325,19 @@ protected class RelationType_SideBArtifactTypeKeyword_11 extends KeywordToken  {
 }
 
 // sideBArtifactType=[ArtifactType|NAME_REFERENCE]
-protected class RelationType_SideBArtifactTypeAssignment_12 extends AssignmentToken  {
+protected class RelationType_SideBArtifactTypeAssignment_11 extends AssignmentToken  {
 	
-	public RelationType_SideBArtifactTypeAssignment_12(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_SideBArtifactTypeAssignment_11(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getSideBArtifactTypeAssignment_12();
+		return grammarAccess.getRelationTypeAccess().getSideBArtifactTypeAssignment_11();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_SideBArtifactTypeKeyword_11(parent, this, 0, inst);
+			case 0: return new RelationType_SideBArtifactTypeKeyword_10(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2741,9 +3347,9 @@ protected class RelationType_SideBArtifactTypeAssignment_12 extends AssignmentTo
 		IInstanceDescription obj = current.cloneAndConsume("sideBArtifactType");
 		if(value instanceof EObject) { // org::eclipse::xtext::impl::CrossReferenceImpl
 			IInstanceDescription param = getDescr((EObject)value);
-			if(param.isInstanceOf(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeArtifactTypeCrossReference_12_0().getType().getClassifier())) {
+			if(param.isInstanceOf(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeArtifactTypeCrossReference_11_0().getType().getClassifier())) {
 				type = AssignmentType.CR;
-				element = grammarAccess.getRelationTypeAccess().getSideBArtifactTypeArtifactTypeCrossReference_12_0(); 
+				element = grammarAccess.getRelationTypeAccess().getSideBArtifactTypeArtifactTypeCrossReference_11_0(); 
 				return obj;
 			}
 		}
@@ -2753,19 +3359,19 @@ protected class RelationType_SideBArtifactTypeAssignment_12 extends AssignmentTo
 }
 
 // "defaultOrderType"
-protected class RelationType_DefaultOrderTypeKeyword_13 extends KeywordToken  {
+protected class RelationType_DefaultOrderTypeKeyword_12 extends KeywordToken  {
 	
-	public RelationType_DefaultOrderTypeKeyword_13(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_DefaultOrderTypeKeyword_12(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getDefaultOrderTypeKeyword_13();
+		return grammarAccess.getRelationTypeAccess().getDefaultOrderTypeKeyword_12();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_SideBArtifactTypeAssignment_12(parent, this, 0, inst);
+			case 0: return new RelationType_SideBArtifactTypeAssignment_11(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2773,19 +3379,19 @@ protected class RelationType_DefaultOrderTypeKeyword_13 extends KeywordToken  {
 }
 
 // defaultOrderType=RelationOrderType
-protected class RelationType_DefaultOrderTypeAssignment_14 extends AssignmentToken  {
+protected class RelationType_DefaultOrderTypeAssignment_13 extends AssignmentToken  {
 	
-	public RelationType_DefaultOrderTypeAssignment_14(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_DefaultOrderTypeAssignment_13(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getDefaultOrderTypeAssignment_14();
+		return grammarAccess.getRelationTypeAccess().getDefaultOrderTypeAssignment_13();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_DefaultOrderTypeKeyword_13(parent, this, 0, inst);
+			case 0: return new RelationType_DefaultOrderTypeKeyword_12(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2795,7 +3401,7 @@ protected class RelationType_DefaultOrderTypeAssignment_14 extends AssignmentTok
 		IInstanceDescription obj = current.cloneAndConsume("defaultOrderType");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.DRC;
-			element = grammarAccess.getRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0();
+			element = grammarAccess.getRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_13_0();
 			return obj;
 		}
 		return null;
@@ -2804,19 +3410,19 @@ protected class RelationType_DefaultOrderTypeAssignment_14 extends AssignmentTok
 }
 
 // "multiplicity"
-protected class RelationType_MultiplicityKeyword_15 extends KeywordToken  {
+protected class RelationType_MultiplicityKeyword_14 extends KeywordToken  {
 	
-	public RelationType_MultiplicityKeyword_15(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_MultiplicityKeyword_14(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getMultiplicityKeyword_15();
+		return grammarAccess.getRelationTypeAccess().getMultiplicityKeyword_14();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_DefaultOrderTypeAssignment_14(parent, this, 0, inst);
+			case 0: return new RelationType_DefaultOrderTypeAssignment_13(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2824,19 +3430,19 @@ protected class RelationType_MultiplicityKeyword_15 extends KeywordToken  {
 }
 
 // multiplicity=RelationMultiplicityEnum
-protected class RelationType_MultiplicityAssignment_16 extends AssignmentToken  {
+protected class RelationType_MultiplicityAssignment_15 extends AssignmentToken  {
 	
-	public RelationType_MultiplicityAssignment_16(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_MultiplicityAssignment_15(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Assignment getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getMultiplicityAssignment_16();
+		return grammarAccess.getRelationTypeAccess().getMultiplicityAssignment_15();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_MultiplicityKeyword_15(parent, this, 0, inst);
+			case 0: return new RelationType_MultiplicityKeyword_14(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	
@@ -2846,7 +3452,7 @@ protected class RelationType_MultiplicityAssignment_16 extends AssignmentToken  
 		IInstanceDescription obj = current.cloneAndConsume("multiplicity");
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.ERC;
-			element = grammarAccess.getRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_16_0();
+			element = grammarAccess.getRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_15_0();
 			return obj;
 		}
 		return null;
@@ -2855,19 +3461,19 @@ protected class RelationType_MultiplicityAssignment_16 extends AssignmentToken  
 }
 
 // "}"
-protected class RelationType_RightCurlyBracketKeyword_17 extends KeywordToken  {
+protected class RelationType_RightCurlyBracketKeyword_16 extends KeywordToken  {
 	
-	public RelationType_RightCurlyBracketKeyword_17(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+	public RelationType_RightCurlyBracketKeyword_16(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
 		super(parent, next, no, current);
 	}
 	
 	public Keyword getGrammarElement() {
-		return grammarAccess.getRelationTypeAccess().getRightCurlyBracketKeyword_17();
+		return grammarAccess.getRelationTypeAccess().getRightCurlyBracketKeyword_16();
 	}
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new RelationType_MultiplicityAssignment_16(parent, this, 0, inst);
+			case 0: return new RelationType_MultiplicityAssignment_15(parent, this, 0, inst);
 			default: return null;
 		}	
 	}	

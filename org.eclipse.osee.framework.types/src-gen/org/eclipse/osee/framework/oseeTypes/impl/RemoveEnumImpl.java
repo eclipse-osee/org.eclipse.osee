@@ -6,53 +6,48 @@
  */
 package org.eclipse.osee.framework.oseeTypes.impl;
 
-import java.util.Collection;
-
-import org.eclipse.emf.common.notify.NotificationChain;
-
-import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
-import org.eclipse.emf.ecore.util.EObjectContainmentEList;
-import org.eclipse.emf.ecore.util.InternalEList;
+import org.eclipse.emf.ecore.impl.ENotificationImpl;
 
 import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
-import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
+import org.eclipse.osee.framework.oseeTypes.RemoveEnum;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Osee Enum Type</b></em>'.
+ * An implementation of the model object '<em><b>Remove Enum</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumTypeImpl#getEnumEntries <em>Enum Entries</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.RemoveEnumImpl#getEnumEntry <em>Enum Entry</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
+public class RemoveEnumImpl extends OverrideOptionImpl implements RemoveEnum
 {
   /**
-   * The cached value of the '{@link #getEnumEntries() <em>Enum Entries</em>}' containment reference list.
+   * The cached value of the '{@link #getEnumEntry() <em>Enum Entry</em>}' reference.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
-   * @see #getEnumEntries()
+   * @see #getEnumEntry()
    * @generated
    * @ordered
    */
-  protected EList<OseeEnumEntry> enumEntries;
+  protected OseeEnumEntry enumEntry;
 
   /**
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    */
-  protected OseeEnumTypeImpl()
+  protected RemoveEnumImpl()
   {
     super();
   }
@@ -65,7 +60,7 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   @Override
   protected EClass eStaticClass()
   {
-    return OseeTypesPackage.Literals.OSEE_ENUM_TYPE;
+    return OseeTypesPackage.Literals.REMOVE_ENUM;
   }
 
   /**
@@ -73,13 +68,19 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
    * <!-- end-user-doc -->
    * @generated
    */
-  public EList<OseeEnumEntry> getEnumEntries()
+  public OseeEnumEntry getEnumEntry()
   {
-    if (enumEntries == null)
+    if (enumEntry != null && enumEntry.eIsProxy())
     {
-      enumEntries = new EObjectContainmentEList<OseeEnumEntry>(OseeEnumEntry.class, this, OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES);
+      InternalEObject oldEnumEntry = (InternalEObject)enumEntry;
+      enumEntry = (OseeEnumEntry)eResolveProxy(oldEnumEntry);
+      if (enumEntry != oldEnumEntry)
+      {
+        if (eNotificationRequired())
+          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.REMOVE_ENUM__ENUM_ENTRY, oldEnumEntry, enumEntry));
+      }
     }
-    return enumEntries;
+    return enumEntry;
   }
 
   /**
@@ -87,15 +88,22 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
    * <!-- end-user-doc -->
    * @generated
    */
-  @Override
-  public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs)
+  public OseeEnumEntry basicGetEnumEntry()
   {
-    switch (featureID)
-    {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
-        return ((InternalEList<?>)getEnumEntries()).basicRemove(otherEnd, msgs);
-    }
-    return super.eInverseRemove(otherEnd, featureID, msgs);
+    return enumEntry;
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
+  public void setEnumEntry(OseeEnumEntry newEnumEntry)
+  {
+    OseeEnumEntry oldEnumEntry = enumEntry;
+    enumEntry = newEnumEntry;
+    if (eNotificationRequired())
+      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.REMOVE_ENUM__ENUM_ENTRY, oldEnumEntry, enumEntry));
   }
 
   /**
@@ -108,8 +116,9 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
-        return getEnumEntries();
+      case OseeTypesPackage.REMOVE_ENUM__ENUM_ENTRY:
+        if (resolve) return getEnumEntry();
+        return basicGetEnumEntry();
     }
     return super.eGet(featureID, resolve, coreType);
   }
@@ -119,15 +128,13 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
    * <!-- end-user-doc -->
    * @generated
    */
-  @SuppressWarnings("unchecked")
   @Override
   public void eSet(int featureID, Object newValue)
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
-        getEnumEntries().clear();
-        getEnumEntries().addAll((Collection<? extends OseeEnumEntry>)newValue);
+      case OseeTypesPackage.REMOVE_ENUM__ENUM_ENTRY:
+        setEnumEntry((OseeEnumEntry)newValue);
         return;
     }
     super.eSet(featureID, newValue);
@@ -143,8 +150,8 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
-        getEnumEntries().clear();
+      case OseeTypesPackage.REMOVE_ENUM__ENUM_ENTRY:
+        setEnumEntry((OseeEnumEntry)null);
         return;
     }
     super.eUnset(featureID);
@@ -160,10 +167,10 @@ public class OseeEnumTypeImpl extends OseeTypeImpl implements OseeEnumType
   {
     switch (featureID)
     {
-      case OseeTypesPackage.OSEE_ENUM_TYPE__ENUM_ENTRIES:
-        return enumEntries != null && !enumEntries.isEmpty();
+      case OseeTypesPackage.REMOVE_ENUM__ENUM_ENTRY:
+        return enumEntry != null;
     }
     return super.eIsSet(featureID);
   }
 
-} //OseeEnumTypeImpl
+} //RemoveEnumImpl

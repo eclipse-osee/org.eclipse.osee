@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#isAbstract <em>Abstract</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getSuperArtifactTypes <em>Super Artifact Types</em>}</li>
- *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getOverride <em>Override</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.impl.ArtifactTypeImpl#getValidAttributeTypes <em>Valid Attribute Types</em>}</li>
  * </ul>
  * </p>
@@ -73,16 +72,6 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
    * @ordered
    */
   protected EList<ArtifactType> superArtifactTypes;
-
-  /**
-   * The cached value of the '{@link #getOverride() <em>Override</em>}' reference.
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @see #getOverride()
-   * @generated
-   * @ordered
-   */
-  protected ArtifactType override;
 
   /**
    * The cached value of the '{@link #getValidAttributeTypes() <em>Valid Attribute Types</em>}' containment reference list.
@@ -157,49 +146,6 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
    * <!-- end-user-doc -->
    * @generated
    */
-  public ArtifactType getOverride()
-  {
-    if (override != null && override.eIsProxy())
-    {
-      InternalEObject oldOverride = (InternalEObject)override;
-      override = (ArtifactType)eResolveProxy(oldOverride);
-      if (override != oldOverride)
-      {
-        if (eNotificationRequired())
-          eNotify(new ENotificationImpl(this, Notification.RESOLVE, OseeTypesPackage.ARTIFACT_TYPE__OVERRIDE, oldOverride, override));
-      }
-    }
-    return override;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public ArtifactType basicGetOverride()
-  {
-    return override;
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
-  public void setOverride(ArtifactType newOverride)
-  {
-    ArtifactType oldOverride = override;
-    override = newOverride;
-    if (eNotificationRequired())
-      eNotify(new ENotificationImpl(this, Notification.SET, OseeTypesPackage.ARTIFACT_TYPE__OVERRIDE, oldOverride, override));
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EList<AttributeTypeRef> getValidAttributeTypes()
   {
     if (validAttributeTypes == null)
@@ -239,9 +185,6 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
         return isAbstract();
       case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
         return getSuperArtifactTypes();
-      case OseeTypesPackage.ARTIFACT_TYPE__OVERRIDE:
-        if (resolve) return getOverride();
-        return basicGetOverride();
       case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
         return getValidAttributeTypes();
     }
@@ -265,9 +208,6 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
       case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
         getSuperArtifactTypes().clear();
         getSuperArtifactTypes().addAll((Collection<? extends ArtifactType>)newValue);
-        return;
-      case OseeTypesPackage.ARTIFACT_TYPE__OVERRIDE:
-        setOverride((ArtifactType)newValue);
         return;
       case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
         getValidAttributeTypes().clear();
@@ -293,9 +233,6 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
       case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
         getSuperArtifactTypes().clear();
         return;
-      case OseeTypesPackage.ARTIFACT_TYPE__OVERRIDE:
-        setOverride((ArtifactType)null);
-        return;
       case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
         getValidAttributeTypes().clear();
         return;
@@ -317,8 +254,6 @@ public class ArtifactTypeImpl extends OseeTypeImpl implements ArtifactType
         return abstract_ != ABSTRACT_EDEFAULT;
       case OseeTypesPackage.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES:
         return superArtifactTypes != null && !superArtifactTypes.isEmpty();
-      case OseeTypesPackage.ARTIFACT_TYPE__OVERRIDE:
-        return override != null;
       case OseeTypesPackage.ARTIFACT_TYPE__VALID_ATTRIBUTE_TYPES:
         return validAttributeTypes != null && !validAttributeTypes.isEmpty();
     }

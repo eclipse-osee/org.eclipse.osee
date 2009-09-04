@@ -17,6 +17,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
@@ -71,12 +72,23 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
       return "\"" + name + "\"";
    }
 
-   private OseeType getObject(String name, Class<? extends OseeType> classToLookFor) {
-      for (OseeType oseeTypes : getCurrentModel().getTypes()) {
-         if (classToLookFor.isAssignableFrom(oseeTypes.getClass())) {
-            if (name.equals(oseeTypes.getName())) {
-               return classToLookFor.cast(oseeTypes);
-            }
+   private OseeType getObject(String name, Class<? extends OseeType> classToLookFor) throws OseeArgumentException {
+      EList<? extends OseeType> types;
+
+      if (classToLookFor.equals(ArtifactType.class)) {
+         types = getCurrentModel().getArtifactTypes();
+      } else if (classToLookFor.equals(AttributeType.class)) {
+         types = getCurrentModel().getAttributeTypes();
+      } else if (classToLookFor.equals(RelationType.class)) {
+         types = getCurrentModel().getRelationTypes();
+      } else if (classToLookFor.equals(OseeEnumType.class)) {
+         types = getCurrentModel().getEnumTypes();
+      } else {
+         throw new OseeArgumentException(classToLookFor.getName() + " not a supported type");
+      }
+      for (OseeType oseeTypes : types) {
+         if (name.equals(oseeTypes.getName())) {
+            return classToLookFor.cast(oseeTypes);
          }
       }
       return null;
@@ -107,7 +119,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
       if (types == null) {
          ArtifactType artifactType = factory.createArtifactType();
          artifactType.setName(id);
-         getCurrentModel().getTypes().add(artifactType);
+         getCurrentModel().getArtifactTypes().add(artifactType);
       }
    }
 
@@ -147,7 +159,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
          if (enumType != null) {
             attributeType.setEnumType(enumType);
          }
-         getCurrentModel().getTypes().add(attributeType);
+         getCurrentModel().getAttributeTypes().add(attributeType);
       }
    }
 
@@ -192,7 +204,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
             arranger = "Unordered";
          }
          relationType.setDefaultOrderType(arranger);
-         getCurrentModel().getTypes().add(relationType);
+         getCurrentModel().getRelationTypes().add(relationType);
       }
    }
 
@@ -304,7 +316,7 @@ public class ExcelToEMFModel implements IOseeDataTypeProcessor {
             oseeEnum.setOrdinal(String.valueOf(entry.getSecond()));
             oseeEnumType.getEnumEntries().add(oseeEnum);
          }
-         getCurrentModel().getTypes().add(oseeEnumType);
+         getCurrentModel().getEnumTypes().add(oseeEnumType);
       } else {
          oseeEnumType = (OseeEnumType) types;
       }
