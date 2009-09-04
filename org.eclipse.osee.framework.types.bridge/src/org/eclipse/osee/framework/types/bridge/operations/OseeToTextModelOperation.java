@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.types.bridge.operations;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -7,28 +17,30 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class OseeToTextModelOperation extends AbstractOperation {
-	private final java.net.URI resource;
+   private final java.net.URI resource;
 
-	public OseeToTextModelOperation(java.net.URI resource) {
-		super("OSEE to Text Model", Activator.PLUGIN_ID);
-		this.resource = resource;
-	}
+   public OseeToTextModelOperation(java.net.URI resource) {
+      super("OSEE to Text Model", Activator.PLUGIN_ID);
+      this.resource = resource;
+   }
 
-	@Override
-	protected void doWork(IProgressMonitor monitor) throws Exception {
-		// TODO Add work here
-		AttributeTypeManager.getAllTypes();
-		RelationTypeManager.getAllTypes();
-		ArtifactTypeManager.getAllTypes();
-		// TypeValidityManager.getAttributeTypesFromArtifactType(artifactType,
-		// branch);
+   @Override
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      // TODO Add work here
+      AttributeTypeManager.getAllTypes();
+      RelationTypeManager.getAllTypes();
+      ArtifactTypeManager.getAllTypes();
+      // TypeValidityManager.getAttributeTypesFromArtifactType(artifactType,
+      // branch);
 
-	
-		// Write Model to File;
+      // Write Model to File;
 
-		// model.
-		// resource.save(outputStream, options);
-	}
+      // model.
+      // resource.save(outputStream, options);
+   }
 
 }

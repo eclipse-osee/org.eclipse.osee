@@ -24,6 +24,9 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.skynet.core.importing.ExcelOseeTypeDataParser;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 
+/**
+ * @author Roberto E. Escobar
+ */
 public class OseeExcelImportOperation extends AbstractOperation {
    private final File sourceFile;
    private final Map<String, OseeTypeModel> models;

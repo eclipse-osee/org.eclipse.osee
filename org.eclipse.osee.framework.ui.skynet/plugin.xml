@@ -53,11 +53,6 @@
             Import artifact data into OSEE.
          </description>
 		</wizard>
-		<wizard category="org.eclipse.osee.define.import.category" class="org.eclipse.osee.framework.ui.skynet.Import.ImportMetaWizard" icon="images/gears.gif" id="osee.define.artifact.Import.ImportMetaWizard" name="OSEE Types">
-			<description>
-            Import OSEE configuration information.
-         </description>
-		</wizard>
 		<category id="org.eclipse.osee.define.import.category" name="OSEE">
       </category>
   	</extension>  	

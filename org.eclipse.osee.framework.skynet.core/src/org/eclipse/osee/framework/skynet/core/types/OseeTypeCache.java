@@ -212,7 +212,9 @@ public class OseeTypeCache {
          }
          nameToTypeMap.remove(type.getName());
          guidToTypeMap.remove(type.getGuid());
-         idToTypeMap.remove(type.getTypeId());
+         if (type.getTypeId() != BaseOseeType.UNPERSISTTED_VALUE) {
+            idToTypeMap.remove(type.getTypeId());
+         }
       }
 
       public void cacheType(T type) throws OseeCoreException {
@@ -248,7 +250,7 @@ public class OseeTypeCache {
 
       protected Collection<T> getDirtyTypes() throws OseeCoreException {
          ensurePopulated();
-         Collection<T> dirtyItems = new ArrayList<T>();
+         Collection<T> dirtyItems = new HashSet<T>();
          for (T type : guidToTypeMap.values()) {
             if (type.isDirty()) {
                dirtyItems.add(type);
@@ -278,7 +280,7 @@ public class OseeTypeCache {
 
       public void storeByGuid(Collection<String> guids) throws OseeCoreException {
          ensurePopulated();
-         List<T> items = new ArrayList<T>();
+         Collection<T> items = new HashSet<T>();
          for (String guid : guids) {
             T type = getTypeByGuid(guid);
             if (type == null) {

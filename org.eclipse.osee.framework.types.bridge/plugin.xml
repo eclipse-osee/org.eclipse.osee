@@ -4,28 +4,24 @@
    <extension
          point="org.eclipse.ui.importWizards">
       <wizard
+            category="org.eclipse.osee.define.import.category"
             class="org.eclipse.osee.framework.types.bridge.wizards.OseeTypesImportWizard"
+            icon="images/gears.gif"
             id="org.eclipse.osee.framework.types.bridge.osee.types.import"
             name="Osee Types Import">
+         <description>
+            Imports OSEE Types
+         </description>
       </wizard>
-      <category
-            id="org.eclipse.osee.define.import.category1"
-            name="OSEE"
-            parentCategory="org.eclipse.osee.define.import.category">
-      </category>
    </extension>
    <extension
          point="org.eclipse.ui.exportWizards">
       <wizard
+            category="org.eclipse.osee.define.export.category"
             class="org.eclipse.osee.framework.types.bridge.wizards.OseeTypesExportWizard"
             id="org.eclipse.osee.framework.types.bridge.osee.types.export"
             name="Osee Types Export">
       </wizard>
-           <category
-                 id="org.eclipse.osee.framework.ui.skynet.export"
-                 name="OSEE"
-                 parentCategory="org.eclipse.osee.framework.ui.skynet.export">
-     </category>
    </extension>
    <extension
          point="org.eclipse.ui.newWizards">

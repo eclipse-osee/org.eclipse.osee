@@ -1,5 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.types.bridge.operations;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +39,10 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 
+/**
+ * @author Ryan D. Brooks
+ * @author Roberto E. Escobar
+ */
 public class XTextToOseeTypeOperation extends AbstractOperation {
    private final java.net.URI resource;
    private final Object context;
@@ -38,41 +53,53 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       this.context = context;
    }
 
+   private void loadDependencies(OseeTypeModel baseModel, List<OseeTypeModel> models) throws OseeCoreException, URISyntaxException {
+      //      for (Import dependant : baseModel.getImports()) {
+      //         OseeTypeModel childModel = OseeTypeModelUtil.loadModel(context, new URI(depenant.getImportURI()));
+      //         loadDependencies(childModel, models);
+      //         //         System.out.println("depends on: " + depenant.getImportURI());
+      //      }
+      //      System.out.println("Added on: " + baseModel.eResource().getURI());
+      models.add(baseModel);
+   }
+
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      System.out.println("In here");
-      OseeTypeModel model = OseeTypeModelUtil.loadModel(context, resource);
-      //      for (Import importEntry : model.getImports()) {
-      //         System.out.println("Import: " + importEntry.getImportURI());
-      //         OseeTypeModel importedModel = OseeTypeModelUtil.loadModel(new URI(importEntry.getImportURI()));
-      //      }
-      if (!model.getTypes().isEmpty()) {
-         double workPercentage = 1.0 / model.getTypes().size() * 2.0;
+      List<OseeTypeModel> models = new ArrayList<OseeTypeModel>();
+      OseeTypeModel targetModel = OseeTypeModelUtil.loadModel(context, resource);
+      loadDependencies(targetModel, models);
 
-         for (OseeType type : model.getTypes()) {
-            if (type instanceof ArtifactType) {
-               handleArtifactType((ArtifactType) type);
-            } else if (type instanceof AttributeType) {
-               handleAttributeType((AttributeType) type);
-            }
-            monitor.worked(calculateWork(workPercentage));
-         }
+      if (!models.isEmpty()) {
+         double workAmount = 1 / models.size();
+         for (OseeTypeModel model : models) {
+            if (!model.getTypes().isEmpty()) {
+               double workPercentage = workAmount / (model.getTypes().size() * 2.0);
 
-         // second pass to handle cross references
-         for (OseeType type1 : model.getTypes()) {
-            if (type1 instanceof ArtifactType) {
-               handleArtifactTypeCrossRef((ArtifactType) type1);
-            } else if (type1 instanceof RelationType) {
-               handleRelationType((RelationType) type1);
+               for (OseeType type : model.getTypes()) {
+                  if (type instanceof ArtifactType) {
+                     handleArtifactType((ArtifactType) type);
+                  } else if (type instanceof AttributeType) {
+                     handleAttributeType((AttributeType) type);
+                  }
+                  monitor.worked(calculateWork(workPercentage));
+               }
+
+               // second pass to handle cross references
+               for (OseeType type1 : model.getTypes()) {
+                  if (type1 instanceof ArtifactType) {
+                     handleArtifactTypeCrossRef((ArtifactType) type1);
+                  } else if (type1 instanceof RelationType) {
+                     handleRelationType((RelationType) type1);
+                  }
+                  monitor.worked(calculateWork(workPercentage));
+               }
             }
-            monitor.worked(calculateWork(workPercentage));
          }
+         OseeEnumTypeManager.persist();
+         AttributeTypeManager.persist();
+         ArtifactTypeManager.persist();
+         RelationTypeManager.persist();
       }
-      OseeEnumTypeManager.persist();
-      AttributeTypeManager.persist();
-      ArtifactTypeManager.persist();
-      RelationTypeManager.persist();
-
    }
 
    /**
@@ -95,6 +122,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             new HashCollection<Branch, org.eclipse.osee.framework.skynet.core.attribute.AttributeType>();
       for (AttributeTypeRef attributeTypeRef : artifactType.getValidAttributeTypes()) {
          AttributeType attributeType = attributeTypeRef.getValidAttributeType();
+         //         handleAttributeType(attributeType);
          Branch branch;
          String branchGuid = attributeTypeRef.getBranchGuid();
          if (branchGuid == null) {
@@ -115,6 +143,12 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    }
 
    private void handleArtifactType(ArtifactType artifactType) throws OseeCoreException {
+      //      for (ArtifactType superArtifactType : artifactType.getSuperArtifactTypes()) {
+      //         for (AttributeTypeRef attributeTypeRef : superArtifactType.getValidAttributeTypes()) {
+      //            handleAttributeType(attributeTypeRef.getValidAttributeType());
+      //         }
+      //         handleArtifactType(superArtifactType);
+      //      }
       String artifactTypeName = getTypeName(artifactType.getName());
       artifactType.setTypeGuid(ArtifactTypeManager.createType(artifactType.getTypeGuid(), artifactType.isAbstract(),
             artifactTypeName).getGuid());
@@ -123,6 +157,10 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType getOseeEnumTypes(OseeEnumType enumType) throws OseeCoreException {
       org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType = null;
       if (enumType != null) {
+         //         OseeEnumType superEnumType = enumType.getOverride();
+         //         if (superEnumType != null) {
+         //            oseeEnumType = getOseeEnumTypes(superEnumType);
+         //         }
          oseeEnumType = OseeEnumTypeManager.createEnumType(enumType.getTypeGuid(), enumType.getName());
          if (oseeEnumType.values().length != enumType.getEnumEntries().size()) {
             int lastOrdinal = 0;
@@ -144,6 +182,10 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    }
 
    private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {
+      //      AttributeType superAttributeType = attributeType.getOverride();
+      //      if (superAttributeType != null) {
+      //         handleAttributeType(superAttributeType);
+      //      }
       int max = Integer.MAX_VALUE;
       if (!attributeType.getMax().equals("unlimited")) {
          max = Integer.parseInt(attributeType.getMax());
@@ -158,7 +200,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             Integer.parseInt(attributeType.getMin()), //
             max, //
             attributeType.getDescription(), //
-            attributeType.getTaggerId()).getGuid());
+            attributeType.getTaggerId()//
+      ).getGuid());
    }
 
    private void handleRelationType(RelationType relationType) throws OseeCoreException {

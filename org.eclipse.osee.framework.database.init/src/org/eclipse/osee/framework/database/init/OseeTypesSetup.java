@@ -17,19 +17,18 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
 import java.util.Collection;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -37,7 +36,6 @@ import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.importing.IOseeTypesHandler;
 import org.osgi.framework.Bundle;
-import org.xml.sax.SAXException;
 
 /**
  * This class provides necessary functionality for branches to be loaded with SkynetDbTypes through their extension
@@ -65,29 +63,32 @@ public class OseeTypesSetup {
    }
 
    public void execute(Collection<String> uniqueIdsToImport) throws OseeCoreException {
+      File combinedFile = null;
       try {
-         executeTypesImport(ExtensionPoints.getExtensionsByUniqueId(OSEE_TYPES_EXTENSION_ID, uniqueIdsToImport));
+         Map<String, URL> itemsToProcess = getOseeTypeExtensionsById(uniqueIdsToImport);
+         combinedFile = createCombinedFile(itemsToProcess);
+         processOseeTypeData(combinedFile.toURI().toURL());
       } catch (IOException ex) {
          throw new OseeWrappedException(ex);
-      } catch (SAXException ex) {
-         throw new OseeWrappedException(ex);
+      } finally {
+         combinedFile.delete();
       }
    }
 
    public Map<String, URL> getOseeTypeExtensions() {
-      Map<String, URL> oseeTypes = new HashMap<String, URL>();
+      Map<String, URL> oseeTypes = new LinkedHashMap<String, URL>();
       for (IConfigurationElement element : ExtensionPoints.getExtensionElements(OSEE_TYPES_EXTENSION_ID, "OseeTypes")) {
          String resourceName = element.getAttribute("resource");
          Bundle bundle = Platform.getBundle(element.getContributor().getName());
          URL url = bundle.getEntry(resourceName);
-         oseeTypes.put(resourceName, url);
+         oseeTypes.put(element.getDeclaringExtension().getUniqueIdentifier(), url);
       }
       return oseeTypes;
    }
 
    public File createCombinedFile(Map<String, URL> urls) throws IOException {
       String userHome = System.getProperty("user.home");
-      File file = new File(userHome, "oseetypes.osee");
+      File file = new File(userHome, "osee.types." + Lib.getDateTimeString() + ".osee");
       Writer writer = null;
       try {
          writer = new FileWriter(file);
@@ -110,56 +111,37 @@ public class OseeTypesSetup {
       return file;
    }
 
-   private void executeTypesImport(List<IExtension> extensionIds) throws IOException, SAXException, OseeCoreException {
-      String userHome = System.getProperty("user.home");
-      File file = new File(userHome, "oseetypes.osee");
-      Writer writer = null;
-      try {
-         writer = new FileWriter(file);
-         for (IExtension extension : extensionIds) {
-            IConfigurationElement[] elements = extension.getConfigurationElements();
-            for (IConfigurationElement el : elements) {
-               if (el.getName().equals("OseeTypes")) {
-                  String resource = el.getAttribute("resource");
-                  Bundle bundle = Platform.getBundle(el.getContributor().getName());
-                  URL url = bundle.getEntry(resource);
-                  OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Importing [%s] from [%s]",
-                        resource, url != null ? url.getPath() : "url was null"));
-                  String oseeTypeFragment = Lib.inputStreamToString(url.openStream());
-                  oseeTypeFragment = oseeTypeFragment.replaceAll("import\\s+\"", "// import \"");
-                  writer.write("\n");
-                  writer.write("//////////////     ");
-                  writer.write(extension.getUniqueIdentifier());
-                  writer.write("\n");
-                  writer.write("\n");
-                  writer.write(oseeTypeFragment);
-               } else {
-                  throw new OseeArgumentException("expecting a single xml element called OseeTypes");
-               }
-            }
-         }
-      } finally {
-         if (writer != null) {
-            writer.close();
-         }
+   private Map<String, URL> getOseeTypeExtensionsById(Collection<String> uniqueIdsToImport) {
+      Map<String, URL> elements = getOseeTypeExtensions();
+      List<String> itemsFound = Collections.setIntersection(elements.keySet(), uniqueIdsToImport);
+      for (String entry : Collections.setComplement(uniqueIdsToImport, itemsFound)) {
+         OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, String.format("ExtensionUniqueId [%s] was not found",
+               entry));
       }
+      for (String entry : Collections.setComplement(elements.keySet(), itemsFound)) {
+         elements.remove(entry);
+      }
+      OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Importing:\n\t%s",
+            itemsFound.toString().replaceAll(",", ",\n\t")));
+      return elements;
+   }
 
-      URL url = file.toURI().toURL();
-      IOseeTypesHandler handler = getHandler(file.getAbsolutePath(), url);
+   public void processOseeTypeData(URL url) throws OseeCoreException {
+      IOseeTypesHandler handler = getHandler(url);
       if (handler != null) {
          handler.execute(new NullProgressMonitor(), null, url);
       } else {
          OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, String.format(
-               "Unable to find handler for [%s] - handlers - %s", file.getAbsolutePath(),
+               "Unable to find handler for [%s] - handlers - %s", url.toExternalForm(),
                this.extensionObjects.getObjects()));
       }
-      file.delete();
    }
 
-   private IOseeTypesHandler getHandler(String resource, URL url) {
+   private IOseeTypesHandler getHandler(URL url) {
       IOseeTypesHandler toReturn = null;
+      String urlString = url.toExternalForm();
       for (IOseeTypesHandler handler : extensionObjects.getObjects()) {
-         if (handler.isApplicable(resource, url)) {
+         if (handler.isApplicable(urlString)) {
             toReturn = handler;
             break;
          }

@@ -6,7 +6,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 public interface IOseeTypesHandler {
 
-   boolean isApplicable(String resource, URL url);
+   boolean isApplicable(String resource);
 
    void execute(IProgressMonitor monitor, Object context, URL url) throws OseeCoreException;
 
