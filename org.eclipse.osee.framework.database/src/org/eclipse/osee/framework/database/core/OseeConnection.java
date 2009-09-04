@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
 public class OseeConnection {
    final static private long timeout = 60000;
-   private OseeConnectionPool pool;
-   private Connection conn;
+   private final OseeConnectionPool pool;
+   private final Connection conn;
    private volatile boolean inuse;
    private long lastUsedTime;
 
