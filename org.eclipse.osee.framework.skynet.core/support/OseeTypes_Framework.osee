@@ -1,14 +1,14 @@
 artifactType "Artifact" {
-   typeGuid "AAMFDh6S7gRLupAMwywA"
-	attribute "Name"
+   guid "AAMFDh6S7gRLupAMwywA"
+   attribute "Name"
    attribute "Annotation"
    attribute "Static Id"
    attribute "Relation Order"
 }
 
 artifactType "Global Preferences" extends "Artifact" {
-   typeGuid "AAMFDho2kBqyoOZEw+gA"
-	attribute "Dictionary"
+   guid "AAMFDho2kBqyoOZEw+gA"
+   attribute "Dictionary"
    attribute "osee.config.Default Mail Server"
 }
 
@@ -24,15 +24,15 @@ abstract artifactType "Test Unit" extends "Artifact" {
 }
 
 attributeType "Extension" extends StringAttribute {
-   typeGuid "AAMFEcUbJEERZTnwJzAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEcUbJEERZTnwJzAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 artifactType "User" extends "Artifact" {
-   typeGuid "AAMFDhmr+Dqqe5pn3kAA"
-	attribute "Active"
+   guid "AAMFDhmr+Dqqe5pn3kAA"
+   attribute "Active"
    attribute "City"
    attribute "Company Title"
    attribute "Company"
@@ -55,152 +55,152 @@ artifactType "User" extends "Artifact" {
 }
 
 attributeType "Active" extends BooleanAttribute {
-   typeGuid "AAMFEbImQyR38BY8A5QA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbImQyR38BY8A5QA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    defaultValue "yes"
 }
 
 attributeType "Company" extends StringAttribute {
-   typeGuid "AAMFEbgTIG1iJuHoe6wA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbgTIG1iJuHoe6wA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Company Title" extends StringAttribute {
-   typeGuid "AAMFEbiRtwq7hoavdXwA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbiRtwq7hoavdXwA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "City" extends StringAttribute {
-   typeGuid "AAMFEbkRZE1lIUmm_0AA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbkRZE1lIUmm_0AA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Street" extends StringAttribute {
-   typeGuid "AAMFEbmjn19BhPhE2cwA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbmjn19BhPhE2cwA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "State" extends StringAttribute {
-   typeGuid "AAMFEbolfGTBLHnDCRQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbolfGTBLHnDCRQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Zip" extends StringAttribute {
-   typeGuid "AAMFEbqmQUTrgrQ7rKgA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbqmQUTrgrQ7rKgA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Country" extends StringAttribute {
-   typeGuid "AAMFEbsk1xGUlmXk8zgA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbsk1xGUlmXk8zgA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "User Id" extends StringAttribute {
-   typeGuid "AAMFEbKl8RCQr17bDAQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbKl8RCQr17bDAQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Favorite Branch" extends IntegerAttribute {
-   typeGuid "AAMFEbMnzS7P92knZKAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbMnzS7P92knZKAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
    defaultValue "0"
 }
 
 attributeType "User Settings" extends StringAttribute {
-   typeGuid "AAMFEbOnewRpnYFgnHQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbOnewRpnYFgnHQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1 fileExtension "xml"
 }
 
 attributeType "XViewer Customization" extends StringAttribute {
-   typeGuid "AAMFEbQk+hTB9fE3uNAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbQk+hTB9fE3uNAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited fileExtension "xml"
 }
 
 attributeType "XViewer Defaults" extends StringAttribute {
-   typeGuid "AAMFEbSjkAKRqLzkWpAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbSjkAKRqLzkWpAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
 }
 
 attributeType "Phone" extends StringAttribute {
-   typeGuid "AAMFEbUkVSwKu4LSpWAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbUkVSwKu4LSpWAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "Mobile Phone" extends StringAttribute {
-   typeGuid "AAMFEbWi7AIC1z82PxQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbWi7AIC1z82PxQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "Fax Phone" extends StringAttribute {
-   typeGuid "AAMFEbYdJAmEGg0TFhAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbYdJAmEGg0TFhAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "Email" extends StringAttribute {
-   typeGuid "AAMFEbaZjEVoecDFCCQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbaZjEVoecDFCCQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Dictionary" extends StringAttribute {
-   typeGuid "AAMFEbcV9BXFKOqkVIwA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbcV9BXFKOqkVIwA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "Website" extends StringAttribute {
-   typeGuid "AAMFEbwiBAmrHwSeMHgA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbwiBAmrHwSeMHgA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "Notes" extends StringAttribute {
-   typeGuid "AAMFEbulnFZFQCiyvpAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbulnFZFQCiyvpAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
    taggerId DefaultAttributeTaggerProvider
@@ -211,30 +211,30 @@ artifactType "Group Artifact" extends "Artifact" {
 }
 
 artifactType "User Group" extends "Group Artifact" {
-typeGuid "AAMFDhrEbXqZKPfWkwAA"
-	}
+guid "AAMFDhrEbXqZKPfWkwAA"
+   }
 
 artifactType "Universal Group" extends "Group Artifact" {
-   typeGuid "AAMFDhLY2TnADPA_EQQA"
-	attribute "Description"
+   guid "AAMFDhLY2TnADPA_EQQA"
+   attribute "Description"
 }
 
 artifactType "Renderer Template" extends "Native Artifact" {
-   typeGuid "AAMFDhvZnHKgSeFKMXgA"
-	attribute "Template Match Criteria"
+   guid "AAMFDhvZnHKgSeFKMXgA"
+   attribute "Template Match Criteria"
 }
 
 attributeType "Template Match Criteria" extends StringAttribute {
-   typeGuid "AAMFEbeRRENHX5KTmxwA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbeRRENHX5KTmxwA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited description
    "Criteria that determines what template is selected ie: \'Render Artifact PresentationType Option\'"
 }
 
 relationType "Default Hierarchical" {
-   typeGuid "AAMFE9skWhPMi6I1WdAA"
-	sideAName "parent"
+   guid "AAMFE9skWhPMi6I1WdAA"
+   sideAName "parent"
    sideAArtifactType "Artifact"
    sideBName "child"
    sideBArtifactType "Artifact"
@@ -243,36 +243,36 @@ relationType "Default Hierarchical" {
 }
 
 artifactType "Root Artifact" extends "Artifact" {
-typeGuid "AAMFDhHDqlbzKcIxcsAA"
-	}
+guid "AAMFDhHDqlbzKcIxcsAA"
+   }
 
 artifactType "Folder" extends "Artifact" {
-typeGuid "AAMFDg_wmiYHHY5swJwA"
-	}
+guid "AAMFDg_wmiYHHY5swJwA"
+   }
 
 artifactType "General Data" extends "Artifact" {
-   typeGuid "AAMFDhQXfyb2m+jCwlwA"
-	attribute "General String Data"
+   guid "AAMFDhQXfyb2m+jCwlwA"
+   attribute "General String Data"
 }
 
 artifactType "Support Document" extends "MS Word Template" {
-typeGuid "AAMFDhJOQTCu5A7LNQwA"
-	}
+guid "AAMFDhJOQTCu5A7LNQwA"
+   }
 
 artifactType "General Document" extends "Native Artifact" {
-typeGuid "AAMFDhCjkTvP+VBpBCQA"
-	}
+guid "AAMFDhCjkTvP+VBpBCQA"
+   }
 
 artifactType "Url" extends "Artifact" {
-   typeGuid "AAMFDhOL0VfVy56cqwgA"
-	attribute "Description"
+   guid "AAMFDhOL0VfVy56cqwgA"
+   attribute "Description"
    attribute "Content URL"
    
 }
 
 attributeType "Name" extends StringAttribute {
-   typeGuid "AAMFEcF1AzV7PKuHmxwA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEcF1AzV7PKuHmxwA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    taggerId DefaultAttributeTaggerProvider description "Descriptive Name"
@@ -287,8 +287,8 @@ attributeType "Relation Order" extends StringAttribute {
 }
 
 attributeType "Description" extends StringAttribute {
-   typeGuid "AAMFEcK+kyOhG8GYvPgA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEcK+kyOhG8GYvPgA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
@@ -300,8 +300,8 @@ oseeEnumType "Page Type.enum" {
 }
 
 attributeType "Page Type" extends EnumeratedAttribute {
-   typeGuid "AAMFEcNiRF2N5xhkYyAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEcNiRF2N5xhkYyAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
@@ -311,52 +311,52 @@ attributeType "Page Type" extends EnumeratedAttribute {
 }
 
 attributeType "Word Ole Data" extends StringAttribute {
-   typeGuid "AAMFEcP2rmoCzqmzJxQA"
-	dataProvider UriAttributeDataProvider
+   guid "AAMFEcP2rmoCzqmzJxQA"
+   dataProvider UriAttributeDataProvider
    min 0
    max 1 description "Word Ole Data" fileExtension "xml"
 }
 
 attributeType "Workflow Definition" extends StringAttribute {
-   typeGuid "AAMFEcSPdVbU8mGugOQA"
-	dataProvider UriAttributeDataProvider
+   guid "AAMFEcSPdVbU8mGugOQA"
+   dataProvider UriAttributeDataProvider
    min 0
    max 1 description "xml definition of a Blam Workflow" fileExtension "vue"
 }
 
 attributeType "Annotation" extends StringAttribute {
-   typeGuid "AAMFEcWy0xc4e3tcemQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEcWy0xc4e3tcemQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "Static Id" extends StringAttribute {
-   typeGuid "AAMFEcY5DUbWyuIpZVwA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEcY5DUbWyuIpZVwA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
 }
 
 attributeType "General String Data" extends StringAttribute {
-   typeGuid "AAMFEca+MB5ssx+Ax5wA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEca+MB5ssx+Ax5wA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
 }
 
 attributeType "Native Content" extends CompressedContentAttribute {
-   typeGuid "AAMFEcdBJGBK9nr9TTQA"
-	dataProvider UriAttributeDataProvider
+   guid "AAMFEcdBJGBK9nr9TTQA"
+   dataProvider UriAttributeDataProvider
    min 0
    max 1 description "content that will be edited by a native program"
    fileExtension "bin"
 }
 
 attributeType "Word Template Content" extends WordAttribute {
-   typeGuid "AAMFEcfcGS2V3SqQN2wA"
-	dataProvider UriAttributeDataProvider
+   guid "AAMFEcfcGS2V3SqQN2wA"
+   dataProvider UriAttributeDataProvider
    min 0
    max 1
    taggerId XmlAttributeTaggerProvider description
@@ -367,8 +367,8 @@ attributeType "Word Template Content" extends WordAttribute {
 }
 
 attributeType "Whole Word Content" extends WordAttribute {
-   typeGuid "AAMFEchZmAzZo2tHjVAA"
-	dataProvider UriAttributeDataProvider
+   guid "AAMFEchZmAzZo2tHjVAA"
+   dataProvider UriAttributeDataProvider
    min 0
    max 1
    taggerId XmlAttributeTaggerProvider description
@@ -379,8 +379,8 @@ attributeType "Whole Word Content" extends WordAttribute {
 }
 
 relationType "Dependency" {
-   typeGuid "AAMFE9uek34jqArVRuAA"
-	sideAName "artifact"
+   guid "AAMFE9uek34jqArVRuAA"
+   sideAName "artifact"
    sideAArtifactType "Artifact"
    sideBName "dependency"
    sideBArtifactType "Artifact"
@@ -389,8 +389,8 @@ relationType "Dependency" {
 }
 
 relationType "Universal Grouping" {
-   typeGuid "AAMFE9yOp2hIrXwZ13wA"
-	sideAName "group"
+   guid "AAMFE9yOp2hIrXwZ13wA"
+   sideAName "group"
    sideAArtifactType "Universal Group"
    sideBName "members"
    sideBArtifactType "Artifact"
@@ -419,15 +419,15 @@ abstract artifactType "Native Artifact" extends "Artifact" {
 }
 
 attributeType "Content URL" extends StringAttribute {
-   typeGuid "AAMFEcIP+U+ML_gzH7AA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEcIP+U+ML_gzH7AA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "Imported Paragraph Number" extends StringAttribute {
-   typeGuid "AAMFEQ3boD3sp6VfArAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEQ3boD3sp6VfArAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description
    "This is the corresponding section number from the outline of document from which this artifact was imported"
@@ -452,8 +452,8 @@ abstract artifactType "Abstract Software Requirement" extends "Requirement" {
 }
 
 artifactType "Software Requirement" extends "MS Word Template", "Abstract Software Requirement" {
-typeGuid "AAMFDiAwhRFXwIyapJAA"
-	}
+guid "AAMFDiAwhRFXwIyapJAA"
+   }
 
 artifactType "Software Requirement Procedure" extends "Software Requirement" {
 }
@@ -465,84 +465,84 @@ artifactType "Software Requirement Drawing" extends "Software Requirement" {
 }
 
 artifactType "System Requirement" extends "Requirement", "MS Word Template" {
-   typeGuid "AAMFDiSTcDGdUd9+tHAA"
-	attribute "Legacy Id"
+   guid "AAMFDiSTcDGdUd9+tHAA"
+   attribute "Legacy Id"
 }
 
 artifactType "Subsystem Requirement" extends "Requirement", "MS Word Template" {
-   typeGuid "AAMFDiN9KiAkhuLqOhQA"
-	attribute "Legacy Id"
+   guid "AAMFDiN9KiAkhuLqOhQA"
+   attribute "Legacy Id"
    attribute "Verification Level"
    attribute "Verification Event"
 }
 
 artifactType "Interface Requirement" extends "Requirement", "MS Word Template" {
-   typeGuid "AAMFDjgcukv7xEsPf2QA"
-	attribute "Component"
+   guid "AAMFDjgcukv7xEsPf2QA"
+   attribute "Component"
 }
 
 artifactType "Hardware Requirement" extends "Requirement", "MS Word Template" {
-typeGuid "AAMFDh8dhUflUdK9FdgA"
-	}
+guid "AAMFDh8dhUflUdK9FdgA"
+   }
 
 abstract artifactType "Function" extends "MS Word Template" {
    attribute "Safety Criticality"
 }
 
 artifactType "System Function" extends "Function" {
-typeGuid "AAMFDjisx2s6BUTDo3wA"
-	}
+guid "AAMFDjisx2s6BUTDo3wA"
+   }
 
 artifactType "Subsystem Function" extends "Function" {
-typeGuid "AAMFDjk6pAAd3tpGEqwA"
-	}
+guid "AAMFDjk6pAAd3tpGEqwA"
+   }
 
 artifactType "Test Information Sheet" extends "MS Word Template" {
-   typeGuid "AAMFDjnM3wQxCjwatKAA"
-	attribute "TIS Test Number"
+   guid "AAMFDjnM3wQxCjwatKAA"
+   attribute "TIS Test Number"
    attribute "TIS Test Type"
    attribute "TIS Test Category"
 }
 
 artifactType "Design" extends "MS Word Template" {
-   typeGuid "AAMFE+XjcSaqnXfOXVQA"
-	attribute "Development Assurance Level"
+   guid "AAMFE+XjcSaqnXfOXVQA"
+   attribute "Development Assurance Level"
    attribute "Safety Criticality"
 }
 
 artifactType "Subsystem Design" extends "Design" {
-   typeGuid "AAMFDiHVwBo+Yx73BoQA"
-	attribute "Subsystem"
+   guid "AAMFDiHVwBo+Yx73BoQA"
+   attribute "Subsystem"
 }
 
 artifactType "System Design" extends "Design" {
-typeGuid "AAMFDiFI+lLm46F3HdQA"
-	}
+guid "AAMFDiFI+lLm46F3HdQA"
+   }
 
 artifactType "Software Design" extends "Design" {
-typeGuid "AAMFDh+nBRDS2smKPLAA"
-	}
+guid "AAMFDh+nBRDS2smKPLAA"
+   }
 
 artifactType "Test Procedure" extends "Artifact" {
-   typeGuid "AAMFDjsjiGhoWpqM4PQA"
-	attribute "Subsystem"
+   guid "AAMFDjsjiGhoWpqM4PQA"
+   attribute "Subsystem"
 }
 
 artifactType "Test Procedure WML" extends "Test Procedure", "MS Word Whole Document" {
-typeGuid "AAMFDiUeCG3KWx5XqeQA"
-	}
+guid "AAMFDiUeCG3KWx5XqeQA"
+   }
 
 artifactType "Test Procedure XL" extends "Test Procedure", "Native Artifact" {
-typeGuid "AAMFDiWs_HdDJTbPPQgA"
-	}
+guid "AAMFDiWs_HdDJTbPPQgA"
+   }
 
 artifactType "Supporting Content" extends "Url" {
-typeGuid "AAMFDiQI2QuheFY71jgA"
-	}
+guid "AAMFDiQI2QuheFY71jgA"
+   }
 
 attributeType "Common NAL Requirement" extends BooleanAttribute {
-   typeGuid "AAMFEQpKOwh5p+AgC8wA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEQpKOwh5p+AgC8wA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1 
    description "Requirement that is common to all NCORE (Networked Common Operating Real-time Environment) Application Layers"
@@ -550,32 +550,32 @@ attributeType "Common NAL Requirement" extends BooleanAttribute {
 }
 
 attributeType "Crew Interface Requirement" extends BooleanAttribute {
-   typeGuid "AAMFEQrZMEwBcq2pQTgA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEQrZMEwBcq2pQTgA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "no"
 }
 
 attributeType "Legacy Id" extends StringAttribute {
-   typeGuid "AAMFEQ5rrGxHTSvY73gA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEQ5rrGxHTSvY73gA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description
    "SLATE unique identifier (caution: not guaranteed to be immutable)"
 }
 
 attributeType "System Security Requirement" extends BooleanAttribute {
-   typeGuid "AAMFERC8OyWTMm8tMOQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFERC8OyWTMm8tMOQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "no"
 }
 
 attributeType "Training Effectivity" extends BooleanAttribute {
-   typeGuid "AAMFERFJAm0_WZ0WQaQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFERFJAm0_WZ0WQaQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "no"
@@ -591,8 +591,8 @@ oseeEnumType "Partition.enum" {
 }
 
 attributeType "Partition" extends EnumeratedAttribute {
-   typeGuid "AAMFERHj9w6pmoLBCaQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFERHj9w6pmoLBCaQA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max unlimited
    taggerId DefaultAttributeTaggerProvider
@@ -615,8 +615,8 @@ oseeEnumType "Subsystem.enum" {
 }
 
 attributeType "Subsystem" extends EnumeratedAttribute {
-   typeGuid "AAMFERJ1GweNukuSd8QA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFERJ1GweNukuSd8QA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    enumType "Subsystem.enum"
@@ -634,8 +634,8 @@ oseeEnumType "Qualification Method.enum" {
 }
 
 attributeType "Qualification Method" extends EnumeratedAttribute {
-   typeGuid "AAMFERMRKHkM9k_Rg2QA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFERMRKHkM9k_Rg2QA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max unlimited
    enumType "Qualification Method.enum"
@@ -652,8 +652,8 @@ oseeEnumType "Safety Criticality.enum" {
 }
 
 attributeType "Safety Criticality" extends EnumeratedAttribute {
-   typeGuid "AAMFERg99R51HIz45HAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFERg99R51HIz45HAA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    enumType "Safety Criticality.enum"
@@ -669,8 +669,8 @@ oseeEnumType "Verification Level.enum" {
 }
 
 attributeType "Verification Level" extends EnumeratedAttribute {
-   typeGuid "AAMFEXRTkyKVIFqcMwQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEXRTkyKVIFqcMwQA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    taggerId DefaultAttributeTaggerProvider
@@ -679,8 +679,8 @@ attributeType "Verification Level" extends EnumeratedAttribute {
 }
 
 attributeType "TIS Test Number" extends StringAttribute {
-   typeGuid "AAMFERjRSDDgyyBh+OAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFERjRSDDgyyBh+OAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1 description "Test Number"
 }
@@ -691,8 +691,8 @@ oseeEnumType "TIS Test Type.enum" {
 }
 
 attributeType "TIS Test Type" extends EnumeratedAttribute {
-   typeGuid "AAMFEVXVuFcy8wCED5AA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEVXVuFcy8wCED5AA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max unlimited
    enumType "TIS Test Type.enum"
@@ -707,8 +707,8 @@ oseeEnumType "TIS Test Category.enum" {
 }
 
 attributeType "TIS Test Category" extends EnumeratedAttribute {
-   typeGuid "AAMFEVbEtV4QJQvA5eQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEVbEtV4QJQvA5eQA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1 
    enumType "TIS Test Category.enum"
@@ -725,8 +725,8 @@ oseeEnumType "Development Assurance Level.enum" {
 }
 
 attributeType "Development Assurance Level" extends EnumeratedAttribute {
-   typeGuid "AAMFEVdW8Bdjtx4GvfwA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEVdW8Bdjtx4GvfwA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    enumType "Development Assurance Level.enum"
@@ -735,15 +735,15 @@ attributeType "Development Assurance Level" extends EnumeratedAttribute {
 }
 
 attributeType "Category" extends StringAttribute {
-   typeGuid "AAMFEVfcEjwtly9djdgA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEVfcEjwtly9djdgA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "Technical Performance Parameter" extends BooleanAttribute {
-   typeGuid "AAMFEVhhNTVx42mlvlQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEVhhNTVx42mlvlQA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    defaultValue "no"
@@ -754,8 +754,8 @@ oseeEnumType "Verification Event.enum" {
 }
 
 attributeType "Verification Event" extends EnumeratedAttribute {
-   typeGuid "AAMFEXlt02WfQ0jcQtAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEXlt02WfQ0jcQtAA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    enumType "Verification Event.enum"
@@ -768,8 +768,8 @@ oseeEnumType "Component.enum" {
 }
 
 attributeType "Component" extends EnumeratedAttribute {
-   typeGuid "AAMFDkG6omAsD6dXPYgA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFDkG6omAsD6dXPYgA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    enumType "Component.enum"
@@ -777,8 +777,8 @@ attributeType "Component" extends EnumeratedAttribute {
 }
 
 relationType "Allocation" {
-   typeGuid "AAMFE+RS8gRV2BXaCtQA"
-	sideAName "requirement"
+   guid "AAMFE+RS8gRV2BXaCtQA"
+   sideAName "requirement"
    sideAArtifactType "Requirement"
    sideBName "component"
    sideBArtifactType "Component"
@@ -787,8 +787,8 @@ relationType "Allocation" {
 }
 
 relationType "Code-Requirement" {
-   typeGuid "AAMFE+TNKxG5ytcGHqgA"
-	sideAName "code"
+   guid "AAMFE+TNKxG5ytcGHqgA"
+   sideAName "code"
    sideAArtifactType "Code Unit"
    sideBName "requirement"
    sideBArtifactType "Requirement"
@@ -797,8 +797,8 @@ relationType "Code-Requirement" {
 }
 
 relationType "Component-Requirement" {
-   typeGuid "AAMFE+VoIUTy9BoL1PgA"
-	sideAName "component"
+   guid "AAMFE+VoIUTy9BoL1PgA"
+   sideAName "component"
    sideAArtifactType "Component"
    sideBName "requirement"
    sideBArtifactType "Requirement"
@@ -807,8 +807,8 @@ relationType "Component-Requirement" {
 }
 
 relationType "Design" {
-   typeGuid "AAMFE+XjcSaqnXfOXVQA"
-	sideAName "requirement"
+   guid "AAMFE+XjcSaqnXfOXVQA"
+   sideAName "requirement"
    sideAArtifactType "Requirement"
    sideBName "design"
    sideBArtifactType "Design"
@@ -817,8 +817,8 @@ relationType "Design" {
 }
 
 relationType "Verification" {
-   typeGuid "AAMFE+ZdqgB+D5zP5+gA"
-	sideAName "requirement"
+   guid "AAMFE+ZdqgB+D5zP5+gA"
+   sideAName "requirement"
    sideAArtifactType "Requirement"
    sideBName "verifier"
    sideBArtifactType "Test Unit"
@@ -827,8 +827,8 @@ relationType "Verification" {
 }
 
 relationType "Verification Procedure" {
-   typeGuid "AAMFE+bY+ibHHBJu0dAA"
-	sideAName "test plan sheet"
+   guid "AAMFE+bY+ibHHBJu0dAA"
+   sideAName "test plan sheet"
    sideAArtifactType "Test Information Sheet"
    sideBName "test procedure"
    sideBArtifactType "Test Procedure"
@@ -837,8 +837,8 @@ relationType "Verification Procedure" {
 }
 
 relationType "Requirement Trace" {
-   typeGuid "AAMFE+dRBVFN6fAPXdwA"
-	sideAName "higher-level requirement"
+   guid "AAMFE+dRBVFN6fAPXdwA"
+   sideAName "higher-level requirement"
    sideAArtifactType "Requirement"
    sideBName "lower-level requirement"
    sideBArtifactType "Requirement"
@@ -847,8 +847,8 @@ relationType "Requirement Trace" {
 }
 
 relationType "Validation" {
-   typeGuid "AAMFE+fMVRM8f9BUD0AA"
-	sideAName "requirement"
+   guid "AAMFE+fMVRM8f9BUD0AA"
+   sideAName "requirement"
    sideAArtifactType "Requirement"
    sideBName "validator"
    sideBArtifactType "Artifact"
@@ -857,8 +857,8 @@ relationType "Validation" {
 }
 
 relationType "Specifying" {
-   typeGuid "AAMFE+hPSXzdCioUZHgA"
-	sideAName "function"
+   guid "AAMFE+hPSXzdCioUZHgA"
+   sideAName "function"
    sideAArtifactType "Subsystem Function"
    sideBName "requirement"
    sideBArtifactType "Requirement"
@@ -875,88 +875,88 @@ abstract artifactType "Work Item Definition" extends "Artifact" {
 }
 
 artifactType "Work Page Definition" extends "Work Item Definition" {
-   typeGuid "AAMFDhzuyizN4qu7tXgA"
-	attribute "osee.wi.Work Page Name"
+   guid "AAMFDhzuyizN4qu7tXgA"
+   attribute "osee.wi.Work Page Name"
 }
 
 artifactType "Work Flow Definition" extends "Work Item Definition" {
-   typeGuid "AAMFDh16eQ1GIHPWlYQA"
-	attribute "osee.wi.Start Page"
+   guid "AAMFDh16eQ1GIHPWlYQA"
+   attribute "osee.wi.Start Page"
    attribute "osee.wi.Transition"
 }
 
 artifactType "Work Rule Definition" extends "Work Item Definition" {
-typeGuid "AAMFDhxjHC2RUV2RkcQA"
-	}
+guid "AAMFDhxjHC2RUV2RkcQA"
+   }
 
 artifactType "Work Widget Definition" extends "Work Item Definition" {
-typeGuid "AAMFDh4IVzqPgVTpLrwA"
-	}
+guid "AAMFDh4IVzqPgVTpLrwA"
+   }
 
 artifactType "XViewer Global Customization" extends "Artifact" {
-   typeGuid "AAMFDhtN7T4of30iYhAA"
-	attribute "XViewer Customization"
+   guid "AAMFDhtN7T4of30iYhAA"
+   attribute "XViewer Customization"
 }
 
 attributeType "osee.wi.Work Data" extends StringAttribute {
-   typeGuid "AAMFEbyhslOoQf3+hyAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEbyhslOoQf3+hyAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited fileExtension "xml"
 }
 
 attributeType "osee.wi.Work Id" extends StringAttribute {
-   typeGuid "AAMFEb0hXw933Zrje2QA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEb0hXw933Zrje2QA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "osee.wi.Work Type" extends StringAttribute {
-   typeGuid "AAMFEb2f9nh42sjMHfAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEb2f9nh42sjMHfAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "osee.wi.Work Description" extends StringAttribute {
-   typeGuid "AAMFEb57TkhPHyzOLDwA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEb57TkhPHyzOLDwA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "osee.wi.Work Parent Id" extends StringAttribute {
-   typeGuid "AAMFEb8R5y9WcjD5hcwA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEb8R5y9WcjD5hcwA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "osee.wi.Work Page Name" extends StringAttribute {
-   typeGuid "AAMFEb+vCyCjKbzzHoQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEb+vCyCjKbzzHoQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
 }
 
 attributeType "osee.wi.Transition" extends StringAttribute {
-   typeGuid "AAMFEcBLGB5U+55hJrQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEcBLGB5U+55hJrQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
 }
 
 attributeType "osee.wi.Start Page" extends StringAttribute {
-   typeGuid "AAMFEcDfggQLaAdLlpQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEcDfggQLaAdLlpQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 relationType "Work Item" {
-   typeGuid "AAMFE9jvEzcbzwAfjzwA"
-	sideAName "Parent"
+   guid "AAMFE9jvEzcbzwAfjzwA"
+   sideAName "Parent"
    sideAArtifactType "Artifact"
    sideBName "Child"
    sideBArtifactType "Artifact"
@@ -965,8 +965,8 @@ relationType "Work Item" {
 }
 
 relationType "User Grouping" {
-   typeGuid "AAMFE9lpTHwUo4DbvKAA"
-	sideAName "group"
+   guid "AAMFE9lpTHwUo4DbvKAA"
+   sideAName "group"
    sideAArtifactType "User Group"
    sideBName "users"
    sideBArtifactType "User"
@@ -975,8 +975,8 @@ relationType "User Grouping" {
 }
 
 relationType "Users" {
-   typeGuid "AAMFE9nibXSCqcoXkMAA"
-	sideAName "Artifact"
+   guid "AAMFE9nibXSCqcoXkMAA"
+   sideAName "Artifact"
    sideAArtifactType "Artifact"
    sideBName "User"
    sideBArtifactType "User"
@@ -985,8 +985,8 @@ relationType "Users" {
 }
 
 relationType "Supercedes" {
-   typeGuid "AAMFE9qJZC_qegaByjgA"
-	sideAName "supercedes"
+   guid "AAMFE9qJZC_qegaByjgA"
+   sideAName "supercedes"
    sideAArtifactType "Artifact"
    sideBName "superceded by"
    sideBArtifactType "Artifact"
@@ -1002,8 +1002,8 @@ oseeEnumType "CSCI.enum" {
 }
 
 attributeType "CSCI" extends EnumeratedAttribute {
-   typeGuid "AAMFEXPEnnkY_07EbRgA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEXPEnnkY_07EbRgA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max unlimited
    enumType "CSCI.enum"
@@ -1011,8 +1011,8 @@ attributeType "CSCI" extends EnumeratedAttribute {
 }
 
 relationType "Qualification" {
-   typeGuid "AAMFE+lNjSyN52Q9wGwA"
-	sideAName "requirement"
+   guid "AAMFE+lNjSyN52Q9wGwA"
+   sideAName "requirement"
    sideAArtifactType "Requirement"
    sideBName "test"
    sideBArtifactType "Test Unit"
@@ -1021,8 +1021,8 @@ relationType "Qualification" {
 }
 
 relationType "Supporting Info" {
-   typeGuid "AAMFE9wWnVhFW0wtOPAA"
-	sideAName "is supported by"
+   guid "AAMFE9wWnVhFW0wtOPAA"
+   sideAName "is supported by"
    sideAArtifactType "Artifact"
    sideBName "supporting info"
    sideBArtifactType "Artifact"
@@ -1031,22 +1031,22 @@ relationType "Supporting Info" {
 }
 
 artifactType "Heading" extends "MS Word Template" {
-typeGuid "AAMFDhEzni8FpFb5yHwA"
-	}
+guid "AAMFDhEzni8FpFb5yHwA"
+   }
 
 artifactType "Component" extends "Artifact" {
-   typeGuid "AAMFDkG6omAsD6dXPYgA"
-	attribute "Developmental"
+   guid "AAMFDkG6omAsD6dXPYgA"
+   attribute "Developmental"
    attribute "GFE / CFE"
 }
 
 artifactType "Code Unit" extends "Artifact" {
-typeGuid "AAMFDkEh216dzK1mTZgA"
-	}
+guid "AAMFDkEh216dzK1mTZgA"
+   }
 
 artifactType "Safety Assessment" extends "MS Word Template" {
-   typeGuid "AAMFDkLwjkgP8iAj8KAA"
-	attribute "Hazard"
+   guid "AAMFDkLwjkgP8iAj8KAA"
+   attribute "Hazard"
    attribute "AFHA"
    attribute "SFHA"
    attribute "Hazard Severity"
@@ -1055,32 +1055,32 @@ artifactType "Safety Assessment" extends "MS Word Template" {
 }
 
 attributeType "Developmental" extends BooleanAttribute {
-   typeGuid "AAMFEP8lp3EupVzVp5QA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEP8lp3EupVzVp5QA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    defaultValue "yes"
 }
 
 attributeType "Hazard" extends StringAttribute {
-   typeGuid "AAMFEQEe6XK8hGjJNxgA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEQEe6XK8hGjJNxgA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "AFHA" extends StringAttribute {
-   typeGuid "AAMFEQGsxihCZXcrWtQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEQGsxihCZXcrWtQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "SFHA" extends StringAttribute {
-   typeGuid "AAMFEQI800ecbF8oCPwA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEQI800ecbF8oCPwA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
@@ -1099,8 +1099,8 @@ oseeEnumType "Hazard Severity.enum" {
 }
 
 attributeType "Hazard Severity" extends EnumeratedAttribute {
-   typeGuid "AAMFEQLLyEqgnjt85bwA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEQLLyEqgnjt85bwA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
@@ -1108,16 +1108,16 @@ attributeType "Hazard Severity" extends EnumeratedAttribute {
 }
 
 attributeType "Safety Objective" extends FloatingPointAttribute {
-   typeGuid "AAMFEQNYjjVjRoKuDsAA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEQNYjjVjRoKuDsAA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "FTA Results" extends FloatingPointAttribute {
-   typeGuid "AAMFEQPomlhpBRRUceQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEQPomlhpBRRUceQA"
+   dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
@@ -1130,8 +1130,8 @@ oseeEnumType "GFE / CFE.enum" {
 }
 
 attributeType "GFE / CFE" extends EnumeratedAttribute {
-   typeGuid "AAMFEQR0SW+7bERFvXQA"
-	dataProvider DefaultAttributeDataProvider
+   guid "AAMFEQR0SW+7bERFvXQA"
+   dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    taggerId DefaultAttributeTaggerProvider
@@ -1140,8 +1140,8 @@ attributeType "GFE / CFE" extends EnumeratedAttribute {
 }
 
 relationType "Functional decomposition " {
-   typeGuid "AAMFE+PYuWYLd90Mm4AA"
-	sideAName "higher-level component"
+   guid "AAMFE+PYuWYLd90Mm4AA"
+   sideAName "higher-level component"
    sideAArtifactType "Component"
    sideBName "lower-level component"
    sideBArtifactType "Component"
