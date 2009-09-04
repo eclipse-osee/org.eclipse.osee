@@ -96,8 +96,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    private boolean showConflicts;
 
    public static void openView(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId) {
-      if (sourceBranch == null && destBranch == null && tranId == null) throw new IllegalArgumentException(
-            "Branch's and Transaction ID can't be null");
+      if (sourceBranch == null && destBranch == null && tranId == null) {
+         throw new IllegalArgumentException("Branch's and Transaction ID can't be null");
+      }
       if (DEBUG && sourceBranch != null && destBranch != null) {
          System.out.println(String.format("Openeing Merge View with Source Branch: %s and Destination Branch: %s",
                sourceBranch.getName(), destBranch.getName()));
@@ -106,7 +107,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    }
 
    public static void openView(final TransactionId commitTrans) {
-      if (commitTrans == null) throw new IllegalArgumentException("Commit Transaction ID can't be null");
+      if (commitTrans == null) {
+         throw new IllegalArgumentException("Commit Transaction ID can't be null");
+      }
       if (DEBUG) {
          System.out.println(String.format("Openeing Merge View with Transaction ID: %d ",
                commitTrans.getTransactionNumber()));
@@ -180,7 +183,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       xMergeViewer.setDisplayLabel(false);
       xMergeViewer.createWidgets(parent, 1);
 
-      if (conflicts != null) xMergeViewer.setConflicts(conflicts);
+      if (conflicts != null) {
+         xMergeViewer.setConflicts(conflicts);
+      }
       MenuManager menuManager = new MenuManager();
       menuManager.setRemoveAllWhenShown(true);
       menuManager.addMenuListener(new IMenuListener() {
@@ -371,8 +376,10 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
-                  0).statusEditable()) return false;
-            attributeConflict = ((AttributeConflict) conflicts.get(0));
+                  0).statusEditable()) {
+               return false;
+            }
+            attributeConflict = (AttributeConflict) conflicts.get(0);
             return true;
          }
       });
@@ -404,7 +411,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (conflicts == null || conflicts.size() != 1) {
                return false;
             }
-            attributeConflict = ((AttributeConflict) conflicts.get(0));
+            attributeConflict = (AttributeConflict) conflicts.get(0);
             return true;
          }
       });
@@ -436,7 +443,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (conflicts == null || conflicts.size() != 1) {
                return false;
             }
-            attributeConflict = ((AttributeConflict) conflicts.get(0));
+            attributeConflict = (AttributeConflict) conflicts.get(0);
             return true;
          }
       });
@@ -468,7 +475,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (conflicts == null || conflicts.size() != 1) {
                return false;
             }
-            attributeConflict = ((AttributeConflict) conflicts.get(0));
+            attributeConflict = (AttributeConflict) conflicts.get(0);
             return true;
          }
       });
@@ -500,7 +507,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             if (conflicts == null || conflicts.size() != 1) {
                return false;
             }
-            attributeConflict = ((AttributeConflict) conflicts.get(0));
+            attributeConflict = (AttributeConflict) conflicts.get(0);
             return true;
          }
       });
@@ -536,8 +543,10 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
             List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
             attributeConflict = null;
             if (conflicts == null || conflicts.size() != 1 || !(conflicts.get(0) instanceof AttributeConflict) || !conflicts.get(
-                  0).statusEditable()) return false;
-            attributeConflict = ((AttributeConflict) conflicts.get(0));
+                  0).statusEditable()) {
+               return false;
+            }
+            attributeConflict = (AttributeConflict) conflicts.get(0);
             return attributeConflict.isWordAttribute();
          }
       });
@@ -686,7 +695,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      }
                      break;
                   case 3:
-                     if (conflict.statusNotResolvable() || conflict.statusInformational()) return false;
+                     if (conflict.statusNotResolvable() || conflict.statusInformational()) {
+                        return false;
+                     }
                      if (conflict.getArtifact() != null) {
                         artifacts.add(conflict.getArtifact());
                      }
@@ -721,21 +732,21 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      MergeUtility.showCompareFile(
                            MergeUtility.getStartArtifact(attributeConflict),
                            attributeConflict.getSourceArtifact(),
-                           "Source_Diff_For_" + attributeConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                           "Source_Diff_For_" + attributeConflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
                                  ":", ";") + ".xml");
                      break;
                   case 2:
                      MergeUtility.showCompareFile(
                            MergeUtility.getStartArtifact(attributeConflict),
                            attributeConflict.getDestArtifact(),
-                           "Destination_Diff_For_" + attributeConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                           "Destination_Diff_For_" + attributeConflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
                                  ":", ";") + ".xml");
                      break;
                   case 3:
                      MergeUtility.showCompareFile(
                            attributeConflict.getSourceArtifact(),
                            attributeConflict.getDestArtifact(),
-                           "Source_Destination_Diff_For_" + attributeConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                           "Source_Destination_Diff_For_" + attributeConflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
                                  ":", ";") + ".xml");
                      break;
                   case 4:
@@ -745,7 +756,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      MergeUtility.showCompareFile(
                            attributeConflict.getSourceArtifact(),
                            attributeConflict.getArtifact(),
-                           "Source_Merge_Diff_For_" + attributeConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                           "Source_Merge_Diff_For_" + attributeConflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
                                  ":", ";") + ".xml");
                      break;
                   case 5:
@@ -755,7 +766,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      MergeUtility.showCompareFile(
                            attributeConflict.getDestArtifact(),
                            attributeConflict.getArtifact(),
-                           "Destination_Merge_Diff_For_" + attributeConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                           "Destination_Merge_Diff_For_" + attributeConflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
                                  ":", ";") + ".xml");
                      break;
                }
@@ -764,14 +775,14 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                   MergeUtility.showCompareFile(
                         artifactConflict.getSourceArtifact(),
                         MergeUtility.getStartArtifact(artifactConflict),
-                        "Source_Diff_For_" + artifactConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                        "Source_Diff_For_" + artifactConflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
                               ":", ";") + ".xml");
                }
                if (diffToShow == 2) {
                   MergeUtility.showCompareFile(
                         artifactConflict.getDestArtifact(),
                         MergeUtility.getStartArtifact(artifactConflict),
-                        "Destination_Diff_For_" + artifactConflict.getArtifact().getSafeName() + (new Date()).toString().replaceAll(
+                        "Destination_Diff_For_" + artifactConflict.getArtifact().getSafeName() + new Date().toString().replaceAll(
                               ":", ";") + ".xml");
                }
             }
@@ -785,7 +796,9 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       public boolean isEnabledWithException() throws OseeCoreException {
          artifacts = new LinkedList<Artifact>();
          List<Conflict> conflicts = xMergeViewer.getSelectedConflicts();
-         if (conflicts.size() != 1) return false;
+         if (conflicts.size() != 1) {
+            return false;
+         }
          if (conflicts.get(0) instanceof AttributeConflict) {
             attributeConflict = (AttributeConflict) conflicts.get(0);
             artifactConflict = null;
@@ -795,36 +808,41 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      if (attributeConflict.getSourceArtifact() != null && MergeUtility.getStartArtifact(attributeConflict) != null) {
                         artifacts.add(attributeConflict.getSourceArtifact());
                         artifacts.add(MergeUtility.getStartArtifact(attributeConflict));
-                     } else
+                     } else {
                         return false;
+                     }
                      break;
                   case 2:
                      if (attributeConflict.getDestArtifact() != null && MergeUtility.getStartArtifact(attributeConflict) != null) {
                         artifacts.add(attributeConflict.getDestArtifact());
                         artifacts.add(MergeUtility.getStartArtifact(attributeConflict));
-                     } else
+                     } else {
                         return false;
+                     }
                      break;
                   case 3:
                      if (attributeConflict.getDestArtifact() != null && attributeConflict.getSourceArtifact() != null) {
                         artifacts.add(attributeConflict.getSourceArtifact());
                         artifacts.add(attributeConflict.getDestArtifact());
-                     } else
+                     } else {
                         return false;
+                     }
                      break;
                   case 4:
                      if (attributeConflict.getSourceArtifact() != null && attributeConflict.getArtifact() != null) {
                         artifacts.add(attributeConflict.getSourceArtifact());
                         artifacts.add(attributeConflict.getArtifact());
-                     } else
+                     } else {
                         return false;
+                     }
                      break;
                   case 5:
                      if (attributeConflict.getDestArtifact() != null && attributeConflict.getArtifact() != null) {
                         artifacts.add(attributeConflict.getDestArtifact());
                         artifacts.add(attributeConflict.getArtifact());
-                     } else
+                     } else {
                         return false;
+                     }
                      break;
                }
             } catch (Exception ex) {
@@ -840,15 +858,17 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      if (artifactConflict.getSourceArtifact() != null && conflicts.get(0).statusNotResolvable() && MergeUtility.getStartArtifact(artifactConflict) != null) {
                         artifacts.add(artifactConflict.getSourceArtifact());
                         artifacts.add(MergeUtility.getStartArtifact(artifactConflict));
-                     } else
+                     } else {
                         return false;
+                     }
                      break;
                   case 2:
                      if (artifactConflict.getDestArtifact() != null && conflicts.get(0).statusInformational() && MergeUtility.getStartArtifact(artifactConflict) != null) {
                         artifacts.add(artifactConflict.getDestArtifact());
                         artifacts.add(MergeUtility.getStartArtifact(artifactConflict));
-                     } else
+                     } else {
                         return false;
+                     }
                      break;
                   case 3:
                      return false;
@@ -887,8 +907,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    @Override
    public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       try {
-         if (sourceBranch == null || destBranch == null || (sourceBranch.getBranchId() != transData.getBranchId() && destBranch.getBranchId() != transData.getBranchId() && ConflictManagerInternal.getMergeBranchId(
-               sourceBranch.getBranchId(), destBranch.getBranchId()) != transData.getBranchId())) {
+         if (sourceBranch == null || destBranch == null || sourceBranch.getBranchId() != transData.getBranchId() && destBranch.getBranchId() != transData.getBranchId() && ConflictManagerInternal.getMergeBranchId(
+               sourceBranch.getBranchId(), destBranch.getBranchId()) != transData.getBranchId()) {
             return;
          }
       } catch (OseeCoreException ex) {
@@ -898,13 +918,15 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (xMergeViewer.getXViewer() == null || xMergeViewer.getXViewer().getTree() == null || xMergeViewer.getXViewer().getTree().isDisposed()) return;
+            if (xMergeViewer.getXViewer() == null || xMergeViewer.getXViewer().getTree() == null || xMergeViewer.getXViewer().getTree().isDisposed()) {
+               return;
+            }
             for (Artifact artifact : transData.cacheChangedArtifacts) {
                try {
                   Branch branch = artifact.getBranch();
                   if (showConflicts) {
                      for (Conflict conflict : conflicts) {
-                        if ((artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch())) || (artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch()))) {
+                        if (artifact.equals(conflict.getSourceArtifact()) && branch.equals(conflict.getSourceBranch()) || artifact.equals(conflict.getDestArtifact()) && branch.equals(conflict.getDestBranch())) {
                            xMergeViewer.setInputData(sourceBranch, destBranch, transactionId, mergeView, commitTrans,
                                  "Source Artifact Changed", showConflicts);
                            if (artifact.equals(conflict.getSourceArtifact()) && sender.isLocal()) {
