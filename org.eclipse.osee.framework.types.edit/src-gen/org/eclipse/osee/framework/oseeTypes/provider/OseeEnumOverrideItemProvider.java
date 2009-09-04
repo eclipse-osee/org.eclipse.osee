@@ -13,7 +13,7 @@ import java.util.List;
 import org.eclipse.emf.common.notify.AdapterFactory;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.ResourceLocator;
+import org.eclipse.emf.ecore.EStructuralFeature;
 
 import org.eclipse.emf.edit.provider.ComposeableAdapterFactory;
 import org.eclipse.emf.edit.provider.IEditingDomainItemProvider;
@@ -23,19 +23,19 @@ import org.eclipse.emf.edit.provider.IItemPropertySource;
 import org.eclipse.emf.edit.provider.IStructuredItemContentProvider;
 import org.eclipse.emf.edit.provider.ITreeItemContentProvider;
 import org.eclipse.emf.edit.provider.ItemPropertyDescriptor;
-import org.eclipse.emf.edit.provider.ItemProviderAdapter;
 import org.eclipse.emf.edit.provider.ViewerNotification;
 
-import org.eclipse.osee.framework.oseeTypes.OseeType;
+import org.eclipse.osee.framework.oseeTypes.OseeEnumOverride;
+import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesPackage;
 
 /**
- * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeType} object.
+ * This is the item provider adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride} object.
  * <!-- begin-user-doc -->
  * <!-- end-user-doc -->
  * @generated
  */
-public class OseeTypeItemProvider
+public class OseeEnumOverrideItemProvider
    extends OseeElementItemProvider
    implements
       IEditingDomainItemProvider,
@@ -49,7 +49,7 @@ public class OseeTypeItemProvider
     * <!-- end-user-doc -->
     * @generated
     */
-   public OseeTypeItemProvider(AdapterFactory adapterFactory) {
+   public OseeEnumOverrideItemProvider(AdapterFactory adapterFactory) {
       super(adapterFactory);
    }
 
@@ -64,65 +64,95 @@ public class OseeTypeItemProvider
       if (itemPropertyDescriptors == null) {
          super.getPropertyDescriptors(object);
 
-         addTypeGuidPropertyDescriptor(object);
-         addNamePropertyDescriptor(object);
+         addOverridenEnumTypePropertyDescriptor(object);
+         addInheritAllPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
 
    /**
-    * This adds a property descriptor for the Name feature.
+    * This adds a property descriptor for the Overriden Enum Type feature.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected void addNamePropertyDescriptor(Object object) {
+   protected void addOverridenEnumTypePropertyDescriptor(Object object) {
       itemPropertyDescriptors.add
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_OseeType_name_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_OseeType_name_feature", "_UI_OseeType_type"),
-             OseeTypesPackage.Literals.OSEE_TYPE__NAME,
+             getString("_UI_OseeEnumOverride_overridenEnumType_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_OseeEnumOverride_overridenEnumType_feature", "_UI_OseeEnumOverride_type"),
+             OseeTypesPackage.Literals.OSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE,
              true,
              false,
-             false,
-             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             true,
+             null,
              null,
              null));
    }
 
    /**
-    * This adds a property descriptor for the Type Guid feature.
+    * This adds a property descriptor for the Inherit All feature.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   protected void addTypeGuidPropertyDescriptor(Object object) {
+   protected void addInheritAllPropertyDescriptor(Object object) {
       itemPropertyDescriptors.add
          (createItemPropertyDescriptor
             (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
              getResourceLocator(),
-             getString("_UI_OseeType_typeGuid_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_OseeType_typeGuid_feature", "_UI_OseeType_type"),
-             OseeTypesPackage.Literals.OSEE_TYPE__TYPE_GUID,
+             getString("_UI_OseeEnumOverride_inheritAll_feature"),
+             getString("_UI_PropertyDescriptor_description", "_UI_OseeEnumOverride_inheritAll_feature", "_UI_OseeEnumOverride_type"),
+             OseeTypesPackage.Literals.OSEE_ENUM_OVERRIDE__INHERIT_ALL,
              true,
              false,
              false,
-             ItemPropertyDescriptor.GENERIC_VALUE_IMAGE,
+             ItemPropertyDescriptor.BOOLEAN_VALUE_IMAGE,
              null,
              null));
    }
 
    /**
-    * This returns OseeType.gif.
+    * This specifies how to implement {@link #getChildren} and is used to deduce an appropriate feature for an
+    * {@link org.eclipse.emf.edit.command.AddCommand}, {@link org.eclipse.emf.edit.command.RemoveCommand} or
+    * {@link org.eclipse.emf.edit.command.MoveCommand} in {@link #createCommand}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Collection<? extends EStructuralFeature> getChildrenFeatures(Object object) {
+      if (childrenFeatures == null) {
+         super.getChildrenFeatures(object);
+         childrenFeatures.add(OseeTypesPackage.Literals.OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS);
+      }
+      return childrenFeatures;
+   }
+
+   /**
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   protected EStructuralFeature getChildFeature(Object object, Object child) {
+      // Check the type of the specified child object and return the proper feature to use for
+      // adding (see {@link AddCommand}) it as a child.
+
+      return super.getChildFeature(object, child);
+   }
+
+   /**
+    * This returns OseeEnumOverride.gif.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
    public Object getImage(Object object) {
-      return overlayImage(object, getResourceLocator().getImage("full/obj16/OseeType"));
+      return overlayImage(object, getResourceLocator().getImage("full/obj16/OseeEnumOverride"));
    }
 
    /**
@@ -133,10 +163,8 @@ public class OseeTypeItemProvider
     */
    @Override
    public String getText(Object object) {
-      String label = ((OseeType)object).getName();
-      return label == null || label.length() == 0 ?
-         getString("_UI_OseeType_type") :
-         getString("_UI_OseeType_type") + " " + label;
+      OseeEnumOverride oseeEnumOverride = (OseeEnumOverride)object;
+      return getString("_UI_OseeEnumOverride_type") + " " + oseeEnumOverride.isInheritAll();
    }
 
    /**
@@ -150,10 +178,12 @@ public class OseeTypeItemProvider
    public void notifyChanged(Notification notification) {
       updateChildren(notification);
 
-      switch (notification.getFeatureID(OseeType.class)) {
-         case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
-         case OseeTypesPackage.OSEE_TYPE__NAME:
+      switch (notification.getFeatureID(OseeEnumOverride.class)) {
+         case OseeTypesPackage.OSEE_ENUM_OVERRIDE__INHERIT_ALL:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
+            return;
+         case OseeTypesPackage.OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS:
+            fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), true, false));
             return;
       }
       super.notifyChanged(notification);
@@ -169,6 +199,21 @@ public class OseeTypeItemProvider
    @Override
    protected void collectNewChildDescriptors(Collection<Object> newChildDescriptors, Object object) {
       super.collectNewChildDescriptors(newChildDescriptors, object);
+
+      newChildDescriptors.add
+         (createChildParameter
+            (OseeTypesPackage.Literals.OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS,
+             OseeTypesFactory.eINSTANCE.createOverrideOption()));
+
+      newChildDescriptors.add
+         (createChildParameter
+            (OseeTypesPackage.Literals.OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS,
+             OseeTypesFactory.eINSTANCE.createAddEnum()));
+
+      newChildDescriptors.add
+         (createChildParameter
+            (OseeTypesPackage.Literals.OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS,
+             OseeTypesFactory.eINSTANCE.createRemoveEnum()));
    }
 
 }
