@@ -11,11 +11,14 @@
 package org.eclipse.osee.framework.types.bridge.wizards;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.types.bridge.operations.OseeToTextModelOperation;
+import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
+import org.eclipse.osee.framework.types.bridge.operations.OseeToXtextOperation;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -37,7 +40,11 @@ public class OseeTypesExportWizard extends Wizard implements IImportWizard {
    @Override
    public boolean performFinish() {
       File file = mainPage.getFile();
-      IOperation operation = new OseeToTextModelOperation(file.toURI());
+
+      Map<String, OseeTypeModel> models = new HashMap<String, OseeTypeModel>();
+      IOperation operation = new OseeToXtextOperation(models);
+
+      //TODO Add write to file Op
       Operations.executeAsJob(operation, true);
       return true;
    }
