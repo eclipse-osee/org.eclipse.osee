@@ -18,8 +18,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
+
+import org.eclipse.core.resources.IProject;
 import org.eclipse.osee.framework.ui.workspacebundleloader.IJarChangeListener;
 import org.eclipse.osee.framework.ui.workspacebundleloader.JarCollectionNature;
+import org.eclipse.osee.ote.runtimemanager.container.OteClasspathContainer;
 
 /**
  * @author Robert A. Fisher
@@ -85,14 +88,24 @@ public class LibJarListener<T extends JarCollectionNature> implements IJarChange
 
    @Override
    public void handleNatureClosed(T nature) {
-      System.out.println("Project closed: " + nature.getProject().getName());
+      IProject project = nature.getProject();
+      System.out.println("Project closed: " + project.getName());
       for (URL url : nature.getBundles()) {
          handleBundleRemoved(url);
       }
+      
+      nature.setClosing(true);
+      updateContainers();
+      nature.setClosing(false);
+   }
+
+   private void updateContainers() {
+      OteClasspathContainer.refreshAll();
    }
 
    @Override
    public void handlePostChange() {
+      updateContainers();
       System.out.println("Bunch of changes just finished");
    }
 

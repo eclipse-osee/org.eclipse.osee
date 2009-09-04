@@ -24,6 +24,7 @@ import java.util.jar.Attributes;
 import java.util.jar.Manifest;
 import java.util.jar.Attributes.Name;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IWorkspace;
@@ -40,6 +41,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class JarCollectionNature implements IProjectNature {
 
    private final Name BUNDLE_PATH_ATTRIBUTE;
+   private boolean isClosing;
 
    protected IProject project;
 
@@ -50,7 +52,25 @@ public class JarCollectionNature implements IProjectNature {
    public JarCollectionNature(String BUNDLE_PATH_ATTRIBUTE) {
       super();
       this.BUNDLE_PATH_ATTRIBUTE = new Name(BUNDLE_PATH_ATTRIBUTE);
+      this.isClosing = false;
    }
+
+
+   /**
+    * @return the isClosing
+    */
+   public boolean isClosing() {
+      return isClosing;
+   }
+
+
+   /**
+    * @param isClosing the isClosing to set
+    */
+   public void setClosing(boolean isClosing) {
+      this.isClosing = isClosing;
+   }
+
 
    @Override
    public void configure() throws CoreException {
@@ -72,6 +92,11 @@ public class JarCollectionNature implements IProjectNature {
 
    public Collection<URL> getBundles() {
       Collection<URL> urls = new ArrayList<URL>();
+
+      if( isClosing ) {
+         return urls;
+      }
+
       IPath[] paths = getProjectRelativeBundlePaths();
       for (IPath path : paths) {
          IPath pluginsPath = project.getLocation().append(path);

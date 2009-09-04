@@ -19,16 +19,27 @@ import org.osgi.framework.BundleContext;
  */
 public class RuntimeManager implements BundleActivator {
    private static RuntimeManager instance;
+   private BundleContext context;
    
    public static RuntimeManager getDefault() {
       return instance;
    }
+
    
    public void start(BundleContext context) throws Exception {
       instance = this;
+      this.context = context;
    }
    
    public void stop(BundleContext context) throws Exception {
       instance = null;
+      this.context = null;
    }
+
+
+   public BundleContext getContext() {
+      return context;
+   }
+   
+   
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.workspacebundleloader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IProjectNature;
 import org.eclipse.core.resources.IResource;

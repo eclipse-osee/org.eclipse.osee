@@ -1,0 +1,238 @@
+/*
+ * Created on Aug 27, 2009
+ *
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
+package org.eclipse.osee.ote.runtimemanager.container;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathContainer;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
+import org.eclipse.osee.framework.ui.workspacebundleloader.JarChangeResourceListener;
+import org.eclipse.osee.ote.runtimemanager.BundleInfo;
+import org.eclipse.osee.ote.runtimemanager.OteBundleLocator;
+import org.eclipse.osee.ote.runtimemanager.OteUserLibsNature;
+import org.eclipse.osee.ote.runtimemanager.RuntimeManager;
+import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
+
+/**
+ * @author b1528444
+ *
+ */
+public class OteClasspathContainer implements IClasspathContainer {
+   public final static Path ID = new Path("OTE Classpath Container");
+   private ServiceTracker tracker;
+   private OteBundleLocator locator;
+   private IJavaProject javaProject;
+   private JarChangeResourceListener<OteUserLibsNature> userLibResourceListener;
+   private IPath containerPath;
+   
+   private static final List<OteClasspathContainer> activeContainers = new ArrayList<OteClasspathContainer>();
+   
+
+   public OteClasspathContainer(IPath path, IJavaProject javaProject) {
+      this.javaProject = javaProject;
+      this.containerPath = path;
+
+      try {
+         BundleContext context = RuntimeManager.getDefault().getContext();
+         tracker = new ServiceTracker(context, OteBundleLocator.class.getName(), null);
+         tracker.open(true);
+         Object obj = tracker.waitForService(10000);
+         locator = (OteBundleLocator)obj;
+         
+//         OteContainerActivator.getDefault().getLibraryChangeProvider().addListener(this);
+      }
+      catch (Exception ex) {
+         ex.printStackTrace();
+      }
+
+      activeContainers.add(this);
+   }
+
+   /**
+    * @param oteClasspathContainer
+    */
+   public OteClasspathContainer(OteClasspathContainer oteClasspathContainer) {
+      this(oteClasspathContainer.containerPath, oteClasspathContainer.javaProject);
+   }
+
+   /**
+    * @param path
+    * @return
+    */
+   private String findProjectRoot(String path) {
+      File fileForPath = new File(path);
+      File projectFile = recursivelyFindProjectFile(fileForPath);
+      return projectFile.getAbsolutePath();
+   }
+
+   /**
+    * @param fileForPath
+    * @return
+    */
+   private File recursivelyFindProjectFile(File file) {
+
+      if( file == null )
+         return file;
+
+      if(fileIsDirectoryWithBin(file)) {
+         return file;
+      } else {
+         return recursivelyFindProjectFile(file.getParentFile());
+      }
+   }
+
+   /**
+    * @param file
+    * @return
+    */
+   private boolean fileIsDirectoryWithBin(File file) {
+      if( file.isDirectory() )
+      {
+         File binChildFile = new File( file.getAbsoluteFile() + "/bin");
+         if( binChildFile.exists())
+            return true;
+      }
+      return false;
+   }
+
+   /**
+    * @param absolutePath
+    * @return
+    */
+   private String getWorkspaceRelativePath(String absolutePath) {
+      return absolutePath;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.jdt.core.IClasspathContainer#getClasspathEntries()
+    */
+   @Override
+   public IClasspathEntry[] getClasspathEntries() {
+      List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
+      Collection<BundleInfo> runtimeLibUrls;
+      try {
+         runtimeLibUrls = locator.getRuntimeLibs();
+         for( BundleInfo info : runtimeLibUrls )
+         {
+
+            String binaryFilePath = info.getSystemLocation().getFile();
+
+            if(info.isSystemLibrary())
+            {
+               entries.add(JavaCore.newLibraryEntry(new Path(binaryFilePath),new Path(binaryFilePath), new Path("/")));
+            } else {
+               File projectFilePath = recursivelyFindProjectFile(new File(binaryFilePath));
+               binaryFilePath = "/" + projectFilePath.getName();
+
+               entries.add(JavaCore.newProjectEntry( new Path(binaryFilePath)));
+            }
+         }
+
+      }
+      catch (Exception ex) {
+         ex.printStackTrace();
+      }
+
+      IClasspathEntry[] retVal = new IClasspathEntry[entries.size()];
+      return entries.toArray(retVal);
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.jdt.core.IClasspathContainer#getDescription()
+    */
+   @Override
+   public String getDescription() {
+      return "OTE Classpath Container";
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.jdt.core.IClasspathContainer#getKind()
+    */
+   @Override
+   public int getKind() {
+      return IClasspathContainer.K_APPLICATION;
+   }
+
+   @Override
+   public IPath getPath() {
+      return ID;
+   }
+
+   private class ClassPathDescription {
+      private String sourcePath, binaryPath;
+
+      /**
+       * @param sourcePath
+       * @param binaryPath
+       */
+      public ClassPathDescription(String binaryPath, String sourcePath) {
+         super();
+         this.sourcePath = sourcePath;
+         this.binaryPath = binaryPath;
+      }
+
+      /**
+       * @return the sourcePath
+       */
+      public String getSourcePath() {
+         return sourcePath;
+      }
+
+      /**
+       * @return the binaryPath
+       */
+      public String getBinaryPath() {
+         return binaryPath;
+      }
+
+
+   }
+   
+   public static void refreshAll() {
+      for( OteClasspathContainer container : activeContainers.toArray(new OteClasspathContainer[0]))
+      {
+         container.refresh();
+      }
+   }
+   
+
+   public void refresh() {
+      
+      try {
+         activeContainers.remove(this);
+         if(javaProject.isOpen()) {
+            JavaCore.setClasspathContainer(containerPath, new IJavaProject[]{javaProject}, new IClasspathContainer[] {new OteClasspathContainer(this)}, null);
+         }
+//         new Thread(new Runnable() {
+//
+//            @Override
+//            public void run() {
+//               try {
+//                  Thread.sleep(10000);
+//               }
+//               catch (InterruptedException ex) {
+//                  ex.printStackTrace();
+//               }
+//               catch (Exception ex) {
+//                  ex.printStackTrace();
+//               }
+//            }
+//            
+//         }).start();
+      }
+      catch (Exception ex) {
+      }
+   }
+
+}

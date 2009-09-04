@@ -28,5 +28,20 @@
             class="org.eclipse.osee.ote.runtimemanager.EarlyStartup">
       </startup>
    </extension>
+  <extension
+        point="org.eclipse.jdt.core.classpathContainerInitializer">
+     <classpathContainerInitializer
+           class="org.eclipse.osee.ote.runtimemanager.container.OteClasspathContainerInitializer"
+           id="OTE Classpath Container">
+     </classpathContainerInitializer>
+  </extension>
+  <extension
+        point="org.eclipse.jdt.ui.classpathContainerPage">
+     <classpathContainerPage
+           class="org.eclipse.osee.ote.runtimemanager.container.OteContainerPage"
+           id="org.eclipse.osee.ote.runtimeManager.container.OTE_CONTAINER"
+           name="OTE Classpath Container">
+     </classpathContainerPage>
+  </extension>
 
 </plugin>
