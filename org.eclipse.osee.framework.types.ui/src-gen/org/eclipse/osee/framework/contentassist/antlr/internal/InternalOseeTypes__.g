@@ -35,55 +35,56 @@ T36 : '{' ;
 T37 : '}' ;
 T38 : 'extends' ;
 T39 : ',' ;
-T40 : 'attribute' ;
-T41 : 'branchGuid' ;
-T42 : 'attributeType' ;
-T43 : 'dataProvider' ;
-T44 : 'min' ;
-T45 : 'max' ;
-T46 : 'overrides' ;
-T47 : 'taggerId' ;
-T48 : 'enumType' ;
-T49 : 'description' ;
-T50 : 'defaultValue' ;
-T51 : 'fileExtension' ;
-T52 : 'oseeEnumType' ;
-T53 : 'entry' ;
-T54 : 'overrides enum' ;
-T55 : 'relationType' ;
-T56 : 'sideAName' ;
-T57 : 'sideAArtifactType' ;
-T58 : 'sideBName' ;
-T59 : 'sideBArtifactType' ;
-T60 : 'defaultOrderType' ;
-T61 : 'multiplicity' ;
-T62 : 'abstract' ;
-T63 : 'inheritAll' ;
-T64 : 'add' ;
-T65 : 'remove' ;
+T40 : 'guid' ;
+T41 : 'attribute' ;
+T42 : 'branchGuid' ;
+T43 : 'attributeType' ;
+T44 : 'dataProvider' ;
+T45 : 'min' ;
+T46 : 'max' ;
+T47 : 'overrides' ;
+T48 : 'taggerId' ;
+T49 : 'enumType' ;
+T50 : 'description' ;
+T51 : 'defaultValue' ;
+T52 : 'fileExtension' ;
+T53 : 'oseeEnumType' ;
+T54 : 'entry' ;
+T55 : 'overrides enum' ;
+T56 : 'add' ;
+T57 : 'remove' ;
+T58 : 'relationType' ;
+T59 : 'sideAName' ;
+T60 : 'sideAArtifactType' ;
+T61 : 'sideBName' ;
+T62 : 'sideBArtifactType' ;
+T63 : 'defaultOrderType' ;
+T64 : 'multiplicity' ;
+T65 : 'abstract' ;
+T66 : 'inheritAll' ;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3638
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3760
 RULE_WHOLE_NUM_STR : ('0'..'9')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3640
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3762
 RULE_ID : '^'? ('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3642
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3764
 RULE_INT : ('0'..'9')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3644
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3766
 RULE_STRING : ('"' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'"')))* '"'|'\'' ('\\' ('b'|'t'|'n'|'f'|'r'|'"'|'\''|'\\')|~(('\\'|'\'')))* '\'');
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3646
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3768
 RULE_ML_COMMENT : '/*' ( options {greedy=false;} : . )*'*/';
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3648
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3770
 RULE_SL_COMMENT : '//' ~(('\n'|'\r'))* ('\r'? '\n')?;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3650
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3772
 RULE_WS : (' '|'\t'|'\r'|'\n')+;
 
-// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3652
+// $ANTLR src "../org.eclipse.osee.framework.types.ui/src-gen/org/eclipse/osee/framework/contentassist/antlr/internal/InternalOseeTypes.g" 3774
 RULE_ANY_OTHER : .;
 
 
