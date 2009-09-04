@@ -1,6 +1,6 @@
 import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 
-artifactType "ats.Release" extends "Artifact"  {
+abstract artifactType "ats.Release Artifact" extends "Artifact"  {
    attribute "ats.Released"
 }
 
@@ -28,18 +28,21 @@ artifactType "ats.Review" extends "ats.Ats Artifact"  {
 }
 
 artifactType "PeerToPeer Review" extends "ats.Review" {
-   attribute "ats.Authors"
+   typeGuid "AAMFDhh_300dpgmNtRAA"
+	attribute "ats.Authors"
    attribute "ats.Location"
    attribute "ats.Review Defect"
 }
 
 artifactType "Decision Review" extends "ats.Review" {
-   attribute "ats.Decision Review Options"
+   typeGuid "AAMFDhfrdR7BGTL7H_wA"
+	attribute "ats.Decision Review Options"
    attribute "ats.Decision"
 }
 
 artifactType "Action" extends "ats.Ats Artifact"  {
-   attribute "ats.User Community"
+   typeGuid "AAMFDhY_rns71KvX14QA"
+	attribute "ats.User Community"
    attribute "ats.Actionable Item"
    attribute "ats.Change Type"
    attribute "ats.Need By"
@@ -48,7 +51,8 @@ artifactType "Action" extends "ats.Ats Artifact"  {
 }
 
 artifactType "Team Definition" extends "ats.Ats Artifact" {
-   attribute "ats.Man Days Needed"
+   typeGuid "AAMFDhUrlytusKbaQGAA"
+	attribute "ats.Man Days Needed"
    attribute "ats.Full Name"
    attribute "ats.Team Uses Versions"
    attribute "ats.Require Targeted Version"
@@ -60,12 +64,14 @@ artifactType "Team Definition" extends "ats.Ats Artifact" {
 }
 
 artifactType "Actionable Item" extends "ats.Ats Artifact"  {
-   attribute "ats.Active"
+   typeGuid "AAMFDhW2LmhtRFsVyzwA"
+	attribute "ats.Active"
    attribute "ats.Actionable"
 }
 
 artifactType "Version" extends "ats.Ats Artifact" {
-   attribute "ats.Allow Commit Branch"
+   typeGuid "AAMFDhder0oETnv14xQA"
+	attribute "ats.Allow Commit Branch"
    attribute "ats.Allow Create Branch"
    attribute "ats.Estimated Release Date"
    attribute "ats.Full Name"
@@ -106,12 +112,14 @@ abstract artifactType "Goal" extends "ats.State Machine" {
 }
 
 artifactType "Task" extends "ats.State Machine" {
-   attribute "ats.Related To State"
+   typeGuid "AAMFDhbTAAB6h+06fuAA"
+	attribute "ats.Related To State"
    attribute "ats.Uses Resolution Options"
 }
 
 artifactType "Team Workflow" extends "Goal" {
-   attribute "ats.Actionable Item"
+   typeGuid "AAMFDhSiF2OD+wiUqugA"
+	attribute "ats.Actionable Item"
    attribute "ats.Branch Id"
    attribute "ats.Branch Metrics"
    attribute "ats.Parent Branch Id"
@@ -120,102 +128,117 @@ artifactType "Team Workflow" extends "Goal" {
 }
 
 attributeType "ats.Validation Required" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEcjT0TwkD2R4w1QA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "no"
 }
 
 attributeType "ats.Active" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEclQOVmzkIvzyWwA"
+	dataProvider DefaultAttributeDataProvider
    min 1
    max 1
    defaultValue "yes"
 }
 
 attributeType "ats.Uses Resolution Options" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEPuOzltN1+Ze1kQA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "no"
 }
 
 attributeType "ats.Released" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEcnMoUZMLA2zB1AA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "no"
 }
 
 attributeType "ats.Next Version" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEcpH8Xb72hsF5AwA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "no"
 }
 
 attributeType "ats.Team Uses Versions" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEcrHnzPxQ7w3ligA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "no"
 }
 
 attributeType "ats.Require Targeted Version" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEQUBDxMJ67lodTQA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "no"
 }
 
 attributeType "ats.Blocking Review" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEctKkjMRrIy1C7gA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "no"
 }
 
 attributeType "ats.Actionable" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEcvDtBiaJ3TMatAA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "yes"
 }
 
 attributeType "ats.Allow Create Branch" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEbARuQEvi6rtY5gA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "yes"
 }
 
 attributeType "ats.Allow Commit Branch" extends BooleanAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEbCZCkwgj73BsQgA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "yes"
 }
 
 attributeType "ats.Need By" extends DateAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEcxAGzHAKfDNAIwA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.Estimated Release Date" extends DateAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEcy6VB7Ble5SP1QA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.Estimated Completion Date" extends DateAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEc18k3Gh+GP7zqAA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.Release Date" extends DateAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEc3+cGcMDOCdmdAA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
@@ -227,7 +250,8 @@ oseeEnumType "ats.Review Blocks.enum" {
 }
 
 attributeType "ats.Review Blocks" extends EnumeratedAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEc6G2A8jmRWJgagA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    enumType "ats.Review Blocks.enum"
@@ -242,7 +266,8 @@ oseeEnumType "ats.Priority.enum" {
 }
 
 attributeType "ats.Priority" extends EnumeratedAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEc8JzH1U6XGD59QA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    enumType "ats.Priority.enum"
@@ -255,7 +280,8 @@ oseeEnumType "ats.Change Type.enum" {
 }
 
 attributeType "ats.Change Type" extends EnumeratedAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEc+MwGHnPCv7HlgA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    enumType "ats.Change Type.enum"
@@ -270,225 +296,259 @@ oseeEnumType "ats.User Community.enum" {
 }
 
 attributeType "ats.User Community" extends EnumeratedAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdAPtAq1IEwiCQAA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
    enumType "ats.User Community.enum"
 }
 
 attributeType "ats.Estimated Hours" extends FloatingPointAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdCSqBh+cPyadiwA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "0.0"
 }
 
 attributeType "ats.Weekly Benefit" extends FloatingPointAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdEnEU9AecOHMOwA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "0"
 }
 
 attributeType "ats.Man Days Needed" extends FloatingPointAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdGlqFsZp22RMdAA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    defaultValue "0.0"
 }
 
 attributeType "ats.Branch Id" extends IntegerAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEQYd4VpF0Fy2+VAA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.Parent Branch Id" extends IntegerAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdIjJ2za2fblEVgA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.Transaction Id" extends IntegerAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEQaqpwxoT7Sx9UQA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.Percent Rework" extends IntegerAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdKfjl2TII9+tuwA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.Branch Metrics" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEQc7yxE0jUqVA7wA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.State" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdMa3wzVvp60xLQA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Current State" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdOWL3u6hmX2VbwA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Problem" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdQUxRyevvTu+bwA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider fileExtension "txt"
 }
 
 attributeType "ats.Proposed Resolution" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdSSRDGgBQ5tctAA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Resolution" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdUMfV1KdbQNaKwA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider fileExtension "txt"
 }
 
 attributeType "ats.Description" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdWJ_ChxX6+YKbwA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider fileExtension "txt"
 }
 
 attributeType "ats.Full Name" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdZI9XLT34cTonAA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Actionable Item" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdbcR2zpGzFOLOQA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
 }
 
 attributeType "ats.Team Definition" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdd5bFEe18bd0lQA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.Log" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdgB1DX3eJSZb0wA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider fileExtension "xml"
 }
 
 attributeType "ats.State Notes" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdiWPm7M_xV1EswA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1 fileExtension "xml"
 }
 
 attributeType "ats.Related To State" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdkwHULOmHbMbGgA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.SMA Note" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdm7ywte8qayfbAA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Work Package" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdpJqRp2wvA2qvAA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Category" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdrYniOQYrYUKKQA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Category2" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEdthBkolbJKLXuAA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Category3" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEd06oxr8LMzZxdgA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Legacy PCR Id" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEd3TakphMtQX1zgA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Decision Review Options" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEd5hRy1+SRJRqfwA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.Decision" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEd7uDXcmqq_FrCQA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
 }
 
 attributeType "ats.Review Defect" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEd+MSVAb8JQ6f5gA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
 }
 
 attributeType "ats.Location" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEeAW4QBlesdfacwA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider fileExtension "txt"
 }
 
 attributeType "ats.Authors" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEQmzoyhG0QNbstQA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 attributeType "ats.Role" extends StringAttribute {
-   dataProvider DefaultAttributeDataProvider
+   typeGuid "AAMFEeCqMz0XCSBJ+IQA"
+	dataProvider DefaultAttributeDataProvider
    min 0
    max 1
 }
 
 relationType "TeamLead" {
-   sideAName "Team Definition"
+   typeGuid "AAMFE90HyTZPyHuQWOQA"
+	sideAName "Team Definition"
    sideAArtifactType "Team Definition"
    sideBName "User"
    sideBArtifactType "User"
@@ -497,7 +557,8 @@ relationType "TeamLead" {
 }
 
 relationType "TeamMember" {
-   sideAName "Team Definition"
+   typeGuid "AAMFE92A6gCO9WJ2ijQA"
+	sideAName "Team Definition"
    sideAArtifactType "Team Definition"
    sideBName "User"
    sideBArtifactType "User"
@@ -506,7 +567,8 @@ relationType "TeamMember" {
 }
 
 relationType "PrivilegedMember" {
-   sideAName "Team Definition"
+   typeGuid "AAMFE9XfiibyK1x2FiwA"
+	sideAName "Team Definition"
    sideAArtifactType "Team Definition"
    sideBName "User"
    sideBArtifactType "User"
@@ -515,7 +577,8 @@ relationType "PrivilegedMember" {
 }
 
 relationType "TeamActionableItem" {
-   sideAName "Team Definition"
+   typeGuid "AAMFE939Ul9Oenq9wWgA"
+	sideAName "Team Definition"
    sideAArtifactType "Team Definition"
    sideBName "Actionable Item"
    sideBArtifactType "Actionable Item"
@@ -524,7 +587,8 @@ relationType "TeamActionableItem" {
 }
 
 relationType "ActionToWorkflow" {
-   sideAName "Action"
+   typeGuid "AAMFE953ixQThusHUPwA"
+	sideAName "Action"
    sideAArtifactType "Action"
    sideBName "Team Workflow"
    sideBArtifactType "Team Workflow"
@@ -533,7 +597,8 @@ relationType "ActionToWorkflow" {
 }
 
 relationType "SmaToTask" {
-   sideAName "State Machine Artifact"
+   typeGuid "AAMFE97xw1BM5l+GxKAA"
+	sideAName "State Machine Artifact"
    sideAArtifactType "ats.Ats Artifact"
    sideBName "Task"
    sideBArtifactType "Task"
@@ -542,7 +607,8 @@ relationType "SmaToTask" {
 }
 
 relationType "TeamWorkflowTargetedForVersion" {
-   sideAName "Team Workflow"
+   typeGuid "AAMFE99pzm4zSibDT9gA"
+	sideAName "Team Workflow"
    sideAArtifactType "Team Workflow"
    sideBName "Version"
    sideBArtifactType "Version"
@@ -551,7 +617,8 @@ relationType "TeamWorkflowTargetedForVersion" {
 }
 
 relationType "TeamDefinitionToVersion" {
-   sideAName "Team Definition"
+   typeGuid "AAMFE9_i7zG3lR1kGWQA"
+	sideAName "Team Definition"
    sideAArtifactType "Team Definition"
    sideBName "Version"
    sideBArtifactType "Version"
@@ -560,7 +627,8 @@ relationType "TeamDefinitionToVersion" {
 }
 
 relationType "TeamDefinitionToWorkflowDiagram" {
-   sideAName "Team Definition"
+   typeGuid "AAMFE+BpKTGewbN8c3gA"
+	sideAName "Team Definition"
    sideAArtifactType "Team Definition"
    sideBName "General Document"
    sideBArtifactType "General Document"
@@ -569,7 +637,8 @@ relationType "TeamDefinitionToWorkflowDiagram" {
 }
 
 relationType "TeamDefinitionToTaskWorkflowDiagram" {
-   sideAName "Team Definition"
+   typeGuid "AAMFE+DkeQ9mRBPca0QA"
+	sideAName "Team Definition"
    sideAArtifactType "Team Definition"
    sideBName "General Document"
    sideBArtifactType "General Document"
@@ -578,7 +647,8 @@ relationType "TeamDefinitionToTaskWorkflowDiagram" {
 }
 
 relationType "TeamDefinitionToDecisionReviewWorkflowDiagram" {
-   sideAName "Team Definition"
+   typeGuid "AAMFE+Fg4RmKrda_jJQA"
+	sideAName "Team Definition"
    sideAArtifactType "Team Definition"
    sideBName "General Document"
    sideBArtifactType "General Document"
@@ -587,7 +657,8 @@ relationType "TeamDefinitionToDecisionReviewWorkflowDiagram" {
 }
 
 relationType "TeamDefinitionToPeerToPeerReviewWorkflowDiagram" {
-   sideAName "Team Definition"
+   typeGuid "AAMFE+HqYUG262IxMFwA"
+	sideAName "Team Definition"
    sideAArtifactType "Team Definition"
    sideBName "General Document"
    sideBArtifactType "General Document"
@@ -596,7 +667,8 @@ relationType "TeamDefinitionToPeerToPeerReviewWorkflowDiagram" {
 }
 
 relationType "TeamWorkflowToReview" {
-   sideAName "Team Workflow"
+   typeGuid "AAMFE+JqDz+8tuRDdIwA"
+	sideAName "Team Workflow"
    sideAArtifactType "Team Workflow"
    sideBName "Review"
    sideBArtifactType "ats.Review"
@@ -605,7 +677,8 @@ relationType "TeamWorkflowToReview" {
 }
 
 relationType "SubscribedUser" {
-   sideAName "Artifact"
+   typeGuid "AAMFE+LkSAkfUWoTHdwA"
+	sideAName "Artifact"
    sideAArtifactType "Artifact"
    sideBName "User"
    sideBArtifactType "User"
@@ -614,7 +687,8 @@ relationType "SubscribedUser" {
 }
 
 relationType "FavoriteUser" {
-   sideAName "Artifact"
+   typeGuid "AAMFE+NegDLK1g2ph+AA"
+	sideAName "Artifact"
    sideAArtifactType "Artifact"
    sideBName "User"
    sideBArtifactType "User"
@@ -623,7 +697,8 @@ relationType "FavoriteUser" {
 }
 
 relationType "ParallelVersion" {
-   sideAName "Parent"
+   typeGuid "AAMFE_EJHSBGb9msPXQA"
+	sideAName "Parent"
    sideAArtifactType "Version"
    sideBName "Child"
    sideBArtifactType "Version"
