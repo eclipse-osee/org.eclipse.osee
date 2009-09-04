@@ -323,7 +323,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getOseeType_Name()
+  public EAttribute getOseeType_TypeGuid()
   {
     return (EAttribute)oseeTypeEClass.getEStructuralFeatures().get(0);
   }
@@ -333,7 +333,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getOseeType_TypeGuid()
+  public EAttribute getOseeType_Name()
   {
     return (EAttribute)oseeTypeEClass.getEStructuralFeatures().get(1);
   }
@@ -623,16 +623,6 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
-  public EAttribute getOverrideOption_OverrideOperation()
-  {
-    return (EAttribute)overrideOptionEClass.getEStructuralFeatures().get(0);
-  }
-
-  /**
-   * <!-- begin-user-doc -->
-   * <!-- end-user-doc -->
-   * @generated
-   */
   public EClass getAddEnum()
   {
     return addEnumEClass;
@@ -802,8 +792,8 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     oseeElementEClass = createEClass(OSEE_ELEMENT);
 
     oseeTypeEClass = createEClass(OSEE_TYPE);
-    createEAttribute(oseeTypeEClass, OSEE_TYPE__NAME);
     createEAttribute(oseeTypeEClass, OSEE_TYPE__TYPE_GUID);
+    createEAttribute(oseeTypeEClass, OSEE_TYPE__NAME);
 
     artifactTypeEClass = createEClass(ARTIFACT_TYPE);
     createEAttribute(artifactTypeEClass, ARTIFACT_TYPE__ABSTRACT);
@@ -839,7 +829,6 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     createEReference(oseeEnumOverrideEClass, OSEE_ENUM_OVERRIDE__OVERRIDE_OPTIONS);
 
     overrideOptionEClass = createEClass(OVERRIDE_OPTION);
-    createEAttribute(overrideOptionEClass, OVERRIDE_OPTION__OVERRIDE_OPERATION);
 
     addEnumEClass = createEClass(ADD_ENUM);
     createEAttribute(addEnumEClass, ADD_ENUM__ENUM_ENTRY);
@@ -913,8 +902,8 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     initEClass(oseeElementEClass, OseeElement.class, "OseeElement", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
     initEClass(oseeTypeEClass, OseeType.class, "OseeType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getOseeType_Name(), ecorePackage.getEString(), "name", null, 0, 1, OseeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getOseeType_TypeGuid(), ecorePackage.getEString(), "typeGuid", null, 0, 1, OseeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getOseeType_Name(), ecorePackage.getEString(), "name", null, 0, 1, OseeType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(artifactTypeEClass, ArtifactType.class, "ArtifactType", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getArtifactType_Abstract(), ecorePackage.getEBoolean(), "abstract", null, 0, 1, ArtifactType.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -950,7 +939,6 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     initEReference(getOseeEnumOverride_OverrideOptions(), this.getOverrideOption(), null, "overrideOptions", null, 0, -1, OseeEnumOverride.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(overrideOptionEClass, OverrideOption.class, "OverrideOption", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-    initEAttribute(getOverrideOption_OverrideOperation(), ecorePackage.getEBoolean(), "overrideOperation", null, 0, 1, OverrideOption.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(addEnumEClass, AddEnum.class, "AddEnum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAddEnum_EnumEntry(), ecorePackage.getEString(), "enumEntry", null, 0, 1, AddEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

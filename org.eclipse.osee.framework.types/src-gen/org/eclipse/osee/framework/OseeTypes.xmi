@@ -124,8 +124,11 @@
           </tokens>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="typeGuid" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+        <tokens xsi:type="xtext:Group" cardinality="?">
+          <tokens xsi:type="xtext:Keyword" value="guid"/>
+          <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+          </tokens>
         </tokens>
         <tokens xsi:type="xtext:Assignment" cardinality="*" feature="validAttributeTypes" operator="+=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.8"/>
@@ -160,8 +163,11 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//AttributeType"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="typeGuid" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+        <tokens xsi:type="xtext:Group" cardinality="?">
+          <tokens xsi:type="xtext:Keyword" value="guid"/>
+          <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+          </tokens>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="attributeType"/>
         <tokens xsi:type="xtext:Assignment" feature="name" operator="=">
@@ -273,8 +279,11 @@
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="typeGuid" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+        <tokens xsi:type="xtext:Group" cardinality="?">
+          <tokens xsi:type="xtext:Keyword" value="guid"/>
+          <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+          </tokens>
         </tokens>
         <tokens xsi:type="xtext:Assignment" cardinality="*" feature="enumEntries" operator="+=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.12"/>
@@ -334,9 +343,7 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//AddEnum"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Assignment" feature="overrideOperation" operator="?=">
-          <terminal xsi:type="xtext:Keyword" value="add"/>
-        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="add"/>
         <tokens xsi:type="xtext:Assignment" feature="enumEntry" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
         </tokens>
@@ -350,9 +357,7 @@
         <classifier xsi:type="ecore:EClass" href="http://www.eclipse.org/osee/framework/OseeTypes#//RemoveEnum"/>
       </type>
       <alternatives xsi:type="xtext:Group">
-        <tokens xsi:type="xtext:Assignment" feature="overrideOperation" operator="?=">
-          <terminal xsi:type="xtext:Keyword" value="remove"/>
-        </tokens>
+        <tokens xsi:type="xtext:Keyword" value="remove"/>
         <tokens xsi:type="xtext:Assignment" feature="enumEntry" operator="=">
           <terminal xsi:type="xtext:CrossReference">
             <type metamodel="/0/@metamodelDeclarations.0">
@@ -373,8 +378,11 @@
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
-        <tokens xsi:type="xtext:Assignment" cardinality="?" feature="typeGuid" operator="=">
-          <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+        <tokens xsi:type="xtext:Group" cardinality="?">
+          <tokens xsi:type="xtext:Keyword" value="guid"/>
+          <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+          </tokens>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="sideAName"/>
         <tokens xsi:type="xtext:Assignment" feature="sideAName" operator="=">

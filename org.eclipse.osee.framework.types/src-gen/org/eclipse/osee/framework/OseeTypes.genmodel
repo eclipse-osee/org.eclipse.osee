@@ -28,8 +28,8 @@
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//OseeElement"/>
     <genClasses ecoreClass="OseeTypes.ecore#//OseeType">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeType/name"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeType/typeGuid"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeType/name"/>
     </genClasses>
     <genClasses ecoreClass="OseeTypes.ecore#//ArtifactType">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//ArtifactType/abstract"/>
@@ -64,9 +64,7 @@
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OseeEnumOverride/inheritAll"/>
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference OseeTypes.ecore#//OseeEnumOverride/overrideOptions"/>
     </genClasses>
-    <genClasses ecoreClass="OseeTypes.ecore#//OverrideOption">
-      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//OverrideOption/overrideOperation"/>
-    </genClasses>
+    <genClasses ecoreClass="OseeTypes.ecore#//OverrideOption"/>
     <genClasses ecoreClass="OseeTypes.ecore#//AddEnum">
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AddEnum/enumEntry"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute OseeTypes.ecore#//AddEnum/ordinal"/>

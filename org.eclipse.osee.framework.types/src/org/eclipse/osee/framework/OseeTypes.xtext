@@ -22,7 +22,7 @@ OseeType:
 
 ArtifactType:
 	(abstract?='abstract')? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactTypes+=[ArtifactType|NAME_REFERENCE] (',' superArtifactTypes+=[ArtifactType|NAME_REFERENCE])*)? '{'
-		typeGuid=STRING?
+		('guid' typeGuid = STRING)?
 	    (validAttributeTypes+=AttributeTypeRef)*
 	'}';
 
@@ -30,7 +30,7 @@ AttributeTypeRef:
 	'attribute' validAttributeType=[AttributeType|NAME_REFERENCE] ('branchGuid' branchGuid=STRING)?;
 
 AttributeType:
-		typeGuid=STRING?
+		('guid' typeGuid = STRING)?
 		'attributeType' name=NAME_REFERENCE ('extends' baseAttributeType=AttributeBaseType) ('overrides' override=[AttributeType|NAME_REFERENCE])? '{'
 		'dataProvider' dataProvider = ('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | 'MappedAttributeDataProvider' | QUALIFIED_NAME)
 		'min' min=WHOLE_NUM_STR
@@ -47,7 +47,7 @@ AttributeBaseType:
 
 OseeEnumType:
 	'oseeEnumType' name=NAME_REFERENCE '{'
-		typeGuid=STRING?
+		('guid' typeGuid = STRING)?
 		(enumEntries+=OseeEnumEntry)*
 	'}';
 
@@ -64,14 +64,14 @@ OverrideOption:
 	AddEnum | RemoveEnum;
 	
 AddEnum: 
-	overrideOperation ?= 'add' enumEntry = NAME_REFERENCE (ordinal=WHOLE_NUM_STR)?;
+	'add' enumEntry = NAME_REFERENCE (ordinal=WHOLE_NUM_STR)?;
 
 RemoveEnum:
-	overrideOperation ?= 'remove' enumEntry = [OseeEnumEntry|NAME_REFERENCE];
+	'remove' enumEntry = [OseeEnumEntry|NAME_REFERENCE];
 
 RelationType:
 	'relationType' name=NAME_REFERENCE '{'
-		typeGuid=STRING?
+		('guid' typeGuid = STRING)?
 		'sideAName' sideAName=STRING
 		'sideAArtifactType' sideAArtifactType=[ArtifactType|NAME_REFERENCE]
 		'sideBName' sideBName=STRING
