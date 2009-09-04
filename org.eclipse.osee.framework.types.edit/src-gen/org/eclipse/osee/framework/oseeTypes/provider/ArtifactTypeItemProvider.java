@@ -66,7 +66,6 @@ public class ArtifactTypeItemProvider
 
          addAbstractPropertyDescriptor(object);
          addSuperArtifactTypesPropertyDescriptor(object);
-         addOverridePropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
@@ -107,28 +106,6 @@ public class ArtifactTypeItemProvider
              getString("_UI_ArtifactType_superArtifactTypes_feature"),
              getString("_UI_PropertyDescriptor_description", "_UI_ArtifactType_superArtifactTypes_feature", "_UI_ArtifactType_type"),
              OseeTypesPackage.Literals.ARTIFACT_TYPE__SUPER_ARTIFACT_TYPES,
-             true,
-             false,
-             true,
-             null,
-             null,
-             null));
-   }
-
-   /**
-    * This adds a property descriptor for the Override feature.
-    * <!-- begin-user-doc -->
-    * <!-- end-user-doc -->
-    * @generated
-    */
-   protected void addOverridePropertyDescriptor(Object object) {
-      itemPropertyDescriptors.add
-         (createItemPropertyDescriptor
-            (((ComposeableAdapterFactory)adapterFactory).getRootAdapterFactory(),
-             getResourceLocator(),
-             getString("_UI_ArtifactType_override_feature"),
-             getString("_UI_PropertyDescriptor_description", "_UI_ArtifactType_override_feature", "_UI_ArtifactType_type"),
-             OseeTypesPackage.Literals.ARTIFACT_TYPE__OVERRIDE,
              true,
              false,
              true,

@@ -10,16 +10,24 @@ import junit.framework.TestCase;
 
 import junit.textui.TestRunner;
 
-import org.eclipse.osee.framework.oseeTypes.OseeType;
+import org.eclipse.osee.framework.oseeTypes.OseeElement;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 
 /**
  * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>Osee Type</b></em>'.
+ * A test case for the model object '<em><b>Osee Element</b></em>'.
  * <!-- end-user-doc -->
  * @generated
  */
-public class OseeTypeTest extends OseeElementTest {
+public class OseeElementTest extends TestCase {
+
+   /**
+    * The fixture for this Osee Element test case.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected OseeElement fixture = null;
 
    /**
     * <!-- begin-user-doc -->
@@ -27,28 +35,37 @@ public class OseeTypeTest extends OseeElementTest {
     * @generated
     */
    public static void main(String[] args) {
-      TestRunner.run(OseeTypeTest.class);
+      TestRunner.run(OseeElementTest.class);
    }
 
    /**
-    * Constructs a new Osee Type test case with the given name.
+    * Constructs a new Osee Element test case with the given name.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   public OseeTypeTest(String name) {
+   public OseeElementTest(String name) {
       super(name);
    }
 
    /**
-    * Returns the fixture for this Osee Type test case.
+    * Sets the fixture for this Osee Element test case.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   @Override
-   protected OseeType getFixture() {
-      return (OseeType)fixture;
+   protected void setFixture(OseeElement fixture) {
+      this.fixture = fixture;
+   }
+
+   /**
+    * Returns the fixture for this Osee Element test case.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected OseeElement getFixture() {
+      return fixture;
    }
 
    /**
@@ -59,7 +76,7 @@ public class OseeTypeTest extends OseeElementTest {
     */
    @Override
    protected void setUp() throws Exception {
-      setFixture(OseeTypesFactory.eINSTANCE.createOseeType());
+      setFixture(OseeTypesFactory.eINSTANCE.createOseeElement());
    }
 
    /**
@@ -73,4 +90,4 @@ public class OseeTypeTest extends OseeElementTest {
       setFixture(null);
    }
 
-} //OseeTypeTest
+} //OseeElementTest

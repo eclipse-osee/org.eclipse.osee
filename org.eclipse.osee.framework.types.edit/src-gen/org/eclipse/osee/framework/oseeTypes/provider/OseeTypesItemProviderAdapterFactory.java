@@ -122,6 +122,29 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
    }
 
    /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.OseeElement} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected OseeElementItemProvider oseeElementItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeElement}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createOseeElementAdapter() {
+      if (oseeElementItemProvider == null) {
+         oseeElementItemProvider = new OseeElementItemProvider(this);
+      }
+
+      return oseeElementItemProvider;
+   }
+
+   /**
     * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.OseeType} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
@@ -260,6 +283,98 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
    }
 
    /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected OseeEnumOverrideItemProvider oseeEnumOverrideItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createOseeEnumOverrideAdapter() {
+      if (oseeEnumOverrideItemProvider == null) {
+         oseeEnumOverrideItemProvider = new OseeEnumOverrideItemProvider(this);
+      }
+
+      return oseeEnumOverrideItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.OverrideOption} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected OverrideOptionItemProvider overrideOptionItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.OverrideOption}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createOverrideOptionAdapter() {
+      if (overrideOptionItemProvider == null) {
+         overrideOptionItemProvider = new OverrideOptionItemProvider(this);
+      }
+
+      return overrideOptionItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.AddEnum} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected AddEnumItemProvider addEnumItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.AddEnum}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createAddEnumAdapter() {
+      if (addEnumItemProvider == null) {
+         addEnumItemProvider = new AddEnumItemProvider(this);
+      }
+
+      return addEnumItemProvider;
+   }
+
+   /**
+    * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.RemoveEnum} instances.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   protected RemoveEnumItemProvider removeEnumItemProvider;
+
+   /**
+    * This creates an adapter for a {@link org.eclipse.osee.framework.oseeTypes.RemoveEnum}.
+    * <!-- begin-user-doc -->
+    * <!-- end-user-doc -->
+    * @generated
+    */
+   @Override
+   public Adapter createRemoveEnumAdapter() {
+      if (removeEnumItemProvider == null) {
+         removeEnumItemProvider = new RemoveEnumItemProvider(this);
+      }
+
+      return removeEnumItemProvider;
+   }
+
+   /**
     * This keeps track of the one adapter used for all {@link org.eclipse.osee.framework.oseeTypes.RelationType} instances.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
@@ -383,12 +498,17 @@ public class OseeTypesItemProviderAdapterFactory extends OseeTypesAdapterFactory
    public void dispose() {
       if (oseeTypeModelItemProvider != null) oseeTypeModelItemProvider.dispose();
       if (importItemProvider != null) importItemProvider.dispose();
+      if (oseeElementItemProvider != null) oseeElementItemProvider.dispose();
       if (oseeTypeItemProvider != null) oseeTypeItemProvider.dispose();
       if (artifactTypeItemProvider != null) artifactTypeItemProvider.dispose();
       if (attributeTypeRefItemProvider != null) attributeTypeRefItemProvider.dispose();
       if (attributeTypeItemProvider != null) attributeTypeItemProvider.dispose();
       if (oseeEnumTypeItemProvider != null) oseeEnumTypeItemProvider.dispose();
       if (oseeEnumEntryItemProvider != null) oseeEnumEntryItemProvider.dispose();
+      if (oseeEnumOverrideItemProvider != null) oseeEnumOverrideItemProvider.dispose();
+      if (overrideOptionItemProvider != null) overrideOptionItemProvider.dispose();
+      if (addEnumItemProvider != null) addEnumItemProvider.dispose();
+      if (removeEnumItemProvider != null) removeEnumItemProvider.dispose();
       if (relationTypeItemProvider != null) relationTypeItemProvider.dispose();
    }
 

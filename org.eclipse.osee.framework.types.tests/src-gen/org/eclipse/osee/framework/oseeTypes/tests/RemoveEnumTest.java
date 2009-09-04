@@ -6,20 +6,18 @@
  */
 package org.eclipse.osee.framework.oseeTypes.tests;
 
-import junit.framework.TestCase;
-
 import junit.textui.TestRunner;
 
-import org.eclipse.osee.framework.oseeTypes.OseeType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
+import org.eclipse.osee.framework.oseeTypes.RemoveEnum;
 
 /**
  * <!-- begin-user-doc -->
- * A test case for the model object '<em><b>Osee Type</b></em>'.
+ * A test case for the model object '<em><b>Remove Enum</b></em>'.
  * <!-- end-user-doc -->
  * @generated
  */
-public class OseeTypeTest extends OseeElementTest {
+public class RemoveEnumTest extends OverrideOptionTest {
 
    /**
     * <!-- begin-user-doc -->
@@ -27,28 +25,28 @@ public class OseeTypeTest extends OseeElementTest {
     * @generated
     */
    public static void main(String[] args) {
-      TestRunner.run(OseeTypeTest.class);
+      TestRunner.run(RemoveEnumTest.class);
    }
 
    /**
-    * Constructs a new Osee Type test case with the given name.
+    * Constructs a new Remove Enum test case with the given name.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
-   public OseeTypeTest(String name) {
+   public RemoveEnumTest(String name) {
       super(name);
    }
 
    /**
-    * Returns the fixture for this Osee Type test case.
+    * Returns the fixture for this Remove Enum test case.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
     * @generated
     */
    @Override
-   protected OseeType getFixture() {
-      return (OseeType)fixture;
+   protected RemoveEnum getFixture() {
+      return (RemoveEnum)fixture;
    }
 
    /**
@@ -59,7 +57,7 @@ public class OseeTypeTest extends OseeElementTest {
     */
    @Override
    protected void setUp() throws Exception {
-      setFixture(OseeTypesFactory.eINSTANCE.createOseeType());
+      setFixture(OseeTypesFactory.eINSTANCE.createRemoveEnum());
    }
 
    /**
@@ -73,4 +71,4 @@ public class OseeTypeTest extends OseeElementTest {
       setFixture(null);
    }
 
-} //OseeTypeTest
+} //RemoveEnumTest
