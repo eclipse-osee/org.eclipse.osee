@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.commit;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
@@ -27,8 +26,7 @@ public class ChangeDatabaseDataAccessor implements IChangeDataAccessor {
    private final static String GET_CHANGE_DATA_QUERY = "";
 
    @Override
-   public Collection<OseeChange> getChangeData(IProgressMonitor monitor, IChangeFactory factory, IChangeLocator locator) throws Exception {
-      Collection<OseeChange> data = new ArrayList<OseeChange>();
+   public void loadChangeData(IProgressMonitor monitor, IChangeFactory factory, IChangeLocator locator, Collection<OseeChange> data) throws Exception {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(GET_CHANGE_DATA_QUERY, toArray(locator));
@@ -51,7 +49,6 @@ public class ChangeDatabaseDataAccessor implements IChangeDataAccessor {
       } finally {
          chStmt.close();
       }
-      return null;
    }
 
    private Object[] toArray(IChangeLocator locator) {

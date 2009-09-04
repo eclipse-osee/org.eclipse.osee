@@ -32,12 +32,14 @@ public class ComputeNetChangeOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (!rawChanges.isEmpty()) {
+         resolver.reset();
          double workPercentage = 1.0 / rawChanges.size();
          for (OseeChange oseeChange : rawChanges) {
             checkForCancelledStatus(monitor);
             oseeChange.accept(resolver);
             monitor.worked(calculateWork(workPercentage));
          }
+         resolver.resolve();
       }
    }
 }

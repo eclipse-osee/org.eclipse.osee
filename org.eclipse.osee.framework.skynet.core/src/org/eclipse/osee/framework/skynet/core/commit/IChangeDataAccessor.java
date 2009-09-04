@@ -18,6 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IChangeDataAccessor {
 
-   public Collection<OseeChange> getChangeData(IProgressMonitor monitor, IChangeFactory factory, IChangeLocator locator) throws Exception;
+   public void loadChangeData(IProgressMonitor monitor, IChangeFactory factory, IChangeLocator locator, Collection<OseeChange> data) throws Exception;
 
 }

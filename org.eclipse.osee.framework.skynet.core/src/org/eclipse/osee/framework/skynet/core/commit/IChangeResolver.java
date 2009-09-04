@@ -10,9 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.commit;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
 public interface IChangeResolver {
 
+   public void reset();
+
+   public void asAttributeChange(OseeChange change) throws OseeCoreException;
+
+   public void asArtifactChange(OseeChange change) throws OseeCoreException;
+
+   public void asRelationChange(OseeChange change) throws OseeCoreException;
+
+   public void resolve() throws OseeCoreException;
 }
