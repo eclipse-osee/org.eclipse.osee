@@ -19,16 +19,22 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.oseeTypes.AddEnum;
 import org.eclipse.osee.framework.oseeTypes.ArtifactType;
 import org.eclipse.osee.framework.oseeTypes.AttributeType;
 import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
+import org.eclipse.osee.framework.oseeTypes.OseeEnumOverride;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
+import org.eclipse.osee.framework.oseeTypes.OverrideOption;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
+import org.eclipse.osee.framework.oseeTypes.RemoveEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -87,6 +93,11 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
                   monitor.worked(calculateWork(workPercentage));
                }
 
+               for (OseeEnumOverride enumOverride : model.getEnumOverrides()) {
+                  handleEnumOverride(enumOverride);
+                  monitor.worked(calculateWork(workPercentage));
+               }
+
                // second pass to handle cross references
                for (ArtifactType type : model.getArtifactTypes()) {
                   handleArtifactTypeCrossRef(type);
@@ -104,6 +115,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          ArtifactTypeManager.persist();
          RelationTypeManager.persist();
       }
+
    }
 
    /**
@@ -117,7 +129,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             ArtifactTypeManager.getTypeByGuid(artifactType.getTypeGuid());
 
       for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
-         superTypes.add(ArtifactTypeManager.getType(getTypeName(superType.getName())));
+         superTypes.add(ArtifactTypeManager.getType(removeQuotes(superType.getName())));
       }
       if (!superTypes.isEmpty()) {
          targetArtifactType.addSuperType(superTypes);
@@ -142,18 +154,12 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       }
    }
 
-   private String getTypeName(String nameReference) {
+   private String removeQuotes(String nameReference) {
       return nameReference != null ? nameReference.substring(1, nameReference.length() - 1) : nameReference; // strip off enclosing quotes
    }
 
    private void handleArtifactType(ArtifactType artifactType) throws OseeCoreException {
-      //      for (ArtifactType superArtifactType : artifactType.getSuperArtifactTypes()) {
-      //         for (AttributeTypeRef attributeTypeRef : superArtifactType.getValidAttributeTypes()) {
-      //            handleAttributeType(attributeTypeRef.getValidAttributeType());
-      //         }
-      //         handleArtifactType(superArtifactType);
-      //      }
-      String artifactTypeName = getTypeName(artifactType.getName());
+      String artifactTypeName = removeQuotes(artifactType.getName());
       artifactType.setTypeGuid(ArtifactTypeManager.createType(artifactType.getTypeGuid(), artifactType.isAbstract(),
             artifactTypeName).getGuid());
    }
@@ -161,11 +167,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType getOseeEnumTypes(OseeEnumType enumType) throws OseeCoreException {
       org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType = null;
       if (enumType != null) {
-         //         OseeEnumType superEnumType = enumType.getOverride();
-         //         if (superEnumType != null) {
-         //            oseeEnumType = getOseeEnumTypes(superEnumType);
-         //         }
-         oseeEnumType = OseeEnumTypeManager.createEnumType(enumType.getTypeGuid(), enumType.getName());
+         oseeEnumType = OseeEnumTypeManager.createEnumType(enumType.getTypeGuid(), removeQuotes(enumType.getName()));
          if (oseeEnumType.values().length != enumType.getEnumEntries().size()) {
             int lastOrdinal = 0;
             List<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry> entries =
@@ -176,7 +178,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
                   lastOrdinal = Integer.parseInt(ordinal);
                }
                // enumEntry guid set to null but if we had we could modify an existing entry
-               entries.add(OseeEnumTypeManager.createEnumEntry(null, enumEntry.getName(), lastOrdinal));
+               entries.add(OseeEnumTypeManager.createEnumEntry(null, removeQuotes(enumEntry.getName()), lastOrdinal));
                lastOrdinal++;
             }
             oseeEnumType.setEntries(entries);
@@ -185,17 +187,53 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       return oseeEnumType;
    }
 
+   private void handleEnumOverride(OseeEnumOverride enumOverride) throws OseeCoreException {
+      org.eclipse.osee.framework.skynet.core.attribute.AttributeType attributeType =
+            AttributeTypeManager.getType(removeQuotes(enumOverride.getOverridenEnumType().getName().replace(".enum", "")));
+      Set<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry> newTypes =
+            new HashSet<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry>();
+      int ordinal = 0;
+      if (enumOverride.isInheritAll()) {
+         for (org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry entry : attributeType.getOseeEnumType().values()) {
+            newTypes.add(entry);
+            if (entry.ordinal() > ordinal) {
+               ordinal = entry.ordinal();
+            }
+         }
+      }
+      for (OverrideOption overrideOption : enumOverride.getOverrideOptions()) {
+         if (overrideOption instanceof AddEnum) {
+            newTypes.add(OseeEnumTypeManager.createEnumEntry(GUID.create(),
+                  removeQuotes(((AddEnum) overrideOption).getEnumEntry()), ++ordinal));
+         } else if (overrideOption instanceof RemoveEnum) {
+            String typeNameToRemove = removeQuotes(((AddEnum) overrideOption).getEnumEntry());
+            org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry typeToRemove = null;
+            for (org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry entry : newTypes) {
+               if (entry.getName().equals(typeNameToRemove)) {
+                  typeToRemove = entry;
+                  break;
+               }
+            }
+            if (typeToRemove == null) {
+               throw new OseeStateException(String.format("Unable to remove enum [%s] from enumType [%s]",
+                     typeNameToRemove, removeQuotes(enumOverride.getOverridenEnumType().getName())));
+            } else {
+               newTypes.remove(typeNameToRemove);
+            }
+         } else {
+            throw new OseeStateException("Unhandled Override Operation type");
+         }
+      }
+      attributeType.getOseeEnumType().setEntries(newTypes);
+   }
+
    private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {
-      //      AttributeType superAttributeType = attributeType.getOverride();
-      //      if (superAttributeType != null) {
-      //         handleAttributeType(superAttributeType);
-      //      }
       int max = Integer.MAX_VALUE;
       if (!attributeType.getMax().equals("unlimited")) {
          max = Integer.parseInt(attributeType.getMax());
       }
       attributeType.setTypeGuid(AttributeTypeManager.createType(attributeType.getTypeGuid(), //
-            getTypeName(attributeType.getName()), //
+            removeQuotes(attributeType.getName()), //
             attributeType.getBaseAttributeType(), // 
             attributeType.getDataProvider(), // 
             attributeType.getFileExtension(), //
@@ -213,11 +251,11 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             RelationTypeMultiplicity.getFromString(relationType.getMultiplicity().name());
 
       relationType.setTypeGuid(//
-      RelationTypeManager.createRelationType(relationType.getTypeGuid(), getTypeName(relationType.getName()), //
+      RelationTypeManager.createRelationType(relationType.getTypeGuid(), removeQuotes(relationType.getName()), //
             relationType.getSideAName(), //
             relationType.getSideBName(), //
-            ArtifactTypeManager.getType(getTypeName(relationType.getSideAArtifactType().getName())), //
-            ArtifactTypeManager.getType(getTypeName(relationType.getSideBArtifactType().getName())), //
+            ArtifactTypeManager.getType(removeQuotes(relationType.getSideAArtifactType().getName())), //
+            ArtifactTypeManager.getType(removeQuotes(relationType.getSideBArtifactType().getName())), //
             multiplicity, //
             isOrdered(relationType.getDefaultOrderType()),//
             convertOrderTypeNameToGuid(relationType.getDefaultOrderType())//

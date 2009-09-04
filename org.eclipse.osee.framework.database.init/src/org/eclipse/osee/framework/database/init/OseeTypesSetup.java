@@ -17,8 +17,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.net.URL;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
@@ -28,7 +28,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -76,7 +75,7 @@ public class OseeTypesSetup {
    }
 
    public Map<String, URL> getOseeTypeExtensions() {
-      Map<String, URL> oseeTypes = new LinkedHashMap<String, URL>();
+      Map<String, URL> oseeTypes = new HashMap<String, URL>();
       for (IConfigurationElement element : ExtensionPoints.getExtensionElements(OSEE_TYPES_EXTENSION_ID, "OseeTypes")) {
          String resourceName = element.getAttribute("resource");
          Bundle bundle = Platform.getBundle(element.getContributor().getName());
@@ -112,18 +111,20 @@ public class OseeTypesSetup {
    }
 
    private Map<String, URL> getOseeTypeExtensionsById(Collection<String> uniqueIdsToImport) {
-      Map<String, URL> elements = getOseeTypeExtensions();
-      List<String> itemsFound = Collections.setIntersection(elements.keySet(), uniqueIdsToImport);
-      for (String entry : Collections.setComplement(uniqueIdsToImport, itemsFound)) {
-         OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, String.format("ExtensionUniqueId [%s] was not found",
-               entry));
-      }
-      for (String entry : Collections.setComplement(elements.keySet(), itemsFound)) {
-         elements.remove(entry);
+      Map<String, URL> items = new LinkedHashMap<String, URL>();
+      Map<String, URL> extensions = getOseeTypeExtensions();
+      for (String idsToImport : uniqueIdsToImport) {
+         URL urlEntry = extensions.get(idsToImport);
+         if (urlEntry == null) {
+            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, String.format(
+                  "ExtensionUniqueId [%s] was not found", idsToImport));
+         } else {
+            items.put(idsToImport, urlEntry);
+         }
       }
       OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Importing:\n\t%s",
-            itemsFound.toString().replaceAll(",", ",\n\t")));
-      return elements;
+            items.toString().replaceAll(",", ",\n\t")));
+      return items;
    }
 
    public void processOseeTypeData(URL url) throws OseeCoreException {

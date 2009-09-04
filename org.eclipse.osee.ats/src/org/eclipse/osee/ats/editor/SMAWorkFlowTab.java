@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.ui.skynet.artifact.annotation.AnnotationCompos
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummaryNote;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -107,6 +108,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    private void createBody(Composite body) throws OseeCoreException {
+
       atsBody = toolkit.createComposite(body);
       atsBody.setLayoutData(new GridData(GridData.FILL_BOTH));
       atsBody.setLayout(new GridLayout(1, false));
@@ -208,6 +210,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          scrolledForm.setImage(ImageManager.getImage(smaMgr.getSma()));
          fillBody(managedForm);
          addMessageDecoration(scrolledForm);
+         FormsUtil.addHeadingGradient(toolkit, scrolledForm, true);
 
          refreshToolbar();
 

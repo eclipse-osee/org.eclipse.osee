@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.parts.MessageSummary
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.AttributesFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.DetailsFormSection;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
+import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
@@ -38,8 +38,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.forms.FormColors;
-import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.SectionPart;
@@ -86,7 +84,7 @@ public class ArtifactFormPage extends FormPage {
       updateImage(form);
       updateArtifactInfoArea(toolkit, form, true);
       addToolBar(toolkit, form, true);
-      addHeadingGradient(toolkit, form, true);
+      FormsUtil.addHeadingGradient(toolkit, form, true);
       addMessageDecoration(form);
 
       int sectionStyle = Section.TITLE_BAR | Section.TWISTIE;
@@ -194,30 +192,6 @@ public class ArtifactFormPage extends FormPage {
       } else {
          infoText.setText(getArtifactShortInfo(), true, false);
       }
-   }
-
-   private void addHeadingGradient(FormToolkit toolkit, ScrolledForm form, boolean add) {
-      FormColors colors = toolkit.getColors();
-      Color top = colors.getColor(IFormColors.H_GRADIENT_END);
-      Color bot = colors.getColor(IFormColors.H_GRADIENT_START);
-      if (add) {
-         form.getForm().setTextBackground(new Color[] {top, bot}, new int[] {100}, true);
-      } else {
-         form.getForm().setTextBackground(null, null, false);
-         form.getForm().setBackground(colors.getBackground());
-      }
-      form.getForm().setHeadColor(IFormColors.H_BOTTOM_KEYLINE1,
-            add ? colors.getColor(IFormColors.H_BOTTOM_KEYLINE1) : null);
-      form.getForm().setHeadColor(IFormColors.H_BOTTOM_KEYLINE2,
-            add ? colors.getColor(IFormColors.H_BOTTOM_KEYLINE2) : null);
-      form.getForm().setHeadColor(IFormColors.H_HOVER_LIGHT, add ? colors.getColor(IFormColors.H_HOVER_LIGHT) : null);
-      form.getForm().setHeadColor(IFormColors.H_HOVER_FULL, add ? colors.getColor(IFormColors.H_HOVER_FULL) : null);
-      form.getForm().setHeadColor(IFormColors.TB_TOGGLE, add ? colors.getColor(IFormColors.TB_TOGGLE) : null);
-      form.getForm().setHeadColor(IFormColors.TB_TOGGLE_HOVER,
-            add ? colors.getColor(IFormColors.TB_TOGGLE_HOVER) : null);
-      form.getForm().setSeparatorVisible(add);
-      form.reflow(true);
-      form.redraw();
    }
 
    @Override
