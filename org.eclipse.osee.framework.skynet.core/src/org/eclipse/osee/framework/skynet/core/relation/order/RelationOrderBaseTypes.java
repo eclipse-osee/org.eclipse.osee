@@ -34,6 +34,15 @@ public enum RelationOrderBaseTypes implements RelationOrderId {
       return prettyName;
    }
 
+   public static RelationOrderBaseTypes getFromGuid(String guid) throws OseeArgumentException {
+      for (RelationOrderBaseTypes type : values()) {
+         if (type.getGuid().equals(guid)) {
+            return type;
+         }
+      }
+      throw new OseeArgumentException("Order type guid does not map to an enum");
+   }
+
    public static RelationOrderBaseTypes getFromOrderTypeName(String orderTypeName) throws OseeArgumentException {
       for (RelationOrderBaseTypes type : values()) {
          if (type.prettyName.equals(orderTypeName)) {
