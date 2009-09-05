@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.types.bridge.operations;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.emf.common.util.URI;
@@ -49,17 +50,27 @@ public final class OseeTypeModelUtil {
       return model;
    }
 
-   public static void saveModel(java.net.URI target, OseeTypeModel model) throws IOException {
+   public static void saveModel(java.net.URI uri, OseeTypeModel model) throws IOException {
       OseeTypesStandaloneSetup.doSetup();
 
-      URI uri = URI.createURI(target.toASCIIString());
       ResourceSet resourceSet = new ResourceSetImpl();
-      Resource resource = resourceSet.createResource(uri);
+      Resource resource = resourceSet.createResource(URI.createURI(uri.toASCIIString()));
 
       resource.getContents().add(model);
 
       Map<String, Boolean> options = new HashMap<String, Boolean>();
       options.put(XtextResource.OPTION_FORMAT, Boolean.FALSE); // Inverted in the code
       resource.save(options);
+   }
+
+   public static void saveModel(URI uri, OseeTypeModel model, OutputStream outputStream) throws IOException {
+      OseeTypesStandaloneSetup.doSetup();
+      ResourceSet resourceSet = new ResourceSetImpl();
+      Resource resource = resourceSet.createResource(uri);
+      resource.getContents().add(model);
+
+      Map<String, Boolean> options = new HashMap<String, Boolean>();
+      options.put(XtextResource.OPTION_FORMAT, Boolean.FALSE); // Inverted in the code
+      resource.save(outputStream, options);
    }
 }

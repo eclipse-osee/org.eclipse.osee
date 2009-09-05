@@ -78,7 +78,7 @@ public class OseeToXtextOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       populateAttributeTypes();
       populateArtifactTypes();
-      populateRelationTypes();
+      //      populateRelationTypes();
 
       // TypeValidityManager.getAttributeTypesFromArtifactType(artifactType,
       // branch);
@@ -135,10 +135,19 @@ public class OseeToXtextOperation extends AbstractOperation {
 
          modelType.setSideAName(relationType.getSideAName());
          modelType.setSideBName(relationType.getSideBName());
-         //         modelType.setSideAArtifactType(value);
-         //         modelType.setSideBArtifactType(value);
 
+         modelType.setSideAArtifactType(getArtifactType(model, relationType.getArtifactTypeSideA().getGuid()));
+         modelType.setSideBArtifactType(getArtifactType(model, relationType.getArtifactTypeSideB().getGuid()));
       }
+   }
+
+   private org.eclipse.osee.framework.oseeTypes.ArtifactType getArtifactType(OseeTypeModel model, String guid) throws OseeArgumentException {
+      for (org.eclipse.osee.framework.oseeTypes.ArtifactType artifactType : model.getArtifactTypes()) {
+         if (guid.equals(artifactType.getTypeGuid())) {
+            return artifactType;
+         }
+      }
+      throw new OseeArgumentException(String.format("ArtifactType guid:[%s] was not found", guid));
    }
 
    private String getRelationOrderType(String guid) throws OseeArgumentException {
@@ -150,6 +159,9 @@ public class OseeToXtextOperation extends AbstractOperation {
       Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
       for (ArtifactType artifactType : artifactTypes) {
          org.eclipse.osee.framework.oseeTypes.ArtifactType modelType = getFactory().createArtifactType();
+
+         modelType.setName(artifactType.getName());
+         modelType.setTypeGuid(artifactType.getGuid());
 
          OseeTypeModel model = getModelByNamespace(getNamespace(artifactType.getName()));
          model.getArtifactTypes().add(modelType);
