@@ -1,10 +1,9 @@
 package org.eclipse.osee.framework.skynet.core.test.commit;
 
-import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.commit.IChangeFactory;
-import org.eclipse.osee.framework.skynet.core.commit.IChangeLocator;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeLocator;
 import org.eclipse.osee.framework.skynet.core.commit.OseeChange;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,8 +33,8 @@ public class ChangeDataTest {
       }
 
       @Override
-      public void loadChangeData(IProgressMonitor monitor, IChangeFactory factory, IChangeLocator locator, Collection<OseeChange> oseeChange) throws Exception {
-         super.loadChangeData(monitor, factory, locator, oseeChange);
+      public void loadChangeData(IProgressMonitor monitor, ChangeLocator locator, List<OseeChange> oseeChange) throws Exception {
+         super.loadChangeData(monitor, locator, oseeChange);
 
          /// Add Data Here
       }

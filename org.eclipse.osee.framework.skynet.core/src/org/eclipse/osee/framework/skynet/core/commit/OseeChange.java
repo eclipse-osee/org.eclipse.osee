@@ -17,23 +17,28 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class OseeChange {
-
-   private final TxChange txChange;
+public class OseeChange {
+   public static enum GammaKind {
+      Artiact, Attribute, Relation
+   };
+   private final TxChange sourceTxChange;
    private final int gammaId;
-   private final ModificationType modificationType;
-   private final int typeId;
+   private final ModificationType sourceModificationType;
+   private int itemId;
+   private GammaKind kind;
+   private TxChange destinationTxChange;
+   private ModificationType desinationModificationType;
 
-   protected OseeChange(TxChange txChange, int gammaId, ModificationType modificationType, int typeId) {
+   protected OseeChange(TxChange txChange, int gammaId, ModificationType modificationType, int itemId) {
       super();
-      this.txChange = txChange;
+      this.sourceTxChange = txChange;
       this.gammaId = gammaId;
-      this.modificationType = modificationType;
-      this.typeId = typeId;
+      this.sourceModificationType = modificationType;
+      this.itemId = itemId;
    }
 
    public TxChange getTxChange() {
-      return txChange;
+      return sourceTxChange;
    }
 
    public int getGammaId() {
@@ -41,12 +46,45 @@ public abstract class OseeChange {
    }
 
    public ModificationType getModificationType() {
-      return modificationType;
+      return sourceModificationType;
    }
 
    public int getTypeId() {
-      return typeId;
+      return itemId;
    }
 
-   public abstract void accept(IChangeResolver resolver) throws OseeCoreException;
+   public void accept(IChangeResolver resolver) throws OseeCoreException {
+   }
+
+   public int getItemId() {
+      return itemId;
+   }
+
+   public void setItemId(int itemId) {
+      this.itemId = itemId;
+   }
+
+   public GammaKind getKind() {
+      return kind;
+   }
+
+   public void setKind(GammaKind kind) {
+      this.kind = kind;
+   }
+
+   public TxChange getDestinationTxChange() {
+      return destinationTxChange;
+   }
+
+   public void setDestinationTxChange(TxChange destinationTxChange) {
+      this.destinationTxChange = destinationTxChange;
+   }
+
+   public ModificationType getDesinationModificationType() {
+      return desinationModificationType;
+   }
+
+   public void setDesinationModificationType(ModificationType desinationModificationType) {
+      this.desinationModificationType = desinationModificationType;
+   }
 }

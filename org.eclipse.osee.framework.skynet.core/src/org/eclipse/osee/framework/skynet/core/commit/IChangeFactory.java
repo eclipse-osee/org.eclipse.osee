@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 public interface IChangeFactory {
 
    // TODO make more specific
-   public OseeChange createAttributeChange(TxChange txChange, int gammaId, ModificationType modificationType, int typeId);
+   public OseeChange createAttributeChange(TxChange txChange, int gammaId, ModificationType modificationType, int itemId);
 
-   public OseeChange createArtifactChange(TxChange txChange, int gammaId, ModificationType modificationType, int typeId);
+   public OseeChange createArtifactChange(TxChange txChange, int gammaId, ModificationType modificationType, int itemId);
 
-   public OseeChange createRelationChange(TxChange txChange, int gammaId, ModificationType modificationType, int typeId);
+   public OseeChange createRelationChange(TxChange txChange, int gammaId, ModificationType modificationType, int itemId);
 }

@@ -15,7 +15,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 /**
  * @author Roberto E. Escobar
  */
-public interface IChangeLocator {
+public class ChangeLocator {
 
-   Branch getBranch();
+   public Branch getSourceBranch() {
+      return null;
+   }
+
+   public Branch getDestinationBranch() {
+      return null;
+   }
 }

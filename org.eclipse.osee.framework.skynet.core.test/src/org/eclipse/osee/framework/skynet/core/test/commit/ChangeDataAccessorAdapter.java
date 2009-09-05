@@ -1,10 +1,9 @@
 package org.eclipse.osee.framework.skynet.core.test.commit;
 
-import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeLocator;
 import org.eclipse.osee.framework.skynet.core.commit.IChangeDataAccessor;
-import org.eclipse.osee.framework.skynet.core.commit.IChangeFactory;
-import org.eclipse.osee.framework.skynet.core.commit.IChangeLocator;
 import org.eclipse.osee.framework.skynet.core.commit.OseeChange;
 
 public class ChangeDataAccessorAdapter implements IChangeDataAccessor {
@@ -23,7 +22,7 @@ public class ChangeDataAccessorAdapter implements IChangeDataAccessor {
    }
 
    @Override
-   public void loadChangeData(IProgressMonitor monitor, IChangeFactory factory, IChangeLocator locator, Collection<OseeChange> oseeChange) throws Exception {
+   public void loadChangeData(IProgressMonitor monitor, ChangeLocator locator, List<OseeChange> oseeChange) throws Exception {
       setChangeDataLoaded(true);
    }
 

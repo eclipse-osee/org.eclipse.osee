@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.commit;
 
-import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
@@ -18,6 +18,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public interface IChangeDataAccessor {
 
-   public void loadChangeData(IProgressMonitor monitor, IChangeFactory factory, IChangeLocator locator, Collection<OseeChange> data) throws Exception;
+   public void loadChangeData(IProgressMonitor monitor, ChangeLocator locator, List<OseeChange> data) throws Exception;
 
 }
