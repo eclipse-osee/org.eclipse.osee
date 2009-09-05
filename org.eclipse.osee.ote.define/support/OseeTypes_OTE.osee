@@ -265,12 +265,6 @@ attributeType "Disposition" extends StringAttribute {
    max 1 description "Disposition"
 }
 
-attributeType "Execution Date" extends DateAttribute {
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1 description "Date script was executed"
-}
-
 oseeEnumType "Test Status.enum" {
    entry "Pass"
    entry "Fail"
