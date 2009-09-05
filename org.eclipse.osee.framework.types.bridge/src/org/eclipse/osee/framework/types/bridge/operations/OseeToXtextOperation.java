@@ -13,11 +13,13 @@ package org.eclipse.osee.framework.types.bridge.operations;
 import java.util.Collection;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
+import org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -25,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 
 /**
@@ -67,6 +70,10 @@ public class OseeToXtextOperation extends AbstractOperation {
       return toReturn;
    }
 
+   private String asPrimitiveType(String name) {
+      return name.replace("org.eclipse.osee.framework.skynet.core.", "");
+   }
+
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       populateAttributeTypes();
@@ -86,11 +93,10 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeTypeModel model = getModelByNamespace(getNamespace(attributeType.getName()));
          model.getAttributeTypes().add(modelType);
 
-         modelType.setTypeGuid(attributeType.getGuid());
          modelType.setName(attributeType.getName());
-         //         modelType.setBaseAttributeType();
-         //         modelType.setDataProvider(value);
-
+         modelType.setTypeGuid(attributeType.getGuid());
+         modelType.setBaseAttributeType(asPrimitiveType(attributeType.getBaseAttributeTypeId()));
+         modelType.setDataProvider(asPrimitiveType(attributeType.getAttributeProviderId()));
          modelType.setMax(String.valueOf(attributeType.getMaxOccurrences()));
          modelType.setMin(String.valueOf(attributeType.getMinOccurrences()));
          modelType.setFileExtension(attributeType.getFileTypeExtension());
@@ -104,12 +110,7 @@ public class OseeToXtextOperation extends AbstractOperation {
             modelType.setEnumType(enumType);
             model.getEnumTypes().add(enumType);
          }
-
          //         modelType.setOverride();
-
-         attributeType.getAttributeProviderId();
-         attributeType.getBaseAttributeTypeId();
-
       }
    }
 
@@ -122,18 +123,34 @@ public class OseeToXtextOperation extends AbstractOperation {
    private void populateRelationTypes() throws OseeCoreException {
       Collection<RelationType> relationTypes = RelationTypeManager.getAllTypes();
       for (RelationType relationType : relationTypes) {
-
          org.eclipse.osee.framework.oseeTypes.RelationType modelType = getFactory().createRelationType();
+
          OseeTypeModel model = getModelByNamespace(getNamespace(relationType.getName()));
          model.getRelationTypes().add(modelType);
+         modelType.setName(relationType.getName());
+         modelType.setTypeGuid(relationType.getGuid());
+
+         modelType.setDefaultOrderType(getRelationOrderType(relationType.getDefaultOrderTypeGuid()));
+         modelType.setMultiplicity(RelationMultiplicityEnum.getByName(relationType.getMultiplicity().name()));
+
+         modelType.setSideAName(relationType.getSideAName());
+         modelType.setSideBName(relationType.getSideBName());
+         //         modelType.setSideAArtifactType(value);
+         //         modelType.setSideBArtifactType(value);
+
       }
+   }
+
+   private String getRelationOrderType(String guid) throws OseeArgumentException {
+      RelationOrderBaseTypes type = RelationOrderBaseTypes.getFromGuid(guid);
+      return type.prettyName().replaceAll(" ", "_");
    }
 
    private void populateArtifactTypes() throws OseeCoreException {
       Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
       for (ArtifactType artifactType : artifactTypes) {
-
          org.eclipse.osee.framework.oseeTypes.ArtifactType modelType = getFactory().createArtifactType();
+
          OseeTypeModel model = getModelByNamespace(getNamespace(artifactType.getName()));
          model.getArtifactTypes().add(modelType);
       }
