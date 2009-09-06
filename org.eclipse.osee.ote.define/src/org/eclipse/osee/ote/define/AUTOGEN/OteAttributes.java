@@ -12,7 +12,7 @@ package org.eclipse.osee.ote.define.AUTOGEN;
 
 import org.eclipse.osee.framework.skynet.core.IOseeType;
 
-public enum OTE_SKYNET_ATTRIBUTES implements IOseeType {
+public enum OteAttributes implements IOseeType {
    BUILD_ID("Build Id"),
    CHECKSUM("Checksum"),
    ELAPSED_DATE("Elapsed Date"),
@@ -44,12 +44,17 @@ public enum OTE_SKYNET_ATTRIBUTES implements IOseeType {
    USER_ID("User ID");
 
    private String name;
+   private String guid;
 
-   private OTE_SKYNET_ATTRIBUTES(String name) {
+   private OteAttributes(String name) {
       this.name = name;
    }
 
    public String getName() {
       return this.name;
+   }
+
+   public String getGuid() {
+      return guid;
    }
 }

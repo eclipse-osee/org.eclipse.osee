@@ -101,6 +101,7 @@ public class MergeXViewer extends XViewer {
       return true;
    }
 
+   @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
@@ -168,9 +169,9 @@ public class MergeXViewer extends XViewer {
          } else if (treeColumn.getText().equals(MergeXViewerFactory.Merged.getName())) {
             if (conflict.statusNotResolvable()) {
                MergeUtility.showDeletedConflict(conflict, shell);
-            } else if (!(conflict.getConflictType().equals(ConflictType.ARTIFACT))) {
+            } else if (!conflict.getConflictType().equals(ConflictType.ARTIFACT)) {
                AttributeConflict attributeConflict = (AttributeConflict) conflict;
-               
+
                // Not for word attribute or enumerations but other strings
                if (!attributeConflict.isWordAttribute() && attributeConflict.getAttribute() instanceof StringAttribute && !(attributeConflict.getAttribute() instanceof EnumeratedAttribute)) {
                   AttributeCompareItem leftContributionItem =
@@ -188,14 +189,17 @@ public class MergeXViewer extends XViewer {
 
                   CompareHandler compareHandler = new CompareHandler(leftContributionItem, rightContributionItem, null);
                   compareHandler.compare();
-               } else{
+               } else {
                   if (attributeConflict.getArtifact().isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName())) {
                      MessageDialog dialog =
-                        new MessageDialog(shell, "Artifact type not supported", null, "Native artifact types are not currently supported for the merge wizzard.\n" +
-                        		"You will need to populate the merge value with the source or destination values" +
-                        		" and then merge by hand by righ-clicking edit merge artifact.", 2, new String[] {"OK"}, 1);
-                  dialog.open();
-                  }else{
+                           new MessageDialog(
+                                 shell,
+                                 "Artifact type not supported",
+                                 null,
+                                 "Native artifact types are not currently supported for the merge wizzard.\n" + "You will need to populate the merge value with the source or destination values" + " and then merge by hand by righ-clicking edit merge artifact.",
+                                 2, new String[] {"OK"}, 1);
+                     dialog.open();
+                  } else {
                      conWizard = new ConflictResolutionWizard(conflict);
                      WizardDialog dialog = new WizardDialog(shell, conWizard);
                      dialog.create();

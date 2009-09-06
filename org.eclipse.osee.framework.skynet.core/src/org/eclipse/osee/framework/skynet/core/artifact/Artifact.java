@@ -317,7 +317,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    public boolean isOfType(IOseeType oseeType) throws OseeCoreException {
-      return artifactType.inheritsFrom(oseeType.getName());
+      return artifactType.inheritsFrom(oseeType);
    }
 
    @Override

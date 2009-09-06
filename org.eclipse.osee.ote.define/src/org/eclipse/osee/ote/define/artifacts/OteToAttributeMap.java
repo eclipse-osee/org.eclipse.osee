@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.ote.define.TestRunField;
-import org.eclipse.osee.ote.define.AUTOGEN.OTE_SKYNET_ATTRIBUTES;
+import org.eclipse.osee.ote.define.AUTOGEN.OteAttributes;
 
 /**
  * @author Roberto E. Escobar
@@ -30,42 +30,42 @@ public class OteToAttributeMap {
    private OteToAttributeMap() {
       outfileFieldToAttributeMap = new HashMap<TestRunField, String>();
 
-      outfileFieldToAttributeMap.put(TestRunField.USER_ID, OTE_SKYNET_ATTRIBUTES.USER_ID.getName());
+      outfileFieldToAttributeMap.put(TestRunField.USER_ID, OteAttributes.USER_ID.getName());
 
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_REVISION, OTE_SKYNET_ATTRIBUTES.REVISION.getName());
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_MODIFIED_FLAG, OTE_SKYNET_ATTRIBUTES.MODIFIED_FLAG.getName());
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_LAST_AUTHOR, OTE_SKYNET_ATTRIBUTES.LAST_AUTHOR.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_REVISION, OteAttributes.REVISION.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_MODIFIED_FLAG, OteAttributes.MODIFIED_FLAG.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_LAST_AUTHOR, OteAttributes.LAST_AUTHOR.getName());
       outfileFieldToAttributeMap.put(TestRunField.SCRIPT_LAST_MODIFIED,
-            OTE_SKYNET_ATTRIBUTES.LAST_MODIFIED_DATE.getName());
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_URL, OTE_SKYNET_ATTRIBUTES.TEST_SCRIPT_URL.getName());
+            OteAttributes.LAST_MODIFIED_DATE.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_URL, OteAttributes.TEST_SCRIPT_URL.getName());
 
-      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_ARCH, OTE_SKYNET_ATTRIBUTES.OS_ARCHITECTURE.getName());
-      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_NAME, OTE_SKYNET_ATTRIBUTES.OS_NAME.getName());
-      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_VERSION, OTE_SKYNET_ATTRIBUTES.OS_VERSION.getName());
-      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_VERSION, OTE_SKYNET_ATTRIBUTES.OSEE_VERSION.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_ARCH, OteAttributes.OS_ARCHITECTURE.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_NAME, OteAttributes.OS_NAME.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OS_VERSION, OteAttributes.OS_VERSION.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_VERSION, OteAttributes.OSEE_VERSION.getName());
       outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_SERVER_TITLE,
-            OTE_SKYNET_ATTRIBUTES.OSEE_SERVER_TITLE.getName());
+            OteAttributes.OSEE_SERVER_TITLE.getName());
       outfileFieldToAttributeMap.put(TestRunField.SYSTEM_OSEE_SERVER_JAR_VERSIONS,
-            OTE_SKYNET_ATTRIBUTES.OSEE_SERVER_JAR_VERSION.getName());
+            OteAttributes.OSEE_SERVER_JAR_VERSION.getName());
 
-      outfileFieldToAttributeMap.put(TestRunField.PROCESSOR_ID, OTE_SKYNET_ATTRIBUTES.PROCESSOR_ID.getName());
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_START_DATE, OTE_SKYNET_ATTRIBUTES.START_DATE.getName());
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_END_DATE, OTE_SKYNET_ATTRIBUTES.END_DATE.getName());
-      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_ELAPSED_TIME, OTE_SKYNET_ATTRIBUTES.ELAPSED_DATE.getName());
+      outfileFieldToAttributeMap.put(TestRunField.PROCESSOR_ID, OteAttributes.PROCESSOR_ID.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_START_DATE, OteAttributes.START_DATE.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_END_DATE, OteAttributes.END_DATE.getName());
+      outfileFieldToAttributeMap.put(TestRunField.SCRIPT_ELAPSED_TIME, OteAttributes.ELAPSED_DATE.getName());
 
-      outfileFieldToAttributeMap.put(TestRunField.TEST_POINTS_PASSED, OTE_SKYNET_ATTRIBUTES.PASSED.getName());
-      outfileFieldToAttributeMap.put(TestRunField.TEST_POINTS_FAILED, OTE_SKYNET_ATTRIBUTES.FAILED.getName());
-      outfileFieldToAttributeMap.put(TestRunField.TOTAL_TEST_POINTS, OTE_SKYNET_ATTRIBUTES.TOTAL_TEST_POINTS.getName());
-      outfileFieldToAttributeMap.put(TestRunField.TEST_ABORT_STATUS, OTE_SKYNET_ATTRIBUTES.SCRIPT_ABORTED.getName());
+      outfileFieldToAttributeMap.put(TestRunField.TEST_POINTS_PASSED, OteAttributes.PASSED.getName());
+      outfileFieldToAttributeMap.put(TestRunField.TEST_POINTS_FAILED, OteAttributes.FAILED.getName());
+      outfileFieldToAttributeMap.put(TestRunField.TOTAL_TEST_POINTS, OteAttributes.TOTAL_TEST_POINTS.getName());
+      outfileFieldToAttributeMap.put(TestRunField.TEST_ABORT_STATUS, OteAttributes.SCRIPT_ABORTED.getName());
 
       outfileFieldToAttributeMap.put(TestRunField.QUALIFICATION_LEVEL,
-            OTE_SKYNET_ATTRIBUTES.QUALIFICATION_LEVEL.getName());
+            OteAttributes.QUALIFICATION_LEVEL.getName());
 
-      outfileFieldToAttributeMap.put(TestRunField.BUILD_ID, OTE_SKYNET_ATTRIBUTES.BUILD_ID.getName());
+      outfileFieldToAttributeMap.put(TestRunField.BUILD_ID, OteAttributes.BUILD_ID.getName());
 
       outfileFieldToAttributeMap.put(TestRunField.IS_BATCH_MODE_ALLOWED,
-            OTE_SKYNET_ATTRIBUTES.IS_BATCH_MODE_ALLOWED.getName());
-      outfileFieldToAttributeMap.put(TestRunField.RAN_IN_BATCH_MODE, OTE_SKYNET_ATTRIBUTES.RAN_IN_BATCH_MODE.getName());
+            OteAttributes.IS_BATCH_MODE_ALLOWED.getName());
+      outfileFieldToAttributeMap.put(TestRunField.RAN_IN_BATCH_MODE, OteAttributes.RAN_IN_BATCH_MODE.getName());
 
       // outfileFieldToAttributeMap.put(TestRunField.SCRIPT_EXECUTION_TIME,
       // OTE_SKYNET_ATTRIBUTES.EgetName());
@@ -119,22 +119,22 @@ public class OteToAttributeMap {
 
    private SimpleDateFormat getFormat(String attribute) {
       SimpleDateFormat toReturn = scriptStartEndDataFormat;
-      if (attribute.equals(OTE_SKYNET_ATTRIBUTES.LAST_MODIFIED_DATE.getName())) {
+      if (attribute.equals(OteAttributes.LAST_MODIFIED_DATE.getName())) {
          toReturn = lastModifiedFormat;
       }
       return toReturn;
    }
 
    private boolean isDate(String attribute) {
-      return attribute.equals(OTE_SKYNET_ATTRIBUTES.LAST_MODIFIED_DATE.getName()) || attribute.equals(OTE_SKYNET_ATTRIBUTES.START_DATE.getName()) || attribute.equals(OTE_SKYNET_ATTRIBUTES.END_DATE.getName());
+      return attribute.equals(OteAttributes.LAST_MODIFIED_DATE.getName()) || attribute.equals(OteAttributes.START_DATE.getName()) || attribute.equals(OteAttributes.END_DATE.getName());
    }
 
    private boolean isInteger(String attribute) {
-      return attribute.equals(OTE_SKYNET_ATTRIBUTES.TOTAL_TEST_POINTS.getName()) || attribute.equals(OTE_SKYNET_ATTRIBUTES.PASSED.getName()) || attribute.equals(OTE_SKYNET_ATTRIBUTES.FAILED.getName());
+      return attribute.equals(OteAttributes.TOTAL_TEST_POINTS.getName()) || attribute.equals(OteAttributes.PASSED.getName()) || attribute.equals(OteAttributes.FAILED.getName());
    }
 
    private boolean isBoolean(String attribute) {
-      return attribute.equals(OTE_SKYNET_ATTRIBUTES.SCRIPT_ABORTED.getName()) || attribute.equals(OTE_SKYNET_ATTRIBUTES.RAN_IN_BATCH_MODE.getName()) || attribute.equals(OTE_SKYNET_ATTRIBUTES.IS_BATCH_MODE_ALLOWED.getName());
+      return attribute.equals(OteAttributes.SCRIPT_ABORTED.getName()) || attribute.equals(OteAttributes.RAN_IN_BATCH_MODE.getName()) || attribute.equals(OteAttributes.IS_BATCH_MODE_ALLOWED.getName());
    }
 
 }

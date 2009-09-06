@@ -13,16 +13,21 @@ package org.eclipse.osee.ote.define.AUTOGEN;
 import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
-public enum OTE_SKYNET_ARTIFACTS implements IOseeType {
+public enum OteArtifacts implements IOseeType {
    TEST_RUN(Requirements.TEST_RUN), TEST_SCRIPT(Requirements.TEST_CASE);
 
    private String name;
+   private String guid;
 
-   private OTE_SKYNET_ARTIFACTS(String name) {
+   private OteArtifacts(String name) {
       this.name = name;
    }
 
    public String getName() {
       return this.name;
+   }
+
+   public String getGuid() {
+      return guid;
    }
 }

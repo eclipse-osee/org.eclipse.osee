@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
@@ -94,6 +95,10 @@ public class ArtifactTypeManager {
          throw new OseeTypeDoesNotExist("Artifact type [" + name + "] is not available.");
       }
       return artifactType;
+   }
+
+   public static ArtifactType getType(IOseeType typeEnum) throws OseeCoreException {
+      return getTypeByGuid(typeEnum.getGuid());
    }
 
    /**

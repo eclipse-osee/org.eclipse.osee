@@ -35,7 +35,7 @@ public class NativeRenderer extends FileRenderer {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.nativeeditor.command");
          commandIds.add("org.eclipse.osee.framework.ui.skynet.othereditor.command");
       }
-      
+
       if (presentationType == PresentationType.PREVIEW) {
          commandIds.add("org.eclipse.osee.framework.ui.skynet.nativeprevieweditor.command");
       }

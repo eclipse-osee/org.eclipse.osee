@@ -15,14 +15,17 @@ import static org.junit.Assert.assertTrue;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.rmi.activation.Activator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -69,7 +72,7 @@ public class WordTrackedChangesTest {
    }
 
    /*
-    * Verifies that the document does not save when it has tracked changes on  
+    * Verifies that the document does not save when it has tracked changes on
     */
 
    @org.junit.Test
@@ -169,7 +172,7 @@ public class WordTrackedChangesTest {
          rFile.setContents(inputStream, IResource.FORCE, new NullProgressMonitor());
          inputStream.close();
       } catch (Exception ex) {
-         System.out.println(ex.toString());
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       } finally {
          FrameworkTestUtil.killAllOpenWinword();
       }

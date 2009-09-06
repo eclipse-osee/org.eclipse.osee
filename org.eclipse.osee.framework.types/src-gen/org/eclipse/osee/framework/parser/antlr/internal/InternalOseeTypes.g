@@ -646,41 +646,17 @@ ruleAttributeType returns [EObject current=null]
     @after { resetLookahead(); 
     	lastConsumedNode = currentNode;
     }:
-(('guid' 
+('attributeType' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getGuidKeyword_0_0(), null); 
-    }
-(	
-	
-	    lv_typeGuid_1=	RULE_STRING
-	{
-		createLeafNode(grammarAccess.getAttributeTypeAccess().getTypeGuidSTRINGTerminalRuleCall_0_1_0(), "typeGuid"); 
-	}
- 
-	    {
-	        if ($current==null) {
-	            $current = factory.create(grammarAccess.getAttributeTypeRule().getType().getClassifier());
-	            associateNodeWithAstElement(currentNode, $current);
-	        }
-	        
-	        try {
-	       		set($current, "typeGuid", lv_typeGuid_1, "STRING", lastConsumedNode);
-	        } catch (ValueConverterException vce) {
-				handleValueConverterException(vce);
-	        }
-	    }
-	
-))?'attributeType' 
-    {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getAttributeTypeKeyword_1(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getAttributeTypeKeyword_0(), null); 
     }
 (	
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getNameNAME_REFERENCEParserRuleCall_2_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getNameNAME_REFERENCEParserRuleCall_1_0(), currentNode); 
 	    }
-	    lv_name_3=ruleNAME_REFERENCE 
+	    lv_name_1=ruleNAME_REFERENCE 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getAttributeTypeRule().getType().getClassifier());
@@ -688,7 +664,7 @@ ruleAttributeType returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		set($current, "name", lv_name_3, "NAME_REFERENCE", currentNode);
+	       		set($current, "name", lv_name_1, "NAME_REFERENCE", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -697,15 +673,15 @@ ruleAttributeType returns [EObject current=null]
 	
 )('extends' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getExtendsKeyword_3_0(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getExtendsKeyword_2_0(), null); 
     }
 (	
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getBaseAttributeTypeAttributeBaseTypeParserRuleCall_3_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getBaseAttributeTypeAttributeBaseTypeParserRuleCall_2_1_0(), currentNode); 
 	    }
-	    lv_baseAttributeType_5=ruleAttributeBaseType 
+	    lv_baseAttributeType_3=ruleAttributeBaseType 
 	    {
 	        if ($current==null) {
 	            $current = factory.create(grammarAccess.getAttributeTypeRule().getType().getClassifier());
@@ -713,7 +689,7 @@ ruleAttributeType returns [EObject current=null]
 	        }
 	        
 	        try {
-	       		set($current, "baseAttributeType", lv_baseAttributeType_5, "AttributeBaseType", currentNode);
+	       		set($current, "baseAttributeType", lv_baseAttributeType_3, "AttributeBaseType", currentNode);
 	        } catch (ValueConverterException vce) {
 				handleValueConverterException(vce);
 	        }
@@ -722,7 +698,7 @@ ruleAttributeType returns [EObject current=null]
 	
 ))('overrides' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getOverridesKeyword_4_0(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getOverridesKeyword_3_0(), null); 
     }
 (	
 	
@@ -734,7 +710,7 @@ ruleAttributeType returns [EObject current=null]
 	        }
         }
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getOverrideAttributeTypeCrossReference_4_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getOverrideAttributeTypeCrossReference_3_1_0(), currentNode); 
 	    }
 		ruleNAME_REFERENCE		{ 
 	        currentNode = currentNode.getParent();
@@ -744,9 +720,33 @@ ruleAttributeType returns [EObject current=null]
 	
 ))?'{' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getLeftCurlyBracketKeyword_5(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getLeftCurlyBracketKeyword_4(), null); 
     }
-'dataProvider' 
+('guid' 
+    {
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getGuidKeyword_5_0(), null); 
+    }
+(	
+	
+	    lv_typeGuid_8=	RULE_STRING
+	{
+		createLeafNode(grammarAccess.getAttributeTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_1_0(), "typeGuid"); 
+	}
+ 
+	    {
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.getAttributeTypeRule().getType().getClassifier());
+	            associateNodeWithAstElement(currentNode, $current);
+	        }
+	        
+	        try {
+	       		set($current, "typeGuid", lv_typeGuid_8, "STRING", lastConsumedNode);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	    }
+	
+))?'dataProvider' 
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderKeyword_6(), null); 
     }

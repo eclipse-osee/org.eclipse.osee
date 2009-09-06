@@ -11,5 +11,7 @@
 package org.eclipse.osee.framework.skynet.core;
 
 public interface IOseeType {
-   String getName();
+   public abstract String getName();
+
+   public abstract String getGuid();
 }

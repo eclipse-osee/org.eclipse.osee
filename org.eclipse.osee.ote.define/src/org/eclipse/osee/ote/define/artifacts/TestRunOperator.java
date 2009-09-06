@@ -26,18 +26,18 @@ import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.MappedAttributeDataProvider;
-import org.eclipse.osee.ote.define.AUTOGEN.OTE_SKYNET_ARTIFACTS;
-import org.eclipse.osee.ote.define.AUTOGEN.OTE_SKYNET_ATTRIBUTES;
+import org.eclipse.osee.ote.define.AUTOGEN.OteArtifacts;
+import org.eclipse.osee.ote.define.AUTOGEN.OteAttributes;
 
 /**
  * @author Roberto E. Escobar
  */
 public class TestRunOperator {
    private static final OteArtifactFetcher<Artifact> TEST_RUN_ARTIFACT_FETCHER =
-         new OteArtifactFetcher<Artifact>(OTE_SKYNET_ARTIFACTS.TEST_RUN);
+         new OteArtifactFetcher<Artifact>(OteArtifacts.TEST_RUN);
 
    private static final OteArtifactFetcher<Artifact> TEST_SCRIPT_ARTIFACT_FETCHER =
-         new OteArtifactFetcher<Artifact>(OTE_SKYNET_ARTIFACTS.TEST_SCRIPT);
+         new OteArtifactFetcher<Artifact>(OteArtifacts.TEST_SCRIPT);
 
    private Artifact artifact;
 
@@ -55,9 +55,9 @@ public class TestRunOperator {
 
    private void checkForType(Artifact artifact) throws OseeArgumentException {
       try {
-         if (!artifact.isOfType(OTE_SKYNET_ARTIFACTS.TEST_RUN.getName())) {
+         if (!artifact.isOfType(OteArtifacts.TEST_RUN.getName())) {
             throw new OseeArgumentException(String.format("Unable to operate on type [%s]. Only [%s] allowed.",
-                  artifact.getArtifactTypeName(), OTE_SKYNET_ARTIFACTS.TEST_RUN.getName()));
+                  artifact.getArtifactTypeName(), OteArtifacts.TEST_RUN.getName()));
          }
       } catch (OseeCoreException e) {
          // TODO Auto-generated catch block
@@ -86,35 +86,35 @@ public class TestRunOperator {
    }
 
    public String getScriptRevision() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.REVISION.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributes.REVISION.getName(), "");
    }
 
    public String getScriptUrl() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.TEST_SCRIPT_URL.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributes.TEST_SCRIPT_URL.getName(), "");
    }
 
    public void setLastDateUploaded(Date value) throws OseeCoreException {
-      artifact.setSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.LAST_DATE_UPLOADED.getName(), value);
+      artifact.setSoleAttributeValue(OteAttributes.LAST_DATE_UPLOADED.getName(), value);
    }
 
    public Date getLastDateUploaded() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.LAST_DATE_UPLOADED.getName(), null);
+      return artifact.getSoleAttributeValue(OteAttributes.LAST_DATE_UPLOADED.getName(), null);
    }
 
    public void setChecksum(String value) throws OseeCoreException {
-      artifact.setSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.CHECKSUM.getName(), value);
+      artifact.setSoleAttributeValue(OteAttributes.CHECKSUM.getName(), value);
    }
 
    public String getChecksum() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.CHECKSUM.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributes.CHECKSUM.getName(), "");
    }
 
    public String getOutfileExtension() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.EXTENSION.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributes.EXTENSION.getName(), "");
    }
 
    public void setOutfileExtension(String outfile) throws OseeCoreException {
-      artifact.setSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.EXTENSION.getName(), outfile);
+      artifact.setSoleAttributeValue(OteAttributes.EXTENSION.getName(), outfile);
    }
 
    public boolean isFromLocalWorkspace() throws OseeCoreException, AttributeDoesNotExist {
@@ -129,7 +129,7 @@ public class TestRunOperator {
    }
 
    public String getOutfileUrl() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.OUTFILE_URL.getName());
+      return artifact.getSoleAttributeValue(OteAttributes.OUTFILE_URL.getName());
    }
 
    public String getOutfileContents() throws OseeCoreException {
@@ -141,7 +141,7 @@ public class TestRunOperator {
    }
 
    public Attribute<InputStream> getOutfileAttribute() throws AttributeDoesNotExist, OseeCoreException {
-      List<Attribute<InputStream>> attributes = artifact.getAttributes(OTE_SKYNET_ATTRIBUTES.OUTFILE_URL.getName());
+      List<Attribute<InputStream>> attributes = artifact.getAttributes(OteAttributes.OUTFILE_URL.getName());
       return attributes != null && attributes.size() > 0 ? attributes.get(0) : null;
    }
 
@@ -164,7 +164,7 @@ public class TestRunOperator {
       Artifact fetched = null;
       try {
          fetched =
-               getTestRunFetcher().searchForUniqueArtifactMatching(OTE_SKYNET_ATTRIBUTES.CHECKSUM.getName(),
+               getTestRunFetcher().searchForUniqueArtifactMatching(OteAttributes.CHECKSUM.getName(),
                      getChecksum(), artifact.getBranch());
       } catch (Exception ex) {
       }
@@ -183,7 +183,7 @@ public class TestRunOperator {
       Artifact testScript =
             getTestScriptFetcher().searchForUniqueArtifactMatching("Name", artifact.getName(), artifact.getBranch());
       if (testScript != null) {
-         artifact.setSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.TEST_SCRIPT_GUID.getName(), testScript.getGuid());
+         artifact.setSoleAttributeValue(OteAttributes.TEST_SCRIPT_GUID.getName(), testScript.getGuid());
       }
    }
 
@@ -206,30 +206,30 @@ public class TestRunOperator {
    }
 
    public int getTestPointsPassed() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.PASSED.getName());
+      return artifact.getSoleAttributeValue(OteAttributes.PASSED.getName());
    }
 
    public int getTestPointsFailed() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.FAILED.getName());
+      return artifact.getSoleAttributeValue(OteAttributes.FAILED.getName());
    }
 
    public int getTotalTestPoints() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.TOTAL_TEST_POINTS.getName());
+      return artifact.getSoleAttributeValue(OteAttributes.TOTAL_TEST_POINTS.getName());
    }
 
    public Date getEndDate() throws OseeCoreException {
-      return processDateAttribute(OTE_SKYNET_ATTRIBUTES.END_DATE);
+      return processDateAttribute(OteAttributes.END_DATE);
    }
 
    public Date getLastModifiedDate() throws OseeCoreException {
-      return processDateAttribute(OTE_SKYNET_ATTRIBUTES.LAST_MODIFIED_DATE);
+      return processDateAttribute(OteAttributes.LAST_MODIFIED_DATE);
    }
 
    public Date getTestStartDate() throws OseeCoreException {
-      return processDateAttribute(OTE_SKYNET_ATTRIBUTES.START_DATE);
+      return processDateAttribute(OteAttributes.START_DATE);
    }
 
-   private Date processDateAttribute(OTE_SKYNET_ATTRIBUTES attributeType) throws OseeCoreException {
+   private Date processDateAttribute(OteAttributes attributeType) throws OseeCoreException {
       Date date = artifact.getSoleAttributeValue(attributeType.getName(), null);
       if (date == null) {
          date = new Date(0);
@@ -240,7 +240,7 @@ public class TestRunOperator {
    public boolean wasAborted() {
       boolean toReturn = true;
       try {
-         toReturn = artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.SCRIPT_ABORTED.getName(), false);
+         toReturn = artifact.getSoleAttributeValue(OteAttributes.SCRIPT_ABORTED.getName(), false);
       } catch (Exception ex) {
       }
       return toReturn;
@@ -265,46 +265,46 @@ public class TestRunOperator {
    public boolean isBatchModeAllowed() {
       boolean toReturn = false;
       try {
-         toReturn = artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.IS_BATCH_MODE_ALLOWED.getName(), false);
+         toReturn = artifact.getSoleAttributeValue(OteAttributes.IS_BATCH_MODE_ALLOWED.getName(), false);
       } catch (Exception ex) {
       }
       return toReturn;
    }
 
    public String getOseeVersion() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.OSEE_VERSION.getName(), "").trim();
+      return artifact.getSoleAttributeValue(OteAttributes.OSEE_VERSION.getName(), "").trim();
    }
 
    public String getOseeServerTitle() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.OSEE_SERVER_TITLE.getName(), "").trim();
+      return artifact.getSoleAttributeValue(OteAttributes.OSEE_SERVER_TITLE.getName(), "").trim();
    }
 
    public String getOseeServerVersion() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.OSEE_SERVER_JAR_VERSION.getName(), "").trim();
+      return artifact.getSoleAttributeValue(OteAttributes.OSEE_SERVER_JAR_VERSION.getName(), "").trim();
    }
 
    public String getProcessorId() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.PROCESSOR_ID.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributes.PROCESSOR_ID.getName(), "");
    }
 
    public String getRunDuration() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.ELAPSED_DATE.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributes.ELAPSED_DATE.getName(), "");
    }
 
    public String getQualificationLevel() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.QUALIFICATION_LEVEL.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributes.QUALIFICATION_LEVEL.getName(), "");
    }
 
    public String getBuildId() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.BUILD_ID.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributes.BUILD_ID.getName(), "");
    }
 
    public String getRanOnOperatingSystem() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.OS_NAME.getName(), "");
+      return artifact.getSoleAttributeValue(OteAttributes.OS_NAME.getName(), "");
    }
 
    public String getLastAuthor() throws OseeCoreException {
-      return artifact.getSoleAttributeValue(OTE_SKYNET_ATTRIBUTES.LAST_AUTHOR.getName(), null);
+      return artifact.getSoleAttributeValue(OteAttributes.LAST_AUTHOR.getName(), null);
    }
 
    public String getScriptSimpleName() {

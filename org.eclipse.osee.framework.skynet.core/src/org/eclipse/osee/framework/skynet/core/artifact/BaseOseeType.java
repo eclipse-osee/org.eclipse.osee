@@ -2,8 +2,9 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.skynet.core.IOseeType;
 
-public class BaseOseeType {
+public class BaseOseeType implements IOseeType {
    public final static int UNPERSISTTED_VALUE = Integer.MIN_VALUE;
 
    private String name;
@@ -58,21 +59,17 @@ public class BaseOseeType {
       if (this == obj) {
          return true;
       }
-      if (obj == null) {
+      if (obj == null || guid == null) {
          return false;
       }
+      if (obj instanceof IOseeType) {
+         return guid.equals(((IOseeType) obj).getGuid());
+      }
+
       if (getClass() != obj.getClass()) {
          return false;
       }
-      BaseOseeType other = (BaseOseeType) obj;
-      if (guid == null) {
-         if (other.guid != null) {
-            return false;
-         }
-      } else if (!guid.equals(other.guid)) {
-         return false;
-      }
-      return true;
+      return guid.equals(((BaseOseeType) obj).guid);
    }
 
    /**

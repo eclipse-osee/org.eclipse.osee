@@ -37,19 +37,6 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
    }
 
    @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof OseeEnumType) {
-         return super.equals(obj);
-      }
-      return false;
-   }
-
-   @Override
-   public int hashCode() {
-      return super.hashCode();
-   }
-
-   @Override
    public String toString() {
       return getName();
    }
@@ -89,7 +76,6 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
          }
       }
       if (toReturn == null) {
-         System.out.println("delete me 23452345" + entryName);
          throw new OseeArgumentException(String.format("No enum const [%s].[%s]", getName(), entryName));
       }
       return toReturn;

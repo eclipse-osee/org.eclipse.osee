@@ -63,9 +63,9 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAttributeTypeRefAccess().getGroup(), "rule__AttributeTypeRef__Group__0");
 					put(grammarAccess.getAttributeTypeRefAccess().getGroup_2(), "rule__AttributeTypeRef__Group_2__0");
 					put(grammarAccess.getAttributeTypeAccess().getGroup(), "rule__AttributeType__Group__0");
-					put(grammarAccess.getAttributeTypeAccess().getGroup_0(), "rule__AttributeType__Group_0__0");
+					put(grammarAccess.getAttributeTypeAccess().getGroup_2(), "rule__AttributeType__Group_2__0");
 					put(grammarAccess.getAttributeTypeAccess().getGroup_3(), "rule__AttributeType__Group_3__0");
-					put(grammarAccess.getAttributeTypeAccess().getGroup_4(), "rule__AttributeType__Group_4__0");
+					put(grammarAccess.getAttributeTypeAccess().getGroup_5(), "rule__AttributeType__Group_5__0");
 					put(grammarAccess.getAttributeTypeAccess().getGroup_12(), "rule__AttributeType__Group_12__0");
 					put(grammarAccess.getAttributeTypeAccess().getGroup_13(), "rule__AttributeType__Group_13__0");
 					put(grammarAccess.getAttributeTypeAccess().getGroup_14(), "rule__AttributeType__Group_14__0");
@@ -94,10 +94,10 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAssignment_6(), "rule__ArtifactType__ValidAttributeTypesAssignment_6");
 					put(grammarAccess.getAttributeTypeRefAccess().getValidAttributeTypeAssignment_1(), "rule__AttributeTypeRef__ValidAttributeTypeAssignment_1");
 					put(grammarAccess.getAttributeTypeRefAccess().getBranchGuidAssignment_2_1(), "rule__AttributeTypeRef__BranchGuidAssignment_2_1");
-					put(grammarAccess.getAttributeTypeAccess().getTypeGuidAssignment_0_1(), "rule__AttributeType__TypeGuidAssignment_0_1");
-					put(grammarAccess.getAttributeTypeAccess().getNameAssignment_2(), "rule__AttributeType__NameAssignment_2");
-					put(grammarAccess.getAttributeTypeAccess().getBaseAttributeTypeAssignment_3_1(), "rule__AttributeType__BaseAttributeTypeAssignment_3_1");
-					put(grammarAccess.getAttributeTypeAccess().getOverrideAssignment_4_1(), "rule__AttributeType__OverrideAssignment_4_1");
+					put(grammarAccess.getAttributeTypeAccess().getNameAssignment_1(), "rule__AttributeType__NameAssignment_1");
+					put(grammarAccess.getAttributeTypeAccess().getBaseAttributeTypeAssignment_2_1(), "rule__AttributeType__BaseAttributeTypeAssignment_2_1");
+					put(grammarAccess.getAttributeTypeAccess().getOverrideAssignment_3_1(), "rule__AttributeType__OverrideAssignment_3_1");
+					put(grammarAccess.getAttributeTypeAccess().getTypeGuidAssignment_5_1(), "rule__AttributeType__TypeGuidAssignment_5_1");
 					put(grammarAccess.getAttributeTypeAccess().getDataProviderAssignment_7(), "rule__AttributeType__DataProviderAssignment_7");
 					put(grammarAccess.getAttributeTypeAccess().getMinAssignment_9(), "rule__AttributeType__MinAssignment_9");
 					put(grammarAccess.getAttributeTypeAccess().getMaxAssignment_11(), "rule__AttributeType__MaxAssignment_11");

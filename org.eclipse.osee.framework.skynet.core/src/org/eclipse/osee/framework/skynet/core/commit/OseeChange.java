@@ -22,7 +22,8 @@ public class OseeChange {
       Artiact, Attribute, Relation
    };
    private final TxChange sourceTxChange;
-   private final int gammaId;
+   private final int sourceGammaId;
+   private int desinationGammaId;
    private final ModificationType sourceModificationType;
    private int itemId;
    private GammaKind kind;
@@ -32,7 +33,7 @@ public class OseeChange {
    protected OseeChange(TxChange txChange, int gammaId, ModificationType modificationType, int itemId) {
       super();
       this.sourceTxChange = txChange;
-      this.gammaId = gammaId;
+      this.sourceGammaId = gammaId;
       this.sourceModificationType = modificationType;
       this.itemId = itemId;
    }
@@ -41,8 +42,8 @@ public class OseeChange {
       return sourceTxChange;
    }
 
-   public int getGammaId() {
-      return gammaId;
+   public int getSourceGammaId() {
+      return sourceGammaId;
    }
 
    public ModificationType getModificationType() {
@@ -86,5 +87,19 @@ public class OseeChange {
 
    public void setDesinationModificationType(ModificationType desinationModificationType) {
       this.desinationModificationType = desinationModificationType;
+   }
+
+   /**
+    * @return the desinationGammaId
+    */
+   public int getDesinationGammaId() {
+      return desinationGammaId;
+   }
+
+   /**
+    * @param desinationGammaId the desinationGammaId to set
+    */
+   public void setDesinationGammaId(int desinationGammaId) {
+      this.desinationGammaId = desinationGammaId;
    }
 }

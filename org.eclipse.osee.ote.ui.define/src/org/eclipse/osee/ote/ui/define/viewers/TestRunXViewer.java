@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
-import org.eclipse.osee.ote.define.AUTOGEN.OTE_SKYNET_ARTIFACTS;
+import org.eclipse.osee.ote.define.AUTOGEN.OteArtifacts;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.osee.ote.ui.define.OteUiDefinePlugin;
 import org.eclipse.osee.ote.ui.define.jobs.CommitTestRunJob;
@@ -255,7 +255,7 @@ public class TestRunXViewer extends XViewer {
       boolean returnValue = false;
       ArrayList<Artifact> dispositionArtifacts = new ArrayList<Artifact>();
       for (Artifact artifact : selectedArtifacts) {
-         if (artifact.isOfType(OTE_SKYNET_ARTIFACTS.TEST_RUN.getName())) {
+         if (artifact.isOfType(OteArtifacts.TEST_RUN.getName())) {
             String name = artifact.getSoleAttributeValueAsString("Name", "");
             if (name != "") {
                Artifact dispoArtifact = null;

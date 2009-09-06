@@ -601,15 +601,18 @@ attributeType "Partition" extends EnumeratedAttribute {
 }
 
 oseeEnumType "Subsystem.enum" {  
+   entry "Robot_API"
    entry "Robot_Survivability_Equipment"
    entry "Robot_Systems_Management"
    entry "Chasis"
+   entry "Cognitive_Decision_Aiding"
    entry "Communications"
    entry "Data_Management"
    entry "Electrical"
    entry "Controls"
    entry "Hydraulics"
-   entry "Robot Navigation"
+   entry "Navigation"
+   entry "Propulsion"
    entry "Unknown"
    entry "Unspecified"
 }
@@ -995,10 +998,12 @@ relationType "Supercedes" {
 }
 
 oseeEnumType "CSCI.enum" {
+   entry "CoreUnit"
    entry "Framework"
-   entry "Core Unit"
-   entry "Interface Unit"
+   entry "Interface"
+   entry "Navigation"
    entry "Unspecified"
+   entry "Visual"
 }
 
 attributeType "CSCI" extends EnumeratedAttribute {

@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
@@ -101,7 +102,7 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
     * @param otherType artifact type to check against
     * @return whether this artifact type inherits from otherType
     */
-   public boolean inheritsFrom(ArtifactType otherType) {
+   public boolean inheritsFrom(IOseeType otherType) {
       if (this.equals(otherType)) {
          return true;
       }
@@ -140,19 +141,6 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
          result = getName().compareTo(other.getName());
       }
       return result;
-   }
-
-   @Override
-   public int hashCode() {
-      return super.hashCode();
-   }
-
-   @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof ArtifactType) {
-         return super.equals(obj);
-      }
-      return false;
    }
 
    public void setAbstract(boolean isAbstract) {

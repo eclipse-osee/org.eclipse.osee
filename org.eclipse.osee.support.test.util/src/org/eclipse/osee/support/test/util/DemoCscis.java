@@ -14,5 +14,5 @@ package org.eclipse.osee.support.test.util;
  * @author Donald G. Dunne
  */
 public enum DemoCscis {
-   Sights, Navigation, Visual, Interface;
+   CoreUnit, Framework, Interface, Navigation, Unspecified, Visual;
 }

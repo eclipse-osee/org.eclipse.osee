@@ -358,23 +358,23 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	public class AttributeTypeElements implements IParserRuleAccess {
 		private final ParserRule rule = (ParserRule) GrammarUtil.findRuleForName(getGrammar(), "AttributeType");
 		private final Group cGroup = (Group)rule.eContents().get(1);
-		private final Group cGroup_0 = (Group)cGroup.eContents().get(0);
-		private final Keyword cGuidKeyword_0_0 = (Keyword)cGroup_0.eContents().get(0);
-		private final Assignment cTypeGuidAssignment_0_1 = (Assignment)cGroup_0.eContents().get(1);
-		private final RuleCall cTypeGuidSTRINGTerminalRuleCall_0_1_0 = (RuleCall)cTypeGuidAssignment_0_1.eContents().get(0);
-		private final Keyword cAttributeTypeKeyword_1 = (Keyword)cGroup.eContents().get(1);
-		private final Assignment cNameAssignment_2 = (Assignment)cGroup.eContents().get(2);
-		private final RuleCall cNameNAME_REFERENCEParserRuleCall_2_0 = (RuleCall)cNameAssignment_2.eContents().get(0);
+		private final Keyword cAttributeTypeKeyword_0 = (Keyword)cGroup.eContents().get(0);
+		private final Assignment cNameAssignment_1 = (Assignment)cGroup.eContents().get(1);
+		private final RuleCall cNameNAME_REFERENCEParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
+		private final Group cGroup_2 = (Group)cGroup.eContents().get(2);
+		private final Keyword cExtendsKeyword_2_0 = (Keyword)cGroup_2.eContents().get(0);
+		private final Assignment cBaseAttributeTypeAssignment_2_1 = (Assignment)cGroup_2.eContents().get(1);
+		private final RuleCall cBaseAttributeTypeAttributeBaseTypeParserRuleCall_2_1_0 = (RuleCall)cBaseAttributeTypeAssignment_2_1.eContents().get(0);
 		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
-		private final Keyword cExtendsKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
-		private final Assignment cBaseAttributeTypeAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
-		private final RuleCall cBaseAttributeTypeAttributeBaseTypeParserRuleCall_3_1_0 = (RuleCall)cBaseAttributeTypeAssignment_3_1.eContents().get(0);
-		private final Group cGroup_4 = (Group)cGroup.eContents().get(4);
-		private final Keyword cOverridesKeyword_4_0 = (Keyword)cGroup_4.eContents().get(0);
-		private final Assignment cOverrideAssignment_4_1 = (Assignment)cGroup_4.eContents().get(1);
-		private final CrossReference cOverrideAttributeTypeCrossReference_4_1_0 = (CrossReference)cOverrideAssignment_4_1.eContents().get(0);
-		private final RuleCall cOverrideAttributeTypeNAME_REFERENCEParserRuleCall_4_1_0_1 = (RuleCall)cOverrideAttributeTypeCrossReference_4_1_0.eContents().get(1);
-		private final Keyword cLeftCurlyBracketKeyword_5 = (Keyword)cGroup.eContents().get(5);
+		private final Keyword cOverridesKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cOverrideAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final CrossReference cOverrideAttributeTypeCrossReference_3_1_0 = (CrossReference)cOverrideAssignment_3_1.eContents().get(0);
+		private final RuleCall cOverrideAttributeTypeNAME_REFERENCEParserRuleCall_3_1_0_1 = (RuleCall)cOverrideAttributeTypeCrossReference_3_1_0.eContents().get(1);
+		private final Keyword cLeftCurlyBracketKeyword_4 = (Keyword)cGroup.eContents().get(4);
+		private final Group cGroup_5 = (Group)cGroup.eContents().get(5);
+		private final Keyword cGuidKeyword_5_0 = (Keyword)cGroup_5.eContents().get(0);
+		private final Assignment cTypeGuidAssignment_5_1 = (Assignment)cGroup_5.eContents().get(1);
+		private final RuleCall cTypeGuidSTRINGTerminalRuleCall_5_1_0 = (RuleCall)cTypeGuidAssignment_5_1.eContents().get(0);
 		private final Keyword cDataProviderKeyword_6 = (Keyword)cGroup.eContents().get(6);
 		private final Assignment cDataProviderAssignment_7 = (Assignment)cGroup.eContents().get(7);
 		private final Alternatives cDataProviderAlternatives_7_0 = (Alternatives)cDataProviderAssignment_7.eContents().get(0);
@@ -416,9 +416,9 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		private final Keyword cRightCurlyBracketKeyword_17 = (Keyword)cGroup.eContents().get(17);
 		
 		//AttributeType:
-		//  ("guid" typeGuid=STRING)? "attributeType" name=NAME_REFERENCE ("extends"
-		//  baseAttributeType=AttributeBaseType) ("overrides" override=[AttributeType|
-		//  NAME_REFERENCE])? "{" "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
+		//  "attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
+		//  ("overrides" override=[AttributeType|NAME_REFERENCE])? "{" ("guid" typeGuid=STRING)?
+		//  "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
 		//  "UriAttributeDataProvider" | "MappedAttributeDataProvider" | QUALIFIED_NAME ) "min" min
 		//  =WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=(
 		//  "DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? ("enumType" enumType=[
@@ -426,9 +426,9 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		//  defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}";
 		public ParserRule getRule() { return rule; }
 
-		//("guid" typeGuid=STRING)? "attributeType" name=NAME_REFERENCE ("extends"
-		//baseAttributeType=AttributeBaseType) ("overrides" override=[AttributeType|
-		//NAME_REFERENCE])? "{" "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
+		//"attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
+		//("overrides" override=[AttributeType|NAME_REFERENCE])? "{" ("guid" typeGuid=STRING)?
+		//"dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
 		//"UriAttributeDataProvider" | "MappedAttributeDataProvider" | QUALIFIED_NAME ) "min" min
 		//=WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=(
 		//"DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? ("enumType" enumType=[
@@ -436,56 +436,56 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		//defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}"
 		public Group getGroup() { return cGroup; }
 
-		//("guid" typeGuid=STRING)?
-		public Group getGroup_0() { return cGroup_0; }
-
-		//"guid"
-		public Keyword getGuidKeyword_0_0() { return cGuidKeyword_0_0; }
-
-		//typeGuid=STRING
-		public Assignment getTypeGuidAssignment_0_1() { return cTypeGuidAssignment_0_1; }
-
-		//STRING
-		public RuleCall getTypeGuidSTRINGTerminalRuleCall_0_1_0() { return cTypeGuidSTRINGTerminalRuleCall_0_1_0; }
-
 		//"attributeType"
-		public Keyword getAttributeTypeKeyword_1() { return cAttributeTypeKeyword_1; }
+		public Keyword getAttributeTypeKeyword_0() { return cAttributeTypeKeyword_0; }
 
 		//name=NAME_REFERENCE
-		public Assignment getNameAssignment_2() { return cNameAssignment_2; }
+		public Assignment getNameAssignment_1() { return cNameAssignment_1; }
 
 		//NAME_REFERENCE
-		public RuleCall getNameNAME_REFERENCEParserRuleCall_2_0() { return cNameNAME_REFERENCEParserRuleCall_2_0; }
+		public RuleCall getNameNAME_REFERENCEParserRuleCall_1_0() { return cNameNAME_REFERENCEParserRuleCall_1_0; }
 
 		//"extends" baseAttributeType=AttributeBaseType
-		public Group getGroup_3() { return cGroup_3; }
+		public Group getGroup_2() { return cGroup_2; }
 
 		//"extends"
-		public Keyword getExtendsKeyword_3_0() { return cExtendsKeyword_3_0; }
+		public Keyword getExtendsKeyword_2_0() { return cExtendsKeyword_2_0; }
 
 		//baseAttributeType=AttributeBaseType
-		public Assignment getBaseAttributeTypeAssignment_3_1() { return cBaseAttributeTypeAssignment_3_1; }
+		public Assignment getBaseAttributeTypeAssignment_2_1() { return cBaseAttributeTypeAssignment_2_1; }
 
 		//AttributeBaseType
-		public RuleCall getBaseAttributeTypeAttributeBaseTypeParserRuleCall_3_1_0() { return cBaseAttributeTypeAttributeBaseTypeParserRuleCall_3_1_0; }
+		public RuleCall getBaseAttributeTypeAttributeBaseTypeParserRuleCall_2_1_0() { return cBaseAttributeTypeAttributeBaseTypeParserRuleCall_2_1_0; }
 
 		//("overrides" override=[AttributeType|NAME_REFERENCE])?
-		public Group getGroup_4() { return cGroup_4; }
+		public Group getGroup_3() { return cGroup_3; }
 
 		//"overrides"
-		public Keyword getOverridesKeyword_4_0() { return cOverridesKeyword_4_0; }
+		public Keyword getOverridesKeyword_3_0() { return cOverridesKeyword_3_0; }
 
 		//override=[AttributeType|NAME_REFERENCE]
-		public Assignment getOverrideAssignment_4_1() { return cOverrideAssignment_4_1; }
+		public Assignment getOverrideAssignment_3_1() { return cOverrideAssignment_3_1; }
 
 		//[AttributeType|NAME_REFERENCE]
-		public CrossReference getOverrideAttributeTypeCrossReference_4_1_0() { return cOverrideAttributeTypeCrossReference_4_1_0; }
+		public CrossReference getOverrideAttributeTypeCrossReference_3_1_0() { return cOverrideAttributeTypeCrossReference_3_1_0; }
 
 		//NAME_REFERENCE
-		public RuleCall getOverrideAttributeTypeNAME_REFERENCEParserRuleCall_4_1_0_1() { return cOverrideAttributeTypeNAME_REFERENCEParserRuleCall_4_1_0_1; }
+		public RuleCall getOverrideAttributeTypeNAME_REFERENCEParserRuleCall_3_1_0_1() { return cOverrideAttributeTypeNAME_REFERENCEParserRuleCall_3_1_0_1; }
 
 		//"{"
-		public Keyword getLeftCurlyBracketKeyword_5() { return cLeftCurlyBracketKeyword_5; }
+		public Keyword getLeftCurlyBracketKeyword_4() { return cLeftCurlyBracketKeyword_4; }
+
+		//("guid" typeGuid=STRING)?
+		public Group getGroup_5() { return cGroup_5; }
+
+		//"guid"
+		public Keyword getGuidKeyword_5_0() { return cGuidKeyword_5_0; }
+
+		//typeGuid=STRING
+		public Assignment getTypeGuidAssignment_5_1() { return cTypeGuidAssignment_5_1; }
+
+		//STRING
+		public RuleCall getTypeGuidSTRINGTerminalRuleCall_5_1_0() { return cTypeGuidSTRINGTerminalRuleCall_5_1_0; }
 
 		//"dataProvider"
 		public Keyword getDataProviderKeyword_6() { return cDataProviderKeyword_6; }
@@ -1231,9 +1231,9 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	}
 
 	//AttributeType:
-	//  ("guid" typeGuid=STRING)? "attributeType" name=NAME_REFERENCE ("extends"
-	//  baseAttributeType=AttributeBaseType) ("overrides" override=[AttributeType|
-	//  NAME_REFERENCE])? "{" "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
+	//  "attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
+	//  ("overrides" override=[AttributeType|NAME_REFERENCE])? "{" ("guid" typeGuid=STRING)?
+	//  "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
 	//  "UriAttributeDataProvider" | "MappedAttributeDataProvider" | QUALIFIED_NAME ) "min" min
 	//  =WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=(
 	//  "DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? ("enumType" enumType=[

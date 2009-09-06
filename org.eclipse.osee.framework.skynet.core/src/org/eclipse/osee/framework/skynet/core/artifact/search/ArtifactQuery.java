@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -258,12 +259,13 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(branch, FULL, false, new AttributeCriteria(attributeTypeName, attributeValue)).getOrCheckArtifact(QueryType.GET);
    }
 
-   public static List<Artifact> getArtifactListFromType(ArtifactType artifactType, boolean allowDeleted) throws OseeCoreException {
-      return getArtifactListFromType(artifactType, null, allowDeleted);
+   public static List<Artifact> getArtifactListFromType(IOseeType artifactTypeEnum, boolean allowDeleted) throws OseeCoreException {
+      return getArtifactListFromType(artifactTypeEnum, null, allowDeleted);
    }
 
-   public static List<Artifact> getArtifactListFromType(ArtifactType artifactType, Branch branch, boolean allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(artifactType, branch, FULL, allowDeleted).getArtifacts(1000, null);
+   public static List<Artifact> getArtifactListFromType(IOseeType artifactTypeEnum, Branch branch, boolean allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeEnum), branch, FULL, allowDeleted).getArtifacts(
+            1000, null);
    }
 
    public static List<Artifact> getArtifactListFromType(ArtifactType artifactType, Branch branch) throws OseeCoreException {
@@ -287,8 +289,7 @@ public class ArtifactQuery {
    }
 
    public static List<Artifact> getArtifactListFromType(String artifactTypeName, Branch branch) throws OseeCoreException {
-      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL, false).getArtifacts(
-            1000, null);
+      return getArtifactListFromType(ArtifactTypeManager.getType(artifactTypeName), branch);
    }
 
    public static List<Artifact> getArtifactListFromTypes(Collection<String> artifactTypeNames, Branch branch, boolean allowDeleted) throws OseeCoreException {

@@ -102,19 +102,6 @@ public class RelationType extends BaseOseeType implements Comparable<RelationTyp
    }
 
    @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof RelationType) {
-         return super.equals(obj);
-      }
-      return false;
-   }
-
-   @Override
-   public int hashCode() {
-      return super.hashCode();
-   }
-
-   @Override
    public String toString() {
       return String.format("[%s] <- [%s] -> [%s]", getSideAName(), getName(), getSideBName());
    }

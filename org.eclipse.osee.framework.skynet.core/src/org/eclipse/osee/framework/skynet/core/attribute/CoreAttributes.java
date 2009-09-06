@@ -16,19 +16,25 @@ import org.eclipse.osee.framework.skynet.core.IOseeType;
  * @author Roberto E. Escobar
  */
 public enum CoreAttributes implements IOseeType {
-
-   NATIVE_CONTENT("Native Content"),
-   NATIVE_EXTENSION("Extension"),
-   WHOLE_WORD_CONTENT("Whole Word Content"),
-   WORD_TEMPLATE_CONTENT("Word Template Content");
+   NAME("Name", "AAMFEcF1AzV7PKuHmxwA"),
+   NATIVE_CONTENT("Native Content", "AAMFEcdBJGBK9nr9TTQA"),
+   NATIVE_EXTENSION("Extension", "AAMFEcUbJEERZTnwJzAA"),
+   WHOLE_WORD_CONTENT("Whole Word Content", "AAMFEchZmAzZo2tHjVAA"),
+   WORD_TEMPLATE_CONTENT("Word Template Content", "AAMFEcfcGS2V3SqQN2wA");
 
    private final String name;
+   private String guid;
 
-   private CoreAttributes(String name) {
+   private CoreAttributes(String name, String guid) {
       this.name = name;
+      this.guid = guid;
    }
 
    public String getName() {
       return this.name;
+   }
+
+   public String getGuid() {
+      return guid;
    }
 }

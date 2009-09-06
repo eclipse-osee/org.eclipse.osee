@@ -132,19 +132,6 @@ public class AttributeType extends BaseOseeType implements Comparable<AttributeT
       return result;
    }
 
-   @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof AttributeType) {
-         return super.equals(obj);
-      }
-      return false;
-   }
-
-   @Override
-   public int hashCode() {
-      return super.hashCode();
-   }
-
    /**
     * @return the providerAttributeClass
     */
