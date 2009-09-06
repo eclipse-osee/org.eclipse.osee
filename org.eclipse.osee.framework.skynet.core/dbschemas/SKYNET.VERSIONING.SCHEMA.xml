@@ -49,6 +49,16 @@
 		</Index>
 	</Table>
 	
+	<Table name="OSEE_JOIN_ID" schema="OSEE" tablespace="osee_data">
+		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ID" type="INTEGER" />
+		<Column id="INSERT_TIME" defaultValue="not null" type="TIMESTAMP" />
+		<Constraint schema="OSEE" id="OSEE_JOIN_ID_Q_I_PK" type="PRIMARY KEY" appliesTo="QUERY_ID, ID" />
+		<Index id="OSEE_JOIN_ID_Q_IDX" tablespace="osee_index">
+			<AppliesTo id="QUERY_ID"/>
+		</Index>
+	</Table>
+	
 	<Table name="OSEE_ARTIFACT_VERSION" schema="OSEE" tablespace="osee_data">
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />

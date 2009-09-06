@@ -41,7 +41,10 @@ public class JoinUtility {
 
    private static final String INSERT_INTO_JOIN_EXPORT_IMPORT =
          "INSERT INTO osee_join_export_import (query_id, insert_time, id1, id2) VALUES (?, ?, ?, ?)";
+   private static final String INSERT_INTO_JOIN_ID =
+         "INSERT INTO osee_join_id (query_id, insert_time, id) VALUES (?, ?, ?)";
 
+   private static final String DELETE_FROM_JOIN_ID = "DELETE FROM osee_join_id WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_TRANSACTION = "DELETE FROM osee_join_transaction WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ATTRIBUTE = "DELETE FROM osee_join_attribute WHERE attr_query_id = ?";
@@ -57,7 +60,8 @@ public class JoinUtility {
       ATTRIBUTE(INSERT_INTO_JOIN_ATTRIBUTE, DELETE_FROM_JOIN_ATTRIBUTE),
       SEARCH_TAGS(INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS),
       TAG_GAMMA_QUEUE(INSERT_INTO_TAG_GAMMA_QUEUE, DELETE_FROM_TAG_GAMMA_QUEUE),
-      EXPORT_IMPORT(INSERT_INTO_JOIN_EXPORT_IMPORT, DELETE_FROM_JOIN_EXPORT_IMPORT);
+      EXPORT_IMPORT(INSERT_INTO_JOIN_EXPORT_IMPORT, DELETE_FROM_JOIN_EXPORT_IMPORT),
+      ID(INSERT_INTO_JOIN_ID, DELETE_FROM_JOIN_ID);
 
       private final String deleteSql;
       private final String insertSql;
@@ -85,6 +89,10 @@ public class JoinUtility {
 
    public static TransactionJoinQuery createTransactionJoinQuery() {
       return new TransactionJoinQuery();
+   }
+
+   public static IdJoinQuery createIdJoinQuery() {
+      return new IdJoinQuery();
    }
 
    public static ArtifactJoinQuery createArtifactJoinQuery() {
@@ -207,6 +215,51 @@ public class JoinUtility {
       public Object[] toArray();
 
       public String toString();
+   }
+
+   public static final class IdJoinQuery extends JoinQueryEntry {
+
+      private final class TempIdEntry implements IJoinRow {
+         private final int id;
+
+         private TempIdEntry(int id) {
+            this.id = id;
+         }
+
+         public Object[] toArray() {
+            return new Object[] {getQueryId(), getInsertTime(), id};
+         }
+
+         @Override
+         public boolean equals(Object obj) {
+            if (obj == this) {
+               return true;
+            }
+            if (!(obj instanceof TempIdEntry)) {
+               return false;
+            }
+            TempIdEntry other = (TempIdEntry) obj;
+            return other.id == this.id;
+         }
+
+         @Override
+         public int hashCode() {
+            return 37 * id;
+         }
+
+         @Override
+         public String toString() {
+            return "id = " + id;
+         }
+      }
+
+      private IdJoinQuery() {
+         super(JoinItem.TRANSACTION);
+      }
+
+      public void add(int id) {
+         entries.add(new TempIdEntry(id));
+      }
    }
 
    public static final class TransactionJoinQuery extends JoinQueryEntry {
