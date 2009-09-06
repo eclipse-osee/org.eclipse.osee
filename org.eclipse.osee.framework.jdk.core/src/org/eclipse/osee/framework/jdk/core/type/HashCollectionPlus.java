@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A Map of keys to multiple values. Collections of values are stored in the Map. The type of Collection can be
@@ -59,7 +60,7 @@ public class HashCollectionPlus<K, V, O> {
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, float loadFactor, IPlusProvider<O> plusProvider) {
 
       if (isSynchronized) {
-         map = Collections.synchronizedMap(new HashMap<K, Pair<Collection<V>, O>>(initialCapacity, loadFactor));
+         map = new ConcurrentHashMap<K, Pair<Collection<V>, O>>(initialCapacity, loadFactor);
       } else {
          map = new HashMap<K, Pair<Collection<V>, O>>(initialCapacity, loadFactor);
       }
@@ -81,7 +82,7 @@ public class HashCollectionPlus<K, V, O> {
    @SuppressWarnings("unchecked")
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, int initialCapacity, IPlusProvider<O> plusProvider) {
       if (isSynchronized) {
-         map = Collections.synchronizedMap(new HashMap<K, Pair<Collection<V>, O>>(initialCapacity));
+         map = new ConcurrentHashMap<K, Pair<Collection<V>, O>>(initialCapacity);
       } else {
          map = new HashMap<K, Pair<Collection<V>, O>>(initialCapacity);
       }
@@ -102,7 +103,7 @@ public class HashCollectionPlus<K, V, O> {
    @SuppressWarnings("unchecked")
    public HashCollectionPlus(boolean isSynchronized, Class<? extends Collection> collectionType, IPlusProvider<O> plusProvider) {
       if (isSynchronized) {
-         map = Collections.synchronizedMap(new HashMap<K, Pair<Collection<V>, O>>());
+         map = new ConcurrentHashMap<K, Pair<Collection<V>, O>>();
       } else {
          map = new HashMap<K, Pair<Collection<V>, O>>();
       }

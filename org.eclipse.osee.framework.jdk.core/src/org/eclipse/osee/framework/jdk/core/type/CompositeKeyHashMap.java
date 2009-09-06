@@ -17,9 +17,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * A hash map implementation that uses composite keys. This class is not thread safe.
+ * A hash map implementation that uses two objects to form a single composite key. The thread safety of this class
+ * is determined by the isThreadSafe of its constructors.
  * 
  * @author Ken J. Aguilar
  * @param <KeyOne>
@@ -27,7 +29,7 @@ import java.util.Set;
  * @param <Value>
  */
 public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyOne, KeyTwo>, Value> {
-   private final HashCollection<KeyOne, KeyTwo> singleKeyMap = new HashCollection<KeyOne, KeyTwo>();
+   private final HashCollection<KeyOne, KeyTwo> singleKeyMap;
    private final Map<Pair<KeyOne, KeyTwo>, Value> map;
 
    private final ThreadLocal<Pair<KeyOne, KeyTwo>> threadLocalKey = new ThreadLocal<Pair<KeyOne, KeyTwo>>() {
@@ -40,15 +42,16 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
    };
 
    public CompositeKeyHashMap() {
-      this(50);
+      this(50, false);
    }
 
-   public CompositeKeyHashMap(Map<Pair<KeyOne, KeyTwo>, Value> map) {
-      this.map = map;
-   }
-
-   public CompositeKeyHashMap(int initialCapacity) {
-      map = new HashMap<Pair<KeyOne, KeyTwo>, Value>(initialCapacity);
+   public CompositeKeyHashMap(int initialCapacity, boolean isThreadSafe) {
+      if (isThreadSafe) {
+         map = new ConcurrentHashMap<Pair<KeyOne, KeyTwo>, Value>(initialCapacity);
+      } else {
+         map = new HashMap<Pair<KeyOne, KeyTwo>, Value>(initialCapacity);
+      }
+      singleKeyMap = new HashCollection<KeyOne, KeyTwo>(isThreadSafe);
    }
 
    public void clear() {

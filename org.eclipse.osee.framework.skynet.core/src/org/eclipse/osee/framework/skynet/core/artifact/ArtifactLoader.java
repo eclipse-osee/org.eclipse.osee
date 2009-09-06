@@ -76,7 +76,7 @@ public final class ArtifactLoader {
    public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
       int queryId = getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
-            new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate);
+            new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate, false);
       selectArtifacts(queryId, insertParameters, sql, queryParameters, artifactCountEstimate, transactionId);
       List<Artifact> artifacts =
             loadArtifacts(queryId, loadLevel, confirmer, new ArrayList<Object[]>(insertParameters.values()), reload,
@@ -147,9 +147,9 @@ public final class ArtifactLoader {
 
          if (confirmer == null || confirmer.canProceed(artifacts.size())) {
             loadArtifactsData(queryId, artifacts, loadLevel, reload, historical, allowDeleted);
-            
-            for(Artifact artifact : artifacts){
-            ArtifactCache.cacheByStaticId(artifact);
+
+            for (Artifact artifact : artifacts) {
+               ArtifactCache.cacheByStaticId(artifact);
             }
          }
       } finally {

@@ -82,6 +82,16 @@ public class HashCollection<K, V> extends HashCollectionPlus<K, V, Object> {
    /**
     * Creates an unsynchronized HashCollection using a default Collection type
     * 
+    * @see HashCollection#HashCollection(boolean, Class, int)
+    * @see HashCollectionPlus#DEFAULT_COLLECTION_TYPE
+    */
+   public HashCollection(boolean isSynchronized) {
+      this(isSynchronized, DEFAULT_COLLECTION_TYPE);
+   }
+
+   /**
+    * Creates an unsynchronized HashCollection using a default Collection type
+    * 
     * @see HashCollection#HashCollection(boolean, Class)
     * @see HashCollectionPlus#DEFAULT_COLLECTION_TYPE
     */

@@ -11,10 +11,8 @@
 package org.eclipse.osee.ote.messaging.dds.entity;
 
 import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.ote.messaging.dds.DataStoreItem;
 import org.eclipse.osee.ote.messaging.dds.IDestination;
 import org.eclipse.osee.ote.messaging.dds.ISource;
@@ -77,8 +75,7 @@ public class DomainParticipant extends Entity implements EntityFactory {
       this.domainId = domainId;
       this.publishers = new CopyOnWriteArrayList<Publisher>(); // Thread Safe
       this.subscribers = new CopyOnWriteArrayList<Subscriber>(); // Thread Safe
-      this.topics =
-            new CompositeKeyHashMap<String, String, Topic>(new ConcurrentHashMap<Pair<String, String>, Topic>(512));
+      this.topics = new CompositeKeyHashMap<String, String, Topic>(512, true);
       this.middlewarePublisher = null;
       this.typeRegistry = new TypeRegistry(typeCapacity, typeFactor);
 

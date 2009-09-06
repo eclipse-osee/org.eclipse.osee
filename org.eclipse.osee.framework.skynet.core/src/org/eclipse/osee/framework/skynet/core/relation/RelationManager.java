@@ -54,7 +54,7 @@ public class RelationManager {
    // Indexed by ArtifactKey so that map does not hold strong reference to artifact which allows it to be garbage collected
    // the branch is accounted for because Artifact.equals includes the branch in the comparison
    private static final CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>> relationsByType =
-         new CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>>(1024);
+         new CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>>(1024, true);
 
    private static final String[] DELETED =
          new String[] {
@@ -74,7 +74,7 @@ public class RelationManager {
       }
    };
 
-   private synchronized static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType, boolean includeDeleted) {
+   private static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType, boolean includeDeleted) {
       List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
       Set<RelationLink> relations = new HashSet<RelationLink>();
       if (selectedRelations != null) {
@@ -99,7 +99,7 @@ public class RelationManager {
     * @return Returns all cached relations including deleted relations
     * @throws OseeArgumentException
     */
-   private synchronized static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType) throws OseeArgumentException {
+   private static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType) throws OseeArgumentException {
       RelationLink relationLink = getLoadedRelation(artifact, aArtifactId, bArtifactId, relationType, false);
 
       if (relationLink == null) {
@@ -157,7 +157,7 @@ public class RelationManager {
    /**
     * Store the newly instantiated relation from the perspective of relationSide in its appropriate order
     */
-   public synchronized static void manageRelation(RelationLink newRelation, RelationSide relationSide) {
+   public static void manageRelation(RelationLink newRelation, RelationSide relationSide) {
       Artifact artifact =
             ArtifactCache.getActive(newRelation.getArtifactId(relationSide), newRelation.getBranch(relationSide));
 
@@ -211,7 +211,7 @@ public class RelationManager {
       return links;
    }
 
-   private synchronized static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
+   private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
       List<RelationLink> selectedRelations = null;
       if (relationType == null) {
          selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
@@ -224,8 +224,7 @@ public class RelationManager {
       }
 
       int queryId = ArtifactLoader.getNewQueryId();
-      CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
-            new CompositeKeyHashMap<Integer, Integer, Object[]>((int) (selectedRelations.size() * 1.25) + 1);
+      List<Object[]> insertParameters = new ArrayList<Object[]>((int) (selectedRelations.size() * 1.25) + 1);
       List<Artifact> relatedArtifacts = new ArrayList<Artifact>(selectedRelations.size());
 
       if (relationSide == null) {
@@ -235,8 +234,7 @@ public class RelationManager {
       addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, selectedRelations, relationSide);
 
       if (insertParameters.size() > 0) {
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, new ArrayList<Object[]>(
-               insertParameters.values()), false, false, false);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, false, false);
       }
 
       //now that bulk loading is done, put the artifacts in the right order and return them
@@ -260,7 +258,7 @@ public class RelationManager {
       return relatedArtifacts;
    }
 
-   private static void addRelatedArtifactIds(int queryId, Artifact artifact, Collection<Artifact> relatedArtifacts, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, List<RelationLink> relations, RelationSide side) {
+   private static void addRelatedArtifactIds(int queryId, Artifact artifact, Collection<Artifact> relatedArtifacts, List<Object[]> insertParameters, List<RelationLink> relations, RelationSide side) {
       if (relations == null) {
          return;
       }
@@ -281,8 +279,7 @@ public class RelationManager {
                int branchId = relation.getBranch(resolvedSide).getBranchId();
                Artifact relatedArtifact = ArtifactCache.getActive(artId, branchId);
                if (relatedArtifact == null) {
-                  insertParameters.put(artId, branchId, new Object[] {queryId, insertTime, artId, branchId,
-                        SQL3DataType.INTEGER});
+                  insertParameters.add(new Object[] {queryId, insertTime, artId, branchId, SQL3DataType.INTEGER});
                } else {
                   relatedArtifacts.add(relatedArtifact);
                }
@@ -297,8 +294,7 @@ public class RelationManager {
 
    public synchronized static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, boolean allowDeleted, IRelationEnumeration... relationEnums) throws OseeCoreException {
       int queryId = ArtifactLoader.getNewQueryId();
-      CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
-            new CompositeKeyHashMap<Integer, Integer, Object[]>(artifacts.size() * 8);
+      List<Object[]> insertParameters = new ArrayList<Object[]>(artifacts.size() * 8);
       Set<Artifact> relatedArtifacts = new HashSet<Artifact>(artifacts.size() * 8);
       Collection<Artifact> newArtifactsToSearch = new ArrayList<Artifact>(artifacts);
       Collection<Artifact> newArtifacts = new ArrayList<Artifact>();
@@ -325,8 +321,8 @@ public class RelationManager {
          }
 
          if (insertParameters.size() > 0) {
-            newArtifacts.addAll(ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, new ArrayList<Object[]>(
-                  insertParameters.values()), false, false, allowDeleted));
+            newArtifacts.addAll(ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false,
+                  false, allowDeleted));
          }
          newArtifactsToSearch.clear();
          newArtifactsToSearch.addAll(newArtifacts);
