@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
@@ -56,6 +57,8 @@ import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
@@ -64,11 +67,16 @@ import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.dialogs.ListDialog;
 
 /**
@@ -381,6 +389,39 @@ public class AtsUtil implements IAtsLib {
    @Override
    public void openInAtsTaskEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
       TaskEditor.open(new TaskEditorSimpleProvider(name, artifacts));
+   }
+
+   public static ToolItem actionToToolItem(ToolBar toolBar, Action action, OseeImage imageEnum) {
+      final Action fAction = action;
+      ToolItem item = new ToolItem(toolBar, SWT.PUSH);
+      item.setImage(ImageManager.getImage(imageEnum));
+      item.setToolTipText(action.getToolTipText());
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            fAction.run();
+         }
+      });
+      return item;
+   }
+
+   public static MenuItem actionToMenuItem(Menu menu, final Action action, final int buttonType) {
+      final Action fAction = action;
+      MenuItem item = new MenuItem(menu, buttonType);
+      item.setText(action.getText());
+      if (action.getImageDescriptor() != null) {
+         item.setImage(action.getImageDescriptor().createImage());
+      }
+      item.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (buttonType == SWT.CHECK) {
+               action.setChecked(!action.isChecked());
+            }
+            fAction.run();
+         }
+      });
+      return item;
    }
 
 }

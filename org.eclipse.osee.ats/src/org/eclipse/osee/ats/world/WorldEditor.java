@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -41,15 +40,16 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * @author Donald G. Dunne
  */
-public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor, IDirtiableEditor, IAtsMetricsProvider, IActionable {
+public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableEditor, IAtsMetricsProvider, IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.world.WorldEditor";
    private int mainPageIndex, metricsPageIndex;
-   private WorldXWidgetActionPage actionPage;
+   private WorldXWidgetActionPage worldXWidgetActionPage;
    private AtsMetricsComposite metricsComposite;
    public static final String HELP_CONTEXT_ID = "atsWorldView";
 
@@ -119,19 +119,19 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
 
    @Override
    public void dispose() {
-      if (actionPage != null && actionPage.getWorldComposite() != null) {
-         actionPage.getWorldComposite().disposeComposite();
+      if (worldXWidgetActionPage != null && worldXWidgetActionPage.getWorldComposite() != null) {
+         worldXWidgetActionPage.getWorldComposite().disposeComposite();
       }
       if (metricsComposite != null) metricsComposite.disposeComposite();
       super.dispose();
    }
 
    public String getCurrentTitleLabel() {
-      return actionPage.getCurrentTitleLabel();
+      return worldXWidgetActionPage.getCurrentTitleLabel();
    }
 
    public void setTableTitle(final String title, final boolean warning) {
-      actionPage.setTableTitle(title, warning);
+      worldXWidgetActionPage.setTableTitle(title, warning);
    }
 
    @Override
@@ -154,18 +154,19 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
          setActivePage(mainPageIndex);
 
          // Until WorldEditor has different help, just use WorldView's help
-         AtsPlugin.getInstance().setHelp(actionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID,
+         AtsPlugin.getInstance().setHelp(worldXWidgetActionPage.getWorldComposite().getControl(), HELP_CONTEXT_ID,
                "org.eclipse.osee.ats.help.ui");
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
    }
 
-   /**
-    * @return the actionPage
-    */
-   public WorldXWidgetActionPage getActionPage() {
-      return actionPage;
+   public WorldComposite getWorldComposite() {
+      return worldXWidgetActionPage.getWorldComposite();
+   }
+
+   public WorldXWidgetActionPage getWorldXWidgetActionPage() {
+      return worldXWidgetActionPage;
    }
 
    public void setEditorTitle(final String str) {
@@ -188,12 +189,12 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
    }
 
    public void reSearch() throws OseeCoreException {
-      actionPage.reSearch();
+      worldXWidgetActionPage.reSearch();
    }
 
    private void createMainTab() throws OseeCoreException, PartInitException {
-      actionPage = new WorldXWidgetActionPage(this);
-      mainPageIndex = addPage(actionPage);
+      worldXWidgetActionPage = new WorldXWidgetActionPage(this);
+      mainPageIndex = addPage(worldXWidgetActionPage);
    }
 
    private void createMetricsTab() throws OseeCoreException {
@@ -205,7 +206,7 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
    }
 
    public ArrayList<Artifact> getLoadedArtifacts() {
-      return actionPage.getWorldComposite().getLoadedArtifacts();
+      return worldXWidgetActionPage.getWorldComposite().getLoadedArtifacts();
    }
 
    @Override
@@ -227,10 +228,6 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
       return null;
    }
 
-   public WorldComposite getWorldComposite() {
-      return actionPage.getWorldComposite();
-   }
-
    @Override
    public String getActionDescription() {
       return null;
@@ -238,12 +235,12 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
 
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
-      return actionPage.getWorldComposite().getManHoursPerDayPreference();
+      return worldXWidgetActionPage.getWorldComposite().getManHoursPerDayPreference();
    }
 
    @Override
    public void reflow() {
-      getActionPage().reflow();
+      getWorldXWidgetActionPage().reflow();
    }
 
    @Override
@@ -276,5 +273,27 @@ public class WorldEditor extends AbstractArtifactEditor implements IWorldEditor,
    @Override
    public IActionable getIActionable() {
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.part.EditorPart#doSaveAs()
+    */
+   @Override
+   public void doSaveAs() {
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
+    */
+   @Override
+   public boolean isSaveAsAllowed() {
+      return false;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.swt.IDirtiableEditor#onDirtied()
+    */
+   @Override
+   public void onDirtied() {
    }
 }

@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 
 /**
@@ -56,5 +57,9 @@ public interface IXTaskViewer {
     * Called if isRefreshActionHandled() returns true
     */
    public void handleRefreshAction() throws OseeCoreException;
+
+   public IActionable getActionable() throws OseeCoreException;
+
+   public boolean addTaskCompositeToolBar();
 
 }

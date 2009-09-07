@@ -152,16 +152,21 @@ public class XViewer extends TreeViewer {
    }
 
    public Action getCustomizeAction() {
+      return getCustomizeAction(this);
+   }
+
+   public static Action getCustomizeAction(final XViewer xViewer) {
       Action customizeAction = new Action("Customize Table") {
 
          @Override
          public void run() {
-            customizeMgr.handleTableCustomization();
+            xViewer.getCustomizeMgr().handleTableCustomization();
          }
       };
       customizeAction.setImageDescriptor(XViewerLib.getImageDescriptor("customize.gif"));
       customizeAction.setToolTipText("Customize Table");
       return customizeAction;
+
    }
 
    public void updateMenuActionsForTable() {

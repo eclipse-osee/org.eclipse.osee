@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
@@ -51,7 +52,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEditor, IAtsMetricsProvider, IXTaskViewer {
+public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
    private int mainPageIndex, metricsPageIndex;
    private TaskXWidgetActionPage taskActionPage;
@@ -345,5 +346,20 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    public double getManHoursPerDayPreference() throws OseeCoreException {
       if (tasks.size() == 0) return StateMachineArtifact.DEFAULT_MAN_HOURS_PER_DAY;
       return tasks.iterator().next().getManHrsPerDayPreference();
+   }
+
+   @Override
+   public String getActionDescription() {
+      return taskActionPage.getActionDescription();
+   }
+
+   @Override
+   public IActionable getActionable() throws OseeCoreException {
+      return this;
+   }
+
+   @Override
+   public boolean addTaskCompositeToolBar() {
+      return false;
    }
 }

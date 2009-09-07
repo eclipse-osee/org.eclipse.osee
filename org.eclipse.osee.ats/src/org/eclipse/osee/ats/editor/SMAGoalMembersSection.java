@@ -13,7 +13,6 @@ package org.eclipse.osee.ats.editor;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsRelation;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.IWorldEditor;
 import org.eclipse.osee.ats.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.world.WorldComposite;
@@ -30,7 +29,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
@@ -65,8 +63,7 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
       sectionBody.setLayout(ALayout.getZeroMarginLayout());
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      ToolBar toolBar = AtsUtil.createCommonToolBar(sectionBody, (XFormToolkit) toolkit);
-      worldComposite = new WorldComposite(this, sectionBody, SWT.BORDER, toolBar);
+      worldComposite = new WorldComposite(this, sectionBody, SWT.BORDER);
       try {
          worldComposite.load("Members", editor.getSmaMgr().getSma().getRelatedArtifacts(AtsRelation.Goal_Member),
                (CustomizeData) null, TableLoadOption.None);
@@ -76,7 +73,6 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
-
    }
 
    @Override

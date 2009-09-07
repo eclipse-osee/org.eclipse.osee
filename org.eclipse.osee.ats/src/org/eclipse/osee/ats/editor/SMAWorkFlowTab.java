@@ -107,6 +107,45 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolkit = smaMgr.getEditor().getToolkit();
    }
 
+   @Override
+   protected void createFormContent(IManagedForm managedForm) {
+      super.createFormContent(managedForm);
+
+      this.managedForm = managedForm;
+      try {
+         scrolledForm = managedForm.getForm();
+         scrolledForm.addDisposeListener(new DisposeListener() {
+            public void widgetDisposed(DisposeEvent e) {
+               try {
+                  storeScrollLocation();
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+               }
+            }
+         });
+
+         scrolledForm.setText(smaMgr.getEditor().getTitleStr());
+         scrolledForm.setImage(ImageManager.getImage(smaMgr.getSma()));
+
+         body = managedForm.getForm().getBody();
+         GridLayout gridLayout = new GridLayout(1, false);
+         body.setLayout(gridLayout);
+         body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
+
+         createBody(body);
+         addMessageDecoration(scrolledForm);
+         FormsUtil.addHeadingGradient(toolkit, scrolledForm, true);
+
+         refreshToolbar();
+
+         if (smaMgr.getSma().getHelpContext() != null) AtsPlugin.getInstance().setHelp(scrolledForm,
+               smaMgr.getSma().getHelpContext(), "org.eclipse.osee.ats.help.ui");
+
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
    private void createBody(Composite body) throws OseeCoreException {
 
       atsBody = toolkit.createComposite(body);
@@ -187,39 +226,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
 
       managedForm.refresh();
-   }
-
-   @Override
-   protected void createFormContent(IManagedForm managedForm) {
-      super.createFormContent(managedForm);
-
-      this.managedForm = managedForm;
-      try {
-         scrolledForm = managedForm.getForm();
-         scrolledForm.addDisposeListener(new DisposeListener() {
-            public void widgetDisposed(DisposeEvent e) {
-               try {
-                  storeScrollLocation();
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-               }
-            }
-         });
-
-         scrolledForm.setText(smaMgr.getEditor().getTitleStr());
-         scrolledForm.setImage(ImageManager.getImage(smaMgr.getSma()));
-         fillBody(managedForm);
-         addMessageDecoration(scrolledForm);
-         FormsUtil.addHeadingGradient(toolkit, scrolledForm, true);
-
-         refreshToolbar();
-
-         if (smaMgr.getSma().getHelpContext() != null) AtsPlugin.getInstance().setHelp(scrolledForm,
-               smaMgr.getSma().getHelpContext(), "org.eclipse.osee.ats.help.ui");
-
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
    }
 
    private void addMessageDecoration(ScrolledForm form) {
@@ -335,15 +341,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          }
       }
       return htmlSb.toString();
-   }
-
-   private void fillBody(IManagedForm managedForm) throws OseeCoreException {
-      body = managedForm.getForm().getBody();
-      GridLayout gridLayout = new GridLayout(1, false);
-      body.setLayout(gridLayout);
-      body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, true, false));
-
-      createBody(body);
    }
 
    private ServicesArea toolbarArea;

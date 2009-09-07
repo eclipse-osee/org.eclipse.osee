@@ -11,37 +11,33 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.List;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
@@ -56,12 +52,12 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    private Section parameterSection;
    protected Composite resultsContainer;
    protected Section resultsSection;
-   protected ToolBar toolBar;
-   private Label warningLabel, searchNameLabel;
+   protected ScrolledForm scrolledForm;
+   private String title;
 
-   public AtsXWidgetActionFormPage(AbstractArtifactEditor editor, String id, String name) {
+   public AtsXWidgetActionFormPage(FormEditor editor, String id, String name) {
       super(editor, id, name);
-      this.toolkit = editor.getToolkit();
+      this.toolkit = new XFormToolkit(SkynetGuiPlugin.getInstance().getSharedFormColors(Display.getCurrent()));
    }
 
    public abstract Result isResearchSearchValid() throws OseeCoreException;
@@ -70,23 +66,12 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
 
    @Override
    protected void createFormContent(IManagedForm managedForm) {
-      ScrolledForm scrolledForm = managedForm.getForm();
+      scrolledForm = managedForm.getForm();
+      FormsUtil.addHeadingGradient(toolkit, scrolledForm, true);
+
       Composite body = scrolledForm.getBody();
       body.setLayout(ALayout.getZeroMarginLayout(1, true));
       body.setLayoutData(new GridData(SWT.LEFT, SWT.LEFT, false, false));
-
-      toolBar = AtsUtil.createCommonToolBar(body, toolkit);
-
-      Composite headerComp = new Composite(body, SWT.NONE);
-      headerComp.setLayout(new GridLayout(2, false));
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      headerComp.setLayoutData(gd);
-      toolkit.adapt(headerComp);
-
-      warningLabel = new Label(headerComp, SWT.NONE);
-      toolkit.adapt(warningLabel, true, true);
-      searchNameLabel = new Label(headerComp, SWT.NONE);
-      toolkit.adapt(searchNameLabel, true, true);
 
       try {
          if (getXWidgetsXml() != null && !getXWidgetsXml().equals("")) {
@@ -96,7 +81,19 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+
+      createToolBar();
       managedForm.refresh();
+   }
+
+   protected void createToolBar(IToolBarManager toolBarManager) {
+
+   }
+
+   private void createToolBar() {
+      IToolBarManager toolBarManager = scrolledForm.getToolBarManager();
+      createToolBar(toolBarManager);
+      scrolledForm.updateToolBar();
    }
 
    public void reflow() {
@@ -163,25 +160,25 @@ public abstract class AtsXWidgetActionFormPage extends FormPage {
    public abstract void handleSearchButtonPressed();
 
    public void setTableTitle(final String title, final boolean warning) {
+      this.title = title;
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (Widgets.isAccessible(warningLabel)) {
-               warningLabel.setImage(warning ? ImageManager.getImage(FrameworkImage.WARNING) : null);
-            }
-            if (Widgets.isAccessible(searchNameLabel)) {
-               searchNameLabel.setText(title);
-               searchNameLabel.getParent().layout();
-            }
+            scrolledForm.setText(title);
          };
       });
    }
 
+   public abstract Section createResultsSection(Composite body) throws OseeCoreException;
+
+   public ScrolledForm getScrolledForm() {
+      return scrolledForm;
+   }
+
    public String getCurrentTitleLabel() {
-      if (searchNameLabel != null) {
-         return searchNameLabel.getText();
+      if (title != null) {
+         return title;
       } else
          return WorldEditor.EDITOR_ID;
    }
 
-   public abstract Section createResultsSection(Composite body) throws OseeCoreException;
 }

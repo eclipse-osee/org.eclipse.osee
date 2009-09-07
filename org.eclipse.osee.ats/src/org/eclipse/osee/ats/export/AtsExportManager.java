@@ -17,8 +17,10 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -36,6 +38,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.search.ui.text.Match;
@@ -44,7 +48,19 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class AtsExportManager implements IAtsWorldEditorMenuItem {
+public class AtsExportManager extends Action implements IAtsWorldEditorMenuItem {
+
+   private final TreeViewer treeViewer;
+
+   public AtsExportManager() {
+      this.treeViewer = null;
+   }
+
+   public AtsExportManager(TreeViewer treeViewer) {
+      setText("Export Selected ATS Artifacts");
+      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EXPORT_DATA));
+      this.treeViewer = treeViewer;
+   }
 
    public enum ExportOption {
       NONE,
@@ -177,6 +193,17 @@ public class AtsExportManager implements IAtsWorldEditorMenuItem {
          AtsExportManager.export(worldEditor.getWorldComposite().getXViewer().getSelection(), ExportOption.POPUP_DIALOG);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   @Override
+   public void run() {
+      if (treeViewer != null) {
+         try {
+            AtsExportManager.export(treeViewer.getSelection(), ExportOption.POPUP_DIALOG);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
    }
 }

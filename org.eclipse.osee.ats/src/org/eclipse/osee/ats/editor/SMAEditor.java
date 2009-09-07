@@ -585,9 +585,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       });
    }
 
-   /**
-    * @return Returns the smaMgr.
-    */
    public SMAManager getSmaMgr() {
       return smaMgr;
    }
@@ -624,9 +621,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       return smaMgr.getSma().isTaskable();
    }
 
-   /**
-    * @return the priviledgedEditMode
-    */
    public boolean isPriviledgedEditModeEnabled() {
       return priviledgedEditModeEnabled;
    }
@@ -793,23 +787,14 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       return smaMgr.getSma().getManHrsPerDayPreference();
    }
 
-   /**
-    * @return the workFlowTab
-    */
    public SMAWorkFlowTab getWorkFlowTab() {
       return workFlowTab;
    }
 
-   /**
-    * @return the taskComposite
-    */
    public SMATaskComposite getTaskComposite() {
       return taskComposite;
    }
 
-   /**
-    * @param taskComposite the taskComposite to set
-    */
    public void setTaskComposite(SMATaskComposite taskComposite) {
       this.taskComposite = taskComposite;
    }
@@ -848,5 +833,15 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             SMAEditor.editArtifact(sma);
          }
       }
+   }
+
+   @Override
+   public IActionable getActionable() throws OseeCoreException {
+      return this;
+   }
+
+   @Override
+   public boolean addTaskCompositeToolBar() {
+      return true;
    }
 }

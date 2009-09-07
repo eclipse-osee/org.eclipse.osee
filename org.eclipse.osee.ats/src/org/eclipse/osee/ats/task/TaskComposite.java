@@ -17,29 +17,26 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditor;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
+import org.eclipse.osee.ats.actions.RefreshAction;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditor.IOpenNewAtsTaskEditorHandler;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
+import org.eclipse.osee.ats.actions.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
-import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.export.AtsExportManager;
-import org.eclipse.osee.ats.export.AtsExportManager.ExportOption;
-import org.eclipse.osee.ats.operation.ImportTasksFromSimpleList;
-import org.eclipse.osee.ats.operation.ImportTasksFromSpreadsheet;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
-import org.eclipse.osee.ats.util.SMAMetrics;
-import org.eclipse.osee.ats.world.WorldAssigneeFilter;
-import org.eclipse.osee.ats.world.WorldCompletedFilter;
-import org.eclipse.osee.ats.world.WorldComposite;
 import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldLabelProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -53,12 +50,9 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -71,19 +65,11 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.KeyEvent;
-import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
@@ -92,14 +78,10 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class TaskComposite extends Composite implements IActionable {
+public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSelectedHandler, IOpenNewAtsTaskEditorHandler, IRefreshActionHandler {
 
    private TaskXViewer taskXViewer;
-   private MenuItem filterCompletedMenuItem, filterMyAssigneeMenuItem, selectionMetricsMenuItem;
    private final IXTaskViewer iXTaskViewer;
-   private Label extraInfoLabel;
-   private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
-   private WorldAssigneeFilter worldAssigneeFilter = null;
 
    /**
     * @param label
@@ -116,22 +98,12 @@ public class TaskComposite extends Composite implements IActionable {
 
       setLayout(ALayout.getZeroMarginLayout(1, true));
       setLayoutData(new GridData(GridData.FILL_BOTH));
-      try {
-         worldAssigneeFilter = new WorldAssigneeFilter();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
 
       if (!DbConnectionExceptionComposite.dbConnectionIsOk(this)) {
          return;
       }
 
-      populateToolBar(toolBar);
-
       try {
-
-         extraInfoLabel = new Label(this, SWT.NONE);
-         extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
          taskXViewer =
                new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
@@ -141,50 +113,6 @@ public class TaskComposite extends Composite implements IActionable {
 
          taskXViewer.setContentProvider(new WorldContentProvider(taskXViewer));
          taskXViewer.setLabelProvider(new WorldLabelProvider(taskXViewer));
-         taskXViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            public void selectionChanged(SelectionChangedEvent event) {
-               try {
-                  updateExtraInfoLine();
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-               }
-            }
-         });
-         taskXViewer.getTree().addKeyListener(new KeyListener() {
-            public void keyPressed(KeyEvent event) {
-            }
-
-            public void keyReleased(KeyEvent event) {
-               try {
-                  if ((event.stateMask & SWT.MODIFIER_MASK) == SWT.CTRL) {
-                     if (event.keyCode == 'a') {
-                        taskXViewer.getTree().setSelection(taskXViewer.getTree().getItems());
-                        updateExtraInfoLine();
-                     } else if (event.keyCode == 'x') {
-                        if (selectionMetricsMenuItem != null) {
-                           selectionMetricsMenuItem.setSelection(!selectionMetricsMenuItem.getSelection());
-                           updateExtraInfoLine();
-                        }
-                     } else if (event.keyCode == 'f') {
-                        if (filterCompletedMenuItem != null) {
-                           filterCompletedMenuItem.setSelection(!filterCompletedMenuItem.getSelection());
-                           handleCompletedFilterAction();
-                        }
-                     } else if (event.keyCode == 'g') {
-                        filterMyAssigneeMenuItem.setSelection(!filterMyAssigneeMenuItem.getSelection());
-                        handleMyAssigneeFilterAction();
-                     } else if (event.keyCode == 'd') {
-                        filterMyAssigneeMenuItem.setSelection(!filterMyAssigneeMenuItem.getSelection());
-                        filterCompletedMenuItem.setSelection(!filterCompletedMenuItem.getSelection());
-                        handleCompletedFilterAction();
-                        handleMyAssigneeFilterAction();
-                     }
-                  }
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-               }
-            }
-         });
 
          Tree tree = taskXViewer.getTree();
          GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
@@ -199,41 +127,14 @@ public class TaskComposite extends Composite implements IActionable {
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      if (iXTaskViewer.addTaskCompositeToolBar()) {
+         populateToolBar(toolBar);
+      }
+
    }
 
-   /**
-    * @return the iXTaskViewer
-    */
    public IXTaskViewer getIXTaskViewer() {
       return iXTaskViewer;
-   }
-
-   public void handleMyAssigneeFilterAction() {
-      if (filterMyAssigneeMenuItem.getSelection()) {
-         taskXViewer.addFilter(worldAssigneeFilter);
-      } else {
-         taskXViewer.removeFilter(worldAssigneeFilter);
-      }
-      updateExtendedStatusString();
-      taskXViewer.refresh();
-   }
-
-   public void handleCompletedFilterAction() {
-      if (filterCompletedMenuItem.getSelection()) {
-         taskXViewer.addFilter(worldCompletedFilter);
-      } else {
-         taskXViewer.removeFilter(worldCompletedFilter);
-      }
-      updateExtendedStatusString();
-   }
-
-   public void updateExtendedStatusString() {
-      String str = "";
-      if (filterCompletedMenuItem != null && filterCompletedMenuItem.getSelection()) {
-         str += "[Complete/Cancel Filter]";
-      }
-      taskXViewer.setExtendedStatusString(str);
-      taskXViewer.refresh();
    }
 
    private void populateToolBar(ToolBar toolBar) throws OseeCoreException {
@@ -265,213 +166,34 @@ public class TaskComposite extends Composite implements IActionable {
 
       }
 
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.REFRESH));
-      item.setToolTipText("Refresh Tasks");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            try {
-               if (iXTaskViewer.isRefreshActionHandled()) {
-                  iXTaskViewer.handleRefreshAction();
-               } else {
-                  loadTable();
-               }
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
+      AtsUtil.actionToToolItem(toolBar, new RefreshAction(this), FrameworkImage.REFRESH);
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(AtsImage.CUSTOMIZE));
-      item.setToolTipText("Customize Table");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            taskXViewer.getCustomizeMgr().handleTableCustomization();
-         }
-      });
+      AtsUtil.actionToToolItem(toolBar, XViewer.getCustomizeAction(taskXViewer), AtsImage.CUSTOMIZE);
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
-
       if (iXTaskViewer.getEditor() != null && (iXTaskViewer.getEditor() instanceof TaskEditor)) {
-         item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(ImageManager.getImage(AtsImage.TASK));
-         item.setToolTipText("Open New ATS Task Editor");
-         item.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               try {
-                  ITaskEditorProvider provider =
-                        ((TaskEditorInput) ((TaskEditor) iXTaskViewer.getEditor()).getEditorInput()).getItaskEditorProvider().copyProvider();
-                  provider.setCustomizeData(taskXViewer.getCustomizeMgr().generateCustDataFromTable());
-                  provider.setTableLoadOptions(TableLoadOption.NoUI);
-                  TaskEditor.open(provider);
-               } catch (OseeCoreException ex) {
-                  OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-               }
-            }
-         });
+         AtsUtil.actionToToolItem(toolBar, new OpenNewAtsTaskEditor(this), AtsImage.TASK);
       }
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(AtsImage.TASK_SELECTED));
-      item.setToolTipText("Open Selected in ATS Task Editor");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            if (taskXViewer.getSelectedArtifacts().size() == 0) {
-               AWorkbench.popup("ERROR", "Select items to open");
-               return;
-            }
-            try {
-               TaskEditor.open(new TaskEditorSimpleProvider("Tasks", taskXViewer.getSelectedArtifacts(),
-                     taskXViewer.getCustomizeMgr().generateCustDataFromTable()));
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
+      AtsUtil.actionToToolItem(toolBar, new OpenNewAtsTaskEditorSelected(this), AtsImage.TASK_SELECTED);
+      new ToolItem(toolBar, SWT.SEPARATOR);
+      AtsUtil.actionToToolItem(toolBar, new NewAction(), AtsImage.NEW_ACTION);
+      if (iXTaskViewer.getActionable() != null) {
+         OseeAts.addButtonToEditorToolBar(iXTaskViewer.getActionable(), AtsPlugin.getInstance(), toolBar,
+               TaskEditor.EDITOR_ID, "ATS Task Tab");
+      }
 
       new ToolItem(toolBar, SWT.SEPARATOR);
 
-      WorldComposite.actionToToolItem(toolBar, new NewAction(), AtsImage.NEW_ACTION);
-      OseeAts.addButtonToEditorToolBar(this, AtsPlugin.getInstance(), toolBar, SMAEditor.EDITOR_ID, "ATS Task Tab");
-
-      new ToolItem(toolBar, SWT.SEPARATOR);
-
-      createTaskActionBarPulldown(toolBar, toolBar.getParent());
-
-   }
-
-   public void updateExtraInfoLine() throws OseeCoreException {
-      if (selectionMetricsMenuItem != null && selectionMetricsMenuItem.getSelection()) if (getTaskXViewer() != null && getTaskXViewer().getSelectedSMAArtifacts() != null && !getTaskXViewer().getSelectedSMAArtifacts().isEmpty()) {
-         extraInfoLabel.setText(SMAMetrics.getEstRemainMetrics(getTaskXViewer().getSelectedSMAArtifacts(), null,
-               getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(), null));
-      } else
-         extraInfoLabel.setText("");
-      extraInfoLabel.getParent().layout();
-   }
-
-   public void createTaskActionBarPulldown(final ToolBar toolBar, Composite composite) {
-      final ToolItem dropDown = new ToolItem(toolBar, SWT.PUSH);
-      dropDown.setImage(ImageManager.getImage(AtsImage.DOWN_TRIANGLE));
-      final Menu menu = new Menu(composite);
-
-      dropDown.addListener(SWT.Selection, new Listener() {
-         public void handleEvent(org.eclipse.swt.widgets.Event event) {
-            Rectangle rect = dropDown.getBounds();
-            Point pt = new Point(rect.x, rect.y + rect.height);
-            pt = toolBar.toDisplay(pt);
-            menu.setLocation(pt.x, pt.y);
-            menu.setVisible(true);
-         }
-      });
-
-      selectionMetricsMenuItem = new MenuItem(menu, SWT.CHECK);
-      selectionMetricsMenuItem.setText("Show Release Metrics by Selection - Ctrl-X");
-      selectionMetricsMenuItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            try {
-               updateExtraInfoLine();
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-
-      filterCompletedMenuItem = new MenuItem(menu, SWT.CHECK);
-      filterCompletedMenuItem.setText("Filter Out Completed/Cancelled - Ctrl-F");
-      filterCompletedMenuItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleCompletedFilterAction();
-         }
-      });
-
-      filterMyAssigneeMenuItem = new MenuItem(menu, SWT.CHECK);
-      filterMyAssigneeMenuItem.setText("Filter My Assignee - Ctrl-G");
-      filterMyAssigneeMenuItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleMyAssigneeFilterAction();
-         }
-      });
-
-      new MenuItem(menu, SWT.SEPARATOR);
-
-      MenuItem exportAtsArtifactsItem = new MenuItem(menu, SWT.PUSH);
-      exportAtsArtifactsItem.setText("Export Selected ATS Artifacts");
-      exportAtsArtifactsItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            try {
-               AtsExportManager.export(taskXViewer.getSelection(), ExportOption.POPUP_DIALOG);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-
-      try {
-         if (iXTaskViewer.isTaskable()) {
-            new MenuItem(menu, SWT.SEPARATOR);
-
-            MenuItem item = new MenuItem(menu, SWT.PUSH);
-            item.setText("Import Tasks via spreadsheet");
-            item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
-            item.addSelectionListener(new SelectionAdapter() {
-               @Override
-               public void widgetSelected(SelectionEvent e) {
-                  try {
-                     handleImportTasksViaSpreadsheet();
-                  } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                  }
-               }
-            });
-
-            item = new MenuItem(menu, SWT.PUSH);
-            item.setText("Import Tasks via simple list");
-            item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
-            item.addSelectionListener(new SelectionAdapter() {
-               @Override
-               public void widgetSelected(SelectionEvent e) {
-                  try {
-                     handleImportTasksViaList();
-                  } catch (Exception ex) {
-                     OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                  }
-               }
-            });
-         }
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      System.err.println("Add this back in");
+      //      createTaskActionBarPulldown(toolBar, toolBar.getParent());
 
    }
 
    public void loadTable() throws OseeCoreException {
       getTaskXViewer().set(iXTaskViewer.getTaskArtifacts(""));
       taskXViewer.refresh();
-   }
-
-   public void handleImportTasksViaList() throws OseeCoreException {
-      ImportTasksFromSimpleList blamOperation = new ImportTasksFromSimpleList();
-      blamOperation.setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
-      BlamEditor.edit(blamOperation);
-      loadTable();
-   }
-
-   public void handleImportTasksViaSpreadsheet() throws OseeCoreException {
-      ImportTasksFromSpreadsheet blamOperation = new ImportTasksFromSpreadsheet();
-      blamOperation.setTaskableStateMachineArtifact((TaskableStateMachineArtifact) iXTaskViewer.getParentSmaMgr().getSma());
-      BlamEditor.edit(blamOperation);
-      loadTable();
+      taskXViewer.getTree().setFocus();
    }
 
    public void handleDeleteTask() {
@@ -653,5 +375,45 @@ public class TaskComposite extends Composite implements IActionable {
 
    public String getActionDescription() {
       return null;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.actions.IRefreshActionHandler#refreshActionHandler()
+    */
+   @Override
+   public void refreshActionHandler() {
+      try {
+         if (iXTaskViewer.isRefreshActionHandled()) {
+            iXTaskViewer.handleRefreshAction();
+         } else {
+            loadTable();
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.actions.OpenNewAtsTaskEditor.IOpenNewAtsTaskEditorHandler#getCustomizeDataCopy()
+    */
+   @Override
+   public CustomizeData getCustomizeDataCopy() throws OseeCoreException {
+      return taskXViewer.getCustomizeMgr().generateCustDataFromTable();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.actions.OpenNewAtsTaskEditor.IOpenNewAtsTaskEditorHandler#getTaskEditorProviderCopy()
+    */
+   @Override
+   public ITaskEditorProvider getTaskEditorProviderCopy() throws OseeCoreException {
+      return ((TaskEditorInput) ((TaskEditor) iXTaskViewer.getEditor()).getEditorInput()).getItaskEditorProvider().copyProvider();
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler#getSelectedArtifacts()
+    */
+   @Override
+   public ArrayList<? extends Artifact> getSelectedArtifacts() throws OseeCoreException {
+      return getSelectedTaskArtifactItems();
    }
 }

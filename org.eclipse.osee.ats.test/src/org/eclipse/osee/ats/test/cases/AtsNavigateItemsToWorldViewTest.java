@@ -114,7 +114,7 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserSearchMyFavoritesTest() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Favorites, true);
       runGeneralUserSearchTest(item, 3);
@@ -122,7 +122,7 @@ public class AtsNavigateItemsToWorldViewTest {
       // test the task tab - this is being done via open ats task editor
       runGeneralXColTest(20, true);
       // Open all three favorites
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       for (Artifact artifact : arts)
          SMAEditor.editArtifact(artifact);
@@ -136,10 +136,10 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserSearchMySubscribedTest() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Subscribed, true);
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), 1, arts.size());
    }
@@ -148,12 +148,12 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserSearchMyReviewsTest() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
@@ -165,14 +165,14 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserSearchMyReviewsAllTest() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, true);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCancelled, true);
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 2);
@@ -184,10 +184,10 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserSearchMyOriginatorTest() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Originator, true);
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class, DemoTestUtil.getNumTasks());
@@ -200,11 +200,11 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserSearchMyOriginatorAllTest() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Originator, true);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, true);
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TaskArtifact.class, DemoTestUtil.getNumTasks());
@@ -216,7 +216,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
    public void runGeneralUserSearchTest(XNavigateItem item, int expectedNum) throws Exception {
       WorldEditor editor = getSingleEditorOrFail();
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       // validate
       NavigateTestUtil.testExpectedVersusActual(item.getName(), expectedNum, arts.size());
@@ -226,11 +226,11 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserSearchMyCompletedTest() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Joe_Smith));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, true);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, TeamWorkFlowArtifact.class, 7);
@@ -257,12 +257,12 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserSearchOtherUserReviewsTest() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Kay_Jones));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 1);
@@ -272,13 +272,13 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserSearchOtherUserAllReviewsTest() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Kay_Jones));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeReviews, true);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTeamWorkflows, false);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeTasks, false);
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.IncludeCompleted, false);
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
 
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), arts, PeerToPeerReviewArtifact.class, 1);
@@ -288,10 +288,10 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserSearchOtherUserFavoritesTest() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Kay_Jones));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Favorites, true);
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), 0, arts.size());
    }
@@ -300,10 +300,10 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserSearchOtherUserSubscribedTest() throws Exception {
       XNavigateItem item = openUserSearchEditor();
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((UserSearchWorkflowSearchItem) dwl).setSelectedUser(UserManager.getUser(DemoUsers.Kay_Jones));
       ((UserSearchWorkflowSearchItem) dwl).setSelected(UserSearchOption.Subscribed, true);
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), 0, arts.size());
    }
@@ -358,7 +358,7 @@ public class AtsNavigateItemsToWorldViewTest {
 
    public void runGeneralTeamWorkflowSearchTest(XNavigateItem item, int expectedNum) throws Exception {
       WorldEditor editor = getSingleEditorOrFail();
-      editor.getActionPage().reSearch(true);
+      editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
       // validate
       NavigateTestUtil.testExpectedVersusActual(item.getName(), expectedNum, arts.size());
@@ -366,33 +366,33 @@ public class AtsNavigateItemsToWorldViewTest {
 
    public void runGeneralTeamWorkflowSearchOnAssigneeTest(XNavigateItem item, String assignee, int expectedNum) throws Exception {
       WorldEditor editor = getSingleEditorOrFail();
-      ((TeamWorkflowSearchWorkflowSearchItem) editor.getActionPage().getDynamicWidgetLayoutListener()).setSelectedUser(UserManager.getUserByName(assignee));
+      ((TeamWorkflowSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener()).setSelectedUser(UserManager.getUserByName(assignee));
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
    public void runGeneralTeamWorkflowSearchOnTeamTest(XNavigateItem item, Collection<TeamDefinitionArtifact> selectedUsers, int expectedNum) throws Exception {
       // need to set team selected users
       WorldEditor editor = getSingleEditorOrFail();
-      IDynamicWidgetLayoutListener dwl = editor.getActionPage().getDynamicWidgetLayoutListener();
+      IDynamicWidgetLayoutListener dwl = editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener();
       ((TeamWorkflowSearchWorkflowSearchItem) dwl).setSelectedTeamDefinitions(selectedUsers);
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
    public void runGeneralTeamWorkflowSearchOnReleasedTest(XNavigateItem item, ReleasedOption released, int expectedNum) throws Exception {
       WorldEditor editor = getSingleEditorOrFail();
-      ((TeamWorkflowSearchWorkflowSearchItem) editor.getActionPage().getDynamicWidgetLayoutListener()).setSelectedReleased(released);
+      ((TeamWorkflowSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener()).setSelectedReleased(released);
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
    public void runGeneralTeamWorkflowSearchOnVersionTest(XNavigateItem item, String versionString, int expectedNum) throws Exception {
       WorldEditor editor = getSingleEditorOrFail();
-      ((TeamWorkflowSearchWorkflowSearchItem) editor.getActionPage().getDynamicWidgetLayoutListener()).setVersion(versionString);
+      ((TeamWorkflowSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener()).setVersion(versionString);
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
    public void runGeneralTeamWorkflowSearchOnCompletedCancelledTest(XNavigateItem item, boolean selected, int expectedNum) throws Exception {
       WorldEditor editor = getSingleEditorOrFail();
-      ((TeamWorkflowSearchWorkflowSearchItem) editor.getActionPage().getDynamicWidgetLayoutListener()).includeCompletedCancelledCheckbox(selected);
+      ((TeamWorkflowSearchWorkflowSearchItem) editor.getWorldXWidgetActionPage().getDynamicWidgetLayoutListener()).includeCompletedCancelledCheckbox(selected);
       runGeneralTeamWorkflowSearchTest(item, expectedNum);
    }
 
