@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -224,14 +225,17 @@ public class RelationManager {
       }
 
       int queryId = ArtifactLoader.getNewQueryId();
-      List<Object[]> insertParameters = new ArrayList<Object[]>((int) (selectedRelations.size() * 1.25) + 1);
+      int mapCapacity = (int) (selectedRelations.size() * 1.25) + 1;
+      List<Object[]> insertParameters = new ArrayList<Object[]>(mapCapacity);
+      HashMap<Integer, Branch> insertMap = new HashMap<Integer, Branch>(mapCapacity);
       List<Artifact> relatedArtifacts = new ArrayList<Artifact>(selectedRelations.size());
 
       if (relationSide == null) {
          relationSide = RelationSide.OPPOSITE;
       }
 
-      addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, selectedRelations, relationSide);
+      addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, insertMap, selectedRelations,
+            relationSide);
 
       if (insertParameters.size() > 0) {
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, false, false);
@@ -258,7 +262,7 @@ public class RelationManager {
       return relatedArtifacts;
    }
 
-   private static void addRelatedArtifactIds(int queryId, Artifact artifact, Collection<Artifact> relatedArtifacts, List<Object[]> insertParameters, List<RelationLink> relations, RelationSide side) {
+   private static void addRelatedArtifactIds(int queryId, Artifact artifact, Collection<Artifact> relatedArtifacts, List<Object[]> insertParameters, HashMap<Integer, Branch> insertMap, List<RelationLink> relations, RelationSide side) {
       if (relations == null) {
          return;
       }
@@ -276,10 +280,14 @@ public class RelationManager {
             }
             if (resolvedSide != null) {
                int artId = relation.getArtifactId(resolvedSide);
-               int branchId = relation.getBranch(resolvedSide).getBranchId();
-               Artifact relatedArtifact = ArtifactCache.getActive(artId, branchId);
+               Branch branch = relation.getBranch(resolvedSide);
+               Artifact relatedArtifact = ArtifactCache.getActive(artId, branch.getBranchId());
                if (relatedArtifact == null) {
-                  insertParameters.add(new Object[] {queryId, insertTime, artId, branchId, SQL3DataType.INTEGER});
+                  if (!branch.equals(insertMap.get(artId))) {
+                     insertMap.put(artId, branch);
+                     insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
+                           SQL3DataType.INTEGER});
+                  }
                } else {
                   relatedArtifacts.add(relatedArtifact);
                }
@@ -295,6 +303,7 @@ public class RelationManager {
    public static Set<Artifact> getRelatedArtifacts(Collection<? extends Artifact> artifacts, int depth, boolean allowDeleted, IRelationEnumeration... relationEnums) throws OseeCoreException {
       int queryId = ArtifactLoader.getNewQueryId();
       List<Object[]> insertParameters = new ArrayList<Object[]>(artifacts.size() * 8);
+      HashMap<Integer, Branch> insertMap = new HashMap<Integer, Branch>(artifacts.size() * 8);
       Set<Artifact> relatedArtifacts = new HashSet<Artifact>(artifacts.size() * 8);
       Collection<Artifact> newArtifactsToSearch = new ArrayList<Artifact>(artifacts);
       Collection<Artifact> newArtifacts = new ArrayList<Artifact>();
@@ -308,14 +317,14 @@ public class RelationManager {
 
             if (relationEnums.length == 0) {
                selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
-               addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, selectedRelations,
+               addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, insertMap, selectedRelations,
                      RelationSide.OPPOSITE);
             } else {
                for (IRelationEnumeration relationEnum : relationEnums) {
                   selectedRelations =
                         relationsByType.get(threadLocalKey.get().getKey(artifact), relationEnum.getRelationType());
-                  addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, selectedRelations,
-                        relationEnum.getSide());
+                  addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, insertMap,
+                        selectedRelations, relationEnum.getSide());
                }
             }
          }
