@@ -82,7 +82,7 @@ public abstract class CommitHandler extends CommandHandler {
          });
 
          if (dialogResult.getValue() == 2) {
-            BranchManager.commitBranch(conflictManager, archiveSourceBranch, true);
+            BranchManager.commitBranch(null, conflictManager, archiveSourceBranch, true);
             branchCommitted = true;
          }
       } else {
@@ -123,7 +123,7 @@ public abstract class CommitHandler extends CommandHandler {
          });
 
          if (dialogResult.getValue() == 0) {
-            BranchManager.commitBranch(conflictManager, archiveSourceBranch, false);
+            BranchManager.commitBranch(null, conflictManager, archiveSourceBranch, false);
             branchCommitted = true;
          }
       }
