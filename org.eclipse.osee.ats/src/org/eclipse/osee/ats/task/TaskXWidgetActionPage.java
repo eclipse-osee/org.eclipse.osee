@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.ImportTasksViaSimpleList;
 import org.eclipse.osee.ats.actions.ImportTasksViaSpreadsheet;
 import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditor;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.actions.RefreshAction;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
@@ -145,7 +145,7 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage implements I
 
       toolBarManager.add(taskComposite.getTaskXViewer().getCustomizeAction());
       toolBarManager.add(new Separator());
-      toolBarManager.add(new OpenNewAtsTaskEditor(taskComposite));
+      toolBarManager.add(new OpenNewAtsTaskEditorAction(taskComposite));
       toolBarManager.add(new OpenNewAtsTaskEditorSelected(taskComposite));
       toolBarManager.add(new Separator());
       toolBarManager.add(new RefreshAction(taskComposite));

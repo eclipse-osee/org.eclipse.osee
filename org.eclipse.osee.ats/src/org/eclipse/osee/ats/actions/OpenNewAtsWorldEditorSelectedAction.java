@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 /**
  * @author Donald G. Dunne
  */
-public class OpenNewAtsWorldEditorSelected extends Action {
+public class OpenNewAtsWorldEditorSelectedAction extends Action {
 
    private final IOpenNewAtsWorldEditorSelectedHandler openNewAtsWorldEditorSelectedHandler;
 
-   public OpenNewAtsWorldEditorSelected(IOpenNewAtsWorldEditorSelectedHandler openNewAtsWorldEditorSelectedHandler) {
+   public OpenNewAtsWorldEditorSelectedAction(IOpenNewAtsWorldEditorSelectedHandler openNewAtsWorldEditorSelectedHandler) {
       this.openNewAtsWorldEditorSelectedHandler = openNewAtsWorldEditorSelectedHandler;
       setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GLOBE_SELECT));
       setToolTipText("Open Selected in ATS World Editor");

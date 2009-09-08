@@ -8,12 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor.service;
+package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,33 +24,28 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 /**
  * @author Donald G. Dunne
  */
-public class OpenInArtifactEditorOperation extends WorkPageService {
+public class OpenInArtifactEditorAction extends Action {
 
-   public OpenInArtifactEditorOperation(SMAManager smaMgr) {
-      super(smaMgr);
+   private final SMAManager smaMgr;
+
+   public OpenInArtifactEditorAction(SMAManager smaMgr) {
+      this.smaMgr = smaMgr;
+      setText("Open Artifact Editor");
+      setToolTipText(getText());
    }
 
    @Override
-   public Action createToolbarService() {
-      if (!AtsUtil.isAtsAdmin()) return null;
-      Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               ArtifactEditor.editArtifact(smaMgr.getSma());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR));
-      return action;
+   public void run() {
+      try {
+         ArtifactEditor.editArtifact(smaMgr.getSma());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    @Override
-   public String getName() {
-      return "Open Artifact Editor";
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
    }
 
 }

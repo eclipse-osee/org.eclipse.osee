@@ -8,10 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor.service;
+package org.eclipse.osee.ats.actions;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -26,10 +27,20 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class EmailActionService extends WorkPageService {
+public class EmailActionAction extends Action {
 
-   public EmailActionService(SMAManager smaMgr) {
-      super(smaMgr);
+   private final SMAManager smaMgr;
+
+   public EmailActionAction(SMAManager smaMgr) {
+      this.smaMgr = smaMgr;
+      String title = "Email";
+      try {
+         title = "Email " + smaMgr.getSma().getArtifactSuperTypeName();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      setText(title);
+      setToolTipText(getText());
    }
 
    private void performEmail() throws OseeCoreException {
@@ -40,29 +51,17 @@ public class EmailActionService extends WorkPageService {
    }
 
    @Override
-   public Action createToolbarService() {
-      Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         public void run() {
-            try {
-               performEmail();
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EMAIL));
-      return action;
+   public void run() {
+      try {
+         performEmail();
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    @Override
-   public String getName() {
-      try {
-         return "Email " + smaMgr.getSma().getArtifactSuperTypeName();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-      return "Email";
-
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.EMAIL);
    }
+
 }

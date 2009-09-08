@@ -9,8 +9,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.world.IWorldEditorProvider;
-import org.eclipse.osee.ats.world.WorldEditor;
+import org.eclipse.osee.ats.task.ITaskEditorProvider;
+import org.eclipse.osee.ats.task.TaskEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -20,18 +20,18 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 /**
  * @author Donald G. Dunne
  */
-public class OpenNewAtsWorldEditor extends Action {
+public class OpenNewAtsTaskEditorAction extends Action {
 
-   private final IOpenNewAtsWorldEditorHandler openNewAtsWorldEditorHandler;
+   private final IOpenNewAtsTaskEditorHandler openNewAtsTaskEditorHandler;
 
-   public OpenNewAtsWorldEditor(IOpenNewAtsWorldEditorHandler openNewAtsWorldEditorHandler) {
-      this.openNewAtsWorldEditorHandler = openNewAtsWorldEditorHandler;
-      setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GLOBE));
-      setToolTipText("Open in ATS World Editor");
+   public OpenNewAtsTaskEditorAction(IOpenNewAtsTaskEditorHandler openNewAtsTaskEditorHandler) {
+      this.openNewAtsTaskEditorHandler = openNewAtsTaskEditorHandler;
+      setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.TASK));
+      setToolTipText("Open New ATS Task Editor");
    }
 
-   public interface IOpenNewAtsWorldEditorHandler {
-      public IWorldEditorProvider getWorldEditorProviderCopy() throws OseeCoreException;
+   public interface IOpenNewAtsTaskEditorHandler {
+      public ITaskEditorProvider getTaskEditorProviderCopy() throws OseeCoreException;
 
       public CustomizeData getCustomizeDataCopy() throws OseeCoreException;
    }
@@ -39,10 +39,10 @@ public class OpenNewAtsWorldEditor extends Action {
    @Override
    public void run() {
       try {
-         IWorldEditorProvider provider = openNewAtsWorldEditorHandler.getWorldEditorProviderCopy();
-         provider.setCustomizeData(openNewAtsWorldEditorHandler.getCustomizeDataCopy());
+         ITaskEditorProvider provider = openNewAtsTaskEditorHandler.getTaskEditorProviderCopy();
+         provider.setCustomizeData(openNewAtsTaskEditorHandler.getCustomizeDataCopy());
          provider.setTableLoadOptions(TableLoadOption.NoUI);
-         WorldEditor.open(provider);
+         TaskEditor.open(provider);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

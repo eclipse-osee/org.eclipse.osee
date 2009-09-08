@@ -9,15 +9,17 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.editor.service;
+package org.eclipse.osee.ats.actions;
 
 import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsUtil;
+import org.eclipse.osee.ats.util.ReadOnlyHyperlinkListener;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -29,25 +31,19 @@ import org.eclipse.swt.widgets.Display;
 /**
  * @author Donald G. Dunne
  */
-public class PrivilegedEditService extends WorkPageService {
+public class PrivilegedEditAction extends Action {
 
-   private Action action;
+   private final SMAManager smaMgr;
 
-   public PrivilegedEditService(SMAManager smaMgr) {
-      super(smaMgr);
+   public PrivilegedEditAction(SMAManager smaMgr) {
+      this.smaMgr = smaMgr;
+      setText("Privileged Edit");
+      setToolTipText(getText());
    }
 
    @Override
-   public Action createToolbarService() {
-      action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            togglePriviledgedEdit();
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.PRIVILEDGED_EDIT));
-      return action;
+   public void run() {
+      togglePriviledgedEdit();
    }
 
    private void togglePriviledgedEdit() {
@@ -88,7 +84,7 @@ public class PrivilegedEditService extends WorkPageService {
    }
 
    @Override
-   public String getName() {
-      return "Privileged Edit";
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(AtsImage.PRIVILEDGED_EDIT);
    }
 }

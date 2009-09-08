@@ -21,12 +21,29 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.actions.AddNoteAction;
+import org.eclipse.osee.ats.actions.CopyActionDetailsAction;
+import org.eclipse.osee.ats.actions.EmailActionAction;
+import org.eclipse.osee.ats.actions.FavoriteAction;
+import org.eclipse.osee.ats.actions.OpenInArtifactEditorAction;
+import org.eclipse.osee.ats.actions.OpenInAtsWorldAction;
+import org.eclipse.osee.ats.actions.OpenInSkyWalkerAction;
+import org.eclipse.osee.ats.actions.OpenParentAction;
+import org.eclipse.osee.ats.actions.OpenTeamDefinitionAction;
+import org.eclipse.osee.ats.actions.OpenVersionArtifactAction;
+import org.eclipse.osee.ats.actions.PrivilegedEditAction;
+import org.eclipse.osee.ats.actions.ReloadAction;
+import org.eclipse.osee.ats.actions.ResourceHistoryAction;
+import org.eclipse.osee.ats.actions.ServicesArea;
+import org.eclipse.osee.ats.actions.ShowChangeReportAction;
+import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
+import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.GoalArtifact;
 import org.eclipse.osee.ats.artifact.NoteItem;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.service.ServicesArea;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
@@ -254,12 +271,34 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    }
 
    private void refreshToolbar() throws OseeCoreException {
+      IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
       if (toolbarArea != null) {
          toolbarArea.dispose();
          scrolledForm.getToolBarManager().removeAll();
       }
       toolbarArea = new ServicesArea(smaMgr);
       toolbarArea.createToolbarServices(currentAtsWorkPage, scrolledForm.getToolBarManager());
+
+      if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (smaMgr.getBranchMgr().isCommittedBranchExists() || smaMgr.getBranchMgr().isWorkingBranchInWork())) {
+         toolBarMgr.add(new ShowMergeManagerAction(smaMgr));
+         toolBarMgr.add(new ShowChangeReportAction(smaMgr));
+      }
+      toolBarMgr.add(new FavoriteAction(smaMgr));
+      if (smaMgr.getSma().getParentSMA() != null) {
+         toolBarMgr.add(new OpenParentAction(smaMgr));
+      }
+      toolBarMgr.add(new EmailActionAction(smaMgr));
+      toolBarMgr.add(new AddNoteAction(smaMgr));
+      toolBarMgr.add(new OpenInAtsWorldAction(smaMgr));
+      toolBarMgr.add(new OpenInArtifactEditorAction(smaMgr));
+      toolBarMgr.add(new OpenInSkyWalkerAction(smaMgr));
+      toolBarMgr.add(new OpenVersionArtifactAction(smaMgr));
+      toolBarMgr.add(new OpenTeamDefinitionAction(smaMgr));
+      toolBarMgr.add(new SubscribedAction(smaMgr));
+      toolBarMgr.add(new CopyActionDetailsAction(smaMgr));
+      toolBarMgr.add(new PrivilegedEditAction(smaMgr));
+      toolBarMgr.add(new ResourceHistoryAction(smaMgr));
+      toolBarMgr.add(new ReloadAction(smaMgr));
 
       OseeAts.addButtonToEditorToolBar(smaMgr.getEditor(), this, AtsPlugin.getInstance(),
             scrolledForm.getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");

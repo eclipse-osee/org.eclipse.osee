@@ -8,16 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor.service;
+package org.eclipse.osee.ats.actions;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -26,17 +25,15 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 /**
  * @author Donald G. Dunne
  */
-public class OpenVersionArtifact extends WorkPageService {
+public class OpenVersionArtifactAction extends Action {
 
    Action action;
+   private final SMAManager smaMgr;
 
-   public OpenVersionArtifact(SMAManager smaMgr) {
-      super(smaMgr);
-   }
-
-   @Override
-   public String getName() {
-      return "Open Targeted for Version";
+   public OpenVersionArtifactAction(SMAManager smaMgr) {
+      this.smaMgr = smaMgr;
+      setText("Open Targeted for Version");
+      setToolTipText(getText());
    }
 
    private void performOpen() {
@@ -48,28 +45,13 @@ public class OpenVersionArtifact extends WorkPageService {
    }
 
    @Override
-   public Action createToolbarService() throws OseeStateException {
-      if (!(smaMgr.getSma() instanceof TeamWorkFlowArtifact)) return null;
-      action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         public void run() {
-            performOpen();
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.VERSION));
-      return action;
+   public void run() {
+      performOpen();
    }
 
    @Override
-   public void refresh() {
-      if (action == null) return;
-      boolean enabled = false;
-      try {
-         enabled = ((TeamWorkFlowArtifact) smaMgr.getSma()).getWorldViewTargetedVersion() != null;
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-      action.setEnabled(enabled);
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.VERSION);
    }
 
 }

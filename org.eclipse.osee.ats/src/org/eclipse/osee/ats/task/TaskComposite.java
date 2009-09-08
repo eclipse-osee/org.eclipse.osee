@@ -23,10 +23,10 @@ import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditor;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.actions.RefreshAction;
-import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditor.IOpenNewAtsTaskEditorHandler;
+import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEditorHandler;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
 import org.eclipse.osee.ats.actions.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
@@ -173,7 +173,7 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
 
       item = new ToolItem(toolBar, SWT.SEPARATOR);
       if (iXTaskViewer.getEditor() != null && (iXTaskViewer.getEditor() instanceof TaskEditor)) {
-         AtsUtil.actionToToolItem(toolBar, new OpenNewAtsTaskEditor(this), AtsImage.TASK);
+         AtsUtil.actionToToolItem(toolBar, new OpenNewAtsTaskEditorAction(this), AtsImage.TASK);
       }
       AtsUtil.actionToToolItem(toolBar, new OpenNewAtsTaskEditorSelected(this), AtsImage.TASK_SELECTED);
       new ToolItem(toolBar, SWT.SEPARATOR);

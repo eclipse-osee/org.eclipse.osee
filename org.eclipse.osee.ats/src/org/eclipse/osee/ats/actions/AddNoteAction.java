@@ -9,16 +9,16 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.editor.service;
+package org.eclipse.osee.ats.actions;
 
 import java.util.ArrayList;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.wizard.NewNoteWizard;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
@@ -30,30 +30,20 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class AddNoteOperation extends WorkPageService {
+public class AddNoteAction extends Action {
 
    Action action;
+   private final SMAManager smaMgr;
 
-   public AddNoteOperation(SMAManager smaMgr) {
-      super(smaMgr);
+   public AddNoteAction(SMAManager smaMgr) {
+      this.smaMgr = smaMgr;
+      setText("Add Note");
+      setToolTipText(getText());
    }
 
    @Override
-   public Action createToolbarService() {
-      action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            performAddNote();
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.NEW_NOTE));
-      return action;
-   }
-
-   @Override
-   public String getName() {
-      return "Add Note";
+   public void run() {
+      performAddNote();
    }
 
    private void performAddNote() {
@@ -81,7 +71,8 @@ public class AddNoteOperation extends WorkPageService {
    }
 
    @Override
-   public void refresh() throws OseeStateException {
-      if (action != null) action.setEnabled(smaMgr.getSma().isReadOnly());
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(AtsImage.NEW_NOTE);
    }
+
 }

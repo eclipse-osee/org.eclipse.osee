@@ -8,9 +8,10 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor.service;
+package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -23,32 +24,28 @@ import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 /**
  * @author Donald G. Dunne
  */
-public class OpenInSkyWalkerOperation extends WorkPageService {
+public class OpenInSkyWalkerAction extends Action {
 
-   public OpenInSkyWalkerOperation(SMAManager smaMgr) {
-      super(smaMgr);
+   private final SMAManager smaMgr;
+
+   public OpenInSkyWalkerAction(SMAManager smaMgr) {
+      this.smaMgr = smaMgr;
+      setText("Open Sky Walker");
+      setToolTipText(getText());
    }
 
    @Override
-   public Action createToolbarService() {
-      Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               SkyWalkerView.exploreArtifact(smaMgr.getSma());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.SKYWALKER));
-      return action;
+   public void run() {
+      try {
+         SkyWalkerView.exploreArtifact(smaMgr.getSma());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    @Override
-   public String getName() {
-      return "Open Sky Walker";
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(FrameworkImage.SKYWALKER);
    }
 
 }

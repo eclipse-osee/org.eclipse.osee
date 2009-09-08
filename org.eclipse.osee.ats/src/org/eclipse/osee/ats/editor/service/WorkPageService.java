@@ -14,6 +14,7 @@ package org.eclipse.osee.ats.editor.service;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
+import org.eclipse.osee.ats.util.ReadOnlyHyperlinkListener;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;

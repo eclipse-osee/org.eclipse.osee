@@ -9,10 +9,11 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.editor.service;
+package org.eclipse.osee.ats.actions;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -26,12 +27,21 @@ import org.eclipse.swt.dnd.Transfer;
 /**
  * @author Donald G. Dunne
  */
-public class CopyActionDetailsService extends WorkPageService {
+public class CopyActionDetailsAction extends Action {
 
    private Clipboard clipboard;
+   private final SMAManager smaMgr;
 
-   public CopyActionDetailsService(SMAManager smaMgr) {
-      super(smaMgr);
+   public CopyActionDetailsAction(SMAManager smaMgr) {
+      this.smaMgr = smaMgr;
+      String title = "Copy";
+      try {
+         title = "Copy " + smaMgr.getSma().getArtifactTypeName() + " details to clipboard";
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      setText(title);
+      setToolTipText(getText());
    }
 
    private void performCopy() {
@@ -46,26 +56,13 @@ public class CopyActionDetailsService extends WorkPageService {
    }
 
    @Override
-   public Action createToolbarService() {
-      Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            performCopy();
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.COPY_TO_CLIPBOARD));
-      return action;
+   public void run() {
+      performCopy();
    }
 
    @Override
-   public String getName() {
-      try {
-         return "Copy " + smaMgr.getSma().getArtifactTypeName() + " details to clipboard";
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-      return "Copy";
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(AtsImage.COPY_TO_CLIPBOARD);
    }
 
 }

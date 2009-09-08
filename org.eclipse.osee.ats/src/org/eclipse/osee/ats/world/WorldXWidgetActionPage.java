@@ -27,8 +27,8 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.CollapseAllAction;
 import org.eclipse.osee.ats.actions.ExpandAllAction;
 import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditor;
-import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelected;
+import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorAction;
+import org.eclipse.osee.ats.actions.OpenNewAtsWorldEditorSelectedAction;
 import org.eclipse.osee.ats.actions.RefreshAction;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -100,8 +100,8 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
 
       toolBarManager.add(worldComposite.getXViewer().getCustomizeAction());
       toolBarManager.add(new Separator());
-      toolBarManager.add(new OpenNewAtsWorldEditor(worldComposite));
-      toolBarManager.add(new OpenNewAtsWorldEditorSelected(worldComposite));
+      toolBarManager.add(new OpenNewAtsWorldEditorAction(worldComposite));
+      toolBarManager.add(new OpenNewAtsWorldEditorSelectedAction(worldComposite));
       toolBarManager.add(new Separator());
       toolBarManager.add(new ExpandAllAction(worldComposite.getXViewer()));
       toolBarManager.add(new CollapseAllAction(worldComposite.getXViewer()));

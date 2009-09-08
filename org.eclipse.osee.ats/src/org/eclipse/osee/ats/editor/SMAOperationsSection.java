@@ -14,15 +14,15 @@ import java.util.Collections;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.actions.EditActionableItemsAction;
+import org.eclipse.osee.ats.actions.EmailActionAction;
+import org.eclipse.osee.ats.actions.FavoriteAction;
+import org.eclipse.osee.ats.actions.OpenInArtifactEditorAction;
+import org.eclipse.osee.ats.actions.OpenInAtsWorldAction;
+import org.eclipse.osee.ats.actions.OpenInSkyWalkerAction;
+import org.eclipse.osee.ats.actions.OpenParentAction;
+import org.eclipse.osee.ats.actions.ResourceHistoryAction;
+import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.service.EmailActionService;
-import org.eclipse.osee.ats.editor.service.FavoriteOperation;
-import org.eclipse.osee.ats.editor.service.HistoryOperation;
-import org.eclipse.osee.ats.editor.service.OpenInArtifactEditorOperation;
-import org.eclipse.osee.ats.editor.service.OpenInAtsWorldOperation;
-import org.eclipse.osee.ats.editor.service.OpenInSkyWalkerOperation;
-import org.eclipse.osee.ats.editor.service.OpenParent;
-import org.eclipse.osee.ats.editor.service.SubscribedOperation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -118,19 +118,14 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       try {
-         (new XButtonViaAction((new OpenInAtsWorldOperation(editor.getSmaMgr())).createToolbarService())).createWidgets(
-               sectionBody, 2);
-         (new XButtonViaAction((new OpenInSkyWalkerOperation(editor.getSmaMgr())).createToolbarService())).createWidgets(
-               sectionBody, 2);
-         (new XButtonViaAction((new HistoryOperation(editor.getSmaMgr())).createToolbarService())).createWidgets(
-               sectionBody, 2);
+         new XButtonViaAction(new OpenInAtsWorldAction(editor.getSmaMgr()));
+         new XButtonViaAction(new OpenInSkyWalkerAction(editor.getSmaMgr()));
+         new XButtonViaAction(new ResourceHistoryAction(editor.getSmaMgr()));
          if (editor.getSmaMgr().getSma().getParentSMA() != null) {
-            (new XButtonViaAction((new OpenParent(editor.getSmaMgr())).createToolbarService())).createWidgets(
-                  sectionBody, 2);
+            new XButtonViaAction(new OpenParentAction(editor.getSmaMgr()));
          }
          if (AtsUtil.isAtsAdmin()) {
-            (new XButtonViaAction((new OpenInArtifactEditorOperation(editor.getSmaMgr())).createToolbarService())).createWidgets(
-                  sectionBody, 2);
+            new XButtonViaAction(new OpenInArtifactEditorAction(editor.getSmaMgr()));
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -151,12 +146,9 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       try {
-         (new XButtonViaAction((new SubscribedOperation(editor.getSmaMgr())).createToolbarService())).createWidgets(
-               sectionBody, 2);
-         (new XButtonViaAction((new FavoriteOperation(editor.getSmaMgr())).createToolbarService())).createWidgets(
-               sectionBody, 2);
-         (new XButtonViaAction((new EmailActionService(editor.getSmaMgr())).createToolbarService())).createWidgets(
-               sectionBody, 2);
+         new XButtonViaAction(new SubscribedAction(editor.getSmaMgr()));
+         new XButtonViaAction(new FavoriteAction(editor.getSmaMgr()));
+         new XButtonViaAction(new EmailActionAction(editor.getSmaMgr()));
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

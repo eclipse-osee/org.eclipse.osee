@@ -9,9 +9,10 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.editor.service;
+package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -25,10 +26,14 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 /**
  * @author Donald G. Dunne
  */
-public class OpenTeamDefinition extends WorkPageService {
+public class OpenTeamDefinitionAction extends Action {
 
-   public OpenTeamDefinition(SMAManager smaMgr) {
-      super(smaMgr);
+   private final SMAManager smaMgr;
+
+   public OpenTeamDefinitionAction(SMAManager smaMgr) {
+      this.smaMgr = smaMgr;
+      setText("Open Team Definition");
+      setToolTipText(getText());
    }
 
    private void performOpen() {
@@ -41,21 +46,13 @@ public class OpenTeamDefinition extends WorkPageService {
    }
 
    @Override
-   public Action createToolbarService() {
-      Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            performOpen();
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.TEAM_DEFINITION));
-      return action;
+   public void run() {
+      performOpen();
    }
 
    @Override
-   public String getName() {
-      return "Open Team Definition";
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(AtsImage.TEAM_DEFINITION);
    }
 
 }

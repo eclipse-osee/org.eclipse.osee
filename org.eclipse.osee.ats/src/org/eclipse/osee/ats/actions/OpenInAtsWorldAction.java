@@ -8,10 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor.service;
+package org.eclipse.osee.ats.actions;
 
 import java.util.Arrays;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
@@ -27,10 +28,13 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
 /**
  * @author Donald G. Dunne
  */
-public class OpenInAtsWorldOperation extends WorkPageService {
+public class OpenInAtsWorldAction extends Action {
 
-   public OpenInAtsWorldOperation(SMAManager smaMgr) {
-      super(smaMgr);
+   private final SMAManager smaMgr;
+
+   public OpenInAtsWorldAction(SMAManager smaMgr) {
+      this.smaMgr = smaMgr;
+      setText("Open in ATS World Editor");
    }
 
    public void performOpen() {
@@ -52,21 +56,16 @@ public class OpenInAtsWorldOperation extends WorkPageService {
    }
 
    @Override
-   public Action createToolbarService() {
-      Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            performOpen();
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GLOBE));
-      return action;
+   public void run() {
+      performOpen();
    }
 
+   /* (non-Javadoc)
+    * @see org.eclipse.jface.action.Action#getImageDescriptor()
+    */
    @Override
-   public String getName() {
-      return "Open in ATS World Editor";
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(AtsImage.GLOBE);
    }
 
 }

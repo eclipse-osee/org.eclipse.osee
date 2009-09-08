@@ -8,10 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor.service;
+package org.eclipse.osee.ats.actions;
 
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
@@ -24,42 +25,28 @@ import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 /**
  * @author Donald G. Dunne
  */
-public class OpenParent extends WorkPageService {
+public class OpenParentAction extends Action {
 
-   public OpenParent(SMAManager smaMgr) {
-      super(smaMgr);
+   private final SMAManager smaMgr;
+
+   public OpenParentAction(SMAManager smaMgr) {
+      this.smaMgr = smaMgr;
+      setText("Open Parent");
+      setToolTipText(getText());
    }
 
    @Override
-   public Action createToolbarService() {
-      if (!isParent()) return null;
-      Action action = new Action(getName(), Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               AtsUtil.openAtsAction(smaMgr.getSma().getParentSMA(), AtsOpenOption.OpenOneOrPopupSelect);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            }
-         }
-      };
-      action.setToolTipText(getName());
-      action.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.OPEN_PARENT));
-      return action;
-   }
-
-   private boolean isParent() {
+   public void run() {
       try {
-         return smaMgr.getSma().getParentSMA() != null;
-      } catch (Exception ex) {
+         AtsUtil.openAtsAction(smaMgr.getSma().getParentSMA(), AtsOpenOption.OpenOneOrPopupSelect);
+      } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
-      return false;
    }
 
    @Override
-   public String getName() {
-      return "Open Parent";
+   public ImageDescriptor getImageDescriptor() {
+      return ImageManager.getImageDescriptor(AtsImage.OPEN_PARENT);
    }
 
 }

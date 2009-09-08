@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.ats.editor.service;
+package org.eclipse.osee.ats.actions;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -19,13 +19,11 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.AtsStateItems;
 import org.eclipse.osee.ats.editor.IAtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.service.branch.ShowChangeReportService;
-import org.eclipse.osee.ats.editor.service.branch.ShowMergeManagerService;
+import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -72,27 +70,9 @@ public class ServicesArea {
    public void loadToolbarServices(AtsWorkPage atsWorkPage) throws OseeCoreException {
       if (toolBarServices.size() == 0) {
          // Toolbar Services
-         if (atsWorkPage != null && (smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (smaMgr.getBranchMgr().isCommittedBranchExists() || smaMgr.getBranchMgr().isWorkingBranchInWork())) {
-            toolBarServices.add(new ShowMergeManagerService(smaMgr));
-            toolBarServices.add(new ShowChangeReportService(smaMgr));
-         }
-         toolBarServices.add(new FavoriteOperation(smaMgr));
-         toolBarServices.add(new OpenParent(smaMgr));
-         toolBarServices.add(new EmailActionService(smaMgr));
-         toolBarServices.add(new AddNoteOperation(smaMgr));
-         toolBarServices.add(new OpenInAtsWorldOperation(smaMgr));
-         toolBarServices.add(new OpenInArtifactEditorOperation(smaMgr));
-         toolBarServices.add(new OpenInSkyWalkerOperation(smaMgr));
-         toolBarServices.add(new OpenVersionArtifact(smaMgr));
-         toolBarServices.add(new OpenTeamDefinition(smaMgr));
-         toolBarServices.add(new SubscribedOperation(smaMgr));
-         toolBarServices.add(new CopyActionDetailsService(smaMgr));
-         toolBarServices.add(new PrivilegedEditService(smaMgr));
-         toolBarServices.add(new HistoryOperation(smaMgr));
          for (IAtsStateItem item : AtsStateItems.getAllStateItems()) {
             toolBarServices.addAll(item.getToolbarServices(smaMgr));
          }
-         toolBarServices.add(new ReloadOperation(smaMgr));
       }
    }
 
