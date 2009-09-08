@@ -30,7 +30,7 @@ public class CommitService implements ICommitService {
 
    @Override
    public void commitBranch(IProgressMonitor monitor, ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
-      if (false) {
+      if (hack()) {
          new CommitDbTx(conflictManager, archiveSourceBranch).execute();
          return;
       }
@@ -59,5 +59,9 @@ public class CommitService implements ICommitService {
             throw new OseeWrappedException(ex);
          }
       }
+   }
+
+   private boolean hack() {
+      return true;
    }
 }
