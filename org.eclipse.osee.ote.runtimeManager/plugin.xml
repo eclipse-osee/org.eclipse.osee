@@ -32,7 +32,7 @@
         point="org.eclipse.jdt.core.classpathContainerInitializer">
      <classpathContainerInitializer
            class="org.eclipse.osee.ote.runtimemanager.container.OteClasspathContainerInitializer"
-           id="OTE Classpath Container">
+           id="OTE Library">
      </classpathContainerInitializer>
   </extension>
   <extension
@@ -40,7 +40,7 @@
      <classpathContainerPage
            class="org.eclipse.osee.ote.runtimemanager.container.OteContainerPage"
            id="org.eclipse.osee.ote.runtimeManager.container.OTE_CONTAINER"
-           name="OTE Classpath Container">
+           name="OTE Library">
      </classpathContainerPage>
   </extension>
 

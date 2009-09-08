@@ -15,7 +15,7 @@ public class OteContainerPage extends WizardPage
 
    
    public OteContainerPage() {
-      super("OTE CONTAINER");
+      super("OTE Library");
    }
    
    /* (non-Javadoc)

@@ -29,7 +29,7 @@ import org.osgi.util.tracker.ServiceTracker;
  *
  */
 public class OteClasspathContainer implements IClasspathContainer {
-   public final static Path ID = new Path("OTE Classpath Container");
+   public final static Path ID = new Path("OTE Library");
    private ServiceTracker tracker;
    private OteBundleLocator locator;
    private IJavaProject javaProject;
@@ -148,12 +148,9 @@ public class OteClasspathContainer implements IClasspathContainer {
       return entries.toArray(retVal);
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.jdt.core.IClasspathContainer#getDescription()
-    */
    @Override
    public String getDescription() {
-      return "OTE Classpath Container";
+      return ID.segment(0);
    }
 
    /* (non-Javadoc)
