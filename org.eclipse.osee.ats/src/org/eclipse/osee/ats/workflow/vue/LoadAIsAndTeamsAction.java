@@ -249,6 +249,7 @@ public class LoadAIsAndTeamsAction {
                parent = AtsFolderUtil.getFolder(AtsFolder.Teams);
             }
             parent.addChild(teamDefArt);
+            parent.persistAttributesAndRelations(transaction);
 
             for (Artifact actionableItem : actionableItems) {
                teamDefArt.addRelation(AtsRelation.TeamActionableItem_ActionableItem, actionableItem);
