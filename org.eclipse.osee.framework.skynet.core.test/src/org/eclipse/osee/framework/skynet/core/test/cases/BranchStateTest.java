@@ -126,7 +126,7 @@ public class BranchStateTest {
          assertTrue(workingBranch.isEditable());
 
          ConflictManagerExternal conflictManager = new ConflictManagerExternal(mainBranch, workingBranch);
-         BranchManager.commitBranch(conflictManager, true, false);
+         BranchManager.commitBranch(null, conflictManager, true, false);
 
          assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
          assertTrue(workingBranch.isArchived());

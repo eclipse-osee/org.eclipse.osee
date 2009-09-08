@@ -169,7 +169,7 @@ public class ConflictTest {
       try {
          ConflictManagerExternal conflictManager =
                new ConflictManagerExternal(ConflictTestManager.getDestBranch(), ConflictTestManager.getSourceBranch());
-         BranchManager.commitBranch(conflictManager, false, false);
+         BranchManager.commitBranch(null, conflictManager, false, false);
          assertTrue("Commit did not complete as expected", ConflictTestManager.validateCommit());
 
          assertEquals("Source Branch state incorrect", BranchState.COMMITTED,

@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.skynet.core.test.cases.RelationDeletionTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.RelationOrderingTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
+import org.eclipse.osee.framework.skynet.core.test.commit.ComputeNetChangeTest;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeEnumTypeManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeTypeCacheTest;
 import org.junit.BeforeClass;
@@ -33,11 +34,11 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {OseeTypeCacheTest.class, ArtifactTypeInheritanceTest.class, ArtifactPurgeTest.class,
-      BranchPurgeTest.class, Artifact_setAttributeValues.class, CsvArtifactTest.class, NativeArtifactTest.class,
-      OseeEnumTypeManagerTest.class, ConflictTest.class, ChangeManagerTest.class, SevereLogMonitorTest.class,
-      RelationDeletionTest.class, StaticIdManagerTest.class, BranchStateTest.class, DuplicateHridTest.class,
-      RelationOrderingTest.class})
+@Suite.SuiteClasses( {OseeTypeCacheTest.class, ComputeNetChangeTest.class, ArtifactTypeInheritanceTest.class,
+      ArtifactPurgeTest.class, BranchPurgeTest.class, Artifact_setAttributeValues.class, CsvArtifactTest.class,
+      NativeArtifactTest.class, OseeEnumTypeManagerTest.class, ConflictTest.class, ChangeManagerTest.class,
+      SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class, BranchStateTest.class,
+      DuplicateHridTest.class, RelationOrderingTest.class})
 /**
  * @author Donald G. Dunne
  */
