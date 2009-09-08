@@ -96,10 +96,9 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private SMAManager smaMgr;
-   private int workFlowPageIndex, taskPageIndex, metricsPageIndex, historyPageIndex, attributesPageIndex;
+   private int workFlowPageIndex, taskPageIndex, metricsPageIndex, attributesPageIndex;
    private SMAWorkFlowTab workFlowTab;
    private SMATaskComposite taskComposite;
-   private SMAHistoryComposite historyComposite;
    private AttributesComposite attributesComposite;
    private AtsMetricsComposite metricsComposite;
    private boolean priviledgedEditModeEnabled = false;
@@ -154,7 +153,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
             createTaskTab();
          }
 
-         createHistoryTab();
          createAttributesTab();
          createMetricsTab();
 
@@ -333,18 +331,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       OseeContributionItem.addTo(this, true);
    }
 
-   private void createHistoryTab() {
-      try {
-         Composite composite = AtsUtil.createCommonPageComposite(getContainer());
-         createToolBar(composite);
-         historyComposite = new SMAHistoryComposite(smaMgr, composite, SWT.NONE);
-         historyPageIndex = addPage(composite);
-         setPageText(historyPageIndex, "History");
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
    private void createTaskTab() {
       try {
          Composite composite = AtsUtil.createCommonPageComposite(getContainer());
@@ -478,9 +464,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
       if (workFlowTab != null) {
          workFlowTab.refresh();
-      }
-      if (historyComposite != null) {
-         historyComposite.refresh();
       }
       if (attributesComposite != null) {
          attributesComposite.refreshArtifact(smaMgr.getSma());

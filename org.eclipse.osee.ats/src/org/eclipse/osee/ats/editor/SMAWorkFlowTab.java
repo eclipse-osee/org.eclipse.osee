@@ -100,6 +100,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
    private SMARelationsSection smaRelationsSection;
    private SMAOperationsSection smaOperationsSection;
    private SMAGoalMembersSection smaGoalMembersSection;
+   private SMAHistorySection smaHistorySection;
 
    public SMAWorkFlowTab(SMAManager smaMgr) {
       super(smaMgr.getEditor(), "overview", "Workflow");
@@ -203,6 +204,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          managedForm.addPart(smaGoalMembersSection);
       }
 
+      smaHistorySection = new SMAHistorySection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
+      managedForm.addPart(smaHistorySection);
+
       smaRelationsSection = new SMARelationsSection(smaMgr.getEditor(), atsBody, toolkit, SWT.NONE);
       managedForm.addPart(smaRelationsSection);
 
@@ -300,6 +304,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
       if (smaDetailsSection != null) {
          smaDetailsSection.dispose();
+      }
+      if (smaHistorySection != null) {
+         smaHistorySection.dispose();
       }
       if (smaRelationsSection != null) {
          smaRelationsSection.dispose();
