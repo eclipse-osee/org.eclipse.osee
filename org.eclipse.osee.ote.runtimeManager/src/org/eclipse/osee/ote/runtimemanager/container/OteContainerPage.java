@@ -53,8 +53,8 @@ public class OteContainerPage extends WizardPage
       GridData data = new GridData(SWT.FILL, SWT.FILL, true, true);
       comp.setLayoutData(data);
       
-      Label label = new Label(comp, SWT.BORDER);
-      label.setText("JUST CLICK FINISH YOU FOOL!!!");
+      Label label = new Label(comp, SWT.NONE);
+      label.setText("Please click finish.");
       
       data = new GridData(SWT.FILL, SWT.FILL, true, true);
       label.setLayoutData(data);
