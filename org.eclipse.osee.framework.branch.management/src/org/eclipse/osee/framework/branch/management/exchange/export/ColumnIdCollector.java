@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility.ExportImportJoinQuer
  * @author Roberto E. Escobar
  */
 public final class ColumnIdCollector implements IExportColumnListener {
-   private String columnToListenFor;
+   private final String columnToListenFor;
    private ExportImportJoinQuery joinQuery;
    private OseeConnection connection;
 
@@ -64,7 +64,7 @@ public final class ColumnIdCollector implements IExportColumnListener {
    @Override
    public void onColumnExport(String columnName, ConnectionHandlerStatement chStmt) throws Exception {
       if (columnName.equals(getColumnToListenFor())) {
-         this.joinQuery.add(chStmt.getInt(columnName), -1);
+         this.joinQuery.add(chStmt.getLong(columnName), -1L);
       }
    }
 }

@@ -48,7 +48,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
    private final int[] branchIds;
    private ExportImportJoinQuery joinQuery;
    private ExecutorService executorService;
-   private List<String> errorList;
+   private final List<String> errorList;
 
    ExportController(String exportName, Options options, int... branchIds) throws Exception {
       if (branchIds == null || branchIds.length <= 0) {
@@ -96,7 +96,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
    private void setUp(OseeConnection connection, List<AbstractExportItem> taskList, File tempFolder) throws OseeDataStoreException {
       joinQuery = JoinUtility.createExportImportJoinQuery();
       for (int branchId : branchIds) {
-         joinQuery.add(branchId, -1);
+         joinQuery.add((long) branchId, -1L);
       }
       joinQuery.store(connection);
 
@@ -110,7 +110,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          exportItem.setOptions(options);
          exportItem.setWriteLocation(tempFolder);
          if (exportItem instanceof AbstractDbExportItem) {
-            AbstractDbExportItem exportItem2 = ((AbstractDbExportItem) exportItem);
+            AbstractDbExportItem exportItem2 = (AbstractDbExportItem) exportItem;
             exportItem2.setJoinQueryId(joinQuery.getQueryId());
             exportItem2.setConnection(connection);
          }

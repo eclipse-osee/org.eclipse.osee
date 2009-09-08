@@ -63,7 +63,7 @@ public class GraphLoader {
          List<Branch> branches = new ArrayList<Branch>(current.getBranch().getChildBranches(recurse));
          branches.add(current.getBranch());
          for (Branch branch : branches) {
-            txJoinQuery.add(-1, branch.getParentTransactionNumber());
+            txJoinQuery.add(-1L, branch.getParentTransactionNumber());
          }
          txJoinQuery.store();
 

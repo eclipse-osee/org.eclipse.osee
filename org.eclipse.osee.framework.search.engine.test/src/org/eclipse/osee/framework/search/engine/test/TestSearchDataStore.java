@@ -105,7 +105,7 @@ public class TestSearchDataStore extends TestCase {
             try {
                joinQuery = JoinUtility.createTransactionJoinQuery();
                for (SearchTag tag : testData) {
-                  joinQuery.add((int) tag.getGammaId(), -1);
+                  joinQuery.add(tag.getGammaId(), -1);
                }
                joinQuery.store(connection);
                updated = SearchTagDataStore.deleteTags(connection, joinQuery.getQueryId());

@@ -188,7 +188,7 @@ public class PurgeTransactionJob extends Job {
             fromToTxData.put(fromTransaction.getBranch(), new TxDeleteInfo(fromTransaction, previousTransaction));
 
             // Store transaction id(s) to delete - no need for gammas
-            txsToDeleteQuery.add(-1, fromTx);
+            txsToDeleteQuery.add(-1L, fromTx);
             monitor.worked(1);
          }
          return fromToTxData;
@@ -225,7 +225,7 @@ public class PurgeTransactionJob extends Job {
          try {
             chStmt.runPreparedQuery(sql, data);
             while (chStmt.next()) {
-               joinQuery.add(chStmt.getInt("gamma_id"), chStmt.getInt(txFieldName));
+               joinQuery.add(chStmt.getLong("gamma_id"), chStmt.getInt(txFieldName));
             }
          } finally {
             chStmt.close();

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  */
 public class OseeChange {
    public static enum GammaKind {
-      Artiact, Attribute, Relation
+      Artifact, Attribute, Relation
    };
 
    private int itemId;

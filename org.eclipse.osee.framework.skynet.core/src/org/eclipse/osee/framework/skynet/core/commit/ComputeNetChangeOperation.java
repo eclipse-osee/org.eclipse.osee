@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.commit;
 
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Roberto E. Escobar
  */
 public class ComputeNetChangeOperation extends AbstractOperation {
-   private final List<OseeChange> changes;
+   private final Collection<OseeChange> changes;
 
-   public ComputeNetChangeOperation(List<OseeChange> changes) {
+   public ComputeNetChangeOperation(Collection<OseeChange> changes) {
       super("Compute Net Change", Activator.PLUGIN_ID);
       this.changes = changes;
    }

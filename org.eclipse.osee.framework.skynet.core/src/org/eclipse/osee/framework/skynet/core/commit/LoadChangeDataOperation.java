@@ -63,7 +63,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       TransactionJoinQuery txJoin = loadSourceBranchChanges(monitor);
-      loadChangesByItemId(monitor, "osee_artifact_version", "art_id", txJoin.getQueryId(), GammaKind.Artiact,
+      loadChangesByItemId(monitor, "osee_artifact_version", "art_id", txJoin.getQueryId(), GammaKind.Artifact,
             artifactChangesByItemId);
       loadChangesByItemId(monitor, "osee_attribute", "attr_id", txJoin.getQueryId(), GammaKind.Attribute,
             attributeChangesByItemId);
@@ -89,10 +89,10 @@ public class LoadChangeDataOperation extends AbstractOperation {
                TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            txJoin.add(chStmt.getInt("gamma_id"), -1);
+            txJoin.add(chStmt.getLong("gamma_id"), -1);
 
             OseeChange oseeChange =
-                  new OseeChange(chStmt.getInt("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")));
+                  new OseeChange(chStmt.getLong("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")));
 
             changeByGammaId.put(oseeChange.getCurrentSourceGammaId(), oseeChange);
          }

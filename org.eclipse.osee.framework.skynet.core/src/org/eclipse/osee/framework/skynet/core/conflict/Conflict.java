@@ -43,7 +43,7 @@ public abstract class Conflict implements IAdaptable {
    private String sourceDiffFile = null;
    private String destDiffFile = null;
 
-   public Conflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId commitTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
+   protected Conflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId commitTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
       super();
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;

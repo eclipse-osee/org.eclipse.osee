@@ -55,13 +55,12 @@ public class JoinUtility {
    private static final String SELECT_TAG_GAMMA_QUEUE_QUERIES = "select DISTINCT query_id from osee_tag_gamma_queue";
 
    public enum JoinItem {
-      TRANSACTION(INSERT_INTO_JOIN_TRANSACTION, DELETE_FROM_JOIN_TRANSACTION),
-      ARTIFACT(INSERT_INTO_JOIN_ARTIFACT, DELETE_FROM_JOIN_ARTIFACT),
-      ATTRIBUTE(INSERT_INTO_JOIN_ATTRIBUTE, DELETE_FROM_JOIN_ATTRIBUTE),
-      SEARCH_TAGS(INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS),
-      TAG_GAMMA_QUEUE(INSERT_INTO_TAG_GAMMA_QUEUE, DELETE_FROM_TAG_GAMMA_QUEUE),
-      EXPORT_IMPORT(INSERT_INTO_JOIN_EXPORT_IMPORT, DELETE_FROM_JOIN_EXPORT_IMPORT),
-      ID(INSERT_INTO_JOIN_ID, DELETE_FROM_JOIN_ID);
+      TRANSACTION(INSERT_INTO_JOIN_TRANSACTION, DELETE_FROM_JOIN_TRANSACTION), ARTIFACT(INSERT_INTO_JOIN_ARTIFACT,
+            DELETE_FROM_JOIN_ARTIFACT), ATTRIBUTE(INSERT_INTO_JOIN_ATTRIBUTE, DELETE_FROM_JOIN_ATTRIBUTE), SEARCH_TAGS(
+            INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS), TAG_GAMMA_QUEUE(INSERT_INTO_TAG_GAMMA_QUEUE,
+            DELETE_FROM_TAG_GAMMA_QUEUE),
+      EXPORT_IMPORT(INSERT_INTO_JOIN_EXPORT_IMPORT, DELETE_FROM_JOIN_EXPORT_IMPORT), ID(INSERT_INTO_JOIN_ID,
+            DELETE_FROM_JOIN_ID);
 
       private final String deleteSql;
       private final String insertSql;
@@ -129,7 +128,7 @@ public class JoinUtility {
       return queryIds;
    }
 
-   private static abstract class JoinQueryEntry {
+   public static abstract class JoinQueryEntry {
       public final JoinItem joinItem;
       private final int queryId;
       private final Timestamp insertTime;
@@ -137,7 +136,7 @@ public class JoinUtility {
       private boolean wasStored;
       private int storedSize;
 
-      public JoinQueryEntry(JoinItem joinItem) {
+      protected JoinQueryEntry(JoinItem joinItem) {
          this.wasStored = false;
          this.joinItem = joinItem;
          this.queryId = getNewQueryId();
@@ -220,9 +219,9 @@ public class JoinUtility {
    public static final class IdJoinQuery extends JoinQueryEntry {
 
       private final class TempIdEntry implements IJoinRow {
-         private final int id;
+         private final Integer id;
 
-         private TempIdEntry(int id) {
+         private TempIdEntry(Integer id) {
             this.id = id;
          }
 
@@ -244,7 +243,7 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return 37 * id;
+            return 37 * id.hashCode();
          }
 
          @Override
@@ -257,7 +256,7 @@ public class JoinUtility {
          super(JoinItem.ID);
       }
 
-      public void add(int id) {
+      public void add(Integer id) {
          entries.add(new TempIdEntry(id));
       }
    }
@@ -265,10 +264,10 @@ public class JoinUtility {
    public static final class TransactionJoinQuery extends JoinQueryEntry {
 
       private final class TempTransactionEntry implements IJoinRow {
-         private final int gammaId;
-         private final int transactionId;
+         private final Long gammaId;
+         private final Integer transactionId;
 
-         private TempTransactionEntry(int gammaId, int transactionId) {
+         private TempTransactionEntry(Long gammaId, Integer transactionId) {
             this.gammaId = gammaId;
             this.transactionId = transactionId;
          }
@@ -291,12 +290,12 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return 37 * gammaId * transactionId;
+            return 37 * gammaId.hashCode() * transactionId.hashCode();
          }
 
          @Override
          public String toString() {
-            return String.format("gamma_id=%d, tx_id=%d", gammaId, transactionId);
+            return String.format("gamma_id=%s, tx_id=%s", gammaId, transactionId);
          }
       }
 
@@ -304,7 +303,7 @@ public class JoinUtility {
          super(JoinItem.TRANSACTION);
       }
 
-      public void add(int gammaId, int transactionId) {
+      public void add(Long gammaId, Integer transactionId) {
          entries.add(new TempTransactionEntry(gammaId, transactionId));
       }
    }
@@ -312,10 +311,10 @@ public class JoinUtility {
    public static final class ArtifactJoinQuery extends JoinQueryEntry {
 
       private final class Entry implements IJoinRow {
-         private final int artId;
-         private final int branchId;
+         private final Integer artId;
+         private final Integer branchId;
 
-         private Entry(int artId, int branchId) {
+         private Entry(Integer artId, Integer branchId) {
             this.artId = artId;
             this.branchId = branchId;
          }
@@ -326,7 +325,7 @@ public class JoinUtility {
 
          @Override
          public String toString() {
-            return String.format("art_id=%d, branch_id=%d", artId, branchId);
+            return String.format("art_id=%s, branch_id=%s", artId, branchId);
          }
 
          @Override
@@ -343,7 +342,7 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return 37 * artId * branchId;
+            return 37 * artId.hashCode() * branchId.hashCode();
          }
       }
 
@@ -351,7 +350,7 @@ public class JoinUtility {
          super(JoinItem.ARTIFACT);
       }
 
-      public void add(int art_id, int branch_id) {
+      public void add(Integer art_id, Integer branch_id) {
          entries.add(new Entry(art_id, branch_id));
       }
    }
@@ -404,9 +403,9 @@ public class JoinUtility {
    public static final class SearchTagJoinQuery extends JoinQueryEntry {
 
       private final class TagEntry implements IJoinRow {
-         private final long value;
+         private final Long value;
 
-         private TagEntry(long value) {
+         private TagEntry(Long value) {
             this.value = value;
          }
 
@@ -428,12 +427,12 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return (int) (37 * value);
+            return 37 * value.hashCode();
          }
 
          @Override
          public String toString() {
-            return String.format("tag=%d", value);
+            return String.format("tag=%s", value);
          }
       }
 
@@ -441,7 +440,7 @@ public class JoinUtility {
          super(JoinItem.SEARCH_TAGS);
       }
 
-      public void add(long tag) {
+      public void add(Long tag) {
          entries.add(new TagEntry(tag));
       }
    }
@@ -449,9 +448,9 @@ public class JoinUtility {
    public static final class TagQueueJoinQuery extends JoinQueryEntry {
 
       private final class GammaEntry implements IJoinRow {
-         private final long gammaId;
+         private final Long gammaId;
 
-         private GammaEntry(long gammaId) {
+         private GammaEntry(Long gammaId) {
             this.gammaId = gammaId;
          }
 
@@ -473,12 +472,12 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return (int) (37 * gammaId);
+            return 37 * gammaId.hashCode();
          }
 
          @Override
          public String toString() {
-            return String.format("gammaId=%d", gammaId);
+            return String.format("gammaId=%s", gammaId);
          }
       }
 
@@ -486,7 +485,7 @@ public class JoinUtility {
          super(JoinItem.TAG_GAMMA_QUEUE);
       }
 
-      public void add(long gammaId) {
+      public void add(Long gammaId) {
          entries.add(new GammaEntry(gammaId));
       }
    }
@@ -494,10 +493,10 @@ public class JoinUtility {
    public static final class ExportImportJoinQuery extends JoinQueryEntry {
 
       private final class ExportImportEntry implements IJoinRow {
-         private final long id1;
-         private final long id2;
+         private final Long id1;
+         private final Long id2;
 
-         private ExportImportEntry(long id1, long id2) {
+         private ExportImportEntry(Long id1, Long id2) {
             this.id1 = id1;
             this.id2 = id2;
          }
@@ -520,12 +519,12 @@ public class JoinUtility {
 
          @Override
          public int hashCode() {
-            return (int) (37 * id1 * id2);
+            return 37 * id1.hashCode() * id2.hashCode();
          }
 
          @Override
          public String toString() {
-            return String.format("id1=%d id2=%d", id1, id2);
+            return String.format("id1=%s id2=%s", id1, id2);
          }
       }
 
@@ -533,7 +532,7 @@ public class JoinUtility {
          super(JoinItem.EXPORT_IMPORT);
       }
 
-      public void add(long id1, long id2) {
+      public void add(Long id1, Long id2) {
          entries.add(new ExportImportEntry(id1, id2));
       }
    }

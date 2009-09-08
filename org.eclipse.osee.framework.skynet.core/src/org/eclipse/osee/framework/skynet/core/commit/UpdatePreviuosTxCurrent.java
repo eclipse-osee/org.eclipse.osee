@@ -32,7 +32,7 @@ public class UpdatePreviuosTxCurrent {
 
    public void addItem(GammaKind kind, int itemId) throws OseeStateException {
       switch (kind) {
-         case Artiact:
+         case Artifact:
             addArtifact(itemId);
             break;
          case Attribute:
