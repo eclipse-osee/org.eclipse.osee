@@ -123,7 +123,7 @@ public class OseeTypesSetup {
          }
       }
       OseeLog.log(DatabaseInitActivator.class, Level.INFO, String.format("Importing:\n\t%s",
-            items.toString().replaceAll(",", ",\n\t")));
+            items.keySet().toString().replaceAll(",", ",\n\t")));
       return items;
    }
 
