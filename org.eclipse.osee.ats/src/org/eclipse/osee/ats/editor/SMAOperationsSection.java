@@ -118,14 +118,14 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       try {
-         new XButtonViaAction(new OpenInAtsWorldAction(editor.getSmaMgr()));
-         new XButtonViaAction(new OpenInSkyWalkerAction(editor.getSmaMgr()));
-         new XButtonViaAction(new ResourceHistoryAction(editor.getSmaMgr()));
+         (new XButtonViaAction(new OpenInAtsWorldAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new OpenInSkyWalkerAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new ResourceHistoryAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
          if (editor.getSmaMgr().getSma().getParentSMA() != null) {
-            new XButtonViaAction(new OpenParentAction(editor.getSmaMgr()));
+            (new XButtonViaAction(new OpenParentAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
          }
          if (AtsUtil.isAtsAdmin()) {
-            new XButtonViaAction(new OpenInArtifactEditorAction(editor.getSmaMgr()));
+            (new XButtonViaAction(new OpenInArtifactEditorAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -146,9 +146,9 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       try {
-         new XButtonViaAction(new SubscribedAction(editor.getSmaMgr()));
-         new XButtonViaAction(new FavoriteAction(editor.getSmaMgr()));
-         new XButtonViaAction(new EmailActionAction(editor.getSmaMgr()));
+         (new XButtonViaAction(new SubscribedAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new FavoriteAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new EmailActionAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
