@@ -14,6 +14,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -41,11 +42,8 @@ public class ComputeNetChangeOperation extends AbstractOperation {
             if (change.wasNewOrIntroducedOnSource() && change.getCurrentSourceModType().isDeleted() || change.isAlreadyOnDestination()) {
                iterator.remove();
             } else {
-               // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
-               if (change.getDestinationModType() == null && !change.wasNewOrIntroducedOnSource()) {
-                  throw new OseeStateException(
-                        "This should be supported in the future - destination branch is not the source's parent: " + change);
-               }
+               checkForInvalidStates(change);
+
                if (change.getNetModType() != ModificationType.MERGED) {
                   if (change.wasNewOnSource()) {
                      change.setNetModType(ModificationType.NEW);
@@ -58,6 +56,23 @@ public class ComputeNetChangeOperation extends AbstractOperation {
                }
             }
             monitor.worked(calculateWork(workPercentage));
+         }
+      }
+   }
+
+   private void checkForInvalidStates(OseeChange change) throws OseeCoreException {
+      // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
+      if (change.getDestinationModType() == null && !change.wasNewOrIntroducedOnSource()) {
+         throw new OseeStateException(
+               "This should be supported in the future - destination branch is not the source's parent: " + change);
+      }
+
+      if (change.getNetModType() != ModificationType.MERGED) {
+         if (change.getCurrentSourceModType() == ModificationType.NEW && change.getDestinationModType() != null) {
+            throw new OseeStateException("Source item marked as new but destination already has item: " + change);
+         }
+         if (change.getCurrentSourceModType() == ModificationType.INTRODUCED && change.getDestinationModType() != null) {
+            throw new OseeStateException("Source item marked as introduced but destination already has item: " + change);
          }
       }
    }

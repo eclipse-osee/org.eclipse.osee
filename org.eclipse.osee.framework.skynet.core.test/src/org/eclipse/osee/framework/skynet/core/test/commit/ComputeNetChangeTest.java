@@ -102,14 +102,19 @@ public class ComputeNetChangeTest {
 
    @Test
    public void testErrorStates() {
+      OseeChange change = createChange(GammaKind.Artifact, 1, NEW, 1, NEW, -1, MODIFIED);
+      computeNetChange(Arrays.asList(change), IStatus.ERROR);
+
+      change = createChange(GammaKind.Artifact, 1, INTRODUCED, 1, INTRODUCED, -1, MODIFIED);
+      computeNetChange(Arrays.asList(change), IStatus.ERROR);
+
       //      createChange(kind, 5, null, 25, ModificationType.MODIFIED, 14, ModificationType.DELETED);
       //      createChange(kind, 6, null, 26, ModificationType.DELETED, 15, ModificationType.ARTIFACT_DELETED);
       //      createChange(kind, 7, null, 27, ModificationType.ARTIFACT_DELETED, 16, ModificationType.NEW);
-      //      createChange(kind, 7, null, 27, ModificationType.ARTIFACT_DELETED, 16, ModificationType.NEW);
       //      createChange(kind, 4, null, 24, ModificationType.NEW, 13, ModificationType.MODIFIED);
+
       //      // Commit Responsibility:
       //      // Compute net changes between source branch to destination branch including any merge changes and add those results to a new transaction on the destination branch.
-      //      /*
       //       * Handle case where destination branch is missing an artifact that was modified (not new) on the source branch.
       //       * Filter out all items that are both new/introduced and deleted on the source branch
       //       * Filter out all gammas that are already current on the destination branch.
@@ -117,8 +122,6 @@ public class ComputeNetChangeTest {
       //       * Compute artifact mod type for commit transaction:
       //       * 1) New and modified -> new
       //       * 2) Introduced and modified -> introduced
-      //       */
-      //    
    }
 
    @Test
