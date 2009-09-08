@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.commit;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -21,12 +21,10 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.commit.OseeChange.GammaKind;
 
 /**
@@ -36,39 +34,45 @@ import org.eclipse.osee.framework.skynet.core.commit.OseeChange.GammaKind;
  */
 public class ChangeDatabaseDataAccessor implements IChangeDataAccessor {
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
-         "select gamma_id, tx_current, mod_type from osee_txs txs, osee_tx_details txd where txd.branch_id = ? and txd.transaction_id = txs.transaction_id and txd.tx_type = ?";
+         "select gamma_id, tx_current, mod_type from osee_txs txs, osee_tx_details txd where txd.branch_id = ? and txd.transaction_id = txs.transaction_id and txd.tx_type = ? and txs.tx_current <> ?";
 
-   private final HashCollection<Integer, OseeChange> artifactChanges = new HashCollection<Integer, OseeChange>();
-   private final HashCollection<Integer, OseeChange> attributeChanges = new HashCollection<Integer, OseeChange>();
-   private final HashCollection<Integer, OseeChange> relationChanges = new HashCollection<Integer, OseeChange>();
-   private final List<OseeChange> changeData = new ArrayList<OseeChange>();
+   private final HashMap<Integer, OseeChange> artifactChangesByItemId = new HashMap<Integer, OseeChange>();
+   private final HashMap<Integer, OseeChange> relationChangesByItemId = new HashMap<Integer, OseeChange>();
+   private final HashMap<Integer, OseeChange> attributeChangesByItemId = new HashMap<Integer, OseeChange>();
+   private final HashMap<Integer, OseeChange> changeByGammaId = new HashMap<Integer, OseeChange>();
    private IProgressMonitor monitor;
    private ChangeLocator locator;
 
-   private void loadIdMap(HashMap<Integer, Integer> idMap, String tableName, String idColumnName, int queryId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      String query =
-            "select " + idColumnName + " from " + tableName + " id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
+   @Override
+   public void loadChangeData(IProgressMonitor monitor, ChangeLocator locator, List<OseeChange> changeData) throws Exception {
+      this.monitor = monitor;
+      this.locator = locator;
 
-      try {
-         chStmt.runPreparedQuery(10000, query, queryId);
-         while (chStmt.next()) {
-            if (monitor.isCanceled()) {
-               throw new OperationCanceledException();
-            }
-            idMap.put(chStmt.getInt("gamma_id"), chStmt.getInt(idColumnName));
-         }
-      } finally {
-         chStmt.close();
-      }
+      TransactionJoinQuery txJoin = loadSourceBranchChanges();
+      loadChangesByItemId("osee_artifact_version", "art_id", txJoin.getQueryId(), GammaKind.Artiact,
+            artifactChangesByItemId);
+      loadChangesByItemId("osee_attribute", "attr_id", txJoin.getQueryId(), GammaKind.Attribute,
+            attributeChangesByItemId);
+      loadChangesByItemId("osee_relation_link", "rel_link_id", txJoin.getQueryId(), GammaKind.Relation,
+            relationChangesByItemId);
+      txJoin.delete();
+
+      loadByItemId("osee_artifact_version", "art_id", artifactChangesByItemId);
+      loadByItemId("osee_attribute", "attr_id", attributeChangesByItemId);
+      loadByItemId("osee_relation_link", "rel_link_id", relationChangesByItemId);
+
+      changeData.addAll(artifactChangesByItemId.values());
+      changeData.addAll(attributeChangesByItemId.values());
+      changeData.addAll(relationChangesByItemId.values());
    }
 
-   private void loadSourceBranchChanges(TransactionJoinQuery txJoin) throws OseeDataStoreException, OseeArgumentException {
+   private TransactionJoinQuery loadSourceBranchChanges() throws OseeDataStoreException, OseeArgumentException {
+      TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, locator.getSourceBranch().getBranchId(),
-               TransactionDetailsType.NonBaselined);
+         chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, locator.getSourceBranchId(),
+               TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
          while (chStmt.next()) {
             if (monitor.isCanceled()) {
                throw new OperationCanceledException();
@@ -77,92 +81,104 @@ public class ChangeDatabaseDataAccessor implements IChangeDataAccessor {
 
             OseeChange oseeChange =
                   new OseeChange(TxChange.getChangeType(chStmt.getInt("tx_current")), chStmt.getInt("gamma_id"),
-                        ModificationType.getMod(chStmt.getInt("mod_type")), -1);
+                        ModificationType.getMod(chStmt.getInt("mod_type")));
 
-            changeData.add(oseeChange);
+            changeByGammaId.put(oseeChange.getCurrentSourceGammaId(), oseeChange);
          }
          txJoin.store();
       } finally {
          chStmt.close();
       }
+      return txJoin;
    }
 
-   private void loadDestinationData(IdJoinQuery idJoin, String tableName, String columnName, HashCollection<Integer, OseeChange> changes) throws OseeDataStoreException, OseeArgumentException {
+   private void loadChangesByItemId(String tableName, String idColumnName, int queryId, GammaKind kind, HashMap<Integer, OseeChange> changesByItemId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-
       String query =
-            "select txs.gamma_id, txs.tx_current, txs.mod_type idj." + columnName + " from osee_join_id idj, " //
-                  + tableName + "item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
-                  " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
+            "select txj.gamma_id, " + idColumnName + " from " + tableName + " id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
       try {
-         chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT,
-               locator.getDestinationBranch().getBranchId());
+         chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             if (monitor.isCanceled()) {
                throw new OperationCanceledException();
             }
-            int itemId = chStmt.getInt(columnName);
-            for (OseeChange change : changes.getValues(itemId)) {
-               change.setDesinationModificationType(ModificationType.getMod(chStmt.getInt("mod_type")));
-               change.setDestinationTxChange(TxChange.getChangeType(chStmt.getInt("tx_current")));
-               change.setDesinationGammaId(chStmt.getInt("gamma_id"));
-            }
+            OseeChange change = changeByGammaId.get(chStmt.getInt("gamma_id"));
+            change.setKind(kind);
+            change.setItemId(chStmt.getInt(idColumnName));
+            changesByItemId.put(change.getItemId(), change);
          }
-         idJoin.store();
       } finally {
          chStmt.close();
       }
    }
 
-   @Override
-   public void loadChangeData(IProgressMonitor monitor, ChangeLocator locator, List<OseeChange> data) throws Exception {
-      this.monitor = monitor;
-      this.locator = locator;
-      TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
-      loadSourceBranchChanges(txJoin);
-
-      HashMap<Integer, Integer> artifactIds = new HashMap<Integer, Integer>();
-      HashMap<Integer, Integer> attributeIds = new HashMap<Integer, Integer>();
-      HashMap<Integer, Integer> relationIds = new HashMap<Integer, Integer>();
-
-      loadIdMap(artifactIds, "osee_artifact_version", "art_id", txJoin.getQueryId());
-      loadIdMap(attributeIds, "osee_attribute", "attr_id", txJoin.getQueryId());
-      loadIdMap(relationIds, "osee_relation_link", "rel_link_id", txJoin.getQueryId());
-
-      for (OseeChange oseeChange : changeData) {
-         Integer gammaId = oseeChange.getSourceGammaId();
-         Integer itemId = artifactIds.get(gammaId);
-         if (itemId == null) {
-            itemId = attributeIds.get(gammaId);
-            if (itemId == null) {
-               itemId = relationIds.get(gammaId);
-               if (itemId == null) {
-                  throw new OseeStateException("Did not find gammaId " + gammaId + " during net change computation");
-               }
-               oseeChange.setKind(GammaKind.Relation);
-               relationChanges.put(itemId, oseeChange);
-            } else {
-               oseeChange.setKind(GammaKind.Attribute);
-               attributeChanges.put(itemId, oseeChange);
-            }
-         } else {
-            oseeChange.setKind(GammaKind.Artiact);
-            artifactChanges.put(itemId, oseeChange);
-         }
-         oseeChange.setItemId(itemId);
+   private void loadByItemId(String tableName, String columnName, HashMap<Integer, OseeChange> changesByItemId) throws OseeCoreException {
+      IdJoinQuery idJoin = JoinUtility.createIdJoinQuery();
+      for (Entry<Integer, OseeChange> entry : changesByItemId.entrySet()) {
+         idJoin.add(entry.getKey());
       }
+      idJoin.store();
 
-      performLoad("osee_artifact_version", "art_id", artifactChanges);
-      performLoad("osee_attribute", "attr_id", attributeChanges);
-      performLoad("osee_relation_link", "rel_link_id", relationChanges);
+      loadDestinationData(tableName, columnName, idJoin, changesByItemId);
+      loadNonCurrentSourceData(tableName, columnName, idJoin, changesByItemId);
 
-      txJoin.delete();
+      idJoin.delete();
    }
 
-   private void performLoad(String tableName, String columnName, HashCollection<Integer, OseeChange> changes) throws OseeCoreException {
-      IdJoinQuery idJoin = JoinUtility.createIdJoinQuery();
-      loadDestinationData(idJoin, tableName, columnName, changes);
-      idJoin.delete();
+   private void loadDestinationData(String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, OseeChange> changesByItemId) throws OseeCoreException {
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+
+      String query =
+            "select txs.gamma_id, txs.tx_current, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
+                  + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
+                  " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
+
+      try {
+         chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
+               locator.getDestinationBranchId());
+         while (chStmt.next()) {
+            if (monitor.isCanceled()) {
+               throw new OperationCanceledException();
+            }
+            int itemId = chStmt.getInt(columnName);
+            OseeChange change = changesByItemId.get(itemId);
+            change.setDesinationModType(ModificationType.getMod(chStmt.getInt("mod_type")));
+            change.setDestinationTxChange(TxChange.getChangeType(chStmt.getInt("tx_current")));
+            change.setDesinationGammaId(chStmt.getInt("gamma_id"));
+         }
+      } finally {
+         chStmt.close();
+      }
+   }
+
+   private void loadNonCurrentSourceData(String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, OseeChange> changesByItemId) throws OseeCoreException {
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+
+      String query =
+            "select txs.mod_type, item." + columnName + " from osee_join_id idj, " //
+                  + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
+                  " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.tx_type = ? order by idj.id, txs.transaction_id asc";
+
+      try {
+         chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
+               locator.getSourceBranchId(), TransactionDetailsType.NonBaselined.getId());
+         int previousItemId = -1;
+         while (chStmt.next()) {
+            if (monitor.isCanceled()) {
+               throw new OperationCanceledException();
+            }
+
+            int itemId = chStmt.getInt(columnName);
+            if (previousItemId != itemId) {
+               previousItemId = itemId;
+
+               OseeChange change = changesByItemId.get(itemId);
+               change.setFirstSourceModType(ModificationType.getMod(chStmt.getInt("mod_type")));
+            }
+         }
+      } finally {
+         chStmt.close();
+      }
    }
 }

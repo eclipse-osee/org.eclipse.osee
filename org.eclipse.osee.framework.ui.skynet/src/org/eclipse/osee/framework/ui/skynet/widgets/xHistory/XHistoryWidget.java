@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.status.SwtStatusMonitor;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -87,7 +86,9 @@ public class XHistoryWidget extends XWidget implements IActionable {
       Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) toolkit.paintBordersFor(mainComp);
+      if (toolkit != null) {
+         toolkit.paintBordersFor(mainComp);
+      }
 
       try {
          createTaskActionBar(mainComp);
@@ -101,7 +102,9 @@ public class XHistoryWidget extends XWidget implements IActionable {
       xHistoryViewer.setContentProvider(new XHistoryContentProvider(xHistoryViewer));
       xHistoryViewer.setLabelProvider(new XHistoryLabelProvider(xHistoryViewer));
 
-      if (toolkit != null) toolkit.adapt(xHistoryViewer.getStatusLabel(), false, false);
+      if (toolkit != null) {
+         toolkit.adapt(xHistoryViewer.getStatusLabel(), false, false);
+      }
 
       Tree tree = xHistoryViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -169,8 +172,12 @@ public class XHistoryWidget extends XWidget implements IActionable {
    @SuppressWarnings("unchecked")
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
-      if (xHistoryViewer == null) return items;
-      if (xHistoryViewer.getSelection().isEmpty()) return items;
+      if (xHistoryViewer == null) {
+         return items;
+      }
+      if (xHistoryViewer.getSelection().isEmpty()) {
+         return items;
+      }
       Iterator i = ((IStructuredSelection) xHistoryViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -234,8 +241,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
 
             try {
                if (loadHistory) {
-                  SwtStatusMonitor swtMonitor = new SwtStatusMonitor(monitor);
-                  changes.addAll(ChangeManager.getChangesPerArtifact(artifact, swtMonitor));
+                  changes.addAll(ChangeManager.getChangesPerArtifact(artifact, monitor));
                }
 
                Displays.ensureInDisplayThread(new Runnable() {
@@ -313,7 +319,9 @@ public class XHistoryWidget extends XWidget implements IActionable {
    @Override
    public String getActionDescription() {
       StringBuffer sb = new StringBuffer();
-      if (artifact != null) sb.append("\nHistory : " + artifact.getName());
+      if (artifact != null) {
+         sb.append("\nHistory : " + artifact.getName());
+      }
       return sb.toString();
    }
 

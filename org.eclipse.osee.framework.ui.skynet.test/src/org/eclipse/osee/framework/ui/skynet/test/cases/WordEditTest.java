@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.test.cases;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -23,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -114,7 +112,7 @@ public class WordEditTest {
 
    public static List<Artifact> getArtifactsToChange(Branch branch) throws OseeCoreException {
       List<Artifact> arts = new ArrayList<Artifact>();
-      Collection<Change> changes = ChangeManager.getChangesPerBranch(branch, null);
+      Collection<Change> changes = ChangeManager.getChangesPerBranch(branch, new NullProgressMonitor());
       for (Change change : changes) {
          Artifact art = change.getArtifact();
          if (art.isOfType(Requirements.ABSTRACT_SOFTWARE_REQUIREMENT)) {

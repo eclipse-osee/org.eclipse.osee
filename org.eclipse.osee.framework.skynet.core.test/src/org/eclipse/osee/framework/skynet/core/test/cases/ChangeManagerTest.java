@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.test.cases;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -29,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.junit.After;
 import org.junit.Before;
@@ -93,7 +93,7 @@ public class ChangeManagerTest {
 
    public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException {
       boolean pass = false;
-      for (Change change : ChangeManager.getChangesPerBranch(artifact.getBranch(), new EmptyMonitor())) {
+      for (Change change : ChangeManager.getChangesPerBranch(artifact.getBranch(), new NullProgressMonitor())) {
          if (change.getArtId() == artifact.getArtId()) {
             pass = change.getModificationType() == modificationType;
             break;

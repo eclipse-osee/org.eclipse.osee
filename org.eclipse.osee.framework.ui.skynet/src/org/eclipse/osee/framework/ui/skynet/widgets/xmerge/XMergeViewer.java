@@ -54,7 +54,6 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
-import org.eclipse.osee.framework.ui.skynet.status.SwtStatusMonitor;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -229,11 +228,11 @@ public class XMergeViewer extends XWidget implements IAdaptable {
                   Conflict[] artifactChanges = new Conflict[0];
                   if (conflicts[0].getToTransactionId() != null) {
                      setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getSourceBranch(),
-                           conflicts[0].getDestBranch(), conflicts[0].getToTransactionId(),
-                           new SwtStatusMonitor(monitor)).toArray(artifactChanges));
+                           conflicts[0].getDestBranch(), conflicts[0].getToTransactionId(), monitor).toArray(
+                           artifactChanges));
                   } else {
                      setConflicts(ConflictManagerInternal.getConflictsPerBranch(conflicts[0].getCommitTransactionId(),
-                           new SwtStatusMonitor(monitor)).toArray(artifactChanges));
+                           monitor).toArray(artifactChanges));
                   }
                }
             } catch (Exception ex) {
@@ -389,17 +388,15 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       Job job = new Job("Loading Merge Manager") {
          @Override
          protected IStatus run(IProgressMonitor monitor) {
-            SwtStatusMonitor swtMonitor = new SwtStatusMonitor(monitor);
             try {
                if (showConflicts) {
                   if (commitTrans == null) {
                      conflicts =
-                           ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destBranch, tranId, swtMonitor).toArray(
+                           ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destBranch, tranId, monitor).toArray(
                                  new Conflict[0]);
                   } else {
                      conflicts =
-                           ConflictManagerInternal.getConflictsPerBranch(commitTrans, swtMonitor).toArray(
-                                 new Conflict[0]);
+                           ConflictManagerInternal.getConflictsPerBranch(commitTrans, monitor).toArray(new Conflict[0]);
                   }
                }
 

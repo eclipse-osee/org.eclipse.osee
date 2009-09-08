@@ -568,7 +568,7 @@ public class BranchManager {
       if (!itemsToUpdate.isEmpty()) {
          List<Object[]> data = new ArrayList<Object[]>();
          for (Entry<Branch, BranchState> entry : itemsToUpdate.entrySet()) {
-            data.add(new Object[] {entry.getValue(), entry.getKey().getBranchId()});
+            data.add(new Object[] {entry.getValue().getValue(), entry.getKey().getBranchId()});
          }
 
          ConnectionHandler.runBatchUpdate(connection, UPDATE_BRANCH_STATE, data);

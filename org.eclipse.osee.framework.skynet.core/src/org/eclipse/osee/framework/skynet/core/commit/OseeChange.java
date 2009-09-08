@@ -22,36 +22,34 @@ public class OseeChange {
       Artiact, Attribute, Relation
    };
    private final TxChange sourceTxChange;
-   private final int sourceGammaId;
+   private final int currentSourceGammaId;
    private int desinationGammaId;
-   private final ModificationType sourceModificationType;
+   private final ModificationType currentSourceModType;
+   private ModificationType firstSourceModType;
    private int itemId;
    private GammaKind kind;
    private TxChange destinationTxChange;
-   private ModificationType desinationModificationType;
+   private ModificationType desinationModType;
+   private ModificationType resultantModType;
+   private int resultantGammaId;
 
-   protected OseeChange(TxChange txChange, int gammaId, ModificationType modificationType, int itemId) {
+   protected OseeChange(TxChange txChange, int currentSourceGammaId, ModificationType currentSourceModType) {
       super();
       this.sourceTxChange = txChange;
-      this.sourceGammaId = gammaId;
-      this.sourceModificationType = modificationType;
-      this.itemId = itemId;
+      this.currentSourceGammaId = currentSourceGammaId;
+      this.currentSourceModType = currentSourceModType;
    }
 
    public TxChange getTxChange() {
       return sourceTxChange;
    }
 
-   public int getSourceGammaId() {
-      return sourceGammaId;
+   public int getCurrentSourceGammaId() {
+      return currentSourceGammaId;
    }
 
-   public ModificationType getModificationType() {
-      return sourceModificationType;
-   }
-
-   public int getTypeId() {
-      return itemId;
+   public ModificationType getCurrentSourceModType() {
+      return currentSourceModType;
    }
 
    public void accept(IChangeResolver resolver) throws OseeCoreException {
@@ -81,12 +79,12 @@ public class OseeChange {
       this.destinationTxChange = destinationTxChange;
    }
 
-   public ModificationType getDesinationModificationType() {
-      return desinationModificationType;
+   public ModificationType getDesinationModType() {
+      return desinationModType;
    }
 
-   public void setDesinationModificationType(ModificationType desinationModificationType) {
-      this.desinationModificationType = desinationModificationType;
+   public void setDesinationModType(ModificationType desinationModType) {
+      this.desinationModType = desinationModType;
    }
 
    /**
@@ -101,5 +99,62 @@ public class OseeChange {
     */
    public void setDesinationGammaId(int desinationGammaId) {
       this.desinationGammaId = desinationGammaId;
+   }
+
+   /**
+    * @return the firstSourceModType
+    */
+   public ModificationType getFirstSourceModType() {
+      return firstSourceModType;
+   }
+
+   /**
+    * @param firstSourceModType the firstSourceModType to set
+    */
+   public void setFirstSourceModType(ModificationType firstSourceModType) {
+      this.firstSourceModType = firstSourceModType;
+   }
+
+   public boolean wasNewOnSource() {
+      return firstSourceModType == ModificationType.NEW || currentSourceModType == ModificationType.NEW || firstSourceModType == null;
+   }
+
+   public boolean wasIntroducedOnSource() {
+      return firstSourceModType == ModificationType.INTRODUCED || currentSourceModType == ModificationType.INTRODUCED;
+   }
+
+   public boolean wasNewOrIndtroducedOnSource() {
+      return wasNewOnSource() || wasIntroducedOnSource();
+   }
+
+   public ModificationType getResultantModType() {
+      return resultantModType;
+   }
+
+   public void setResultantModType(ModificationType resultantModType) {
+      this.resultantModType = resultantModType;
+   }
+
+   public boolean isAlreadyOnDestination() {
+      return currentSourceGammaId == desinationGammaId && currentSourceModType.isDeleted() == desinationModType.isDeleted();
+   }
+
+   /**
+    * @return the resultantGammaId
+    */
+   public int getResultantGammaId() {
+      return resultantGammaId;
+   }
+
+   /**
+    * @param resultantGammaId the resultantGammaId to set
+    */
+   public void setResultantGammaId(int resultantGammaId) {
+      this.resultantGammaId = resultantGammaId;
+   }
+
+   @Override
+   public String toString() {
+      return "OseeChange [currentSourceGammaId=" + currentSourceGammaId + ", currentSourceModType=" + currentSourceModType + ", desinationGammaId=" + desinationGammaId + ", desinationModType=" + desinationModType + ", destinationTxChange=" + destinationTxChange + ", firstSourceModType=" + firstSourceModType + ", itemId=" + itemId + ", kind=" + kind + ", resultantGammaId=" + resultantGammaId + ", resultantModType=" + resultantModType + ", sourceTxChange=" + sourceTxChange + "]";
    }
 }

@@ -11,20 +11,17 @@
 package org.eclipse.osee.framework.skynet.core.commit;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 public class ChangeCache {
    private final IChangeDataAccessor changeDataAccessor;
-   private final IChangeFactory factory;
 
-   public ChangeCache(IChangeDataAccessor changeDataAccessor, IChangeFactory factory) {
+   public ChangeCache(IChangeDataAccessor changeDataAccessor) {
       this.changeDataAccessor = changeDataAccessor;
-      this.factory = factory;
    }
 
-   public Collection<OseeChange> getRawChangeData(IProgressMonitor monitor, ChangeLocator locator) throws Exception {
+   public List<OseeChange> getRawChangeData(IProgressMonitor monitor, ChangeLocator locator) throws Exception {
       List<OseeChange> changeData = new ArrayList<OseeChange>();
       changeDataAccessor.loadChangeData(monitor, locator, changeData);
       return changeData;

@@ -38,17 +38,17 @@ public class ChangeResolver implements IChangeResolver {
 
    @Override
    public void asArtifactChange(OseeChange change) throws OseeCoreException {
-      artifactData.put(change.getTypeId(), change);
+      artifactData.put(change.getItemId(), change);
    }
 
    @Override
    public void asAttributeChange(OseeChange change) throws OseeCoreException {
-      attributeData.put(change.getTypeId(), change);
+      attributeData.put(change.getItemId(), change);
    }
 
    @Override
    public void asRelationChange(OseeChange change) throws OseeCoreException {
-      relationData.put(change.getTypeId(), change);
+      relationData.put(change.getItemId(), change);
    }
 
    @Override
@@ -59,7 +59,7 @@ public class ChangeResolver implements IChangeResolver {
    private void getNetChange(Collection<OseeChange> changes) {
       ModificationType totalModType = null;
       for (OseeChange change : changes) {
-         totalModType = getNetModificationType(totalModType, change.getModificationType());
+         totalModType = getNetModificationType(totalModType, change.getCurrentSourceModType());
       }
    }
 

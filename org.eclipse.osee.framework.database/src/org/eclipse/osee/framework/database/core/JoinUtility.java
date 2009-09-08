@@ -254,7 +254,7 @@ public class JoinUtility {
       }
 
       private IdJoinQuery() {
-         super(JoinItem.TRANSACTION);
+         super(JoinItem.ID);
       }
 
       public void add(int id) {

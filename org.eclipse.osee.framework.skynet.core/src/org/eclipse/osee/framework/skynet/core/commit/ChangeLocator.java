@@ -16,12 +16,27 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
  * @author Roberto E. Escobar
  */
 public class ChangeLocator {
+   private final Branch sourceBranch;
+   private final Branch destinationBranch;
+
+   public ChangeLocator(Branch sourceBranch, Branch destinationBranch) {
+      this.sourceBranch = sourceBranch;
+      this.destinationBranch = destinationBranch;
+   }
 
    public Branch getSourceBranch() {
-      return null;
+      return sourceBranch;
+   }
+
+   public int getSourceBranchId() {
+      return sourceBranch.getBranchId();
    }
 
    public Branch getDestinationBranch() {
-      return null;
+      return destinationBranch;
+   }
+
+   public int getDestinationBranchId() {
+      return destinationBranch.getBranchId();
    }
 }

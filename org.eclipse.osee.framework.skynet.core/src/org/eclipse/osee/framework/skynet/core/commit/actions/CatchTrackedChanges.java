@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.commit.actions;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 import org.eclipse.osee.framework.skynet.core.validation.OseeValidator;
 
@@ -42,7 +42,7 @@ public class CatchTrackedChanges implements CommitAction {
    public void runCommitAction(Branch branch) throws OseeCoreException {
       Set<Artifact> changedArtifacts = new HashSet<Artifact>();
 
-      for (Change change : ChangeManager.getChangesPerBranch(branch, new EmptyMonitor())) {
+      for (Change change : ChangeManager.getChangesPerBranch(branch, new NullProgressMonitor())) {
          if (!change.getModificationType().equals(ModificationType.DELETED)) {
             if (change instanceof AttributeChanged) {
                Attribute<?> attribute = ((AttributeChanged) change).getAttribute();

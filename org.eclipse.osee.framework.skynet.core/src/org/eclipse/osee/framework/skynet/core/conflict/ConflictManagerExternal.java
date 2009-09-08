@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
@@ -36,7 +36,7 @@ public class ConflictManagerExternal {
       if (originalConflicts == null) {
          originalConflicts =
                ConflictManagerInternal.getConflictsPerBranch(sourceBranch, destinationBranch,
-                     TransactionIdManager.getStartEndPoint(sourceBranch).getFirst(), new EmptyMonitor());
+                     TransactionIdManager.getStartEndPoint(sourceBranch).getFirst(), new NullProgressMonitor());
       }
       return originalConflicts;
    }

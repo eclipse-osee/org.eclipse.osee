@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.status.EmptyMonitor;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -46,12 +45,12 @@ import org.junit.Before;
 public class ViewWordChangeAndDiffTest {
    private boolean isWordRunning = false;
    private Collection<Change> artifactChanges = new ArrayList<Change>();
-   private ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>();
-   private ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>();
+   private final ArrayList<Artifact> baseArtifacts = new ArrayList<Artifact>();
+   private final ArrayList<Artifact> newerArtifacts = new ArrayList<Artifact>();
    private ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
    private Artifact baseArtifact = null;
    private Artifact newerArtifact = null;
-   private VariableMap variableMap = new VariableMap();
+   private final VariableMap variableMap = new VariableMap();
    private Artifact instanceOfArtifact = null;
    private String fileName = null;
 
@@ -77,12 +76,12 @@ public class ViewWordChangeAndDiffTest {
       } else {
          theBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       }
-      artifactChanges = ChangeManager.getChangesPerBranch(theBranch, new EmptyMonitor());
+      artifactChanges = ChangeManager.getChangesPerBranch(theBranch, new NullProgressMonitor());
       // get the artifacts from the changed list
       artifacts = getArtifacts();
       // make sure permissions are right
-      assertTrue("Valid object permissions", (AccessControlManager.checkObjectListPermission(artifacts,
-            PermissionEnum.READ)));
+      assertTrue("Valid object permissions", AccessControlManager.checkObjectListPermission(artifacts,
+            PermissionEnum.READ));
       // initialize the lists for the test
       initializeViewChangeReportBaseAndNewArtifacts();
       Artifact bArtifact = baseArtifacts.iterator().next();
@@ -98,12 +97,12 @@ public class ViewWordChangeAndDiffTest {
    public void testSingleNativeDiff() throws Exception {
       artifactChanges =
             ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
-                  new EmptyMonitor());
+                  new NullProgressMonitor());
       // get the artifacts from the changed list
       artifacts = getArtifacts();
       // make sure permissions are right
-      assertTrue("Valid object permissions", (AccessControlManager.hasPermission(
-            artifactChanges.iterator().next().getArtifact(), PermissionEnum.READ)));
+      assertTrue("Valid object permissions", AccessControlManager.hasPermission(
+            artifactChanges.iterator().next().getArtifact(), PermissionEnum.READ));
       initializeBaseAndNewArtifact(artifactChanges.iterator().next());
       singleNativeDiff(baseArtifact, newerArtifact);
       // if we get here there were no exceptions on the diff considered successful
@@ -115,7 +114,7 @@ public class ViewWordChangeAndDiffTest {
       try {
          artifactChanges =
                ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
-                     new EmptyMonitor());
+                     new NullProgressMonitor());
          // get the artifacts from the changed list
          artifacts = getArtifacts();
          newerArtifact =
@@ -166,12 +165,12 @@ public class ViewWordChangeAndDiffTest {
 
    private void initializeBaseAndNewArtifact(Change artifactChange) throws ArtifactDoesNotExist, OseeCoreException {
       baseArtifact =
-            (artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED) ? null : ArtifactQuery.getHistoricalArtifactFromId(
+            artifactChange.getModificationType() == NEW || artifactChange.getModificationType() == ModificationType.INTRODUCED ? null : ArtifactQuery.getHistoricalArtifactFromId(
                   artifactChange.getArtifact().getArtId(), artifactChange.getFromTransactionId(), true);
 
       newerArtifact =
-            artifactChange.getModificationType() == DELETED ? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
-                  artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact());
+            artifactChange.getModificationType() == DELETED ? null : artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+                  artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact();
 
       baseArtifacts.add(baseArtifact);
       newerArtifacts.add(newerArtifact);
@@ -183,7 +182,7 @@ public class ViewWordChangeAndDiffTest {
             fileName =
                   baseArtifact != null ? baseArtifact.getBranch().getShortName() : newerArtifact.getBranch().getShortName();
          }
-         variableMap.setValue("fileName", fileName + "_" + (new Date()).toString().replaceAll(":", ";") + ".xml");
+         variableMap.setValue("fileName", fileName + "_" + new Date().toString().replaceAll(":", ";") + ".xml");
       }
    }
 

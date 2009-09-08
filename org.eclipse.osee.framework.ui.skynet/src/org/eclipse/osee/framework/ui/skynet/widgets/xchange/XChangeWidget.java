@@ -44,7 +44,6 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
-import org.eclipse.osee.framework.ui.skynet.status.SwtStatusMonitor;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -98,7 +97,9 @@ public class XChangeWidget extends XWidget implements IActionable {
       Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
       mainComp.setLayout(ALayout.getZeroMarginLayout());
-      if (toolkit != null) toolkit.paintBordersFor(mainComp);
+      if (toolkit != null) {
+         toolkit.paintBordersFor(mainComp);
+      }
 
       try {
          createTaskActionBar(mainComp);
@@ -112,7 +113,9 @@ public class XChangeWidget extends XWidget implements IActionable {
       xChangeViewer.setContentProvider(contentProvider);
       xChangeViewer.setLabelProvider(new XChangeLabelProvider(xChangeViewer));
 
-      if (toolkit != null) toolkit.adapt(xChangeViewer.getStatusLabel(), false, false);
+      if (toolkit != null) {
+         toolkit.adapt(xChangeViewer.getStatusLabel(), false, false);
+      }
 
       Tree tree = xChangeViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -228,8 +231,12 @@ public class XChangeWidget extends XWidget implements IActionable {
    @SuppressWarnings("unchecked")
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
-      if (xChangeViewer == null) return items;
-      if (xChangeViewer.getSelection().isEmpty()) return items;
+      if (xChangeViewer == null) {
+         return items;
+      }
+      if (xChangeViewer.getSelection().isEmpty()) {
+         return items;
+      }
       Iterator i = ((IStructuredSelection) xChangeViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -296,12 +303,11 @@ public class XChangeWidget extends XWidget implements IActionable {
             // need to determine if the branch has been updated from parent
             final boolean rebaselined = hasBranch ? branch.getBranchState().equals(BranchState.REBASELINED) : false;
             final Collection<Change> changes = new ArrayList<Change>();
-            SwtStatusMonitor swtMonitor = new SwtStatusMonitor(monitor);
 
             try {
                if (loadChangeReport && !rebaselined) {
-                  changes.addAll((hasBranch ? ChangeManager.getChangesPerBranch(branch, swtMonitor) : ChangeManager.getChangesPerTransaction(
-                        transactionId, swtMonitor)));
+                  changes.addAll((hasBranch ? ChangeManager.getChangesPerBranch(branch, monitor) : ChangeManager.getChangesPerTransaction(
+                        transactionId, monitor)));
                }
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
@@ -391,8 +397,12 @@ public class XChangeWidget extends XWidget implements IActionable {
    @Override
    public String getActionDescription() {
       StringBuffer sb = new StringBuffer();
-      if (branch != null) sb.append("\nBranch: " + branch);
-      if (transactionId != null) sb.append("\nTransaction Id: " + transactionId.getTransactionNumber());
+      if (branch != null) {
+         sb.append("\nBranch: " + branch);
+      }
+      if (transactionId != null) {
+         sb.append("\nTransaction Id: " + transactionId.getTransactionNumber());
+      }
       return sb.toString();
    }
 

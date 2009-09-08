@@ -35,6 +35,12 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
 
    protected abstract void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException;
 
+   protected void handleTxException(Exception ex) {
+   }
+
+   protected void handleTxFinally() throws OseeCoreException {
+   }
+
    private final class Transaction extends DbTransaction {
       private final IProgressMonitor monitor;
 
@@ -51,6 +57,16 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          AbstractDbTxOperation.this.doTxWork(monitor, connection);
+      }
+
+      @Override
+      protected void handleTxException(Exception ex) {
+         AbstractDbTxOperation.this.handleTxException(ex);
+      }
+
+      @Override
+      protected void handleTxFinally() throws OseeCoreException {
+         AbstractDbTxOperation.this.handleTxFinally();
       }
    }
 }
