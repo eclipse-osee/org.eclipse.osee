@@ -172,9 +172,20 @@ public class RelationManager {
             // Log error cause this should never happen;  only one relation link object should be created 
             for (RelationLink relation : artifactsRelations) {
                if (relation.equals(newRelation) && relation != newRelation) {
-                  OseeLog.log(Activator.class, Level.SEVERE, String.format(
-                        "Duplicate relation objects for same relation for Relation [%s] Artifact (%s)[%s]", relation,
-                        artifact.getArtId(), artifact.getName()));
+                  String artAName = "Unknown";
+                  String artBName = "Unknown";
+                  try {
+                     artAName = relation.getArtifactA().getSafeName();
+                     artBName = relation.getArtifactB().getSafeName();
+                  } catch (Exception ex) {
+                     // do nothing
+                  }
+                  OseeLog.log(
+                        Activator.class,
+                        Level.SEVERE,
+                        String.format(
+                              "Duplicate relation objects for same relation for Relation [%s]  - ArtA (%s)[%s] <-> ArtB (%s)[%s]",
+                              relation, relation.getAArtifactId(), artAName, relation.getBArtifactId(), artBName));
                }
             }
             // Always want to return if relation link is already managed
