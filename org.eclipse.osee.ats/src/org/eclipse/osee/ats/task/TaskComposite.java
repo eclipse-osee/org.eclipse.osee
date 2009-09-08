@@ -18,17 +18,13 @@ import java.util.Iterator;
 import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
-import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.actions.NewAction;
-import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction;
-import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
-import org.eclipse.osee.ats.actions.RefreshAction;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorAction.IOpenNewAtsTaskEditorHandler;
 import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler;
 import org.eclipse.osee.ats.actions.RefreshAction.IRefreshActionHandler;
+import org.eclipse.osee.ats.actions.TaskAddAction.ITaskAddActionHandler;
+import org.eclipse.osee.ats.actions.TaskDeleteAction.ITaskDeleteActionHandler;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
@@ -47,10 +43,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -65,20 +58,17 @@ import org.eclipse.swt.dnd.DropTargetEvent;
 import org.eclipse.swt.dnd.FileTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
  */
-public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSelectedHandler, IOpenNewAtsTaskEditorHandler, IRefreshActionHandler {
+public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSelectedHandler, ITaskDeleteActionHandler, ITaskAddActionHandler, IOpenNewAtsTaskEditorHandler, IRefreshActionHandler {
 
    private TaskXViewer taskXViewer;
    private final IXTaskViewer iXTaskViewer;
@@ -127,67 +117,10 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      if (iXTaskViewer.addTaskCompositeToolBar()) {
-         populateToolBar(toolBar);
-      }
-
    }
 
    public IXTaskViewer getIXTaskViewer() {
       return iXTaskViewer;
-   }
-
-   private void populateToolBar(ToolBar toolBar) throws OseeCoreException {
-      ToolItem item = null;
-
-      if (iXTaskViewer.isTaskable()) {
-
-         item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(ImageManager.getImage(AtsImage.NEW_TASK));
-         item.setToolTipText("New Task");
-         item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
-         item.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               handleNewTask();
-            }
-         });
-
-         item = new ToolItem(toolBar, SWT.PUSH);
-         item.setImage(ImageManager.getImage(FrameworkImage.X_RED));
-         item.setToolTipText("Delete Task");
-         item.setEnabled(iXTaskViewer.isTasksEditable() && iXTaskViewer.isTaskable());
-         item.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-               handleDeleteTask();
-            }
-         });
-
-      }
-
-      AtsUtil.actionToToolItem(toolBar, new RefreshAction(this), FrameworkImage.REFRESH);
-
-      item = new ToolItem(toolBar, SWT.SEPARATOR);
-      AtsUtil.actionToToolItem(toolBar, XViewer.getCustomizeAction(taskXViewer), AtsImage.CUSTOMIZE);
-
-      item = new ToolItem(toolBar, SWT.SEPARATOR);
-      if (iXTaskViewer.getEditor() != null && (iXTaskViewer.getEditor() instanceof TaskEditor)) {
-         AtsUtil.actionToToolItem(toolBar, new OpenNewAtsTaskEditorAction(this), AtsImage.TASK);
-      }
-      AtsUtil.actionToToolItem(toolBar, new OpenNewAtsTaskEditorSelected(this), AtsImage.TASK_SELECTED);
-      new ToolItem(toolBar, SWT.SEPARATOR);
-      AtsUtil.actionToToolItem(toolBar, new NewAction(), AtsImage.NEW_ACTION);
-      if (iXTaskViewer.getActionable() != null) {
-         OseeAts.addButtonToEditorToolBar(iXTaskViewer.getActionable(), AtsPlugin.getInstance(), toolBar,
-               TaskEditor.EDITOR_ID, "ATS Task Tab");
-      }
-
-      new ToolItem(toolBar, SWT.SEPARATOR);
-
-      System.err.println("Add this back in");
-      //      createTaskActionBarPulldown(toolBar, toolBar.getParent());
-
    }
 
    public void loadTable() throws OseeCoreException {
@@ -377,9 +310,6 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.actions.IRefreshActionHandler#refreshActionHandler()
-    */
    @Override
    public void refreshActionHandler() {
       try {
@@ -393,27 +323,28 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.actions.OpenNewAtsTaskEditor.IOpenNewAtsTaskEditorHandler#getCustomizeDataCopy()
-    */
    @Override
    public CustomizeData getCustomizeDataCopy() throws OseeCoreException {
       return taskXViewer.getCustomizeMgr().generateCustDataFromTable();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.actions.OpenNewAtsTaskEditor.IOpenNewAtsTaskEditorHandler#getTaskEditorProviderCopy()
-    */
    @Override
    public ITaskEditorProvider getTaskEditorProviderCopy() throws OseeCoreException {
       return ((TaskEditorInput) ((TaskEditor) iXTaskViewer.getEditor()).getEditorInput()).getItaskEditorProvider().copyProvider();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected.IOpenNewAtsTaskEditorSelectedHandler#getSelectedArtifacts()
-    */
    @Override
    public ArrayList<? extends Artifact> getSelectedArtifacts() throws OseeCoreException {
       return getSelectedTaskArtifactItems();
+   }
+
+   @Override
+   public void taskAddActionHandler() {
+      handleNewTask();
+   }
+
+   @Override
+   public void taskDeleteActionHandler() {
+      handleDeleteTask();
    }
 }

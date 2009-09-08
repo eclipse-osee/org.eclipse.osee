@@ -53,7 +53,7 @@ import org.eclipse.ui.forms.widgets.Section;
 /**
  * @author Donald G. Dunne
  */
-public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage implements IActionable {
+public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implements IActionable {
 
    private final TaskEditor taskEditor;
    private TaskComposite taskComposite;
@@ -62,7 +62,7 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage implements I
    private WorldAssigneeFilter worldAssigneeFilter = null;
    private Action filterCompletedAction, filterMyAssigneeAction;
 
-   public TaskXWidgetActionPage(TaskEditor taskEditor) {
+   public TaskEditorXWidgetActionPage(TaskEditor taskEditor) {
       super(taskEditor, "org.eclipse.osee.ats.actionPage", "Actions");
       this.taskEditor = taskEditor;
    }

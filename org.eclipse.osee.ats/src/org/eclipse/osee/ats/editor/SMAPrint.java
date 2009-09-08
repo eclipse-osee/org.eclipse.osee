@@ -15,6 +15,7 @@ import java.util.Arrays;
 import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.NoteItem;
+import org.eclipse.osee.ats.task.TaskComposite;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -30,10 +31,10 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 public class SMAPrint extends Action {
 
    private final SMAManager smaMgr;
-   private final SMATaskComposite taskComposite;
+   private final TaskComposite taskComposite;
    private final SMAWorkFlowTab workFlowTab;
 
-   public SMAPrint(SMAManager smaMgr, SMAWorkFlowTab workFlowTab, SMATaskComposite taskComposite) {
+   public SMAPrint(SMAManager smaMgr, SMAWorkFlowTab workFlowTab, TaskComposite taskComposite) {
       super();
       this.smaMgr = smaMgr;
       this.workFlowTab = workFlowTab;
@@ -91,7 +92,7 @@ public class SMAPrint extends Action {
          }
       }
       if (workFlowTab != null) resultData.addRaw(workFlowTab.getHtml());
-      if (taskComposite != null) resultData.addRaw(taskComposite.getHtml());
+      if (taskComposite != null) resultData.addRaw(taskComposite.toHTML(AHTML.LABEL_FONT));
       resultData.addRaw(AHTML.newline());
       resultData.addRaw(smaMgr.getLog().getHtml());
 

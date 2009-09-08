@@ -27,9 +27,10 @@ public class Strings {
 
    public static String truncate(String value, int length) {
       String toReturn = value;
-      if (Strings.isValid(value)) {
+      if (Strings.isValid(value) && value.length() > length) {
          toReturn = value.substring(0, Math.min(length, value.length()));
       }
       return toReturn;
    }
+
 }

@@ -60,6 +60,4 @@ public interface IXTaskViewer {
 
    public IActionable getActionable() throws OseeCoreException;
 
-   public boolean addTaskCompositeToolBar();
-
 }

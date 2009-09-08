@@ -26,6 +26,8 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.navigate.VisitedItems;
 import org.eclipse.osee.ats.task.IXTaskViewer;
+import org.eclipse.osee.ats.task.TaskComposite;
+import org.eclipse.osee.ats.task.TaskTabXWidgetActionPage;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
@@ -98,11 +100,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    private SMAManager smaMgr;
    private int workFlowPageIndex, taskPageIndex, metricsPageIndex, attributesPageIndex;
    private SMAWorkFlowTab workFlowTab;
-   private SMATaskComposite taskComposite;
    private AttributesComposite attributesComposite;
    private AtsMetricsComposite metricsComposite;
    private boolean priviledgedEditModeEnabled = false;
    private Action printAction;
+   private TaskTabXWidgetActionPage taskTabXWidgetActionPage;
 
    public SMAEditor() {
       super();
@@ -162,6 +164,11 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
 
       enableGlobalPrint();
+   }
+
+   private void createTaskTab() throws OseeCoreException, PartInitException {
+      taskTabXWidgetActionPage = new TaskTabXWidgetActionPage(this);
+      addPage(taskTabXWidgetActionPage);
    }
 
    private void updatePartName() throws OseeCoreException {
@@ -241,7 +248,9 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    }
 
    void enableGlobalPrint() {
-      printAction = new SMAPrint(smaMgr, workFlowTab, taskComposite);
+      printAction =
+            new SMAPrint(smaMgr, workFlowTab,
+                  taskTabXWidgetActionPage == null ? null : taskTabXWidgetActionPage.getTaskComposite());
       getEditorSite().getActionBars().setGlobalActionHandler(ActionFactory.PRINT.getId(), printAction);
    }
 
@@ -262,8 +271,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       }
 
       workFlowTab.dispose();
-      if (taskComposite != null) {
-         taskComposite.disposeTaskComposite();
+      if (taskTabXWidgetActionPage != null) {
+         taskTabXWidgetActionPage.dispose();
       }
       if (metricsComposite != null) {
          metricsComposite.disposeComposite();
@@ -329,18 +338,6 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    protected void createPages() {
       super.createPages();
       OseeContributionItem.addTo(this, true);
-   }
-
-   private void createTaskTab() {
-      try {
-         Composite composite = AtsUtil.createCommonPageComposite(getContainer());
-         ToolBar toolBar = createToolBar(composite);
-         taskComposite = new SMATaskComposite(this, composite, SWT.NONE, toolBar);
-         taskPageIndex = addPage(composite);
-         setPageText(taskPageIndex, "Tasks");
-      } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
    }
 
    private void createMetricsTab() {
@@ -774,12 +771,8 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       return workFlowTab;
    }
 
-   public SMATaskComposite getTaskComposite() {
-      return taskComposite;
-   }
-
-   public void setTaskComposite(SMATaskComposite taskComposite) {
-      this.taskComposite = taskComposite;
+   public TaskComposite getTaskComposite() {
+      return taskTabXWidgetActionPage.getTaskComposite();
    }
 
    public List<XWidget> getXWidgetsFromState(String stateName, Class<?> clazz) {
@@ -823,8 +816,4 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
       return this;
    }
 
-   @Override
-   public boolean addTaskCompositeToolBar() {
-      return true;
-   }
 }

@@ -55,7 +55,7 @@ import org.eclipse.ui.PartInitException;
 public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IAtsMetricsProvider, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.TaskEditor";
    private int mainPageIndex, metricsPageIndex;
-   private TaskXWidgetActionPage taskActionPage;
+   private TaskEditorXWidgetActionPage taskActionPage;
    private final Collection<TaskArtifact> tasks = new HashSet<TaskArtifact>();
    private AtsMetricsComposite metricsComposite;
 
@@ -138,7 +138,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    /**
     * @return the taskActionPage
     */
-   public TaskXWidgetActionPage getTaskActionPage() {
+   public TaskEditorXWidgetActionPage getTaskActionPage() {
       return taskActionPage;
    }
 
@@ -167,7 +167,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
    }
 
    private void createMainTab() throws OseeCoreException, PartInitException {
-      taskActionPage = new TaskXWidgetActionPage(this);
+      taskActionPage = new TaskEditorXWidgetActionPage(this);
       mainPageIndex = addPage(taskActionPage);
    }
 
@@ -358,8 +358,4 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
       return this;
    }
 
-   @Override
-   public boolean addTaskCompositeToolBar() {
-      return false;
-   }
 }
