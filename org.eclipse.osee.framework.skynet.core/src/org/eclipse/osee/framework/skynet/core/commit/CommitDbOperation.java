@@ -115,8 +115,10 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
    private void manageBranchStates() throws OseeCoreException {
       Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
-      savedBranchStates.put(mergeBranch, mergeBranch.getBranchState());
-      BranchManager.setBranchState(connection, mergeBranch, BranchState.COMMITTED);
+      if (mergeBranch != null) {
+         savedBranchStates.put(mergeBranch, mergeBranch.getBranchState());
+         BranchManager.setBranchState(connection, mergeBranch, BranchState.COMMITTED);
+      }
 
       BranchManager.setBranchState(connection, destinationBranch, BranchState.MODIFIED);
 
