@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -53,15 +52,26 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private final Map<Branch, BranchState> savedBranchStates = new HashMap<Branch, BranchState>();
    private final Branch sourceBranch;
    private final Branch destinationBranch;
+   private final Branch mergeBranch;
    private final List<OseeChange> changes;
    private Integer newTransactionNumber;
    private OseeConnection connection;
 
-   public CommitDbOperation(ConflictManagerExternal conflictManager, List<OseeChange> changes) {
-      super("Commit Database Operation", Activator.PLUGIN_ID);
+   //            for (Conflict conflict : conflictManager.getOriginalConflicts()) {
+   //               if (!conflict.statusResolved()) {
+   //                  throw new OseeStateException("All conflicts must be resolved before commit.");
+   //               }
+   //               if (conflict.getSourceGamma() == change.getCurrentSourceGammaId()) {
+   //                  conflict.setStatus(ConflictStatus.COMMITTED);
+   //                  break;
+   //               }
+   //            }
 
-      sourceBranch = conflictManager.getSourceBranch();
-      destinationBranch = conflictManager.getDestinationBranch();
+   public CommitDbOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<OseeChange> changes) {
+      super("Commit Database Operation", Activator.PLUGIN_ID);
+      this.sourceBranch = sourceBranch;
+      this.destinationBranch = destinationBranch;
+      this.mergeBranch = mergeBranch;
       this.changes = changes;
 
       savedBranchStates.put(sourceBranch, sourceBranch.getBranchState());
@@ -71,6 +81,10 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       this.connection = connection;
+      if (changes.isEmpty()) {
+         throw new OseeStateException(" A branch can not be commited without any changes made.");
+      }
+
       newTransactionNumber = addCommitTransactionToDatabase(UserManager.getUser());
 
       AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
@@ -106,20 +120,18 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private void insertCommitAddressing() throws OseeDataStoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
       for (OseeChange change : changes) {
-         ModificationType modType = change.getResultantModType();
-         insertData.add(new Object[] {newTransactionNumber, change.getResultantGammaId(), modType.getValue(),
+         ModificationType modType = change.getNetModType();
+         insertData.add(new Object[] {newTransactionNumber, change.getNetGammaId(), modType.getValue(),
                TxChange.getCurrent(modType).getValue()});
       }
       ConnectionHandler.runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }
 
    private void manageBranchStates() throws OseeCoreException {
-      Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
       if (mergeBranch != null) {
          savedBranchStates.put(mergeBranch, mergeBranch.getBranchState());
          BranchManager.setBranchState(connection, mergeBranch, BranchState.COMMITTED);
       }
-
       BranchManager.setBranchState(connection, destinationBranch, BranchState.MODIFIED);
 
       if (!sourceBranch.isRebaselined() && !sourceBranch.isRebaselineInProgress() && !sourceBranch.isCommitted()) {

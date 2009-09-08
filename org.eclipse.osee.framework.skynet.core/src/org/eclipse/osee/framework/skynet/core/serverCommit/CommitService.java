@@ -5,22 +5,23 @@
  */
 package org.eclipse.osee.framework.skynet.core.serverCommit;
 
-import java.rmi.activation.Activator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CommitDbTx;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeCache;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeDatabaseDataAccessor;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeLocator;
 import org.eclipse.osee.framework.skynet.core.commit.CommitDbOperation;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
+import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
 import org.eclipse.osee.framework.skynet.core.commit.OseeChange;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Jeff C. Phillips
@@ -28,21 +29,35 @@ import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 public class CommitService implements ICommitService {
 
    @Override
-   public void commitBranch(ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
+   public void commitBranch(IProgressMonitor monitor, ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
       if (false) {
-         IProgressMonitor monitor = new NullProgressMonitor();
-         ChangeLocator locator =
-               new ChangeLocator(conflictManager.getSourceBranch(), conflictManager.getDestinationBranch());
-         List<OseeChange> changes;
-         try {
-            changes = new ChangeCache(new ChangeDatabaseDataAccessor()).getRawChangeData(monitor, locator);
-            Operations.executeWork(new ComputeNetChangeOperation(changes, conflictManager, null), monitor, -1);
-            Operations.executeWork(new CommitDbOperation(conflictManager, changes), monitor, -1);
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      } else {
          new CommitDbTx(conflictManager, archiveSourceBranch).execute();
+         return;
+      }
+
+      Branch sourceBranch = conflictManager.getSourceBranch();
+      Branch destinationBranch = conflictManager.getDestinationBranch();
+      Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
+
+      List<OseeChange> changes = new ArrayList<OseeChange>();
+
+      List<IOperation> ops = new ArrayList<IOperation>();
+      ops.add(new LoadChangeDataOperation(sourceBranch, destinationBranch, mergeBranch, changes));
+      ops.add(new ComputeNetChangeOperation(changes));
+      ops.add(new CommitDbOperation(sourceBranch, destinationBranch, mergeBranch, changes));
+
+      String opName =
+            String.format("Commit: [%s]->[%s]", sourceBranch.getShortName(), destinationBranch.getShortName());
+      IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
+      Operations.executeWork(op, monitor, -1);
+      try {
+         Operations.checkForErrorStatus(op.getStatus());
+      } catch (Exception ex) {
+         if (ex instanceof OseeCoreException) {
+            throw (OseeCoreException) ex;
+         } else {
+            throw new OseeWrappedException(ex);
+         }
       }
    }
 }

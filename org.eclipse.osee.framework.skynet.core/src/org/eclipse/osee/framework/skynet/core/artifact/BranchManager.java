@@ -30,6 +30,7 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -498,11 +499,15 @@ public class BranchManager {
     * Commit the net changes from the source branch into the destination branch. If there are conflicts between the two
     * branches, the source branch changes will override those on the destination branch.
     * 
+    * @param monitor TODO
     * @param conflictManager
     * @param archiveSourceBranch
     * @throws OseeCoreException
     */
-   public static void commitBranch(ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) throws OseeCoreException {
+   public static void commitBranch(IProgressMonitor monitor, ConflictManagerExternal conflictManager, boolean archiveSourceBranch, boolean overwriteUnresolvedConflicts) throws OseeCoreException {
+      if (monitor == null) {
+         monitor = new NullProgressMonitor();
+      }
       if (conflictManager.remainingConflictsExist() && !overwriteUnresolvedConflicts) {
          throw new OseeCoreException("Commit failed due to unresolved conflicts");
       }
@@ -510,7 +515,7 @@ public class BranchManager {
          throw new OseeCoreException("Commit failed - unable to commit into a non-editable branch");
       }
       runCommitExtPointActions(conflictManager.getSourceBranch());
-      Activator.getInstance().getCommitBranchService().commitBranch(conflictManager, archiveSourceBranch);
+      Activator.getInstance().getCommitBranchService().commitBranch(monitor, conflictManager, archiveSourceBranch);
    }
 
    private static void runCommitExtPointActions(Branch branch) throws OseeCoreException {

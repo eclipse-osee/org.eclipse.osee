@@ -13,91 +13,52 @@ package org.eclipse.osee.framework.skynet.core.commit;
 import java.util.Iterator;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ComputeNetChangeOperation extends AbstractOperation {
-   private final List<OseeChange> rawChanges;
-   private final ConflictManagerExternal conflictManager;
-   private final IChangeResolver resolver;
+   private final List<OseeChange> changes;
 
-   /**
-    * the rawChanges will be transformed into the net changes
-    * 
-    * @param rawChanges
-    * @param resolver
-    */
-   public ComputeNetChangeOperation(List<OseeChange> rawChanges, ConflictManagerExternal conflictManager, IChangeResolver resolver) {
+   public ComputeNetChangeOperation(List<OseeChange> changes) {
       super("Compute Net Change", Activator.PLUGIN_ID);
-      this.rawChanges = rawChanges;
-      this.conflictManager = conflictManager;
-      this.resolver = resolver;
+      this.changes = changes;
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      compute();
-      if (rawChanges.isEmpty()) {
-         resolver.reset();
-         double workPercentage = 1.0 / rawChanges.size();
-         for (OseeChange oseeChange : rawChanges) {
+      if (!changes.isEmpty()) {
+         double workPercentage = 1.0 / changes.size();
+         Iterator<OseeChange> iterator = changes.iterator();
+         while (iterator.hasNext()) {
             checkForCancelledStatus(monitor);
-            oseeChange.accept(resolver);
+            OseeChange change = iterator.next();
+
+            if (change.wasNewOrIntroducedOnSource() && change.getCurrentSourceModType().isDeleted() || change.isAlreadyOnDestination()) {
+               iterator.remove();
+            } else {
+               // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
+               if (change.getDestinationModType() == null && !change.wasNewOrIntroducedOnSource()) {
+                  throw new OseeStateException(
+                        "This should be supported in the future - destination branch is not the source's parent: " + change);
+               }
+               if (change.getNetModType() != ModificationType.MERGED) {
+                  if (change.wasNewOnSource()) {
+                     change.setNetModType(ModificationType.NEW);
+                  } else if (change.wasIntroducedOnSource()) {
+                     change.setNetModType(ModificationType.INTRODUCED);
+                  } else {
+                     change.setNetModType(change.getCurrentSourceModType());
+                  }
+                  change.setNetGammaId(change.getCurrentSourceGammaId());
+               }
+            }
             monitor.worked(calculateWork(workPercentage));
          }
-         resolver.resolve();
-      }
-   }
-
-   private void compute() throws OseeCoreException {
-
-      Iterator<OseeChange> iterator = rawChanges.iterator();
-      while (iterator.hasNext()) {
-         OseeChange change = iterator.next();
-
-         if (change.wasNewOrIndtroducedOnSource() && change.getCurrentSourceModType().isDeleted() || change.isAlreadyOnDestination()) {
-            iterator.remove();
-            continue;
-         }
-
-         if (change.wasNewOnSource()) {
-            change.setResultantModType(ModificationType.NEW);
-         } else if (change.wasIntroducedOnSource()) {
-            change.setResultantModType(ModificationType.INTRODUCED);
-         } else {
-            change.setResultantModType(change.getCurrentSourceModType());
-         }
-         change.setResultantGammaId(change.getCurrentSourceGammaId());
-
-         // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
-         if (change.getDesinationModType() == null && !change.wasNewOrIndtroducedOnSource()) {
-            throw new OseeStateException("missing from destination: " + change);
-         }
-
-         for (Conflict conflict : conflictManager.getOriginalConflicts()) {
-            if (!conflict.statusResolved()) {
-               throw new OseeStateException("All conflicts must be resolved before commit.");
-            }
-            if (conflict.getSourceGamma() == change.getCurrentSourceGammaId()) {
-               change.setResultantGammaId(conflict.getMergeGammaId());
-               conflict.setStatus(ConflictStatus.COMMITTED);
-               change.setResultantModType(ModificationType.MERGED);
-               break;
-            }
-         }
-      }
-
-      if (rawChanges.isEmpty()) {
-         throw new OseeStateException(" A branch can not be commited without any changes made.");
       }
    }
 }

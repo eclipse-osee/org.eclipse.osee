@@ -48,7 +48,7 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       monitor.setTaskName("Merging updates");
-      BranchManager.commitBranch(conflictManager, archiveSourceBranch, overwriteUnresolvedConflicts);
+      BranchManager.commitBranch(null, conflictManager, archiveSourceBranch, overwriteUnresolvedConflicts);
       monitor.worked(calculateWork(0.60));
 
       Branch sourceBranch = conflictManager.getSourceBranch();

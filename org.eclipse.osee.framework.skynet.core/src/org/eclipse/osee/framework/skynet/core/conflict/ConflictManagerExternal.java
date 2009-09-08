@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  */
 public class ConflictManagerExternal {
 
-   Branch destinationBranch;
-   Branch sourceBranch;
-   List<Conflict> originalConflicts;
+   private final Branch destinationBranch;
+   private final Branch sourceBranch;
+   private List<Conflict> originalConflicts;
 
    public ConflictManagerExternal(Branch destinationBranch, Branch sourceBranch) {
       this.destinationBranch = destinationBranch;
