@@ -288,6 +288,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          }
       };
       filterCompletedAction.setToolTipText("Filter Out Completed/Cancelled - Ctrl-F");
+      filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GREEN_PLUS));
 
       filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", Action.AS_CHECK_BOX) {
 
@@ -303,6 +304,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          }
       };
       filterMyAssigneeAction.setToolTipText("Filter My Assignee - Ctrl-G");
+      filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
 
       toAction = new Action("Re-display as Actions", Action.AS_PUSH_BUTTON) {
 
@@ -312,6 +314,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          }
       };
       toAction.setToolTipText("Re-display as Actions");
+      toAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.ACTION));
 
       toWorkFlow = new Action("Re-display as WorkFlows", Action.AS_PUSH_BUTTON) {
 
@@ -321,6 +324,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          }
       };
       toWorkFlow.setToolTipText("Re-display as WorkFlows");
+      toWorkFlow.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.WORKFLOW));
 
       toTask = new Action("Re-display as Tasks", Action.AS_PUSH_BUTTON) {
 
@@ -330,6 +334,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          }
       };
       toTask.setToolTipText("Re-display as Tasks");
+      toTask.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.TASK));
 
       toReview = new Action("Re-display as Reviews", Action.AS_PUSH_BUTTON) {
 
@@ -339,6 +344,7 @@ public class WorldXWidgetActionPage extends AtsXWidgetActionFormPage {
          }
       };
       toReview.setToolTipText("Re-display as Reviews");
+      toReview.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.REVIEW));
 
    }
 

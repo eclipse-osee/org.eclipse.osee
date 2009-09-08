@@ -28,8 +28,6 @@ import org.eclipse.osee.ats.artifact.ActionArtifact.CreateTeamOption;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem;
-import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -41,7 +39,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XListDropViewer;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -52,7 +49,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEditorMenuItem {
+public class DuplicateWorkflowBlam extends AbstractBlam {
 
    private static String TEAM_WORKFLOW = "Team Workflow (drop here)";
    private static String DUPLICATE_WORKFLOW =
@@ -218,21 +215,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
       return "Duplicate team workflow(s) as a carbon copy (all fields/states/assignees will be exactly as they are) or as new workflows in start state.";
    }
 
-   @Override
-   public void runMenuItem(WorldEditor worldEditor) throws OseeCoreException {
-      if (worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts().size() == 0) {
-         AWorkbench.popup("ERROR", "Must select one or more team workflows to duplicate");
-         return;
-      }
-      try {
-         DuplicateWorkflowBlam blamOperation = new DuplicateWorkflowBlam();
-         blamOperation.setDefaultTeamWorkflows(worldEditor.getWorldComposite().getXViewer().getSelectedTeamWorkflowArtifacts());
-         BlamEditor.edit(blamOperation);
-      } catch (IOException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
    /**
     * @return the defaultTeamWorkflows
     */
@@ -248,11 +230,6 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
    }
 
    @Override
-   public String getMenuItemName() {
-      return "Duplicate Team Workflow";
-   }
-
-   @Override
    public String getName() {
       return "Duplicate Workflow";
    }
@@ -261,4 +238,5 @@ public class DuplicateWorkflowBlam extends AbstractBlam implements IAtsWorldEdit
    public Collection<String> getCategories() {
       return Arrays.asList("ATS");
    }
+
 }

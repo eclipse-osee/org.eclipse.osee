@@ -12,6 +12,7 @@ package org.eclipse.osee.ats.world;
 
 import java.util.Collections;
 import java.util.List;
+import org.eclipse.jface.action.Action;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.swt.graphics.Color;
@@ -48,7 +49,7 @@ public abstract class AtsWorldEditorItemBase implements IAtsWorldEditorItem {
    }
 
    @Override
-   public List<? extends IAtsWorldEditorMenuItem> getWorldEditorMenuItems(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException {
+   public List<? extends Action> getWorldEditorMenuActions(IWorldEditorProvider worldEditorProvider, WorldEditor worldEditor) throws OseeCoreException {
       return Collections.emptyList();
    }
 }

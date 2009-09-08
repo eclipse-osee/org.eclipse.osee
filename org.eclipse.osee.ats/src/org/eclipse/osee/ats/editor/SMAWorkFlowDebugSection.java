@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
@@ -60,9 +62,12 @@ public class SMAWorkFlowDebugSection extends SectionPart {
       super.initialize(form);
 
       Section section = getSection();
+      section.setText("Debug - Admin Only");
+      section.setLayout(new GridLayout());
+      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       workComp = toolkit.createClientContainer(section, 1);
-      section.setText("Debug - Admin Only");
+      workComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       Hyperlink link = toolkit.createHyperlink(workComp, "Dirty Report", SWT.NONE);
       link.addHyperlinkListener(new IHyperlinkListener() {

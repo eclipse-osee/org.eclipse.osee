@@ -27,7 +27,6 @@ import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAPrint;
-import org.eclipse.osee.ats.world.IAtsWorldEditorMenuItem;
 import org.eclipse.osee.ats.world.WorldEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -48,12 +47,12 @@ import org.eclipse.ui.PlatformUI;
 /**
  * @author Donald G. Dunne
  */
-public class AtsExportManager extends Action implements IAtsWorldEditorMenuItem {
+public class AtsExportManager extends Action {
 
    private final TreeViewer treeViewer;
 
-   public AtsExportManager() {
-      this.treeViewer = null;
+   public AtsExportManager(WorldEditor worldEditor) {
+      this(worldEditor.getWorldComposite().getXViewer());
    }
 
    public AtsExportManager(TreeViewer treeViewer) {
@@ -180,20 +179,6 @@ public class AtsExportManager extends Action implements IAtsWorldEditorMenuItem 
          }
       }
       return Result.TrueResult;
-   }
-
-   @Override
-   public String getMenuItemName() throws OseeCoreException {
-      return "Export Selected ATS Artifacts";
-   }
-
-   @Override
-   public void runMenuItem(WorldEditor worldEditor) throws OseeCoreException {
-      try {
-         AtsExportManager.export(worldEditor.getWorldComposite().getXViewer().getSelection(), ExportOption.POPUP_DIALOG);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
    }
 
    @Override

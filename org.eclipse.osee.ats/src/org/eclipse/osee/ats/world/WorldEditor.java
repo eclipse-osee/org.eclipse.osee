@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.Action;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
@@ -30,8 +31,6 @@ import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -245,24 +244,11 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
 
    @Override
    public void createToolBarPulldown(Menu menu) {
-      final WorldEditor fWorldEditor = this;
       new MenuItem(menu, SWT.SEPARATOR);
       try {
          for (IAtsWorldEditorItem item : AtsWorldEditorItems.getItems()) {
-            for (final IAtsWorldEditorMenuItem atsMenuItem : item.getWorldEditorMenuItems(getWorldEditorProvider(),
-                  this)) {
-               MenuItem menuItem = new MenuItem(menu, SWT.PUSH);
-               menuItem.setText(atsMenuItem.getMenuItemName());
-               menuItem.addSelectionListener(new SelectionAdapter() {
-                  @Override
-                  public void widgetSelected(SelectionEvent e) {
-                     try {
-                        atsMenuItem.runMenuItem(fWorldEditor);
-                     } catch (Exception ex) {
-                        OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                     }
-                  }
-               });
+            for (final Action action : item.getWorldEditorMenuActions(getWorldEditorProvider(), this)) {
+               AtsUtil.actionToMenuItem(menu, action, SWT.PUSH);
             }
          }
       } catch (Exception ex) {
@@ -275,24 +261,15 @@ public class WorldEditor extends FormEditor implements IWorldEditor, IDirtiableE
       return null;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.EditorPart#doSaveAs()
-    */
    @Override
    public void doSaveAs() {
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.part.EditorPart#isSaveAsAllowed()
-    */
    @Override
    public boolean isSaveAsAllowed() {
       return false;
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.swt.IDirtiableEditor#onDirtied()
-    */
    @Override
    public void onDirtied() {
    }

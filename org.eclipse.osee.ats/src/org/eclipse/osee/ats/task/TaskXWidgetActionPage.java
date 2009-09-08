@@ -294,6 +294,7 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage implements I
          }
       };
       filterCompletedAction.setToolTipText("Filter Out Completed/Cancelled - Ctrl-F");
+      filterCompletedAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GREEN_PLUS));
 
       filterMyAssigneeAction = new Action("Filter My Assignee - Ctrl-G", Action.AS_CHECK_BOX) {
 
@@ -309,6 +310,7 @@ public class TaskXWidgetActionPage extends AtsXWidgetActionFormPage implements I
          }
       };
       filterMyAssigneeAction.setToolTipText("Filter My Assignee - Ctrl-G");
+      filterMyAssigneeAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.USER));
    }
 
 }
