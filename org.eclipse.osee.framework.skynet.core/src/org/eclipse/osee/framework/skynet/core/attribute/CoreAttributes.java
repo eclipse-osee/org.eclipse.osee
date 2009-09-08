@@ -23,7 +23,7 @@ public enum CoreAttributes implements IOseeType {
    WORD_TEMPLATE_CONTENT("Word Template Content", "AAMFEcfcGS2V3SqQN2wA");
 
    private final String name;
-   private String guid;
+   private final String guid;
 
    private CoreAttributes(String name, String guid) {
       this.name = name;

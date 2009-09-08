@@ -14,13 +14,14 @@ import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
 public enum OteArtifacts implements IOseeType {
-   TEST_RUN(Requirements.TEST_RUN), TEST_SCRIPT(Requirements.TEST_CASE);
+   TEST_RUN(Requirements.TEST_RUN, "AAMFDjqDHWo+orlSpaQA"), TEST_SCRIPT(Requirements.TEST_CASE, "AAMFDikEi0TGK27TKPgA");
 
-   private String name;
-   private String guid;
+   private final String name;
+   private final String guid;
 
-   private OteArtifacts(String name) {
+   private OteArtifacts(String name, String guid) {
       this.name = name;
+      this.guid = guid;
    }
 
    public String getName() {
