@@ -39,20 +39,20 @@ public class ComputeNetChangeOperation extends AbstractOperation {
             checkForCancelledStatus(monitor);
             CommitItem change = iterator.next();
 
-            if (change.wasNewOrIntroducedOnSource() && change.getCurrentSourceModType().isDeleted() || change.isAlreadyOnDestination()) {
+            if (change.wasNewOrIntroducedOnSource() && change.getCurrent().getModType().isDeleted() || change.isAlreadyOnDestination()) {
                iterator.remove();
             } else {
                checkForInvalidStates(change);
 
-               if (change.getNetModType() != ModificationType.MERGED) {
+               if (change.getNet().getModType() != ModificationType.MERGED) {
+                  ModificationType modType = change.getCurrent().getModType();
                   if (change.wasNewOnSource()) {
-                     change.setNetModType(ModificationType.NEW);
+                     modType = ModificationType.NEW;
                   } else if (change.wasIntroducedOnSource()) {
-                     change.setNetModType(ModificationType.INTRODUCED);
-                  } else {
-                     change.setNetModType(change.getCurrentSourceModType());
+                     modType = ModificationType.INTRODUCED;
                   }
-                  change.setNetGammaId(change.getCurrentSourceGammaId());
+                  change.getNet().setModType(modType);
+                  change.getNet().setGammaId(change.getCurrent().getGammaId());
                }
             }
             monitor.worked(calculateWork(workPercentage));
@@ -62,16 +62,16 @@ public class ComputeNetChangeOperation extends AbstractOperation {
 
    private void checkForInvalidStates(CommitItem change) throws OseeCoreException {
       // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
-      if (change.getDestinationModType() == null && !change.wasNewOrIntroducedOnSource()) {
+      if (change.getDestination().getModType() == null && !change.wasNewOrIntroducedOnSource()) {
          throw new OseeStateException(
                "This should be supported in the future - destination branch is not the source's parent: " + change);
       }
 
-      if (change.getNetModType() != ModificationType.MERGED) {
-         if (change.getCurrentSourceModType() == ModificationType.NEW && change.getDestinationModType() != null) {
+      if (change.getNet().getModType() != ModificationType.MERGED) {
+         if (change.getCurrent().getModType() == ModificationType.NEW && change.getDestination().getModType() != null) {
             throw new OseeStateException("Source item marked as new but destination already has item: " + change);
          }
-         if (change.getCurrentSourceModType() == ModificationType.INTRODUCED && change.getDestinationModType() != null) {
+         if (change.getCurrent().getModType() == ModificationType.INTRODUCED && change.getDestination().getModType() != null) {
             throw new OseeStateException("Source item marked as introduced but destination already has item: " + change);
          }
       }

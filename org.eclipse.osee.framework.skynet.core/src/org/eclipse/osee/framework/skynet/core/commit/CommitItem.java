@@ -22,26 +22,19 @@ public class CommitItem {
 
    private int itemId;
    private GammaKind kind;
-   private ModificationType baseSourceModType;
-   private final long currentSourceGammaId;
-   private final ModificationType currentSourceModType;
-   private long destinationGammaId;
-   private ModificationType destinationModType;
-   private long netGammaId;
-   private ModificationType netModType;
+   private final ChangePair baseEntry;
+   private final ChangePair firstChange;
+   private final ChangePair currentEntry;
+   private final ChangePair destinationEntry;
+   private final ChangePair netEntry;
 
    public CommitItem(long currentSourceGammaId, ModificationType currentSourceModType) {
       super();
-      this.currentSourceGammaId = currentSourceGammaId;
-      this.currentSourceModType = currentSourceModType;
-   }
-
-   public long getCurrentSourceGammaId() {
-      return currentSourceGammaId;
-   }
-
-   public ModificationType getCurrentSourceModType() {
-      return currentSourceModType;
+      this.baseEntry = new ChangePair();
+      this.firstChange = new ChangePair();
+      this.currentEntry = new ChangePair(currentSourceGammaId, currentSourceModType);
+      this.destinationEntry = new ChangePair();
+      this.netEntry = new ChangePair();
    }
 
    public int getItemId() {
@@ -60,36 +53,32 @@ public class CommitItem {
       this.kind = kind;
    }
 
-   public ModificationType getDestinationModType() {
-      return destinationModType;
+   public ChangePair getBase() {
+      return baseEntry;
    }
 
-   public void setDestinationModType(ModificationType destinationModType) {
-      this.destinationModType = destinationModType;
+   public ChangePair getFirst() {
+      return firstChange;
    }
 
-   public long getDestinationGammaId() {
-      return destinationGammaId;
+   public ChangePair getCurrent() {
+      return currentEntry;
    }
 
-   public void setDestinationGammaId(long desinationGammaId) {
-      this.destinationGammaId = desinationGammaId;
+   public ChangePair getDestination() {
+      return destinationEntry;
    }
 
-   public ModificationType getBaseSourceModType() {
-      return baseSourceModType;
-   }
-
-   public void setBaseSourceModType(ModificationType baseSourceModType) {
-      this.baseSourceModType = baseSourceModType;
+   public ChangePair getNet() {
+      return netEntry;
    }
 
    public boolean wasNewOnSource() {
-      return baseSourceModType == ModificationType.NEW || currentSourceModType == ModificationType.NEW || baseSourceModType == null;
+      return getFirst().getModType() == ModificationType.NEW || getCurrent().getModType() == ModificationType.NEW || getBase().getModType() == null;
    }
 
    public boolean wasIntroducedOnSource() {
-      return baseSourceModType == ModificationType.INTRODUCED || currentSourceModType == ModificationType.INTRODUCED;
+      return getFirst().getModType() == ModificationType.INTRODUCED || getCurrent().getModType() == ModificationType.INTRODUCED;
    }
 
    public boolean wasNewOrIntroducedOnSource() {
@@ -97,30 +86,49 @@ public class CommitItem {
    }
 
    public boolean isAlreadyOnDestination() {
-      return currentSourceGammaId == destinationGammaId && currentSourceModType.isDeleted() == destinationModType.isDeleted();
-   }
-
-   public ModificationType getNetModType() {
-      return netModType;
-   }
-
-   public void setNetModType(ModificationType netModType) {
-      this.netModType = netModType;
-   }
-
-   public long getNetGammaId() {
-      return netGammaId;
-   }
-
-   public void setNetGammaId(long netGammaId) {
-      this.netGammaId = netGammaId;
+      return getCurrent().getGammaId() == getDestination().getGammaId() && getCurrent().getModType().isDeleted() == getDestination().getModType().isDeleted();
    }
 
    @Override
    public String toString() {
-      return String.format(
-            "CommitItem - kind:[%s] itemId:[%s] baseMod[%s] source[%s,%s] destination[%s,%s] net[%s,%s]", kind, itemId,
-            baseSourceModType, currentSourceGammaId, currentSourceModType, destinationGammaId, destinationModType,
-            netGammaId, netModType);
+      return String.format("CommitItem - kind:[%s] itemId:[%s] base:%s first:%s current:%s destination:%s net:%s",
+            kind, itemId, getBase(), getFirst(), getCurrent(), getDestination(), getNet());
+   }
+
+   public final class ChangePair {
+      private Long gammaId;
+      private ModificationType modType;
+
+      private ChangePair() {
+         this(null, null);
+      }
+
+      private ChangePair(Long gammaId, ModificationType modType) {
+         super();
+         this.gammaId = gammaId;
+         this.modType = modType;
+      }
+
+      public Long getGammaId() {
+         return gammaId;
+      }
+
+      public ModificationType getModType() {
+         return modType;
+      }
+
+      public void setGammaId(Long gammaId) {
+         this.gammaId = gammaId;
+      }
+
+      public void setModType(ModificationType modType) {
+         this.modType = modType;
+      }
+
+      @Override
+      public String toString() {
+         return String.format("[%s,%s]", getGammaId(), getModType());
+      }
+
    }
 }

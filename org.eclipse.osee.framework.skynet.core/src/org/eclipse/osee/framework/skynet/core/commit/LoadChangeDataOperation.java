@@ -94,7 +94,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             CommitItem oseeChange =
                   new CommitItem(chStmt.getLong("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")));
 
-            changeByGammaId.put(oseeChange.getCurrentSourceGammaId(), oseeChange);
+            changeByGammaId.put(oseeChange.getCurrent().getGammaId(), oseeChange);
          }
          txJoin.store();
       } finally {
@@ -156,11 +156,11 @@ public class LoadChangeDataOperation extends AbstractOperation {
             CommitItem change = changesByItemId.get(itemId);
 
             if (branch.isMergeBranch()) {
-               change.setNetGammaId(gammaId);
-               change.setNetModType(ModificationType.MERGED);
+               change.getNet().setGammaId(gammaId);
+               change.getNet().setModType(ModificationType.MERGED);
             } else {
-               change.setDestinationModType(ModificationType.getMod(chStmt.getInt("mod_type")));
-               change.setDestinationGammaId(gammaId);
+               change.getDestination().setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
+               change.getDestination().setGammaId(gammaId);
             }
          }
       } finally {
@@ -188,7 +188,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
                previousItemId = itemId;
 
                CommitItem change = changesByItemId.get(itemId);
-               change.setBaseSourceModType(ModificationType.getMod(chStmt.getInt("mod_type")));
+               change.getBase().setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
             }
          }
       } finally {

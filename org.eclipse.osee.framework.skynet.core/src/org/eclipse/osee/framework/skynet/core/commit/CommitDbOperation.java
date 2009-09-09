@@ -119,8 +119,8 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private void insertCommitAddressing() throws OseeDataStoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
       for (CommitItem change : changes) {
-         ModificationType modType = change.getNetModType();
-         insertData.add(new Object[] {newTransactionNumber, change.getNetGammaId(), modType.getValue(),
+         ModificationType modType = change.getNet().getModType();
+         insertData.add(new Object[] {newTransactionNumber, change.getNet().getGammaId(), modType.getValue(),
                TxChange.getCurrent(modType).getValue()});
       }
       ConnectionHandler.runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
