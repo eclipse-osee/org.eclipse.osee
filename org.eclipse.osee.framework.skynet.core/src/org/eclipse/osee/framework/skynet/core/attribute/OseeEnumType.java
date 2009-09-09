@@ -42,7 +42,7 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
    }
 
    public OseeEnumEntry[] values() throws OseeCoreException {
-      List<OseeEnumEntry> entries = cache.getEnumTypeData().getEnumEntries(this);
+      List<OseeEnumEntry> entries = cache.getEnumTypeCache().getEnumEntries(this);
       Collections.sort(entries);
       return entries.toArray(new OseeEnumEntry[entries.size()]);
    }
@@ -82,9 +82,9 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
    }
 
    public void setEntries(Collection<OseeEnumEntry> entries) throws OseeCoreException {
-      List<OseeEnumEntry> oldEntries = cache.getEnumTypeData().getEnumEntries(this);
-      cache.getEnumTypeData().cacheEnumEntries(this, entries);
-      List<OseeEnumEntry> newEntries = cache.getEnumTypeData().getEnumEntries(this);
+      List<OseeEnumEntry> oldEntries = cache.getEnumTypeCache().getEnumEntries(this);
+      cache.getEnumTypeCache().cacheEnumEntries(this, entries);
+      List<OseeEnumEntry> newEntries = cache.getEnumTypeCache().getEnumEntries(this);
       boolean isEmpty1 =
             org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(oldEntries, newEntries).isEmpty();
       boolean isEmpty2 =

@@ -123,7 +123,7 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
     * @throws OseeCoreException
     */
    public boolean inheritsFrom(String artifactTypeName) throws OseeCoreException {
-      ArtifactType artifactType = cache.getArtifactTypeData().getTypeByName(artifactTypeName);
+      ArtifactType artifactType = cache.getArtifactTypeCache().getTypeByName(artifactTypeName);
       if (artifactType == null) {
          throw new OseeTypeDoesNotExist("Artifact type [" + artifactTypeName + "] is not available.");
       }

@@ -41,7 +41,7 @@ public class OseeEnumEntry extends BaseOseeType implements Comparable<OseeEnumEn
    }
 
    public OseeEnumType getDeclaringClass() throws OseeCoreException {
-      return cache.getEnumTypeData().getEnumType(this);
+      return cache.getEnumTypeCache().getEnumType(this);
    }
 
    @Override

@@ -41,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache.ArtifactTypeCache;
 
 /**
  * @author Roberto E. Escobar
@@ -127,7 +126,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
    }
 
    public void loadAllArtifactTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
-      ArtifactTypeCache cacheData = cache.getArtifactTypeData();
+      ArtifactTypeCache cacheData = cache.getArtifactTypeCache();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(SELECT_ARTIFACT_TYPES);
@@ -194,7 +193,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                      AttributeExtensionManager.getAttributeProviderClassFor(baseProviderClassString);
 
                int enumTypeId = chStmt.getInt("enum_type_id");
-               OseeEnumType enumType = cache.getEnumTypeData().getTypeById(enumTypeId);
+               OseeEnumType enumType = cache.getEnumTypeCache().getTypeById(enumTypeId);
                AttributeType attributeType =
                      factory.createAttributeType(chStmt.getString("attr_type_guid"), chStmt.getString("name"),
                            baseClassString, baseProviderClassString, baseAttributeClass, providerAttributeClass,
@@ -202,7 +201,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                            chStmt.getInt("min_occurence"), chStmt.getInt("max_occurence"),
                            chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
                attributeType.setTypeId(chStmt.getInt("attr_type_id"));
-               cache.getAttributeTypeData().cacheType(attributeType);
+               cache.getAttributeTypeCache().cacheType(attributeType);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -235,7 +234,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                               artifactTypeSideB, multiplicity, isUserOrdered,
                               chStmt.getString("default_order_type_guid"));
                   relationType.setTypeId(chStmt.getInt("rel_link_type_id"));
-                  cache.getRelationTypeData().cacheType(relationType);
+                  cache.getRelationTypeCache().cacheType(relationType);
                } else {
                   OseeLog.log(Activator.class, Level.SEVERE, String.format("Multiplicity was null for [%s][%s]",
                         relationTypeName, relationTypeId));
@@ -426,7 +425,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                if (lastEnumTypeId != currentEnumTypeId) {
                   oseeEnumType = factory.createEnumType(currentEnumTypeGuid, chStmt.getString("enum_type_name"), cache);
                   oseeEnumType.setTypeId(currentEnumTypeId);
-                  cache.getEnumTypeData().cacheType(oseeEnumType);
+                  cache.getEnumTypeCache().cacheType(oseeEnumType);
                   lastEnumTypeId = currentEnumTypeId;
                }
                types.put(oseeEnumType, factory.createEnumEntry(chStmt.getString("enum_entry_guid"),

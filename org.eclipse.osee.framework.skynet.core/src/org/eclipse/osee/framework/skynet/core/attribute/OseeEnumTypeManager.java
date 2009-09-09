@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache.OseeEnumTypeCache;
 
 /**
  * @author Roberto E. Escobar
@@ -27,7 +26,7 @@ public class OseeEnumTypeManager {
    }
 
    public static OseeEnumType getType(int enumTypeId, boolean includeDeleted) throws OseeCoreException {
-      OseeEnumType oseeEnumType = OseeTypeManager.getCache().getEnumTypeData().getTypeById(enumTypeId);
+      OseeEnumType oseeEnumType = OseeTypeManager.getCache().getEnumTypeCache().getTypeById(enumTypeId);
       if (oseeEnumType == null || !includeDeleted && oseeEnumType.getModificationType().isDeleted()) {
          throw new OseeTypeDoesNotExist(String.format("Osee Enum Type with id:[%s] does not exist.", enumTypeId));
       }
@@ -35,7 +34,7 @@ public class OseeEnumTypeManager {
    }
 
    public static OseeEnumType getUniqueType(String enumTypeName, boolean includeDeleted) throws OseeCoreException {
-      OseeEnumType itemsFound = OseeTypeManager.getCache().getEnumTypeData().getTypeByName(enumTypeName);
+      OseeEnumType itemsFound = OseeTypeManager.getCache().getEnumTypeCache().getTypeByName(enumTypeName);
       boolean wasFound = false;
       if (itemsFound != null) {
          if (includeDeleted || !itemsFound.getModificationType().isDeleted()) {
@@ -51,7 +50,7 @@ public class OseeEnumTypeManager {
 
    public static Collection<OseeEnumType> getAllTypes(boolean includeDeleted) throws OseeCoreException {
       List<OseeEnumType> items = new ArrayList<OseeEnumType>();
-      for (OseeEnumType types : OseeTypeManager.getCache().getEnumTypeData().getAllTypes()) {
+      for (OseeEnumType types : OseeTypeManager.getCache().getEnumTypeCache().getAllTypes()) {
          if (includeDeleted || !types.getModificationType().isDeleted()) {
             items.add(types);
          }
@@ -68,7 +67,7 @@ public class OseeEnumTypeManager {
    }
 
    public static boolean typeExist(String enumTypeName, boolean includeDeleted) throws OseeCoreException {
-      OseeEnumType itemsFound = OseeTypeManager.getCache().getEnumTypeData().getTypeByName(enumTypeName);
+      OseeEnumType itemsFound = OseeTypeManager.getCache().getEnumTypeCache().getTypeByName(enumTypeName);
       boolean wasFound = false;
       if (itemsFound != null) {
          if (includeDeleted || !itemsFound.getModificationType().isDeleted()) {
@@ -103,24 +102,15 @@ public class OseeEnumTypeManager {
    }
 
    public static OseeEnumEntry createEnumEntry(String guid, String name, int ordinal) throws OseeCoreException {
-      return OseeTypeManager.getTypeFactory().createEnumEntry(guid, name, ordinal, OseeTypeManager.getCache());
+      return OseeTypeManager.getCache().getEnumTypeCache().createEntry(guid, name, ordinal);
    }
 
    public static OseeEnumType createEnumType(String guid, String enumTypeName) throws OseeCoreException {
-      OseeEnumTypeCache dataCache = OseeTypeManager.getCache().getEnumTypeData();
-      OseeEnumType oseeEnumType = dataCache.getTypeByGuid(guid);
-      if (oseeEnumType == null) {
-         oseeEnumType = OseeTypeManager.getTypeFactory().createEnumType(guid, enumTypeName, OseeTypeManager.getCache());
-      } else {
-         dataCache.decacheType(oseeEnumType);
-         oseeEnumType.setName(enumTypeName);
-      }
-      dataCache.cacheType(oseeEnumType);
-      return oseeEnumType;
+      return OseeTypeManager.getCache().getEnumTypeCache().createType(guid, enumTypeName);
    }
 
    public static void persist() throws OseeCoreException {
-      OseeTypeManager.getCache().getEnumTypeData().storeAllModified();
+      OseeTypeManager.getCache().getEnumTypeCache().storeAllModified();
    }
 
    //   public static OseeEnumType createEnumTypeFromXml(String attributeTypeName, String xmlDefinition) throws OseeCoreException {

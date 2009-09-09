@@ -10,44 +10,33 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeTypeCache {
 
-   private final ArtifactTypeCache artifactCache = new ArtifactTypeCache();
-   private final AttributeTypeCache attributeCache = new AttributeTypeCache();
-   private final RelationTypeCache relationCache = new RelationTypeCache();
-   private final OseeEnumTypeCache oseeEnumTypeCache = new OseeEnumTypeCache();
-
    private final HashCollection<ArtifactType, ArtifactType> artifactTypeToSuperTypeMap =
          new HashCollection<ArtifactType, ArtifactType>();
 
    private final CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> artifactToAttributeMap =
          new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
+
+   private final ArtifactTypeCache artifactCache;
+   private final AttributeTypeCache attributeCache;
+   private final RelationTypeCache relationCache;
+   private final OseeEnumTypeCache oseeEnumTypeCache;
 
    private final IOseeTypeDataAccessor dataAccessor;
    private final IOseeTypeFactory factory;
@@ -57,6 +46,17 @@ public class OseeTypeCache {
       this.dataAccessor = dataAccessor;
       this.factory = factory;
       this.duringPopulate = false;
+      artifactCache = new ArtifactTypeCache(this, factory, dataAccessor);
+      attributeCache = new AttributeTypeCache(this, factory, dataAccessor);
+      relationCache = new RelationTypeCache(this, factory, dataAccessor);
+      oseeEnumTypeCache = new OseeEnumTypeCache(this, factory, dataAccessor);
+   }
+
+   public void storeAllModified() throws OseeCoreException {
+      getEnumTypeCache().storeAllModified();
+      getAttributeTypeCache().storeAllModified();
+      getArtifactTypeCache().storeAllModified();
+      getRelationTypeCache().storeAllModified();
    }
 
    private IOseeTypeDataAccessor getDataAccessor() {
@@ -67,19 +67,19 @@ public class OseeTypeCache {
       return factory;
    }
 
-   public ArtifactTypeCache getArtifactTypeData() {
+   public ArtifactTypeCache getArtifactTypeCache() {
       return artifactCache;
    }
 
-   public AttributeTypeCache getAttributeTypeData() {
+   public AttributeTypeCache getAttributeTypeCache() {
       return attributeCache;
    }
 
-   public RelationTypeCache getRelationTypeData() {
+   public RelationTypeCache getRelationTypeCache() {
       return relationCache;
    }
 
-   public OseeEnumTypeCache getEnumTypeData() {
+   public OseeEnumTypeCache getEnumTypeCache() {
       return oseeEnumTypeCache;
    }
 
@@ -175,14 +175,15 @@ public class OseeTypeCache {
       return artifactToAttributeMap;
    }
 
-   private synchronized void ensurePopulated() throws OseeCoreException {
+   public synchronized void ensurePopulated() throws OseeCoreException {
       if (!duringPopulate) {
          duringPopulate = true;
-         getArtifactTypeData().ensureTypeCachePopulated();
-         getEnumTypeData().ensureTypeCachePopulated();
-         getAttributeTypeData().ensureTypeCachePopulated();
+         getEnumTypeCache().ensurePopulated();
+         getAttributeTypeCache().ensurePopulated();
+         getArtifactTypeCache().ensurePopulated();
+
          ensureTypeValidityPopulated();
-         getRelationTypeData().ensureTypeCachePopulated();
+         getRelationTypeCache().ensurePopulated();
          duringPopulate = false;
       }
    }
@@ -193,207 +194,4 @@ public class OseeTypeCache {
       }
    }
 
-   public abstract class OseeTypeCacheData<T extends BaseOseeType> {
-      private final HashMap<String, T> nameToTypeMap = new HashMap<String, T>();
-      private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
-      private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
-
-      private OseeTypeCacheData() {
-      }
-
-      public boolean existsByGuid(String guid) throws OseeCoreException {
-         ensurePopulated();
-         return guidToTypeMap.containsKey(guid);
-      }
-
-      public void decacheType(T type) throws OseeCoreException {
-         if (type == null) {
-            throw new OseeArgumentException("Caching a null value is not allowed");
-         }
-         nameToTypeMap.remove(type.getName());
-         guidToTypeMap.remove(type.getGuid());
-         if (type.getTypeId() != BaseOseeType.UNPERSISTTED_VALUE) {
-            idToTypeMap.remove(type.getTypeId());
-         }
-      }
-
-      public void cacheType(T type) throws OseeCoreException {
-         if (type == null) {
-            throw new OseeArgumentException("Caching a null value is not allowed");
-         }
-         nameToTypeMap.put(type.getName(), type);
-         guidToTypeMap.put(type.getGuid(), type);
-         if (type.getTypeId() != BaseOseeType.UNPERSISTTED_VALUE) {
-            idToTypeMap.put(type.getTypeId(), type);
-         }
-      }
-
-      public Collection<T> getAllTypes() throws OseeCoreException {
-         ensurePopulated();
-         return new ArrayList<T>(guidToTypeMap.values());
-      }
-
-      public T getTypeById(int typeId) throws OseeCoreException {
-         ensurePopulated();
-         return idToTypeMap.get(typeId);
-      }
-
-      public T getTypeByName(String typeName) throws OseeCoreException {
-         ensurePopulated();
-         return nameToTypeMap.get(typeName);
-      }
-
-      public T getTypeByGuid(String typeGuid) throws OseeCoreException {
-         ensurePopulated();
-         return guidToTypeMap.get(typeGuid);
-      }
-
-      protected Collection<T> getDirtyTypes() throws OseeCoreException {
-         ensurePopulated();
-         Collection<T> dirtyItems = new HashSet<T>();
-         for (T type : guidToTypeMap.values()) {
-            if (type.isDirty()) {
-               dirtyItems.add(type);
-            }
-         }
-         return dirtyItems;
-      }
-
-      public void storeAllModified() throws OseeCoreException {
-         Collection<T> items = getDirtyTypes();
-         synchronized (idToTypeMap) {
-            storeItems(items);
-            for (T type : items) {
-               idToTypeMap.put(type.getTypeId(), type);
-               type.persist();
-            }
-         }
-      }
-
-      protected void ensureTypeCachePopulated() throws OseeCoreException {
-         if (guidToTypeMap.isEmpty()) {
-            reloadCache();
-         }
-      }
-
-      protected abstract void storeItems(Collection<T> items) throws OseeCoreException;
-
-      public void storeByGuid(Collection<String> guids) throws OseeCoreException {
-         ensurePopulated();
-         Collection<T> items = new HashSet<T>();
-         for (String guid : guids) {
-            T type = getTypeByGuid(guid);
-            if (type == null) {
-               throw new OseeTypeDoesNotExist(String.format("Item was not found [%s]", guid));
-            }
-            items.add(type);
-         }
-         if (!items.isEmpty()) {
-            storeItems(items);
-         }
-      }
-
-      public abstract void reloadCache() throws OseeCoreException;
-   }
-
-   public final class ArtifactTypeCache extends OseeTypeCacheData<ArtifactType> {
-      @Override
-      public void reloadCache() throws OseeCoreException {
-         getDataAccessor().loadAllArtifactTypes(OseeTypeCache.this, getDataFactory());
-      }
-
-      @Override
-      protected void storeItems(Collection<ArtifactType> items) throws OseeCoreException {
-         getDataAccessor().storeArtifactType(OseeTypeCache.this, items);
-      }
-   }
-
-   public final class AttributeTypeCache extends OseeTypeCacheData<AttributeType> {
-      @Override
-      public void reloadCache() throws OseeCoreException {
-         getDataAccessor().loadAllAttributeTypes(OseeTypeCache.this, getDataFactory());
-      }
-
-      @Override
-      protected void storeItems(Collection<AttributeType> items) throws OseeCoreException {
-         getDataAccessor().storeAttributeType(items);
-      }
-   }
-
-   public final class RelationTypeCache extends OseeTypeCacheData<RelationType> {
-      @Override
-      public void reloadCache() throws OseeCoreException {
-         getDataAccessor().loadAllRelationTypes(OseeTypeCache.this, getDataFactory());
-      }
-
-      @Override
-      protected void storeItems(Collection<RelationType> items) throws OseeCoreException {
-         getDataAccessor().storeRelationType(items);
-      }
-   }
-
-   public final class OseeEnumTypeCache extends OseeTypeCacheData<OseeEnumType> {
-
-      private final HashCollection<OseeEnumType, OseeEnumEntry> enumTypeToEntryMap =
-            new HashCollection<OseeEnumType, OseeEnumEntry>();
-      private final Map<OseeEnumEntry, OseeEnumType> enumEntryToEnumType = new HashMap<OseeEnumEntry, OseeEnumType>();
-
-      public void cacheEnumEntries(OseeEnumType oseeEnumType, Collection<OseeEnumEntry> oseeEnumEntries) throws OseeCoreException {
-         for (OseeEnumEntry entry : oseeEnumEntries) {
-            if (entry.getName() == null) {
-               throw new OseeArgumentException("EnumEntry name violation - null is not allowed");
-            }
-            if (entry.ordinal() < 0) {
-               throw new OseeArgumentException("EnumEntry ordinal must be greater than zero");
-            }
-            for (OseeEnumEntry existingEntry : oseeEnumEntries) {
-               if (!entry.equals(existingEntry)) {
-                  if (entry.getName().equals(existingEntry.getName())) {
-                     throw new OseeArgumentException(String.format(
-                           "Unique enumEntry name violation - %s already exists.", entry));
-                  }
-                  if (entry.ordinal() == existingEntry.ordinal()) {
-                     throw new OseeArgumentException(
-                           String.format(
-                                 "Unique enumEntry ordinal violation - ordinal [%d] is used by existing entry:[%s] and new entry:[%s]",
-                                 entry.ordinal(), existingEntry, entry));
-                  }
-               }
-            }
-         }
-         List<OseeEnumEntry> existingEntries = getEnumEntries(oseeEnumType);
-         for (OseeEnumEntry entries : Collections.setComplement(existingEntries, oseeEnumEntries)) {
-            entries.setModificationType(ModificationType.DELETED);
-         }
-         for (OseeEnumEntry entry : oseeEnumEntries) {
-            enumTypeToEntryMap.put(oseeEnumType, entry);
-            enumEntryToEnumType.put(entry, oseeEnumType);
-         }
-      }
-
-      public OseeEnumType getEnumType(OseeEnumEntry oseeEnumEntry) throws OseeCoreException {
-         //         ensurePopulated();
-         return enumEntryToEnumType.get(oseeEnumEntry);
-      }
-
-      public List<OseeEnumEntry> getEnumEntries(OseeEnumType oseeEnumType) throws OseeCoreException {
-         ensurePopulated();
-         List<OseeEnumEntry> itemsToReturn = new ArrayList<OseeEnumEntry>();
-         Collection<OseeEnumEntry> entries = enumTypeToEntryMap.getValues(oseeEnumType);
-         if (entries != null) {
-            itemsToReturn.addAll(entries);
-         }
-         return itemsToReturn;
-      }
-
-      @Override
-      public void reloadCache() throws OseeCoreException {
-         getDataAccessor().loadAllOseeEnumTypes(OseeTypeCache.this, getDataFactory());
-      }
-
-      @Override
-      protected void storeItems(Collection<OseeEnumType> items) throws OseeCoreException {
-         getDataAccessor().storeOseeEnumType(items);
-      }
-   }
 }

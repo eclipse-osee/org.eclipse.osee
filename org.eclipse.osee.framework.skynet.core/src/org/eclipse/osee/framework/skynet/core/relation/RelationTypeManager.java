@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache.OseeTypeCacheData;
 
 /**
  * @author Ryan D. Brooks
@@ -68,11 +67,11 @@ public class RelationTypeManager {
     * @throws OseeCoreException
     */
    public static Collection<RelationType> getAllTypes() throws OseeCoreException {
-      return OseeTypeManager.getCache().getRelationTypeData().getAllTypes();
+      return OseeTypeManager.getCache().getRelationTypeCache().getAllTypes();
    }
 
    public static RelationType getType(int relationTypeId) throws OseeCoreException {
-      RelationType relationType = OseeTypeManager.getCache().getRelationTypeData().getTypeById(relationTypeId);
+      RelationType relationType = OseeTypeManager.getCache().getRelationTypeCache().getTypeById(relationTypeId);
       if (relationType == null) {
          throw new OseeTypeDoesNotExist("The relation with type id[" + relationTypeId + "] does not exist");
       }
@@ -80,7 +79,7 @@ public class RelationTypeManager {
    }
 
    public static RelationType getType(String typeName) throws OseeCoreException {
-      RelationType relationType = OseeTypeManager.getCache().getRelationTypeData().getTypeByName(typeName);
+      RelationType relationType = OseeTypeManager.getCache().getRelationTypeCache().getTypeByName(typeName);
       if (relationType == null) {
          throw new OseeTypeDoesNotExist("The relation type [" + typeName + "] does not exist");
       }
@@ -88,25 +87,15 @@ public class RelationTypeManager {
    }
 
    public static boolean typeExists(String name) throws OseeCoreException {
-      return OseeTypeManager.getCache().getRelationTypeData().getTypeByName(name) != null;
+      return OseeTypeManager.getCache().getRelationTypeCache().getTypeByName(name) != null;
    }
 
-   public static RelationType createRelationType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {
-      OseeTypeCacheData<RelationType> dataCache = OseeTypeManager.getCache().getRelationTypeData();
-      RelationType relationType = dataCache.getTypeByGuid(guid);
-      if (relationType == null) {
-         relationType =
-               OseeTypeManager.getTypeFactory().createRelationType(guid, typeName, sideAName, sideBName,
-                     artifactTypeSideA, artifactTypeSideB, multiplicity, isUserOrdered, defaultOrderTypeGuid);
-      } else {
-         dataCache.decacheType(relationType);
-
-      }
-      dataCache.cacheType(relationType);
-      return relationType;
+   public static RelationType createType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {
+      return OseeTypeManager.getCache().getRelationTypeCache().createType(guid, typeName, sideAName, sideBName,
+            artifactTypeSideA, artifactTypeSideB, multiplicity, isUserOrdered, defaultOrderTypeGuid);
    }
 
    public static void persist() throws OseeCoreException {
-      OseeTypeManager.getCache().getRelationTypeData().storeAllModified();
+      OseeTypeManager.getCache().getRelationTypeCache().storeAllModified();
    }
 }

@@ -1,0 +1,61 @@
+/*******************************************************************************
+ * Copyright (c) 2009 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.skynet.core.types;
+
+import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeExtensionManager;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public final class AttributeTypeCache extends OseeTypeCacheData<AttributeType> {
+
+   public AttributeTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor dataAccessor) {
+      super(cache, factory, dataAccessor);
+   }
+
+   @Override
+   public void reloadCache() throws OseeCoreException {
+      getDataAccessor().loadAllAttributeTypes(getCache(), getDataFactory());
+   }
+
+   @Override
+   protected void storeItems(Collection<AttributeType> items) throws OseeCoreException {
+      getDataAccessor().storeAttributeType(items);
+   }
+
+   public AttributeType createType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
+      AttributeType attributeType = getTypeByGuid(guid);
+      Class<? extends Attribute<?>> baseAttributeClass =
+            AttributeExtensionManager.getAttributeClassFor(baseAttributeTypeId);
+      Class<? extends IAttributeDataProvider> providerAttributeClass =
+            AttributeExtensionManager.getAttributeProviderClassFor(attributeProviderNameId);
+
+      if (attributeType == null) {
+         attributeType =
+               getDataFactory().createAttributeType(guid, typeName, baseAttributeTypeId, attributeProviderNameId,
+                     baseAttributeClass, providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType,
+                     minOccurrences, maxOccurrences, description, taggerId);
+      } else {
+         decacheType(attributeType);
+         attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, baseAttributeClass,
+               providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType, minOccurrences, maxOccurrences,
+               description, taggerId);
+      }
+      cacheType(attributeType);
+      return attributeType;
+   }
+}
