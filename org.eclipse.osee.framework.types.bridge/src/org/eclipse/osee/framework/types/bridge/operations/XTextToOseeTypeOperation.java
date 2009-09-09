@@ -98,7 +98,6 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
                   monitor.worked(calculateWork(workPercentage));
                }
 
-               // second pass to handle cross references
                for (ArtifactType type : model.getArtifactTypes()) {
                   handleArtifactTypeCrossRef(type);
                   monitor.worked(calculateWork(workPercentage));
