@@ -76,7 +76,8 @@ public class RelationManager {
    };
 
    private static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType, boolean includeDeleted) {
-      List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
+      List<RelationLink> selectedRelations =
+            getLoadedRelations(artifact.getArtId(), artifact.getBranch().getBranchId(), relationType, includeDeleted);
       Set<RelationLink> relations = new HashSet<RelationLink>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
@@ -96,6 +97,20 @@ public class RelationManager {
       return relations.iterator().next();
    }
 
+   private static List<RelationLink> getLoadedRelations(int artifactId, int branchId, RelationType relationType, boolean includeDeleted) {
+      List<RelationLink> selectedRelations =
+            relationsByType.get(threadLocalKey.get().getKey(artifactId, branchId), relationType);
+      List<RelationLink> relations = new ArrayList<RelationLink>();
+      if (selectedRelations != null) {
+         for (RelationLink relation : selectedRelations) {
+            if ((includeDeleted || !relation.isDeleted()) && (relation.getAArtifactId() == artifactId || relation.getBArtifactId() == artifactId)) {
+               relations.add(relation);
+            }
+         }
+      }
+      return relations;
+   }
+
    /**
     * @return Returns all cached relations including deleted relations
     * @throws OseeArgumentException
@@ -113,23 +128,25 @@ public class RelationManager {
 
    /**
     * This method should never be called by application code.
-    * 
-    * @param relationType
-    * @param aArtifactId
-    * @param bArtifactId
-    * @param aBranch
-    * @param bBranch
-    * @return RelationLink
     */
    public static RelationLink getLoadedRelation(RelationType relationType, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
-      Artifact artifactA = ArtifactCache.getActive(aArtifactId, aBranch);
-      Artifact artifactB = ArtifactCache.getActive(bArtifactId, bBranch);
       RelationLink relation = null;
-      if (artifactA != null) {
-         relation = getLoadedRelation(artifactA, aArtifactId, bArtifactId, relationType, true);
+      List<RelationLink> relations = getLoadedRelations(aArtifactId, aBranch.getBranchId(), relationType, true);
+      for (RelationLink rel : relations) {
+         if (rel.getBArtifactId() == bArtifactId) {
+            relation = rel;
+            break;
+         }
       }
-      if (artifactB != null && relation == null) {
-         relation = getLoadedRelation(artifactB, aArtifactId, bArtifactId, relationType, true);
+
+      if (relation == null) {
+         relations = getLoadedRelations(bArtifactId, bBranch.getBranchId(), relationType, true);
+         for (RelationLink rel : relations) {
+            if (rel.getAArtifactId() == aArtifactId) {
+               relation = rel;
+               break;
+            }
+         }
       }
       return relation;
    }
@@ -161,7 +178,6 @@ public class RelationManager {
    public static void manageRelation(RelationLink newRelation, RelationSide relationSide) {
       Artifact artifact =
             ArtifactCache.getActive(newRelation.getArtifactId(relationSide), newRelation.getBranch(relationSide));
-
       if (artifact != null) {
          List<RelationLink> artifactsRelations =
                getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
@@ -807,6 +823,12 @@ public class RelationManager {
       public ArtifactKey getKey(Artifact artifact) {
          this.artId = artifact.getArtId();
          this.branchId = artifact.getBranch().getBranchId();
+         return this;
+      }
+
+      public ArtifactKey getKey(int artId, int branchId) {
+         this.artId = artId;
+         this.branchId = branchId;
          return this;
       }
 
