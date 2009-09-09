@@ -1,3 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.commit;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
@@ -15,8 +25,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.CommitItem;
+import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.CommitItem.GammaKind;
 import org.junit.Test;
 
@@ -44,6 +54,11 @@ public class ComputeNetChangeTest {
          changes.add(createChange(kind, 9, MODIFIED, 9, INTRODUCED, 9, INTRODUCED));
          changes.add(createChange(kind, 10, MODIFIED, 10, MERGED, 10, MERGED));
 
+         changes.add(createChange(kind, 11, null, 20, NEW, 20, NEW));
+         changes.add(createChange(kind, 12, NEW, 21, NEW, 21, NEW));
+
+         changes.add(createChange(kind, 428968, null, 7693330, INTRODUCED, 7693330, NEW));
+
          computeNetChange(changes, IStatus.OK);
          Assert.assertTrue(changes.isEmpty());
       }
@@ -52,13 +67,13 @@ public class ComputeNetChangeTest {
    @Test
    public void testMergeChange() {
       CommitItem change = createChange(GammaKind.Artifact, 1, MODIFIED, 1, MODIFIED, 2, MODIFIED);
-      change.setNetGammaId(3);
-      change.setNetModType(MERGED);
+      change.getNet().setGammaId(3L);
+      change.getNet().setModType(MERGED);
 
       computeNetChange(Arrays.asList(change), IStatus.OK);
 
-      Assert.assertEquals(3, change.getNetGammaId());
-      Assert.assertEquals(MERGED, change.getNetModType());
+      Assert.assertEquals(3L, (long) change.getNet().getGammaId());
+      Assert.assertEquals(MERGED, change.getNet().getModType());
    }
 
    @Test
@@ -83,10 +98,10 @@ public class ComputeNetChangeTest {
 
          for (int index = 0; index < changes.size(); index++) {
             CommitItem change = changes.get(index);
-            ModificationType base = change.getBaseSourceModType();
+            ModificationType base = change.getBase().getModType();
             ModificationType expected = null;
             if (base == NEW || base == INTRODUCED) {
-               if (change.getCurrentSourceModType() == NEW) {
+               if (change.getCurrent().getModType() == NEW) {
                   expected = NEW;
                } else {
                   expected = base;
@@ -94,8 +109,8 @@ public class ComputeNetChangeTest {
             } else {
                Assert.assertFalse(true);
             }
-            Assert.assertEquals("Test: " + change.getItemId(), expected, change.getNetModType());
-            Assert.assertEquals("Test: " + change.getItemId(), index + 1, change.getCurrentSourceGammaId());
+            Assert.assertEquals("Test: " + change.getItemId(), expected, change.getNet().getModType());
+            Assert.assertEquals("Test: " + change.getItemId(), index + 1L, (long) change.getCurrent().getGammaId());
          }
       }
    }
@@ -139,9 +154,10 @@ public class ComputeNetChangeTest {
 
          for (int index = 0; index < changes.size(); index++) {
             CommitItem change = changes.get(index);
-            Assert.assertEquals("Test: " + change.getItemId(), change.getCurrentSourceModType(), change.getNetModType());
-            Assert.assertEquals("Test: " + change.getItemId(), change.getCurrentSourceGammaId(),
-                  change.getCurrentSourceGammaId());
+            Assert.assertEquals("Test: " + change.getItemId(), change.getCurrent().getModType(),
+                  change.getNet().getModType());
+            Assert.assertEquals("Test: " + change.getItemId(), change.getCurrent().getGammaId(),
+                  change.getCurrent().getGammaId());
          }
       }
    }
@@ -156,10 +172,10 @@ public class ComputeNetChangeTest {
       CommitItem change = new CommitItem(sourceGamma, sourceMod);
       change.setItemId(itemId);
       change.setKind(kind);
-      change.setBaseSourceModType(baseSourceMod);
+      change.getBase().setModType(baseSourceMod);
 
-      change.setDestinationGammaId(destGamma);
-      change.setDestinationModType(destModType);
+      change.getDestination().setGammaId(destGamma);
+      change.getDestination().setModType(destModType);
       return change;
    }
 }
