@@ -123,6 +123,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
          insertData.add(new Object[] {newTransactionNumber, change.getNet().getGammaId(), modType.getValue(),
                TxChange.getCurrent(modType).getValue()});
       }
+      System.out.println("Commit change size: " + changes.size());
       ConnectionHandler.runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }
 

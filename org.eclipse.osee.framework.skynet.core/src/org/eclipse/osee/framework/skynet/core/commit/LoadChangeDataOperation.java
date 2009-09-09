@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.commit.CommitItem.ChangePair;
 import org.eclipse.osee.framework.skynet.core.commit.CommitItem.GammaKind;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -172,27 +173,36 @@ public class LoadChangeDataOperation extends AbstractOperation {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       String query =
-            "select txs.mod_type, item." + columnName + " from osee_join_id idj, " //
+            "select item." + columnName + ", txs.gamma_id, txs.mod_type from osee_join_id idj, " //
                   + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
-                  " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.tx_type = ? order by idj.id, txs.transaction_id asc";
+                  " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? order by idj.id, txs.transaction_id asc";
 
       try {
          chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
-               getSourceBranchId(), TransactionDetailsType.NonBaselined.getId());
+               getSourceBranchId());
          int previousItemId = -1;
+         boolean firstChange = false;
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
 
             int itemId = chStmt.getInt(columnName);
+            CommitItem change = changesByItemId.get(itemId);
             if (previousItemId != itemId) {
+               loadVersionData(chStmt, change.getBase());
                previousItemId = itemId;
-
-               CommitItem change = changesByItemId.get(itemId);
-               change.getBase().setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
+               firstChange = true;
+            } else if (firstChange) {
+               loadVersionData(chStmt, change.getFirst());
+               firstChange = false;
             }
          }
       } finally {
          chStmt.close();
       }
+   }
+
+   private void loadVersionData(ConnectionHandlerStatement chStmt, ChangePair changePair) throws OseeArgumentException, OseeDataStoreException {
+      changePair.setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
+      changePair.setGammaId(chStmt.getLong("gamma_id"));
    }
 }
