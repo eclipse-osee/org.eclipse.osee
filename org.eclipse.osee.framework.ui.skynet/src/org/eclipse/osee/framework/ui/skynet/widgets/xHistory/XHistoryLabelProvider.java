@@ -37,27 +37,29 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
       try {
-         if (!(element instanceof Change)) return "";
+         if (!(element instanceof Change)) {
+            return "";
+         }
          Change data = (Change) element;
-         
+
          if (cCol.equals(HistoryXViewerFactory.transaction)) {
             return String.valueOf(data.getToTransactionId().getTransactionNumber());
          } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
             return String.valueOf(data.getGamma());
          } else if (cCol.equals(HistoryXViewerFactory.itemType)) {
-            return data instanceof RelationChanged? data.getName() : data.getItemTypeName();
+            return data instanceof RelationChanged ? data.getName() : data.getItemTypeName();
          } else if (cCol.equals(HistoryXViewerFactory.itemChange)) {
             return data.getItemKind();
          } else if (cCol.equals(HistoryXViewerFactory.modType)) {
             return data.getModificationType().getDisplayName();
          } else if (cCol.equals(HistoryXViewerFactory.itemId)) {
-            return String.valueOf(data.getItemTypeId());
+            return String.valueOf(data.getItemId());
          } else if (cCol.equals(HistoryXViewerFactory.was)) {
             return data.getWasValue();
          } else if (cCol.equals(HistoryXViewerFactory.is)) {
             return data.getIsValue();
          } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
-            return  new SimpleDateFormat("MM/dd/yyyy hh:mm a").format((data.getToTransactionId().getTime()));
+            return new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(data.getToTransactionId().getTime());
          } else if (cCol.equals(HistoryXViewerFactory.author)) {
             return UserManager.getUserNameById(data.getToTransactionId().getAuthorArtId());
          } else if (cCol.equals(HistoryXViewerFactory.comment)) {
@@ -89,7 +91,9 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       try {
-         if (!(element instanceof Change)) return null;
+         if (!(element instanceof Change)) {
+            return null;
+         }
          Change change = (Change) element;
          if (xCol.equals(HistoryXViewerFactory.transaction)) {
             return ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
