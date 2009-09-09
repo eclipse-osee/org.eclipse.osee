@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Roberto E. Escobar
  */
 public class ComputeNetChangeOperation extends AbstractOperation {
-   private final Collection<OseeChange> changes;
+   private final Collection<CommitItem> changes;
 
-   public ComputeNetChangeOperation(Collection<OseeChange> changes) {
+   public ComputeNetChangeOperation(Collection<CommitItem> changes) {
       super("Compute Net Change", Activator.PLUGIN_ID);
       this.changes = changes;
    }
@@ -34,10 +34,10 @@ public class ComputeNetChangeOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (!changes.isEmpty()) {
          double workPercentage = 1.0 / changes.size();
-         Iterator<OseeChange> iterator = changes.iterator();
+         Iterator<CommitItem> iterator = changes.iterator();
          while (iterator.hasNext()) {
             checkForCancelledStatus(monitor);
-            OseeChange change = iterator.next();
+            CommitItem change = iterator.next();
 
             if (change.wasNewOrIntroducedOnSource() && change.getCurrentSourceModType().isDeleted() || change.isAlreadyOnDestination()) {
                iterator.remove();
@@ -60,7 +60,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
       }
    }
 
-   private void checkForInvalidStates(OseeChange change) throws OseeCoreException {
+   private void checkForInvalidStates(CommitItem change) throws OseeCoreException {
       // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
       if (change.getDestinationModType() == null && !change.wasNewOrIntroducedOnSource()) {
          throw new OseeStateException(

@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.commit.OseeChange.GammaKind;
+import org.eclipse.osee.framework.skynet.core.commit.CommitItem.GammaKind;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -38,17 +38,17 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
          "select gamma_id, mod_type from osee_txs txs, osee_tx_details txd where txd.branch_id = ? and txd.transaction_id = txs.transaction_id and txd.tx_type = ? and txs.tx_current <> ?";
 
-   private final HashMap<Integer, OseeChange> artifactChangesByItemId = new HashMap<Integer, OseeChange>();
-   private final HashMap<Integer, OseeChange> relationChangesByItemId = new HashMap<Integer, OseeChange>();
-   private final HashMap<Integer, OseeChange> attributeChangesByItemId = new HashMap<Integer, OseeChange>();
-   private final HashMap<Long, OseeChange> changeByGammaId = new HashMap<Long, OseeChange>();
+   private final HashMap<Integer, CommitItem> artifactChangesByItemId = new HashMap<Integer, CommitItem>();
+   private final HashMap<Integer, CommitItem> relationChangesByItemId = new HashMap<Integer, CommitItem>();
+   private final HashMap<Integer, CommitItem> attributeChangesByItemId = new HashMap<Integer, CommitItem>();
+   private final HashMap<Long, CommitItem> changeByGammaId = new HashMap<Long, CommitItem>();
 
-   private final List<OseeChange> changeData;
+   private final List<CommitItem> changeData;
    private final Branch sourceBranch;
    private final Branch destinationBranch;
    private final Branch mergeBranch;
 
-   public LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<OseeChange> changeData) {
+   public LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<CommitItem> changeData) {
       super("Load Change Data", Activator.PLUGIN_ID);
       this.mergeBranch = mergeBranch;
       this.sourceBranch = sourceBranch;
@@ -91,8 +91,8 @@ public class LoadChangeDataOperation extends AbstractOperation {
             checkForCancelledStatus(monitor);
             txJoin.add(chStmt.getLong("gamma_id"), -1);
 
-            OseeChange oseeChange =
-                  new OseeChange(chStmt.getLong("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")));
+            CommitItem oseeChange =
+                  new CommitItem(chStmt.getLong("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")));
 
             changeByGammaId.put(oseeChange.getCurrentSourceGammaId(), oseeChange);
          }
@@ -103,7 +103,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       return txJoin;
    }
 
-   private void loadChangesByItemId(IProgressMonitor monitor, String tableName, String idColumnName, int queryId, GammaKind kind, HashMap<Integer, OseeChange> changesByItemId) throws OseeDataStoreException {
+   private void loadChangesByItemId(IProgressMonitor monitor, String tableName, String idColumnName, int queryId, GammaKind kind, HashMap<Integer, CommitItem> changesByItemId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       String query =
             "select txj.gamma_id, " + idColumnName + " from " + tableName + " id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
@@ -112,7 +112,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
          chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            OseeChange change = changeByGammaId.get(chStmt.getInt("gamma_id"));
+            CommitItem change = changeByGammaId.get(chStmt.getLong("gamma_id"));
             change.setKind(kind);
             change.setItemId(chStmt.getInt(idColumnName));
             changesByItemId.put(change.getItemId(), change);
@@ -122,9 +122,9 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadByItemId(IProgressMonitor monitor, String tableName, String columnName, HashMap<Integer, OseeChange> changesByItemId) throws OseeCoreException {
+   private void loadByItemId(IProgressMonitor monitor, String tableName, String columnName, HashMap<Integer, CommitItem> changesByItemId) throws OseeCoreException {
       IdJoinQuery idJoin = JoinUtility.createIdJoinQuery();
-      for (Entry<Integer, OseeChange> entry : changesByItemId.entrySet()) {
+      for (Entry<Integer, CommitItem> entry : changesByItemId.entrySet()) {
          idJoin.add(entry.getKey());
       }
       idJoin.store();
@@ -138,7 +138,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       idJoin.delete();
    }
 
-   private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, Branch branch, HashMap<Integer, OseeChange> changesByItemId) throws OseeCoreException {
+   private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, Branch branch, HashMap<Integer, CommitItem> changesByItemId) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       String query =
@@ -153,7 +153,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             checkForCancelledStatus(monitor);
             int itemId = chStmt.getInt(columnName);
             long gammaId = chStmt.getLong("gamma_id");
-            OseeChange change = changesByItemId.get(itemId);
+            CommitItem change = changesByItemId.get(itemId);
 
             if (branch.isMergeBranch()) {
                change.setNetGammaId(gammaId);
@@ -168,7 +168,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadNonCurrentSourceData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, OseeChange> changesByItemId) throws OseeCoreException {
+   private void loadNonCurrentSourceData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, CommitItem> changesByItemId) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       String query =
@@ -187,7 +187,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             if (previousItemId != itemId) {
                previousItemId = itemId;
 
-               OseeChange change = changesByItemId.get(itemId);
+               CommitItem change = changesByItemId.get(itemId);
                change.setBaseSourceModType(ModificationType.getMod(chStmt.getInt("mod_type")));
             }
          }

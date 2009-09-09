@@ -16,8 +16,8 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
-import org.eclipse.osee.framework.skynet.core.commit.OseeChange;
-import org.eclipse.osee.framework.skynet.core.commit.OseeChange.GammaKind;
+import org.eclipse.osee.framework.skynet.core.commit.CommitItem;
+import org.eclipse.osee.framework.skynet.core.commit.CommitItem.GammaKind;
 import org.junit.Test;
 
 /**
@@ -29,7 +29,7 @@ public class ComputeNetChangeTest {
 
    @Test
    public void testChangeRemoval() {
-      List<OseeChange> changes = new ArrayList<OseeChange>();
+      List<CommitItem> changes = new ArrayList<CommitItem>();
       for (GammaKind kind : GammaKind.values()) {
          changes.add(createChange(kind, 1, NEW, 1, DELETED, -1, null));
          changes.add(createChange(kind, 2, INTRODUCED, 2, ARTIFACT_DELETED, -1, null));
@@ -51,7 +51,7 @@ public class ComputeNetChangeTest {
 
    @Test
    public void testMergeChange() {
-      OseeChange change = createChange(GammaKind.Artifact, 1, MODIFIED, 1, MODIFIED, 2, MODIFIED);
+      CommitItem change = createChange(GammaKind.Artifact, 1, MODIFIED, 1, MODIFIED, 2, MODIFIED);
       change.setNetGammaId(3);
       change.setNetModType(MERGED);
 
@@ -63,13 +63,13 @@ public class ComputeNetChangeTest {
 
    @Test
    public void testDestinationMissingItem() {
-      OseeChange change = createChange(GammaKind.Artifact, 1, MODIFIED, 1, MODIFIED, -1, null);
+      CommitItem change = createChange(GammaKind.Artifact, 1, MODIFIED, 1, MODIFIED, -1, null);
       computeNetChange(Arrays.asList(change), IStatus.ERROR);
    }
 
    @Test
    public void testNewAndIntroduced() {
-      List<OseeChange> changes = new ArrayList<OseeChange>();
+      List<CommitItem> changes = new ArrayList<CommitItem>();
       for (GammaKind kind : GammaKind.values()) {
          changes.clear();
          changes.add(createChange(kind, 1, NEW, 1, MODIFIED, -1, null));
@@ -82,7 +82,7 @@ public class ComputeNetChangeTest {
          computeNetChange(changes, IStatus.OK);
 
          for (int index = 0; index < changes.size(); index++) {
-            OseeChange change = changes.get(index);
+            CommitItem change = changes.get(index);
             ModificationType base = change.getBaseSourceModType();
             ModificationType expected = null;
             if (base == NEW || base == INTRODUCED) {
@@ -102,7 +102,7 @@ public class ComputeNetChangeTest {
 
    @Test
    public void testErrorStates() {
-      OseeChange change = createChange(GammaKind.Artifact, 1, NEW, 1, NEW, -1, MODIFIED);
+      CommitItem change = createChange(GammaKind.Artifact, 1, NEW, 1, NEW, -1, MODIFIED);
       computeNetChange(Arrays.asList(change), IStatus.ERROR);
 
       change = createChange(GammaKind.Artifact, 1, INTRODUCED, 1, INTRODUCED, -1, MODIFIED);
@@ -126,7 +126,7 @@ public class ComputeNetChangeTest {
 
    @Test
    public void testAdditionalStates() throws OseeCoreException {
-      List<OseeChange> changes = new ArrayList<OseeChange>();
+      List<CommitItem> changes = new ArrayList<CommitItem>();
       for (GammaKind kind : GammaKind.values()) {
          changes.clear();
          createChange(kind, 1, null, 21, ModificationType.MODIFIED, 10, ModificationType.MODIFIED);
@@ -138,7 +138,7 @@ public class ComputeNetChangeTest {
          computeNetChange(changes, IStatus.OK);
 
          for (int index = 0; index < changes.size(); index++) {
-            OseeChange change = changes.get(index);
+            CommitItem change = changes.get(index);
             Assert.assertEquals("Test: " + change.getItemId(), change.getCurrentSourceModType(), change.getNetModType());
             Assert.assertEquals("Test: " + change.getItemId(), change.getCurrentSourceGammaId(),
                   change.getCurrentSourceGammaId());
@@ -146,14 +146,14 @@ public class ComputeNetChangeTest {
       }
    }
 
-   private void computeNetChange(List<OseeChange> changes, int status) {
+   private void computeNetChange(List<CommitItem> changes, int status) {
       IOperation operation = new ComputeNetChangeOperation(changes);
       operation.run(new NullProgressMonitor());
       Assert.assertEquals(status, operation.getStatus().getSeverity());
    }
 
-   private OseeChange createChange(GammaKind kind, int itemId, ModificationType baseSourceMod, long sourceGamma, ModificationType sourceMod, long destGamma, ModificationType destModType) {
-      OseeChange change = new OseeChange(sourceGamma, sourceMod);
+   private CommitItem createChange(GammaKind kind, int itemId, ModificationType baseSourceMod, long sourceGamma, ModificationType sourceMod, long destGamma, ModificationType destModType) {
+      CommitItem change = new CommitItem(sourceGamma, sourceMod);
       change.setItemId(itemId);
       change.setKind(kind);
       change.setBaseSourceModType(baseSourceMod);

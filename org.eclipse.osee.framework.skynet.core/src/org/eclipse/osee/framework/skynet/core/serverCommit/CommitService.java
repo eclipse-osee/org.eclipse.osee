@@ -15,11 +15,10 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.CommitDbTx;
 import org.eclipse.osee.framework.skynet.core.commit.CommitDbOperation;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
-import org.eclipse.osee.framework.skynet.core.commit.OseeChange;
+import org.eclipse.osee.framework.skynet.core.commit.CommitItem;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -30,16 +29,11 @@ public class CommitService implements ICommitService {
 
    @Override
    public void commitBranch(IProgressMonitor monitor, ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
-      if (hack()) {
-         new CommitDbTx(conflictManager, archiveSourceBranch).execute();
-         return;
-      }
-
       Branch sourceBranch = conflictManager.getSourceBranch();
       Branch destinationBranch = conflictManager.getDestinationBranch();
       Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
 
-      List<OseeChange> changes = new ArrayList<OseeChange>();
+      List<CommitItem> changes = new ArrayList<CommitItem>();
 
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new LoadChangeDataOperation(sourceBranch, destinationBranch, mergeBranch, changes));
@@ -59,9 +53,5 @@ public class CommitService implements ICommitService {
             throw new OseeWrappedException(ex);
          }
       }
-   }
-
-   private boolean hack() {
-      return true;
    }
 }

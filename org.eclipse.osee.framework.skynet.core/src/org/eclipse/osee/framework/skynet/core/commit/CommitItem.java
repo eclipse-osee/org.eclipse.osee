@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 /**
  * @author Roberto E. Escobar
  */
-public class OseeChange {
+public class CommitItem {
    public static enum GammaKind {
       Artifact, Attribute, Relation
    };
@@ -30,7 +30,7 @@ public class OseeChange {
    private long netGammaId;
    private ModificationType netModType;
 
-   public OseeChange(long currentSourceGammaId, ModificationType currentSourceModType) {
+   public CommitItem(long currentSourceGammaId, ModificationType currentSourceModType) {
       super();
       this.currentSourceGammaId = currentSourceGammaId;
       this.currentSourceModType = currentSourceModType;
@@ -119,7 +119,7 @@ public class OseeChange {
    @Override
    public String toString() {
       return String.format(
-            "OseeChange - kind:[%s] itemId:[%s] baseMod[%s] source[%s,%s] destination[%s,%s] net[%s,%s]", kind, itemId,
+            "CommitItem - kind:[%s] itemId:[%s] baseMod[%s] source[%s,%s] destination[%s,%s] net[%s,%s]", kind, itemId,
             baseSourceModType, currentSourceGammaId, currentSourceModType, destinationGammaId, destinationModType,
             netGammaId, netModType);
    }

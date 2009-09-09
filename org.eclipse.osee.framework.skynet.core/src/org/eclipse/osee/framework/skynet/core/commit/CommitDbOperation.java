@@ -53,7 +53,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private final Branch sourceBranch;
    private final Branch destinationBranch;
    private final Branch mergeBranch;
-   private final List<OseeChange> changes;
+   private final List<CommitItem> changes;
    private Integer newTransactionNumber;
    private OseeConnection connection;
 
@@ -67,7 +67,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    //               }
    //            }
 
-   public CommitDbOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<OseeChange> changes) {
+   public CommitDbOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<CommitItem> changes) {
       super("Commit Database Operation", Activator.PLUGIN_ID);
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
@@ -84,7 +84,6 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       if (changes.isEmpty()) {
          throw new OseeStateException(" A branch can not be commited without any changes made.");
       }
-
       newTransactionNumber = addCommitTransactionToDatabase(UserManager.getUser());
 
       AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
@@ -98,7 +97,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
    private void updatePreviousCurrentsOnDestinationBranch() throws OseeStateException, OseeDataStoreException {
       UpdatePreviuosTxCurrent updater = new UpdatePreviuosTxCurrent(destinationBranch, connection);
-      for (OseeChange change : changes) {
+      for (CommitItem change : changes) {
          updater.addItem(change.getKind(), change.getItemId());
       }
       updater.updateTxNotCurrents();
@@ -119,7 +118,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
    private void insertCommitAddressing() throws OseeDataStoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
-      for (OseeChange change : changes) {
+      for (CommitItem change : changes) {
          ModificationType modType = change.getNetModType();
          insertData.add(new Object[] {newTransactionNumber, change.getNetGammaId(), modType.getValue(),
                TxChange.getCurrent(modType).getValue()});
