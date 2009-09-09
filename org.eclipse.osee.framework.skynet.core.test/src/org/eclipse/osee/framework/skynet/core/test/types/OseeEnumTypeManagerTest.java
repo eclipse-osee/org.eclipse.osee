@@ -41,7 +41,7 @@ public class OseeEnumTypeManagerTest {
       testAccessor = new TestDataAccessor(oseeEnumTypes);
       typeCache = new OseeTypeCache(testAccessor, factory);
 
-      typeCache.getEnumTypeData().getAllTypes();
+      typeCache.getEnumTypeCache().getAllTypes();
       Assert.assertTrue(testAccessor.isLoadAllArtifactTypes());
       Assert.assertTrue(testAccessor.isLoadAllAttributeTypes());
       Assert.assertTrue(testAccessor.isLoadAllRelationTypes());
@@ -260,7 +260,7 @@ public class OseeEnumTypeManagerTest {
          int typeId = 400;
          for (OseeEnumType type : oseeEnumTypes) {
             type.setTypeId(typeId++);
-            cache.getEnumTypeData().cacheType(type);
+            cache.getEnumTypeCache().cacheType(type);
          }
       }
    }
