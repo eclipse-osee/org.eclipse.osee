@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.IOseeTypesHandler;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 
 /**
  * @author Roberto E. Escobar
@@ -27,7 +28,7 @@ public class XtextOseeTypesHandler implements IOseeTypesHandler {
    @Override
    public void execute(IProgressMonitor monitor, Object context, URL url) throws OseeCoreException {
       try {
-         IOperation operation = new XTextToOseeTypeOperation(context, url.toURI());
+         IOperation operation = new XTextToOseeTypeOperation(OseeTypeManager.getCache(), context, url.toURI());
          Operations.executeWork(operation, monitor, -1);
          Operations.checkForErrorStatus(operation.getStatus());
       } catch (Exception ex) {

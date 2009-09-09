@@ -18,6 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 import org.eclipse.osee.framework.types.bridge.operations.XTextToOseeTypeOperation;
 import org.eclipse.ui.IImportWizard;
@@ -42,7 +43,7 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
    @Override
    public boolean performFinish() {
       final File file = mainPage.getTypesToImport();
-      IOperation operation = new XTextToOseeTypeOperation(null, file.toURI());
+      IOperation operation = new XTextToOseeTypeOperation(OseeTypeManager.getCache(), null, file.toURI());
       Job job = Operations.executeAsJob(operation, true);
       job.addJobChangeListener(new JobChangeAdapter() {
          @Override

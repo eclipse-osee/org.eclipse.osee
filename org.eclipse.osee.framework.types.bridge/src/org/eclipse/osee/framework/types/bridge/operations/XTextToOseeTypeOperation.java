@@ -35,13 +35,10 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OverrideOption;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
 import org.eclipse.osee.framework.oseeTypes.RemoveEnum;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 
 /**
@@ -51,11 +48,17 @@ import org.eclipse.osee.framework.types.bridge.internal.Activator;
 public class XTextToOseeTypeOperation extends AbstractOperation {
    private final java.net.URI resource;
    private final Object context;
+   private final OseeTypeCache typeCache;
 
-   public XTextToOseeTypeOperation(Object context, java.net.URI resource) {
+   public XTextToOseeTypeOperation(OseeTypeCache typeCache, Object context, java.net.URI resource) {
       super("OSEE Text Model to OSEE", Activator.PLUGIN_ID);
+      this.typeCache = typeCache;
       this.resource = resource;
       this.context = context;
+   }
+
+   private OseeTypeCache getCache() {
+      return typeCache;
    }
 
    private void loadDependencies(OseeTypeModel baseModel, List<OseeTypeModel> models) throws OseeCoreException, URISyntaxException {
@@ -109,10 +112,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
                }
             }
          }
-         OseeEnumTypeManager.persist();
-         AttributeTypeManager.persist();
-         ArtifactTypeManager.persist();
-         RelationTypeManager.persist();
+         getCache().storeAllModified();
       }
 
    }
@@ -125,10 +125,10 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       Set<org.eclipse.osee.framework.skynet.core.artifact.ArtifactType> superTypes =
             new HashSet<org.eclipse.osee.framework.skynet.core.artifact.ArtifactType>();
       org.eclipse.osee.framework.skynet.core.artifact.ArtifactType targetArtifactType =
-            ArtifactTypeManager.getTypeByGuid(artifactType.getTypeGuid());
+            getCache().getArtifactTypeCache().getTypeByGuid(artifactType.getTypeGuid());
 
       for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
-         superTypes.add(ArtifactTypeManager.getType(removeQuotes(superType.getName())));
+         superTypes.add(getCache().getArtifactTypeCache().getTypeByName(removeQuotes(superType.getName())));
       }
       if (!superTypes.isEmpty()) {
          targetArtifactType.addSuperType(superTypes);
@@ -145,11 +145,11 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          } else {
             branch = BranchManager.getBranchByGuid(branchGuid);
          }
-         items.put(branch, AttributeTypeManager.getTypeByGuid(attributeType.getTypeGuid()));
+         items.put(branch, getCache().getAttributeTypeCache().getTypeByGuid(attributeType.getTypeGuid()));
       }
 
       for (Branch branch : items.keySet()) {
-         ArtifactTypeManager.setAttributeTypes(targetArtifactType, items.getValues(), branch);
+         getCache().cacheTypeValidity(targetArtifactType, items.getValues(), branch);
       }
    }
 
@@ -159,14 +159,15 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
 
    private void handleArtifactType(ArtifactType artifactType) throws OseeCoreException {
       String artifactTypeName = removeQuotes(artifactType.getName());
-      artifactType.setTypeGuid(ArtifactTypeManager.createType(artifactType.getTypeGuid(), artifactType.isAbstract(),
-            artifactTypeName).getGuid());
+      artifactType.setTypeGuid(getCache().getArtifactTypeCache().createType(artifactType.getTypeGuid(),
+            artifactType.isAbstract(), artifactTypeName).getGuid());
    }
 
    private org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType getOseeEnumTypes(OseeEnumType enumType) throws OseeCoreException {
       org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType = null;
       if (enumType != null) {
-         oseeEnumType = OseeEnumTypeManager.createEnumType(enumType.getTypeGuid(), removeQuotes(enumType.getName()));
+         oseeEnumType =
+               getCache().getEnumTypeCache().createType(enumType.getTypeGuid(), removeQuotes(enumType.getName()));
          if (oseeEnumType.values().length != enumType.getEnumEntries().size()) {
             int lastOrdinal = 0;
             List<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry> entries =
@@ -177,7 +178,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
                   lastOrdinal = Integer.parseInt(ordinal);
                }
                // enumEntry guid set to null but if we had we could modify an existing entry
-               entries.add(OseeEnumTypeManager.createEnumEntry(null, removeQuotes(enumEntry.getName()), lastOrdinal));
+               entries.add(getCache().getEnumTypeCache().createEntry(null, removeQuotes(enumEntry.getName()),
+                     lastOrdinal));
                lastOrdinal++;
             }
             oseeEnumType.setEntries(entries);
@@ -188,7 +190,9 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
 
    private void handleEnumOverride(OseeEnumOverride enumOverride) throws OseeCoreException {
       org.eclipse.osee.framework.skynet.core.attribute.AttributeType attributeType =
-            AttributeTypeManager.getType(removeQuotes(enumOverride.getOverridenEnumType().getName().replace(".enum", "")));
+            getCache().getAttributeTypeCache().getTypeByName(
+                  removeQuotes(enumOverride.getOverridenEnumType().getName().replace(".enum", "")));
+
       Set<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry> newTypes =
             new HashSet<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry>();
       int ordinal = 0;
@@ -202,7 +206,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       }
       for (OverrideOption overrideOption : enumOverride.getOverrideOptions()) {
          if (overrideOption instanceof AddEnum) {
-            newTypes.add(OseeEnumTypeManager.createEnumEntry(GUID.create(),
+            newTypes.add(getCache().getEnumTypeCache().createEntry(GUID.create(),
                   removeQuotes(((AddEnum) overrideOption).getEnumEntry()), ++ordinal));
          } else if (overrideOption instanceof RemoveEnum) {
             String typeNameToRemove = removeQuotes(((AddEnum) overrideOption).getEnumEntry());
@@ -231,7 +235,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       if (!attributeType.getMax().equals("unlimited")) {
          max = Integer.parseInt(attributeType.getMax());
       }
-      attributeType.setTypeGuid(AttributeTypeManager.createType(attributeType.getTypeGuid(), //
+      attributeType.setTypeGuid(getCache().getAttributeTypeCache().createType(attributeType.getTypeGuid(), //
             removeQuotes(attributeType.getName()), //
             attributeType.getBaseAttributeType(), // 
             attributeType.getDataProvider(), // 
@@ -250,11 +254,13 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             RelationTypeMultiplicity.getFromString(relationType.getMultiplicity().name());
 
       relationType.setTypeGuid(//
-      RelationTypeManager.createRelationType(relationType.getTypeGuid(), removeQuotes(relationType.getName()), //
+      getCache().getRelationTypeCache().createType(
+            relationType.getTypeGuid(),
+            removeQuotes(relationType.getName()), //
             relationType.getSideAName(), //
             relationType.getSideBName(), //
-            ArtifactTypeManager.getType(removeQuotes(relationType.getSideAArtifactType().getName())), //
-            ArtifactTypeManager.getType(removeQuotes(relationType.getSideBArtifactType().getName())), //
+            getCache().getArtifactTypeCache().getTypeByName(removeQuotes(relationType.getSideAArtifactType().getName())), //
+            getCache().getArtifactTypeCache().getTypeByName(removeQuotes(relationType.getSideBArtifactType().getName())), //
             multiplicity, //
             isOrdered(relationType.getDefaultOrderType()),//
             convertOrderTypeNameToGuid(relationType.getDefaultOrderType())//
