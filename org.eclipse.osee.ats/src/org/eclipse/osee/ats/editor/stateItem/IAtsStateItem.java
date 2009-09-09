@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -50,10 +49,6 @@ public interface IAtsStateItem {
 
    public Collection<String> getIds() throws OseeCoreException;
 
-   public List<WorkPageService> getSidebarServices(SMAManager smaMgr) throws OseeCoreException;
-
-   public List<WorkPageService> getToolbarServices(SMAManager smaMgr) throws OseeCoreException;
-
    /**
     * @param smaMgr
     * @param fromState
@@ -72,5 +67,7 @@ public interface IAtsStateItem {
     * @throws Exception
     */
    public Result committing(SMAManager smaMgr) throws OseeCoreException;
+
+   public List<XWidget> getDynamicXWidgets(SMAManager smaMgr) throws OseeCoreException;
 
 }

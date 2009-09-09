@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
-import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -40,11 +39,6 @@ public class AtsLogWorkPage extends AtsWorkPage {
     */
    public AtsLogWorkPage(String title) {
       super(new EmptyWorkFlowDefinition(title, PAGE_ID), new WorkPageDefinition(title, PAGE_ID, null), null, null);
-   }
-
-   @Override
-   public boolean isDisplayService(WorkPageService service) {
-      return false;
    }
 
 }

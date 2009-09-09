@@ -15,7 +15,6 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -107,10 +106,6 @@ public class AtsWorkPage extends WorkPage {
 
    public boolean isCancelledPage() {
       return getName().equals(DefaultTeamState.Cancelled.name());
-   }
-
-   public boolean isDisplayService(WorkPageService service) {
-      return true;
    }
 
    public boolean isEndorsePage() {

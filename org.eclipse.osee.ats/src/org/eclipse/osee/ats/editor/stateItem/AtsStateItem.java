@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor.stateItem;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
-import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -33,8 +32,6 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public abstract class AtsStateItem implements IAtsStateItem {
 
    public static String ALL_STATE_IDS = "ALL";
-   private static final ArrayList<WorkPageService> EMPTY_SERVICES = new ArrayList<WorkPageService>();
-   private static final Collection<String> EMPTY_STRING = new ArrayList<String>();
 
    public Result committing(SMAManager smaMgr) throws OseeCoreException {
       return Result.TrueResult;
@@ -49,7 +46,7 @@ public abstract class AtsStateItem implements IAtsStateItem {
    }
 
    public Collection<String> getIds() throws OseeCoreException {
-      if (getId() == null) return EMPTY_STRING;
+      if (getId() == null) return Collections.emptyList();
       return Arrays.asList(getId());
    }
 
@@ -61,12 +58,8 @@ public abstract class AtsStateItem implements IAtsStateItem {
       return null;
    }
 
-   public List<WorkPageService> getSidebarServices(SMAManager smaMgr) throws OseeCoreException {
-      return EMPTY_SERVICES;
-   }
-
-   public List<WorkPageService> getToolbarServices(SMAManager smaMgr) throws OseeCoreException {
-      return EMPTY_SERVICES;
+   public List<XWidget> getDynamicXWidgets(SMAManager smaMgr) throws OseeCoreException {
+      return Collections.emptyList();
    }
 
    public Result pageCreated(FormToolkit toolkit, AtsWorkPage page, SMAManager smaMgr, XModifiedListener xModListener, boolean isEditable) throws OseeCoreException {

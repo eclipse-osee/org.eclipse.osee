@@ -22,7 +22,6 @@ import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.actions.ServicesArea;
 import org.eclipse.osee.ats.artifact.LogItem;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -98,7 +97,6 @@ public class SMAWorkFlowSection extends SectionPart {
    protected final SMAManager smaMgr;
    private final AtsWorkPage atsWorkPage;
    private final boolean isEditable, isCurrentState, isGlobalEditable;
-   private ServicesArea servicesArea;
    private final XFormToolkit toolkit;
    private Composite mainComp;
    private final List<XWidget> allXWidgets = new ArrayList<XWidget>();
@@ -115,9 +113,6 @@ public class SMAWorkFlowSection extends SectionPart {
       // parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_CYAN));
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.ui.forms.AbstractFormPart#initialize(org.eclipse.ui.forms.IManagedForm)
-    */
    @Override
    public void initialize(final IManagedForm form) {
       super.initialize(form);
@@ -139,18 +134,11 @@ public class SMAWorkFlowSection extends SectionPart {
 
          SMAWorkFlowTab.createStateNotesHeader(mainComp, toolkit, smaMgr, 2, atsWorkPage.getName());
 
-         Composite rightComp = toolkit.createContainer(mainComp, 1);
-         rightComp.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
-         // rightComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_DARK_YELLOW));
-
          Composite workComp = createWorkArea(mainComp, atsWorkPage, toolkit);
 
          GridData gridData = new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING);
          gridData.widthHint = 400;
          workComp.setLayoutData(gridData);
-
-         servicesArea = new ServicesArea(smaMgr);
-         servicesArea.createSidebarServices(rightComp, atsWorkPage, toolkit, this);
 
          section.layout();
          section.setExpanded(smaMgr.isCurrentSectionExpanded(atsWorkPage.getName()));
@@ -199,6 +187,14 @@ public class SMAWorkFlowSection extends SectionPart {
             atsWorkPage.createBody(getManagedForm(), workComp, smaMgr.getSma(), xModListener,
                   isEditable || isGlobalEditable);
       allXWidgets.addAll(dynamicXWidgetLayout.getXWidgets());
+
+      // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
+      for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
+         for (XWidget xWidget : item.getDynamicXWidgets(smaMgr)) {
+            xWidget.createWidgets(workComp, 2);
+            allXWidgets.add(xWidget);
+         }
+      }
 
       createTaskFooter(workComp, atsWorkPage.getName());
       createReviewFooter(workComp, atsWorkPage.getName());
@@ -363,7 +359,6 @@ public class SMAWorkFlowSection extends SectionPart {
          xWidget.dispose();
       }
       atsWorkPage.dispose();
-      servicesArea.dispose();
    }
 
    final SMAWorkFlowSection fSection = this;
@@ -403,7 +398,7 @@ public class SMAWorkFlowSection extends SectionPart {
             }
             transitionAssigneesLabel.getParent().layout();
          }
-         refreshStateServices();
+         smaMgr.getEditor().onDirtied();
          for (XWidget xWidget : allXWidgets) {
             xWidget.refresh();
          }
@@ -753,13 +748,6 @@ public class SMAWorkFlowSection extends SectionPart {
       } finally {
          smaMgr.setInTransition(false);
       }
-   }
-
-   public void refreshStateServices() throws OseeCoreException {
-      if (servicesArea != null) {
-         servicesArea.refresh();
-      }
-      smaMgr.getEditor().onDirtied();
    }
 
    /**

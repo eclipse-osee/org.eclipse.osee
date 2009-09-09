@@ -35,7 +35,6 @@ import org.eclipse.osee.ats.actions.OpenTeamDefinitionAction;
 import org.eclipse.osee.ats.actions.OpenVersionArtifactAction;
 import org.eclipse.osee.ats.actions.PrivilegedEditAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
-import org.eclipse.osee.ats.actions.ServicesArea;
 import org.eclipse.osee.ats.actions.ShowChangeReportAction;
 import org.eclipse.osee.ats.actions.ShowMergeManagerAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
@@ -271,12 +270,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private void refreshToolbar() throws OseeCoreException {
       IToolBarManager toolBarMgr = scrolledForm.getToolBarManager();
-      if (toolbarArea != null) {
-         toolbarArea.dispose();
-         scrolledForm.getToolBarManager().removeAll();
-      }
-      toolbarArea = new ServicesArea(smaMgr);
-      toolbarArea.createToolbarServices(currentAtsWorkPage, scrolledForm.getToolBarManager());
+      scrolledForm.getToolBarManager().removeAll();
 
       if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && (smaMgr.getBranchMgr().isCommittedBranchExists() || smaMgr.getBranchMgr().isWorkingBranchInWork())) {
          toolBarMgr.add(new ShowMergeManagerAction(smaMgr));
@@ -353,9 +347,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
       for (SMAWorkFlowSection section : sections)
          section.dispose();
-      if (toolbarArea != null) {
-         toolbarArea.dispose();
-      }
+
       if (toolkit != null) {
          toolkit.dispose();
       }
@@ -386,8 +378,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
       return htmlSb.toString();
    }
-
-   private ServicesArea toolbarArea;
 
    private Control control = null;
 
