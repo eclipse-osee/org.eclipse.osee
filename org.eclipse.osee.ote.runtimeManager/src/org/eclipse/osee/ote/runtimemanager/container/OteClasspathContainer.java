@@ -35,9 +35,9 @@ public class OteClasspathContainer implements IClasspathContainer {
    private IJavaProject javaProject;
    private JarChangeResourceListener<OteUserLibsNature> userLibResourceListener;
    private IPath containerPath;
-   
+
    private static final List<OteClasspathContainer> activeContainers = new ArrayList<OteClasspathContainer>();
-   
+
 
    public OteClasspathContainer(IPath path, IJavaProject javaProject) {
       this.javaProject = javaProject;
@@ -49,8 +49,8 @@ public class OteClasspathContainer implements IClasspathContainer {
          tracker.open(true);
          Object obj = tracker.waitForService(10000);
          locator = (OteBundleLocator)obj;
-         
-//         OteContainerActivator.getDefault().getLibraryChangeProvider().addListener(this);
+
+         //         OteContainerActivator.getDefault().getLibraryChangeProvider().addListener(this);
       }
       catch (Exception ex) {
          ex.printStackTrace();
@@ -125,7 +125,6 @@ public class OteClasspathContainer implements IClasspathContainer {
          runtimeLibUrls = locator.getRuntimeLibs();
          for( BundleInfo info : runtimeLibUrls )
          {
-
             String binaryFilePath = info.getSystemLocation().getFile();
 
             if(info.isSystemLibrary())
@@ -133,9 +132,12 @@ public class OteClasspathContainer implements IClasspathContainer {
                entries.add(JavaCore.newLibraryEntry(new Path(binaryFilePath),new Path(binaryFilePath), new Path("/")));
             } else {
                File projectFilePath = recursivelyFindProjectFile(new File(binaryFilePath));
-               binaryFilePath = "/" + projectFilePath.getName();
+               if( !projectMatchesClasspathFile(projectFilePath))
+               {
+                  binaryFilePath = "/" + projectFilePath.getName();
 
-               entries.add(JavaCore.newProjectEntry( new Path(binaryFilePath)));
+                  entries.add(JavaCore.newProjectEntry( new Path(binaryFilePath)));
+               }
             }
          }
 
@@ -146,6 +148,19 @@ public class OteClasspathContainer implements IClasspathContainer {
 
       IClasspathEntry[] retVal = new IClasspathEntry[entries.size()];
       return entries.toArray(retVal);
+   }
+
+   /**
+    * @param projectFilePath
+    * @return
+    */
+   private boolean projectMatchesClasspathFile(File projectFilePath) {
+      String projectBeingResolvedName = javaProject.getPath().toString();
+      String classpathFilePath = projectFilePath.getName();
+      if(projectBeingResolvedName.contains(classpathFilePath))
+         return true;
+      
+      return false;
    }
 
    @Override
@@ -195,38 +210,38 @@ public class OteClasspathContainer implements IClasspathContainer {
 
 
    }
-   
+
    public static void refreshAll() {
       for( OteClasspathContainer container : activeContainers.toArray(new OteClasspathContainer[0]))
       {
          container.refresh();
       }
    }
-   
+
 
    public void refresh() {
-      
+
       try {
          activeContainers.remove(this);
          if(javaProject.isOpen()) {
             JavaCore.setClasspathContainer(containerPath, new IJavaProject[]{javaProject}, new IClasspathContainer[] {new OteClasspathContainer(this)}, null);
          }
-//         new Thread(new Runnable() {
-//
-//            @Override
-//            public void run() {
-//               try {
-//                  Thread.sleep(10000);
-//               }
-//               catch (InterruptedException ex) {
-//                  ex.printStackTrace();
-//               }
-//               catch (Exception ex) {
-//                  ex.printStackTrace();
-//               }
-//            }
-//            
-//         }).start();
+         //         new Thread(new Runnable() {
+         //
+         //            @Override
+         //            public void run() {
+         //               try {
+         //                  Thread.sleep(10000);
+         //               }
+         //               catch (InterruptedException ex) {
+         //                  ex.printStackTrace();
+         //               }
+         //               catch (Exception ex) {
+         //                  ex.printStackTrace();
+         //               }
+         //            }
+         //            
+         //         }).start();
       }
       catch (Exception ex) {
       }
