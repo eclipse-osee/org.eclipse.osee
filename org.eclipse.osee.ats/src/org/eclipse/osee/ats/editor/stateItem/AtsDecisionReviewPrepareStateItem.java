@@ -12,7 +12,6 @@ package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
-import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

@@ -31,6 +31,8 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
+import org.eclipse.osee.ats.editor.stateItem.AtsStateItems;
+import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsRelation;

@@ -31,6 +31,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
+import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.editor.widget.CurrentAssigneesXWidget;
 import org.eclipse.osee.ats.editor.widget.ReviewInfoXWidget;
 import org.eclipse.osee.ats.editor.widget.StateHoursSpentXWidget;

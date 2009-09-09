@@ -14,11 +14,8 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
@@ -29,9 +26,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.SectionPart;
-import org.eclipse.ui.forms.events.HyperlinkEvent;
-import org.eclipse.ui.forms.events.IHyperlinkListener;
-import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.Section;
 
 /**
@@ -68,40 +62,6 @@ public class SMAWorkFlowDebugSection extends SectionPart {
 
       workComp = toolkit.createClientContainer(section, 1);
       workComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-      Hyperlink link = toolkit.createHyperlink(workComp, "Dirty Report", SWT.NONE);
-      link.addHyperlinkListener(new IHyperlinkListener() {
-
-         public void linkEntered(HyperlinkEvent e) {
-         }
-
-         public void linkExited(HyperlinkEvent e) {
-         }
-
-         public void linkActivated(HyperlinkEvent e) {
-            try {
-               Result result = smaMgr.getEditor().isDirtyResult();
-               AWorkbench.popup("Success", Strings.isValid(result.getText()) ? result.getText() : "Success");
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-
-      });
-      link = toolkit.createHyperlink(workComp, "Refresh Dirty", SWT.NONE);
-      link.addHyperlinkListener(new IHyperlinkListener() {
-
-         public void linkEntered(HyperlinkEvent e) {
-         }
-
-         public void linkExited(HyperlinkEvent e) {
-         }
-
-         public void linkActivated(HyperlinkEvent e) {
-            smaMgr.getEditor().onDirtied();
-         }
-
-      });
 
       try {
          // Display team definition

@@ -16,7 +16,6 @@ import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.util.widgets.DecisionOption;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;

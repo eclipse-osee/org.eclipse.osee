@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor;
+package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;

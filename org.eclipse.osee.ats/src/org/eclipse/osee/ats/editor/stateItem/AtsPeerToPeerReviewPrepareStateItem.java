@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
-import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;

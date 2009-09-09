@@ -14,7 +14,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;

@@ -20,6 +20,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.actions.AccessControlAction;
+import org.eclipse.osee.ats.actions.DirtyReportAction;
+import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
@@ -64,14 +67,12 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
-import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.notify.OseeNotificationManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.xHistory.HistoryView;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -391,58 +392,12 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
 
    private ToolBar createToolBar(Composite parent) {
       ToolBar toolBar = AtsUtil.createCommonToolBar(parent);
-      ToolItem item;
 
       OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "ATS Editor");
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.EDIT_BLUE));
-      item.setToolTipText("Show this artifact in the Resource History");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            try {
-               HistoryView.open(smaMgr.getSma());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-
-      item = new ToolItem(toolBar, SWT.SEPARATOR);
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.AUTHENTICATED));
-      item.setToolTipText("&Access Control");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            try {
-               PolicyDialog pd = new PolicyDialog(Display.getCurrent().getActiveShell(), smaMgr.getSma());
-               pd.open();
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.DIRTY));
-      item.setToolTipText("Show what attribute or relation making editor dirty.");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent event) {
-            try {
-               Result result = smaMgr.getEditor().isDirtyResult();
-               AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      });
-
+      AtsUtil.actionToToolItem(toolBar, new ResourceHistoryAction(smaMgr), FrameworkImage.EDIT_BLUE);
+      AtsUtil.actionToToolItem(toolBar, new AccessControlAction(smaMgr), FrameworkImage.AUTHENTICATED);
+      AtsUtil.actionToToolItem(toolBar, new DirtyReportAction(smaMgr), FrameworkImage.DIRTY);
       new ToolItem(toolBar, SWT.SEPARATOR);
-
       Text artifactInfoLabel = new Text(toolBar.getParent(), SWT.END);
       artifactInfoLabel.setEditable(false);
       try {

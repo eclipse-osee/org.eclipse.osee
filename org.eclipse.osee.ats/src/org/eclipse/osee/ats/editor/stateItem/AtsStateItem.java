@@ -8,12 +8,14 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.editor;
+package org.eclipse.osee.ats.editor.stateItem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.editor.SMAWorkFlowSection;
 import org.eclipse.osee.ats.editor.service.WorkPageService;
 import org.eclipse.osee.ats.workflow.AtsWorkPage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

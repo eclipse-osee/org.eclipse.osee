@@ -34,7 +34,6 @@ import org.eclipse.osee.ats.actions.OpenParentAction;
 import org.eclipse.osee.ats.actions.OpenTeamDefinitionAction;
 import org.eclipse.osee.ats.actions.OpenVersionArtifactAction;
 import org.eclipse.osee.ats.actions.PrivilegedEditAction;
-import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.ServicesArea;
 import org.eclipse.osee.ats.actions.ShowChangeReportAction;
@@ -298,7 +297,6 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolBarMgr.add(new CopyActionDetailsAction(smaMgr));
       toolBarMgr.add(new PrivilegedEditAction(smaMgr));
       toolBarMgr.add(new ResourceHistoryAction(smaMgr));
-      toolBarMgr.add(new ReloadAction(smaMgr));
 
       OseeAts.addButtonToEditorToolBar(smaMgr.getEditor(), this, AtsPlugin.getInstance(),
             scrolledForm.getToolBarManager(), SMAEditor.EDITOR_ID, "ATS Editor");

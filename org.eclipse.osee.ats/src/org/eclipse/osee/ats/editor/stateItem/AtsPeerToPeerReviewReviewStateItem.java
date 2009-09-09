@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
-import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

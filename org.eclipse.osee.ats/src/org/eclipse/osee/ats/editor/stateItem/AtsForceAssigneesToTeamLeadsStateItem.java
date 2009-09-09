@@ -14,7 +14,6 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.editor.AtsStateItem;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

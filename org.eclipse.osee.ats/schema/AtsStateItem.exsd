@@ -50,7 +50,7 @@
                   
                </documentation>
                <appInfo>
-                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.ats.editor.IAtsStateItem"/>
+                  <meta.attribute kind="java" basedOn=":org.eclipse.osee.ats.editor.stateItem.IAtsStateItem"/>
                </appInfo>
             </annotation>
          </attribute>

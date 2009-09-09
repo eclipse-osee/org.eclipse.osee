@@ -12,6 +12,8 @@ package org.eclipse.osee.ats.editor;
 
 import java.util.Collections;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.actions.AccessControlAction;
+import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.actions.EditActionableItemsAction;
 import org.eclipse.osee.ats.actions.EmailActionAction;
@@ -20,6 +22,8 @@ import org.eclipse.osee.ats.actions.OpenInArtifactEditorAction;
 import org.eclipse.osee.ats.actions.OpenInAtsWorldAction;
 import org.eclipse.osee.ats.actions.OpenInSkyWalkerAction;
 import org.eclipse.osee.ats.actions.OpenParentAction;
+import org.eclipse.osee.ats.actions.RefreshDirtyAction;
+import org.eclipse.osee.ats.actions.ReloadAction;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -70,6 +74,8 @@ public class SMAOperationsSection extends SectionPart {
       createViewsEditorsSection(sectionBody, toolkit);
       createNotificationsSection(sectionBody, toolkit);
 
+      createAdvancedSection(sectionBody, toolkit);
+
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
 
@@ -98,6 +104,38 @@ public class SMAOperationsSection extends SectionPart {
             (new XButtonViaAction(new DuplicateWorkflowAction(
                   Collections.singleton((TeamWorkFlowArtifact) editor.getSmaMgr().getSma())))).createWidgets(
                   sectionBody, 2);
+            (new XButtonViaAction(new AccessControlAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+
+      section.setClient(sectionBody);
+   }
+
+   private void createAdvancedSection(Composite parent, FormToolkit toolkit) {
+      try {
+         if (!(editor.getSmaMgr().getSma() instanceof TeamWorkFlowArtifact)) return;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+      section.setText("Advanced");
+
+      section.setLayout(new GridLayout());
+      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+      final Composite sectionBody = toolkit.createComposite(section, SWT.NONE);
+      sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
+      sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      try {
+         if (editor.getSmaMgr().getSma() instanceof TeamWorkFlowArtifact) {
+            (new XButtonViaAction(new DirtyReportAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+            (new XButtonViaAction(new ReloadAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+            if (AtsUtil.isAtsAdmin()) {
+               (new XButtonViaAction(new RefreshDirtyAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

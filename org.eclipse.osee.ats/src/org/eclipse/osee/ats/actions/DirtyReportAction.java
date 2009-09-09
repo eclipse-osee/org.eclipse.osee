@@ -10,42 +10,36 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
-import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class FavoriteAction extends Action {
+public class DirtyReportAction extends Action {
 
    private final SMAManager smaMgr;
 
-   public FavoriteAction(SMAManager smaMgr) {
+   public DirtyReportAction(SMAManager smaMgr) {
+      super("Show Artifact Dirty Report");
       this.smaMgr = smaMgr;
-      String title = "Favorite";
-      try {
-         title = ((IFavoriteableArtifact) smaMgr.getSma()).amIFavorite() ? "Remove Favorite" : "Add as Favorite";
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-      setText(title);
-      setToolTipText(title);
+      setToolTipText("Show what attribute or relation making editor dirty.");
    }
 
    @Override
    public void run() {
       try {
-         (new FavoritesManager(smaMgr.getSma())).toggleFavorite();
+         Result result = smaMgr.getEditor().isDirtyResult();
+         AWorkbench.popup("Dirty Report", result.isFalse() ? "Not Dirty" : "Dirty -> " + result.getText());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -53,7 +47,7 @@ public class FavoriteAction extends Action {
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(AtsImage.FAVORITE);
+      return ImageManager.getImageDescriptor(FrameworkImage.DIRTY);
    }
 
 }
