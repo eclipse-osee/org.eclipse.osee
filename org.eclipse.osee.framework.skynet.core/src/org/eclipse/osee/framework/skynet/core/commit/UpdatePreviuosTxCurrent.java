@@ -72,9 +72,9 @@ public class UpdatePreviuosTxCurrent {
 
    private void updateNoLongerCurrentGammas(String tableName, String columnName, int queryId) throws OseeDataStoreException {
       List<Object[]> gammaTxPairs = new ArrayList<Object[]>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       String query =
-            "select txs.transaction_id, txs.gamma_id FROM osee_join_id idj, " + tableName + " item, osee_txs txs, osee_tx_details txd WHERE idj.query_id = ? and idj.id = item." + columnName + " AND item.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ?";
+            "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id idj, " + tableName + " item, osee_txs txs, osee_tx_details txd WHERE idj.query_id = ? and idj.id = item." + columnName + " AND item.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ?";
 
       try {
          chStmt.runPreparedQuery(10000, query, queryId, branch.getBranchId());
