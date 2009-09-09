@@ -22,3 +22,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Export-Package: org.eclipse.osee.framework.contentassist,
  org.eclipse.osee.framework.contentassist.antlr
 Bundle-Activator: org.eclipse.osee.framework.internal.OseeTypesActivator
+Import-Package: org.eclipse.osee.framework.jdk.core.util
