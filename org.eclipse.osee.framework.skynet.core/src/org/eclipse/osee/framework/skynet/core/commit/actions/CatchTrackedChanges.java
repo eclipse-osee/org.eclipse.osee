@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -43,7 +42,7 @@ public class CatchTrackedChanges implements CommitAction {
       Set<Artifact> changedArtifacts = new HashSet<Artifact>();
 
       for (Change change : ChangeManager.getChangesPerBranch(branch, new NullProgressMonitor())) {
-         if (!change.getModificationType().equals(ModificationType.DELETED)) {
+         if (!change.getModificationType().isDeleted()) {
             if (change instanceof AttributeChanged) {
                Attribute<?> attribute = ((AttributeChanged) change).getAttribute();
                if (attribute instanceof WordAttribute) {
