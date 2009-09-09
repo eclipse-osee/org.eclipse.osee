@@ -16,9 +16,9 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.commit.CommitDbOperation;
+import org.eclipse.osee.framework.skynet.core.commit.CommitItem;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
-import org.eclipse.osee.framework.skynet.core.commit.CommitItem;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -52,6 +52,9 @@ public class CommitService implements ICommitService {
          } else {
             throw new OseeWrappedException(ex);
          }
+      }
+      if (archiveSourceBranch) {
+         sourceBranch.archive();
       }
    }
 }
