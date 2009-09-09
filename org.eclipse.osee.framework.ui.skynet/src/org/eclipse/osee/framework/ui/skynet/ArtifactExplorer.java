@@ -252,7 +252,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       stackComposite.getParent().layout();
    }
 
-
    @Override
    public void createPartControl(Composite parent) {
       try {
@@ -1381,7 +1380,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                } else if (artifactModType == ArtifactModType.Changed) {
                   treeViewer.refresh(artifact, true);
                } else if (artifactModType == ArtifactModType.Reverted) {
-                  if (artifact.getParent() != null) {
+                  if (artifact.hasParent()) {
                      treeViewer.refresh(artifact.getParent());
                   }
                }
