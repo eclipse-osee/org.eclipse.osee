@@ -584,11 +584,8 @@ public class RelationManager {
 
       if (relation == null) {
          ensureRelationCanBeAdded(relationType, artifactA, artifactB);
-         relation = new RelationLink(artifactA, artifactB, relationType, rationale, ModificationType.NEW);
+         relation = RelationLink.getOrCreate(artifactA, artifactB, relationType, rationale, ModificationType.NEW);
          relation.setDirty();
-
-         RelationManager.manageRelation(relation, RelationSide.SIDE_A);
-         RelationManager.manageRelation(relation, RelationSide.SIDE_B);
 
          try {
             OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Added, relation,
@@ -750,11 +747,8 @@ public class RelationManager {
             getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
 
       if (relation == null) {
-         relation = new RelationLink(artifactA, artifactB, relationType, rationale, ModificationType.NEW);
+         relation = RelationLink.getOrCreate(artifactA, artifactB, relationType, rationale, ModificationType.NEW);
          relation.setDirty();
-
-         RelationManager.manageRelation(relation, RelationSide.SIDE_A);
-         RelationManager.manageRelation(relation, RelationSide.SIDE_B);
       }
 
       OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Added, relation,

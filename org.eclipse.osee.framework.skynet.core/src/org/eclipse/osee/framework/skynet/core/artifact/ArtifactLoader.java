@@ -15,16 +15,13 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -40,7 +37,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -205,16 +201,6 @@ public final class ArtifactLoader {
 
    /**
     * loads or reloads artifacts based on artifact ids and branch ids in the insertParameters
-    * 
-    * @param queryId
-    * @param loadLevel
-    * @param confirmer
-    * @param insertParameters
-    * @param reload
-    * @param historical
-    * @param allowDeleted
-    * @return list of the loaded artifacts
-    * @throws OseeCoreException
     */
    public static List<Artifact> loadArtifacts(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, List<Object[]> insertParameters, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
 
@@ -403,28 +389,17 @@ public final class ArtifactLoader {
             if (relationId == 43135 && aArtifactId == 52002 && bArtifactId == 108) {
                System.out.println("loading that relation with gamma " + chStmt.getInt("gamma_id"));
             }
-            RelationLink relation =
-                  RelationManager.getLoadedRelation(relationType, aArtifactId, bArtifactId, aBranch, bBranch);
+            int aOrderValue = chStmt.getInt("a_order");
+            int bOrderValue = chStmt.getInt("b_order");
+            int gammaId = chStmt.getInt("gamma_id");
+            String rationale = chStmt.getString("rationale");
 
-            if (relation == null) {
-               int aOrderValue = chStmt.getInt("a_order");
-               int bOrderValue = chStmt.getInt("b_order");
-               int gammaId = chStmt.getInt("gamma_id");
-               String rationale = chStmt.getString("rationale");
-
-               relation =
-                     new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
-                           rationale, aOrderValue, bOrderValue, ModificationType.getMod(chStmt.getInt("mod_type")));
-
-            }
-            RelationManager.manageRelation(relation, RelationSide.SIDE_A);
-            RelationManager.manageRelation(relation, RelationSide.SIDE_B);
+            RelationLink.getOrCreate(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
+                  rationale, aOrderValue, bOrderValue, ModificationType.getMod(chStmt.getInt("mod_type")));
          }
       } finally {
          chStmt.close();
       }
-      Map<Integer, RelationLink> sideB = new HashMap<Integer, RelationLink>();
-      Map<Integer, RelationLink> sideA = new HashMap<Integer, RelationLink>();
       for (Artifact artifact : artifacts) {
          artifact.setLinksLoaded(true);
       }

@@ -45,7 +45,10 @@ public class RelationLink {
    private static final boolean SET_DIRTY = true;
    private static final boolean SET_NOT_DIRTY = false;
 
-   public RelationLink(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder, ModificationType modificationType) {
+   /**
+    * Private constructor. Use getOrCreate().
+    */
+   private RelationLink(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder, ModificationType modificationType) {
       this.relationType = relationType;
       this.relationId = relationId;
       this.gammaId = gammaId;
@@ -63,13 +66,27 @@ public class RelationLink {
    }
 
    /**
-    * This constructor creates new relations that does not already exist in the data store.
-    * 
-    * @param modificationType
+    * Return existing RelationLink or create new one. This needs to be synchronized so two threads don't create the same
+    * link object twice.
     */
-   public RelationLink(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale, ModificationType modificationType) {
-      this(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(), bArtifact.getBranch(), relationType, 0,
-            0, rationale, 0, 0, modificationType);
+   public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder, ModificationType modificationType) {
+      RelationLink relation =
+            RelationManager.getLoadedRelation(relationType, aArtifactId, bArtifactId, aBranch, bBranch);
+      if (relation == null) {
+
+         relation =
+               new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
+                     rationale, aOrder, bOrder, modificationType);
+      }
+      RelationManager.manageRelation(relation, RelationSide.SIDE_A);
+      RelationManager.manageRelation(relation, RelationSide.SIDE_B);
+
+      return relation;
+   }
+
+   public static RelationLink getOrCreate(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale, ModificationType modificationType) {
+      return getOrCreate(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(), bArtifact.getBranch(),
+            relationType, 0, 0, rationale, 0, 0, modificationType);
    }
 
    public RelationSide getSide(Artifact artifact) {

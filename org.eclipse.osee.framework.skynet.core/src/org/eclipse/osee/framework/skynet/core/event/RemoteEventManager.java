@@ -26,7 +26,6 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -673,13 +672,11 @@ public class RemoteEventManager {
 
                   if (relation == null || relation.getModificationType() == ModificationType.DELETED) {
                      relation =
-                           new RelationLink(event.getArtAId(), event.getArtBId(), branch, branch, relationType,
-                                 event.getRelId(), event.getGammaId(),
+                           RelationLink.getOrCreate(event.getArtAId(), event.getArtBId(), branch, branch,
+                                 relationType, event.getRelId(), event.getGammaId(),
                                  ((NetworkNewRelationLinkEvent) event).getRationale(),
                                  ((NetworkNewRelationLinkEvent) event).getAOrder(),
                                  ((NetworkNewRelationLinkEvent) event).getBOrder(), ModificationType.NEW);
-                     RelationManager.manageRelation(relation, RelationSide.SIDE_A);
-                     RelationManager.manageRelation(relation, RelationSide.SIDE_B);
                      //                     if (bArtifactLoaded) {
                      //                        RelationManager.sortRelations(bArtifact, relation.getRelationType(),
                      //                              new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());
