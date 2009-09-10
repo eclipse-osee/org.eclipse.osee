@@ -74,11 +74,11 @@ public class CommitItem {
    }
 
    public boolean wasNewOnSource() {
-      return getFirst().getModType() == ModificationType.NEW || getCurrent().getModType() == ModificationType.NEW || getBase().getModType() == null;
+      return getFirst().isNew() || getCurrent().isNew();
    }
 
    public boolean wasIntroducedOnSource() {
-      return getFirst().getModType() == ModificationType.INTRODUCED || getCurrent().getModType() == ModificationType.INTRODUCED;
+      return getFirst().isIntroduced() || getCurrent().isIntroduced();
    }
 
    public boolean wasNewOrIntroducedOnSource() {
@@ -86,49 +86,12 @@ public class CommitItem {
    }
 
    public boolean isAlreadyOnDestination() {
-      return getCurrent().getGammaId() == getDestination().getGammaId() && getCurrent().getModType().isDeleted() == getDestination().getModType().isDeleted();
+      return getCurrent().sameGammaAs(getDestination()) && getCurrent().getModType().isDeleted() == getDestination().getModType().isDeleted();
    }
 
    @Override
    public String toString() {
       return String.format("CommitItem - kind:[%s] itemId:[%s] base:%s first:%s current:%s destination:%s net:%s",
             kind, itemId, getBase(), getFirst(), getCurrent(), getDestination(), getNet());
-   }
-
-   public final class ChangePair {
-      private Long gammaId;
-      private ModificationType modType;
-
-      private ChangePair() {
-         this(null, null);
-      }
-
-      private ChangePair(Long gammaId, ModificationType modType) {
-         super();
-         this.gammaId = gammaId;
-         this.modType = modType;
-      }
-
-      public Long getGammaId() {
-         return gammaId;
-      }
-
-      public ModificationType getModType() {
-         return modType;
-      }
-
-      public void setGammaId(Long gammaId) {
-         this.gammaId = gammaId;
-      }
-
-      public void setModType(ModificationType modType) {
-         this.modType = modType;
-      }
-
-      @Override
-      public String toString() {
-         return String.format("[%s,%s]", getGammaId(), getModType());
-      }
-
    }
 }

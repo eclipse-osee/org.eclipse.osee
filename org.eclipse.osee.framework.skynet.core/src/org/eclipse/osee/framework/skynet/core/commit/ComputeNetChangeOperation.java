@@ -45,13 +45,11 @@ public class ComputeNetChangeOperation extends AbstractOperation {
                checkForInvalidStates(change);
 
                if (change.getNet().getModType() != ModificationType.MERGED) {
-                  ModificationType modType = change.getCurrent().getModType();
-                  if (change.wasNewOnSource()) {
-                     modType = ModificationType.NEW;
-                  } else if (change.wasIntroducedOnSource()) {
-                     modType = ModificationType.INTRODUCED;
+                  ModificationType netModType = getNetModType(change);
+                  if (netModType == null) {
+                     throw new OseeStateException("Net Mod Type was null");
                   }
-                  change.getNet().setModType(modType);
+                  change.getNet().setModType(netModType);
                   change.getNet().setGammaId(change.getCurrent().getGammaId());
                }
             }
@@ -60,9 +58,28 @@ public class ComputeNetChangeOperation extends AbstractOperation {
       }
    }
 
+   private ModificationType getNetModType(CommitItem change) {
+      ModificationType netModType = null;
+      if (change.getDestination().exists() && (change.getBase().exists() || change.getFirst().exists())) {
+         netModType = change.getCurrent().getModType();
+      } else if (change.wasNewOnSource()) {
+         netModType = ModificationType.NEW;
+      } else if (change.wasIntroducedOnSource()) {
+         netModType = ModificationType.INTRODUCED;
+      } else if (!change.getDestination().exists()) {
+         if (!change.getBase().exists()) {
+            netModType = ModificationType.NEW;
+         } else {
+            // Case when committing into non-parent
+            netModType = ModificationType.INTRODUCED;
+         }
+      }
+      return netModType;
+   }
+
    private void checkForInvalidStates(CommitItem change) throws OseeCoreException {
       // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
-      if (change.getDestination().getModType() == null && !change.wasNewOrIntroducedOnSource()) {
+      if (!change.getDestination().exists() && change.getBase().exists()) {
          throw new OseeStateException(
                "This should be supported in the future - destination branch is not the source's parent: " + change);
       }

@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.commit.CommitItem.ChangePair;
 import org.eclipse.osee.framework.skynet.core.commit.CommitItem.GammaKind;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 

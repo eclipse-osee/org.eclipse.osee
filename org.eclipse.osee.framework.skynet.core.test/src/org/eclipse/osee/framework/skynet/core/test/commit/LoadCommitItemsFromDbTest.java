@@ -68,7 +68,8 @@ public class LoadCommitItemsFromDbTest {
       startTime = System.currentTimeMillis();
       operation = new ComputeNetChangeOperation(changeData);
       Operations.executeWork(operation, new NullProgressMonitor(), -1);
-      Assert.assertEquals(IStatus.OK, operation.getStatus().getSeverity());
+      Assert.assertEquals(Lib.exceptionToString(operation.getStatus().getException()), IStatus.OK,
+            operation.getStatus().getSeverity());
       System.out.println("Time to compute changes: " + Lib.getElapseString(startTime));
 
       System.out.println("Size after net changes: " + changeData.size());
