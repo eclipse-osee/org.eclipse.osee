@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.support.test;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -35,9 +34,7 @@ public class MasterTestSuite_ProductionDbTests {
    @BeforeClass
    public static void setUp() throws Exception {
       assertTrue("Should be run on production datbase.", TestUtil.isProductionDb());
-      assertFalse("Application Server must be running.", ClientSessionManager.getAuthenticationProtocols().contains(
-            "demo"));
-      assertFalse("Client can't authenticate using demo protocol",
-            ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
+      assertTrue("Application Server must be running.", ClientSessionManager.getAuthenticationProtocols().contains(
+            "lba"));
    }
 }
