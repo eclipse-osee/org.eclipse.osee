@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -52,7 +53,19 @@ public class ArtifactTypeManager {
 
    public static Collection<ArtifactType> getValidArtifactTypes(Branch branch) throws OseeCoreException {
       // TODO Filter artifact types by branch
-      return ArtifactTypeManager.getAllTypes();
+      return getAllTypes();
+   }
+
+   public static Collection<ArtifactType> getConcreteArtifactTypes(Branch branch) throws OseeCoreException {
+      Collection<ArtifactType> types = getAllTypes();
+      Iterator<ArtifactType> iterator = types.iterator();
+      while (iterator.hasNext()) {
+         ArtifactType type = iterator.next();
+         if (type.isAbstract()) {
+            iterator.remove();
+         }
+      }
+      return types;
    }
 
    /**

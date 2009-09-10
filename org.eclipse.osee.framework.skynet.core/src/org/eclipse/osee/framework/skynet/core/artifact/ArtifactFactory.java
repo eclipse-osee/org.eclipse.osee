@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.SequenceManager;
@@ -46,6 +47,10 @@ public abstract class ArtifactFactory {
     * @return the new artifact instance
     */
    public Artifact makeNewArtifact(Branch branch, ArtifactType artifactType, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
+      if (artifactType.isAbstract()) {
+         throw new OseeArgumentException(String.format("Cannot create an instance of abstract type [%s]",
+               artifactType.getName()));
+      }
       Artifact artifact = getArtifactInstance(guid, humandReadableId, branch, artifactType);
 
       artifact.setArtId(SequenceManager.getNextArtifactId());

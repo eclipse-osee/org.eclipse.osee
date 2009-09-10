@@ -566,7 +566,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          public void widgetSelected(SelectionEvent e) {
             super.widgetSelected(e);
             try {
-               Collection<ArtifactType> data = ArtifactTypeManager.getValidArtifactTypes(branchSelect.getData());
+               Collection<ArtifactType> data = ArtifactTypeManager.getConcreteArtifactTypes(branchSelect.getData());
                List<ArtifactType> descriptors = new ArrayList<ArtifactType>();
                for (ArtifactType descriptor : new ArrayList<ArtifactType>(data)) {
                   if (!descriptor.getName().equals("Root Artifact")) {
