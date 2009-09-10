@@ -28,6 +28,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -1793,10 +1794,12 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    public Date getLastModified() {
+      if (transactionId == null) return new Date();
       return transactionId.getTime();
    }
 
    public User getLastModifiedBy() throws OseeCoreException {
+      if (transactionId == null) return UserManager.getUser(SystemUser.OseeSystem);
       return UserManager.getUserByArtId(transactionId.getAuthorArtId());
    }
 
