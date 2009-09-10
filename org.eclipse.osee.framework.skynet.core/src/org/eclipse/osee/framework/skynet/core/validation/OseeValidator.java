@@ -54,17 +54,21 @@ public class OseeValidator {
 
    public IStatus validate(int requiredQualityOfService, Artifact artifact, AttributeType attributeType, Object proposedValue) {
       for (IOseeValidator validator : loadedObjects.getObjects()) {
-         try {
-            if (requiredQualityOfService >= validator.getQualityOfService()) {
+         if (requiredQualityOfService >= validator.getQualityOfService()) {
+            try {
                if (validator.isApplicable(artifact, attributeType)) {
-                  IStatus status = validator.validate(artifact, attributeType, proposedValue);
-                  if (!status.isOK()) {
-                     return status;
+                  try {
+                     IStatus status = validator.validate(artifact, attributeType, proposedValue);
+                     if (!status.isOK()) {
+                        return status;
+                     }
+                  } catch (Exception ex) {
+                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ex.getLocalizedMessage(), ex);
                   }
                }
+            } catch (Exception ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
             }
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
          }
       }
       return Status.OK_STATUS;

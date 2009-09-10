@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.commit;
 
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -43,12 +43,12 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private final HashMap<Integer, CommitItem> attributeChangesByItemId = new HashMap<Integer, CommitItem>();
    private final HashMap<Long, CommitItem> changeByGammaId = new HashMap<Long, CommitItem>();
 
-   private final List<CommitItem> changeData;
+   private final Collection<CommitItem> changeData;
    private final Branch sourceBranch;
    private final Branch destinationBranch;
    private final Branch mergeBranch;
 
-   public LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<CommitItem> changeData) {
+   public LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<CommitItem> changeData) {
       super("Load Change Data", Activator.PLUGIN_ID);
       this.mergeBranch = mergeBranch;
       this.sourceBranch = sourceBranch;
