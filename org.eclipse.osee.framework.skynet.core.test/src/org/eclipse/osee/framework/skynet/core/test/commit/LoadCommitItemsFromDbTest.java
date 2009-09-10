@@ -39,6 +39,7 @@ public class LoadCommitItemsFromDbTest {
       Branch sourceBranch = BranchManager.getBranch(1001);
       Branch destinationBranch = BranchManager.getBranch(2567);
       Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
+      int artifactOfInerestId = 27463;
 
       Assert.assertNotNull(sourceBranch);
       Assert.assertNotNull(destinationBranch);
@@ -57,7 +58,7 @@ public class LoadCommitItemsFromDbTest {
 
       boolean wasFound = false;
       for (CommitItem item : changeData) {
-         if (item.getItemId() == 428968) {
+         if (item.getItemId() == artifactOfInerestId) {
             if (item.getKind() == GammaKind.Artifact) {
                wasFound = true;
             }
@@ -76,7 +77,7 @@ public class LoadCommitItemsFromDbTest {
       //      Assert.assertEquals(363, changeData.size());
       wasFound = false;
       for (CommitItem item : changeData) {
-         if (item.getItemId() == 428968) {
+         if (item.getItemId() == artifactOfInerestId) {
             if (item.getKind() == GammaKind.Artifact) {
                wasFound = true;
             }
