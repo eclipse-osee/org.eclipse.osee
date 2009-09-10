@@ -29,8 +29,10 @@ public abstract class OseeTypeCacheData<T extends BaseOseeType> {
    private final OseeTypeCache cache;
    private final IOseeTypeFactory factory;
    private final IOseeTypeDataAccessor dataAccessor;
+   private boolean duringPopulate;
 
    public OseeTypeCacheData(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor dataAccessor) {
+      this.duringPopulate = false;
       this.cache = cache;
       this.factory = factory;
       this.dataAccessor = dataAccessor;
@@ -119,7 +121,11 @@ public abstract class OseeTypeCacheData<T extends BaseOseeType> {
 
    public void ensurePopulated() throws OseeCoreException {
       if (guidToTypeMap.isEmpty()) {
-         reloadCache();
+         if (!duringPopulate) {
+            duringPopulate = true;
+            reloadCache();
+            duringPopulate = false;
+         }
       }
    }
 
