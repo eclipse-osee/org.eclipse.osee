@@ -16,10 +16,8 @@ import org.eclipse.jdt.core.IClasspathContainer;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
-import org.eclipse.osee.framework.ui.workspacebundleloader.JarChangeResourceListener;
 import org.eclipse.osee.ote.runtimemanager.BundleInfo;
 import org.eclipse.osee.ote.runtimemanager.OteBundleLocator;
-import org.eclipse.osee.ote.runtimemanager.OteUserLibsNature;
 import org.eclipse.osee.ote.runtimemanager.RuntimeManager;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -33,7 +31,6 @@ public class OteClasspathContainer implements IClasspathContainer {
    private ServiceTracker tracker;
    private OteBundleLocator locator;
    private IJavaProject javaProject;
-   private JarChangeResourceListener<OteUserLibsNature> userLibResourceListener;
    private IPath containerPath;
 
    private static final List<OteClasspathContainer> activeContainers = new ArrayList<OteClasspathContainer>();
@@ -47,10 +44,8 @@ public class OteClasspathContainer implements IClasspathContainer {
          BundleContext context = RuntimeManager.getDefault().getContext();
          tracker = new ServiceTracker(context, OteBundleLocator.class.getName(), null);
          tracker.open(true);
-         Object obj = tracker.waitForService(10000);
-         locator = (OteBundleLocator)obj;
+         initializeBundleLocator();
 
-         //         OteContainerActivator.getDefault().getLibraryChangeProvider().addListener(this);
       }
       catch (Exception ex) {
          ex.printStackTrace();
@@ -60,20 +55,24 @@ public class OteClasspathContainer implements IClasspathContainer {
    }
 
    /**
+    * @throws InterruptedException
+    */
+   private void initializeBundleLocator() throws InterruptedException {
+      Object obj = tracker.waitForService(10000);
+      if( obj == null )
+         throw new IllegalStateException("OteBundleLocator service never started.");
+
+      locator = (OteBundleLocator)obj;
+      
+      
+      
+   }
+
+   /**
     * @param oteClasspathContainer
     */
    public OteClasspathContainer(OteClasspathContainer oteClasspathContainer) {
       this(oteClasspathContainer.containerPath, oteClasspathContainer.javaProject);
-   }
-
-   /**
-    * @param path
-    * @return
-    */
-   private String findProjectRoot(String path) {
-      File fileForPath = new File(path);
-      File projectFile = recursivelyFindProjectFile(fileForPath);
-      return projectFile.getAbsolutePath();
    }
 
    /**
@@ -106,22 +105,12 @@ public class OteClasspathContainer implements IClasspathContainer {
       return false;
    }
 
-   /**
-    * @param absolutePath
-    * @return
-    */
-   private String getWorkspaceRelativePath(String absolutePath) {
-      return absolutePath;
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.jdt.core.IClasspathContainer#getClasspathEntries()
-    */
    @Override
    public IClasspathEntry[] getClasspathEntries() {
       List<IClasspathEntry> entries = new ArrayList<IClasspathEntry>();
       Collection<BundleInfo> runtimeLibUrls;
       try {
+         lazyLoadLocator();
          runtimeLibUrls = locator.getRuntimeLibs();
          for( BundleInfo info : runtimeLibUrls )
          {
@@ -148,6 +137,14 @@ public class OteClasspathContainer implements IClasspathContainer {
 
       IClasspathEntry[] retVal = new IClasspathEntry[entries.size()];
       return entries.toArray(retVal);
+   }
+
+   /**
+    * @throws InterruptedException
+    */
+   private void lazyLoadLocator() throws InterruptedException {
+      if( locator == null )
+         initializeBundleLocator();
    }
 
    /**
@@ -179,36 +176,6 @@ public class OteClasspathContainer implements IClasspathContainer {
    @Override
    public IPath getPath() {
       return ID;
-   }
-
-   private class ClassPathDescription {
-      private String sourcePath, binaryPath;
-
-      /**
-       * @param sourcePath
-       * @param binaryPath
-       */
-      public ClassPathDescription(String binaryPath, String sourcePath) {
-         super();
-         this.sourcePath = sourcePath;
-         this.binaryPath = binaryPath;
-      }
-
-      /**
-       * @return the sourcePath
-       */
-      public String getSourcePath() {
-         return sourcePath;
-      }
-
-      /**
-       * @return the binaryPath
-       */
-      public String getBinaryPath() {
-         return binaryPath;
-      }
-
-
    }
 
    public static void refreshAll() {
