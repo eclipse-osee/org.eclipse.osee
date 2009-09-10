@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.commit;
 
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,12 +35,12 @@ public class ComputeNetChangeOperation extends AbstractOperation {
    protected void doWork(IProgressMonitor monitor) throws Exception {
       if (!changes.isEmpty()) {
          double workPercentage = 1.0 / changes.size();
-         Iterator<CommitItem> iterator = changes.iterator();
-         while (iterator.hasNext()) {
+         List<CommitItem> toRemove = new ArrayList<CommitItem>();
+
+         for (CommitItem change : changes) {
             checkForCancelledStatus(monitor);
-            CommitItem change = iterator.next();
             if (change.isIgnoreCase()) {
-               iterator.remove();
+               toRemove.add(change);
             } else {
                checkForInvalidStates(change);
 
@@ -58,6 +59,11 @@ public class ComputeNetChangeOperation extends AbstractOperation {
                }
             }
             monitor.worked(calculateWork(workPercentage));
+         }
+         try {
+            changes.removeAll(toRemove);
+         } catch (UnsupportedOperationException ex) {
+            ex.printStackTrace();
          }
       }
       System.out.println("Commit change size: " + changes.size());
