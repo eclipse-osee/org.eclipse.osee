@@ -78,6 +78,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       changeData.addAll(artifactChangesByItemId.values());
       changeData.addAll(attributeChangesByItemId.values());
       changeData.addAll(relationChangesByItemId.values());
+
    }
 
    private TransactionJoinQuery loadSourceBranchChanges(IProgressMonitor monitor) throws OseeDataStoreException, OseeArgumentException {
@@ -141,10 +142,18 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, Branch branch, HashMap<Integer, CommitItem> changesByItemId) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
-      String query =
-            "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-                  + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
-                  " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
+      String query;
+      if (branch.isMergeBranch()) {
+         query =
+               "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
+                     + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
+                     " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
+      } else {
+         query =
+               "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
+                     + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
+                     " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.tx_type = 1";
+      }
 
       try {
          chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),

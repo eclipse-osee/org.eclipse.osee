@@ -67,6 +67,7 @@ public class ComputeNetChangeTest {
       data.add(createTest(null, new ChangePair(4L, NEW), new ChangePair(5L, ARTIFACT_DELETED), null, null, true));
       data.add(createTest(null, new ChangePair(6L, INTRODUCED), new ChangePair(7L, ARTIFACT_DELETED), null, null, true));
       data.add(createTest(null, null, new ChangePair(7693330L, INTRODUCED), new ChangePair(7693330L, NEW), null, true));
+      data.add(createTest(null, null, new ChangePair(21345L, NEW), new ChangePair(21345L, NEW), null, true));
 
       // Undelete then delete again
       data.add(createTest(new ChangePair(4L, DELETED), new ChangePair(3L, MODIFIED), new ChangePair(4L, DELETED),

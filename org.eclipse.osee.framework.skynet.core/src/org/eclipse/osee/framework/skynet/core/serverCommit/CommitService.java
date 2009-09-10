@@ -37,9 +37,7 @@ public class CommitService implements ICommitService {
 
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new LoadChangeDataOperation(sourceBranch, destinationBranch, mergeBranch, changes));
-      System.out.println("Commit change size: " + changes.size());
       ops.add(new ComputeNetChangeOperation(changes));
-      System.out.println("Commit change size: " + changes.size());
       ops.add(new CommitDbOperation(sourceBranch, destinationBranch, mergeBranch, changes));
 
       String opName =

@@ -55,6 +55,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
             monitor.worked(calculateWork(workPercentage));
          }
       }
+      System.out.println("Commit change size: " + changes.size());
    }
 
    private ModificationType getNetModType(CommitItem change) {
