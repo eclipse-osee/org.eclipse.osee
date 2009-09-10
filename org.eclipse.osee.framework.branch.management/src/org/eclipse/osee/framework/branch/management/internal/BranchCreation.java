@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -125,7 +126,7 @@ public class BranchCreation implements IBranchCreation {
 
    // descending order is used so that the most recent entry will be used if there are multiple rows with the same gamma (an error case)
    private static final String SELECT_ADDRESSING =
-         "SELECT gamma_id, mod_type FROM osee_txs txs, osee_tx_details txd WHERE txs.tx_current = 1 AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ? order by txd.transaction_id desc";
+         "SELECT gamma_id, mod_type FROM osee_txs txs, osee_tx_details txd WHERE txs.tx_current <> ? AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ? order by txd.transaction_id desc";
    private static final String INSERT_ADDRESSING =
          "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
 
@@ -134,7 +135,7 @@ public class BranchCreation implements IBranchCreation {
       List<Object[]> data = new ArrayList<Object[]>();
       HashSet<Integer> gammas = new HashSet<Integer>(100000);
       try {
-         chStmt.runPreparedQuery(10000, SELECT_ADDRESSING, parentBranchId);
+         chStmt.runPreparedQuery(10000, SELECT_ADDRESSING, TxChange.NOT_CURRENT.getValue(), parentBranchId);
          while (chStmt.next()) {
             Integer gamma = chStmt.getInt("gamma_id");
             if (!gammas.contains(gamma)) {
