@@ -108,6 +108,8 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
          }
       });
 
+      new ToolItem(toolBar, SWT.SEPARATOR);
+
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getProgramImage("csv"));
       item.setToolTipText("Export as CSV");
@@ -128,6 +130,8 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
          }
       });
 
+      new ToolItem(toolBar, SWT.SEPARATOR);
+
       item = new ToolItem(toolBar, SWT.PUSH);
       item.setImage(ImageManager.getImage(FrameworkImage.FOLDER));
       item.setToolTipText("Import Saved Results Report");
@@ -138,10 +142,16 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
                final FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell().getShell(), SWT.OPEN);
                dialog.setFilterExtensions(new String[] {"*.html"});
                String filename = dialog.open();
-               if (filename == null || filename.equals("")) return;
+               if (filename == null || filename.equals("")) {
+                  return;
+               }
                String html = AFile.readFile(filename);
-               if (html == null) throw new IllegalStateException("Can't load file");
-               if (html.equals("")) throw new IllegalStateException("Empty file");
+               if (html == null) {
+                  throw new IllegalStateException("Can't load file");
+               }
+               if (html.equals("")) {
+                  throw new IllegalStateException("Empty file");
+               }
                resultsEditor.addResultsTab(new ResultsEditorHtmlTab(new XResultPage(filename, html,
                      Manipulations.RAW_HTML)));
             } catch (Exception ex) {
