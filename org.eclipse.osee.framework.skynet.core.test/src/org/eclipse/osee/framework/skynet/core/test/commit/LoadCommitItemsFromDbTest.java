@@ -11,10 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.test.commit;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
@@ -35,54 +37,73 @@ import org.junit.Test;
 public class LoadCommitItemsFromDbTest {
 
    @Test
-   public void checkLoad() throws OseeCoreException {
-      Branch sourceBranch = BranchManager.getBranch(1001);
-      Branch destinationBranch = BranchManager.getBranch(2567);
-      Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
-      int artifactOfInerestId = 27463;
+   public void testCommitItemsNonConflicting() throws OseeCoreException {
+      Branch source =
+            BranchManager.getBranch("NCVYS - SAW (uncommitted) More Reqt Changes for Diagram View - SAW (uncommitted) More Reqt Changes for...");
+      Branch destination = BranchManager.getBranch("SAW_Bld_2");
 
-      Assert.assertNotNull(sourceBranch);
-      Assert.assertNotNull(destinationBranch);
-      Assert.assertNotNull(mergeBranch);
+      Assert.assertNotNull(source);
+      Assert.assertNotNull(destination);
 
-      List<CommitItem> changeData = new ArrayList<CommitItem>();
-      long startTime = System.currentTimeMillis();
-      IOperation operation = new LoadChangeDataOperation(sourceBranch, destinationBranch, mergeBranch, changeData);
+      List<CommitItem> items = new ArrayList<CommitItem>();
+
+      processItems(items, source, destination, null, 42, 42);
+
+      checkNetItems(items, ModificationType.NEW, 2, 16, 4);
+      checkNetItems(items, ModificationType.INTRODUCED, 0, 0, 0);
+      checkNetItems(items, ModificationType.MODIFIED, 2, 6, 0);
+      checkNetItems(items, ModificationType.MERGED, 0, 0, 0);
+      checkNetItems(items, ModificationType.ARTIFACT_DELETED, 0, 10, 1);
+      checkNetItems(items, ModificationType.DELETED, 1, 0, 0);
+   }
+
+   @Test
+   public void testCommitItemsConflicting() throws OseeCoreException {
+      Branch source =
+            BranchManager.getBranch("HJD4M - SAW (uncommitted-conflicted) More Requirement Changes for Diagram View - SAW (uncommitted-conflicted) More Requi...");
+      Branch destination = BranchManager.getBranch("SAW_Bld_2");
+
+      Assert.assertNotNull(source);
+      Assert.assertNotNull(destination);
+
+      List<CommitItem> items = new ArrayList<CommitItem>();
+
+      processItems(items, source, destination, null, 5, 5);
+
+      checkNetItems(items, ModificationType.NEW, 0, 0, 1);
+      checkNetItems(items, ModificationType.INTRODUCED, 0, 0, 0);
+      checkNetItems(items, ModificationType.MODIFIED, 1, 3, 0);
+      checkNetItems(items, ModificationType.MERGED, 0, 0, 0);
+      checkNetItems(items, ModificationType.ARTIFACT_DELETED, 0, 0, 0);
+      checkNetItems(items, ModificationType.DELETED, 0, 0, 0);
+   }
+
+   private void processItems(Collection<CommitItem> items, Branch source, Branch destination, Branch mergeBranch, int loadedItems, int netItems) {
+      IOperation operation = new LoadChangeDataOperation(source, destination, mergeBranch, items);
       Operations.executeWork(operation, new NullProgressMonitor(), -1);
       Assert.assertEquals(IStatus.OK, operation.getStatus().getSeverity());
+      Assert.assertEquals(loadedItems, items.size());
 
-      System.out.println("Time to load: " + Lib.getElapseString(startTime));
-
-      System.out.println("Size after load: " + changeData.size());
-      Assert.assertEquals(47482, changeData.size());
-
-      boolean wasFound = false;
-      for (CommitItem item : changeData) {
-         if (item.getItemId() == artifactOfInerestId) {
-            if (item.getKind() == GammaKind.Artifact) {
-               wasFound = true;
-            }
-         }
-      }
-      Assert.assertTrue(wasFound);
-
-      startTime = System.currentTimeMillis();
-      operation = new ComputeNetChangeOperation(changeData);
+      operation = new ComputeNetChangeOperation(items);
       Operations.executeWork(operation, new NullProgressMonitor(), -1);
       Assert.assertEquals(Lib.exceptionToString(operation.getStatus().getException()), IStatus.OK,
             operation.getStatus().getSeverity());
-      System.out.println("Time to compute changes: " + Lib.getElapseString(startTime));
+      Assert.assertEquals(netItems, items.size());
+   }
 
-      System.out.println("Size after net changes: " + changeData.size());
-      //      Assert.assertEquals(363, changeData.size());
-      wasFound = false;
-      for (CommitItem item : changeData) {
-         if (item.getItemId() == artifactOfInerestId) {
-            if (item.getKind() == GammaKind.Artifact) {
-               wasFound = true;
-            }
+   private void checkNetItems(Collection<CommitItem> items, ModificationType modType, int artifacts, int attributes, int relations) {
+      Assert.assertEquals(artifacts, getCount(items, GammaKind.Artifact, modType));
+      Assert.assertEquals(attributes, getCount(items, GammaKind.Attribute, modType));
+      Assert.assertEquals(relations, getCount(items, GammaKind.Relation, modType));
+   }
+
+   private int getCount(Collection<CommitItem> items, GammaKind gammaKind, ModificationType type) {
+      int count = 0;
+      for (CommitItem item : items) {
+         if (item.getKind() == gammaKind && item.getNet().getModType() == type) {
+            count++;
          }
       }
-      Assert.assertFalse("Item Should not be found", wasFound);
+      return count;
    }
 }
