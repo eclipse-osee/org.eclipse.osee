@@ -27,74 +27,68 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.skynet.core.commit.ChangePair;
 import org.eclipse.osee.framework.skynet.core.commit.CommitItem;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
-import org.eclipse.osee.framework.skynet.core.commit.CommitItem.GammaKind;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * Low-level Change Data Test - checks :
+ * Low-level Change Data Test
  * 
  * @author Roberto E. Escobar
  */
 public class ComputeNetChangeTest {
-   private static int itemId = 0;
-
-   @BeforeClass
-   public static void prepateTest() {
-      itemId = 0;
-   }
 
    private List<TestData> getTestData() {
       List<TestData> data = new ArrayList<TestData>();
 
       // New Or Introduced
-      data.add(createTest(null, new ChangePair(4L, NEW), new ChangePair(5L, MODIFIED), null, new ChangePair(5L, NEW),
-            false));
-      data.add(createTest(null, new ChangePair(6L, INTRODUCED), new ChangePair(7L, MODIFIED), null, new ChangePair(7L,
-            INTRODUCED), false));
+      data.add(createTest(1, null, new ChangePair(4L, NEW), new ChangePair(5L, MODIFIED), null,
+            new ChangePair(5L, NEW), false));
+      data.add(createTest(2, null, new ChangePair(6L, INTRODUCED), new ChangePair(7L, MODIFIED), null, new ChangePair(
+            7L, INTRODUCED), false));
 
       // Modified Once
-      data.add(createTest(new ChangePair(10L, MODIFIED), null, new ChangePair(11L, MODIFIED), new ChangePair(10L,
+      data.add(createTest(3, new ChangePair(10L, MODIFIED), null, new ChangePair(11L, MODIFIED), new ChangePair(10L,
             MODIFIED), new ChangePair(11L, MODIFIED), false));
 
       // Modified Twice
-      data.add(createTest(new ChangePair(10L, NEW), new ChangePair(11L, MODIFIED), new ChangePair(12L, MODIFIED),
+      data.add(createTest(4, new ChangePair(10L, NEW), new ChangePair(11L, MODIFIED), new ChangePair(12L, MODIFIED),
             new ChangePair(10L, NEW), new ChangePair(12L, MODIFIED), false));
 
       // Removal - new/intro and deleted
-      data.add(createTest(null, new ChangePair(1L, NEW), new ChangePair(2L, DELETED), null, null, true));
-      data.add(createTest(null, new ChangePair(2L, INTRODUCED), new ChangePair(3L, DELETED), null, null, true));
-      data.add(createTest(null, new ChangePair(4L, NEW), new ChangePair(5L, ARTIFACT_DELETED), null, null, true));
-      data.add(createTest(null, new ChangePair(6L, INTRODUCED), new ChangePair(7L, ARTIFACT_DELETED), null, null, true));
-      data.add(createTest(null, null, new ChangePair(7693330L, INTRODUCED), new ChangePair(7693330L, NEW), null, true));
-      data.add(createTest(null, null, new ChangePair(21345L, NEW), new ChangePair(21345L, NEW), null, true));
+      data.add(createTest(5, null, new ChangePair(1L, NEW), new ChangePair(2L, DELETED), null, null, true));
+      data.add(createTest(6, null, new ChangePair(2L, INTRODUCED), new ChangePair(3L, DELETED), null, null, true));
+      data.add(createTest(7, null, new ChangePair(4L, NEW), new ChangePair(5L, ARTIFACT_DELETED), null, null, true));
+      data.add(createTest(8, null, new ChangePair(6L, INTRODUCED), new ChangePair(7L, ARTIFACT_DELETED), null, null,
+            true));
+      data.add(createTest(9, null, null, new ChangePair(7693330L, INTRODUCED), new ChangePair(7693330L, NEW), null,
+            true));
+      data.add(createTest(10, null, null, new ChangePair(21345L, NEW), new ChangePair(21345L, NEW), null, true));
 
       // Undelete then delete again
-      data.add(createTest(new ChangePair(4L, DELETED), new ChangePair(3L, MODIFIED), new ChangePair(4L, DELETED),
+      data.add(createTest(11, new ChangePair(4L, DELETED), new ChangePair(3L, MODIFIED), new ChangePair(4L, DELETED),
             new ChangePair(4L, DELETED), null, true));
-      data.add(createTest(new ChangePair(4L, ARTIFACT_DELETED), null, new ChangePair(5L, MODIFIED), new ChangePair(4L,
-            ARTIFACT_DELETED), null, true));
+      data.add(createTest(12, new ChangePair(4L, ARTIFACT_DELETED), null, new ChangePair(5L, MODIFIED), new ChangePair(
+            4L, ARTIFACT_DELETED), null, true));
 
       // Delete Cases -
-      data.add(createTest(new ChangePair(10L, MODIFIED), null, new ChangePair(10L, DELETED), new ChangePair(10L,
+      data.add(createTest(13, new ChangePair(10L, MODIFIED), null, new ChangePair(10L, DELETED), new ChangePair(10L,
             MODIFIED), new ChangePair(10L, DELETED), false));
-      data.add(createTest(new ChangePair(330L, NEW), null, new ChangePair(331L, ARTIFACT_DELETED), new ChangePair(330L,
-            NEW), new ChangePair(331L, ARTIFACT_DELETED), false));
-      data.add(createTest(new ChangePair(330L, NEW), new ChangePair(331L, ARTIFACT_DELETED), new ChangePair(331L,
+      data.add(createTest(14, new ChangePair(330L, NEW), null, new ChangePair(331L, ARTIFACT_DELETED), new ChangePair(
+            330L, NEW), new ChangePair(331L, ARTIFACT_DELETED), false));
+      data.add(createTest(15, new ChangePair(330L, NEW), new ChangePair(331L, ARTIFACT_DELETED), new ChangePair(331L,
             ARTIFACT_DELETED), new ChangePair(330L, NEW), new ChangePair(331L, ARTIFACT_DELETED), false));
 
       // Parent to Child Intro
-      data.add(createTest(null, new ChangePair(10L, INTRODUCED), new ChangePair(11L, MODIFIED), new ChangePair(10L,
+      data.add(createTest(16, null, new ChangePair(10L, INTRODUCED), new ChangePair(11L, MODIFIED), new ChangePair(10L,
             MODIFIED), new ChangePair(11L, MODIFIED), false));
 
       // Attribute Modified/New
-      data.add(createTest(null, null, new ChangePair(11L, MODIFIED), null, new ChangePair(11L, NEW), false));
+      data.add(createTest(17, null, null, new ChangePair(11L, MODIFIED), null, new ChangePair(11L, NEW), false));
 
       // Test Merge Items
-      data.add(createTest(null, null, new ChangePair(12L, MODIFIED), null, new ChangePair(13L, MERGED), new ChangePair(
-            13L, MERGED), false));
-      data.add(createTest(null, null, new ChangePair(12L, NEW), null, new ChangePair(14L, MERGED), new ChangePair(14L,
-            MERGED), false));
+      data.add(createTest(18, null, null, new ChangePair(12L, MODIFIED), null, new ChangePair(13L, MERGED),
+            new ChangePair(13L, MERGED), false));
+      data.add(createTest(19, null, null, new ChangePair(12L, NEW), null, new ChangePair(14L, MERGED), new ChangePair(
+            14L, MERGED), false));
 
       return data;
    }
@@ -115,27 +109,23 @@ public class ComputeNetChangeTest {
             Assert.assertFalse(message, items.contains(testData.getItem()));
          } else {
             Assert.assertTrue(message, items.contains(testData.getItem()));
-            checkChange(message, testData.getExpectedNet(), testData.getItem().getNet());
+            CommitUtil.checkChange(message, testData.getExpectedNet(), testData.getItem().getNet());
          }
       }
    }
 
    @Test
    public void testErrorStates() {
-      CommitItem change = createItem(null, null, new ChangePair(1L, NEW), new ChangePair(1L, NEW), null);
+      CommitItem change = CommitUtil.createItem(1, null, null, new ChangePair(1L, NEW), new ChangePair(1L, NEW), null);
       computeNetChange(Arrays.asList(change), IStatus.ERROR);
 
-      change = createItem(null, null, new ChangePair(1L, INTRODUCED), new ChangePair(1L, INTRODUCED), null);
+      change =
+            CommitUtil.createItem(2, null, null, new ChangePair(1L, INTRODUCED), new ChangePair(1L, INTRODUCED), null);
       computeNetChange(Arrays.asList(change), IStatus.ERROR);
 
       // Source to Non-Parent commit
-      change = createItem(new ChangePair(10L, MODIFIED), null, new ChangePair(11L, MODIFIED), null, null);
+      change = CommitUtil.createItem(3, new ChangePair(10L, MODIFIED), null, new ChangePair(11L, MODIFIED), null, null);
       computeNetChange(Arrays.asList(change), IStatus.ERROR);
-   }
-
-   private void checkChange(String message, ChangePair expected, ChangePair actual) {
-      Assert.assertEquals(message, expected.getGammaId(), actual.getGammaId());
-      Assert.assertEquals(message, expected.getModType(), actual.getModType());
    }
 
    private void computeNetChange(List<CommitItem> changes, int status) {
@@ -145,38 +135,12 @@ public class ComputeNetChangeTest {
       Assert.assertEquals(message, status, operation.getStatus().getSeverity());
    }
 
-   private TestData createTest(ChangePair base, ChangePair first, ChangePair current, ChangePair destination, ChangePair expected, boolean isRemoved) {
-      return new TestData(createItem(base, first, current, destination, null), expected, isRemoved);
+   private TestData createTest(int itemId, ChangePair base, ChangePair first, ChangePair current, ChangePair destination, ChangePair expected, boolean isRemoved) {
+      return new TestData(CommitUtil.createItem(itemId, base, first, current, destination, null), expected, isRemoved);
    }
 
-   private TestData createTest(ChangePair base, ChangePair first, ChangePair current, ChangePair destination, ChangePair net, ChangePair expected, boolean isRemoved) {
-      return new TestData(createItem(base, first, current, destination, net), expected, isRemoved);
-   }
-
-   private CommitItem createItem(ChangePair base, ChangePair first, ChangePair current, ChangePair destination, ChangePair net) {
-      CommitItem change = new CommitItem(current.getGammaId(), current.getModType());
-      change.setItemId(++itemId);
-
-      GammaKind[] kinds = GammaKind.values();
-      change.setKind(kinds[itemId % kinds.length]);
-
-      if (base != null) {
-         change.getBase().setModType(base.getModType());
-         change.getBase().setGammaId(base.getGammaId());
-      }
-      if (first != null) {
-         change.getFirst().setGammaId(first.getGammaId());
-         change.getFirst().setModType(first.getModType());
-      }
-      if (destination != null) {
-         change.getDestination().setGammaId(destination.getGammaId());
-         change.getDestination().setModType(destination.getModType());
-      }
-      if (net != null) {
-         change.getNet().setGammaId(net.getGammaId());
-         change.getNet().setModType(net.getModType());
-      }
-      return change;
+   private TestData createTest(int itemId, ChangePair base, ChangePair first, ChangePair current, ChangePair destination, ChangePair net, ChangePair expected, boolean isRemoved) {
+      return new TestData(CommitUtil.createItem(itemId, base, first, current, destination, net), expected, isRemoved);
    }
 
    private final class TestData {
@@ -202,6 +166,5 @@ public class ComputeNetChangeTest {
       public boolean isRemoved() {
          return isRemoved;
       }
-
    }
 }
