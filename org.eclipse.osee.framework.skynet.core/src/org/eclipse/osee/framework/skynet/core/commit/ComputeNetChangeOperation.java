@@ -50,6 +50,11 @@ public class ComputeNetChangeOperation extends AbstractOperation {
                   }
                   change.getNet().setModType(netModType);
                   change.getNet().setGammaId(change.getCurrent().getGammaId());
+               } else {
+                  if (change.getCurrent().isDeleted()) {
+                     change.getNet().setGammaId(change.getCurrent().getGammaId());
+                     change.getNet().setModType(change.getCurrent().getModType());
+                  }
                }
             }
             monitor.worked(calculateWork(workPercentage));

@@ -158,11 +158,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
             if (branch.isMergeBranch()) {
                change.getNet().setGammaId(gammaId);
-               if (change.getCurrent().isDeleted()) {
-                  change.getNet().setModType(change.getCurrent().getModType());
-               } else {
-                  change.getNet().setModType(ModificationType.MERGED);
-               }
+               change.getNet().setModType(ModificationType.MERGED);
             } else {
                change.getDestination().setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
                change.getDestination().setGammaId(gammaId);
