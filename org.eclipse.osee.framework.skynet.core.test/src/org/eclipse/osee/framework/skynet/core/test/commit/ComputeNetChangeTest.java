@@ -17,7 +17,6 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.MERGED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.core.runtime.IStatus;
@@ -63,33 +62,36 @@ public class ComputeNetChangeTest {
             true));
       data.add(createTest(10, null, null, new ChangePair(21345L, NEW), new ChangePair(21345L, NEW), null, true));
 
+      data.add(createTest(11, null, null, new ChangePair(1L, NEW), new ChangePair(2L, MODIFIED), null, null, true));
+      data.add(createTest(12, null, null, new ChangePair(1L, INTRODUCED), new ChangePair(2L, DELETED), null, null, true));
+
       // Undelete then delete again
-      data.add(createTest(11, new ChangePair(4L, DELETED), new ChangePair(3L, MODIFIED), new ChangePair(4L, DELETED),
+      data.add(createTest(13, new ChangePair(4L, DELETED), new ChangePair(3L, MODIFIED), new ChangePair(4L, DELETED),
             new ChangePair(4L, DELETED), null, true));
-      data.add(createTest(12, new ChangePair(4L, ARTIFACT_DELETED), null, new ChangePair(5L, MODIFIED), new ChangePair(
+      data.add(createTest(14, new ChangePair(4L, ARTIFACT_DELETED), null, new ChangePair(5L, MODIFIED), new ChangePair(
             4L, ARTIFACT_DELETED), null, true));
 
       // Delete Cases -
-      data.add(createTest(13, new ChangePair(10L, MODIFIED), null, new ChangePair(10L, DELETED), new ChangePair(10L,
+      data.add(createTest(15, new ChangePair(10L, MODIFIED), null, new ChangePair(10L, DELETED), new ChangePair(10L,
             MODIFIED), new ChangePair(10L, DELETED), false));
-      data.add(createTest(14, new ChangePair(330L, NEW), null, new ChangePair(331L, ARTIFACT_DELETED), new ChangePair(
+      data.add(createTest(16, new ChangePair(330L, NEW), null, new ChangePair(331L, ARTIFACT_DELETED), new ChangePair(
             330L, NEW), new ChangePair(331L, ARTIFACT_DELETED), false));
-      data.add(createTest(15, new ChangePair(330L, NEW), new ChangePair(331L, ARTIFACT_DELETED), new ChangePair(331L,
+      data.add(createTest(17, new ChangePair(330L, NEW), new ChangePair(331L, ARTIFACT_DELETED), new ChangePair(331L,
             ARTIFACT_DELETED), new ChangePair(330L, NEW), new ChangePair(331L, ARTIFACT_DELETED), false));
 
       // Parent to Child Intro
-      data.add(createTest(16, null, new ChangePair(10L, INTRODUCED), new ChangePair(11L, MODIFIED), new ChangePair(10L,
+      data.add(createTest(18, null, new ChangePair(10L, INTRODUCED), new ChangePair(11L, MODIFIED), new ChangePair(10L,
             MODIFIED), new ChangePair(11L, MODIFIED), false));
 
       // Attribute Modified/New
-      data.add(createTest(17, null, null, new ChangePair(11L, MODIFIED), null, new ChangePair(11L, NEW), false));
+      data.add(createTest(19, null, null, new ChangePair(11L, MODIFIED), null, new ChangePair(11L, NEW), false));
 
       // Test Merge Items
-      data.add(createTest(18, null, null, new ChangePair(12L, MODIFIED), null, new ChangePair(13L, MERGED),
+      data.add(createTest(20, null, null, new ChangePair(12L, MODIFIED), null, new ChangePair(13L, MERGED),
             new ChangePair(13L, MERGED), false));
-      data.add(createTest(19, null, null, new ChangePair(12L, NEW), null, new ChangePair(14L, MERGED), new ChangePair(
+      data.add(createTest(21, null, null, new ChangePair(12L, NEW), null, new ChangePair(14L, MERGED), new ChangePair(
             14L, MERGED), false));
-      data.add(createTest(20, new ChangePair(96915L, MODIFIED), new ChangePair(7290448L, MODIFIED), new ChangePair(
+      data.add(createTest(22, new ChangePair(96915L, MODIFIED), new ChangePair(7290448L, MODIFIED), new ChangePair(
             7865315L, DELETED), new ChangePair(7432082L, MODIFIED), new ChangePair(7865315L, MERGED), new ChangePair(
             7865315L, DELETED), false));
       data.add(createTest(21, new ChangePair(96915L, MODIFIED), new ChangePair(7290448L, MODIFIED), new ChangePair(
@@ -122,16 +124,11 @@ public class ComputeNetChangeTest {
 
    @Test
    public void testErrorStates() {
-      CommitItem change = CommitUtil.createItem(1, null, null, new ChangePair(1L, NEW), new ChangePair(1L, NEW), null);
-      computeNetChange(Arrays.asList(change), IStatus.ERROR);
-
-      change =
-            CommitUtil.createItem(2, null, null, new ChangePair(1L, INTRODUCED), new ChangePair(1L, INTRODUCED), null);
-      computeNetChange(Arrays.asList(change), IStatus.ERROR);
-
+      List<CommitItem> items = new ArrayList<CommitItem>();
+      items.clear();
       // Source to Non-Parent commit
-      change = CommitUtil.createItem(3, new ChangePair(10L, MODIFIED), null, new ChangePair(11L, MODIFIED), null, null);
-      computeNetChange(Arrays.asList(change), IStatus.ERROR);
+      items.add(CommitUtil.createItem(3, new ChangePair(10L, MODIFIED), null, new ChangePair(11L, MODIFIED), null, null));
+      computeNetChange(items, IStatus.ERROR);
    }
 
    private void computeNetChange(List<CommitItem> changes, int status) {

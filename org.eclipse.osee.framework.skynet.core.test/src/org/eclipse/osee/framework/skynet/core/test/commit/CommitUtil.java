@@ -29,11 +29,15 @@ public class CommitUtil {
    }
 
    public static CommitItem createItem(int itemId, ChangePair base, ChangePair first, ChangePair current, ChangePair destination, ChangePair net) {
+      GammaKind[] kinds = GammaKind.values();
+      return createItem(kinds[itemId % kinds.length], itemId, base, first, current, destination, net);
+   }
+
+   public static CommitItem createItem(GammaKind gammaKind, int itemId, ChangePair base, ChangePair first, ChangePair current, ChangePair destination, ChangePair net) {
       CommitItem change = new CommitItem(current.getGammaId(), current.getModType());
       change.setItemId(itemId);
 
-      GammaKind[] kinds = GammaKind.values();
-      change.setKind(kinds[itemId % kinds.length]);
+      change.setKind(gammaKind);
 
       if (base != null) {
          change.getBase().setModType(base.getModType());

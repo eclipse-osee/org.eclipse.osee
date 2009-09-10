@@ -90,10 +90,23 @@ public class CommitItem {
    }
 
    public boolean isIgnoreCase() {
-      return wasNewOrIntroducedOnSource() && getCurrent().getModType().isDeleted() || //
-      isAlreadyOnDestination() || //
-      !getDestination().exists() && getCurrent().getModType().isDeleted() || //
-      getDestination().exists() && getDestination().getModType().isDeleted();
+      return wasCreatedAndDeleted() || isAlreadyOnDestination() || isDeletedAndDoestNotExistInDestination() || hasBeenDeletedInDestination() || isDestinationEqualOrNewerThanCurrent();
+   }
+
+   private boolean wasCreatedAndDeleted() {
+      return wasNewOrIntroducedOnSource() && getCurrent().getModType().isDeleted();
+   }
+
+   private boolean isDeletedAndDoestNotExistInDestination() {
+      return !getDestination().exists() && getCurrent().getModType().isDeleted();
+   }
+
+   private boolean hasBeenDeletedInDestination() {
+      return getDestination().exists() && getDestination().getModType().isDeleted();
+   }
+
+   private boolean isDestinationEqualOrNewerThanCurrent() {
+      return (getCurrent().isNew() || getCurrent().isIntroduced()) && getDestination().exists();
    }
 
    @Override
