@@ -15,6 +15,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
@@ -96,21 +98,38 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
       if (artifact != null) {
          sb.append(String.format(template, "GUID", Xml.escape(artifact.getGuid())));
          sb.append(String.format(template, "HRID", Xml.escape(artifact.getHumanReadableId())));
-         sb.append(String.format(template, "Branch", Xml.escape(artifact.getBranch().toString())));
-         sb.append(String.format(template, "Branch Id", artifact.getBranch().getBranchId()));
+
+         int branchId = -1;
+         String branchName = "Unknown";
+         Branch branch = artifact.getBranch();
+         if (branch != null) {
+            branchName = branch.toString();
+            branchId = branch.getBranchId();
+         }
+         sb.append(String.format(template, "Branch", Xml.escape(branchName)));
+         sb.append(String.format(template, "Branch Id", branchId));
+
          sb.append(String.format(template, "Artifact Id", artifact.getArtId()));
          sb.append(String.format(template, "Artifact Type Name", Xml.escape(artifact.getArtifactTypeName())));
          sb.append(String.format(template, "Artifact Type Id", artifact.getArtTypeId()));
          sb.append(String.format(template, "Gamma Id", artifact.getGammaId()));
          sb.append(String.format(template, "Historical", artifact.isHistorical()));
          sb.append(String.format(template, "Deleted", artifact.isDeleted()));
-         sb.append(String.format(template, "Revision", artifact.getTransactionNumber()));
+
+         String tx;
+         TransactionId transactionId = artifact.getTransactionId();
+         if (transactionId == null) {
+            tx = "Not Version Controlled";
+         } else {
+            tx = String.valueOf(transactionId.getTransactionNumber());
+         }
+         sb.append(String.format(template, "Revision", tx));
          sb.append(String.format(template, "Read Only", artifact.isReadOnly()));
          Date lastModified = null;
          try {
             lastModified = artifact.getLastModified();
          } catch (Exception ex) {
-
+            // Do Nothing
          }
          sb.append(String.format(template, "Last Modified",
                lastModified != null ? String.valueOf(lastModified) : "Error - unknown"));
@@ -118,7 +137,7 @@ public class DetailsFormSection extends ArtifactEditorFormSection {
          try {
             lastAuthor = artifact.getLastModifiedBy();
          } catch (Exception ex) {
-
+            // Do Nothing
          }
          sb.append(String.format(template, "Last Modified By", lastAuthor != null ? lastAuthor : "Error - unknown"));
       } else {

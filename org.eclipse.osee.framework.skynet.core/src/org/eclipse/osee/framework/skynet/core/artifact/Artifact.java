@@ -1521,7 +1521,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * @return the transaction number for this artifact if it is historical, otherwise 0
     */
    public int getTransactionNumber() {
-      return transactionId.getTransactionNumber();
+      return transactionId != null ? transactionId.getTransactionNumber() : -1;
    }
 
    public TransactionId getTransactionId() {
