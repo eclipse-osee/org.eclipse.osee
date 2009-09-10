@@ -10,12 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.editor;
 
-import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -69,7 +65,7 @@ public class SMADetailsSection extends SectionPart {
 
       if (Widgets.isAccessible(formText)) {
          try {
-            formText.setText(getDetailsText(editor.getSmaMgr().getSma()), true, true);
+            formText.setText(Artifacts.getDetailsFormText(editor.getSmaMgr().getSma()), true, true);
          } catch (Exception ex) {
             formText.setText(Lib.exceptionToString(ex), false, false);
          }
@@ -91,39 +87,4 @@ public class SMADetailsSection extends SectionPart {
       updateText(false);
    }
 
-   private String getDetailsText(Artifact artifact) {
-      String template = "<p><b>%s:</b> %s</p>";
-      StringBuilder sb = new StringBuilder();
-      sb.append("<form>");
-
-      if (artifact != null) {
-         sb.append(String.format(template, "GUID", Xml.escape(artifact.getGuid())));
-         sb.append(String.format(template, "HRID", Xml.escape(artifact.getHumanReadableId())));
-         sb.append(String.format(template, "Branch", Xml.escape(artifact.getBranch().toString())));
-         sb.append(String.format(template, "Branch Id", artifact.getBranch().getBranchId()));
-         sb.append(String.format(template, "Artifact Id", artifact.getArtId()));
-         sb.append(String.format(template, "Artifact Type Name", Xml.escape(artifact.getArtifactTypeName())));
-         sb.append(String.format(template, "Artifact Type Id", artifact.getArtTypeId()));
-         sb.append(String.format(template, "Gamma Id", artifact.getGammaId()));
-         sb.append(String.format(template, "Historical", artifact.isHistorical()));
-         sb.append(String.format(template, "Deleted", artifact.isDeleted()));
-         sb.append(String.format(template, "Revision",
-               (artifact.isInDb() ? artifact.getTransactionNumber() : "Not In Db")));
-         sb.append(String.format(template, "Read Only", artifact.isReadOnly()));
-         sb.append(String.format(template, "Last Modified",
-               (artifact.isInDb() ? artifact.getLastModified() : "Not In Db")));
-         String lastAuthor = null;
-         try {
-            lastAuthor = artifact.getLastModifiedBy().toString();
-         } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-            lastAuthor = "Exception : " + ex.getLocalizedMessage();
-         }
-         sb.append(String.format(template, "Last Modified By", (artifact.isInDb() ? lastAuthor : "Not In Db")));
-      } else {
-         sb.append(String.format(template, "Artifact", "null"));
-      }
-      sb.append("</form>");
-      return sb.toString();
-   }
 }
