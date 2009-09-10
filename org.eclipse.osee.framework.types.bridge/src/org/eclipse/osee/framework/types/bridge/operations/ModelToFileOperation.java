@@ -34,7 +34,7 @@ public class ModelToFileOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       for (Entry<String, OseeTypeModel> entry : models.entrySet()) {
-         File file = new File(folder, entry.getKey());
+         File file = new File(folder, entry.getKey() + ".osee");
          OseeTypeModelUtil.saveModel(file.toURI(), entry.getValue());
       }
    }
