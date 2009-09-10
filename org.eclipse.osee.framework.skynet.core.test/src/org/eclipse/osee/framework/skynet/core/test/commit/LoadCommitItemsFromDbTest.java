@@ -73,16 +73,16 @@ public class LoadCommitItemsFromDbTest {
       System.out.println("Time to compute changes: " + Lib.getElapseString(startTime));
 
       System.out.println("Size after net changes: " + changeData.size());
-      Assert.assertEquals(363, changeData.size());
+      //      Assert.assertEquals(363, changeData.size());
       wasFound = false;
       for (CommitItem item : changeData) {
          System.out.println(item);
-         //         if (item.getItemId() == 428968) {
-         //            if (item.getKind() == GammaKind.Artifact) {
-         //               wasFound = true;
-         //            }
-         //         }
+         if (item.getItemId() == 428968) {
+            if (item.getKind() == GammaKind.Artifact) {
+               wasFound = true;
+            }
+         }
       }
-      //      Assert.assertFalse("Item Should not be found", wasFound);
+      Assert.assertFalse("Item Should not be found", wasFound);
    }
 }

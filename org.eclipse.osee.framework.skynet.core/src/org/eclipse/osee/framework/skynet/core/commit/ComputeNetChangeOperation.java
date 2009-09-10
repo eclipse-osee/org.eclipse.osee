@@ -38,8 +38,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
          while (iterator.hasNext()) {
             checkForCancelledStatus(monitor);
             CommitItem change = iterator.next();
-
-            if (change.wasNewOrIntroducedOnSource() && change.getCurrent().getModType().isDeleted() || change.isAlreadyOnDestination()) {
+            if (change.isIgnoreCase()) {
                iterator.remove();
             } else {
                checkForInvalidStates(change);

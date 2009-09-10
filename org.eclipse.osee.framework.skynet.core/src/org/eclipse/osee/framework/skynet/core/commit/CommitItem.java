@@ -89,6 +89,10 @@ public class CommitItem {
       return getCurrent().sameGammaAs(getDestination()) && getCurrent().getModType().isDeleted() == getDestination().getModType().isDeleted();
    }
 
+   public boolean isIgnoreCase() {
+      return wasNewOrIntroducedOnSource() && getCurrent().getModType().isDeleted() || isAlreadyOnDestination() || !getDestination().exists() && getCurrent().getModType().isDeleted();
+   }
+
    @Override
    public String toString() {
       return String.format("CommitItem - kind:[%s] itemId:[%s] base:%s first:%s current:%s destination:%s net:%s",
