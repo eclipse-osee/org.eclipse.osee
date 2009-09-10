@@ -172,7 +172,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       String query =
-            "select item." + columnName + ", txs.gamma_id, txs.mod_type from osee_join_id idj, " //
+            "select item." + columnName + ", txs.gamma_id, txs.mod_type, txd.tx_type from osee_join_id idj, " //
                   + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
                   " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? order by idj.id, txs.transaction_id asc";
 
@@ -180,19 +180,29 @@ public class LoadChangeDataOperation extends AbstractOperation {
          chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
                getSourceBranchId());
          int previousItemId = -1;
-         boolean firstChange = false;
+         boolean isFirstSet = false;
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
 
             int itemId = chStmt.getInt(columnName);
+            boolean isBaseline =
+                  TransactionDetailsType.toEnum(chStmt.getInt("tx_type")) == TransactionDetailsType.Baselined;
             CommitItem change = changesByItemId.get(itemId);
+
             if (previousItemId != itemId) {
-               loadVersionData(chStmt, change.getBase());
+               isFirstSet = false;
                previousItemId = itemId;
-               firstChange = true;
-            } else if (firstChange) {
-               loadVersionData(chStmt, change.getFirst());
-               firstChange = false;
+               if (isBaseline) {
+                  loadVersionData(chStmt, change.getBase());
+               } else {
+                  loadVersionData(chStmt, change.getFirst());
+                  isFirstSet = true;
+               }
+            } else {
+               if (!isFirstSet) {
+                  loadVersionData(chStmt, change.getFirst());
+                  isFirstSet = true;
+               }
             }
          }
       } finally {
