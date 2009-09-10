@@ -76,7 +76,6 @@ public class LoadCommitItemsFromDbTest {
       //      Assert.assertEquals(363, changeData.size());
       wasFound = false;
       for (CommitItem item : changeData) {
-         System.out.println(item);
          if (item.getItemId() == 428968) {
             if (item.getKind() == GammaKind.Artifact) {
                wasFound = true;
