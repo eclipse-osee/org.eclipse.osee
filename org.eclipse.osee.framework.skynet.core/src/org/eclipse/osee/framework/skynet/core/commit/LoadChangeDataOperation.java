@@ -63,11 +63,11 @@ public class LoadChangeDataOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       TransactionJoinQuery txJoin = loadSourceBranchChanges(monitor);
-      loadChangesByItemId(monitor, "osee_artifact_version", "art_id", txJoin.getQueryId(), GammaKind.Artifact,
+      loadItemIdsBasedOnGammas(monitor, "osee_artifact_version", "art_id", txJoin.getQueryId(), GammaKind.Artifact,
             artifactChangesByItemId);
-      loadChangesByItemId(monitor, "osee_attribute", "attr_id", txJoin.getQueryId(), GammaKind.Attribute,
+      loadItemIdsBasedOnGammas(monitor, "osee_attribute", "attr_id", txJoin.getQueryId(), GammaKind.Attribute,
             attributeChangesByItemId);
-      loadChangesByItemId(monitor, "osee_relation_link", "rel_link_id", txJoin.getQueryId(), GammaKind.Relation,
+      loadItemIdsBasedOnGammas(monitor, "osee_relation_link", "rel_link_id", txJoin.getQueryId(), GammaKind.Relation,
             relationChangesByItemId);
       txJoin.delete();
 
@@ -104,7 +104,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       return txJoin;
    }
 
-   private void loadChangesByItemId(IProgressMonitor monitor, String tableName, String idColumnName, int queryId, GammaKind kind, HashMap<Integer, CommitItem> changesByItemId) throws OseeDataStoreException {
+   private void loadItemIdsBasedOnGammas(IProgressMonitor monitor, String tableName, String idColumnName, int queryId, GammaKind kind, HashMap<Integer, CommitItem> changesByItemId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       String query =
             "select txj.gamma_id, " + idColumnName + " from " + tableName + " id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
@@ -142,18 +142,10 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, Branch branch, HashMap<Integer, CommitItem> changesByItemId) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
-      String query;
-      if (branch.isMergeBranch()) {
-         query =
-               "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-                     + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
-                     " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
-      } else {
-         query =
-               "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-                     + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
-                     " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.tx_type = 1";
-      }
+      String query =
+            "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
+                  + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
+                  " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
 
       try {
          chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
