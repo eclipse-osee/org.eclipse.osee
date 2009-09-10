@@ -89,6 +89,12 @@ public class ComputeNetChangeTest {
             new ChangePair(13L, MERGED), false));
       data.add(createTest(19, null, null, new ChangePair(12L, NEW), null, new ChangePair(14L, MERGED), new ChangePair(
             14L, MERGED), false));
+      data.add(createTest(20, new ChangePair(96915L, MODIFIED), new ChangePair(7290448L, MODIFIED), new ChangePair(
+            7865315L, DELETED), new ChangePair(7432082L, MODIFIED), new ChangePair(7865315L, MERGED), new ChangePair(
+            7865315L, DELETED), false));
+      data.add(createTest(21, new ChangePair(96915L, MODIFIED), new ChangePair(7290448L, MODIFIED), new ChangePair(
+            7865315L, ARTIFACT_DELETED), new ChangePair(7432082L, MODIFIED), new ChangePair(7865315L, MERGED),
+            new ChangePair(7865315L, ARTIFACT_DELETED), false));
 
       return data;
    }
