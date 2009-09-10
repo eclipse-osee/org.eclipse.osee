@@ -53,6 +53,10 @@ public final class ChangePair {
       return getModType() == ModificationType.INTRODUCED;
    }
 
+   public boolean isDeleted() {
+      return getModType().isDeleted();
+   }
+
    public boolean exists() {
       return getModType() != null && getGammaId() != null;
    }
