@@ -29,10 +29,12 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
+import org.eclipse.osee.ats.actions.FavoriteAction;
+import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
+import org.eclipse.osee.ats.actions.SubscribedAction;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
-import org.eclipse.osee.ats.artifact.IFavoriteableArtifact;
-import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -46,8 +48,6 @@ import org.eclipse.osee.ats.task.TaskXViewer;
 import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.ats.util.AtsDeleteManager;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.util.FavoritesManager;
-import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.ats.util.xviewer.column.XViewerAtsAttributeColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -66,7 +66,6 @@ import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -87,7 +86,7 @@ import org.eclipse.ui.PartInitException;
 /**
  * @author Donald G. Dunne
  */
-public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListener, IArtifactReloadEventListener, IArtifactsChangeTypeEventListener, IFrameworkTransactionEventListener {
+public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArtifactsPurgedEventListener, IArtifactReloadEventListener, IArtifactsChangeTypeEventListener, IFrameworkTransactionEventListener {
    private String title;
    private String extendedStatusString = "";
    public static final String MENU_GROUP_ATS_WORLD_EDIT = "ATS WORLD EDIT";
@@ -228,11 +227,11 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
    Action editStatusAction, editNotesAction, editEstimateAction, editChangeTypeAction, editPriorityAction,
          editTargetVersionAction, editAssigneeAction, editActionableItemsAction;
-   Action convertActionableItemsAction;
+   ConvertActionableItemsAction convertActionableItemsAction;
    Action openInArtifactEditorAction, openInAtsWorkflowEditorAction, openInMassEditorAction,
          openInAtsWorldEditorAction, openInAtsTaskEditorAction;
-   Action favoritesAction;
-   Action subscribedAction;
+   FavoriteAction favoritesAction;
+   SubscribedAction subscribedAction;
    Action deletePurgeAtsObjectAction;
    Action emailAction;
    Action resetActionArtifactAction;
@@ -351,21 +350,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          }
       };
 
-      convertActionableItemsAction = new Action("Convert to Actionable Item/Team", Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            try {
-               TeamWorkFlowArtifact teamArt = getSelectedTeamWorkflowArtifacts().iterator().next();
-               Result result = teamArt.convertActionableItems();
-               if (result.isFalse() && !result.getText().equals("")) {
-                  result.popup();
-               }
-               refresh(getSelectedArtifactItems().iterator().next());
-            } catch (Exception ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
+      convertActionableItemsAction = new ConvertActionableItemsAction(this);
 
       openInMassEditorAction = new Action("Open in Mass Editor", Action.AS_PUSH_BUTTON) {
          @Override
@@ -428,23 +413,8 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
          }
       };
 
-      favoritesAction = new Action("Add as Favorite", Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            if (getSelectedSMA() != null) {
-               new FavoritesManager(getSelectedSMAArtifacts()).toggleFavorite();
-            }
-         }
-      };
-
-      subscribedAction = new Action("Subscribe for Notifications", Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            if (getSelectedSMA() != null) {
-               new SubscribeManager(getSelectedSMAArtifacts()).toggleSubscribe();
-            }
-         }
-      };
+      favoritesAction = new FavoriteAction(this);
+      subscribedAction = new SubscribedAction(this);
 
       openInArtifactEditorAction = new Action("Open in Artifact Editor", Action.AS_PUSH_BUTTON) {
          @Override
@@ -651,7 +621,7 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       editActionableItemsAction.setEnabled(getSelectedActionArtifacts().size() == 1 || getSelectedTeamWorkflowArtifacts().size() == 1);
 
       mm.insertBefore(MENU_GROUP_PRE, convertActionableItemsAction);
-      convertActionableItemsAction.setEnabled(getSelectedTeamWorkflowArtifacts().size() == 1);
+      convertActionableItemsAction.updateEnablement();
 
    }
 
@@ -684,20 +654,10 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
 
       // OTHER MENU BLOCK
       mm.insertBefore(MENU_GROUP_PRE, favoritesAction);
-      favoritesAction.setEnabled(favoritesActionIsEnabled());
-      if (getSelectedSMA() == null) {
-         favoritesAction.setText(ADD_AS_FAVORITE);
-      } else {
-         favoritesAction.setText(((IFavoriteableArtifact) getSelectedSMA()).amIFavorite() ? REMOVE_FAVORITE : ADD_AS_FAVORITE);
-      }
+      favoritesAction.updateEnablement();
 
       mm.insertBefore(MENU_GROUP_PRE, subscribedAction);
-      subscribedAction.setEnabled(subscribedActionIsEnabled());
-      if (getSelectedSMA() == null) {
-         subscribedAction.setText(SUBSCRIBE);
-      } else {
-         subscribedAction.setText(((ISubscribableArtifact) getSelectedSMA()).amISubscribed() ? UN_SUBSCRIBE : SUBSCRIBE);
-      }
+      subscribedAction.updateEnablement();
 
       mm.insertBefore(MENU_GROUP_PRE, emailAction);
       emailAction.setEnabled(getSelectedArtifacts().size() == 1);
@@ -709,22 +669,6 @@ public class WorldXViewer extends XViewer implements IArtifactsPurgedEventListen
       mm.insertAfter(XViewer.MENU_GROUP_PRE, new GroupMarker(MENU_GROUP_ATS_WORLD_OTHER));
       mm.insertAfter(MENU_GROUP_PRE, new Separator());
 
-   }
-
-   private boolean favoritesActionIsEnabled() {
-      if (getSelectedSMAArtifacts().size() == 0) {
-         return false;
-      }
-
-      return true;
-   }
-
-   private boolean subscribedActionIsEnabled() {
-      if (getSelectedSMAArtifacts().size() == 0) {
-         return false;
-      }
-
-      return true;
    }
 
    @Override

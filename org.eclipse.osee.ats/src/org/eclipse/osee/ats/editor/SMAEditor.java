@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.Action;
@@ -22,6 +23,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
+import org.eclipse.osee.ats.actions.ISelectedAtsArtifacts;
 import org.eclipse.osee.ats.actions.ResourceHistoryAction;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
@@ -96,10 +98,10 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
+public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArtifacts, IDirtiableEditor, IActionable, IArtifactReloadEventListener, IAtsMetricsProvider, IArtifactsPurgedEventListener, IRelationModifiedEventListener, IFrameworkTransactionEventListener, IBranchEventListener, IXTaskViewer {
    public static final String EDITOR_ID = "org.eclipse.osee.ats.editor.SMAEditor";
    private SMAManager smaMgr;
-   private int workFlowPageIndex, taskPageIndex, metricsPageIndex, attributesPageIndex;
+   private int workFlowPageIndex, metricsPageIndex, attributesPageIndex;
    private SMAWorkFlowTab workFlowTab;
    private AttributesComposite attributesComposite;
    private AtsMetricsComposite metricsComposite;
@@ -769,6 +771,14 @@ public class SMAEditor extends AbstractArtifactEditor implements IDirtiableEdito
    @Override
    public IActionable getActionable() throws OseeCoreException {
       return this;
+   }
+
+   /* (non-Javadoc)
+    * @see org.eclipse.osee.ats.actions.ISelectedAtsArtifacts#getSelectedSMAArtifacts()
+    */
+   @Override
+   public Set<? extends Artifact> getSelectedSMAArtifacts() throws OseeStateException {
+      return Collections.singleton(smaMgr.getSma());
    }
 
 }

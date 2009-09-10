@@ -335,7 +335,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
          toolBarMgr.add(new ShowMergeManagerAction(smaMgr));
          toolBarMgr.add(new ShowChangeReportAction(smaMgr));
       }
-      toolBarMgr.add(new FavoriteAction(smaMgr));
+      toolBarMgr.add(new FavoriteAction(smaMgr.getEditor()));
       if (smaMgr.getSma().getParentSMA() != null) {
          toolBarMgr.add(new OpenParentAction(smaMgr));
       }
@@ -346,7 +346,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolBarMgr.add(new OpenInSkyWalkerAction(smaMgr));
       toolBarMgr.add(new OpenVersionArtifactAction(smaMgr));
       toolBarMgr.add(new OpenTeamDefinitionAction(smaMgr));
-      toolBarMgr.add(new SubscribedAction(smaMgr));
+      toolBarMgr.add(new SubscribedAction(smaMgr.getEditor()));
       toolBarMgr.add(new CopyActionDetailsAction(smaMgr));
       toolBarMgr.add(new PrivilegedEditAction(smaMgr));
       toolBarMgr.add(new ResourceHistoryAction(smaMgr));

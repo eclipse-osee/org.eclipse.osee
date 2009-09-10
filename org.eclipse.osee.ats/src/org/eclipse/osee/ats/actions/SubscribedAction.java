@@ -10,15 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.actions;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
+import org.eclipse.osee.ats.artifact.ISubscribableArtifact;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
@@ -26,18 +31,45 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
  */
 public class SubscribedAction extends Action {
 
-   private final SMAManager smaMgr;
+   private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
-   public SubscribedAction(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
-      setText("Subscribe to Email Notifications");
-      setToolTipText(getText());
+   public SubscribedAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+      this.selectedAtsArtifacts = selectedAtsArtifacts;
+      updateName();
+   }
+
+   private void updateName() {
+      String title = "Subscribed";
+      try {
+         if (getSelectedSubscribableArts().size() == 1) {
+            title =
+                  getSelectedSubscribableArts().iterator().next().amISubscribed() ? "Remove Subscribed" : "Add as Subscribed";
+         } else {
+            title = "Toggle Subscribed";
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      setText(title);
+      setToolTipText(title);
+   }
+
+   public Collection<ISubscribableArtifact> getSelectedSubscribableArts() throws OseeCoreException {
+      List<ISubscribableArtifact> favoritableArts = new ArrayList<ISubscribableArtifact>();
+      for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
+         if (art instanceof ISubscribableArtifact) {
+            favoritableArts.add((ISubscribableArtifact) art);
+         }
+      }
+      return favoritableArts;
    }
 
    @Override
    public void run() {
       try {
-         (new SubscribeManager(smaMgr.getSma())).toggleSubscribe();
+         for (ISubscribableArtifact sma : getSelectedSubscribableArts()) {
+            (new SubscribeManager((StateMachineArtifact) sma)).toggleSubscribe();
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -46,6 +78,16 @@ public class SubscribedAction extends Action {
    @Override
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(AtsImage.SUBSCRIBED);
+   }
+
+   public void updateEnablement() {
+      try {
+         setEnabled(getSelectedSubscribableArts().size() > 0);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         setEnabled(false);
+      }
+      updateName();
    }
 
 }

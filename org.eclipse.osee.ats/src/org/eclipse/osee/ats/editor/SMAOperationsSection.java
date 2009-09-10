@@ -13,6 +13,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.Collections;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.AccessControlAction;
+import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.actions.EditActionableItemsAction;
@@ -136,6 +137,7 @@ public class SMAOperationsSection extends SectionPart {
             if (AtsUtil.isAtsAdmin()) {
                (new XButtonViaAction(new RefreshDirtyAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
             }
+            (new XButtonViaAction(new ConvertActionableItemsAction(editor))).createWidgets(sectionBody, 2);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -184,8 +186,8 @@ public class SMAOperationsSection extends SectionPart {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       try {
-         (new XButtonViaAction(new SubscribedAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
-         (new XButtonViaAction(new FavoriteAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new SubscribedAction(editor))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new FavoriteAction(editor))).createWidgets(sectionBody, 2);
          (new XButtonViaAction(new EmailActionAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
