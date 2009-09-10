@@ -71,10 +71,16 @@ public class ComputeNetChangeTest {
       // Undelete then delete again
       data.add(createTest(new ChangePair(4L, DELETED), new ChangePair(3L, MODIFIED), new ChangePair(4L, DELETED),
             new ChangePair(4L, DELETED), null, true));
+      data.add(createTest(new ChangePair(4L, ARTIFACT_DELETED), null, new ChangePair(5L, MODIFIED), new ChangePair(4L,
+            ARTIFACT_DELETED), null, true));
 
       // Delete Cases -
       data.add(createTest(new ChangePair(10L, MODIFIED), null, new ChangePair(10L, DELETED), new ChangePair(10L,
             MODIFIED), new ChangePair(10L, DELETED), false));
+      data.add(createTest(new ChangePair(330L, NEW), null, new ChangePair(331L, ARTIFACT_DELETED), new ChangePair(330L,
+            NEW), new ChangePair(331L, ARTIFACT_DELETED), false));
+      data.add(createTest(new ChangePair(330L, NEW), new ChangePair(331L, ARTIFACT_DELETED), new ChangePair(331L,
+            ARTIFACT_DELETED), new ChangePair(330L, NEW), new ChangePair(331L, ARTIFACT_DELETED), false));
 
       // Parent to Child Intro
       data.add(createTest(null, new ChangePair(10L, INTRODUCED), new ChangePair(11L, MODIFIED), new ChangePair(10L,

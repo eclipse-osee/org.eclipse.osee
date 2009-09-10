@@ -83,13 +83,14 @@ public class ComputeNetChangeOperation extends AbstractOperation {
                "This should be supported in the future - destination branch is not the source's parent: " + change);
       }
 
-      if (change.getNet().getModType() != ModificationType.MERGED) {
-         if (change.getCurrent().getModType() == ModificationType.NEW && change.getDestination().getModType() != null) {
-            throw new OseeStateException("Source item marked as new but destination already has item: " + change);
-         }
-         if (change.getCurrent().getModType() == ModificationType.INTRODUCED && change.getDestination().getModType() != null) {
-            throw new OseeStateException("Source item marked as introduced but destination already has item: " + change);
-         }
+      if (change.getDestination().exists() && change.getDestination().getModType().isDeleted()) {
+         throw new OseeStateException("Destination was deleted - source should not modify: " + change);
       }
+
+      if ((change.getCurrent().isIntroduced() || change.getCurrent().isNew()) && change.getDestination().exists()) {
+         throw new OseeStateException(
+               "Source item marked as new/introduced but destination already has item: " + change);
+      }
+
    }
 }

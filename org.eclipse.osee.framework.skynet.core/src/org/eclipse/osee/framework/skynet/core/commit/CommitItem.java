@@ -90,7 +90,10 @@ public class CommitItem {
    }
 
    public boolean isIgnoreCase() {
-      return wasNewOrIntroducedOnSource() && getCurrent().getModType().isDeleted() || isAlreadyOnDestination() || !getDestination().exists() && getCurrent().getModType().isDeleted();
+      return wasNewOrIntroducedOnSource() && getCurrent().getModType().isDeleted() || //
+      isAlreadyOnDestination() || //
+      !getDestination().exists() && getCurrent().getModType().isDeleted() || //
+      getDestination().exists() && getDestination().getModType().isDeleted();
    }
 
    @Override
