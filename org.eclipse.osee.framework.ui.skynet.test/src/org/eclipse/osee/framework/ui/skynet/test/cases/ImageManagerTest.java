@@ -85,7 +85,7 @@ public abstract class ImageManagerTest {
     */
    @org.junit.Test
    public void testFrameworkImageMissing() throws Exception {
-      // This will throw an OseeLog exceptino cause NOT_HERE can't be found; this is expected
+      // This will throw an OseeLog exception cause NOT_HERE can't be found; this is expected
       assertEquals(ImageManager.getImage(MissingImage.NOT_HERE), ImageManager.getImage(FrameworkImage.MISSING));
    }
 
@@ -98,7 +98,9 @@ public abstract class ImageManagerTest {
    public void testFrameworkImageEnums() throws Exception {
       StringBuffer sb = new StringBuffer();
       for (OseeImage oseeImage : oseeImages) {
-         if (oseeImage == FrameworkImage.MISSING) continue;
+         if (oseeImage == FrameworkImage.MISSING) {
+            continue;
+         }
          assertNotNull(String.format("[%s] Image not defined for [%s]", imageClassName, oseeImage),
                ImageManager.getImage(oseeImage));
          if (ImageManager.getImage(oseeImage).equals(ImageManager.getImage(FrameworkImage.MISSING))) {

@@ -21,11 +21,11 @@ import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.eclipse.osee.framework.jdk.core.test.JdkCoreTestSuite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {AtsTest_Config_Suite.class, AtsTest_Demo_Suite.class,
-      FrameworkUi_Demo_Suite.class,
-      FrameworkCore_Demo_Suite.class})
+@Suite.SuiteClasses( {AtsTest_Config_Suite.class, AtsTest_Demo_Suite.class, FrameworkUi_Demo_Suite.class,
+      FrameworkCore_Demo_Suite.class, JdkCoreTestSuite.class})
 /**
  * This suite should contain all cases and suites that can be run against a Demo Db Init and Demo Populated osee
  * database.
