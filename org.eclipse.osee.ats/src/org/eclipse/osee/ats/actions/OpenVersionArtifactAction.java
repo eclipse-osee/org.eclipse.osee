@@ -14,7 +14,6 @@ import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -38,7 +37,9 @@ public class OpenVersionArtifactAction extends Action {
 
    private void performOpen() {
       try {
-         if (((TeamWorkFlowArtifact) smaMgr.getSma()).getWorldViewTargetedVersion() != null) ArtifactEditor.editArtifact(((TeamWorkFlowArtifact) smaMgr.getSma()).getWorldViewTargetedVersion());
+         if (smaMgr.getSma().getWorldViewTargetedVersion() != null) {
+            ArtifactEditor.editArtifact(smaMgr.getSma().getWorldViewTargetedVersion());
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
