@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -30,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
  * @author Jeff C. Phillips
  */
 public class RelationChanged extends Change {
-
    private int bArtId;
    private String bArtName;
    private Artifact bArtifact;
@@ -56,8 +54,9 @@ public class RelationChanged extends Change {
     * @param relationType
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
+    * @throws ArtifactDoesNotExist
     */
-   public RelationChanged(Branch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public RelationChanged(Branch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super(branch, aArtType, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical);
       this.bArtId = bArtId;
@@ -76,16 +75,12 @@ public class RelationChanged extends Change {
       try {
          if (adapter.isInstance(getArtifact())) {
             return getArtifact();
-         }
-         else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
+         } else if (adapter.isInstance(getToTransactionId()) && isHistorical()) {
             return getToTransactionId();
-         }
-         else if (adapter.isInstance(this)) {
+         } else if (adapter.isInstance(this)) {
             return this;
          }
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      } catch (ArtifactDoesNotExist ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
       return null;
@@ -98,24 +93,11 @@ public class RelationChanged extends Change {
       return bArtId;
    }
 
-   /**
-    * @return the bArtifact
-    * @throws ArtifactDoesNotExist
-    */
+   public void setbArtifact(Artifact bArtifact) {
+      this.bArtifact = bArtifact;
+   }
+
    public Artifact getBArtifact() throws ArtifactDoesNotExist {
-      if (bArtifact == null) {
-         if (isHistorical()) {
-            bArtifact = ArtifactCache.getHistorical(bArtId, getToTransactionId().getTransactionNumber());
-         } else {
-            bArtifact = ArtifactCache.getActive(bArtId, getBranch());
-         }
-      }
-
-      if (bArtifact == null) {
-         throw new ArtifactDoesNotExist(
-               "Artifact: " + bArtId + " Does not exist on branch: " + getBranch().getName() + " branch id: " + getBranch().getBranchId());
-      }
-
       return bArtifact;
    }
 

@@ -52,8 +52,9 @@ public class AttributeChanged extends Change {
     * @param attrTypeId
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
+    * @throws ArtifactDoesNotExist 
     */
-   public AttributeChanged(Branch branch, ArtifactType artType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public AttributeChanged(Branch branch, ArtifactType artType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical);
       this.isValue = isValue;

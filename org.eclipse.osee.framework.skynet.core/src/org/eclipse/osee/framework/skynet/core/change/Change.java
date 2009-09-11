@@ -18,9 +18,7 @@ import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
@@ -50,8 +48,9 @@ public abstract class Change implements IAdaptable {
     * @param changeType
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
+    * @throws ArtifactDoesNotExist 
     */
-   public Change(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist {
+   public Change(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
@@ -115,29 +114,14 @@ public abstract class Change implements IAdaptable {
       return changeType;
    }
 
-   /**
-    * @return the artifact
-    * @throws ArtifactDoesNotExist
-    * @throws IllegalArgumentException
-    * @throws MultipleArtifactsExist
-    * @throws ArtifactDoesNotExist
-    */
-   public Artifact getArtifact() throws ArtifactDoesNotExist {
-      if (artifact == null) {
-         if (isHistorical()) {
-            artifact = ArtifactCache.getHistorical(artId, getToTransactionId().getTransactionNumber());
-         } else {
-            artifact = ArtifactCache.getActive(artId, branch);
-         }
-      }
-
-      if (artifact == null) {
-         throw new ArtifactDoesNotExist(
-               "Artifact: " + artId + " Does not exist on branch: " + branch.getName() + " branch id: " + branch.getBranchId());
-      }
+   public Artifact getArtifact(){
       return artifact;
    }
-
+   
+   public void setArtifact(Artifact artifact) {
+      this.artifact = artifact;
+   }
+   
    public String getArtifactName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return getArtifact().getName();
    }

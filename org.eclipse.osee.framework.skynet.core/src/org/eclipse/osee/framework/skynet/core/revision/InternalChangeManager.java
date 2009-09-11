@@ -34,6 +34,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -91,12 +92,19 @@ public final class InternalChangeManager {
    }
 
    private Collection<TransactionId> getTransactionsPerArtifact(Branch branch, Artifact artifact) throws OseeCoreException {
-      Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
+      Set<TransactionId> transactionIds = new HashSet<TransactionId>();
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_GET_TRANSACTIONS_PER_ARTIFACT),
                branch.getBranchId(), artifact.getArtId());
+
+         while (chStmt.next()) {
+            transactionIds.add(TransactionIdManager.getTransactionId(chStmt.getInt("transaction_id")));
+         }
+
+         chStmt.runPreparedQuery("SELECT td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_relation_link rel where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and tx1.gamma_id = rel.gamma_id and (rel.a_art_id = ? or rel.b_art_id = ?)",
+               branch.getBranchId(), artifact.getArtId(), artifact.getArtId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionIdManager.getTransactionId(chStmt.getInt("transaction_id")));
@@ -161,7 +169,9 @@ public final class InternalChangeManager {
             insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
                   historical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }
+         
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
+         loadAndSetArtifacts(changes);
       }
 
       if (DEBUG) {
@@ -171,6 +181,25 @@ public final class InternalChangeManager {
       }
       monitor.done();
       return changes;
+   }
+   
+   private void loadAndSetArtifacts(Collection<Change> changes){
+      for(Change change : changes){
+         if (change.isHistorical()) {
+           change.setArtifact(ArtifactCache.getHistorical(change.getArtId(), change.getToTransactionId().getTransactionNumber()));
+         } else {
+            change.setArtifact(ArtifactCache.getActive(change.getArtId(), change.getBranch()));
+         }
+         
+         if(change instanceof RelationChanged){
+            RelationChanged relationChanged = (RelationChanged)change;
+            if (relationChanged.isHistorical()) {
+               relationChanged.setbArtifact(ArtifactCache.getHistorical(relationChanged.getBArtId(), relationChanged.getToTransactionId().getTransactionNumber()));
+             } else {
+                relationChanged.setbArtifact(ArtifactCache.getActive(relationChanged.getBArtId(), relationChanged.getBranch()));
+             }
+         }
+      }
    }
 
    /**
