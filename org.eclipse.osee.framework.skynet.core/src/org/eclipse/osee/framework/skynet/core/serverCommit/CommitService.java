@@ -24,6 +24,8 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Jeff C. Phillips
+ * @author Ryan D. Brooks
+ * @author Roberto E. Escobar
  */
 public class CommitService implements ICommitService {
 
