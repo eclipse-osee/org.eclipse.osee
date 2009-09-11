@@ -55,11 +55,10 @@ public final class OseeTypeModelUtil {
 
       ResourceSet resourceSet = new ResourceSetImpl();
       Resource resource = resourceSet.createResource(URI.createURI(uri.toASCIIString()));
-
       resource.getContents().add(model);
 
       Map<String, Boolean> options = new HashMap<String, Boolean>();
-      options.put(XtextResource.OPTION_FORMAT, Boolean.FALSE); // Inverted in the code
+      options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
       resource.save(options);
    }
 
@@ -70,7 +69,7 @@ public final class OseeTypeModelUtil {
       resource.getContents().add(model);
 
       Map<String, Boolean> options = new HashMap<String, Boolean>();
-      options.put(XtextResource.OPTION_FORMAT, Boolean.FALSE); // Inverted in the code
+      options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
       resource.save(outputStream, options);
    }
 }

@@ -262,10 +262,6 @@ public class ArtifactTypeManager {
       }
    }
 
-   public static void setAttributeTypes(ArtifactType artifactType, Collection<AttributeType> attributeTypes, Branch branch) throws OseeCoreException {
-      OseeTypeManager.getCache().cacheTypeValidity(artifactType, attributeTypes, branch);
-   }
-
    public static ArtifactType createType(String guid, boolean isAbstract, String artifactTypeName) throws OseeCoreException {
       return OseeTypeManager.getCache().getArtifactTypeCache().createType(guid, isAbstract, artifactTypeName);
    }

@@ -16,7 +16,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum;
@@ -38,8 +37,6 @@ public class OseeToXtextOperation extends AbstractOperation {
    private final Map<String, OseeTypeModel> oseeModels;
    private final OseeTypesFactory factory;
 
-   private OseeTypeModel currentModel;
-
    public OseeToXtextOperation(Map<String, OseeTypeModel> oseeModels) {
       super("OSEE to Text Model", Activator.PLUGIN_ID);
       this.oseeModels = oseeModels;
@@ -54,19 +51,19 @@ public class OseeToXtextOperation extends AbstractOperation {
       OseeTypeModel model = oseeModels.get(namespace);
       if (model == null) {
          model = factory.createOseeTypeModel();
-         oseeModels.put(namespace, currentModel);
+         oseeModels.put(namespace, model);
       }
       return model;
    }
 
    private String getNamespace(String name) {
-      String toReturn = name;
-      if (Strings.isValid(name)) {
-         int index = name.lastIndexOf(".");
-         if (index > 0) {
-            toReturn = name.substring(0, index);
-         }
-      }
+      String toReturn = "default";
+      //      if (Strings.isValid(name)) {
+      //         int index = name.lastIndexOf(".");
+      //         if (index > 0) {
+      //            toReturn = name.substring(0, index);
+      //         }
+      //      }
       return toReturn;
    }
 
@@ -76,18 +73,27 @@ public class OseeToXtextOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      populateAttributeTypes();
-      populateArtifactTypes();
-      //      populateRelationTypes();
+      populateAttributeTypes(monitor);
+      monitor.worked(calculateWork(0.20));
+
+      populateArtifactTypes(monitor);
+      monitor.worked(calculateWork(0.20));
+
+      //      populateRelationTypes(monitor);
+      monitor.worked(calculateWork(0.20));
 
       // TypeValidityManager.getAttributeTypesFromArtifactType(artifactType,
       // branch);
+      monitor.worked(calculateWork(0.20));
+
+      //
+      monitor.worked(calculateWork(0.20));
    }
 
-   private void populateAttributeTypes() throws OseeCoreException {
+   private void populateAttributeTypes(IProgressMonitor monitor) throws OseeCoreException {
       Collection<AttributeType> attributeTypes = AttributeTypeManager.getAllTypes();
       for (AttributeType attributeType : attributeTypes) {
-
+         checkForCancelledStatus(monitor);
          org.eclipse.osee.framework.oseeTypes.AttributeType modelType = getFactory().createAttributeType();
 
          OseeTypeModel model = getModelByNamespace(getNamespace(attributeType.getName()));
@@ -120,9 +126,10 @@ public class OseeToXtextOperation extends AbstractOperation {
       return modelType;
    }
 
-   private void populateRelationTypes() throws OseeCoreException {
+   private void populateRelationTypes(IProgressMonitor monitor) throws OseeCoreException {
       Collection<RelationType> relationTypes = RelationTypeManager.getAllTypes();
       for (RelationType relationType : relationTypes) {
+         checkForCancelledStatus(monitor);
          org.eclipse.osee.framework.oseeTypes.RelationType modelType = getFactory().createRelationType();
 
          OseeTypeModel model = getModelByNamespace(getNamespace(relationType.getName()));
@@ -155,9 +162,10 @@ public class OseeToXtextOperation extends AbstractOperation {
       return type.prettyName().replaceAll(" ", "_");
    }
 
-   private void populateArtifactTypes() throws OseeCoreException {
+   private void populateArtifactTypes(IProgressMonitor monitor) throws OseeCoreException {
       Collection<ArtifactType> artifactTypes = ArtifactTypeManager.getAllTypes();
       for (ArtifactType artifactType : artifactTypes) {
+         checkForCancelledStatus(monitor);
          org.eclipse.osee.framework.oseeTypes.ArtifactType modelType = getFactory().createArtifactType();
 
          modelType.setName(artifactType.getName());

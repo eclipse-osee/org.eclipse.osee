@@ -1,7 +1,9 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.IOseeType;
 
 public class BaseOseeType implements IOseeType {
@@ -27,6 +29,7 @@ public class BaseOseeType implements IOseeType {
 
    public final void setTypeId(int uniqueId) throws OseeStateException {
       if (this.uniqueId == UNPERSISTTED_VALUE) {
+         updateDirty(this.uniqueId, uniqueId);
          this.uniqueId = uniqueId;
       } else {
          throw new OseeStateException("can not change the type id once it has been set");
@@ -76,7 +79,7 @@ public class BaseOseeType implements IOseeType {
     * Sets the type name in memory, but does not persist to the data store
     */
    public void setName(String name) {
-      dirty = true;
+      updateDirty(this.name, name);
       this.name = name;
    }
 
@@ -97,5 +100,31 @@ public class BaseOseeType implements IOseeType {
 
    public void persist() {
       dirty = false;
+   }
+
+   protected void updateDirty(Object original, Object other) {
+      if (isDifferent(original, other)) {
+         dirty = true;
+      }
+   }
+
+   @SuppressWarnings("unchecked")
+   protected boolean isDifferent(Object original, Object other) {
+      boolean result = true;
+      if (original == null && other == null) {
+         result = false;
+      } else if (original != null && other != null) {
+         if (original instanceof Collection<?> && other instanceof Collection<?>) {
+            result = isDifferent((Collection<Object>) original, (Collection<Object>) other);
+         } else {
+            result = !original.equals(other);
+         }
+      }
+      return result;
+   }
+
+   private boolean isDifferent(Collection<Object> original, Collection<Object> other) {
+      return !Collections.setComplement(original, other).isEmpty() || //
+      !Collections.setComplement(other, original).isEmpty();
    }
 }

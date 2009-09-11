@@ -257,7 +257,7 @@ public class OseeTypeCacheTest {
       baseSuperType.add(baseType);
 
       try {
-         typeCache.addArtifactSuperType(baseType, baseSuperType);
+         typeCache.getArtifactTypeCache().setArtifactSuperType(baseType, baseSuperType);
          Assert.assertTrue(
                "This line should not be execute, an inheritance cycle should have been detected and an exception should have been thrown",
                false);
@@ -386,18 +386,18 @@ public class OseeTypeCacheTest {
          Set<ArtifactType> baseSuperType = new HashSet<ArtifactType>();
          baseSuperType.add(baseType);
          // 0<-1
-         typeCache.addArtifactSuperType(cache.getTypeByGuid("111"), baseSuperType);
+         cache.setArtifactSuperType(cache.getTypeByGuid("111"), baseSuperType);
          // 0<-2
-         typeCache.addArtifactSuperType(cache.getTypeByGuid("222"), baseSuperType);
+         cache.setArtifactSuperType(cache.getTypeByGuid("222"), baseSuperType);
          // 2<-3
-         typeCache.addArtifactSuperType(cache.getTypeByGuid("333"), Arrays.asList(cache.getTypeByGuid("222")));
+         cache.setArtifactSuperType(cache.getTypeByGuid("333"), Arrays.asList(cache.getTypeByGuid("222")));
          // 2,3<-4 
-         typeCache.addArtifactSuperType(cache.getTypeByGuid("444"), Arrays.asList(cache.getTypeByGuid("222"),
+         cache.setArtifactSuperType(cache.getTypeByGuid("444"), Arrays.asList(cache.getTypeByGuid("222"),
                cache.getTypeByGuid("333"), baseType));
          // 4<-5 
-         typeCache.addArtifactSuperType(cache.getTypeByGuid("555"), Arrays.asList(cache.getTypeByGuid("444"), baseType));
+         cache.setArtifactSuperType(cache.getTypeByGuid("555"), Arrays.asList(cache.getTypeByGuid("444"), baseType));
          // 3<-6 
-         typeCache.addArtifactSuperType(cache.getTypeByGuid("666"), Arrays.asList(cache.getTypeByGuid("333"), baseType));
+         cache.setArtifactSuperType(cache.getTypeByGuid("666"), Arrays.asList(cache.getTypeByGuid("333"), baseType));
       }
 
       private AttributeType createAttributeTypeHelper(IOseeTypeFactory factory, String guid, String name) throws OseeCoreException {

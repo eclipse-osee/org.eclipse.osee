@@ -16,7 +16,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -85,13 +84,7 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
       List<OseeEnumEntry> oldEntries = cache.getEnumTypeCache().getEnumEntries(this);
       cache.getEnumTypeCache().cacheEnumEntries(this, entries);
       List<OseeEnumEntry> newEntries = cache.getEnumTypeCache().getEnumEntries(this);
-      boolean isEmpty1 =
-            org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(oldEntries, newEntries).isEmpty();
-      boolean isEmpty2 =
-            org.eclipse.osee.framework.jdk.core.util.Collections.setComplement(newEntries, oldEntries).isEmpty();
-      if (getModificationType() != ModificationType.NEW && (!isEmpty1 || !isEmpty2)) {
-         setModificationType(ModificationType.MODIFIED);
-      }
+      updateDirty(oldEntries, newEntries);
    }
 
    @Override
@@ -104,16 +97,14 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
    }
 
    @Override
-   public void setModificationType(ModificationType modificationType) {
-      super.setModificationType(modificationType);
-      if (modificationType.isDeleted()) {
-         try {
-            for (OseeEnumEntry entry : values()) {
-               entry.setModificationType(modificationType);
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
+   public void persist() {
+      super.persist();
+      try {
+         for (OseeEnumEntry entry : values()) {
+            entry.persist();
          }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 

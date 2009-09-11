@@ -43,7 +43,8 @@ public class OseeTypeFactory implements IOseeTypeFactory {
       if (!Strings.isValid(name)) {
          throw new OseeArgumentException("name cannot be null.");
       }
-      return new ArtifactType(createGuidIfNeeded(guid), name, isAbstract, factoryManager, oseeTypeCache);
+      return new ArtifactType(createGuidIfNeeded(guid), name, isAbstract, factoryManager,
+            oseeTypeCache.getArtifactTypeCache());
    }
 
    @Override

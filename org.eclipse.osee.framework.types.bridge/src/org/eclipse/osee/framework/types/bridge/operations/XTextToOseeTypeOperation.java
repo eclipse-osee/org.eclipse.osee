@@ -149,7 +149,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       }
 
       for (Branch branch : items.keySet()) {
-         getCache().cacheTypeValidity(targetArtifactType, items.getValues(), branch);
+         targetArtifactType.setAttributeTypeValidity(items.getValues(), branch);
       }
    }
 

@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -26,7 +28,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -62,10 +63,13 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
          "select * from osee_artifact_type_inheritance order by super_art_type_id, art_type_id";
    private static final String INSERT_ARTIFACT_TYPE_INHERITANCE =
          "insert into osee_artifact_type_inheritance (art_type_id, super_art_type_id) VALUES (?,?)";
+   private static final String DELETE_ARTIFACT_TYPE_INHERITANCE =
+         "delete from osee_artifact_type_inheritance where art_type_id = ?";
 
    private static final String SELECT_ATTRIBUTE_VALIDITY = "SELECT * FROM osee_valid_attributes";
    private static final String INSERT_VALID_ATTRIBUTE =
          "INSERT INTO osee_valid_attributes (art_type_id, attr_type_id, branch_id) VALUES (?, ?, ?)";
+   private static final String DELETE_VALID_ATTRIBUTE = "delete from osee_valid_attributes where art_type_id = ?";
 
    private static final String SELECT_ATTRIBUTE_TYPES =
          "SELECT * FROM osee_attribute_type aty1, osee_attribute_base_type aby1, osee_attribute_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
@@ -115,7 +119,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
                AttributeType attributeType = AttributeTypeManager.getType(chStmt.getInt("attr_type_id"));
                Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
-               cache.cacheTypeValidity(artifactType, attributeType, branch);
+               cache.getArtifactTypeCache().cacheTypeValidity(artifactType, attributeType, branch);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -138,6 +142,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                      factory.createArtifactType(chStmt.getString("art_type_guid"), isAbstract,
                            chStmt.getString("name"), cache);
                artifactType.setTypeId(chStmt.getInt("art_type_id"));
+               artifactType.setModificationType(ModificationType.MODIFIED);
                cacheData.cacheType(artifactType);
             } catch (OseeDataStoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -167,7 +172,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                   throw new OseeInvalidInheritanceException(String.format(
                         "ArtifactType [%s] inherit from [%s] is null", artTypeId, superArtTypeId));
                }
-               cache.cacheArtifactTypeInheritance(artifactType, superTypes);
+               cache.getArtifactTypeCache().cacheArtifactTypeInheritance(artifactType, superTypes);
                superTypes.clear();
                previousBaseId = artTypeId;
             }
@@ -201,6 +206,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                            chStmt.getInt("min_occurence"), chStmt.getInt("max_occurence"),
                            chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
                attributeType.setTypeId(chStmt.getInt("attr_type_id"));
+               attributeType.setModificationType(ModificationType.MODIFIED);
                cache.getAttributeTypeCache().cacheType(attributeType);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -234,6 +240,7 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                               artifactTypeSideB, multiplicity, isUserOrdered,
                               chStmt.getString("default_order_type_guid"));
                   relationType.setTypeId(chStmt.getInt("rel_link_type_id"));
+                  relationType.setModificationType(ModificationType.MODIFIED);
                   cache.getRelationTypeCache().cacheType(relationType);
                } else {
                   OseeLog.log(Activator.class, Level.SEVERE, String.format("Multiplicity was null for [%s][%s]",
@@ -250,50 +257,65 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
 
    @Override
    public void storeArtifactType(OseeTypeCache cache, Collection<ArtifactType> types) throws OseeCoreException {
+      Set<ArtifactType> typeValidityChanges = new HashSet<ArtifactType>();
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> updateData = new ArrayList<Object[]>();
+      List<Object[]> insertInheritanceData = new ArrayList<Object[]>();
+      List<Object[]> deleteInheritanceData = new ArrayList<Object[]>();
       for (ArtifactType type : types) {
-         switch (type.getModificationType()) {
-            case NEW:
-               type.setTypeId(SequenceManager.getNextArtifactTypeId());
-               insertData.add(new Object[] {type.getTypeId(), type.getGuid(), type.getName(),
-                     type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR});
-               break;
-            case MODIFIED:
-               updateData.add(new Object[] {type.getName(), type.isAbstract(), type.getTypeId()});
-               break;
-            default:
-               break;
+         if (type.isDataDirty()) {
+            switch (type.getModificationType()) {
+               case NEW:
+                  type.setTypeId(SequenceManager.getNextArtifactTypeId());
+                  insertData.add(new Object[] {type.getTypeId(), type.getGuid(), type.getName(),
+                        type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR});
+                  break;
+               case MODIFIED:
+                  updateData.add(new Object[] {type.getName(), type.isAbstract(), type.getTypeId()});
+                  break;
+               default:
+                  break;
+            }
+         } else if (type.isInheritanceDirty()) {
+            deleteInheritanceData.add(new Object[] {type.getTypeId()});
+            for (ArtifactType superType : type.getSuperArtifactTypes()) {
+               insertInheritanceData.add(new Object[] {type.getTypeId(), superType.getTypeId()});
+            }
+         } else if (type.isAttributeTypeValidityDirty()) {
+            typeValidityChanges.add(type);
          }
       }
       ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE, insertData);
       ConnectionHandler.runBatchUpdate(UPDATE_ARTIFACT_TYPE, updateData);
 
-      storeArtifactTypeInheritance(types);
-      storeAttributeTypeValidity(cache, types);
-   }
+      ConnectionHandler.runBatchUpdate(DELETE_ARTIFACT_TYPE_INHERITANCE, deleteInheritanceData);
+      ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE_INHERITANCE, insertInheritanceData);
 
-   private void storeArtifactTypeInheritance(Collection<ArtifactType> types) throws OseeDataStoreException {
-      List<Object[]> insertData = new ArrayList<Object[]>();
+      storeAttributeTypeValidity(cache, types);
+
       for (ArtifactType type : types) {
-         for (ArtifactType superType : type.getSuperArtifactTypes()) {
-            insertData.add(new Object[] {type.getTypeId(), superType.getTypeId()});
-         }
+         type.persist();
       }
-      ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE_INHERITANCE, insertData);
    }
 
    private void storeAttributeTypeValidity(OseeTypeCache cache, Collection<ArtifactType> types) throws OseeDataStoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
-      for (Entry<Pair<ArtifactType, Branch>, Collection<AttributeType>> entry : cache.getArtifactToAttributeMap().entrySet()) {
-         ArtifactType artifactType = entry.getKey().getFirst();
-         if (types.contains(artifactType)) {
-            Branch branch = entry.getKey().getSecond();
-            for (AttributeType attributeType : entry.getValue()) {
-               insertData.add(new Object[] {artifactType.getTypeId(), attributeType.getTypeId(), branch.getBranchId()});
+      List<Object[]> deleteData = new ArrayList<Object[]>();
+      for (ArtifactType artifactType : types) {
+         deleteData.add(new Object[] {artifactType.getTypeId()});
+         Map<Branch, Collection<AttributeType>> entries =
+               cache.getArtifactTypeCache().getLocalAttributeTypes(artifactType);
+         if (entries != null) {
+            for (Entry<Branch, Collection<AttributeType>> entry : entries.entrySet()) {
+               Branch branch = entry.getKey();
+               for (AttributeType attributeType : entry.getValue()) {
+                  insertData.add(new Object[] {artifactType.getTypeId(), attributeType.getTypeId(),
+                        branch.getBranchId()});
+               }
             }
          }
       }
+      ConnectionHandler.runBatchUpdate(DELETE_VALID_ATTRIBUTE, deleteData);
       ConnectionHandler.runBatchUpdate(INSERT_VALID_ATTRIBUTE, insertData);
    }
 
@@ -316,6 +338,10 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
       }
       ConnectionHandler.runBatchUpdate(INSERT_RELATION_TYPE, insertData);
       ConnectionHandler.runBatchUpdate(UPDATE_RELATION_TYPE, updateData);
+
+      for (RelationType type : types) {
+         type.persist();
+      }
    }
 
    @Override
@@ -337,6 +363,9 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
       }
       ConnectionHandler.runBatchUpdate(INSERT_ATTRIBUTE_TYPE, insertData);
       ConnectionHandler.runBatchUpdate(UPDATE_ATTRIBUTE_TYPE, updateData);
+      for (AttributeType type : types) {
+         type.persist();
+      }
    }
 
    private Object[] toInsertValues(RelationType type) throws OseeDataStoreException {
@@ -425,11 +454,15 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                if (lastEnumTypeId != currentEnumTypeId) {
                   oseeEnumType = factory.createEnumType(currentEnumTypeGuid, chStmt.getString("enum_type_name"), cache);
                   oseeEnumType.setTypeId(currentEnumTypeId);
+                  oseeEnumType.setModificationType(ModificationType.MODIFIED);
                   cache.getEnumTypeCache().cacheType(oseeEnumType);
                   lastEnumTypeId = currentEnumTypeId;
                }
-               types.put(oseeEnumType, factory.createEnumEntry(chStmt.getString("enum_entry_guid"),
-                     chStmt.getString("name"), chStmt.getInt("ordinal"), cache));
+               OseeEnumEntry entry =
+                     factory.createEnumEntry(chStmt.getString("enum_entry_guid"), chStmt.getString("name"),
+                           chStmt.getInt("ordinal"), cache);
+               entry.setModificationType(ModificationType.MODIFIED);
+               types.put(oseeEnumType, entry);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -494,6 +527,10 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
       ConnectionHandler.runBatchUpdate(UPDATE_ENUM_TYPE, updateData);
       ConnectionHandler.runBatchUpdate(DELETE_ENUM_TYPE, deleteData);
 
+      for (OseeEnumType oseeEnumType : oseeEnumTypes) {
+         oseeEnumType.persist();
+      }
+
       insertData.clear();
       updateData.clear();
       deleteData.clear();
@@ -518,5 +555,11 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
       ConnectionHandler.runBatchUpdate(INSERT_ENUM_TYPE_DEF, insertData);
       ConnectionHandler.runBatchUpdate(UPDATE_ENUM_TYPE_DEF, updateData);
       ConnectionHandler.runBatchUpdate(DELETE_ENUM_TYPE_DEF, deleteData);
+
+      for (OseeEnumType oseeEnumType : oseeEnumTypes) {
+         for (OseeEnumEntry entry : oseeEnumType.values()) {
+            entry.persist();
+         }
+      }
    }
 }
