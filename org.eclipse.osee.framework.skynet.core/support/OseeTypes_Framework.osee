@@ -13,6 +13,7 @@ artifactType "Global Preferences" extends "Artifact" {
 }
 
 attributeType "osee.config.Default Mail Server" extends StringAttribute {
+   guid "ABMuIC3FejpGilonfAgA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
@@ -21,6 +22,7 @@ attributeType "osee.config.Default Mail Server" extends StringAttribute {
 }
 
 abstract artifactType "Test Unit" extends "Artifact" {
+   guid "ABM2d6uxUw66aSdo0LwA"
 }
 
 attributeType "Extension" extends StringAttribute {
@@ -206,13 +208,13 @@ attributeType "Notes" extends StringAttribute {
    taggerId DefaultAttributeTaggerProvider
 }
 
-
 artifactType "Group Artifact" extends "Artifact" {
+   guid "ABM4FTvWVzDQsTsM6jQA"
 }
 
 artifactType "User Group" extends "Group Artifact" {
-guid "AAMFDhrEbXqZKPfWkwAA"
-   }
+   guid "AAMFDhrEbXqZKPfWkwAA"
+}
 
 artifactType "Universal Group" extends "Group Artifact" {
    guid "AAMFDhLY2TnADPA_EQQA"
@@ -243,12 +245,12 @@ relationType "Default Hierarchical" {
 }
 
 artifactType "Root Artifact" extends "Artifact" {
-guid "AAMFDhHDqlbzKcIxcsAA"
-   }
+   guid "AAMFDhHDqlbzKcIxcsAA"
+}
 
 artifactType "Folder" extends "Artifact" {
-guid "AAMFDg_wmiYHHY5swJwA"
-   }
+   guid "AAMFDg_wmiYHHY5swJwA"
+}
 
 artifactType "General Data" extends "Artifact" {
    guid "AAMFDhQXfyb2m+jCwlwA"
@@ -256,18 +258,17 @@ artifactType "General Data" extends "Artifact" {
 }
 
 artifactType "Support Document" extends "MS Word Template" {
-guid "AAMFDhJOQTCu5A7LNQwA"
-   }
+   guid "AAMFDhJOQTCu5A7LNQwA"
+}
 
 artifactType "General Document" extends "Native Artifact" {
-guid "AAMFDhCjkTvP+VBpBCQA"
-   }
+   guid "AAMFDhCjkTvP+VBpBCQA"
+}
 
 artifactType "Url" extends "Artifact" {
    guid "AAMFDhOL0VfVy56cqwgA"
    attribute "Description"
    attribute "Content URL"
-   
 }
 
 attributeType "Name" extends StringAttribute {
@@ -280,10 +281,12 @@ attributeType "Name" extends StringAttribute {
 }
 
 attributeType "Relation Order" extends StringAttribute {
+   guid "ABM5kHa9cFsTbI_ooyQA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description "Defines relation ordering information"
+   taggerId DefaultAttributeTaggerProvider description
+   "Defines relation ordering information"
 }
 
 attributeType "Description" extends StringAttribute {
@@ -295,6 +298,7 @@ attributeType "Description" extends StringAttribute {
 }
 
 oseeEnumType "Page Type.enum" {
+   guid "ABM6w018rgblQAxWidwA"
    entry "Portrait"
    entry "Landscape"
 }
@@ -305,8 +309,7 @@ attributeType "Page Type" extends EnumeratedAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
-   enumType "Page Type.enum"
-   description "Page Type: Landscape/Portrait"
+   enumType "Page Type.enum" description "Page Type: Landscape/Portrait"
    defaultValue "Portrait"
 }
 
@@ -350,8 +353,8 @@ attributeType "Native Content" extends CompressedContentAttribute {
    guid "AAMFEcdBJGBK9nr9TTQA"
    dataProvider UriAttributeDataProvider
    min 0
-   max 1 description "content that will be edited by a native program"
-   fileExtension "bin"
+   max 1 description "content that will be edited by a native program" fileExtension
+   "bin"
 }
 
 attributeType "Word Template Content" extends WordAttribute {
@@ -399,20 +402,24 @@ relationType "Universal Grouping" {
 }
 
 abstract artifactType "MS Word" extends "Artifact" {
+   guid "ABM8Rd_GKRGZWlU1JHAA"
    attribute "Imported Paragraph Number"
 }
 
 artifactType "MS Word Whole Document" extends "MS Word" {
+   guid "ABM9Dt9SyGjwuvem7SQA"
    attribute "Whole Word Content"
 }
 
 artifactType "MS Word Template" extends "MS Word" {
+   guid "ABM96xK5ZlE5IZP2digA"
    attribute "Word Ole Data"
    attribute "Page Type"
    attribute "Word Template Content"
 }
 
 abstract artifactType "Native Artifact" extends "Artifact" {
+   guid "ABM+oSPp6DqH59607PAA"
    attribute "Extension"
    attribute "Description"
    attribute "Native Content"
@@ -434,6 +441,7 @@ attributeType "Imported Paragraph Number" extends StringAttribute {
 }
 
 artifactType "Requirement" extends "Artifact" {
+   guid "ABM_vxEEowY+8i2_q9gA"
    attribute "Development Assurance Level"
    attribute "Qualification Method"
    attribute "Safety Criticality"
@@ -442,6 +450,7 @@ artifactType "Requirement" extends "Artifact" {
 }
 
 abstract artifactType "Abstract Software Requirement" extends "Requirement" {
+   guid "ABNAYPwV6H4EkjQ3+QQA"
    attribute "CSCI"
    attribute "Partition"
    attribute "Crew Interface Requirement"
@@ -451,51 +460,56 @@ abstract artifactType "Abstract Software Requirement" extends "Requirement" {
    attribute "Training Effectivity"
 }
 
-artifactType "Software Requirement" extends "MS Word Template", "Abstract Software Requirement" {
-guid "AAMFDiAwhRFXwIyapJAA"
-   }
+artifactType "Software Requirement" extends "MS Word Template" ,
+"Abstract Software Requirement" {
+   guid "AAMFDiAwhRFXwIyapJAA"
+}
 
 artifactType "Software Requirement Procedure" extends "Software Requirement" {
+   guid "ABNBLPY4LnIKtcON0mgA"
 }
 
 artifactType "Software Requirement Function" extends "Software Requirement" {
+   guid "ABNBwZMdFgEDTVQ7pTAA"
 }
 
 artifactType "Software Requirement Drawing" extends "Software Requirement" {
+   guid "ABNClhgUfwj6A3EAArQA"
 }
 
-artifactType "System Requirement" extends "Requirement", "MS Word Template" {
+artifactType "System Requirement" extends "Requirement" , "MS Word Template" {
    guid "AAMFDiSTcDGdUd9+tHAA"
    attribute "Legacy Id"
 }
 
-artifactType "Subsystem Requirement" extends "Requirement", "MS Word Template" {
+artifactType "Subsystem Requirement" extends "Requirement" , "MS Word Template" {
    guid "AAMFDiN9KiAkhuLqOhQA"
    attribute "Legacy Id"
    attribute "Verification Level"
    attribute "Verification Event"
 }
 
-artifactType "Interface Requirement" extends "Requirement", "MS Word Template" {
+artifactType "Interface Requirement" extends "Requirement" , "MS Word Template" {
    guid "AAMFDjgcukv7xEsPf2QA"
    attribute "Component"
 }
 
-artifactType "Hardware Requirement" extends "Requirement", "MS Word Template" {
-guid "AAMFDh8dhUflUdK9FdgA"
-   }
+artifactType "Hardware Requirement" extends "Requirement" , "MS Word Template" {
+   guid "AAMFDh8dhUflUdK9FdgA"
+}
 
 abstract artifactType "Function" extends "MS Word Template" {
+   guid "ABNDbXzoYyef9lHIWdAA"
    attribute "Safety Criticality"
 }
 
 artifactType "System Function" extends "Function" {
-guid "AAMFDjisx2s6BUTDo3wA"
-   }
+   guid "AAMFDjisx2s6BUTDo3wA"
+}
 
 artifactType "Subsystem Function" extends "Function" {
-guid "AAMFDjk6pAAd3tpGEqwA"
-   }
+   guid "AAMFDjk6pAAd3tpGEqwA"
+}
 
 artifactType "Test Information Sheet" extends "MS Word Template" {
    guid "AAMFDjnM3wQxCjwatKAA"
@@ -516,36 +530,37 @@ artifactType "Subsystem Design" extends "Design" {
 }
 
 artifactType "System Design" extends "Design" {
-guid "AAMFDiFI+lLm46F3HdQA"
-   }
+   guid "AAMFDiFI+lLm46F3HdQA"
+}
 
 artifactType "Software Design" extends "Design" {
-guid "AAMFDh+nBRDS2smKPLAA"
-   }
+   guid "AAMFDh+nBRDS2smKPLAA"
+}
 
 artifactType "Test Procedure" extends "Artifact" {
    guid "AAMFDjsjiGhoWpqM4PQA"
    attribute "Subsystem"
 }
 
-artifactType "Test Procedure WML" extends "Test Procedure", "MS Word Whole Document" {
-guid "AAMFDiUeCG3KWx5XqeQA"
-   }
+artifactType "Test Procedure WML" extends "Test Procedure" , "MS Word Whole Document"
+{
+   guid "AAMFDiUeCG3KWx5XqeQA"
+}
 
-artifactType "Test Procedure XL" extends "Test Procedure", "Native Artifact" {
-guid "AAMFDiWs_HdDJTbPPQgA"
-   }
+artifactType "Test Procedure XL" extends "Test Procedure" , "Native Artifact" {
+   guid "AAMFDiWs_HdDJTbPPQgA"
+}
 
 artifactType "Supporting Content" extends "Url" {
-guid "AAMFDiQI2QuheFY71jgA"
-   }
+   guid "AAMFDiQI2QuheFY71jgA"
+}
 
 attributeType "Common NAL Requirement" extends BooleanAttribute {
    guid "AAMFEQpKOwh5p+AgC8wA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 
-   description "Requirement that is common to all NCORE (Networked Common Operating Real-time Environment) Application Layers"
+   max 1 description
+   "Requirement that is common to all NCORE (Networked Common Operating Real-time Environment) Application Layers"
    defaultValue "no"
 }
 
@@ -582,6 +597,7 @@ attributeType "Training Effectivity" extends BooleanAttribute {
 }
 
 oseeEnumType "Partition.enum" {
+   guid "ABNEZoo6fGwQIIHdCaAA"
    entry "Graphics Handler"
    entry "Communication"
    entry "Flight Control"
@@ -600,7 +616,8 @@ attributeType "Partition" extends EnumeratedAttribute {
    defaultValue "Unspecified"
 }
 
-oseeEnumType "Subsystem.enum" {  
+oseeEnumType "Subsystem.enum" {
+   guid "ABNFDGDD_HEo2PU29jgA"
    entry "Robot_API"
    entry "Robot_Survivability_Equipment"
    entry "Robot_Systems_Management"
@@ -627,6 +644,7 @@ attributeType "Subsystem" extends EnumeratedAttribute {
 }
 
 oseeEnumType "Qualification Method.enum" {
+   guid "ABNF0ABXwGKbwaIpWGwA"
    entry "Demonstration"
    entry "Test"
    entry "Analysis"
@@ -641,12 +659,13 @@ attributeType "Qualification Method" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max unlimited
-   enumType "Qualification Method.enum"
-   description "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software)."
+   enumType "Qualification Method.enum" description
+   "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software)."
    defaultValue "Unspecified"
 }
 
 oseeEnumType "Safety Criticality.enum" {
+   guid "ABNGzJBUHBFcd_GDm5QA"
    entry "I"
    entry "II"
    entry "III"
@@ -659,12 +678,12 @@ attributeType "Safety Criticality" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   enumType "Safety Criticality.enum"
-   description "Criticality Classification"
+   enumType "Safety Criticality.enum" description "Criticality Classification"
    defaultValue "V"
 }
 
 oseeEnumType "Verification Level.enum" {
+   guid "ABNINTWl4TcjWzt4l7wA"
    entry "System"
    entry "Subsystem"
    entry "Component"
@@ -689,6 +708,7 @@ attributeType "TIS Test Number" extends StringAttribute {
 }
 
 oseeEnumType "TIS Test Type.enum" {
+   guid "ABNJEWx1hG9EG1pwvpwA"
    entry "Stationary Vehicle"
    entry "In Operation"
 }
@@ -698,12 +718,12 @@ attributeType "TIS Test Type" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max unlimited
-   enumType "TIS Test Type.enum"
-   description "TIS Test Type"
+   enumType "TIS Test Type.enum" description "TIS Test Type"
    defaultValue "Stationary Vehicle"
 }
 
 oseeEnumType "TIS Test Category.enum" {
+   guid "ABNJ30z1VC1b9gFxX7gA"
    entry "SPEC_COMP"
    entry "DEV"
    entry "USG"
@@ -713,13 +733,13 @@ attributeType "TIS Test Category" extends EnumeratedAttribute {
    guid "AAMFEVbEtV4QJQvA5eQA"
    dataProvider DefaultAttributeDataProvider
    min 1
-   max 1 
-   enumType "TIS Test Category.enum"
-   description "TIS Test Category"
+   max 1
+   enumType "TIS Test Category.enum" description "TIS Test Category"
    defaultValue "DEV"
 }
 
 oseeEnumType "Development Assurance Level.enum" {
+   guid "ABNKg0zpK359Z5qvBsQA"
    entry "A"
    entry "B"
    entry "C"
@@ -732,8 +752,8 @@ attributeType "Development Assurance Level" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   enumType "Development Assurance Level.enum"
-   description "Development Assurance Level"
+   enumType "Development Assurance Level.enum" description
+   "Development Assurance Level"
    defaultValue "E"
 }
 
@@ -753,6 +773,7 @@ attributeType "Technical Performance Parameter" extends BooleanAttribute {
 }
 
 oseeEnumType "Verification Event.enum" {
+   guid "ABNLUIIPNHH7mbdPP8QA"
    entry "Unspecified"
 }
 
@@ -766,6 +787,7 @@ attributeType "Verification Event" extends EnumeratedAttribute {
 }
 
 oseeEnumType "Component.enum" {
+   guid "ABNL6N03ahNnXnhwaUQA"
    entry "Top level product component"
    entry "Unspecified"
 }
@@ -870,6 +892,7 @@ relationType "Specifying" {
 }
 
 abstract artifactType "Work Item Definition" extends "Artifact" {
+   guid "ABNM6pIn_x_3e6a3aIgA"
    attribute "osee.wi.Work Id"
    attribute "osee.wi.Work Type"
    attribute "osee.wi.Work Parent Id"
@@ -889,12 +912,12 @@ artifactType "Work Flow Definition" extends "Work Item Definition" {
 }
 
 artifactType "Work Rule Definition" extends "Work Item Definition" {
-guid "AAMFDhxjHC2RUV2RkcQA"
-   }
+   guid "AAMFDhxjHC2RUV2RkcQA"
+}
 
 artifactType "Work Widget Definition" extends "Work Item Definition" {
-guid "AAMFDh4IVzqPgVTpLrwA"
-   }
+   guid "AAMFDh4IVzqPgVTpLrwA"
+}
 
 artifactType "XViewer Global Customization" extends "Artifact" {
    guid "AAMFDhtN7T4of30iYhAA"
@@ -998,6 +1021,7 @@ relationType "Supercedes" {
 }
 
 oseeEnumType "CSCI.enum" {
+   guid "ABNOGOJntWJLS941VowA"
    entry "CoreUnit"
    entry "Framework"
    entry "Interface"
@@ -1036,8 +1060,8 @@ relationType "Supporting Info" {
 }
 
 artifactType "Heading" extends "MS Word Template" {
-guid "AAMFDhEzni8FpFb5yHwA"
-   }
+   guid "AAMFDhEzni8FpFb5yHwA"
+}
 
 artifactType "Component" extends "Artifact" {
    guid "AAMFDkG6omAsD6dXPYgA"
@@ -1046,8 +1070,8 @@ artifactType "Component" extends "Artifact" {
 }
 
 artifactType "Code Unit" extends "Artifact" {
-guid "AAMFDkEh216dzK1mTZgA"
-   }
+   guid "AAMFDkEh216dzK1mTZgA"
+}
 
 artifactType "Safety Assessment" extends "MS Word Template" {
    guid "AAMFDkLwjkgP8iAj8KAA"
@@ -1092,6 +1116,7 @@ attributeType "SFHA" extends StringAttribute {
 }
 
 oseeEnumType "Hazard Severity.enum" {
+   guid "ABNPJtJu0kpPSt4W8ogA"
    entry "Catastrophic, I"
    entry "Severe-Major, II"
    entry "Critical, II"
@@ -1129,6 +1154,7 @@ attributeType "FTA Results" extends FloatingPointAttribute {
 }
 
 oseeEnumType "GFE / CFE.enum" {
+   guid "ABNQJ1OIQEtgQPopuLAA"
    entry "CFE"
    entry "GFE"
    entry "Unspecified"

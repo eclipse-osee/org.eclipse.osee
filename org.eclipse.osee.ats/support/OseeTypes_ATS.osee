@@ -1,14 +1,17 @@
 import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 
-abstract artifactType "ats.Release Artifact" extends "Artifact"  {
+abstract artifactType "ats.Release Artifact" extends "Artifact" {
+   guid "ABMZAdJpQi01iAbMBjgA"
    attribute "ats.Released"
 }
 
 abstract artifactType "ats.Ats Artifact" extends "Artifact" {
+   guid "ABMaLS0jvw92SE+4ZJQA"
    attribute "ats.Description"
 }
 
-artifactType "ats.Review" extends "ats.Ats Artifact"  {
+artifactType "ats.Review" extends "ats.Ats Artifact" {
+   guid "ABMa6P4TwzXA1b8K3RAA"
    attribute "ats.Actionable Item"
    attribute "ats.Blocking Review"
    attribute "ats.Current State"
@@ -40,7 +43,7 @@ artifactType "Decision Review" extends "ats.Review" {
    attribute "ats.Decision"
 }
 
-artifactType "Action" extends "ats.Ats Artifact"  {
+artifactType "Action" extends "ats.Ats Artifact" {
    guid "AAMFDhY_rns71KvX14QA"
    attribute "ats.User Community"
    attribute "ats.Actionable Item"
@@ -63,7 +66,7 @@ artifactType "Team Definition" extends "ats.Ats Artifact" {
    attribute "ats.Allow Commit Branch"
 }
 
-artifactType "Actionable Item" extends "ats.Ats Artifact"  {
+artifactType "Actionable Item" extends "ats.Ats Artifact" {
    guid "AAMFDhW2LmhtRFsVyzwA"
    attribute "ats.Active"
    attribute "ats.Actionable"
@@ -82,6 +85,7 @@ artifactType "Version" extends "ats.Ats Artifact" {
 }
 
 abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
+   guid "ABMfXC+LFBn31ZZbvjAA"
    attribute "ats.Work Package"
    attribute "ats.Category"
    attribute "ats.Category2"
@@ -99,6 +103,7 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
 }
 
 abstract artifactType "Goal" extends "ats.State Machine" {
+   guid "ABMgU119UjI_Q23Yu+gA"
    attribute "ats.Weekly Benefit"
    attribute "ats.Change Type"
    attribute "ats.Legacy PCR Id"
@@ -244,6 +249,7 @@ attributeType "ats.Release Date" extends DateAttribute {
 }
 
 oseeEnumType "ats.Review Blocks.enum" {
+   guid "ABMh6Y18TUW59m2x_igA"
    entry "None"
    entry "Transition"
    entry "Commit"
@@ -258,6 +264,7 @@ attributeType "ats.Review Blocks" extends EnumeratedAttribute {
 }
 
 oseeEnumType "ats.Priority.enum" {
+   guid "ABMjQbcGpBtsFrT8CfAA"
    entry "1"
    entry "2"
    entry "3"
@@ -274,6 +281,7 @@ attributeType "ats.Priority" extends EnumeratedAttribute {
 }
 
 oseeEnumType "ats.Change Type.enum" {
+   guid "ABMkdBxT60hKwVnEoqwA"
    entry "Improvement"
    entry "Problem"
    entry "Support"
@@ -288,6 +296,7 @@ attributeType "ats.Change Type" extends EnumeratedAttribute {
 }
 
 oseeEnumType "ats.User Community.enum" {
+   guid "ABMlzNXtugbhIRzeYgwA"
    entry "Program_1"
    entry "Program_2"
    entry "Tools"
@@ -707,6 +716,7 @@ relationType "ParallelVersion" {
 }
 
 relationType "Goal" {
+   guid "ABMn0wPKdyN+Mfo5nwgA"
    sideAName "Goal"
    sideAArtifactType "Goal"
    sideBName "Member"

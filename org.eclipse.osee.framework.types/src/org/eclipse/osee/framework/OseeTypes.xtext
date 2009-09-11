@@ -22,7 +22,7 @@ OseeType:
 
 ArtifactType:
 	(abstract?='abstract')? 'artifactType' name=NAME_REFERENCE ('extends' superArtifactTypes+=[ArtifactType|NAME_REFERENCE] (',' superArtifactTypes+=[ArtifactType|NAME_REFERENCE])*)? '{'
-		('guid' typeGuid = STRING)?
+		'guid' typeGuid = STRING
 	    (validAttributeTypes+=AttributeTypeRef)*
 	'}';
 
@@ -31,7 +31,7 @@ AttributeTypeRef:
 
 AttributeType:
 		'attributeType' name=NAME_REFERENCE ('extends' baseAttributeType=AttributeBaseType) ('overrides' override=[AttributeType|NAME_REFERENCE])? '{'
-		('guid' typeGuid = STRING)?
+		'guid' typeGuid = STRING
 		'dataProvider' dataProvider = ('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | 'MappedAttributeDataProvider' | QUALIFIED_NAME)
 		'min' min=WHOLE_NUM_STR
 		'max' max=(WHOLE_NUM_STR | 'unlimited')
@@ -47,7 +47,7 @@ AttributeBaseType:
 
 OseeEnumType:
 	'oseeEnumType' name=NAME_REFERENCE '{'
-		('guid' typeGuid = STRING)?
+		'guid' typeGuid = STRING
 		(enumEntries+=OseeEnumEntry)*
 	'}';
 
@@ -71,7 +71,7 @@ RemoveEnum:
 
 RelationType:
 	'relationType' name=NAME_REFERENCE '{'
-		('guid' typeGuid = STRING)?
+		'guid' typeGuid = STRING
 		'sideAName' sideAName=STRING
 		'sideAArtifactType' sideAArtifactType=[ArtifactType|NAME_REFERENCE]
 		'sideBName' sideBName=STRING

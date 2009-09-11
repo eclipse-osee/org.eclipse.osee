@@ -1,12 +1,12 @@
-import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
-
+import
+"platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 artifactType "Test Case" extends "Test Unit" {
-guid "AAMFDikEi0TGK27TKPgA"
-   }
+   guid "AAMFDikEi0TGK27TKPgA"
+}
 
 artifactType "Test Support" extends "Test Unit" {
-guid "AAMFDj+FW0f_Ut72ocQA"
-   }
+   guid "AAMFDj+FW0f_Ut72ocQA"
+}
 
 artifactType "Test Run Disposition" extends "Artifact" {
    guid "AAMFDjeNxhi0KmXZcKQA"
@@ -266,6 +266,7 @@ attributeType "Disposition" extends StringAttribute {
 }
 
 oseeEnumType "Test Status.enum" {
+   guid "ABSD_8RLAUYKe4TBTeAA"
    entry "Pass"
    entry "Fail"
    entry "Aborted"
@@ -277,9 +278,7 @@ attributeType "Test Status" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   enumType "Test Status.enum"
-   description "Test Status"
-   
+   enumType "Test Status.enum" description "Test Status"
 }
 
 attributeType "Test Pass" extends IntegerAttribute {
@@ -327,6 +326,7 @@ attributeType "Test Log" extends CompressedContentAttribute {
 }
 
 relationType "Test Case to Run Relation" {
+   guid "ABSc8LjSrQxwEx0+BEgA"
    sideAName "Test Case"
    sideAArtifactType "Test Case"
    sideBName "Test Run"

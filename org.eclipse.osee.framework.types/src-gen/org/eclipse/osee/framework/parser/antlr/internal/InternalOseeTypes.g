@@ -509,15 +509,15 @@ ruleArtifactType returns [EObject current=null]
     {
         createLeafNode(grammarAccess.getArtifactTypeAccess().getLeftCurlyBracketKeyword_4(), null); 
     }
-('guid' 
+'guid' 
     {
-        createLeafNode(grammarAccess.getArtifactTypeAccess().getGuidKeyword_5_0(), null); 
+        createLeafNode(grammarAccess.getArtifactTypeAccess().getGuidKeyword_5(), null); 
     }
 (	
 	
 	    lv_typeGuid_9=	RULE_STRING
 	{
-		createLeafNode(grammarAccess.getArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_1_0(), "typeGuid"); 
+		createLeafNode(grammarAccess.getArtifactTypeAccess().getTypeGuidSTRINGTerminalRuleCall_6_0(), "typeGuid"); 
 	}
  
 	    {
@@ -533,11 +533,11 @@ ruleArtifactType returns [EObject current=null]
 	        }
 	    }
 	
-))?(	
+)(	
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAttributeTypeRefParserRuleCall_6_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getArtifactTypeAccess().getValidAttributeTypesAttributeTypeRefParserRuleCall_7_0(), currentNode); 
 	    }
 	    lv_validAttributeTypes_10=ruleAttributeTypeRef 
 	    {
@@ -556,7 +556,7 @@ ruleArtifactType returns [EObject current=null]
 	
 )*'}' 
     {
-        createLeafNode(grammarAccess.getArtifactTypeAccess().getRightCurlyBracketKeyword_7(), null); 
+        createLeafNode(grammarAccess.getArtifactTypeAccess().getRightCurlyBracketKeyword_8(), null); 
     }
 );
 
@@ -722,15 +722,15 @@ ruleAttributeType returns [EObject current=null]
     {
         createLeafNode(grammarAccess.getAttributeTypeAccess().getLeftCurlyBracketKeyword_4(), null); 
     }
-('guid' 
+'guid' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getGuidKeyword_5_0(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getGuidKeyword_5(), null); 
     }
 (	
 	
 	    lv_typeGuid_8=	RULE_STRING
 	{
-		createLeafNode(grammarAccess.getAttributeTypeAccess().getTypeGuidSTRINGTerminalRuleCall_5_1_0(), "typeGuid"); 
+		createLeafNode(grammarAccess.getAttributeTypeAccess().getTypeGuidSTRINGTerminalRuleCall_6_0(), "typeGuid"); 
 	}
  
 	    {
@@ -746,32 +746,32 @@ ruleAttributeType returns [EObject current=null]
 	        }
 	    }
 	
-))?'dataProvider' 
+)'dataProvider' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderKeyword_6(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderKeyword_7(), null); 
     }
 (	
 	
 	    lv_dataProvider_10=('DefaultAttributeDataProvider' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderDefaultAttributeDataProviderKeyword_7_0_0(), "dataProvider"); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderDefaultAttributeDataProviderKeyword_8_0_0(), "dataProvider"); 
     }
 
 
     |'UriAttributeDataProvider' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_7_0_1(), "dataProvider"); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_8_0_1(), "dataProvider"); 
     }
 
 
     |'MappedAttributeDataProvider' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderMappedAttributeDataProviderKeyword_7_0_2(), "dataProvider"); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderMappedAttributeDataProviderKeyword_8_0_2(), "dataProvider"); 
     }
 
 
     |	{ 
-        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_7_0_3(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_3(), currentNode); 
     }
 	ruleQUALIFIED_NAME	{ 
         currentNode = currentNode.getParent();
@@ -793,13 +793,13 @@ ruleAttributeType returns [EObject current=null]
 	
 )'min' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getMinKeyword_8(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getMinKeyword_9(), null); 
     }
 (	
 	
 	    lv_min_12=	RULE_WHOLE_NUM_STR
 	{
-		createLeafNode(grammarAccess.getAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_9_0(), "min"); 
+		createLeafNode(grammarAccess.getAttributeTypeAccess().getMinWHOLE_NUM_STRTerminalRuleCall_10_0(), "min"); 
 	}
  
 	    {
@@ -817,18 +817,18 @@ ruleAttributeType returns [EObject current=null]
 	
 )'max' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getMaxKeyword_10(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getMaxKeyword_11(), null); 
     }
 (	
 	
 	    lv_max_14=(	RULE_WHOLE_NUM_STR
 	{
-		createLeafNode(grammarAccess.getAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_11_0_0(), "max"); 
+		createLeafNode(grammarAccess.getAttributeTypeAccess().getMaxWHOLE_NUM_STRTerminalRuleCall_12_0_0(), "max"); 
 	}
 
     |'unlimited' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getMaxUnlimitedKeyword_11_0_1(), "max"); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getMaxUnlimitedKeyword_12_0_1(), "max"); 
     }
 
 )
@@ -848,18 +848,18 @@ ruleAttributeType returns [EObject current=null]
 	
 )('taggerId' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getTaggerIdKeyword_12_0(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getTaggerIdKeyword_13_0(), null); 
     }
 (	
 	
 	    lv_taggerId_16=('DefaultAttributeTaggerProvider' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getTaggerIdDefaultAttributeTaggerProviderKeyword_12_1_0_0(), "taggerId"); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getTaggerIdDefaultAttributeTaggerProviderKeyword_13_1_0_0(), "taggerId"); 
     }
 
 
     |	{ 
-        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getTaggerIdQUALIFIED_NAMEParserRuleCall_12_1_0_1(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getTaggerIdQUALIFIED_NAMEParserRuleCall_13_1_0_1(), currentNode); 
     }
 	ruleQUALIFIED_NAME	{ 
         currentNode = currentNode.getParent();
@@ -881,7 +881,7 @@ ruleAttributeType returns [EObject current=null]
 	
 ))?('enumType' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getEnumTypeKeyword_13_0(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getEnumTypeKeyword_14_0(), null); 
     }
 (	
 	
@@ -893,7 +893,7 @@ ruleAttributeType returns [EObject current=null]
 	        }
         }
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getEnumTypeOseeEnumTypeCrossReference_13_1_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getEnumTypeOseeEnumTypeCrossReference_14_1_0(), currentNode); 
 	    }
 		ruleNAME_REFERENCE		{ 
 	        currentNode = currentNode.getParent();
@@ -903,13 +903,13 @@ ruleAttributeType returns [EObject current=null]
 	
 ))?('description' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getDescriptionKeyword_14_0(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getDescriptionKeyword_15_0(), null); 
     }
 (	
 	
 	    lv_description_20=	RULE_STRING
 	{
-		createLeafNode(grammarAccess.getAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_14_1_0(), "description"); 
+		createLeafNode(grammarAccess.getAttributeTypeAccess().getDescriptionSTRINGTerminalRuleCall_15_1_0(), "description"); 
 	}
  
 	    {
@@ -927,13 +927,13 @@ ruleAttributeType returns [EObject current=null]
 	
 ))?('defaultValue' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getDefaultValueKeyword_15_0(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getDefaultValueKeyword_16_0(), null); 
     }
 (	
 	
 	    lv_defaultValue_22=	RULE_STRING
 	{
-		createLeafNode(grammarAccess.getAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_15_1_0(), "defaultValue"); 
+		createLeafNode(grammarAccess.getAttributeTypeAccess().getDefaultValueSTRINGTerminalRuleCall_16_1_0(), "defaultValue"); 
 	}
  
 	    {
@@ -951,13 +951,13 @@ ruleAttributeType returns [EObject current=null]
 	
 ))?('fileExtension' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getFileExtensionKeyword_16_0(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getFileExtensionKeyword_17_0(), null); 
     }
 (	
 	
 	    lv_fileExtension_24=	RULE_STRING
 	{
-		createLeafNode(grammarAccess.getAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_16_1_0(), "fileExtension"); 
+		createLeafNode(grammarAccess.getAttributeTypeAccess().getFileExtensionSTRINGTerminalRuleCall_17_1_0(), "fileExtension"); 
 	}
  
 	    {
@@ -975,7 +975,7 @@ ruleAttributeType returns [EObject current=null]
 	
 ))?'}' 
     {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getRightCurlyBracketKeyword_17(), null); 
+        createLeafNode(grammarAccess.getAttributeTypeAccess().getRightCurlyBracketKeyword_18(), null); 
     }
 );
 
@@ -1124,15 +1124,15 @@ ruleOseeEnumType returns [EObject current=null]
     {
         createLeafNode(grammarAccess.getOseeEnumTypeAccess().getLeftCurlyBracketKeyword_2(), null); 
     }
-('guid' 
+'guid' 
     {
-        createLeafNode(grammarAccess.getOseeEnumTypeAccess().getGuidKeyword_3_0(), null); 
+        createLeafNode(grammarAccess.getOseeEnumTypeAccess().getGuidKeyword_3(), null); 
     }
 (	
 	
 	    lv_typeGuid_4=	RULE_STRING
 	{
-		createLeafNode(grammarAccess.getOseeEnumTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_1_0(), "typeGuid"); 
+		createLeafNode(grammarAccess.getOseeEnumTypeAccess().getTypeGuidSTRINGTerminalRuleCall_4_0(), "typeGuid"); 
 	}
  
 	    {
@@ -1148,11 +1148,11 @@ ruleOseeEnumType returns [EObject current=null]
 	        }
 	    }
 	
-))?(	
+)(	
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getOseeEnumTypeAccess().getEnumEntriesOseeEnumEntryParserRuleCall_4_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getOseeEnumTypeAccess().getEnumEntriesOseeEnumEntryParserRuleCall_5_0(), currentNode); 
 	    }
 	    lv_enumEntries_5=ruleOseeEnumEntry 
 	    {
@@ -1171,7 +1171,7 @@ ruleOseeEnumType returns [EObject current=null]
 	
 )*'}' 
     {
-        createLeafNode(grammarAccess.getOseeEnumTypeAccess().getRightCurlyBracketKeyword_5(), null); 
+        createLeafNode(grammarAccess.getOseeEnumTypeAccess().getRightCurlyBracketKeyword_6(), null); 
     }
 );
 
@@ -1531,15 +1531,15 @@ ruleRelationType returns [EObject current=null]
     {
         createLeafNode(grammarAccess.getRelationTypeAccess().getLeftCurlyBracketKeyword_2(), null); 
     }
-('guid' 
+'guid' 
     {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getGuidKeyword_3_0(), null); 
+        createLeafNode(grammarAccess.getRelationTypeAccess().getGuidKeyword_3(), null); 
     }
 (	
 	
 	    lv_typeGuid_4=	RULE_STRING
 	{
-		createLeafNode(grammarAccess.getRelationTypeAccess().getTypeGuidSTRINGTerminalRuleCall_3_1_0(), "typeGuid"); 
+		createLeafNode(grammarAccess.getRelationTypeAccess().getTypeGuidSTRINGTerminalRuleCall_4_0(), "typeGuid"); 
 	}
  
 	    {
@@ -1555,15 +1555,15 @@ ruleRelationType returns [EObject current=null]
 	        }
 	    }
 	
-))?'sideAName' 
+)'sideAName' 
     {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getSideANameKeyword_4(), null); 
+        createLeafNode(grammarAccess.getRelationTypeAccess().getSideANameKeyword_5(), null); 
     }
 (	
 	
 	    lv_sideAName_6=	RULE_STRING
 	{
-		createLeafNode(grammarAccess.getRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_5_0(), "sideAName"); 
+		createLeafNode(grammarAccess.getRelationTypeAccess().getSideANameSTRINGTerminalRuleCall_6_0(), "sideAName"); 
 	}
  
 	    {
@@ -1581,7 +1581,7 @@ ruleRelationType returns [EObject current=null]
 	
 )'sideAArtifactType' 
     {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeKeyword_6(), null); 
+        createLeafNode(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeKeyword_7(), null); 
     }
 (	
 	
@@ -1593,7 +1593,7 @@ ruleRelationType returns [EObject current=null]
 	        }
         }
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeArtifactTypeCrossReference_7_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getSideAArtifactTypeArtifactTypeCrossReference_8_0(), currentNode); 
 	    }
 		ruleNAME_REFERENCE		{ 
 	        currentNode = currentNode.getParent();
@@ -1603,13 +1603,13 @@ ruleRelationType returns [EObject current=null]
 	
 )'sideBName' 
     {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getSideBNameKeyword_8(), null); 
+        createLeafNode(grammarAccess.getRelationTypeAccess().getSideBNameKeyword_9(), null); 
     }
 (	
 	
 	    lv_sideBName_10=	RULE_STRING
 	{
-		createLeafNode(grammarAccess.getRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_9_0(), "sideBName"); 
+		createLeafNode(grammarAccess.getRelationTypeAccess().getSideBNameSTRINGTerminalRuleCall_10_0(), "sideBName"); 
 	}
  
 	    {
@@ -1627,7 +1627,7 @@ ruleRelationType returns [EObject current=null]
 	
 )'sideBArtifactType' 
     {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeKeyword_10(), null); 
+        createLeafNode(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeKeyword_11(), null); 
     }
 (	
 	
@@ -1639,7 +1639,7 @@ ruleRelationType returns [EObject current=null]
 	        }
         }
 		{ 
-	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeArtifactTypeCrossReference_11_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getSideBArtifactTypeArtifactTypeCrossReference_12_0(), currentNode); 
 	    }
 		ruleNAME_REFERENCE		{ 
 	        currentNode = currentNode.getParent();
@@ -1649,13 +1649,13 @@ ruleRelationType returns [EObject current=null]
 	
 )'defaultOrderType' 
     {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeKeyword_12(), null); 
+        createLeafNode(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeKeyword_13(), null); 
     }
 (	
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_13_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getDefaultOrderTypeRelationOrderTypeParserRuleCall_14_0(), currentNode); 
 	    }
 	    lv_defaultOrderType_14=ruleRelationOrderType 
 	    {
@@ -1674,13 +1674,13 @@ ruleRelationType returns [EObject current=null]
 	
 )'multiplicity' 
     {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getMultiplicityKeyword_14(), null); 
+        createLeafNode(grammarAccess.getRelationTypeAccess().getMultiplicityKeyword_15(), null); 
     }
 (	
 	
 	    
 	    { 
-	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_15_0(), currentNode); 
+	        currentNode=createCompositeNode(grammarAccess.getRelationTypeAccess().getMultiplicityRelationMultiplicityEnumEnumRuleCall_16_0(), currentNode); 
 	    }
 	    lv_multiplicity_16=ruleRelationMultiplicityEnum 
 	    {
@@ -1699,7 +1699,7 @@ ruleRelationType returns [EObject current=null]
 	
 )'}' 
     {
-        createLeafNode(grammarAccess.getRelationTypeAccess().getRightCurlyBracketKeyword_16(), null); 
+        createLeafNode(grammarAccess.getRelationTypeAccess().getRightCurlyBracketKeyword_17(), null); 
     }
 );
 

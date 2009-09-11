@@ -124,11 +124,9 @@
           </tokens>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
-        <tokens xsi:type="xtext:Group" cardinality="?">
-          <tokens xsi:type="xtext:Keyword" value="guid"/>
-          <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
-          </tokens>
+        <tokens xsi:type="xtext:Keyword" value="guid"/>
+        <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
         </tokens>
         <tokens xsi:type="xtext:Assignment" cardinality="*" feature="validAttributeTypes" operator="+=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.8"/>
@@ -185,11 +183,9 @@
           </tokens>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
-        <tokens xsi:type="xtext:Group" cardinality="?">
-          <tokens xsi:type="xtext:Keyword" value="guid"/>
-          <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
-          </tokens>
+        <tokens xsi:type="xtext:Keyword" value="guid"/>
+        <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="dataProvider"/>
         <tokens xsi:type="xtext:Assignment" feature="dataProvider" operator="=">
@@ -279,11 +275,9 @@
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
-        <tokens xsi:type="xtext:Group" cardinality="?">
-          <tokens xsi:type="xtext:Keyword" value="guid"/>
-          <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
-          </tokens>
+        <tokens xsi:type="xtext:Keyword" value="guid"/>
+        <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
         </tokens>
         <tokens xsi:type="xtext:Assignment" cardinality="*" feature="enumEntries" operator="+=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.12"/>
@@ -378,11 +372,9 @@
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.3"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="{"/>
-        <tokens xsi:type="xtext:Group" cardinality="?">
-          <tokens xsi:type="xtext:Keyword" value="guid"/>
-          <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
-            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
-          </tokens>
+        <tokens xsi:type="xtext:Keyword" value="guid"/>
+        <tokens xsi:type="xtext:Assignment" feature="typeGuid" operator="=">
+          <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
         </tokens>
         <tokens xsi:type="xtext:Keyword" value="sideAName"/>
         <tokens xsi:type="xtext:Assignment" feature="sideAName" operator="=">
