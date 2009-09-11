@@ -18,14 +18,12 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
@@ -45,9 +43,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Jeff C. Phillips
  */
 public final class InternalChangeManager {
-   private static final boolean DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Change"));
-
    private static InternalChangeManager instance = new InternalChangeManager();
 
    private InternalChangeManager() {
@@ -129,12 +124,8 @@ public final class InternalChangeManager {
       Set<Integer> artIds = new HashSet<Integer>();
       Set<Integer> newAndDeletedArtifactIds = new HashSet<Integer>();
       boolean historical = sourceBranch == null;
-      long totalTime = System.currentTimeMillis();
 
       monitor.beginTask("Find Changes", 100);
-      if (DEBUG) {
-         System.out.println(String.format("\nChange Manager: getChanges(%s, %s)", sourceBranch, transactionId));
-      }
 
       ArtifactChangeAcquirer artifactChangeAcquirer = new ArtifactChangeAcquirer(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
       changeBuilders = artifactChangeAcquirer.acquireChanges();
@@ -148,7 +139,6 @@ public final class InternalChangeManager {
       monitor.subTask("Loading Artifacts from the Database");
       Branch branch = historical ? transactionId.getBranch() : sourceBranch;
       
-      long time = System.currentTimeMillis();
       if (!artIds.isEmpty()) {
          int queryId = ArtifactLoader.getNewQueryId();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
@@ -166,11 +156,6 @@ public final class InternalChangeManager {
          changes.add(builder.build(branch));
       }
 
-      if (DEBUG) {
-         System.out.println(String.format("     Loaded %d Artifacts in %s", artIds.size(), Lib.getElapseString(time)));
-         System.out.println(String.format("Change Manager: Found all of the Changes in %s\n",
-               Lib.getElapseString(totalTime)));
-      }
       monitor.done();
       return changes;
    }
