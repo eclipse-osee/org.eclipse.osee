@@ -41,10 +41,10 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.change.ArtifactChanged;
-import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.change.RelationChanged;
+import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -199,7 +199,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
          }
          artifactForStore.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, getReport(
                currentDbGuid, currentChangeData));
-         artifactForStore.persistAttributes();
+         artifactForStore.persist();
          resultData.log("Stored Change Report for " + teamArt.getHumanReadableId());
          return new Result(true, "Stored Change Report for " + teamArt.getHumanReadableId());
       }
@@ -258,12 +258,12 @@ public class ValidateChangeReports extends XNavigateItemAction {
       StringBuffer sb = new StringBuffer();
       sb.append(String.format("<%s %s=\"%s\">", VCR_ROOT_ELEMENT_TAG, VCR_DB_GUID, dbGuid));
       for (Change change : changeData.getChanges()) {
-         if (change instanceof RelationChanged) {
-            sb.append(toXml((RelationChanged) change));
-         } else if (change instanceof ArtifactChanged) {
-            sb.append(toXml((ArtifactChanged) change));
-         } else if (change instanceof AttributeChanged) {
-            sb.append(toXml((AttributeChanged) change));
+         if (change instanceof RelationChange) {
+            sb.append(toXml((RelationChange) change));
+         } else if (change instanceof ArtifactChange) {
+            sb.append(toXml((ArtifactChange) change));
+         } else if (change instanceof AttributeChange) {
+            sb.append(toXml((AttributeChange) change));
          }
       }
       sb.append(String.format("</%s>", VCR_ROOT_ELEMENT_TAG));
@@ -271,7 +271,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return toReturn.replaceAll("\n", "");
    }
 
-   private static String toXml(RelationChanged change) throws OseeCoreException, ParserConfigurationException {
+   private static String toXml(RelationChange change) throws OseeCoreException, ParserConfigurationException {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getBranchId())));
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
@@ -291,7 +291,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return AXml.addTagData("RelChg", sb.toString());
    }
 
-   private static String toXml(ArtifactChanged change) throws OseeCoreException {
+   private static String toXml(ArtifactChange change) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getBranchId())));
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
@@ -305,7 +305,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       return AXml.addTagData("ArtChg", sb.toString());
    }
 
-   private static String toXml(AttributeChanged change) throws OseeCoreException, ParserConfigurationException {
+   private static String toXml(AttributeChange change) throws OseeCoreException, ParserConfigurationException {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getBranchId())));
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
