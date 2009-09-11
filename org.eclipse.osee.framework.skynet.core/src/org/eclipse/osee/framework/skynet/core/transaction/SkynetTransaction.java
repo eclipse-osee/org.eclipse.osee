@@ -317,11 +317,11 @@ public class SkynetTransaction extends DbTransaction {
 
          Artifact aArtifact = link.getArtifact(RelationSide.SIDE_A);
          if (!aArtifact.isInDb()) {
-            aArtifact.persistAttributesAndRelations(this);
+            aArtifact.persist(this);
          }
          Artifact bArtifact = link.getArtifact(RelationSide.SIDE_B);
          if (!bArtifact.isInDb()) {
-            bArtifact.persistAttributesAndRelations(this);
+            bArtifact.persist(this);
          }
 
          link.internalSetRelationId(SequenceManager.getNextRelationId());

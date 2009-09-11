@@ -116,7 +116,7 @@ public class RelationOrderAnalysisOnBranch extends AbstractBlam {
                      }
                   }
                }
-               art.persistRelations(transaction);
+               art.persist(transaction);
             }
          }
          System.out.println("stop");

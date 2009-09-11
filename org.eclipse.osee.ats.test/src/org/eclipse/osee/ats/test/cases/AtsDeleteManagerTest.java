@@ -228,7 +228,7 @@ public class AtsDeleteManagerTest {
             ReviewManager.createNewDecisionReview(teamArt, ReviewBlockType.None, testName.name(),
                   DefaultTeamState.Endorse.name(), "Description", ReviewManager.getDefaultDecisionReviewOptions(),
                   Arrays.asList(UserManager.getUser()));
-      decRev.persistAttributesAndRelations(transaction);
+      decRev.persist(transaction);
 
       return teamArt;
 

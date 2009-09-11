@@ -241,7 +241,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Navigation.name(),
                      reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, navArt);
-         art.persistAttributesAndRelations();
+         art.persist();
       }
 
       for (Artifact art : DemoDbUtil.getSoftwareRequirements(SoftwareRequirementStrs.Event,
@@ -255,7 +255,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Robot_API.name(),
                      reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, robotArt);
-         art.persistAttributesAndRelations();
+         art.persist();
       }
 
       // Delete two artifacts
@@ -276,9 +276,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, parentArt.getBranch(), name);
          newArt.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "IV");
          newArt.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
-         newArt.persistAttributesAndRelations();
+         newArt.persist();
          parentArt.addChild(newArt);
-         parentArt.persistAttributesAndRelations();
+         parentArt.persist();
       }
 
       DemoDbUtil.sleep(2000L);
@@ -323,7 +323,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
             ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Robot_API.name(),
                   reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
       branchArtifact.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, comArt);
-      branchArtifact.persistAttributesAndRelations();
+      branchArtifact.persist();
 
       Artifact parentArtifact =
             DemoDbUtil.getArtTypeRequirements(Requirements.SOFTWARE_REQUIREMENT, DemoDbUtil.HAPTIC_CONSTRAINTS_REQ,
@@ -334,7 +334,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       parentArtifact.setSoleAttributeValue(DemoProgramAttributes.Safety_Criticality.toString(), "V");
       parentArtifact.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(),
             DemoSubsystems.Cognitive_Decision_Aiding.name());
-      parentArtifact.persistAttributesAndRelations();
+      parentArtifact.persist();
 
    }
 
@@ -370,7 +370,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                      reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
 
          art.addRelation(CoreRelationEnumeration.ALLOCATION__COMPONENT, comArt);
-         art.persistAttributesAndRelations();
+         art.persist();
       }
 
       // Delete one artifacts
@@ -393,7 +393,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          newArt.setSoleAttributeValue(DemoProgramAttributes.Subsystem.name(), DemoSubsystems.Communications.name());
          parentArt.addChild(newArt);
 
-         newArt.persistAttributesAndRelations();
+         newArt.persist();
       }
 
    }
@@ -436,13 +436,13 @@ public class PopulateDemoActions extends XNavigateItemAction {
                }
                // Transition to desired state
                dtwm.transitionTo((toStateOverride != null ? toStateOverride : aData.toState), null, false, transaction);
-               teamWf.persistAttributesAndRelations(transaction);
+               teamWf.persist(transaction);
                if (versionStr != null && !versionStr.equals("")) {
                   VersionArtifact verArt =
                         (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
                               versionStr, AtsUtil.getAtsBranch());
                   teamWf.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, verArt);
-                  teamWf.persistAttributesAndRelations(transaction);
+                  teamWf.persist(transaction);
                }
             }
          }
@@ -514,22 +514,22 @@ public class PopulateDemoActions extends XNavigateItemAction {
          // Relate System to SubSystem to Software Requirements
          for (Artifact systemArt : systemArts) {
             relate(CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL, systemArt, subSystemArts);
-            systemArt.persistRelations(transaction);
+            systemArt.persist(transaction);
 
             for (Artifact subSystemArt : subSystemArts) {
                relate(CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL, subSystemArt, softArts);
-               subSystemArt.persistRelations(transaction);
+               subSystemArt.persist(transaction);
             }
          }
 
          // Relate System, SubSystem and Software Requirements to Componets
          for (Artifact art : systemArts) {
             relate(CoreRelationEnumeration.ALLOCATION__COMPONENT, art, component);
-            art.persistRelations(transaction);
+            art.persist(transaction);
          }
          for (Artifact art : subSystemArts) {
             relate(CoreRelationEnumeration.ALLOCATION__COMPONENT, art, component);
-            art.persistRelations(transaction);
+            art.persist(transaction);
          }
          for (Artifact art : softArts) {
             relate(CoreRelationEnumeration.ALLOCATION__COMPONENT, art, component);
@@ -547,7 +547,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                         "Verification Test " + str);
             verificationTests.add(newArt);
             verificationHeader.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt);
-            newArt.persistAttributesAndRelations(transaction);
+            newArt.persist(transaction);
          }
          Artifact verificationTestsArray[] = verificationTests.toArray(new Artifact[verificationTests.size()]);
 
@@ -563,7 +563,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                         "Validation Test " + str);
             validationTests.add(newArt);
             validationHeader.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt);
-            newArt.persistAttributesAndRelations(transaction);
+            newArt.persist(transaction);
          }
          Artifact validationTestsArray[] = validationTests.toArray(new Artifact[validationTests.size()]);
 
@@ -579,7 +579,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                         "integration Test " + str);
             integrationTests.add(newArt);
             integrationHeader.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, newArt);
-            newArt.persistAttributesAndRelations(transaction);
+            newArt.persist(transaction);
          }
          Artifact integrationTestsArray[] = integrationTests.toArray(new Artifact[integrationTests.size()]);
 
@@ -596,7 +596,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          softReqsArray[5].addRelation(CoreRelationEnumeration.Validation__Validator, validationTestsArray[2]);
 
          for (Artifact artifact : softArts) {
-            artifact.persistAttributesAndRelations(transaction);
+            artifact.persist(transaction);
          }
 
       } catch (Exception ex) {

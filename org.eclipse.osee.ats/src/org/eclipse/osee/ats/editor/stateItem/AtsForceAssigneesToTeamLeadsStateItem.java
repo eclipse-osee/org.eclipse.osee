@@ -39,7 +39,7 @@ public class AtsForceAssigneesToTeamLeadsStateItem extends AtsStateItem {
          try {
             Collection<User> teamLeads = ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamDefinition().getLeads();
             smaMgr.getStateMgr().setAssignees(teamLeads);
-            smaMgr.getSma().persistAttributesAndRelations(transaction);
+            smaMgr.getSma().persist(transaction);
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
          }

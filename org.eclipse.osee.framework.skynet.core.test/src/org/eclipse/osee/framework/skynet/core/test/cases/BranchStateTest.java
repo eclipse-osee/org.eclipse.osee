@@ -73,7 +73,7 @@ public class BranchStateTest {
 
          Artifact change =
                ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "Test Object on Working Branch");
-         change.persistAttributes();
+         change.persist();
 
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
@@ -120,7 +120,7 @@ public class BranchStateTest {
          assertTrue(workingBranch.isEditable());
 
          Artifact change = ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "A commit change");
-         change.persistAttributes();
+         change.persist();
 
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
@@ -147,7 +147,7 @@ public class BranchStateTest {
       try {
          baseArtifact = ArtifactTypeManager.addArtifact("Software Requirement", mainBranch, "Test Object");
          baseArtifact.setSoleAttributeFromString("Annotation", "This is the base annotation");
-         baseArtifact.persistAttributes();
+         baseArtifact.persist();
 
          User user = UserManager.getUser(SystemUser.Guest);
          workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
@@ -155,11 +155,11 @@ public class BranchStateTest {
          // Add a new artifact on the working branch
          Artifact change =
                ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "Test Object on Working Branch");
-         change.persistAttributes();
+         change.persist();
 
          // Make a change on the parent
          baseArtifact.setSoleAttributeFromString("Annotation", "This is the updated annotation");
-         baseArtifact.persistAttributes();
+         baseArtifact.persist();
 
          // Update the branch
          ConflictResolverOperation resolverOperation =
@@ -203,7 +203,7 @@ public class BranchStateTest {
       try {
          baseArtifact = ArtifactTypeManager.addArtifact("Software Requirement", mainBranch, "Test Object");
          baseArtifact.setSoleAttributeFromString("Annotation", "This is the base annotation");
-         baseArtifact.persistAttributes();
+         baseArtifact.persist();
 
          User user = UserManager.getUser(SystemUser.OseeSystem);
          workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
@@ -211,11 +211,11 @@ public class BranchStateTest {
          // Modify same artifact on working branch
          Artifact sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getGuid(), workingBranch);
          sameArtifact.setSoleAttributeFromString("Annotation", "This is the working branch update annotation");
-         sameArtifact.persistAttributes();
+         sameArtifact.persist();
 
          // Make a change on the parent
          baseArtifact.setSoleAttributeFromString("Annotation", "This is the updated annotation");
-         baseArtifact.persistAttributes();
+         baseArtifact.persist();
 
          ConflictResolverOperation resolverOperation =
                new ConflictResolverOperation("Test 2 Resolver", BranchStateTest.class.getCanonicalName()) {

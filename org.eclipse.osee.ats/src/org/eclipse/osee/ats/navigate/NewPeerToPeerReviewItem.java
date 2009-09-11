@@ -55,7 +55,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
                      ReviewManager.createNewPeerToPeerReview(null, ed.getEntry(), null, UserManager.getUser(),
                            new Date(), transaction);
                peerArt.getActionableItemsDam().setActionableItems(ld.getSelected());
-               peerArt.persistAttributesAndRelations(transaction);
+               peerArt.persist(transaction);
                AtsUtil.openAtsAction(peerArt, AtsOpenOption.OpenAll);
                transaction.execute();
             } catch (Exception ex) {

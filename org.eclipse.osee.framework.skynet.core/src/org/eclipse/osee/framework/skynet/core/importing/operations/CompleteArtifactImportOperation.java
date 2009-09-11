@@ -31,7 +31,7 @@ public final class CompleteArtifactImportOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      destinationArtifact.persistAttributesAndRelations(transaction);
+      destinationArtifact.persist(transaction);
       transaction.execute();
       monitor.worked(calculateWork(1.0));
    }

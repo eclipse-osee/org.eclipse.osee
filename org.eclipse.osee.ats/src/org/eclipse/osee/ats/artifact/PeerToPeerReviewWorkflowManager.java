@@ -84,10 +84,16 @@ public class PeerToPeerReviewWorkflowManager {
    }
 
    public static Result setReviewStateData(PeerToPeerReviewArtifact reviewArt, Collection<UserRole> roles, Collection<DefectItem> defects, int statePercentComplete, double stateHoursSpent, SkynetTransaction transaction) throws OseeCoreException {
-      if (roles != null) for (UserRole role : roles)
-         reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false, transaction);
-      if (defects != null) for (DefectItem defect : defects)
-         reviewArt.getDefectManager().addOrUpdateDefectItem(defect, false, transaction);
+      if (roles != null) {
+         for (UserRole role : roles) {
+            reviewArt.getUserRoleManager().addOrUpdateUserRole(role, false, transaction);
+         }
+      }
+      if (defects != null) {
+         for (DefectItem defect : defects) {
+            reviewArt.getDefectManager().addOrUpdateDefectItem(defect, false, transaction);
+         }
+      }
       reviewArt.getSmaMgr().getStateMgr().updateMetrics(stateHoursSpent, statePercentComplete, true);
       return Result.TrueResult;
    }

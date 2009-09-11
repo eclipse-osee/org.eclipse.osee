@@ -130,7 +130,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          if (title != null && !title.equals("")) {
             newTeamArt.setName(title);
          }
-         newTeamArt.persistAttributesAndRelations(transaction);
+         newTeamArt.persist(transaction);
          newTeamArts.add(newTeamArt);
       }
       transaction.execute();
@@ -156,11 +156,11 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
                dupTaskArt.getSmaMgr().getLog().addLog(LogType.Note, null,
                      "Task duplicated from " + taskArt.getHumanReadableId());
                dupArt.addRelation(AtsRelation.SmaToTask_Task, dupTaskArt);
-               dupArt.persistAttributes(transaction);
+               dupArt.persist(transaction);
             }
             newTeamArts.add(dupArt);
          }
-         dupArt.persistAttributesAndRelations(transaction);
+         dupArt.persist(transaction);
          // Notify all extension points that workflow is being duplicated in case they need to add, remove
          // attributes or relations
          for (IAtsTeamWorkflow teamExtension : TeamWorkflowExtensions.getInstance().getAtsTeamWorkflowExtensions()) {

@@ -56,7 +56,7 @@ public class NewGoal extends Action {
                   Collections.singleton(UserManager.getUser()));
             goalArt.getSmaMgr().getLog().addLog(LogType.StateEntered, GoalState.InWork.name(), "");
 
-            goalArt.persistAttributesAndRelations();
+            goalArt.persist();
             SMAEditor.editArtifact(goalArt);
          }
       } catch (Exception ex) {

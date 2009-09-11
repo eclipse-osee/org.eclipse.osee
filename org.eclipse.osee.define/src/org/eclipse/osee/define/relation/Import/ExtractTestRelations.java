@@ -129,7 +129,7 @@ public class ExtractTestRelations {
          Artifact testArtifact =
                ArtifactTypeManager.addArtifact(Requirements.TEST_CASE, branch, testArtifactFile.getName());
          testArtifact.setSoleAttributeValue("Content URL", testArtifactFile.getFullPath().toString());
-         testArtifact.persistAttributes();
+         testArtifact.persist();
          return testArtifact;
       }
    }

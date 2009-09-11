@@ -46,7 +46,7 @@ public class NewPeerToPeerReviewJob extends Job {
          peerToPeerReviewArtifact =
                teamParent.getSmaMgr().getReviewManager().createNewPeerToPeerReview(reviewTitle, againstState,
                      transaction);
-         peerToPeerReviewArtifact.persistAttributesAndRelations(transaction);
+         peerToPeerReviewArtifact.persist(transaction);
          transaction.execute();
 
          AtsUtil.openAtsAction(peerToPeerReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);

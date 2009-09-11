@@ -104,7 +104,7 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
             for (Object obj : attributeHolder) {
                if (obj instanceof Artifact) {
                   ((Artifact) obj).setSoleAttributeValue(attributeName, new Boolean(value));
-                  if (persist) ((Artifact) obj).persistAttributes();
+                  if (persist) ((Artifact) obj).persist();
                }
                if (obj instanceof AttributeConflict) {
                   if (!((AttributeConflict) obj).setAttributeValue(new Boolean(value))) {

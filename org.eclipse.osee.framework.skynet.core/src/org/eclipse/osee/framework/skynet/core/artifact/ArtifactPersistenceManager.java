@@ -199,7 +199,7 @@ public class ArtifactPersistenceManager {
             artifact.internalSetDeleted();
             RelationManager.deleteRelationsAll(artifact, reorderRelations);
             if (transaction != null) {
-               artifact.persistAttributesAndRelations(transaction);
+               artifact.persist(transaction);
             }
          } catch (OseeCoreException ex) {
             artifact.resetToPreviousModType();

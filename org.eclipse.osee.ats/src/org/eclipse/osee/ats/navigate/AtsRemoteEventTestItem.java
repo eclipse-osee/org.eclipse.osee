@@ -108,7 +108,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Make current user assignee for convenience to developer
       teamArt.getSmaMgr().getStateMgr().addAssignee(UserManager.getUser());
-      teamArt.persistAttributesAndRelations();
+      teamArt.persist();
 
       validateActionAtStart(actionArt);
 
@@ -128,20 +128,20 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
             PriorityType.Priority_2.getShortName());
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "yes");
       teamArt.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, getVersion256());
-      teamArt.persistAttributesAndRelations(transaction);
+      teamArt.persist(transaction);
       transaction.execute();
 
       // Make changes and persist
       teamArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "description 3");
       teamArt.setSoleAttributeFromString(ATSAttributes.PROPOSED_RESOLUTION_ATTRIBUTE.getStoreName(),
             "this is resolution");
-      teamArt.persistAttributes();
+      teamArt.persist();
 
       // Make changes and persist
       teamArt.deleteRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, getVersion256());
       teamArt.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, getVersion257());
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "no");
-      teamArt.persistAttributesAndRelations();
+      teamArt.persist();
 
       // Make changes and persist
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
@@ -152,24 +152,24 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             PriorityType.Priority_3.getShortName());
       teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion258()));
-      teamArt.persistAttributesAndRelations(transaction);
+      teamArt.persist(transaction);
       transaction.execute();
 
       // Make changes and persist
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "yes");
-      teamArt.persistAttributes();
+      teamArt.persist();
 
       // Make changes and transition
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion257()));
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "no");
-      teamArt.persistAttributesAndRelations(transaction);
+      teamArt.persist(transaction);
       transaction.execute();
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       teamArt.getSmaMgr().transition(DefaultTeamState.Analyze.name(), Collections.singleton(UserManager.getUser()),
             transaction, TransitionOption.Persist);
-      teamArt.persistAttributesAndRelations(transaction);
+      teamArt.persist(transaction);
       transaction.execute();
 
       validateActionAtEnd(actionArt);

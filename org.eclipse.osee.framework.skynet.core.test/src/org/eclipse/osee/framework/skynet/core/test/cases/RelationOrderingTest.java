@@ -83,7 +83,7 @@ public class RelationOrderingTest {
       parent.addRelation(CoreRelationEnumeration.Users_User, child4);
       parent.addRelation(CoreRelationEnumeration.Users_User, child5);
       parent.addRelation(CoreRelationEnumeration.Users_User, child6);
-      parent.persistRelations();
+      parent.persist();
       
       parent.setRelationOrder(CoreRelationEnumeration.Users_User,
             RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);

@@ -282,7 +282,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
       }
       getArtifact().setSoleAttributeFromString(getAttributeType().getName(), value);
-      getArtifact().persistAttributes();
+      getArtifact().persist();
       markStatusToReflectEdit();
       return true;
    }
@@ -299,7 +299,7 @@ public class AttributeConflict extends Conflict {
          System.out.println(String.format("AttributeConflict: Set the Merge Value for attr_id %d", getAttrId()));
       }
       getArtifact().setSoleAttributeValue(getAttributeType().getName(), value);
-      getArtifact().persistAttributes();
+      getArtifact().persist();
       markStatusToReflectEdit();
       return true;
    }
@@ -318,7 +318,7 @@ public class AttributeConflict extends Conflict {
                getAttrId()));
       }
       getArtifact().setSoleAttributeValue(getAttributeType().getName(), getSourceObject());
-      getArtifact().persistAttributes();
+      getArtifact().persist();
       markStatusToReflectEdit();
       return true;
    }
@@ -337,7 +337,7 @@ public class AttributeConflict extends Conflict {
                getAttrId()));
       }
       getArtifact().setSoleAttributeValue(getAttributeType().getName(), getDestObject());
-      getArtifact().persistAttributes();
+      getArtifact().persist();
       markStatusToReflectEdit();
       return true;
    }
@@ -357,10 +357,10 @@ public class AttributeConflict extends Conflict {
       setStatus(ConflictStatus.UNTOUCHED);
       if (isWordAttribute) {
          getAttribute().resetToDefaultValue();
-         getArtifact().persistAttributes();
+         getArtifact().persist();
       } else {
          getArtifact().setSoleAttributeFromString(getAttributeType().getName(), NO_VALUE);
-         getArtifact().persistAttributes();
+         getArtifact().persist();
       }
       computeEqualsValues();
       return true;

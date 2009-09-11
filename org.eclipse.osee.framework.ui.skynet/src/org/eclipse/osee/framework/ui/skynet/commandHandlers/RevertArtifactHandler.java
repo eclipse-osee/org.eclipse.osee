@@ -21,7 +21,6 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -52,14 +51,10 @@ public class RevertArtifactHandler extends AbstractHandler {
       for (Change change : changes) {
          List<Artifact> artifactList = new LinkedList<Artifact>();
 
-         try {
-            if (!duplicateCheck.contains(change.getArtifact())) {
-               artifactList.add(change.getArtifact());
-               artifacts.add(artifactList);
-               duplicateCheck.add(change.getArtifact());
-            }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(getClass(), Level.SEVERE, ex);
+         if (!duplicateCheck.contains(change.getArtifact())) {
+            artifactList.add(change.getArtifact());
+            artifacts.add(artifactList);
+            duplicateCheck.add(change.getArtifact());
          }
 
       }

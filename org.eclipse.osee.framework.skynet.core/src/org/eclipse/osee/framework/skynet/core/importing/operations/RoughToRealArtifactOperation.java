@@ -92,7 +92,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       }
 
       if (realArtifact != null) {
-         realArtifact.persistAttributesAndRelations(transaction);
+         realArtifact.persist(transaction);
       }
       return realArtifact;
    }
@@ -118,7 +118,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
             monitor.subTask(aArt.getName() + " <--> " + bArt.getName());
             monitor.worked(1);
             RelationManager.addRelation(relationType, aArt, bArt, roughRelation.getRationale());
-            aArt.persistRelations(transaction);
+            aArt.persist(transaction);
          } catch (IllegalArgumentException ex) {
             OseeLog.log(Activator.class, Level.WARNING, ex.getLocalizedMessage());
          }

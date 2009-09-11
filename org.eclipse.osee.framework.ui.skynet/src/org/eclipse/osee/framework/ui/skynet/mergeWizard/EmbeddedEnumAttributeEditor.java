@@ -115,7 +115,7 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
          for (Object object : attributeHolder) {
             if (object instanceof Artifact) {
                ((Artifact) object).setSoleAttributeFromString(attributeName, selection);
-               if (persist) ((Artifact) object).persistAttributes();
+               if (persist) ((Artifact) object).persist();
             }
             if (object instanceof AttributeConflict) {
                if (selection.equals("")) {

@@ -173,7 +173,7 @@ public class User extends Artifact implements Serializable {
             throw new OseeWrappedException(ex);
          }
          setSoleAttributeFromString("User Settings", stringWriter.toString());
-         persistAttributes();
+         persist();
       }
    }
 

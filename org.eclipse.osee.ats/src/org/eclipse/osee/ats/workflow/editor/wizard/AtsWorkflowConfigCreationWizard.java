@@ -128,7 +128,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
       }
 
       AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(newWorkflowArt, transaction);
-      newWorkflowArt.persistAttributesAndRelations(transaction);
+      newWorkflowArt.persist(transaction);
 
       // Duplicate work pages w/ namespace changes
       for (DefaultTeamState state : DefaultTeamState.values()) {
@@ -151,7 +151,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          }
 
          AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(newStateArt, transaction);
-         newStateArt.persistAttributesAndRelations(transaction);
+         newStateArt.persist(transaction);
       }
       return new WorkflowData(new WorkFlowDefinition(newWorkflowArt), newWorkflowArt);
 
@@ -197,7 +197,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
 
       for (Artifact artifact : artifacts) {
          AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
-         artifact.persistAttributesAndRelations(transaction);
+         artifact.persist(transaction);
       }
       return new WorkflowData(workflow, workflowArt);
    }

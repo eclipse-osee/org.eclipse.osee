@@ -52,11 +52,11 @@ public class AtsHandleAddReviewRuleStateItem extends AtsStateItem {
                   DecisionReviewArtifact decArt =
                         AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, smaMgr,
                               DecisionRuleOption.TransitionToDecision);
-                  if (decArt != null) decArt.persistAttributesAndRelations(transaction);
+                  if (decArt != null) decArt.persist(transaction);
                } else if (ruleId.startsWith(AtsAddPeerToPeerReviewRule.ID)) {
                   PeerToPeerReviewArtifact peerArt =
                         AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, smaMgr, transaction);
-                  if (peerArt != null) peerArt.persistAttributesAndRelations(transaction);
+                  if (peerArt != null) peerArt.persist(transaction);
                }
             }
          }

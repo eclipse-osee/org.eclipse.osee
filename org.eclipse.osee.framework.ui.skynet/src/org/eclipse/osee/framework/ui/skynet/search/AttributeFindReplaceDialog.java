@@ -176,7 +176,7 @@ public class AttributeFindReplaceDialog extends Dialog {
                      Matcher matcher = pattern.matcher(attribute.toString());
                      attribute.setFromString(matcher.replaceAll(replaceText));
                   }
-                  artifact.persistAttributes(transaction);
+                  artifact.persist(transaction);
                   monitor.worked(1);
                   if (monitor.isCanceled()) {
                      throw new IllegalStateException("USER_PURPLE CANCELLED");

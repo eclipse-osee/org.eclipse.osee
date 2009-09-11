@@ -489,7 +489,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
          if (teamDefinition != null) setTeamDefinition(teamDefinition);
          SkynetTransaction transaction = new SkynetTransaction(branch);
          getParentActionArtifact().resetAttributesOffChildren(transaction);
-         persistAttributes(transaction);
+         persist(transaction);
          transaction.execute();
       }
       return workResult;

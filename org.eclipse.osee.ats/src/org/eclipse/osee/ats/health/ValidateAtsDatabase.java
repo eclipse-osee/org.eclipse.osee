@@ -338,7 +338,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
             }
          }
          if (artifact.hasDirtyAttributes()) {
-            artifact.persistAttributes(transaction);
+            artifact.persist(transaction);
          }
       }
       transaction.execute();
@@ -366,7 +366,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                            attr.delete();
                         }
                      }
-                     artifact.persistAttributes(transaction);
+                     artifact.persist(transaction);
                      xResultData.log("Fixed");
                   }
                } else {
@@ -531,7 +531,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   xResultData.logError(sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " cancel/complete with attribute assignees");
                   if (fixAssignees) {
                      smaMgr.getStateMgr().clearAssignees();
-                     smaMgr.getSma().persistAttributesAndRelations();
+                     smaMgr.getSma().persist();
                      xResultData.log(monitor, "Fixed");
                   }
                }
@@ -557,7 +557,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   if (fixAssignees) {
                      try {
                         StateManager.updateAssigneeRelations(smaMgr);
-                        art.persistAttributesAndRelations();
+                        art.persist();
                      } catch (OseeCoreException ex) {
                         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                      }
@@ -570,7 +570,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                      if (fixAssignees) {
                         try {
                            StateManager.updateAssigneeRelations(smaMgr);
-                           art.persistAttributesAndRelations();
+                           art.persist();
                         } catch (OseeCoreException ex) {
                            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                         }

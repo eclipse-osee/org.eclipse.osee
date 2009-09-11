@@ -81,7 +81,7 @@ public class SetRequirementCategory extends AbstractBlam {
             throw new MultipleArtifactsExist(requirement.getName());
          } else {
             requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
-            requirement.persistAttributes(transaction);
+            requirement.persist(transaction);
          }
       } catch (MultipleArtifactsExist ex) {
          List<Artifact> artiafcts =
@@ -91,7 +91,7 @@ public class SetRequirementCategory extends AbstractBlam {
                OseeLog.log(SkynetGuiPlugin.class, Level.INFO, requirement + " is an orphan");
             } else {
                requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
-               requirement.persistAttributes(transaction);
+               requirement.persist(transaction);
             }
          }
       } catch (ArtifactDoesNotExist ex) {

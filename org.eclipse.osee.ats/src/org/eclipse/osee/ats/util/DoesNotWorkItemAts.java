@@ -148,7 +148,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
          String str = art.getSoleAttributeValue(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), null);
          str = str.replaceAll("rj236c", "1779483");
          art.setSoleAttributeFromString(ATSAttributes.LOG_ATTRIBUTE.getStoreName(), str);
-         art.persistAttributes(transaction);
+         art.persist(transaction);
       }
    }
 
@@ -182,7 +182,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
                }
                if (newResolution != null) {
                   taskArt.setSoleAttributeFromString(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName(), newResolution);
-                  taskArt.persistAttributes();
+                  taskArt.persist();
                }
             }
          }

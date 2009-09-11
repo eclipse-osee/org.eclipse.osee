@@ -124,7 +124,7 @@ public class SMAPromptChangeStatus {
             sma.getSmaMgr().getStateMgr().updateMetrics(hours, percent, true);
          }
          if (persist) {
-            sma.persistAttributesAndRelations(transaction);
+            sma.persist(transaction);
          }
       }
       if (persist) {

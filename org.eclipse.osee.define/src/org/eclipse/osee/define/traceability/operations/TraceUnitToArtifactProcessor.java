@@ -173,7 +173,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          if (traceUnitArtifact.isOfType(Requirements.ABSTRACT_TEST_UNIT)) {
             TestRunHandler.linkWithTestUnit(transaction, traceUnitArtifact);
          }
-         traceUnitArtifact.persistAttributesAndRelations(transaction);
+         traceUnitArtifact.persist(transaction);
       }
    }
 
@@ -268,7 +268,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
          if (folder != null && !folder.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, testUnit)) {
             folder.addChild(testUnit);
-            folder.persistAttributesAndRelations(transaction);
+            folder.persist(transaction);
          }
       }
 
@@ -289,7 +289,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
          if (!root.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, codeUnitFolder)) {
             root.addChild(codeUnitFolder);
-            root.persistAttributesAndRelations(transaction);
+            root.persist(transaction);
          }
          return codeUnitFolder;
       }
@@ -299,7 +299,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          Artifact testUnits = getOrCreateTestUnitsFolder(transaction);
          if (!testUnits.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, subFolder)) {
             testUnits.addChild(subFolder);
-            testUnits.persistAttributesAndRelations(transaction);
+            testUnits.persist(transaction);
          }
          return subFolder;
       }
@@ -309,7 +309,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
          if (!root.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, testUnitFolder)) {
             root.addChild(testUnitFolder);
-            root.persistAttributesAndRelations(transaction);
+            root.persist(transaction);
          }
          return testUnitFolder;
       }

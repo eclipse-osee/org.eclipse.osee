@@ -84,7 +84,7 @@ public class MsWordPreferencePage extends PreferencePage implements IWorkbenchPr
       setUserBooleanSetting(REMOVE_TRACKED_CHANGES, removeTrackedChangesInWord);
       setUserBooleanSetting(MUTI_EDIT_SAVE_ALL_CHANGES, saveAllChanges);
       try {
-         UserManager.getUser().persistAttributes();
+         UserManager.getUser().persist();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

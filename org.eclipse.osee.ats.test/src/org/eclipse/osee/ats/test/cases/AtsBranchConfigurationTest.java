@@ -120,7 +120,7 @@ public class AtsBranchConfigurationTest {
       // setup team def to allow create/commit of branch
       verArtToTarget.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
       verArtToTarget.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
-      verArtToTarget.persistAttributes();
+      verArtToTarget.persist();
 
       TestUtil.sleep(2000);
 
@@ -137,7 +137,7 @@ public class AtsBranchConfigurationTest {
                   transaction);
       actionArt.getTeamWorkFlowArtifacts().iterator().next().addRelation(
             AtsRelation.TeamWorkflowTargetedForVersion_Version, verArtToTarget);
-      actionArt.getTeamWorkFlowArtifacts().iterator().next().persistAttributesAndRelations(transaction);
+      actionArt.getTeamWorkFlowArtifacts().iterator().next().persist(transaction);
       transaction.execute();
 
       final TeamWorkFlowArtifact teamWf = actionArt.getTeamWorkFlowArtifacts().iterator().next();
@@ -148,7 +148,7 @@ public class AtsBranchConfigurationTest {
 
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       dtwm.transitionTo(DefaultTeamState.Implement, null, false, transaction);
-      teamWf.persistAttributesAndRelations(transaction);
+      teamWf.persist(transaction);
       transaction.execute();
 
       SMAEditor.editArtifact(teamWf, true);
@@ -172,7 +172,7 @@ public class AtsBranchConfigurationTest {
                   teamWf.getSmaMgr().getBranchMgr().getWorkingBranch(),
                   TestType.BranchViaVersions.name() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
-      blk3MainArt.persistAttributesAndRelations();
+      blk3MainArt.persist();
 
       // commit branch
       commitBranch(teamWf);
@@ -220,7 +220,7 @@ public class AtsBranchConfigurationTest {
       teamDef.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
       teamDef.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
       teamDef.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), false);
-      teamDef.persistAttributes();
+      teamDef.persist();
 
       TestUtil.sleep(2000);
 
@@ -244,7 +244,7 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       dtwm.transitionTo(DefaultTeamState.Implement, null, false, transaction);
-      teamWf.persistAttributesAndRelations(transaction);
+      teamWf.persist(transaction);
       transaction.execute();
 
       SMAEditor.editArtifact(teamWf, true);
@@ -268,7 +268,7 @@ public class AtsBranchConfigurationTest {
                   teamWf.getSmaMgr().getBranchMgr().getWorkingBranch(),
                   TestType.BranchViaTeamDef.name() + " Requirement");
       rootArtifact.addChild(blk3MainArt);
-      blk3MainArt.persistAttributesAndRelations();
+      blk3MainArt.persist();
 
       // commit branch
       commitBranch(teamWf);
@@ -411,7 +411,7 @@ public class AtsBranchConfigurationTest {
             WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName()));
       implementPageDef.addRelation(AtsRelation.WorkItem__Child,
             WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName()));
-      implementPageDef.persistAttributesAndRelations();
+      implementPageDef.persist();
    }
 
    @After

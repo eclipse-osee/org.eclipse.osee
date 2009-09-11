@@ -260,7 +260,7 @@ public final class UserManager {
          }
       }
 
-      user.persistAttributesAndRelations(transaction);
+      user.persist(transaction);
       return user;
    }
 

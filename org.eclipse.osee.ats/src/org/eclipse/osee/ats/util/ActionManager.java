@@ -57,7 +57,7 @@ public class ActionManager {
       for (TeamDefinitionArtifact teamDef : teams) {
          actionArt.createTeamWorkflow(teamDef, actionableItems, teamDef.getLeads(actionableItems), transaction);
       }
-      actionArt.persistAttributesAndRelations(transaction);
+      actionArt.persist(transaction);
       return actionArt;
 
    }

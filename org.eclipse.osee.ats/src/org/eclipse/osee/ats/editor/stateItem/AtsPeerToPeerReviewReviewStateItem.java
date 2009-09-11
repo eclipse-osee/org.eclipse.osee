@@ -41,7 +41,7 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
       assignees.addAll(smaMgr.getStateMgr().getAssignees());
 
       smaMgr.getStateMgr().setAssignees(assignees);
-      smaMgr.getSma().persistAttributesAndRelations(transaction);
+      smaMgr.getSma().persist(transaction);
    }
 
    public String getDescription() throws OseeCoreException {

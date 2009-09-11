@@ -224,7 +224,7 @@ public class ConflictTestManager {
          for (AttributeValue value : conflictDefs[i].newAttributes) {
             destArtifacts[i].addAttribute(value.attributeName, stringToObject(value.clas, value.sourceValue));
          }
-         destArtifacts[i].persistAttributesAndRelations();
+         destArtifacts[i].persist();
       }
       // Create the source branch
       sourceBranch = BranchManager.createWorkingBranch(destBranch, SOURCE_BRANCH, null);
@@ -252,7 +252,7 @@ public class ConflictTestManager {
          }
 
          ///handle destination objects
-         sourceArtifacts[i].persistAttributes();
+         sourceArtifacts[i].persist();
          for (AttributeValue value : conflictDefs[i].values) {
             if (value.destinationDeleted) {
                destArtifacts[i].getSoleAttribute(value.attributeName).delete();
@@ -263,7 +263,7 @@ public class ConflictTestManager {
          }
       }
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
-         destArtifacts[i].persistAttributes();
+         destArtifacts[i].persist();
 
          if (conflictDefs[i].destDelete) {
             System.out.println("Deleting Artifact with ID " + destArtifacts[i].getArtId() + " index " + i);
@@ -324,13 +324,13 @@ public class ConflictTestManager {
                      createAttribute((Artifact) modification.object, modification.Name, modification.clas,
                            modification.value);
                      ((Artifact) modification.object).deleteSoleAttribute(modification.Name);
-                     ((Artifact) modification.object).persistAttributes();
+                     ((Artifact) modification.object).persist();
                      break;
                   case RELATION:
                      createRelation((Artifact) modification.object, (Artifact) modification.object2);
                      ((Artifact) modification.object).deleteRelation(CoreRelationEnumeration.Dependency__Dependency,
                            (Artifact) modification.object2);
-                     ((Artifact) modification.object).persistRelations();
+                     ((Artifact) modification.object).persist();
                      break;
                }
 
@@ -355,19 +355,19 @@ public class ConflictTestManager {
          }
       }
       Artifact child = rootArtifact.addNewChild(ArtifactTypeManager.getType(type), name);
-      child.persistAttributesAndRelations();
+      child.persist();
       return child;
    }
 
    protected static Attribute<?> createAttribute(Artifact artifact, String name, Class<?> clas, String value) throws OseeCoreException {
       artifact.addAttribute(name, stringToObject(clas, value));
-      artifact.persistAttributes();
+      artifact.persist();
       return artifact.getSoleAttribute(name);
    }
 
    protected static RelationLink createRelation(Artifact artifact, Artifact artifactB) throws OseeCoreException {
       artifact.addRelation(CoreRelationEnumeration.Dependency__Dependency, artifactB);
-      artifact.persistRelations();
+      artifact.persist();
       return artifact.getRelations(CoreRelationEnumeration.Dependency__Dependency).get(0);
    }
 

@@ -74,7 +74,7 @@ public class AtsConfigManager {
       teamDef.addRelation(AtsRelation.TeamLead_Lead, UserManager.getUser());
       teamDef.addRelation(AtsRelation.TeamMember_Member, UserManager.getUser());
       AtsFolderUtil.getFolder(AtsFolder.Teams).addChild(teamDef);
-      teamDef.persistAttributesAndRelations(transaction);
+      teamDef.persist(transaction);
 
       // Create actionable items
       List<ActionableItemArtifact> aias = new ArrayList<ActionableItemArtifact>();
@@ -83,11 +83,11 @@ public class AtsConfigManager {
             (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
                   AtsUtil.getAtsBranch(), teamDefName);
       topAia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
-      topAia.persistAttributesAndRelations(transaction);
+      topAia.persist(transaction);
 
       AtsFolderUtil.getFolder(AtsFolder.ActionableItem).addChild(topAia);
       teamDef.addRelation(AtsRelation.TeamActionableItem_ActionableItem, topAia);
-      teamDef.persistAttributesAndRelations(transaction);
+      teamDef.persist(transaction);
 
       aias.add(topAia);
       // Create childrent actionable item
@@ -97,7 +97,7 @@ public class AtsConfigManager {
                      AtsUtil.getAtsBranch(), name);
          aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), true);
          topAia.addChild(aia);
-         aia.persistAttributesAndRelations(transaction);
+         aia.persist(transaction);
          aias.add(aia);
       }
 
@@ -110,7 +110,7 @@ public class AtsConfigManager {
                         AtsUtil.getAtsBranch(), name);
             teamDef.addRelation(AtsRelation.TeamDefinitionToVersion_Version, version);
             versions.add(version);
-            version.persistAttributesAndRelations(transaction);
+            version.persist(transaction);
          }
       }
 
@@ -125,7 +125,7 @@ public class AtsConfigManager {
                AtsWorkflowConfigCreationWizard.generateDefaultWorkflow(namespace, transaction, teamDef);
          workFlowDefinition = workflowData.getWorkDefinition();
          workflowArt = workflowData.getWorkFlowArtifact();
-         workflowArt.persistAttributesAndRelations(transaction);
+         workflowArt.persist(transaction);
       }
       // Else, use existing one
       else {
@@ -133,7 +133,7 @@ public class AtsConfigManager {
       }
       // Relate new team def to workflow artifact
       teamDef.addRelation(AtsRelation.WorkItem__Child, workflowArt);
-      teamDef.persistAttributesAndRelations(transaction);
+      teamDef.persist(transaction);
 
       transaction.execute();
 

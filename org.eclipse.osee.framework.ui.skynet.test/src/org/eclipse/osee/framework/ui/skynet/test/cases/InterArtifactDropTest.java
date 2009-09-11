@@ -63,7 +63,7 @@ public class InterArtifactDropTest {
       sleep(5000);
 
       sourceArtifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, sourceBranch);
-      sourceArtifact.persistAttributes();
+      sourceArtifact.persist();
 
       destinationBranch =
             BranchManager.createWorkingBranch(BranchManager.getSystemRootBranch(), destinationBranchName,

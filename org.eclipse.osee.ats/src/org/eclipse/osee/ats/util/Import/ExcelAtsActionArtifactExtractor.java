@@ -138,7 +138,7 @@ public class ExcelAtsActionArtifactExtractor {
                }
             }
             for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-               team.persistAttributesAndRelations(transaction);
+               team.persist(transaction);
             }
             teamWfs.addAll(actionArt.getTeamWorkFlowArtifacts());
          }

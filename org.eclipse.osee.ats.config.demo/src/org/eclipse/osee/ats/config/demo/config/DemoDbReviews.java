@@ -74,7 +74,7 @@ public class DemoDbReviews {
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Followup: " + result.getText());
       }
-      reviewArt.persistAttributesAndRelations(transaction);
+      reviewArt.persist(transaction);
 
       // Create a Decision review and transition to Completed
       reviewArt = secondTestArt.getSmaMgr().getReviewManager().createValidateReview(true, transaction);
@@ -83,7 +83,7 @@ public class DemoDbReviews {
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
       }
-      reviewArt.persistAttributesAndRelations(transaction);
+      reviewArt.persist(transaction);
 
    }
 
@@ -127,7 +127,7 @@ public class DemoDbReviews {
             firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview(
                   "Peer Review first set of code changes",
                   firstCodeArt.getSmaMgr().getStateMgr().getCurrentStateName(), transaction);
-      reviewArt.persistAttributesAndRelations(transaction);
+      reviewArt.persist(transaction);
 
       // Create a PeerToPeer review and transition to Review state
       reviewArt =
@@ -144,7 +144,7 @@ public class DemoDbReviews {
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Review: " + result.getText());
       }
-      reviewArt.persistAttributesAndRelations(transaction);
+      reviewArt.persist(transaction);
 
       // Create a PeerToPeer review and transition to Completed
       reviewArt =
@@ -171,7 +171,7 @@ public class DemoDbReviews {
             PeerToPeerReviewWorkflowManager.transitionTo(reviewArt,
                   PeerToPeerReviewArtifact.PeerToPeerReviewState.Completed, roles, defects, UserManager.getUser(),
                   false, transaction);
-      reviewArt.persistAttributesAndRelations(transaction);
+      reviewArt.persist(transaction);
       if (result.isFalse()) {
          throw new IllegalStateException("Failed transitioning review to Completed: " + result.getText());
       }

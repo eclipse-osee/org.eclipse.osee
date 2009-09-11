@@ -74,7 +74,7 @@ public class EditorsPreferencePage extends PreferencePage implements IWorkbenchP
             UserManager.getUser().deleteAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE,
                   PreviewOnDoubleClickForWordArtifacts);
          }
-         UserManager.getUser().persistAttributes();
+         UserManager.getUser().persist();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

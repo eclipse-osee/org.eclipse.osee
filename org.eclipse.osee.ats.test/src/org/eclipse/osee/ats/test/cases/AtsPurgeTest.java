@@ -71,7 +71,7 @@ public class AtsPurgeTest {
                   org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ActionableItemArtifact.class,
                         ArtifactQuery.getArtifactListFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, "SAW Test",
                               AtsUtil.getAtsBranch())), transaction);
-      actionArt.persistAttributesAndRelations(transaction);
+      actionArt.persist(transaction);
       transaction.execute();
 
       artsToPurge.add(actionArt);
@@ -81,7 +81,7 @@ public class AtsPurgeTest {
          TaskArtifact taskArt =
                actionArt.getTeamWorkFlowArtifacts().iterator().next().getSmaMgr().getTaskMgr().createNewTask(
                      getClass().getSimpleName() + x);
-         taskArt.persistAttributesAndRelations();
+         taskArt.persist();
          artsToPurge.add(taskArt);
       }
 

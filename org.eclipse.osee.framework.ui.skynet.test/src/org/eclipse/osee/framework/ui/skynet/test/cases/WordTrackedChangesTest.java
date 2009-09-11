@@ -85,7 +85,7 @@ public class WordTrackedChangesTest {
       // create a new requirement artifact
       Artifact newArt =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch, getClass().getSimpleName());
-      newArt.persistAttributesAndRelations();
+      newArt.persist();
       artifacts = Arrays.asList(newArt);
       WordTemplateRenderer renderer = new WordTemplateRenderer();
       renderer = WordEditTest.openArtifacts(artifacts);
@@ -108,7 +108,7 @@ public class WordTrackedChangesTest {
       Branch branch = BranchManager.getCommonBranch();
       // create a new general document artifact
       Artifact newArt = ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName());
-      newArt.persistAttributesAndRelations();
+      newArt.persist();
       artifacts = Arrays.asList(newArt);
       RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
       FileRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, newArt);
@@ -136,7 +136,7 @@ public class WordTrackedChangesTest {
       content = WordMlLinkHandler.unlink(linkType, newArt, content);
       try {
          newArt.setSoleAttributeFromString(WordAttribute.WHOLE_WORD_CONTENT, content);
-         newArt.persistAttributesAndRelations();
+         newArt.persist();
       } catch (OseeArgumentException ex) {
          if (ex.getLocalizedMessage().equals("Cannot save - Detected tracked changes on this artifact. ")) {
             assertTrue("Did not Detect Tracked Changes", WordAttribute.getDisplayTrackedChangesErrorMessage().contains(

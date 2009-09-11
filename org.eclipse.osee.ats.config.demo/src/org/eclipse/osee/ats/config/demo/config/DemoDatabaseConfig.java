@@ -80,7 +80,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, "SAW Test",
                   AtsUtil.getAtsBranch());
       teamDef.addRelation(AtsRelation.PrivilegedMember_Member, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith));
-      teamDef.persistAttributesAndRelations(transaction);
+      teamDef.persist(transaction);
 
       transaction.execute();
 
@@ -91,7 +91,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       Branch branch = BranchManager.getBranch(branchName);
       VersionArtifact verArt = teamDef.getVersionArtifact(versionName, false);
       verArt.setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), branch.getBranchId());
-      verArt.persistAttributes(transaction);
+      verArt.persist(transaction);
    }
 
    private void populateProgramBranch(String branchName) throws OseeCoreException {
@@ -113,8 +113,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
          programRoot.addChild(ArtifactTypeManager.addArtifact("Folder", programBranch, name));
       }
 
-      sawProduct.persistAttributesAndRelations();
-      programRoot.persistAttributesAndRelations();
+      sawProduct.persist();
+      programRoot.persist();
 
    }
 
@@ -139,7 +139,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             ver.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
          }
          DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
-         ver.persistAttributesAndRelations();
+         ver.persist();
       }
 
       // Setup some sample builds for Widget B
@@ -155,7 +155,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
          }
          DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
-         ver.persistAttributesAndRelations();
+         ver.persist();
       }
    }
 }

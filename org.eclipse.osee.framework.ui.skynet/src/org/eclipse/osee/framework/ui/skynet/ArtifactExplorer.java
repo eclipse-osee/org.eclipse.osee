@@ -586,10 +586,10 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   Iterator<?> itemsIter = selection.iterator();
                   // If nothing was selected, then the child belongs at the root
                   if (!itemsIter.hasNext()) {
-                     exploreRoot.addNewChild(descriptor, name).persistAttributesAndRelations();
+                     exploreRoot.addNewChild(descriptor, name).persist();
                   } else {
                      while (itemsIter.hasNext()) {
-                        ((Artifact) itemsIter.next()).addNewChild(descriptor, name).persistAttributesAndRelations();
+                        ((Artifact) itemsIter.next()).addNewChild(descriptor, name).persist();
                      }
                   }
                   treeViewer.refresh();
@@ -779,7 +779,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          Artifact myArtifact = (Artifact) myTreeItemObject;
          try {
             myArtifact.setSoleAttributeValue("Name", newLabel);
-            myArtifact.persistAttributes();
+            myArtifact.persist();
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }

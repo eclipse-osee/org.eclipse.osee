@@ -101,7 +101,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
             (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(),
                   newVer);
       teamDefHoldingVersions.addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
-      ver.persistAttributesAndRelations(transaction);
+      ver.persist(transaction);
       ArtifactEditor.editArtifact(ver);
    }
 

@@ -116,7 +116,7 @@ public class WorkflowDiagram extends ModelElement {
 
          Artifact artifact = workFlowDefinition.toArtifact(WriteType.Update);
          AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
-         artifact.persistAttributes(transaction);
+         artifact.persist(transaction);
 
          WorkItemDefinitionFactory.deCache(workFlowDefinition);
 

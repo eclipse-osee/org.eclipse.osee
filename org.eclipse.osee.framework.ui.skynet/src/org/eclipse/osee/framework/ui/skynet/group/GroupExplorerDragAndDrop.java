@@ -242,7 +242,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                               CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art);
                         targetArtifact = art;
                      }
-                     parentArtifact.persistAttributesAndRelations();
+                     parentArtifact.persist();
                   }
                   // Drag item came from outside Group Explorer
                   else {
@@ -257,7 +257,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                         parentArtifact.addRelation(targetArtifact, isFeedbackAfter,
                               CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art, "");
                      }
-                     parentArtifact.persistAttributesAndRelations();
+                     parentArtifact.persist();
                   }
                }
             }
@@ -299,7 +299,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                dragOverExplorerItem.getArtifact().addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art);
             }
          }
-         dragOverExplorerItem.getArtifact().persistAttributesAndRelations(transaction);
+         dragOverExplorerItem.getArtifact().persist(transaction);
 
          transaction.execute();
       } catch (Exception ex) {

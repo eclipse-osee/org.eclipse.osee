@@ -107,14 +107,14 @@ public class ArtifactPurgeTest {
             FrameworkTestUtil.createSimpleArtifacts(Requirements.SOFTWARE_REQUIREMENT, 10, getClass().getSimpleName(),
                   branch);
       for (Artifact softArt : softArts) {
-         softArt.persistAttributesAndRelations(transaction);
+         softArt.persist(transaction);
       }
       transaction.execute();
 
       // make more changes to artifacts
       for (Artifact softArt : softArts) {
          softArt.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, getClass().getSimpleName());
-         softArt.persistAttributesAndRelations();
+         softArt.persist();
       }
 
       // Count rows and check that increased

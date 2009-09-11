@@ -258,7 +258,7 @@ public class ExcelAtsTaskArtifactExtractor {
                taskArt.transitionToCompleted(0, transaction, TransitionOption.None);
             }
             // always persist
-            taskArt.persistAttributesAndRelations(transaction);
+            taskArt.persist(transaction);
             if (emailPOCs && !taskArt.isCompleted() && !taskArt.isCancelled()) {
                AtsNotifyUsers.notify(smaMgr.getSma(), AtsNotifyUsers.NotifyType.Assigned);
             }

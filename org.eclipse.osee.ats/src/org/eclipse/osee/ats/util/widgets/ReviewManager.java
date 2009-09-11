@@ -107,7 +107,7 @@ public class ReviewManager {
       DecisionReviewArtifact decRev =
             ReviewManager.createNewDecisionReview(teamArt, reviewBlockType, reviewTitle, againstState, description,
                   options, assignees);
-      decRev.persistAttributesAndRelations(transaction);
+      decRev.persist(transaction);
 
       SMAManager revSmaMgr = new SMAManager(decRev);
       revSmaMgr.transition(DecisionReviewArtifact.DecisionReviewState.Decision.name(), assignees, transaction,
@@ -148,7 +148,7 @@ public class ReviewManager {
             DecisionReviewArtifact.DecisionReviewState.Prepare.name());
       peerToPeerRev.getSmaMgr().getLog().addLog(LogType.StateEntered,
             DecisionReviewArtifact.DecisionReviewState.Prepare.name(), "", origDate, origUser);
-      peerToPeerRev.persistAttributesAndRelations(transaction);
+      peerToPeerRev.persist(transaction);
       return peerToPeerRev;
    }
 

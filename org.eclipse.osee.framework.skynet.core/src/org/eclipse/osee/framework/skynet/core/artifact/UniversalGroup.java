@@ -54,10 +54,10 @@ public class UniversalGroup {
       }
 
       Artifact groupArt = ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, branch, name);
-      groupArt.persistAttributes();
+      groupArt.persist();
       Artifact groupRoot = getTopUniversalGroupArtifact(branch);
       groupRoot.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, groupArt);
-      groupRoot.persistAttributesAndRelations();
+      groupRoot.persist();
       return groupArt;
    }
 

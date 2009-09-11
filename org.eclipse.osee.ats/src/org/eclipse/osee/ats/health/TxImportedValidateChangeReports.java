@@ -160,7 +160,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
                         String modified = translateImportedData(data);
                         modified = updateSourceGuid(currentDbGuid, modified);
                         artifact.setSoleAttributeValue(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, modified);
-                        artifact.persistAttributes(transaction);
+                        artifact.persist(transaction);
                      }
                   }
                }

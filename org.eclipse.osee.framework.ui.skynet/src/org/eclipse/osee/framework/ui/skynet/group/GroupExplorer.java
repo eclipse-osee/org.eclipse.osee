@@ -327,7 +327,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
             for (GroupExplorerItem item : items) {
                item.getArtifact().deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP,
                      item.getParentItem().getArtifact());
-               item.getArtifact().persistRelations(transaction);
+               item.getArtifact().persist(transaction);
             }
             transaction.execute();
          } catch (Exception ex) {

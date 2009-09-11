@@ -44,9 +44,9 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          Branch systemBranch = BranchManager.getSystemRootBranch();
 
          ArtifactTypeManager.addArtifact(OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME, systemBranch,
-               OseeSystemArtifacts.DEFAULT_HIERARCHY_ROOT_NAME).persistAttributesAndRelations();
+               OseeSystemArtifacts.DEFAULT_HIERARCHY_ROOT_NAME).persist();
          ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, systemBranch,
-               OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME).persistAttributesAndRelations();
+               OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME).persist();
 
          BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID, null);
 
@@ -56,10 +56,10 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
             UserManager.createUser(userEnum, transaction);
          }
          // Create Global Preferences artifact that lives on common branch
-         OseeSystemArtifacts.createGlobalPreferenceArtifact().persistAttributesAndRelations(transaction);
+         OseeSystemArtifacts.createGlobalPreferenceArtifact().persist(transaction);
 
          // Create XViewer Customization artifact that lives on common branch
-         GlobalXViewerSettings.createCustomArtifact().persistAttributesAndRelations(transaction);
+         GlobalXViewerSettings.createCustomArtifact().persist(transaction);
 
          transaction.execute();
       }

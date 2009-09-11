@@ -80,7 +80,7 @@ public class AtsFolderUtil {
          Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsUtil.getAtsBranch());
          rootArt.addChild(headingArt);
          StaticIdManager.setSingletonAttributeValue(headingArt, AtsFolder.Ats_Heading.staticId);
-         headingArt.persistAttributesAndRelations(transaction);
+         headingArt.persist(transaction);
       }
 
       for (AtsFolder atsFolder : AtsFolder.values()) {
@@ -92,7 +92,7 @@ public class AtsFolderUtil {
                      AtsUtil.getAtsBranch());
          StaticIdManager.setSingletonAttributeValue(art, atsFolder.staticId);
          headingArt.addChild(art);
-         art.persistAttributesAndRelations(transaction);
+         art.persist(transaction);
       }
 
       transaction.execute();

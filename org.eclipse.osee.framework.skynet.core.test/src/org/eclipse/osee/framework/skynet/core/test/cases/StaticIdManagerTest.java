@@ -84,7 +84,7 @@ public class StaticIdManagerTest {
       assertTrue("Should be 0; Returned " + artifacts.size(), artifacts.size() == 0);
       Artifact art = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
       art.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, staticId);
-      art.persistAttributesAndRelations();
+      art.persist();
 
       artifacts = ArtifactCache.getArtifactsByStaticId(staticId);
       assertTrue("Should be 1; Returned " + artifacts.size(), artifacts.size() == 1);
@@ -126,7 +126,7 @@ public class StaticIdManagerTest {
       Artifact artifact = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
       artifact.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, STATIC_ID_BBB);
       artifact.addAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE, STATIC_ID_BBB);
-      artifact.persistAttributes();
+      artifact.persist();
 
       // call to search for artifact with STATIC_ID_BBB
       Artifact artifactWithDoubleBbb =
@@ -167,7 +167,7 @@ public class StaticIdManagerTest {
          Artifact artifact =
                ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
          StaticIdManager.setSingletonAttributeValue(artifact, STATIC_ID_CCC);
-         artifact.persistAttributes(transaction);
+         artifact.persist(transaction);
          assertNotNull(artifact);
       }
       transaction.execute();
@@ -202,7 +202,7 @@ public class StaticIdManagerTest {
          Artifact artifact =
                ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
          StaticIdManager.setSingletonAttributeValue(artifact, STATIC_ID_DDD);
-         artifact.persistAttributes(transaction);
+         artifact.persist(transaction);
          assertNotNull(artifact);
          artifacts.add(artifact);
       }
@@ -230,7 +230,7 @@ public class StaticIdManagerTest {
                artifact.delete();
             }
             for (Artifact artifact : toDelete) {
-               artifact.persistAttributesAndRelations(transaction);
+               artifact.persist(transaction);
             }
             transaction.execute();
          }
@@ -256,7 +256,7 @@ public class StaticIdManagerTest {
       Artifact artifact =
             StaticIdManager.getOrCreateSingletonArtifact(GeneralData.ARTIFACT_TYPE, STATIC_ID_EEE,
                   BranchManager.getCommonBranch());
-      artifact.persistAttributes(transaction);
+      artifact.persist(transaction);
       assertNotNull(artifact);
       transaction.execute();
 
@@ -272,7 +272,7 @@ public class StaticIdManagerTest {
       transaction = new SkynetTransaction(BranchManager.getCommonBranch());
       artifact = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
       StaticIdManager.setSingletonAttributeValue(artifact, STATIC_ID_EEE);
-      artifact.persistAttributes(transaction);
+      artifact.persist(transaction);
       assertNotNull(artifact);
       transaction.execute();
       itemsCreated.add(artifact);

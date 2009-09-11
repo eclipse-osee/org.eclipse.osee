@@ -65,7 +65,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
       if (!found) {
          saveArt.addAttribute(CUSTOMIZATION_ATTRIBUTE_NAME, custData.getXml(true));
       }
-      saveArt.persistAttributes();
+      saveArt.persist();
    }
 
    public void saveCustomization(CustomizeData custData) throws OseeCoreException {
@@ -124,7 +124,7 @@ public class SkynetCustomizations implements IXViewerCustomizations {
          Matcher m = pattern.matcher(str);
          if (m.find() && m.group(1).equals(custData.getName())) {
             attribute.delete();
-            deleteArt.persistAttributes();
+            deleteArt.persist();
             break;
          }
       }

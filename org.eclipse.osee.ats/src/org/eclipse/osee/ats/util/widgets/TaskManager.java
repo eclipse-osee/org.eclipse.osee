@@ -246,7 +246,7 @@ public class TaskManager {
             taskArt.getSmaMgr().getStateMgr().setAssignees(users);
          }
          tasks.add(taskArt);
-         taskArt.persistAttributesAndRelations(transaction);
+         taskArt.persist(transaction);
       }
       return tasks;
    }

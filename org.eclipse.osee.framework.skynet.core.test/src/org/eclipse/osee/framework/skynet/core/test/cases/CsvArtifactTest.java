@@ -42,7 +42,7 @@ public class CsvArtifactTest {
       assertEquals(csv.getCsvData(), "");
       csv.getArtifact().setName(id);
       csv.setCsvData(csvData);
-      csv.getArtifact().persistAttributes();
+      csv.getArtifact().persist();
    }
 
    @org.junit.Test
@@ -52,7 +52,7 @@ public class CsvArtifactTest {
       assertNotNull(csvArt);
       assertEquals(csvData, csvArt.getCsvData());
       csvArt.appendData(appendData);
-      csvArt.getArtifact().persistAttributes();
+      csvArt.getArtifact().persist();
    }
 
    @org.junit.Test

@@ -34,7 +34,7 @@ public class DemoDbTasks {
                         (firstTaskWorkflow ? Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith),
                               DemoDbUtil.getDemoUser(DemoUsers.Kay_Jones)) : Arrays.asList(DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith))),
                         title);
-            taskArt.persistAttributesAndRelations();
+            taskArt.persist();
          }
          firstTaskWorkflow = false;
       }

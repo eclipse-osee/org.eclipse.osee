@@ -55,7 +55,7 @@ public class NewDecisionReviewJob extends Job {
          decisionReviewArtifact =
                ReviewManager.createNewDecisionReview(teamParent, reviewBlockType, reviewTitle, againstState,
                      description, options, assignees);
-         decisionReviewArtifact.persistAttributesAndRelations();
+         decisionReviewArtifact.persist();
          AtsUtil.openAtsAction(decisionReviewArtifact, AtsOpenOption.OpenOneOrPopupSelect);
       } catch (Exception ex) {
          monitor.done();

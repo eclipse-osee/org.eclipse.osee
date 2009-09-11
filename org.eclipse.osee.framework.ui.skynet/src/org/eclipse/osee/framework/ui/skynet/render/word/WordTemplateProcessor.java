@@ -366,7 +366,7 @@ public class WordTemplateProcessor {
                if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
                   if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
                      artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
-                     artifact.persistAttributes((SkynetTransaction) options.getValue(ITemplateRenderer.TRANSACTION_OPTION));
+                     artifact.persist((SkynetTransaction) options.getValue(ITemplateRenderer.TRANSACTION_OPTION));
                   }
                }
             }

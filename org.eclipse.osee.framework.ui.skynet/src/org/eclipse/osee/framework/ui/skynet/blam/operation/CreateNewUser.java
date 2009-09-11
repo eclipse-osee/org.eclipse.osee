@@ -110,7 +110,7 @@ public class CreateNewUser extends AbstractBlam {
          }
       }
 
-      user.persistAttributesAndRelations();
+      user.persist();
       ArtifactEditor.editArtifact(user);
       monitor.done();
    }

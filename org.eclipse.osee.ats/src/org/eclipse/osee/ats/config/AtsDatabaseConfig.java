@@ -46,7 +46,7 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       new DecisionWorkflowDefinition().config(writeType, xResultData);
       new PeerToPeerWorkflowDefinition().config(writeType, xResultData);
 
-      AtsUtil.getAtsAdminGroup().getGroupArtifact().persistAttributesAndRelations();
+      AtsUtil.getAtsAdminGroup().getGroupArtifact().persist();
 
    }
 

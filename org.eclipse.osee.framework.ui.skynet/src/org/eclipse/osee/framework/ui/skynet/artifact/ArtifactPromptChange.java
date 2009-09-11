@@ -130,7 +130,7 @@ public class ArtifactPromptChange {
          if (persist) {
             SkynetTransaction transaction = new SkynetTransaction(artifacts.iterator().next().getBranch());
             for (Artifact artifact : artifacts) {
-               artifact.persistAttributes(transaction);
+               artifact.persist(transaction);
             }
             transaction.execute();
          }
@@ -175,7 +175,7 @@ public class ArtifactPromptChange {
                   return false;
                }
                if (persist) {
-                  artifact.persistAttributes(transaction);
+                  artifact.persist(transaction);
                }
             }
             if (persist) {
@@ -247,7 +247,7 @@ public class ArtifactPromptChange {
    private static void persistSmaAttributes(final Collection<? extends Artifact> smas) throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(smas.iterator().next().getBranch());
       for (Artifact sma : smas) {
-         sma.persistAttributes(transaction);
+         sma.persist(transaction);
       }
 
       transaction.execute();
@@ -274,7 +274,7 @@ public class ArtifactPromptChange {
             for (Artifact sma : smas) {
                sma.setSoleAttributeValue(attributeName, md.getToggleState());
                if (persist) {
-                  sma.persistAttributes();
+                  sma.persist();
                }
             }
             if (persist) {

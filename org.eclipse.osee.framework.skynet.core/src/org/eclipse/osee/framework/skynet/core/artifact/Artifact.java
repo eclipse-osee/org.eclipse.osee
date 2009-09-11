@@ -1120,15 +1120,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       RelationManager.prepareRelationsForReload(this);
    }
 
-   public final void persistAttributes() throws OseeCoreException {
-      if (hasDirtyAttributes()) {
-         SkynetTransaction transaction = new SkynetTransaction(branch);
-         persistAttributes(transaction);
-         transaction.execute();
-      }
-   }
-
-   public final void persistAttributes(SkynetTransaction transaction) throws OseeCoreException {
+   private final void persistAttributes(SkynetTransaction transaction) throws OseeCoreException {
       if (!UserManager.duringMainUserCreation() && !AccessControlManager.hasPermission(getBranch(),
             PermissionEnum.WRITE)) {
          throw new OseeArgumentException(
@@ -1145,33 +1137,19 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       }
    }
 
-   public final void persistRelations() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(branch);
-      persistRelations(transaction);
-      transaction.execute();
-   }
-
-   public final void persistRelations(SkynetTransaction transaction) throws OseeCoreException {
+   private final void persistRelations(SkynetTransaction transaction) throws OseeCoreException {
       RelationManager.persistRelationsFor(transaction, this, null);
    }
 
-   public final void persistRelations(Collection<RelationType> relationTypes) throws OseeCoreException {
+   public final void persist() throws OseeCoreException {
       SkynetTransaction transaction = new SkynetTransaction(branch);
-      for (RelationType relationType : relationTypes) {
-         RelationManager.persistRelationsFor(transaction, this, relationType);
-      }
+      persist(transaction);
       transaction.execute();
    }
 
-   public final void persistAttributesAndRelations() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(branch);
-      persistAttributesAndRelations(transaction);
-      transaction.execute();
-   }
-
-   public final void persistAttributesAndRelations(SkynetTransaction transaction) throws OseeCoreException {
+   public final void persist(SkynetTransaction transaction) throws OseeCoreException {
       if (transaction == null) {
-         persistAttributesAndRelations();
+         persist();
       } else {
          persistAttributes(transaction);
          persistRelations(transaction);
@@ -1332,7 +1310,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    @Deprecated
    public void relate(IRelationEnumeration relationSide, Artifact artifact, boolean persist) throws OseeCoreException {
       addRelation(relationSide, artifact);
-      persistRelations();
+      persist();
    }
 
    public void deleteRelation(IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {

@@ -83,7 +83,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       resetTitleOffChildren();
       resetValidationOffChildren();
       resetDescriptionOffChildren();
-      persistAttributes(transaction);
+      persist(transaction);
    }
 
    public boolean hasAtsWorldChildren() throws OseeCoreException {
@@ -577,7 +577,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
                team.getActionableItemsDam().removeActionableItem(aia);
             }
          }
-         team.persistAttributes(transaction);
+         team.persist(transaction);
       }
 
       transaction.execute();
@@ -610,7 +610,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             if (originator != null) {
                teamArt.getSmaMgr().getLog().setOriginator(originator);
             }
-            teamArt.persistAttributesAndRelations(transaction);
+            teamArt.persist(transaction);
             sb.append(aia.getName() + " => added team workflow \"" + tda.getName() + "\"\n");
          }
       }
@@ -688,7 +688,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       // Relate Action to WorkFlow
       addRelation(AtsRelation.ActionToWorkflow_WorkFlow, teamArt);
 
-      teamArt.persistAttributesAndRelations(transaction);
+      teamArt.persist(transaction);
 
       return teamArt;
    }

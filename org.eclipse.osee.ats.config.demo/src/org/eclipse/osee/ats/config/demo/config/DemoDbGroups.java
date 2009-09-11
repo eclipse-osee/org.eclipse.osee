@@ -46,14 +46,14 @@ public class DemoDbGroups {
             groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, teamWorkflow);
          }
 
-         codeArt.persistAttributesAndRelations();
+         codeArt.persist();
       }
 
       // Add all Tasks to Group
       for (Artifact task : ArtifactQuery.getArtifactListFromType(TaskArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch())) {
          groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, task);
       }
-      groupArt.persistRelations();
+      groupArt.persist();
 
       return codeWorkflows;
    }

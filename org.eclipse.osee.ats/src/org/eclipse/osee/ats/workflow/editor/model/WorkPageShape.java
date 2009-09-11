@@ -244,7 +244,7 @@ public class WorkPageShape extends RectangleShape {
       artifact.setName(workId);
       AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(artifact, transaction);
       WorkItemDefinitionFactory.deCache(workPageDefinition);
-      artifact.persistAttributesAndRelations(transaction);
+      artifact.persist(transaction);
       return Result.TrueResult;
    }
 }

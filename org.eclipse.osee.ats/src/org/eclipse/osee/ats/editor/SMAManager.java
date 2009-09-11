@@ -387,7 +387,7 @@ public class SMAManager {
       if (persist) {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
          for (TeamWorkFlowArtifact teamArt : smas) {
-            teamArt.persistRelations(transaction);
+            teamArt.persist(transaction);
          }
          transaction.execute();
       }
@@ -568,7 +568,7 @@ public class SMAManager {
             }
             if (diag.open() == 0) {
                verArt.setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(), diag.getSelectedDate());
-               verArt.persistAttributes();
+               verArt.persist();
                return true;
             }
          } else {
@@ -582,7 +582,7 @@ public class SMAManager {
             if (diag.open() == 0) {
                getSma().setSoleAttributeValue(ATSAttributes.RELEASE_DATE_ATTRIBUTE.getStoreName(),
                      diag.getSelectedDate());
-               getSma().persistAttributes();
+               getSma().persist();
                return true;
             }
          }
@@ -610,7 +610,7 @@ public class SMAManager {
             if (diag.open() == 0) {
                verArt.setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
                      diag.getSelectedDate());
-               verArt.persistAttributes();
+               verArt.persist();
                return true;
             }
          } else {
@@ -625,7 +625,7 @@ public class SMAManager {
             if (diag.open() == 0) {
                getSma().setSoleAttributeValue(ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(),
                      diag.getSelectedDate());
-               getSma().persistAttributes();
+               getSma().persist();
                return true;
             }
          }
@@ -849,7 +849,7 @@ public class SMAManager {
 
       // Persist
       if (persist) {
-         getSma().persistAttributesAndRelations(transaction);
+         getSma().persist(transaction);
       }
 
       getSma().transitioned(fromPage, toPage, toAssignees, true, transaction);

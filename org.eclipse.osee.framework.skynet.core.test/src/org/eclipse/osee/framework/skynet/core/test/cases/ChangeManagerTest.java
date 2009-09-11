@@ -50,7 +50,7 @@ public class ChangeManagerTest {
 
       modArtifact =
             ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, BranchManager.getSystemRootBranch());
-      modArtifact.persistAttributes();
+      modArtifact.persist();
 
       sleep(5000);
 
@@ -62,7 +62,7 @@ public class ChangeManagerTest {
       sleep(5000);
 
       newArtifact = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch);
-      newArtifact.persistAttributes();
+      newArtifact.persist();
       sleep(5000);
    }
 
@@ -79,7 +79,7 @@ public class ChangeManagerTest {
       newArtifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "new content");
       assertTrue("Check artifact is still new", checkArtifactModType(newArtifact, ModificationType.NEW));
       modArtifact.setSoleAttributeFromString(WordAttribute.WORD_TEMPLATE_CONTENT, "changed content");
-      modArtifact.persistAttributes();
+      modArtifact.persist();
       assertTrue("Check artifact has changed", checkArtifactModType(modArtifact, ModificationType.MODIFIED));
    }
 
@@ -88,7 +88,7 @@ public class ChangeManagerTest {
       BranchManager.purgeBranch(branch);
       sleep(5000);
 
-      modArtifact.persistAttributes();
+      modArtifact.persist();
    }
 
    public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException {

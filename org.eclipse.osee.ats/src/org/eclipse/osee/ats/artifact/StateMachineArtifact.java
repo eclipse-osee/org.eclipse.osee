@@ -367,14 +367,14 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public void addSubscribed(User user, SkynetTransaction transaction) throws OseeCoreException {
       if (!getRelatedArtifacts(AtsRelation.SubscribedUser_User).contains(user)) {
          addRelation(AtsRelation.SubscribedUser_User, user);
-         persistRelations(transaction);
+         persist(transaction);
       }
 
    }
 
    public void removeSubscribed(User user, SkynetTransaction transaction) throws OseeCoreException {
       deleteRelation(AtsRelation.SubscribedUser_User, user);
-      persistRelations(transaction);
+      persist(transaction);
    }
 
    public boolean isSubscribed(User user) throws OseeCoreException {
@@ -392,13 +392,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    public void addFavorite(User user, SkynetTransaction transaction) throws OseeCoreException {
       if (!getRelatedArtifacts(AtsRelation.FavoriteUser_User).contains(user)) {
          addRelation(AtsRelation.FavoriteUser_User, user);
-         persistRelations(transaction);
+         persist(transaction);
       }
    }
 
    public void removeFavorite(User user, SkynetTransaction transaction) throws OseeCoreException {
       deleteRelation(AtsRelation.FavoriteUser_User, user);
-      persistRelations(transaction);
+      persist(transaction);
    }
 
    public boolean isFavorite(User user) throws OseeCoreException {
@@ -752,7 +752,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
          Set<Artifact> artifacts = new HashSet<Artifact>();
          getSmaArtifactsOneLevel(this, artifacts);
          for (Artifact artifact : artifacts) {
-            artifact.persistAttributesAndRelations(transaction);
+            artifact.persist(transaction);
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't save artifact " + getHumanReadableId(), ex);

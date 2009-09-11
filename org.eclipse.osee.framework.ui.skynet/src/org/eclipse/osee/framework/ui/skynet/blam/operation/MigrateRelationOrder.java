@@ -91,7 +91,7 @@ public class MigrateRelationOrder extends AbstractBlam {
       }
 
       artifact.setRelationOrder(relationEnum, orginalOrder);
-      artifact.persistAttributesAndRelations(transaction);
+      artifact.persist(transaction);
    }
 
    private void getOrginalOrder(Artifact artifact, IRelationEnumeration relationEnum, List<Artifact> orginalOrder) throws OseeCoreException {

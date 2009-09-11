@@ -675,13 +675,13 @@ public class AtsBranchManager {
                         AtsAddDecisionReviewRule.createNewDecisionReview(workRuleDef, transaction, smaMgr,
                               DecisionRuleOption.TransitionToDecision);
                   if (decArt != null) {
-                     decArt.persistAttributesAndRelations(transaction);
+                     decArt.persist(transaction);
                   }
                } else if (ruleId.equals(AtsAddPeerToPeerReviewRule.ID)) {
                   PeerToPeerReviewArtifact peerArt =
                         AtsAddPeerToPeerReviewRule.createNewPeerToPeerReview(workRuleDef, smaMgr, transaction);
                   if (peerArt != null) {
-                     peerArt.persistAttributesAndRelations(transaction);
+                     peerArt.persist(transaction);
                   }
                }
             }

@@ -154,7 +154,7 @@ public class WordEditTest {
          FileRenderer.setWorkbenchSavePopUpDisabled(true);
          branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
          Artifact newArt = ArtifactTypeManager.addArtifact(Requirements.SOFTWARE_REQUIREMENT, branch, className);
-         newArt.persistAttributesAndRelations();
+         newArt.persist();
          // open the artifacts; testing one artifact for now
          artifacts = Arrays.asList(newArt);
          if (useRendererManager) {

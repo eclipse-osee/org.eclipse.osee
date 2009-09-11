@@ -51,7 +51,7 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
          if (diag.open() != 0) return;
          UserManager.getUser().setRelationsOfType(AtsRelation.SubscribedUser_Artifact, diag.getChecked(),
                ActionableItemArtifact.class);
-         UserManager.getUser().persistAttributesAndRelations();
+         UserManager.getUser().persist();
          AWorkbench.popup(getName(), "Subscriptions updated.");
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

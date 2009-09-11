@@ -113,7 +113,7 @@ public class ArtifactClipboard {
             }
          }
 
-         parent.persistAttributesAndRelations();
+         parent.persist();
       }
    }
 }

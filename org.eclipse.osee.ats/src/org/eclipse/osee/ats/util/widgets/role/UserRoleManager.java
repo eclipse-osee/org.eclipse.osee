@@ -115,7 +115,9 @@ public class UserRoleManager {
          sb.append("</" + ATS_DEFECT_TAG + ">");
          getArtifact().setSoleAttributeValue(REVIEW_DEFECT_ATTRIBUTE_NAME, sb.toString());
          updateAssignees();
-         if (persist) getArtifact().persistAttributes(transaction);
+         if (persist) {
+            getArtifact().persist(transaction);
+         }
          rollupHoursSpentToReviewState(persist, transaction);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats review defect document", ex);
@@ -136,7 +138,7 @@ public class UserRoleManager {
    }
 
    private void updateAssignees() throws OseeCoreException {
-      // Set assigness based on roles that are not set as completed
+      // Set assignees based on roles that are not set as completed
       Set<User> assignees = new HashSet<User>();
       for (UserRole uRole : getUserRoles()) {
          if (!uRole.isCompleted() && uRole.getUser() != null) assignees.add(uRole.getUser());
@@ -152,7 +154,7 @@ public class UserRoleManager {
          else
             assignees.add(UserManager.getUser());
       }
-      // Set assigness based on roles
+      // Set assignees based on roles
       getArtifact().getSmaMgr().getStateMgr().setAssignees(assignees);
    }
 
@@ -222,6 +224,6 @@ public class UserRoleManager {
          hoursSpent += role.getHoursSpent() == null ? 0 : role.getHoursSpent();
       SMAManager smaMgr = new SMAManager(getArtifact());
       smaMgr.getStateMgr().setMetrics(hoursSpent, smaMgr.getStateMgr().getPercentComplete(), true);
-      if (persist) getArtifact().persistAttributes(transaction);
+      if (persist) getArtifact().persist(transaction);
    }
 }

@@ -50,7 +50,7 @@ public class Artifact_setAttributeValues {
             ArtifactTypeManager.addArtifact("General Document",
                   BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), getClass().getSimpleName());
       artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, firstSet);
-      artifact.persistAttributes();
+      artifact.persist();
 
       assertTrue(Collections.isEqual(firstSet, artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
    }
@@ -59,7 +59,7 @@ public class Artifact_setAttributeValues {
    public void testSetAttributeValuesAddOne() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, addOneSet);
-      artifact.persistAttributes();
+      artifact.persist();
 
       assertTrue(Collections.isEqual(addOneSet, artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
    }
@@ -68,7 +68,7 @@ public class Artifact_setAttributeValues {
    public void testSetAttributeValuesAddOneRemoveOne() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, addOneRemoveOneSet);
-      artifact.persistAttributes();
+      artifact.persist();
 
       assertTrue(Collections.isEqual(addOneRemoveOneSet,
             artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));
@@ -78,7 +78,7 @@ public class Artifact_setAttributeValues {
    public void testSetAttributeValuesRemoveAll() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, emptySet);
-      artifact.persistAttributes();
+      artifact.persist();
 
       assertTrue(artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE).size() == 0);
    }
@@ -87,7 +87,7 @@ public class Artifact_setAttributeValues {
    public void testSetAttributeValuesWithDuplicates() throws Exception {
       Artifact artifact = getArtifact();
       artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, addDuplicates_set);
-      artifact.persistAttributes();
+      artifact.persist();
 
       assertTrue(Collections.isEqual(addDuplicates_result,
             artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)));

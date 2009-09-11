@@ -132,7 +132,7 @@ public class InterArtifactExplorerDropHandler {
             } else {
                reloadArtifacts.add(reflectedArtifact);
             }
-            reflectedArtifact.persistAttributesAndRelations(transaction);
+            reflectedArtifact.persist(transaction);
          }
       }
       transaction.execute();

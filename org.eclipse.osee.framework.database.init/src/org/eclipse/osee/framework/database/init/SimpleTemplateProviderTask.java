@@ -60,7 +60,7 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
                   String match = matchCriteriaEl.getAttribute("match");
                   templateArtifact.addAttribute("Template Match Criteria", match);
                }
-               templateArtifact.persistAttributes();
+               templateArtifact.persist();
                templateFolder.addChild(templateArtifact);
             } else {
                OseeLog.log(SimpleTemplateProviderTask.class, Level.SEVERE, String.format("Problem loading file %s",
@@ -68,7 +68,7 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
             }
          }
       }
-      templateFolder.persistAttributesAndRelations();
+      templateFolder.persist();
    }
 
    private Artifact getTemplateFolder() throws OseeCoreException {
@@ -80,7 +80,7 @@ public class SimpleTemplateProviderTask implements IDbInitializationTask {
          templateFolder =
                ArtifactTypeManager.addArtifact("Folder", BranchManager.getCommonBranch(), "Document Templates");
          rootArt.addChild(templateFolder);
-         templateFolder.persistAttributesAndRelations();
+         templateFolder.persist();
       }
       return templateFolder;
    }

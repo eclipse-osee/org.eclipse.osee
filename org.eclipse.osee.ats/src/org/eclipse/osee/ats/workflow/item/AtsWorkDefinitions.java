@@ -262,7 +262,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
                if (art.isDirty() && resultData != null) {
                   resultData.log("Updated [" + art.getArtifactTypeName() + "][" + art + "]");
                }
-               art.persistAttributesAndRelations(transaction);
+               art.persist(transaction);
             }
          }
       }
@@ -290,7 +290,7 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
    private static void relateIfNotRelated(Artifact parent, Artifact child, SkynetTransaction transaction) throws OseeCoreException {
       if (!parent.getChildren().contains(child) && !child.hasParent()) {
          parent.addChild(child);
-         parent.persistRelations(transaction);
+         parent.persist(transaction);
       }
    }
 

@@ -116,7 +116,7 @@ public class WorkItemDefinitionFactory {
       Artifact childArt = childArts.iterator().next();
       if (!parentArt.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class).contains(childArt)) {
          parentArt.addRelation(CoreRelationEnumeration.WorkItem__Child, childArt);
-         parentArt.persistRelations();
+         parentArt.persist();
       }
    }
 

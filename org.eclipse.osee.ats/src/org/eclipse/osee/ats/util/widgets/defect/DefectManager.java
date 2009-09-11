@@ -135,7 +135,7 @@ public class DefectManager {
                   AXml.addTagData(DEFECT_ITEM_TAG, newPromoteItem.toXml()));
          }
          if (persist) {
-            getArtifact().persistAttributes(transaction);
+            getArtifact().persist(transaction);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, "Can't create ats review defect document", ex);

@@ -218,7 +218,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
                // If change was made on Attribute tab, persist sma separately.  This is cause attribute
                // tab changes conflict with XWidget changes
                if (attributesComposite != null && getActivePage() == attributesPageIndex) {
-                  smaMgr.getSma().persistAttributes(transaction);
+                  smaMgr.getSma().persist(transaction);
                }
                // Save widget data to artifact
                workFlowTab.saveXWidgetToArtifact();
@@ -373,7 +373,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
             @Override
             public void widgetSelected(SelectionEvent e) {
                try {
-                  smaMgr.getSma().persistAttributes();
+                  smaMgr.getSma().persist();
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }

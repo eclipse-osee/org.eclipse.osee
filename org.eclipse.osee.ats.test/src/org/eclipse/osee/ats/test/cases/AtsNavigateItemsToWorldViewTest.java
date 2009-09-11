@@ -590,7 +590,7 @@ public class AtsNavigateItemsToWorldViewTest {
       for (Artifact art : arts) {
          attributeValues.put(art, art.getSoleAttributeValue(attributeToDelete));
          art.deleteAttribute(attributeToDelete, art.getSoleAttributeValue(attributeToDelete));
-         art.persistAttributes(transaction);
+         art.persist(transaction);
       }
       transaction.execute();
       try {
@@ -600,7 +600,7 @@ public class AtsNavigateItemsToWorldViewTest {
          // restore the attribute to leave the demo db back in its original state      
          for (Artifact art : arts) {
             art.setSoleAttributeValue(attributeToDelete, attributeValues.get(art));
-            art.persistAttributes(transaction);
+            art.persist(transaction);
          }
          transaction.execute();
       }

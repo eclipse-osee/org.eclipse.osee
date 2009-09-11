@@ -87,7 +87,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
       try {
          getFormPage().doSave(monitor);
          Artifact artifact = getEditorInput().getArtifact();
-         artifact.persistAttributesAndRelations();
+         artifact.persist();
          firePropertyChange(PROP_DIRTY);
       } catch (OseeCoreException ex) {
          onDirtied();

@@ -87,7 +87,7 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
                   SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
                   TaskManager.createTasks(teamArt, titles, assignees, transaction);
-                  teamArt.persistAttributesAndRelations(transaction);
+                  teamArt.persist(transaction);
                   transaction.execute();
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);

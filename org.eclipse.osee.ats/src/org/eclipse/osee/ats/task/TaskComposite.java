@@ -296,7 +296,7 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
                      taskArt.deleteRelation(AtsRelation.SmaToTask_Sma, taskArt.getParentSMA());
                   }
                   taskArt.addRelation(AtsRelation.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma());
-                  taskArt.persistRelations(transaction);
+                  taskArt.persist(transaction);
                }
             }
             transaction.execute();

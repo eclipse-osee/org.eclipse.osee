@@ -51,7 +51,7 @@ public class DeleteUnneededUnspecifiedAttributes extends AbstractBlam {
                      attribute.delete();
                   }
                }
-               artifact.persistAttributes(transaction);
+               artifact.persist(transaction);
                break;
             }
          }

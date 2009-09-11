@@ -130,7 +130,7 @@ public class UpdateArtifactJob extends UpdateJob {
    private void updateNativeArtifact(Artifact artifact) throws OseeCoreException, FileNotFoundException {
       if (!artifact.isReadOnly()) {
          artifact.setSoleAttributeFromStream(CoreAttributes.NATIVE_CONTENT.getName(), new FileInputStream(workingFile));
-         artifact.persistAttributes();
+         artifact.persist();
       } else {
          logUpdateSkip(artifact);
       }
@@ -229,7 +229,7 @@ public class UpdateArtifactJob extends UpdateJob {
                   content = WordMlLinkHandler.unlink(linkType, artifact, content);
                   artifact.setSoleAttributeValue(WordAttribute.WORD_TEMPLATE_CONTENT, content);
                }
-               artifact.persistAttributes();
+               artifact.persist();
             }
          }
       } finally {
@@ -249,7 +249,7 @@ public class UpdateArtifactJob extends UpdateJob {
             LinkType linkType = LinkType.OSEE_SERVER_LINK;
             content = WordMlLinkHandler.unlink(linkType, artifact, content);
             artifact.setSoleAttributeFromString(WordAttribute.WHOLE_WORD_CONTENT, content);
-            artifact.persistAttributes();
+            artifact.persist();
          } else {
             logUpdateSkip(artifact);
          }

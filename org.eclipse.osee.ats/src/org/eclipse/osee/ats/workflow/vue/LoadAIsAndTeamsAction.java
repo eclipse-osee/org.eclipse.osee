@@ -155,7 +155,7 @@ public class LoadAIsAndTeamsAction {
          workPage = workFlow.getPage("Teams");
          addTeam(atsHeading, workPage, transaction);
 
-         atsHeading.persistAttributesAndRelations(transaction);
+         atsHeading.persist(transaction);
          transaction.execute();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -249,7 +249,7 @@ public class LoadAIsAndTeamsAction {
                parent = AtsFolderUtil.getFolder(AtsFolder.Teams);
             }
             parent.addChild(teamDefArt);
-            parent.persistAttributesAndRelations(transaction);
+            parent.persist(transaction);
 
             for (Artifact actionableItem : actionableItems) {
                teamDefArt.addRelation(AtsRelation.TeamActionableItem_ActionableItem, actionableItem);
@@ -273,7 +273,7 @@ public class LoadAIsAndTeamsAction {
                System.err.println(ex.getLocalizedMessage());
             }
          }
-         teamDefArt.persistAttributesAndRelations(transaction);
+         teamDefArt.persist(transaction);
       }
 
       // Handle all team children
@@ -327,10 +327,10 @@ public class LoadAIsAndTeamsAction {
                aia.addRelation(AtsRelation.TeamLead_Lead, user);
             }
 
-            aia.persistAttributes(transaction);
+            aia.persist(transaction);
             idToActionItem.put(page.getId(), aia);
             parent.addChild(aia);
-            parent.persistAttributesAndRelations(transaction);
+            parent.persist(transaction);
          }
       }
       for (DiagramNode childPage : page.getToPages()) {
@@ -338,7 +338,7 @@ public class LoadAIsAndTeamsAction {
       }
       aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), actionable);
 
-      aia.persistAttributes(transaction);
+      aia.persist(transaction);
       return aia;
    }
 

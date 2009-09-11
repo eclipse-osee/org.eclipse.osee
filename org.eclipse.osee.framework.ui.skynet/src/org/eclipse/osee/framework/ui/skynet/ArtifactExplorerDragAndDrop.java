@@ -136,7 +136,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   for (Artifact artifact : artifactsToBeRelated) {
                      artifact.setRelations(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT,
                            Collections.singleton(parentArtifact));
-                     artifact.persistAttributesAndRelations(transaction);
+                     artifact.persist(transaction);
                   }
                   transaction.execute();
                } catch (OseeCoreException ex) {
