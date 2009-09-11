@@ -37,8 +37,6 @@ import org.eclipse.ui.menus.CommandContributionItem;
 import org.eclipse.ui.menus.CommandContributionItemParameter;
 
 /**
- * 
- * 
  * @author Jeff C. Phillips
  */
 public class CommitIntoParentCompoundContributionItem extends CompoundContributionItem {
@@ -67,7 +65,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
 
          if (!branches.isEmpty()) {
             Branch selectedBranch = branches.iterator().next();
-            if (selectedBranch != null) {
+            if (selectedBranch != null && !selectedBranch.isSystemRootBranch()) {
                try {
                   String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitIntoParent";
                   Command command = configCommandParameter(commandId);
@@ -88,6 +86,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
    }
 
    private CommandContributionItem createCommand(Branch branch, String commandId) throws OseeCoreException {
+
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put(BranchView.BRANCH_ID, Integer.toString(branch.getBranchId()));
       parameters.put(CommitBranchParameter.ARCHIVE_PARENT_BRANCH, "true");
