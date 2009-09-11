@@ -129,22 +129,29 @@ IOSEEMessageWriterListener, ITimeout {
 
    public MsgWaitResult waitForCondition(ITestEnvironmentAccessor accessor, ICondition condition, boolean maintain, int milliseconds) throws InterruptedException {
       long time = 0l;
-      boolean pass = condition.check();
+      boolean pass;
       if (milliseconds > 0) {
-         time = accessor.getEnvTime();
-         boolean done = pass ^ maintain;
-         final ICancelTimer cancelTimer = accessor.setTimerFor(this, milliseconds);
-         while (!done) {
-            if (waitForData()) {
-               // we timed out
-               break;
-            } else {
-               pass = condition.checkAndIncrement();
-               done = pass ^ maintain;
+         ICancelTimer cancelTimer;
+         synchronized (this) {
+            pass = condition.check();
+            time = accessor.getEnvTime();
+            boolean done = pass ^ maintain;
+            cancelTimer = accessor.setTimerFor(this, milliseconds);
+            while (!done) {
+               if (waitForData()) {
+                  // we timed out
+                  break;
+               } else {
+                  pass = condition.checkAndIncrement();
+                  done = pass ^ maintain;
+               }
             }
+            time = accessor.getEnvTime() - time;
          }
          cancelTimer.cancelTimer();
-         time = accessor.getEnvTime() - time;
+      }
+      else{
+         pass = condition.check();
       }
       return new MsgWaitResult(time, condition.getCheckCount(), pass);
    }
