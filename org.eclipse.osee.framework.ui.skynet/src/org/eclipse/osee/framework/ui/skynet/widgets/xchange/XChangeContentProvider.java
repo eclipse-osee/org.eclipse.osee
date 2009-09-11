@@ -20,22 +20,22 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.change.ArtifactChanged;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 
 public class XChangeContentProvider implements ITreeContentProvider {
    private final ChangeXViewer changeXViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
-   private Map<Artifact, ArtifactChanged> artifactToChangeMap;
-   private ArrayList<ArtifactChanged> docOrderedChnages;
+   private Map<Artifact, ArtifactChange> artifactToChangeMap;
+   private ArrayList<ArtifactChange> docOrderedChnages;
    private boolean showDocOrder;
 
    public XChangeContentProvider(ChangeXViewer commitXViewer) {
       super();
       this.changeXViewer = commitXViewer;
       this.showDocOrder = true;
-      this.artifactToChangeMap = new HashMap<Artifact, ArtifactChanged>();
-      this.docOrderedChnages = new ArrayList<ArtifactChanged>();
+      this.artifactToChangeMap = new HashMap<Artifact, ArtifactChange>();
+      this.docOrderedChnages = new ArrayList<ArtifactChange>();
    }
 
    @SuppressWarnings("unchecked")
@@ -58,8 +58,8 @@ public class XChangeContentProvider implements ITreeContentProvider {
 
       if (docOrderedChnages.size() < 1) {
          for (Object object : changes) {
-            if (object instanceof ArtifactChanged) {
-               ArtifactChanged artifactChanged = (ArtifactChanged)object;
+            if (object instanceof ArtifactChange) {
+               ArtifactChange artifactChanged = (ArtifactChange)object;
                Artifact artifact = artifactChanged.getArtifact();
                if (artifact != null) {
                   artifacts.add(artifact);

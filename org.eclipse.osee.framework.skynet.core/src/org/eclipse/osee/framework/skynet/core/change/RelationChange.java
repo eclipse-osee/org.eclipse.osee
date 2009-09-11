@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 /**
  * @author Jeff C. Phillips
  */
-public class RelationChanged extends Change {
+public final class RelationChange extends Change {
    private int bArtId;
    private String bArtName;
    private Artifact bArtifact;
@@ -56,15 +56,16 @@ public class RelationChanged extends Change {
     * @throws OseeDataStoreException
     * @throws ArtifactDoesNotExist
     */
-   public RelationChanged(Branch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+   public RelationChange(Branch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType, boolean isHistorical, Artifact artifact, Artifact bArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super(branch, aArtType, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType,
-            isHistorical);
+            isHistorical, artifact);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
       this.aLinkOrder = aLinkOrder;
       this.bLinkOrder = bLinkOrder;
       this.relationType = relationType;
+      this.bArtifact = bArtifact;
    }
 
    @SuppressWarnings("unchecked")
@@ -91,10 +92,6 @@ public class RelationChanged extends Change {
     */
    public int getBArtId() {
       return bArtId;
-   }
-
-   public void setbArtifact(Artifact bArtifact) {
-      this.bArtifact = bArtifact;
    }
 
    public Artifact getBArtifact() throws ArtifactDoesNotExist {

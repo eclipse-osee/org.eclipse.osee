@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -31,7 +32,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 /**
  * @author Jeff C. Phillips
  */
-public class AttributeChanged extends Change {
+public final class AttributeChange extends Change {
    private final String isValue;
    private String wasValue;
    private final int attrId;
@@ -54,9 +55,9 @@ public class AttributeChanged extends Change {
     * @throws OseeDataStoreException
     * @throws ArtifactDoesNotExist 
     */
-   public AttributeChanged(Branch branch, ArtifactType artType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+   public AttributeChange(Branch branch, ArtifactType artType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
-            isHistorical);
+            isHistorical, artifact);
       this.isValue = isValue;
       this.wasValue = wasValue;
       this.attrId = attrId;
@@ -66,8 +67,8 @@ public class AttributeChanged extends Change {
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof AttributeChanged) {
-         AttributeChanged change = (AttributeChanged) obj;
+      if (obj instanceof AttributeChange) {
+         AttributeChange change = (AttributeChange) obj;
          return super.equals(obj) &&
          //
          change.getArtId() == attrTypeId &&

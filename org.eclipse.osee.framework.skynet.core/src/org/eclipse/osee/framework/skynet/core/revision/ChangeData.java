@@ -19,9 +19,9 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.change.ArtifactChanged;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.change.RelationChanged;
+import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 
 /**
  * Collection of changes from working branch or transactionId from committed branch.
@@ -99,16 +99,16 @@ public class ChangeData {
       if (kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation || kindType == KindType.Relation) {
          if (changes != null) {
             for (Change change : changes) {
-               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && (change instanceof ArtifactChanged)) {
+               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && (change instanceof ArtifactChange)) {
                   if (modTypes.contains(change.getModificationType())) {
                      artifacts.add(change.getArtifact());
                   }
                }
                // 
-               else if ((kindType == KindType.Relation || kindType == KindType.ArtifactOrRelation) && (change instanceof RelationChanged)) {
+               else if ((kindType == KindType.Relation || kindType == KindType.ArtifactOrRelation) && (change instanceof RelationChange)) {
                   if (modTypes.contains(change.getModificationType())) {
-                     artifacts.add(((RelationChanged) change).getArtifact());
-                     artifacts.add(((RelationChanged) change).getBArtifact());
+                     artifacts.add(((RelationChange) change).getArtifact());
+                     artifacts.add(((RelationChange) change).getBArtifact());
                   }
                }
             }

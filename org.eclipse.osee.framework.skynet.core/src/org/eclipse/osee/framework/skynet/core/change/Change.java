@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
  * @author Jeff C. Phillips
  */
 public abstract class Change implements IAdaptable {
-
    private final int sourceGamma;
    private final int artId;
    private final TransactionId toTransactionId;
@@ -50,7 +49,7 @@ public abstract class Change implements IAdaptable {
     * @throws OseeDataStoreException
     * @throws ArtifactDoesNotExist 
     */
-   public Change(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+   public Change(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
@@ -61,6 +60,7 @@ public abstract class Change implements IAdaptable {
       this.changeType = changeType;
       this.artifactType = artifactType;
       this.isHistorical = isHistorical;
+      this.artifact = artifact;
    }
 
    @Override
@@ -116,10 +116,6 @@ public abstract class Change implements IAdaptable {
 
    public Artifact getArtifact(){
       return artifact;
-   }
-   
-   public void setArtifact(Artifact artifact) {
-      this.artifact = artifact;
    }
    
    public String getArtifactName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
@@ -194,11 +190,4 @@ public abstract class Change implements IAdaptable {
    public abstract String getItemKind();
 
    public abstract int getItemId();
-
-   /**
-    * @param branch the branch to set
-    */
-   public void setBranch(Branch branch) {
-      this.branch = branch;
-   }
 }

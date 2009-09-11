@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
-import org.eclipse.osee.framework.skynet.core.change.AttributeChanged;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
@@ -43,8 +43,8 @@ public class CatchTrackedChanges implements CommitAction {
 
       for (Change change : ChangeManager.getChangesPerBranch(branch, new NullProgressMonitor())) {
          if (!change.getModificationType().isDeleted()) {
-            if (change instanceof AttributeChanged) {
-               Attribute<?> attribute = ((AttributeChanged) change).getAttribute();
+            if (change instanceof AttributeChange) {
+               Attribute<?> attribute = ((AttributeChange) change).getAttribute();
                if (attribute instanceof WordAttribute) {
                   if (((WordAttribute) attribute).containsWordAnnotations()) {
                      throw new OseeCoreException(

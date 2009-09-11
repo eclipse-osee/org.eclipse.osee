@@ -18,7 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.change.RelationChanged;
+import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -47,7 +47,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
             return String.valueOf(data.getGamma());
          } else if (cCol.equals(HistoryXViewerFactory.itemType)) {
-            return data instanceof RelationChanged ? data.getName() : data.getItemTypeName();
+            return data instanceof RelationChange ? data.getName() : data.getItemTypeName();
          } else if (cCol.equals(HistoryXViewerFactory.itemChange)) {
             return data.getItemKind();
          } else if (cCol.equals(HistoryXViewerFactory.modType)) {
