@@ -131,9 +131,10 @@ public class BranchCreation implements IBranchCreation {
          "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
 
    private static int insertAddressing(int parentBranchId, int newTransactionNumber, OseeConnection connection) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       List<Object[]> data = new ArrayList<Object[]>();
       HashSet<Integer> gammas = new HashSet<Integer>(100000);
+
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
          chStmt.runPreparedQuery(10000, SELECT_ADDRESSING, TxChange.NOT_CURRENT.getValue(), parentBranchId);
          while (chStmt.next()) {
