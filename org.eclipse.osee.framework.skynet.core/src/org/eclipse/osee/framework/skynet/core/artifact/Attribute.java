@@ -16,7 +16,6 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -86,6 +85,14 @@ public abstract class Attribute<T> {
       this.gammaId = gammaId;
    }
 
+   private void markAsNewOrChanged() throws OseeStateException {
+      if (isInDb()) {
+         markAsChanged(ModificationType.MODIFIED);
+      } else {
+         markAsChanged(ModificationType.NEW);
+      }
+   }
+
    public void setValue(T value) throws OseeCoreException {
       if (attributeType.getName().equals("Name") && !value.equals(getValue())) {
          // Confirm artifact is fit to rename
@@ -98,7 +105,7 @@ public abstract class Attribute<T> {
       }
 
       if (subClassSetValue(value)) {
-         markAsChanged(ModificationType.MODIFIED);
+         markAsNewOrChanged();
       }
    }
 
@@ -115,7 +122,7 @@ public abstract class Attribute<T> {
 
       boolean response = subClassSetValue(convertStringToValue(value));
       if (response) {
-         markAsChanged(ModificationType.MODIFIED);
+         markAsNewOrChanged();
       }
       return response;
    }
@@ -138,7 +145,7 @@ public abstract class Attribute<T> {
       try {
          boolean response = setFromString(Lib.inputStreamToString(value));
          if (response) {
-            markAsChanged(ModificationType.MODIFIED);
+            markAsNewOrChanged();
          }
          return response;
       } catch (IOException ex) {
@@ -182,7 +189,7 @@ public abstract class Attribute<T> {
    }
 
    protected void markAsChanged(ModificationType modificationType) throws OseeStateException {
-	  setDirtyFlag(true);
+      setDirtyFlag(true);
       this.modificationType = modificationType;
 
       if (modificationType != ModificationType.ARTIFACT_DELETED) {
@@ -200,17 +207,17 @@ public abstract class Attribute<T> {
    public void setNotDirty() {
       setDirtyFlag(false);
    }
-   
+
    private void setDirtyFlag(boolean dirty) {
-	  this.dirty = dirty;
-	  try {
-		 Artifact artifact = getArtifact();
-		 ArtifactCache.updateCachedArtifact(artifact.getArtId(), artifact.getBranch().getBranchId());
-	  } catch (OseeStateException ex) {
-		 OseeLog.log(Attribute.class, Level.SEVERE, ex.toString(), ex);
-	  } catch (OseeCoreException ex) {
-		 OseeLog.log(Attribute.class, Level.SEVERE, ex.toString(), ex);
-	  }
+      this.dirty = dirty;
+      try {
+         Artifact artifact = getArtifact();
+         ArtifactCache.updateCachedArtifact(artifact.getArtId(), artifact.getBranch().getBranchId());
+      } catch (OseeStateException ex) {
+         OseeLog.log(Attribute.class, Level.SEVERE, ex.toString(), ex);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Attribute.class, Level.SEVERE, ex.toString(), ex);
+      }
    }
 
    public Artifact getArtifact() throws OseeStateException {
