@@ -308,23 +308,23 @@ public class AtsUtil implements IAtsLib {
       newAction.run();
    }
 
-   public static void openAtsAction(final Artifact art, final AtsOpenOption option) {
-      new AtsUtil().openATSAction(art, option);
+   public static void openAtsAction(final Artifact art, final AtsOpenOption atsOpenOption) {
+      new AtsUtil().openATSAction(art, atsOpenOption);
    }
 
-   public void openATSAction(final Artifact art, final AtsOpenOption option) {
+   public void openATSAction(final Artifact art, final AtsOpenOption atsOpenOption) {
       try {
          if (art instanceof ActionArtifact) {
             final ActionArtifact actionArt = (ActionArtifact) art;
             Collection<TeamWorkFlowArtifact> teams = actionArt.getTeamWorkFlowArtifacts();
-            if (option == AtsOpenOption.OpenAll) {
+            if (atsOpenOption == AtsOpenOption.OpenAll) {
                for (TeamWorkFlowArtifact team : teams) {
                   SMAEditor.editArtifact(team);
                }
-            } else if (option == AtsOpenOption.AtsWorld) {
+            } else if (atsOpenOption == AtsOpenOption.AtsWorld) {
                WorldEditor.open(new WorldEditorSimpleProvider("Action " + actionArt.getHumanReadableId(),
                      Arrays.asList(actionArt)));
-            } else if (option == AtsOpenOption.OpenOneOrPopupSelect) {
+            } else if (atsOpenOption == AtsOpenOption.OpenOneOrPopupSelect) {
                if (teams.size() == 1) {
                   SMAEditor.editArtifact(teams.iterator().next());
                } else {
