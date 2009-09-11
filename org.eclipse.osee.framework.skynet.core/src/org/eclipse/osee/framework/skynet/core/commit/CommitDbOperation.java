@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -48,6 +49,9 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private static final String INSERT_COMMIT_ADDRESSING =
          "insert into osee_txs(transaction_id, gamma_id, mod_type, tx_current) values(?,?,?,?)";
 
+   private static final String UPDATE_CONFLICT_STATUS =
+         "UPDATE osee_conflict SET status = ? WHERE status = ? AND merge_branch_id = ?";
+
    private boolean success = true;
    private final Map<Branch, BranchState> savedBranchStates = new HashMap<Branch, BranchState>();
    private final Branch sourceBranch;
@@ -56,16 +60,6 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private final List<CommitItem> changes;
    private Integer newTransactionNumber;
    private OseeConnection connection;
-
-   //            for (Conflict conflict : conflictManager.getOriginalConflicts()) {
-   //               if (!conflict.statusResolved()) {
-   //                  throw new OseeStateException("All conflicts must be resolved before commit.");
-   //               }
-   //               if (conflict.getSourceGamma() == change.getCurrentSourceGammaId()) {
-   //                  conflict.setStatus(ConflictStatus.COMMITTED);
-   //                  break;
-   //               }
-   //            }
 
    public CommitDbOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<CommitItem> changes) {
       super("Commit Database Operation", Activator.PLUGIN_ID);
@@ -164,9 +158,10 @@ public class CommitDbOperation extends AbstractDbTxOperation {
                      newTransactionNumber};
          // reload the committed artifacts since the commit changed them on the destination branch
          ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, queryData, 400, ArtifactLoad.FULL, true, null, true);
-      }
 
-      if (success) {
+         ConnectionHandler.runPreparedUpdate(connection, UPDATE_CONFLICT_STATUS, ConflictStatus.COMMITTED.getValue(),
+               ConflictStatus.RESOLVED.getValue(), mergeBranch.getBranchId());
+
          OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, sourceBranch.getBranchId());
       }
    }
