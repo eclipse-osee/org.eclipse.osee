@@ -96,6 +96,18 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       throw new UnsupportedOperationException("use getValues() instead");
    }
 
+   public Map<KeyTwo, Value> getKeyedValues(KeyOne key1) {
+      Collection<KeyTwo> key2s = singleKeyMap.getValues(key1);
+      if (key2s == null) {
+         return Collections.emptyMap();
+      }
+      Map<KeyTwo, Value> values = new HashMap<KeyTwo, Value>(key2s.size());
+      for (KeyTwo key2 : key2s) {
+         values.put(key2, get(key1, key2));
+      }
+      return values;
+   }
+
    public List<Value> getValues(KeyOne key1) {
       Collection<KeyTwo> key2s = singleKeyMap.getValues(key1);
       if (key2s == null) {

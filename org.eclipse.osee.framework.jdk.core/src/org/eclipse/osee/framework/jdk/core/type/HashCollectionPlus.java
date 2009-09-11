@@ -233,7 +233,7 @@ public class HashCollectionPlus<K, V, O> {
    public Collection<V> getValues(K key) {
       Pair<Collection<V>, O> objectPair = map.get(key);
       if (objectPair != null) {
-         return map.get(key).getFirst();
+         return objectPair.getFirst();
       }
       return null;
    }
