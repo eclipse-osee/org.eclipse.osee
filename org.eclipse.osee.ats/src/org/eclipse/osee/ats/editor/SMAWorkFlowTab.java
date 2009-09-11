@@ -342,7 +342,9 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       toolBarMgr.add(new EmailActionAction(smaMgr.getEditor()));
       toolBarMgr.add(new AddNoteAction(smaMgr));
       toolBarMgr.add(new OpenInAtsWorldAction(smaMgr));
-      toolBarMgr.add(new OpenInArtifactEditorAction(smaMgr.getEditor()));
+      if (AtsUtil.isAtsAdmin()) {
+         toolBarMgr.add(new OpenInArtifactEditorAction(smaMgr.getEditor()));
+      }
       toolBarMgr.add(new OpenInSkyWalkerAction(smaMgr));
       toolBarMgr.add(new OpenVersionArtifactAction(smaMgr));
       toolBarMgr.add(new OpenTeamDefinitionAction(smaMgr));

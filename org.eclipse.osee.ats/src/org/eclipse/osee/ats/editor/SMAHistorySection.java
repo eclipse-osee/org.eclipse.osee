@@ -73,7 +73,7 @@ public class SMAHistorySection extends SectionPart {
          Label button = toolkit.createLabel(composite, "   ", SWT.NONE);
          button.setText("    ");
          final SMAManager fSmaMgr = smaMgr;
-         button.addListener(SWT.MouseUp, new Listener() {
+         button.addListener(SWT.MouseDoubleClick, new Listener() {
             @Override
             public void handleEvent(Event event) {
                try {
