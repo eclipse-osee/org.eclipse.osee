@@ -264,14 +264,14 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
 
       for (ArtifactType type : types) {
          if (type.isDataDirty()) {
+            int abstractValue = type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR;
             switch (type.getModificationType()) {
                case NEW:
                   type.setTypeId(SequenceManager.getNextArtifactTypeId());
-                  insertData.add(new Object[] {type.getTypeId(), type.getGuid(), type.getName(),
-                        type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR});
+                  insertData.add(new Object[] {type.getTypeId(), type.getGuid(), type.getName(), abstractValue});
                   break;
                case MODIFIED:
-                  updateData.add(new Object[] {type.getName(), type.isAbstract(), type.getTypeId()});
+                  updateData.add(new Object[] {type.getName(), abstractValue, type.getTypeId()});
                   break;
                default:
                   break;
