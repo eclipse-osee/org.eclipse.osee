@@ -14,6 +14,7 @@ import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.ats.test.AtsTest_Config_Suite;
 import org.eclipse.osee.ats.test.AtsTest_Demo_Suite;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.jdk.core.test.JdkCoreTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.FrameworkCore_Demo_Suite;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Demo_Suite;
@@ -21,7 +22,6 @@ import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.eclipse.osee.framework.jdk.core.test.JdkCoreTestSuite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {AtsTest_Config_Suite.class, AtsTest_Demo_Suite.class, FrameworkUi_Demo_Suite.class,
