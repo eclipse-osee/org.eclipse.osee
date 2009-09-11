@@ -47,7 +47,7 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
       return superTypes != null && !superTypes.isEmpty();
    }
 
-   public void addSuperType(Set<ArtifactType> superType) throws OseeCoreException {
+   public void setSuperType(Set<ArtifactType> superType) throws OseeCoreException {
       Collection<ArtifactType> original = getSuperArtifactTypes();
       cache.setArtifactSuperType(this, superType);
       Collection<ArtifactType> newTypes = getSuperArtifactTypes();

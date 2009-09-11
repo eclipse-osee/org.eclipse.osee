@@ -299,7 +299,7 @@ public class OseeTypeCacheTest {
       Assert.assertFalse(artifactType.inheritsFrom(baseType));
       Assert.assertEquals(0, artifactType.getSuperArtifactTypes().size());
 
-      artifactType.addSuperType(new HashSet<ArtifactType>(Arrays.asList(baseType)));
+      artifactType.setSuperType(new HashSet<ArtifactType>(Arrays.asList(baseType)));
       Assert.assertEquals(1, artifactType.getSuperArtifactTypes().size());
       Assert.assertTrue(artifactType.inheritsFrom(baseType));
    }

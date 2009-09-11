@@ -131,7 +131,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          superTypes.add(getCache().getArtifactTypeCache().getTypeByName(removeQuotes(superType.getName())));
       }
       if (!superTypes.isEmpty()) {
-         targetArtifactType.addSuperType(superTypes);
+         targetArtifactType.setSuperType(superTypes);
       }
       HashCollection<Branch, org.eclipse.osee.framework.skynet.core.attribute.AttributeType> items =
             new HashCollection<Branch, org.eclipse.osee.framework.skynet.core.attribute.AttributeType>();

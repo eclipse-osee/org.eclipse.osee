@@ -257,11 +257,11 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
 
    @Override
    public void storeArtifactType(OseeTypeCache cache, Collection<ArtifactType> types) throws OseeCoreException {
+      Set<ArtifactType> typeInheritanceChanges = new HashSet<ArtifactType>();
       Set<ArtifactType> typeValidityChanges = new HashSet<ArtifactType>();
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> updateData = new ArrayList<Object[]>();
-      List<Object[]> insertInheritanceData = new ArrayList<Object[]>();
-      List<Object[]> deleteInheritanceData = new ArrayList<Object[]>();
+
       for (ArtifactType type : types) {
          if (type.isDataDirty()) {
             switch (type.getModificationType()) {
@@ -276,26 +276,37 @@ final class OseeTypeDatabaseAccessor implements IOseeTypeDataAccessor {
                default:
                   break;
             }
-         } else if (type.isInheritanceDirty()) {
-            deleteInheritanceData.add(new Object[] {type.getTypeId()});
-            for (ArtifactType superType : type.getSuperArtifactTypes()) {
-               insertInheritanceData.add(new Object[] {type.getTypeId(), superType.getTypeId()});
-            }
-         } else if (type.isAttributeTypeValidityDirty()) {
+         }
+         if (type.isInheritanceDirty()) {
+            typeInheritanceChanges.add(type);
+
+         }
+         if (type.isAttributeTypeValidityDirty()) {
             typeValidityChanges.add(type);
          }
       }
       ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE, insertData);
       ConnectionHandler.runBatchUpdate(UPDATE_ARTIFACT_TYPE, updateData);
 
-      ConnectionHandler.runBatchUpdate(DELETE_ARTIFACT_TYPE_INHERITANCE, deleteInheritanceData);
-      ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE_INHERITANCE, insertInheritanceData);
-
+      storeArtifactTypeInheritance(typeInheritanceChanges);
       storeAttributeTypeValidity(cache, types);
 
       for (ArtifactType type : types) {
          type.persist();
       }
+   }
+
+   private void storeArtifactTypeInheritance(Collection<ArtifactType> types) throws OseeDataStoreException {
+      List<Object[]> insertInheritanceData = new ArrayList<Object[]>();
+      List<Object[]> deleteInheritanceData = new ArrayList<Object[]>();
+      for (ArtifactType type : types) {
+         deleteInheritanceData.add(new Object[] {type.getTypeId()});
+         for (ArtifactType superType : type.getSuperArtifactTypes()) {
+            insertInheritanceData.add(new Object[] {type.getTypeId(), superType.getTypeId()});
+         }
+      }
+      ConnectionHandler.runBatchUpdate(DELETE_ARTIFACT_TYPE_INHERITANCE, deleteInheritanceData);
+      ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE_INHERITANCE, insertInheritanceData);
    }
 
    private void storeAttributeTypeValidity(OseeTypeCache cache, Collection<ArtifactType> types) throws OseeDataStoreException {

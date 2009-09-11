@@ -82,6 +82,7 @@
 		<Column id="NAME" defaultValue="not null" limits="75" type="VARCHAR" />
 	    <Column id="IMAGE" type="BLOB" />
 		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_AR_PK" type="PRIMARY KEY" appliesTo="ART_TYPE_ID" />
+		<Constraint schema="OSEE" id="OSEE_ARTIFACT_TYPE_G_IDX" type="UNIQUE" appliesTo="ART_TYPE_GUID" />
 		<Index id="OSEE_ARTIFACT_TYPE_N_IDX" type="UNIQUE" tablespace="osee_index">
 			<AppliesTo id="NAME"/>
 		</Index>
@@ -144,6 +145,7 @@
 		<Column id="ENUM_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="ENUM_TYPE_NAME" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_PK" type="PRIMARY KEY" appliesTo="ENUM_TYPE_ID" />
+		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_G_IDX" type="UNIQUE" appliesTo="ENUM_TYPE_GUID" />
 	</Table>
 	
 	<Table name="OSEE_ENUM_TYPE_DEF" schema="OSEE" tablespace="osee_data">
@@ -152,6 +154,7 @@
 		<Column id="NAME" defaultValue="not null" limits="500" type="VARCHAR" />
 		<Column id="ORDINAL" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_DEF_EO_PK" type="PRIMARY KEY" appliesTo="ENUM_TYPE_ID, ORDINAL" />
+		<Constraint schema="OSEE" id="OSEE_ENUM_TYPE_DEF_G_IDX" type="UNIQUE" appliesTo="ENUM_ENTRY_GUID" />
 		<Constraint schema="OSEE" id="ENUM_TYPE_ID_FK1" type="FOREIGN KEY" appliesTo="ENUM_TYPE_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_ENUM_TYPE" column="ENUM_TYPE_ID" onDelete="CASCADE" />
 		</Constraint>
@@ -171,6 +174,7 @@
 		<Column id="TIP_TEXT" limits="4000" type="VARCHAR" />
 		<Column id="TAGGER_ID" limits="500" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_TYPE_AT_PK" type="PRIMARY KEY" appliesTo="ATTR_TYPE_ID" />
+		<Constraint schema="OSEE" id="OSEE_ATTRIBUTE_TYPE_G_IDX" type="UNIQUE" appliesTo="ATTR_TYPE_GUID" />
 		<Constraint schema="OSEE" id="ATTR_BASE_TYPE_ID_FK" type="FOREIGN KEY" appliesTo="ATTR_BASE_TYPE_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_ATTRIBUTE_BASE_TYPE" column="ATTR_BASE_TYPE_ID" onDelete="CASCADE" />
 		</Constraint>
@@ -267,6 +271,7 @@
 		<Column id="USER_ORDERED" defaultValue="not null" limits="5" type="VARCHAR" />
 		<Column id="DEFAULT_ORDER_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />
+		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_G_IDX" type="UNIQUE" appliesTo="REL_LINK_TYPE_GUID" />
 	</Table>
 	
 	<Table name="OSEE_VALID_ATTRIBUTES" schema="OSEE" tablespace="osee_data">
@@ -321,6 +326,7 @@
 		<Column id="ASSOCIATED_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="BRANCH_TYPE" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_BRANCH_B_PK" type="PRIMARY KEY" appliesTo="BRANCH_ID" />
+		<Constraint schema="OSEE" id="OSEE_BRANCH_G_IDX" type="UNIQUE" appliesTo="BRANCH_GUID" />
 			<!--
 		<Constraint schema="OSEE" id="OSEE_TRANSACTION_ID_FK2" type="FOREIGN KEY" appliesTo="PARENT_TRANSACTION_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_TX_DETAILS" column="TRANSACTION_ID" onDelete="CASCADE" />
