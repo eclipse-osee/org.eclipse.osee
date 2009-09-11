@@ -152,6 +152,7 @@ public final class InternalChangeManager {
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
       }
       
+      //We build the changes after the artifact loader has been run so we can take advantage of bulk loading. 
       for(ChangeBuilder builder : changeBuilders){
          changes.add(builder.build(branch));
       }
