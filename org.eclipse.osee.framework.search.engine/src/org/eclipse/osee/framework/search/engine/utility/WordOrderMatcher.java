@@ -68,6 +68,11 @@ public class WordOrderMatcher {
             }
 
             if (currCharValid) {
+               if (charsToSearch[index] != currChar) {
+                  index = 0;
+                  matchLocation.reset();
+               }
+
                if (charsToSearch[index] == currChar) {
                   if (index == 0) {
                      matchLocation.setStartPosition(charCount);
@@ -83,9 +88,6 @@ public class WordOrderMatcher {
                         break;
                      }
                   }
-               } else {
-                  index = 0;
-                  matchLocation.reset();
                }
             }
          }
