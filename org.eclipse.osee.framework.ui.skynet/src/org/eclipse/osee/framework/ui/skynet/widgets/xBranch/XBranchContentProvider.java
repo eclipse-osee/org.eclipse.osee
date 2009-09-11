@@ -70,7 +70,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
       } else if (parentElement instanceof Branch) {
          return getBranchChildren((Branch) parentElement);
 
-      } else if (parentElement instanceof Collection) {
+      } else if (parentElement instanceof Collection<?>) {
          return ((Collection<?>) parentElement).toArray();
       }
       return EMPTY_ARRAY;
@@ -179,7 +179,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
          }
          return hasChildren;
       }
-      if (element instanceof Collection) return true;
+      if (element instanceof Collection<?>) return true;
       return false;
    }
 

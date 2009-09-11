@@ -28,7 +28,7 @@ public class XBranchTextFilter extends XViewerTextFilter {
       if (element instanceof TransactionId) {
          return true;
       }
-      if (element instanceof ArrayList) {
+      if (element instanceof ArrayList<?>) {
          return true;
       }
       return super.select(viewer, parentElement, element);

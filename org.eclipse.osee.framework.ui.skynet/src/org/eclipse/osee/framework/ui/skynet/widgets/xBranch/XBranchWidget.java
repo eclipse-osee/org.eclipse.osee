@@ -252,6 +252,10 @@ public class XBranchWidget extends XWidget implements IActionable {
    }
 
    public void loadData() {
+      loadData(BranchManager.getInstance());
+   }
+
+   public void loadData(final Object input) {
       if (extraInfoLabel != null && !extraInfoLabel.isDisposed()) {
          extraInfoLabel.setText(LOADING);
       }
@@ -272,7 +276,7 @@ public class XBranchWidget extends XWidget implements IActionable {
                      } catch (OseeCoreException ex) {
                         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                      }
-                     branchXViewer.setInput(BranchManager.getInstance());
+                     branchXViewer.setInput(input);
                   }
                }
             });

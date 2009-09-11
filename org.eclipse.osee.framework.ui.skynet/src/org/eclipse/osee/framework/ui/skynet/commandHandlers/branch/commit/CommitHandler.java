@@ -174,7 +174,7 @@ public abstract class CommitHandler extends CommandHandler {
       return branch.hasParentBranch() && useParentBranch && !branch.isChangeManaged() && !branch.isArchived();
    }
 
-   private class CommitJob extends Job {
+   protected class CommitJob extends Job {
       private final Branch sourceBranch;
       private final Branch destinationBranch;
       private final boolean archiveSourceBranch;

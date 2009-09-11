@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.branch;
 
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -36,13 +37,19 @@ public class BranchSelectionDialog extends MessageDialog {
 
    Branch selected = null;
    XBranchWidget branchWidget;
-   private final boolean allowOnlyWorkingBranches;
+   private boolean allowOnlyWorkingBranches = false;
+   private final Collection<Branch> branches;
 
-   public BranchSelectionDialog(String title, boolean allowOnlyWorkingBranches) {
+   public BranchSelectionDialog(String title, Collection<Branch> branches) {
       super(Display.getCurrent().getActiveShell(), title, null, null, MessageDialog.NONE,
             new String[] {"Ok", "Cancel"}, 0);
-      this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
+      this.branches = branches;
       setShellStyle(getShellStyle() | SWT.RESIZE);
+   }
+
+   public BranchSelectionDialog(String title, boolean allowOnlyWorkingBranches) {
+      this(title, null);
+      this.allowOnlyWorkingBranches = allowOnlyWorkingBranches;
    }
 
    public Branch getSelection() {
@@ -56,7 +63,11 @@ public class BranchSelectionDialog extends MessageDialog {
       branchWidget.createWidgets(container, 1);
       branchWidget.setBranchOptions(BranchOptions.FAVORITES_FIRST, BranchOptions.FLAT);
       branchWidget.setShowWorkingBranchesOnly(allowOnlyWorkingBranches);
-      branchWidget.loadData();
+      if (branches != null) {
+         branchWidget.loadData(branches);
+      } else {
+         branchWidget.loadData();
+      }
 
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);
       gd.heightHint = 500;

@@ -557,13 +557,11 @@
             class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitIntoParentCompoundContributionItem"
             id="org.eclipse.osee.framework.ui.skynet.dynamic.commitIntoParent">
       </dynamic>
-      <menu
-            label="Commit Into">
-         <dynamic
-               class="org.eclipse.osee.framework.ui.skynet.commandHandlers.branch.commit.CommitIntoCompoundContributionItem"
-               id="org.eclipse.osee.framework.ui.skynet.dynamic.commitInto">
-         </dynamic>
-      </menu>
+      <command
+            commandId="org.eclipse.osee.framework.ui.skynet.branch.BranchView.commitInto"
+            style="push">
+      </command>
+      
       <separator
             name="separator.xBranch.BranchView2"
             visible="true">

@@ -65,10 +65,10 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       Object tailCursor = collection;
       String columnText = "";
 
-      while (headCursor instanceof List && !((List<?>) headCursor).isEmpty()) {
+      while (headCursor instanceof List<?> && !((List<?>) headCursor).isEmpty()) {
          headCursor = ((List<?>) headCursor).get(0);
       }
-      while (tailCursor instanceof List && !((List<?>) tailCursor).isEmpty()) {
+      while (tailCursor instanceof List<?> && !((List<?>) tailCursor).isEmpty()) {
          List<?> list = (List<?>) tailCursor;
          tailCursor = list.get(list.size() - 1);
       }
