@@ -12,65 +12,44 @@ package org.eclipse.osee.ats.actions;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.util.ArtifactEmailWizard;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 
 /**
  * @author Donald G. Dunne
  */
-public class EmailActionAction extends Action {
+public class OpenInMassEditorAction extends Action {
 
    private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
-   public EmailActionAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+   public OpenInMassEditorAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
       this.selectedAtsArtifacts = selectedAtsArtifacts;
-      try {
-         updateName();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-      }
+      setText("Open Mass Editor");
       setToolTipText(getText());
-   }
-
-   private void performEmail() throws OseeCoreException {
-      ArtifactEmailWizard ew =
-            new ArtifactEmailWizard(
-                  ((StateMachineArtifact) selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next()));
-      WizardDialog dialog = new WizardDialog(Display.getCurrent().getActiveShell(), ew);
-      dialog.create();
-      dialog.open();
    }
 
    @Override
    public void run() {
       try {
-         performEmail();
-      } catch (Exception ex) {
+         MassArtifactEditor.editArtifacts("", selectedAtsArtifacts.getSelectedSMAArtifacts());
+      } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
    @Override
    public ImageDescriptor getImageDescriptor() {
-      return ImageManager.getImageDescriptor(FrameworkImage.EMAIL);
-   }
-
-   private void updateName() throws OseeCoreException {
-      setText("Email " + (selectedAtsArtifacts.getSelectedSMAArtifacts().size() == 1 ? selectedAtsArtifacts.getSelectedSMAArtifacts().iterator().next().getArtifactTypeName() : ""));
+      return ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
    }
 
    public void updateEnablement() {
       try {
-         setEnabled(selectedAtsArtifacts.getSelectedSMAArtifacts().size() == 1);
-         updateName();
+         setEnabled(selectedAtsArtifacts.getSelectedSMAArtifacts().size() > 0);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          setEnabled(false);

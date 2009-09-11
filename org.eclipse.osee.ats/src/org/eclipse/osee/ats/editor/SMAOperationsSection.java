@@ -14,6 +14,7 @@ import java.util.Collections;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.AccessControlAction;
 import org.eclipse.osee.ats.actions.ConvertActionableItemsAction;
+import org.eclipse.osee.ats.actions.DeletePurgeAtsArtifactsAction;
 import org.eclipse.osee.ats.actions.DirtyReportAction;
 import org.eclipse.osee.ats.actions.DuplicateWorkflowAction;
 import org.eclipse.osee.ats.actions.EditActionableItemsAction;
@@ -76,6 +77,9 @@ public class SMAOperationsSection extends SectionPart {
       createNotificationsSection(sectionBody, toolkit);
 
       createAdvancedSection(sectionBody, toolkit);
+      if (AtsUtil.isAtsAdmin()) {
+         createAdminSection(sectionBody, toolkit);
+      }
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
@@ -134,14 +138,33 @@ public class SMAOperationsSection extends SectionPart {
          if (editor.getSmaMgr().getSma() instanceof TeamWorkFlowArtifact) {
             (new XButtonViaAction(new DirtyReportAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
             (new XButtonViaAction(new ReloadAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
-            if (AtsUtil.isAtsAdmin()) {
-               (new XButtonViaAction(new RefreshDirtyAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
-            }
             (new XButtonViaAction(new ConvertActionableItemsAction(editor))).createWidgets(sectionBody, 2);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
+
+      section.setClient(sectionBody);
+   }
+
+   private void createAdminSection(Composite parent, FormToolkit toolkit) {
+      try {
+         if (!(editor.getSmaMgr().getSma() instanceof TeamWorkFlowArtifact)) return;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      Section section = toolkit.createSection(parent, Section.TITLE_BAR);
+      section.setText("Admin");
+
+      section.setLayout(new GridLayout());
+      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+      final Composite sectionBody = toolkit.createComposite(section, SWT.NONE);
+      sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
+      sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      (new XButtonViaAction(new RefreshDirtyAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+      (new XButtonViaAction(new DeletePurgeAtsArtifactsAction(editor))).createWidgets(sectionBody, 2);
 
       section.setClient(sectionBody);
    }
@@ -165,7 +188,7 @@ public class SMAOperationsSection extends SectionPart {
             (new XButtonViaAction(new OpenParentAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
          }
          if (AtsUtil.isAtsAdmin()) {
-            (new XButtonViaAction(new OpenInArtifactEditorAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+            (new XButtonViaAction(new OpenInArtifactEditorAction(editor))).createWidgets(sectionBody, 2);
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -188,7 +211,7 @@ public class SMAOperationsSection extends SectionPart {
       try {
          (new XButtonViaAction(new SubscribedAction(editor))).createWidgets(sectionBody, 2);
          (new XButtonViaAction(new FavoriteAction(editor))).createWidgets(sectionBody, 2);
-         (new XButtonViaAction(new EmailActionAction(editor.getSmaMgr()))).createWidgets(sectionBody, 2);
+         (new XButtonViaAction(new EmailActionAction(editor))).createWidgets(sectionBody, 2);
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

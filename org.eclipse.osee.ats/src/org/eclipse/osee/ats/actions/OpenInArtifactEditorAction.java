@@ -13,10 +13,10 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -26,10 +26,10 @@ import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
  */
 public class OpenInArtifactEditorAction extends Action {
 
-   private final SMAManager smaMgr;
+   private final ISelectedAtsArtifacts selectedAtsArtifacts;
 
-   public OpenInArtifactEditorAction(SMAManager smaMgr) {
-      this.smaMgr = smaMgr;
+   public OpenInArtifactEditorAction(ISelectedAtsArtifacts selectedAtsArtifacts) {
+      this.selectedAtsArtifacts = selectedAtsArtifacts;
       setText("Open Artifact Editor");
       setToolTipText(getText());
    }
@@ -37,7 +37,9 @@ public class OpenInArtifactEditorAction extends Action {
    @Override
    public void run() {
       try {
-         ArtifactEditor.editArtifact(smaMgr.getSma());
+         for (Artifact art : selectedAtsArtifacts.getSelectedSMAArtifacts()) {
+            ArtifactEditor.editArtifact(art);
+         }
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -46,6 +48,15 @@ public class OpenInArtifactEditorAction extends Action {
    @Override
    public ImageDescriptor getImageDescriptor() {
       return ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EDITOR);
+   }
+
+   public void updateEnablement() {
+      try {
+         setEnabled(selectedAtsArtifacts.getSelectedSMAArtifacts().size() > 0);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         setEnabled(false);
+      }
    }
 
 }
