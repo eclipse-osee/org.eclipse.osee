@@ -63,7 +63,7 @@ public class MasterTestSuite_DemoDbPopulate {
          PopulateDemoActions populateDemoActions = new PopulateDemoActions(null);
          populateDemoActions.run(false);
       } catch (Exception ex) {
-         Assert.assertNull(ex);
+         Assert.assertNull(ex.getLocalizedMessage(), ex);
       }
    }
 }
