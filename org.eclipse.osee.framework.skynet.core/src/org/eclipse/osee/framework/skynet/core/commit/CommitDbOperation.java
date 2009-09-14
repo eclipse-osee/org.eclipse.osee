@@ -159,8 +159,11 @@ public class CommitDbOperation extends AbstractDbTxOperation {
          // reload the committed artifacts since the commit changed them on the destination branch
          ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, queryData, 400, ArtifactLoad.FULL, true, null, true);
 
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_CONFLICT_STATUS, ConflictStatus.COMMITTED.getValue(),
-               ConflictStatus.RESOLVED.getValue(), mergeBranch.getBranchId());
+         // update conflict status, if necessary
+         if (mergeBranch != null) {
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_CONFLICT_STATUS,
+                  ConflictStatus.COMMITTED.getValue(), ConflictStatus.RESOLVED.getValue(), mergeBranch.getBranchId());
+         }
 
          OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, sourceBranch.getBranchId());
       }
