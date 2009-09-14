@@ -85,10 +85,9 @@ public class ChangeManagerTest {
 
    @After
    public void tearDown() throws Exception {
+      modArtifact.persist();
       BranchManager.purgeBranch(branch);
       sleep(5000);
-
-      modArtifact.persist();
    }
 
    public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException {
