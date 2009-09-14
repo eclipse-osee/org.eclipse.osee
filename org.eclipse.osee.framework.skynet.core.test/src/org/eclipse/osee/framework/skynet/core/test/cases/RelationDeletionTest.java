@@ -70,6 +70,6 @@ public class RelationDeletionTest {
 
       assertTrue("Child2 is not the first in the list and it should be.", children.get(0) == child2);
 
-      assertTrue(monitor.toString(), monitor.getAllLogs().size() == 0);
+      assertTrue(monitor.toString(), monitor.getSevereLogs().size() == 0);
    }
 }
