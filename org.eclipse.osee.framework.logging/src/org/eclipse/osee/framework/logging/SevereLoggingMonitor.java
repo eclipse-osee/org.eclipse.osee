@@ -53,13 +53,12 @@ public class SevereLoggingMonitor implements ILoggerListener {
 
    public String toString() {
       StringBuilder sb = new StringBuilder();
-      sb.append(status.size());
+      sb.append(getSevereLogs().size());
       sb.append(" Severe logs captured.\n");
-      for (IHealthStatus health : status) {
-         sb.append(health.getException().getMessage());
+      for (IHealthStatus health : getSevereLogs()) {
+         sb.append(health.getException() != null ? health.getException().getMessage() : health.getMessage());
          sb.append("\n");
       }
       return sb.toString();
    }
-
 }
