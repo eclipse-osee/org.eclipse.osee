@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.GlobalXViewerSettings;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -51,6 +52,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID, null);
 
          SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+
          // Create Default Users
          for (SystemUser userEnum : SystemUser.values()) {
             UserManager.createUser(userEnum, transaction);
@@ -60,6 +62,9 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
 
          // Create XViewer Customization artifact that lives on common branch
          GlobalXViewerSettings.createCustomArtifact().persist(transaction);
+
+         // Create OseeAdmin group
+         SystemGroup.OseeAdmin.getArtifact().persist(transaction);
 
          transaction.execute();
       }

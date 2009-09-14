@@ -29,8 +29,9 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       AtsFolderUtil.createAtsFolders();
 
-      // Configure WorkItemDefinitions
       configWorkItemDefinitions(WriteType.New, null);
+
+      AtsUtil.getAtsAdminGroup().getGroupArtifact().persist();
    }
 
    public static void configWorkItemDefinitions(WriteType writeType, XResultData xResultData) throws OseeCoreException {
@@ -45,8 +46,6 @@ public class AtsDatabaseConfig implements IDbInitializationTask {
       new SimpleWorkflowDefinition().config(writeType, xResultData);
       new DecisionWorkflowDefinition().config(writeType, xResultData);
       new PeerToPeerWorkflowDefinition().config(writeType, xResultData);
-
-      AtsUtil.getAtsAdminGroup().getGroupArtifact().persist();
 
    }
 
