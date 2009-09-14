@@ -28,11 +28,12 @@ public final class RelationTypeCache extends AbstractOseeTypeCache<RelationType>
       RelationType relationType = getTypeByGuid(guid);
       if (relationType == null) {
          relationType =
-               getDataFactory().createRelationType(guid, typeName, sideAName, sideBName, artifactTypeSideA,
+               getDataFactory().createRelationType(this, guid, typeName, sideAName, sideBName, artifactTypeSideA,
                      artifactTypeSideB, multiplicity, isUserOrdered, defaultOrderTypeGuid);
       } else {
          decacheType(relationType);
-
+         relationType.setFields(typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
+               isUserOrdered, defaultOrderTypeGuid);
       }
       cacheType(relationType);
       return relationType;

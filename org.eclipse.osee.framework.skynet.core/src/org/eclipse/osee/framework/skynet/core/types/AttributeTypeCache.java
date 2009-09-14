@@ -35,7 +35,7 @@ public final class AttributeTypeCache extends AbstractOseeTypeCache<AttributeTyp
 
       if (attributeType == null) {
          attributeType =
-               getDataFactory().createAttributeType(guid, typeName, baseAttributeTypeId, attributeProviderNameId,
+               getDataFactory().createAttributeType(this, guid, typeName, baseAttributeTypeId, attributeProviderNameId,
                      baseAttributeClass, providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType,
                      minOccurrences, maxOccurrences, description, taggerId);
       } else {

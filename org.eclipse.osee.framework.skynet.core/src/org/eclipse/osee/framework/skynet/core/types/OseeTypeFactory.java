@@ -38,19 +38,25 @@ public class OseeTypeFactory implements IOseeTypeFactory {
       return guid == null ? GUID.create() : guid;
    }
 
-   @Override
-   public ArtifactType createArtifactType(ArtifactTypeCache cache, String guid, boolean isAbstract, String name) throws OseeCoreException {
-      if (!Strings.isValid(name)) {
+   private void checkName(AbstractOseeTypeCache<?> cache, String typeName) throws OseeCoreException {
+      if (!Strings.isValid(typeName)) {
          throw new OseeArgumentException("name cannot be null.");
       }
+      Object object = cache.getTypeByName(typeName);
+      if (object != null) {
+         throw new OseeArgumentException(String.format("Item matching name [%s] already exists", typeName));
+      }
+   }
+
+   @Override
+   public ArtifactType createArtifactType(ArtifactTypeCache cache, String guid, boolean isAbstract, String name) throws OseeCoreException {
+      checkName(cache, name);
       return new ArtifactType(cache, createGuidIfNeeded(guid), name, isAbstract, factoryManager);
    }
 
    @Override
-   public AttributeType createAttributeType(String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
-      if (!Strings.isValid(name)) {
-         throw new OseeArgumentException("name cannot be null.");
-      }
+   public AttributeType createAttributeType(AttributeTypeCache cache, String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
+      checkName(cache, name);
       if (baseAttributeClass == null) {
          throw new OseeArgumentException("The baseAttributeClass can not be null or empty");
       }
@@ -79,10 +85,8 @@ public class OseeTypeFactory implements IOseeTypeFactory {
    }
 
    @Override
-   public RelationType createRelationType(String guid, String name, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {
-      if (!Strings.isValid(name)) {
-         throw new OseeArgumentException("name cannot be null.");
-      }
+   public RelationType createRelationType(RelationTypeCache cache, String guid, String name, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {
+      checkName(cache, name);
       if (!Strings.isValid(sideAName)) {
          throw new OseeArgumentException("The sideAName can not be null or empty");
       }
@@ -104,9 +108,7 @@ public class OseeTypeFactory implements IOseeTypeFactory {
 
    @Override
    public OseeEnumType createEnumType(OseeEnumTypeCache cache, String guid, String name) throws OseeCoreException {
-      if (!Strings.isValid(name)) {
-         throw new OseeArgumentException("name cannot be null.");
-      }
+      checkName(cache, name);
       return new OseeEnumType(cache, createGuidIfNeeded(guid), name);
    }
 

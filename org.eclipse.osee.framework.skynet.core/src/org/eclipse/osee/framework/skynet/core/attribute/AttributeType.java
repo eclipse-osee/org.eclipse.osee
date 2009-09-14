@@ -53,6 +53,18 @@ public class AttributeType extends BaseOseeType implements Comparable<AttributeT
    }
 
    public void setFields(String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
+      String fileExtensionToSet = fileTypeExtension != null ? fileTypeExtension : "";
+      updateDirty(this.baseAttributeTypeId, baseAttributeTypeId);
+      updateDirty(this.attributeProviderNameId, attributeProviderNameId);
+      updateDirty(this.baseAttributeClass, baseAttributeClass);
+      updateDirty(this.providerAttributeClass, providerAttributeClass);
+      updateDirty(this.defaultValue, defaultValue);
+      updateDirty(this.oseeEnumType, oseeEnumType);
+      updateDirty(this.maxOccurrences, maxOccurrences);
+      updateDirty(this.minOccurrences, minOccurrences);
+      updateDirty(this.description, description);
+      updateDirty(this.fileTypeExtension, fileExtensionToSet);
+      updateDirty(this.taggerId, taggerId);
       setName(name);
       this.baseAttributeTypeId = baseAttributeTypeId;
       this.attributeProviderNameId = attributeProviderNameId;
@@ -63,7 +75,7 @@ public class AttributeType extends BaseOseeType implements Comparable<AttributeT
       this.maxOccurrences = maxOccurrences;
       this.minOccurrences = minOccurrences;
       this.description = description;
-      this.fileTypeExtension = fileTypeExtension != null ? fileTypeExtension : "";
+      this.fileTypeExtension = fileExtensionToSet;
       this.taggerId = taggerId;
    }
 

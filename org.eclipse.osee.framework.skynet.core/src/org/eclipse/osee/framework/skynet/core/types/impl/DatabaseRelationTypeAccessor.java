@@ -61,10 +61,10 @@ public class DatabaseRelationTypeAccessor implements IOseeTypeDataAccessor<Relat
                if (multiplicity != null) {
                   boolean isUserOrdered = USER_ORDERED.equalsIgnoreCase(chStmt.getString("user_ordered"));
                   RelationType relationType =
-                        factory.createRelationType(chStmt.getString("rel_link_type_guid"), relationTypeName,
-                              chStmt.getString("a_name"), chStmt.getString("b_name"), artifactTypeSideA,
-                              artifactTypeSideB, multiplicity, isUserOrdered,
-                              chStmt.getString("default_order_type_guid"));
+                        factory.createRelationType(cache.getRelationTypeCache(),
+                              chStmt.getString("rel_link_type_guid"), relationTypeName, chStmt.getString("a_name"),
+                              chStmt.getString("b_name"), artifactTypeSideA, artifactTypeSideB, multiplicity,
+                              isUserOrdered, chStmt.getString("default_order_type_guid"));
                   relationType.setTypeId(chStmt.getInt("rel_link_type_id"));
                   relationType.setModificationType(ModificationType.MODIFIED);
                   relationType.clearDirty();

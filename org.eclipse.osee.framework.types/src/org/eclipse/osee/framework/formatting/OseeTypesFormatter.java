@@ -21,7 +21,8 @@ public class OseeTypesFormatter extends AbstractDeclarativeFormatter {
    private final List<String> KEYWORDS =
          Arrays.asList(new String[] {"attribute", "sideAName", "sideAArtifactType", "sideBName", "sideBArtifactType",
                "defaultOrderType", "multiplicity", "dataProvider", "min", "max", "taggerId", "enumType",
-               "defaultValue", "entry", "guid", "add", "remove", "inheritsAll"});
+               "defaultValue", "entry", "guid", "add", "remove", "inheritsAll", "description", "min", "max",
+               "dataProvider", "defaultValue", "fileExtension", "taggerId"});
 
    private boolean isKeywordEntry(String current) {
       return KEYWORDS.contains(current);

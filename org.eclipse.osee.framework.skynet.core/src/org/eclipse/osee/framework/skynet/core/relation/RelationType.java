@@ -35,15 +35,20 @@ public class RelationType extends BaseOseeType implements Comparable<RelationTyp
    }
 
    public void setFields(String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
+      updateDirty(this.sideAName, sideAName);
+      updateDirty(this.sideBName, sideBName);
+      updateDirty(this.artifactTypeSideA, artifactTypeSideA);
+      updateDirty(this.artifactTypeSideB, artifactTypeSideB);
+      updateDirty(this.multiplicity, multiplicity);
+      updateDirty(this.isOrdered, isOrdered);
+      updateDirty(this.defaultOrderTypeGuid, defaultOrderTypeGuid);
       this.sideAName = sideAName;
       this.sideBName = sideBName;
       this.artifactTypeSideA = artifactTypeSideA;
       this.artifactTypeSideB = artifactTypeSideB;
       this.multiplicity = multiplicity;
-
       this.isOrdered = isOrdered;
       this.defaultOrderTypeGuid = defaultOrderTypeGuid;
-
    }
 
    public RelationTypeMultiplicity getMultiplicity() {

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.types.bridge.operations;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -41,10 +42,10 @@ import org.eclipse.ui.progress.UIJob;
 /**
  * @author Roberto E. Escobar
  */
-public class DirtyOseeTypesReport extends AbstractOperation {
+public class ReportDirtyOseeTypesOperation extends AbstractOperation {
    private final OseeTypeCache cache;
 
-   public DirtyOseeTypesReport(OseeTypeCache cache) {
+   public ReportDirtyOseeTypesOperation(OseeTypeCache cache) {
       super("Report Osee Type Changes", Activator.PLUGIN_ID);
       this.cache = cache;
    }
@@ -120,15 +121,21 @@ public class DirtyOseeTypesReport extends AbstractOperation {
       tab.endTable();
    }
 
-   private void createOseeEnumTypeReport(List<IResultsEditorTab> tabs, Collection<OseeEnumType> types) {
+   private void createOseeEnumTypeReport(List<IResultsEditorTab> tabs, Collection<OseeEnumType> types) throws OseeCoreException {
       ReportTab tab = new ReportTab("OseeEnum Types", tabs);
-      tab.addTableHeader("Name", "ModType");
+      tab.addTableHeader("Name", "ModType", "isDataDirty", "areEntriesDirty");
+      String dirtyEntries;
       for (OseeEnumType type : types) {
-         tab.addRow(type.getName(), type.getModificationType().getDisplayName());
+         if (type.areEntriesDirty()) {
+            dirtyEntries = Arrays.deepToString(type.values());
+         } else {
+            dirtyEntries = "Not Changed";
+         }
+         tab.addRow(type.getName(), type.getModificationType().getDisplayName(), String.valueOf(type.isDataDirty()),
+               dirtyEntries);
       }
       tab.endTable();
    }
-
    private static final class OseeTypesReportProvider implements IResultsEditorProvider {
       private final List<IResultsEditorTab> resultsTabs;
       private final String editorName;

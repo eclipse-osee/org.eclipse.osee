@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumType> {
 
    private final OseeEnumTypeCache cache;
+   private boolean areEntriesDirty;
 
    public OseeEnumType(OseeEnumTypeCache cache, String guid, String enumTypeName) {
       super(guid, enumTypeName);
@@ -37,7 +39,15 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
 
    @Override
    public String toString() {
-      return getName();
+      List<String> data = new ArrayList<String>();
+      try {
+         for (OseeEnumEntry entry : values()) {
+            data.add(entry.toString());
+         }
+      } catch (OseeCoreException ex) {
+         data.add("Error");
+      }
+      return String.format("[%s] - %s", getName(), data);
    }
 
    public OseeEnumEntry[] values() throws OseeCoreException {
@@ -84,7 +94,24 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
       List<OseeEnumEntry> oldEntries = cache.getEnumEntries(this);
       cache.cacheEnumEntries(this, entries);
       List<OseeEnumEntry> newEntries = cache.getEnumEntries(this);
-      updateDirty(oldEntries, newEntries);
+      areEntriesDirty |= isDifferent(oldEntries, newEntries);
+   }
+
+   void internalUpdateDirtyEntries(boolean areEntriesDirty) {
+      this.areEntriesDirty |= areEntriesDirty;
+   }
+
+   public boolean areEntriesDirty() {
+      return areEntriesDirty;
+   }
+
+   public boolean isDataDirty() {
+      return super.isDirty();
+   }
+
+   @Override
+   public boolean isDirty() {
+      return isDataDirty() || areEntriesDirty();
    }
 
    @Override
@@ -99,6 +126,7 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
    @Override
    public void clearDirty() {
       super.clearDirty();
+      areEntriesDirty = false;
       try {
          for (OseeEnumEntry entry : values()) {
             entry.clearDirty();

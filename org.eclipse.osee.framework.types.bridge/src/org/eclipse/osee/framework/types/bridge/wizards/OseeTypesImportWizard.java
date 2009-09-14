@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
-import org.eclipse.osee.framework.types.bridge.operations.DirtyOseeTypesReport;
+import org.eclipse.osee.framework.types.bridge.operations.ReportDirtyOseeTypesOperation;
 import org.eclipse.osee.framework.types.bridge.operations.XTextToOseeTypeOperation;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -56,7 +56,7 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
       if (isReport) {
          List<IOperation> ops = new ArrayList<IOperation>();
          ops.add(operation);
-         ops.add(new DirtyOseeTypesReport(cache));
+         ops.add(new ReportDirtyOseeTypesOperation(cache));
          operation = new CompositeOperation("Import Osee Types", Activator.PLUGIN_ID, ops);
       }
       Job job = Operations.executeAsJob(operation, true);

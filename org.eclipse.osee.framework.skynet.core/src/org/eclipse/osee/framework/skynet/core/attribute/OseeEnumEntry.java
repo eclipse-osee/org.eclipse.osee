@@ -10,13 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 
 /**
@@ -38,6 +34,22 @@ public class OseeEnumEntry extends BaseOseeType implements Comparable<OseeEnumEn
 
    public Pair<String, Integer> asPair() {
       return new Pair<String, Integer>(getName(), ordinal());
+   }
+
+   @Override
+   protected void updateDirty(Object original, Object other) {
+      super.updateDirty(original, other);
+      if (isDirty()) {
+         OseeEnumType type = null;
+         try {
+            type = getDeclaringClass();
+            if (type != null) {
+               type.internalUpdateDirtyEntries(true);
+            }
+         } catch (OseeCoreException ex) {
+            // Do Nothing
+         }
+      }
    }
 
    public OseeEnumType getDeclaringClass() throws OseeCoreException {
@@ -63,18 +75,7 @@ public class OseeEnumEntry extends BaseOseeType implements Comparable<OseeEnumEn
 
    @Override
    public String toString() {
-      String className;
-      try {
-         if (getDeclaringClass() != null) {
-            className = getDeclaringClass().getName();
-         } else {
-            className = "empty";
-         }
-      } catch (OseeCoreException ex) {
-         className = Lib.exceptionToString(ex);
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      return String.format("[%s].[%s:%s]", className, getName(), ordinal);
+      return String.format("%s:%s", getName(), ordinal);
    }
 
    @Override

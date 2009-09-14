@@ -72,11 +72,11 @@ public class DatabaseAttributeTypeAccessor implements IOseeTypeDataAccessor<Attr
                int enumTypeId = chStmt.getInt("enum_type_id");
                OseeEnumType enumType = cache.getEnumTypeCache().getTypeById(enumTypeId);
                AttributeType attributeType =
-                     factory.createAttributeType(chStmt.getString("attr_type_guid"), chStmt.getString("name"),
-                           baseClassString, baseProviderClassString, baseAttributeClass, providerAttributeClass,
-                           chStmt.getString("file_type_extension"), chStmt.getString("default_value"), enumType,
-                           chStmt.getInt("min_occurence"), chStmt.getInt("max_occurence"),
-                           chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
+                     factory.createAttributeType(cache.getAttributeTypeCache(), chStmt.getString("attr_type_guid"),
+                           chStmt.getString("name"), baseClassString, baseProviderClassString, baseAttributeClass,
+                           providerAttributeClass, chStmt.getString("file_type_extension"),
+                           chStmt.getString("default_value"), enumType, chStmt.getInt("min_occurence"),
+                           chStmt.getInt("max_occurence"), chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
                attributeType.setTypeId(chStmt.getInt("attr_type_id"));
                attributeType.setModificationType(ModificationType.MODIFIED);
                attributeType.clearDirty();
