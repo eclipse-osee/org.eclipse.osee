@@ -38,16 +38,17 @@ public class HistoryXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn itemId =
          new XViewerColumn("framework.history.itemId", "Item ID", 55, SWT.LEFT, true, SortDataType.Integer, false, null);
    public static XViewerColumn was =
-         new XViewerColumn("framework.history.was", "Was", 250, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.history.was", "Was", 150, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn is =
-         new XViewerColumn("framework.history.is", "Is", 250, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.history.is", "Is", 150, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn timeStamp =
          new XViewerColumn("framework.history.timeStamp", "Time Stamp", 110, SWT.LEFT, true, SortDataType.Date, false,
                null);
    public static XViewerColumn author =
          new XViewerColumn("framework.history.author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn comment =
-         new XViewerColumn("framework.history.comment", "Comment", 70, SWT.LEFT, true, SortDataType.String, false, null);
+         new XViewerColumn("framework.history.comment", "Comment", 300, SWT.LEFT, true, SortDataType.String, false,
+               null);
 
    public static String NAMESPACE = "osee.skynet.gui.HisotryXViewer";
 
