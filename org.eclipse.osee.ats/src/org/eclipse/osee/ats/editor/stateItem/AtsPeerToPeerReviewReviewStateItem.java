@@ -36,8 +36,11 @@ public class AtsPeerToPeerReviewReviewStateItem extends AtsStateItem {
       // Set Assignees to all user roles users
       Set<User> assignees = new HashSet<User>();
       PeerToPeerReviewArtifact peerArt = (PeerToPeerReviewArtifact) smaMgr.getSma();
-      for (UserRole uRole : peerArt.getUserRoleManager().getUserRoles())
-         assignees.add(uRole.getUser());
+      for (UserRole uRole : peerArt.getUserRoleManager().getUserRoles()) {
+         if (!uRole.isCompleted()) {
+            assignees.add(uRole.getUser());
+         }
+      }
       assignees.addAll(smaMgr.getStateMgr().getAssignees());
 
       smaMgr.getStateMgr().setAssignees(assignees);

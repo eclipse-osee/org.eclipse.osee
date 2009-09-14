@@ -72,7 +72,7 @@ public class RelationLink {
    public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder, ModificationType modificationType) {
       RelationLink relation =
             RelationManager.getLoadedRelation(relationType, aArtifactId, bArtifactId, aBranch, bBranch);
-      if (relation == null) {
+      if (relation == null || relation.modificationType != modificationType) {
 
          relation =
                new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,

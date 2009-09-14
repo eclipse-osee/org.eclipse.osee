@@ -127,6 +127,8 @@ public class DemoNavigateViewItems implements IAtsNavigateItem {
       XNavigateItem demoItems = new XNavigateItem(adminItems, "Demo Data", FrameworkImage.ADMIN);
       new PopulateDemoActions(demoItems);
 
+      new DoesNotWorkItemDemo(adminItems);
+
       return items;
    }
 }
