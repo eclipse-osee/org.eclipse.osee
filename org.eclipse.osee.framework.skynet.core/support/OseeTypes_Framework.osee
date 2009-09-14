@@ -444,9 +444,9 @@ artifactType "Requirement" extends "Artifact" {
    guid "ABM_vxEEowY+8i2_q9gA"
    attribute "Development Assurance Level"
    attribute "Qualification Method"
-   attribute "Safety Criticality"
    attribute "Subsystem"
    attribute "Technical Performance Parameter"
+   attribute "PublishInline"
 }
 
 abstract artifactType "Abstract Software Requirement" extends "Requirement" {
@@ -759,6 +759,13 @@ attributeType "Development Assurance Level" extends EnumeratedAttribute {
 
 attributeType "Category" extends StringAttribute {
    guid "AAMFEVfcEjwtly9djdgA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+}
+
+attributeType "PublishInline" extends BooleanAttribute {
+   guid "ADpktgUh1xxE38Ht66QA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
