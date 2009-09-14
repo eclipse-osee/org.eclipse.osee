@@ -28,7 +28,7 @@ public class XtextOseeTypesHandler implements IOseeTypesHandler {
    @Override
    public void execute(IProgressMonitor monitor, Object context, URL url) throws OseeCoreException {
       try {
-         IOperation operation = new XTextToOseeTypeOperation(OseeTypeManager.getCache(), context, url.toURI());
+         IOperation operation = new XTextToOseeTypeOperation(OseeTypeManager.getCache(), true, context, url.toURI());
          Operations.executeWork(operation, monitor, -1);
          Operations.checkForErrorStatus(operation.getStatus());
       } catch (Exception ex) {

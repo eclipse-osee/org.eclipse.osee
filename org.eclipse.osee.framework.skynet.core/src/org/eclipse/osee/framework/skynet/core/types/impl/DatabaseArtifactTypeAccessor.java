@@ -42,8 +42,8 @@ import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
  * @author Roberto E. Escobar
  */
 public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<ArtifactType> {
-   private static final int ABSTRACT_TYPE_INDICATOR = 1;
-   private static final int CONCRETE_TYPE_INDICATOR = 0;
+   protected static final int ABSTRACT_TYPE_INDICATOR = 1;
+   protected static final int CONCRETE_TYPE_INDICATOR = 0;
 
    private static final String SELECT_ARTIFACT_TYPES = "select * from osee_artifact_type";
    private static final String INSERT_ARTIFACT_TYPE =

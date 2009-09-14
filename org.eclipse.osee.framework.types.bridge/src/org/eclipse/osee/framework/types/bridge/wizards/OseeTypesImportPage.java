@@ -38,8 +38,10 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 import org.eclipse.xtext.resource.ClassloaderClasspathUriResolver;
@@ -57,6 +59,8 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
    private TreeViewer linksViewer;
    private final SelectOseeTypesPanel oseeTypesPanel;
    private final List<LinkNode> messages;
+   private Button reportChanges;
+   private Button persistChanges;
 
    protected OseeTypesImportPage(IStructuredSelection selection, String title) {
       super(PAGE_NAME);
@@ -119,10 +123,36 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
       linksViewer.setLabelProvider(new LinkNodeLabelProvider());
       linksViewer.setInput(messages);
 
+      createOptions(composite);
+
       restoreWidgetValues();
       updateWidgetEnablements();
       setPageComplete(determinePageCompletion());
       setControl(composite);
+   }
+
+   private void createOptions(Composite parent) {
+      Group composite = new Group(parent, SWT.NULL);
+      composite.setLayout(new GridLayout(1, false));
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      composite.setFont(parent.getFont());
+      composite.setText("Options");
+
+      reportChanges = new Button(composite, SWT.CHECK);
+      reportChanges.setText("Report Changes");
+      reportChanges.setSelection(true);
+
+      persistChanges = new Button(composite, SWT.CHECK);
+      persistChanges.setText("Persist Changes");
+      persistChanges.setSelection(false);
+   }
+
+   public boolean isPersistAllowed() {
+      return persistChanges.getSelection();
+   }
+
+   public boolean isReportChanges() {
+      return reportChanges.getSelection();
    }
 
    public File getTypesToImport() {

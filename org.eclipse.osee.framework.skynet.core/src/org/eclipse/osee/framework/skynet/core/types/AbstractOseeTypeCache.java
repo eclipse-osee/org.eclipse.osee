@@ -72,6 +72,13 @@ public abstract class AbstractOseeTypeCache<T extends BaseOseeType> {
       }
       nameToTypeMap.put(type.getName(), type);
       guidToTypeMap.put(type.getGuid(), type);
+      cacheTypeById(type);
+   }
+
+   private void cacheTypeById(T type) throws OseeCoreException {
+      if (type == null) {
+         throw new OseeArgumentException("Caching a null value is not allowed");
+      }
       if (type.getTypeId() != BaseOseeType.UNPERSISTTED_VALUE) {
          idToTypeMap.put(type.getTypeId(), type);
       }
@@ -97,7 +104,7 @@ public abstract class AbstractOseeTypeCache<T extends BaseOseeType> {
       return guidToTypeMap.get(typeGuid);
    }
 
-   protected Collection<T> getDirtyTypes() throws OseeCoreException {
+   public Collection<T> getDirtyTypes() throws OseeCoreException {
       getCache().ensurePopulated();
       Collection<T> dirtyItems = new HashSet<T>();
       for (T type : guidToTypeMap.values()) {
@@ -109,14 +116,7 @@ public abstract class AbstractOseeTypeCache<T extends BaseOseeType> {
    }
 
    public void storeAllModified() throws OseeCoreException {
-      Collection<T> items = getDirtyTypes();
-      synchronized (idToTypeMap) {
-         storeItems(items);
-         for (T type : items) {
-            idToTypeMap.put(type.getTypeId(), type);
-            type.persist();
-         }
-      }
+      storeItems(getDirtyTypes());
    }
 
    public void ensurePopulated() throws OseeCoreException {
@@ -150,5 +150,10 @@ public abstract class AbstractOseeTypeCache<T extends BaseOseeType> {
 
    private void storeItems(Collection<T> items) throws OseeCoreException {
       getDataAccessor().store(getCache(), items);
+      synchronized (idToTypeMap) {
+         for (T type : items) {
+            cacheTypeById(type);
+         }
+      }
    }
 }

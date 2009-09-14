@@ -11,15 +11,20 @@
 package org.eclipse.osee.framework.types.bridge.wizards;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.types.bridge.operations.DirtyOseeTypesReport;
 import org.eclipse.osee.framework.types.bridge.operations.XTextToOseeTypeOperation;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
@@ -43,7 +48,17 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
    @Override
    public boolean performFinish() {
       final File file = mainPage.getTypesToImport();
-      IOperation operation = new XTextToOseeTypeOperation(OseeTypeManager.getCache(), null, file.toURI());
+      final boolean isPersistAllowed = mainPage.isPersistAllowed();
+      final boolean isReport = mainPage.isReportChanges();
+
+      OseeTypeCache cache = OseeTypeManager.getCache();
+      IOperation operation = new XTextToOseeTypeOperation(cache, isPersistAllowed, null, file.toURI());
+      if (isReport) {
+         List<IOperation> ops = new ArrayList<IOperation>();
+         ops.add(operation);
+         ops.add(new DirtyOseeTypesReport(cache));
+         operation = new CompositeOperation("Import Osee Types", Activator.PLUGIN_ID, ops);
+      }
       Job job = Operations.executeAsJob(operation, true);
       job.addJobChangeListener(new JobChangeAdapter() {
          @Override

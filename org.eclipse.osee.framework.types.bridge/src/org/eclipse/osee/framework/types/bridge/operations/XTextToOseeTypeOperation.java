@@ -49,12 +49,14 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private final java.net.URI resource;
    private final Object context;
    private final OseeTypeCache typeCache;
+   private final boolean isPersistAllowed;
 
-   public XTextToOseeTypeOperation(OseeTypeCache typeCache, Object context, java.net.URI resource) {
+   public XTextToOseeTypeOperation(OseeTypeCache typeCache, boolean isPersistAllowed, Object context, java.net.URI resource) {
       super("OSEE Text Model to OSEE", Activator.PLUGIN_ID);
       this.typeCache = typeCache;
       this.resource = resource;
       this.context = context;
+      this.isPersistAllowed = isPersistAllowed;
    }
 
    private OseeTypeCache getCache() {
@@ -112,7 +114,9 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
                }
             }
          }
-         getCache().storeAllModified();
+         if (isPersistAllowed) {
+            getCache().storeAllModified();
+         }
       }
 
    }
