@@ -38,9 +38,10 @@ public class LoadCommitItemsFromDbTest {
 
    @Test
    public void testCommitItemsNonConflicting() throws OseeCoreException {
-      Branch source =
-            BranchManager.getBranch("NCVYS - SAW (uncommitted) More Reqt Changes for Diagram View - SAW (uncommitted) More Reqt Changes for...");
+      final String branchName =
+            "SAW (uncommitted) More Reqt Changes for Diagram View - SAW (uncommitted) More Reqt Changes for...";
       Branch destination = BranchManager.getBranch("SAW_Bld_2");
+      Branch source = findASourceBranch(destination, branchName);
 
       Assert.assertNotNull(source);
       Assert.assertNotNull(destination);
@@ -59,9 +60,10 @@ public class LoadCommitItemsFromDbTest {
 
    @Test
    public void testCommitItemsConflicting() throws OseeCoreException {
-      Branch source =
-            BranchManager.getBranch("HJD4M - SAW (uncommitted-conflicted) More Requirement Changes for Diagram View - SAW (uncommitted-conflicted) More Requi...");
+      final String branchName =
+            "SAW (uncommitted-conflicted) More Requirement Changes for Diagram View - SAW (uncommitted-conflicted) More Requi...";
       Branch destination = BranchManager.getBranch("SAW_Bld_2");
+      Branch source = findASourceBranch(destination, branchName);
 
       Assert.assertNotNull(source);
       Assert.assertNotNull(destination);
@@ -76,6 +78,16 @@ public class LoadCommitItemsFromDbTest {
       checkNetItems(items, ModificationType.MERGED, 0, 0, 0);
       checkNetItems(items, ModificationType.ARTIFACT_DELETED, 0, 0, 0);
       checkNetItems(items, ModificationType.DELETED, 0, 0, 0);
+   }
+
+   private Branch findASourceBranch(Branch destination, String branchName) throws OseeCoreException {
+      Branch source = null;
+      for (Branch branch : destination.getWorkingBranches()) {
+         if (branch.getName().contains(branchName)) {
+            source = branch;
+         }
+      }
+      return source;
    }
 
    private void processItems(Collection<CommitItem> items, Branch source, Branch destination, Branch mergeBranch, int loadedItems, int netItems) {
