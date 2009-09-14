@@ -29,7 +29,7 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
    private boolean isInheritanceDirty;
    private boolean isAttributeTypeValidatityDirty;
 
-   public ArtifactType(String guid, String name, boolean isAbstract, ArtifactFactoryManager factoryManager, ArtifactTypeCache cache) {
+   public ArtifactType(ArtifactTypeCache cache, String guid, String name, boolean isAbstract, ArtifactFactoryManager factoryManager) {
       super(guid, name);
       isInheritanceDirty = false;
       isAttributeTypeValidatityDirty = false;

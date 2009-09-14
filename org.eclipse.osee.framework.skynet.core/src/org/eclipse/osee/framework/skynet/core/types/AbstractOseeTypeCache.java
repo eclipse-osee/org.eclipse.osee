@@ -22,16 +22,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class OseeTypeCacheData<T extends BaseOseeType> {
+public abstract class AbstractOseeTypeCache<T extends BaseOseeType> {
    private final HashMap<String, T> nameToTypeMap = new HashMap<String, T>();
    private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
    private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
    private final OseeTypeCache cache;
    private final IOseeTypeFactory factory;
-   private final IOseeTypeDataAccessor dataAccessor;
+   private final IOseeTypeDataAccessor<T> dataAccessor;
    private boolean duringPopulate;
 
-   public OseeTypeCacheData(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor dataAccessor) {
+   public AbstractOseeTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<T> dataAccessor) {
       this.duringPopulate = false;
       this.cache = cache;
       this.factory = factory;
@@ -42,7 +42,7 @@ public abstract class OseeTypeCacheData<T extends BaseOseeType> {
       return cache;
    }
 
-   protected IOseeTypeDataAccessor getDataAccessor() {
+   protected IOseeTypeDataAccessor<T> getDataAccessor() {
       return dataAccessor;
    }
 
@@ -144,7 +144,11 @@ public abstract class OseeTypeCacheData<T extends BaseOseeType> {
       }
    }
 
-   protected abstract void storeItems(Collection<T> items) throws OseeCoreException;
+   public void reloadCache() throws OseeCoreException {
+      getDataAccessor().load(getCache(), getDataFactory());
+   }
 
-   public abstract void reloadCache() throws OseeCoreException;
+   private void storeItems(Collection<T> items) throws OseeCoreException {
+      getDataAccessor().store(getCache(), items);
+   }
 }

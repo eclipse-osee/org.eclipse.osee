@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
+import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseArtifactTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseAttributeTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseOseeEnumTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseRelationTypeAccessor;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -17,25 +22,16 @@ public class OseeTypeManager {
 
    private static final OseeTypeManager instance = new OseeTypeManager();
 
-   private final IOseeTypeDataAccessor dataAccessor;
    private final OseeTypeCache oseeTypeCache;
-   private final IOseeTypeFactory typeFactory;
 
    private OseeTypeManager() {
-      typeFactory = new OseeTypeFactory();
-      dataAccessor = new OseeTypeDatabaseAccessor();
-      oseeTypeCache = new OseeTypeCache(dataAccessor, typeFactory);
+      oseeTypeCache =
+            new OseeTypeCache(new OseeTypeFactory(), new DatabaseArtifactTypeAccessor(),
+                  new DatabaseAttributeTypeAccessor(), new DatabaseRelationTypeAccessor(),
+                  new DatabaseOseeEnumTypeAccessor());
    }
 
    public static OseeTypeCache getCache() {
       return instance.oseeTypeCache;
-   }
-
-   public static IOseeTypeFactory getTypeFactory() {
-      return instance.typeFactory;
-   }
-
-   public static IOseeTypeDataAccessor getDataTypeAccessor() {
-      return instance.dataAccessor;
    }
 }

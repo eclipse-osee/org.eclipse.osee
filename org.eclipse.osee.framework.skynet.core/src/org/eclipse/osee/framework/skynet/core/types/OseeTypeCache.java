@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
  * @author Roberto E. Escobar
@@ -28,12 +28,12 @@ public class OseeTypeCache {
 
    private boolean duringPopulate;
 
-   public OseeTypeCache(IOseeTypeDataAccessor dataAccessor, IOseeTypeFactory factory) {
+   public OseeTypeCache(IOseeTypeFactory factory, IOseeTypeDataAccessor<ArtifactType> artifactData, IOseeTypeDataAccessor<AttributeType> attributeData, IOseeTypeDataAccessor<RelationType> relationData, IOseeTypeDataAccessor<OseeEnumType> enumData) {
       this.duringPopulate = false;
-      artifactCache = new ArtifactTypeCache(this, factory, dataAccessor);
-      attributeCache = new AttributeTypeCache(this, factory, dataAccessor);
-      relationCache = new RelationTypeCache(this, factory, dataAccessor);
-      oseeEnumTypeCache = new OseeEnumTypeCache(this, factory, dataAccessor);
+      artifactCache = new ArtifactTypeCache(this, factory, artifactData);
+      attributeCache = new AttributeTypeCache(this, factory, attributeData);
+      relationCache = new RelationTypeCache(this, factory, relationData);
+      oseeEnumTypeCache = new OseeEnumTypeCache(this, factory, enumData);
    }
 
    public void storeAllModified() throws OseeCoreException {
@@ -57,14 +57,6 @@ public class OseeTypeCache {
 
    public OseeEnumTypeCache getEnumTypeCache() {
       return oseeEnumTypeCache;
-   }
-
-   public void cacheArtifactTypeInheritance(ArtifactType artifactType, Collection<ArtifactType> superType) throws OseeCoreException {
-      getArtifactTypeCache().cacheArtifactTypeInheritance(artifactType, superType);
-   }
-
-   public void cacheTypeValidity(ArtifactType artifactType, AttributeType attributeType, Branch branch) throws OseeCoreException {
-      getArtifactTypeCache().cacheTypeValidity(artifactType, attributeType, branch);
    }
 
    public synchronized void ensurePopulated() throws OseeCoreException {

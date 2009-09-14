@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -19,20 +18,10 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 /**
  * @author Roberto E. Escobar
  */
-public final class RelationTypeCache extends OseeTypeCacheData<RelationType> {
+public final class RelationTypeCache extends AbstractOseeTypeCache<RelationType> {
 
-   public RelationTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor dataAccessor) {
+   public RelationTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<RelationType> dataAccessor) {
       super(cache, factory, dataAccessor);
-   }
-
-   @Override
-   public void reloadCache() throws OseeCoreException {
-      getDataAccessor().loadAllRelationTypes(getCache(), getDataFactory());
-   }
-
-   @Override
-   protected void storeItems(Collection<RelationType> items) throws OseeCoreException {
-      getDataAccessor().storeRelationType(items);
    }
 
    public RelationType createType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {

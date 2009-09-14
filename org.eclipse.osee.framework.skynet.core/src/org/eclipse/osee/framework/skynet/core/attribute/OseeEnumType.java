@@ -21,16 +21,16 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
+import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumType> {
 
-   private final OseeTypeCache cache;
+   private final OseeEnumTypeCache cache;
 
-   public OseeEnumType(String guid, String enumTypeName, OseeTypeCache cache) {
+   public OseeEnumType(OseeEnumTypeCache cache, String guid, String enumTypeName) {
       super(guid, enumTypeName);
       this.cache = cache;
    }
@@ -41,7 +41,7 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
    }
 
    public OseeEnumEntry[] values() throws OseeCoreException {
-      List<OseeEnumEntry> entries = cache.getEnumTypeCache().getEnumEntries(this);
+      List<OseeEnumEntry> entries = cache.getEnumEntries(this);
       Collections.sort(entries);
       return entries.toArray(new OseeEnumEntry[entries.size()]);
    }
@@ -81,9 +81,9 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
    }
 
    public void setEntries(Collection<OseeEnumEntry> entries) throws OseeCoreException {
-      List<OseeEnumEntry> oldEntries = cache.getEnumTypeCache().getEnumEntries(this);
-      cache.getEnumTypeCache().cacheEnumEntries(this, entries);
-      List<OseeEnumEntry> newEntries = cache.getEnumTypeCache().getEnumEntries(this);
+      List<OseeEnumEntry> oldEntries = cache.getEnumEntries(this);
+      cache.cacheEnumEntries(this, entries);
+      List<OseeEnumEntry> newEntries = cache.getEnumEntries(this);
       updateDirty(oldEntries, newEntries);
    }
 

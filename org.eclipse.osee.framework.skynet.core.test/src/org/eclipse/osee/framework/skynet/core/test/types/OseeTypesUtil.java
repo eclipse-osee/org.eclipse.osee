@@ -24,15 +24,32 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
+import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TestOseeTypesUtil {
+public class OseeTypesUtil {
 
-   private TestOseeTypesUtil() {
+   private OseeTypesUtil() {
 
+   }
+
+   public static OseeEnumType createEnumType(OseeTypeCache cache, IOseeTypeFactory factory, String guid, String name, Object... entries) throws OseeCoreException {
+      OseeEnumTypeCache eCache = cache.getEnumTypeCache();
+      OseeEnumType type = factory.createEnumType(eCache, guid, name);
+      if (entries != null && entries.length > 0) {
+         List<OseeEnumEntry> items = new ArrayList<OseeEnumEntry>();
+         for (int index = 0; index < entries.length; index++) {
+            String itemName = (String) entries[index];
+            Integer ordinal = (Integer) entries[++index];
+            items.add(factory.createEnumEntry(eCache, null, itemName, ordinal));
+         }
+         type.setEntries(items);
+      }
+      return type;
    }
 
    public static void checkEnumType(String expectedName, String[] expectedEntries, Integer[] expectedOrdinals, OseeEnumType actualEnumType) throws OseeCoreException {

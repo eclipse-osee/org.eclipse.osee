@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 /**
  * @author Roberto E. Escobar
  */
-public final class ArtifactTypeCache extends OseeTypeCacheData<ArtifactType> {
+public final class ArtifactTypeCache extends AbstractOseeTypeCache<ArtifactType> {
 
    private final HashCollection<ArtifactType, ArtifactType> artifactTypeToSuperTypeMap =
          new HashCollection<ArtifactType, ArtifactType>();
@@ -35,25 +35,14 @@ public final class ArtifactTypeCache extends OseeTypeCacheData<ArtifactType> {
    private final CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> artifactToAttributeMap =
          new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
 
-   public ArtifactTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor dataAccessor) {
+   public ArtifactTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<ArtifactType> dataAccessor) {
       super(cache, factory, dataAccessor);
-   }
-
-   @Override
-   public void reloadCache() throws OseeCoreException {
-      getDataAccessor().loadAllArtifactTypes(getCache(), getDataFactory());
-      getDataAccessor().loadAllTypeValidity(getCache(), getDataFactory());
-   }
-
-   @Override
-   protected void storeItems(Collection<ArtifactType> items) throws OseeCoreException {
-      getDataAccessor().storeArtifactType(getCache(), items);
    }
 
    public ArtifactType createType(String guid, boolean isAbstract, String artifactTypeName) throws OseeCoreException {
       ArtifactType artifactType = getTypeByGuid(guid);
       if (artifactType == null) {
-         artifactType = getDataFactory().createArtifactType(guid, isAbstract, artifactTypeName, getCache());
+         artifactType = getDataFactory().createArtifactType(this, guid, isAbstract, artifactTypeName);
       } else {
          decacheType(artifactType);
          artifactType.setName(artifactTypeName);

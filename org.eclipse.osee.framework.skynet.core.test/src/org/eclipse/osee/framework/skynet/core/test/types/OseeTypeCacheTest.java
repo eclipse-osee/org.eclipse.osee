@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider;
@@ -50,11 +49,15 @@ public class OseeTypeCacheTest {
    private static List<AttributeType> attributeTypes;
    private static List<RelationType> relationTypes;
    private static List<OseeEnumType> oseeEnumTypes;
-   private static TestOseeTypeDataAccessor testAccessor;
    private static Branch branch1;
    private static Branch branch2;
    private static OseeTypeCache typeCache;
    private static IOseeTypeFactory factory;
+
+   private static ArtifactCache artCache;
+   private static AttributeCache attrCache;
+   private static RelationCache relCache;
+   private static EnumTypeCache enumCache;
 
    @BeforeClass
    public static void prepareTestData() throws OseeCoreException {
@@ -66,15 +69,17 @@ public class OseeTypeCacheTest {
       branch1 = createBranchHelper("ROOT", "Root Branch", 999, null, BranchType.SYSTEM_ROOT);
       branch2 = createBranchHelper("TEST", "Test Branch", 998, branch1, BranchType.BASELINE);
 
-      testAccessor = new TestData(artifactTypes, attributeTypes, relationTypes, oseeEnumTypes, branch1, branch2);
-      typeCache = new OseeTypeCache(testAccessor, factory);
+      artCache = new ArtifactCache(artifactTypes, branch1, branch2);
+      attrCache = new AttributeCache(attributeTypes);
+      relCache = new RelationCache(relationTypes);
+      enumCache = new EnumTypeCache(oseeEnumTypes);
 
+      typeCache = new OseeTypeCache(factory, artCache, attrCache, relCache, enumCache);
       typeCache.getArtifactTypeCache().getAllTypes();
-      Assert.assertTrue(testAccessor.isLoadAllArtifactTypes());
-      Assert.assertTrue(testAccessor.isLoadAllAttributeTypes());
-      Assert.assertTrue(testAccessor.isLoadAllRelationTypes());
-      Assert.assertTrue(testAccessor.isLoadAllTypeValidity());
-      Assert.assertTrue(testAccessor.isLoadAllOseeEnumTypes());
+      Assert.assertTrue(artCache.wasLoaded());
+      Assert.assertTrue(attrCache.wasLoaded());
+      Assert.assertTrue(relCache.wasLoaded());
+      Assert.assertTrue(enumCache.wasLoaded());
    }
 
    @org.junit.Test
@@ -84,6 +89,7 @@ public class OseeTypeCacheTest {
       java.util.Collections.sort(artifactTypes);
       Assert.assertEquals(artifactTypes.size(), actualTypes.size());
       for (int index = 0; index < artifactTypes.size(); index++) {
+         Assert.assertNotNull(actualTypes.get(index));
          Assert.assertEquals(artifactTypes.get(index), actualTypes.get(index));
       }
    }
@@ -100,6 +106,7 @@ public class OseeTypeCacheTest {
    public void testCacheArtifactTypesByGuid() throws OseeCoreException {
       for (ArtifactType expected : artifactTypes) {
          ArtifactType actual = typeCache.getArtifactTypeCache().getTypeByGuid(expected.getGuid());
+         Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
    }
@@ -108,6 +115,7 @@ public class OseeTypeCacheTest {
    public void testCacheArtifactTypesById() throws OseeCoreException {
       for (ArtifactType expected : artifactTypes) {
          ArtifactType actual = typeCache.getArtifactTypeCache().getTypeById(expected.getTypeId());
+         Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
    }
@@ -116,6 +124,7 @@ public class OseeTypeCacheTest {
    public void testCacheArtifactTypesByName() throws OseeCoreException {
       for (ArtifactType expected : artifactTypes) {
          ArtifactType actual = typeCache.getArtifactTypeCache().getTypeByName(expected.getName());
+         Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
    }
@@ -143,6 +152,7 @@ public class OseeTypeCacheTest {
    public void testCacheAttributeTypesByGuid() throws OseeCoreException {
       for (AttributeType expected : attributeTypes) {
          AttributeType actual = typeCache.getAttributeTypeCache().getTypeByGuid(expected.getGuid());
+         Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
    }
@@ -151,6 +161,7 @@ public class OseeTypeCacheTest {
    public void testCacheAttributeTypesById() throws OseeCoreException {
       for (AttributeType expected : attributeTypes) {
          AttributeType actual = typeCache.getAttributeTypeCache().getTypeById(expected.getTypeId());
+         Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
    }
@@ -159,6 +170,7 @@ public class OseeTypeCacheTest {
    public void testCacheAttributeTypesByName() throws OseeCoreException {
       for (AttributeType expected : attributeTypes) {
          AttributeType actual = typeCache.getAttributeTypeCache().getTypeByName(expected.getName());
+         Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
    }
@@ -186,6 +198,7 @@ public class OseeTypeCacheTest {
    public void testCacheRelationTypesByGuid() throws OseeCoreException {
       for (RelationType expected : relationTypes) {
          RelationType actual = typeCache.getRelationTypeCache().getTypeByGuid(expected.getGuid());
+         Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
    }
@@ -194,6 +207,7 @@ public class OseeTypeCacheTest {
    public void testCacheRelationTypesById() throws OseeCoreException {
       for (RelationType expected : relationTypes) {
          RelationType actual = typeCache.getRelationTypeCache().getTypeById(expected.getTypeId());
+         Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
    }
@@ -202,6 +216,7 @@ public class OseeTypeCacheTest {
    public void testCacheRelationTypesByName() throws OseeCoreException {
       for (RelationType expected : relationTypes) {
          RelationType actual = typeCache.getRelationTypeCache().getTypeByName(expected.getName());
+         Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
    }
@@ -213,7 +228,7 @@ public class OseeTypeCacheTest {
       java.util.Collections.sort(oseeEnumTypes);
       Assert.assertEquals(oseeEnumTypes.size(), actualTypes.size());
       for (int index = 0; index < oseeEnumTypes.size(); index++) {
-         TestOseeTypesUtil.checkEnumType(oseeEnumTypes.get(index), actualTypes.get(index));
+         OseeTypesUtil.checkEnumType(oseeEnumTypes.get(index), actualTypes.get(index));
       }
    }
 
@@ -229,7 +244,8 @@ public class OseeTypeCacheTest {
    public void testCacheOseeEnumTypesByGuid() throws OseeCoreException {
       for (OseeEnumType expected : oseeEnumTypes) {
          OseeEnumType actual = typeCache.getEnumTypeCache().getTypeByGuid(expected.getGuid());
-         TestOseeTypesUtil.checkEnumType(expected, actual);
+         Assert.assertNotNull(actual);
+         OseeTypesUtil.checkEnumType(expected, actual);
       }
    }
 
@@ -237,7 +253,8 @@ public class OseeTypeCacheTest {
    public void testCacheOseeEnumTypesById() throws OseeCoreException {
       for (OseeEnumType expected : oseeEnumTypes) {
          OseeEnumType actual = typeCache.getEnumTypeCache().getTypeById(expected.getTypeId());
-         TestOseeTypesUtil.checkEnumType(expected, actual);
+         Assert.assertNotNull(actual);
+         OseeTypesUtil.checkEnumType(expected, actual);
       }
    }
 
@@ -245,13 +262,15 @@ public class OseeTypeCacheTest {
    public void testCacheOseeEnumTypesByName() throws OseeCoreException {
       for (OseeEnumType expected : oseeEnumTypes) {
          OseeEnumType actual = typeCache.getEnumTypeCache().getTypeByName(expected.getName());
-         TestOseeTypesUtil.checkEnumType(expected, actual);
+         Assert.assertNotNull(actual);
+         OseeTypesUtil.checkEnumType(expected, actual);
       }
    }
 
    @org.junit.Test
    public void testArtifactInheritanceCycleDetect() throws OseeCoreException {
       ArtifactType baseType = typeCache.getArtifactTypeCache().getTypeByName("BaseArtifactType");
+      Assert.assertNotNull(baseType);
 
       Set<ArtifactType> baseSuperType = new HashSet<ArtifactType>();
       baseSuperType.add(baseType);
@@ -268,13 +287,13 @@ public class OseeTypeCacheTest {
 
    @org.junit.Test
    public void testArtifactInheritance() throws OseeCoreException {
-      TestOseeTypesUtil.checkInheritance(typeCache, "000", "000");// inherits from returns true if comparing against itself
-      TestOseeTypesUtil.checkInheritance(typeCache, "111", "000");
-      TestOseeTypesUtil.checkInheritance(typeCache, "222", "000");
-      TestOseeTypesUtil.checkInheritance(typeCache, "333", "000", "222");
-      TestOseeTypesUtil.checkInheritance(typeCache, "444", "000", "222", "333");
-      TestOseeTypesUtil.checkInheritance(typeCache, "555", "000", "444", "333", "222");
-      TestOseeTypesUtil.checkInheritance(typeCache, "666", "000", "333", "222");
+      OseeTypesUtil.checkInheritance(typeCache, "000", "000");// inherits from returns true if comparing against itself
+      OseeTypesUtil.checkInheritance(typeCache, "111", "000");
+      OseeTypesUtil.checkInheritance(typeCache, "222", "000");
+      OseeTypesUtil.checkInheritance(typeCache, "333", "000", "222");
+      OseeTypesUtil.checkInheritance(typeCache, "444", "000", "222", "333");
+      OseeTypesUtil.checkInheritance(typeCache, "555", "000", "444", "333", "222");
+      OseeTypesUtil.checkInheritance(typeCache, "666", "000", "333", "222");
    }
 
    @org.junit.Test
@@ -292,7 +311,8 @@ public class OseeTypeCacheTest {
 
    @org.junit.Test
    public void testAddArtifactSuperTypeMethod() throws OseeCoreException {
-      ArtifactType artifactType = factory.createArtifactType("myGUID", false, "TestMethodCreated", typeCache);
+      ArtifactType artifactType =
+            factory.createArtifactType(typeCache.getArtifactTypeCache(), "myGUID", false, "TestMethodCreated");
       typeCache.getArtifactTypeCache().cacheType(artifactType);
 
       ArtifactType baseType = typeCache.getArtifactTypeCache().getTypeByName("BaseArtifactType");
@@ -306,37 +326,37 @@ public class OseeTypeCacheTest {
 
    @org.junit.Test
    public void testInheritedAttributeTypes() throws OseeCoreException {
-      TestOseeTypesUtil.checkAttributes(typeCache, "000", branch1, "AAA");
-      TestOseeTypesUtil.checkAttributes(typeCache, "111", branch1, "AAA", "BBB");
-      TestOseeTypesUtil.checkAttributes(typeCache, "222", branch1, "AAA", "CCC");
-      TestOseeTypesUtil.checkAttributes(typeCache, "333", branch1, "AAA", "DDD", "CCC");
-      TestOseeTypesUtil.checkAttributes(typeCache, "444", branch1, "AAA", "FFF", "CCC", "DDD");
-      TestOseeTypesUtil.checkAttributes(typeCache, "555", branch1, "AAA", "GGG", "FFF", "CCC", "DDD");
-      TestOseeTypesUtil.checkAttributes(typeCache, "666", branch1, "AAA", "HHH", "DDD", "CCC");
+      OseeTypesUtil.checkAttributes(typeCache, "000", branch1, "AAA");
+      OseeTypesUtil.checkAttributes(typeCache, "111", branch1, "AAA", "BBB");
+      OseeTypesUtil.checkAttributes(typeCache, "222", branch1, "AAA", "CCC");
+      OseeTypesUtil.checkAttributes(typeCache, "333", branch1, "AAA", "DDD", "CCC");
+      OseeTypesUtil.checkAttributes(typeCache, "444", branch1, "AAA", "FFF", "CCC", "DDD");
+      OseeTypesUtil.checkAttributes(typeCache, "555", branch1, "AAA", "GGG", "FFF", "CCC", "DDD");
+      OseeTypesUtil.checkAttributes(typeCache, "666", branch1, "AAA", "HHH", "DDD", "CCC");
 
-      TestOseeTypesUtil.checkAttributes(typeCache, "000", branch2, "AAA");
-      TestOseeTypesUtil.checkAttributes(typeCache, "111", branch2, "AAA", "BBB");
-      TestOseeTypesUtil.checkAttributes(typeCache, "222", branch2, "AAA", "CCC");
-      TestOseeTypesUtil.checkAttributes(typeCache, "333", branch2, "AAA", "DDD", "CCC", "EEE"); // EEE only visible on branch2
-      TestOseeTypesUtil.checkAttributes(typeCache, "444", branch2, "AAA", "FFF", "CCC", "DDD", "EEE");
-      TestOseeTypesUtil.checkAttributes(typeCache, "555", branch2, "AAA", "GGG", "FFF", "CCC", "DDD", "EEE");
-      TestOseeTypesUtil.checkAttributes(typeCache, "666", branch2, "AAA", "HHH", "DDD", "CCC", "EEE");
+      OseeTypesUtil.checkAttributes(typeCache, "000", branch2, "AAA");
+      OseeTypesUtil.checkAttributes(typeCache, "111", branch2, "AAA", "BBB");
+      OseeTypesUtil.checkAttributes(typeCache, "222", branch2, "AAA", "CCC");
+      OseeTypesUtil.checkAttributes(typeCache, "333", branch2, "AAA", "DDD", "CCC", "EEE"); // EEE only visible on branch2
+      OseeTypesUtil.checkAttributes(typeCache, "444", branch2, "AAA", "FFF", "CCC", "DDD", "EEE");
+      OseeTypesUtil.checkAttributes(typeCache, "555", branch2, "AAA", "GGG", "FFF", "CCC", "DDD", "EEE");
+      OseeTypesUtil.checkAttributes(typeCache, "666", branch2, "AAA", "HHH", "DDD", "CCC", "EEE");
    }
 
    public void testRelationTypeSides() throws OseeCoreException {
-      TestOseeTypesUtil.checkInheritance(typeCache, "1A", RelationSide.SIDE_A, 1, "111");
-      TestOseeTypesUtil.checkInheritance(typeCache, "1A", RelationSide.SIDE_B, 1, "444", "555");
+      OseeTypesUtil.checkInheritance(typeCache, "1A", RelationSide.SIDE_A, 1, "111");
+      OseeTypesUtil.checkInheritance(typeCache, "1A", RelationSide.SIDE_B, 1, "444", "555");
 
-      TestOseeTypesUtil.checkInheritance(typeCache, "2B", RelationSide.SIDE_A, 1, "555");
-      TestOseeTypesUtil.checkInheritance(typeCache, "2B", RelationSide.SIDE_B, Integer.MAX_VALUE, "000", "111", "222",
+      OseeTypesUtil.checkInheritance(typeCache, "2B", RelationSide.SIDE_A, 1, "555");
+      OseeTypesUtil.checkInheritance(typeCache, "2B", RelationSide.SIDE_B, Integer.MAX_VALUE, "000", "111", "222",
             "333", "444", "555", "666");
 
-      TestOseeTypesUtil.checkInheritance(typeCache, "3C", RelationSide.SIDE_A, Integer.MAX_VALUE, "222", "333", "444",
+      OseeTypesUtil.checkInheritance(typeCache, "3C", RelationSide.SIDE_A, Integer.MAX_VALUE, "222", "333", "444",
             "555", "666");
-      TestOseeTypesUtil.checkInheritance(typeCache, "3C", RelationSide.SIDE_B, 1, "333", "444", "555", "666");
+      OseeTypesUtil.checkInheritance(typeCache, "3C", RelationSide.SIDE_B, 1, "333", "444", "555", "666");
 
-      TestOseeTypesUtil.checkInheritance(typeCache, "4D", RelationSide.SIDE_A, Integer.MAX_VALUE, "666");
-      TestOseeTypesUtil.checkInheritance(typeCache, "4D", RelationSide.SIDE_B, Integer.MAX_VALUE, "666");
+      OseeTypesUtil.checkInheritance(typeCache, "4D", RelationSide.SIDE_A, Integer.MAX_VALUE, "666");
+      OseeTypesUtil.checkInheritance(typeCache, "4D", RelationSide.SIDE_B, Integer.MAX_VALUE, "666");
    }
 
    private static Branch createBranchHelper(String guid, String name, int id, Branch parentBranch, BranchType branchType) {
@@ -344,43 +364,128 @@ public class OseeTypeCacheTest {
             branchType, BranchState.CREATED);
    }
 
-   private static class TestData extends TestOseeTypeDataAccessor {
-      private final List<ArtifactType> artifactTypes;
-      private final List<AttributeType> attributeTypes;
-      private final List<RelationType> relationTypes;
+   private final static class EnumTypeCache extends OseeTypeDataAccessor<OseeEnumType> {
       private final List<OseeEnumType> oseeEnumTypes;
+
+      public EnumTypeCache(List<OseeEnumType> oseeEnumTypes) {
+         super();
+         this.oseeEnumTypes = oseeEnumTypes;
+      }
+
+      @Override
+      public void load(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+         super.load(cache, factory);
+         oseeEnumTypes.add(OseeTypesUtil.createEnumType(cache, factory, "E1", "Enum1", "AAA", 1, "BBB", 2, "CCC", 3));
+         oseeEnumTypes.add(OseeTypesUtil.createEnumType(cache, factory, "E2", "Enum2", "DDD", 4, "EEE", 5, "FFF", 6));
+         oseeEnumTypes.add(OseeTypesUtil.createEnumType(cache, factory, "E3", "Enum3", "GGG", 7, "HHH", 8, "III", 9));
+         oseeEnumTypes.add(OseeTypesUtil.createEnumType(cache, factory, "E4", "Enum4", "JJJ", 10, "KKK", 11, "LLL", 12));
+         oseeEnumTypes.add(OseeTypesUtil.createEnumType(cache, factory, "E5", "Enum5", "MMM", 1, "NNN", 2, "OOO", 3));
+         int typeId = 400;
+         for (OseeEnumType type : oseeEnumTypes) {
+            type.setTypeId(typeId++);
+            cache.getEnumTypeCache().cacheType(type);
+         }
+      }
+   }
+
+   private final static class RelationCache extends OseeTypeDataAccessor<RelationType> {
+      private final List<RelationType> relationTypes;
+
+      public RelationCache(List<RelationType> relationTypes) {
+         super();
+         this.relationTypes = relationTypes;
+      }
+
+      private RelationType createRelationHelper(OseeTypeCache cache, IOseeTypeFactory factory, String guid, String name, String aGUID, String bGUID, RelationTypeMultiplicity multiplicity) throws OseeCoreException {
+         ArtifactType type1 = cache.getArtifactTypeCache().getTypeByGuid(aGUID);
+         ArtifactType type2 = cache.getArtifactTypeCache().getTypeByGuid(bGUID);
+         return factory.createRelationType(guid, name, name + "_A", name + "_B", type1, type2, multiplicity, true, "");
+      }
+
+      @Override
+      public void load(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+         super.load(cache, factory);
+         relationTypes.add(createRelationHelper(cache, factory, "1A", "REL_1", "111", "444",
+               RelationTypeMultiplicity.ONE_TO_ONE));
+         relationTypes.add(createRelationHelper(cache, factory, "2B", "REL_2", "555", "000",
+               RelationTypeMultiplicity.ONE_TO_MANY));
+         relationTypes.add(createRelationHelper(cache, factory, "3C", "REL_3", "222", "333",
+               RelationTypeMultiplicity.MANY_TO_ONE));
+         relationTypes.add(createRelationHelper(cache, factory, "4D", "REL_4", "666", "666",
+               RelationTypeMultiplicity.MANY_TO_MANY));
+         int typeId = 300;
+         for (RelationType type : relationTypes) {
+            type.setTypeId(typeId++);
+            cache.getRelationTypeCache().cacheType(type);
+         }
+      }
+   }
+   private final static class AttributeCache extends OseeTypeDataAccessor<AttributeType> {
+
+      private final List<AttributeType> attributeTypes;
+
+      public AttributeCache(List<AttributeType> attributeTypes) {
+         super();
+         this.attributeTypes = attributeTypes;
+      }
+
+      private AttributeType createAttributeTypeHelper(IOseeTypeFactory factory, String guid, String name) throws OseeCoreException {
+         return factory.createAttributeType(guid, name, "DummyBase", "DummyProvider", StringAttribute.class,
+               DefaultAttributeDataProvider.class, "none", "none", null, 1, 1, "test data", null);
+      }
+
+      @Override
+      public void load(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+         super.load(cache, factory);
+         attributeTypes.add(createAttributeTypeHelper(factory, "AAA", "Attribute1"));
+         attributeTypes.add(createAttributeTypeHelper(factory, "BBB", "Attribute2"));
+         attributeTypes.add(createAttributeTypeHelper(factory, "CCC", "Attribute3"));
+         attributeTypes.add(createAttributeTypeHelper(factory, "DDD", "Attribute4"));
+         attributeTypes.add(createAttributeTypeHelper(factory, "EEE", "Attribute5"));
+         attributeTypes.add(createAttributeTypeHelper(factory, "FFF", "Attribute6"));
+         attributeTypes.add(createAttributeTypeHelper(factory, "GGG", "Attribute7"));
+         attributeTypes.add(createAttributeTypeHelper(factory, "HHH", "Attribute8"));
+         int typeId = 200;
+         for (AttributeType type : attributeTypes) {
+            type.setTypeId(typeId++);
+            cache.getAttributeTypeCache().cacheType(type);
+         }
+      }
+   }
+   private final static class ArtifactCache extends OseeTypeDataAccessor<ArtifactType> {
+
+      private final List<ArtifactType> artifactTypes;
       private final Branch branch1;
       private final Branch branch2;
 
-      public TestData(List<ArtifactType> artifactTypes, List<AttributeType> attributeTypes, List<RelationType> relationTypes, List<OseeEnumType> oseeEnumTypes, Branch branch1, Branch branch2) {
+      public ArtifactCache(List<ArtifactType> artifactTypes, Branch branch1, Branch branch2) {
+         super();
          this.artifactTypes = artifactTypes;
-         this.attributeTypes = attributeTypes;
-         this.relationTypes = relationTypes;
-         this.oseeEnumTypes = oseeEnumTypes;
          this.branch1 = branch1;
          this.branch2 = branch2;
       }
 
       @Override
-      public void loadAllArtifactTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
-         super.loadAllArtifactTypes(cache, factory);
-         artifactTypes.add(factory.createArtifactType("000", true, "BaseArtifactType", cache));
-         artifactTypes.add(factory.createArtifactType("111", true, "ArtifactType1", cache));
-         artifactTypes.add(factory.createArtifactType("222", false, "ArtifactType2", cache));
-         artifactTypes.add(factory.createArtifactType("333", true, "ArtifactType3", cache));
-         artifactTypes.add(factory.createArtifactType("444", false, "ArtifactType4", cache));
-         artifactTypes.add(factory.createArtifactType("555", true, "ArtifactType5", cache));
-         artifactTypes.add(factory.createArtifactType("666", false, "ArtifactType6", cache));
+      public void load(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+         super.load(cache, factory);
+         ArtifactTypeCache typeCache = cache.getArtifactTypeCache();
+         artifactTypes.add(factory.createArtifactType(typeCache, "000", true, "BaseArtifactType"));
+         artifactTypes.add(factory.createArtifactType(typeCache, "111", true, "ArtifactType1"));
+         artifactTypes.add(factory.createArtifactType(typeCache, "222", false, "ArtifactType2"));
+         artifactTypes.add(factory.createArtifactType(typeCache, "333", true, "ArtifactType3"));
+         artifactTypes.add(factory.createArtifactType(typeCache, "444", false, "ArtifactType4"));
+         artifactTypes.add(factory.createArtifactType(typeCache, "555", true, "ArtifactType5"));
+         artifactTypes.add(factory.createArtifactType(typeCache, "666", false, "ArtifactType6"));
          int typeId = 100;
          for (ArtifactType type : artifactTypes) {
             type.setTypeId(typeId++);
-            cache.getArtifactTypeCache().cacheType(type);
+            typeCache.cacheType(type);
          }
-         setUpArtifactTypeInheritance(cache);
+         setUpArtifactTypeInheritance(typeCache);
+         setUpTypeValidity(cache);
       }
 
-      private void setUpArtifactTypeInheritance(OseeTypeCache typeCache) throws OseeCoreException {
-         ArtifactTypeCache cache = typeCache.getArtifactTypeCache();
+      private void setUpArtifactTypeInheritance(ArtifactTypeCache cache) throws OseeCoreException {
          ArtifactType baseType = cache.getTypeByName("BaseArtifactType");
 
          Set<ArtifactType> baseSuperType = new HashSet<ArtifactType>();
@@ -400,96 +505,19 @@ public class OseeTypeCacheTest {
          cache.setArtifactSuperType(cache.getTypeByGuid("666"), Arrays.asList(cache.getTypeByGuid("333"), baseType));
       }
 
-      private AttributeType createAttributeTypeHelper(IOseeTypeFactory factory, String guid, String name) throws OseeCoreException {
-         return factory.createAttributeType(guid, name, "DummyBase", "DummyProvider", StringAttribute.class,
-               DefaultAttributeDataProvider.class, "none", "none", null, 1, 1, "test data", null);
-      }
-
-      @Override
-      public void loadAllAttributeTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
-         super.loadAllAttributeTypes(cache, factory);
-         attributeTypes.add(createAttributeTypeHelper(factory, "AAA", "Attribute1"));
-         attributeTypes.add(createAttributeTypeHelper(factory, "BBB", "Attribute2"));
-         attributeTypes.add(createAttributeTypeHelper(factory, "CCC", "Attribute3"));
-         attributeTypes.add(createAttributeTypeHelper(factory, "DDD", "Attribute4"));
-         attributeTypes.add(createAttributeTypeHelper(factory, "EEE", "Attribute5"));
-         attributeTypes.add(createAttributeTypeHelper(factory, "FFF", "Attribute6"));
-         attributeTypes.add(createAttributeTypeHelper(factory, "GGG", "Attribute7"));
-         attributeTypes.add(createAttributeTypeHelper(factory, "HHH", "Attribute8"));
-         int typeId = 200;
-         for (AttributeType type : attributeTypes) {
-            type.setTypeId(typeId++);
-            cache.getAttributeTypeCache().cacheType(type);
-         }
-      }
-
-      @Override
-      public void loadAllTypeValidity(OseeTypeCache cache, IOseeTypeFactory artifactTypeFactory) throws OseeCoreException {
-         super.loadAllTypeValidity(cache, artifactTypeFactory);
-         ArtifactTypeCache artifactCache = cache.getArtifactTypeCache();
+      private void setUpTypeValidity(OseeTypeCache cache) throws OseeCoreException {
+         ArtifactTypeCache artCache = cache.getArtifactTypeCache();
          AttributeTypeCache attributeCache = cache.getAttributeTypeCache();
 
-         cache.cacheTypeValidity(artifactCache.getTypeByGuid("000"), attributeCache.getTypeByGuid("AAA"), branch1);
-         cache.cacheTypeValidity(artifactCache.getTypeByGuid("111"), attributeCache.getTypeByGuid("BBB"), branch1);
-         cache.cacheTypeValidity(artifactCache.getTypeByGuid("222"), attributeCache.getTypeByGuid("CCC"), branch1);
-         cache.cacheTypeValidity(artifactCache.getTypeByGuid("333"), attributeCache.getTypeByGuid("DDD"), branch1);
-         cache.cacheTypeValidity(artifactCache.getTypeByGuid("333"), attributeCache.getTypeByGuid("EEE"), branch2);
-         cache.cacheTypeValidity(artifactCache.getTypeByGuid("444"), attributeCache.getTypeByGuid("FFF"), branch1);
-         cache.cacheTypeValidity(artifactCache.getTypeByGuid("555"), attributeCache.getTypeByGuid("GGG"), branch1);
-         cache.cacheTypeValidity(artifactCache.getTypeByGuid("666"), attributeCache.getTypeByGuid("HHH"), branch1);
+         artCache.cacheTypeValidity(artCache.getTypeByGuid("000"), attributeCache.getTypeByGuid("AAA"), branch1);
+         artCache.cacheTypeValidity(artCache.getTypeByGuid("111"), attributeCache.getTypeByGuid("BBB"), branch1);
+         artCache.cacheTypeValidity(artCache.getTypeByGuid("222"), attributeCache.getTypeByGuid("CCC"), branch1);
+         artCache.cacheTypeValidity(artCache.getTypeByGuid("333"), attributeCache.getTypeByGuid("DDD"), branch1);
+         artCache.cacheTypeValidity(artCache.getTypeByGuid("333"), attributeCache.getTypeByGuid("EEE"), branch2);
+         artCache.cacheTypeValidity(artCache.getTypeByGuid("444"), attributeCache.getTypeByGuid("FFF"), branch1);
+         artCache.cacheTypeValidity(artCache.getTypeByGuid("555"), attributeCache.getTypeByGuid("GGG"), branch1);
+         artCache.cacheTypeValidity(artCache.getTypeByGuid("666"), attributeCache.getTypeByGuid("HHH"), branch1);
       }
 
-      private RelationType createRelationHelper(OseeTypeCache cache, IOseeTypeFactory factory, String guid, String name, String aGUID, String bGUID, RelationTypeMultiplicity multiplicity) throws OseeCoreException {
-         ArtifactType type1 = cache.getArtifactTypeCache().getTypeByGuid(aGUID);
-         ArtifactType type2 = cache.getArtifactTypeCache().getTypeByGuid(bGUID);
-         return factory.createRelationType(guid, name, name + "_A", name + "_B", type1, type2, multiplicity, true, "");
-      }
-
-      @Override
-      public void loadAllRelationTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
-         super.loadAllRelationTypes(cache, factory);
-         relationTypes.add(createRelationHelper(cache, factory, "1A", "REL_1", "111", "444",
-               RelationTypeMultiplicity.ONE_TO_ONE));
-         relationTypes.add(createRelationHelper(cache, factory, "2B", "REL_2", "555", "000",
-               RelationTypeMultiplicity.ONE_TO_MANY));
-         relationTypes.add(createRelationHelper(cache, factory, "3C", "REL_3", "222", "333",
-               RelationTypeMultiplicity.MANY_TO_ONE));
-         relationTypes.add(createRelationHelper(cache, factory, "4D", "REL_4", "666", "666",
-               RelationTypeMultiplicity.MANY_TO_MANY));
-         int typeId = 300;
-         for (RelationType type : relationTypes) {
-            type.setTypeId(typeId++);
-            cache.getRelationTypeCache().cacheType(type);
-         }
-      }
-
-      private OseeEnumType createEnumTypeHelper(OseeTypeCache cache, IOseeTypeFactory factory, String guid, String name, Object... entries) throws OseeCoreException {
-         OseeEnumType type = factory.createEnumType(guid, name, cache);
-         if (entries != null && entries.length > 0) {
-            List<OseeEnumEntry> items = new ArrayList<OseeEnumEntry>();
-            for (int index = 0; index < entries.length; index++) {
-               String itemName = (String) entries[index];
-               Integer ordinal = (Integer) entries[++index];
-               items.add(factory.createEnumEntry(null, itemName, ordinal, cache));
-            }
-            type.setEntries(items);
-         }
-         return type;
-      }
-
-      @Override
-      public void loadAllOseeEnumTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
-         super.loadAllOseeEnumTypes(cache, factory);
-         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E1", "Enum1", "AAA", 1, "BBB", 2, "CCC", 3));
-         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E2", "Enum2", "DDD", 4, "EEE", 5, "FFF", 6));
-         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E3", "Enum3", "GGG", 7, "HHH", 8, "III", 9));
-         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E4", "Enum4", "JJJ", 10, "KKK", 11, "LLL", 12));
-         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E5", "Enum5", "MMM", 1, "NNN", 2, "OOO", 3));
-         int typeId = 400;
-         for (OseeEnumType type : oseeEnumTypes) {
-            type.setTypeId(typeId++);
-            cache.getEnumTypeCache().cacheType(type);
-         }
-      }
    }
 }

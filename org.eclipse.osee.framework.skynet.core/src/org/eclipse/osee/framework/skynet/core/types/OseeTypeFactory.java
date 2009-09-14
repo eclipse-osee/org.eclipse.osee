@@ -39,12 +39,11 @@ public class OseeTypeFactory implements IOseeTypeFactory {
    }
 
    @Override
-   public ArtifactType createArtifactType(String guid, boolean isAbstract, String name, OseeTypeCache oseeTypeCache) throws OseeCoreException {
+   public ArtifactType createArtifactType(ArtifactTypeCache cache, String guid, boolean isAbstract, String name) throws OseeCoreException {
       if (!Strings.isValid(name)) {
          throw new OseeArgumentException("name cannot be null.");
       }
-      return new ArtifactType(createGuidIfNeeded(guid), name, isAbstract, factoryManager,
-            oseeTypeCache.getArtifactTypeCache());
+      return new ArtifactType(cache, createGuidIfNeeded(guid), name, isAbstract, factoryManager);
    }
 
    @Override
@@ -104,21 +103,21 @@ public class OseeTypeFactory implements IOseeTypeFactory {
    }
 
    @Override
-   public OseeEnumType createEnumType(String guid, String name, OseeTypeCache oseeTypeCache) throws OseeCoreException {
+   public OseeEnumType createEnumType(OseeEnumTypeCache cache, String guid, String name) throws OseeCoreException {
       if (!Strings.isValid(name)) {
          throw new OseeArgumentException("name cannot be null.");
       }
-      return new OseeEnumType(createGuidIfNeeded(guid), name, oseeTypeCache);
+      return new OseeEnumType(cache, createGuidIfNeeded(guid), name);
    }
 
    @Override
-   public OseeEnumEntry createEnumEntry(String guid, String name, int ordinal, OseeTypeCache oseeTypeCache) throws OseeCoreException {
+   public OseeEnumEntry createEnumEntry(OseeEnumTypeCache cache, String guid, String name, int ordinal) throws OseeCoreException {
       if (!Strings.isValid(name)) {
          throw new OseeArgumentException("name cannot be null.");
       }
       if (ordinal < 0) {
          throw new OseeArgumentException("ordinal must be greater than or equal to zero");
       }
-      return new OseeEnumEntry(createGuidIfNeeded(guid), name, ordinal, oseeTypeCache);
+      return new OseeEnumEntry(cache, createGuidIfNeeded(guid), name, ordinal);
    }
 }

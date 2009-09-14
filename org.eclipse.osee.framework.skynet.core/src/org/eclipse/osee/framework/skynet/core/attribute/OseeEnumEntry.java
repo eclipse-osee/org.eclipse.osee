@@ -17,16 +17,16 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
+import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeEnumEntry extends BaseOseeType implements Comparable<OseeEnumEntry> {
    private final int ordinal;
-   private final OseeTypeCache cache;
+   private final OseeEnumTypeCache cache;
 
-   public OseeEnumEntry(String guid, String name, int ordinal, OseeTypeCache cache) {
+   public OseeEnumEntry(OseeEnumTypeCache cache, String guid, String name, int ordinal) {
       super(guid, name);
       this.ordinal = ordinal;
       this.cache = cache;
@@ -41,7 +41,7 @@ public class OseeEnumEntry extends BaseOseeType implements Comparable<OseeEnumEn
    }
 
    public OseeEnumType getDeclaringClass() throws OseeCoreException {
-      return cache.getEnumTypeCache().getEnumType(this);
+      return cache.getEnumType(this);
    }
 
    @Override

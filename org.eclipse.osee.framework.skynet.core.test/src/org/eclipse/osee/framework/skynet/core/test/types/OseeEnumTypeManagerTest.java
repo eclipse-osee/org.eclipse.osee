@@ -12,42 +12,32 @@
 package org.eclipse.osee.framework.skynet.core.test.types;
 
 import static org.junit.Assert.assertTrue;
-import java.util.ArrayList;
-import java.util.List;
-import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
-import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
-import org.junit.BeforeClass;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeEnumTypeManagerTest {
 
-   private static OseeTypeCache typeCache;
-   private static List<OseeEnumType> oseeEnumTypes;
-   private static OseeTypeFactory factory;
-   private static TestDataAccessor testAccessor;
-
-   @BeforeClass
-   public static void prepareTestData() throws OseeCoreException {
-      oseeEnumTypes = new ArrayList<OseeEnumType>();
-      factory = new OseeTypeFactory();
-
-      testAccessor = new TestDataAccessor(oseeEnumTypes);
-      typeCache = new OseeTypeCache(testAccessor, factory);
-
-      typeCache.getEnumTypeCache().getAllTypes();
-      Assert.assertTrue(testAccessor.isLoadAllArtifactTypes());
-      Assert.assertTrue(testAccessor.isLoadAllAttributeTypes());
-      Assert.assertTrue(testAccessor.isLoadAllRelationTypes());
-      Assert.assertTrue(testAccessor.isLoadAllTypeValidity());
-      Assert.assertTrue(testAccessor.isLoadAllOseeEnumTypes());
-   }
+   //   private static OseeTypeCache typeCache;
+   //   private static List<OseeEnumType> oseeEnumTypes;
+   //   private static OseeTypeFactory factory;
+   //   private static TestDataAccessor testAccessor;
+   //
+   //   @BeforeClass
+   //   public static void prepareTestData() throws OseeCoreException {
+   //      oseeEnumTypes = new ArrayList<OseeEnumType>();
+   //      factory = new OseeTypeFactory();
+   //
+   ////      testAccessor = new TestDataAccessor(oseeEnumTypes);
+   ////      typeCache = new OseeTypeCache(testAccessor, factory);
+   ////
+   ////      typeCache.getEnumTypeCache().getAllTypes();
+   ////      Assert.assertTrue(testAccessor.isLoadAllArtifactTypes());
+   ////      Assert.assertTrue(testAccessor.isLoadAllAttributeTypes());
+   ////      Assert.assertTrue(testAccessor.isLoadAllRelationTypes());
+   ////      Assert.assertTrue(testAccessor.isLoadAllOseeEnumTypes());
+   //   }
 
    @org.junit.Test
    public void testThis() throws OseeCoreException {
@@ -229,39 +219,39 @@ public class OseeEnumTypeManagerTest {
    //      assertTrue(!OseeEnumTypeManager.getAllTypeNames().contains(actual.getName()));
    //   }
 
-   private static class TestDataAccessor extends TestOseeTypeDataAccessor {
-      private final List<OseeEnumType> oseeEnumTypes;
-
-      public TestDataAccessor(List<OseeEnumType> oseeEnumTypes) {
-         this.oseeEnumTypes = oseeEnumTypes;
-      }
-
-      private OseeEnumType createEnumTypeHelper(OseeTypeCache cache, IOseeTypeFactory factory, String guid, String name, Object... entries) throws OseeCoreException {
-         OseeEnumType type = factory.createEnumType(guid, name, cache);
-         if (entries != null && entries.length > 0) {
-            List<OseeEnumEntry> items = new ArrayList<OseeEnumEntry>();
-            for (int index = 0; index < entries.length; index++) {
-               String itemName = (String) entries[index];
-               Integer ordinal = (Integer) entries[++index];
-               items.add(factory.createEnumEntry(null, itemName, ordinal, cache));
-            }
-            type.setEntries(items);
-         }
-         return type;
-      }
-
-      @Override
-      public void loadAllOseeEnumTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
-         super.loadAllOseeEnumTypes(cache, factory);
-         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E2", "Enum2", "AAA", 1, "BBB", 2, "CCC", 3));
-         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E3", "Enum3", "DDD", 4, "EEE", 5, "FFF", 6));
-         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E4", "Enum4", "GGG", 7, "HHH", 8, "III", 9));
-         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E5", "Enum5", "JJJ", 10, "KKK", 11, "LLL", 12));
-         int typeId = 400;
-         for (OseeEnumType type : oseeEnumTypes) {
-            type.setTypeId(typeId++);
-            cache.getEnumTypeCache().cacheType(type);
-         }
-      }
-   }
+   //   private static class TestDataAccessor extends TestOseeTypeDataAccessor {
+   //      private final List<OseeEnumType> oseeEnumTypes;
+   //
+   //      public TestDataAccessor(List<OseeEnumType> oseeEnumTypes) {
+   //         this.oseeEnumTypes = oseeEnumTypes;
+   //      }
+   //
+   //      private OseeEnumType createEnumTypeHelper(OseeTypeCache cache, IOseeTypeFactory factory, String guid, String name, Object... entries) throws OseeCoreException {
+   //         OseeEnumType type = factory.createEnumType(guid, name, cache);
+   //         if (entries != null && entries.length > 0) {
+   //            List<OseeEnumEntry> items = new ArrayList<OseeEnumEntry>();
+   //            for (int index = 0; index < entries.length; index++) {
+   //               String itemName = (String) entries[index];
+   //               Integer ordinal = (Integer) entries[++index];
+   //               items.add(factory.createEnumEntry(null, itemName, ordinal, cache));
+   //            }
+   //            type.setEntries(items);
+   //         }
+   //         return type;
+   //      }
+   //
+   //      @Override
+   //      public void loadAllOseeEnumTypes(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+   //         super.loadAllOseeEnumTypes(cache, factory);
+   //         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E2", "Enum2", "AAA", 1, "BBB", 2, "CCC", 3));
+   //         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E3", "Enum3", "DDD", 4, "EEE", 5, "FFF", 6));
+   //         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E4", "Enum4", "GGG", 7, "HHH", 8, "III", 9));
+   //         oseeEnumTypes.add(createEnumTypeHelper(cache, factory, "E5", "Enum5", "JJJ", 10, "KKK", 11, "LLL", 12));
+   //         int typeId = 400;
+   //         for (OseeEnumType type : oseeEnumTypes) {
+   //            type.setTypeId(typeId++);
+   //            cache.getEnumTypeCache().cacheType(type);
+   //         }
+   //      }
+   //   }
 }

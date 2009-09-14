@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
-import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeExtensionManager;
@@ -21,20 +20,10 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeData
 /**
  * @author Roberto E. Escobar
  */
-public final class AttributeTypeCache extends OseeTypeCacheData<AttributeType> {
+public final class AttributeTypeCache extends AbstractOseeTypeCache<AttributeType> {
 
-   public AttributeTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor dataAccessor) {
+   public AttributeTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<AttributeType> dataAccessor) {
       super(cache, factory, dataAccessor);
-   }
-
-   @Override
-   public void reloadCache() throws OseeCoreException {
-      getDataAccessor().loadAllAttributeTypes(getCache(), getDataFactory());
-   }
-
-   @Override
-   protected void storeItems(Collection<AttributeType> items) throws OseeCoreException {
-      getDataAccessor().storeAttributeType(items);
    }
 
    public AttributeType createType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {

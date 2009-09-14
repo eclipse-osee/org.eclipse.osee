@@ -26,15 +26,15 @@ import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 /**
  * @author Roberto E. Escobar
  */
-public final class OseeEnumTypeCache extends OseeTypeCacheData<OseeEnumType> {
-
-   public OseeEnumTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor dataAccessor) {
-      super(cache, factory, dataAccessor);
-   }
+public final class OseeEnumTypeCache extends AbstractOseeTypeCache<OseeEnumType> {
 
    private final HashCollection<OseeEnumType, OseeEnumEntry> enumTypeToEntryMap =
          new HashCollection<OseeEnumType, OseeEnumEntry>();
    private final Map<OseeEnumEntry, OseeEnumType> enumEntryToEnumType = new HashMap<OseeEnumEntry, OseeEnumType>();
+
+   public OseeEnumTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<OseeEnumType> dataAccessor) {
+      super(cache, factory, dataAccessor);
+   }
 
    public void cacheEnumEntries(OseeEnumType oseeEnumType, Collection<OseeEnumEntry> oseeEnumEntries) throws OseeCoreException {
       for (OseeEnumEntry entry : oseeEnumEntries) {
@@ -70,12 +70,12 @@ public final class OseeEnumTypeCache extends OseeTypeCacheData<OseeEnumType> {
    }
 
    public OseeEnumType getEnumType(OseeEnumEntry oseeEnumEntry) throws OseeCoreException {
-      //         ensurePopulated();
+      //      getCache().ensurePopulated();
       return enumEntryToEnumType.get(oseeEnumEntry);
    }
 
    public List<OseeEnumEntry> getEnumEntries(OseeEnumType oseeEnumType) throws OseeCoreException {
-      ensurePopulated();
+      getCache().ensurePopulated();
       List<OseeEnumEntry> itemsToReturn = new ArrayList<OseeEnumEntry>();
       Collection<OseeEnumEntry> entries = enumTypeToEntryMap.getValues(oseeEnumType);
       if (entries != null) {
@@ -84,20 +84,10 @@ public final class OseeEnumTypeCache extends OseeTypeCacheData<OseeEnumType> {
       return itemsToReturn;
    }
 
-   @Override
-   public void reloadCache() throws OseeCoreException {
-      getDataAccessor().loadAllOseeEnumTypes(getCache(), getDataFactory());
-   }
-
-   @Override
-   protected void storeItems(Collection<OseeEnumType> items) throws OseeCoreException {
-      getDataAccessor().storeOseeEnumType(items);
-   }
-
    public OseeEnumType createType(String guid, String enumTypeName) throws OseeCoreException {
       OseeEnumType oseeEnumType = getTypeByGuid(guid);
       if (oseeEnumType == null) {
-         oseeEnumType = getDataFactory().createEnumType(guid, enumTypeName, getCache());
+         oseeEnumType = getDataFactory().createEnumType(this, guid, enumTypeName);
       } else {
          decacheType(oseeEnumType);
          oseeEnumType.setName(enumTypeName);
@@ -107,6 +97,6 @@ public final class OseeEnumTypeCache extends OseeTypeCacheData<OseeEnumType> {
    }
 
    public OseeEnumEntry createEntry(String guid, String name, int ordinal) throws OseeCoreException {
-      return getDataFactory().createEnumEntry(guid, name, ordinal, getCache());
+      return getDataFactory().createEnumEntry(this, guid, name, ordinal);
    }
 }
