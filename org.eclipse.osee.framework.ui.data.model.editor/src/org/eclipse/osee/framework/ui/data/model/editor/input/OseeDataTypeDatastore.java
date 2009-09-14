@@ -35,8 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
  * @author Roberto E. Escobar
  */
 public class OseeDataTypeDatastore {
-   private static final String SELECT_ATTRIBUTE_VALIDITY = "SELECT * FROM osee_valid_attributes";
-   private static final String SELECT_RELATION_VALIDITY = "SELECT * FROM osee_valid_relations";
+   private static final String SELECT_ATTRIBUTE_VALIDITY = "SELECT * FROM osee_artifact_type_attributes";
 
    private OseeDataTypeDatastore() {
    }
@@ -98,25 +97,25 @@ public class OseeDataTypeDatastore {
    public static CompositeKeyHashMap<String, String, Pair<Integer, Integer>> getArtifactToRelationEntries() throws OseeCoreException {
       CompositeKeyHashMap<String, String, Pair<Integer, Integer>> toReturn =
             new CompositeKeyHashMap<String, String, Pair<Integer, Integer>>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         chStmt.runPreparedQuery(2000, SELECT_RELATION_VALIDITY);
-         while (chStmt.next()) {
-            try {
-               Pair<String, String> key =
-                     new Pair<String, String>(chStmt.getString("art_type_id"), chStmt.getString("rel_link_type_id"));
-
-               Pair<Integer, Integer> multiplicity =
-                     new Pair<Integer, Integer>(chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max"));
-
-               toReturn.put(key, multiplicity);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         }
-      } finally {
-         chStmt.close();
-      }
+      //      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      //      try {
+      //         chStmt.runPreparedQuery(2000, SELECT_RELATION_VALIDITY);
+      //         while (chStmt.next()) {
+      //            try {
+      //               Pair<String, String> key =
+      //                     new Pair<String, String>(chStmt.getString("art_type_id"), chStmt.getString("rel_link_type_id"));
+      //
+      //               Pair<Integer, Integer> multiplicity =
+      //                     new Pair<Integer, Integer>(chStmt.getInt("side_a_max"), chStmt.getInt("side_b_max"));
+      //
+      //               toReturn.put(key, multiplicity);
+      //            } catch (OseeCoreException ex) {
+      //               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      //            }
+      //         }
+      //      } finally {
+      //         chStmt.close();
+      //      }
       return toReturn;
    }
 

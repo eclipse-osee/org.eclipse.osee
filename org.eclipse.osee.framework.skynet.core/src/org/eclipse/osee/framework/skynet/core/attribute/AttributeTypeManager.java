@@ -161,7 +161,8 @@ public class AttributeTypeManager {
       return getEnumerationValues(getType(attributeName));
    }
 
-   private static final String DELETE_VALID_ATTRIBUTE = "delete from osee_valid_attributes where attr_type_id = ?";
+   private static final String DELETE_VALID_ATTRIBUTE =
+         "delete from osee_artifact_type_attributes where attr_type_id = ?";
    private static final String COUNT_ATTRIBUTE_OCCURRENCE =
          "select count(1) FROM osee_attribute where attr_type_id = ?";
    private static final String DELETE_ATTRIBUTE_TYPE = "delete from osee_attribute_type where attr_type_id = ?";

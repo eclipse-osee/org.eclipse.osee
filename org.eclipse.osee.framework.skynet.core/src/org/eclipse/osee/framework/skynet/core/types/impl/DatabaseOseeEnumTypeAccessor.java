@@ -73,6 +73,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
                      factory.createEnumEntry(cacheData, chStmt.getString("enum_entry_guid"), chStmt.getString("name"),
                            chStmt.getInt("ordinal"));
                entry.setModificationType(ModificationType.MODIFIED);
+               entry.clearDirty();
                types.put(oseeEnumType, entry);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -85,6 +86,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
          Collection<OseeEnumEntry> oseeEnumEntries = types.getValues(oseeEnumType);
          if (oseeEnumEntries != null) {
             oseeEnumType.setEntries(oseeEnumEntries);
+            oseeEnumType.clearDirty();
          }
       }
    }
@@ -115,7 +117,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
       ConnectionHandler.runBatchUpdate(DELETE_ENUM_TYPE, deleteData);
 
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
-         oseeEnumType.persist();
+         oseeEnumType.clearDirty();
       }
 
       insertData.clear();
@@ -145,7 +147,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
 
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
          for (OseeEnumEntry entry : oseeEnumType.values()) {
-            entry.persist();
+            entry.clearDirty();
          }
       }
    }

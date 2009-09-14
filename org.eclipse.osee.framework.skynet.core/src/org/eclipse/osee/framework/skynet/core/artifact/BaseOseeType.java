@@ -98,7 +98,7 @@ public class BaseOseeType implements IOseeType {
       this.modificationType = modificationType;
    }
 
-   public void persist() {
+   public void clearDirty() {
       dirty = false;
    }
 

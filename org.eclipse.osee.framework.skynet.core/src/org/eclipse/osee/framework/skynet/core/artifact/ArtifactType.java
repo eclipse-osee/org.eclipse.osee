@@ -51,14 +51,14 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
       Collection<ArtifactType> original = getSuperArtifactTypes();
       cache.setArtifactSuperType(this, superType);
       Collection<ArtifactType> newTypes = getSuperArtifactTypes();
-      isInheritanceDirty = isDifferent(original, newTypes);
+      isInheritanceDirty |= isDifferent(original, newTypes);
    }
 
    public void setAttributeTypeValidity(Collection<AttributeType> attributeTypes, Branch branch) throws OseeCoreException {
       Collection<AttributeType> original = cache.getLocalAttributeTypes(this, branch);
       cache.cacheTypeValidity(this, attributeTypes, branch);
       Collection<AttributeType> newTypes = cache.getLocalAttributeTypes(this, branch);
-      isAttributeTypeValidatityDirty = isDifferent(original, newTypes);
+      isAttributeTypeValidatityDirty |= isDifferent(original, newTypes);
    }
 
    public boolean isValidAttributeType(AttributeType attributeType, Branch branch) throws OseeCoreException {
@@ -180,8 +180,8 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
    }
 
    @Override
-   public void persist() {
-      super.persist();
+   public void clearDirty() {
+      super.clearDirty();
       isInheritanceDirty = false;
       isAttributeTypeValidatityDirty = false;
    }

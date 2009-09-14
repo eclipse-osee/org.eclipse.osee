@@ -79,6 +79,7 @@ public class DatabaseAttributeTypeAccessor implements IOseeTypeDataAccessor<Attr
                            chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
                attributeType.setTypeId(chStmt.getInt("attr_type_id"));
                attributeType.setModificationType(ModificationType.MODIFIED);
+               attributeType.clearDirty();
                cache.getAttributeTypeCache().cacheType(attributeType);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -109,7 +110,7 @@ public class DatabaseAttributeTypeAccessor implements IOseeTypeDataAccessor<Attr
       ConnectionHandler.runBatchUpdate(INSERT_ATTRIBUTE_TYPE, insertData);
       ConnectionHandler.runBatchUpdate(UPDATE_ATTRIBUTE_TYPE, updateData);
       for (AttributeType type : types) {
-         type.persist();
+         type.clearDirty();
       }
    }
 

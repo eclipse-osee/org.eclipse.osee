@@ -67,6 +67,7 @@ public class DatabaseRelationTypeAccessor implements IOseeTypeDataAccessor<Relat
                               chStmt.getString("default_order_type_guid"));
                   relationType.setTypeId(chStmt.getInt("rel_link_type_id"));
                   relationType.setModificationType(ModificationType.MODIFIED);
+                  relationType.clearDirty();
                   cache.getRelationTypeCache().cacheType(relationType);
                } else {
                   OseeLog.log(Activator.class, Level.SEVERE, String.format("Multiplicity was null for [%s][%s]",
@@ -102,7 +103,7 @@ public class DatabaseRelationTypeAccessor implements IOseeTypeDataAccessor<Relat
       ConnectionHandler.runBatchUpdate(UPDATE_RELATION_TYPE, updateData);
 
       for (RelationType type : relationTypes) {
-         type.persist();
+         type.clearDirty();
       }
    }
 

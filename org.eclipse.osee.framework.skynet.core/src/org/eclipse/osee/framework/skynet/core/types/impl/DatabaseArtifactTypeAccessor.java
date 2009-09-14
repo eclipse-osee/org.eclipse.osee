@@ -59,10 +59,11 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
    private static final String DELETE_ARTIFACT_TYPE_INHERITANCE =
          "delete from osee_artifact_type_inheritance where art_type_id = ?";
 
-   private static final String SELECT_ATTRIBUTE_VALIDITY = "SELECT * FROM osee_valid_attributes";
-   private static final String INSERT_VALID_ATTRIBUTE =
-         "INSERT INTO osee_valid_attributes (art_type_id, attr_type_id, branch_id) VALUES (?, ?, ?)";
-   private static final String DELETE_VALID_ATTRIBUTE = "delete from osee_valid_attributes where art_type_id = ?";
+   private static final String SELECT_ARTIFACT_TYPE_ATTRIBUTES = "SELECT * FROM osee_artifact_type_attributes";
+   private static final String INSERT_ARTIFACT_TYPE_ATTRIBUTES =
+         "INSERT INTO osee_artifact_type_attributes (art_type_id, attr_type_id, branch_id) VALUES (?, ?, ?)";
+   private static final String DELETE_ARTIFACT_TYPE_ATTRIBUTES =
+         "delete from osee_artifact_type_attributes where art_type_id = ?";
 
    @Override
    public void load(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
@@ -70,6 +71,9 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
       loadArtifactTypes(cacheData, factory);
       loadTypeInheritance(cacheData);
       loadAllTypeValidity(cacheData, factory);
+      for (ArtifactType type : cacheData.getAllTypes()) {
+         type.clearDirty();
+      }
    }
 
    private void loadArtifactTypes(ArtifactTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
@@ -129,7 +133,7 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
    private void loadAllTypeValidity(ArtifactTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(2000, SELECT_ATTRIBUTE_VALIDITY);
+         chStmt.runPreparedQuery(2000, SELECT_ARTIFACT_TYPE_ATTRIBUTES);
          while (chStmt.next()) {
             try {
                ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
@@ -182,7 +186,7 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
       storeAttributeTypeValidity(cache, types);
 
       for (ArtifactType type : types) {
-         type.persist();
+         type.clearDirty();
       }
    }
 
@@ -216,7 +220,7 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
             }
          }
       }
-      ConnectionHandler.runBatchUpdate(DELETE_VALID_ATTRIBUTE, deleteData);
-      ConnectionHandler.runBatchUpdate(INSERT_VALID_ATTRIBUTE, insertData);
+      ConnectionHandler.runBatchUpdate(DELETE_ARTIFACT_TYPE_ATTRIBUTES, deleteData);
+      ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE_ATTRIBUTES, insertData);
    }
 }

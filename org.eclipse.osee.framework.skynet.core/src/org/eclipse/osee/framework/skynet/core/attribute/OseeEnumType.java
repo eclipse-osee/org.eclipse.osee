@@ -97,11 +97,11 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
    }
 
    @Override
-   public void persist() {
-      super.persist();
+   public void clearDirty() {
+      super.clearDirty();
       try {
          for (OseeEnumEntry entry : values()) {
-            entry.persist();
+            entry.clearDirty();
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

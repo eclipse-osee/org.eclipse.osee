@@ -82,7 +82,7 @@ public class DirtyOseeTypesReport extends AbstractOperation {
    private void createArtifactTypeReport(List<IResultsEditorTab> tabs, ArtifactTypeCache cache) throws OseeCoreException {
       Collection<ArtifactType> types = cache.getDirtyTypes();
       ReportTab tab = new ReportTab("Artifact Types", tabs);
-      tab.addTableHeader("Name", "ModType", "Data Dirty", "Inherits", "Validity");
+      tab.addTableHeader("Name", "ModType", "Data Dirty", "IsAbstract", "Inherits", "Validity");
       String inheritance;
       String validity;
       for (ArtifactType type : types) {
@@ -96,8 +96,8 @@ public class DirtyOseeTypesReport extends AbstractOperation {
          } else {
             inheritance = "Not Changed";
          }
-         tab.addRow(type.getName(), type.getModificationType().getDisplayName(), String.valueOf(type.isDataDirty()),
-               inheritance, validity);
+         tab.addRow(type.getName(), type.getModificationType().getDisplayName(), String.valueOf(type.isAbstract()),
+               String.valueOf(type.isDataDirty()), inheritance, validity);
       }
       tab.endTable();
    }

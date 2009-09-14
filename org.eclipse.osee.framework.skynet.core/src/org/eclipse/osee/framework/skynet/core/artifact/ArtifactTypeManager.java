@@ -178,8 +178,8 @@ public class ArtifactTypeManager {
       return getType(artifactTypeName).makeNewArtifact(branch, guid, humandReadableId);
    }
 
-   private static final String DELETE_VALID_REL = "delete from osee_valid_relations where art_type_id = ?";
-   private static final String DELETE_VALID_ATTRIBUTE = "delete from osee_valid_attributes where art_type_id = ?";
+   private static final String DELETE_VALID_ATTRIBUTE =
+         "delete from osee_artifact_type_attributes where art_type_id = ?";
    private static final String COUNT_ARTIFACT_OCCURRENCE = "select count(1) FROM osee_artifact where art_type_id = ?";
    private static final String DELETE_ARIFACT_TYPE = "delete from osee_artifact_type where art_type_id = ?";
 
@@ -196,7 +196,6 @@ public class ArtifactTypeManager {
          @Override
          protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
             int artTypeId = artifactType.getTypeId();
-            ConnectionHandler.runPreparedUpdate(connection, DELETE_VALID_REL, artTypeId);
             ConnectionHandler.runPreparedUpdate(connection, DELETE_VALID_ATTRIBUTE, artTypeId);
             ConnectionHandler.runPreparedUpdate(connection, DELETE_ARIFACT_TYPE, artTypeId);
          }
