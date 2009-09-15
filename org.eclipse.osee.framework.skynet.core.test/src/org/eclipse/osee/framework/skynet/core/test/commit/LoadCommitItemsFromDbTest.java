@@ -48,13 +48,13 @@ public class LoadCommitItemsFromDbTest {
 
       List<CommitItem> items = new ArrayList<CommitItem>();
 
-      processItems(items, source, destination, null, 42, 42);
+      processItems(items, source, destination, null, 41, 41);
 
-      checkNetItems(items, ModificationType.NEW, 2, 16, 4);
+      checkNetItems(items, ModificationType.NEW, 2, 18, 4);
       checkNetItems(items, ModificationType.INTRODUCED, 0, 0, 0);
-      checkNetItems(items, ModificationType.MODIFIED, 2, 6, 0);
+      checkNetItems(items, ModificationType.MODIFIED, 2, 4, 0);
       checkNetItems(items, ModificationType.MERGED, 0, 0, 0);
-      checkNetItems(items, ModificationType.ARTIFACT_DELETED, 0, 10, 1);
+      checkNetItems(items, ModificationType.ARTIFACT_DELETED, 0, 9, 1);
       checkNetItems(items, ModificationType.DELETED, 1, 0, 0);
    }
 
@@ -72,9 +72,9 @@ public class LoadCommitItemsFromDbTest {
 
       processItems(items, source, destination, null, 5, 5);
 
-      checkNetItems(items, ModificationType.NEW, 0, 0, 1);
+      checkNetItems(items, ModificationType.NEW, 0, 1, 1);
       checkNetItems(items, ModificationType.INTRODUCED, 0, 0, 0);
-      checkNetItems(items, ModificationType.MODIFIED, 1, 3, 0);
+      checkNetItems(items, ModificationType.MODIFIED, 1, 2, 0);
       checkNetItems(items, ModificationType.MERGED, 0, 0, 0);
       checkNetItems(items, ModificationType.ARTIFACT_DELETED, 0, 0, 0);
       checkNetItems(items, ModificationType.DELETED, 0, 0, 0);
