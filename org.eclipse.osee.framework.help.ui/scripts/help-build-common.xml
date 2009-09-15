@@ -37,8 +37,8 @@
 
 		<sequential>
 			<antcall target="init" />
-			<get dest="tmp/help.doc.xml" src="@{help.doc.url.xml}" />
-			<get dest="tmp/help.doc.html" src="@{help.doc.url.html}" />
+			<osee-get dest="tmp/help.doc.xml" src="@{help.doc.url.xml}" />
+			<osee-get dest="tmp/help.doc.html" src="@{help.doc.url.html}" />
 
 			<copy todir="tmp">
 				<fileset dir="images" />
