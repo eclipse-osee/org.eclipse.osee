@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -76,7 +77,12 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       List<OseeTypeModel> models = new ArrayList<OseeTypeModel>();
-      OseeTypeModel targetModel = OseeTypeModelUtil.loadModel(context, resource);
+      OseeTypeModel targetModel = null;
+      try {
+         targetModel = OseeTypeModelUtil.loadModel(context, resource);
+      } catch (OseeCoreException ex) {
+         throw new OseeWrappedException(String.format("Error loading: [%s]", resource), ex);
+      }
       loadDependencies(targetModel, models);
 
       if (!models.isEmpty()) {
