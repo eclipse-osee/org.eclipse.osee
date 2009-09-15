@@ -81,7 +81,7 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
             Object object = iterator.next();
             if (object instanceof IFile) {
                IFile file = (IFile) object;
-               if (file.getFileExtension().equals(".osee")) {
+               if (file.getFileExtension().equals("osee")) {
                   resources.add(file);
                }
             }
@@ -127,6 +127,7 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
 
       restoreWidgetValues();
       updateWidgetEnablements();
+      updateExtractedElements();
       setPageComplete(determinePageCompletion());
       setControl(composite);
    }
