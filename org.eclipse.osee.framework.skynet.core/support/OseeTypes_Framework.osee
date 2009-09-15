@@ -443,8 +443,7 @@ attributeType "Imported Paragraph Number" extends StringAttribute {
 artifactType "Requirement" extends "Artifact" {
    guid "ABM_vxEEowY+8i2_q9gA"
    attribute "Development Assurance Level"
-   attribute "Qualification Method"
-   attribute "Safety Criticality"
+   attribute "Qualification Method"  
    attribute "Subsystem"
    attribute "Technical Performance Parameter"
    attribute "PublishInline"
