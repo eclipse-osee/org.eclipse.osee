@@ -39,8 +39,8 @@ import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
 import org.junit.BeforeClass;
 
 /**
- * Low-level OseeTypeCache Test - check inheritance, artifact, attribute and relation type management
- * This test does not require database access
+ * Low-level OseeTypeCache Test - check inheritance, artifact, attribute and relation type management This test does not
+ * require database access
  * 
  * @author Roberto E. Escobar
  */
@@ -399,7 +399,8 @@ public class OseeTypeCacheTest {
       private RelationType createRelationHelper(OseeTypeCache cache, IOseeTypeFactory factory, String guid, String name, String aGUID, String bGUID, RelationTypeMultiplicity multiplicity) throws OseeCoreException {
          ArtifactType type1 = cache.getArtifactTypeCache().getTypeByGuid(aGUID);
          ArtifactType type2 = cache.getArtifactTypeCache().getTypeByGuid(bGUID);
-         return factory.createRelationType(guid, name, name + "_A", name + "_B", type1, type2, multiplicity, true, "");
+         return factory.createRelationType(cache.getRelationTypeCache(), guid, name, name + "_A", name + "_B", type1,
+               type2, multiplicity, true, "");
       }
 
       @Override
@@ -430,8 +431,9 @@ public class OseeTypeCacheTest {
       }
 
       private AttributeType createAttributeTypeHelper(IOseeTypeFactory factory, String guid, String name) throws OseeCoreException {
-         return factory.createAttributeType(guid, name, "DummyBase", "DummyProvider", StringAttribute.class,
-               DefaultAttributeDataProvider.class, "none", "none", null, 1, 1, "test data", null);
+         return factory.createAttributeType(typeCache.getAttributeTypeCache(), guid, name, "DummyBase",
+               "DummyProvider", StringAttribute.class, DefaultAttributeDataProvider.class, "none", "none", null, 1, 1,
+               "test data", null);
       }
 
       @Override
