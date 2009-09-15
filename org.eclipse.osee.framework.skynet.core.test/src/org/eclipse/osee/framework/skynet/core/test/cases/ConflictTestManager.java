@@ -214,7 +214,6 @@ public class ConflictTestManager {
       // Add artifacts onto the destination Branch
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          ArtifactType artType = ArtifactTypeManager.getType(conflictDefs[i].artifactType);
-         //               ConfigurationPersistenceManager.getArtifactSubtypeDescriptor(conflictDefs[i].artifactType);
          if (conflictDefs[i].rootArtifact > 0 && conflictDefs[i].rootArtifact < i) {
             destArtifacts[i] =
                   destArtifacts[conflictDefs[i].rootArtifact].addNewChild(artType, "Test Artifact Number " + i);
@@ -237,6 +236,7 @@ public class ConflictTestManager {
       for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          //handle source objects
          for (AttributeValue value : conflictDefs[i].values) {
+            // source objects
             if (value.sourceDeleted) {
                sourceArtifacts[i].getSoleAttribute(value.attributeName).delete();
             } else {
@@ -249,11 +249,7 @@ public class ConflictTestManager {
                   conflictDefs[i].numConflicts++;
                }
             }
-         }
-
-         ///handle destination objects
-         sourceArtifacts[i].persist();
-         for (AttributeValue value : conflictDefs[i].values) {
+            // destination objects
             if (value.destinationDeleted) {
                destArtifacts[i].getSoleAttribute(value.attributeName).delete();
             } else if (value.destValue != null) {
@@ -261,10 +257,11 @@ public class ConflictTestManager {
                destArtifacts[i].setSoleAttributeValue(value.attributeName, stringToObject(value.clas, value.destValue));
             }
          }
-      }
-      for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
+         sourceArtifacts[i].persist();
          destArtifacts[i].persist();
 
+      }
+      for (int i = 0; i < NUMBER_OF_ARTIFACTS; i++) {
          if (conflictDefs[i].destDelete) {
             System.out.println("Deleting Artifact with ID " + destArtifacts[i].getArtId() + " index " + i);
             destArtifacts[i].deleteAndPersist();
@@ -565,8 +562,6 @@ public class ConflictTestManager {
       conflictDefs[1].setValues("Software Requirement", false, false, 0, 0);
 
       conflictDefs[2].setValues("Software Requirement", false, false, 0, 0);
-      conflictDefs[2].values.add(new AttributeValue("Safety Criticality", "B", "C", "Destination",
-            StringAttribute.class));
       conflictDefs[2].values.add(new AttributeValue("CSCI", "Sights", "Navigation", "Source", StringAttribute.class));
       conflictDefs[2].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Navigation",
             StringAttribute.class));
@@ -574,10 +569,6 @@ public class ConflictTestManager {
             "Test Artifact Number 2 - Destination", "Test Artifact Number 2 - Merge", StringAttribute.class));
 
       conflictDefs[3].setValues("Software Requirement", true, false, 0, 0);
-      conflictDefs[3].values.add(new AttributeValue("Safety Criticality", "B", "C", "Destination",
-            StringAttribute.class));
-      conflictDefs[3].values.add(new AttributeValue("Page Type", "Landscape", "Portrait", "Source",
-            StringAttribute.class));
       conflictDefs[3].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[3].values.add(new AttributeValue("Name", "Test Artifact Number 3 - Source", null, "Destination",
             StringAttribute.class));
@@ -585,7 +576,6 @@ public class ConflictTestManager {
       conflictDefs[4].setValues("Software Requirement", false, false, 0, 0);
 
       conflictDefs[5].setValues("Software Requirement", false, true, 0, 0);
-      conflictDefs[5].values.add(new AttributeValue("Safety Criticality", "A", "C", "Source", StringAttribute.class));
       conflictDefs[5].values.add(new AttributeValue("Page Type", "Landscape", "Portrait", "Destination",
             StringAttribute.class));
       conflictDefs[5].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
@@ -623,8 +613,6 @@ public class ConflictTestManager {
       conflictDefs[14].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[14].values.add(new AttributeValue("Name", "Test Artifact Number 14 - Parent", null, "Source",
             StringAttribute.class));
-      conflictDefs[14].values.add(new AttributeValue("Safety Criticality", "E", null, "Source", StringAttribute.class,
-            true, false));
 
       conflictDefs[15].setValues("Software Requirement", false, false, 14, DELETION_TEST_QUERY);
       conflictDefs[15].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
