@@ -993,8 +993,8 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       ensureAttributesLoaded();
       if (!isAttributeTypeValid(attributeTypeName)) {
          throw new OseeStateException(String.format(
-               "Artifact[%s] type definition error - Attribute Type [%s] is not a part of Artifact Type [%s]",
-               attributeTypeName, getArtifactTypeName(), getGuid()));
+               "ArtifactType [%s] definition error - Attribute Type [%s] is not a part of Artifact Type [%s:%s]",
+               getArtifactTypeName(), attributeTypeName, getArtifactTypeName(), getGuid()));
       }
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isOfType(attributeTypeName)) {
@@ -1772,12 +1772,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    public Date getLastModified() {
-      if (transactionId == null) return new Date();
+      if (transactionId == null) {
+         return new Date();
+      }
       return transactionId.getTime();
    }
 
    public User getLastModifiedBy() throws OseeCoreException {
-      if (transactionId == null) return UserManager.getUser(SystemUser.OseeSystem);
+      if (transactionId == null) {
+         return UserManager.getUser(SystemUser.OseeSystem);
+      }
       return UserManager.getUserByArtId(transactionId.getAuthorArtId());
    }
 
