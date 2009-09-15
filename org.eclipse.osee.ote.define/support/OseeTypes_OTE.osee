@@ -50,29 +50,34 @@ attributeType "Outfile URL" extends StringAttribute {
    guid "AAMFEVlyBndUvySg+gwA"
    dataProvider MappedAttributeDataProvider
    min 1
-   max 1 description "Test Run Content"
-   defaultValue "\"\"" fileExtension "tmo"
+   max 1
+   description "Test Run Content"
+   defaultValue "\"\""
+   fileExtension "tmo"
 }
 
 attributeType "Test Script URL" extends StringAttribute {
    guid "AAMFEVn0+mhxtCuACgAA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Url of the test script used"
+   max 1
+   description "Url of the test script used"
 }
 
 attributeType "Revision" extends StringAttribute {
    guid "AAMFEWAal2I3j7EJligA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Version"
+   max 1
+   description "Version"
 }
 
 attributeType "Modified Flag" extends StringAttribute {
    guid "AAMFEWCruiS26nCN68wA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "File Modification Flag from Repository"
+   max 1
+   description "File Modification Flag from Repository"
 }
 
 attributeType "Last Author" extends StringAttribute {
@@ -80,14 +85,16 @@ attributeType "Last Author" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description "Last Author"
+   taggerId DefaultAttributeTaggerProvider
+   description "Last Author"
 }
 
 attributeType "Last Modified Date" extends DateAttribute {
    guid "AAMFEWHw7V1uWv4IKcQA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Last Modified"
+   max 1
+   description "Last Modified"
 }
 
 attributeType "OS Architecture" extends StringAttribute {
@@ -95,77 +102,88 @@ attributeType "OS Architecture" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description "OS Architecture"
+   taggerId DefaultAttributeTaggerProvider
+   description "OS Architecture"
 }
 
 attributeType "OS Name" extends StringAttribute {
    guid "AAMFEWMdBmP9aCgsysgA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "OS Name"
+   max 1
+   description "OS Name"
 }
 
 attributeType "OS Version" extends StringAttribute {
    guid "AAMFEWOvQWV6JJvh9NQA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "OS Version"
+   max 1
+   description "OS Version"
 }
 
 attributeType "OSEE Version" extends StringAttribute {
    guid "AAMFEWQ_TTkstJvjnGQA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "OSEE Version"
+   max 1
+   description "OSEE Version"
 }
 
 attributeType "OSEE Server Title" extends StringAttribute {
    guid "AAMFEWTnXGYRfdzY3gAA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "OSEE Server Title"
+   max 1
+   description "OSEE Server Title"
 }
 
 attributeType "OSEE Server Jar Version" extends StringAttribute {
    guid "AAMFEWV1OQtXL67OfOQA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "OSEE Server Jar Version"
+   max 1
+   description "OSEE Server Jar Version"
 }
 
 attributeType "Processor ID" extends StringAttribute {
    guid "AAMFEWYOAGkplo4RjTQA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Processor ID"
+   max 1
+   description "Processor ID"
 }
 
 attributeType "Start Date" extends DateAttribute {
    guid "AAMFEWpeXjfr2W5ZT5QA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Start Date"
+   max 1
+   description "Start Date"
 }
 
 attributeType "End Date" extends DateAttribute {
    guid "AAMFEWryxym0P9FFckgA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Stop Date"
+   max 1
+   description "Stop Date"
 }
 
 attributeType "Elapsed Date" extends StringAttribute {
    guid "AAMFEWuD6yH04y89M3wA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Time Elapsed from the start to the end of the script"
+   max 1
+   description "Time Elapsed from the start to the end of the script"
 }
 
 attributeType "Passed" extends IntegerAttribute {
    guid "AAMFEWwT92IzQp6Dh3gA"
    dataProvider DefaultAttributeDataProvider
    min 1
-   max 1 description "Number of test points that passed"
+   max 1
+   description "Number of test points that passed"
    defaultValue "0"
 }
 
@@ -173,7 +191,8 @@ attributeType "Failed" extends IntegerAttribute {
    guid "AAMFEWynSU+XeRG7nRAA"
    dataProvider DefaultAttributeDataProvider
    min 1
-   max 1 description "Number of test points that failed"
+   max 1
+   description "Number of test points that failed"
    defaultValue "0"
 }
 
@@ -181,7 +200,8 @@ attributeType "Total Test Points" extends IntegerAttribute {
    guid "AAMFEW05hBfECFGfZkgA"
    dataProvider DefaultAttributeDataProvider
    min 1
-   max 1 description "Total test points"
+   max 1
+   description "Total test points"
    defaultValue "0"
 }
 
@@ -190,7 +210,8 @@ attributeType "Script Aborted" extends BooleanAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   taggerId DefaultAttributeTaggerProvider description "Test Abort status"
+   taggerId DefaultAttributeTaggerProvider
+   description "Test Abort status"
    defaultValue "yes"
 }
 
@@ -198,14 +219,16 @@ attributeType "Test Script GUID" extends StringAttribute {
    guid "AAMFEW5fEhinpcjeZ0wA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Test Case GUID"
+   max 1
+   description "Test Case GUID"
 }
 
 attributeType "Ran In Batch Mode" extends BooleanAttribute {
    guid "AAMFEW7uBlg0KLp8mhQA"
    dataProvider DefaultAttributeDataProvider
    min 1
-   max 1 description "Run was performed as part of a batch"
+   max 1
+   description "Run was performed as part of a batch"
    defaultValue "no"
 }
 
@@ -213,7 +236,8 @@ attributeType "Is Batch Mode Allowed" extends BooleanAttribute {
    guid "AAMFEW+CcA6F5GEjsSgA"
    dataProvider DefaultAttributeDataProvider
    min 1
-   max 1 description "Whether Test Script is allowed to run as part of a batch"
+   max 1
+   description "Whether Test Script is allowed to run as part of a batch"
    defaultValue "yes"
 }
 
@@ -222,15 +246,16 @@ attributeType "User ID" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description
-   "Id of the user who ran the test"
+   taggerId DefaultAttributeTaggerProvider
+   description "Id of the user who ran the test"
 }
 
 attributeType "Last Date Uploaded" extends DateAttribute {
    guid "AAMFEXCm5ju5gvq142QA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Last time outfile was uploaded"
+   max 1
+   description "Last time outfile was uploaded"
 }
 
 attributeType "Qualification Level" extends StringAttribute {
@@ -238,7 +263,8 @@ attributeType "Qualification Level" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description "Qualification level"
+   taggerId DefaultAttributeTaggerProvider
+   description "Qualification level"
    defaultValue "DEVELOPMENT"
 }
 
@@ -247,7 +273,8 @@ attributeType "Build Id" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description "Build Id"
+   taggerId DefaultAttributeTaggerProvider
+   description "Build Id"
    defaultValue "unknown"
 }
 
@@ -255,14 +282,16 @@ attributeType "Checksum" extends StringAttribute {
    guid "AAMFEXJbaHt5uKG9kogA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Test Case Checksum"
+   max 1
+   description "Test Case Checksum"
 }
 
 attributeType "Disposition" extends StringAttribute {
    guid "AAMFEXfoPWRZHNiOR3gA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Disposition"
+   max 1
+   description "Disposition"
 }
 
 oseeEnumType "Test Status.enum" {
@@ -278,7 +307,8 @@ attributeType "Test Status" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   enumType "Test Status.enum" description "Test Status"
+   enumType "Test Status.enum"
+   description "Test Status"
 }
 
 attributeType "Test Pass" extends IntegerAttribute {
@@ -298,35 +328,40 @@ attributeType "Test Fail" extends IntegerAttribute {
 }
 
 attributeType "Version" extends StringAttribute {
-   guid "AAMFDhder0oETnv14xQA"
+   guid "AAMFERX4UAvPcLnvswwA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Version"
+   max 1
+   description "Version"
 }
 
 attributeType "Repository Type" extends StringAttribute {
    guid "AAMFERaLojPfsL4I2AwA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Repository Type"
+   max 1
+   description "Repository Type"
 }
 
 attributeType "Modification Flag" extends StringAttribute {
    guid "AAMFERccxh8La5wlEmgA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "File Modification Flag from Repository"
+   max 1
+   description "File Modification Flag from Repository"
 }
 
 attributeType "Test Log" extends CompressedContentAttribute {
    guid "AAMFERet6VP3iltwxMwA"
    dataProvider UriAttributeDataProvider
    min 0
-   max 1 description "Compressed Data" fileExtension "txt"
+   max 1
+   description "Compressed Data"
+   fileExtension "txt"
 }
 
 relationType "Test Case to Run Relation" {
-   guid "ABSc8LjSrQxwEx0+BEgA"
+   guid "AAMFE+jMyBDK7CV479wA"
    sideAName "Test Case"
    sideAArtifactType "Test Case"
    sideBName "Test Run"
