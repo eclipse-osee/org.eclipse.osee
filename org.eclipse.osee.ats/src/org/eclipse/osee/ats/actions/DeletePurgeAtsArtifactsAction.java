@@ -13,12 +13,13 @@ package org.eclipse.osee.ats.actions;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.util.AtsDeleteManager;
+import org.eclipse.osee.ats.util.AtsDeleteManager.DeleteOption;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 
 /**
  * @author Donald G. Dunne
@@ -36,7 +37,8 @@ public class DeletePurgeAtsArtifactsAction extends Action {
    @Override
    public void run() {
       try {
-         MassArtifactEditor.editArtifacts("", selectedAtsArtifacts.getSelectedSMAArtifacts());
+         AtsDeleteManager.handleDeletePurgeAtsObject(selectedAtsArtifacts.getSelectedSMAArtifacts(),
+               DeleteOption.Prompt);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
