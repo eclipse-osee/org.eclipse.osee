@@ -443,7 +443,7 @@ attributeType "Imported Paragraph Number" extends StringAttribute {
 artifactType "Requirement" extends "Artifact" {
    guid "ABM_vxEEowY+8i2_q9gA"
    attribute "Development Assurance Level"
-   attribute "Qualification Method"  
+   attribute "Qualification Method"
    attribute "Subsystem"
    attribute "Technical Performance Parameter"
    attribute "PublishInline"
@@ -800,7 +800,7 @@ oseeEnumType "Component.enum" {
 }
 
 attributeType "Component" extends EnumeratedAttribute {
-   guid "AAMFDkG6omAsD6dXPYgA"
+   guid "AAMFEVjkKR2EMfwWk4AA"
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
