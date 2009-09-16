@@ -297,8 +297,8 @@ attributeType "Description" extends StringAttribute {
    taggerId DefaultAttributeTaggerProvider
 }
 
-oseeEnumType "Page Type.enum" {
-   guid "ABM6w018rgblQAxWidwA"
+oseeEnumType "enum.doc.page.type" {
+   guid "ABbjHDYCtmvuIrCz2MAA"
    entry "Portrait"
    entry "Landscape"
 }
@@ -309,7 +309,8 @@ attributeType "Page Type" extends EnumeratedAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
-   enumType "Page Type.enum" description "Page Type: Landscape/Portrait"
+   enumType "enum.doc.page.type"
+   description "Page Type: Landscape/Portrait"
    defaultValue "Portrait"
 }
 
@@ -596,8 +597,8 @@ attributeType "Training Effectivity" extends BooleanAttribute {
    defaultValue "no"
 }
 
-oseeEnumType "Partition.enum" {
-   guid "ABNEZoo6fGwQIIHdCaAA"
+oseeEnumType "enum.req.partition" {
+   guid "ABbjHBzHfCU9H2BPpqAA"
    entry "Graphics Handler"
    entry "Communication"
    entry "Flight Control"
@@ -612,12 +613,12 @@ attributeType "Partition" extends EnumeratedAttribute {
    min 1
    max unlimited
    taggerId DefaultAttributeTaggerProvider
-   enumType "Partition.enum"
+   enumType "enum.req.partition"
    defaultValue "Unspecified"
 }
 
-oseeEnumType "Subsystem.enum" {
-   guid "ABNFDGDD_HEo2PU29jgA"
+oseeEnumType "enum.req.subsystem" {
+   guid "ABbjHB5dcGIVi9+p9bQA"
    entry "Robot_API"
    entry "Robot_Survivability_Equipment"
    entry "Robot_Systems_Management"
@@ -639,12 +640,12 @@ attributeType "Subsystem" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   enumType "Subsystem.enum"
+   enumType "enum.req.subsystem"
    defaultValue "Unspecified"
 }
 
-oseeEnumType "Qualification Method.enum" {
-   guid "ABNF0ABXwGKbwaIpWGwA"
+oseeEnumType "enum.req.qualification.method" {
+   guid "ABbjHCAHCGyBB5TlmFQA"
    entry "Demonstration"
    entry "Test"
    entry "Analysis"
@@ -659,13 +660,13 @@ attributeType "Qualification Method" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max unlimited
-   enumType "Qualification Method.enum" description
-   "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software)."
+   enumType "enum.req.qualification.method"
+   description "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software)."
    defaultValue "Unspecified"
 }
 
-oseeEnumType "Safety Criticality.enum" {
-   guid "ABNGzJBUHBFcd_GDm5QA"
+oseeEnumType "enum.req.safety.criticality" {
+   guid "ABbjHCNxJBcbZ6yiZDgA"
    entry "I"
    entry "II"
    entry "III"
@@ -678,12 +679,12 @@ attributeType "Safety Criticality" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   enumType "Safety Criticality.enum" description "Criticality Classification"
+   enumType "enum.req.safety.criticality" description "Criticality Classification"
    defaultValue "V"
 }
 
-oseeEnumType "Verification Level.enum" {
-   guid "ABNINTWl4TcjWzt4l7wA"
+oseeEnumType "enum.req.verification.level" {
+   guid "ABbjHC2WXXrSKP4puzgA"
    entry "System"
    entry "Subsystem"
    entry "Component"
@@ -696,7 +697,7 @@ attributeType "Verification Level" extends EnumeratedAttribute {
    min 1
    max 1
    taggerId DefaultAttributeTaggerProvider
-   enumType "Verification Level.enum"
+   enumType "enum.req.verification.level"
    defaultValue "Unspecified"
 }
 
@@ -707,8 +708,8 @@ attributeType "TIS Test Number" extends StringAttribute {
    max 1 description "Test Number"
 }
 
-oseeEnumType "TIS Test Type.enum" {
-   guid "ABNJEWx1hG9EG1pwvpwA"
+oseeEnumType "enum.test.tis.type" {
+   guid "ABbjHCU5SnXJ62yrqgQA"
    entry "Stationary Vehicle"
    entry "In Operation"
 }
@@ -718,12 +719,12 @@ attributeType "TIS Test Type" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max unlimited
-   enumType "TIS Test Type.enum" description "TIS Test Type"
+   enumType "enum.test.tis.type" description "TIS Test Type"
    defaultValue "Stationary Vehicle"
 }
 
-oseeEnumType "TIS Test Category.enum" {
-   guid "ABNJ30z1VC1b9gFxX7gA"
+oseeEnumType "enum.test.tis.category" {
+   guid "ABbjHCbrnnqEZAX3kzwA"
    entry "SPEC_COMP"
    entry "DEV"
    entry "USG"
@@ -734,11 +735,11 @@ attributeType "TIS Test Category" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   enumType "TIS Test Category.enum" description "TIS Test Category"
+   enumType "enum.test.tis.category" description "TIS Test Category"
    defaultValue "DEV"
 }
 
-oseeEnumType "Development Assurance Level.enum" {
+oseeEnumType "enum.req.development.assurance.level" {
    guid "ABNKg0zpK359Z5qvBsQA"
    entry "A"
    entry "B"
@@ -752,7 +753,7 @@ attributeType "Development Assurance Level" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   enumType "Development Assurance Level.enum" description
+   enumType "enum.req.development.assurance.level" description
    "Development Assurance Level"
    defaultValue "E"
 }
@@ -779,8 +780,8 @@ attributeType "Technical Performance Parameter" extends BooleanAttribute {
    defaultValue "no"
 }
 
-oseeEnumType "Verification Event.enum" {
-   guid "ABNLUIIPNHH7mbdPP8QA"
+oseeEnumType "enum.req.verification.event" {
+   guid "ABbjHC9L9lc8UkipZnQA"
    entry "Unspecified"
 }
 
@@ -789,12 +790,12 @@ attributeType "Verification Event" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   enumType "Verification Event.enum"
+   enumType "enum.req.verification.event"
    defaultValue "Unspecified"
 }
 
-oseeEnumType "Component.enum" {
-   guid "ABNL6N03ahNnXnhwaUQA"
+oseeEnumType "enum.req.component" {
+   guid "ABbjHCpCFT4BoiZph4gA"
    entry "Top level product component"
    entry "Unspecified"
 }
@@ -804,7 +805,7 @@ attributeType "Component" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   enumType "Component.enum"
+   enumType "enum.req.component"
    defaultValue "Unspecified"
 }
 
@@ -1027,8 +1028,8 @@ relationType "Supercedes" {
    multiplicity MANY_TO_MANY
 }
 
-oseeEnumType "CSCI.enum" {
-   guid "ABNOGOJntWJLS941VowA"
+oseeEnumType "enum.req.csci" {
+   guid "ABbjHCvlIUEX3D7+BywA"
    entry "CoreUnit"
    entry "Framework"
    entry "Interface"
@@ -1042,7 +1043,7 @@ attributeType "CSCI" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max unlimited
-   enumType "CSCI.enum"
+   enumType "enum.req.csci"
    defaultValue "Unspecified"
 }
 
@@ -1122,8 +1123,8 @@ attributeType "SFHA" extends StringAttribute {
    taggerId DefaultAttributeTaggerProvider
 }
 
-oseeEnumType "Hazard Severity.enum" {
-   guid "ABNPJtJu0kpPSt4W8ogA"
+oseeEnumType "enum.req.hazard.severity" {
+   guid "ABbjHBmFwRMuPIuJlXgA"
    entry "Catastrophic, I"
    entry "Severe-Major, II"
    entry "Critical, II"
@@ -1141,7 +1142,7 @@ attributeType "Hazard Severity" extends EnumeratedAttribute {
    min 0
    max 1
    taggerId DefaultAttributeTaggerProvider
-   enumType "Hazard Severity.enum"
+   enumType "enum.req.hazard.severity"
 }
 
 attributeType "Safety Objective" extends FloatingPointAttribute {
@@ -1160,8 +1161,8 @@ attributeType "FTA Results" extends FloatingPointAttribute {
    taggerId DefaultAttributeTaggerProvider
 }
 
-oseeEnumType "GFE / CFE.enum" {
-   guid "ABNQJ1OIQEtgQPopuLAA"
+oseeEnumType "enum.req.gfe.cfe" {
+   guid "ABbjHBslh00N4r93HbQA"
    entry "CFE"
    entry "GFE"
    entry "Unspecified"
@@ -1173,7 +1174,7 @@ attributeType "GFE / CFE" extends EnumeratedAttribute {
    min 1
    max 1
    taggerId DefaultAttributeTaggerProvider
-   enumType "GFE / CFE.enum"
+   enumType "enum.req.gfe.cfe"
    defaultValue "Unspecified"
 }
 

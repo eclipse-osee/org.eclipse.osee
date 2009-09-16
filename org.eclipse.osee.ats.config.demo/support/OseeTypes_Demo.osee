@@ -54,7 +54,7 @@ artifactType "Demo Test Team Workflow" extends "Team Workflow" {
    guid "ABRPeQO1qlCd4J7Bv5AA"
 }
 
-oseeEnumType "demo.code.Category.enum" {
+oseeEnumType "enum.demo.code.category" {
    guid "ABRQJeuW4zJNV3RbrFgA"
    entry "Code Problem"
    entry "Design/Implementation"
@@ -68,7 +68,7 @@ attributeType "demo.code.Category" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   enumType "demo.code.Category.enum"
+   enumType "enum.demo.code.category"
 }
 
 attributeType "demo.code.Close Detection" extends StringAttribute {
@@ -95,7 +95,7 @@ attributeType "demo.code.CSCI" extends StringAttribute {
    taggerId DefaultAttributeTaggerProvider
 }
 
-oseeEnumType "demo.code.Defect Code.enum" {
+oseeEnumType "enum.demo.code.defect.code" {
    guid "ABRTp7g+c3I+mmadl6AA"
    entry "CL01 - Requirements Implemented Incorrectly"
    entry "CL02 - Initialization Error"
@@ -124,10 +124,10 @@ attributeType "demo.code.Defect Code" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   enumType "demo.code.Defect Code.enum"
+   enumType "enum.demo.code.defect.code"
 }
 
-oseeEnumType "demo.code.Detection.enum" {
+oseeEnumType "enum.demo.code.detection" {
    guid "ABRVcCZLEkYPujANarAA"
    entry "Test Script(s)"
    entry "Inspection (Test)"
@@ -143,7 +143,7 @@ attributeType "demo.code.Detection" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   enumType "demo.code.Detection.enum"
+   enumType "enum.demo.code.detection"
 }
 
 attributeType "demo.code.Include Build" extends StringAttribute {
@@ -169,7 +169,7 @@ attributeType "demo.code.Originating Build" extends StringAttribute {
    taggerId DefaultAttributeTaggerProvider
 }
 
-oseeEnumType "demo.code.Req Doc.enum" {
+oseeEnumType "enum.demo.code.req.doc" {
    guid "ABRZKN5hR0dFQUAklKQA"
    entry "Unknown"
    entry "SubDD"
@@ -183,7 +183,7 @@ attributeType "demo.code.Req Doc" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   enumType "demo.code.Req Doc.enum"
+   enumType "enum.demo.code.req.doc"
 }
 
 attributeType "demo.code.Subsystem" extends StringAttribute {

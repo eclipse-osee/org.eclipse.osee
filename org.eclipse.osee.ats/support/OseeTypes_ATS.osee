@@ -248,8 +248,8 @@ attributeType "ats.Release Date" extends DateAttribute {
    max 1
 }
 
-oseeEnumType "ats.Review Blocks.enum" {
-   guid "ABMh6Y18TUW59m2x_igA"
+oseeEnumType "enum.ats.review.blocks" {
+   guid "ABbjHDeufSNcLOtj78wA"
    entry "None"
    entry "Transition"
    entry "Commit"
@@ -260,11 +260,11 @@ attributeType "ats.Review Blocks" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   enumType "ats.Review Blocks.enum"
+   enumType "enum.ats.review.blocks"
 }
 
-oseeEnumType "ats.Priority.enum" {
-   guid "ABMjQbcGpBtsFrT8CfAA"
+oseeEnumType "enum.ats.priority" {
+   guid "ABbjHDlSoUHxQqPfkQAA"
    entry "1"
    entry "2"
    entry "3"
@@ -277,11 +277,11 @@ attributeType "ats.Priority" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   enumType "ats.Priority.enum"
+   enumType "enum.ats.priority"
 }
 
-oseeEnumType "ats.Change Type.enum" {
-   guid "ABMkdBxT60hKwVnEoqwA"
+oseeEnumType "enum.ats.change.type" {
+   guid "ABbjHDsCxWD6TscnY4AA"
    entry "Improvement"
    entry "Problem"
    entry "Support"
@@ -292,11 +292,11 @@ attributeType "ats.Change Type" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   enumType "ats.Change Type.enum"
+   enumType "enum.ats.change.type"
 }
 
-oseeEnumType "ats.User Community.enum" {
-   guid "ABMlzNXtugbhIRzeYgwA"
+oseeEnumType "enum.ats.use.community" {
+   guid "ABbjHDyl0m_BTHf+IdgA"
    entry "Program_1"
    entry "Program_2"
    entry "Tools"
@@ -309,7 +309,7 @@ attributeType "ats.User Community" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
-   enumType "ats.User Community.enum"
+   enumType "enum.ats.use.community"
 }
 
 attributeType "ats.Estimated Hours" extends FloatingPointAttribute {
