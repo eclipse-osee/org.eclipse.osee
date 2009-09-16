@@ -199,19 +199,17 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    }
 
    private void handleEnumOverride(OseeEnumOverride enumOverride) throws OseeCoreException {
-      org.eclipse.osee.framework.skynet.core.attribute.AttributeType attributeType =
-            getCache().getAttributeTypeCache().getTypeByName(
-                  removeQuotes(enumOverride.getOverridenEnumType().getName().replace(".enum", "")));
+      org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType =
+            getCache().getEnumTypeCache().getTypeByGuid(enumOverride.getOverridenEnumType().getTypeGuid());
 
       Set<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry> newTypes =
             new HashSet<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry>();
       int ordinal = 0;
+      
       if (enumOverride.isInheritAll()) {
-         for (org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry entry : attributeType.getOseeEnumType().values()) {
+         for (org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry entry : oseeEnumType.values()) {
             newTypes.add(entry);
-            if (entry.ordinal() > ordinal) {
-               ordinal = entry.ordinal();
-            }
+            ordinal = Math.max(entry.ordinal(), ordinal);
          }
       }
       for (OverrideOption overrideOption : enumOverride.getOverrideOptions()) {
@@ -237,7 +235,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             throw new OseeStateException("Unhandled Override Operation type");
          }
       }
-      attributeType.getOseeEnumType().setEntries(newTypes);
+      oseeEnumType.setEntries(newTypes);
    }
 
    private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {
