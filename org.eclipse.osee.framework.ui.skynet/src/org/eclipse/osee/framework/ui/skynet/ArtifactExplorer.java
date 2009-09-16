@@ -449,7 +449,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   }
                }
             };
-      openQuickSearch.setToolTipText("Opens Quick Search View");
+      openQuickSearch.setToolTipText("Open Quick Search View");
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(openQuickSearch);
    }
