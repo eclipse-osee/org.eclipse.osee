@@ -11,27 +11,26 @@
 package org.eclipse.osee.ats.navigate;
 
 import java.util.logging.Level;
-import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.actions.CollapseAllAction;
+import org.eclipse.osee.ats.actions.ExpandAllAction;
+import org.eclipse.osee.ats.actions.MyFavoritesAction;
+import org.eclipse.osee.ats.actions.MyWorldAction;
 import org.eclipse.osee.ats.actions.NewAction;
 import org.eclipse.osee.ats.actions.NewGoal;
+import org.eclipse.osee.ats.actions.OpenByIdAction;
+import org.eclipse.osee.ats.actions.OpenChangeReportByIdAction;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
-import org.eclipse.osee.ats.world.search.MyFavoritesSearchItem;
-import org.eclipse.osee.ats.world.search.MyWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.ui.plugin.util.AudioFile;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -78,9 +77,6 @@ public class NavigateView extends ViewPart implements IActionable {
    public XCheckBox completeCancelledCheck;
    private boolean includeCompleteCancelled = false;
 
-   /**
-    * The constructor.
-    */
    public NavigateView() {
    }
 
@@ -110,7 +106,7 @@ public class NavigateView extends ViewPart implements IActionable {
       xNavComp = new AtsNavigateComposite(new AtsNavigateViewItems(), parent, SWT.NONE);
 
       AtsPlugin.getInstance().setHelp(xNavComp, HELP_CONTEXT_ID, "org.eclipse.osee.ats.help.ui");
-      createActions();
+      createToolBar();
       getViewSite().getActionBars().updateActionBars();
 
       // add search text box      
@@ -222,104 +218,24 @@ public class NavigateView extends ViewPart implements IActionable {
       }
    }
 
-   protected void createActions() {
-      Action myWorldAction = new Action("My World") {
-
-         @Override
-         public void run() {
-            try {
-               xNavComp.handleDoubleClick(new SearchNavigateItem(null, new MyWorldSearchItem("My World",
-                     UserManager.getUser())), TableLoadOption.None);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-      myWorldAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.GLOBE));
-      myWorldAction.setToolTipText("My World");
-
-      Action myFavoritesAction = new Action("My Favorites") {
-
-         @Override
-         public void run() {
-            try {
-               xNavComp.handleDoubleClick(new SearchNavigateItem(null, new MyFavoritesSearchItem("My Favorites",
-                     UserManager.getUser())), TableLoadOption.None);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-      myFavoritesAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.FAVORITE));
-      myFavoritesAction.setToolTipText("My Favorites");
-
-      Action collapseAction = new Action("Collapse All") {
-
-         @Override
-         public void run() {
-            xNavComp.refresh();
-         }
-      };
-      collapseAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COLLAPSE_ALL));
-      collapseAction.setToolTipText("Collapse All");
-
-      Action expandAction = new Action("Expand All") {
-
-         @Override
-         public void run() {
-            xNavComp.getFilteredTree().getViewer().expandAll();
-         }
-      };
-      expandAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.EXPAND_ALL));
-      expandAction.setToolTipText("Expand All");
-
-      Action openByIdAction = new Action("Open by Id") {
-
-         @Override
-         public void run() {
-            try {
-               xNavComp.handleDoubleClick(new SearchNavigateItem(null, new MultipleHridSearchItem()),
-                     TableLoadOption.None);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-      openByIdAction.setImageDescriptor(ImageManager.getImageDescriptor(AtsImage.OPEN_BY_ID));
-      openByIdAction.setToolTipText("Open by Id");
-
-      Action openChangeReportById = new Action("Open Change Report by Id") {
-
-         @Override
-         public void run() {
-            try {
-               xNavComp.handleDoubleClick(new OpenChangeReportByIdItem(null), TableLoadOption.None);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-            }
-         }
-      };
-      openChangeReportById.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE));
-      openChangeReportById.setToolTipText("Open Change Report by Id");
-
+   protected void createToolBar() {
       IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
-      toolbarManager.add(myWorldAction);
-      toolbarManager.add(myFavoritesAction);
-      toolbarManager.add(collapseAction);
-      toolbarManager.add(expandAction);
-      toolbarManager.add(openChangeReportById);
-      toolbarManager.add(openByIdAction);
-      if (AtsUtil.isGoalEnabled()) toolbarManager.add(new NewGoal());
+      toolbarManager.add(new MyWorldAction());
+      toolbarManager.add(new MyFavoritesAction());
+      toolbarManager.add(new CollapseAllAction(xNavComp.getFilteredTree().getViewer()));
+      toolbarManager.add(new ExpandAllAction(xNavComp.getFilteredTree().getViewer()));
+      toolbarManager.add(new OpenChangeReportByIdAction());
+      toolbarManager.add(new OpenByIdAction());
+      if (AtsUtil.isGoalEnabled()) {
+         toolbarManager.add(new NewGoal());
+      }
       toolbarManager.add(new NewAction());
 
       OseeAts.addBugToViewToolbar(this, this, AtsPlugin.getInstance(), VIEW_ID, "ATS Navigator");
-
    }
 
    /**
     * Provided for tests to be able to simulate a double-click
-    * 
-    * @param item
     */
    public void handleDoubleClick(XNavigateItem item, TableLoadOption... tableLoadOptions) throws OseeCoreException {
       OseeLog.log(AtsPlugin.class, Level.INFO,

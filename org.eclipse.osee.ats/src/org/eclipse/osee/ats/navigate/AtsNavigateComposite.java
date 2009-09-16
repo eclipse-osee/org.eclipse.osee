@@ -82,7 +82,8 @@ public class AtsNavigateComposite extends XNavigateComposite {
          } else if (worldSearchItem.getLoadView() == LoadView.TaskEditor) {
             if (worldSearchItem instanceof TaskEditorParameterSearchItem) {
                TaskEditor.open(new TaskEditorParameterSearchItemProvider(
-                     (TaskEditorParameterSearchItem) (dontCopyWsi ? worldSearchItem : worldSearchItem.copy()),null,tableLoadOptions));
+                     (TaskEditorParameterSearchItem) (dontCopyWsi ? worldSearchItem : worldSearchItem.copy()), null,
+                     tableLoadOptions));
             } else {
                AWorkbench.popup("ERROR", "Unhandled TaskEditor navigate item");
             }
