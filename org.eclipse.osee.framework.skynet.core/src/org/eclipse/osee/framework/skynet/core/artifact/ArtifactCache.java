@@ -119,9 +119,8 @@ public class ArtifactCache {
    }
 
    /**
-    * This method is called by attributes and relations when their dirty state changes.
-    * This way, when an artifact is dirty we can hold onto a strong reference and when it
-    * is not dirty we can have a weak reference.
+    * This method is called by attributes and relations when their dirty state changes. This way, when an artifact is
+    * dirty we can hold onto a strong reference and when it is not dirty we can have a weak reference.
     * 
     * @param artId
     * @param branchId
@@ -150,18 +149,24 @@ public class ArtifactCache {
    }
 
    static void cachePostAttributeLoad(Artifact artifact) throws OseeCoreException {
-      for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
-         cacheByStaticId(staticId, artifact);
+      if (!artifact.isHistorical()) {
+         for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
+            cacheByStaticId(staticId, artifact);
+         }
       }
    }
 
    public static void cacheByStaticId(String staticId, Artifact artifact) {
-      staticIdArtifactCache.put(staticId, getCacheObject(artifact));
+      if (!artifact.isHistorical()) {
+         staticIdArtifactCache.put(staticId, getCacheObject(artifact));
+      }
    }
 
    public static void cacheByStaticId(Artifact artifact) throws OseeCoreException {
-      for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
-         ArtifactCache.cacheByStaticId(staticId, artifact);
+      if (!artifact.isHistorical()) {
+         for (String staticId : artifact.getAttributesToStringList(StaticIdManager.STATIC_ID_ATTRIBUTE)) {
+            ArtifactCache.cacheByStaticId(staticId, artifact);
+         }
       }
    }
 

@@ -59,13 +59,6 @@ public class StaticIdManager {
       // Retrieve database artifacts if cache has none
       artifacts.addAll(ArtifactQuery.getArtifactListFromTypeAndAttribute(artifactTypeName, STATIC_ID_ATTRIBUTE,
             staticId, branch));
-
-      // Store results in cache
-      for (Artifact artifact : artifacts) {
-         if (!artifact.isDeleted()) {
-            ArtifactCache.cachePostAttributeLoad(artifact);
-         }
-      }
       return artifacts;
    }
 
