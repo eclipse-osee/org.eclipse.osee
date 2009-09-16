@@ -64,7 +64,8 @@ public class StaticIdManagerTest {
 
       for (String staticIdValue : ALL_STATIC_IDS) {
          Collection<Artifact> artifacts =
-               StaticIdManager.getArtifacts(GeneralData.ARTIFACT_TYPE, staticIdValue, BranchManager.getCommonBranch());
+               StaticIdManager.getArtifactsFromArtifactQuery(GeneralData.ARTIFACT_TYPE, staticIdValue,
+                     BranchManager.getCommonBranch());
          for (Artifact artifact : artifacts) {
             System.err.println("Search returned non-deleted " + artifact.getGuid());
          }
@@ -103,7 +104,7 @@ public class StaticIdManagerTest {
    public void testGetSingletonArtifact() throws OseeCoreException {
       Artifact artifact =
             StaticIdManager.getSingletonArtifact(GeneralData.ARTIFACT_TYPE, STATIC_ID_AAA,
-                  BranchManager.getCommonBranch());
+                  BranchManager.getCommonBranch(), true);
       assertNull(artifact);
 
       artifact =
@@ -131,7 +132,7 @@ public class StaticIdManagerTest {
       // call to search for artifact with STATIC_ID_BBB
       Artifact artifactWithDoubleBbb =
             StaticIdManager.getSingletonArtifact(GeneralData.ARTIFACT_TYPE, STATIC_ID_BBB,
-                  BranchManager.getCommonBranch());
+                  BranchManager.getCommonBranch(), false);
       assertNotNull(artifactWithDoubleBbb);
 
       // should be two static id attributes
@@ -153,7 +154,7 @@ public class StaticIdManagerTest {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager#getArtifacts(java.lang.String, java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Branch)}
+    * {@link org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager#getArtifactsFromArtifactQuery(java.lang.String, java.lang.String, org.eclipse.osee.framework.skynet.core.artifact.Branch)}
     * .
     * 
     * @throws InterruptedException
@@ -174,7 +175,8 @@ public class StaticIdManagerTest {
 
       // search for static attributes
       Collection<Artifact> artifacts =
-            StaticIdManager.getArtifacts(GeneralData.ARTIFACT_TYPE, STATIC_ID_CCC, BranchManager.getCommonBranch());
+            StaticIdManager.getArtifactsFromArtifactQuery(GeneralData.ARTIFACT_TYPE, STATIC_ID_CCC,
+                  BranchManager.getCommonBranch());
       assertTrue("Expected 3 artifacts; Returned " + artifacts.size(), artifacts.size() == 3);
 
       deleteArtifacts(artifacts, STATIC_ID_CCC);
@@ -265,7 +267,7 @@ public class StaticIdManagerTest {
       // test that singleton comes back
       artifact =
             StaticIdManager.getSingletonArtifact(GeneralData.ARTIFACT_TYPE, STATIC_ID_EEE,
-                  BranchManager.getCommonBranch());
+                  BranchManager.getCommonBranch(), false);
       assertNotNull(artifact);
 
       // create another artifact with eee staticId
@@ -279,14 +281,15 @@ public class StaticIdManagerTest {
 
       // test that there are now two artifacts with eee
       Collection<Artifact> artifacts =
-            StaticIdManager.getArtifacts(GeneralData.ARTIFACT_TYPE, STATIC_ID_EEE, BranchManager.getCommonBranch());
+            StaticIdManager.getArtifactsFromArtifactQuery(GeneralData.ARTIFACT_TYPE, STATIC_ID_EEE,
+                  BranchManager.getCommonBranch());
       assertTrue("Expected 2 artifacts; Returned " + artifacts.size(), artifacts.size() == 2);
 
       // test that call to get singleton does NOT exception
       try {
          artifact =
                StaticIdManager.getSingletonArtifact(GeneralData.ARTIFACT_TYPE, STATIC_ID_EEE,
-                     BranchManager.getCommonBranch());
+                     BranchManager.getCommonBranch(), false);
          assertNotNull(artifact);
       } catch (Exception ex) {
          fail("Exception should not have occurred " + ex.getLocalizedMessage());

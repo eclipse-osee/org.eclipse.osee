@@ -77,7 +77,7 @@ public class CsvArtifact {
    }
 
    public static CsvArtifact getCsvArtifact(String staticId, Branch branch, boolean create) throws OseeCoreException {
-      Artifact art = StaticIdManager.getSingletonArtifact("General Document", staticId, branch);
+      Artifact art = StaticIdManager.getSingletonArtifact("General Document", staticId, branch, true);
       if (art != null) {
          return new CsvArtifact(art);
       }
