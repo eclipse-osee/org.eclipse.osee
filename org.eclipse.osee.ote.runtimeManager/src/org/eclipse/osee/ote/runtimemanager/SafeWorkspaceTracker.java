@@ -25,11 +25,13 @@ import java.util.Set;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.workspace.SafeWorkspaceAccess;
 import org.eclipse.osee.framework.ui.workspacebundleloader.JarChangeResourceListener;
+import org.eclipse.osee.ote.runtimemanager.container.OteClasspathContainer;
 import org.eclipse.osee.ote.runtimemanager.internal.ProjectChangeResourceListener;
 import org.eclipse.osee.ote.runtimemanager.internal.RuntimeBundleServer;
 import org.osgi.framework.BundleContext;
@@ -86,6 +88,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements OteBundleLoc
       this.bundleServer = new RuntimeBundleServer(this);
 
       context.registerService(OteBundleLocator.class.getName(), this, new Hashtable());
+      OteClasspathContainer.refreshAll();
 
       return super.addingService(reference);
    }

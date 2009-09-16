@@ -58,14 +58,8 @@ public class OteClasspathContainer implements IClasspathContainer {
     * @throws InterruptedException
     */
    private void initializeBundleLocator() throws InterruptedException {
-      Object obj = tracker.waitForService(10000);
-      if( obj == null )
-         throw new IllegalStateException("OteBundleLocator service never started.");
-
+      Object obj = tracker.waitForService(1);
       locator = (OteBundleLocator)obj;
-      
-      
-      
    }
 
    /**
@@ -111,6 +105,9 @@ public class OteClasspathContainer implements IClasspathContainer {
       Collection<BundleInfo> runtimeLibUrls;
       try {
          lazyLoadLocator();
+         if( locator == null )
+            return entries.toArray( new IClasspathEntry[0]);
+         
          runtimeLibUrls = locator.getRuntimeLibs();
          for( BundleInfo info : runtimeLibUrls )
          {
