@@ -657,7 +657,7 @@ public class RemoteEventManager {
                   //                  }
                } else if (event instanceof NetworkRelationLinkDeletedEvent) {
                   RelationLink relation =
-                        RelationManager.getLoadedRelation(event.getRelId(), event.getArtAId(), event.getArtBId(),
+                        RelationManager.getLoadedRelationById(event.getRelId(), event.getArtAId(), event.getArtBId(),
                               branch, branch);
                   if (relation != null) {
                      relation.internalRemoteEventDelete();
@@ -667,7 +667,7 @@ public class RemoteEventManager {
                   }
                } else if (event instanceof NetworkNewRelationLinkEvent) {
                   RelationLink relation =
-                        RelationManager.getLoadedRelation(event.getRelId(), event.getArtAId(), event.getArtBId(),
+                        RelationManager.getLoadedRelationById(event.getRelId(), event.getArtAId(), event.getArtBId(),
                               branch, branch);
 
                   if (relation == null || relation.getModificationType() == ModificationType.DELETED) {

@@ -126,7 +126,7 @@ public class RelationManager {
       return relationLink;
    }
 
-   public static RelationLink getLoadedRelation(int relLinkId, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
+   public static RelationLink getLoadedRelationById(int relLinkId, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
       RelationLink relation = null;
       for (RelationLink link : getRelationsAll(aArtifactId, aBranch.getBranchId(), true)) {
          if (link.getRelationId() == relLinkId) {
@@ -138,6 +138,28 @@ public class RelationManager {
          if (link.getRelationId() == relLinkId) {
             relation = link;
             break;
+         }
+      }
+      return relation;
+   }
+
+   public static RelationLink getLoadedRelation(RelationType relationType, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
+      RelationLink relation = null;
+      List<RelationLink> relations = getLoadedRelations(aArtifactId, aBranch.getBranchId(), relationType, true);
+      for (RelationLink rel : relations) {
+         if (rel.getBArtifactId() == bArtifactId) {
+            relation = rel;
+            break;
+         }
+      }
+
+      if (relation == null) {
+         relations = getLoadedRelations(bArtifactId, bBranch.getBranchId(), relationType, true);
+         for (RelationLink rel : relations) {
+            if (rel.getAArtifactId() == aArtifactId) {
+               relation = rel;
+               break;
+            }
          }
       }
       return relation;

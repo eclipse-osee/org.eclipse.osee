@@ -74,14 +74,21 @@ public class RelationLink {
    /**
     * Return existing RelationLink or create new one. This needs to be synchronized so two threads don't create the same
     * link object twice.
+    * 
+    * @param relationId 0 or relationId if already created
     */
    public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder, ModificationType modificationType) {
-      RelationLink relation = RelationManager.getLoadedRelation(relationId, aArtifactId, bArtifactId, aBranch, bBranch);
+      RelationLink relation = null;
+      if (relationId != 0) {
+         relation = RelationManager.getLoadedRelationById(relationId, aArtifactId, bArtifactId, aBranch, bBranch);
+      } else {
+         relation = RelationManager.getLoadedRelation(relationType, aArtifactId, bArtifactId, aBranch, bBranch);
+      }
       if (isRelationUnderTest() && relationId == RELATION_ID_UNDER_TEST) {
          System.out.println("RelationLink.getOrCreate relationId == " + RELATION_ID_UNDER_TEST);
       }
 
-      if (relation == null || relation.modificationType != modificationType) {
+      if (relation == null || relation.modificationType != modificationType || relation.getRelationId() != relationId) {
          relation =
                new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
                      rationale, aOrder, bOrder, modificationType);
