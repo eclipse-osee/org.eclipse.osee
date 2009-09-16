@@ -47,9 +47,11 @@ import org.eclipse.swt.events.KeyAdapter;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -143,9 +145,20 @@ public class NavigateView extends ViewPart implements IActionable {
       Composite comp = new Composite(parent, SWT.NONE);
       comp.setLayout(ALayout.getZeroMarginLayout(4, false));
       comp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      Label searchLabel = new Label(comp, SWT.NONE);
-      searchLabel.setText("Search:");
-      searchLabel.addMouseListener(new MouseListener() {
+      Button searchButton = new Button(comp, SWT.PUSH);
+      searchButton.setText("Search:");
+      searchButton.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            try {
+               xNavComp.handleDoubleClick(new SearchNavigateItem(null, new AtsNavigateQuickSearch("ATS Quick Search",
+                     searchArea.getText(), isIncludeCompleteCancelled())));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
+      searchButton.addMouseListener(new MouseListener() {
          @Override
          public void mouseUp(MouseEvent mouseEvent) {
          }
