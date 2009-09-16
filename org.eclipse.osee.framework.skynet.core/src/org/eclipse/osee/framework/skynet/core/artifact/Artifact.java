@@ -1298,21 +1298,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
             RelationOrderBaseTypes.USER_DEFINED, currentOrder);
    }
 
-   /**
-    * Use addRelation instead
-    * 
-    * @param relationSide
-    * @param artifact
-    * @param persist
-    * @see #addRelation
-    * @throws OseeCoreException
-    */
-   @Deprecated
-   public void relate(IRelationEnumeration relationSide, Artifact artifact, boolean persist) throws OseeCoreException {
-      addRelation(relationSide, artifact);
-      persist();
-   }
-
    public void deleteRelation(IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationSide);
       RelationManager.deleteRelation(relationSide.getRelationType(), sides.getFirst(), sides.getSecond());
