@@ -44,6 +44,8 @@ public class RelationLink {
    private ModificationType modificationType;
    private static final boolean SET_DIRTY = true;
    private static final boolean SET_NOT_DIRTY = false;
+   // Set to relationId to determine loading/caching of certain relationIds; set to 0 for production release
+   public static int RELATION_ID_UNDER_TEST = 0;
 
    /**
     * Private constructor. Use getOrCreate().
@@ -65,15 +67,21 @@ public class RelationLink {
       this.modificationType = modificationType;
    }
 
+   public static boolean isRelationUnderTest() {
+      return RELATION_ID_UNDER_TEST != 0;
+   }
+
    /**
     * Return existing RelationLink or create new one. This needs to be synchronized so two threads don't create the same
     * link object twice.
     */
    public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder, ModificationType modificationType) {
-      RelationLink relation =
-            RelationManager.getLoadedRelation(relationType, aArtifactId, bArtifactId, aBranch, bBranch);
-      if (relation == null || relation.modificationType != modificationType) {
+      RelationLink relation = RelationManager.getLoadedRelation(relationId, aArtifactId, bArtifactId, aBranch, bBranch);
+      if (isRelationUnderTest() && relationId == RELATION_ID_UNDER_TEST) {
+         System.out.println("RelationLink.getOrCreate relationId == " + RELATION_ID_UNDER_TEST);
+      }
 
+      if (relation == null || relation.modificationType != modificationType) {
          relation =
                new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
                      rationale, aOrder, bOrder, modificationType);
@@ -312,9 +320,24 @@ public class RelationLink {
 
    @Override
    public String toString() {
-      return String.format("%s id[%d] modType[%s] [%s]: aId[%d] aOrder[%d] <--> bId[%s] bOrder[%d]",
-            relationType.getName(), relationId, getModificationType(), (isDirty() ? "dirty" : "not dirty"),
-            aArtifactId, aOrder, bArtifactId, bOrder);
+      String artAName = "Unloaded";
+      String artBName = "Unloaded";
+      try {
+         Artifact artA = ArtifactCache.getActive(getAArtifactId(), getABranch());
+         if (artA != null) {
+            artAName = artA.getSafeName();
+         }
+         Artifact artB = ArtifactCache.getActive(getBArtifactId(), getBBranch());
+         if (artB != null) {
+            artBName = artB.getSafeName();
+         }
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return String.format(
+            "type[%s] id[%d] modType[%s] [%s]: aName[%s] aId[%d] aOrder[%d] <--> bName[%s] bId[%s] bOrder[%d]",
+            relationType.getName(), relationId, getModificationType(), (isDirty() ? "dirty" : "not dirty"), artAName,
+            aArtifactId, aOrder, artBName, bArtifactId, bOrder);
    }
 
    public boolean isExplorable() {

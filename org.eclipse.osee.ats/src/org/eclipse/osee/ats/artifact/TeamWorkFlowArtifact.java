@@ -62,13 +62,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       Endorse, Analyze, Authorize, Implement, Completed, Cancelled
    }
 
-   /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
-    * @throws OseeDataStoreException
-    */
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       registerSMAEditorRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version);
@@ -158,8 +151,12 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public String getEditorTitle() throws OseeCoreException {
-      if (getWorldViewTargetedVersion() != null) {
-         return smaMgr.getSma().getWorldViewType() + ": " + "[" + getWorldViewTargetedVersionStr() + "] - " + getName();
+      try {
+         if (getWorldViewTargetedVersion() != null) {
+            return smaMgr.getSma().getWorldViewType() + ": " + "[" + getWorldViewTargetedVersionStr() + "] - " + getName();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
       }
       return super.getEditorTitle();
    }

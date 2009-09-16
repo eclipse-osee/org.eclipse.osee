@@ -931,10 +931,13 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return result;
    }
 
-   public static List<Artifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
-      List<Artifact> result = new ArrayList<Artifact>();
+   public static List<TeamWorkFlowArtifact> getAllTeamWorkflowArtifacts() throws OseeCoreException {
+      List<TeamWorkFlowArtifact> result = new ArrayList<TeamWorkFlowArtifact>();
       for (String artType : TeamWorkflowExtensions.getInstance().getAllTeamWorkflowArtifactNames()) {
-         result.addAll(ArtifactQuery.getArtifactListFromType(artType, AtsUtil.getAtsBranch()));
+         List<TeamWorkFlowArtifact> teamArts =
+               org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactQuery.getArtifactListFromType(
+                     artType, AtsUtil.getAtsBranch()));
+         result.addAll(teamArts);
       }
       return result;
    }

@@ -32,6 +32,8 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -50,30 +52,15 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
     * @param parent
     */
    public DoesNotWorkItemAts(XNavigateItem parent) {
-      super(parent, "Does Not Work - ATS - ??", FrameworkImage.ADMIN);
+      super(parent, "Does Not Work - ATS - Dup Relations", FrameworkImage.ADMIN);
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
-      //      for (Artifact art : ArtifactQuery.getArtifactsFromAttributeType("ats.Branch Id", AtsUtil.getAtsBranch())) {
-      //         int branchId = art.getSoleAttributeValue("ats.Branch Id");
-      //         Branch branch = null;
-      //         try {
-      //            branch = BranchManager.getBranch(branchId);
-      //         } catch (BranchDoesNotExist ex) {
-      //            System.out.println("Branch does not exist for art " + art.getHumanReadableId() + " - " + art);
-      //         } catch (Exception ex) {
-      //            System.err.println("Exception getting branch for art " + art.getHumanReadableId() + " - " + art);
-      //         }
-      //         if (branch != null) {
-      //            System.err.println("Branch DOES exist for art " + art.getHumanReadableId() + " - " + art);
-      //         }
-      //      }
-
-      //      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-      //      transaction.execute();
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction.execute();
 
       //      convertAtsLogUserIds(transaction);
       //      deleteUnAssignedUserRelations();
@@ -90,6 +77,36 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       // fixOseePeerReviews();
 
       AWorkbench.popup("Completed", "Complete");
+   }
+
+   private void purgeDuplicateVersionRelations() throws OseeCoreException {
+      boolean fix = false;
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      for (TeamWorkFlowArtifact teamArt : TeamWorkFlowArtifact.getAllTeamWorkflowArtifacts()) {
+         List<RelationLink> relLinks =
+               teamArt.getRelations(RelationTypeManager.getType(AtsRelation.TeamWorkflowTargetedForVersion_Version.getName()));
+         if (relLinks.size() > 1) {
+            String str = "Duplicate verArts found for " + teamArt.getHumanReadableId() + " ";
+            Integer firstId = null;
+            String firstName = null;
+            for (RelationLink relLink : relLinks) {
+               if (firstId == null) {
+                  firstId = relLink.getRelationId();
+                  firstName = relLink.getArtifactB().getName();
+               } else if (relLink.getRelationId() != firstId && relLink.getArtifactB().getName().equals(firstName)) {
+                  str += " Deleteable";
+                  if (fix) {
+                     relLink.delete(false);
+                     teamArt.persist(transaction);
+                  }
+               }
+               str += "[" + relLink.getArtifactB().getName() + "(" + relLink.getRelationId() + ")]";
+
+            }
+            System.out.println(str);
+         }
+      }
+      transaction.execute();
    }
 
    private void purgeHrids() throws OseeCoreException {

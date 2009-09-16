@@ -126,47 +126,18 @@ public class RelationManager {
       return relationLink;
    }
 
-   /**
-    * This method should never be called by application code.
-    */
-   public static RelationLink getLoadedRelation(RelationType relationType, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
+   public static RelationLink getLoadedRelation(int relLinkId, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
       RelationLink relation = null;
-      List<RelationLink> relations = getLoadedRelations(aArtifactId, aBranch.getBranchId(), relationType, true);
-      for (RelationLink rel : relations) {
-         if (rel.getBArtifactId() == bArtifactId) {
-            relation = rel;
+      for (RelationLink link : getRelationsAll(aArtifactId, aBranch.getBranchId(), true)) {
+         if (link.getRelationId() == relLinkId) {
+            relation = link;
             break;
          }
       }
-
-      if (relation == null) {
-         relations = getLoadedRelations(bArtifactId, bBranch.getBranchId(), relationType, true);
-         for (RelationLink rel : relations) {
-            if (rel.getAArtifactId() == aArtifactId) {
-               relation = rel;
-               break;
-            }
-         }
-      }
-      return relation;
-   }
-
-   public static RelationLink getLoadedRelation(int relLinkId, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
-      Artifact artifactA = ArtifactCache.getActive(aArtifactId, aBranch);
-      Artifact artifactB = ArtifactCache.getActive(bArtifactId, bBranch);
-      RelationLink relation = null;
-      if (artifactA != null) {
-         for (RelationLink link : getRelationsAll(artifactA, true)) {
-            if (link.getRelationId() == relLinkId) {
-               relation = link;
-            }
-         }
-      }
-      if (artifactB != null && relation == null) {
-         for (RelationLink link : getRelationsAll(artifactB, true)) {
-            if (link.getRelationId() == relLinkId) {
-               relation = link;
-            }
+      for (RelationLink link : getRelationsAll(bArtifactId, bBranch.getBranchId(), true)) {
+         if (link.getRelationId() == relLinkId) {
+            relation = link;
+            break;
          }
       }
       return relation;
@@ -176,6 +147,9 @@ public class RelationManager {
     * Store the newly instantiated relation from the perspective of relationSide in its appropriate order
     */
    public static void manageRelation(RelationLink newRelation, RelationSide relationSide) {
+      if (RelationLink.isRelationUnderTest() && newRelation.getRelationId() == RelationLink.RELATION_ID_UNDER_TEST) {
+         System.out.println("RelationManager.manageRelation relationId == " + RelationLink.RELATION_ID_UNDER_TEST + " for side " + relationSide);
+      }
       Artifact artifact =
             ArtifactCache.getActive(newRelation.getArtifactId(relationSide), newRelation.getBranch(relationSide));
       if (artifact != null) {
@@ -185,27 +159,17 @@ public class RelationManager {
             artifactsRelations = new CopyOnWriteArrayList<RelationLink>();
          }
          if (artifactsRelations.contains(newRelation)) {
-            // Log error cause this should never happen;  only one relation link object should be created 
-            for (RelationLink relation : artifactsRelations) {
-               if (relation.equals(newRelation) && relation != newRelation) {
-                  String artAName = "Unknown";
-                  String artBName = "Unknown";
-                  try {
-                     artAName = relation.getArtifactA().getSafeName();
-                     artBName = relation.getArtifactB().getSafeName();
-                  } catch (Exception ex) {
-                     // do nothing
-                  }
-                  OseeLog.log(
-                        Activator.class,
-                        Level.SEVERE,
-                        String.format(
-                              "Duplicate relation objects for same relation for Relation [%s]  - ArtA (%s)[%s] <-> ArtB (%s)[%s]",
-                              relation, relation.getAArtifactId(), artAName, relation.getBArtifactId(), artBName));
-               }
-            }
             // Always want to return if relation link is already managed
             return;
+         }
+
+         // Verify that relation is unique by aArtId, bArtId and relTypeId; Needs to be cleaned up in DB, Only log problem.
+         for (RelationLink relation : artifactsRelations) {
+            if (relation.getAArtifactId() == newRelation.getAArtifactId() && relation.getBArtifactId() == newRelation.getBArtifactId() && relation.getRelationType() == newRelation.getRelationType() && relation != newRelation) {
+               OseeLog.log(Activator.class, Level.SEVERE, String.format(
+                     "Duplicate relation objects for same relation for RELATION 1 [%s] RELATION 2 [%s]", relation,
+                     newRelation));
+            }
          }
 
          artifactsRelations.add(newRelation);
@@ -546,9 +510,9 @@ public class RelationManager {
       }
    }
 
-   public static List<RelationLink> getRelationsAll(Artifact artifact, boolean includeDeleted) {
+   public static List<RelationLink> getRelationsAll(int artId, int branchId, boolean includeDeleted) {
       List<RelationLink> selectedRelations =
-            getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
+            getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artId, branchId)));
 
       if (selectedRelations == null) {
          return Collections.emptyList();

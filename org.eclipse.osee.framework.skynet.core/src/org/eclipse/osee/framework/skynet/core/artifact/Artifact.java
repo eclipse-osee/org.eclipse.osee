@@ -1743,7 +1743,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    public List<RelationLink> getRelationsAll(boolean includeDeleted) {
-      return RelationManager.getRelationsAll(this, includeDeleted);
+      return RelationManager.getRelationsAll(getArtId(), getBranch().getBranchId(), includeDeleted);
    }
 
    /**
@@ -1756,12 +1756,6 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
 
    /**
     * This method should never be called from outside the OSEE Application Framework
-    * 
-    * @param gammaId
-    * @param transactionId
-    * @param modType
-    * @param lastModified
-    * @param historical
     */
    void internalSetPersistenceData(int gammaId, TransactionId transactionId, ModificationType modType, boolean historical) {
       this.gammaId = gammaId;
