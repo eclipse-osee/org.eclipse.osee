@@ -18,7 +18,7 @@
             defaultHandler="org.eclipse.osee.framework.ui.data.model.editor.OpenODMEditor"
             description="Opens the Osee Data Model Editor"
             id="org.eclipse.osee.framework.ui.data.model.editor.command.ODMOpen"
-            name="Open Osee Data Model Editor">
+            name="Open OSEE Data Model Editor">
       </command>
    </extension>
    <extension
