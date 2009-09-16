@@ -155,10 +155,6 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          testVersionArtifacts(artifacts);
          testStateMachineAssignees(artifacts);
          testAtsLogs(artifacts);
-
-         artifacts.clear();
-         // Garbage collect so don't run out of memory
-         System.gc();
          if (monitor != null) {
             monitor.worked(1);
          }
