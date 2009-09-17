@@ -37,6 +37,18 @@ public class OseeTypesUtil {
 
    }
 
+   public static void checkOseeEnumEntries(OseeEnumEntry[] actual, Object... entries) {
+      Assert.assertEquals(entries.length / 2, actual.length);
+      int index2 = 0;
+      for (int index = 0; index < entries.length; index++, index2++) {
+         String itemName = (String) entries[index];
+         Integer ordinal = (Integer) entries[++index];
+
+         Assert.assertEquals(itemName, actual[index2].getName());
+         Assert.assertEquals((int) ordinal, actual[index2].ordinal());
+      }
+   }
+
    public static OseeEnumType createEnumType(OseeTypeCache cache, IOseeTypeFactory factory, String guid, String name, Object... entries) throws OseeCoreException {
       OseeEnumTypeCache eCache = cache.getEnumTypeCache();
       OseeEnumType type = factory.createEnumType(eCache, guid, name);
@@ -141,7 +153,7 @@ public class OseeTypesUtil {
             artifactType.getName(), branch.getName(), typesNotFound), typesNotFound.isEmpty());
    }
 
-   public static void checkInheritance(OseeTypeCache typeCache, String relGuid, RelationSide relationSide, int maxValue, String... artifactTypesAllowed) throws OseeCoreException {
+   public static void checkRelationTypeInheritance(OseeTypeCache typeCache, String relGuid, RelationSide relationSide, int maxValue, String... artifactTypesAllowed) throws OseeCoreException {
       RelationType relationType = typeCache.getRelationTypeCache().getTypeByGuid(relGuid);
       Assert.assertNotNull(relationType);
 

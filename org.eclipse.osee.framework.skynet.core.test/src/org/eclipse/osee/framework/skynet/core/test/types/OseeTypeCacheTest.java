@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider;
@@ -322,6 +323,7 @@ public class OseeTypeCacheTest {
       artifactType.setSuperType(new HashSet<ArtifactType>(Arrays.asList(baseType)));
       Assert.assertEquals(1, artifactType.getSuperArtifactTypes().size());
       Assert.assertTrue(artifactType.inheritsFrom(baseType));
+      typeCache.getArtifactTypeCache().decacheType(artifactType);
    }
 
    @org.junit.Test
@@ -343,20 +345,39 @@ public class OseeTypeCacheTest {
       OseeTypesUtil.checkAttributes(typeCache, "666", branch2, "AAA", "HHH", "DDD", "CCC", "EEE");
    }
 
+   @org.junit.Test
    public void testRelationTypeSides() throws OseeCoreException {
-      OseeTypesUtil.checkInheritance(typeCache, "1A", RelationSide.SIDE_A, 1, "111");
-      OseeTypesUtil.checkInheritance(typeCache, "1A", RelationSide.SIDE_B, 1, "444", "555");
+      OseeTypesUtil.checkRelationTypeInheritance(typeCache, "1A", RelationSide.SIDE_A, 1, "111");
+      OseeTypesUtil.checkRelationTypeInheritance(typeCache, "1A", RelationSide.SIDE_B, 1, "444", "555");
 
-      OseeTypesUtil.checkInheritance(typeCache, "2B", RelationSide.SIDE_A, 1, "555");
-      OseeTypesUtil.checkInheritance(typeCache, "2B", RelationSide.SIDE_B, Integer.MAX_VALUE, "000", "111", "222",
-            "333", "444", "555", "666");
+      OseeTypesUtil.checkRelationTypeInheritance(typeCache, "2B", RelationSide.SIDE_A, 1, "555");
+      OseeTypesUtil.checkRelationTypeInheritance(typeCache, "2B", RelationSide.SIDE_B, Integer.MAX_VALUE, "000", "111",
+            "222", "333", "444", "555", "666");
 
-      OseeTypesUtil.checkInheritance(typeCache, "3C", RelationSide.SIDE_A, Integer.MAX_VALUE, "222", "333", "444",
-            "555", "666");
-      OseeTypesUtil.checkInheritance(typeCache, "3C", RelationSide.SIDE_B, 1, "333", "444", "555", "666");
+      OseeTypesUtil.checkRelationTypeInheritance(typeCache, "3C", RelationSide.SIDE_A, Integer.MAX_VALUE, "222", "333",
+            "444", "555", "666");
+      OseeTypesUtil.checkRelationTypeInheritance(typeCache, "3C", RelationSide.SIDE_B, 1, "333", "444", "555", "666");
 
-      OseeTypesUtil.checkInheritance(typeCache, "4D", RelationSide.SIDE_A, Integer.MAX_VALUE, "666");
-      OseeTypesUtil.checkInheritance(typeCache, "4D", RelationSide.SIDE_B, Integer.MAX_VALUE, "666");
+      OseeTypesUtil.checkRelationTypeInheritance(typeCache, "4D", RelationSide.SIDE_A, Integer.MAX_VALUE, "666");
+      OseeTypesUtil.checkRelationTypeInheritance(typeCache, "4D", RelationSide.SIDE_B, Integer.MAX_VALUE, "666");
+   }
+
+   @org.junit.Test
+   public void testAddOseeEnumEntry() throws OseeCoreException {
+      OseeEnumType enum1 =
+            OseeTypesUtil.createEnumType(typeCache, factory, "Test 1", "Test 1", "OneEntry", 0, "TwoEntry", 1);
+      OseeTypesUtil.checkOseeEnumEntries(enum1.values(), "OneEntry", 0, "TwoEntry", 1);
+
+      OseeEnumEntry entry = factory.createEnumEntry(typeCache.getEnumTypeCache(), "C", "AddedEntry", 4);
+      enum1.addEntry(entry);
+
+      OseeTypesUtil.checkOseeEnumEntries(enum1.values(), "OneEntry", 0, "TwoEntry", 1, "AddedEntry", 4);
+
+      enum1.removeEntry(entry);
+      OseeTypesUtil.checkOseeEnumEntries(enum1.values(), "OneEntry", 0, "TwoEntry", 1);
+
+      enum1.removeEntry(enum1.values()[0]);
+      OseeTypesUtil.checkOseeEnumEntries(enum1.values(), "TwoEntry", 1);
    }
 
    private static Branch createBranchHelper(String guid, String name, int id, Branch parentBranch, BranchType branchType) {

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
  * @author Roberto E. Escobar
  */
 public class OseeEnumEntry extends BaseOseeType implements Comparable<OseeEnumEntry> {
-   private final int ordinal;
+   private int ordinal;
    private final OseeEnumTypeCache cache;
 
    public OseeEnumEntry(OseeEnumTypeCache cache, String guid, String name, int ordinal) {
@@ -30,6 +30,11 @@ public class OseeEnumEntry extends BaseOseeType implements Comparable<OseeEnumEn
 
    public int ordinal() {
       return ordinal;
+   }
+
+   public void setOrdinal(int ordinal) {
+      updateDirty(this.ordinal, ordinal);
+      this.ordinal = ordinal;
    }
 
    public Pair<String, Integer> asPair() {

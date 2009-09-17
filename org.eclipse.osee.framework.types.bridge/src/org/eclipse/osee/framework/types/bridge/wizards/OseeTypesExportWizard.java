@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
 import org.eclipse.osee.framework.types.bridge.operations.ModelToFileOperation;
 import org.eclipse.osee.framework.types.bridge.operations.OseeToXtextOperation;
@@ -47,7 +48,7 @@ public class OseeTypesExportWizard extends Wizard implements IImportWizard {
       final File folder = mainPage.getFile();
       final Map<String, OseeTypeModel> models = new HashMap<String, OseeTypeModel>();
       List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new OseeToXtextOperation(models));
+      ops.add(new OseeToXtextOperation(OseeTypeManager.getCache(), models));
       ops.add(new ModelToFileOperation(folder, models));
       Operations.executeAsJob(new CompositeOperation("Export Osee Type Model", Activator.PLUGIN_ID, ops), true);
       return true;

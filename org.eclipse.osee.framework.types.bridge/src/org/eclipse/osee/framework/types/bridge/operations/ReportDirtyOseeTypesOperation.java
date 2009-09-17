@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.types.bridge.operations;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,8 +22,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
@@ -127,7 +128,15 @@ public class ReportDirtyOseeTypesOperation extends AbstractOperation {
       String dirtyEntries;
       for (OseeEnumType type : types) {
          if (type.areEntriesDirty()) {
-            dirtyEntries = Arrays.deepToString(type.values());
+            List<String> data = new ArrayList<String>();
+            for (OseeEnumEntry entry : type.values()) {
+               if (entry.isDirty()) {
+                  data.add(String.format("*{%s}", entry.toString()));
+               } else {
+                  data.add(entry.toString());
+               }
+            }
+            dirtyEntries = Collections.toString(data, ",");
          } else {
             dirtyEntries = "Not Changed";
          }

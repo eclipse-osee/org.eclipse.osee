@@ -25,76 +25,38 @@ public class OseeEnumTypeManager {
    private OseeEnumTypeManager() {
    }
 
-   public static OseeEnumType getType(int enumTypeId, boolean includeDeleted) throws OseeCoreException {
+   public static OseeEnumType getType(int enumTypeId) throws OseeCoreException {
       OseeEnumType oseeEnumType = OseeTypeManager.getCache().getEnumTypeCache().getTypeById(enumTypeId);
-      if (oseeEnumType == null || !includeDeleted && oseeEnumType.getModificationType().isDeleted()) {
+      if (oseeEnumType == null) {
          throw new OseeTypeDoesNotExist(String.format("Osee Enum Type with id:[%s] does not exist.", enumTypeId));
       }
       return oseeEnumType;
    }
 
-   public static OseeEnumType getUniqueType(String enumTypeName, boolean includeDeleted) throws OseeCoreException {
+   public static OseeEnumType getType(String enumTypeName) throws OseeCoreException {
       OseeEnumType itemsFound = OseeTypeManager.getCache().getEnumTypeCache().getTypeByName(enumTypeName);
-      boolean wasFound = false;
-      if (itemsFound != null) {
-         if (includeDeleted || !itemsFound.getModificationType().isDeleted()) {
-            wasFound = true;
-         }
-      }
-      if (!wasFound) {
+      if (itemsFound == null) {
          throw new OseeTypeDoesNotExist(
                String.format("OSEE enum types matching [%s] name does not exist", enumTypeName));
       }
       return itemsFound;
    }
 
-   public static Collection<OseeEnumType> getAllTypes(boolean includeDeleted) throws OseeCoreException {
-      List<OseeEnumType> items = new ArrayList<OseeEnumType>();
-      for (OseeEnumType types : OseeTypeManager.getCache().getEnumTypeCache().getAllTypes()) {
-         if (includeDeleted || !types.getModificationType().isDeleted()) {
-            items.add(types);
-         }
-      }
-      return items;
-   }
-
-   public static Collection<String> getAllTypeNames(boolean includeDeleted) throws OseeCoreException {
+   public static Collection<String> getAllTypeNames() throws OseeCoreException {
       List<String> items = new ArrayList<String>();
-      for (OseeEnumType types : getAllTypes(includeDeleted)) {
+      for (OseeEnumType types : getAllTypes()) {
          items.add(types.getName());
       }
       return items;
    }
 
-   public static boolean typeExist(String enumTypeName, boolean includeDeleted) throws OseeCoreException {
-      OseeEnumType itemsFound = OseeTypeManager.getCache().getEnumTypeCache().getTypeByName(enumTypeName);
-      boolean wasFound = false;
-      if (itemsFound != null) {
-         if (includeDeleted || !itemsFound.getModificationType().isDeleted()) {
-            wasFound = true;
-         }
-      }
-      return wasFound;
-   }
-
-   public static OseeEnumType getType(int enumTypeId) throws OseeCoreException {
-      return getType(enumTypeId, false);
-   }
-
-   public static OseeEnumType getUniqueType(String enumTypeName) throws OseeCoreException {
-      return getUniqueType(enumTypeName, false);
-   }
-
-   public static Collection<String> getAllTypeNames() throws OseeCoreException {
-      return getAllTypeNames(false);
-   }
-
    public static Collection<OseeEnumType> getAllTypes() throws OseeCoreException {
-      return getAllTypes(false);
+      return OseeTypeManager.getCache().getEnumTypeCache().getAllTypes();
    }
 
    public static boolean typeExist(String enumTypeName) throws OseeCoreException {
-      return typeExist(enumTypeName, false);
+      OseeEnumType itemsFound = OseeTypeManager.getCache().getEnumTypeCache().getTypeByName(enumTypeName);
+      return itemsFound != null;
    }
 
    public static int getDefaultEnumTypeId() {

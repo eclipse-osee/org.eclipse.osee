@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.types.bridge.operations.CompareOseeTypeCacheOperation;
 import org.eclipse.osee.framework.types.bridge.operations.ReportDirtyOseeTypesOperation;
 import org.eclipse.osee.framework.types.bridge.operations.XTextToOseeTypeOperation;
 import org.eclipse.ui.IImportWizard;
@@ -41,7 +42,6 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
       setDialogSettings(Activator.getDefault().getDialogSettings());
       setWindowTitle("OSEE Types Import Wizard");
       setNeedsProgressMonitor(true);
-
       setHelpAvailable(true);
    }
 
@@ -50,15 +50,19 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
       final File file = mainPage.getTypesToImport();
       final boolean isPersistAllowed = mainPage.isPersistAllowed();
       final boolean isReport = mainPage.isReportChanges();
-
+      final boolean useCompareEditor = mainPage.useCompareEditor();
       OseeTypeCache cache = OseeTypeManager.getCache();
-      IOperation operation = new XTextToOseeTypeOperation(cache, isPersistAllowed, null, file.toURI());
+
+      List<IOperation> ops = new ArrayList<IOperation>();
+      ops.add(new XTextToOseeTypeOperation(cache, isPersistAllowed, null, file.toURI()));
       if (isReport) {
-         List<IOperation> ops = new ArrayList<IOperation>();
-         ops.add(operation);
          ops.add(new ReportDirtyOseeTypesOperation(cache));
-         operation = new CompositeOperation("Import Osee Types", Activator.PLUGIN_ID, ops);
       }
+      if (useCompareEditor) {
+         ops.add(new CompareOseeTypeCacheOperation(cache));
+      }
+      IOperation operation = new CompositeOperation("Import Osee Types", Activator.PLUGIN_ID, ops);
+
       Job job = Operations.executeAsJob(operation, true);
       job.addJobChangeListener(new JobChangeAdapter() {
          @Override

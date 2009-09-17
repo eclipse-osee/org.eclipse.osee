@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.oseeTypes.AddEnum;
 import org.eclipse.osee.framework.oseeTypes.ArtifactType;
@@ -33,6 +32,7 @@ import org.eclipse.osee.framework.oseeTypes.OseeEnumEntry;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumOverride;
 import org.eclipse.osee.framework.oseeTypes.OseeEnumType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
+import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.OverrideOption;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
 import org.eclipse.osee.framework.oseeTypes.RemoveEnum;
@@ -89,8 +89,12 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          double workAmount = 1.0 / models.size();
          for (OseeTypeModel model : models) {
 
-            int count =
-                  model.getArtifactTypes().size() + model.getAttributeTypes().size() + model.getRelationTypes().size() + model.getEnumTypes().size() + model.getEnumOverrides().size();
+            int count = model.getArtifactTypes().size();
+            count += model.getAttributeTypes().size();
+            count += model.getRelationTypes().size();
+            count += model.getEnumTypes().size();
+            count += model.getEnumOverrides().size();
+
             if (count > 0) {
                double workPercentage = workAmount / count;
 
@@ -99,13 +103,18 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
                   monitor.worked(calculateWork(workPercentage));
                }
 
-               for (AttributeType type : model.getAttributeTypes()) {
-                  handleAttributeType(type);
+               for (OseeEnumOverride enumOverride : model.getEnumOverrides()) {
+                  handleEnumOverride(enumOverride);
                   monitor.worked(calculateWork(workPercentage));
                }
 
-               for (OseeEnumOverride enumOverride : model.getEnumOverrides()) {
-                  handleEnumOverride(enumOverride);
+               for (OseeEnumType enumType : model.getEnumTypes()) {
+                  handleOseeEnumType(enumType);
+                  monitor.worked(calculateWork(workPercentage));
+               }
+
+               for (AttributeType type : model.getAttributeTypes()) {
+                  handleAttributeType(type);
                   monitor.worked(calculateWork(workPercentage));
                }
 
@@ -124,7 +133,6 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             getCache().storeAllModified();
          }
       }
-
    }
 
    /**
@@ -173,69 +181,47 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             artifactType.isAbstract(), artifactTypeName).getGuid());
    }
 
-   private org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType getOseeEnumTypes(OseeEnumType enumType) throws OseeCoreException {
-      org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType = null;
-      if (enumType != null) {
-         oseeEnumType =
-               getCache().getEnumTypeCache().createType(enumType.getTypeGuid(), removeQuotes(enumType.getName()));
-         if (oseeEnumType.values().length != enumType.getEnumEntries().size()) {
-            int lastOrdinal = 0;
-            List<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry> entries =
-                  new ArrayList<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry>();
-            for (OseeEnumEntry enumEntry : enumType.getEnumEntries()) {
-               String ordinal = enumEntry.getOrdinal();
-               if (Strings.isValid(ordinal)) {
-                  lastOrdinal = Integer.parseInt(ordinal);
-               }
-               // enumEntry guid set to null but if we had we could modify an existing entry
-               entries.add(getCache().getEnumTypeCache().createEntry(null, removeQuotes(enumEntry.getName()),
-                     lastOrdinal));
-               lastOrdinal++;
-            }
-            oseeEnumType.setEntries(entries);
+   private void handleOseeEnumType(OseeEnumType modelEnumType) throws OseeCoreException {
+      String enumTypeName = removeQuotes(modelEnumType.getName());
+
+      org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType =
+            getCache().getEnumTypeCache().createType(modelEnumType.getTypeGuid(), enumTypeName);
+
+      int lastOrdinal = 0;
+      List<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry> modelEntries =
+            new ArrayList<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry>();
+      for (OseeEnumEntry enumEntry : modelEnumType.getEnumEntries()) {
+         String entryName = removeQuotes(enumEntry.getName());
+         String ordinal = enumEntry.getOrdinal();
+         if (Strings.isValid(ordinal)) {
+            lastOrdinal = Integer.parseInt(ordinal);
          }
+         // enumEntry guid set to null but if we had we could modify an existing entry
+         modelEntries.add(getCache().getEnumTypeCache().createEntry(null, entryName, lastOrdinal));
+         lastOrdinal++;
       }
-      return oseeEnumType;
+      oseeEnumType.setEntries(modelEntries);
    }
 
    private void handleEnumOverride(OseeEnumOverride enumOverride) throws OseeCoreException {
-      org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType =
-            getCache().getEnumTypeCache().getTypeByGuid(enumOverride.getOverridenEnumType().getTypeGuid());
-
-      Set<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry> newTypes =
-            new HashSet<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry>();
-      int ordinal = 0;
-      
-      if (enumOverride.isInheritAll()) {
-         for (org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry entry : oseeEnumType.values()) {
-            newTypes.add(entry);
-            ordinal = Math.max(entry.ordinal(), ordinal);
-         }
+      OseeEnumType oseeEnumType = enumOverride.getOverridenEnumType();
+      if (!enumOverride.isInheritAll()) {
+         oseeEnumType.getEnumEntries().clear();
       }
+      OseeTypesFactory factory = OseeTypesFactory.eINSTANCE;
       for (OverrideOption overrideOption : enumOverride.getOverrideOptions()) {
          if (overrideOption instanceof AddEnum) {
-            newTypes.add(getCache().getEnumTypeCache().createEntry(GUID.create(),
-                  removeQuotes(((AddEnum) overrideOption).getEnumEntry()), ++ordinal));
+            String entryName = ((AddEnum) overrideOption).getEnumEntry();
+            OseeEnumEntry enumEntry = factory.createOseeEnumEntry();
+            enumEntry.setName(entryName);
+            oseeEnumType.getEnumEntries().add(enumEntry);
          } else if (overrideOption instanceof RemoveEnum) {
-            String typeNameToRemove = removeQuotes(((AddEnum) overrideOption).getEnumEntry());
-            org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry typeToRemove = null;
-            for (org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry entry : newTypes) {
-               if (entry.getName().equals(typeNameToRemove)) {
-                  typeToRemove = entry;
-                  break;
-               }
-            }
-            if (typeToRemove == null) {
-               throw new OseeStateException(String.format("Unable to remove enum [%s] from enumType [%s]",
-                     typeNameToRemove, removeQuotes(enumOverride.getOverridenEnumType().getName())));
-            } else {
-               newTypes.remove(typeNameToRemove);
-            }
+            OseeEnumEntry enumEntry = ((RemoveEnum) overrideOption).getEnumEntry();
+            oseeEnumType.getEnumEntries().remove(enumEntry);
          } else {
-            throw new OseeStateException("Unhandled Override Operation type");
+            throw new OseeStateException("Unsupported Override Operation");
          }
       }
-      oseeEnumType.setEntries(newTypes);
    }
 
    private void handleAttributeType(AttributeType attributeType) throws OseeCoreException {
@@ -243,13 +229,18 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       if (!attributeType.getMax().equals("unlimited")) {
          max = Integer.parseInt(attributeType.getMax());
       }
+      org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType = null;
+      OseeEnumType enumType = attributeType.getEnumType();
+      if (enumType != null) {
+         oseeEnumType = getCache().getEnumTypeCache().getTypeByGuid(enumType.getTypeGuid());
+      }
       attributeType.setTypeGuid(getCache().getAttributeTypeCache().createType(attributeType.getTypeGuid(), //
             removeQuotes(attributeType.getName()), //
             attributeType.getBaseAttributeType(), // 
             attributeType.getDataProvider(), // 
             attributeType.getFileExtension(), //
             attributeType.getDefaultValue(), //
-            getOseeEnumTypes(attributeType.getEnumType()), //
+            oseeEnumType, //
             Integer.parseInt(attributeType.getMin()), //
             max, //
             attributeType.getDescription(), //

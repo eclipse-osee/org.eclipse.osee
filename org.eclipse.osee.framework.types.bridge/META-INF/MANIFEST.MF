@@ -5,28 +5,24 @@ Bundle-SymbolicName: org.eclipse.osee.framework.types.bridge;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.types.bridge.internal.Activator
 Bundle-Vendor: Eclipse.org
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.jface;bundle-version="3.5.0",
- org.eclipse.ui;bundle-version="3.5.0",
- org.eclipse.ui.ide;bundle-version="3.5.0",
+Require-Bundle: org.eclipse.ui.ide;bundle-version="3.5.0",
  org.eclipse.osee.framework.ui.plugin;bundle-version="0.4.0",
  org.eclipse.osee.framework.types.ui;bundle-version="1.0.0",
- org.eclipse.emf;bundle-version="2.5.0",
- org.eclipse.core.resources;bundle-version="3.5.0",
- com.google.guice;bundle-version="1.0.1",
  org.eclipse.osee.framework.skynet.core;bundle-version="0.4.0",
- org.eclipse.xtext;bundle-version="0.7.2",
  org.eclipse.xtext.ui.core;bundle-version="0.7.2",
  org.eclipse.osee.framework.plugin.core;bundle-version="0.4.0",
  org.eclipse.osee.framework.ui.skynet;bundle-version="0.4.0",
  org.eclipse.nebula.widgets.xviewer;bundle-version="1.0.0",
+ org.eclipse.compare;bundle-version="3.5.0",
+ org.eclipse.emf.compare.ui;bundle-version="1.0.0",
+ org.eclipse.emf.compare.diff;bundle-version="1.0.0",
+ org.eclipse.emf.compare.match;bundle-version="1.0.0",
  org.eclipse.ui.forms;bundle-version="3.4.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.operation,
- org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.database.init,
  org.eclipse.osee.framework.jdk.core.type,
  org.eclipse.osee.framework.jdk.core.util,

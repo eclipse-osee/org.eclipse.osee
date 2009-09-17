@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.skynet.core.types.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -22,6 +24,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -44,9 +47,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
 
    private static final String INSERT_ENUM_TYPE_DEF =
          "insert into osee_enum_type_def (enum_type_id, enum_entry_guid, name, ordinal) values (?,?,?,?)";
-   private static final String UPDATE_ENUM_TYPE_DEF =
-         "update osee_enum_type_def set name=?, ordinal=? where enum_entry_guid=?";
-   private static final String DELETE_ENUM_TYPE_DEF = "delete from osee_enum_type_def where enum_entry_guid = ?";
+   private static final String DELETE_ENUM_TYPE_DEF = "delete from osee_enum_type_def where enum_type_id = ?";
 
    @Override
    public void load(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
@@ -93,29 +94,38 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
 
    @Override
    public void store(OseeTypeCache cache, Collection<OseeEnumType> oseeEnumTypes) throws OseeCoreException {
+      Set<OseeEnumType> dirtyEntries = new HashSet<OseeEnumType>();
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> updateData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
-         switch (oseeEnumType.getModificationType()) {
-            case NEW:
-               oseeEnumType.setTypeId(SequenceManager.getNextOseeEnumTypeId());
-               insertData.add(toInsertValues(oseeEnumType));
-               break;
-            case MODIFIED:
-               updateData.add(toUpdateValues(oseeEnumType));
-               break;
-            case DELETED:
-               deleteData.add(toDeleteValues(oseeEnumType));
-               break;
-            default:
-               break;
+         if (oseeEnumType.isDataDirty()) {
+            switch (oseeEnumType.getModificationType()) {
+               case NEW:
+                  oseeEnumType.setTypeId(SequenceManager.getNextOseeEnumTypeId());
+                  insertData.add(toInsertValues(oseeEnumType));
+                  break;
+               case MODIFIED:
+                  updateData.add(toUpdateValues(oseeEnumType));
+                  break;
+               case DELETED:
+                  deleteData.add(toDeleteValues(oseeEnumType));
+                  break;
+               default:
+                  break;
+            }
+         }
+         if (oseeEnumType.areEntriesDirty()) {
+            if (!oseeEnumType.getModificationType().isDeleted()) {
+               dirtyEntries.add(oseeEnumType);
+            }
          }
       }
       ConnectionHandler.runBatchUpdate(INSERT_ENUM_TYPE, insertData);
       ConnectionHandler.runBatchUpdate(UPDATE_ENUM_TYPE, updateData);
       ConnectionHandler.runBatchUpdate(DELETE_ENUM_TYPE, deleteData);
 
+      storeOseeEnumEntries(dirtyEntries);
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
          oseeEnumType.clearDirty();
       }
@@ -123,33 +133,37 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
       insertData.clear();
       updateData.clear();
       deleteData.clear();
-      for (OseeEnumType oseeEnumType : oseeEnumTypes) {
-         for (OseeEnumEntry entry : oseeEnumType.values()) {
-            switch (entry.getModificationType()) {
-               case NEW:
-                  entry.setTypeId(oseeEnumType.getTypeId());
-                  insertData.add(toInsertValues(entry));
-                  break;
-               case MODIFIED:
-                  updateData.add(toUpdateValues(entry));
-                  break;
-               case DELETED:
-                  deleteData.add(toDeleteValues(entry));
-                  break;
-               default:
-                  break;
-            }
-         }
-      }
-      ConnectionHandler.runBatchUpdate(INSERT_ENUM_TYPE_DEF, insertData);
-      ConnectionHandler.runBatchUpdate(UPDATE_ENUM_TYPE_DEF, updateData);
-      ConnectionHandler.runBatchUpdate(DELETE_ENUM_TYPE_DEF, deleteData);
 
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
          for (OseeEnumEntry entry : oseeEnumType.values()) {
             entry.clearDirty();
          }
       }
+   }
+
+   private void storeOseeEnumEntries(Collection<OseeEnumType> oseeEnumTypes) throws OseeCoreException {
+      List<Object[]> insertData = new ArrayList<Object[]>();
+      List<Object[]> deleteData = new ArrayList<Object[]>();
+      for (OseeEnumType type : oseeEnumTypes) {
+         if (type.getTypeId() != BaseOseeType.UNPERSISTTED_VALUE) {
+            deleteData.add(toDeleteValues(type));
+         }
+         for (OseeEnumEntry entry : type.values()) {
+            switch (entry.getModificationType()) {
+               case NEW:
+                  entry.setTypeId(type.getTypeId());
+                  insertData.add(toInsertValues(entry));
+                  break;
+               case MODIFIED:
+                  insertData.add(toInsertValues(entry));
+                  break;
+               default:
+                  break;
+            }
+         }
+      }
+      ConnectionHandler.runBatchUpdate(DELETE_ENUM_TYPE_DEF, deleteData);
+      ConnectionHandler.runBatchUpdate(INSERT_ENUM_TYPE_DEF, insertData);
    }
 
    private Object[] toInsertValues(OseeEnumType type) throws OseeDataStoreException {
@@ -166,13 +180,5 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
 
    private Object[] toInsertValues(OseeEnumEntry type) throws OseeDataStoreException {
       return new Object[] {type.getTypeId(), type.getGuid(), type.getName(), type.ordinal()};
-   }
-
-   private Object[] toUpdateValues(OseeEnumEntry type) throws OseeDataStoreException {
-      return new Object[] {type.getName(), type.ordinal(), type.getGuid()};
-   }
-
-   private Object[] toDeleteValues(OseeEnumEntry type) throws OseeDataStoreException {
-      return new Object[] {type.getGuid()};
    }
 }

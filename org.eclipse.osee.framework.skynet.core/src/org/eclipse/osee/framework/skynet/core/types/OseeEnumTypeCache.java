@@ -13,13 +13,13 @@ package org.eclipse.osee.framework.skynet.core.types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.enums.ModificationType;
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 
@@ -37,6 +37,56 @@ public final class OseeEnumTypeCache extends AbstractOseeTypeCache<OseeEnumType>
    }
 
    public void cacheEnumEntries(OseeEnumType oseeEnumType, Collection<OseeEnumEntry> oseeEnumEntries) throws OseeCoreException {
+      checkEnumEntryIntegrity(oseeEnumEntries);
+      List<OseeEnumEntry> newEntries = new ArrayList<OseeEnumEntry>();
+
+      List<OseeEnumEntry> currentEntries = getEnumEntries(oseeEnumType);
+      Set<OseeEnumEntry> toRemove = new HashSet<OseeEnumEntry>(currentEntries);
+      for (OseeEnumEntry entry : oseeEnumEntries) {
+         boolean wasFound = false;
+
+         String nameToCheck = entry.getName();
+         int ordinalToCheck = entry.ordinal();
+         String guidToCheck = entry.getGuid();
+
+         for (OseeEnumEntry existingEntry : currentEntries) {
+            if (existingEntry.getGuid().equals(guidToCheck)) {
+               wasFound = true;
+               existingEntry.setName(nameToCheck);
+               existingEntry.setOrdinal(ordinalToCheck);
+            } else if (existingEntry.getName().equals(nameToCheck)) {
+               wasFound = true;
+               //               existingEntry.setOrdinal(ordinalToCheck);
+            }
+            //            else if (existingEntry.ordinal() == ordinalToCheck) {
+            //               wasFound = true;
+            //               existingEntry.setName(nameToCheck);
+            //            }
+
+            if (wasFound) {
+               toRemove.remove(existingEntry);
+               break;
+            }
+         }
+         if (!wasFound) {
+            newEntries.add(entry);
+         }
+      }
+      if (!toRemove.isEmpty()) {
+         Collection<OseeEnumEntry> entriesRemoved = enumTypeToEntryMap.getValues(oseeEnumType);
+         if (entriesRemoved != null) {
+            for (OseeEnumEntry entry : toRemove) {
+               entriesRemoved.remove(entry);
+            }
+         }
+      }
+      for (OseeEnumEntry entry : newEntries) {
+         enumTypeToEntryMap.put(oseeEnumType, entry);
+         enumEntryToEnumType.put(entry, oseeEnumType);
+      }
+   }
+
+   private void checkEnumEntryIntegrity(Collection<OseeEnumEntry> oseeEnumEntries) throws OseeArgumentException {
       for (OseeEnumEntry entry : oseeEnumEntries) {
          if (entry.getName() == null) {
             throw new OseeArgumentException("EnumEntry name violation - null is not allowed");
@@ -58,14 +108,6 @@ public final class OseeEnumTypeCache extends AbstractOseeTypeCache<OseeEnumType>
                }
             }
          }
-      }
-      List<OseeEnumEntry> existingEntries = getEnumEntries(oseeEnumType);
-      for (OseeEnumEntry entries : Collections.setComplement(existingEntries, oseeEnumEntries)) {
-         entries.setModificationType(ModificationType.DELETED);
-      }
-      for (OseeEnumEntry entry : oseeEnumEntries) {
-         enumTypeToEntryMap.put(oseeEnumType, entry);
-         enumEntryToEnumType.put(entry, oseeEnumType);
       }
    }
 

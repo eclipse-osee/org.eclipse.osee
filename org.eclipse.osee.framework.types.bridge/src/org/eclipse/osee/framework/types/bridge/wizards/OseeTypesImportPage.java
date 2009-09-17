@@ -61,6 +61,7 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
    private final List<LinkNode> messages;
    private Button reportChanges;
    private Button persistChanges;
+   private Button useCompareEditor;
 
    protected OseeTypesImportPage(IStructuredSelection selection, String title) {
       super(PAGE_NAME);
@@ -143,6 +144,10 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
       reportChanges.setText("Report Changes");
       reportChanges.setSelection(true);
 
+      useCompareEditor = new Button(composite, SWT.CHECK);
+      useCompareEditor.setText("Use Compare Editor");
+      useCompareEditor.setSelection(true);
+
       persistChanges = new Button(composite, SWT.CHECK);
       persistChanges.setText("Persist Changes");
       persistChanges.setSelection(false);
@@ -154,6 +159,10 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
 
    public boolean isReportChanges() {
       return reportChanges.getSelection();
+   }
+
+   public boolean useCompareEditor() {
+      return useCompareEditor.getSelection();
    }
 
    public File getTypesToImport() {

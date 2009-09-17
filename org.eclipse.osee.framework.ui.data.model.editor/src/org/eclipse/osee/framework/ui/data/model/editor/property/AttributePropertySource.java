@@ -185,7 +185,7 @@ public class AttributePropertySource extends ModelPropertySource {
       if (id == idEnumType) {
          String enumTypeName = EnumeratedAttributeValuesPropertyDescriptor.toModel(value);
          try {
-            getDataTypeElement().setEnumTypeId(OseeEnumTypeManager.getUniqueType(enumTypeName).getTypeId());
+            getDataTypeElement().setEnumTypeId(OseeEnumTypeManager.getType(enumTypeName).getTypeId());
          } catch (OseeCoreException ex) {
             OseeLog.log(ODMEditorActivator.class, Level.SEVERE, ex);
          }

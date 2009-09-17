@@ -221,7 +221,14 @@ public class HashCollectionPlus<K, V, O> {
    }
 
    public Collection<V> removeValues(K key) {
-      return map.remove(key).getFirst();
+      Pair<Collection<V>, O> objectPair = map.remove(key);
+      Collection<V> toReturn;
+      if (objectPair != null) {
+         toReturn = objectPair.getFirst();
+      } else {
+         toReturn = Collections.emptyList();
+      }
+      return toReturn;
    }
 
    /**

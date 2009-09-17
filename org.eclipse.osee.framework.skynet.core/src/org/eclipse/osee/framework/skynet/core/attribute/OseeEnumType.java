@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -97,6 +98,23 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
       areEntriesDirty |= isDifferent(oldEntries, newEntries);
    }
 
+   public void addEntry(OseeEnumEntry entry) throws OseeCoreException {
+      List<OseeEnumEntry> entries = new ArrayList<OseeEnumEntry>();
+      entries.addAll(Arrays.asList(values()));
+      entries.add(entry);
+      setEntries(entries);
+   }
+
+   public void removeEntry(OseeEnumEntry entry) throws OseeCoreException {
+      List<OseeEnumEntry> entries = new ArrayList<OseeEnumEntry>();
+      entries.addAll(Arrays.asList(values()));
+      if (!entries.remove(entry)) {
+         throw new OseeArgumentException(String.format("OseeEnumEntry[%s] does not exist on OseeEnumType[%s]", entry,
+               this));
+      }
+      setEntries(entries);
+   }
+
    void internalUpdateDirtyEntries(boolean areEntriesDirty) {
       this.areEntriesDirty |= areEntriesDirty;
    }
@@ -135,5 +153,4 @@ public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumTyp
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
-
 }
