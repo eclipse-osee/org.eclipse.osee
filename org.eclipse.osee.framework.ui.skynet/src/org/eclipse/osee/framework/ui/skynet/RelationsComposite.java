@@ -276,7 +276,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
 
       List<RelationOrderId> orderTypes = RelationManager.getRelationOrderTypes();
       for (RelationOrderId id : orderTypes) {
-         MenuItem idMenu = new MenuItem(subMenu, SWT.CASCADE);
+         MenuItem idMenu = new MenuItem(subMenu, SWT.CASCADE | SWT.CHECK);
          idMenu.setText(id.prettyName());
          idMenu.addSelectionListener(new SelectionId(id));
       }
@@ -287,7 +287,20 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Object[] objects = selection.toArray();
             if (objects.length == 1 && objects[0] instanceof RelationTypeSide) {
+               //               RelationTypeSide typeSide = (RelationTypeSide) objects[0];
+               //               try {
+               //                  typeSide.getArtifact().setRelationOrder(typeSide, id);
+               //               } catch (OseeCoreException ex) {
+               //                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               //               }
+
                orderRelationMenuItem.setEnabled(true);
+               //               Menu subMenu = orderRelationMenuItem.getMenu();
+               //               //               for (MenuItem item : subMenu.getItems()) {
+               //               //                  //                  if (true) {
+               //               //                  //                     item.setSelection(true);
+               //               //                  //                  }
+               //               //               }
             } else {
                orderRelationMenuItem.setEnabled(false);
             }
@@ -296,7 +309,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       });
       orderRelationMenuItem.setEnabled(true);
    }
-
    private class SelectionId implements SelectionListener {
 
       private final RelationOrderId id;
