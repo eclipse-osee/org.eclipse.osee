@@ -295,7 +295,7 @@ attributeType "ats.Change Type" extends EnumeratedAttribute {
    enumType "enum.ats.change.type"
 }
 
-oseeEnumType "enum.ats.use.community" {
+oseeEnumType "enum.ats.user.community" {
    guid "ABbjHDyl0m_BTHf+IdgA"
    entry "Program_1"
    entry "Program_2"
@@ -309,7 +309,7 @@ attributeType "ats.User Community" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
-   enumType "enum.ats.use.community"
+   enumType "enum.ats.user.community"
 }
 
 attributeType "ats.Estimated Hours" extends FloatingPointAttribute {
