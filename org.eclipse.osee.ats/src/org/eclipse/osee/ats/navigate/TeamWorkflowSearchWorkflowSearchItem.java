@@ -50,8 +50,12 @@ public class TeamWorkflowSearchWorkflowSearchItem extends WorldEditorParameterSe
    private XMembersCombo assigneeCombo;
    private XCheckBox includeCompletedCancelledCheckbox;
 
+   public TeamWorkflowSearchWorkflowSearchItem(String name) throws OseeArgumentException {
+      super(name, AtsImage.TEAM_WORKFLOW);
+   }
+
    public TeamWorkflowSearchWorkflowSearchItem() throws OseeArgumentException {
-      super("Team Workflow Search", AtsImage.TEAM_WORKFLOW);
+      this("Team Workflow Search");
    }
 
    public TeamWorkflowSearchWorkflowSearchItem(TeamWorkflowSearchWorkflowSearchItem editTeamWorkflowSearchItem) throws OseeArgumentException {
