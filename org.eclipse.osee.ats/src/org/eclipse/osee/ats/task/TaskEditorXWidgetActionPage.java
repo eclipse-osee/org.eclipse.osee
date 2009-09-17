@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.actions.OpenNewAtsTaskEditorSelected;
 import org.eclipse.osee.ats.actions.RefreshAction;
 import org.eclipse.osee.ats.artifact.TaskableStateMachineArtifact;
 import org.eclipse.osee.ats.export.AtsExportManager;
+import org.eclipse.osee.ats.util.SMAMetrics;
 import org.eclipse.osee.ats.world.AtsXWidgetActionFormPage;
 import org.eclipse.osee.ats.world.WorldAssigneeFilter;
 import org.eclipse.osee.ats.world.WorldCompletedFilter;
@@ -41,6 +42,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayou
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -60,7 +63,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
    private static String HELP_CONTEXT_ID = "atsWorkflowEditorTaskTab";
    private final WorldCompletedFilter worldCompletedFilter = new WorldCompletedFilter();
    private WorldAssigneeFilter worldAssigneeFilter = null;
-   private Action filterCompletedAction, filterMyAssigneeAction;
+   private Action filterCompletedAction, filterMyAssigneeAction, selectionMetricsAction;
 
    public TaskEditorXWidgetActionPage(TaskEditor taskEditor) {
       super(taskEditor, "org.eclipse.osee.ats.actionPage", "Actions");
@@ -156,9 +159,7 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
       toolBarManager.add(new Separator());
       createDropDownMenuActions();
       toolBarManager.add(new DropDownAction());
-
    }
-
    public class DropDownAction extends Action implements IMenuCreator {
       private Menu fMenu;
 
@@ -167,13 +168,14 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          setMenuCreator(this);
          setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.GEAR));
          addKeyListener();
+         addSelectionListener();
       }
 
       public Menu getMenu(Control parent) {
          if (fMenu != null) fMenu.dispose();
 
          fMenu = new Menu(parent);
-
+         addActionToMenu(fMenu, selectionMetricsAction);
          addActionToMenu(fMenu, filterCompletedAction);
          addActionToMenu(fMenu, filterMyAssigneeAction);
          new MenuItem(fMenu, SWT.SEPARATOR);
@@ -247,6 +249,9 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
                   if (event.keyCode == 'a') {
                      taskComposite.getTaskXViewer().getTree().setSelection(
                            taskComposite.getTaskXViewer().getTree().getItems());
+                  } else if (event.keyCode == 'x') {
+                     selectionMetricsAction.setChecked(!selectionMetricsAction.isChecked());
+                     selectionMetricsAction.run();
                   } else if (event.keyCode == 'f') {
                      filterCompletedAction.setChecked(!filterCompletedAction.isChecked());
                      filterCompletedAction.run();
@@ -263,6 +268,41 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
             }
          });
       }
+
+      private void addSelectionListener() {
+         taskComposite.getTaskXViewer().getTree().addSelectionListener(new SelectionListener() {
+            @Override
+            public void widgetDefaultSelected(SelectionEvent e) {
+            }
+
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+               if (selectionMetricsAction != null) {
+                  if (selectionMetricsAction.isChecked()) {
+                     selectionMetricsAction.run();
+                  } else {
+                     if (taskComposite != null) {
+                        taskComposite.showReleaseMetricsLabel.setText("");
+                     }
+                  }
+               }
+            }
+         });
+      }
+   }
+
+   public void updateExtraInfoLine() throws OseeCoreException {
+      if (selectionMetricsAction != null && selectionMetricsAction.isChecked()) {
+         if (taskComposite.getTaskXViewer() != null && taskComposite.getTaskXViewer().getSelectedSMAArtifacts() != null && !taskComposite.getTaskXViewer().getSelectedSMAArtifacts().isEmpty()) {
+            taskComposite.showReleaseMetricsLabel.setText(SMAMetrics.getEstRemainMetrics(
+                  taskComposite.getTaskXViewer().getSelectedSMAArtifacts(),
+                  null,
+                  taskComposite.getTaskXViewer().getSelectedSMAArtifacts().iterator().next().getManHrsPerDayPreference(),
+                  null));
+         } else
+            taskComposite.showReleaseMetricsLabel.setText("");
+      }
+      taskComposite.showReleaseMetricsLabel.getParent().layout();
    }
 
    public void updateExtendedStatusString() {
@@ -280,8 +320,20 @@ public class TaskEditorXWidgetActionPage extends AtsXWidgetActionFormPage implem
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
-      filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", Action.AS_CHECK_BOX) {
+      selectionMetricsAction = new Action("Show Release Metrics by Selection - Ctrl-X", Action.AS_CHECK_BOX) {
+         @Override
+         public void run() {
+            try {
+               updateExtraInfoLine();
+            } catch (Exception ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      };
+      selectionMetricsAction.setToolTipText("Show Release Metrics by Selection - Ctrl-X");
+      selectionMetricsAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.PAGE));
 
+      filterCompletedAction = new Action("Filter Out Completed/Cancelled - Ctrl-F", Action.AS_CHECK_BOX) {
          @Override
          public void run() {
             if (filterCompletedAction.isChecked()) {

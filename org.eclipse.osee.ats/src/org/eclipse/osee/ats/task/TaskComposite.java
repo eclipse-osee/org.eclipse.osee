@@ -61,6 +61,7 @@ import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.PlatformUI;
@@ -72,6 +73,7 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
 
    private TaskXViewer taskXViewer;
    private final IXTaskViewer iXTaskViewer;
+   protected Label showReleaseMetricsLabel;
 
    /**
     * @param label
@@ -94,6 +96,9 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
       }
 
       try {
+
+         showReleaseMetricsLabel = new Label(this, SWT.NONE);
+         showReleaseMetricsLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
          taskXViewer =
                new TaskXViewer(this, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, iXTaskViewer.getEditor(), this);
