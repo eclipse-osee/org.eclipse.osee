@@ -152,5 +152,19 @@
          install-size="1168"
          version="0.0.0"
          unpack="false"/>
-
+         
+    <plugin
+         id="org.eclipse.nebula.cwt"
+         download-size="1166"
+         install-size="1168"
+         version="0.0.0"
+         unpack="false"/>
+         
+    <plugin
+         id="org.eclipse.nebula.widgets.cdatetime"
+         download-size="1166"
+         install-size="1168"
+         version="0.0.0"
+         unpack="false"/>
+         
 </feature>
