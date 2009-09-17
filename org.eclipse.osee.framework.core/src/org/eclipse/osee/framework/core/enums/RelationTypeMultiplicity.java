@@ -53,7 +53,7 @@ public enum RelationTypeMultiplicity {
    }
 
    public String getSideBLimitLabel() {
-      return limitToString(getSideALimit());
+      return limitToString(getSideBLimit());
    }
 
    public int getValue() {
