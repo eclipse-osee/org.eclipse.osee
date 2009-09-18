@@ -466,6 +466,10 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       return getBranchState() == BranchState.REBASELINE_IN_PROGRESS;
    }
 
+   public boolean isCreationInProgress() {
+      return getBranchState() == BranchState.CREATION_IN_PROGRESS;
+   }
+
    /**
     * @return the parentTransactionId
     * @throws OseeCoreException
