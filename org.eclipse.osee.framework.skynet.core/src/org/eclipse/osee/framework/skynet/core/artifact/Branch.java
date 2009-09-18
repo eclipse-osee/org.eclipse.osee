@@ -451,7 +451,7 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
     * @return Returns whether the branch is editable.
     */
    public boolean isEditable() {
-      return !isCommitted() && !isRebaselined() && !isArchived() && !isDeleted();
+      return !isCommitted() && !isRebaselined() && !isArchived() && !isDeleted() && !isCreationInProgress();
    }
 
    public boolean isCommitted() {
