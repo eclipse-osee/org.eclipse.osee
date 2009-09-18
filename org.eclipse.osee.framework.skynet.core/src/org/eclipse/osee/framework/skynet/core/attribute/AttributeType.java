@@ -11,9 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 
 /**
  * Type information for dynamic attributes.
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeData
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class AttributeType extends BaseOseeType implements Comparable<AttributeType> {
+public class AttributeType extends AbstractOseeType implements Comparable<AttributeType> {
    private Class<? extends Attribute<?>> baseAttributeClass;
    private Class<? extends IAttributeDataProvider> providerAttributeClass;
    private String defaultValue;
@@ -47,8 +48,8 @@ public class AttributeType extends BaseOseeType implements Comparable<AttributeT
     * @param maxOccurrences
     * @param tipText
     */
-   public AttributeType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
-      super(guid, typeName);
+   public AttributeType(AbstractOseeCache<AttributeType> cache, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
+      super(cache, guid, typeName);
       this.dirtyStateDetails = new DirtyStateDetail();
       setFields(typeName, baseAttributeTypeId, attributeProviderNameId, baseAttributeClass, providerAttributeClass,
             fileTypeExtension, defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);

@@ -12,17 +12,18 @@ package org.eclipse.osee.framework.skynet.core.types;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
+import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeTypeCache<T extends BaseOseeType> {
+public abstract class AbstractOseeCache<T extends AbstractOseeType> {
    private final HashMap<String, T> nameToTypeMap = new HashMap<String, T>();
    private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
    private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
@@ -31,7 +32,7 @@ public abstract class AbstractOseeTypeCache<T extends BaseOseeType> {
    private final IOseeTypeDataAccessor<T> dataAccessor;
    private boolean duringPopulate;
 
-   public AbstractOseeTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<T> dataAccessor) {
+   public AbstractOseeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<T> dataAccessor) {
       this.duringPopulate = false;
       this.cache = cache;
       this.factory = factory;
@@ -61,7 +62,7 @@ public abstract class AbstractOseeTypeCache<T extends BaseOseeType> {
       }
       nameToTypeMap.remove(type.getName());
       guidToTypeMap.remove(type.getGuid());
-      if (type.getTypeId() != BaseOseeType.UNPERSISTTED_VALUE) {
+      if (type.getTypeId() != AbstractOseeType.UNPERSISTTED_VALUE) {
          idToTypeMap.remove(type.getTypeId());
       }
    }
@@ -79,7 +80,7 @@ public abstract class AbstractOseeTypeCache<T extends BaseOseeType> {
       if (type == null) {
          throw new OseeArgumentException("Caching a null value is not allowed");
       }
-      if (type.getTypeId() != BaseOseeType.UNPERSISTTED_VALUE) {
+      if (type.getTypeId() != AbstractOseeType.UNPERSISTTED_VALUE) {
          idToTypeMap.put(type.getTypeId(), type);
       }
    }
@@ -148,10 +149,15 @@ public abstract class AbstractOseeTypeCache<T extends BaseOseeType> {
       getDataAccessor().load(getCache(), getDataFactory());
    }
 
-   private void storeItems(Collection<T> items) throws OseeCoreException {
-      getDataAccessor().store(getCache(), items);
+   @SuppressWarnings("unchecked")
+   public void storeItem(AbstractOseeType item) throws OseeCoreException {
+      storeItems(Collections.singletonList((T) item));
+   }
+
+   private void storeItems(Collection<T> toStore) throws OseeCoreException {
+      getDataAccessor().store(getCache(), toStore);
       synchronized (idToTypeMap) {
-         for (T type : items) {
+         for (T type : toStore) {
             cacheTypeById(type);
          }
       }

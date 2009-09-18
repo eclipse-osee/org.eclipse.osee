@@ -38,7 +38,7 @@ public class OseeTypeFactory implements IOseeTypeFactory {
       return guid == null ? GUID.create() : guid;
    }
 
-   private void checkName(AbstractOseeTypeCache<?> cache, String typeName) throws OseeCoreException {
+   private void checkName(AbstractOseeCache<?> cache, String typeName) throws OseeCoreException {
       if (!Strings.isValid(typeName)) {
          throw new OseeArgumentException("name cannot be null.");
       }
@@ -79,7 +79,7 @@ public class OseeTypeFactory implements IOseeTypeFactory {
       if (maxOccurrences < minOccurrences) {
          throw new OseeArgumentException("maxOccurences can not be less than minOccurences");
       }
-      return new AttributeType(createGuidIfNeeded(guid), name, baseAttributeTypeId, attributeProviderNameId,
+      return new AttributeType(cache, createGuidIfNeeded(guid), name, baseAttributeTypeId, attributeProviderNameId,
             baseAttributeClass, providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType, minOccurrences,
             maxOccurrences, tipText, taggerId);
    }
@@ -102,7 +102,7 @@ public class OseeTypeFactory implements IOseeTypeFactory {
       if (multiplicity == null) {
          throw new OseeArgumentException("Multiplicity can not be null or empty");
       }
-      return new RelationType(createGuidIfNeeded(guid), name, sideAName, sideBName, artifactTypeSideA,
+      return new RelationType(cache, createGuidIfNeeded(guid), name, sideAName, sideBName, artifactTypeSideA,
             artifactTypeSideB, multiplicity, isUserOrdered, defaultOrderTypeGuid);
    }
 

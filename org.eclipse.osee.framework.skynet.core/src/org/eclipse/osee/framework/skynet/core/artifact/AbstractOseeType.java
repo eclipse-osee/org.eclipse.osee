@@ -2,11 +2,13 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.IOseeType;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 
-public class BaseOseeType implements IOseeType {
+public abstract class AbstractOseeType implements IOseeType {
    public final static int UNPERSISTTED_VALUE = Integer.MIN_VALUE;
 
    private String name;
@@ -14,8 +16,10 @@ public class BaseOseeType implements IOseeType {
    private int uniqueId;
    private boolean dirty;
    private ModificationType modificationType;
+   private final AbstractOseeCache<? extends AbstractOseeType> cache;
 
-   protected BaseOseeType(String guid, String name) {
+   protected AbstractOseeType(AbstractOseeCache<? extends AbstractOseeType> cache, String guid, String name) {
+      this.cache = cache;
       this.name = name;
       this.guid = guid;
       this.uniqueId = UNPERSISTTED_VALUE;
@@ -72,7 +76,7 @@ public class BaseOseeType implements IOseeType {
       if (getClass() != obj.getClass()) {
          return false;
       }
-      return guid.equals(((BaseOseeType) obj).guid);
+      return guid.equals(((AbstractOseeType) obj).guid);
    }
 
    /**
@@ -126,5 +130,9 @@ public class BaseOseeType implements IOseeType {
    private boolean isDifferent(Collection<Object> original, Collection<Object> other) {
       return !Collections.setComplement(original, other).isEmpty() || //
       !Collections.setComplement(other, original).isEmpty();
+   }
+
+   public void persist() throws OseeCoreException {
+      cache.storeItem(this);
    }
 }

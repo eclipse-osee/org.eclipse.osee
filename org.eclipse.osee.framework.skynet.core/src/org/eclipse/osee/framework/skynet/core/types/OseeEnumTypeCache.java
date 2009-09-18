@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 /**
  * @author Roberto E. Escobar
  */
-public final class OseeEnumTypeCache extends AbstractOseeTypeCache<OseeEnumType> {
+public final class OseeEnumTypeCache extends AbstractOseeCache<OseeEnumType> {
 
    private final HashCollection<OseeEnumType, OseeEnumEntry> enumTypeToEntryMap =
          new HashCollection<OseeEnumType, OseeEnumEntry>();

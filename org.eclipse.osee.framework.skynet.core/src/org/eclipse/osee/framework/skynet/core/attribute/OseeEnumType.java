@@ -21,20 +21,20 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
+import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeEnumType extends BaseOseeType implements Comparable<OseeEnumType> {
+public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnumType> {
 
    private final OseeEnumTypeCache cache;
    private boolean areEntriesDirty;
 
    public OseeEnumType(OseeEnumTypeCache cache, String guid, String enumTypeName) {
-      super(guid, enumTypeName);
+      super(cache, guid, enumTypeName);
       this.cache = cache;
    }
 

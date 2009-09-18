@@ -13,13 +13,14 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 
 /**
  * @author Robert A. Fisher
  */
-public class RelationType extends BaseOseeType implements Comparable<RelationType> {
+public class RelationType extends AbstractOseeType implements Comparable<RelationType> {
    private String sideAName;
    private String sideBName;
    private RelationTypeMultiplicity multiplicity;
@@ -29,8 +30,8 @@ public class RelationType extends BaseOseeType implements Comparable<RelationTyp
    private String defaultOrderTypeGuid;
    private final RelationTypeDirtyDetails dirtyDetails;
 
-   public RelationType(String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
-      super(guid, relationTypeName);
+   public RelationType(AbstractOseeCache<RelationType> cache, String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
+      super(cache, guid, relationTypeName);
       this.dirtyDetails = new RelationTypeDirtyDetails();
       setFields(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, isOrdered,
             defaultOrderTypeGuid);
@@ -144,6 +145,7 @@ public class RelationType extends BaseOseeType implements Comparable<RelationTyp
       }
 
       private void update(String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
+         setName(relationTypeName);
          isSideANameDirty |= isDifferent(getSideAName(), sideAName);
          isSideBNameDirty |= isDifferent(getSideBName(), sideBName);
          isArtifactTypeSideADirty |= isDifferent(getArtifactTypeSideA(), artifactTypeSideA);

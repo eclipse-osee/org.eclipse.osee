@@ -22,16 +22,16 @@ import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 /**
  * @author Robert A. Fisher
  */
-public class ArtifactType extends BaseOseeType implements Comparable<ArtifactType> {
+public class ArtifactType extends AbstractOseeType implements Comparable<ArtifactType> {
    private boolean isAbstract;
    private final ArtifactFactoryManager factoryManager;
    private final ArtifactTypeCache cache;
    private final DirtyStateDetail dirtyStateDetail;
 
    public ArtifactType(ArtifactTypeCache cache, String guid, String name, boolean isAbstract, ArtifactFactoryManager factoryManager) {
-      super(guid, name);
+      super(cache, guid, name);
       this.dirtyStateDetail = new DirtyStateDetail();
-      this.isAbstract = isAbstract;
+      setAbstract(isAbstract);
       this.factoryManager = factoryManager;
       this.cache = cache;
    }
@@ -180,7 +180,6 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
       private boolean isAbstractDirty;
 
       private DirtyStateDetail() {
-         clear();
       }
 
       public void setIsAttributeTypeValidatityDirty(boolean different) {

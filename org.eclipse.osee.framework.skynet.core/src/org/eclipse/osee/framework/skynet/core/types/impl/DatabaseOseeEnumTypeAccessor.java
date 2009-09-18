@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
+import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -145,7 +145,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (OseeEnumType type : oseeEnumTypes) {
-         if (type.getTypeId() != BaseOseeType.UNPERSISTTED_VALUE) {
+         if (type.getTypeId() != AbstractOseeType.UNPERSISTTED_VALUE) {
             deleteData.add(toDeleteValues(type));
          }
          for (OseeEnumEntry entry : type.values()) {

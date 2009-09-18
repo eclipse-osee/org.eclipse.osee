@@ -134,7 +134,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    }
 
    @Override
-   protected void handleTxException(Exception ex) {
+   protected void handleTxException(IProgressMonitor monitor, Exception ex) {
       success = false;
       // Restore Original Branch States
       try {
@@ -145,7 +145,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    }
 
    @Override
-   protected void handleTxFinally() throws OseeCoreException {
+   protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
       if (success) {
          // Update commit artifact cache with new information
          if (sourceBranch.getAssociatedArtifactId() > 0) {

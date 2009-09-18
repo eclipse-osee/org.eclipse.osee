@@ -27,7 +27,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 /**
  * @author Roberto E. Escobar
  */
-public final class ArtifactTypeCache extends AbstractOseeTypeCache<ArtifactType> {
+public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
 
    private final HashCollection<ArtifactType, ArtifactType> artifactTypeToSuperTypeMap =
          new HashCollection<ArtifactType, ArtifactType>();

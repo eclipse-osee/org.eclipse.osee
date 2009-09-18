@@ -12,18 +12,18 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.artifact.BaseOseeType;
+import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeEnumEntry extends BaseOseeType implements Comparable<OseeEnumEntry> {
+public class OseeEnumEntry extends AbstractOseeType implements Comparable<OseeEnumEntry> {
    private int ordinal;
    private final OseeEnumTypeCache cache;
 
    public OseeEnumEntry(OseeEnumTypeCache cache, String guid, String name, int ordinal) {
-      super(guid, name);
+      super(cache, guid, name);
       this.ordinal = ordinal;
       this.cache = cache;
    }
@@ -87,4 +87,10 @@ public class OseeEnumEntry extends BaseOseeType implements Comparable<OseeEnumEn
    public int compareTo(OseeEnumEntry other) {
       return this.ordinal() - other.ordinal();
    }
+
+   @Override
+   public void persist() throws OseeCoreException {
+      cache.storeItem(getDeclaringClass());
+   }
+
 }

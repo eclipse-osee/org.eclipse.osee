@@ -90,7 +90,6 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
                            chStmt.getString("name"));
                artifactType.setTypeId(chStmt.getInt("art_type_id"));
                artifactType.setModificationType(ModificationType.MODIFIED);
-               artifactType.clearDirty();
                cache.cacheType(artifactType);
             } catch (OseeDataStoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

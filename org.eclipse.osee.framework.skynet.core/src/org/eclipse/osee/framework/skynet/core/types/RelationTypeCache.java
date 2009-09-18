@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 /**
  * @author Roberto E. Escobar
  */
-public final class RelationTypeCache extends AbstractOseeTypeCache<RelationType> {
+public final class RelationTypeCache extends AbstractOseeCache<RelationType> {
 
    public RelationTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<RelationType> dataAccessor) {
       super(cache, factory, dataAccessor);

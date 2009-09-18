@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeData
 /**
  * @author Roberto E. Escobar
  */
-public final class AttributeTypeCache extends AbstractOseeTypeCache<AttributeType> {
+public final class AttributeTypeCache extends AbstractOseeCache<AttributeType> {
 
    public AttributeTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<AttributeType> dataAccessor) {
       super(cache, factory, dataAccessor);
