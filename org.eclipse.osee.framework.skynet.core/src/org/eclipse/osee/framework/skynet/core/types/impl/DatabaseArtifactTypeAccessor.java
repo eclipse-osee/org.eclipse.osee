@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType.DirtyStateDetail;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -89,6 +90,7 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
                            chStmt.getString("name"));
                artifactType.setTypeId(chStmt.getInt("art_type_id"));
                artifactType.setModificationType(ModificationType.MODIFIED);
+               artifactType.clearDirty();
                cache.cacheType(artifactType);
             } catch (OseeDataStoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -157,7 +159,8 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
       List<Object[]> updateData = new ArrayList<Object[]>();
 
       for (ArtifactType type : types) {
-         if (type.isDataDirty()) {
+         DirtyStateDetail dirtyDetails = type.getDirtyDetails();
+         if (dirtyDetails.isNameDirty() || dirtyDetails.isAbstractDirty()) {
             int abstractValue = type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR;
             switch (type.getModificationType()) {
                case NEW:
@@ -171,11 +174,11 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
                   break;
             }
          }
-         if (type.isInheritanceDirty()) {
+         if (dirtyDetails.isInheritanceDirty()) {
             typeInheritanceChanges.add(type);
 
          }
-         if (type.isAttributeTypeValidityDirty()) {
+         if (dirtyDetails.isAttributeTypeValidityDirty()) {
             typeValidityChanges.add(type);
          }
       }

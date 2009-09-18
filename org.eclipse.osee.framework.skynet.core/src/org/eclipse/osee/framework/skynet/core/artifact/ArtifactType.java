@@ -26,16 +26,18 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
    private boolean isAbstract;
    private final ArtifactFactoryManager factoryManager;
    private final ArtifactTypeCache cache;
-   private boolean isInheritanceDirty;
-   private boolean isAttributeTypeValidatityDirty;
+   private final DirtyStateDetail dirtyStateDetail;
 
    public ArtifactType(ArtifactTypeCache cache, String guid, String name, boolean isAbstract, ArtifactFactoryManager factoryManager) {
       super(guid, name);
-      isInheritanceDirty = false;
-      isAttributeTypeValidatityDirty = false;
+      this.dirtyStateDetail = new DirtyStateDetail();
       this.isAbstract = isAbstract;
       this.factoryManager = factoryManager;
       this.cache = cache;
+   }
+
+   public DirtyStateDetail getDirtyDetails() {
+      return dirtyStateDetail;
    }
 
    public Collection<ArtifactType> getSuperArtifactTypes() {
@@ -51,14 +53,14 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
       Collection<ArtifactType> original = getSuperArtifactTypes();
       cache.setArtifactSuperType(this, superType);
       Collection<ArtifactType> newTypes = getSuperArtifactTypes();
-      isInheritanceDirty |= isDifferent(original, newTypes);
+      getDirtyDetails().setIsInheritanceDirty(isDifferent(original, newTypes));
    }
 
    public void setAttributeTypeValidity(Collection<AttributeType> attributeTypes, Branch branch) throws OseeCoreException {
       Collection<AttributeType> original = cache.getLocalAttributeTypes(this, branch);
       cache.cacheTypeValidity(this, attributeTypes, branch);
       Collection<AttributeType> newTypes = cache.getLocalAttributeTypes(this, branch);
-      isAttributeTypeValidatityDirty |= isDifferent(original, newTypes);
+      getDirtyDetails().setIsAttributeTypeValidatityDirty(isDifferent(original, newTypes));
    }
 
    public boolean isValidAttributeType(AttributeType attributeType, Branch branch) throws OseeCoreException {
@@ -158,32 +160,67 @@ public class ArtifactType extends BaseOseeType implements Comparable<ArtifactTyp
    }
 
    public void setAbstract(boolean isAbstract) {
-      updateDirty(this.isAbstract, isAbstract);
+      getDirtyDetails().updateAbstract(isAbstract);
       this.isAbstract = isAbstract;
-   }
-
-   public boolean isDataDirty() {
-      return super.isDirty();
-   }
-
-   public boolean isInheritanceDirty() {
-      return isInheritanceDirty;
-   }
-
-   public boolean isAttributeTypeValidityDirty() {
-      return isAttributeTypeValidatityDirty;
    }
 
    @Override
    public boolean isDirty() {
-      return isDataDirty() || isInheritanceDirty() || isAttributeTypeValidityDirty();
+      return getDirtyDetails().isDirty();
    }
 
    @Override
    public void clearDirty() {
-      super.clearDirty();
-      isInheritanceDirty = false;
-      isAttributeTypeValidatityDirty = false;
+      getDirtyDetails().clear();
    }
 
+   public final class DirtyStateDetail {
+      private boolean isInheritanceDirty;
+      private boolean isAttributeTypeValidatityDirty;
+      private boolean isAbstractDirty;
+
+      private DirtyStateDetail() {
+         clear();
+      }
+
+      public void setIsAttributeTypeValidatityDirty(boolean different) {
+         isAttributeTypeValidatityDirty |= different;
+      }
+
+      public void setIsInheritanceDirty(boolean different) {
+         isInheritanceDirty |= different;
+      }
+
+      private void updateAbstract(boolean isAbstract) {
+         isAbstractDirty |= isDifferent(isAbstract(), isAbstract);
+      }
+
+      public boolean isInheritanceDirty() {
+         return isInheritanceDirty;
+      }
+
+      public boolean isAttributeTypeValidityDirty() {
+         return isAttributeTypeValidatityDirty;
+      }
+
+      public boolean isAbstractDirty() {
+         return isAbstractDirty;
+      }
+
+      public boolean isNameDirty() {
+         return ArtifactType.super.isDirty();
+      }
+
+      public boolean isDirty() {
+         return isNameDirty() || isAbstractDirty() || //
+         isInheritanceDirty() || isAttributeTypeValidityDirty();
+      }
+
+      private void clear() {
+         ArtifactType.super.clearDirty();
+         isInheritanceDirty = false;
+         isAttributeTypeValidatityDirty = false;
+         isAbstractDirty = false;
+      }
+   }
 }

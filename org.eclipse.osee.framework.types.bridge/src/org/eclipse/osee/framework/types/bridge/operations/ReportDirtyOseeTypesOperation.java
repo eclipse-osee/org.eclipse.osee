@@ -27,7 +27,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType.DirtyStateDetail;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType.RelationTypeDirtyDetails;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
@@ -84,40 +86,56 @@ public class ReportDirtyOseeTypesOperation extends AbstractOperation {
    private void createArtifactTypeReport(List<IResultsEditorTab> tabs, ArtifactTypeCache cache) throws OseeCoreException {
       Collection<ArtifactType> types = cache.getDirtyTypes();
       ReportTab tab = new ReportTab("Artifact Types", tabs);
-      tab.addTableHeader("Name", "ModType", "Data Dirty", "IsAbstract", "Inherits", "Validity");
+      tab.addTableHeader("Name", "ModType", "Name Dirty", "IsAbstract Dirty", "Inherits Dirty", "Validity Dirty");
       String inheritance;
       String validity;
       for (ArtifactType type : types) {
-         if (type.isAttributeTypeValidityDirty()) {
+         if (type.getDirtyDetails().isAttributeTypeValidityDirty()) {
             validity = cache.getLocalAttributeTypes(type).toString();
          } else {
-            validity = "Not Changed";
+            validity = "false";
          }
-         if (type.isInheritanceDirty()) {
+         if (type.getDirtyDetails().isInheritanceDirty()) {
             inheritance = cache.getArtifactSuperType(type).toString();
          } else {
-            inheritance = "Not Changed";
+            inheritance = "false";
          }
-         tab.addRow(type.getName(), type.getModificationType().getDisplayName(), String.valueOf(type.isAbstract()),
-               String.valueOf(type.isDataDirty()), inheritance, validity);
+         tab.addRow(type.getName(), type.getModificationType().getDisplayName(),
+               String.valueOf(type.getDirtyDetails().isNameDirty()),
+               String.valueOf(type.getDirtyDetails().isAbstractDirty()), inheritance, validity);
       }
       tab.endTable();
    }
 
    private void createAttributeTypeReport(List<IResultsEditorTab> tabs, Collection<AttributeType> types) {
       ReportTab tab = new ReportTab("Attribute Types", tabs);
-      tab.addTableHeader("Name", "ModType");
+      tab.addTableHeader("Name", "ModType", "Name Dirty", "Min Dirty", "Max Dirty", "Base Type Dirty",
+            "Data Provider Dirty", "Default Value Dirty", "Description Dirty", "File Ext Dirty", "Tagger Dirty",
+            "Related Enum Dirty");
       for (AttributeType type : types) {
-         tab.addRow(type.getName(), type.getModificationType().getDisplayName());
+         DirtyStateDetail detail = type.getDirtyDetails();
+         tab.addRow(type.getName(), type.getModificationType().getDisplayName(), String.valueOf(detail.isNameDirty()),
+               String.valueOf(detail.isMinOccurrencesDirty()), String.valueOf(detail.isMaxOccurrencesDirty()),
+               String.valueOf(detail.isBaseAttributeTypeIdDirty()),
+               String.valueOf(detail.isAttributeProviderNameIdDirty()), String.valueOf(detail.isDefaultValueDirty()),
+               String.valueOf(detail.isDescriptionDirty()), String.valueOf(detail.isFileExtensionDirty()),
+               String.valueOf(detail.isTaggerIdDirty()), String.valueOf(detail.isOseeEnumTypeDirty()));
       }
       tab.endTable();
    }
 
    private void createRelationTypeReport(List<IResultsEditorTab> tabs, Collection<RelationType> types) {
       ReportTab tab = new ReportTab("Relation Types", tabs);
-      tab.addTableHeader("Name", "ModType");
+      tab.addTableHeader("Name", "ModType", "Name Dirty", "A Name Dirty", "B Name Dirty", "A Type Dirty",
+            "B Type Dirty", "Multiplicity Dirty", "Ordered Dirty", "Order GUID Dirty");
       for (RelationType type : types) {
-         tab.addRow(type.getName(), type.getModificationType().getDisplayName());
+         RelationTypeDirtyDetails details = type.getDirtyDetails();
+
+         tab.addRow(type.getName(), type.getModificationType().getDisplayName(), String.valueOf(details.isNameDirty()),
+               String.valueOf(details.isSideANameDirty()), String.valueOf(details.isSideBNameDirty()),
+               String.valueOf(details.isArtifactTypeSideADirty()), String.valueOf(details.isArtifactTypeSideBDirty()),
+               String.valueOf(details.isMultiplicityDirty()), String.valueOf(details.isOrderedDirty()),
+               String.valueOf(details.isDefaultOrderTypeGuidDirty()));
       }
       tab.endTable();
    }

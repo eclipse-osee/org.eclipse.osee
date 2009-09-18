@@ -27,21 +27,22 @@ public class RelationType extends BaseOseeType implements Comparable<RelationTyp
    private ArtifactType artifactTypeSideB;
    private boolean isOrdered;
    private String defaultOrderTypeGuid;
+   private final RelationTypeDirtyDetails dirtyDetails;
 
    public RelationType(String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
       super(guid, relationTypeName);
+      this.dirtyDetails = new RelationTypeDirtyDetails();
       setFields(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, isOrdered,
             defaultOrderTypeGuid);
    }
 
+   public RelationTypeDirtyDetails getDirtyDetails() {
+      return dirtyDetails;
+   }
+
    public void setFields(String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
-      updateDirty(this.sideAName, sideAName);
-      updateDirty(this.sideBName, sideBName);
-      updateDirty(this.artifactTypeSideA, artifactTypeSideA);
-      updateDirty(this.artifactTypeSideB, artifactTypeSideB);
-      updateDirty(this.multiplicity, multiplicity);
-      updateDirty(this.isOrdered, isOrdered);
-      updateDirty(this.defaultOrderTypeGuid, defaultOrderTypeGuid);
+      getDirtyDetails().update(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB,
+            multiplicity, isOrdered, defaultOrderTypeGuid);
       this.sideAName = sideAName;
       this.sideBName = sideBName;
       this.artifactTypeSideA = artifactTypeSideA;
@@ -117,5 +118,93 @@ public class RelationType extends BaseOseeType implements Comparable<RelationTyp
 
    public String getDefaultOrderTypeGuid() {
       return defaultOrderTypeGuid;
+   }
+
+   @Override
+   public void clearDirty() {
+      getDirtyDetails().clearDirty();
+   }
+
+   @Override
+   public boolean isDirty() {
+      return getDirtyDetails().isDirty();
+   }
+
+   public final class RelationTypeDirtyDetails {
+      private boolean isSideANameDirty;
+      private boolean isSideBNameDirty;
+      private boolean isArtifactTypeSideADirty;
+      private boolean isArtifactTypeSideBDirty;
+      private boolean isMultiplicityDirty;
+      private boolean isOrderedDirty;
+      private boolean isDefaultOrderTypeGuidDirty;
+
+      private RelationTypeDirtyDetails() {
+         clearDirty();
+      }
+
+      private void update(String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
+         isSideANameDirty |= isDifferent(getSideAName(), sideAName);
+         isSideBNameDirty |= isDifferent(getSideBName(), sideBName);
+         isArtifactTypeSideADirty |= isDifferent(getArtifactTypeSideA(), artifactTypeSideA);
+         isArtifactTypeSideBDirty |= isDifferent(getArtifactTypeSideB(), artifactTypeSideB);
+         isMultiplicityDirty |= isDifferent(getMultiplicity(), multiplicity);
+         isOrderedDirty |= isDifferent(isOrdered(), isOrdered);
+         isDefaultOrderTypeGuidDirty |= isDifferent(getDefaultOrderTypeGuid(), defaultOrderTypeGuid);
+      }
+
+      public boolean isNameDirty() {
+         return RelationType.super.isDirty();
+      }
+
+      public boolean isSideANameDirty() {
+         return isSideANameDirty;
+      }
+
+      public boolean isSideBNameDirty() {
+         return isSideBNameDirty;
+      }
+
+      public boolean isArtifactTypeSideADirty() {
+         return isArtifactTypeSideADirty;
+      }
+
+      public boolean isArtifactTypeSideBDirty() {
+         return isArtifactTypeSideBDirty;
+      }
+
+      public boolean isMultiplicityDirty() {
+         return isMultiplicityDirty;
+      }
+
+      public boolean isOrderedDirty() {
+         return isOrderedDirty;
+      }
+
+      public boolean isDefaultOrderTypeGuidDirty() {
+         return isDefaultOrderTypeGuidDirty;
+      }
+
+      public boolean isDirty() {
+         return isNameDirty() || //
+         isSideANameDirty() || //
+         isSideBNameDirty() || //
+         isArtifactTypeSideADirty() || //
+         isArtifactTypeSideBDirty() || //
+         isMultiplicityDirty() || //
+         isOrderedDirty() || //
+         isDefaultOrderTypeGuidDirty();
+      }
+
+      public void clearDirty() {
+         RelationType.super.clearDirty();
+         isSideANameDirty = false;
+         isSideBNameDirty = false;
+         isArtifactTypeSideADirty = false;
+         isArtifactTypeSideBDirty = false;
+         isMultiplicityDirty = false;
+         isOrderedDirty = false;
+         isDefaultOrderTypeGuidDirty = false;
+      }
    }
 }

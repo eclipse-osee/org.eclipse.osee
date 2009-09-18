@@ -33,6 +33,7 @@ public class AttributeType extends BaseOseeType implements Comparable<AttributeT
    private String taggerId;
    private String baseAttributeTypeId;
    private String attributeProviderNameId;
+   private final DirtyStateDetail dirtyStateDetails;
 
    /**
     * Create a dynamic attribute descriptor. Descriptors can be acquired for application use from the
@@ -48,23 +49,16 @@ public class AttributeType extends BaseOseeType implements Comparable<AttributeT
     */
    public AttributeType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
       super(guid, typeName);
+      this.dirtyStateDetails = new DirtyStateDetail();
       setFields(typeName, baseAttributeTypeId, attributeProviderNameId, baseAttributeClass, providerAttributeClass,
             fileTypeExtension, defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
    }
 
    public void setFields(String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
       String fileExtensionToSet = fileTypeExtension != null ? fileTypeExtension : "";
-      updateDirty(this.baseAttributeTypeId, baseAttributeTypeId);
-      updateDirty(this.attributeProviderNameId, attributeProviderNameId);
-      updateDirty(this.baseAttributeClass, baseAttributeClass);
-      updateDirty(this.providerAttributeClass, providerAttributeClass);
-      updateDirty(this.defaultValue, defaultValue);
-      updateDirty(this.oseeEnumType, oseeEnumType);
-      updateDirty(this.maxOccurrences, maxOccurrences);
-      updateDirty(this.minOccurrences, minOccurrences);
-      updateDirty(this.description, description);
-      updateDirty(this.fileTypeExtension, fileExtensionToSet);
-      updateDirty(this.taggerId, taggerId);
+      getDirtyDetails().updateDirty(baseAttributeTypeId, attributeProviderNameId, baseAttributeClass,
+            providerAttributeClass, fileExtensionToSet, defaultValue, oseeEnumType, minOccurrences, maxOccurrences,
+            description, taggerId);
       setName(name);
       this.baseAttributeTypeId = baseAttributeTypeId;
       this.attributeProviderNameId = attributeProviderNameId;
@@ -77,6 +71,10 @@ public class AttributeType extends BaseOseeType implements Comparable<AttributeT
       this.description = description;
       this.fileTypeExtension = fileExtensionToSet;
       this.taggerId = taggerId;
+   }
+
+   public DirtyStateDetail getDirtyDetails() {
+      return dirtyStateDetails;
    }
 
    public String getBaseAttributeTypeId() {
@@ -175,5 +173,125 @@ public class AttributeType extends BaseOseeType implements Comparable<AttributeT
 
    public boolean isEnumerated() {
       return EnumeratedAttribute.class.isAssignableFrom(baseAttributeClass);
+   }
+
+   @Override
+   public boolean isDirty() {
+      return getDirtyDetails().isDirty();
+   }
+
+   @Override
+   public void clearDirty() {
+      getDirtyDetails().clear();
+   }
+
+   public final class DirtyStateDetail {
+      private boolean isFileExtensionDirty;
+      private boolean isTaggerIdDirty;
+      private boolean isDescriptionDirty;
+      private boolean isMinOccurrencesDirty;
+      private boolean isMaxOccurrencesDirty;
+      private boolean isOseeEnumTypeDirty;
+      private boolean isDefaultValueDirty;
+      private boolean isAttributeProviderClassDirty;
+      private boolean isBaseAttributeClassDirty;
+      private boolean isAttributeProviderNameIdDirty;
+      private boolean isBaseAttributeTypeIdDirty;
+
+      private DirtyStateDetail() {
+         clear();
+      }
+
+      protected void updateDirty(String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileExtensionToSet, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
+         isFileExtensionDirty |= isDifferent(getBaseAttributeTypeId(), baseAttributeTypeId);
+         isTaggerIdDirty |= isDifferent(getAttributeProviderId(), attributeProviderNameId);
+         isDescriptionDirty |= isDifferent(getBaseAttributeClass(), baseAttributeClass);
+         isMinOccurrencesDirty |= isDifferent(getProviderAttributeClass(), providerAttributeClass);
+         isMaxOccurrencesDirty |= isDifferent(getDefaultValue(), defaultValue);
+         isOseeEnumTypeDirty |= isDifferent(getOseeEnumType(), oseeEnumType);
+         isDefaultValueDirty |= isDifferent(getMaxOccurrences(), maxOccurrences);
+         isAttributeProviderClassDirty |= isDifferent(getMinOccurrences(), minOccurrences);
+         isBaseAttributeClassDirty |= isDifferent(getDescription(), description);
+         isAttributeProviderNameIdDirty |= isDifferent(getFileTypeExtension(), fileExtensionToSet);
+         isBaseAttributeTypeIdDirty |= isDifferent(getTaggerId(), taggerId);
+      }
+
+      public boolean isFileExtensionDirty() {
+         return isFileExtensionDirty;
+      }
+
+      public boolean isTaggerIdDirty() {
+         return isTaggerIdDirty;
+      }
+
+      public boolean isDescriptionDirty() {
+         return isDescriptionDirty;
+      }
+
+      public boolean isMinOccurrencesDirty() {
+         return isMinOccurrencesDirty;
+      }
+
+      public boolean isMaxOccurrencesDirty() {
+         return isMaxOccurrencesDirty;
+      }
+
+      public boolean isOseeEnumTypeDirty() {
+         return isOseeEnumTypeDirty;
+      }
+
+      public boolean isDefaultValueDirty() {
+         return isDefaultValueDirty;
+      }
+
+      public boolean isAttributeProviderClassDirty() {
+         return isAttributeProviderClassDirty;
+      }
+
+      public boolean isBaseAttributeClassDirty() {
+         return isBaseAttributeClassDirty;
+      }
+
+      public boolean isAttributeProviderNameIdDirty() {
+         return isAttributeProviderNameIdDirty;
+      }
+
+      public boolean isBaseAttributeTypeIdDirty() {
+         return isBaseAttributeTypeIdDirty;
+      }
+
+      public boolean isNameDirty() {
+         return AttributeType.super.isDirty();
+      }
+
+      public boolean isDirty() {
+         return isFileExtensionDirty() || //
+         isTaggerIdDirty() || // 
+         isDescriptionDirty() || //
+         isMinOccurrencesDirty() || //
+         isMaxOccurrencesDirty() || //
+         isOseeEnumTypeDirty() || //
+         isDefaultValueDirty() || //
+         isAttributeProviderClassDirty() || //
+         isBaseAttributeClassDirty() || // 
+         isAttributeProviderNameIdDirty() || //
+         isBaseAttributeTypeIdDirty() || //
+         isNameDirty();
+      }
+
+      private void clear() {
+         AttributeType.super.clearDirty();
+         isFileExtensionDirty = false;
+         isTaggerIdDirty = false;
+         isDescriptionDirty = false;
+         isMinOccurrencesDirty = false;
+         isMaxOccurrencesDirty = false;
+         isOseeEnumTypeDirty = false;
+         isDefaultValueDirty = false;
+         isAttributeProviderClassDirty = false;
+         isBaseAttributeClassDirty = false;
+         isAttributeProviderNameIdDirty = false;
+         isBaseAttributeTypeIdDirty = false;
+      }
    }
 }
