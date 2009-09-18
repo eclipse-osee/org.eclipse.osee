@@ -48,7 +48,7 @@ public class RelationTransactionData extends BaseTransactionData {
       super.addInsertToBatch(transaction);
       if (!useExistingBackingData()) {
          internalAddInsertToBatch(transaction, 4, INSERT_INTO_RELATION_TABLE, relation.getRelationId(),
-               relation.getRelationType().getTypeId(), relation.getAArtifactId(), relation.getBArtifactId(),
+               relation.getRelationType().getId(), relation.getAArtifactId(), relation.getBArtifactId(),
                relation.getRationale(), relation.getAOrder(), relation.getBOrder(), getGammaId());
       }
    }
