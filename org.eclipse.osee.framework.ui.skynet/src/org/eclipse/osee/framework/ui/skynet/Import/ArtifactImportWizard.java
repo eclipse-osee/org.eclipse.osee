@@ -50,7 +50,7 @@ import org.eclipse.ui.IWorkbench;
 public class ArtifactImportWizard extends Wizard implements IImportWizard {
    private File importResource;
    private Artifact defaultDestinationArtifact;
-   private ArtifactImportSourcePage mainPage;
+   private ArtifactImportPage mainPage;
 
    public ArtifactImportWizard() {
       super();
@@ -89,7 +89,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public void addPages() {
-      mainPage = new ArtifactImportSourcePage();
+      mainPage = new ArtifactImportPage();
       mainPage.setDefaultDestinationArtifact(defaultDestinationArtifact);
       mainPage.setDefaultSourceFile(importResource);
       addPage(mainPage);

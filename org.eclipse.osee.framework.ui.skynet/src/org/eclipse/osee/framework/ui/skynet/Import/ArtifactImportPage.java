@@ -65,9 +65,9 @@ import org.eclipse.ui.dialogs.WizardDataTransferPage;
  * @author Ryan C. Schmitt
  * @author Roberto E. Escobar
  */
-public class ArtifactImportSourcePage extends WizardDataTransferPage {
+public class ArtifactImportPage extends WizardDataTransferPage {
 
-   private static final String PAGE_NAME = "osee.define.wizardPage.artifactImportSourcePage";
+   private static final String PAGE_NAME = "osee.define.wizardPage.artifactImportPage";
 
    private DirectoryOrFileSelector directoryFileSelector;
    private File defaultSourceFile;
@@ -82,7 +82,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
    private final SelectionLatch selectionLatch;
    private final Collection<ArtifactType> selectedArtifactTypes;
 
-   protected ArtifactImportSourcePage() {
+   protected ArtifactImportPage() {
       super(PAGE_NAME);
       selectedArtifactTypes = new ArrayList<ArtifactType>();
       selectionLatch = new SelectionLatch();
@@ -95,7 +95,7 @@ public class ArtifactImportSourcePage extends WizardDataTransferPage {
 
       setTitle("Import artifacts into OSEE");
       setDescription("Import artifacts into Define");
-      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.IMPORT));
+      setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_IMPORT_WIZARD));
 
    }
 
