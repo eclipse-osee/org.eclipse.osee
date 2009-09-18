@@ -57,6 +57,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    private final Branch branch;
    private final String creationComment;
    private final int authorId;
+   private boolean passedPreConditions;
 
    public CreateBranchOperation(Branch branch, int authorId, String creationComment) throws OseeCoreException {
       super(String.format("Create Branch: [%s from %s]", branch.getName(), branch.getParentBranchId()),
@@ -66,22 +67,25 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       this.creationComment = creationComment;
    }
 
-   public void checkPreconditions(IProgressMonitor monitor) throws OseeCoreException {
-      int count =
-            ConnectionHandler.runPreparedQueryFetchInt(0, "select (1) from osee_branch where associated_art_id=?",
-                  branch.getAssociatedArtifactId());
-      if (count > 0) {
-         throw new OseeStateException(String.format("Existing branch creation detected for [%s]", branch.getName()));
+   public boolean checkPreconditions(IProgressMonitor monitor) throws OseeCoreException {
+      if (branch.getAssociatedArtifactId() > -1) {
+         int count =
+               ConnectionHandler.runPreparedQueryFetchInt(0, "select (1) from osee_branch where associated_art_id=?",
+                     branch.getAssociatedArtifactId());
+         if (count > 0) {
+            throw new OseeStateException(String.format("Existing branch creation detected for [%s]", branch.getName()));
+         }
       }
+      return true;
    }
 
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
-      checkPreconditions(monitor);
+      passedPreConditions = checkPreconditions(monitor);
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       branch.setBranchState(BranchState.CREATION_IN_PROGRESS);
-      storeBranch(branch, true);
+      storeBranch(null, branch, true); // Use different Connection
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.10));
 
@@ -105,16 +109,18 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       monitor.worked(calculateWork(0.20));
 
       branch.setBranchState(BranchState.CREATED);
-      storeBranch(branch, false);
+      storeBranch(connection, branch, false);
       monitor.worked(calculateWork(0.20));
    }
 
    @Override
    protected void handleTxException(IProgressMonitor monitor, Exception ex) {
-      try {
-         ConnectionHandler.runPreparedUpdate(DELETE_BRANCH, branch.getBranchId());
-      } catch (OseeDataStoreException ex1) {
-         OseeLog.log(InternalBranchActivator.class, Level.SEVERE, ex1);
+      if (passedPreConditions) {
+         try {
+            ConnectionHandler.runPreparedUpdate(DELETE_BRANCH, branch.getBranchId());
+         } catch (OseeDataStoreException ex1) {
+            OseeLog.log(InternalBranchActivator.class, Level.SEVERE, ex1);
+         }
       }
    }
 
@@ -123,20 +129,20 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       monitor.worked(calculateWork(0.10));
    }
 
-   private void storeBranch(Branch branch, boolean isCreate) throws OseeDataStoreException {
+   private void storeBranch(OseeConnection connection, Branch branch, boolean isCreate) throws OseeDataStoreException {
       if (isCreate) {
          int branchId = SequenceManager.getNextBranchId();
          String guid = branch.getGuid();
          if (!GUID.isValid(guid)) {
             guid = GUID.create();
          }
-         ConnectionHandler.runPreparedUpdate(INSERT_BRANCH, branchId, guid, branch.getName(),
+         ConnectionHandler.runPreparedUpdate(connection, INSERT_BRANCH, branchId, guid, branch.getName(),
                branch.getParentBranchId(), branch.getParentTransactionId(), 0, branch.getAssociatedArtifactId(),
                branch.getBranchType().getValue(), branch.getBranchState().getValue());
          branch.setGuid(guid);
          branch.setBranchId(branchId);
       } else {
-         ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH, branch.getName(), branch.getParentBranchId(),
+         ConnectionHandler.runPreparedUpdate(connection, UPDATE_BRANCH, branch.getName(), branch.getParentBranchId(),
                branch.getParentTransactionId(), 0, branch.getAssociatedArtifactId(), branch.getBranchType().getValue(),
                branch.getBranchState().getValue(), branch.getBranchId());
       }
