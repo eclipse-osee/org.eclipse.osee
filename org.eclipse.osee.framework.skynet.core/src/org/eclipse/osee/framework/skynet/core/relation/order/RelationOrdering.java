@@ -23,8 +23,13 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 public class RelationOrdering {
 
    private final Map<String, RelationOrder> orderMap;
+   private static final RelationOrdering instance = new RelationOrdering();
 
-   public RelationOrdering() {
+   public static RelationOrdering getInstance() {
+      return instance;
+   }
+
+   private RelationOrdering() {
       orderMap = new ConcurrentHashMap<String, RelationOrder>();
       registerOrderType(new Lexicographical(false, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC));
       registerOrderType(new Lexicographical(true, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC));
@@ -48,7 +53,7 @@ public class RelationOrdering {
       order.sort(artifact, type, side, relatives);
    }
 
-   private RelationOrder getRelationOrder(String orderGuid) throws OseeCoreException {
+   public RelationOrder getRelationOrder(String orderGuid) throws OseeCoreException {
       RelationOrder order = orderMap.get(orderGuid);
       if (order == null && !orderGuid.contains("debug")) {
          throw new OseeCoreException(String.format("Unable to locate RelationOrder for guid[%s].", orderGuid));
@@ -70,7 +75,7 @@ public class RelationOrdering {
 
    public void setOrder(Artifact artifact, RelationType type, RelationSide side, RelationOrderId orderId, List<Artifact> relatives) throws OseeCoreException {
       RelationOrder order = getRelationOrder(orderId.getGuid());
-      order.setOrder(artifact, type, side, relatives);
+      order.applyOrder(artifact, type, side, relatives);
    }
 
    public void updateOrderOnRelationDelete(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
@@ -81,13 +86,34 @@ public class RelationOrdering {
          if (relationOrderGuid != null) {
             RelationOrder order = getRelationOrder(relationOrderGuid);
             if (order != null) {
-               order.setOrder(artifact, type, side, relatives);
+               order.applyOrder(artifact, type, side, relatives);
             }
          }
       }
    }
 
    public List<RelationOrderId> getRegisteredRelationOrderIds() {
+      Collection<RelationOrder> relationOrder = orderMap.values();
+      List<RelationOrderId> ids = new ArrayList<RelationOrderId>();
+      for (RelationOrder order : relationOrder) {
+         ids.add(order.getOrderId());
+      }
+      Collections.sort(ids, new RelationOrderIdComparator());
+      return ids;
+   }
+
+   public RelationOrderId getOrderId(String wantedOrderGuid) {
+      List<RelationOrderId> allOrderIds = getAllRelationOrderIds();
+      for (RelationOrderId currentOrderId : allOrderIds) {
+         if (currentOrderId.getGuid().equals(wantedOrderGuid)) {
+            return currentOrderId;
+         }
+      }
+
+      return null;
+   }
+
+   public List<RelationOrderId> getAllRelationOrderIds() {
       Collection<RelationOrder> relationOrder = orderMap.values();
       List<RelationOrderId> ids = new ArrayList<RelationOrderId>();
       for (RelationOrder order : relationOrder) {

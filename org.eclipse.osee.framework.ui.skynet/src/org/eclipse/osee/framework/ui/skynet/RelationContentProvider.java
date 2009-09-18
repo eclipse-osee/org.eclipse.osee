@@ -22,9 +22,9 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 
 /**
  * The basis for the comments in this class can be found at
@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 public class RelationContentProvider implements ITreeContentProvider {
    private static Object[] EMPTY_ARRAY = new Object[0];
    private ArtifactRoot artifact;
-   private Map<Object, Object> childToParentMap = new HashMap<Object, Object>();
+   private final Map<Object, Object> childToParentMap = new HashMap<Object, Object>();
 
    /*
     * @see IContentProvider#dispose()
@@ -83,8 +83,8 @@ public class RelationContentProvider implements ITreeContentProvider {
                   RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifact().getArtifactType(), RelationSide.SIDE_A);
             int sideBMax =
                   RelationTypeManager.getRelationSideMax(relationType, artifact.getArtifact().getArtifactType(), RelationSide.SIDE_B);
-            RelationTypeSide sideA = new RelationTypeSide(relationType, RelationSide.SIDE_A, artifact.getArtifact());
-            RelationTypeSide sideB = new RelationTypeSide(relationType, RelationSide.SIDE_B, artifact.getArtifact());
+            RelationSorter sideA = new RelationSorter(relationType, RelationSide.SIDE_A, artifact.getArtifact());
+            RelationSorter sideB = new RelationSorter(relationType, RelationSide.SIDE_B, artifact.getArtifact());
             boolean onSideA = sideBMax > 0;
             boolean onSideB = sideAMax > 0;
             
@@ -98,8 +98,8 @@ public class RelationContentProvider implements ITreeContentProvider {
             } else if (onSideB) {
                return new Object[] {sideB};
             }
-         } else if (parentElement instanceof RelationTypeSide) {
-            RelationTypeSide relationTypeSide = (RelationTypeSide) parentElement;
+         } else if (parentElement instanceof RelationSorter) {
+            RelationSorter relationTypeSide = (RelationSorter) parentElement;
             List<Artifact> artifacts = artifact.getArtifact().getRelatedArtifacts(relationTypeSide);
             WrapperForRelationLink[] wrapper = new WrapperForRelationLink[artifacts.size()];
             for(int i = 0; i < artifacts.size(); i++){
@@ -134,9 +134,9 @@ public class RelationContentProvider implements ITreeContentProvider {
     * @see ITreeContentProvider#hasChildren(Object)
     */
    public boolean hasChildren(Object element) {
-      if (element instanceof RelationTypeSide) {
+      if (element instanceof RelationSorter) {
          try {
-            return artifact.getArtifact().getRelatedArtifactsCount((RelationTypeSide) element) > 0;
+            return artifact.getArtifact().getRelatedArtifactsCount((RelationSorter) element) > 0;
          } catch (OseeCoreException ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             return false;

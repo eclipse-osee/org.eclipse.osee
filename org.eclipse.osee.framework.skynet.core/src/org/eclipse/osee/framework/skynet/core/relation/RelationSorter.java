@@ -11,30 +11,40 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrder;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderXmlProcessor;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrdering;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationTypeSide implements IRelationEnumeration {
+public class RelationSorter implements IRelationEnumeration {
 
    private final RelationType type;
    private final RelationSide side;
    private final Artifact artifact;
+   RelationOrderXmlProcessor store = null;
 
-   public RelationTypeSide(RelationType type, RelationSide side, Artifact artifact) {
+   public RelationSorter(RelationType type, RelationSide side, Artifact artifact) throws OseeWrappedException, OseeCoreException {
       this.type = type;
       this.side = side;
       this.artifact = artifact;
+      if (artifact != null) {
+         store = new RelationOrderXmlProcessor(artifact);
+      }
    }
 
-   public RelationTypeSide(RelationType type, RelationSide side) {
+   public RelationSorter(RelationType type, RelationSide side) throws OseeWrappedException, OseeCoreException {
       this(type, side, null);
    }
 
-   public RelationTypeSide(String typeName, String sideName) throws OseeCoreException {
+   public RelationSorter(String typeName, String sideName) throws OseeCoreException {
       this.type = RelationTypeManager.getType(typeName);
       this.side = type.isSideAName(sideName) ? RelationSide.SIDE_A : RelationSide.SIDE_B;
       this.artifact = null;
@@ -76,16 +86,17 @@ public class RelationTypeSide implements IRelationEnumeration {
 
    @Override
    public boolean equals(Object arg0) {
-      if (arg0 instanceof RelationTypeSide) {
-         RelationTypeSide arg = (RelationTypeSide) arg0;
+      if (arg0 instanceof RelationSorter) {
+         RelationSorter arg = (RelationSorter) arg0;
          if (artifact == null && arg.artifact == null) {
             return type.equals(arg.type) && side.equals(arg.side);
          } else if (artifact == null) {
             return false;
          } else if (arg.artifact == null) {
             return false;
+         } else {
+            return type.equals(arg.type) && side.equals(arg.side) && artifact.equals(arg.artifact);
          }
-         return type.equals(arg.type) && side.equals(arg.side) && artifact.equals(arg.artifact);
       }
       return false;
    }
@@ -99,5 +110,28 @@ public class RelationTypeSide implements IRelationEnumeration {
          hashCode = hashCode * 31 + artifact.hashCode();
       }
       return hashCode;
+   }
+
+   public RelationOrderId getOrderId() {
+      String orderGuid = getOrderGuid();
+      return RelationOrdering.getInstance().getOrderId(orderGuid);
+   }
+
+   public String getOrderGuid() {
+      String orderGuid = store.getOrderGuid(type.getName(), side);
+      if (orderGuid == null) {
+         orderGuid = type.getDefaultOrderTypeGuid();
+      }
+      return orderGuid;
+   }
+
+   public String getOrderName() {
+      RelationOrderId id = getOrderId();
+      return id.prettyName();
+   }
+
+   public void setOrder(RelationOrderId orderId, List<Artifact> relatives) throws OseeCoreException {
+      RelationOrder order = RelationOrdering.getInstance().getRelationOrder(orderId.getGuid());
+      order.applyOrder(artifact, type, side, relatives);
    }
 }

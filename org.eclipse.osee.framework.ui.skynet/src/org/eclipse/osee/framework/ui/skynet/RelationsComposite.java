@@ -47,8 +47,8 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -270,7 +270,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       orderRelationMenuItem.setText("&Order Relations");
       needSelectedArtifactListener.add(orderRelationMenuItem);
 
-      //subMenu = new Menu(clearContents);
       Menu subMenu = new Menu(parentMenu);
       orderRelationMenuItem.setMenu(subMenu);
 
@@ -280,27 +279,19 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          idMenu.setText(id.prettyName());
          idMenu.addSelectionListener(new SelectionId(id));
       }
+
       parentMenu.addListener(SWT.Show, new Listener() {
 
          @Override
          public void handleEvent(Event event) {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Object[] objects = selection.toArray();
-            if (objects.length == 1 && objects[0] instanceof RelationTypeSide) {
-               //               RelationTypeSide typeSide = (RelationTypeSide) objects[0];
-               //               try {
-               //                  typeSide.getArtifact().setRelationOrder(typeSide, id);
-               //               } catch (OseeCoreException ex) {
-               //                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-               //               }
-
+            if (objects.length == 1 && objects[0] instanceof RelationSorter) {
                orderRelationMenuItem.setEnabled(true);
-               //               Menu subMenu = orderRelationMenuItem.getMenu();
-               //               //               for (MenuItem item : subMenu.getItems()) {
-               //               //                  //                  if (true) {
-               //               //                  //                     item.setSelection(true);
-               //               //                  //                  }
-               //               //               }
+               try {
+                  checkCurrentOrderStrategy(orderRelationMenuItem.getMenu(), (RelationSorter) objects[0]);
+               } catch (OseeCoreException ex) {
+               }
             } else {
                orderRelationMenuItem.setEnabled(false);
             }
@@ -309,6 +300,20 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       });
       orderRelationMenuItem.setEnabled(true);
    }
+
+   private void checkCurrentOrderStrategy(Menu menu, RelationSorter rts) throws OseeCoreException {
+      String relationOrderName = rts.getOrderName();
+
+      for (MenuItem item : menu.getItems()) {
+         String itemName = item.getText();
+         if (itemName.equals(relationOrderName)) {
+            item.setSelection(true);
+         } else {
+            item.setSelection(false);
+         }
+      }
+   }
+
    private class SelectionId implements SelectionListener {
 
       private final RelationOrderId id;
@@ -325,8 +330,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       public void widgetSelected(SelectionEvent e) {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
          Object[] objects = selection.toArray();
-         if (objects.length == 1 && objects[0] instanceof RelationTypeSide) {
-            RelationTypeSide typeSide = (RelationTypeSide) objects[0];
+         if (objects.length == 1 && objects[0] instanceof RelationSorter) {
+            RelationSorter typeSide = (RelationSorter) objects[0];
             try {
                typeSide.getArtifact().setRelationOrder(typeSide, id);
             } catch (OseeCoreException ex) {
@@ -592,7 +597,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
             try {
                wrapper.getArtifactA().deleteRelation(
-                     new RelationTypeSide(wrapper.getRelationType(), RelationSide.SIDE_B, wrapper.getArtifactA()),
+                     new RelationSorter(wrapper.getRelationType(), RelationSide.SIDE_B, wrapper.getArtifactA()),
                      wrapper.getArtifactB());
                Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(object);
                if (parent != null) {
@@ -611,8 +616,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
-         } else if (object instanceof RelationTypeSide) {
-            RelationTypeSide group = (RelationTypeSide) object;
+         } else if (object instanceof RelationSorter) {
+            RelationSorter group = (RelationSorter) object;
             try {
                RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
                treeViewer.refresh(group);
@@ -697,7 +702,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          event.feedback = DND.FEEDBACK_EXPAND;
          event.detail = DND.DROP_NONE;
 
-         if (selected != null && selected.getData() instanceof RelationTypeSide) {
+         if (selected != null && selected.getData() instanceof RelationSorter) {
             if (artifact.isReadOnly()) {
                event.detail = DND.DROP_NONE;
 
@@ -776,13 +781,13 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
                Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
                for (Artifact artifactToMove : artifactsToMove) {
-                  artifact.setRelationOrder(targetLink.getOther(), isFeedbackAfter, new RelationTypeSide(
+                  artifact.setRelationOrder(targetLink.getOther(), isFeedbackAfter, new RelationSorter(
                         targetLink.getRelationType(), targetLink.getRelationSide()), artifactToMove);
                }
                treeViewer.refresh();
                editor.onDirtied();
-            } else if (object instanceof RelationTypeSide) {
-               RelationTypeSide group = (RelationTypeSide) object;
+            } else if (object instanceof RelationSorter) {
+               RelationSorter group = (RelationSorter) object;
 
                RelationExplorerWindow window = new RelationExplorerWindow(treeViewer, group);
 

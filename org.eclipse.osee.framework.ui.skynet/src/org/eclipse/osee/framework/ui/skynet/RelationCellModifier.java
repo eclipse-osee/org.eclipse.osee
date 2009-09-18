@@ -16,14 +16,14 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
 import org.eclipse.swt.widgets.Item;
 
 /**
  * @author Ryan D. Brooks
  */
 public class RelationCellModifier implements ICellModifier {
-   private TreeViewer treeViewer;
+   private final TreeViewer treeViewer;
 
    /**
     * 
@@ -37,8 +37,8 @@ public class RelationCellModifier implements ICellModifier {
    public boolean canModify(Object element, String property) {
 	   boolean isModifiable = true;
 	   
-	   if(element instanceof RelationTypeSide){
-		  isModifiable = !((RelationTypeSide)element).getArtifact().isReadOnly(); 
+      if (element instanceof RelationSorter) {
+         isModifiable = !((RelationSorter) element).getArtifact().isReadOnly();
 	   }
 	   return isModifiable;
    }

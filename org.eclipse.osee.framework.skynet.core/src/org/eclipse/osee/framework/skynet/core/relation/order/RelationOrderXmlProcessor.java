@@ -11,10 +11,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -24,7 +27,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * @author Andrew M. Finkbeiner
  */
-class RelationOrderXmlProcessor {
+public class RelationOrderXmlProcessor {
 
    private static final Object ROOT_ELEMENT = "OrderList";
 
@@ -41,6 +44,10 @@ class RelationOrderXmlProcessor {
       } catch (IOException ex) {
          throw new OseeWrappedException(ex);
       }
+   }
+
+   public RelationOrderXmlProcessor(Artifact artifact) throws OseeWrappedException, MultipleAttributesExist, OseeCoreException {
+      this(artifact.getSoleAttributeValueAsString("Relation Order", ""));
    }
 
    private void parseXml(String value) throws SAXException, IOException {
@@ -96,7 +103,7 @@ class RelationOrderXmlProcessor {
          }
          for (int i = 0; i < guids.size(); i++) {
             sb.append(guids.get(i));
-            if ((i + 1) < guids.size()) {
+            if (i + 1 < guids.size()) {
                sb.append(",");
             }
          }
@@ -152,5 +159,13 @@ class RelationOrderXmlProcessor {
             }
          }
       }
+   }
+
+   public String getOrderGuid(String typeName, RelationSide side) {
+      Pair<String, List<String>> pair = lists.get(typeName, side.name());
+      if (pair != null) {
+         return pair.getFirst();
+      }
+      return null;
    }
 }

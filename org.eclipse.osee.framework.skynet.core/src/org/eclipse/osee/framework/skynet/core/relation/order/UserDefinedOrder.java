@@ -51,7 +51,7 @@ class UserDefinedOrder implements RelationOrder {
    }
 
    @Override
-   public void setOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
+   public void applyOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
       if (relatives.size() > 0) {
          String value = artifact.getOrInitializeSoleAttributeValue("Relation Order");
          RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(value);

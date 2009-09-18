@@ -65,7 +65,7 @@ public class RelationManager {
    private static final String GET_DELETED_ARTIFACT_B = DELETED[0] + "b_art_id" + DELETED[1] + "a_art_id" + DELETED[2];
    private static final String GET_DELETED_ARTIFACT_A = DELETED[0] + "a_art_id" + DELETED[1] + "b_art_id" + DELETED[2];
 
-   private static RelationOrdering relationOrdering = new RelationOrdering();
+   private static RelationOrdering relationOrdering = RelationOrdering.getInstance();
 
    private static final ThreadLocal<ArtifactKey> threadLocalKey = new ThreadLocal<ArtifactKey>() {
 

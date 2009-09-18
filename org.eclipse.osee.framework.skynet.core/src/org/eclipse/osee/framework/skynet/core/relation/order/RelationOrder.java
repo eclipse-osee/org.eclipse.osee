@@ -18,6 +18,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 public interface RelationOrder {
 
    RelationOrderId getOrderId();
-   void setOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException;
+   void applyOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException;
    void sort(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException;
 }

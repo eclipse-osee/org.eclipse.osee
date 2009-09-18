@@ -13,15 +13,13 @@ package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.StructuredViewer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -46,7 +44,7 @@ import org.eclipse.swt.widgets.Table;
 public class RelationExplorerWindow {
 
    private RelationTableViewer relationTableViewer;
-   private final RelationTypeSide relationGroup;
+   private final RelationSorter relationGroup;
    private final boolean persistOnOk;
    private boolean cancelled = false;
 
@@ -77,7 +75,7 @@ public class RelationExplorerWindow {
    public static final int NAME_NUM = 0;
    public static final int REASON_NUM = 1;
 
-   public RelationExplorerWindow(StructuredViewer viewer, RelationTypeSide group, boolean persistOnOk) {
+   public RelationExplorerWindow(StructuredViewer viewer, RelationSorter group, boolean persistOnOk) {
       this.validArtifacts = new ArrayList<Artifact>();
       this.invalidArtifacts = new ArrayList<Artifact>();
 
@@ -94,7 +92,7 @@ public class RelationExplorerWindow {
 
    }
 
-   public RelationExplorerWindow(StructuredViewer viewer, RelationTypeSide group) {
+   public RelationExplorerWindow(StructuredViewer viewer, RelationSorter group) {
       this(viewer, group, false);
    }
 
@@ -226,10 +224,12 @@ public class RelationExplorerWindow {
 
       // Populate Tables
       relationTableViewer = new RelationTableViewer(validTable, invalidTable, branch);
-      for (int i = 0; i < validArtifacts.size(); i++)
+      for (int i = 0; i < validArtifacts.size(); i++) {
          relationTableViewer.addValidItem(validArtifacts.get(i));
-      for (int i = 0; i < invalidName.size(); i++)
+      }
+      for (int i = 0; i < invalidName.size(); i++) {
          relationTableViewer.addInvalidItem(invalidName.get(i), invalidReason.get(i));
+      }
 
       // Add Listeners to buttons
       okButton.addSelectionListener(new SelectionListener() {
@@ -294,8 +294,9 @@ public class RelationExplorerWindow {
                      OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                   }
                }
-            } else
+            } else {
                artifact = model.getArtifact();
+            }
 
             if (artifact != null) {
                try {
@@ -323,30 +324,18 @@ public class RelationExplorerWindow {
       shell.dispose();
    }
 
-   /**
-    * @return Returns the relationGroup.
-    */
-   public RelationTypeSide getRelationGroup() {
+   public RelationSorter getRelationGroup() {
       return relationGroup;
    }
 
-   /**
-    * @return Returns the cancelled.
-    */
    public boolean isCancelled() {
       return cancelled;
    }
 
-   /**
-    * @return Returns the invalidArtifacts.
-    */
    public ArrayList<Artifact> getInvalidArtifacts() {
       return invalidArtifacts;
    }
 
-   /**
-    * @param invalidArtifact The invalidArtifact to set.
-    */
    public void addInvalidArtifact(Artifact invalidArtifact, String errorMessage) {
       invalidArtifacts.add(invalidArtifact);
       addInvalid(invalidArtifact.getName(), errorMessage);

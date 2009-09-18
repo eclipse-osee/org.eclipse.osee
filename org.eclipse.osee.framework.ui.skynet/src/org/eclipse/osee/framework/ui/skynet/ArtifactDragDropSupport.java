@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
@@ -67,7 +67,7 @@ public class ArtifactDragDropSupport {
       }
    }
 
-   private static void ensureLinkValidity(RelationTypeSide group, Artifact artifact) throws OseeCoreException {
+   private static void ensureLinkValidity(RelationSorter group, Artifact artifact) throws OseeCoreException {
       RelationType relationType = group.getRelationType();
       Artifact otherArtifact = group.getArtifact();
 
@@ -77,7 +77,7 @@ public class ArtifactDragDropSupport {
    }
 
    private static void addArtifacts(Artifact[] artifacts, RelationExplorerWindow window) throws OseeCoreException {
-      RelationTypeSide group = window.getRelationGroup();
+      RelationSorter group = window.getRelationGroup();
       RelationSide relationSide = group.getSide();
       RelationType relationType = group.getRelationType();
 
@@ -106,7 +106,7 @@ public class ArtifactDragDropSupport {
    }
 
    private static void addFiles(String[] fileNames, RelationExplorerWindow window, Shell shell) {
-      RelationTypeSide group = window.getRelationGroup();
+      RelationSorter group = window.getRelationGroup();
       IFile iFile;
       Artifact artifact;
 
@@ -147,7 +147,7 @@ public class ArtifactDragDropSupport {
    }
 
    private static void addURL(String url, RelationExplorerWindow window, Shell shell) {
-      RelationTypeSide group = window.getRelationGroup();
+      RelationSorter group = window.getRelationGroup();
       Artifact artifact;
       String location;
 
