@@ -502,7 +502,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       boolean isVisible = false;
       if (conflicts != null && conflicts.length != 0) {
          isVisible = !hasMergeBranchBeenCommitted() && areAllConflictsResolved();
-         isVisible &= sourceBranch != null && sourceBranch.isRebaselineInProgress();
+         isVisible &= sourceBranch != null && sourceBranch.getBranchState().isRebaselineInProgress();
       }
       setCompleteCommitItemVisible(isVisible);
    }
@@ -550,7 +550,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
 
       @Override
       public void run() {
-         if (sourceBranch.isRebaselineInProgress()) {
+         if (sourceBranch.getBranchState().isRebaselineInProgress()) {
             ConflictManagerExternal conflictManager = new ConflictManagerExternal(destBranch, sourceBranch);
             BranchManager.completeUpdateBranch(conflictManager, true, false);
          }

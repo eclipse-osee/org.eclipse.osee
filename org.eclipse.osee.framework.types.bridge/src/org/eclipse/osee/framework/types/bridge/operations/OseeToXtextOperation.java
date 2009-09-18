@@ -214,7 +214,7 @@ public class OseeToXtextOperation extends AbstractOperation {
                            getAttributeType(model, attributeType.getGuid());
                      if (modelType != null) {
                         ref.setValidAttributeType(modelType);
-                        if (branch != null && !branch.isSystemRootBranch()) {
+                        if (branch != null && !branch.getBranchType().isSystemRootBranch()) {
                            ref.setBranchGuid(branch.getGuid());
                         }
                         references.add(ref);

@@ -217,8 +217,8 @@ public class CommitDbTx extends DbTransaction {
       }
       time = System.currentTimeMillis();
       newTransactionNumber = addCommitTransactionToDatabase(connection, destinationBranch, sourceBranch, userToBlame);
-         fromBranchId = sourceBranch.getBranchId();
-         AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
+      fromBranchId = sourceBranch.getBranchId();
+      AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
       if (DEBUG) {
          System.out.println(String.format("   Added commit transaction [%d] into the DB in %s", newTransactionNumber,
                Lib.getElapseString(time)));
@@ -344,7 +344,8 @@ public class CommitDbTx extends DbTransaction {
 
       BranchManager.setBranchState(connection, destinationBranch, BranchState.MODIFIED);
 
-      if (!sourceBranch.isRebaselined() && !sourceBranch.isRebaselineInProgress() && !sourceBranch.isCommitted()) {
+      BranchState sourceBranchState = sourceBranch.getBranchState();
+      if (!sourceBranchState.isCreationInProgress() && !sourceBranchState.isRebaselined() && !sourceBranchState.isRebaselineInProgress() && !sourceBranchState.isCommitted()) {
          BranchManager.setBranchState(connection, sourceBranch, BranchState.COMMITTED);
       }
       success = true;

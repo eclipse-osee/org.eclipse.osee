@@ -336,19 +336,8 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       }
    }
 
-   /*
-    * True if baseline or top level branch
-    */
-   public boolean isBaselineBranch() {
-      return branchType.equals(BranchType.BASELINE);
-   }
-
-   public boolean isSystemRootBranch() {
-      return branchType.equals(BranchType.SYSTEM_ROOT);
-   }
-
    public boolean isTopLevelBranch() {
-      return getParentBranch() != null && getParentBranch().isSystemRootBranch();
+      return getParentBranch() != null && getParentBranch().getBranchType().isSystemRootBranch();
    }
 
    public BranchType getBranchType() {
@@ -359,17 +348,6 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       branchType = BranchType.getBranchType(type);
    }
 
-   public boolean isMergeBranch() {
-      return branchType.equals(BranchType.MERGE);
-   }
-
-   public boolean isWorkingBranch() {
-      return branchType.equals(BranchType.WORKING);
-   }
-
-   /**
-    * @return the associatedArtifactId
-    */
    public int getAssociatedArtifactId() {
       return associatedArtifactId;
    }
@@ -444,30 +422,14 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
     * @return the deleted
     */
    public boolean isDeleted() {
-      return getBranchState() == BranchState.DELETED;
+      return getBranchState().isDeleted();
    }
 
    /**
     * @return Returns whether the branch is editable.
     */
    public boolean isEditable() {
-      return !isCommitted() && !isRebaselined() && !isArchived() && !isDeleted() && !isCreationInProgress();
-   }
-
-   public boolean isCommitted() {
-      return getBranchState() == BranchState.COMMITTED;
-   }
-
-   public boolean isRebaselined() {
-      return getBranchState() == BranchState.REBASELINED;
-   }
-
-   public boolean isRebaselineInProgress() {
-      return getBranchState() == BranchState.REBASELINE_IN_PROGRESS;
-   }
-
-   public boolean isCreationInProgress() {
-      return getBranchState() == BranchState.CREATION_IN_PROGRESS;
+      return !getBranchState().isCommitted() && !getBranchState().isRebaselined() && !isArchived() && !isDeleted() && !getBranchState().isCreationInProgress();
    }
 
    /**

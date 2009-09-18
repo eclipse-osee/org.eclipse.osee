@@ -53,7 +53,9 @@ public class ChangeXViewer extends XViewer {
    @Override
    public void handleDoubleClick() {
       try {
-         if (getSelectedChanges().size() == 0) return;
+         if (getSelectedChanges().size() == 0) {
+            return;
+         }
 
          Change change = getSelectedChanges().iterator().next();
          if (CHANGE_DEBUG) {
@@ -121,10 +123,11 @@ public class ChangeXViewer extends XViewer {
 
       // EDIT MENU BLOCK
       mm.insertBefore(MENU_GROUP_PRE, openMergeViewAction);
-      openMergeViewAction.setEnabled(getSelectedBranches().size() == 1 && getSelectedBranches().iterator().next().isBaselineBranch());
+      openMergeViewAction.setEnabled(getSelectedBranches().size() == 1 && getSelectedBranches().iterator().next().getBranchType().isBaselineBranch());
 
    }
 
+   @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
@@ -144,8 +147,11 @@ public class ChangeXViewer extends XViewer {
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> arts = new ArrayList<Branch>();
       TreeItem items[] = getTree().getSelection();
-      if (items.length > 0) for (TreeItem item : items)
-         arts.add((Branch) item.getData());
+      if (items.length > 0) {
+         for (TreeItem item : items) {
+            arts.add((Branch) item.getData());
+         }
+      }
       return arts;
    }
 

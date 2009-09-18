@@ -38,7 +38,7 @@ public class BranchXViewer extends XViewer {
       ArrayList<Branch> branches = xBranchViewer.getSelectedBranches();
       if (branches != null && !branches.isEmpty()) {
          for (Branch branch : branches) {
-            if (!branch.isSystemRootBranch()) {
+            if (!branch.getBranchType().isSystemRootBranch()) {
                ArtifactExplorer.exploreBranch(branch);
                BranchManager.setLastBranch(branch);
             }
@@ -63,6 +63,7 @@ public class BranchXViewer extends XViewer {
       });
    }
 
+   @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
       mm.insertBefore(MENU_GROUP_PRE, new Separator());

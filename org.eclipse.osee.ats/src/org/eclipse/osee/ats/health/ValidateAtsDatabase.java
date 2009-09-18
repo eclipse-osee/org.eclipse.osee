@@ -251,10 +251,10 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (branch.isArchived()) {
             xResultData.logError(String.format("Parent Branch Id [%s][%s] can't be Archived branch for [%s][%s]",
                   parentBranchId, branch, art.getHumanReadableId(), art));
-         } else if (branch.isWorkingBranch()) {
+         } else if (branch.getBranchType().isWorkingBranch()) {
             xResultData.logError(String.format("Parent Branch Id [%s][%s] can't be Working branch for [%s][%s]",
                   parentBranchId, branch, art.getHumanReadableId(), art));
-         } else if (!branch.isBaselineBranch()) {
+         } else if (!branch.getBranchType().isBaselineBranch()) {
             xResultData.logError(String.format("Parent Branch Id [%s][%s] must be Baseline branch for [%s][%s]",
                   parentBranchId, branch, art.getHumanReadableId(), art));
          }

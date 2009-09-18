@@ -140,7 +140,7 @@ public class RenameBranchHandler extends CommandHandler {
 
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
 
-      return branches.size() == 1 && (AccessControlManager.isOseeAdmin() || branches.get(0).isWorkingBranch() || branches.get(
+      return branches.size() == 1 && (AccessControlManager.isOseeAdmin() || branches.get(0).getBranchType().isWorkingBranch() || branches.get(
             0).getAuthorId() == UserManager.getUser().getArtId());
    }
 

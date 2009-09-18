@@ -135,7 +135,7 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
          if (items != null) {
             attributeTypes.addAll(items);
          }
-         if (branchCursor.isSystemRootBranch()) {
+         if (branchCursor.getBranchType().isSystemRootBranch()) {
             break;
          } else {
             branchCursor = branchCursor.getParentBranch();

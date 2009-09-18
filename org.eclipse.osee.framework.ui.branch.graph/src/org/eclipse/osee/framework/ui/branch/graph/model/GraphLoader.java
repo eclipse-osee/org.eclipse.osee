@@ -89,7 +89,7 @@ public class GraphLoader {
       //      models.addAll(graphCache.getBranchModels());
 
       for (BranchModel branchModel : models) {
-         if (branchModel.getBranch().isSystemRootBranch()) {
+         if (branchModel.getBranch().getBranchType().isSystemRootBranch()) {
             systemRootTx = branchModel.getFirstTx();
          } else {
             long parentTxId = branchModel.getBranch().getParentTransactionNumber();

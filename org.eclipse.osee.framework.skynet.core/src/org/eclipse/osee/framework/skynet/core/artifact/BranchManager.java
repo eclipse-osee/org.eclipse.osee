@@ -267,7 +267,7 @@ public class BranchManager {
                   cachedBranch.setBranchState(BranchState.getBranchState(chStmt.getInt("branch_state")));
                }
 
-               if (cachedBranch.isSystemRootBranch()) {
+               if (cachedBranch.getBranchType().isSystemRootBranch()) {
                   systemRoot = cachedBranch;
                }
             }

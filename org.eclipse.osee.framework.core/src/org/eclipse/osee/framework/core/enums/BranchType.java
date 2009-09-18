@@ -25,9 +25,28 @@ public enum BranchType {
       return value;
    }
 
+   public boolean isBaselineBranch() {
+      return this == BranchType.BASELINE;
+   }
+
+   public boolean isSystemRootBranch() {
+      return this == BranchType.SYSTEM_ROOT;
+   }
+
+   public boolean isMergeBranch() {
+      return this == BranchType.MERGE;
+   }
+
+   public boolean isWorkingBranch() {
+      return this == BranchType.WORKING;
+   }
+
    public static BranchType getBranchType(int value) {
-      for (BranchType type : values())
-         if (type.getValue() == value) return type;
+      for (BranchType type : values()) {
+         if (type.getValue() == value) {
+            return type;
+         }
+      }
       return null;
    }
 }

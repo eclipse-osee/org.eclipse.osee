@@ -149,7 +149,8 @@ public class ConflictManagerInternal {
                destinationBranch == null ? "NULL" : destinationBranch.getBranchId()));
       }
 
-      if (!sourceBranch.isCommitted() && !sourceBranch.isRebaselined() && !sourceBranch.isRebaselineInProgress()) {
+      BranchState sourceBranchState = sourceBranch.getBranchState();
+      if (!sourceBranchState.isCreationInProgress() && !sourceBranchState.isCommitted() && !sourceBranchState.isRebaselined() && !sourceBranchState.isRebaselineInProgress()) {
          BranchManager.setBranchState(sourceBranch, BranchState.COMMIT_IN_PROGRESS);
       }
 

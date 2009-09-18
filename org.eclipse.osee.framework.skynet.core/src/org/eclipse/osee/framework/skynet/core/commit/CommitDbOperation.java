@@ -128,7 +128,8 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       }
       BranchManager.setBranchState(connection, destinationBranch, BranchState.MODIFIED);
 
-      if (!sourceBranch.isRebaselined() && !sourceBranch.isRebaselineInProgress() && !sourceBranch.isCommitted()) {
+      BranchState sourceBranchState = sourceBranch.getBranchState();
+      if (!sourceBranchState.isCreationInProgress() && !sourceBranchState.isRebaselined() && !sourceBranchState.isRebaselineInProgress() && !sourceBranchState.isCommitted()) {
          BranchManager.setBranchState(connection, sourceBranch, BranchState.COMMITTED);
       }
    }

@@ -46,7 +46,7 @@ public class UpdateBranchHandler extends CommandHandler {
       if (branch.hasParentBranch()) {
          try {
             result = !branch.getParentBranch().equals(BranchManager.getSystemRootBranch());
-            result &= branch.isEditable() && branch.isWorkingBranch();
+            result &= branch.isEditable() && branch.getBranchType().isWorkingBranch();
             result &= branch.getChildBranches().isEmpty();
          } catch (Exception ex) {
             result = false;

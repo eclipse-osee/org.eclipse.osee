@@ -14,15 +14,8 @@ package org.eclipse.osee.framework.core.enums;
  * @author Roberto E. Escobar
  */
 public enum BranchState {
-   UNKNOWN(-1),
-   CREATED(0),
-   MODIFIED(1),
-   COMMITTED(2),
-   REBASELINED(3),
-   DELETED(4),
-   REBASELINE_IN_PROGRESS(5),
-   COMMIT_IN_PROGRESS(6),
-   CREATION_IN_PROGRESS(7);
+   UNKNOWN(-1), CREATED(0), MODIFIED(1), COMMITTED(2), REBASELINED(3), DELETED(4), REBASELINE_IN_PROGRESS(5),
+   COMMIT_IN_PROGRESS(6), CREATION_IN_PROGRESS(7);
 
    private final int value;
 
@@ -34,6 +27,26 @@ public enum BranchState {
       return value;
    }
 
+   public boolean isCommitted() {
+      return this == BranchState.COMMITTED;
+   }
+
+   public boolean isRebaselined() {
+      return this == BranchState.REBASELINED;
+   }
+
+   public boolean isRebaselineInProgress() {
+      return this == BranchState.REBASELINE_IN_PROGRESS;
+   }
+
+   public boolean isCreationInProgress() {
+      return this == BranchState.CREATION_IN_PROGRESS;
+   }
+
+   public boolean isDeleted() {
+      return this == BranchState.DELETED;
+   }
+
    public static BranchState getBranchState(int value) {
       for (BranchState type : values()) {
          if (type.getValue() == value) {
@@ -42,4 +55,5 @@ public enum BranchState {
       }
       return null;
    }
+
 }

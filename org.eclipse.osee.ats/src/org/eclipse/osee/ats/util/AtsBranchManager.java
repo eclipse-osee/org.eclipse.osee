@@ -248,7 +248,7 @@ public class AtsBranchManager {
       Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
       for (TransactionId transactionId : TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma())) {
          // exclude working branches including branch states that are re-baselined 
-         if (transactionId.getBranch().isBaselineBranch()) {
+         if (transactionId.getBranch().getBranchType().isBaselineBranch()) {
             transactionIds.add(transactionId);
          }
       }
@@ -299,11 +299,11 @@ public class AtsBranchManager {
       Collection<TransactionId> transactionIds = new HashSet<TransactionId>();
       for (TransactionId id : getTransactionIds(showMergeManager)) {
          // ignore working branches that have been committed
-         if (id.getBranch().isWorkingBranch() && id.getBranch().isCommitted()) {
+         if (id.getBranch().getBranchType().isWorkingBranch() && id.getBranch().getBranchState().isCommitted()) {
             continue;
          }
          // ignore working branches that have been re-baselined (e.g. update form parent branch)
-         else if (id.getBranch().isWorkingBranch() && id.getBranch().isRebaselined()) {
+         else if (id.getBranch().getBranchType().isWorkingBranch() && id.getBranch().getBranchState().isRebaselined()) {
             continue;
          } else {
             transactionIds.add(id);
@@ -357,7 +357,7 @@ public class AtsBranchManager {
             return new Result(false,
                   "Parent Branch not configured for Version [" + smaMgr.getTargetedForVersion() + "]");
          }
-         if (!smaMgr.getTargetedForVersion().getParentBranch().isBaselineBranch()) {
+         if (!smaMgr.getTargetedForVersion().getParentBranch().getBranchType().isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
          }
          return Result.TrueResult;
@@ -372,7 +372,7 @@ public class AtsBranchManager {
             return new Result(false,
                   "Parent Branch not configured for Team Definition [" + teamArt.getTeamDefinition() + "]");
          }
-         if (!teamArt.getTeamDefinition().getParentBranch().isBaselineBranch()) {
+         if (!teamArt.getTeamDefinition().getParentBranch().getBranchType().isBaselineBranch()) {
             return new Result(false, "Parent Branch must be of Baseline branch type.  See Admin for configuration.");
          }
          return Result.TrueResult;
@@ -471,7 +471,7 @@ public class AtsBranchManager {
    public Branch getWorkingBranch(boolean includeArchived, boolean includeDeleted) throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
       for (Branch branch : BranchManager.getAssociatedArtifactBranches(smaMgr.getSma(), includeArchived, includeDeleted)) {
-         if (!branch.isRebaselined()) {
+         if (!branch.getBranchState().isRebaselined()) {
             branches.add(branch);
          }
       }

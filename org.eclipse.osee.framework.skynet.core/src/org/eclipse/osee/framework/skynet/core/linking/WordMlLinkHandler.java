@@ -190,7 +190,7 @@ public class WordMlLinkHandler {
 
       artifactsFromSearch =
             findArtifacts(source.getTransactionId(), source.getBranch(), source.isHistorical(), guidsFromLinks);
-      if (guidsFromLinks.size() != artifactsFromSearch.size() && branch.isMergeBranch()) {
+      if (guidsFromLinks.size() != artifactsFromSearch.size() && branch.getBranchType().isMergeBranch()) {
          Branch sourceBranch = BranchManager.getBranch(branch.getParentBranchId());
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 

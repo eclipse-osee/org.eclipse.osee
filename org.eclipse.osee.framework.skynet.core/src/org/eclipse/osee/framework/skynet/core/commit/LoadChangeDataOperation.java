@@ -156,7 +156,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             long gammaId = chStmt.getLong("gamma_id");
             CommitItem change = changesByItemId.get(itemId);
 
-            if (branch.isMergeBranch()) {
+            if (branch.getBranchType().isMergeBranch()) {
                change.getNet().setGammaId(gammaId);
                change.getNet().setModType(ModificationType.MERGED);
             } else {

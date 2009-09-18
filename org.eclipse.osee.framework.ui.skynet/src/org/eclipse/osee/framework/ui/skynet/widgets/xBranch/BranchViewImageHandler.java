@@ -49,12 +49,12 @@ public class BranchViewImageHandler {
             Branch branch = (Branch) element;
             boolean favorite = UserManager.getUser().isFavoriteBranch(branch);
             boolean isChangeManaged = branch.isChangeManaged();
-            boolean isSystemBranch = branch.isSystemRootBranch();
+            boolean isSystemBranch = branch.getBranchType().isSystemRootBranch();
 
             if (isSystemBranch) {
                return ImageManager.getImage(FrameworkImage.BRANCH_SYSTEM_ROOT);
             } else {
-               if (branch.isCreationInProgress()) {
+               if (branch.getBranchState().isCreationInProgress()) {
                   returnImage = inCreationBranchImage;
                } else if (favorite && isChangeManaged) {
                   returnImage = favoriteChangeManagedBranchImage;
