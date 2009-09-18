@@ -34,10 +34,8 @@ public class BranchManagerServlet extends OseeHttpServlet {
          HttpBranchCreationInfo info = new HttpBranchCreationInfo(req);
          int branchId = -1;
          branchId =
-               InternalBranchServletActivator.getInstance().getBranchCreation().createBranch(info.getBranchType(),
-                     info.getParentTransactionId(), info.getParentBranchId(), info.getBranchGuid(),
-                     info.getBranchName(), info.getCreationComment(), info.getAssociatedArtifactId(),
-                     info.getAuthorId(), info.getStaticBranchName());
+               InternalBranchServletActivator.getInstance().getBranchCreation().createBranch(info.getBranch(),
+                     info.getAuthorId(), info.getCreationComment());
          if (branchId == -1) {
             resp.getWriter().write("Unknown Error during branch creation.");
          } else {

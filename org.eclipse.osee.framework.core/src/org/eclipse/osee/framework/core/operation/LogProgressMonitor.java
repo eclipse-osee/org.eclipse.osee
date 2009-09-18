@@ -8,12 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.plugin.core.util;
+package org.eclipse.osee.framework.core.operation;
 
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.internal.Activator;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.plugin.core.PluginCoreActivator;
 
 /**
  * @author Roberto E. Escobar
@@ -30,12 +31,12 @@ public class LogProgressMonitor implements IProgressMonitor {
    @Override
    public void beginTask(String name, int totalWork) {
       this.taskName = name;
-      OseeLog.log(PluginCoreActivator.class, Level.INFO, String.format("Starting: %s", taskName));
+      OseeLog.log(Activator.class, Level.INFO, String.format("Starting: %s", taskName));
    }
 
    @Override
    public void done() {
-      OseeLog.log(PluginCoreActivator.class, Level.INFO, String.format("Finished: %s", taskName));
+      OseeLog.log(Activator.class, Level.INFO, String.format("Finished: %s", taskName));
    }
 
    @Override
@@ -55,13 +56,15 @@ public class LogProgressMonitor implements IProgressMonitor {
 
    @Override
    public void setTaskName(String name) {
-      this.taskName = name;
-      OseeLog.log(PluginCoreActivator.class, Level.INFO, name);
+      if (Strings.isValid(name)) {
+         this.taskName = name;
+      }
+      OseeLog.log(Activator.class, Level.INFO, name);
    }
 
    @Override
    public void subTask(String name) {
-      OseeLog.log(PluginCoreActivator.class, Level.FINER, name);
+      OseeLog.log(Activator.class, Level.FINER, name);
    }
 
    @Override

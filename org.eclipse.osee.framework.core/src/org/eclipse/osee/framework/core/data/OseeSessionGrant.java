@@ -113,6 +113,8 @@ public class OseeSessionGrant extends BaseExchangeData {
 
    private final class GrantedOseeUserInfo implements IOseeUser {
 
+      private static final long serialVersionUID = 4895789161489202252L;
+
       @Override
       public String getEmail() {
          return getString(OSEE_USER_EMAIL);
@@ -135,6 +137,8 @@ public class OseeSessionGrant extends BaseExchangeData {
    }
 
    private final class GrantedDatabaseInfo implements IDatabaseInfo {
+
+      private static final long serialVersionUID = -7314120611445752014L;
 
       @Override
       public Properties getConnectionProperties() {

@@ -21,7 +21,8 @@ public enum BranchState {
    REBASELINED(3),
    DELETED(4),
    REBASELINE_IN_PROGRESS(5),
-   COMMIT_IN_PROGRESS(6);
+   COMMIT_IN_PROGRESS(6),
+   CREATION_IN_PROGRESS(7);
 
    private final int value;
 

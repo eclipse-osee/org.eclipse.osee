@@ -22,6 +22,7 @@ import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
 public class InternalBranchActivator implements BundleActivator {
+   public static final String PLUGIN_ID = "org.eclipse.osee.framework.branch.management";
 
    private static InternalBranchActivator instance;
    private ServiceRegistration serviceRegistration;

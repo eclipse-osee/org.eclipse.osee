@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.core.data;
  * @author Ryan D. Brooks
  */
 public class OseeUser implements IOseeUser {
+   private static final long serialVersionUID = -4632859204715457300L;
    private final String userName;
    private final String userId;
    private final String userEmail;

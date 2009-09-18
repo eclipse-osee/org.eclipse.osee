@@ -4,9 +4,11 @@ Bundle-Name: Branch Management Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.branch.management;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator
-Import-Package: org.eclipse.osee.framework.core.data,
+Import-Package: org.eclipse.core.runtime,
+ org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.server,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,

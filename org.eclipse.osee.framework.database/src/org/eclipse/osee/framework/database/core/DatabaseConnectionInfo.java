@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.core.data.IDatabaseInfo;
  * @author Ryan D. Brooks
  */
 public class DatabaseConnectionInfo implements IDatabaseInfo {
+
+   private static final long serialVersionUID = -6513818831248393100L;
    private final String databaseLoginName;
    private final String connectionPrefix;
    private final String databaseName;

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.servlet;
 
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.osee.framework.branch.management.Branch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 
@@ -71,18 +72,9 @@ class HttpBranchCreationInfo {
       staticBranchName = req.getParameter("staticBranchName");
    }
 
-   /**
-    * @return the parentBranchId
-    */
-   public int getParentBranchId() {
-      return parentBranchId;
-   }
-
-   /**
-    * @return the branchName
-    */
-   public String getBranchName() {
-      return branchName;
+   public Branch getBranch() {
+      return new Branch(branchType, parentTransactionId, parentBranchId, branchGuid, branchName, associatedArtifactId,
+            staticBranchName);
    }
 
    /**
@@ -93,44 +85,9 @@ class HttpBranchCreationInfo {
    }
 
    /**
-    * @return the associatedArtifactId
-    */
-   public int getAssociatedArtifactId() {
-      return associatedArtifactId;
-   }
-
-   /**
     * @return the authorId
     */
    public int getAuthorId() {
       return authorId;
-   }
-
-   /**
-    * @return the staticBranchName
-    */
-   public String getStaticBranchName() {
-      return staticBranchName;
-   }
-
-   /**
-    * @return the systemRootBranch
-    */
-   public BranchType getBranchType() {
-      return branchType;
-   }
-
-   /**
-    * @return the branchGuid
-    */
-   public String getBranchGuid() {
-      return branchGuid;
-   }
-
-   /**
-    * @return the parentTransactionId
-    */
-   public int getParentTransactionId() {
-      return parentTransactionId;
    }
 }
