@@ -27,13 +27,8 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public class FavoriteSorter extends XViewerSorter {
    private boolean favoritesFirst;
 
-   /**
-    * @param labelProvider
-    */
    public FavoriteSorter(XViewer viewer) {
       super(viewer);
-//      super(labelProvider);
-
       this.favoritesFirst = false;
    }
 

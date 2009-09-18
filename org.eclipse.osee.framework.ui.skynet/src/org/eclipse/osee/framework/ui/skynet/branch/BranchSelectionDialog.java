@@ -35,14 +35,16 @@ import org.eclipse.swt.widgets.Listener;
  */
 public class BranchSelectionDialog extends MessageDialog {
 
-   Branch selected = null;
-   XBranchWidget branchWidget;
-   private boolean allowOnlyWorkingBranches = false;
+   private Branch selected;
+   private XBranchWidget branchWidget;
+   private boolean allowOnlyWorkingBranches;
    private final Collection<Branch> branches;
 
    public BranchSelectionDialog(String title, Collection<Branch> branches) {
       super(Display.getCurrent().getActiveShell(), title, null, null, MessageDialog.NONE,
             new String[] {"Ok", "Cancel"}, 0);
+      this.allowOnlyWorkingBranches = false;
+      this.selected = null;
       this.branches = branches;
       setShellStyle(getShellStyle() | SWT.RESIZE);
    }
@@ -93,6 +95,7 @@ public class BranchSelectionDialog extends MessageDialog {
       return branchWidget.getControl();
    }
 
+   @Override
    protected Button createButton(Composite parent, int id, String label, boolean defaultButton) {
       Button selectionButton = super.createButton(parent, id, label, defaultButton);
       // default the ok button to disabled until the user selects a branch

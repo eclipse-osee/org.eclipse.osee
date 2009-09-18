@@ -29,6 +29,7 @@ import org.eclipse.swt.graphics.Image;
 public class BranchViewImageHandler {
    private static Image favoriteBranchImage = null;
    private static Image favoriteChangeManagedBranchImage = null;
+   private static Image inCreationBranchImage = null;
    private static int X_LOCATION = 0;
    private static int Y_LOCATION = 7;
 
@@ -38,7 +39,7 @@ public class BranchViewImageHandler {
       //lazy loading of images
       checkImages();
       // Seek down through aggregation lists to the lowest level to get an actual element
-      while (element instanceof List && !((List<?>) element).isEmpty()) {
+      while (element instanceof List<?> && !((List<?>) element).isEmpty()) {
          element = ((List<?>) element).get(0);
       }
 
@@ -53,7 +54,9 @@ public class BranchViewImageHandler {
             if (isSystemBranch) {
                return ImageManager.getImage(FrameworkImage.BRANCH_SYSTEM_ROOT);
             } else {
-               if (favorite && isChangeManaged) {
+               if (branch.isCreationInProgress()) {
+                  returnImage = inCreationBranchImage;
+               } else if (favorite && isChangeManaged) {
                   returnImage = favoriteChangeManagedBranchImage;
                } else if (favorite) {
                   returnImage = favoriteBranchImage;
@@ -69,7 +72,6 @@ public class BranchViewImageHandler {
 
       } else if (element instanceof TransactionId && columnIndex == 0) {
          returnImage = ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
-
       }
       return returnImage;
    }
@@ -82,7 +84,9 @@ public class BranchViewImageHandler {
          favoriteChangeManagedBranchImage =
                new OverlayImage(ImageManager.getImage(FrameworkImage.BRANCH_CHANGE_MANAGED),
                      ImageManager.getImageDescriptor(FrameworkImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION, Y_LOCATION).createImage();
+         inCreationBranchImage =
+               new OverlayImage(ImageManager.getImage(FrameworkImage.BRANCH),
+                     ImageManager.getImageDescriptor(FrameworkImage.BRANCH_IN_CREATION_OVERLAY), X_LOCATION, Y_LOCATION).createImage();
       }
    }
-
 }
