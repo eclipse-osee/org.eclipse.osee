@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -23,6 +25,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.types.branch.Branch;
+import org.eclipse.osee.framework.skynet.core.types.branch.BranchCache;
 
 /**
  * @author Roberto E. Escobar
@@ -121,5 +125,20 @@ public class OseeTypeFactory implements IOseeTypeFactory {
          throw new OseeArgumentException("ordinal must be greater than or equal to zero");
       }
       return new OseeEnumEntry(cache, createGuidIfNeeded(guid), name, ordinal);
+   }
+
+   @Override
+   public Branch createBranch(BranchCache cache, String guid, String name, int parentTxNumber, int associatedArtifactId, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+      if (!Strings.isValid(name)) {
+         throw new OseeArgumentException("name cannot be null.");
+      }
+      if (branchType == null) {
+         throw new OseeArgumentException("branchType cannot be null.");
+      }
+      if (branchState == null) {
+         throw new OseeArgumentException("branchState cannot be null.");
+      }
+      return new Branch(cache, createGuidIfNeeded(guid), name, parentTxNumber, associatedArtifactId, branchType,
+            branchState, isArchived);
    }
 }

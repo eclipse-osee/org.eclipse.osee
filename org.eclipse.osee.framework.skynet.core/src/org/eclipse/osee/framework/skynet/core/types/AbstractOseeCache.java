@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeCache<T extends AbstractOseeType> {
+public abstract class AbstractOseeCache<T extends IOseeStorableType> {
    private final HashMap<String, T> nameToTypeMap = new HashMap<String, T>();
    private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
    private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
@@ -62,8 +62,8 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> {
       }
       nameToTypeMap.remove(type.getName());
       guidToTypeMap.remove(type.getGuid());
-      if (type.getTypeId() != AbstractOseeType.UNPERSISTTED_VALUE) {
-         idToTypeMap.remove(type.getTypeId());
+      if (type.getId() != AbstractOseeType.UNPERSISTTED_VALUE) {
+         idToTypeMap.remove(type.getId());
       }
    }
 
@@ -80,8 +80,8 @@ public abstract class AbstractOseeCache<T extends AbstractOseeType> {
       if (type == null) {
          throw new OseeArgumentException("Caching a null value is not allowed");
       }
-      if (type.getTypeId() != AbstractOseeType.UNPERSISTTED_VALUE) {
-         idToTypeMap.put(type.getTypeId(), type);
+      if (type.getId() != AbstractOseeType.UNPERSISTTED_VALUE) {
+         idToTypeMap.put(type.getId(), type);
       }
    }
 

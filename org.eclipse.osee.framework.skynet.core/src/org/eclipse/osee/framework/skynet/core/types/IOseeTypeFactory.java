@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
+import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -19,6 +21,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.types.branch.Branch;
+import org.eclipse.osee.framework.skynet.core.types.branch.BranchCache;
 
 /**
  * @author Roberto E. Escobar
@@ -34,4 +38,6 @@ public interface IOseeTypeFactory {
    public OseeEnumType createEnumType(OseeEnumTypeCache cache, String guid, String name) throws OseeCoreException;
 
    public OseeEnumEntry createEnumEntry(OseeEnumTypeCache cache, String guid, String name, int ordinal) throws OseeCoreException;
+
+   public Branch createBranch(BranchCache cache, String guid, String name, int parentTxNumber, int associatedArtifactId, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException;
 }
