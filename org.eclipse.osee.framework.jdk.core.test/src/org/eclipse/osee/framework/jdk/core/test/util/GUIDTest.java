@@ -40,7 +40,7 @@ public class GUIDTest {
 
    @org.junit.Test
    public void testValidGeneration() {
-      for (int i = 0; i < 500000; i++) {
+      for (int i = 0; i < 50000; i++) {
          String guid = GUID.create();
          Assert.assertTrue("Generated GUID " + guid + " fails validity test", GUID.isValid(guid));
       }
