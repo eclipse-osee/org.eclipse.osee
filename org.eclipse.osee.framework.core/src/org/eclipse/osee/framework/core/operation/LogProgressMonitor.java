@@ -31,12 +31,12 @@ public class LogProgressMonitor implements IProgressMonitor {
    @Override
    public void beginTask(String name, int totalWork) {
       this.taskName = name;
-      OseeLog.log(Activator.class, Level.INFO, String.format("Starting: %s", taskName));
+      OseeLog.log(Activator.class, Level.INFO, String.format("Start: %s", taskName));
    }
 
    @Override
    public void done() {
-      OseeLog.log(Activator.class, Level.INFO, String.format("Finished: %s", taskName));
+      OseeLog.log(Activator.class, Level.INFO, String.format("Finish: %s", taskName));
    }
 
    @Override
@@ -58,13 +58,15 @@ public class LogProgressMonitor implements IProgressMonitor {
    public void setTaskName(String name) {
       if (Strings.isValid(name)) {
          this.taskName = name;
+         OseeLog.log(Activator.class, Level.INFO, name);
       }
-      OseeLog.log(Activator.class, Level.INFO, name);
    }
 
    @Override
    public void subTask(String name) {
-      OseeLog.log(Activator.class, Level.FINER, name);
+      if (Strings.isValid(name)) {
+         OseeLog.log(Activator.class, Level.FINER, name);
+      }
    }
 
    @Override
