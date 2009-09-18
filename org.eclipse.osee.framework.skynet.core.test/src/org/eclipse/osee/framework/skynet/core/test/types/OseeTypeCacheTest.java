@@ -115,7 +115,7 @@ public class OseeTypeCacheTest {
    @org.junit.Test
    public void testCacheArtifactTypesById() throws OseeCoreException {
       for (ArtifactType expected : artifactTypes) {
-         ArtifactType actual = typeCache.getArtifactTypeCache().getTypeById(expected.getTypeId());
+         ArtifactType actual = typeCache.getArtifactTypeCache().getTypeById(expected.getId());
          Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
@@ -161,7 +161,7 @@ public class OseeTypeCacheTest {
    @org.junit.Test
    public void testCacheAttributeTypesById() throws OseeCoreException {
       for (AttributeType expected : attributeTypes) {
-         AttributeType actual = typeCache.getAttributeTypeCache().getTypeById(expected.getTypeId());
+         AttributeType actual = typeCache.getAttributeTypeCache().getTypeById(expected.getId());
          Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
@@ -207,7 +207,7 @@ public class OseeTypeCacheTest {
    @org.junit.Test
    public void testCacheRelationTypesById() throws OseeCoreException {
       for (RelationType expected : relationTypes) {
-         RelationType actual = typeCache.getRelationTypeCache().getTypeById(expected.getTypeId());
+         RelationType actual = typeCache.getRelationTypeCache().getTypeById(expected.getId());
          Assert.assertNotNull(actual);
          Assert.assertEquals(expected, actual);
       }
@@ -253,7 +253,7 @@ public class OseeTypeCacheTest {
    @org.junit.Test
    public void testCacheOseeEnumTypesById() throws OseeCoreException {
       for (OseeEnumType expected : oseeEnumTypes) {
-         OseeEnumType actual = typeCache.getEnumTypeCache().getTypeById(expected.getTypeId());
+         OseeEnumType actual = typeCache.getEnumTypeCache().getTypeById(expected.getId());
          Assert.assertNotNull(actual);
          OseeTypesUtil.checkEnumType(expected, actual);
       }
@@ -403,7 +403,7 @@ public class OseeTypeCacheTest {
          oseeEnumTypes.add(OseeTypesUtil.createEnumType(cache, factory, "E5", "Enum5", "MMM", 1, "NNN", 2, "OOO", 3));
          int typeId = 400;
          for (OseeEnumType type : oseeEnumTypes) {
-            type.setTypeId(typeId++);
+            type.setId(typeId++);
             cache.getEnumTypeCache().cacheType(type);
          }
       }
@@ -437,7 +437,7 @@ public class OseeTypeCacheTest {
                RelationTypeMultiplicity.MANY_TO_MANY));
          int typeId = 300;
          for (RelationType type : relationTypes) {
-            type.setTypeId(typeId++);
+            type.setId(typeId++);
             cache.getRelationTypeCache().cacheType(type);
          }
       }
@@ -470,7 +470,7 @@ public class OseeTypeCacheTest {
          attributeTypes.add(createAttributeTypeHelper(factory, "HHH", "Attribute8"));
          int typeId = 200;
          for (AttributeType type : attributeTypes) {
-            type.setTypeId(typeId++);
+            type.setId(typeId++);
             cache.getAttributeTypeCache().cacheType(type);
          }
       }
@@ -501,7 +501,7 @@ public class OseeTypeCacheTest {
          artifactTypes.add(factory.createArtifactType(typeCache, "666", false, "ArtifactType6"));
          int typeId = 100;
          for (ArtifactType type : artifactTypes) {
-            type.setTypeId(typeId++);
+            type.setId(typeId++);
             typeCache.cacheType(type);
          }
          setUpArtifactTypeInheritance(typeCache);

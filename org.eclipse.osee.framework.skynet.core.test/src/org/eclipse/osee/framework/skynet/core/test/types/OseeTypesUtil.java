@@ -77,7 +77,7 @@ public class OseeTypesUtil {
       assertEquals(expectedName, entry.getName());
       assertEquals(expectedOrdinal, entry.ordinal());
       assertEquals(parent, entry.getDeclaringClass());
-      assertEquals(parent.getTypeId(), entry.getTypeId());
+      assertEquals(parent.getId(), entry.getId());
       assertEquals(parent.getName(), entry.getName());
       OseeEnumEntry[] expected = parent.values();
       OseeEnumEntry[] actual = entry.getDeclaringClass().values();

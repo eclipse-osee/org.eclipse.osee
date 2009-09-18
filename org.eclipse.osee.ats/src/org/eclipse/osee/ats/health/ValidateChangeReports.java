@@ -286,7 +286,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sb.append(AXml.addTagData("rat", change.getRationale()));
       sb.append(AXml.addTagData("aOrdr", String.valueOf(change.getLinkOrder())));
       sb.append(AXml.addTagData("bOrdr", String.valueOf(change.getBLinkOrder())));
-      sb.append(AXml.addTagData("relTId", String.valueOf(change.getRelationType().getTypeId())));
+      sb.append(AXml.addTagData("relTId", String.valueOf(change.getRelationType().getId())));
       sb.append(AXml.addTagData("hist", String.valueOf(change.isHistorical())));
       return AXml.addTagData("RelChg", sb.toString());
    }

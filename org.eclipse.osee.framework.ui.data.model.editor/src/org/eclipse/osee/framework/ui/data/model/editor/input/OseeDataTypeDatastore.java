@@ -44,7 +44,7 @@ public class OseeDataTypeDatastore {
       List<AttributeDataType> attributeDataTypes = new ArrayList<AttributeDataType>();
       for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
          AttributeDataType attributeDataType =
-               new AttributeDataType(String.valueOf(attributeType.getTypeId()), attributeType.getName(),
+               new AttributeDataType(String.valueOf(attributeType.getId()), attributeType.getName(),
                      attributeType.getBaseAttributeClass().getCanonicalName(), attributeType.getDefaultValue(),
                      attributeType.getFileTypeExtension(), attributeType.getMaxOccurrences(),
                      attributeType.getMinOccurrences(), attributeType.getProviderAttributeClass().getCanonicalName(),
@@ -58,7 +58,7 @@ public class OseeDataTypeDatastore {
       List<RelationDataType> relationDataTypes = new ArrayList<RelationDataType>();
       for (RelationType relationType : RelationTypeManager.getAllTypes()) {
          RelationDataType relationDataType =
-               new RelationDataType(String.valueOf(relationType.getTypeId()), relationType.getName(), "", "",
+               new RelationDataType(String.valueOf(relationType.getId()), relationType.getName(), "", "",
                      relationType.isOrdered(), "", relationType.getSideAName(), relationType.getSideBName());
          relationDataTypes.add(relationDataType);
       }
@@ -69,7 +69,7 @@ public class OseeDataTypeDatastore {
       List<ArtifactDataType> artifactDataTypes = new ArrayList<ArtifactDataType>();
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          ArtifactDataType artifactDataType =
-               new ArtifactDataType(String.valueOf(artifactType.getTypeId()), artifactType.getName(),
+               new ArtifactDataType(String.valueOf(artifactType.getId()), artifactType.getName(),
                      ImageManager.getImage(artifactType));
          artifactDataTypes.add(artifactDataType);
       }
@@ -124,7 +124,7 @@ public class OseeDataTypeDatastore {
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
          if (artifactType.hasSuperArtifactTypes()) {
             for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
-               toReturn.put(String.valueOf(superType.getTypeId()), String.valueOf(artifactType.getTypeId()));
+               toReturn.put(String.valueOf(superType.getId()), String.valueOf(artifactType.getId()));
             }
          }
       }

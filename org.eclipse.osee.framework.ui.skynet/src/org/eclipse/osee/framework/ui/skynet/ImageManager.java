@@ -331,10 +331,10 @@ public class ImageManager {
    public static void setArtifactTypeImageInDb(ArtifactType artifactType, ByteArrayInputStream byteInput) throws OseeDataStoreException, IOException {
       if (byteInput != null) {
          ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact_type SET image = ? where art_type_id = ?",
-               byteInput, artifactType.getTypeId());
+               byteInput, artifactType.getId());
       } else {
          ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact_type SET image = ? where art_type_id = ?",
-               SQL3DataType.NULL, artifactType.getTypeId());
+               SQL3DataType.NULL, artifactType.getId());
       }
       loadCache();
       // TODO Need remote event kick to tell other clients of artifact type image changes

@@ -157,7 +157,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
          List<AttrData> attrData = new ArrayList<AttrData>();
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt.runPreparedQuery(GET_ATTRS, attributeType.getTypeId());
+            chStmt.runPreparedQuery(GET_ATTRS, attributeType.getId());
             while (chStmt.next()) {
                checkForCancelledStatus(monitor);
                String uri = chStmt.getString("uri");

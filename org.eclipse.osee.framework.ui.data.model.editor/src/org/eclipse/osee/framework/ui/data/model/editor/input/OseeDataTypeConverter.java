@@ -51,7 +51,7 @@ public class OseeDataTypeConverter implements IOseeDataTypeProcessor {
    @Override
    public void onAttributeType(String baseAttributeClass, String providerAttributeClass, String fileTypeExtension, String name, String defaultValue, String validityXml, int minOccurrence, int maxOccurrence, String toolTipText, String taggerId) throws OseeCoreException {
       OseeEnumType enumType = OseeEnumTypeManager.getType(name);
-      int enumTypeId = enumType.getTypeId();
+      int enumTypeId = enumType.getId();
       AttributeDataType attributeDataType =
             new AttributeDataType(name, baseAttributeClass, defaultValue, fileTypeExtension, maxOccurrence,
                   minOccurrence, providerAttributeClass, taggerId, toolTipText, enumTypeId);
