@@ -65,7 +65,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
       if (relationType != null) {
          builder.append(relAlias);
          builder.append(".rel_link_type_id=? AND ");
-         builder.addParameter(relationType.getTypeId());
+         builder.addParameter(relationType.getId());
       }
 
       builder.append(relAlias);

@@ -874,7 +874,7 @@ public class InternalEventManager {
                            link.getRelationId(), link.getAArtifactId(),
                            (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
                            (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(), link.getAOrder(),
-                           link.getBOrder(), sender.getNetworkSender(), link.getRelationType().getTypeId());
+                           link.getBOrder(), sender.getNetworkSender(), link.getRelationType().getId());
                events.add(networkRelationLinkModifiedEvent);
             }
             if (xRelationModifiedEvent.relationEventType == RelationEventType.RationaleMod) {
@@ -886,14 +886,14 @@ public class InternalEventManager {
                            link.getRelationId(), link.getAArtifactId(),
                            (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
                            (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(), link.getAOrder(),
-                           link.getBOrder(), sender.getNetworkSender(), link.getRelationType().getTypeId());
+                           link.getBOrder(), sender.getNetworkSender(), link.getRelationType().getId());
                events.add(networkRelationLinkRationalModifiedEvent);
             } else if (xRelationModifiedEvent.relationEventType == RelationEventType.Deleted) {
                RelationLink link = xRelationModifiedEvent.link;
                Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
                Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
                NetworkRelationLinkDeletedEvent networkRelationLinkModifiedEvent =
-                     new NetworkRelationLinkDeletedEvent(link.getRelationType().getTypeId(), link.getGammaId(),
+                     new NetworkRelationLinkDeletedEvent(link.getRelationType().getId(), link.getGammaId(),
                            link.getBranch().getBranchId(), link.getRelationId(),
                            link.getArtifactId(RelationSide.SIDE_A),
                            (aArtifact != null ? aArtifact.getArtTypeId() : -1),
@@ -909,7 +909,7 @@ public class InternalEventManager {
                            link.getRelationId(), link.getAArtifactId(),
                            (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
                            (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(), link.getAOrder(),
-                           link.getBOrder(), link.getRelationType().getTypeId(), link.getRelationType().getName(),
+                           link.getBOrder(), link.getRelationType().getId(), link.getRelationType().getName(),
                            sender.getNetworkSender());
                events.add(networkRelationLinkModifiedEvent);
             } else {

@@ -287,7 +287,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     * @return Returns the artTypeId.
     */
    public int getArtTypeId() {
-      return artifactType.getTypeId();
+      return artifactType.getId();
    }
 
    /**
@@ -1508,7 +1508,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
 
       for (Attribute<?> attribute : internalGetAttributes()) {
          if (attribute.isDirty()) {
-            dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getTypeId(),
+            dirtyAttributes.add(new SkynetAttributeChange(attribute.getAttributeType().getId(),
                   attribute.getAttributeDataProvider().getData(), attribute.getModificationType(),
                   attribute.getAttrId(), attribute.getGammaId()));
          }
@@ -1524,7 +1524,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
     */
    public void changeArtifactType(ArtifactType artifactType) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact SET art_type_id = ? WHERE art_id = ?",
-            artifactType.getTypeId(), artId);
+            artifactType.getId(), artId);
       this.artifactType = artifactType;
    }
 

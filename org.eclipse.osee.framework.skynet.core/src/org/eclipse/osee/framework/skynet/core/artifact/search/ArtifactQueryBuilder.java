@@ -232,11 +232,11 @@ public class ArtifactQueryBuilder {
          sql.append(".art_type_id");
          if (artifactTypes.size() == 1) {
             sql.append("=? AND ");
-            addParameter(artifactTypes.iterator().next().getTypeId());
+            addParameter(artifactTypes.iterator().next().getId());
          } else {
             sql.append(" IN (");
             for (ArtifactType artifactType : artifactTypes) {
-               sql.append(artifactType.getTypeId());
+               sql.append(artifactType.getId());
                sql.append(",");
             }
             sql.deleteCharAt(sql.length() - 1);

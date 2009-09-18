@@ -65,7 +65,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
                if (lastEnumTypeId != currentEnumTypeId) {
                   oseeEnumType =
                         factory.createEnumType(cacheData, currentEnumTypeGuid, chStmt.getString("enum_type_name"));
-                  oseeEnumType.setTypeId(currentEnumTypeId);
+                  oseeEnumType.setId(currentEnumTypeId);
                   oseeEnumType.setModificationType(ModificationType.MODIFIED);
                   cache.getEnumTypeCache().cacheType(oseeEnumType);
                   lastEnumTypeId = currentEnumTypeId;
@@ -102,7 +102,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
          if (oseeEnumType.isDataDirty()) {
             switch (oseeEnumType.getModificationType()) {
                case NEW:
-                  oseeEnumType.setTypeId(SequenceManager.getNextOseeEnumTypeId());
+                  oseeEnumType.setId(SequenceManager.getNextOseeEnumTypeId());
                   insertData.add(toInsertValues(oseeEnumType));
                   break;
                case MODIFIED:
@@ -145,13 +145,13 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (OseeEnumType type : oseeEnumTypes) {
-         if (type.getTypeId() != AbstractOseeType.UNPERSISTTED_VALUE) {
+         if (type.getId() != AbstractOseeType.UNPERSISTTED_VALUE) {
             deleteData.add(toDeleteValues(type));
          }
          for (OseeEnumEntry entry : type.values()) {
             switch (entry.getModificationType()) {
                case NEW:
-                  entry.setTypeId(type.getTypeId());
+                  entry.setId(type.getId());
                   insertData.add(toInsertValues(entry));
                   break;
                case MODIFIED:
@@ -167,18 +167,18 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
    }
 
    private Object[] toInsertValues(OseeEnumType type) throws OseeDataStoreException {
-      return new Object[] {type.getTypeId(), type.getGuid(), type.getName()};
+      return new Object[] {type.getId(), type.getGuid(), type.getName()};
    }
 
    private Object[] toUpdateValues(OseeEnumType type) throws OseeDataStoreException {
-      return new Object[] {type.getName(), type.getTypeId()};
+      return new Object[] {type.getName(), type.getId()};
    }
 
    private Object[] toDeleteValues(OseeEnumType type) throws OseeDataStoreException {
-      return new Object[] {type.getTypeId()};
+      return new Object[] {type.getId()};
    }
 
    private Object[] toInsertValues(OseeEnumEntry type) throws OseeDataStoreException {
-      return new Object[] {type.getTypeId(), type.getGuid(), type.getName(), type.ordinal()};
+      return new Object[] {type.getId(), type.getGuid(), type.getName(), type.ordinal()};
    }
 }

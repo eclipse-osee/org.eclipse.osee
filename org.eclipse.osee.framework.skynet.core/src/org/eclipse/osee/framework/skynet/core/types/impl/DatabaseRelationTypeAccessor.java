@@ -65,7 +65,7 @@ public class DatabaseRelationTypeAccessor implements IOseeTypeDataAccessor<Relat
                               chStmt.getString("rel_link_type_guid"), relationTypeName, chStmt.getString("a_name"),
                               chStmt.getString("b_name"), artifactTypeSideA, artifactTypeSideB, multiplicity,
                               isUserOrdered, chStmt.getString("default_order_type_guid"));
-                  relationType.setTypeId(chStmt.getInt("rel_link_type_id"));
+                  relationType.setId(chStmt.getInt("rel_link_type_id"));
                   relationType.setModificationType(ModificationType.MODIFIED);
                   relationType.clearDirty();
                   cache.getRelationTypeCache().cacheType(relationType);
@@ -89,7 +89,7 @@ public class DatabaseRelationTypeAccessor implements IOseeTypeDataAccessor<Relat
       for (RelationType type : relationTypes) {
          switch (type.getModificationType()) {
             case NEW:
-               type.setTypeId(SequenceManager.getNextRelationTypeId());
+               type.setId(SequenceManager.getNextRelationTypeId());
                insertData.add(toInsertValues(type));
                break;
             case MODIFIED:
@@ -108,15 +108,15 @@ public class DatabaseRelationTypeAccessor implements IOseeTypeDataAccessor<Relat
    }
 
    private Object[] toInsertValues(RelationType type) throws OseeDataStoreException {
-      return new Object[] {type.getTypeId(), type.getGuid(), type.getName(), type.getSideAName(), type.getSideBName(),
-            type.getArtifactTypeSideA().getTypeId(), type.getArtifactTypeSideB().getTypeId(),
+      return new Object[] {type.getId(), type.getGuid(), type.getName(), type.getSideAName(), type.getSideBName(),
+            type.getArtifactTypeSideA().getId(), type.getArtifactTypeSideB().getId(),
             type.getMultiplicity().getValue(), type.isOrdered() ? USER_ORDERED : NOT_USER_ORDERED,
             type.getDefaultOrderTypeGuid()};
    }
 
    private Object[] toUpdateValues(RelationType type) throws OseeDataStoreException {
       return new Object[] {type.getName(), type.getSideAName(), type.getSideBName(),
-            type.getArtifactTypeSideA().getTypeId(), type.getArtifactTypeSideB().getTypeId(),
-            type.getMultiplicity().getValue(), type.getDefaultOrderTypeGuid(), type.getTypeId()};
+            type.getArtifactTypeSideA().getId(), type.getArtifactTypeSideB().getId(),
+            type.getMultiplicity().getValue(), type.getDefaultOrderTypeGuid(), type.getId()};
    }
 }

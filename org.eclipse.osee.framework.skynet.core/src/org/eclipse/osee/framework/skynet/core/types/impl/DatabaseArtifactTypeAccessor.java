@@ -88,7 +88,7 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
                ArtifactType artifactType =
                      factory.createArtifactType(cache, chStmt.getString("art_type_guid"), isAbstract,
                            chStmt.getString("name"));
-               artifactType.setTypeId(chStmt.getInt("art_type_id"));
+               artifactType.setId(chStmt.getInt("art_type_id"));
                artifactType.setModificationType(ModificationType.MODIFIED);
                cache.cacheType(artifactType);
             } catch (OseeDataStoreException ex) {
@@ -163,11 +163,11 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
             int abstractValue = type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR;
             switch (type.getModificationType()) {
                case NEW:
-                  type.setTypeId(SequenceManager.getNextArtifactTypeId());
-                  insertData.add(new Object[] {type.getTypeId(), type.getGuid(), type.getName(), abstractValue});
+                  type.setId(SequenceManager.getNextArtifactTypeId());
+                  insertData.add(new Object[] {type.getId(), type.getGuid(), type.getName(), abstractValue});
                   break;
                case MODIFIED:
-                  updateData.add(new Object[] {type.getName(), abstractValue, type.getTypeId()});
+                  updateData.add(new Object[] {type.getName(), abstractValue, type.getId()});
                   break;
                default:
                   break;
@@ -196,9 +196,9 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
       List<Object[]> insertInheritanceData = new ArrayList<Object[]>();
       List<Object[]> deleteInheritanceData = new ArrayList<Object[]>();
       for (ArtifactType type : types) {
-         deleteInheritanceData.add(new Object[] {type.getTypeId()});
+         deleteInheritanceData.add(new Object[] {type.getId()});
          for (ArtifactType superType : type.getSuperArtifactTypes()) {
-            insertInheritanceData.add(new Object[] {type.getTypeId(), superType.getTypeId()});
+            insertInheritanceData.add(new Object[] {type.getId(), superType.getId()});
          }
       }
       ConnectionHandler.runBatchUpdate(DELETE_ARTIFACT_TYPE_INHERITANCE, deleteInheritanceData);
@@ -209,14 +209,14 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (ArtifactType artifactType : types) {
-         deleteData.add(new Object[] {artifactType.getTypeId()});
+         deleteData.add(new Object[] {artifactType.getId()});
          Map<Branch, Collection<AttributeType>> entries =
                cache.getArtifactTypeCache().getLocalAttributeTypes(artifactType);
          if (entries != null) {
             for (Entry<Branch, Collection<AttributeType>> entry : entries.entrySet()) {
                Branch branch = entry.getKey();
                for (AttributeType attributeType : entry.getValue()) {
-                  insertData.add(new Object[] {artifactType.getTypeId(), attributeType.getTypeId(),
+                  insertData.add(new Object[] {artifactType.getId(), attributeType.getId(),
                         branch.getBranchId()});
                }
             }

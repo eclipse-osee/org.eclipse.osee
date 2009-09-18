@@ -7,8 +7,9 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.IOseeStorableType;
 
-public abstract class AbstractOseeType implements IOseeType {
+public abstract class AbstractOseeType implements IOseeStorableType {
    public final static int UNPERSISTTED_VALUE = Integer.MIN_VALUE;
 
    private String name;
@@ -27,11 +28,11 @@ public abstract class AbstractOseeType implements IOseeType {
       this.modificationType = ModificationType.NEW;
    }
 
-   public final int getTypeId() {
+   public final int getId() {
       return uniqueId;
    }
 
-   public final void setTypeId(int uniqueId) throws OseeStateException {
+   public final void setId(int uniqueId) throws OseeStateException {
       if (this.uniqueId == UNPERSISTTED_VALUE) {
          updateDirty(this.uniqueId, uniqueId);
          this.uniqueId = uniqueId;

@@ -75,7 +75,7 @@ public final class ArtifactChange extends Change {
 
    @Override
    public int getItemTypeId() {
-      return getArtifactType().getTypeId();
+      return getArtifactType().getId();
    }
 
    @Override

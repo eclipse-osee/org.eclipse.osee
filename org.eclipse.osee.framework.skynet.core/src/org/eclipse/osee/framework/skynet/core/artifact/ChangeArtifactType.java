@@ -58,7 +58,7 @@ public class ChangeArtifactType {
       }
 
       // Kick Local and Remote Events
-      OseeEventManager.kickArtifactsChangeTypeEvent(ChangeArtifactType.class, artifactType.getTypeId(),
+      OseeEventManager.kickArtifactsChangeTypeEvent(ChangeArtifactType.class, artifactType.getId(),
             new LoadedArtifacts(artifacts));
    }
 

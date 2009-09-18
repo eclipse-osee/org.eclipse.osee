@@ -119,7 +119,7 @@ public class AttributeType extends AbstractOseeType implements Comparable<Attrib
    }
 
    public int getOseeEnumTypeId() {
-      return oseeEnumType == null ? OseeEnumTypeManager.getDefaultEnumTypeId() : oseeEnumType.getTypeId();
+      return oseeEnumType == null ? OseeEnumTypeManager.getDefaultEnumTypeId() : oseeEnumType.getId();
    }
 
    public OseeEnumType getOseeEnumType() {

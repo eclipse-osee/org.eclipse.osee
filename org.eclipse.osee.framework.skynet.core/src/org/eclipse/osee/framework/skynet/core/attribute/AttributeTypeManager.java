@@ -169,7 +169,7 @@ public class AttributeTypeManager {
 
    public static void purgeAttributeType(final AttributeType attributeType) throws OseeCoreException {
       int attributeCount =
-            ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ATTRIBUTE_OCCURRENCE, attributeType.getTypeId());
+            ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ATTRIBUTE_OCCURRENCE, attributeType.getId());
       if (attributeCount != 0) {
          throw new OseeArgumentException(
                "Can not delete attribute type " + attributeType.getName() + " because there are " + attributeCount + " existing attributes of this type.");
@@ -178,7 +178,7 @@ public class AttributeTypeManager {
       new DbTransaction() {
          @Override
          protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-            int attributeTypeId = attributeType.getTypeId();
+            int attributeTypeId = attributeType.getId();
             ConnectionHandler.runPreparedUpdate(connection, DELETE_VALID_ATTRIBUTE, attributeTypeId);
             ConnectionHandler.runPreparedUpdate(connection, DELETE_ATTRIBUTE_TYPE, attributeTypeId);
          }

@@ -119,7 +119,7 @@ public class TransactionId implements Serializable, IAdaptable {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof TransactionId) {
-         TransactionId other = ((TransactionId) obj);
+         TransactionId other = (TransactionId) obj;
          return other.transactionNumber == transactionNumber;
       }
 
@@ -163,7 +163,9 @@ public class TransactionId implements Serializable, IAdaptable {
 
    @Override
    public Object getAdapter(Class adapter) {
-      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+      if (adapter == null) {
+         throw new IllegalArgumentException("adapter can not be null");
+      }
 
       if (adapter.isInstance(this)) {
          return this;

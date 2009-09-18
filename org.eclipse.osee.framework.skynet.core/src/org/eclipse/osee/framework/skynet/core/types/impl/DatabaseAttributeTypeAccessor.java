@@ -77,7 +77,7 @@ public class DatabaseAttributeTypeAccessor implements IOseeTypeDataAccessor<Attr
                            providerAttributeClass, chStmt.getString("file_type_extension"),
                            chStmt.getString("default_value"), enumType, chStmt.getInt("min_occurence"),
                            chStmt.getInt("max_occurence"), chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
-               attributeType.setTypeId(chStmt.getInt("attr_type_id"));
+               attributeType.setId(chStmt.getInt("attr_type_id"));
                attributeType.setModificationType(ModificationType.MODIFIED);
                attributeType.clearDirty();
                cache.getAttributeTypeCache().cacheType(attributeType);
@@ -97,7 +97,7 @@ public class DatabaseAttributeTypeAccessor implements IOseeTypeDataAccessor<Attr
       for (AttributeType type : types) {
          switch (type.getModificationType()) {
             case NEW:
-               type.setTypeId(SequenceManager.getNextAttributeTypeId());
+               type.setId(SequenceManager.getNextAttributeTypeId());
                insertData.add(toInsertValues(type));
                break;
             case MODIFIED:
@@ -117,7 +117,7 @@ public class DatabaseAttributeTypeAccessor implements IOseeTypeDataAccessor<Attr
    private Object[] toInsertValues(AttributeType type) throws OseeDataStoreException {
       int attrBaseTypeId = getOrCreateAttributeBaseType(type.getBaseAttributeTypeId());
       int attrProviderTypeId = getOrCreateAttributeProviderType(type.getAttributeProviderId());
-      return new Object[] {type.getTypeId(), type.getGuid(), attrBaseTypeId, attrProviderTypeId,
+      return new Object[] {type.getId(), type.getGuid(), attrBaseTypeId, attrProviderTypeId,
             type.getFileTypeExtension() == null ? SQL3DataType.VARCHAR : type.getFileTypeExtension(),
             type.getName() == null ? SQL3DataType.VARCHAR : type.getName(),
             type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(), type.getOseeEnumTypeId(),
@@ -135,7 +135,7 @@ public class DatabaseAttributeTypeAccessor implements IOseeTypeDataAccessor<Attr
             type.getDefaultValue() == null ? SQL3DataType.VARCHAR : type.getDefaultValue(), type.getOseeEnumTypeId(),
             type.getMinOccurrences(), type.getMaxOccurrences(),
             type.getDescription() == null ? SQL3DataType.VARCHAR : type.getDescription(),
-            type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId(), type.getTypeId()};
+            type.getTaggerId() == null ? SQL3DataType.VARCHAR : type.getTaggerId(), type.getId()};
    }
 
    private int getOrCreateAttributeProviderType(String attrProviderExtension) throws OseeDataStoreException {

@@ -169,7 +169,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
-            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, RelationTypeManager.getType("Users").getTypeId());
+            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, RelationTypeManager.getType("Users").getId());
 
             // get group members and populate subjectToGroupCache
             while (chStmt.next()) {

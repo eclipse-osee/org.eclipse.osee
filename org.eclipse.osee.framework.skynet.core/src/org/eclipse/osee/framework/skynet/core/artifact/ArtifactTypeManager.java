@@ -185,7 +185,7 @@ public class ArtifactTypeManager {
 
    public static void purgeArtifactType(final ArtifactType artifactType) throws OseeCoreException {
       int artifactCount =
-            ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artifactType.getTypeId());
+            ConnectionHandler.runPreparedQueryFetchInt(0, COUNT_ARTIFACT_OCCURRENCE, artifactType.getId());
 
       if (artifactCount != 0) {
          throw new OseeArgumentException(
@@ -195,7 +195,7 @@ public class ArtifactTypeManager {
 
          @Override
          protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
-            int artTypeId = artifactType.getTypeId();
+            int artTypeId = artifactType.getId();
             ConnectionHandler.runPreparedUpdate(connection, DELETE_VALID_ATTRIBUTE, artTypeId);
             ConnectionHandler.runPreparedUpdate(connection, DELETE_ARIFACT_TYPE, artTypeId);
          }
