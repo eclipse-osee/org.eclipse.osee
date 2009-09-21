@@ -52,6 +52,9 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private static final String UPDATE_CONFLICT_STATUS =
          "UPDATE osee_conflict SET status = ? WHERE status = ? AND merge_branch_id = ?";
 
+   private static final String UPDATE_MERGE_COMMIT_TX =
+         "UPDATE osee_merge set commit_transaction_id = ? Where source_branch_id = ? and dest_branch_id = ?";
+
    private boolean success = true;
    private final Map<Branch, BranchState> savedBranchStates = new HashMap<Branch, BranchState>();
    private final Branch sourceBranch;
@@ -86,7 +89,14 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
       insertCommitAddressing();
 
+      updateMergeBranchCommitTx();
+
       manageBranchStates();
+   }
+
+   private void updateMergeBranchCommitTx() throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, newTransactionNumber,
+            sourceBranch.getBranchId(), destinationBranch.getBranchId());
    }
 
    private void updatePreviousCurrentsOnDestinationBranch() throws OseeStateException, OseeDataStoreException {
@@ -117,7 +127,6 @@ public class CommitDbOperation extends AbstractDbTxOperation {
          insertData.add(new Object[] {newTransactionNumber, change.getNet().getGammaId(), modType.getValue(),
                TxChange.getCurrent(modType).getValue()});
       }
-      System.out.println("Commit change size: " + changes.size());
       ConnectionHandler.runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }
 
