@@ -49,8 +49,8 @@ public class AtsDeleteManager {
          if (art instanceof ATSArtifact) {
             delArts.add(art);
             if (selectedArts.size() < 30) {
-               artBuilder.append(String.format("Name: %s  Type: %s\n",
-                     art.getHumanReadableId(), art.getArtifactTypeName()));
+               artBuilder.append(String.format("Name: %s  Type: %s\n", art.getHumanReadableId(),
+                     art.getArtifactTypeName()));
             }
          }
       }
@@ -94,7 +94,7 @@ public class AtsDeleteManager {
          for (Artifact art : allDeleteArts) {
             if (art instanceof StateMachineArtifact) {
                ActionArtifact actionArt = ((StateMachineArtifact) art).getParentActionArtifact();
-               if (!allDeleteArts.contains(actionArt) && allDeleteArts.containsAll(actionArt.getTeamWorkFlowArtifacts())) {
+               if (actionArt != null && !allDeleteArts.contains(actionArt) && allDeleteArts.containsAll(actionArt.getTeamWorkFlowArtifacts())) {
                   relatedArts.add(actionArt);
                   delBuilder.append(String.format(AHTML.addSpace(4) + "<b>Related</b>:[%s][%s][%s]",
                         actionArt.getArtifactTypeName(), actionArt.getHumanReadableId(), actionArt.getName()) + "\n");

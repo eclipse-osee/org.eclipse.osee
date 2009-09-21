@@ -404,8 +404,12 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void testAtsWorkflowsHaveAction(Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TeamWorkFlowArtifact) {
-            if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
-               xResultData.logError("Team " + XResultData.getHyperlink(artifact) + " has no parent Action\n");
+            try {
+               if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
+                  xResultData.logError("Team " + XResultData.getHyperlink(artifact) + " has no parent Action\n");
+               }
+            } catch (Exception ex) {
+               xResultData.logError("Team " + XResultData.getHyperlink(artifact) + " has no parent Action: exception " + ex);
             }
          }
       }
