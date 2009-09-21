@@ -71,9 +71,9 @@ plugin@org.eclipse.osee.framework.help.ui=SVN,url=https://dev.eclipse.org/svnroo
 plugin@org.eclipse.osee.framework.dev.help.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.dev.help.ui
 
 feature@org.eclipse.osee.external.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.external.feature
-!plugin@org.eclipse.team.svn.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=branches/svn1.6
-!plugin@org.eclipse.team.svn=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=branches/svn1.6
-!plugin@org.eclipse.team.svn.core=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=branches/svn1.6
+plugin@org.eclipse.team.svn=SVN,url=http://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=trunk,path=org.eclipse.team.svn
+plugin@org.eclipse.team.svn.ui=SVN,url=http://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=trunk,path=org.eclipse.team.svn.ui
+plugin@org.eclipse.team.svn.core=SVN,url=http://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=trunk,path=org.eclipse.team.svn.core
 
 plugin@org.eclipse.nebula.widgets.calendarcombo=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.nebula.widgets.calendarcombo_1.0.0.jar
 plugin@org.eclipse.nebula.cwt=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.nebula.cwt_0.9.0.HEAD.jar
