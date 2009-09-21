@@ -459,6 +459,26 @@ public class RelationLink {
       return false;
    }
 
+   /**
+    * Same as equals except don't check relationIds. This is what equals should become once database is cleaned
+    * (permanently) of duplicate "conceptual" relations. ex same artA, artB and relationType
+    */
+   public boolean equalsConceptually(Object obj) {
+      if (obj instanceof RelationLink) {
+         RelationLink other = (RelationLink) obj;
+         boolean result = aArtifactId == other.aArtifactId && aBranch.equals(other.aBranch) &&
+         //
+         bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
+         //
+         other.modificationType == modificationType &&
+         //
+         relationType.equals(other.relationType);
+
+         return result;
+      }
+      return false;
+   }
+
    @Override
    public int hashCode() {
       final int prime = 31;

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
@@ -23,6 +24,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.ats.health.ValidateAtsDatabase;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,11 +35,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -59,9 +61,10 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-      transaction.execute();
+      //      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      //      transaction.execute();
 
+      //      deleteDuplicateCommonBranchDuplicateRelations();
       //      convertAtsLogUserIds(transaction);
       //      deleteUnAssignedUserRelations();
       //      relateDonDunne();
@@ -79,34 +82,71 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       AWorkbench.popup("Completed", "Complete");
    }
 
-   private void purgeDuplicateVersionRelations() throws OseeCoreException {
-      boolean fix = false;
+   private void deleteDuplicateCommonBranchDuplicateRelations() throws OseeCoreException {
+      XResultData rd = new XResultData();
+      rd.log(getName());
+      int listsCount = 0;
+      int artifactsCount = 0;
+      boolean fix = true;
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-      for (TeamWorkFlowArtifact teamArt : TeamWorkFlowArtifact.getAllTeamWorkflowArtifacts()) {
-         List<RelationLink> relLinks =
-               teamArt.getRelations(RelationTypeManager.getType(AtsRelation.TeamWorkflowTargetedForVersion_Version.getName()));
-         if (relLinks.size() > 1) {
-            String str = "Duplicate verArts found for " + teamArt.getHumanReadableId() + " ";
-            Integer firstId = null;
-            String firstName = null;
+
+      // Break artifacts into blocks so don't run out of memory
+      List<Collection<Integer>> artIdLists = ValidateAtsDatabase.loadAtsBranchArtifactIds(rd, null);
+      for (Collection<Integer> artIdList : artIdLists) {
+         System.out.println(String.format("Processing artifacts from list %d/%d", listsCount++, artIdLists.size()));
+         Collection<Artifact> artifacts = ArtifactQuery.getArtifactListFromIds(artIdList, AtsUtil.getAtsBranch());
+         artifactsCount += artifacts.size();
+
+         for (Artifact artifact : artifacts) {
+            List<RelationLink> relLinks = artifact.getRelationsAll(false);
             for (RelationLink relLink : relLinks) {
-               if (firstId == null) {
-                  firstId = relLink.getRelationId();
-                  firstName = relLink.getArtifactB().getName();
-               } else if (relLink.getRelationId() != firstId && relLink.getArtifactB().getName().equals(firstName)) {
-                  str += " Deleteable";
-                  if (fix) {
-                     relLink.delete(false);
-                     teamArt.persist(transaction);
+               // Only handle relations where this artifact is SIDEA (so don't handle same relation twice)
+               if (!relLink.getArtifactA().equals(artifact)) continue;
+               // Find all duplicates
+               List<RelationLink> duplicates = new ArrayList<RelationLink>();
+               duplicates.add(relLink);
+               for (RelationLink otherRelLink : relLinks) {
+                  if (relLink == otherRelLink) continue;
+                  if (relLink.equalsConceptually(otherRelLink)) {
+                     duplicates.add(otherRelLink);
                   }
                }
-               str += "[" + relLink.getArtifactB().getName() + "(" + relLink.getRelationId() + ")]";
-
+               // If more than one, there are duplicates
+               if (duplicates.size() > 1) {
+                  handleDuplicates(rd, artifact, duplicates, fix, transaction);
+               }
             }
-            System.out.println(str);
          }
       }
       transaction.execute();
+      rd.report(getName());
+   }
+
+   /**
+    * For set of duplicate relations, keep first one and delete rest
+    */
+   private void handleDuplicates(XResultData rd, Artifact artifact, List<RelationLink> relLinks, boolean fix, SkynetTransaction transaction) throws OseeCoreException {
+      Integer firstId = null;
+      String firstName = null;
+      String str = relLinks.size() + " duplicate relations found for [" + artifact.getHumanReadableId() + "] ";
+      for (RelationLink relLink : relLinks) {
+         if (firstId == null) {
+            firstId = relLink.getRelationId();
+            firstName = relLink.getArtifactB().getName();
+         } else if (relLink.getRelationId() != firstId && relLink.getArtifactB().getName().equals(firstName)) {
+            str += " Deleteable";
+            if (fix) {
+               relLink.delete(false);
+               artifact.persist(transaction);
+            }
+         }
+         str += "[" + relLink.getArtifactB().getName() + "(" + relLink.getRelationId() + ")]";
+      }
+      System.out.println(str);
+      if (fix) {
+         rd.log("fixed");
+      }
+      rd.log(str);
    }
 
    private void purgeHrids() throws OseeCoreException {

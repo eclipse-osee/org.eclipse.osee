@@ -135,7 +135,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
       int count = 0;
       // Break artifacts into blocks so don't run out of memory
-      List<Collection<Integer>> artIdLists = loadAtsBranchArtifactIds();
+      List<Collection<Integer>> artIdLists = loadAtsBranchArtifactIds(xResultData, monitor);
       if (monitor != null) {
          monitor.beginTask(getName(), artIdLists.size());
       }
@@ -264,7 +264,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private List<Collection<Integer>> loadAtsBranchArtifactIds() throws OseeCoreException {
+   public static List<Collection<Integer>> loadAtsBranchArtifactIds(XResultData xResultData, IProgressMonitor monitor) throws OseeCoreException {
       if (xResultData == null) {
          xResultData = new XResultData();
       }
@@ -405,9 +405,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TeamWorkFlowArtifact) {
             try {
-               if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
-                  xResultData.logError("Team " + XResultData.getHyperlink(artifact) + " has no parent Action\n");
-               }
+            if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
+               xResultData.logError("Team " + XResultData.getHyperlink(artifact) + " has no parent Action\n");
+            }
             } catch (Exception ex) {
                xResultData.logError("Team " + XResultData.getHyperlink(artifact) + " has no parent Action: exception " + ex);
             }
