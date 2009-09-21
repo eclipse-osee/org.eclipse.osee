@@ -14,7 +14,6 @@ package org.eclipse.osee.ats.editor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
@@ -23,7 +22,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.ats.AtsOpenOption;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -66,12 +64,24 @@ public class SMARelationsHyperlinkComposite extends Composite {
       setLayoutData(gd);
       toolkit.adapt(this);
 
-      processArtifact("This", smaMgr.getSma());
-      if (smaMgr.getSma() instanceof ReviewSMArtifact) processReviewArtifact((ReviewSMArtifact) smaMgr.getSma());
+      // Create all hyperlinks from this artifact to others of interest
+      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is reviewed by",
+            AtsRelation.TeamWorkflowToReview_Review);
+      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "reviews", AtsRelation.TeamWorkflowToReview_Team);
+      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "supercedes", AtsRelation.Supercedes_Superceded);
+      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is superceded by", AtsRelation.Supercedes_Supercedes);
+      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "depends on", AtsRelation.Dependency__Dependency);
+      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is dependency of", AtsRelation.Dependency__Artifact);
+      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is supported info for",
+            AtsRelation.SupportingInfo_SupportedBy);
+      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "has supporting info",
+            AtsRelation.SupportingInfo_SupportingInfo);
 
-      if ((smaMgr.getSma() instanceof TeamWorkFlowArtifact) && ((TeamWorkFlowArtifact) smaMgr.getSma()).getParentActionArtifact() != null) {
-         processArtifact("Parent ", ((TeamWorkFlowArtifact) smaMgr.getSma()).getParentActionArtifact());
+      // Create label for review's related actionable items (if any) 
+      if (smaMgr.getSma() instanceof ReviewSMArtifact) {
+         processReviewArtifact((ReviewSMArtifact) smaMgr.getSma());
       }
+
    }
 
    public static boolean relationExists(StateMachineArtifact smaArt) throws OseeCoreException {
@@ -92,33 +102,27 @@ public class SMARelationsHyperlinkComposite extends Composite {
       return "";
    }
 
-   private void processArtifact(String name, Artifact thisArt) throws OseeCoreException {
-      for (AtsRelation side : sides) {
-         for (final Artifact art : thisArt.getRelatedArtifacts(side)) {
-            RelationLink rel = thisArt.getRelations(side, art).iterator().next();
-            toolkit.createLabel(
-                  this,
-                  name + " \"" + thisArt.getArtifactTypeName() + "\" " + rel.getSidePhrasingFor(thisArt) + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
-            Hyperlink link =
-                  toolkit.createHyperlink(
-                        this,
-                        String.format(
-                              "\"%s\" - %s",
-                              art.getName().length() < 60 ? art.getName() : art.getName().substring(
-                                    0, 60), art.getHumanReadableId()), SWT.NONE);
-            link.addHyperlinkListener(new IHyperlinkListener() {
+   private void createArtifactRelationHyperlinks(String prefix, Artifact thisArt, String action, AtsRelation side) throws OseeCoreException {
+      for (final Artifact art : thisArt.getRelatedArtifacts(side)) {
+         toolkit.createLabel(
+               this,
+               prefix + " \"" + thisArt.getArtifactTypeName() + "\" " + action + getCompletedCancelledString(art) + " \"" + art.getArtifactTypeName() + "\" ");
+         Hyperlink link =
+               toolkit.createHyperlink(this, String.format("\"%s\" - %s",
+                     art.getName().length() < 60 ? art.getName() : art.getName().substring(0, 60),
+                     art.getHumanReadableId()), SWT.NONE);
+         link.addHyperlinkListener(new IHyperlinkListener() {
 
-               public void linkEntered(HyperlinkEvent e) {
-               }
+            public void linkEntered(HyperlinkEvent e) {
+            }
 
-               public void linkExited(HyperlinkEvent e) {
-               }
+            public void linkExited(HyperlinkEvent e) {
+            }
 
-               public void linkActivated(HyperlinkEvent e) {
-                  AtsUtil.openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
-               }
-            });
-         }
+            public void linkActivated(HyperlinkEvent e) {
+               AtsUtil.openAtsAction(art, AtsOpenOption.OpenOneOrPopupSelect);
+            }
+         });
       }
    }
 
