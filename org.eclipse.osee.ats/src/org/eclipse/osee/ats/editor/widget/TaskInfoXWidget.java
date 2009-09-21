@@ -65,8 +65,8 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
 
    @Override
    public void refresh() {
-      if (managedForm == null || managedForm.getForm() == null || managedForm.getForm().isDisposed()) {
-         return;
+      if (labelWidget == null || !labelWidget.isDisposed() || managedForm == null || managedForm.getForm() == null || managedForm.getForm().isDisposed()) {
+         dispose();
       }
       try {
          if (smaMgr.getTaskMgr().getTaskArtifacts(forStateName).size() > 0) {
