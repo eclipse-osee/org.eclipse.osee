@@ -51,13 +51,6 @@ public class NativeArtifactTest {
    }
 
    @org.junit.Test
-   public void testGetImage() throws Exception {
-      Artifact nativeArtifact = getNativeArtifact();
-      assertTrue("Fix this Test - not testing what its supposed to", false);
-      assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName(), "").equals("csv"));
-   }
-
-   @org.junit.Test
    public void testGetFileExtension() throws Exception {
       Artifact nativeArtifact = getNativeArtifact();
       assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName(), "").equals("csv"));
