@@ -14,5 +14,13 @@ package org.eclipse.osee.framework.core.enums;
  * @author Ryan D. Brooks
  */
 public enum BranchControlled {
-   CHANGE_MANAGED, NOT_CHANGE_MANAGED, ALL
+   CHANGE_MANAGED, NOT_CHANGE_MANAGED, ALL;
+
+   public boolean matches(BranchControlled branchControlled) {
+      return branchControlled == BranchControlled.ALL || this == branchControlled;
+   }
+
+   public static BranchControlled fromBoolean(boolean isChangeManaged) {
+      return isChangeManaged ? CHANGE_MANAGED : NOT_CHANGE_MANAGED;
+   }
 }

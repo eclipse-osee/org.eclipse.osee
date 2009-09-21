@@ -23,12 +23,12 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 
 /**
  * @author Roberto E. Escobar
@@ -43,38 +43,46 @@ public class DatabaseRelationTypeAccessor implements IOseeTypeDataAccessor<Relat
    private static final String USER_ORDERED = "Yes";
    private static final String NOT_USER_ORDERED = "No";
 
+   private final ArtifactTypeCache artifactCache;
+
+   public DatabaseRelationTypeAccessor(ArtifactTypeCache artifactCache) {
+      this.artifactCache = artifactCache;
+   }
+
    @Override
-   public void load(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+   public void load(AbstractOseeCache<RelationType> cache, IOseeTypeFactory factory) throws OseeCoreException {
+      artifactCache.ensurePopulated();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
          chStmt.runPreparedQuery(SELECT_LINK_TYPES);
 
          while (chStmt.next()) {
+            String name = chStmt.getString("type_name");
+            int typeId = chStmt.getInt("rel_link_type_id");
+            int aArtTypeId = chStmt.getInt("a_art_type_id");
+            int bArtTypeId = chStmt.getInt("b_art_type_id");
+            int multiplicityValue = chStmt.getInt("multiplicity");
             try {
-               String relationTypeName = chStmt.getString("type_name");
-               int relationTypeId = chStmt.getInt("rel_link_type_id");
-               ArtifactType artifactTypeSideA = ArtifactTypeManager.getType(chStmt.getInt("a_art_type_id"));
-               ArtifactType artifactTypeSideB = ArtifactTypeManager.getType(chStmt.getInt("b_art_type_id"));
+               ArtifactType artifactTypeSideA = artifactCache.getTypeById(aArtTypeId);
+               ArtifactType artifactTypeSideB = artifactCache.getTypeById(bArtTypeId);
                RelationTypeMultiplicity multiplicity =
-                     RelationTypeMultiplicity.getRelationMultiplicity(chStmt.getInt("multiplicity"));
-               if (multiplicity != null) {
-                  boolean isUserOrdered = USER_ORDERED.equalsIgnoreCase(chStmt.getString("user_ordered"));
-                  RelationType relationType =
-                        factory.createRelationType(cache.getRelationTypeCache(),
-                              chStmt.getString("rel_link_type_guid"), relationTypeName, chStmt.getString("a_name"),
-                              chStmt.getString("b_name"), artifactTypeSideA, artifactTypeSideB, multiplicity,
-                              isUserOrdered, chStmt.getString("default_order_type_guid"));
-                  relationType.setId(chStmt.getInt("rel_link_type_id"));
-                  relationType.setModificationType(ModificationType.MODIFIED);
-                  relationType.clearDirty();
-                  cache.getRelationTypeCache().cacheType(relationType);
-               } else {
-                  OseeLog.log(Activator.class, Level.SEVERE, String.format("Multiplicity was null for [%s][%s]",
-                        relationTypeName, relationTypeId));
-               }
+                     RelationTypeMultiplicity.getRelationMultiplicity(multiplicityValue);
+               boolean isUserOrdered = USER_ORDERED.equalsIgnoreCase(chStmt.getString("user_ordered"));
+               RelationType relationType =
+                     factory.createRelationType(cache, chStmt.getString("rel_link_type_guid"), name,
+                           chStmt.getString("a_name"), chStmt.getString("b_name"), artifactTypeSideA,
+                           artifactTypeSideB, multiplicity, isUserOrdered, chStmt.getString("default_order_type_guid"));
+               relationType.setId(typeId);
+               relationType.setModificationType(ModificationType.MODIFIED);
+               relationType.clearDirty();
+               cache.cacheType(relationType);
             } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
+               String message =
+                     String.format(
+                           "Error loading relation type - name:[%s] id:[%s] aArtTypeId:[%s] bArtTypeid:[%s] multiplicity:[%s]",
+                           name, typeId, aArtTypeId, bArtTypeId, multiplicityValue);
+               OseeLog.log(Activator.class, Level.SEVERE, message, ex);
             }
          }
       } finally {
@@ -83,7 +91,7 @@ public class DatabaseRelationTypeAccessor implements IOseeTypeDataAccessor<Relat
    }
 
    @Override
-   public void store(OseeTypeCache cache, Collection<RelationType> relationTypes) throws OseeCoreException {
+   public void store(AbstractOseeCache<RelationType> cache, Collection<RelationType> relationTypes) throws OseeCoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> updateData = new ArrayList<Object[]>();
       for (RelationType type : relationTypes) {

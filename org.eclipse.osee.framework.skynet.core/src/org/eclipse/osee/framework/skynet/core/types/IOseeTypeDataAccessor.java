@@ -16,9 +16,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeTypeDataAccessor<T> {
+public interface IOseeTypeDataAccessor<T extends IOseeStorableType> {
 
-   public void load(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException;
+   public void load(AbstractOseeCache<T> cache, IOseeTypeFactory factory) throws OseeCoreException;
 
-   public void store(OseeTypeCache cache, Collection<T> types) throws OseeCoreException;
+   public void store(AbstractOseeCache<T> cache, Collection<T> types) throws OseeCoreException;
 }

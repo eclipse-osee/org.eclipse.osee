@@ -41,6 +41,15 @@ public enum BranchType {
       return this == BranchType.WORKING;
    }
 
+   public boolean isOfType(BranchType... branchTypes) {
+      for (BranchType branchType : branchTypes) {
+         if (this == branchType) {
+            return true;
+         }
+      }
+      return false;
+   }
+
    public static BranchType getBranchType(int value) {
       for (BranchType type : values()) {
          if (type.getValue() == value) {

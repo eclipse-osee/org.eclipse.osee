@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 
 /**
@@ -25,15 +26,18 @@ import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 public class ArtifactType extends AbstractOseeType implements Comparable<ArtifactType> {
    private boolean isAbstract;
    private final ArtifactFactoryManager factoryManager;
-   private final ArtifactTypeCache cache;
    private final DirtyStateDetail dirtyStateDetail;
 
-   public ArtifactType(ArtifactTypeCache cache, String guid, String name, boolean isAbstract, ArtifactFactoryManager factoryManager) {
+   public ArtifactType(AbstractOseeCache<ArtifactType> cache, String guid, String name, boolean isAbstract, ArtifactFactoryManager factoryManager) {
       super(cache, guid, name);
       this.dirtyStateDetail = new DirtyStateDetail();
       setAbstract(isAbstract);
       this.factoryManager = factoryManager;
-      this.cache = cache;
+   }
+
+   @Override
+   protected ArtifactTypeCache getCache() {
+      return (ArtifactTypeCache) super.getCache();
    }
 
    public DirtyStateDetail getDirtyDetails() {
@@ -41,7 +45,7 @@ public class ArtifactType extends AbstractOseeType implements Comparable<Artifac
    }
 
    public Collection<ArtifactType> getSuperArtifactTypes() {
-      return cache.getArtifactSuperType(this);
+      return getCache().getArtifactSuperType(this);
    }
 
    public boolean hasSuperArtifactTypes() {
@@ -51,15 +55,15 @@ public class ArtifactType extends AbstractOseeType implements Comparable<Artifac
 
    public void setSuperType(Set<ArtifactType> superType) throws OseeCoreException {
       Collection<ArtifactType> original = getSuperArtifactTypes();
-      cache.setArtifactSuperType(this, superType);
+      getCache().setArtifactSuperType(this, superType);
       Collection<ArtifactType> newTypes = getSuperArtifactTypes();
       getDirtyDetails().setIsInheritanceDirty(isDifferent(original, newTypes));
    }
 
    public void setAttributeTypeValidity(Collection<AttributeType> attributeTypes, Branch branch) throws OseeCoreException {
-      Collection<AttributeType> original = cache.getLocalAttributeTypes(this, branch);
-      cache.cacheTypeValidity(this, attributeTypes, branch);
-      Collection<AttributeType> newTypes = cache.getLocalAttributeTypes(this, branch);
+      Collection<AttributeType> original = getCache().getLocalAttributeTypes(this, branch);
+      getCache().cacheTypeValidity(this, attributeTypes, branch);
+      Collection<AttributeType> newTypes = getCache().getLocalAttributeTypes(this, branch);
       getDirtyDetails().setIsAttributeTypeValidatityDirty(isDifferent(original, newTypes));
    }
 
@@ -68,7 +72,7 @@ public class ArtifactType extends AbstractOseeType implements Comparable<Artifac
    }
 
    public Set<AttributeType> getAttributeTypes(Branch branch) throws OseeCoreException {
-      return cache.getAttributeTypes(this, branch);
+      return getCache().getAttributeTypes(this, branch);
    }
 
    public boolean isAbstract() {
@@ -139,7 +143,7 @@ public class ArtifactType extends AbstractOseeType implements Comparable<Artifac
     * @throws OseeCoreException
     */
    public boolean inheritsFrom(String artifactTypeName) throws OseeCoreException {
-      ArtifactType artifactType = cache.getTypeByName(artifactTypeName);
+      ArtifactType artifactType = getCache().getTypeByName(artifactTypeName);
       if (artifactType == null) {
          throw new OseeTypeDoesNotExist("Artifact type [" + artifactTypeName + "] is not available.");
       }

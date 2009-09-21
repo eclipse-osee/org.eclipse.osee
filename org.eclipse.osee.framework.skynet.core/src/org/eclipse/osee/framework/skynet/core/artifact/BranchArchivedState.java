@@ -14,5 +14,35 @@ package org.eclipse.osee.framework.skynet.core.artifact;
  * @author Ryan D. Brooks
  */
 public enum BranchArchivedState {
-   ARCHIVED, UNARCHIVED, ALL
+   ARCHIVED(1), UNARCHIVED(0), ALL(-1);
+
+   private final int value;
+
+   BranchArchivedState(int value) {
+      this.value = value;
+   }
+
+   public final int getValue() {
+      return value;
+   }
+
+   public boolean isArchived() {
+      return this == ARCHIVED;
+   }
+
+   public boolean isUnArchived() {
+      return this == UNARCHIVED;
+   }
+
+   public boolean matches(BranchArchivedState branchState) {
+      return branchState == BranchArchivedState.ALL || this == branchState;
+   }
+
+   public static BranchArchivedState fromBoolean(boolean isArchived) {
+      return isArchived ? ARCHIVED : UNARCHIVED;
+   }
+
+   public static BranchArchivedState valueOf(int value) {
+      return ARCHIVED.getValue() != value ? UNARCHIVED : ARCHIVED;
+   }
 }

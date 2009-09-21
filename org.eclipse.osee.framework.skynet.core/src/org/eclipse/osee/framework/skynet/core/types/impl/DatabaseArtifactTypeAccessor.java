@@ -27,17 +27,16 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType.DirtyStateDetail;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
+import org.eclipse.osee.framework.skynet.core.types.AttributeTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 
 /**
  * @author Roberto E. Escobar
@@ -66,18 +65,28 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
    private static final String DELETE_ARTIFACT_TYPE_ATTRIBUTES =
          "delete from osee_artifact_type_attributes where art_type_id = ?";
 
+   private final AttributeTypeCache attributeCache;
+
+   public DatabaseArtifactTypeAccessor(AttributeTypeCache attributeCache) {
+      this.attributeCache = attributeCache;
+   }
+
+   private ArtifactTypeCache getCastedObject(AbstractOseeCache<ArtifactType> cache) {
+      return (ArtifactTypeCache) cache;
+   }
+
    @Override
-   public void load(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
-      ArtifactTypeCache cacheData = cache.getArtifactTypeCache();
-      loadArtifactTypes(cacheData, factory);
-      loadTypeInheritance(cacheData);
-      loadAllTypeValidity(cacheData, factory);
-      for (ArtifactType type : cacheData.getAllTypes()) {
+   public void load(AbstractOseeCache<ArtifactType> cache, IOseeTypeFactory factory) throws OseeCoreException {
+      attributeCache.ensurePopulated();
+      loadArtifactTypes(cache, factory);
+      loadTypeInheritance(getCastedObject(cache));
+      loadAllTypeValidity(getCastedObject(cache), factory);
+      for (ArtifactType type : cache.getAllTypes()) {
          type.clearDirty();
       }
    }
 
-   private void loadArtifactTypes(ArtifactTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+   private void loadArtifactTypes(AbstractOseeCache<ArtifactType> cache, IOseeTypeFactory factory) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(SELECT_ARTIFACT_TYPES);
@@ -137,9 +146,11 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
          chStmt.runPreparedQuery(2000, SELECT_ARTIFACT_TYPE_ATTRIBUTES);
          while (chStmt.next()) {
             try {
-               ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
-               AttributeType attributeType = AttributeTypeManager.getType(chStmt.getInt("attr_type_id"));
-               Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
+               ArtifactType artifactType = cache.getTypeById(chStmt.getInt("art_type_id"));
+               AttributeType attributeType = attributeCache.getTypeById(chStmt.getInt("attr_type_id"));
+
+               // TODO remove dependency on Managers
+               Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id")); // Use Branch Cache
                cache.cacheTypeValidity(artifactType, attributeType, branch);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -151,7 +162,7 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
    }
 
    @Override
-   public void store(OseeTypeCache cache, Collection<ArtifactType> types) throws OseeCoreException {
+   public void store(AbstractOseeCache<ArtifactType> cache, Collection<ArtifactType> types) throws OseeCoreException {
       Set<ArtifactType> typeInheritanceChanges = new HashSet<ArtifactType>();
       Set<ArtifactType> typeValidityChanges = new HashSet<ArtifactType>();
       List<Object[]> insertData = new ArrayList<Object[]>();
@@ -185,7 +196,7 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
       ConnectionHandler.runBatchUpdate(UPDATE_ARTIFACT_TYPE, updateData);
 
       storeArtifactTypeInheritance(typeInheritanceChanges);
-      storeAttributeTypeValidity(cache, types);
+      storeAttributeTypeValidity(getCastedObject(cache), types);
 
       for (ArtifactType type : types) {
          type.clearDirty();
@@ -205,19 +216,17 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
       ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE_INHERITANCE, insertInheritanceData);
    }
 
-   private void storeAttributeTypeValidity(OseeTypeCache cache, Collection<ArtifactType> types) throws OseeDataStoreException {
+   private void storeAttributeTypeValidity(ArtifactTypeCache cache, Collection<ArtifactType> types) throws OseeDataStoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (ArtifactType artifactType : types) {
          deleteData.add(new Object[] {artifactType.getId()});
-         Map<Branch, Collection<AttributeType>> entries =
-               cache.getArtifactTypeCache().getLocalAttributeTypes(artifactType);
+         Map<Branch, Collection<AttributeType>> entries = cache.getLocalAttributeTypes(artifactType);
          if (entries != null) {
             for (Entry<Branch, Collection<AttributeType>> entry : entries.entrySet()) {
                Branch branch = entry.getKey();
                for (AttributeType attributeType : entry.getValue()) {
-                  insertData.add(new Object[] {artifactType.getId(), attributeType.getId(),
-                        branch.getBranchId()});
+                  insertData.add(new Object[] {artifactType.getId(), attributeType.getId(), branch.getBranchId()});
                }
             }
          }

@@ -20,8 +20,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
  */
 public final class RelationTypeCache extends AbstractOseeCache<RelationType> {
 
-   public RelationTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<RelationType> dataAccessor) {
-      super(cache, factory, dataAccessor);
+   public RelationTypeCache(IOseeTypeFactory factory, IOseeTypeDataAccessor<RelationType> dataAccessor) {
+      super(factory, dataAccessor);
    }
 
    public RelationType createType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {

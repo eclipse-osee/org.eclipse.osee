@@ -27,20 +27,15 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
    private final HashMap<String, T> nameToTypeMap = new HashMap<String, T>();
    private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
    private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
-   private final OseeTypeCache cache;
+
    private final IOseeTypeFactory factory;
    private final IOseeTypeDataAccessor<T> dataAccessor;
    private boolean duringPopulate;
 
-   public AbstractOseeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<T> dataAccessor) {
+   public AbstractOseeCache(IOseeTypeFactory factory, IOseeTypeDataAccessor<T> dataAccessor) {
       this.duringPopulate = false;
-      this.cache = cache;
       this.factory = factory;
       this.dataAccessor = dataAccessor;
-   }
-
-   protected OseeTypeCache getCache() {
-      return cache;
    }
 
    protected IOseeTypeDataAccessor<T> getDataAccessor() {
@@ -52,7 +47,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
    }
 
    public boolean existsByGuid(String guid) throws OseeCoreException {
-      getCache().ensurePopulated();
+      ensurePopulated();
       return guidToTypeMap.containsKey(guid);
    }
 
@@ -86,27 +81,27 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
    }
 
    public Collection<T> getAllTypes() throws OseeCoreException {
-      getCache().ensurePopulated();
+      ensurePopulated();
       return new ArrayList<T>(guidToTypeMap.values());
    }
 
    public T getTypeById(int typeId) throws OseeCoreException {
-      getCache().ensurePopulated();
+      ensurePopulated();
       return idToTypeMap.get(typeId);
    }
 
    public T getTypeByName(String typeName) throws OseeCoreException {
-      getCache().ensurePopulated();
+      ensurePopulated();
       return nameToTypeMap.get(typeName);
    }
 
    public T getTypeByGuid(String typeGuid) throws OseeCoreException {
-      getCache().ensurePopulated();
+      ensurePopulated();
       return guidToTypeMap.get(typeGuid);
    }
 
    public Collection<T> getDirtyTypes() throws OseeCoreException {
-      getCache().ensurePopulated();
+      ensurePopulated();
       Collection<T> dirtyItems = new HashSet<T>();
       for (T type : guidToTypeMap.values()) {
          if (type.isDirty()) {
@@ -131,7 +126,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
    }
 
    public void storeByGuid(Collection<String> guids) throws OseeCoreException {
-      getCache().ensurePopulated();
+      ensurePopulated();
       Collection<T> items = new HashSet<T>();
       for (String guid : guids) {
          T type = getTypeByGuid(guid);
@@ -146,7 +141,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
    }
 
    public void reloadCache() throws OseeCoreException {
-      getDataAccessor().load(getCache(), getDataFactory());
+      getDataAccessor().load(this, getDataFactory());
    }
 
    @SuppressWarnings("unchecked")
@@ -155,7 +150,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
    }
 
    private void storeItems(Collection<T> toStore) throws OseeCoreException {
-      getDataAccessor().store(getCache(), toStore);
+      getDataAccessor().store(this, toStore);
       synchronized (idToTypeMap) {
          for (T type : toStore) {
             cacheTypeById(type);

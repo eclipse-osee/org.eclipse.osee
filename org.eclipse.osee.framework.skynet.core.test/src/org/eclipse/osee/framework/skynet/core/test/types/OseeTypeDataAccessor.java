@@ -3,11 +3,12 @@ package org.eclipse.osee.framework.skynet.core.test.types;
 import java.util.Collection;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.IOseeStorableType;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 
-public class OseeTypeDataAccessor<T> implements IOseeTypeDataAccessor<T> {
+public class OseeTypeDataAccessor<T extends IOseeStorableType> implements IOseeTypeDataAccessor<T> {
 
    private boolean wasLoadCalled = false;
    private boolean wasStoreCalled = false;
@@ -29,14 +30,14 @@ public class OseeTypeDataAccessor<T> implements IOseeTypeDataAccessor<T> {
    }
 
    @Override
-   public void load(OseeTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
+   public void load(AbstractOseeCache<T> cache, IOseeTypeFactory factory) throws OseeCoreException {
       Assert.assertNotNull(cache);
       Assert.assertNotNull(factory);
       setLoadCalled(true);
    }
 
    @Override
-   public void store(OseeTypeCache cache, Collection<T> types) throws OseeCoreException {
+   public void store(AbstractOseeCache<T> cache, Collection<T> types) throws OseeCoreException {
       Assert.assertNotNull(cache);
       Assert.assertNotNull(types);
       setStoreCalled(true);

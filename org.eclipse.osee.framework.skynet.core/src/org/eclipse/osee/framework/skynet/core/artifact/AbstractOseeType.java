@@ -28,6 +28,10 @@ public abstract class AbstractOseeType implements IOseeStorableType {
       this.modificationType = ModificationType.NEW;
    }
 
+   protected AbstractOseeCache<? extends AbstractOseeType> getCache() {
+      return cache;
+   }
+
    public final int getId() {
       return uniqueId;
    }

@@ -33,8 +33,13 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
+import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
+import org.eclipse.osee.framework.skynet.core.types.AttributeTypeCache;
+import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
+import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
+import org.eclipse.osee.framework.skynet.core.types.RelationTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseArtifactTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseAttributeTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseOseeEnumTypeAccessor;
@@ -60,6 +65,18 @@ public class CompareOseeTypeCacheOperation extends AbstractOperation {
       this.modifiedCache = modifiedCache;
    }
 
+   private OseeTypeCache createEmptyCache() {
+      IOseeTypeFactory factory = new OseeTypeFactory();
+      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(factory, new DatabaseOseeEnumTypeAccessor());
+      AttributeTypeCache attrCache = new AttributeTypeCache(factory, new DatabaseAttributeTypeAccessor(enumCache));
+
+      ArtifactTypeCache artCache = new ArtifactTypeCache(factory, new DatabaseArtifactTypeAccessor(attrCache));
+      RelationTypeCache relCache = new RelationTypeCache(factory, new DatabaseRelationTypeAccessor(artCache));
+
+      OseeTypeCache storeCache = new OseeTypeCache(factory, artCache, attrCache, relCache, enumCache);
+      return storeCache;
+   }
+
    /*
     * (non-Javadoc)
     * @see org.eclipse.osee.framework.core.operation.AbstractOperation#doWork(org.eclipse.core.runtime.IProgressMonitor)
@@ -69,10 +86,7 @@ public class CompareOseeTypeCacheOperation extends AbstractOperation {
       Map<String, OseeTypeModel> changedModels = new HashMap<String, OseeTypeModel>();
       doSubWork(new OseeToXtextOperation(modifiedCache, changedModels), monitor, 0.20);
 
-      OseeTypeCache storeCache =
-            new OseeTypeCache(new OseeTypeFactory(), new DatabaseArtifactTypeAccessor(),
-                  new DatabaseAttributeTypeAccessor(), new DatabaseRelationTypeAccessor(),
-                  new DatabaseOseeEnumTypeAccessor());
+      OseeTypeCache storeCache = createEmptyCache();
       storeCache.ensurePopulated();
       Map<String, OseeTypeModel> baseModels = new HashMap<String, OseeTypeModel>();
       doSubWork(new OseeToXtextOperation(storeCache, baseModels), monitor, 0.20);

@@ -24,8 +24,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 
 /**
@@ -49,15 +49,14 @@ public class OseeTypesUtil {
       }
    }
 
-   public static OseeEnumType createEnumType(OseeTypeCache cache, IOseeTypeFactory factory, String guid, String name, Object... entries) throws OseeCoreException {
-      OseeEnumTypeCache eCache = cache.getEnumTypeCache();
-      OseeEnumType type = factory.createEnumType(eCache, guid, name);
+   public static OseeEnumType createEnumType(AbstractOseeCache<OseeEnumType> cache, IOseeTypeFactory factory, String guid, String name, Object... entries) throws OseeCoreException {
+      OseeEnumType type = factory.createEnumType(cache, guid, name);
       if (entries != null && entries.length > 0) {
          List<OseeEnumEntry> items = new ArrayList<OseeEnumEntry>();
          for (int index = 0; index < entries.length; index++) {
             String itemName = (String) entries[index];
             Integer ordinal = (Integer) entries[++index];
-            items.add(factory.createEnumEntry(eCache, null, itemName, ordinal));
+            items.add(factory.createEnumEntry(cache, null, itemName, ordinal));
          }
          type.setEntries(items);
       }

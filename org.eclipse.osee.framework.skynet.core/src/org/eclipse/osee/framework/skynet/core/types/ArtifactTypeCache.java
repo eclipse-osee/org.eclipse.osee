@@ -35,8 +35,8 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
    private final CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> artifactToAttributeMap =
          new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
 
-   public ArtifactTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<ArtifactType> dataAccessor) {
-      super(cache, factory, dataAccessor);
+   public ArtifactTypeCache(IOseeTypeFactory factory, IOseeTypeDataAccessor<ArtifactType> dataAccessor) {
+      super(factory, dataAccessor);
    }
 
    public ArtifactType createType(String guid, boolean isAbstract, String artifactTypeName) throws OseeCoreException {

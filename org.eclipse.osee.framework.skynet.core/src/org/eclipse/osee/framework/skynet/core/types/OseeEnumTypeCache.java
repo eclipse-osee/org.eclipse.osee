@@ -32,8 +32,8 @@ public final class OseeEnumTypeCache extends AbstractOseeCache<OseeEnumType> {
          new HashCollection<OseeEnumType, OseeEnumEntry>();
    private final Map<OseeEnumEntry, OseeEnumType> enumEntryToEnumType = new HashMap<OseeEnumEntry, OseeEnumType>();
 
-   public OseeEnumTypeCache(OseeTypeCache cache, IOseeTypeFactory factory, IOseeTypeDataAccessor<OseeEnumType> dataAccessor) {
-      super(cache, factory, dataAccessor);
+   public OseeEnumTypeCache(IOseeTypeFactory factory, IOseeTypeDataAccessor<OseeEnumType> dataAccessor) {
+      super(factory, dataAccessor);
    }
 
    public void cacheEnumEntries(OseeEnumType oseeEnumType, Collection<OseeEnumEntry> oseeEnumEntries) throws OseeCoreException {
@@ -112,12 +112,12 @@ public final class OseeEnumTypeCache extends AbstractOseeCache<OseeEnumType> {
    }
 
    public OseeEnumType getEnumType(OseeEnumEntry oseeEnumEntry) throws OseeCoreException {
-      //      getCache().ensurePopulated();
+      ensurePopulated();
       return enumEntryToEnumType.get(oseeEnumEntry);
    }
 
    public List<OseeEnumEntry> getEnumEntries(OseeEnumType oseeEnumType) throws OseeCoreException {
-      getCache().ensurePopulated();
+      ensurePopulated();
       List<OseeEnumEntry> itemsToReturn = new ArrayList<OseeEnumEntry>();
       Collection<OseeEnumEntry> entries = enumTypeToEntryMap.getValues(oseeEnumType);
       if (entries != null) {

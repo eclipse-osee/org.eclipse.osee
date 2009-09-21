@@ -25,10 +25,15 @@ public class OseeTypeManager {
    private final OseeTypeCache oseeTypeCache;
 
    private OseeTypeManager() {
-      oseeTypeCache =
-            new OseeTypeCache(new OseeTypeFactory(), new DatabaseArtifactTypeAccessor(),
-                  new DatabaseAttributeTypeAccessor(), new DatabaseRelationTypeAccessor(),
-                  new DatabaseOseeEnumTypeAccessor());
+      IOseeTypeFactory factory = new OseeTypeFactory();
+
+      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(factory, new DatabaseOseeEnumTypeAccessor());
+      AttributeTypeCache attrCache = new AttributeTypeCache(factory, new DatabaseAttributeTypeAccessor(enumCache));
+
+      ArtifactTypeCache artCache = new ArtifactTypeCache(factory, new DatabaseArtifactTypeAccessor(attrCache));
+      RelationTypeCache relCache = new RelationTypeCache(factory, new DatabaseRelationTypeAccessor(artCache));
+
+      oseeTypeCache = new OseeTypeCache(new OseeTypeFactory(), artCache, attrCache, relCache, enumCache);
    }
 
    public static OseeTypeCache getCache() {

@@ -86,4 +86,9 @@ public class Branch {
       return branchGuid;
    }
 
+   @Override
+   public String toString() {
+      return "Branch [associatedArtifactId=" + associatedArtifactId + ", branchGuid=" + branchGuid + ", branchId=" + branchId + ", branchState=" + branchState + ", branchType=" + branchType + ", name=" + name + ", parentBranchId=" + parentBranchId + ", parentTransactionId=" + parentTransactionId + ", staticBranchName=" + staticBranchName + "]";
+   }
+
 }

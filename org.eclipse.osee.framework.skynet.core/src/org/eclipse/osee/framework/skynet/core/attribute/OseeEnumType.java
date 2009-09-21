@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 
 /**
@@ -30,12 +31,15 @@ import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
  */
 public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnumType> {
 
-   private final OseeEnumTypeCache cache;
    private boolean areEntriesDirty;
 
-   public OseeEnumType(OseeEnumTypeCache cache, String guid, String enumTypeName) {
+   public OseeEnumType(AbstractOseeCache<OseeEnumType> cache, String guid, String enumTypeName) {
       super(cache, guid, enumTypeName);
-      this.cache = cache;
+   }
+
+   @Override
+   protected OseeEnumTypeCache getCache() {
+      return (OseeEnumTypeCache) super.getCache();
    }
 
    @Override
@@ -52,7 +56,7 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
    }
 
    public OseeEnumEntry[] values() throws OseeCoreException {
-      List<OseeEnumEntry> entries = cache.getEnumEntries(this);
+      List<OseeEnumEntry> entries = getCache().getEnumEntries(this);
       Collections.sort(entries);
       return entries.toArray(new OseeEnumEntry[entries.size()]);
    }
@@ -92,9 +96,9 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
    }
 
    public void setEntries(Collection<OseeEnumEntry> entries) throws OseeCoreException {
-      List<OseeEnumEntry> oldEntries = cache.getEnumEntries(this);
-      cache.cacheEnumEntries(this, entries);
-      List<OseeEnumEntry> newEntries = cache.getEnumEntries(this);
+      List<OseeEnumEntry> oldEntries = getCache().getEnumEntries(this);
+      getCache().cacheEnumEntries(this, entries);
+      List<OseeEnumEntry> newEntries = getCache().getEnumEntries(this);
       areEntriesDirty |= isDifferent(oldEntries, newEntries);
    }
 

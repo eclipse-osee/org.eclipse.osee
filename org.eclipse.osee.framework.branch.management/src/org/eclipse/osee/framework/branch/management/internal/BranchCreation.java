@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.branch.management.internal;
 
 import org.eclipse.osee.framework.branch.management.Branch;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
+import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
 
@@ -21,8 +22,9 @@ import org.eclipse.osee.framework.core.operation.Operations;
 public class BranchCreation implements IBranchCreation {
 
    public int createBranch(Branch branch, int authorId, String creationComment) throws Exception {
-      CreateBranchOperation operation = new CreateBranchOperation(branch, authorId, creationComment);
+      IOperation operation = new CreateBranchOperation(branch, authorId, creationComment);
       Operations.executeWork(operation, new LogProgressMonitor(), -1);
+      Operations.checkForErrorStatus(operation.getStatus());
       return branch.getBranchId();
    }
 }

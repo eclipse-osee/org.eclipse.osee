@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.Branch;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -53,11 +54,14 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
          "SELECT gamma_id, mod_type FROM osee_txs txs, osee_tx_details txd WHERE txs.tx_current <> ? AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ? order by txd.transaction_id desc";
    private static final String INSERT_ADDRESSING =
          "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
+   private static final String USER_ID_QUERY =
+         "select oa.art_id from osee_attribute_type oat, osee_attribute oa, osee_txs txs where oat.name = 'User Id' and oat.attr_type_id = oa.attr_type_id and oa.gamma_id = txs.gamma_id and txs.tx_current = 1 and oa.value = ?";
 
    private final Branch branch;
    private final String creationComment;
    private final int authorId;
    private boolean passedPreConditions;
+   private int systemUserId;
 
    public CreateBranchOperation(Branch branch, int authorId, String creationComment) throws OseeCoreException {
       super(String.format("Create Branch: [%s from %s]", branch.getName(), branch.getParentBranchId()),
@@ -65,15 +69,31 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       this.branch = branch;
       this.authorId = authorId;
       this.creationComment = creationComment;
+      this.systemUserId = -1;
+   }
+
+   private int getSystemUserId() {
+      if (systemUserId == -1) {
+         try {
+            systemUserId =
+                  ConnectionHandler.runPreparedQueryFetchInt(-1, USER_ID_QUERY, SystemUser.OseeSystem.getUserID());
+         } catch (OseeDataStoreException ex) {
+            OseeLog.log(InternalBranchActivator.class, Level.WARNING, "Unable to retrieve the system user");
+         }
+      }
+      return systemUserId;
    }
 
    public boolean checkPreconditions(IProgressMonitor monitor) throws OseeCoreException {
-      if (branch.getAssociatedArtifactId() > -1) {
+      int associatedArtifactId = branch.getAssociatedArtifactId();
+      int systemUserId = getSystemUserId();
+      if (associatedArtifactId > -1 && associatedArtifactId != systemUserId) {
          int count =
-               ConnectionHandler.runPreparedQueryFetchInt(0, "select (1) from osee_branch where associated_art_id=?",
-                     branch.getAssociatedArtifactId());
+               ConnectionHandler.runPreparedQueryFetchInt(0,
+                     "select (1) from osee_branch where associated_art_id=? and branch_state <> ?",
+                     branch.getAssociatedArtifactId(), BranchState.DELETED.getValue());
          if (count > 0) {
-            throw new OseeStateException(String.format("Existing branch creation detected for [%s]", branch.getName()));
+            throw new OseeStateException(String.format("Existing branch creation detected for [%s]", branch));
          }
       }
       return true;

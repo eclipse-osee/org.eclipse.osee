@@ -50,6 +50,7 @@ public class UserDataStore {
    }
 
    private final static class OseeUserInfo extends OseeUser implements IOseeUserInfo {
+      private static final long serialVersionUID = 6770020451554391030L;
       private final boolean isCreationRequired;
 
       private OseeUserInfo(boolean isCreationRequired, String userName, String userId, String userEmail, boolean isActive) {

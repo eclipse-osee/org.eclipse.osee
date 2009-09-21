@@ -11,10 +11,6 @@
 package org.eclipse.osee.framework.skynet.core.types;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
  * @author Roberto E. Escobar
@@ -28,12 +24,12 @@ public class OseeTypeCache {
 
    private boolean duringPopulate;
 
-   public OseeTypeCache(IOseeTypeFactory factory, IOseeTypeDataAccessor<ArtifactType> artifactData, IOseeTypeDataAccessor<AttributeType> attributeData, IOseeTypeDataAccessor<RelationType> relationData, IOseeTypeDataAccessor<OseeEnumType> enumData) {
+   public OseeTypeCache(IOseeTypeFactory factory, ArtifactTypeCache artifactCache, AttributeTypeCache attributeCache, RelationTypeCache relationCache, OseeEnumTypeCache oseeEnumTypeCache) {
       this.duringPopulate = false;
-      artifactCache = new ArtifactTypeCache(this, factory, artifactData);
-      attributeCache = new AttributeTypeCache(this, factory, attributeData);
-      relationCache = new RelationTypeCache(this, factory, relationData);
-      oseeEnumTypeCache = new OseeEnumTypeCache(this, factory, enumData);
+      this.artifactCache = artifactCache;
+      this.attributeCache = attributeCache;
+      this.relationCache = relationCache;
+      this.oseeEnumTypeCache = oseeEnumTypeCache;
    }
 
    public void storeAllModified() throws OseeCoreException {
