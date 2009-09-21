@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameComparator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
@@ -53,19 +52,20 @@ public class MigrateRelationOrder extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      for (Branch baselineBranch : BranchManager.getBaselineBranches()) {
-         SkynetTransaction transaction = new SkynetTransaction(baselineBranch);
-         for (RelationType relationType : RelationTypeManager.getAllTypes()) {
-            if (relationType.isOrdered()) {
-               for (Artifact artifact : ArtifactQuery.getArtifactListFromRelation(relationType, RelationSide.SIDE_A,
-                     baselineBranch)) {
-                  writeNewOrder(transaction, relationType, artifact);
-               }
+      Branch baselineBranch = variableMap.getBranch("Branch");
+      //for (Branch baselineBranch : BranchManager.getBaselineBranches()) {
+      SkynetTransaction transaction = new SkynetTransaction(baselineBranch);
+      for (RelationType relationType : RelationTypeManager.getAllTypes()) {
+         if (relationType.isOrdered()) {
+            for (Artifact artifact : ArtifactQuery.getArtifactListFromRelation(relationType, RelationSide.SIDE_A,
+                  baselineBranch)) {
+               writeNewOrder(transaction, relationType, artifact);
             }
          }
-         transaction.execute();
-         addToChildBaseilnes(transaction);
       }
+      transaction.execute();
+      addToChildBaseilnes(transaction);
+      //}
    }
 
    private void writeNewOrder(SkynetTransaction transaction, RelationType relationType, Artifact artifact) throws OseeCoreException {
