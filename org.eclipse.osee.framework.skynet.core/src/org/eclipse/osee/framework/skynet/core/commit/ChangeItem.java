@@ -50,7 +50,7 @@ public abstract class ChangeItem {
       return itemId;
    }
 
-   public void setItemId(int itemId) {
+   protected void setItemId(int itemId) {
       this.itemId = itemId;
    }
 
@@ -58,7 +58,7 @@ public abstract class ChangeItem {
       return kind;
    }
 
-   public void setKind(GammaKind kind) {
+   protected void setKind(GammaKind kind) {
       this.kind = kind;
    }
 

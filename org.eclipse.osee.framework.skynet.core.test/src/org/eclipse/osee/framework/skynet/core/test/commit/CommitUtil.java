@@ -11,7 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.test.commit;
 
 import junit.framework.Assert;
+import org.eclipse.osee.framework.skynet.core.commit.ArtifactChangeItem;
+import org.eclipse.osee.framework.skynet.core.commit.AttributeChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
+import org.eclipse.osee.framework.skynet.core.commit.RelationChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.VersionedChange;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItem.GammaKind;
 
@@ -28,16 +31,25 @@ public class CommitUtil {
       Assert.assertEquals(message, expected.getModType(), actual.getModType());
    }
 
-   public static ChangeItem createItem(int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange net) {
+   public static ChangeItem createItem(int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange net){
       GammaKind[] kinds = GammaKind.values();
       return createItem(kinds[itemId % kinds.length], itemId, base, first, current, destination, net);
    }
 
    public static ChangeItem createItem(GammaKind gammaKind, int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange net) {
-      ChangeItem change = new ChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber());
-      change.setItemId(itemId);
+      ChangeItem change = null;
 
-      change.setKind(gammaKind);
+      switch (gammaKind){
+         case Artifact:
+            change = new ArtifactChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(), itemId);
+            break;
+         case Attribute:
+            change = new AttributeChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(), itemId, -1, "");
+            break;
+         case Relation:
+            change = new RelationChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(), -1, -1, itemId, -1, "");
+            break;
+      }
 
       if (base != null) {
          change.getBase().setModType(base.getModType());
