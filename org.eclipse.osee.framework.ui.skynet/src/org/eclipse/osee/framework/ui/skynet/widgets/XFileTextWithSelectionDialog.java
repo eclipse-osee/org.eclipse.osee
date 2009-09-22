@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.io.File;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
@@ -31,6 +32,11 @@ public class XFileTextWithSelectionDialog extends XText {
    public static enum Type {
       File, Directory
    };
+
+   public XFileTextWithSelectionDialog(String displayLabel, Type type, String defaultFileSelection) {
+      this(displayLabel, type);
+      this.defaultFileSelection = defaultFileSelection;
+   }
 
    public XFileTextWithSelectionDialog(String displayLabel, Type type) {
       super(displayLabel);
@@ -54,6 +60,9 @@ public class XFileTextWithSelectionDialog extends XText {
 
       Button fileDialog = new Button(getStyledText().getParent(), SWT.NONE);
       fileDialog.setText("Select " + type.name());
+      if (Strings.isValid(defaultFileSelection)) {
+         set(defaultFileSelection);
+      }
       fileDialog.addSelectionListener(new SelectionListener() {
 
          public void widgetDefaultSelected(SelectionEvent e) {
@@ -64,10 +73,9 @@ public class XFileTextWithSelectionDialog extends XText {
             if (type == Type.File) {
                FileDialog dialog = new FileDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
                dialog.setFilterExtensions(new String[] {"*.*"});
-               String defaultDir = getDefaultFileSelection();
-               File dir = new File(defaultDir != null ? defaultDir : "");
+               File dir = new File(defaultFileSelection != null ? defaultFileSelection : "");
                if (dir.isFile() || dir.isDirectory())
-                  dialog.setFilterPath(defaultDir);
+                  dialog.setFilterPath(defaultFileSelection);
                else
                   dialog.setFilterPath("c:\\");
 
@@ -77,10 +85,9 @@ public class XFileTextWithSelectionDialog extends XText {
                }
             } else if (type == Type.Directory) {
                DirectoryDialog dialog = new DirectoryDialog(Display.getCurrent().getActiveShell(), SWT.OPEN);
-               String defaultDir = getDefaultFileSelection();
-               File dir = new File(defaultDir != null ? defaultDir : "");
+               File dir = new File(defaultFileSelection != null ? defaultFileSelection : "");
                if (dir.isFile() || dir.isDirectory())
-                  dialog.setFilterPath(defaultDir);
+                  dialog.setFilterPath(defaultFileSelection);
                else
                   dialog.setFilterPath("c:\\");
 

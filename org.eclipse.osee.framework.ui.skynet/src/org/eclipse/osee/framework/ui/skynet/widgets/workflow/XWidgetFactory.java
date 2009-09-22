@@ -132,7 +132,12 @@ public class XWidgetFactory {
       } else if (xWidgetName.equals("XFileSelectionDialog")) {
          xWidget = new XFileTextWithSelectionDialog(name);
       } else if (xWidgetName.equals("XDirectorySelectionDialog")) {
-         xWidget = new XFileTextWithSelectionDialog(name, Type.Directory);
+         String defaultValue = xWidgetLayoutData.getDefaultValue();
+         if (Strings.isValid(defaultValue)) {
+            xWidget = new XFileTextWithSelectionDialog(name, Type.Directory, defaultValue);
+         } else {
+            xWidget = new XFileTextWithSelectionDialog(name, Type.Directory);
+         }
       } else if (xWidgetName.equals("XDateDam")) {
          xWidget = new XDateDam(name);
       } else if (xWidgetName.equals("XTextResourceDropDam")) {
