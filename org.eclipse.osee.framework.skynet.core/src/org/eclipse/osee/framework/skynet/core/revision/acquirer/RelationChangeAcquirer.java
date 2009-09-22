@@ -69,9 +69,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
             }
          }
 
-         int count = 0;
          while (chStmt.next()) {
-            count++;
             int aArtId = chStmt.getInt("a_art_id");
             int bArtId = chStmt.getInt("b_art_id");
             int relLinkId = chStmt.getInt("rel_link_id");
@@ -86,8 +84,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
                      new RelationChangeBuilder(getSourceBranch(),
                            ArtifactTypeManager.getType(chStmt.getInt("art_type_id")), chStmt.getInt("gamma_id"),
                            aArtId, toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, bArtId,
-                           relLinkId, rationale, chStmt.getInt("a_order"), chStmt.getInt("b_order"),
-                           RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")), !hasBranch));
+                           relLinkId, rationale,RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")), !hasBranch));
             }
          }
          getMonitor().worked(25);

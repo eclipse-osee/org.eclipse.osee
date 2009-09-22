@@ -19,18 +19,36 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.operation.CompositeOperation;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
+import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
+import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.RelationChange;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
+import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
+import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
+import org.eclipse.osee.framework.skynet.core.commit.RelationChangeItem;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeItem.GammaKind;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.ArtifactChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.AttributeChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.RelationChangeAcquirer;
@@ -159,6 +177,147 @@ public final class InternalChangeManager {
 
       monitor.done();
       return changes;
+   }
+   
+   public static Collection<Change> getChangeReportChanges(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException{
+      return getChangeReportChanges(sourceBranch, null, monitor); 
+   }
+   
+   public static Collection<Change> getChangeReportChanges(TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException{
+      return getChangeReportChanges(null, transactionId, monitor); 
+   }
+   
+   private static Collection<Change> getChangeReportChanges(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException{
+      boolean isHistorical = sourceBranch == null;
+      ArrayList<Change> changes = new ArrayList<Change>();
+      List<ChangeItem> changeItems = loadChangeItems(sourceBranch, transactionId, monitor, isHistorical);
+      
+      preloadArtifacts(changeItems, sourceBranch, transactionId, isHistorical, monitor);
+      
+      for(ChangeItem item : changeItems){
+         Change change;
+         TransactionId toTransactionId =
+               TransactionIdManager.getTransactionId((int) item.getCurrent().getTransactionNumber().longValue());
+         TransactionId fromTransactionId;
+         String wasValue = "";
+         Branch branch = isHistorical? transactionId.getBranch() : sourceBranch;
+         Artifact artifact;
+         
+         if (isHistorical) {
+            fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
+            artifact = ArtifactCache.getHistorical(item.getArtId(), transactionId.getTransactionNumber());
+            branch = transactionId.getBranch();
+         }else{
+            branch = sourceBranch;
+            artifact = ArtifactCache.getActive(item.getArtId(), branch);
+            
+            if (item.getCurrent().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.NEW) {
+               fromTransactionId = toTransactionId;
+            } else {
+               if (item.getBase().exists()) {
+                  fromTransactionId =
+                        TransactionIdManager.getTransactionId((int) item.getBase().getTransactionNumber().longValue());
+                  wasValue = item.getBase().getValue();
+               } else {
+                  fromTransactionId =
+                        TransactionIdManager.getTransactionId((int) item.getFirst().getTransactionNumber().longValue());
+                  wasValue = item.getFirst().getValue();
+               }
+            }
+         }
+
+         if(artifact == null){
+            System.out.println(item.getKind() + " " + item.getArtId() + " " + item.getCurrent().getTransactionNumber());
+            continue;
+         }
+         monitor.subTask("Build Change Display Objects");
+         //The artifacts have been previously bulk loaded for performance
+         
+         switch (item.getKind()){
+            case Artifact:
+               change = new ArtifactChange(branch, artifact.getArtifactType(), (int)item.getCurrent().getGammaId().longValue(), item.getItemId(),
+                     toTransactionId, fromTransactionId, item.getNet().getModType(), ChangeType.OUTGOING, isHistorical, artifact);
+               break;
+            case Attribute:
+               change = new AttributeChange(branch, artifact.getArtifactType(), (int)item.getCurrent().getGammaId().longValue(), item.getArtId(),
+                     toTransactionId, fromTransactionId, item.getNet().getModType(), ChangeType.OUTGOING, item.getCurrent().getValue(), wasValue, item.getItemId(), artifact.getAttributeById(item.getItemId(), true).getAttributeType().getId(), item.getNet().getModType(), isHistorical, artifact);
+               break;
+            case Relation:
+               RelationChangeItem relationChangeItem = (RelationChangeItem)item;
+               Artifact bArtifact = ArtifactQuery.getArtifactFromId(relationChangeItem.getBArtId(), branch, true);
+               change = new RelationChange(branch, artifact.getArtifactType(), (int)relationChangeItem.getCurrent().getGammaId().longValue(), 
+                     item.getArtId(), toTransactionId, fromTransactionId, relationChangeItem.getNet().getModType(), ChangeType.OUTGOING, bArtifact.getArtId(),
+                     relationChangeItem.getItemId(), relationChangeItem.getRationale(), RelationTypeManager.getType(relationChangeItem.getRelTypeId()),
+                     isHistorical, artifact, bArtifact);
+               break;
+            default: 
+               throw new OseeCoreException("The change item must map to either a artifact, attribute or relation change");
+         }
+         
+         changes.add(change);
+      }
+      monitor.done();
+      return changes;
+   }
+
+   private static void preloadArtifacts(List<ChangeItem> changeItems, Branch sourceBranch, TransactionId transactionId, boolean isHistorical, IProgressMonitor monitor) throws OseeCoreException {
+      if (!changeItems.isEmpty()) {
+         monitor.subTask("Preload artifacts");
+         int queryId = ArtifactLoader.getNewQueryId();
+         Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+         Branch branch = isHistorical? transactionId.getBranch() : sourceBranch;
+         
+         Set<Integer> artIds = new HashSet<Integer>();
+         for(ChangeItem item : changeItems) {
+            artIds.add(item.getArtId());
+            
+            if(item.getKind() == GammaKind.Relation){
+               artIds.add(((RelationChangeItem)item).getBArtId());
+            }
+         }
+         
+         List<Object[]> insertParameters = new LinkedList<Object[]>();
+         for (Integer artId : artIds) {
+            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
+                  isHistorical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
+         }
+         
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, isHistorical, true);
+      }
+   }
+
+   /**
+    * @param sourceBranch
+    * @param monitor
+    * @return
+    * @throws OseeCoreException
+    * @throws OseeWrappedException
+    */
+   private static List<ChangeItem> loadChangeItems(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException, OseeWrappedException {
+      List<ChangeItem> changeItems = new ArrayList<ChangeItem>();
+      List<IOperation> ops = new ArrayList<IOperation>();
+      
+      if(isHistorical){
+         ops.add(new LoadChangeDataOperation(transactionId.getTransactionNumber(), changeItems));
+      }else{
+         ops.add(new LoadChangeDataOperation(sourceBranch, changeItems));
+      }
+      ops.add(new ComputeNetChangeOperation(changeItems, false));
+
+      String opName =
+            String.format("Gathering changes for %s", sourceBranch != null ? sourceBranch.getShortName() : transactionId);
+      IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
+      Operations.executeWork(op, monitor, -1);
+      try {
+         Operations.checkForErrorStatus(op.getStatus());
+      } catch (Exception ex) {
+         if (ex instanceof OseeCoreException) {
+            throw (OseeCoreException) ex;
+         } else {
+            throw new OseeWrappedException(ex);
+         }
+      }
+      return changeItems;
    }
    
    boolean isChangesOnWorkingBranch(Branch workingBranch) throws OseeCoreException {

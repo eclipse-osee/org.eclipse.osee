@@ -60,11 +60,11 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private final Branch sourceBranch;
    private final Branch destinationBranch;
    private final Branch mergeBranch;
-   private final List<CommitItem> changes;
+   private final List<ChangeItem> changes;
    private Integer newTransactionNumber;
    private OseeConnection connection;
 
-   public CommitDbOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<CommitItem> changes) {
+   public CommitDbOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes) {
       super("Commit Database Operation", Activator.PLUGIN_ID);
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
@@ -101,7 +101,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
    private void updatePreviousCurrentsOnDestinationBranch() throws OseeStateException, OseeDataStoreException {
       UpdatePreviuosTxCurrent updater = new UpdatePreviuosTxCurrent(destinationBranch, connection);
-      for (CommitItem change : changes) {
+      for (ChangeItem change : changes) {
          updater.addItem(change.getKind(), change.getItemId());
       }
       updater.updateTxNotCurrents();
@@ -122,7 +122,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
    private void insertCommitAddressing() throws OseeDataStoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
-      for (CommitItem change : changes) {
+      for (ChangeItem change : changes) {
          ModificationType modType = change.getNet().getModType();
          insertData.add(new Object[] {newTransactionNumber, change.getNet().getGammaId(), modType.getValue(),
                TxChange.getCurrent(modType).getValue()});

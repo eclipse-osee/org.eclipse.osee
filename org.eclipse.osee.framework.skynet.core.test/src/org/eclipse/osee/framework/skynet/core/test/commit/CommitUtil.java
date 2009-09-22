@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.test.commit;
 
 import junit.framework.Assert;
-import org.eclipse.osee.framework.skynet.core.commit.ChangePair;
-import org.eclipse.osee.framework.skynet.core.commit.CommitItem;
-import org.eclipse.osee.framework.skynet.core.commit.CommitItem.GammaKind;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
+import org.eclipse.osee.framework.skynet.core.commit.VersionedChange;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeItem.GammaKind;
 
 /**
  * @author Roberto E. Escobar
@@ -23,18 +23,18 @@ public class CommitUtil {
    private CommitUtil() {
    }
 
-   public static void checkChange(String message, ChangePair expected, ChangePair actual) {
+   public static void checkChange(String message, VersionedChange expected, VersionedChange actual) {
       Assert.assertEquals(message, expected.getGammaId(), actual.getGammaId());
       Assert.assertEquals(message, expected.getModType(), actual.getModType());
    }
 
-   public static CommitItem createItem(int itemId, ChangePair base, ChangePair first, ChangePair current, ChangePair destination, ChangePair net) {
+   public static ChangeItem createItem(int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange net) {
       GammaKind[] kinds = GammaKind.values();
       return createItem(kinds[itemId % kinds.length], itemId, base, first, current, destination, net);
    }
 
-   public static CommitItem createItem(GammaKind gammaKind, int itemId, ChangePair base, ChangePair first, ChangePair current, ChangePair destination, ChangePair net) {
-      CommitItem change = new CommitItem(current.getGammaId(), current.getModType());
+   public static ChangeItem createItem(GammaKind gammaKind, int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange net) {
+      ChangeItem change = new ChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber());
       change.setItemId(itemId);
 
       change.setKind(gammaKind);

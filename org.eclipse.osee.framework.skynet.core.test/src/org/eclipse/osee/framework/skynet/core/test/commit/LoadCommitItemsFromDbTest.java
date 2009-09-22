@@ -23,10 +23,10 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.commit.CommitItem;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
-import org.eclipse.osee.framework.skynet.core.commit.CommitItem.GammaKind;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeItem.GammaKind;
 import org.junit.Test;
 
 /**
@@ -46,7 +46,7 @@ public class LoadCommitItemsFromDbTest {
       Assert.assertNotNull(source);
       Assert.assertNotNull(destination);
 
-      List<CommitItem> items = new ArrayList<CommitItem>();
+      List<ChangeItem> items = new ArrayList<ChangeItem>();
 
       processItems(items, source, destination, null, 41, 41);
 
@@ -68,7 +68,7 @@ public class LoadCommitItemsFromDbTest {
       Assert.assertNotNull(source);
       Assert.assertNotNull(destination);
 
-      List<CommitItem> items = new ArrayList<CommitItem>();
+      List<ChangeItem> items = new ArrayList<ChangeItem>();
 
       processItems(items, source, destination, null, 5, 5);
 
@@ -90,7 +90,7 @@ public class LoadCommitItemsFromDbTest {
       return source;
    }
 
-   private void processItems(Collection<CommitItem> items, Branch source, Branch destination, Branch mergeBranch, int loadedItems, int netItems) {
+   private void processItems(Collection<ChangeItem> items, Branch source, Branch destination, Branch mergeBranch, int loadedItems, int netItems) {
       IOperation operation = new LoadChangeDataOperation(source, destination, mergeBranch, items);
       Operations.executeWork(operation, new NullProgressMonitor(), -1);
       Assert.assertEquals(IStatus.OK, operation.getStatus().getSeverity());
@@ -103,15 +103,15 @@ public class LoadCommitItemsFromDbTest {
       Assert.assertEquals(netItems, items.size());
    }
 
-   private void checkNetItems(Collection<CommitItem> items, ModificationType modType, int artifacts, int attributes, int relations) {
+   private void checkNetItems(Collection<ChangeItem> items, ModificationType modType, int artifacts, int attributes, int relations) {
       Assert.assertEquals(artifacts, getCount(items, GammaKind.Artifact, modType));
       Assert.assertEquals(attributes, getCount(items, GammaKind.Attribute, modType));
       Assert.assertEquals(relations, getCount(items, GammaKind.Relation, modType));
    }
 
-   private int getCount(Collection<CommitItem> items, GammaKind gammaKind, ModificationType type) {
+   private int getCount(Collection<ChangeItem> items, GammaKind gammaKind, ModificationType type) {
       int count = 0;
-      for (CommitItem item : items) {
+      for (ChangeItem item : items) {
          if (item.getKind() == gammaKind && item.getNet().getModType() == type) {
             count++;
          }

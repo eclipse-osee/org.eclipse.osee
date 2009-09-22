@@ -23,18 +23,14 @@ public class RelationChangeBuilder extends ChangeBuilder {
    private int bArtId;
    private int relLinkId;
    private String rationale;
-   private int aLinkOrder;
-   private int bLinkOrder;
    private RelationType relationType;
 
-   public RelationChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, int aLinkOrder, int bLinkOrder, RelationType relationType, boolean isHistorical) {
+   public RelationChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
       super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical);
       this.bArtId = bArtId;
       this.relLinkId = relLinkId;
       this.rationale = rationale;
-      this.aLinkOrder = aLinkOrder;
-      this.bLinkOrder = bLinkOrder;
       this.relationType = relationType;
    }
 
@@ -48,8 +44,8 @@ public class RelationChangeBuilder extends ChangeBuilder {
          bArtifact = ArtifactCache.getActive(bArtId, branch);
       }
       return new RelationChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getToTransactionId(),
-            getFromTransactionId(), getModType(), getChangeType(), bArtId, relLinkId, rationale, aLinkOrder,
-            bLinkOrder, relationType, isHistorical(), loadArtifact(), bArtifact);
+            getFromTransactionId(), getModType(), getChangeType(), bArtId, relLinkId, rationale,
+            relationType, isHistorical(), loadArtifact(), bArtifact);
    }
 
 }

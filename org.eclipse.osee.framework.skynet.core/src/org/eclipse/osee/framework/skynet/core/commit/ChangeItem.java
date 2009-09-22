@@ -15,26 +15,35 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 /**
  * @author Roberto E. Escobar
  */
-public class CommitItem {
+public abstract class ChangeItem {
    public static enum GammaKind {
       Artifact, Attribute, Relation
    };
 
+   private int artId;
    private int itemId;
    private GammaKind kind;
-   private final ChangePair baseEntry;
-   private final ChangePair firstChange;
-   private final ChangePair currentEntry;
-   private final ChangePair destinationEntry;
-   private final ChangePair netEntry;
+   private final VersionedChange baseEntry;
+   private final VersionedChange firstChange;
+   private final VersionedChange currentEntry;
+   private final VersionedChange destinationEntry;
+   private final VersionedChange netEntry;
 
-   public CommitItem(long currentSourceGammaId, ModificationType currentSourceModType) {
+   public ChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber) {
       super();
-      this.baseEntry = new ChangePair();
-      this.firstChange = new ChangePair();
-      this.currentEntry = new ChangePair(currentSourceGammaId, currentSourceModType);
-      this.destinationEntry = new ChangePair();
-      this.netEntry = new ChangePair();
+      this.baseEntry = new VersionedChange();
+      this.firstChange = new VersionedChange();
+      this.currentEntry = new VersionedChange(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
+      this.destinationEntry = new VersionedChange();
+      this.netEntry = new VersionedChange();
+   }
+
+   public int getArtId() {
+      return artId;
+   }
+   
+   public void setArt_id(int artId) {
+      this.artId = artId;
    }
 
    public int getItemId() {
@@ -53,23 +62,23 @@ public class CommitItem {
       this.kind = kind;
    }
 
-   public ChangePair getBase() {
+   public VersionedChange getBase() {
       return baseEntry;
    }
 
-   public ChangePair getFirst() {
+   public VersionedChange getFirst() {
       return firstChange;
    }
 
-   public ChangePair getCurrent() {
+   public VersionedChange getCurrent() {
       return currentEntry;
    }
 
-   public ChangePair getDestination() {
+   public VersionedChange getDestination() {
       return destinationEntry;
    }
 
-   public ChangePair getNet() {
+   public VersionedChange getNet() {
       return netEntry;
    }
 

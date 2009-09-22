@@ -15,18 +15,22 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 /**
  * @author Roberto E. Escobar
  */
-public final class ChangePair {
+public final class VersionedChange {
    private Long gammaId;
    private ModificationType modType;
+   private String value;
+   private Long transactionNumber;
+   
 
-   public ChangePair() {
-      this(null, null);
+   public VersionedChange() {
+      this(null, null, null);
    }
 
-   public ChangePair(Long gammaId, ModificationType modType) {
+   public VersionedChange(Long gammaId, ModificationType modType, Long transactionNumber) {
       super();
       this.gammaId = gammaId;
       this.modType = modType;
+      this.transactionNumber = transactionNumber;
    }
 
    public Long getGammaId() {
@@ -35,6 +39,22 @@ public final class ChangePair {
 
    public ModificationType getModType() {
       return modType;
+   }
+   
+   public String getValue() {
+      return value;
+   }
+
+   public Long getTransactionNumber(){
+      return transactionNumber;
+   }
+   
+   public void setTransactionNumber(long transactionNumber){
+      this.transactionNumber = transactionNumber;
+   }
+   
+   public void setValue(String value) {
+      this.value = value;
    }
 
    public void setGammaId(Long gammaId) {
@@ -61,7 +81,7 @@ public final class ChangePair {
       return getModType() != null && getGammaId() != null;
    }
 
-   public boolean sameGammaAs(ChangePair other) {
+   public boolean sameGammaAs(VersionedChange other) {
       boolean result = false;
       if (this.getGammaId() == other.getGammaId()) {
          result = true;

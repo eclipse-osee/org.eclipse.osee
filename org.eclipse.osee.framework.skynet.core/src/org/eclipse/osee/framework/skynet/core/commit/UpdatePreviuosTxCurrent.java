@@ -11,7 +11,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.commit.CommitItem.GammaKind;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeItem.GammaKind;
 
 /**
  * @author Ryan D. Brooks

@@ -75,17 +75,17 @@ public class ChangeManager {
       return new ChangeData(InternalChangeManager.getInstance().getChanges(sourceBranch, null, monitor));
    }
 
-   /**
-    * Acquires artifact, relation and attribute changes from a source branch since its creation.
-    * 
-    * @param sourceBranch
-    * @param baselineTransactionId
-    * @return changes
-    * @throws OseeCoreException
-    */
-   public static Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
-      return InternalChangeManager.getInstance().getChanges(sourceBranch, transactionId, monitor);
-   }
+//   /**
+//    * Acquires artifact, relation and attribute changes from a source branch since its creation.
+//    * 
+//    * @param sourceBranch
+//    * @param baselineTransactionId
+//    * @return changes
+//    * @throws OseeCoreException
+//    */
+//   public static Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
+//      return InternalChangeManager.getInstance().getChanges(sourceBranch, transactionId, monitor);
+//   }
 
    /**
     * @return true changes exist

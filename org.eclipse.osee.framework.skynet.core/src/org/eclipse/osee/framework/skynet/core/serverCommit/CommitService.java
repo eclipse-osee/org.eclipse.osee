@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.commit.CommitDbOperation;
-import org.eclipse.osee.framework.skynet.core.commit.CommitItem;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
@@ -35,7 +35,7 @@ public class CommitService implements ICommitService {
       Branch destinationBranch = conflictManager.getDestinationBranch();
       Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
 
-      List<CommitItem> changes = new ArrayList<CommitItem>();
+      List<ChangeItem> changes = new ArrayList<ChangeItem>();
 
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new LoadChangeDataOperation(sourceBranch, destinationBranch, mergeBranch, changes));

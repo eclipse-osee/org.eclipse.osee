@@ -25,35 +25,53 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.commit.CommitItem.GammaKind;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Ryan D. Brooks
  * @author Roberto E. Escobar
  * @author Ryan Schmitt
+ * @author Jeff C. Phillips
  */
 public class LoadChangeDataOperation extends AbstractOperation {
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
-         "select gamma_id, mod_type from osee_txs txs, osee_tx_details txd where txd.branch_id = ? and txd.transaction_id = txs.transaction_id and txd.tx_type = ? and txs.tx_current <> ?";
+         "select txs.transaction_id, gamma_id, mod_type from osee_txs txs, osee_tx_details txd where txd.branch_id = ? and txd.transaction_id = txs.transaction_id and txd.tx_type = ? and txs.tx_current <> ?";
 
-   private final HashMap<Integer, CommitItem> artifactChangesByItemId = new HashMap<Integer, CommitItem>();
-   private final HashMap<Integer, CommitItem> relationChangesByItemId = new HashMap<Integer, CommitItem>();
-   private final HashMap<Integer, CommitItem> attributeChangesByItemId = new HashMap<Integer, CommitItem>();
-   private final HashMap<Long, CommitItem> changeByGammaId = new HashMap<Long, CommitItem>();
+   private static final String SELECT_SOURCE_TRANSACTION_CHANGES =
+         "select txs.transaction_id, gamma_id, mod_type from osee_txs txs, osee_tx_details txd where txd.transaction_id = ? and txd.transaction_id = txs.transaction_id and txd.tx_type = ?";
 
-   private final Collection<CommitItem> changeData;
+   private final HashMap<Integer, ChangeItem> artifactChangesByItemId = new HashMap<Integer, ChangeItem>();
+   private final HashMap<Integer, ChangeItem> relationChangesByItemId = new HashMap<Integer, ChangeItem>();
+   private final HashMap<Integer, ChangeItem> attributeChangesByItemId = new HashMap<Integer, ChangeItem>();
+   private final HashMap<Long, Pair<Long, ModificationType>> changeByGammaId =
+         new HashMap<Long, Pair<Long, ModificationType>>();
+
+   private final Collection<ChangeItem> changeData;
    private final Branch sourceBranch;
    private final Branch destinationBranch;
    private final Branch mergeBranch;
+   private int transactionNumber;
+   boolean isHistorical = false;
 
-   public LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<CommitItem> changeData) {
+   public LoadChangeDataOperation(int transactionNumber, Collection<ChangeItem> changeData) {
+      this(null, null, null, changeData);
+      this.transactionNumber = transactionNumber;
+      this.isHistorical = true;
+   }
+
+   public LoadChangeDataOperation(Branch sourceBranch, Collection<ChangeItem> changeData) {
+      this(sourceBranch, null, null, changeData);
+   }
+
+   public LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<ChangeItem> changeData) {
       super("Load Change Data", Activator.PLUGIN_ID);
       this.mergeBranch = mergeBranch;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.changeData = changeData;
+      this.isHistorical = false;
    }
 
    private int getSourceBranchId() {
@@ -63,22 +81,18 @@ public class LoadChangeDataOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       TransactionJoinQuery txJoin = loadSourceBranchChanges(monitor);
-      loadItemIdsBasedOnGammas(monitor, "osee_artifact_version", "art_id", txJoin.getQueryId(), GammaKind.Artifact,
-            artifactChangesByItemId);
-      loadItemIdsBasedOnGammas(monitor, "osee_attribute", "attr_id", txJoin.getQueryId(), GammaKind.Attribute,
-            attributeChangesByItemId);
-      loadItemIdsBasedOnGammas(monitor, "osee_relation_link", "rel_link_id", txJoin.getQueryId(), GammaKind.Relation,
-            relationChangesByItemId);
+      loadArtifactItemIdsBasedOnGammas(monitor, txJoin.getQueryId(), artifactChangesByItemId);
+      loadAttributeItemIdsBasedOnGammas(monitor, txJoin.getQueryId(), attributeChangesByItemId);
+      loadRelationItemIdsBasedOnGammas(monitor, txJoin.getQueryId(), relationChangesByItemId);
       txJoin.delete();
 
-      loadByItemId(monitor, "osee_artifact_version", "art_id", artifactChangesByItemId);
-      loadByItemId(monitor, "osee_attribute", "attr_id", attributeChangesByItemId);
-      loadByItemId(monitor, "osee_relation_link", "rel_link_id", relationChangesByItemId);
+      loadByItemId(monitor, "osee_artifact_version", "art_id", artifactChangesByItemId, null);
+      loadByItemId(monitor, "osee_attribute", "attr_id", attributeChangesByItemId, "value");
+      loadByItemId(monitor, "osee_relation_link", "rel_link_id", relationChangesByItemId, "rationale");
 
       changeData.addAll(artifactChangesByItemId.values());
       changeData.addAll(attributeChangesByItemId.values());
       changeData.addAll(relationChangesByItemId.values());
-
    }
 
    private TransactionJoinQuery loadSourceBranchChanges(IProgressMonitor monitor) throws OseeDataStoreException, OseeArgumentException {
@@ -86,16 +100,19 @@ public class LoadChangeDataOperation extends AbstractOperation {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
-               TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
+         if (!isHistorical) {
+            chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
+                  TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
+         } else {
+            chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionNumber,
+                  TransactionDetailsType.NonBaselined.getId());
+         }
+
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
             txJoin.add(chStmt.getLong("gamma_id"), -1);
-
-            CommitItem oseeChange =
-                  new CommitItem(chStmt.getLong("gamma_id"), ModificationType.getMod(chStmt.getInt("mod_type")));
-
-            changeByGammaId.put(oseeChange.getCurrent().getGammaId(), oseeChange);
+            changeByGammaId.put(chStmt.getLong("gamma_id"), new Pair<Long, ModificationType>(
+                  chStmt.getLong("transaction_id"), ModificationType.getMod(chStmt.getInt("mod_type"))));
          }
          txJoin.store();
       } finally {
@@ -104,28 +121,73 @@ public class LoadChangeDataOperation extends AbstractOperation {
       return txJoin;
    }
 
-   private void loadItemIdsBasedOnGammas(IProgressMonitor monitor, String tableName, String idColumnName, int queryId, GammaKind kind, HashMap<Integer, CommitItem> changesByItemId) throws OseeDataStoreException {
+   private void loadArtifactItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       String query =
-            "select txj.gamma_id, " + idColumnName + " from " + tableName + " id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
+            "select art_id, txj.gamma_id from osee_artifact_version id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
       try {
          chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            CommitItem change = changeByGammaId.get(chStmt.getLong("gamma_id"));
-            change.setKind(kind);
-            change.setItemId(chStmt.getInt(idColumnName));
-            changesByItemId.put(change.getItemId(), change);
+            Pair<Long, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
+            ArtifactChangeItem changeItem =
+                  new ArtifactChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
+                        chStmt.getInt("art_id"));
+            changesByItemId.put(changeItem.getItemId(), changeItem);
          }
       } finally {
          chStmt.close();
       }
    }
 
-   private void loadByItemId(IProgressMonitor monitor, String tableName, String columnName, HashMap<Integer, CommitItem> changesByItemId) throws OseeCoreException {
+   private void loadAttributeItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      String query =
+            "select art_id, attr_id, value, txj.gamma_id from osee_attribute id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
+
+      try {
+         chStmt.runPreparedQuery(10000, query, queryId);
+         while (chStmt.next()) {
+            checkForCancelledStatus(monitor);
+            Pair<Long, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
+            AttributeChangeItem changeItem =
+                  new AttributeChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(),
+                        txsTableData.getFirst(), chStmt.getInt("attr_id"), chStmt.getInt("art_id"),
+                        chStmt.getString("value"));
+
+            changesByItemId.put(changeItem.getItemId(), changeItem);
+         }
+      } finally {
+         chStmt.close();
+      }
+   }
+
+   private void loadRelationItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      String query =
+            "select a_art_id, b_art_id, rel_link_id, rel_link_type_id, rationale, txj.gamma_id from osee_relation_link id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
+
+      try {
+         chStmt.runPreparedQuery(10000, query, queryId);
+         while (chStmt.next()) {
+            checkForCancelledStatus(monitor);
+            Pair<Long, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
+            RelationChangeItem changeItem =
+                  new RelationChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
+                        chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"), chStmt.getInt("rel_link_id"),
+                        chStmt.getInt("rel_link_type_id"), chStmt.getString("rationale"));
+
+            changesByItemId.put(changeItem.getItemId(), changeItem);
+         }
+      } finally {
+         chStmt.close();
+      }
+   }
+
+   private void loadByItemId(IProgressMonitor monitor, String tableName, String columnName, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName) throws OseeCoreException {
       IdJoinQuery idJoin = JoinUtility.createIdJoinQuery();
-      for (Entry<Integer, CommitItem> entry : changesByItemId.entrySet()) {
+      for (Entry<Integer, ChangeItem> entry : changesByItemId.entrySet()) {
          idJoin.add(entry.getKey());
       }
       idJoin.store();
@@ -133,13 +195,19 @@ public class LoadChangeDataOperation extends AbstractOperation {
       if (mergeBranch != null) {
          loadCurrentData(monitor, tableName, columnName, idJoin, mergeBranch, changesByItemId);
       }
-      loadCurrentData(monitor, tableName, columnName, idJoin, destinationBranch, changesByItemId);
-      loadNonCurrentSourceData(monitor, tableName, columnName, idJoin, changesByItemId);
+
+      if (destinationBranch != null) {
+         loadCurrentData(monitor, tableName, columnName, idJoin, destinationBranch, changesByItemId);
+      }
+
+      if(sourceBranch != null){
+         loadNonCurrentSourceData(monitor, tableName, columnName, idJoin, changesByItemId, columnValueName);
+      }
 
       idJoin.delete();
    }
 
-   private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, Branch branch, HashMap<Integer, CommitItem> changesByItemId) throws OseeCoreException {
+   private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, Branch branch, HashMap<Integer, ChangeItem> changesByItemId) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       String query =
@@ -154,7 +222,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             checkForCancelledStatus(monitor);
             int itemId = chStmt.getInt(columnName);
             long gammaId = chStmt.getLong("gamma_id");
-            CommitItem change = changesByItemId.get(itemId);
+            ChangeItem change = changesByItemId.get(itemId);
 
             if (branch.getBranchType().isMergeBranch()) {
                change.getNet().setGammaId(gammaId);
@@ -169,17 +237,19 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadNonCurrentSourceData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, CommitItem> changesByItemId) throws OseeCoreException {
+   private void loadNonCurrentSourceData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-
-      String query =
-            "select item." + columnName + ", txs.gamma_id, txs.mod_type, txd.tx_type from osee_join_id idj, " //
-                  + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
-                  " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? order by idj.id, txs.transaction_id asc";
+      String query;
 
       try {
+         query =
+               "select " + (columnValueName != null ? "item." + columnValueName + ", item." + columnName : "item." + columnName) + ", txs.gamma_id, txs.mod_type, txd.tx_type, txs.transaction_id from osee_join_id idj, " //
+                     + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
+                     " and item.gamma_id = txs.gamma_id and txs.tx_current = ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? order by idj.id, txs.transaction_id asc";
+
          chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
                getSourceBranchId());
+
          int previousItemId = -1;
          boolean isFirstSet = false;
          while (chStmt.next()) {
@@ -188,20 +258,20 @@ public class LoadChangeDataOperation extends AbstractOperation {
             int itemId = chStmt.getInt(columnName);
             boolean isBaseline =
                   TransactionDetailsType.toEnum(chStmt.getInt("tx_type")) == TransactionDetailsType.Baselined;
-            CommitItem change = changesByItemId.get(itemId);
+            ChangeItem change = changesByItemId.get(itemId);
 
             if (previousItemId != itemId) {
                isFirstSet = false;
                previousItemId = itemId;
                if (isBaseline) {
-                  loadVersionData(chStmt, change.getBase());
+                  loadVersionData(chStmt, change.getBase(), columnValueName);
                } else {
-                  loadVersionData(chStmt, change.getFirst());
+                  loadVersionData(chStmt, change.getFirst(), columnValueName);
                   isFirstSet = true;
                }
             } else {
                if (!isFirstSet) {
-                  loadVersionData(chStmt, change.getFirst());
+                  loadVersionData(chStmt, change.getFirst(), columnValueName);
                   isFirstSet = true;
                }
             }
@@ -211,8 +281,13 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadVersionData(ConnectionHandlerStatement chStmt, ChangePair changePair) throws OseeArgumentException, OseeDataStoreException {
-      changePair.setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
-      changePair.setGammaId(chStmt.getLong("gamma_id"));
+   private void loadVersionData(ConnectionHandlerStatement chStmt, VersionedChange versionedChange, String valueColumnName) throws OseeArgumentException, OseeDataStoreException {
+      if (valueColumnName != null) {
+         versionedChange.setValue(chStmt.getString(valueColumnName));
+      }
+
+      versionedChange.setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
+      versionedChange.setGammaId(chStmt.getLong("gamma_id"));
+      versionedChange.setTransactionNumber(chStmt.getLong("transaction_id"));
    }
 }

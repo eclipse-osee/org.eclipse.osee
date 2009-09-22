@@ -23,11 +23,17 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Roberto E. Escobar
  */
 public class ComputeNetChangeOperation extends AbstractOperation {
-   private final Collection<CommitItem> changes;
+   private final Collection<ChangeItem> changes;
+   private final boolean hasDestinationBranch;
 
-   public ComputeNetChangeOperation(Collection<CommitItem> changes) {
+   public ComputeNetChangeOperation(Collection<ChangeItem> changes) {
+      this(changes, true);
+   }
+   
+   public ComputeNetChangeOperation(Collection<ChangeItem> changes, boolean hasDestinationBranch) {
       super("Compute Net Change", Activator.PLUGIN_ID);
       this.changes = changes;
+      this.hasDestinationBranch = hasDestinationBranch;
    }
 
    @Override
@@ -35,10 +41,10 @@ public class ComputeNetChangeOperation extends AbstractOperation {
       if (!changes.isEmpty()) {
          double workPercentage = 1.0 / changes.size();
 
-         Iterator<CommitItem> iterator = changes.iterator();
+         Iterator<ChangeItem> iterator = changes.iterator();
          while (iterator.hasNext()) {
             checkForCancelledStatus(monitor);
-            CommitItem change = iterator.next();
+            ChangeItem change = iterator.next();
             if (change.isIgnoreCase()) {
                iterator.remove();
             } else {
@@ -64,7 +70,29 @@ public class ComputeNetChangeOperation extends AbstractOperation {
       System.out.println("Commit change size: " + changes.size());
    }
 
-   private ModificationType getNetModType(CommitItem change) {
+   private ModificationType getNetModType(ChangeItem change) {
+      ModificationType modificationType;
+      
+      if(hasDestinationBranch){
+         modificationType = calculateNetWithDestinationBranch(change);
+      }else{
+         modificationType = calculateNetWithoutDestinationBranch(change); 
+      }
+      return modificationType;
+   }
+
+   private ModificationType calculateNetWithoutDestinationBranch(ChangeItem change) {
+      ModificationType netModType = change.getCurrent().getModType();
+
+      if (change.wasNewOnSource()) {
+         netModType = ModificationType.NEW;
+      } else if (change.wasIntroducedOnSource()) {
+         netModType = ModificationType.INTRODUCED;
+      }
+      return netModType;
+   }
+   
+   private ModificationType calculateNetWithDestinationBranch(ChangeItem change) {
       ModificationType netModType = null;
       if (change.getDestination().exists() && (change.getBase().exists() || change.getFirst().exists())) {
          netModType = change.getCurrent().getModType();
@@ -83,12 +111,12 @@ public class ComputeNetChangeOperation extends AbstractOperation {
       return netModType;
    }
 
-   private void checkForInvalidStates(CommitItem change) throws OseeCoreException {
+   private void checkForInvalidStates(ChangeItem change) throws OseeCoreException {
       // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
-      if (!change.getDestination().exists() && change.getBase().exists()) {
-         throw new OseeStateException(
-               "This should be supported in the future - destination branch is not the source's parent: " + change);
-      }
+//      if (!change.getDestination().exists() && change.getBase().exists()) {
+//         throw new OseeStateException(
+//               "This should be supported in the future - destination branch is not the source's parent: " + change);
+//      }
 
       if (change.getDestination().exists() && change.getDestination().getModType().isDeleted()) {
          throw new OseeStateException("Destination was deleted - source should not modify: " + change);
