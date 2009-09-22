@@ -368,7 +368,7 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (!artifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName())) {
+      if (!artifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName())) {
          if (presentationType == PresentationType.DIFF || presentationType == PresentationType.PREVIEW) {
             return WORD_PUBLICATION;
          }
