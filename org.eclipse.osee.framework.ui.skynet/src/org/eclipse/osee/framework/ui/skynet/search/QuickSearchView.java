@@ -30,6 +30,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
@@ -126,6 +127,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
       branchSelect = new XBranchSelectWidget("");
       branchSelect.setDisplayLabel(false);
       branchSelect.createWidgets(parent, 2);
+      branchSelect.addListener(this);
 
       OseeContributionItem.addTo(this, true);
 
@@ -140,6 +142,7 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
 
       searchComposite = new SearchComposite(panel, SWT.NONE);
       searchComposite.addListener(this);
+      compositeEnablement(searchComposite, false);
 
       optionsComposite = new QuickSearchOptionComposite(panel, SWT.NONE);
       optionsComposite.setLayout(ALayout.getZeroMarginLayout());
@@ -157,6 +160,14 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
 
    private void createActions() {
       OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Quick Search");
+   }
+
+   private void compositeEnablement(Composite composite, boolean enable) {
+      if (Widgets.isAccessible(composite)) {
+         for (Control cntrl : composite.getChildren()) {
+            cntrl.setEnabled(enable);
+         }
+      }
    }
 
    @Override
@@ -193,6 +204,9 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
                      optionsComposite.isMatchAllLocationsEnabled(), optionsComposite.isCaseSensitiveEnabled(),
                      optionsComposite.getAttributeTypeFilter()));
             }
+         } else {
+            // branch has been selected; allow user to set up search string
+            compositeEnablement(searchComposite, true);
          }
       }
    }
