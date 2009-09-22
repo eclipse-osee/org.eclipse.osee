@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.demo.db.connection;
+package org.eclipse.osee.demo.db.connection.internal;
 
 import java.net.URL;
 import org.osgi.framework.BundleActivator;

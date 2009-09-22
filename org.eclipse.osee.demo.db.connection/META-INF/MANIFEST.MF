@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Connection Plug-in
 Bundle-SymbolicName: org.eclipse.osee.demo.db.connection;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.eclipse.osee.demo.db.connection.Activator
+Bundle-Activator: org.eclipse.osee.demo.db.connection.internal.Activator
 Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.data,
