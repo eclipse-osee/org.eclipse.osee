@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+   <extension
+         point="org.eclipse.osee.coverage.CoverageNavigateItem">
+      <ICoverageNavigateItem
+            classname="org.eclipse.osee.coverage.test.navigate.CoverageNavigateViews">
+      </ICoverageNavigateItem>
+   </extension>
+
+</fragment>
