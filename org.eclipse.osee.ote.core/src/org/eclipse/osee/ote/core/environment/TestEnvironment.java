@@ -660,7 +660,6 @@ public abstract class TestEnvironment implements TestEnvironmentInterface, ITest
       }
 
       // here we remove all environment tasks (emulators)
-      removeAllTasks();
       if (associatedObjects != null) {
          this.associatedObjects.clear();// get rid of all models and support
       }

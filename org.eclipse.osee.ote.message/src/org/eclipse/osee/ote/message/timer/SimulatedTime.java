@@ -92,10 +92,14 @@ public class SimulatedTime extends TimerControl {
       return cycleCountDown;
    }
 
-   public void addTask(EnvironmentTask task, TestEnvironment environment) {
-      if (!tasks.contains(task)) {
-         tasks.add(new Task(task, environment));
-      }
+   public void addTask(EnvironmentTask envTask, TestEnvironment environment) {
+	   for (Task task : tasks) {
+		   if (task.task == envTask) {
+			   return;
+		   }
+	   }
+
+	   tasks.add(new Task(envTask, environment));
    }
 
    public void removeTask(EnvironmentTask task) {
