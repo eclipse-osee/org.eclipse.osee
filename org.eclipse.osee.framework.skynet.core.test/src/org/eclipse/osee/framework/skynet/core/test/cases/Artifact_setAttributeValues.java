@@ -15,9 +15,11 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import junit.framework.Assert;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -46,9 +48,9 @@ public class Artifact_setAttributeValues {
 
    @org.junit.Test
    public void testSetAttributeValues() throws Exception {
-      Artifact artifact =
-            ArtifactTypeManager.addArtifact("General Document",
-                  BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), getClass().getSimpleName());
+      Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
+      Assert.assertNotNull(branch);
+      Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName());
       artifact.setAttributeValues(StaticIdManager.STATIC_ID_ATTRIBUTE, firstSet);
       artifact.persist();
 
@@ -99,15 +101,16 @@ public class Artifact_setAttributeValues {
    }
 
    private Artifact getArtifact() throws Exception {
-      return ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(),
-            BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false).iterator().next();
+      Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
+      Assert.assertNotNull(branch);
+      return ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), branch, false).iterator().next();
    }
 
    private static void cleanup() throws Exception {
+      Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
+      Assert.assertNotNull(branch);
       Collection<Artifact> arts =
-            ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(),
-                  BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
+            ArtifactQuery.getArtifactListFromName(Artifact_setAttributeValues.class.getSimpleName(), branch, false);
       FrameworkTestUtil.purgeArtifacts(arts);
    }
-
 }

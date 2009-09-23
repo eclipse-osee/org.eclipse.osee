@@ -75,7 +75,8 @@ public class UpdateBranchOperation extends AbstractOperation {
          newWorkingBranch = createTempBranch(originalBranch);
          monitor.worked(calculateWork(0.40));
 
-         BranchManager.setBranchState(originalBranch, BranchState.REBASELINE_IN_PROGRESS);
+         originalBranch.setBranchState(BranchState.REBASELINE_IN_PROGRESS);
+         originalBranch.persist();
 
          monitor.setTaskName("Checking for Conflicts");
          ConflictManagerExternal conflictManager = new ConflictManagerExternal(newWorkingBranch, originalBranch);

@@ -473,7 +473,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       } else {
          rootArt = topArt;
          rootItem = new GroupExplorerItem(treeViewer, rootArt, null, this);
-//         rootItem.getGroupItems();
+         //         rootItem.getGroupItems();
       }
 
       if (treeViewer != null) {
@@ -567,7 +567,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
                if (branchId != null) {
                   try {
                      branch = BranchManager.getBranch(branchId);
-                     if (branch.isDeleted() || branch.isArchived()) {
+                     if (branch.getBranchState().isDeleted() || branch.getArchiveState().isArchived()) {
                         branch = null;
                      }
                   } catch (BranchDoesNotExist ex) {

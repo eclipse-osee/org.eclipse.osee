@@ -27,13 +27,13 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeTypeDataAccessor;
+import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseRelationTypeAccessor implements IOseeTypeDataAccessor<RelationType> {
+public class DatabaseRelationTypeAccessor implements IOseeDataAccessor<RelationType> {
    private static final String SELECT_LINK_TYPES = "SELECT * FROM osee_relation_link_type";
    private static final String INSERT_RELATION_TYPE =
          "INSERT INTO osee_relation_link_type (rel_link_type_id, rel_link_type_guid, type_name, a_name, b_name, a_art_type_id, b_art_type_id, multiplicity, user_ordered, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?,?)";
@@ -69,14 +69,24 @@ public class DatabaseRelationTypeAccessor implements IOseeTypeDataAccessor<Relat
                RelationTypeMultiplicity multiplicity =
                      RelationTypeMultiplicity.getRelationMultiplicity(multiplicityValue);
                boolean isUserOrdered = USER_ORDERED.equalsIgnoreCase(chStmt.getString("user_ordered"));
-               RelationType relationType =
-                     factory.createRelationType(cache, chStmt.getString("rel_link_type_guid"), name,
-                           chStmt.getString("a_name"), chStmt.getString("b_name"), artifactTypeSideA,
-                           artifactTypeSideB, multiplicity, isUserOrdered, chStmt.getString("default_order_type_guid"));
-               relationType.setId(typeId);
-               relationType.setModificationType(ModificationType.MODIFIED);
+               String sideAName = chStmt.getString("a_name");
+               String sideBName = chStmt.getString("b_name");
+               String defaultOrderTypeGuid = chStmt.getString("default_order_type_guid");
+
+               RelationType relationType = cache.getTypeById(typeId);
+               if (relationType == null) {
+                  relationType =
+                        factory.createRelationType(cache, chStmt.getString("rel_link_type_guid"), name, sideAName,
+                              sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, isUserOrdered,
+                              defaultOrderTypeGuid);
+                  relationType.setId(typeId);
+                  relationType.setModificationType(ModificationType.MODIFIED);
+                  cache.cacheType(relationType);
+               } else {
+                  relationType.setFields(name, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB,
+                        multiplicity, isUserOrdered, defaultOrderTypeGuid);
+               }
                relationType.clearDirty();
-               cache.cacheType(relationType);
             } catch (OseeCoreException ex) {
                String message =
                      String.format(

@@ -16,10 +16,10 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Roberto E. Escobar
@@ -55,24 +55,24 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       Branch destinationBranch = conflictManager.getDestinationBranch();
 
       String originalBranchName = sourceBranch.getName();
-      Artifact originalAssociatedArtifact = sourceBranch.getAssociatedArtifact();
+      IArtifact originalAssociatedArtifact = sourceBranch.getAssociatedArtifact();
 
-      sourceBranch.rename(getUpdatedName(originalBranchName));
+      sourceBranch.setName(getUpdatedName(originalBranchName));
       monitor.worked(calculateWork(0.20));
 
-      destinationBranch.rename(originalBranchName);
-      if (originalAssociatedArtifact != null) {
-         destinationBranch.setAssociatedArtifact(originalAssociatedArtifact);
-      }
-      BranchManager.setBranchState(sourceBranch, BranchState.REBASELINED);
+      destinationBranch.setName(originalBranchName);
+      destinationBranch.setAssociatedArtifact(originalAssociatedArtifact);
+      sourceBranch.setBranchState(BranchState.REBASELINED);
+
+      BranchManager.persist(sourceBranch, destinationBranch);
+
       monitor.worked(calculateWork(0.20));
    }
 
    @Override
    protected IStatus createErrorStatus(Throwable error) {
       setStatusMessage(String.format("Error merging updates between [%s] and [%s]",
-            conflictManager.getSourceBranch().getShortName(),
-            conflictManager.getDestinationBranch().getShortName()));
+            conflictManager.getSourceBranch().getShortName(), conflictManager.getDestinationBranch().getShortName()));
       return super.createErrorStatus(error);
    }
 

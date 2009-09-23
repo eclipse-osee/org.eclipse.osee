@@ -63,7 +63,7 @@ public class GraphLoader {
          List<Branch> branches = new ArrayList<Branch>(current.getBranch().getChildBranches(recurse));
          branches.add(current.getBranch());
          for (Branch branch : branches) {
-            txJoinQuery.add(-1L, branch.getParentTransactionNumber());
+            txJoinQuery.add(-1L, branch.getBaseTransaction().getTransactionNumber());
          }
          txJoinQuery.store();
 
@@ -92,7 +92,12 @@ public class GraphLoader {
          if (branchModel.getBranch().getBranchType().isSystemRootBranch()) {
             systemRootTx = branchModel.getFirstTx();
          } else {
-            long parentTxId = branchModel.getBranch().getParentTransactionNumber();
+            long parentTxId = 0;
+            try {
+               parentTxId = branchModel.getBranch().getBaseTransaction().getTransactionNumber();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(BranchGraphActivator.class, Level.SEVERE, ex);
+            }
             if (parentTxId > 0) {
                TxModel txModel = branchModel.getFirstTx();
                if (txModel != null) {
@@ -117,7 +122,8 @@ public class GraphLoader {
       if (systemRootTx != null) {
          for (BranchModel branchModel : models) {
             try {
-               if (branchModel.getBranch().isTopLevelBranch()) {
+               Branch branch = branchModel.getBranch();
+               if (branch.hasParentBranch() && branch.getParentBranch().getBranchType().isSystemRootBranch()) {
                   TxModel txModel = branchModel.getFirstTx();
                   if (txModel != null) {
                      connect(systemRootTx, txModel);

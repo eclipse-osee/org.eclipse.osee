@@ -248,7 +248,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    private void validateBranchId(Artifact art, String parentBranchId) throws OseeCoreException {
       try {
          Branch branch = BranchManager.getBranch(new Integer(parentBranchId));
-         if (branch.isArchived()) {
+         if (branch.getArchiveState().isArchived()) {
             xResultData.logError(String.format("Parent Branch Id [%s][%s] can't be Archived branch for [%s][%s]",
                   parentBranchId, branch, art.getHumanReadableId(), art));
          } else if (branch.getBranchType().isWorkingBranch()) {
@@ -405,9 +405,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       for (Artifact artifact : artifacts) {
          if (artifact instanceof TeamWorkFlowArtifact) {
             try {
-            if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
-               xResultData.logError("Team " + XResultData.getHyperlink(artifact) + " has no parent Action\n");
-            }
+               if (((TeamWorkFlowArtifact) artifact).getParentActionArtifact() == null) {
+                  xResultData.logError("Team " + XResultData.getHyperlink(artifact) + " has no parent Action\n");
+               }
             } catch (Exception ex) {
                xResultData.logError("Team " + XResultData.getHyperlink(artifact) + " has no parent Action: exception " + ex);
             }

@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -115,7 +116,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       int authorId = userToBlame == null ? -1 : userToBlame.getArtId();
       ConnectionHandler.runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
             TransactionDetailsType.NonBaselined.getId(), destinationBranch.getBranchId(), newTransactionNumber,
-            comment, timestamp, authorId, sourceBranch.getAssociatedArtifactId());
+            comment, timestamp, authorId, sourceBranch.getAssociatedArtifact().getArtId());
 
       return newTransactionNumber;
    }
@@ -131,15 +132,17 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    }
 
    private void manageBranchStates() throws OseeCoreException {
-      if (mergeBranch != null) {
-         savedBranchStates.put(mergeBranch, mergeBranch.getBranchState());
-         BranchManager.setBranchState(connection, mergeBranch, BranchState.COMMITTED);
-      }
-      BranchManager.setBranchState(connection, destinationBranch, BranchState.MODIFIED);
-
+      destinationBranch.setBranchState(BranchState.MODIFIED);
       BranchState sourceBranchState = sourceBranch.getBranchState();
       if (!sourceBranchState.isCreationInProgress() && !sourceBranchState.isRebaselined() && !sourceBranchState.isRebaselineInProgress() && !sourceBranchState.isCommitted()) {
-         BranchManager.setBranchState(connection, sourceBranch, BranchState.COMMITTED);
+         sourceBranch.setBranchState(BranchState.COMMITTED);
+      }
+      if (mergeBranch != null) {
+         savedBranchStates.put(mergeBranch, mergeBranch.getBranchState());
+         mergeBranch.setBranchState(BranchState.COMMITTED);
+         BranchManager.persist(mergeBranch, destinationBranch, sourceBranch);
+      } else {
+         BranchManager.persist(destinationBranch, sourceBranch);
       }
    }
 
@@ -148,8 +151,11 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       success = false;
       // Restore Original Branch States
       try {
-         BranchManager.setBranchState(null, savedBranchStates);
-      } catch (OseeDataStoreException ex1) {
+         for (Entry<Branch, BranchState> entry : savedBranchStates.entrySet()) {
+            entry.getKey().setBranchState(entry.getValue());
+         }
+         BranchManager.persist(savedBranchStates.keySet());
+      } catch (OseeCoreException ex1) {
          OseeLog.log(Activator.class, Level.SEVERE, ex1);
       }
    }
@@ -158,7 +164,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
       if (success) {
          // Update commit artifact cache with new information
-         if (sourceBranch.getAssociatedArtifactId() > 0) {
+         if (sourceBranch.getAssociatedArtifact().getArtId() > 0) {
             TransactionIdManager.cacheCommittedArtifactTransaction(sourceBranch.getAssociatedArtifact(),
                   TransactionIdManager.getTransactionId(newTransactionNumber));
          }

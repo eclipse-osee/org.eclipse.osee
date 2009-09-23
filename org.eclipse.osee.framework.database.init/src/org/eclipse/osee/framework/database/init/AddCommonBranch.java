@@ -49,7 +49,8 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, systemBranch,
                OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME).persist();
 
-         BranchManager.createTopLevelBranch(Branch.COMMON_BRANCH_CONFIG_ID, Branch.COMMON_BRANCH_CONFIG_ID, null);
+         BranchManager.createTopLevelBranch(BranchManager.COMMON_BRANCH_CONFIG_ID,
+               BranchManager.COMMON_BRANCH_CONFIG_ID, null);
 
          SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
 

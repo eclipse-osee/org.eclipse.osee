@@ -80,9 +80,10 @@ import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.osgi.framework.Bundle;
 
-public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessControllable {
+public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IAccessControllable {
    public static final String UNNAMED = "Unnamed";
    public static final String BEFORE_GUID_STRING = "/BeforeGUID/PrePend";
    public static final String AFTER_GUID_STRING = "/AfterGUID";
@@ -1776,7 +1777,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       if (transactionId == null) {
          return new Date();
       }
-      return transactionId.getTime();
+      return transactionId.getDate();
    }
 
    public User getLastModifiedBy() throws OseeCoreException {
@@ -1808,7 +1809,7 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    }
 
    @Override
-   public PermissionEnum getUserPermission(Artifact subject, PermissionEnum permission) {
-      return AccessControlManager.getArtifactPermission(subject, this, permission);
+   public Artifact getFullArtifact() throws OseeCoreException {
+      return this;
    }
 }

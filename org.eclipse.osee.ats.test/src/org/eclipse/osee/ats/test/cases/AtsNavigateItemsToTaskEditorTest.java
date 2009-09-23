@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayoutListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
+import org.eclipse.osee.support.test.util.DemoSawBuilds;
 
 /**
  * @author Donald G. Dunne
@@ -72,8 +73,8 @@ public class AtsNavigateItemsToTaskEditorTest {
       Set<TeamDefinitionArtifact> tda = TeamDefinitionArtifact.getTeamDefinitions(teamDefs);
       runGeneralTaskSearchOnTeamTest(item, tda, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Joe Smith", 14);
-      runGeneralTaskSearchOnVersionTest(item, "SAW_Bld_1", 0);
-      runGeneralTaskSearchOnVersionTest(item, "SAW_Bld_2", 14);
+      runGeneralTaskSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.name(), 0);
+      runGeneralTaskSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.name(), 14);
       selectedUsers.clear();
       runGeneralTaskSearchOnTeamTest(item, selectedUsers, 14);
       runGeneralTaskSearchOnAssigneeTest(item, "Kay Jones", 8);

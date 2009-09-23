@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.support.test.util.DemoSawBuilds;
 
 /**
  * @author Theron Virgin
@@ -206,7 +207,7 @@ public class ConflictTestManager {
       cleanUpConflictTest();
       createConflictDefinitions();
       Branch branch;
-      branch = BranchManager.getBranch("SAW_Bld_1");
+      branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_1.name());
       destBranch = BranchManager.createWorkingBranch(branch, DEST_BRANCH, null);
 
       Artifact rootArtifact = ArtifactQuery.getArtifactFromAttribute("Name", FOLDER, destBranch);

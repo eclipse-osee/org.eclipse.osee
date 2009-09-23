@@ -96,8 +96,9 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          final Collection<Artifact> srchArts =
                ArtifactQuery.getArtifactListFromName("%" + artifactName + "%", branch, true);
          final Set<Artifact> processArts = new HashSet<Artifact>();
-         if (srchArts.size() == 0)
+         if (srchArts.size() == 0) {
             return;
+         }
          if (srchArts.size() > 1) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
@@ -134,7 +135,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             Collection<Branch> branches = branchMap.getValues(srchArt);
             if (branches != null) {
                for (Branch branch : branches) {
-                  Artifact assocArt = branch.getAssociatedArtifact();
+                  Artifact assocArt = branch.getAssociatedArtifact().getFullArtifact();
                   if (assocArt != null && !assocArt.equals(UserManager.getUser(SystemUser.OseeSystem))) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
                            XResultData.getHyperlink(assocArt), assocArt.getName()}));

@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
+import org.eclipse.osee.support.test.util.ITestBranch;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -69,13 +70,14 @@ public class ViewWordChangeAndDiffTest {
 
    @org.junit.Test
    public void testViewWordChangeReport() throws Exception {
-      Branch theBranch;
+      ITestBranch testBranch;
       // get the changes on the specified branch
       if (BranchManager.branchExists(DemoSawBuilds.SAW_Bld_2.name())) {
-         theBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
+         testBranch = DemoSawBuilds.SAW_Bld_2;
       } else {
-         theBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
+         testBranch = DemoSawBuilds.SAW_Bld_1;
       }
+      Branch theBranch = BranchManager.getKeyedBranch(testBranch.name());
       artifactChanges = ChangeManager.getChangesPerBranch(theBranch, new NullProgressMonitor());
       // get the artifacts from the changed list
       artifacts = getArtifacts();

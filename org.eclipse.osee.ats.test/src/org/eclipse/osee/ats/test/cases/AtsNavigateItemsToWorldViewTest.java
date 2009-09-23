@@ -69,6 +69,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.IDynamicWidgetLayou
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 import org.eclipse.osee.support.test.util.AtsUserCommunity;
+import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -124,8 +125,9 @@ public class AtsNavigateItemsToWorldViewTest {
       // Open all three favorites
       editor.getWorldXWidgetActionPage().reSearch(true);
       Collection<Artifact> arts = editor.getLoadedArtifacts();
-      for (Artifact artifact : arts)
+      for (Artifact artifact : arts) {
          SMAEditor.editArtifact(artifact);
+      }
       // Test that recently visited returns all three
       Collection<Artifact> artsLoaded = editor.getLoadedArtifacts();
       NavigateTestUtil.testExpectedVersusActual(item.getName(), artsLoaded, TeamWorkFlowArtifact.class, 3);
@@ -317,7 +319,7 @@ public class AtsNavigateItemsToWorldViewTest {
       assertTrue(groupArt != null);
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Group Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof GroupWorldSearchItem);
-      ((GroupWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedGroup(groupArt);
+      ((GroupWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedGroup(groupArt);
       NavigateView.getNavigateView().handleDoubleClick(item, TableLoadOption.ForcePend, TableLoadOption.NoUI);
       WorldEditor worldEditor = getSingleEditorOrFail();
       Collection<Artifact> arts = worldEditor.getLoadedArtifacts();
@@ -350,8 +352,8 @@ public class AtsNavigateItemsToWorldViewTest {
       teamDefs.add("SAW Design");
       Set<TeamDefinitionArtifact> tda = TeamDefinitionArtifact.getTeamDefinitions(teamDefs);
       runGeneralTeamWorkflowSearchOnTeamTest(item, tda, 3);
-      runGeneralTeamWorkflowSearchOnVersionTest(item, "SAW_Bld_1", 0);
-      runGeneralTeamWorkflowSearchOnVersionTest(item, "SAW_Bld_2", 3);
+      runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_1.name(), 0);
+      runGeneralTeamWorkflowSearchOnVersionTest(item, DemoSawBuilds.SAW_Bld_2.name(), 3);
       selectedUsers.clear();
       runGeneralTeamWorkflowSearchOnTeamTest(item, selectedUsers, 6);
    }
@@ -400,7 +402,7 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testUserCommunitySearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("User Community Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof UserCommunitySearchItem);
-      ((UserCommunitySearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUserComm(AtsUserCommunity.Program_2.name());
+      ((UserCommunitySearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedUserComm(AtsUserCommunity.Program_2.name());
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 4, null, TableLoadOption.DontCopySearchItem);
    }
@@ -409,7 +411,7 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testActionableItemSearch() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Actionable Item Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof ActionableItemWorldSearchItem);
-      ((ActionableItemWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedActionItems(ActionableItemArtifact.getActionableItems(Arrays.asList("SAW Code")));
+      ((ActionableItemWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedActionItems(ActionableItemArtifact.getActionableItems(Arrays.asList("SAW Code")));
       // normal searches copy search item which would clear out the set value above; for this test, don't copy item
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 3, null, TableLoadOption.DontCopySearchItem);
    }
@@ -420,8 +422,8 @@ public class AtsNavigateItemsToWorldViewTest {
       // First one is the global one
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof VersionTargetedForTeamSearchItem);
-      ((VersionTargetedForTeamSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedVersionArt(VersionArtifact.getVersions(
-            Arrays.asList("SAW_Bld_2")).iterator().next());
+      ((VersionTargetedForTeamSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedVersionArt(VersionArtifact.getVersions(
+            Arrays.asList(DemoSawBuilds.SAW_Bld_2.name())).iterator().next());
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 14, null, TableLoadOption.DontCopySearchItem);
    }
 
@@ -431,7 +433,7 @@ public class AtsNavigateItemsToWorldViewTest {
       // First one is the global one
       XNavigateItem item = items.iterator().next();
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof NextVersionSearchItem);
-      ((NextVersionSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedTeamDef(TeamDefinitionArtifact.getTeamDefinitions(
+      ((NextVersionSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedTeamDef(TeamDefinitionArtifact.getTeamDefinitions(
             Arrays.asList("SAW SW")).iterator().next());
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 14, null, TableLoadOption.DontCopySearchItem);
    }
@@ -468,7 +470,7 @@ public class AtsNavigateItemsToWorldViewTest {
    public void testSearchByCurrentState() throws Exception {
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Search by Current State");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof StateWorldSearchItem);
-      ((StateWorldSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedStateClass("Implement");
+      ((StateWorldSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedStateClass("Implement");
       runGeneralLoadingTest(item, TeamWorkFlowArtifact.class, 17, null, TableLoadOption.DontCopySearchItem);
    }
 
@@ -496,9 +498,9 @@ public class AtsNavigateItemsToWorldViewTest {
       // Close all open world editors
       WorldEditor.closeAll();
       // Find the correct navigate item
-      if (user != null && (item instanceof SearchNavigateItem)) {
+      if (user != null && item instanceof SearchNavigateItem) {
          if (((SearchNavigateItem) item).getWorldSearchItem() instanceof UserSearchItem) {
-            ((UserSearchItem) (((SearchNavigateItem) item).getWorldSearchItem())).setSelectedUser(user);
+            ((UserSearchItem) ((SearchNavigateItem) item).getWorldSearchItem()).setSelectedUser(user);
          }
       }
       // Simulate double-click of navigate item
@@ -544,10 +546,11 @@ public class AtsNavigateItemsToWorldViewTest {
          handleTableCustomization();
          columns = getXViewer().getCustomizeMgr().getCurrentTableColumns();
          verifyXColumns(labelProv, arts, columns);
-      } else if (isErrorCheck)
+      } else if (isErrorCheck) {
          verifyXColumnsHasErrors(labelProv, arts, columns, attributeToDelete);
-      else
+      } else {
          verifyXColumns(labelProv, arts, columns);
+      }
    }
 
    public void getAllTreeItems(TreeItem[] treeItem, List<Artifact> taskArts) throws OseeCoreException {
@@ -558,7 +561,9 @@ public class AtsNavigateItemsToWorldViewTest {
                taskArts.add((Artifact) item.getData());
             }
          }
-         if (item.getExpanded()) getAllTreeItems(item.getItems(), taskArts);
+         if (item.getExpanded()) {
+            getAllTreeItems(item.getItems(), taskArts);
+         }
       }
    }
 
@@ -612,10 +617,11 @@ public class AtsNavigateItemsToWorldViewTest {
          verifyArtifactsHasErrors(labelProv, arts, xCol, getXViewer().getCustomizeMgr().getColumnNumFromXViewerColumn(
                xCol), attributeToDelete, actualErrorCols);
       }
-      if (!attributeToDelete.equals("ats.Current State") && !attributeToDelete.equals("ats.Priority"))
+      if (!attributeToDelete.equals("ats.Current State") && !attributeToDelete.equals("ats.Priority")) {
          verifyXCol1HasErrors(actualErrorCols);
-      else
+      } else {
          verifyXCol2HasErrors(actualErrorCols);
+      }
    }
 
    public void verifyXCol1HasErrors(List<String> actualErrorCols) {
@@ -653,7 +659,11 @@ public class AtsNavigateItemsToWorldViewTest {
       for (Artifact art : arts) {
          String colText = labelProv.getColumnText(art, colIndex);
          if (art.getArtifactTypeName().equals("Demo Code Team Workflow")) {
-            if (colText.contains("!Error")) if (!actualErrorCols.contains(xCol.getId())) actualErrorCols.add(xCol.getId());
+            if (colText.contains("!Error")) {
+               if (!actualErrorCols.contains(xCol.getId())) {
+                  actualErrorCols.add(xCol.getId());
+               }
+            }
          }
       }
    }

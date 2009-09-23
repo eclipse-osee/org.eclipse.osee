@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItem.GammaKind;
+import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.Test;
 
 /**
@@ -40,7 +41,7 @@ public class LoadCommitItemsFromDbTest {
    public void testCommitItemsNonConflicting() throws OseeCoreException {
       final String branchName =
             "SAW (uncommitted) More Reqt Changes for Diagram View - SAW (uncommitted) More Reqt Changes for...";
-      Branch destination = BranchManager.getBranch("SAW_Bld_2");
+      Branch destination = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.name());
       Branch source = findASourceBranch(destination, branchName);
 
       Assert.assertNotNull(source);
@@ -62,7 +63,7 @@ public class LoadCommitItemsFromDbTest {
    public void testCommitItemsConflicting() throws OseeCoreException {
       final String branchName =
             "SAW (uncommitted-conflicted) More Requirement Changes for Diagram View - SAW (uncommitted-conflicted) More Requi...";
-      Branch destination = BranchManager.getBranch("SAW_Bld_2");
+      Branch destination = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.name());
       Branch source = findASourceBranch(destination, branchName);
 
       Assert.assertNotNull(source);

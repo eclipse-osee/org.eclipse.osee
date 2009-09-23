@@ -39,6 +39,7 @@ import org.eclipse.osee.support.test.util.DemoCISBuilds;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoSubsystems;
 import org.eclipse.osee.support.test.util.DemoUsers;
+import org.eclipse.osee.support.test.util.ITestBranch;
 
 /**
  * Initialization class that will load configuration information for a sample DB.
@@ -61,12 +62,12 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       createVersionArtifacts();
 
       // Create SAW_Bld_1 branch
-      createProgramBranch(DemoSawBuilds.SAW_Bld_1.name());
-      populateProgramBranch(DemoSawBuilds.SAW_Bld_1.name());
+      createProgramBranch(DemoSawBuilds.SAW_Bld_1);
+      populateProgramBranch(DemoSawBuilds.SAW_Bld_1);
 
       // Create build one branch for CIS
-      createProgramBranch(DemoCISBuilds.CIS_Bld_1.name());
-      populateProgramBranch(DemoCISBuilds.CIS_Bld_1.name());
+      createProgramBranch(DemoCISBuilds.CIS_Bld_1);
+      populateProgramBranch(DemoCISBuilds.CIS_Bld_1);
 
       // Map team definitions versions to their related branches
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
@@ -94,9 +95,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       verArt.persist(transaction);
    }
 
-   private void populateProgramBranch(String branchName) throws OseeCoreException {
-
-      Branch programBranch = BranchManager.getKeyedBranch(branchName);
+   private void populateProgramBranch(ITestBranch branch) throws OseeCoreException {
+      Branch programBranch = BranchManager.getBranchByGuid(branch.getGuid());
       Artifact sawProduct =
             ArtifactTypeManager.addArtifact(Requirements.COMPONENT, programBranch, "SAW Product Decomposition");
 
@@ -118,8 +118,8 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
 
    }
 
-   private void createProgramBranch(String branchName) throws OseeCoreException {
-      BranchManager.createTopLevelBranch(branchName, branchName, null);
+   private void createProgramBranch(ITestBranch branch) throws OseeCoreException {
+      BranchManager.createTopLevelBranch(branch.name(), branch.name(), branch.getGuid());
    }
 
    private void createVersionArtifacts() throws OseeCoreException {

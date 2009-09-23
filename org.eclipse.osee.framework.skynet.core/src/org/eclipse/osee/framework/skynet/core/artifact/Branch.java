@@ -11,160 +11,122 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.BranchControlled;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.PermissionEnum;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
-import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.IAccessControllable;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
-import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.BranchCache;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
- * @author Robert A. Fisher
+ * @author Roberto E. Escobar
  */
-public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllable {
+public class Branch extends AbstractOseeType implements Comparable<Branch>, IAccessControllable, IAdaptable {
    private static final int SHORT_NAME_LIMIT = 25;
-   public static final String COMMON_BRANCH_CONFIG_ID = "Common";
-   private final String branchGuid;
-   private final int branchId;
-   private Branch parentBranch;
-   private TransactionId parentTransactionId;
-   private final int parentTransactionIdNumber;
-   private String branchName;
-   private boolean archived;
-   private final int authorId;
-   private int associatedArtifactId;
-   private Artifact associatedArtifact;
-   private final Timestamp creationDate;
-   private final String creationComment;
-   private BranchType branchType;
-   private Branch sourceBranch;
-   private Branch destBranch;
-   private BranchState branchState;
 
-   public Branch(String branchName, String branchGuid, int branchId, Branch parentBranch, int parentTransactionIdNumber, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) {
-      this.branchId = branchId;
-      this.branchGuid = branchGuid;
-      this.branchName = branchName;
-      this.parentBranch = parentBranch;
-      this.parentTransactionIdNumber = parentTransactionIdNumber;
-      this.archived = archived;
-      this.authorId = authorId;
-      this.creationDate = creationDate;
-      this.creationComment = creationComment;
-      this.associatedArtifactId = associatedArtifactId;
-      this.associatedArtifact = null;
+   private BranchType branchType;
+   private BranchState branchState;
+   private BranchArchivedState archivedState;
+   private final DirtyStateDetails dirtyStateDetails;
+
+   public Branch(AbstractOseeCache<Branch> cache, String guid, String name, int parentTxNumber, BranchType branchType, BranchState branchState, boolean isArchived) {
+      super(cache, guid, name);
+      this.dirtyStateDetails = new DirtyStateDetails();
+      this.archivedState = BranchArchivedState.fromBoolean(isArchived);
       this.branchType = branchType;
       this.branchState = branchState;
    }
 
-   void internalSetBranchParent(Branch parentBranch) throws OseeStateException {
-      if (this.parentBranch == null) {
-         this.parentBranch = parentBranch;
-      } else {
-         throw new OseeStateException("parent branch cannot be set twice");
-      }
+   @Override
+   protected BranchCache getCache() {
+      return (BranchCache) super.getCache();
    }
 
-   public String getGuid() {
-      return branchGuid;
+   public Branch getParentBranch() throws OseeCoreException {
+      return getCache().getParentBranch(this);
+   }
+
+   public boolean hasParentBranch() throws OseeCoreException {
+      return getParentBranch() != null;
+   }
+
+   public String getShortName() {
+      String shortName = "";
+      if (Strings.isValid(getName())) {
+         shortName = Strings.truncate(getName(), SHORT_NAME_LIMIT);
+      }
+      return shortName;
+   }
+
+   public BranchType getBranchType() {
+      return branchType;
    }
 
    public BranchState getBranchState() {
       return branchState;
    }
 
-   void setBranchState(BranchState branchState) {
+   public IArtifact getAssociatedArtifact() throws OseeCoreException {
+      return getCache().getAssociatedArtifact(this);
+   }
+
+   public void setAssociatedArtifact(IArtifact artifact) throws OseeCoreException {
+      IArtifact oldArtifact = getCache().getAssociatedArtifact(this);
+      getCache().setAssociatedArtifact(this, artifact);
+      IArtifact newArtifact = getCache().getAssociatedArtifact(this);
+      getDirtyDetails().isAssociatedArtifactDirty |= isDifferent(oldArtifact, newArtifact);
+   }
+
+   public TransactionId getBaseTransaction() throws OseeCoreException {
+      return getCache().getBaseTransaction(this);
+   }
+
+   public BranchArchivedState getArchiveState() {
+      return archivedState;
+   }
+
+   public Collection<String> getAliases() throws OseeCoreException {
+      return getCache().getAliases(this);
+   }
+
+   public void setAliases(String... alias) throws OseeCoreException {
+      Collection<String> original = getAliases();
+      getCache().setAliases(this, alias);
+      Collection<String> other = getAliases();
+      getDirtyDetails().areAliasesDirty |= isDifferent(original, other);
+   }
+
+   public void setArchived(boolean isArchived) {
+      BranchArchivedState newValue = BranchArchivedState.fromBoolean(isArchived);
+      getDirtyDetails().isArchivedStateDirty |= isDifferent(this.archivedState, newValue);
+      this.archivedState = newValue;
+   }
+
+   public void setBranchState(BranchState branchState) {
+      getDirtyDetails().isBranchStateDirty |= isDifferent(this.branchState, branchState);
       this.branchState = branchState;
    }
 
-   /**
-    * @return Returns the branchId.
-    */
-   public int getBranchId() {
-      // Should we persist the branch automatically here if the branchId is 0 for cases the software
-      // has freshly created a branch ?
-      return branchId;
+   public void setBranchType(BranchType branchType) {
+      getDirtyDetails().isBranchTypeDirty |= isDifferent(this.branchType, branchType);
+      this.branchType = branchType;
    }
 
-   public String getName() {
-      return branchName;
-   }
-
-   /**
-    * updates this object's name (but does not affect the datastore)
-    * 
-    * @param branchName The branchName to set.
-    */
-   public void setName(String branchName) {
-      this.branchName = branchName;
-   }
-
-   /**
-    * @return Returns the short branch name if provided else returns null.
-    */
-   public String getShortName() {
-      if (Strings.isValid(getName())) {
-         return Strings.truncate(getName(), SHORT_NAME_LIMIT);
-      } else {
-         return Strings.emptyString();
-      }
-   }
-
-   private void kickRenameEvents() throws OseeCoreException {
-      OseeEventManager.kickBranchEvent(this, BranchEventType.Renamed, branchId);
-   }
-
-   /**
-    * Sets the branch name to the given value and stores this change in the data-store
-    * 
-    * @param branchName The branchName to set.
-    */
-   public void rename(String branchName) throws OseeCoreException {
-      setName(branchName);
-      ConnectionHandler.runPreparedUpdate("UPDATE osee_branch SET branch_name = ? WHERE branch_id = ?", branchName,
-            branchId);
-      kickRenameEvents();
-   }
-
-   public void setAssociatedArtifact(Artifact artifact) throws OseeCoreException {
-      // TODO: this method should allow the artifact to be on any branch, not just common
-      if (artifact.getBranch() != BranchManager.getCommonBranch()) {
-         throw new OseeArgumentException(
-               "Setting associated artifact for branch only valid for common branch artifact.");
-      }
-
-      ConnectionHandler.runPreparedUpdate("UPDATE osee_branch SET associated_art_id = ? WHERE branch_id = ?",
-            artifact.getArtId(), branchId);
-
-      associatedArtifact = artifact;
-      associatedArtifactId = artifact.getArtId();
+   public boolean isEditable() {
+      BranchState state = getBranchState();
+      return !state.isCommitted() && !state.isRebaselined() && // 
+      !state.isDeleted() && !state.isCreationInProgress() && //
+      !getArchiveState().isArchived();
    }
 
    @Override
@@ -172,27 +134,27 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       return getName();
    }
 
-   public Branch getParentBranch() {
-      return parentBranch;
-   }
-
-   public boolean hasParentBranch() {
-      return getParentBranch() != null;
-   }
-
-   public boolean hasTopLevelBranch() {
-      return !isTopLevelBranch();
-   }
-
-   /**
-    * @return the top level branch that is an ancestor of this branch (which could be itself)
-    */
-   public Branch getTopLevelBranch() {
-      Branch branchCursor = this;
-      while (branchCursor.hasTopLevelBranch()) {
-         branchCursor = branchCursor.getParentBranch();
+   @Override
+   public int compareTo(Branch other) {
+      int result = -1;
+      if (other != null && other.getName() != null && getName() != null) {
+         result = getName().compareTo(other.getName());
       }
-      return branchCursor;
+      return result;
+   }
+
+   public Collection<Branch> getChildren() throws OseeCoreException {
+      return getCache().getChildren(this);
+   }
+
+   // TODO remove this convenience method
+   public int getBranchId() {
+      return getId();
+   }
+
+   @Override
+   public Branch getAccessControlBranch() {
+      return this;
    }
 
    public Collection<Branch> getChildBranches() throws OseeCoreException {
@@ -206,165 +168,116 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
    }
 
    private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeCoreException {
+      int parentBranchId = parentBranch.getBranchId();
       for (Branch branch : BranchManager.getNormalBranches()) {
-         if (branch.getParentBranchId() == parentBranch.getBranchId()) {
-            children.add(branch);
-            if (recurse) {
-               getChildBranches(branch, children, recurse);
+         if (branch.hasParentBranch()) {
+            if (parentBranchId == branch.getParentBranch().getBranchId()) {
+               children.add(branch);
+               if (recurse) {
+                  getChildBranches(branch, children, recurse);
+               }
             }
          }
       }
    }
 
-   /**
-    * @return Returns all children branches including archived branches
-    */
-   public Collection<Branch> getDescendants() throws OseeCoreException {
-      Set<Branch> children = new HashSet<Branch>();
-      getAllChildBranches(this, children, true);
-
-      return children;
-   }
-
-   private void getAllChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeCoreException {
-      for (Branch branch : BranchManager.getNormalAllBranches()) {
-         if (branch.getParentBranchId() == parentBranch.getBranchId()) {
-            children.add(branch);
-            if (recurse) {
-               getChildBranches(branch, children, recurse);
-            }
-         }
-      }
-   }
-
-   public List<Branch> getBranchHierarchy() throws OseeCoreException {
-      List<Branch> ancestors = new LinkedList<Branch>();
+   public Collection<Branch> getAncestors() throws OseeCoreException {
+      List<Branch> ancestors = new ArrayList<Branch>();
       Branch branchCursor = this;
       ancestors.add(branchCursor);
-      while (branchCursor.hasTopLevelBranch()) {
+      while (branchCursor.hasParentBranch()) {
          branchCursor = branchCursor.getParentBranch();
          ancestors.add(branchCursor);
       }
       return ancestors;
    }
 
-   public int getParentBranchId() {
-      return hasParentBranch() ? getParentBranch().getBranchId() : -1;
-   }
+   public Collection<Branch> getWorkingBranches() throws OseeCoreException {
+      // TODO change this to recurse all Children and then filter by states.
 
-   public void archive() throws OseeCoreException {
-      BranchManager.archive(this);
+      List<Branch> branches = new ArrayList<Branch>(500);
+      for (Branch branch : getCache().getAllTypes()) {
+         if (branch.getArchiveState().isUnArchived() && //
+         branch.getBranchType().isOfType(BranchType.WORKING) && //
+         this.equals(branch.getParentBranch())) {
+            branches.add(branch);
+         }
+      }
+      return branches;
    }
 
    @Override
-   public boolean equals(Object obj) {
-      if (obj instanceof Branch) {
-         return ((Branch) obj).branchId == branchId;
-      }
-
-      return false;
+   public void clearDirty() {
+      getDirtyDetails().clearDirty();
    }
 
    @Override
-   public int hashCode() {
-      return branchId * 13;
+   public boolean isDirty() {
+      return getDirtyDetails().isDirty();
    }
 
-   /**
-    * @return Returns the archived.
-    */
-   public boolean isArchived() {
-      return archived;
+   public DirtyStateDetails getDirtyDetails() {
+      return dirtyStateDetails;
    }
 
-   public void setArchived(boolean archived) {
-      this.archived = archived;
-   }
+   public final class DirtyStateDetails {
+      private boolean isBranchTypeDirty;
+      private boolean isBranchStateDirty;
+      private boolean isArchivedStateDirty;
+      private boolean isAssociatedArtifactDirty;
+      private boolean areAliasesDirty;
 
-   public boolean hasChanges() throws OseeCoreException {
-      Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getStartEndPoint(this);
-      return transactions.getFirst() != transactions.getSecond();
-   }
-
-   /**
-    * @return the artifact id of the user who created the branch
-    */
-   public int getAuthorId() {
-      return authorId;
-   }
-
-   public String getCreationComment() {
-      return creationComment;
-   }
-
-   public Date getCreationDate() {
-      return creationDate;
-   }
-
-   public int compareTo(Branch branch) {
-      return getName().compareToIgnoreCase(branch.getName());
-   }
-
-   /**
-    * @return Returns the associatedArtifact.
-    * @throws MultipleArtifactsExist
-    * @throws ArtifactDoesNotExist
-    * @throws OseeDataStoreException
-    */
-   public Artifact getAssociatedArtifact() throws OseeCoreException {
-      if (associatedArtifact == null && associatedArtifactId > 0) {
-         associatedArtifact = ArtifactQuery.getArtifactFromId(associatedArtifactId, BranchManager.getCommonBranch());
+      private DirtyStateDetails() {
+         clearDirty();
       }
-      return associatedArtifact;
-   }
 
-   /**
-    * Efficient way of determining if branch is associated cause it does not load the associated artifact
-    * 
-    * @param artifact
-    */
-   public boolean isAssociatedToArtifact(Artifact artifact) {
-      return artifact.getArtId() == getAssociatedArtifactId();
-   }
-
-   public boolean isChangeManaged() {
-      try {
-         return associatedArtifactId != UserManager.getUser(SystemUser.OseeSystem).getArtId();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return true;
+      public boolean isBranchTypeDirty() {
+         return isBranchTypeDirty;
       }
-   }
 
-   public boolean isTopLevelBranch() {
-      return getParentBranch() != null && getParentBranch().getBranchType().isSystemRootBranch();
-   }
+      public boolean isBranchStateDirty() {
+         return isBranchStateDirty;
+      }
 
-   public BranchType getBranchType() {
-      return branchType;
-   }
+      public boolean isArchivedStateDirty() {
+         return isArchivedStateDirty;
+      }
 
-   protected void setBranchType(int type) {
-      branchType = BranchType.getBranchType(type);
-   }
+      public boolean isAssociatedArtifactDirty() {
+         return isAssociatedArtifactDirty;
+      }
 
-   public int getAssociatedArtifactId() {
-      return associatedArtifactId;
-   }
+      public boolean isNameDirty() {
+         return Branch.super.isDirty();
+      }
 
-   public String asFolderName() {
-      String branchName = this.getShortName();
+      public boolean areAliasesDirty() {
+         return areAliasesDirty;
+      }
 
-      // Remove illegal filename characters
-      // NOTE: The current program.launch has a tokenizing bug that causes an error if consecutive spaces are in the name
-      branchName = branchName.replaceAll("[^A-Za-z0-9]", "_");
-      branchName = Strings.truncate(branchName, 20).trim();
+      public boolean isDirty() {
+         return isBranchTypeDirty() || //
+         isBranchStateDirty() || //
+         isArchivedStateDirty() || //
+         isAssociatedArtifactDirty() || //
+         isNameDirty() || areAliasesDirty();
+      }
 
-      return String.format("%s.%s", branchName.toLowerCase(), this.getBranchId());
-   }
+      public boolean isDataDirty() {
+         return isBranchTypeDirty() || //
+         isBranchStateDirty() || //
+         isArchivedStateDirty() || //
+         isAssociatedArtifactDirty() || //
+         isNameDirty();
+      }
 
-   public static int getBranchIdFromBranchFolderName(String folderName) throws Exception {
-      return Integer.parseInt(Lib.getExtension(folderName));
+      public void clearDirty() {
+         Branch.super.clearDirty();
+         isBranchTypeDirty = false;
+         isBranchStateDirty = false;
+         isArchivedStateDirty = false;
+         isAssociatedArtifactDirty = false;
+      }
    }
 
    @SuppressWarnings("unchecked")
@@ -379,85 +292,4 @@ public class Branch implements Comparable<Branch>, IAdaptable, IAccessControllab
       return null;
    }
 
-   public void setMergeBranchInfo(Branch sourceBranch, Branch destBranch) {
-      this.sourceBranch = sourceBranch;
-      this.destBranch = destBranch;
-   }
-
-   public boolean isMergeBranchFor(Branch sourceBranch, Branch destBranch) {
-      return sourceBranch.equals(this.sourceBranch) && destBranch.equals(this.destBranch);
-   }
-
-   /**
-    * @param branchTypes
-    * @return whether this branch is of one of the specified branch types
-    */
-   public boolean isOfType(BranchType... branchTypes) {
-      for (BranchType branchType : branchTypes) {
-         if (this.branchType == branchType) {
-            return true;
-         }
-      }
-      return false;
-   }
-
-   public boolean matchesState(BranchArchivedState branchState) {
-      return branchState == BranchArchivedState.ALL || isArchived() && branchState == BranchArchivedState.ARCHIVED || !isArchived() && branchState == BranchArchivedState.UNARCHIVED;
-   }
-
-   public boolean matchesControlled(BranchControlled branchControlled) {
-      return branchControlled == BranchControlled.ALL || isChangeManaged() && branchControlled == BranchControlled.CHANGE_MANAGED || !isChangeManaged() && branchControlled == BranchControlled.NOT_CHANGE_MANAGED;
-   }
-
-   public void setDeleted() {
-      setBranchState(BranchState.DELETED);
-      try {
-         OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, getBranchId());
-      } catch (Exception ex) {
-         // Do Nothing
-      }
-   }
-
-   /**
-    * @return the deleted
-    */
-   public boolean isDeleted() {
-      return getBranchState().isDeleted();
-   }
-
-   /**
-    * @return Returns whether the branch is editable.
-    */
-   public boolean isEditable() {
-      return !getBranchState().isCommitted() && !getBranchState().isRebaselined() && !isArchived() && !isDeleted() && !getBranchState().isCreationInProgress();
-   }
-
-   /**
-    * @return the parentTransactionId
-    * @throws OseeCoreException
-    */
-   public TransactionId getParentTransactionId() throws OseeCoreException {
-      if (parentTransactionId == null) {
-         parentTransactionId = TransactionIdManager.getTransactionId(parentTransactionIdNumber);
-      }
-      return parentTransactionId;
-   }
-
-   public Collection<Branch> getWorkingBranches() throws OseeCoreException {
-      return BranchManager.getWorkingBranches(this);
-   }
-
-   public int getParentTransactionNumber() {
-      return parentTransactionIdNumber;
-   }
-
-   @Override
-   public Branch getAccessControlBranch() {
-      return this;
-   }
-
-   @Override
-   public PermissionEnum getUserPermission(Artifact subject, PermissionEnum permission) {
-      return null;
-   }
 }

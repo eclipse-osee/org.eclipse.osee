@@ -19,13 +19,13 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.types.branch.Branch;
 
 /**
  * @author Roberto E. Escobar
@@ -45,7 +45,10 @@ public class OseeTypeFactory implements IOseeTypeFactory {
       if (!Strings.isValid(typeName)) {
          throw new OseeArgumentException("name cannot be null.");
       }
-      Object object = cache.getTypeByName(typeName);
+   }
+
+   private void checkNameUnique(AbstractOseeCache<?> cache, String typeName) throws OseeCoreException {
+      Object object = cache.getUniqueByName(typeName);
       if (object != null) {
          throw new OseeArgumentException(String.format("Item matching name [%s] already exists", typeName));
       }
@@ -54,12 +57,14 @@ public class OseeTypeFactory implements IOseeTypeFactory {
    @Override
    public ArtifactType createArtifactType(AbstractOseeCache<ArtifactType> cache, String guid, boolean isAbstract, String name) throws OseeCoreException {
       checkName(cache, name);
+      checkNameUnique(cache, name);
       return new ArtifactType(cache, createGuidIfNeeded(guid), name, isAbstract, factoryManager);
    }
 
    @Override
    public AttributeType createAttributeType(AbstractOseeCache<AttributeType> cache, String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
       checkName(cache, name);
+      checkNameUnique(cache, name);
       if (baseAttributeClass == null) {
          throw new OseeArgumentException("The baseAttributeClass can not be null or empty");
       }
@@ -90,6 +95,7 @@ public class OseeTypeFactory implements IOseeTypeFactory {
    @Override
    public RelationType createRelationType(AbstractOseeCache<RelationType> cache, String guid, String name, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {
       checkName(cache, name);
+      checkNameUnique(cache, name);
       if (!Strings.isValid(sideAName)) {
          throw new OseeArgumentException("The sideAName can not be null or empty");
       }
@@ -112,14 +118,13 @@ public class OseeTypeFactory implements IOseeTypeFactory {
    @Override
    public OseeEnumType createEnumType(AbstractOseeCache<OseeEnumType> cache, String guid, String name) throws OseeCoreException {
       checkName(cache, name);
+      checkNameUnique(cache, name);
       return new OseeEnumType(cache, createGuidIfNeeded(guid), name);
    }
 
    @Override
    public OseeEnumEntry createEnumEntry(AbstractOseeCache<OseeEnumType> cache, String guid, String name, int ordinal) throws OseeCoreException {
-      if (!Strings.isValid(name)) {
-         throw new OseeArgumentException("name cannot be null.");
-      }
+      checkName(cache, name);
       if (ordinal < 0) {
          throw new OseeArgumentException("ordinal must be greater than or equal to zero");
       }
@@ -127,17 +132,14 @@ public class OseeTypeFactory implements IOseeTypeFactory {
    }
 
    @Override
-   public Branch createBranch(AbstractOseeCache<Branch> cache, String guid, String name, int parentTxNumber, int associatedArtifactId, BranchType branchType, BranchState branchState, boolean isArchived, boolean isChangeManaged) throws OseeCoreException {
-      if (!Strings.isValid(name)) {
-         throw new OseeArgumentException("name cannot be null.");
-      }
+   public Branch createBranch(AbstractOseeCache<Branch> cache, String guid, String name, int parentTxNumber, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+      checkName(cache, name);
       if (branchType == null) {
          throw new OseeArgumentException("branchType cannot be null.");
       }
       if (branchState == null) {
          throw new OseeArgumentException("branchState cannot be null.");
       }
-      return new Branch(cache, createGuidIfNeeded(guid), name, parentTxNumber, associatedArtifactId, branchType,
-            branchState, isArchived, isChangeManaged);
+      return new Branch(cache, createGuidIfNeeded(guid), name, parentTxNumber, branchType, branchState, isArchived);
    }
 }

@@ -45,6 +45,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.ListSelectionDialogNoSave;
@@ -430,7 +431,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
 
    private void refreshAssociatedArtifactItem(Branch sourceBranch) {
       try {
-         Artifact branchAssociatedArtifact = sourceBranch.getAssociatedArtifact();
+         IArtifact branchAssociatedArtifact = sourceBranch.getAssociatedArtifact();
          if (branchAssociatedArtifact != null) {
             openAssociatedArtifactAction.setImageDescriptor(ImageManager.getImageDescriptor(branchAssociatedArtifact));
             openAssociatedArtifactAction.setEnabled(true);
@@ -569,7 +570,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       public void run() {
          try {
             Branch sourceBranch = conflicts[0].getSourceBranch();
-            Artifact branchAssociatedArtifact = sourceBranch.getAssociatedArtifact();
+            Artifact branchAssociatedArtifact = sourceBranch.getAssociatedArtifact().getFullArtifact();
             if (branchAssociatedArtifact instanceof IATSArtifact) {
                OseeAts.openATSArtifact(branchAssociatedArtifact);
                return;

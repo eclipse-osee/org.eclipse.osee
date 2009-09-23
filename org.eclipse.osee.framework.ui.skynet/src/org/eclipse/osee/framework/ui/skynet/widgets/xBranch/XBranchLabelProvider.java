@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
@@ -81,7 +80,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
             columnText =
                   String.valueOf(headTransaction.getTransactionNumber() + "..." + tailTransaction.getTransactionNumber());
          } else if (columnIndex == 1) {
-            columnText = String.valueOf(headTransaction.getTime());
+            columnText = String.valueOf(headTransaction.getDate());
          }
       } else {
          columnText =
@@ -94,13 +93,25 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       if (cCol.equals(BranchXViewerFactory.branchName)) {
          return branch.getName();
       } else if (cCol.equals(BranchXViewerFactory.archivedState)) {
-         return (branch.isArchived() ? BranchArchivedState.ARCHIVED : BranchArchivedState.UNARCHIVED).toString();
+         return branch.getArchiveState().toString();
       } else if (cCol.equals(BranchXViewerFactory.timeStamp)) {
-         return String.valueOf(branch.getCreationDate());
+         try {
+            return String.valueOf(branch.getBaseTransaction().getDate());
+         } catch (OseeCoreException ex) {
+            return XViewerCells.getCellExceptionString(ex);
+         }
       } else if (cCol.equals(BranchXViewerFactory.author)) {
-         return UserManager.getUserNameById(branch.getAuthorId());
+         try {
+            return UserManager.getUserNameById(branch.getBaseTransaction().getAuthorArtId());
+         } catch (OseeCoreException ex) {
+            return XViewerCells.getCellExceptionString(ex);
+         }
       } else if (cCol.equals(BranchXViewerFactory.comment)) {
-         return branch.getCreationComment();
+         try {
+            return branch.getBaseTransaction().getComment();
+         } catch (OseeCoreException ex) {
+            return XViewerCells.getCellExceptionString(ex);
+         }
       } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {
          try {
             if (branch.getAssociatedArtifact() != null) {
@@ -118,7 +129,11 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       } else if (cCol.equals(BranchXViewerFactory.branchGuid)) {
          return String.valueOf(branch.getGuid());
       } else if (cCol.equals(BranchXViewerFactory.parentBranch)) {
-         return branch.hasParentBranch() ? branch.getParentBranch().getName() : "none";
+         try {
+            return branch.hasParentBranch() ? branch.getParentBranch().getName() : "none";
+         } catch (OseeCoreException ex) {
+            return XViewerCells.getCellExceptionString(ex);
+         }
       }
       return "";
    }
@@ -130,7 +145,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          columnText = String.valueOf(transaction.getTransactionNumber());
       }
       if (cCol.equals(BranchXViewerFactory.timeStamp)) {
-         columnText = new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(transaction.getTime());
+         columnText = new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(transaction.getDate());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
          columnText = UserManager.getUserNameById(transaction.getAuthorArtId());
       } else if (cCol.equals(BranchXViewerFactory.comment)) {

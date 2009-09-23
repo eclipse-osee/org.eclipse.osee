@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.test;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.skynet.core.test.branch.BranchTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactPurgeTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.ArtifactTypeInheritanceTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.Artifact_setAttributeValues;
@@ -29,17 +30,18 @@ import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.commit.ComputeNetChangeTest;
 import org.eclipse.osee.framework.skynet.core.test.commit.LoadCommitItemsFromDbTest;
 import org.eclipse.osee.framework.skynet.core.test.relation.RelationSorterTest;
-import org.eclipse.osee.framework.skynet.core.test.types.OseeTypeCacheTest;
+import org.eclipse.osee.framework.skynet.core.test.types.OseeCacheTestSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {OseeTypeCacheTest.class, ComputeNetChangeTest.class, LoadCommitItemsFromDbTest.class,
-      ArtifactTypeInheritanceTest.class, ArtifactPurgeTest.class, BranchPurgeTest.class,
-      Artifact_setAttributeValues.class, CsvArtifactTest.class, NativeArtifactTest.class, ConflictTest.class,
-      ChangeManagerTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class,
-      BranchStateTest.class, DuplicateHridTest.class, RelationOrderingTest.class, RelationSorterTest.class})
+@Suite.SuiteClasses( {BranchTestSuite.class, OseeCacheTestSuite.class, ComputeNetChangeTest.class,
+      LoadCommitItemsFromDbTest.class, ArtifactTypeInheritanceTest.class, ArtifactPurgeTest.class,
+      BranchPurgeTest.class, Artifact_setAttributeValues.class, CsvArtifactTest.class, NativeArtifactTest.class,
+      ConflictTest.class, ChangeManagerTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class,
+      StaticIdManagerTest.class, BranchStateTest.class, DuplicateHridTest.class, RelationOrderingTest.class,
+      RelationSorterTest.class})
 /**
  * @author Donald G. Dunne
  */

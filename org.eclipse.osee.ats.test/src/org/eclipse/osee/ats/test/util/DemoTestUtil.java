@@ -40,6 +40,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
 import org.eclipse.osee.support.test.util.AtsUserCommunity;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
+import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoUsers;
 import org.eclipse.osee.support.test.util.TestUtil;
 
@@ -49,10 +50,12 @@ import org.eclipse.osee.support.test.util.TestUtil;
 public class DemoTestUtil {
 
    public static Result isDbPopulatedWithDemoData() throws Exception {
-      Branch branch = BranchManager.getKeyedBranch("SAW_Bld_1");
+      Branch branch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
 
-      if (ArtifactQuery.getArtifactListFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, "%Robot%", branch).size() != 6) return new Result(
-            "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
+      if (ArtifactQuery.getArtifactListFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, "%Robot%", branch).size() != 6) {
+         return new Result(
+               "Expected at least 6 Software Requirements with word \"Robot\".  Database is not be populated with demo data.");
+      }
       return Result.TrueResult;
    }
 
@@ -62,9 +65,10 @@ public class DemoTestUtil {
          return Arrays.asList("Look into Graph View.", "Redesign how view shows values.",
                "Discuss new design with Senior Engineer", "Develop prototype", "Show prototype to management",
                "Create development plan", "Create test plan", "Make changes");
-      } else
+      } else {
          return Arrays.asList("Document how Graph View works", "Update help contents", "Review new documentation",
                "Publish documentation to website", "Remove old viewer", "Deploy release");
+      }
    }
 
    public static int getNumTasks() {

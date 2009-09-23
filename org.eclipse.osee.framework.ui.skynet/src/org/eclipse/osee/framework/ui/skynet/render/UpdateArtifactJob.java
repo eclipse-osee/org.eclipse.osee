@@ -83,8 +83,7 @@ public class UpdateArtifactJob extends UpdateJob {
    }
 
    private void processUpdate() throws Exception {
-      int branchId = Branch.getBranchIdFromBranchFolderName(workingFile.getParentFile().getName());
-      Branch branch = BranchManager.getBranch(branchId);
+      Branch branch = BranchManager.fromFileName(workingFile.getParentFile().getName());
       if (branch.isEditable()) {
          FileInputStream myFileInputStream = new FileInputStream(workingFile);
 

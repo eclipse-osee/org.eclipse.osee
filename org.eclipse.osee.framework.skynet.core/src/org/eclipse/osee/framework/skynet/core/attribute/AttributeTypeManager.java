@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -102,7 +103,7 @@ public class AttributeTypeManager {
    }
 
    public static boolean typeExists(String name) throws OseeCoreException {
-      return OseeTypeManager.getCache().getAttributeTypeCache().getTypeByName(name) != null;
+      return !OseeTypeManager.getCache().getAttributeTypeCache().getTypeByName(name).isEmpty();
    }
 
    /**
@@ -112,6 +113,9 @@ public class AttributeTypeManager {
     * @throws OseeTypeDoesNotExist
     */
    public static AttributeType getTypeByGuid(String guid) throws OseeCoreException {
+      if (!GUID.isValid(guid)) {
+         throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
+      }
       AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeCache().getTypeByGuid(guid);
       if (attributeType == null) {
          throw new OseeTypeDoesNotExist("Attribute Type [" + guid + "] is not available.");
@@ -126,7 +130,7 @@ public class AttributeTypeManager {
     * @throws OseeCoreException
     */
    public static AttributeType getType(String name) throws OseeCoreException {
-      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeCache().getTypeByName(name);
+      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeCache().getUniqueByName(name);
       if (attributeType == null) {
          throw new OseeTypeDoesNotExist("Attribute Type with name [" + name + "] does not exist.");
       }

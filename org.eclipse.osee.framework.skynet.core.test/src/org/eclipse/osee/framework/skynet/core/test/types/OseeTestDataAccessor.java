@@ -5,10 +5,10 @@ import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeStorableType;
-import org.eclipse.osee.framework.skynet.core.types.IOseeTypeDataAccessor;
+import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 
-public class OseeTypeDataAccessor<T extends IOseeStorableType> implements IOseeTypeDataAccessor<T> {
+public class OseeTestDataAccessor<T extends IOseeStorableType> implements IOseeDataAccessor<T> {
 
    private boolean wasLoadCalled = false;
    private boolean wasStoreCalled = false;

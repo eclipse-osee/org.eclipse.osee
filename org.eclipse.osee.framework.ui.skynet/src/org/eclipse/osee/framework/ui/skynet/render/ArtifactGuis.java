@@ -47,7 +47,7 @@ public class ArtifactGuis {
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), artifact.getBranch().getBranchId(),
-                  artifact.getBranch().getParentBranchId());
+                  artifact.getBranch().getId());
 
             while (chStmt.next()) {
                otherBranches.add(BranchManager.getBranch(chStmt.getInt("branch_id")));

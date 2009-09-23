@@ -43,7 +43,7 @@ public class InterArtifactExplorerDropHandler {
    private static final String ACCESS_ERROR_MSG =
          "Access control has restricted this action. The current user does not have sufficient permission to drag and drop artifacts on this branch from the selected source branch.";
 
-   public boolean isUpdateFromParent(Branch sourceBranch, Branch destinationBranch) {
+   public boolean isUpdateFromParent(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
       boolean result = false;
       if (destinationBranch.hasParentBranch()) {
          result = destinationBranch.getParentBranch().equals(sourceBranch);

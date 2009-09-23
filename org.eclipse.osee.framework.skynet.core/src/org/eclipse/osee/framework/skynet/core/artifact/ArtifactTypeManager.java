@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -78,7 +79,7 @@ public class ArtifactTypeManager {
    }
 
    public static boolean typeExists(String name) throws OseeCoreException {
-      return OseeTypeManager.getCache().getArtifactTypeCache().getTypeByName(name) != null;
+      return !OseeTypeManager.getCache().getArtifactTypeCache().getTypeByName(name).isEmpty();
    }
 
    /**
@@ -88,6 +89,9 @@ public class ArtifactTypeManager {
     * @throws OseeTypeDoesNotExist
     */
    public static ArtifactType getTypeByGuid(String guid) throws OseeCoreException {
+      if (!GUID.isValid(guid)) {
+         throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
+      }
       ArtifactType artifactType = OseeTypeManager.getCache().getArtifactTypeCache().getTypeByGuid(guid);
       if (artifactType == null) {
          throw new OseeTypeDoesNotExist("Artifact type [" + guid + "] is not available.");
@@ -102,7 +106,7 @@ public class ArtifactTypeManager {
     * @throws OseeTypeDoesNotExist
     */
    public static ArtifactType getType(String name) throws OseeCoreException {
-      ArtifactType artifactType = OseeTypeManager.getCache().getArtifactTypeCache().getTypeByName(name);
+      ArtifactType artifactType = OseeTypeManager.getCache().getArtifactTypeCache().getUniqueByName(name);
       if (artifactType == null) {
          throw new OseeTypeDoesNotExist("Artifact type [" + name + "] is not available.");
       }

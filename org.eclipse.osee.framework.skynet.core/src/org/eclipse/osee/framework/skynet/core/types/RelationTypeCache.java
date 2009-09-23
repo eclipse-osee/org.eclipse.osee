@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
  */
 public final class RelationTypeCache extends AbstractOseeCache<RelationType> {
 
-   public RelationTypeCache(IOseeTypeFactory factory, IOseeTypeDataAccessor<RelationType> dataAccessor) {
+   public RelationTypeCache(IOseeTypeFactory factory, IOseeDataAccessor<RelationType> dataAccessor) {
       super(factory, dataAccessor);
    }
 

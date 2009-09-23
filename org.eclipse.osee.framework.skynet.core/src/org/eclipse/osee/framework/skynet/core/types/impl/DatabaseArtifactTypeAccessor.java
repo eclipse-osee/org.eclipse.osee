@@ -35,13 +35,13 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.AttributeTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeTypeDataAccessor;
+import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<ArtifactType> {
+public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactType> {
    protected static final int ABSTRACT_TYPE_INDICATOR = 1;
    protected static final int CONCRETE_TYPE_INDICATOR = 0;
 
@@ -93,13 +93,22 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
 
          while (chStmt.next()) {
             try {
+               int artTypeId = chStmt.getInt("art_type_id");
                boolean isAbstract = chStmt.getInt("is_abstract") == ABSTRACT_TYPE_INDICATOR;
-               ArtifactType artifactType =
-                     factory.createArtifactType(cache, chStmt.getString("art_type_guid"), isAbstract,
-                           chStmt.getString("name"));
-               artifactType.setId(chStmt.getInt("art_type_id"));
-               artifactType.setModificationType(ModificationType.MODIFIED);
-               cache.cacheType(artifactType);
+               String artifactTypeName = chStmt.getString("name");
+
+               ArtifactType artifactType = cache.getTypeById(artTypeId);
+               if (artifactType == null) {
+                  artifactType =
+                        factory.createArtifactType(cache, chStmt.getString("art_type_guid"), isAbstract,
+                              artifactTypeName);
+                  artifactType.setId(artTypeId);
+                  artifactType.setModificationType(ModificationType.MODIFIED);
+                  cache.cacheType(artifactType);
+               } else {
+                  artifactType.setName(artifactTypeName);
+                  artifactType.setAbstract(isAbstract);
+               }
             } catch (OseeDataStoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -226,7 +235,7 @@ public class DatabaseArtifactTypeAccessor implements IOseeTypeDataAccessor<Artif
             for (Entry<Branch, Collection<AttributeType>> entry : entries.entrySet()) {
                Branch branch = entry.getKey();
                for (AttributeType attributeType : entry.getValue()) {
-                  insertData.add(new Object[] {artifactType.getId(), attributeType.getId(), branch.getBranchId()});
+                  insertData.add(new Object[] {artifactType.getId(), attributeType.getId(), branch.getId()});
                }
             }
          }

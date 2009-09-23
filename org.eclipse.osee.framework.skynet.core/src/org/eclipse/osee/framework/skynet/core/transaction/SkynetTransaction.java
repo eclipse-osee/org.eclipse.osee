@@ -40,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
@@ -353,7 +352,8 @@ public class SkynetTransaction extends DbTransaction {
    protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
       executeTransactionDataItems(connection);
       if (branch.getBranchState() == BranchState.CREATED) {
-         BranchManager.setBranchState(connection, branch, BranchState.MODIFIED);
+         branch.setBranchState(BranchState.MODIFIED);
+         branch.persist();
       }
    }
 

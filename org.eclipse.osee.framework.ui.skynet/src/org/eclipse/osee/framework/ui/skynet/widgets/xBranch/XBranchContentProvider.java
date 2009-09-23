@@ -19,13 +19,13 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -81,7 +81,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
          if (showChildBranchesUnderParents) {
             List<Object> items = new LinkedList<Object>();
             Collection<Branch> childBrances =
-                  showArchivedBranches ? branch.getDescendants() : branch.getChildBranches();
+                  showArchivedBranches ? branch.getChildBranches(true) : branch.getChildBranches();
 
             items.addAll(childBrances);
             items.addAll(getTransactions(branch));
@@ -101,14 +101,15 @@ public class XBranchContentProvider implements ITreeContentProvider {
       List<BranchType> branchTypes = new ArrayList<BranchType>(4);
 
       try {
-         if (AccessControlManager.isOseeAdmin()) {
+         boolean isAdmin = AccessControlManager.isOseeAdmin();
+         if (isAdmin) {
             branchTypes.add(BranchType.SYSTEM_ROOT);
          }
 
-         if (AccessControlManager.isOseeAdmin() && showMergeBranches) {
+         if (isAdmin && showMergeBranches) {
             branchTypes.add(BranchType.MERGE);
          }
-         if (AccessControlManager.isOseeAdmin() && showArchivedBranches) {
+         if (isAdmin && showArchivedBranches) {
             branchState = BranchArchivedState.ALL;
          }
          if (showChildBranchesAtMainLevel) {
@@ -125,7 +126,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             branchTypes.add(BranchType.BASELINE);
             for (Branch branch : BranchManager.getBranches(branchState, BranchControlled.ALL,
                   branchTypes.toArray(new BranchType[branchTypes.size()]))) {
-               if (branch.isTopLevelBranch()) {
+               if (branch.hasParentBranch() && branch.getParentBranch().getBranchType().isSystemRootBranch()) {
                   branchesToReturn.add(branch);
                }
             }
@@ -145,7 +146,9 @@ public class XBranchContentProvider implements ITreeContentProvider {
    }
 
    private Collection<Object> getTransactions(Branch branch) throws OseeCoreException {
-      if (!showTransactions) return Collections.emptyList();
+      if (!showTransactions) {
+         return Collections.emptyList();
+      }
       List<TransactionId> transactions = TransactionIdManager.getTransactionsForBranch(branch);
       Collections.sort(transactions, new Comparator<TransactionId>() {
          public int compare(TransactionId o1, TransactionId o2) {
@@ -161,7 +164,9 @@ public class XBranchContentProvider implements ITreeContentProvider {
    }
 
    public boolean hasChildren(Object element) {
-      if (element instanceof BranchManager) return true;
+      if (element instanceof BranchManager) {
+         return true;
+      }
       if (element instanceof Branch) {
          boolean hasChildren = true;
 
@@ -169,7 +174,7 @@ public class XBranchContentProvider implements ITreeContentProvider {
             try {
                if (!showChildBranchesAtMainLevel) {
                   hasChildren =
-                        showArchivedBranches ? !((Branch) element).getDescendants().isEmpty() : !((Branch) element).getChildBranches().isEmpty();
+                        showArchivedBranches ? !((Branch) element).getChildBranches(true).isEmpty() : !((Branch) element).getChildBranches().isEmpty();
                } else {
                   hasChildren = false;
                }
@@ -179,7 +184,9 @@ public class XBranchContentProvider implements ITreeContentProvider {
          }
          return hasChildren;
       }
-      if (element instanceof Collection<?>) return true;
+      if (element instanceof Collection<?>) {
+         return true;
+      }
       return false;
    }
 

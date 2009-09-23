@@ -20,8 +20,10 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
+import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
@@ -76,11 +78,12 @@ public class BranchCreator {
             initializeBranch(connection, sourceTransactionId, childBranchName, userId, timestamp, comment,
                   associatedArtifact, branchType, branchState);
 
+      TransactionId startTx = childBranch.getBaseTransaction();
       // insert the new transaction data first.
       int newTransactionNumber = SequenceManager.getNextTransactionId();
       ConnectionHandler.runPreparedUpdate(connection, INSERT_INTO_TX_DETAILS, childBranch.getBranchId(),
-            newTransactionNumber, childBranch.getCreationComment(), childBranch.getCreationDate(),
-            childBranch.getAuthorId(), TransactionDetailsType.Baselined.getId());
+            newTransactionNumber, startTx.getComment(), startTx.getDate(), startTx.getAuthorArtId(),
+            TransactionDetailsType.Baselined.getId());
 
       return new Pair<Branch, Integer>(childBranch, newTransactionNumber);
    }
@@ -102,7 +105,7 @@ public class BranchCreator {
    private Branch initializeBranch(OseeConnection connection, TransactionId sourceTransactionId, String branchName, int authorId, Timestamp creationDate, String creationComment, Artifact associatedArtifact, BranchType branchType, BranchState branchState) throws OseeCoreException {
       int branchId = SequenceManager.getNextBranchId();
       String branchGuid = GUID.create();
-      int parentBranchNumber = sourceTransactionId.getBranchId();
+      int parentBranchNumber = sourceTransactionId.getBranch().getBranchId();
       int parentTransactionIdNumnber = sourceTransactionId.getTransactionNumber();
       int associatedArtifactId = -1;
 
@@ -120,14 +123,33 @@ public class BranchCreator {
 
       // this needs to be after the insert in case there is an exception on insert
       Branch branch =
-            BranchManager.createBranchObject(branchName, branchGuid, branchId, parentBranchNumber,
-                  parentTransactionIdNumnber, false, authorId, creationDate, creationComment, associatedArtifactId,
-                  branchType, branchState);
-      if (associatedArtifact != null) {
-         branch.setAssociatedArtifact(associatedArtifact);
-      }
-
+            createBranchObject(branchName, branchGuid, branchId, parentBranchNumber, parentTransactionIdNumnber, false,
+                  authorId, creationDate, creationComment, associatedArtifactId, branchType, branchState);
+      branch.setAssociatedArtifact(associatedArtifact);
       return branch;
+   }
+
+   public static Branch createBranchObject(String branchName, String branchGuid, int branchId, int parentBranchId, int parentTransactionId, boolean archived, int authorId, Timestamp creationDate, String creationComment, int associatedArtifactId, BranchType branchType, BranchState branchState) throws BranchDoesNotExist, OseeInvalidInheritanceException {
+      Branch parentBranch = null;
+      //      if (parentBranchId == branchId) {
+      //         throw new OseeInvalidInheritanceException(String.format(
+      //               "Branch inheritance error detected - ancestor[%s] = descendant[%s]", parentBranchId, branchId));
+      //      }
+      //
+      //      if (parentBranchId != NULL_PARENT_BRANCH_ID) {
+      //         try {
+      //            parentBranch = BranchManager.getBranch(parentBranchId);
+      //         } catch (BranchDoesNotExist ex1) {
+      //            throw new BranchDoesNotExist(getParentBranchError(branchId, branchName, parentBranchId), ex1);
+      //         } catch (OseeCoreException ex2) {
+      //            throw new BranchDoesNotExist(getParentBranchError(branchId, branchName, parentBranchId), ex2);
+      //         }
+      //      }
+      //      Branch branch =
+      //            new Branch(branchName, branchGuid, branchId, parentBranch, parentTransactionId, archived, authorId,
+      //                  creationDate, creationComment, associatedArtifactId, branchType, branchState);
+      //      instance.branchCache.put(branchId, branch);
+      return parentBranch;
    }
 
    /**

@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
@@ -191,11 +190,11 @@ public class WordMlLinkHandler {
       artifactsFromSearch =
             findArtifacts(source.getTransactionId(), source.getBranch(), source.isHistorical(), guidsFromLinks);
       if (guidsFromLinks.size() != artifactsFromSearch.size() && branch.getBranchType().isMergeBranch()) {
-         Branch sourceBranch = BranchManager.getBranch(branch.getParentBranchId());
+         Branch sourceBranch = branch.getParentBranch();
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 
          List<Artifact> union = new ArrayList<Artifact>();
-         union.addAll(findArtifacts(branch.getParentTransactionId(), sourceBranch, source.isHistorical(), unknownGuids));
+         union.addAll(findArtifacts(branch.getBaseTransaction(), sourceBranch, source.isHistorical(), unknownGuids));
          union.addAll(artifactsFromSearch);
          artifactsFromSearch = union;
       }

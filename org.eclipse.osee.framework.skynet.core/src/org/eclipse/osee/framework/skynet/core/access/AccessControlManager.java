@@ -209,6 +209,10 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       return isValid;
    }
 
+   //   public static boolean hasPermission(Branch object, PermissionEnum permission) throws OseeCoreException {
+   //      
+   //   }
+
    public static boolean hasPermission(IAccessControllable object, PermissionEnum permission) throws OseeCoreException {
       return hasPermission(UserManager.getUser(), object, permission);
    }

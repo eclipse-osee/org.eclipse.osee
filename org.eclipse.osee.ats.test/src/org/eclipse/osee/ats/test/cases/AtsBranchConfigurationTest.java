@@ -35,6 +35,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.XWorkingBranch;
 import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -45,7 +46,6 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchArchivedState;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
@@ -57,6 +57,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.support.test.util.ITestBranch;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
 import org.junit.Before;
@@ -68,8 +69,19 @@ import org.junit.Before;
  */
 public class AtsBranchConfigurationTest {
 
-   public enum TestType {
-      BranchViaTeamDef, BranchViaVersions, BranchViaParallelVersions
+   public enum TestType implements ITestBranch {
+      BranchViaTeamDef("AyH_e6damwQgvDhKfAAA"), BranchViaVersions("AyH_e6damwQgvDhKfBBB"), BranchViaParallelVersions(
+            "AyH_e6damwQgvDhKfCCC");
+
+      private final String guid;
+
+      private TestType(String guid) {
+         this.guid = guid;
+      }
+
+      public String getGuid() {
+         return guid;
+      }
    }
 
    @Before
@@ -100,7 +112,7 @@ public class AtsBranchConfigurationTest {
       // create main branch
       OseeLog.log(AtsPlugin.class, Level.INFO, "Creating root branch");
       // Create SAW_Bld_2 branch off SAW_Bld_1
-      Branch viaTeamDefBranch = createRootBranch(TestType.BranchViaVersions.name());
+      Branch viaTeamDefBranch = createRootBranch(TestType.BranchViaVersions);
 
       TestUtil.sleep(2000);
 
@@ -205,7 +217,7 @@ public class AtsBranchConfigurationTest {
       // create main branch
       OseeLog.log(AtsPlugin.class, Level.INFO, "Creating root branch");
       // Create SAW_Bld_2 branch off SAW_Bld_1
-      Branch viaTeamDefBranch = createRootBranch(TestType.BranchViaTeamDef.name());
+      Branch viaTeamDefBranch = createRootBranch(TestType.BranchViaTeamDef);
 
       TestUtil.sleep(2000);
 
@@ -281,8 +293,8 @@ public class AtsBranchConfigurationTest {
       assertTrue("Should be 1 new artifact in change report, found " + newArts.size(), newArts.size() == 1);
    }
 
-   private Branch createRootBranch(String branchName) throws Exception {
-      return BranchManager.createTopLevelBranch(branchName, branchName, null);
+   private Branch createRootBranch(ITestBranch branch) throws Exception {
+      return BranchManager.createTopLevelBranch(branch.name(), branch.name(), branch.getGuid());
    }
 
    private void cleanupBranchTest(TestType testType) throws Exception {
@@ -359,7 +371,7 @@ public class AtsBranchConfigurationTest {
             }
          }
          // delete baseline branch
-         Branch branch = BranchManager.getKeyedBranch(testType.name());
+         Branch branch = BranchManager.getBranchByGuid(testType.getGuid());
          if (branch != null) {
             BranchManager.purgeBranchInJob(branch);
             TestUtil.sleep(2000);

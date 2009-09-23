@@ -12,41 +12,35 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
  */
-class DeleteBranchJob extends Job {
+public class DeleteBranchOperation extends AbstractOperation {
 
    private final Branch branch;
 
-   /**
-    * @param name
-    * @param branch
-    */
-   public DeleteBranchJob(Branch branch) {
-      super("Delete Branch: " + branch);
+   public DeleteBranchOperation(Branch branch) {
+      super("Delete Branch: " + branch, Activator.PLUGIN_ID);
       this.branch = branch;
    }
 
    @Override
-   protected IStatus run(IProgressMonitor monitor) {
-      IStatus status = Status.OK_STATUS;
-      monitor.beginTask(getName(), 1);
+   protected void doWork(IProgressMonitor monitor) throws Exception {
+      BranchState originalState = branch.getBranchState();
+      BranchArchivedState originalArchivedState = branch.getArchiveState();
       try {
-         BranchManager.setBranchState(branch, BranchState.DELETED);
-         BranchManager.archive(branch);
-         BranchManager.handleBranchDeletion(branch.getBranchId());
+         branch.setBranchState(BranchState.DELETED);
+         branch.setArchived(true);
+         branch.persist();
       } catch (Exception ex) {
-         status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error - " + getName(), ex);
-      } finally {
-         monitor.done();
+         branch.setBranchState(originalState);
+         branch.setArchived(originalArchivedState.isArchived());
+         throw ex;
       }
-      return status;
    }
 }

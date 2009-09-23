@@ -146,7 +146,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             getCache().getArtifactTypeCache().getTypeByGuid(artifactType.getTypeGuid());
 
       for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
-         superTypes.add(getCache().getArtifactTypeCache().getTypeByName(removeQuotes(superType.getName())));
+         superTypes.add(getCache().getArtifactTypeCache().getUniqueByName(removeQuotes(superType.getName())));
       }
       if (!superTypes.isEmpty()) {
          targetArtifactType.setSuperType(superTypes);
@@ -258,8 +258,10 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             removeQuotes(relationType.getName()), //
             relationType.getSideAName(), //
             relationType.getSideBName(), //
-            getCache().getArtifactTypeCache().getTypeByName(removeQuotes(relationType.getSideAArtifactType().getName())), //
-            getCache().getArtifactTypeCache().getTypeByName(removeQuotes(relationType.getSideBArtifactType().getName())), //
+            getCache().getArtifactTypeCache().getUniqueByName(
+                  removeQuotes(relationType.getSideAArtifactType().getName())), //
+            getCache().getArtifactTypeCache().getUniqueByName(
+                  removeQuotes(relationType.getSideBArtifactType().getName())), //
             multiplicity, //
             isOrdered(relationType.getDefaultOrderType()),//
             convertOrderTypeNameToGuid(relationType.getDefaultOrderType())//

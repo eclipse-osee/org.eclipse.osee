@@ -29,13 +29,13 @@ import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeTypeDataAccessor;
+import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeEnumType> {
+public class DatabaseOseeEnumTypeAccessor implements IOseeDataAccessor<OseeEnumType> {
 
    private static final String SELECT_OSEE_ENUM_TYPES =
          "select oet.enum_type_name, oet.enum_type_guid, oetd.* from osee_enum_type oet, osee_enum_type_def oetd where oet.enum_type_id = oetd.enum_type_id order by oetd.enum_type_id, oetd.ordinal";
@@ -61,10 +61,16 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeTypeDataAccessor<OseeE
                int currentEnumTypeId = chStmt.getInt("enum_type_id");
                String currentEnumTypeGuid = chStmt.getString("enum_type_guid");
                if (lastEnumTypeId != currentEnumTypeId) {
-                  oseeEnumType = factory.createEnumType(cache, currentEnumTypeGuid, chStmt.getString("enum_type_name"));
-                  oseeEnumType.setId(currentEnumTypeId);
-                  oseeEnumType.setModificationType(ModificationType.MODIFIED);
-                  cache.cacheType(oseeEnumType);
+                  String enumTypeName = chStmt.getString("enum_type_name");
+                  oseeEnumType = cache.getTypeById(currentEnumTypeId);
+                  if (oseeEnumType == null) {
+                     oseeEnumType = factory.createEnumType(cache, currentEnumTypeGuid, enumTypeName);
+                     oseeEnumType.setId(currentEnumTypeId);
+                     oseeEnumType.setModificationType(ModificationType.MODIFIED);
+                     cache.cacheType(oseeEnumType);
+                  } else {
+                     oseeEnumType.setName(enumTypeName);
+                  }
                   lastEnumTypeId = currentEnumTypeId;
                }
                OseeEnumEntry entry =

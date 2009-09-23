@@ -34,7 +34,7 @@ public class OseeEnumTypeManager {
    }
 
    public static OseeEnumType getType(String enumTypeName) throws OseeCoreException {
-      OseeEnumType itemsFound = OseeTypeManager.getCache().getEnumTypeCache().getTypeByName(enumTypeName);
+      OseeEnumType itemsFound = OseeTypeManager.getCache().getEnumTypeCache().getUniqueByName(enumTypeName);
       if (itemsFound == null) {
          throw new OseeTypeDoesNotExist(
                String.format("OSEE enum types matching [%s] name does not exist", enumTypeName));
@@ -55,7 +55,7 @@ public class OseeEnumTypeManager {
    }
 
    public static boolean typeExist(String enumTypeName) throws OseeCoreException {
-      OseeEnumType itemsFound = OseeTypeManager.getCache().getEnumTypeCache().getTypeByName(enumTypeName);
+      OseeEnumType itemsFound = OseeTypeManager.getCache().getEnumTypeCache().getUniqueByName(enumTypeName);
       return itemsFound != null;
    }
 

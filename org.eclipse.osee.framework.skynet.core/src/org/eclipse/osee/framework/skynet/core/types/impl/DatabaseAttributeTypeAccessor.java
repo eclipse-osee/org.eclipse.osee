@@ -29,13 +29,13 @@ import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeTypeDataAccessor;
+import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseAttributeTypeAccessor implements IOseeTypeDataAccessor<AttributeType> {
+public class DatabaseAttributeTypeAccessor implements IOseeDataAccessor<AttributeType> {
 
    private static final String SELECT_ATTRIBUTE_TYPES =
          "SELECT * FROM osee_attribute_type aty1, osee_attribute_base_type aby1, osee_attribute_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
@@ -68,6 +68,7 @@ public class DatabaseAttributeTypeAccessor implements IOseeTypeDataAccessor<Attr
          chStmt.runPreparedQuery(SELECT_ATTRIBUTE_TYPES);
 
          while (chStmt.next()) {
+            int attributeTypeId = chStmt.getInt("attr_type_id");
             String baseClassString = chStmt.getString("attribute_class");
             String baseProviderClassString = chStmt.getString("attribute_provider_class");
             try {
@@ -75,19 +76,28 @@ public class DatabaseAttributeTypeAccessor implements IOseeTypeDataAccessor<Attr
                      AttributeExtensionManager.getAttributeClassFor(baseClassString);
                Class<? extends IAttributeDataProvider> providerAttributeClass =
                      AttributeExtensionManager.getAttributeProviderClassFor(baseProviderClassString);
-
                int enumTypeId = chStmt.getInt("enum_type_id");
-               OseeEnumType enumType = enumCache.getTypeById(enumTypeId);
-               AttributeType attributeType =
-                     factory.createAttributeType(cache, chStmt.getString("attr_type_guid"), chStmt.getString("name"),
-                           baseClassString, baseProviderClassString, baseAttributeClass, providerAttributeClass,
-                           chStmt.getString("file_type_extension"), chStmt.getString("default_value"), enumType,
-                           chStmt.getInt("min_occurence"), chStmt.getInt("max_occurence"),
-                           chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
-               attributeType.setId(chStmt.getInt("attr_type_id"));
-               attributeType.setModificationType(ModificationType.MODIFIED);
+               OseeEnumType oseeEnumType = enumCache.getTypeById(enumTypeId);
+
+               AttributeType attributeType = cache.getTypeById(attributeTypeId);
+               if (attributeType == null) {
+                  attributeType =
+                        factory.createAttributeType(cache, chStmt.getString("attr_type_guid"),
+                              chStmt.getString("name"), baseClassString, baseProviderClassString, baseAttributeClass,
+                              providerAttributeClass, chStmt.getString("file_type_extension"),
+                              chStmt.getString("default_value"), oseeEnumType, chStmt.getInt("min_occurence"),
+                              chStmt.getInt("max_occurence"), chStmt.getString("tip_text"),
+                              chStmt.getString("tagger_id"));
+                  attributeType.setId(attributeTypeId);
+                  attributeType.setModificationType(ModificationType.MODIFIED);
+                  cache.cacheType(attributeType);
+               } else {
+                  attributeType.setFields(chStmt.getString("name"), baseClassString, baseProviderClassString,
+                        baseAttributeClass, providerAttributeClass, chStmt.getString("file_type_extension"),
+                        chStmt.getString("default_value"), oseeEnumType, chStmt.getInt("min_occurence"),
+                        chStmt.getInt("max_occurence"), chStmt.getString("tip_text"), chStmt.getString("tagger_id"));
+               }
                attributeType.clearDirty();
-               cache.cacheType(attributeType);
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }

@@ -59,7 +59,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(HistoryXViewerFactory.is)) {
             return data.getIsValue();
          } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
-            return new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(data.getToTransactionId().getTime());
+            return new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(data.getToTransactionId().getDate());
          } else if (cCol.equals(HistoryXViewerFactory.author)) {
             return UserManager.getUserNameById(data.getToTransactionId().getAuthorArtId());
          } else if (cCol.equals(HistoryXViewerFactory.comment)) {

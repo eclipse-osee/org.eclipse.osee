@@ -101,7 +101,7 @@ public class ArtifactPurgeTest {
       Set<Artifact> artsToPurge = new HashSet<Artifact>();
 
       // Create some software artifacts      
-      Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
+      Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.name());
       SkynetTransaction transaction = new SkynetTransaction(branch);
       Collection<Artifact> softArts =
             FrameworkTestUtil.createSimpleArtifacts(Requirements.SOFTWARE_REQUIREMENT, 10, getClass().getSimpleName(),
@@ -124,7 +124,7 @@ public class ArtifactPurgeTest {
       // Purge
       for (Artifact art : softArts) {
          art.purgeFromBranch();
-      }    
+      }
 
       // Count rows and check that same as when began
       DbUtil.getTableRowCounts(postPurgeCount, tables);

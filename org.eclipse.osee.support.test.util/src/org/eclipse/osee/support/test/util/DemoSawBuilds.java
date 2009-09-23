@@ -13,6 +13,16 @@ package org.eclipse.osee.support.test.util;
 /**
  * @author Donald G. Dunne
  */
-public enum DemoSawBuilds {
-   SAW_Bld_1, SAW_Bld_2, SAW_Bld_3;
+public enum DemoSawBuilds implements ITestBranch {
+   SAW_Bld_1("AyH_f2sSKy3l07fIvAAA"), SAW_Bld_2("AyH_f2sSKy3l07fIvBBB"), SAW_Bld_3("AyH_f2sSKy3l07fIvCCC");
+
+   private final String guid;
+
+   private DemoSawBuilds(String guid) {
+      this.guid = guid;
+   }
+
+   public String getGuid() {
+      return guid;
+   }
 }

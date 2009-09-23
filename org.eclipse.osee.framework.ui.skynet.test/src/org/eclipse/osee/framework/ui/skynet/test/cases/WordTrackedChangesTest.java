@@ -153,7 +153,7 @@ public class WordTrackedChangesTest {
    @After
    public void tearDown() throws Exception {
       if (!isWordRunning) {
-         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
+         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid()),
                WordTrackedChangesTest.class.getSimpleName());
          FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(),
                WordTrackedChangesTest.class.getSimpleName());

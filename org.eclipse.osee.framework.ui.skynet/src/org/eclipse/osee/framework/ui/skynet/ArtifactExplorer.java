@@ -1154,7 +1154,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          if (memento != null && memento.getString(ROOT_GUID) != null && memento.getString(ROOT_BRANCH) != null) {
             Branch branch = BranchManager.getBranch(Integer.parseInt(memento.getString(ROOT_BRANCH)));
 
-            if (!branch.isArchived() || AccessControlManager.isOseeAdmin()) {
+            if (!branch.getArchiveState().isArchived() || AccessControlManager.isOseeAdmin()) {
                Artifact previousArtifact = ArtifactQuery.checkArtifactFromId(memento.getString(ROOT_GUID), branch);
                if (previousArtifact != null) {
                   explore(previousArtifact);

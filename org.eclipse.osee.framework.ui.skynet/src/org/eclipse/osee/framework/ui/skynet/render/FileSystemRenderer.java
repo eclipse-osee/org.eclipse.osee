@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.ui.skynet.util.FileUiUtil;
 import org.eclipse.swt.program.Program;
@@ -52,7 +53,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    public IFolder getRenderFolder(Branch branch, PresentationType presentationType) throws OseeCoreException {
       try {
          IFolder baseFolder = ensureRenderFolderExists(presentationType);
-         IFolder renderFolder = baseFolder.getFolder(branch.asFolderName());
+         IFolder renderFolder = baseFolder.getFolder(BranchManager.toFileName(branch));
          if (!renderFolder.exists()) {
             renderFolder.create(true, true, null);
          }
@@ -68,7 +69,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    }
 
    private void internalOpen(List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException {
-      if ((presentationType != PresentationType.SPECIALIZED_EDIT) || ArtifactGuis.checkOtherEdit(artifacts)) {
+      if (presentationType != PresentationType.SPECIALIZED_EDIT || ArtifactGuis.checkOtherEdit(artifacts)) {
          IFile file = getRenderedFile(artifacts, presentationType);
          if (file != null) {
             String dummyName = file.getName();

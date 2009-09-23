@@ -32,7 +32,7 @@ public final class OseeEnumTypeCache extends AbstractOseeCache<OseeEnumType> {
          new HashCollection<OseeEnumType, OseeEnumEntry>();
    private final Map<OseeEnumEntry, OseeEnumType> enumEntryToEnumType = new HashMap<OseeEnumEntry, OseeEnumType>();
 
-   public OseeEnumTypeCache(IOseeTypeFactory factory, IOseeTypeDataAccessor<OseeEnumType> dataAccessor) {
+   public OseeEnumTypeCache(IOseeTypeFactory factory, IOseeDataAccessor<OseeEnumType> dataAccessor) {
       super(factory, dataAccessor);
    }
 

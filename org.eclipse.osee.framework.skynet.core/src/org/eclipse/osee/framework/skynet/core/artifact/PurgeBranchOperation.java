@@ -101,7 +101,11 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    protected void doFinally(IProgressMonitor monitor) {
       super.doFinally(monitor);
       if (getStatus().isOK()) {
-         BranchManager.handleBranchDeletion(branch.getBranchId());
+         try {
+            BranchManager.decache(branch);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
       monitor.worked(calculateWork(0.10));
    }

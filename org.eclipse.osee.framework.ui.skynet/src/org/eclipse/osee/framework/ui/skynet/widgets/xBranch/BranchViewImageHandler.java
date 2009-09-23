@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -48,7 +49,7 @@ public class BranchViewImageHandler {
             checkImages();
             Branch branch = (Branch) element;
             boolean favorite = UserManager.getUser().isFavoriteBranch(branch);
-            boolean isChangeManaged = branch.isChangeManaged();
+            boolean isChangeManaged = BranchManager.isChangeManaged(branch);
             boolean isSystemBranch = branch.getBranchType().isSystemRootBranch();
 
             if (isSystemBranch) {
@@ -86,7 +87,7 @@ public class BranchViewImageHandler {
                      ImageManager.getImageDescriptor(FrameworkImage.BRANCH_FAVORITE_OVERLAY), X_LOCATION, Y_LOCATION).createImage();
          inCreationBranchImage =
                new OverlayImage(ImageManager.getImage(FrameworkImage.BRANCH),
-                     ImageManager.getImageDescriptor(FrameworkImage.BRANCH_IN_CREATION_OVERLAY), X_LOCATION, Y_LOCATION).createImage();
+                     ImageManager.getImageDescriptor(FrameworkImage.BRANCH_IN_CREATION_OVERLAY), -1, 8).createImage();
       }
    }
 }

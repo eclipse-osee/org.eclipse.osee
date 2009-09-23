@@ -78,16 +78,14 @@ public class FigureFactory {
       TxData txData = txModel.getTxData();
       Branch branch = txData.getBranch();
       String title = String.format("Tx: %s Name: %s", txData.getTxId(), branch.getShortName());
-      return createNoteFigure(title, branch.getName(), txData.getAuthor(), txData.getTimeStamp(),
-            txData.getComment());
+      return createNoteFigure(title, branch.getName(), txData.getAuthor(), txData.getTimeStamp(), txData.getComment());
    }
 
    public static IFigure createBranchNoteFigure(BranchModel branchModel) {
       Branch branch = branchModel.getBranch();
-      String title =
-            String.format("Tx: %s Name: %s", branchModel.getFirstTx().getRevision(), branch.getShortName());
-      return createNoteFigure(title, branch.getName(), branchModel.getFirstTx().getTxData().getAuthor(),
-            branch.getCreationDate(), branch.getCreationComment());
+      String title = String.format("Tx: %s Name: %s", branchModel.getFirstTx().getRevision(), branch.getShortName());
+      TxData txData = branchModel.getFirstTx().getTxData();
+      return createNoteFigure(title, branch.getName(), txData.getAuthor(), txData.getTimeStamp(), txData.getComment());
    }
 
    private static IFigure createNoteFigure(String shortName, String name, String author, Date date, String comment) {

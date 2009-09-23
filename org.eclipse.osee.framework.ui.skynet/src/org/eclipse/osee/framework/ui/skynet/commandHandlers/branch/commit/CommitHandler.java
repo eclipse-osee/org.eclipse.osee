@@ -157,7 +157,9 @@ public abstract class CommitHandler extends CommandHandler {
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
       boolean enabled = false;
-      if (AWorkbench.getActivePage() == null) return enabled;
+      if (AWorkbench.getActivePage() == null) {
+         return enabled;
+      }
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
@@ -165,15 +167,14 @@ public abstract class CommitHandler extends CommandHandler {
 
       if (branches.size() == 1) {
          Branch branch = branches.iterator().next();
-         enabled = useParentBranchValid(branch) || (!useParentBranch && AccessControlManager.isOseeAdmin());
+         enabled = useParentBranchValid(branch) || !useParentBranch && AccessControlManager.isOseeAdmin();
       }
       return enabled;
    }
 
    protected boolean useParentBranchValid(Branch branch) throws OseeCoreException {
-      return branch.hasParentBranch() && useParentBranch && !branch.isChangeManaged() && !branch.isArchived();
+      return branch.hasParentBranch() && useParentBranch && !BranchManager.isChangeManaged(branch) && !branch.getArchiveState().isArchived();
    }
-
    protected class CommitJob extends Job {
       private final Branch sourceBranch;
       private final Branch destinationBranch;

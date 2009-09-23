@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage.Location;
 import org.eclipse.swt.graphics.Image;
@@ -231,11 +232,11 @@ public class ImageManager {
       return getImage(FrameworkImage.INFO_LG);
    }
 
-   public static synchronized Image getImage(Artifact artifact) {
+   public static synchronized Image getImage(IArtifact artifact) {
       return imageRegistry.get(setupImage(artifact));
    }
 
-   public static synchronized ImageDescriptor getImageDescriptor(Artifact artifact) {
+   public static synchronized ImageDescriptor getImageDescriptor(IArtifact artifact) {
       return imageRegistry.getDescriptor(setupImage(artifact));
    }
 
@@ -259,11 +260,12 @@ public class ImageManager {
       return AbstractUIPlugin.imageDescriptorFromPlugin(symbolicBundleName, imagePath + File.separator + imageFileName);
    }
 
-   private static synchronized String setupImage(Artifact artifact) {
+   private static synchronized String setupImage(IArtifact artifact) {
       try {
+         Artifact castedArtifact = artifact.getFullArtifact();
          ArtifactImageProvider imageProvider = providersOverrideImageMap.get(artifact.getArtifactType().getName());
          if (imageProvider != null) {
-            return imageProvider.setupImage(artifact);
+            return imageProvider.setupImage(castedArtifact);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -272,23 +274,27 @@ public class ImageManager {
       return setupImageNoProviders(artifact);
    }
 
-   protected static synchronized String setupImageNoProviders(Artifact artifact) {
-      OseeImage baseImageEnum = BaseImage.getBaseImageEnum(artifact);
-
-      if (AccessControlManager.hasLock(artifact)) {
-         OseeImage overlay =
-               AccessControlManager.hasLockAccess(artifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
-         return setupImageWithOverlay(baseImageEnum, overlay, Location.TOP_LEFT);
-      }
-
+   protected static synchronized String setupImageNoProviders(IArtifact artifact) {
+      OseeImage baseImageEnum = null;
       try {
-         if (artifact.getMainAnnotationType() == ArtifactAnnotation.Type.Error) {
+         Artifact castedArtifact = artifact.getFullArtifact();
+         baseImageEnum = BaseImage.getBaseImageEnum(castedArtifact);
+
+         if (AccessControlManager.hasLock(castedArtifact)) {
+            OseeImage overlay =
+                  AccessControlManager.hasLockAccess(castedArtifact) ? FrameworkImage.LOCKED_WITH_ACCESS : FrameworkImage.LOCKED_NO_ACCESS;
+            return setupImageWithOverlay(baseImageEnum, overlay, Location.TOP_LEFT);
+         }
+
+         if (castedArtifact.getMainAnnotationType() == ArtifactAnnotation.Type.Error) {
             return setupImageWithOverlay(baseImageEnum, FrameworkImage.ERROR_OVERLAY, Location.BOT_LEFT);
-         } else if (artifact.getMainAnnotationType() == ArtifactAnnotation.Type.Warning) {
+         } else if (castedArtifact.getMainAnnotationType() == ArtifactAnnotation.Type.Warning) {
             return setupImageWithOverlay(baseImageEnum, FrameworkImage.WARNING_OVERLAY, Location.BOT_LEFT);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      if (baseImageEnum == null) {
       }
       return setupImage(baseImageEnum);
    }
@@ -311,11 +317,8 @@ public class ImageManager {
       return imageName;
    }
 
-   public static String setupImage(OseeImage imageEnum) {
-      return setupImage(imageEnum.getImageKey(), imageEnum);
-   }
-
-   private static synchronized String setupImage(String imageKey, OseeImage imageEnum) {
+   public static synchronized String setupImage(OseeImage imageEnum) {
+      String imageKey = imageEnum != null ? imageEnum.getImageKey() : FrameworkImage.MISSING.getImageKey();
       if (imageRegistry.getDescriptor(imageKey) == null) {
          ImageDescriptor imageDescriptor = imageEnum.createImageDescriptor();
          if (imageDescriptor == null) {

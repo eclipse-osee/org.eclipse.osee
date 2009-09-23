@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.types;
 
 import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseArtifactTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseAttributeTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseBranchAccessor;
 import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseOseeEnumTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseRelationTypeAccessor;
 
@@ -23,6 +24,7 @@ public class OseeTypeManager {
    private static final OseeTypeManager instance = new OseeTypeManager();
 
    private final OseeTypeCache oseeTypeCache;
+   private final BranchCache branchCache;
 
    private OseeTypeManager() {
       IOseeTypeFactory factory = new OseeTypeFactory();
@@ -33,10 +35,15 @@ public class OseeTypeManager {
       ArtifactTypeCache artCache = new ArtifactTypeCache(factory, new DatabaseArtifactTypeAccessor(attrCache));
       RelationTypeCache relCache = new RelationTypeCache(factory, new DatabaseRelationTypeAccessor(artCache));
 
+      branchCache = new BranchCache(factory, new DatabaseBranchAccessor());
       oseeTypeCache = new OseeTypeCache(new OseeTypeFactory(), artCache, attrCache, relCache, enumCache);
    }
 
    public static OseeTypeCache getCache() {
       return instance.oseeTypeCache;
+   }
+
+   public static BranchCache getBranchCache() {
+      return instance.branchCache;
    }
 }

@@ -54,7 +54,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       if (OseeClientProperties.isOseeImportAllowed()) {
          // Clean up and delete all branches except Common
          for (Branch branch : BranchManager.getNormalBranches()) {
-            if (!branch.getName().equals(Branch.COMMON_BRANCH_CONFIG_ID)) {
+            if (!branch.getName().equals(BranchManager.COMMON_BRANCH_CONFIG_ID)) {
                BranchManager.purgeBranch(branch);
             }
          }
@@ -67,8 +67,8 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
                //TODO not yet supported               importData.getSelectedBranches();
                HttpBranchExchange.importBranches(importFile.toURI().toASCIIString(), true, true);
             } catch (OseeDataStoreException ex) {
-               OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, String.format("Exception while importing branch: [%s]",
-                     importData), ex);
+               OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, String.format(
+                     "Exception while importing branch: [%s]", importData), ex);
                throw ex;
             }
          }

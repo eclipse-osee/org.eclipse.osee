@@ -17,28 +17,34 @@ import java.util.HashMap;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractOseeCache<T extends IOseeStorableType> {
-   private final HashMap<String, T> nameToTypeMap = new HashMap<String, T>();
+   private final HashCollection<String, T> nameToTypeMap = new HashCollection<String, T>();
    private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
    private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
 
    private final IOseeTypeFactory factory;
-   private final IOseeTypeDataAccessor<T> dataAccessor;
+   private final IOseeDataAccessor<T> dataAccessor;
    private boolean duringPopulate;
 
-   public AbstractOseeCache(IOseeTypeFactory factory, IOseeTypeDataAccessor<T> dataAccessor) {
+   public AbstractOseeCache(IOseeTypeFactory factory, IOseeDataAccessor<T> dataAccessor) {
       this.duringPopulate = false;
       this.factory = factory;
       this.dataAccessor = dataAccessor;
    }
 
-   protected IOseeTypeDataAccessor<T> getDataAccessor() {
+   public int size() {
+      return guidToTypeMap.size();
+   }
+
+   protected IOseeDataAccessor<T> getDataAccessor() {
       return dataAccessor;
    }
 
@@ -55,8 +61,8 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       if (type == null) {
          throw new OseeArgumentException("Caching a null value is not allowed");
       }
-      nameToTypeMap.remove(type.getName());
       guidToTypeMap.remove(type.getGuid());
+      nameToTypeMap.removeValue(type.getName(), type);
       if (type.getId() != AbstractOseeType.UNPERSISTTED_VALUE) {
          idToTypeMap.remove(type.getId());
       }
@@ -90,9 +96,22 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       return idToTypeMap.get(typeId);
    }
 
-   public T getTypeByName(String typeName) throws OseeCoreException {
+   public T getUniqueByName(String typeName) throws OseeCoreException {
+      Collection<T> values = getTypeByName(typeName);
+      if (values.size() > 1) {
+         throw new OseeStateException(String.format("Multiple items matching [%s] name exist", typeName));
+      }
+      return values.isEmpty() ? null : values.iterator().next();
+   }
+
+   public Collection<T> getTypeByName(String typeName) throws OseeCoreException {
       ensurePopulated();
-      return nameToTypeMap.get(typeName);
+      Collection<T> types = new ArrayList<T>();
+      Collection<T> values = nameToTypeMap.getValues(typeName);
+      if (values != null) {
+         types.addAll(values);
+      }
+      return types;
    }
 
    public T getTypeByGuid(String typeGuid) throws OseeCoreException {
@@ -135,9 +154,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
          }
          items.add(type);
       }
-      if (!items.isEmpty()) {
-         storeItems(items);
-      }
+      storeItems(items);
    }
 
    public void reloadCache() throws OseeCoreException {
@@ -149,11 +166,13 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       storeItems(Collections.singletonList((T) item));
    }
 
-   private void storeItems(Collection<T> toStore) throws OseeCoreException {
-      getDataAccessor().store(this, toStore);
-      synchronized (idToTypeMap) {
-         for (T type : toStore) {
-            cacheTypeById(type);
+   public void storeItems(Collection<T> toStore) throws OseeCoreException {
+      if (!toStore.isEmpty()) {
+         getDataAccessor().store(this, toStore);
+         synchronized (idToTypeMap) {
+            for (T type : toStore) {
+               cacheTypeById(type);
+            }
          }
       }
    }

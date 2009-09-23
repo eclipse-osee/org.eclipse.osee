@@ -215,7 +215,7 @@ public class AtsBranchManager {
          Branch branch = getWorkingBranch();
          if (promptUser) {
             StringBuilder message = new StringBuilder();
-            if (branch.hasChanges()) {
+            if (BranchManager.hasChanges(branch)) {
                message.append("Warning: Changes have been made on this branch.\n\n");
             }
             message.append("Are you sure you want to delete the branch: ");
@@ -516,7 +516,7 @@ public class AtsBranchManager {
     * @throws OseeCoreException
     */
    public boolean isWorkingBranchArchived() throws OseeCoreException {
-      return getWorkingBranch(true, false) != null && getWorkingBranch(true, false).isArchived();
+      return getWorkingBranch(true, false) != null && getWorkingBranch(true, false).getArchiveState().isArchived();
    }
 
    /**

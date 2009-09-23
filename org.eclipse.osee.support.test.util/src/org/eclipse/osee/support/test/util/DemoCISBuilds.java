@@ -13,6 +13,16 @@ package org.eclipse.osee.support.test.util;
 /**
  * @author Donald G. Dunne
  */
-public enum DemoCISBuilds {
-   CIS_Bld_1, CIS_Bld_2, CIS_Bld_3;
+public enum DemoCISBuilds implements ITestBranch {
+   CIS_Bld_1("AyH_f2sSKy3l07fIvDDD"), CIS_Bld_2("AyH_f2sSKy3l07fIvEEE"), CIS_Bld_3("AyH_f2sSKy3l07fIvFFF");
+
+   private final String guid;
+
+   private DemoCISBuilds(String guid) {
+      this.guid = guid;
+   }
+
+   public String getGuid() {
+      return guid;
+   }
 }

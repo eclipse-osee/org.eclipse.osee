@@ -41,7 +41,7 @@ public enum FrameworkImage implements OseeImage {
    BRANCH_BASELINE("baseline.gif"),
    BRANCH_CHANGE_DEST("branch_change_dest.gif"),
    BRANCH_CHANGE_SOURCE("branch_change_source.gif"),
-   BRANCH_IN_CREATION_OVERLAY("waiting_over.gif"),
+   BRANCH_IN_CREATION_OVERLAY("waiting_ovr.gif"),
    BRANCH_MERGE("merge.gif"),
    BRANCH_WORKING("working.gif"),
    BRANCH_FAVORITE_OVERLAY("star_9_9.gif"),

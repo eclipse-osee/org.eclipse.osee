@@ -20,6 +20,10 @@ public enum BranchControlled {
       return branchControlled == BranchControlled.ALL || this == branchControlled;
    }
 
+   public boolean isChangeManaged() {
+      return this == BranchControlled.CHANGE_MANAGED;
+   }
+
    public static BranchControlled fromBoolean(boolean isChangeManaged) {
       return isChangeManaged ? CHANGE_MANAGED : NOT_CHANGE_MANAGED;
    }

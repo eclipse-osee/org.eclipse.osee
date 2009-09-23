@@ -184,7 +184,7 @@ public class XChangeWidget extends XWidget implements IActionable {
             try {
                Artifact associatedArtifact = null;
                if (branch != null) {
-                  associatedArtifact = branch.getAssociatedArtifact();
+                  associatedArtifact = branch.getAssociatedArtifact().getFullArtifact();
                } else if (transactionId != null) {
                   associatedArtifact =
                         ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), BranchManager.getCommonBranch());
@@ -210,7 +210,7 @@ public class XChangeWidget extends XWidget implements IActionable {
       try {
          Artifact associatedArtifact = null;
          if (branch != null) {
-            associatedArtifact = branch.getAssociatedArtifact();
+            associatedArtifact = branch.getAssociatedArtifact().getFullArtifact();
          } else if (transactionId != null && transactionId.getCommitArtId() != 0) {
             associatedArtifact =
                   ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), BranchManager.getCommonBranch());

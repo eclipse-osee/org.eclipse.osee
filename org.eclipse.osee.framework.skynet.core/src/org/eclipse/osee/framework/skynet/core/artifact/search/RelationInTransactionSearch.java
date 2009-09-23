@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Robert A. Fisher
  */
 public class RelationInTransactionSearch implements ISearchPrimitive {
-   private Integer fromTransactionNumber;
-   private Integer toTransactionNumber;
-   private Integer branchId;
+   private final Integer fromTransactionNumber;
+   private final Integer toTransactionNumber;
+   private final Integer branchId;
    private static final String sql = "";
    private static final String TOKEN = ";";
 
@@ -34,14 +34,16 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
    }
 
    public RelationInTransactionSearch(TransactionId fromTransactionId, TransactionId toTransactionId) {
-      if (!fromTransactionId.getBranch().equals(toTransactionId.getBranch())) throw new IllegalArgumentException(
-            "The fromTransactionId and toTransactionId must be on the same branch");
-      if (fromTransactionId.getTransactionNumber() > toTransactionId.getTransactionNumber()) throw new IllegalArgumentException(
-            "The fromTransactionId can not be greater than the toTransactionId.");
+      if (!fromTransactionId.getBranch().equals(toTransactionId.getBranch())) {
+         throw new IllegalArgumentException("The fromTransactionId and toTransactionId must be on the same branch");
+      }
+      if (fromTransactionId.getTransactionNumber() > toTransactionId.getTransactionNumber()) {
+         throw new IllegalArgumentException("The fromTransactionId can not be greater than the toTransactionId.");
+      }
 
       this.fromTransactionNumber = fromTransactionId.getTransactionNumber();
       this.toTransactionNumber = toTransactionId.getTransactionNumber();
-      this.branchId = fromTransactionId.getBranchId();
+      this.branchId = fromTransactionId.getBranch().getBranchId();
    }
 
    public String getArtIdColName() {
@@ -73,15 +75,18 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
 
    @Override
    public String toString() {
-      if (fromTransactionNumber.equals(toTransactionNumber))
+      if (fromTransactionNumber.equals(toTransactionNumber)) {
          return "Transaction Number: " + toTransactionNumber;
-      else
+      } else {
          return "Transactions: " + fromTransactionNumber + " to " + toTransactionNumber;
+      }
    }
 
    public static RelationInTransactionSearch getPrimitive(String storageString) throws NumberFormatException, OseeCoreException {
       String[] values = storageString.split(TOKEN);
-      if (values.length != 2) throw new IllegalArgumentException("Unable to parse the storage string:" + storageString);
+      if (values.length != 2) {
+         throw new IllegalArgumentException("Unable to parse the storage string:" + storageString);
+      }
 
       return new RelationInTransactionSearch(TransactionIdManager.getTransactionId(Integer.parseInt(values[0])),
             TransactionIdManager.getTransactionId(Integer.parseInt(values[1])));

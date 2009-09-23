@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
+import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.Before;
 
 /**
@@ -45,7 +46,7 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testCreateState() throws OseeCoreException {
-      Branch mainBranch = BranchManager.getKeyedBranch("SAW_Bld_1");
+      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "Create State Branch";
       Branch workingBranch = null;
       try {
@@ -62,7 +63,7 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testModifiedState() throws OseeCoreException, InterruptedException {
-      Branch mainBranch = BranchManager.getKeyedBranch("SAW_Bld_1");
+      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "Modified State Branch";
       Branch workingBranch = null;
       try {
@@ -86,7 +87,7 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testDeleteState() throws OseeCoreException, InterruptedException {
-      Branch mainBranch = BranchManager.getKeyedBranch("SAW_Bld_1");
+      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "Deleted State Branch";
       Branch workingBranch = null;
       try {
@@ -98,9 +99,9 @@ public class BranchStateTest {
          Job job = BranchManager.deleteBranch(workingBranch);
          job.join();
          assertEquals(BranchState.DELETED, workingBranch.getBranchState());
-         assertTrue(workingBranch.isArchived());
+         assertTrue(workingBranch.getArchiveState().isArchived());
          assertTrue(!workingBranch.isEditable());
-         assertTrue(workingBranch.isDeleted());
+         assertTrue(workingBranch.getBranchState().isDeleted());
       } finally {
          if (workingBranch != null) {
             BranchManager.purgeBranch(workingBranch);
@@ -110,7 +111,7 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testCommitState() throws OseeCoreException {
-      Branch mainBranch = BranchManager.getKeyedBranch("SAW_Bld_1");
+      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "Commit State Branch";
       Branch workingBranch = null;
       try {
@@ -129,7 +130,7 @@ public class BranchStateTest {
          BranchManager.commitBranch(null, conflictManager, true, false);
 
          assertEquals(BranchState.COMMITTED, workingBranch.getBranchState());
-         assertTrue(workingBranch.isArchived());
+         assertTrue(workingBranch.getArchiveState().isArchived());
          assertTrue(!workingBranch.isEditable());
       } finally {
          if (workingBranch != null) {
@@ -140,7 +141,7 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testRebaselineWithoutConflicts() throws Exception {
-      Branch mainBranch = BranchManager.getKeyedBranch("SAW_Bld_1");
+      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "UpdateBranch Test 1";
       Artifact baseArtifact = null;
       Branch workingBranch = null;
@@ -179,7 +180,7 @@ public class BranchStateTest {
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
          // Check that the associated artifact remained unchanged
-         assertEquals(workingBranch.getAssociatedArtifact(), user);
+         assertEquals(workingBranch.getAssociatedArtifact().getArtId(), user.getArtId());
 
          Collection<Branch> branches = BranchManager.getBranchesByName(originalBranchName);
          assertEquals("Check only 1 original branch", 1, branches.size());
@@ -195,7 +196,7 @@ public class BranchStateTest {
 
    @org.junit.Test
    public void testRebaselineWithConflicts() throws Exception {
-      Branch mainBranch = BranchManager.getKeyedBranch("SAW_Bld_1");
+      Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "UpdateBranch Test 2";
       Artifact baseArtifact = null;
       Branch workingBranch = null;
@@ -234,7 +235,7 @@ public class BranchStateTest {
          assertTrue("UpdateBranch was not successful\n" + job.getResult().getMessage(), job.getResult().isOK());
          assertTrue("Resolver not executed", resolverOperation.wasExecuted());
 
-         assertTrue("Branch was archived", !workingBranch.isArchived());
+         assertTrue("Branch was archived", !workingBranch.getArchiveState().isArchived());
          assertTrue("Branch was not marked as rebaseline in progress",
                workingBranch.getBranchState().isRebaselineInProgress());
          assertTrue("Branch was not editable", workingBranch.isEditable());
@@ -299,7 +300,7 @@ public class BranchStateTest {
    }
 
    private void checkBranchWasRebaselined(String originalBranchName, Branch branchToCheck) {
-      assertTrue("Branch was not archived", branchToCheck.isArchived());
+      assertTrue("Branch was not archived", branchToCheck.getArchiveState().isArchived());
       assertTrue("Branch was still editable", !branchToCheck.isEditable());
       assertTrue("Branch state was not set as rebaselined", branchToCheck.getBranchState().isRebaselined());
       assertTrue("Branch name not set correctly", branchToCheck.getName().startsWith(

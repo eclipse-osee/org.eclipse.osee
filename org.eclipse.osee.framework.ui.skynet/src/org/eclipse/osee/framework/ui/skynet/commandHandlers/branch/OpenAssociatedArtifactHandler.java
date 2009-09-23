@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -41,15 +42,17 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       try {
-         if (selectedBranch.getAssociatedArtifact() == null) {
+         Artifact associatedArtifact = (Artifact) selectedBranch.getAssociatedArtifact();
+         if (associatedArtifact == null) {
             AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
             return null;
          }
-         if (AccessControlManager.hasPermission(selectedBranch.getAssociatedArtifact(), PermissionEnum.READ)) {
-            if (selectedBranch.getAssociatedArtifact() instanceof IATSArtifact)
-               OseeAts.openATSArtifact(selectedBranch.getAssociatedArtifact());
-            else
-               ArtifactEditor.editArtifact(selectedBranch.getAssociatedArtifact());
+         if (AccessControlManager.hasPermission(associatedArtifact, PermissionEnum.READ)) {
+            if (selectedBranch.getAssociatedArtifact() instanceof IATSArtifact) {
+               OseeAts.openATSArtifact(associatedArtifact);
+            } else {
+               ArtifactEditor.editArtifact(associatedArtifact);
+            }
          } else {
             OseeLog.log(
                   SkynetGuiPlugin.class,
@@ -65,7 +68,9 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
-      if (AWorkbench.getActivePage() == null) return false;
+      if (AWorkbench.getActivePage() == null) {
+         return false;
+      }
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 

@@ -151,7 +151,8 @@ public class ConflictManagerInternal {
 
       BranchState sourceBranchState = sourceBranch.getBranchState();
       if (!sourceBranchState.isCreationInProgress() && !sourceBranchState.isCommitted() && !sourceBranchState.isRebaselined() && !sourceBranchState.isRebaselineInProgress()) {
-         BranchManager.setBranchState(sourceBranch, BranchState.COMMIT_IN_PROGRESS);
+         sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
+         sourceBranch.persist();
       }
 
       int transactionId = findCommonTransaction(sourceBranch, destinationBranch);
@@ -361,9 +362,9 @@ public class ConflictManagerInternal {
       //We just need the largest value at first so the complete source branch will be searched
       int parentTransactionNumber = Integer.MAX_VALUE;
 
-      for (Branch branch : sourceBranch.getBranchHierarchy()) {
+      for (Branch branch : sourceBranch.getAncestors()) {
          isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
-         parentTransactionNumber = branch.getParentTransactionNumber();
+         parentTransactionNumber = branch.getBaseTransaction().getTransactionNumber();
 
          if (!isValidConflict) {
             break;
@@ -488,8 +489,8 @@ public class ConflictManagerInternal {
     * should provide the reference for detecting conflicts based on the gamma at that point.
     */
    private static int findCommonTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
-      List<Branch> sourceBranches = sourceBranch.getBranchHierarchy();
-      List<Branch> destBranches = destBranch.getBranchHierarchy();
+      Collection<Branch> sourceBranches = sourceBranch.getAncestors();
+      Collection<Branch> destBranches = destBranch.getAncestors();
       Branch commonBranch = null;
       for (Branch branch : sourceBranches) {
          if (destBranches.contains(branch)) {

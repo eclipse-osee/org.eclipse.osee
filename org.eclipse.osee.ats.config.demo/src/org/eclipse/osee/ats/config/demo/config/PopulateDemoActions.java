@@ -202,10 +202,9 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
    public static Branch createChildMainWorkingBranch(String parentBrachName, String childBranchName) throws Exception {
       Branch parentBranch = BranchManager.getKeyedBranch(parentBrachName);
-
       Branch childBranch =
             BranchManager.createWorkingBranch(parentBranch, childBranchName, UserManager.getUser(SystemUser.OseeSystem));
-      BranchManager.setKeyedBranch(childBranchName, childBranch);
+      childBranch.setAliases(childBranchName);
       return childBranch;
    }
 

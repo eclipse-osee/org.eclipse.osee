@@ -46,7 +46,9 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
                new EntryDialog(
                      "Set Associated Artifact",
                      "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"" + (selectedBranch.getAssociatedArtifact() != null ? "\n\nCurrently: " + selectedBranch.getAssociatedArtifact() : ""));
-         if (selectedBranch.getAssociatedArtifact() != null) ed.setEntry(String.valueOf(selectedBranch.getAssociatedArtifactId()));
+         if (selectedBranch.getAssociatedArtifact() != null) {
+            ed.setEntry(String.valueOf(selectedBranch.getAssociatedArtifact().getArtId()));
+         }
          if (ed.open() == 0) {
             String artId = ed.getEntry();
             Artifact associatedArtifact =
@@ -56,6 +58,7 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
                   "Set Associated Artifact",
                   "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {
                selectedBranch.setAssociatedArtifact(associatedArtifact);
+               selectedBranch.persist();
             }
          }
       } catch (OseeCoreException ex) {
@@ -67,7 +70,9 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
 
    @Override
    public boolean isEnabledWithException() throws OseeCoreException {
-      if (AWorkbench.getActivePage() == null) return false;
+      if (AWorkbench.getActivePage() == null) {
+         return false;
+      }
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 

@@ -344,6 +344,7 @@ public class RemoteEventManager {
                      try {
                         Branch branch = BranchManager.getBranch(branchId);
                         branch.setName(((NetworkRenameBranchEvent) event).getBranchName());
+                        branch.clearDirty();
                         try {
                            InternalEventManager.kickBranchEvent(sender, BranchEventType.Renamed, branchId);
                         } catch (Exception ex) {
@@ -361,8 +362,8 @@ public class RemoteEventManager {
                      }
                   } else if (event instanceof NetworkDeletedBranchEvent) {
                      int branchId = ((NetworkDeletedBranchEvent) event).getBranchId();
-                     BranchManager.handleBranchDeletion(branchId);
                      try {
+                        BranchManager.handleBranchDeletion(branchId);
                         InternalEventManager.kickBranchEvent(sender, BranchEventType.Deleted, branchId);
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -672,8 +673,8 @@ public class RemoteEventManager {
 
                   if (relation == null || relation.getModificationType() == ModificationType.DELETED) {
                      relation =
-                           RelationLink.getOrCreate(event.getArtAId(), event.getArtBId(), branch, branch,
-                                 relationType, event.getRelId(), event.getGammaId(),
+                           RelationLink.getOrCreate(event.getArtAId(), event.getArtBId(), branch, branch, relationType,
+                                 event.getRelId(), event.getGammaId(),
                                  ((NetworkNewRelationLinkEvent) event).getRationale(),
                                  ((NetworkNewRelationLinkEvent) event).getAOrder(),
                                  ((NetworkNewRelationLinkEvent) event).getBOrder(), ModificationType.NEW);

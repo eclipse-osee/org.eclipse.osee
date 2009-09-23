@@ -122,10 +122,12 @@ public class RenameBranchHandler extends CommandHandler {
    }
 
    private void updateText(String newLabel, Branch selectedBranch) {
+      String oldName = selectedBranch.getName();
       selectedBranch.setName(newLabel);
       try {
-         selectedBranch.rename(newLabel);
+         selectedBranch.persist();
       } catch (Exception ex) {
+         selectedBranch.setName(oldName);
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
@@ -141,7 +143,7 @@ public class RenameBranchHandler extends CommandHandler {
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
 
       return branches.size() == 1 && (AccessControlManager.isOseeAdmin() || branches.get(0).getBranchType().isWorkingBranch() || branches.get(
-            0).getAuthorId() == UserManager.getUser().getArtId());
+            0).getBaseTransaction().getAuthorArtId() == UserManager.getUser().getArtId());
    }
 
 }

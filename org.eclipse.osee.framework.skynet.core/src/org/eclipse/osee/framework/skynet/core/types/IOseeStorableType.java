@@ -23,4 +23,6 @@ public interface IOseeStorableType extends IOseeType {
    void setId(int uniqueId) throws OseeStateException;
 
    boolean isDirty();
+
+   void clearDirty();
 }

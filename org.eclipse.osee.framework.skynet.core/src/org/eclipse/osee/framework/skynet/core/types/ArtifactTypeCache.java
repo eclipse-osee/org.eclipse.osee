@@ -35,7 +35,7 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
    private final CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> artifactToAttributeMap =
          new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
 
-   public ArtifactTypeCache(IOseeTypeFactory factory, IOseeTypeDataAccessor<ArtifactType> dataAccessor) {
+   public ArtifactTypeCache(IOseeTypeFactory factory, IOseeDataAccessor<ArtifactType> dataAccessor) {
       super(factory, dataAccessor);
    }
 
@@ -122,13 +122,13 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
       return types;
    }
 
-   public Set<AttributeType> getAttributeTypes(ArtifactType artifactType, Branch branch) {
+   public Set<AttributeType> getAttributeTypes(ArtifactType artifactType, Branch branch) throws OseeCoreException {
       HashSet<AttributeType> attributeTypes = new HashSet<AttributeType>();
       getAttributeTypes(attributeTypes, artifactType, branch);
       return attributeTypes;
    }
 
-   private void getAttributeTypes(HashSet<AttributeType> attributeTypes, ArtifactType artifactType, Branch branch) {
+   private void getAttributeTypes(HashSet<AttributeType> attributeTypes, ArtifactType artifactType, Branch branch) throws OseeCoreException {
       Branch branchCursor = branch;
       while (true) {
          Collection<AttributeType> items = artifactToAttributeMap.get(artifactType, branchCursor);

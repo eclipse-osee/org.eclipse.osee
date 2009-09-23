@@ -29,9 +29,9 @@ import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * Manages a cache of <code>TransactionId</code>.
@@ -54,8 +54,8 @@ public final class TransactionIdManager {
 
    private final Map<Integer, TransactionId> transactionIdCache = new HashMap<Integer, TransactionId>();
    private static final TransactionIdManager instance = new TransactionIdManager();
-   private static final HashMap<Artifact, List<TransactionId>> commitArtifactMap =
-         new HashMap<Artifact, List<TransactionId>>();
+   private static final HashMap<IArtifact, List<TransactionId>> commitArtifactMap =
+         new HashMap<IArtifact, List<TransactionId>>();
 
    private TransactionIdManager() {
    }
@@ -76,7 +76,7 @@ public final class TransactionIdManager {
       return transactions;
    }
 
-   public synchronized static Collection<TransactionId> getCommittedArtifactTransactionIds(Artifact artifact) throws OseeCoreException {
+   public synchronized static Collection<TransactionId> getCommittedArtifactTransactionIds(IArtifact artifact) throws OseeCoreException {
       List<TransactionId> transactionIds = commitArtifactMap.get(artifact);
       if (transactionIds == null) {
          transactionIds = new ArrayList<TransactionId>(5);
@@ -94,11 +94,15 @@ public final class TransactionIdManager {
       return transactionIds;
    }
 
-   public synchronized static void cacheCommittedArtifactTransaction(Artifact artifact, TransactionId transactionId) throws OseeCoreException {
+   public synchronized static void cacheCommittedArtifactTransaction(IArtifact artifact, TransactionId transactionId) throws OseeCoreException {
       Collection<TransactionId> transactionIds = getCommittedArtifactTransactionIds(artifact);
       if (!transactionIds.contains(transactionId)) {
          transactionIds.add(transactionId);
       }
+   }
+
+   public synchronized static void cacheTransaction(TransactionId transaction) throws OseeCoreException {
+      instance.transactionIdCache.put(transaction.getTransactionNumber(), transaction);
    }
 
    /**
