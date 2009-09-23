@@ -72,7 +72,7 @@ public class ChangeManager {
    }
 
    public static ChangeData getChangeDataPerBranch(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
-      return new ChangeData(InternalChangeManager.getInstance().getChanges(sourceBranch, null, monitor));
+      return new ChangeData(getChangesPerBranch(sourceBranch, monitor));
    }
 
 //   /**
