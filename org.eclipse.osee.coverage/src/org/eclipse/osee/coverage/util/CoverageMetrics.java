@@ -1,8 +1,13 @@
-/*
- * Created on Sep 23, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.coverage.util;
 
 import java.util.Collection;
@@ -24,7 +29,9 @@ public class CoverageMetrics {
             numCovered += coverageItem.getCoverageMethod() == CoverageMethodEnum.None ? 0 : 1;
          }
       }
-      if (numItems == 0 || numCovered == 0) return 0;
+      if (numItems == 0 || numCovered == 0) {
+         return 0;
+      }
       return new Integer(numItems / numCovered * 100).intValue();
    }
 }

@@ -1,8 +1,13 @@
-/*
- * Created on Sep 22, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.coverage.test.import1;
 
 import java.util.logging.Level;
@@ -32,8 +37,9 @@ public class NavigationButton1 extends Button {
       try {
          if (getStyle() == 4) { // 2, 1, y
             return "Navigate Here"; // 2, 2, y
-         } else
+         } else {
             return "Navigate There"; // 2, 3, y
+         }
       } catch (Exception ex) {
          OseeLog.log(CoveragePlugin.class, Level.SEVERE, ex); // 2, 4, n
       }
@@ -55,8 +61,9 @@ public class NavigationButton1 extends Button {
       try {
          if (getStyle() == 4) { // 5, 1, y
             return this.image; // 5, 2, n
-         } else
+         } else {
             return super.getImage(); // 5, 3, y
+         }
       } catch (IllegalArgumentException ex) {
          OseeLog.log(CoveragePlugin.class, Level.SEVERE, ex); // 5, 4, n
 
