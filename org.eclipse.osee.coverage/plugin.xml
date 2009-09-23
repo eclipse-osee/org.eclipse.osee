@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.0"?>
 <plugin>
-   <extension-point id="DefineNavigateItem" name="DefineNavigateItem" schema="schema/DefineNavigateItem.exsd"/>
-   <extension-point id="TraceUnitHandler" name="TraceUnitHandler" schema="schema/TraceUnitHandler.exsd"/>
+   <extension-point id="CoverageNavigateItem" name="CoverageNavigateItem" schema="schema/CoverageNavigateItem.exsd"/>
 
       <extension
             point="org.eclipse.ui.perspectives">
@@ -18,9 +17,6 @@
          <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
             <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
          </perspectiveExtension>
-         <perspectiveExtension targetID="osee.ats.ATSPerspective">
-            <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
-         </perspectiveExtension>
          <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">
             <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
          </perspectiveExtension>
@@ -31,9 +27,17 @@
          </perspectiveExtension>
       </extension>
       <extension
-            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation
-               className="lba.coverage.ImportCoverageBlam">
-         </Operation>
-      </extension>
+         point="org.eclipse.ui.views">
+      <category
+            name="OSEE Coverage"
+            id="osee.coverage.category">
+      </category>
+      <view
+            allowMultiple="false"
+            category="osee.coverage.category"
+            class="org.eclipse.osee.coverage.navigate.CoverageNavigateView"
+            icon="images/coverage.gif"
+            id="org.eclipse.osee.coverage.navigate.CoverageNavigateView"
+            name="Coverage Navigator"/>
+   </extension>
 </plugin>

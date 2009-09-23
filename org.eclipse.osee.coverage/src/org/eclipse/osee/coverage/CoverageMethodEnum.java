@@ -9,5 +9,5 @@ package org.eclipse.osee.coverage;
  * @author Donald G. Dunne
  */
 public enum CoverageMethodEnum {
-   Deactivated_Code, Exception_Handling, Test_Unit, Test_Procedure, Unknown
+   Deactivated_Code, Exception_Handling, Test_Unit, Test_Procedure, None
 }

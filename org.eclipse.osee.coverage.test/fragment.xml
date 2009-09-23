@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.osee.coverage.CoverageNavigateItem">
       <ICoverageNavigateItem
-            classname="org.eclipse.osee.coverage.test.navigate.CoverageNavigateViews">
+            classname="org.eclipse.osee.coverage.test.navigate.CoverageTestNavigateViews">
       </ICoverageNavigateItem>
    </extension>
 

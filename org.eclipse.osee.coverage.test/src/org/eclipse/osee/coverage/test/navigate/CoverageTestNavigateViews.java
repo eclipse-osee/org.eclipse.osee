@@ -12,16 +12,14 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.coverage.navigate.ICoverageNavigateItem;
 import org.eclipse.osee.coverage.test.import1.CoverageTestImporter1;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemFolder;
 
 /**
  * @author Donald G. Dunne
  */
-public class CoverageNavigateViews implements ICoverageNavigateItem {
+public class CoverageTestNavigateViews implements ICoverageNavigateItem {
 
-   public CoverageNavigateViews() {
+   public CoverageTestNavigateViews() {
       super();
    }
 
@@ -31,11 +29,7 @@ public class CoverageNavigateViews implements ICoverageNavigateItem {
 
       if (AtsPlugin.areOSEEServicesAvailable().isFalse()) return items;
 
-      XNavigateItem lbaItems = new XNavigateItemFolder(null, "Coverage Testing", FrameworkImage.FOLDER);
-
-      new CoverageTestImporter1(lbaItems);
-
-      items.add(lbaItems);
+      items.add(new CoverageTestImporter1(null));
 
       return items;
    }

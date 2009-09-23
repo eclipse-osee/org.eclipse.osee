@@ -12,6 +12,9 @@ package org.eclipse.osee.coverage.internal;
 
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 
+/**
+ * @author Donald G. Dunne
+ */
 public class CoveragePlugin extends OseeUiActivator {
    private static CoveragePlugin pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.coverage";
