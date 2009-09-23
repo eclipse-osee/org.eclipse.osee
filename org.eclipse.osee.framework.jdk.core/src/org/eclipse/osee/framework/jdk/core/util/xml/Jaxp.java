@@ -272,7 +272,7 @@ public class Jaxp {
       source.add(element);
 
       LinkedList<String> path;
-      if (elementPath instanceof LinkedList) {
+      if (elementPath instanceof LinkedList<?>) {
          path = (LinkedList<String>) elementPath;
       } else {
          path = new LinkedList<String>(elementPath);
