@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.revision.InternalChangeManager;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -306,7 +306,8 @@ public class XChangeWidget extends XWidget implements IActionable {
 
             try {
                if (loadChangeReport && !rebaselined) {
-                  changes.addAll((hasBranch ? InternalChangeManager.getChangeReportChanges(branch, monitor) : InternalChangeManager.getChangeReportChanges(transactionId, monitor)));
+                  changes.addAll((hasBranch ? ChangeManager.getChangesPerBranch(branch, monitor) : ChangeManager.getChangesPerTransaction(
+                        transactionId, monitor)));
                }
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {

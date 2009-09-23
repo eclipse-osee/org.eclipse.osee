@@ -333,12 +333,12 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
     * 
     * @param artifacts
     */
-   private void displayNotMultiEditArtifacts(final Collection<Artifact> artifacts) {
+   private void displayNotMultiEditArtifacts(final Collection<Artifact> artifacts, final String warningString) {
       if (!artifacts.isEmpty()) {
          Displays.ensureInDisplayThread(new Runnable() {
 
             public void run() {
-               WordUiUtil.displayUnhandledArtifacts(artifacts);
+               WordUiUtil.displayUnhandledArtifacts(artifacts, warningString);
             }
          });
       }
@@ -445,7 +445,8 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
                   notMultiEditableArtifacts.add(artifact);
                }
             }
-            displayNotMultiEditArtifacts(notMultiEditableArtifacts);
+            displayNotMultiEditArtifacts(notMultiEditableArtifacts,
+                  "Do not support editing of multiple artifacts with OLE data");
             artifacts.removeAll(notMultiEditableArtifacts);
          } else { // support OLE data when appropriate
             if (!firstArtifact.getSoleAttributeValue(WordAttribute.OLE_DATA_NAME, "").equals("")) {

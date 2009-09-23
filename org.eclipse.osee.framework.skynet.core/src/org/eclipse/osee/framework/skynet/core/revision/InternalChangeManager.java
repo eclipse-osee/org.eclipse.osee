@@ -186,15 +186,15 @@ public final class InternalChangeManager {
       return changes;
    }
 
-   public static Collection<Change> getChangeReportChanges(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
+   public Collection<Change> getChangeReportChanges(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
       return getChangeReportChanges(sourceBranch, null, monitor);
    }
 
-   public static Collection<Change> getChangeReportChanges(TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
+   public Collection<Change> getChangeReportChanges(TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
       return getChangeReportChanges(null, transactionId, monitor);
    }
 
-   private static Collection<Change> getChangeReportChanges(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
+   private Collection<Change> getChangeReportChanges(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
       boolean isHistorical = sourceBranch == null;
       ArrayList<Change> changes = new ArrayList<Change>();
       List<ChangeItem> changeItems = loadChangeItems(sourceBranch, transactionId, monitor, isHistorical);

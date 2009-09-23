@@ -205,7 +205,8 @@ public class WordTemplateProcessor {
       }
       // Write out the last of the template
       wordMl.addWordMl(template.substring(lastEndIndex));
-      displayNonTemplateArtifacts(nonTemplateArtifacts);
+      displayNonTemplateArtifacts(nonTemplateArtifacts,
+            "Only artifacts of type Word Template Content are supported in this case.");
       return charBak;
    }
 
@@ -548,14 +549,14 @@ public class WordTemplateProcessor {
       return orderedNames;
    }
 
-   private void displayNonTemplateArtifacts(final Collection<Artifact> artifacts) {
+   private void displayNonTemplateArtifacts(final Collection<Artifact> artifacts, final String warningString) {
       if (!artifacts.isEmpty()) {
          Displays.ensureInDisplayThread(new Runnable() {
 
             public void run() {
                ArrayList<Artifact> nonTempArtifacts = new ArrayList<Artifact>(artifacts.size());
                nonTempArtifacts.addAll(artifacts);
-               WordUiUtil.displayUnhandledArtifacts(artifacts);
+               WordUiUtil.displayUnhandledArtifacts(artifacts, warningString);
             }
          });
       }

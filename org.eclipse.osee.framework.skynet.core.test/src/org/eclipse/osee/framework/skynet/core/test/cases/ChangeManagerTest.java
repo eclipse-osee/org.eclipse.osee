@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.revision.InternalChangeManager;
+import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.junit.After;
 import org.junit.Before;
@@ -92,7 +92,7 @@ public class ChangeManagerTest {
 
    public static boolean checkArtifactModType(Artifact artifact, ModificationType modificationType) throws OseeCoreException {
       boolean pass = false;
-      for (Change change : InternalChangeManager.getChangeReportChanges(artifact.getBranch(), new NullProgressMonitor())) {
+      for (Change change : ChangeManager.getChangesPerBranch(artifact.getBranch(), new NullProgressMonitor())) {
          if (change.getArtId() == artifact.getArtId()) {
             pass = change.getModificationType() == modificationType;
             break;

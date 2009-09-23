@@ -52,11 +52,11 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerTransaction(TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
-      return InternalChangeManager.getInstance().getChanges(null, transactionId, monitor);
+      return InternalChangeManager.getInstance().getChangeReportChanges(transactionId, monitor);
    }
 
    public static ChangeData getChangeDataPerTransaction(TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
-      return new ChangeData(InternalChangeManager.getInstance().getChanges(null, transactionId, monitor));
+      return new ChangeData(getChangesPerTransaction(transactionId, monitor));
    }
 
    /**
@@ -68,24 +68,12 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerBranch(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
-      return InternalChangeManager.getInstance().getChanges(sourceBranch, null, monitor);
+      return InternalChangeManager.getInstance().getChangeReportChanges(sourceBranch, monitor);
    }
 
    public static ChangeData getChangeDataPerBranch(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
       return new ChangeData(getChangesPerBranch(sourceBranch, monitor));
    }
-
-//   /**
-//    * Acquires artifact, relation and attribute changes from a source branch since its creation.
-//    * 
-//    * @param sourceBranch
-//    * @param baselineTransactionId
-//    * @return changes
-//    * @throws OseeCoreException
-//    */
-//   public static Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
-//      return InternalChangeManager.getInstance().getChanges(sourceBranch, transactionId, monitor);
-//   }
 
    /**
     * @return true changes exist

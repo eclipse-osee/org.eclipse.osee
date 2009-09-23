@@ -63,12 +63,13 @@ public class WordUiUtil {
       }
    }
 
-   public static void displayUnhandledArtifacts(final Collection<Artifact> artifacts) {
+   public static void displayUnhandledArtifacts(final Collection<Artifact> artifacts, final String warningString) {
       if (!artifacts.isEmpty()) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
                XResultData rd = new XResultData();
-               rd.logWarning("\nYou chose to preview/edit artifacts that could not be handled\n");
+               rd.logWarning("\nYou chose to preview/edit artifacts that could not be handled: ");
+               rd.log(warningString + "\n");
                rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
                rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
                for (Artifact artifact : artifacts)
