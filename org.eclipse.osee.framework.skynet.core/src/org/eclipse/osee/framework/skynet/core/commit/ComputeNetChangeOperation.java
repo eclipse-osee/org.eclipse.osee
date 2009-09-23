@@ -113,10 +113,10 @@ public class ComputeNetChangeOperation extends AbstractOperation {
 
    private void checkForInvalidStates(ChangeItem change) throws OseeCoreException {
       // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
-//      if (!change.getDestination().exists() && change.getBase().exists()) {
-//         throw new OseeStateException(
-//               "This should be supported in the future - destination branch is not the source's parent: " + change);
-//      }
+      if (hasDestinationBranch && (!change.getDestination().exists() && change.getBase().exists())) {
+         throw new OseeStateException(
+               "This should be supported in the future - destination branch is not the source's parent: " + change);
+      }
 
       if (change.getDestination().exists() && change.getDestination().getModType().isDeleted()) {
          throw new OseeStateException("Destination was deleted - source should not modify: " + change);
