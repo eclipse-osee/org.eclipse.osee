@@ -419,6 +419,10 @@ public class MemoryResource {
    public ByteBuffer getAsBuffer() {
       return ByteBuffer.wrap(byteArray.get());
    }
+   
+   public ByteBuffer getBuffer() {
+	   return byteArray.getByteBuffer();
+   }
 
    //	public void set(ByteBuffer other) {
    //	buffer.put(other);

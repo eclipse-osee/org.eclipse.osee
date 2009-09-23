@@ -10,11 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.data;
 
+import java.nio.ByteBuffer;
+
 /**
  * @author Andrew M. Finkbeiner
  */
 public class ByteArrayHolder {
    private byte[] buffer;
+   private ByteBuffer byteBuffer;
    
    public ByteArrayHolder(){
       
@@ -22,13 +25,19 @@ public class ByteArrayHolder {
    
    public ByteArrayHolder(byte[] buffer){
       this.buffer = buffer;
+      byteBuffer = ByteBuffer.wrap(buffer);
    }
    
    public void set(byte[] buffer){
       this.buffer = buffer;
+      byteBuffer = ByteBuffer.wrap(buffer);
    }
    
    public byte[] get(){
       return this.buffer;
+   }
+   
+   public ByteBuffer getByteBuffer(){
+	   return byteBuffer;
    }
 }
