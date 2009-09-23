@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
  */
 class Lexicographical implements RelationOrder {
 
-   private ArtifactNameComparator comparator;
-   private RelationOrderId id;
+   private final ArtifactNameComparator comparator;
+   private final RelationOrderId id;
 
    Lexicographical(boolean descending, RelationOrderId id) {
       comparator = new ArtifactNameComparator(descending);
@@ -38,8 +38,8 @@ class Lexicographical implements RelationOrder {
 
    @Override
    public void applyOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
-      String value = artifact.getOrInitializeSoleAttributeValue("Relation Order");
-      RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(value);
+      RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(artifact);
+      String value = artifact.getSoleAttributeValue("Relation Order", "");
       String guid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
       boolean isTypeToSetDefault = type.getDefaultOrderTypeGuid().equals(getOrderId().getGuid());
       if(guid == null && isTypeToSetDefault){//nothing has been saved for this type/side pair and it's the default

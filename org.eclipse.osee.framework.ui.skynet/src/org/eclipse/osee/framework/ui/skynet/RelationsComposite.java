@@ -49,6 +49,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -597,7 +598,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
             try {
                wrapper.getArtifactA().deleteRelation(
-                     new RelationSorter(wrapper.getRelationType(), RelationSide.SIDE_B, wrapper.getArtifactA()),
+                     new RelationTypeSide(wrapper.getRelationType(), RelationSide.SIDE_B),
                      wrapper.getArtifactB());
                Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(object);
                if (parent != null) {
@@ -781,7 +782,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
                Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
                for (Artifact artifactToMove : artifactsToMove) {
-                  artifact.setRelationOrder(targetLink.getOther(), isFeedbackAfter, new RelationSorter(
+                  artifact.setRelationOrder(targetLink.getOther(), isFeedbackAfter, new RelationTypeSide(
                         targetLink.getRelationType(), targetLink.getRelationSide()), artifactToMove);
                }
                treeViewer.refresh();

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -300,7 +301,9 @@ public class RelationExplorerWindow {
 
             if (artifact != null) {
                try {
-                  relationGroup.getArtifact().addRelation(relationGroup, artifact);
+                  RelationTypeSide relationToInsert =
+                        new RelationTypeSide(relationGroup.getRelationType(), relationGroup.getSide());
+                  relationGroup.getArtifact().addRelation(relationToInsert, artifact);
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }

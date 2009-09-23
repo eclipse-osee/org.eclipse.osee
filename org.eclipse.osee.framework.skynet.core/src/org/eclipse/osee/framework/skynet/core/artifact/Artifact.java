@@ -71,8 +71,10 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -178,6 +180,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
       return RelationManager.getRelatedArtifacts(this, relationType);
    }
 
+   public List<Artifact> getRelatedArtifacts(RelationSorter relationSorter) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationSorter.getRelationType(),
+            relationSorter.getSide()));
+   }
+
    public List<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, relationEnum);
    }
@@ -234,6 +241,11 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
 
    public int getRelatedArtifactsCount(IRelationEnumeration relationEnum) throws OseeCoreException {
       return RelationManager.getRelatedArtifactsCount(this, relationEnum.getRelationType(), relationEnum.getSide());
+   }
+
+   public int getRelatedArtifactsCount(RelationSorter relationSorter) throws OseeCoreException {
+      return RelationManager.getRelatedArtifactsCount(relationSorter.getArtifact(), relationSorter.getRelationType(),
+            relationSorter.getSide());
    }
 
    /**
@@ -1268,6 +1280,16 @@ public class Artifact implements IAdaptable, Comparable<Artifact>, IAccessContro
    public void setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) throws OseeCoreException {
       RelationManager.setRelationOrder(this, relationSide.getRelationType(), relationSide.getSide(),
             RelationOrderBaseTypes.USER_DEFINED, artifactsInNewOrder);
+   }
+
+   public void setRelationOrder(RelationSorter sorter, RelationOrderId orderId) throws OseeCoreException {
+      List<Artifact> empty = java.util.Collections.emptyList();
+      RelationManager.setRelationOrder(this, sorter.getRelationType(), sorter.getSide(), orderId, empty);
+   }
+
+   public void setRelationOrder(Artifact targetArtifact, boolean insertAfterTarget, RelationSorter sorter, Artifact artifact) throws OseeCoreException {
+      setRelationOrder(targetArtifact, insertAfterTarget, new RelationTypeSide(sorter.getRelationType(),
+            sorter.getSide()), artifact);
    }
 
    public void setRelationOrder(Artifact targetArtifact, boolean insertAfterTarget, IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {

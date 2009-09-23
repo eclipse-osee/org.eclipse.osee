@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrdering;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationSorter implements IRelationEnumeration {
+public class RelationSorter {
 
    private final RelationType type;
    private final RelationSide side;
@@ -50,32 +50,26 @@ public class RelationSorter implements IRelationEnumeration {
       this.artifact = null;
    }
 
-   @Override
    public RelationType getRelationType() {
       return type;
    }
 
-   @Override
    public RelationSide getSide() {
       return side;
    }
 
-   @Override
    public String getSideName() {
       return type.getSideName(side);
    }
 
-   @Override
    public String getName() {
       return type.getName();
    }
 
-   @Override
    public boolean isSideA() {
       return side == RelationSide.SIDE_A;
    }
 
-   @Override
    public boolean isThisType(RelationLink link) {
       return link.getRelationType() == type;
    }

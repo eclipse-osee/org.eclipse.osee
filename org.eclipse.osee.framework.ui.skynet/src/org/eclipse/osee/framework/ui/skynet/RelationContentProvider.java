@@ -99,14 +99,14 @@ public class RelationContentProvider implements ITreeContentProvider {
                return new Object[] {sideB};
             }
          } else if (parentElement instanceof RelationSorter) {
-            RelationSorter relationTypeSide = (RelationSorter) parentElement;
-            List<Artifact> artifacts = artifact.getArtifact().getRelatedArtifacts(relationTypeSide);
+            RelationSorter relationSorter = (RelationSorter) parentElement;
+            List<Artifact> artifacts = artifact.getArtifact().getRelatedArtifacts(relationSorter);
             WrapperForRelationLink[] wrapper = new WrapperForRelationLink[artifacts.size()];
             for(int i = 0; i < artifacts.size(); i++){
-               if(relationTypeSide.isSideA()){
-                  wrapper[i]=new WrapperForRelationLink(relationTypeSide.getRelationType(), artifacts.get(i), artifacts.get(i), relationTypeSide.getArtifact());   
+               if(relationSorter.isSideA()){
+                  wrapper[i]=new WrapperForRelationLink(relationSorter.getRelationType(), artifacts.get(i), artifacts.get(i), relationSorter.getArtifact());   
                } else {
-                  wrapper[i]=new WrapperForRelationLink(relationTypeSide.getRelationType(), artifacts.get(i), relationTypeSide.getArtifact(), artifacts.get(i));
+                  wrapper[i]=new WrapperForRelationLink(relationSorter.getRelationType(), artifacts.get(i), relationSorter.getArtifact(), artifacts.get(i));
                }
                childToParentMap.put(wrapper[i], parentElement);
             }

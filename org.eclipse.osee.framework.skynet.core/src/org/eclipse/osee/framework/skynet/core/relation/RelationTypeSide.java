@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -22,22 +21,15 @@ public class RelationTypeSide implements IRelationEnumeration {
 
    private final RelationType type;
    private final RelationSide side;
-   private final Artifact artifact;
-
-   public RelationTypeSide(RelationType type, RelationSide side, Artifact artifact) {
-      this.type = type;
-      this.side = side;
-      this.artifact = artifact;
-   }
 
    public RelationTypeSide(RelationType type, RelationSide side) {
-      this(type, side, null);
+      this.type = type;
+      this.side = side;
    }
 
    public RelationTypeSide(String typeName, String sideName) throws OseeCoreException {
       this.type = RelationTypeManager.getType(typeName);
       this.side = type.isSideAName(sideName) ? RelationSide.SIDE_A : RelationSide.SIDE_B;
-      this.artifact = null;
    }
 
    @Override
@@ -70,22 +62,11 @@ public class RelationTypeSide implements IRelationEnumeration {
       return link.getRelationType() == type;
    }
 
-   public Artifact getArtifact() {
-      return artifact;
-   }
-
    @Override
    public boolean equals(Object arg0) {
       if (arg0 instanceof RelationTypeSide) {
          RelationTypeSide arg = (RelationTypeSide) arg0;
-         if (artifact == null && arg.artifact == null) {
-            return type.equals(arg.type) && side.equals(arg.side);
-         } else if (artifact == null) {
-            return false;
-         } else if (arg.artifact == null) {
-            return false;
-         }
-         return type.equals(arg.type) && side.equals(arg.side) && artifact.equals(arg.artifact);
+         return type.equals(arg.type) && side.equals(arg.side);
       }
       return false;
    }
@@ -95,9 +76,6 @@ public class RelationTypeSide implements IRelationEnumeration {
       int hashCode = 11;
       hashCode = hashCode * 31 + type.hashCode();
       hashCode = hashCode * 31 + side.hashCode();
-      if (artifact != null) {
-         hashCode = hashCode * 31 + artifact.hashCode();
-      }
       return hashCode;
    }
 }

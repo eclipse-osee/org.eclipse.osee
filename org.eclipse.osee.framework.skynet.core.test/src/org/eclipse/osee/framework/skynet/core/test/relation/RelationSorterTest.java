@@ -15,18 +15,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.junit.Test;
 
 /**
  * @author Ryan Schmitt
  */
-public class RelationTypeSideTest {
+public class RelationSorterTest {
    @Test
    public void testEquals() throws OseeCoreException {
-      RelationTypeSide a = new RelationTypeSide(RelationTypeManager.getType(6), RelationSide.SIDE_A);
-      RelationTypeSide b = new RelationTypeSide(RelationTypeManager.getType(7), RelationSide.SIDE_B);
+      RelationSorter a = new RelationSorter(RelationTypeManager.getType(6), RelationSide.SIDE_A);
+      RelationSorter b = new RelationSorter(RelationTypeManager.getType(7), RelationSide.SIDE_B);
       assertFalse(a.equals(b));
       assertTrue(a.equals(a));
    }

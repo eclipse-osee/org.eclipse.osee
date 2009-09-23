@@ -67,14 +67,12 @@ public class RelationOrdering {
    }
 
    private String getOrderGuid(Artifact artifact, RelationType type, RelationSide side) throws OseeCoreException {
-      Attribute<String> attribute = artifact.getSoleAttribute("Relation Order");
-      if (attribute != null) {
-         RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(attribute.getValue());
-         String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
-         if (relationOrderGuid != null) {
-            return relationOrderGuid;
-         }
+      RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(artifact);
+      String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
+      if (relationOrderGuid != null) {
+         return relationOrderGuid;
       }
+
       return type.getDefaultOrderTypeGuid();
    }
 

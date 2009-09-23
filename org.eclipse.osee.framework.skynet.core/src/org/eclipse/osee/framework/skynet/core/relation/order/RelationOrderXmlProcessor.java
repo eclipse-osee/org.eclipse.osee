@@ -11,7 +11,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -46,7 +45,7 @@ public class RelationOrderXmlProcessor {
       }
    }
 
-   public RelationOrderXmlProcessor(Artifact artifact) throws OseeWrappedException, MultipleAttributesExist, OseeCoreException {
+   public RelationOrderXmlProcessor(Artifact artifact) throws OseeCoreException {
       this(artifact.getSoleAttributeValueAsString("Relation Order", ""));
    }
 
