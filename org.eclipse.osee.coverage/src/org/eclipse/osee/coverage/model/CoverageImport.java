@@ -3,14 +3,17 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.coverage;
+package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
+ * Single import of coverage information that includes
+ * 
  * @author Donald G. Dunne
  */
 public class CoverageImport {
@@ -36,6 +39,14 @@ public class CoverageImport {
       return coverageUnits;
    }
 
+   public List<CoverageItem> getCoverageItems() {
+      List<CoverageItem> items = new ArrayList<CoverageItem>();
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         items.addAll(coverageUnit.getCoverageItems(true));
+      }
+      return items;
+   }
+
    public String getGuid() {
       return guid;
    }
@@ -46,5 +57,9 @@ public class CoverageImport {
 
    public void setCoverageUnits(List<CoverageUnit> coverageUnits) {
       this.coverageUnits = coverageUnits;
+   }
+
+   public String getName() {
+      return "Coverage Import - " + XDate.getDateStr(runDate, XDate.MMDDYYHHMM);
    }
 }

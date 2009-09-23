@@ -25,7 +25,6 @@ public class NavigationButton1 extends Button {
     */
    public NavigationButton1(Composite parent, int style, Image image) {
       super(parent, style);
-      this.image = image; // 1, 1, y
    }
 
    @Override

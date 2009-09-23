@@ -46,14 +46,28 @@ import org.eclipse.swt.widgets.ToolItem;
 public class ResultsEditorTableTab implements IResultsEditorTableTab {
 
    private final String tabName;
-   private final List<XViewerColumn> columns;
-   private final Collection<IResultsXViewerRow> rows;
+   private List<XViewerColumn> columns;
+   private Collection<IResultsXViewerRow> rows;
    private ResultsXViewer resultsXViewer;
+
+   public ResultsEditorTableTab(String tabName) {
+      this(tabName, null, null);
+      this.columns = new ArrayList<XViewerColumn>();
+      this.rows = new ArrayList<IResultsXViewerRow>();
+   }
 
    public ResultsEditorTableTab(String tabName, List<XViewerColumn> columns, Collection<IResultsXViewerRow> rows) {
       this.tabName = tabName;
       this.columns = columns;
       this.rows = rows;
+   }
+
+   public void addColumn(XViewerColumn xViewerColumn) {
+      this.columns.add(xViewerColumn);
+   }
+
+   public void addRow(IResultsXViewerRow resultsXViewerRow) {
+      this.rows.add(resultsXViewerRow);
    }
 
    @Override

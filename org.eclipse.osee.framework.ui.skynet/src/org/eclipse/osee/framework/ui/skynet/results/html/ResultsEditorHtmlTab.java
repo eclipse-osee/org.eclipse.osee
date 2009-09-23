@@ -43,18 +43,26 @@ public class ResultsEditorHtmlTab implements IResultsEditorHtmlTab {
    private XResultsComposite xResultsComposite;
    private static String HELP_CONTEXT_ID = "xResultView";
    private ResultsEditor resultsEditor;
-   private final XResultPage xResultPage;
+   private XResultPage xResultPage;
 
    public ResultsEditorHtmlTab(XResultPage xResultPage) {
       this.xResultPage = xResultPage;
       tabName = "Results";
    }
 
-   public ResultsEditorHtmlTab(String title, String tabName, String html) {
+   public ResultsEditorHtmlTab(String tabName) {
       this.tabName = tabName;
-      xResultPage = new XResultPage(title, html, Manipulations.NONE);
+   }
+
+   public ResultsEditorHtmlTab(String title, String tabName, String html) {
+      this(tabName);
       org.eclipse.core.runtime.Assert.isNotNull(tabName);
+      setHtml(title, html);
+   }
+
+   public void setHtml(String title, String html) {
       org.eclipse.core.runtime.Assert.isNotNull(html);
+      xResultPage = new XResultPage(title, html, Manipulations.NONE);
    }
 
    @Override

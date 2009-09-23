@@ -5,10 +5,11 @@
  */
 package org.eclipse.osee.coverage.test.import1;
 
-import org.eclipse.osee.coverage.CoverageImport;
+import java.net.URL;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.ICoverageImporter;
 import org.eclipse.osee.coverage.internal.CoveragePlugin;
+import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -22,6 +23,8 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
  */
 public class CoverageTestImporter1 extends XNavigateItemAction implements ICoverageImporter {
 
+   public static String PATH = "../../../../../../../src/org/eclipse/osee/coverage/test/import1/";
+
    public CoverageTestImporter1() {
       super(null, "");
    }
@@ -34,7 +37,8 @@ public class CoverageTestImporter1 extends XNavigateItemAction implements ICover
    public CoverageImport run() {
       CoverageImport coverageImport = new CoverageImport();
       try {
-         coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit("NavigationButton1.java"));
+         URL url = CoverageTestImporter1.class.getResource(PATH + "NavigationButton1.java");
+         coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
       } catch (OseeCoreException ex) {
          OseeLog.log(CoveragePlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

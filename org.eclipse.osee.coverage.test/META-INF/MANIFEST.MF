@@ -8,3 +8,6 @@ Fragment-Host: org.eclipse.osee.coverage
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.junit4,
  org.eclipse.osee.ats;bundle-version="0.4.0"
+Export-Package: org.eclipse.osee.coverage.test,
+ org.eclipse.osee.coverage.test.import1,
+ org.eclipse.osee.coverage.test.navigate

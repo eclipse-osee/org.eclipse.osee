@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.coverage;
+package org.eclipse.osee.coverage.model;
 
 /**
  * @author Donald G. Dunne

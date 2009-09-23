@@ -5,6 +5,8 @@
  */
 package org.eclipse.osee.coverage;
 
+import org.eclipse.osee.coverage.model.CoverageImport;
+
 /**
  * @author Donald G. Dunne
  */

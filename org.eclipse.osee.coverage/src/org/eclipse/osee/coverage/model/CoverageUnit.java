@@ -3,7 +3,7 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.coverage;
+package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +20,11 @@ public class CoverageUnit {
    private final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    private String location;
    private final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
+   private final CoverageUnit parentCoverageUnit;
 
-   public CoverageUnit(String name, String location) {
+   public CoverageUnit(CoverageUnit parentCoverageUnit, String name, String location) {
       super();
+      this.parentCoverageUnit = parentCoverageUnit;
       this.name = name;
       this.location = location;
    }
@@ -39,8 +41,15 @@ public class CoverageUnit {
       coverageItems.add(coverageItem);
    }
 
-   public List<CoverageItem> getCoverageItems() {
-      return coverageItems;
+   public List<CoverageItem> getCoverageItems(boolean recurse) {
+      if (!recurse) {
+         return coverageItems;
+      }
+      List<CoverageItem> items = new ArrayList<CoverageItem>(coverageItems);
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         items.addAll(coverageUnit.getCoverageItems(true));
+      }
+      return items;
    }
 
    public String getName() {
@@ -69,6 +78,10 @@ public class CoverageUnit {
 
    public String getGuid() {
       return guid;
+   }
+
+   public CoverageUnit getParentCoverageUnit() {
+      return parentCoverageUnit;
    }
 
 }
