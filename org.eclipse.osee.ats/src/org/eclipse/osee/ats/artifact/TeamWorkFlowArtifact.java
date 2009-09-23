@@ -525,4 +525,13 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       return getParentActionArtifact().getHumanReadableId();
    }
 
+   @Override
+   public Date getWorldViewEstimatedCompletionDate() throws OseeCoreException {
+      Date date = super.getWorldViewEstimatedCompletionDate();
+      if (date == null) {
+         date = getWorldViewEstimatedReleaseDate();
+      }
+      return date;
+   }
+
 }
