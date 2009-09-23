@@ -184,6 +184,8 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
    public void setBranch(Branch branch) {
       if (branchSelect != null) {
          branchSelect.setSelection(branch);
+         // branch has been selected; allow user to set up search string
+         compositeEnablement(searchComposite, true);
       }
    }
 
