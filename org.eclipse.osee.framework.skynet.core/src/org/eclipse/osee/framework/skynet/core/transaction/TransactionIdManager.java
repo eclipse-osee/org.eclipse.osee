@@ -106,14 +106,23 @@ public final class TransactionIdManager {
     * @return the largest (most recent) transaction on the given branch
     * @throws OseeCoreException
     */
-   public static TransactionId getlatestTransactionForBranch(Branch branch) throws OseeCoreException {
+   public static TransactionId getlatestTransactionForBranch(int branchId) throws OseeCoreException {
       int transactionNumber =
             ConnectionHandler.runPreparedQueryFetchInt(-1,
-                  ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branch.getBranchId());
+                  ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branchId);
       if (transactionNumber == -1) {
-         throw new TransactionDoesNotExist("No transactions where found in the database for branch: " + branch);
+         throw new TransactionDoesNotExist("No transactions where found in the database for branch: " + branchId);
       }
       return getTransactionId(transactionNumber);
+   }
+
+   /**
+    * @param branch
+    * @return the largest (most recent) transaction on the given branch
+    * @throws OseeCoreException
+    */
+   public static TransactionId getlatestTransactionForBranch(Branch branch) throws OseeCoreException {
+      return getlatestTransactionForBranch(branch.getBranchId());
    }
 
    public static synchronized TransactionId createNextTransactionId(Branch branch, User userToBlame, String comment) throws OseeDataStoreException {

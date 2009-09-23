@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * @author Ryan D. Brooks
@@ -52,10 +53,10 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private final Branch sourceBranch;
    private final Branch destinationBranch;
    private final Branch mergeBranch;
-   private int transactionNumber;
+   private Long transactionNumber;
    boolean isHistorical = false;
 
-   public LoadChangeDataOperation(int transactionNumber, Collection<ChangeItem> changeData) {
+   public LoadChangeDataOperation(Long transactionNumber, Collection<ChangeItem> changeData) {
       this(null, null, null, changeData);
       this.transactionNumber = transactionNumber;
       this.isHistorical = true;
@@ -95,24 +96,28 @@ public class LoadChangeDataOperation extends AbstractOperation {
       changeData.addAll(relationChangesByItemId.values());
    }
 
-   private TransactionJoinQuery loadSourceBranchChanges(IProgressMonitor monitor) throws OseeDataStoreException, OseeArgumentException {
+   private TransactionJoinQuery loadSourceBranchChanges(IProgressMonitor monitor) throws OseeCoreException {
       TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      Long currentTransactionNumber;
 
       try {
-         if (!isHistorical) {
-            chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
-                  TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
-         } else {
+         if (isHistorical) {
             chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionNumber,
                   TransactionDetailsType.NonBaselined.getId());
+            currentTransactionNumber = transactionNumber;
+         } else {
+            chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
+                  TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
+            currentTransactionNumber =
+                  Long.valueOf(TransactionIdManager.getlatestTransactionForBranch(getSourceBranchId()).getTransactionNumber());
          }
 
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
             txJoin.add(chStmt.getLong("gamma_id"), -1);
-            changeByGammaId.put(chStmt.getLong("gamma_id"), new Pair<Long, ModificationType>(
-                  chStmt.getLong("transaction_id"), ModificationType.getMod(chStmt.getInt("mod_type"))));
+            changeByGammaId.put(chStmt.getLong("gamma_id"), new Pair<Long, ModificationType>(currentTransactionNumber,
+                  ModificationType.getMod(chStmt.getInt("mod_type"))));
          }
          txJoin.store();
       } finally {
@@ -200,7 +205,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
          loadCurrentData(monitor, tableName, columnName, idJoin, destinationBranch, changesByItemId);
       }
 
-      if(sourceBranch != null){
+      if (sourceBranch != null) {
          loadNonCurrentSourceData(monitor, tableName, columnName, idJoin, changesByItemId, columnValueName);
       }
 
