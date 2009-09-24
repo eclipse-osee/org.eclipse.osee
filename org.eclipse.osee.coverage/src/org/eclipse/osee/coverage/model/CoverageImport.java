@@ -11,6 +11,7 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -50,6 +51,25 @@ public class CoverageImport {
          items.addAll(coverageUnit.getCoverageItems(true));
       }
       return items;
+   }
+
+   public int getPercentCoverage() {
+      if (getCoverageItems().size() == 0 || getCoverageItemsCovered().size() == 0) return 0;
+      Double percent = new Double(getCoverageItemsCovered().size());
+      percent = percent / getCoverageItems().size();
+      percent = percent * 100;
+      return percent.intValue();
+   }
+
+   public List<CoverageItem> getCoverageItemsCovered() {
+      List<CoverageItem> items = new ArrayList<CoverageItem>();
+      for (CoverageItem coverageItem : getCoverageItems()) {
+         if (coverageItem.getCoverageMethod() != CoverageMethodEnum.None) {
+            items.add(coverageItem);
+         }
+      }
+      return items;
+
    }
 
    public String getGuid() {

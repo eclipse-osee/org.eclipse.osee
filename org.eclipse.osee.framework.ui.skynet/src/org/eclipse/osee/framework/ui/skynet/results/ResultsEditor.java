@@ -53,17 +53,14 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
          OseeContributionItem.addTo(this, true);
 
          IResultsEditorProvider provider = getResultsEditorProvider();
-
          List<IResultsEditorTab> tabs = provider.getResultsEditorTabs();
          if (tabs.isEmpty()) {
             tabs.add(new ResultsEditorHtmlTab("Error", "Error",
                   AHTML.simplePage("Error: Pages creation error for \"" + provider.getEditorName() + "\"")));
          }
-
          for (IResultsEditorTab tab : provider.getResultsEditorTabs()) {
             addResultsTab(tab);
          }
-
          if (startPage == null) {
             addResultsTab(new ResultsEditorHtmlTab(
                   "Error",
@@ -72,7 +69,6 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
          }
          setPartName(provider.getEditorName());
          setActivePage(startPage);
-
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -87,10 +83,19 @@ public class ResultsEditor extends AbstractArtifactEditor implements IDirtiableE
       setPageText(pageIndex, tab.getTabName());
    }
 
+   public String getEditorId() {
+      return EDITOR_ID;
+   }
+
+   public String getActionableItemName() {
+      return "Result View";
+   }
+
    public ToolBar createToolBar(Composite parent) {
       ToolBar toolBar = ALayout.createCommonToolBar(parent);
 
-      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, EDITOR_ID, "Result View");
+      OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, getEditorId(),
+            getActionableItemName());
 
       return toolBar;
    }

@@ -2,7 +2,15 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="CoverageNavigateItem" name="CoverageNavigateItem" schema="schema/CoverageNavigateItem.exsd"/>
-
+	<extension point="org.eclipse.ui.editors">
+		  <editor
+		        class="org.eclipse.osee.coverage.results.CoverageImportResultsEditor"
+		        default="false"
+		        icon="images/coverage.gif"
+		        id="org.eclipse.osee.coverage.results.CoverageImportResultsEditor"
+		        name="Coverage Import Editor">
+		  </editor>
+      </extension>
       <extension
             point="org.eclipse.ui.perspectives">
          <perspective

@@ -16,10 +16,14 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
+import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
 import org.osgi.framework.Bundle;
 
@@ -50,6 +54,12 @@ public class CoverageNavigateViewItems extends XNavigateViewItems {
             items.addAll(navigateItem.getNavigateItems());
          } catch (Throwable th) {
             OseeLog.log(CoverageNavigateViewItems.class, Level.SEVERE, th);
+         }
+      }
+
+      for (AbstractBlam blam : BlamContributionManager.getBlamOperations()) {
+         if (blam instanceof AbstractCoverageBlam) {
+            items.add(new XNavigateItemBlam(null, blam));
          }
       }
    }

@@ -21,6 +21,6 @@ public class CoverageManager {
 
    public static void importCoverage(ICoverageImporter coverageImporter) throws OseeCoreException {
       CoverageImport coverageImport = coverageImporter.run();
-      new CoverageImportResultsEditor(coverageImport).open();
+      CoverageImportResultsEditor.open(coverageImport);
    }
 }

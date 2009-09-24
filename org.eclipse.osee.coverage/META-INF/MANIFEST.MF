@@ -59,4 +59,5 @@ Import-Package: org.apache.commons.lang,
  org.eclipse.osee.framework.ui.skynet.widgets.xnavigate,
  org.eclipse.osee.framework.ui.swt
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.eclipse.osee.coverage
+Export-Package: org.eclipse.osee.coverage,
+ org.eclipse.osee.coverage.blam

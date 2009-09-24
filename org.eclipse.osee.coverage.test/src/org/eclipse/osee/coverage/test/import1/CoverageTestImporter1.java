@@ -44,6 +44,8 @@ public class CoverageTestImporter1 extends XNavigateItemAction implements ICover
       try {
          URL url = CoverageTestImporter1.class.getResource(PATH + "NavigationButton1.java");
          coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
+         url = CoverageTestImporter1.class.getResource(PATH + "NavigationButton2.java");
+         coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
       } catch (OseeCoreException ex) {
          OseeLog.log(CoveragePlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
