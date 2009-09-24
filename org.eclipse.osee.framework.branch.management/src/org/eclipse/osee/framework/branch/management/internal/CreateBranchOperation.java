@@ -57,19 +57,30 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    private static final String USER_ID_QUERY =
          "select oa.art_id from osee_attribute_type oat, osee_attribute oa, osee_txs txs where oat.name = 'User Id' and oat.attr_type_id = oa.attr_type_id and oa.gamma_id = txs.gamma_id and txs.tx_current = 1 and oa.value = ?";
 
+   private static final String MERGE_BRANCH_INSERT =
+         "INSERT INTO osee_merge (source_branch_id, dest_branch_id, merge_branch_id, commit_transaction_id) VALUES(?,?,?,?)";
+   private final static String INSERT_ADDITIONAL_ATTRIBUTE_GAMMAS =
+         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, atr1.gamma_id, txs1.mod_type, ? FROM osee_attribute atr1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
+   private final static String INSERT_ADDITIONAL_ARTIFACT_GAMMAS =
+         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, arv1.gamma_id, txs1.mod_type, ? FROM osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
+
    private final Branch branch;
    private final String creationComment;
    private final int authorId;
    private boolean passedPreConditions;
    private int systemUserId;
+   private final int populateBaseTxFromAddressingQueryId;
+   private final int destinationBranchId;
 
-   public CreateBranchOperation(Branch branch, int authorId, String creationComment) throws OseeCoreException {
+   public CreateBranchOperation(Branch branch, int authorId, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) {
       super(String.format("Create Branch: [%s from %s]", branch.getName(), branch.getParentBranchId()),
             InternalBranchActivator.PLUGIN_ID);
       this.branch = branch;
       this.authorId = authorId;
       this.creationComment = creationComment;
       this.systemUserId = -1;
+      this.populateBaseTxFromAddressingQueryId = populateBaseTxFromAddressingQueryId;
+      this.destinationBranchId = destinationBranchId;
    }
 
    private int getSystemUserId() {
@@ -84,7 +95,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       return systemUserId;
    }
 
-   public boolean checkPreconditions(IProgressMonitor monitor) throws OseeCoreException {
+   public void checkPreconditions(IProgressMonitor monitor) throws OseeCoreException {
       int associatedArtifactId = branch.getAssociatedArtifactId();
       int systemUserId = getSystemUserId();
       if (associatedArtifactId > -1 && associatedArtifactId != systemUserId) {
@@ -96,41 +107,29 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
             throw new OseeStateException(String.format("Existing branch creation detected for [%s]", branch));
          }
       }
-      return true;
    }
 
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
-      passedPreConditions = checkPreconditions(monitor);
+      passedPreConditions = false;
 
-      Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
+      checkPreconditions(monitor);
+
+      passedPreConditions = true;
+
       branch.setBranchState(BranchState.CREATION_IN_PROGRESS);
-      storeBranch(null, branch, true); // Use different Connection
-      checkForCancelledStatus(monitor);
-      monitor.worked(calculateWork(0.10));
 
-      int startTxNumber = SequenceManager.getNextTransactionId();
-      ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, branch.getBranchId(), startTxNumber,
-            creationComment, timestamp, authorId, 1);
-      checkForCancelledStatus(monitor);
-      monitor.worked(calculateWork(0.20));
+      storeBranch(monitor, 0.10, null, branch, true); // Use different Connection
 
-      if (branch.getBranchType() != BranchType.SYSTEM_ROOT) {
-         insertAddressing(connection, monitor, branch.getParentBranchId(), startTxNumber);
-      }
-      checkForCancelledStatus(monitor);
-      monitor.worked(calculateWork(0.20));
+      populateBaseTransaction(monitor, 0.30, connection, branch, populateBaseTxFromAddressingQueryId);
 
-      if (branch.getStaticBranchName() != null) {
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES, branch.getStaticBranchName(),
-               branch.getBranchId());
-      }
-      checkForCancelledStatus(monitor);
-      monitor.worked(calculateWork(0.20));
+      addBranchAlias(monitor, 0.20, connection, branch);
+
+      addMergeBranchEntry(monitor, 0.20, connection, branch, destinationBranchId);
 
       branch.setBranchState(BranchState.CREATED);
-      storeBranch(connection, branch, false);
-      monitor.worked(calculateWork(0.20));
+
+      storeBranch(monitor, 0.10, connection, branch, false);
    }
 
    @Override
@@ -149,8 +148,27 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       monitor.worked(calculateWork(0.10));
    }
 
-   private void storeBranch(OseeConnection connection, Branch branch, boolean isCreate) throws OseeDataStoreException {
+   private void addBranchAlias(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch) throws OseeDataStoreException {
+      if (branch.getStaticBranchName() != null) {
+         ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES, branch.getStaticBranchName(),
+               branch.getBranchId());
+      }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(workAmount));
+   }
+
+   private void addMergeBranchEntry(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch, int destinationBranchId) throws OseeDataStoreException {
+      if (branch.getBranchType().isMergeBranch()) {
+         ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, branch.getParentBranchId(),
+               destinationBranchId, branch.getBranchId(), -1);
+      }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(workAmount));
+   }
+
+   private void storeBranch(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch, boolean isCreate) throws OseeDataStoreException {
       if (isCreate) {
+         Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
          int branchId = SequenceManager.getNextBranchId();
          String guid = branch.getGuid();
          if (!GUID.isValid(guid)) {
@@ -161,32 +179,57 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
                branch.getBranchType().getValue(), branch.getBranchState().getValue());
          branch.setGuid(guid);
          branch.setBranchId(branchId);
+
+         branch.setBaseTransaction(SequenceManager.getNextTransactionId());
+         ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, branch.getBranchId(),
+               branch.getBaseTransaction(), creationComment, timestamp, authorId, 1);
       } else {
          ConnectionHandler.runPreparedUpdate(connection, UPDATE_BRANCH, branch.getName(), branch.getParentBranchId(),
                branch.getParentTransactionId(), 0, branch.getAssociatedArtifactId(), branch.getBranchType().getValue(),
                branch.getBranchState().getValue(), branch.getBranchId());
       }
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(workAmount));
    }
 
-   private void insertAddressing(OseeConnection connection, IProgressMonitor monitor, int parentBranchId, int newTransactionNumber) throws OseeDataStoreException {
-      List<Object[]> data = new ArrayList<Object[]>();
-      HashSet<Integer> gammas = new HashSet<Integer>(100000);
+   private void populateBaseTransaction(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch, int populateBaseTxFromAddressingQueryId) throws OseeDataStoreException {
+      if (branch.getBranchType() != BranchType.SYSTEM_ROOT) {
+         if (populateBaseTxFromAddressingQueryId > 0) {
+            int txCurrent = TxChange.CURRENT.getValue();
+            int parentBranchId = branch.getParentBranchId();
+            int baseTransaction = branch.getBaseTransaction();
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
-      try {
-         chStmt.runPreparedQuery(10000, SELECT_ADDRESSING, TxChange.NOT_CURRENT.getValue(), parentBranchId);
-         while (chStmt.next()) {
-            checkForCancelledStatus(monitor);
-            Integer gamma = chStmt.getInt("gamma_id");
-            if (!gammas.contains(gamma)) {
-               data.add(new Object[] {newTransactionNumber, gamma, chStmt.getInt("mod_type"), 1});
-               gammas.add(gamma);
+            ConnectionHandler.runPreparedUpdate(connection, INSERT_ADDITIONAL_ATTRIBUTE_GAMMAS, baseTransaction,
+                  txCurrent, parentBranchId, populateBaseTxFromAddressingQueryId);
+            ConnectionHandler.runPreparedUpdate(connection, INSERT_ADDITIONAL_ARTIFACT_GAMMAS, baseTransaction,
+                  txCurrent, parentBranchId, populateBaseTxFromAddressingQueryId);
+            monitor.setTaskName(String.format("Created base transaction for branch [%s] joining against query id",
+                  branch.getName()));
+         } else {
+            List<Object[]> data = new ArrayList<Object[]>();
+            HashSet<Integer> gammas = new HashSet<Integer>(100000);
+
+            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+            try {
+               chStmt.runPreparedQuery(10000, SELECT_ADDRESSING, TxChange.NOT_CURRENT.getValue(),
+                     branch.getParentBranchId());
+               while (chStmt.next()) {
+                  checkForCancelledStatus(monitor);
+                  Integer gamma = chStmt.getInt("gamma_id");
+                  if (!gammas.contains(gamma)) {
+                     data.add(new Object[] {branch.getBaseTransaction(), gamma, chStmt.getInt("mod_type"), 1});
+                     gammas.add(gamma);
+                  }
+               }
+            } finally {
+               chStmt.close();
             }
+            ConnectionHandler.runBatchUpdate(connection, INSERT_ADDRESSING, data);
+            monitor.setTaskName(String.format("Created branch [%s] with [%d] transactions", branch.getName(),
+                  data.size()));
          }
-      } finally {
-         chStmt.close();
       }
-      ConnectionHandler.runBatchUpdate(connection, INSERT_ADDRESSING, data);
-      monitor.setTaskName(String.format("Created branch [%s] with [%d] transactions", branch.getName(), data.size()));
+      checkForCancelledStatus(monitor);
+      monitor.worked(calculateWork(workAmount));
    }
 }

@@ -14,5 +14,5 @@ package org.eclipse.osee.framework.branch.management;
  * @author Andrew M Finkbeiner
  */
 public interface IBranchCreation {
-   public int createBranch(Branch branch, int authorId, String creationComment) throws Exception;
+   public int createBranch(Branch branch, int authorId, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws Exception;
 }

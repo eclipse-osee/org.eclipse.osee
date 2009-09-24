@@ -27,8 +27,9 @@ public class Branch {
    private String branchGuid;
    private int branchId;
    private BranchState branchState;
+   private int baseTransaction;
 
-   public Branch(BranchType branchType, int parentTransactionId, int parentBranchId, String branchGuid, String name, int associatedArtifactId, String staticBranchName) {
+   public Branch(BranchType branchType, int parentTransactionId, int parentBranchId, String branchGuid, String name, int associatedArtifactId, String staticBranchName, int baseTransaction) {
       this.parentBranchId = parentBranchId;
       this.name = name;
       this.associatedArtifactId = associatedArtifactId;
@@ -36,6 +37,7 @@ public class Branch {
       this.parentTransactionId = parentTransactionId;
       this.staticBranchName = staticBranchName;
       this.branchGuid = branchGuid;
+      this.baseTransaction = baseTransaction;
    }
 
    public void setBranchId(int branchId) {
@@ -86,9 +88,16 @@ public class Branch {
       return branchGuid;
    }
 
-   @Override
-   public String toString() {
-      return "Branch [associatedArtifactId=" + associatedArtifactId + ", branchGuid=" + branchGuid + ", branchId=" + branchId + ", branchState=" + branchState + ", branchType=" + branchType + ", name=" + name + ", parentBranchId=" + parentBranchId + ", parentTransactionId=" + parentTransactionId + ", staticBranchName=" + staticBranchName + "]";
+   public int getBaseTransaction() {
+      return baseTransaction;
    }
 
+   public void setBaseTransaction(int baseTransaction) {
+      this.baseTransaction = baseTransaction;
+   }
+
+   @Override
+   public String toString() {
+      return "Branch [associatedArtifactId=" + associatedArtifactId + ", branchGuid=" + branchGuid + ", branchId=" + branchId + ", branchState=" + branchState + ", branchType=" + branchType + ", name=" + name + ", parentBranchId=" + parentBranchId + ", parentTransactionId=" + parentTransactionId + ", staticBranchName=" + staticBranchName + ", baseTransaction=" + baseTransaction + "]";
+   }
 }

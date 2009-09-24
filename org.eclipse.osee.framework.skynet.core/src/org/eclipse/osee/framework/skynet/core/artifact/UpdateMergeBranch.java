@@ -10,20 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeSql;
+import org.eclipse.osee.framework.database.core.SQL3DataType;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
@@ -124,8 +132,7 @@ public class UpdateMergeBranch extends DbTransaction {
          expectedArtIds.remove(Integer.valueOf(artifact.getArtId()));
       }
       if (!expectedArtIds.isEmpty()) {
-         BranchCreator.getInstance().addArtifactsToBranch(connection, sourceBranch, destBranch, mergeBranch,
-               expectedArtIds);
+         addArtifactsToBranch(connection, sourceBranch, destBranch, mergeBranch, expectedArtIds);
       }
 
       if (DEBUG) {
@@ -133,6 +140,43 @@ public class UpdateMergeBranch extends DbTransaction {
                Lib.getElapseString(time)));
          time = System.currentTimeMillis();
       }
+   }
+
+   private final static String INSERT_ATTRIBUTE_GAMMAS =
+         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, atr1.gamma_id, txs1.mod_type, ? FROM osee_attribute atr1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
+   private final static String INSERT_ARTIFACT_GAMMAS =
+         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, arv1.gamma_id, txs1.mod_type, ? FROM osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
+
+   private void addArtifactsToBranch(OseeConnection connection, Branch sourceBranch, Branch destBranch, Branch mergeBranch, Collection<Integer> artIds) throws OseeCoreException {
+      if (artIds == null || artIds.isEmpty()) {
+         throw new IllegalArgumentException("Artifact IDs can not be null or empty");
+      }
+
+      TransactionId startTransactionId = TransactionIdManager.getStartEndPoint(mergeBranch).getFirst();
+
+      List<Object[]> datas = new LinkedList<Object[]>();
+      int queryId = ArtifactLoader.getNewQueryId();
+      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+
+      for (int artId : artIds) {
+         datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(), SQL3DataType.INTEGER});
+      }
+      try {
+         ArtifactLoader.insertIntoArtifactJoin(datas);
+         Integer startTransactionNumber = startTransactionId.getTransactionNumber();
+         insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTransactionNumber, queryId, sourceBranch);
+         insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTransactionNumber, queryId, sourceBranch);
+      } catch (OseeCoreException ex) {
+         throw new OseeCoreException(
+               "Source Branch Id: " + sourceBranch.getBranchId() + " Artifact Ids: " + Collections.toString(",", artIds));
+      } finally {
+         ArtifactLoader.clearQuery(connection, queryId);
+      }
+   }
+
+   private static void insertGammas(OseeConnection connection, String sql, int baselineTransactionNumber, int queryId, Branch sourceBranch) throws OseeDataStoreException {
+      ConnectionHandler.runPreparedUpdate(connection, sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
+            sourceBranch.getBranchId(), queryId);
    }
 
    private static Collection<Integer> getAllMergeArtifacts(Branch branch) throws OseeCoreException {

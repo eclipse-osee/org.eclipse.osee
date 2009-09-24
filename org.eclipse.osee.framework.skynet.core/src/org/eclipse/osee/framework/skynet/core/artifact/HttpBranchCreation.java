@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 public class HttpBranchCreation {
 
    /**
-    * Creates a new root branch. Should NOT be used outside BranchManager. If programatic access is necessary, setting
+    * Creates a new root branch. Should NOT be used outside BranchManager. If programmatic access is necessary, setting
     * the staticBranchName will add a key for this branch and allow access to the branch through
     * getKeyedBranch(staticBranchName).
     * 
@@ -48,7 +48,7 @@ public class HttpBranchCreation {
     * @see BranchManager#createRootBranch(String, String, int)
     * @see BranchManager#getKeyedBranch(String)
     */
-   public static Branch createFullBranch(BranchType branchType, int parentTransactionNumber, int parentBranchId, String branchName, String staticBranchName, String branchGuid, Artifact associatedArtifact) throws OseeCoreException {
+   public static Branch createFullBranch(BranchType branchType, int parentTransactionNumber, int parentBranchId, String branchName, String staticBranchName, String branchGuid, Artifact associatedArtifact, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       if (GUID.isValid(branchGuid)) {
@@ -66,18 +66,13 @@ public class HttpBranchCreation {
       }
 
       parameters.put("branchType", branchType.name());
-
-      String creationComment;
-      if (branchType == BranchType.SYSTEM_ROOT) {
-         creationComment = "System Root Branch Creation";
-      } else if (branchType == BranchType.BASELINE) {
-         creationComment = String.format("Root Branch [%s] Creation", branchName);
-      } else {
-         Branch parentBranch = BranchManager.getBranch(parentBranchId);
-         creationComment = "New Branch from " + parentBranch.getName() + "(" + parentTransactionNumber + ")";
-      }
       parameters.put("creationComment", creationComment);
-
+      if (populateBaseTxFromAddressingQueryId > 0) {
+         parameters.put("populateBaseTxFromAddressingQueryId", Integer.toString(populateBaseTxFromAddressingQueryId));
+      }
+      if (destinationBranchId > 0) {
+         parameters.put("destinationBranchId", Integer.toString(destinationBranchId));
+      }
       return commonServletBranchingCode(parameters);
    }
 

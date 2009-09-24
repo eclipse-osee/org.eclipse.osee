@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,10 +41,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -220,8 +223,7 @@ public class BranchManager {
             System.out.println("Creating a new Merge Branch");
             time = System.currentTimeMillis();
          }
-         mergeBranch = BranchCreator.getInstance().createMergeBranch(sourceBranch, destBranch, expectedArtIds);
-         mergeBranch.persist();
+         mergeBranch = createMergeBranch(sourceBranch, destBranch, expectedArtIds);
          OseeTypeManager.getBranchCache().addMergeBranch(mergeBranch, sourceBranch, destBranch);
 
          if (MERGE_DEBUG) {
@@ -236,6 +238,33 @@ public class BranchManager {
          if (MERGE_DEBUG) {
             System.out.println(String.format("     Branch updated in %s", Lib.getElapseString(time)));
          }
+      }
+      return mergeBranch;
+   }
+
+   private static Branch createMergeBranch(final Branch sourceBranch, final Branch destBranch, final ArrayList<Integer> expectedArtIds) throws OseeCoreException {
+      Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
+      int populateBaseTxFromAddressingQueryId = ArtifactLoader.getNewQueryId();
+      List<Object[]> datas = new LinkedList<Object[]>();
+      for (int artId : expectedArtIds) {
+         datas.add(new Object[] {populateBaseTxFromAddressingQueryId, insertTime, artId, sourceBranch.getBranchId(),
+               SQL3DataType.INTEGER});
+      }
+      Branch mergeBranch = null;
+      try {
+         ArtifactLoader.insertIntoArtifactJoin(datas);
+
+         int parentTxId = sourceBranch.getBaseTransaction().getTransactionNumber();
+         String creationComment =
+               String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(), parentTxId,
+                     destBranch.getName());
+         String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
+         mergeBranch =
+               HttpBranchCreation.createFullBranch(BranchType.MERGE, parentTxId, sourceBranch.getBranchId(),
+                     branchName, null, null, UserManager.getUser(), creationComment,
+                     populateBaseTxFromAddressingQueryId, destBranch.getBranchId());
+      } finally {
+         ArtifactLoader.clearQuery(populateBaseTxFromAddressingQueryId);
       }
       return mergeBranch;
    }
@@ -373,8 +402,14 @@ public class BranchManager {
     * @throws OseeCoreException
     */
    public static Branch createWorkingBranch(TransactionId parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
-      return HttpBranchCreation.createFullBranch(BranchType.WORKING, parentTransactionId.getTransactionNumber(),
-            parentTransactionId.getBranch().getBranchId(), childBranchName, null, null, associatedArtifact);
+      int parentBranchId = parentTransactionId.getBranch().getBranchId();
+      int parentTransactionNumber = parentTransactionId.getTransactionNumber();
+
+      Branch parentBranch = BranchManager.getBranch(parentBranchId);
+      String creationComment = "New Branch from " + parentBranch.getName() + "(" + parentTransactionNumber + ")";
+
+      return HttpBranchCreation.createFullBranch(BranchType.WORKING, parentTransactionNumber, parentBranchId,
+            childBranchName, null, null, associatedArtifact, creationComment, -1, -1);
    }
 
    /**
@@ -396,10 +431,12 @@ public class BranchManager {
     * @param childBranchName
     * @throws OseeCoreException
     */
-   public static Branch createBaselineBranch(Branch parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+   public static Branch createBaselineBranch(Branch parentBranch, String branchName, Artifact associatedArtifact) throws OseeCoreException {
       TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(parentBranch);
+      String creationComment = String.format("Root Branch [%s] Creation", branchName);
       return HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getTransactionNumber(),
-            parentTransactionId.getBranch().getBranchId(), childBranchName, null, null, associatedArtifact);
+            parentTransactionId.getBranch().getBranchId(), branchName, null, null, associatedArtifact, creationComment,
+            -1, -1);
    }
 
    /**
@@ -417,9 +454,11 @@ public class BranchManager {
    public static Branch createTopLevelBranch(String branchName, String staticBranchName, String branchGuid) throws OseeCoreException {
       Branch systemRootBranch = BranchManager.getSystemRootBranch();
       TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(systemRootBranch);
+      String creationComment = String.format("Root Branch [%s] Creation", branchName);
       Branch branch =
             HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getTransactionNumber(),
-                  systemRootBranch.getBranchId(), branchName, staticBranchName, branchGuid, null);
+                  systemRootBranch.getBranchId(), branchName, staticBranchName, branchGuid, null, creationComment, -1,
+                  -1);
       if (staticBranchName != null) {
          branch.setAliases(staticBranchName);
       }
@@ -428,7 +467,7 @@ public class BranchManager {
 
    public static Branch createSystemRootBranch() throws OseeCoreException {
       return HttpBranchCreation.createFullBranch(BranchType.SYSTEM_ROOT, 1, NULL_PARENT_BRANCH_ID,
-            "System Root Branch", null, null, null);
+            "System Root Branch", null, null, null, "System Root Branch Creation", -1, -1);
    }
 
    public static List<Branch> getBaselineBranches() throws OseeCoreException {

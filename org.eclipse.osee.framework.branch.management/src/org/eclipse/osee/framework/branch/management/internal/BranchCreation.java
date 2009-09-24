@@ -21,8 +21,10 @@ import org.eclipse.osee.framework.core.operation.Operations;
  */
 public class BranchCreation implements IBranchCreation {
 
-   public int createBranch(Branch branch, int authorId, String creationComment) throws Exception {
-      IOperation operation = new CreateBranchOperation(branch, authorId, creationComment);
+   public int createBranch(Branch branch, int authorId, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws Exception {
+      IOperation operation =
+            new CreateBranchOperation(branch, authorId, creationComment, populateBaseTxFromAddressingQueryId,
+                  destinationBranchId);
       Operations.executeWork(operation, new LogProgressMonitor(), -1);
       Operations.checkForErrorStatus(operation.getStatus());
       return branch.getBranchId();

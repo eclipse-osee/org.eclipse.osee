@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.eclipse.osee.framework.branch.management.Branch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Andrew M Finkbeiner
@@ -28,6 +29,8 @@ class HttpBranchCreationInfo {
    private final String staticBranchName;
    private final BranchType branchType;
    private final String branchGuid;
+   private final int populateBaseTxFromAddressingQueryId;
+   private final int destinationBranchId;
 
    public HttpBranchCreationInfo(HttpServletRequest req) throws OseeArgumentException {
       branchGuid = req.getParameter("branchGuid");
@@ -52,11 +55,11 @@ class HttpBranchCreationInfo {
       }
 
       branchName = req.getParameter("branchName");//required
-      if (branchName == null || branchName.length() == 0) {
+      if (!Strings.isValid(branchName)) {
          throw new OseeArgumentException("A 'branchName' parameter must be specified");
       }
       creationComment = req.getParameter("creationComment");//required
-      if (creationComment == null || creationComment.length() == 0) {
+      if (!Strings.isValid(creationComment)) {
          throw new OseeArgumentException("A 'creationComment' parameter must be specified");
       }
       String associatedArtifactIdStr = req.getParameter("associatedArtifactId");
@@ -70,23 +73,39 @@ class HttpBranchCreationInfo {
       }
       authorId = Integer.parseInt(authorIdStr);
       staticBranchName = req.getParameter("staticBranchName");
+
+      String populateBaseTxFromAddressingQueryIdStr = req.getParameter("populateBaseTxFromAddressingQueryId");
+      if (!Strings.isValid(populateBaseTxFromAddressingQueryIdStr)) {
+         populateBaseTxFromAddressingQueryId = -1;
+      } else {
+         populateBaseTxFromAddressingQueryId = Integer.parseInt(populateBaseTxFromAddressingQueryIdStr);
+      }
+
+      String destinationBranchIdStr = req.getParameter("destinationBranchId");
+      if (!Strings.isValid(destinationBranchIdStr)) {
+         destinationBranchId = -1;
+      } else {
+         destinationBranchId = Integer.parseInt(destinationBranchIdStr);
+      }
    }
 
    public Branch getBranch() {
       return new Branch(branchType, parentTransactionId, parentBranchId, branchGuid, branchName, associatedArtifactId,
-            staticBranchName);
+            staticBranchName, -1);
    }
 
-   /**
-    * @return the creationComment
-    */
+   public int getDestinationBranchId() {
+      return destinationBranchId;
+   }
+
+   public int getPopulateBaseTxFromAddressingQueryId() {
+      return populateBaseTxFromAddressingQueryId;
+   }
+
    public String getCreationComment() {
       return creationComment;
    }
 
-   /**
-    * @return the authorId
-    */
    public int getAuthorId() {
       return authorId;
    }
