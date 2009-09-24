@@ -17,12 +17,13 @@ public class AttributeChangeItem extends ChangeItem{
     * @param currentSourceGammaId
     * @param currentSourceModType
     * @param currentSourceTansactionNumber
-    * @param value 
-    * @param artId 
     * @param attrId 
+    * @param artId 
+    * @param value 
+    * @param hasDestinationBranch TODO
     */
-   public AttributeChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber, int attrId, int artId, String value) {
-      super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
+   public AttributeChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber, int attrId, int artId, String value, boolean hasDestinationBranch) {
+      super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber, hasDestinationBranch);
       
       this.setKind(GammaKind.Attribute);
       this.setItemId(attrId);

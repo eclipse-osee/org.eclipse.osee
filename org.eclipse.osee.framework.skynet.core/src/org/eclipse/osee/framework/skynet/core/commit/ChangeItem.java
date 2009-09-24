@@ -28,8 +28,9 @@ public abstract class ChangeItem {
    private final VersionedChange currentEntry;
    private final VersionedChange destinationEntry;
    private final VersionedChange netEntry;
+   private final boolean hasDestinationBranch;
 
-   public ChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber) {
+   public ChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber, boolean hasDestinationBranch) {
       super();
       this.baseEntry = new VersionedChange();
       this.firstChange = new VersionedChange();
@@ -37,6 +38,7 @@ public abstract class ChangeItem {
             new VersionedChange(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
       this.destinationEntry = new VersionedChange();
       this.netEntry = new VersionedChange();
+      this.hasDestinationBranch = hasDestinationBranch;
    }
 
    public int getArtId() {
@@ -108,7 +110,7 @@ public abstract class ChangeItem {
    }
 
    private boolean isDeletedAndDoestNotExistInDestination() {
-      return false; //!getDestination().exists() && getCurrent().getModType().isDeleted();
+      return hasDestinationBranch && (!getDestination().exists() && getCurrent().getModType().isDeleted());
    }
 
    private boolean hasBeenDeletedInDestination() {

@@ -31,7 +31,7 @@ public class CommitUtil {
       Assert.assertEquals(message, expected.getModType(), actual.getModType());
    }
 
-   public static ChangeItem createItem(int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange net){
+   public static ChangeItem createItem(int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange net) {
       GammaKind[] kinds = GammaKind.values();
       return createItem(kinds[itemId % kinds.length], itemId, base, first, current, destination, net);
    }
@@ -39,15 +39,21 @@ public class CommitUtil {
    public static ChangeItem createItem(GammaKind gammaKind, int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange net) {
       ChangeItem change = null;
 
-      switch (gammaKind){
+      switch (gammaKind) {
          case Artifact:
-            change = new ArtifactChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(), itemId);
+            change =
+                  new ArtifactChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(),
+                        itemId, true);
             break;
          case Attribute:
-            change = new AttributeChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(), itemId, -1, "");
+            change =
+                  new AttributeChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(),
+                        itemId, -1, "", true);
             break;
          case Relation:
-            change = new RelationChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(), -1, -1, itemId, -1, "");
+            change =
+                  new RelationChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(),
+                        -1, -1, itemId, -1, "", true);
             break;
       }
 

@@ -16,8 +16,8 @@ public class RelationChangeItem extends ChangeItem{
    private int relTypeId;
    private String rationale;
    
-   public RelationChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber, int aArtId, int bArtId, int relLinkId, int relTypeId, String rationale) {
-      super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
+   public RelationChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber, int aArtId, int bArtId, int relLinkId, int relTypeId, String rationale, boolean hasDestinationBranch) {
+      super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber, hasDestinationBranch);
       
       this.setKind(GammaKind.Relation);
       this.setItemId(relLinkId);

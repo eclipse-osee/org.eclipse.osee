@@ -13,8 +13,8 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  */
 public class ArtifactChangeItem extends ChangeItem {
 
-   public ArtifactChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber, int artId) {
-      super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
+   public ArtifactChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber, int artId, boolean hasDestinationBranch) {
+      super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber, hasDestinationBranch);
       
       this.setKind(GammaKind.Artifact);
       this.setItemId(artId);
