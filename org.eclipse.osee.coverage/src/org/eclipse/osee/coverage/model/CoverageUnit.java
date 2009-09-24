@@ -23,7 +23,7 @@ public class CoverageUnit {
 
    private String name;
    private final String guid = GUID.create();
-   private String previewHtml;
+   private String text;
    private final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    private String location;
    private final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
@@ -68,6 +68,13 @@ public class CoverageUnit {
       return null;
    }
 
+   /**
+    * Get child coverage unit
+    */
+   public CoverageUnit getCoverageUnit(String index) {
+      return coverageUnits.get(new Integer(index).intValue() - 1);
+   }
+
    public String getName() {
       return name;
    }
@@ -84,12 +91,12 @@ public class CoverageUnit {
       this.location = location;
    }
 
-   public String getPreviewHtml() {
-      return previewHtml;
+   public String getText() {
+      return text;
    }
 
-   public void setPreviewHtml(String previewHtml) {
-      this.previewHtml = previewHtml;
+   public void setText(String text) {
+      this.text = text;
    }
 
    public String getGuid() {
@@ -100,4 +107,8 @@ public class CoverageUnit {
       return parentCoverageUnit;
    }
 
+   @Override
+   public String toString() {
+      return getName();
+   }
 }

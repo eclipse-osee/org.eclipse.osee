@@ -60,4 +60,8 @@ public class CoverageItem {
       this.methodNum = methodNum;
    }
 
+   @Override
+   public String toString() {
+      return getMethodNum() + ", " + getExecuteNum();
+   }
 }

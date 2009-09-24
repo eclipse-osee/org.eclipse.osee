@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
@@ -27,6 +28,7 @@ public class CoverageImport {
    private final Date runDate;
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    private final List<TestUnit> testUnits = new ArrayList<TestUnit>();
+   private final XResultData logResultData = new XResultData();
 
    public CoverageImport() {
       this(new Date());
@@ -93,5 +95,9 @@ public class CoverageImport {
 
    public String getName() {
       return "Coverage Import - " + XDate.getDateStr(runDate, XDate.MMDDYYHHMM);
+   }
+
+   public XResultData getLog() {
+      return logResultData;
    }
 }

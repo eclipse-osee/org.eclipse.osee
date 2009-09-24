@@ -25,10 +25,13 @@ public class CoverageImportOverviewResultsEditorTab extends ResultsEditorHtmlTab
       super("Overview");
 
       XResultData rd = new XResultData();
-      rd.log(AHTML.heading(4, "Coverage Import for " + XDate.getDateStr(coverageImport.getRunDate(), XDate.HHMMSSSS)));
+      rd.log(AHTML.bold("Coverage Import for " + XDate.getDateStr(coverageImport.getRunDate(), XDate.HHMMSSSS)) + AHTML.newline());
       rd.log(AHTML.getLabelStr("Coverage Units: ", String.valueOf(coverageImport.getCoverageUnits().size())));
       rd.log(AHTML.getLabelStr("Coverage Items: ", String.valueOf(coverageImport.getCoverageItems().size())));
       rd.log(AHTML.getLabelStr("Coverage Percent: ", String.format("%d", coverageImport.getPercentCoverage())));
+      rd.log("\n");
+      rd.log(AHTML.bold("Log") + AHTML.newline());
+      rd.addRaw(coverageImport.getLog().getReport("").getManipulatedHtml());
       setHtml(coverageImport.getName(), rd.getReport(coverageImport.getName()).getManipulatedHtml());
    }
 }

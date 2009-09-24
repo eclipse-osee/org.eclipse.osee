@@ -28,7 +28,7 @@ public class VCastVcp {
       VcpResultsFile vcpResultsFile = null;
       for (String line : AFile.readFile(vCastVcpFile).split("\n")) {
          if (line.startsWith("SOURCE_FILE_BEGIN")) {
-            vcpSourceFile = new VcpSourceFile();
+            vcpSourceFile = new VcpSourceFile(vcastDirectory);
          } else if (line.startsWith("SOURCE_FILE_END")) {
             sourceFiles.add(vcpSourceFile);
             vcpSourceFile = null;

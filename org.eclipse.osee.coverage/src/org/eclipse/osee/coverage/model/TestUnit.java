@@ -64,4 +64,8 @@ public class TestUnit {
       return guid;
    }
 
+   @Override
+   public String toString() {
+      return getName();
+   }
 }

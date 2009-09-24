@@ -57,4 +57,8 @@ public class VcpResultsFile {
       return vcpResultsDatFile;
    }
 
+   @Override
+   public String toString() {
+      return getValue(ResultsValue.FILENAME);
+   }
 }

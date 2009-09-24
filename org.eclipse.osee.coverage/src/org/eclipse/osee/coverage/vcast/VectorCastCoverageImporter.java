@@ -11,6 +11,7 @@
 package org.eclipse.osee.coverage.vcast;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.coverage.ICoverageImporter;
@@ -38,20 +39,31 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
 
    @Override
    public CoverageImport run() {
+      coverageImport = new CoverageImport();
       if (!Strings.isValid(vcastDirectory)) {
-         throw new IllegalArgumentException("VectorCast directory must be specified");
+         coverageImport.getLog().logError("VectorCast directory must be specified");
+         return coverageImport;
       }
       File file = new File(vcastDirectory);
       if (!file.exists()) {
-         throw new IllegalArgumentException(String.format("VectorCast directory doesn't exist [%s]", vcastDirectory));
+         coverageImport.getLog().logError(String.format("VectorCast directory doesn't exist [%s]", vcastDirectory));
+         return coverageImport;
       }
-      coverageImport = new CoverageImport();
-      VCastVcp vCastVcp = new VCastVcp(vcastDirectory);
+      VCastVcp vCastVcp = null;
+      try {
+         vCastVcp = new VCastVcp(vcastDirectory);
+      } catch (Exception ex) {
+         coverageImport.getLog().logError("Exception reading vcast.vcp file: " + ex.getLocalizedMessage());
+         return coverageImport;
+      }
       Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
       for (VcpSourceFile vcpSourceFile : vCastVcp.sourceFiles) {
          CoverageUnit coverageUnit =
                new CoverageUnit(null, vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME),
                      vcpSourceFile.getValue(SourceValue.SOURCE_DIRECTORY));
+         coverageUnit.setText(Arrays.toString(vcpSourceFile.getVcpSourceLisFile().get()));
+         // Create children coverage units from procedures/functions/methods
+         vcpSourceFile.getVcpSourceLineFile().createCoverageUnits(coverageUnit);
          fileNumToCoverageUnit.put(vcpSourceFile.getValue(SourceValue.UNIT_NUMBER), coverageUnit);
          coverageImport.addCoverageUnit(coverageUnit);
       }
@@ -62,19 +74,27 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
          for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
             CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
             if (coverageUnit == null) {
-               throw new IllegalArgumentException(String.format("coverageUnit doesn't exist for unit_number [%s]",
-                     fileNum));
+               coverageImport.getLog().logError(
+                     String.format("coverageUnit doesn't exist for unit_number [%s]", fileNum));
+               continue;
             }
             for (Pair<String, String> methodExecutionPair : vcpResultsFile.getVcpResultsDatFile().getMethodExecutionPairs(
                   fileNum)) {
+               String methodNum = methodExecutionPair.getFirst();
+               String executeNum = methodExecutionPair.getSecond();
                // Find or create new coverage item for mehod num /execution line
-               CoverageItem coverageItem =
-                     coverageUnit.getCoverageItem(methodExecutionPair.getFirst(), methodExecutionPair.getSecond());
+               CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
                if (coverageItem == null) {
-                  coverageItem =
-                        new CoverageItem(coverageUnit, CoverageMethodEnum.Test_Unit, methodExecutionPair.getSecond());
-                  coverageItem.setMethodNum(methodExecutionPair.getFirst());
-                  coverageUnit.addCoverageItem(coverageItem);
+                  try {
+                     CoverageUnit methodCoverageUnit = coverageUnit.getCoverageUnit(methodNum);
+                     coverageItem = new CoverageItem(methodCoverageUnit, CoverageMethodEnum.Test_Unit, executeNum);
+                     coverageItem.setMethodNum(methodNum);
+                     coverageUnit.addCoverageItem(coverageItem);
+                  } catch (IndexOutOfBoundsException ex) {
+                     coverageImport.getLog().logError(
+                           String.format("Can't retrieve method [%s] from coverageUnit [%s] for test unit [%s]",
+                                 methodNum, coverageUnit, testUnit));
+                  }
                }
                // Relate that coverage item to the test unit that covers it
                testUnit.addCoverageItem(coverageItem);

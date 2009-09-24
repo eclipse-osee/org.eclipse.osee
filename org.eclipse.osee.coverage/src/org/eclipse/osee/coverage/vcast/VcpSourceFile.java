@@ -20,6 +20,9 @@ public class VcpSourceFile {
 
    private final Map<SourceValue, String> sourceValues = new HashMap<SourceValue, String>(20);
    Pattern valuePattern = Pattern.compile("(.*?):(.*?)$");
+   private VcpSourceLineFile vcpSourceLineFile = null;
+   private VcpSourceLisFile vcpSourceLisFile = null;
+   private final String vcastDirectory;
 
    public static enum SourceValue {
       SOURCE_FILENAME,
@@ -38,7 +41,8 @@ public class VcpSourceFile {
       UNINSTR_CHECKSUM
    };
 
-   public VcpSourceFile() {
+   public VcpSourceFile(String vcastDirectory) {
+      this.vcastDirectory = vcastDirectory;
    }
 
    public String getValue(SourceValue sourceValue) {
@@ -59,4 +63,19 @@ public class VcpSourceFile {
          OseeLog.log(CoveragePlugin.class, Level.SEVERE, String.format("Unhandled VcpSourceFile line [%s]", line));
       }
    }
+
+   public VcpSourceLineFile getVcpSourceLineFile() {
+      if (vcpSourceLineFile == null) {
+         vcpSourceLineFile = new VcpSourceLineFile(vcastDirectory, this);
+      }
+      return vcpSourceLineFile;
+   }
+
+   public VcpSourceLisFile getVcpSourceLisFile() {
+      if (vcpSourceLisFile == null) {
+         vcpSourceLisFile = new VcpSourceLisFile(vcastDirectory, this);
+      }
+      return vcpSourceLisFile;
+   }
+
 }

@@ -55,10 +55,24 @@ public class CoverageItemResultsTableTab extends ResultsEditorTableTab {
       for (CoverageItem coverageItem : coverageItems) {
          addRow(new ResultsXViewerRow(
                new String[] {
-                     coverageItem.getCoverageUnit().getParentCoverageUnit() != null ? coverageItem.getCoverageUnit().getParentCoverageUnit().getName() : "",
-                     coverageItem.getCoverageUnit().getName(), String.valueOf(coverageItem.getMethodNum()),
-                     String.valueOf(coverageItem.getExecuteNum()), String.valueOf(coverageItem.getLineNum()),
-                     String.valueOf(coverageItem.getCoverageMethod())}));
+                     valueOrBlank(coverageItem.getCoverageUnit().getParentCoverageUnit() == null ? "" : coverageItem.getCoverageUnit().getParentCoverageUnit().getName()),
+                     //
+                     valueOrBlank(coverageItem.getCoverageUnit().getName()),
+                     //
+                     valueOrBlank(coverageItem.getMethodNum()),
+                     //
+                     valueOrBlank(coverageItem.getExecuteNum()),
+                     //
+                     valueOrBlank(coverageItem.getLineNum()),
+                     //
+                     valueOrBlank(coverageItem.getCoverageMethod())}));
       }
+   }
+
+   private String valueOrBlank(Object value) {
+      if (value == null)
+         return "";
+      else
+         return value.toString();
    }
 }
