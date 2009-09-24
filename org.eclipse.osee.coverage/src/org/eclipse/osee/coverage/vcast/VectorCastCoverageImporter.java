@@ -49,6 +49,22 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
          coverageImport.getLog().logError(String.format("VectorCast directory doesn't exist [%s]", vcastDirectory));
          return coverageImport;
       }
+      coverageImport.getLog().logError("Changing code to read info out of coverate_data.xml");
+
+      return coverageImport;
+   }
+
+   public CoverageImport runOld() {
+      coverageImport = new CoverageImport();
+      if (!Strings.isValid(vcastDirectory)) {
+         coverageImport.getLog().logError("VectorCast directory must be specified");
+         return coverageImport;
+      }
+      File file = new File(vcastDirectory);
+      if (!file.exists()) {
+         coverageImport.getLog().logError(String.format("VectorCast directory doesn't exist [%s]", vcastDirectory));
+         return coverageImport;
+      }
       VCastVcp vCastVcp = null;
       try {
          vCastVcp = new VCastVcp(vcastDirectory);
