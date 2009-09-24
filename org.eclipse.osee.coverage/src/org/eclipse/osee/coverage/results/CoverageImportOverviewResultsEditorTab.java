@@ -29,8 +29,7 @@ public class CoverageImportOverviewResultsEditorTab extends ResultsEditorHtmlTab
       rd.log(AHTML.getLabelStr("Coverage Units: ", String.valueOf(coverageImport.getCoverageUnits().size())));
       rd.log(AHTML.getLabelStr("Coverage Items: ", String.valueOf(coverageImport.getCoverageItems().size())));
       rd.log(AHTML.getLabelStr("Coverage Percent: ", String.format("%d", coverageImport.getPercentCoverage())));
-      rd.log("\n");
-      rd.log(AHTML.bold("Log") + AHTML.newline());
+      rd.log(AHTML.newline() + AHTML.bold("Log") + AHTML.newline());
       rd.addRaw(coverageImport.getLog().getReport("").getManipulatedHtml());
       setHtml(coverageImport.getName(), rd.getReport(coverageImport.getName()).getManipulatedHtml());
    }
