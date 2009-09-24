@@ -119,9 +119,6 @@ public class RelationContentProvider implements ITreeContentProvider {
       return EMPTY_ARRAY;
    }
 
-   /*
-    * @see ITreeContentProvider#getParent(Object)
-    */
    public Object getParent(Object element) {
       return childToParentMap.get(element);
    }
