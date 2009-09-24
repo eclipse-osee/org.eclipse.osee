@@ -78,7 +78,7 @@ public final class TransactionIdManager {
 
    public synchronized static Collection<TransactionId> getCommittedArtifactTransactionIds(IArtifact artifact) throws OseeCoreException {
       List<TransactionId> transactionIds = commitArtifactMap.get(artifact);
-      if (transactionIds == null) {
+      if (transactionIds == null || transactionIds.isEmpty()) {
          transactionIds = new ArrayList<TransactionId>(5);
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
@@ -86,6 +86,7 @@ public final class TransactionIdManager {
             while (chStmt.next()) {
                transactionIds.add(getTransactionId(chStmt.getInt("transaction_id")));
             }
+
             commitArtifactMap.put(artifact, transactionIds);
          } finally {
             chStmt.close();
