@@ -33,7 +33,8 @@ public abstract class ChangeItem {
       super();
       this.baseEntry = new VersionedChange();
       this.firstChange = new VersionedChange();
-      this.currentEntry = new VersionedChange(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
+      this.currentEntry =
+            new VersionedChange(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
       this.destinationEntry = new VersionedChange();
       this.netEntry = new VersionedChange();
    }
@@ -41,7 +42,7 @@ public abstract class ChangeItem {
    public int getArtId() {
       return artId;
    }
-   
+
    public void setArt_id(int artId) {
       this.artId = artId;
    }
@@ -107,7 +108,7 @@ public abstract class ChangeItem {
    }
 
    private boolean isDeletedAndDoestNotExistInDestination() {
-      return !getDestination().exists() && getCurrent().getModType().isDeleted();
+      return false; //!getDestination().exists() && getCurrent().getModType().isDeleted();
    }
 
    private boolean hasBeenDeletedInDestination() {
