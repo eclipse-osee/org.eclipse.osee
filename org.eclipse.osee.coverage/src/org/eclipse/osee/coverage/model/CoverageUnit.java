@@ -15,6 +15,8 @@ import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
+ * Single code unit (file/procedure/function) that can contain other Coverage Unit or Coverage Items
+ * 
  * @author Donald G. Dunne
  */
 public class CoverageUnit {
