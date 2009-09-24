@@ -59,6 +59,15 @@ public class CoverageUnit {
       return items;
    }
 
+   public CoverageItem getCoverageItem(String methodNum, String executionLine) {
+      for (CoverageItem coverageItem : getCoverageItems(true)) {
+         if (coverageItem.getMethodNum().equals(methodNum) && coverageItem.getExecuteNum().equals(executionLine)) {
+            return coverageItem;
+         }
+      }
+      return null;
+   }
+
    public String getName() {
       return name;
    }

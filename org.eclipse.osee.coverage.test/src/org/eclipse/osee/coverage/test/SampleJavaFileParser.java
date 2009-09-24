@@ -55,14 +55,13 @@ public class SampleJavaFileParser {
             m = executeLine.matcher(line);
             if (m.find()) {
                String methodNum = m.group(1);
-               String executeNumStr = m.group(2);
-               int executeNum = new Integer(executeNumStr).intValue();
+               String executeNum = m.group(2);
                boolean covered = m.group(3).equals("y");
                CoverageItem coverageItem =
                      new CoverageItem(coverageUnit, covered ? CoverageMethodEnum.Test_Unit : CoverageMethodEnum.None,
                            executeNum);
-               coverageItem.setLineNum(lineNum);
-               coverageItem.setMethodNum(new Integer(methodNum).intValue());
+               coverageItem.setLineNum(String.valueOf(lineNum));
+               coverageItem.setMethodNum(methodNum);
                coverageUnit.addCoverageItem(coverageItem);
             }
          }

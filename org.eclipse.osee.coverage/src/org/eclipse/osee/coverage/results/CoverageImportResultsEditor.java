@@ -13,6 +13,7 @@ package org.eclipse.osee.coverage.results;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.coverage.internal.CoveragePlugin;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -45,8 +46,16 @@ public class CoverageImportResultsEditor extends ResultsEditor {
          @Override
          public List<IResultsEditorTab> getResultsEditorTabs() throws OseeCoreException {
             List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
-            tabs.add(new CoverageImportOverviewResultsEditorTab(coverageImport));
-            tabs.add(new CoverageItemResultsTableTab(coverageImport.getCoverageUnits()));
+            try {
+               tabs.add(new CoverageImportOverviewResultsEditorTab(coverageImport));
+            } catch (Exception ex) {
+               OseeLog.log(CoveragePlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+            try {
+               tabs.add(new CoverageItemResultsTableTab(coverageImport.getCoverageUnits()));
+            } catch (Exception ex) {
+               OseeLog.log(CoveragePlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
             return tabs;
          }
 

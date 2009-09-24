@@ -18,10 +18,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class VcpSourceFile {
 
-   private final Map<Value, String> values = new HashMap<Value, String>(20);
+   private final Map<SourceValue, String> sourceValues = new HashMap<SourceValue, String>(20);
    Pattern valuePattern = Pattern.compile("(.*?):(.*?)$");
 
-   public static enum Value {
+   public static enum SourceValue {
       SOURCE_FILENAME,
       SOURCE_DIRECTORY,
       DEST_FILENAME,
@@ -41,19 +41,19 @@ public class VcpSourceFile {
    public VcpSourceFile() {
    }
 
-   public String getValue(Value value) {
-      return values.get(value);
+   public String getValue(SourceValue sourceValue) {
+      return sourceValues.get(sourceValue);
    }
 
    public void addLine(String line) {
       Matcher m = valuePattern.matcher(line);
       if (m.find()) {
-         Value value = Value.valueOf(m.group(1));
-         if (value == null) {
+         SourceValue sourceValue = SourceValue.valueOf(m.group(1));
+         if (sourceValue == null) {
             OseeLog.log(CoveragePlugin.class, Level.SEVERE, String.format("Unhandled VcpSourceFile value [%s]",
                   m.group(1)));
          } else {
-            values.put(value, m.group(2));
+            sourceValues.put(sourceValue, m.group(2));
          }
       } else {
          OseeLog.log(CoveragePlugin.class, Level.SEVERE, String.format("Unhandled VcpSourceFile line [%s]", line));

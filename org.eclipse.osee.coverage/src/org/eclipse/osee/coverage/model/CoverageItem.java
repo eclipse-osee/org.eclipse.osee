@@ -16,12 +16,12 @@ package org.eclipse.osee.coverage.model;
 public class CoverageItem {
 
    private CoverageMethodEnum coverageMethod = CoverageMethodEnum.None;
-   private final int executeNum;
-   private int lineNum;
-   private int methodNum;
+   private final String executeNum;
+   private String lineNum;
+   private String methodNum;
    private final CoverageUnit coverageUnit;
 
-   public CoverageItem(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethod, int executeNum) {
+   public CoverageItem(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethod, String executeNum) {
       super();
       this.coverageUnit = coverageUnit;
       this.coverageMethod = coverageMethod;
@@ -36,15 +36,15 @@ public class CoverageItem {
       this.coverageMethod = coverageMethod;
    }
 
-   public int getExecuteNum() {
+   public String getExecuteNum() {
       return executeNum;
    }
 
-   public int getLineNum() {
+   public String getLineNum() {
       return lineNum;
    }
 
-   public void setLineNum(int lineNum) {
+   public void setLineNum(String lineNum) {
       this.lineNum = lineNum;
    }
 
@@ -52,11 +52,11 @@ public class CoverageItem {
       return coverageUnit;
    }
 
-   public int getMethodNum() {
+   public String getMethodNum() {
       return methodNum;
    }
 
-   public void setMethodNum(int methodNum) {
+   public void setMethodNum(String methodNum) {
       this.methodNum = methodNum;
    }
 

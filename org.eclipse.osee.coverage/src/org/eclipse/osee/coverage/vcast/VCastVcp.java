@@ -18,10 +18,15 @@ public class VCastVcp {
    List<VcpSourceFile> sourceFiles = new ArrayList<VcpSourceFile>();
    List<VcpResultsFile> resultsFiles = new ArrayList<VcpResultsFile>();
 
-   public VCastVcp(File file) {
+   public VCastVcp(String vcastDirectory) {
+      File vCastVcpFile = new File(vcastDirectory + "/vcast.vcp");
+      if (!vCastVcpFile.exists()) {
+         throw new IllegalArgumentException(String.format("VectorCast vcast.vcp file doesn't exist [%s]",
+               vcastDirectory));
+      }
       VcpSourceFile vcpSourceFile = null;
       VcpResultsFile vcpResultsFile = null;
-      for (String line : AFile.readFile(file).split("\n")) {
+      for (String line : AFile.readFile(vCastVcpFile).split("\n")) {
          if (line.startsWith("SOURCE_FILE_BEGIN")) {
             vcpSourceFile = new VcpSourceFile();
          } else if (line.startsWith("SOURCE_FILE_END")) {
@@ -30,7 +35,7 @@ public class VCastVcp {
          } else if (vcpSourceFile != null) {
             vcpSourceFile.addLine(line);
          } else if (line.startsWith("RESULT_FILE_BEGIN")) {
-            vcpResultsFile = new VcpResultsFile();
+            vcpResultsFile = new VcpResultsFile(vcastDirectory);
          } else if (line.startsWith("RESULT_FILE_END")) {
             resultsFiles.add(vcpResultsFile);
             vcpResultsFile = null;

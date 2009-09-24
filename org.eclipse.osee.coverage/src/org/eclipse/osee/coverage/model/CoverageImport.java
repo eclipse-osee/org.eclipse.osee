@@ -11,7 +11,6 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -27,6 +26,7 @@ public class CoverageImport {
    private final String guid = GUID.create();
    private final Date runDate;
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
+   private final List<TestUnit> testUnits = new ArrayList<TestUnit>();
 
    public CoverageImport() {
       this(new Date());
@@ -35,6 +35,14 @@ public class CoverageImport {
    public CoverageImport(Date runDate) {
       super();
       this.runDate = runDate;
+   }
+
+   public void addTestUnit(TestUnit testUnit) {
+      testUnits.add(testUnit);
+   }
+
+   public List<TestUnit> getTestUnits() {
+      return testUnits;
    }
 
    public void addCoverageUnit(CoverageUnit coverageUnit) {
@@ -69,7 +77,6 @@ public class CoverageImport {
          }
       }
       return items;
-
    }
 
    public String getGuid() {

@@ -11,10 +11,17 @@
 package org.eclipse.osee.coverage.vcast;
 
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.osee.coverage.ICoverageImporter;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.vcast.VcpSourceFile.Value;
+import org.eclipse.osee.coverage.model.TestUnit;
+import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
+import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -39,17 +46,41 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
          throw new IllegalArgumentException(String.format("VectorCast directory doesn't exist [%s]", vcastDirectory));
       }
       coverageImport = new CoverageImport();
-      File vCastVcpFile = new File(vcastDirectory + "/vcast.vcp");
-      if (!vCastVcpFile.exists()) {
-         throw new IllegalArgumentException(String.format("VectorCast vcast.vcp file doesn't exist [%s]",
-               vcastDirectory));
-      }
-      VCastVcp vCastVcp = new VCastVcp(vCastVcpFile);
+      VCastVcp vCastVcp = new VCastVcp(vcastDirectory);
+      Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
       for (VcpSourceFile vcpSourceFile : vCastVcp.sourceFiles) {
          CoverageUnit coverageUnit =
-               new CoverageUnit(null, vcpSourceFile.getValue(Value.SOURCE_FILENAME),
-                     vcpSourceFile.getValue(Value.SOURCE_DIRECTORY));
+               new CoverageUnit(null, vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME),
+                     vcpSourceFile.getValue(SourceValue.SOURCE_DIRECTORY));
+         fileNumToCoverageUnit.put(vcpSourceFile.getValue(SourceValue.UNIT_NUMBER), coverageUnit);
          coverageImport.addCoverageUnit(coverageUnit);
+      }
+      for (VcpResultsFile vcpResultsFile : vCastVcp.resultsFiles) {
+         TestUnit testUnit =
+               new TestUnit(vcpResultsFile.getValue(ResultsValue.FILENAME),
+                     vcpResultsFile.getValue(ResultsValue.DIRECTORY));
+         for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
+            CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
+            if (coverageUnit == null) {
+               throw new IllegalArgumentException(String.format("coverageUnit doesn't exist for unit_number [%s]",
+                     fileNum));
+            }
+            for (Pair<String, String> methodExecutionPair : vcpResultsFile.getVcpResultsDatFile().getMethodExecutionPairs(
+                  fileNum)) {
+               // Find or create new coverage item for mehod num /execution line
+               CoverageItem coverageItem =
+                     coverageUnit.getCoverageItem(methodExecutionPair.getFirst(), methodExecutionPair.getSecond());
+               if (coverageItem == null) {
+                  coverageItem =
+                        new CoverageItem(coverageUnit, CoverageMethodEnum.Test_Unit, methodExecutionPair.getSecond());
+                  coverageItem.setMethodNum(methodExecutionPair.getFirst());
+                  coverageUnit.addCoverageItem(coverageItem);
+               }
+               // Relate that coverage item to the test unit that covers it
+               testUnit.addCoverageItem(coverageItem);
+            }
+         }
+         coverageImport.addTestUnit(testUnit);
       }
       return coverageImport;
    }

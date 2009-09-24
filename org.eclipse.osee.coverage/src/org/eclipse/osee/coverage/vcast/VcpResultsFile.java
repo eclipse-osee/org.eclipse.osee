@@ -18,32 +18,43 @@ import org.eclipse.osee.framework.logging.OseeLog;
  */
 public class VcpResultsFile {
 
-   private final Map<Value, String> values = new HashMap<Value, String>(20);
-   Pattern valuePattern = Pattern.compile("(.*?):(.*?)");
+   private final Map<ResultsValue, String> resultsValues = new HashMap<ResultsValue, String>(20);
+   Pattern valuePattern = Pattern.compile("(.*?):(.*?)$");
+   private VcpResultsDatFile vcpResultsDatFile;
+   private final String vcastDirectory;
 
-   public static enum Value {
+   public static enum ResultsValue {
       FILENAME, DIRECTORY, DISPLAY_NAME, RESULT_TYPE, ADDITION_TIME, IS_SELECTED, HAD_COVERAGE_REMOVED
    };
 
-   public VcpResultsFile() {
+   public VcpResultsFile(String vcastDirectory) {
+      this.vcastDirectory = vcastDirectory;
    }
 
-   public String getValue(Value value) {
-      return values.get(value);
+   public String getValue(ResultsValue resultsValue) {
+      return resultsValues.get(resultsValue);
    }
 
    public void addLine(String line) {
       Matcher m = valuePattern.matcher(line);
       if (m.find()) {
-         Value value = Value.valueOf(m.group(1));
-         if (value == null) {
+         ResultsValue resultsValue = ResultsValue.valueOf(m.group(1));
+         if (resultsValue == null) {
             OseeLog.log(CoveragePlugin.class, Level.SEVERE, String.format("Unhandled VcpResultsFile value [%s]",
                   m.group(1)));
          } else {
-            values.put(value, m.group(2));
+            resultsValues.put(resultsValue, m.group(2));
          }
       } else {
          OseeLog.log(CoveragePlugin.class, Level.SEVERE, String.format("Unhandled VcpResultsFile line [%s]", line));
       }
    }
+
+   public VcpResultsDatFile getVcpResultsDatFile() {
+      if (vcpResultsDatFile == null) {
+         vcpResultsDatFile = new VcpResultsDatFile(vcastDirectory, this);
+      }
+      return vcpResultsDatFile;
+   }
+
 }
