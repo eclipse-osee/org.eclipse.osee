@@ -11,13 +11,10 @@
 
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -35,18 +32,14 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
-import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -78,17 +71,7 @@ public class BranchManager {
 
    private static final BranchManager instance = new BranchManager();
 
-   private static final String SELECT_BRANCH_TRANSACTION =
-         "SELECT transaction_id FROM osee_tx_details WHERE branch_id = ? AND time < ? ORDER BY time DESC";
-
-   private static final String UPDATE_TRANSACTION_BRANCH =
-         "UPDATE " + TRANSACTION_DETAIL_TABLE + " SET branch_id=? WHERE " + TRANSACTION_DETAIL_TABLE.column("transaction_id") + "=?";
-
-   private static final String UPDATE_ASSOCIATED_ART_BRANCH =
-         "UPDATE  osee_branch set associated_art_id = ? WHERE branch_id = ?";
-
-   private final static String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
-
+   private static final String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
    public static final String COMMIT_COMMENT = "Commit Branch ";
 
    private static final boolean MERGE_DEBUG =
@@ -329,13 +312,6 @@ public class BranchManager {
       return Operations.executeAsJob(new DeleteBranchOperation(branch), true);
    }
 
-   public static void handleBranchDeletion(int branchId) throws OseeCoreException {
-      Branch branch = OseeTypeManager.getBranchCache().getTypeById(branchId);
-      if (branch != null) {
-         branch.setBranchState(BranchState.DELETED);
-      }
-   }
-
    /**
     * Commit the net changes from the source branch into the destination branch. If there are conflicts between the two
     * branches, the source branch changes will override those on the destination branch.
@@ -390,22 +366,6 @@ public class BranchManager {
    }
 
    /**
-    * Move a transaction to a particular branch. This is simply a database call and should only be used to fix user
-    * errors. No internal cached data is updated, nor are any events fired from the modified data so any Skynet sessions
-    * reading this data should be restarted to see the changes.
-    * 
-    * @throws OseeDataStoreException
-    */
-   public static void moveTransaction(TransactionId transactionId, Branch toBranch) throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_TRANSACTION_BRANCH, toBranch.getBranchId(),
-            transactionId.getTransactionNumber());
-   }
-
-   public void updateAssociatedArtifact(Branch branch, Artifact artifact) throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_ASSOCIATED_ART_BRANCH, artifact.getArtId(), branch.getBranchId());
-   }
-
-   /**
     * Creates a new Branch based on the transaction number selected and the parent branch.
     * 
     * @param parentTransactionId
@@ -428,14 +388,6 @@ public class BranchManager {
       TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranchName, associatedArtifact);
    }
-
-   /**
-    * Creates a new Branch based on the transaction number selected and the parent branch.
-    * 
-    * @param parentTransactionId
-    * @param childBranchName
-    * @throws OseeCoreException
-    */
 
    /**
     * Creates a new Branch based on the most recent transaction on the parent branch.
@@ -558,25 +510,6 @@ public class BranchManager {
     */
    public static Branch getSystemRootBranch() throws OseeCoreException {
       return OseeTypeManager.getBranchCache().getSystemRootBranch();
-   }
-
-   public static int getBranchTransaction(Date date, int branchId) throws OseeCoreException {
-      int transactionId = -1;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-
-      if (date == null) {
-         throw new OseeCoreException("Must select a valid Date");
-      }
-      try {
-         chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION, branchId, new Timestamp(date.getTime()));
-
-         if (chStmt.next()) {
-            transactionId = chStmt.getInt("transaction_id");
-         }
-      } finally {
-         chStmt.close();
-      }
-      return transactionId;
    }
 
    private void initCommitActions() {

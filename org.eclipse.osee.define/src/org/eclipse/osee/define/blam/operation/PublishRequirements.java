@@ -26,6 +26,7 @@ import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -51,6 +52,9 @@ import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
  * @author Theron Virgin
  */
 public class PublishRequirements extends AbstractBlam {
+   private static final String SELECT_BRANCH_TRANSACTION =
+         "SELECT transaction_id FROM osee_tx_details WHERE branch_id = ? AND time < ? ORDER BY time DESC";
+
    private boolean includeAttributes;
    private boolean publishAsDiff;
    //private boolean removeTrackedChanges;
@@ -108,6 +112,25 @@ public class PublishRequirements extends AbstractBlam {
       transaction.execute();
    }
 
+   private static int getBranchTransaction(Date date, int branchId) throws OseeCoreException {
+      int transactionId = -1;
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+
+      if (date == null) {
+         throw new OseeCoreException("Must select a valid Date");
+      }
+      try {
+         chStmt.runPreparedQuery(SELECT_BRANCH_TRANSACTION, branchId, new Timestamp(date.getTime()));
+
+         if (chStmt.next()) {
+            transactionId = chStmt.getInt("transaction_id");
+         }
+      } finally {
+         chStmt.close();
+      }
+      return transactionId;
+   }
+
    private void publish(IProgressMonitor monitor, Artifact artifact, VariableMap options) throws OseeCoreException {
       if (monitor.isCanceled()) {
          return;
@@ -132,7 +155,7 @@ public class PublishRequirements extends AbstractBlam {
                   "Must Select a " + branch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
          }
          nonFolderChildren = buildRecursiveList(nonFolderChildren);
-         int transactionId = BranchManager.getBranchTransaction(date, branch.getBranchId());
+         int transactionId = getBranchTransaction(date, branch.getBranchId());
          ArrayList<Artifact> olderArtifacts = getOlderArtifacts(nonFolderChildren, transactionId, branch.getBranchId());
          int index = 0;
          for (Artifact art : olderArtifacts) {
