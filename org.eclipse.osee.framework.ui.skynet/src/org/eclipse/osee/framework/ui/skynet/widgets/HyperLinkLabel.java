@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets;
 
+import org.eclipse.osee.framework.ui.skynet.CursorManager;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -60,7 +60,7 @@ public class HyperLinkLabel extends Label {
       label.addMouseTrackListener(new MouseTrackListener() {
 
          public void mouseEnter(MouseEvent e) {
-            label.setCursor(new Cursor(null, SWT.CURSOR_HAND));
+            label.setCursor(CursorManager.getCursor(SWT.CURSOR_HAND));
          }
 
          public void mouseExit(MouseEvent e) {
@@ -75,7 +75,7 @@ public class HyperLinkLabel extends Label {
    MouseTrackListener listener = new MouseTrackListener() {
 
       public void mouseEnter(MouseEvent e) {
-         setCursor(new Cursor(null, SWT.CURSOR_HAND));
+         setCursor(CursorManager.getCursor(SWT.CURSOR_HAND));
       }
 
       public void mouseExit(MouseEvent e) {

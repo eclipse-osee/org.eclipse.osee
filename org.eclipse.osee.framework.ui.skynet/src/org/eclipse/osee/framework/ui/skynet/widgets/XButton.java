@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.skynet.CursorManager;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Cursor;
@@ -58,6 +59,7 @@ public class XButton extends XWidget {
     * Create Check Widgets. Widgets Created: Label: "text entry" horizonatalSpan takes up 2 columns; horizontalSpan must
     * be >=2
     */
+   @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       if (horizontalSpan < 2) {
          horizontalSpan = 2;
@@ -95,8 +97,21 @@ public class XButton extends XWidget {
          labelWidget = new Label(bComp, SWT.NONE);
          labelWidget.setText(getLabel());
       }
+      // Nice to allow user to select label or icon to kick-off action
+      if (labelWidget != null) {
+         labelWidget.addListener(SWT.MouseUp, new Listener() {
+            @Override
+            public void handleEvent(Event event) {
+               notifyXModifiedListeners();
+            }
+         });
+         labelWidget.setCursor(CursorManager.getCursor(SWT.CURSOR_HAND));
+      }
       if (getToolTip() != null) {
          button.setToolTipText(getToolTip());
+         if (labelWidget != null) {
+            labelWidget.setToolTipText(getToolTip());
+         }
       }
       button.setLayoutData(gd);
       updateCheckWidget();
@@ -114,18 +129,22 @@ public class XButton extends XWidget {
       if (parent != null && !parent.isDisposed()) parent.layout();
    }
 
+   @Override
    public void setFocus() {
       return;
    }
 
+   @Override
    public String getXmlData() {
       return "";
    }
 
+   @Override
    public String getReportData() {
       return getXmlData();
    }
 
+   @Override
    public void setXmlData(String set) {
       if (set.equals("true"))
          set(true);
@@ -142,14 +161,17 @@ public class XButton extends XWidget {
       updateCheckWidget();
    }
 
+   @Override
    public void refresh() {
       updateCheckWidget();
    }
 
+   @Override
    public IStatus isValid() {
       return Status.OK_STATUS;
    }
 
+   @Override
    public String toHTML(String labelFont) {
       return AHTML.getLabelStr(labelFont, getLabel() + ": ") + selected;
    }
