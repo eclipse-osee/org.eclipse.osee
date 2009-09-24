@@ -68,6 +68,8 @@ public interface IAtsStateItem {
     */
    public Result committing(SMAManager smaMgr) throws OseeCoreException;
 
-   public List<XWidget> getDynamicXWidgets(SMAManager smaMgr) throws OseeCoreException;
+   public List<XWidget> getDynamicXWidgetsPostBody(SMAManager smaMgr) throws OseeCoreException;
+
+   public List<XWidget> getDynamicXWidgetsPreBody(SMAManager smaMgr) throws OseeCoreException;
 
 }

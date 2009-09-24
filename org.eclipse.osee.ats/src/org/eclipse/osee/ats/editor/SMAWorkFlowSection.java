@@ -182,6 +182,14 @@ public class SMAWorkFlowSection extends SectionPart {
       createTargetVersionAndAssigneeHeader(workComp, atsWorkPage, toolkit);
       createMetricsHeader(workComp);
 
+      // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
+      for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
+         for (XWidget xWidget : item.getDynamicXWidgetsPreBody(smaMgr)) {
+            xWidget.createWidgets(workComp, 2);
+            allXWidgets.add(xWidget);
+         }
+      }
+
       // Create dynamic XWidgets
       DynamicXWidgetLayout dynamicXWidgetLayout =
             atsWorkPage.createBody(getManagedForm(), workComp, smaMgr.getSma(), xModListener,
@@ -190,7 +198,7 @@ public class SMAWorkFlowSection extends SectionPart {
 
       // Add any dynamic XWidgets declared for page by IAtsStateItem extensions
       for (IAtsStateItem item : smaMgr.getStateItems().getStateItems(atsWorkPage.getId())) {
-         for (XWidget xWidget : item.getDynamicXWidgets(smaMgr)) {
+         for (XWidget xWidget : item.getDynamicXWidgetsPostBody(smaMgr)) {
             xWidget.createWidgets(workComp, 2);
             allXWidgets.add(xWidget);
          }

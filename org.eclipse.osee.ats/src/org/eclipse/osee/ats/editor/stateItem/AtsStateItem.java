@@ -58,7 +58,11 @@ public abstract class AtsStateItem implements IAtsStateItem {
       return null;
    }
 
-   public List<XWidget> getDynamicXWidgets(SMAManager smaMgr) throws OseeCoreException {
+   public List<XWidget> getDynamicXWidgetsPostBody(SMAManager smaMgr) throws OseeCoreException {
+      return Collections.emptyList();
+   }
+
+   public List<XWidget> getDynamicXWidgetsPreBody(SMAManager smaMgr) throws OseeCoreException {
       return Collections.emptyList();
    }
 
