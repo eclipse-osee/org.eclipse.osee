@@ -218,7 +218,7 @@ public final class InternalChangeManager {
             branch = sourceBranch;
             artifact = ArtifactCache.getActive(item.getArtId(), branch);
 
-            if (item.getCurrent().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.NEW) {
+            if (item.getCurrent().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.INTRODUCED) {
                fromTransactionId = toTransactionId;
             } else {
                if (item.getBase().exists()) {
@@ -302,7 +302,7 @@ public final class InternalChangeManager {
                   isHistorical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }
 
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, isHistorical, true);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.ALL_CURRENT, null, insertParameters, true, isHistorical, true);
       }
    }
 
