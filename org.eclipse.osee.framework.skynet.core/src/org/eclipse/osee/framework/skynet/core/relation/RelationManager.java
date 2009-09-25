@@ -180,18 +180,20 @@ public class RelationManager {
          if (artifactsRelations == null) {
             artifactsRelations = new CopyOnWriteArrayList<RelationLink>();
          }
-         if (artifactsRelations.contains(newRelation)) {
-            // Always want to return if relation link is already managed
-            return;
-         }
 
          // Verify that relation is unique by aArtId, bArtId and relTypeId; Needs to be cleaned up in DB, Only log problem.
+         // Need to do this check before to catch the relations that are .equal but not ==
          for (RelationLink relation : artifactsRelations) {
             if (relation.getAArtifactId() == newRelation.getAArtifactId() && relation.getBArtifactId() == newRelation.getBArtifactId() && relation.getRelationType() == newRelation.getRelationType() && relation != newRelation) {
                OseeLog.log(Activator.class, Level.SEVERE, String.format(
                      "Duplicate relation objects for same relation for RELATION 1 [%s] RELATION 2 [%s]", relation,
                      newRelation));
             }
+         }
+
+         if (artifactsRelations.contains(newRelation)) {
+            // Always want to return if relation link is already managed
+            return;
          }
 
          artifactsRelations.add(newRelation);
