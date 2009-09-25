@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
+import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -103,6 +105,11 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       if (getStatus().isOK()) {
          try {
             BranchManager.decache(branch);
+            try {
+               OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, branch.getId());
+            } catch (Exception ex) {
+               // Do Nothing
+            }
          } catch (OseeCoreException ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }

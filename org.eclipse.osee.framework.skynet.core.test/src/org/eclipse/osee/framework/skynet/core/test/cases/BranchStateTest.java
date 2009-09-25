@@ -8,9 +8,8 @@ package org.eclipse.osee.framework.skynet.core.test.cases;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
@@ -114,13 +113,14 @@ public class BranchStateTest {
       Branch mainBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       String originalBranchName = "Commit State Branch";
       Branch workingBranch = null;
+      Artifact change = null;
       try {
          User user = UserManager.getUser(SystemUser.OseeSystem);
          workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
          assertEquals(BranchState.CREATED, workingBranch.getBranchState());
          assertTrue(workingBranch.isEditable());
 
-         Artifact change = ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "A commit change");
+         change = ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "A commit change");
          change.persist();
 
          assertEquals(BranchState.MODIFIED, workingBranch.getBranchState());
@@ -145,16 +145,17 @@ public class BranchStateTest {
       String originalBranchName = "UpdateBranch Test 1";
       Artifact baseArtifact = null;
       Branch workingBranch = null;
+      Artifact change = null;
       try {
          baseArtifact = ArtifactTypeManager.addArtifact("Software Requirement", mainBranch, "Test Object");
          baseArtifact.setSoleAttributeFromString("Annotation", "This is the base annotation");
          baseArtifact.persist();
 
-         User user = UserManager.getUser(SystemUser.Guest);
+         User user = UserManager.getUser(SystemUser.OseeSystem);
          workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
 
          // Add a new artifact on the working branch
-         Artifact change =
+         change =
                ArtifactTypeManager.addArtifact("Software Requirement", workingBranch, "Test Object on Working Branch");
          change.persist();
 
@@ -190,7 +191,7 @@ public class BranchStateTest {
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", newWorkingBranch.isEditable());
       } finally {
-         cleanup(originalBranchName, baseArtifact, workingBranch, null);
+         cleanup(originalBranchName, workingBranch, null, change, baseArtifact);
       }
    }
 
@@ -201,6 +202,7 @@ public class BranchStateTest {
       Artifact baseArtifact = null;
       Branch workingBranch = null;
       Branch mergeBranch = null;
+      Artifact sameArtifact = null;
       try {
          baseArtifact = ArtifactTypeManager.addArtifact("Software Requirement", mainBranch, "Test Object");
          baseArtifact.setSoleAttributeFromString("Annotation", "This is the base annotation");
@@ -210,7 +212,7 @@ public class BranchStateTest {
          workingBranch = BranchManager.createWorkingBranch(mainBranch, originalBranchName, user);
 
          // Modify same artifact on working branch
-         Artifact sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getGuid(), workingBranch);
+         sameArtifact = ArtifactQuery.getArtifactFromId(baseArtifact.getGuid(), workingBranch);
          sameArtifact.setSoleAttributeFromString("Annotation", "This is the working branch update annotation");
          sameArtifact.persist();
 
@@ -275,11 +277,11 @@ public class BranchStateTest {
          // Swapped successfully
          assertEquals(destinationBranch.getBranchId(), newWorkingBranch.getBranchId());
       } finally {
-         cleanup(originalBranchName, baseArtifact, workingBranch, mergeBranch);
+         cleanup(originalBranchName, workingBranch, mergeBranch, sameArtifact, baseArtifact);
       }
    }
 
-   private void cleanup(String originalBranchName, Artifact baseArtifact, Branch workingBranch, Branch mergeBranch) throws Exception {
+   private void cleanup(String originalBranchName, Branch workingBranch, Branch mergeBranch, Artifact... toDelete) throws Exception {
       for (Branch branch : BranchManager.getBranchesByName(originalBranchName)) {
          for (Branch child : branch.getChildBranches(true)) {
             BranchManager.purgeBranch(child);
@@ -292,10 +294,8 @@ public class BranchStateTest {
       if (workingBranch != null) {
          BranchManager.purgeBranch(workingBranch);
       }
-      if (baseArtifact != null) {
-         List<Artifact> itemsToPurge = new ArrayList<Artifact>();
-         itemsToPurge.add(baseArtifact);
-         FrameworkTestUtil.purgeArtifacts(itemsToPurge);
+      if (toDelete != null) {
+         FrameworkTestUtil.purgeArtifacts(Arrays.asList(toDelete));
       }
    }
 
