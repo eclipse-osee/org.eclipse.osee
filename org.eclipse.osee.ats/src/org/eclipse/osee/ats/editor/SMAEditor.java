@@ -63,12 +63,10 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.AttributesComposite;
-import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -181,24 +179,6 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
 
    public String getTitleStr() throws OseeCoreException {
       return smaMgr.getEditorTitle();
-   }
-
-   public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) throws OseeCoreException {
-      createLabelValue(toolkit, comp, labelStr, valueStr, null);
-   }
-
-   public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) throws OseeCoreException {
-      Label label = toolkit.createLabel(comp, labelStr + ": ");
-      if (tooltip != null && !tooltip.equals("")) {
-         label.setToolTipText(tooltip);
-      }
-      SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
-      Text text = new Text(comp, SWT.WRAP | SWT.NO_TRIM);
-      toolkit.adapt(text, true, true);
-      text.setText(valueStr);
-      if (tooltip != null && !tooltip.equals("")) {
-         text.setToolTipText(tooltip);
-      }
    }
 
    @Override

@@ -50,7 +50,6 @@ import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -65,7 +64,6 @@ import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -79,9 +77,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.IMessage;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -277,14 +273,17 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
 
    private void createHeaderSection() {
       Composite headerComp = toolkit.createComposite(atsBody);
-      headerComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+      gd.widthHint = 100;
+      headerComp.setLayoutData(gd);
       headerComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 
       // Display relations
       try {
-         createTopLineHeader(headerComp, toolkit);
-         createAssigneesLineHeader(headerComp, toolkit);
+         createCurrentStateAndTeamHeaders(headerComp, toolkit);
+         FormsUtil.createLabelText(toolkit, headerComp, "Assignee(s)", smaMgr.getStateMgr().getAssigneesStr(150));
+
          createLatestHeader(headerComp, toolkit);
          if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
             actionableItemHeader = new SMAActionableItemHeader(headerComp, toolkit, smaMgr);
@@ -488,28 +487,15 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
    }
 
-   private void createAssigneesLineHeader(Composite comp, XFormToolkit toolkit) throws OseeCoreException {
+   private void createCurrentStateAndTeamHeaders(Composite comp, XFormToolkit toolkit) {
       Composite topLineComp = new Composite(comp, SWT.NONE);
       topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      topLineComp.setLayout(ALayout.getZeroMarginLayout(3, false));
       toolkit.adapt(topLineComp);
-      SMAEditor.createLabelValue(toolkit, topLineComp, "Assignee(s)", smaMgr.getStateMgr().getAssigneesStr(150));
-   }
-
-   private void createTopLineHeader(Composite comp, XFormToolkit toolkit) {
-      Composite topLineComp = new Composite(comp, SWT.NONE);
-      topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      topLineComp.setLayout(ALayout.getZeroMarginLayout(13, false));
-      toolkit.adapt(topLineComp);
-      // mainComp.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
 
       try {
-         SMAEditor.createLabelValue(toolkit, topLineComp, "Current State", smaMgr.getStateMgr().getCurrentStateName());
-         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
-            SMAEditor.createLabelValue(toolkit, topLineComp, "Team",
-                  ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName());
-         }
-         SMAEditor.createLabelValue(toolkit, topLineComp, "Created", XDate.getDateStr(
+         FormsUtil.createLabelText(toolkit, topLineComp, "Current State: ", smaMgr.getStateMgr().getCurrentStateName());
+         FormsUtil.createLabelText(toolkit, topLineComp, "Created: ", XDate.getDateStr(
                smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM));
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
@@ -522,12 +508,25 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       }
 
       try {
-         SMAEditor.createLabelValue(
+         if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
+            FormsUtil.createLabelText(toolkit, topLineComp, "Team: ",
+                  ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName());
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+
+      try {
+         FormsUtil.createLabelText(
                toolkit,
                topLineComp,
-               "Action Id",
+               "Action Id: ",
                smaMgr.getSma().getParentActionArtifact() == null ? "??" : smaMgr.getSma().getParentActionArtifact().getHumanReadableId());
-         SMAEditor.createLabelValue(toolkit, topLineComp, smaMgr.getSma().getArtifactSuperTypeName() + " Id",
+         if (smaMgr.getSma().getParentSMA() != null) {
+            FormsUtil.createLabelText(toolkit, topLineComp, "Parent Workflow Id: ",
+                  smaMgr.getSma().getParentSMA() == null ? "??" : smaMgr.getSma().getParentSMA().getHumanReadableId());
+         }
+         FormsUtil.createLabelText(toolkit, topLineComp, smaMgr.getSma().getArtifactSuperTypeName() + " Id: ",
                smaMgr.getSma().getHumanReadableId());
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
@@ -554,7 +553,7 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Display SMA Note
       String note = smaMgr.getSma().getSoleAttributeValue(ATSAttributes.SMA_NOTE_ATTRIBUTE.getStoreName(), "");
       if (!note.equals("")) {
-         createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note, false);
+         FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, "Note: " + note);
       }
    }
 
@@ -562,35 +561,19 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
       // Display global Notes
       for (NoteItem noteItem : smaMgr.getNotes().getNoteItems()) {
          if (forStateName == null || noteItem.getState().equals(forStateName)) {
-            createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toString(), false);
+            FormsUtil.createLabelOrHyperlink(comp, toolkit, horizontalSpan, noteItem.toString());
          }
       }
    }
 
-   private static void createLabelOrHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final String str, boolean onlyState) {
-      if (str.length() > 150) {
-         Hyperlink label = toolkit.createHyperlink(comp, Strings.truncate(str, 150) + "...", SWT.NONE);
-         label.setToolTipText("click to view all");
-         label.addListener(SWT.MouseUp, new Listener() {
-            public void handleEvent(Event event) {
-               new HtmlDialog("Note", null, str).open();
-            }
-         });
-         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-         gd.horizontalSpan = horizontalSpan;
-         label.setLayoutData(gd);
-      } else {
-         Label label = toolkit.createLabel(comp, str);
-         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-         gd.horizontalSpan = horizontalSpan;
-         label.setLayoutData(gd);
-      }
-   }
-
    private void createOriginatorHeader(Composite comp, XFormToolkit toolkit) throws OseeCoreException {
+      Composite topLineComp = new Composite(comp, SWT.NONE);
+      topLineComp.setLayoutData(new GridData());
+      topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      toolkit.adapt(topLineComp);
+
       if (!smaMgr.isCancelled() && !smaMgr.isCompleted()) {
-         toolkit.createLabel(comp, "     ");
-         Hyperlink link = toolkit.createHyperlink(comp, ORIGINATOR, SWT.NONE);
+         Hyperlink link = toolkit.createHyperlink(topLineComp, ORIGINATOR, SWT.NONE);
          link.addHyperlinkListener(new IHyperlinkListener() {
 
             public void linkEntered(HyperlinkEvent e) {
@@ -611,19 +594,19 @@ public class SMAWorkFlowTab extends FormPage implements IActionable {
             }
          });
          if (smaMgr.getOriginator() == null) {
-            Label errorLabel = toolkit.createLabel(comp, "Error: No originator identified.");
+            Label errorLabel = toolkit.createLabel(topLineComp, "Error: No originator identified.");
             errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
-            origLabel = toolkit.createLabel(comp, smaMgr.getOriginator().getName());
+            origLabel = toolkit.createLabel(topLineComp, smaMgr.getOriginator().getName());
             origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
          }
       } else {
          if (smaMgr.getOriginator() == null) {
-            Label errorLabel = toolkit.createLabel(comp, "Error: No originator identified.");
+            Label errorLabel = toolkit.createLabel(topLineComp, "Error: No originator identified.");
             errorLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
          } else {
-            Label origLabel = toolkit.createLabel(comp, "     " + ORIGINATOR + smaMgr.getOriginator().getName());
-            origLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+            Label origLabel = toolkit.createLabel(topLineComp, ORIGINATOR + smaMgr.getOriginator().getName());
+            origLabel.setLayoutData(new GridData());
          }
       }
    }

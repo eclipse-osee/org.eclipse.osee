@@ -5,16 +5,114 @@
  */
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.skynet.FontManager;
+import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.HtmlDialog;
+import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
 /**
  * @author Donald G. Dunne
  */
 public class FormsUtil {
+
+   public static void createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) throws OseeCoreException {
+      createLabelText(toolkit, comp, labelStr, valueStr, null);
+   }
+
+   public static void createLabelOrHyperlink(Composite comp, XFormToolkit toolkit, final int horizontalSpan, final String str) {
+      if (str.length() > 150) {
+         Hyperlink label = toolkit.createHyperlink(comp, Strings.truncate(str, 150) + "...", SWT.NONE);
+         label.setToolTipText("click to view all");
+         label.addListener(SWT.MouseUp, new Listener() {
+            public void handleEvent(Event event) {
+               new HtmlDialog("Note", null, str).open();
+            }
+         });
+         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+         gd.horizontalSpan = horizontalSpan;
+         label.setLayoutData(gd);
+      } else {
+         Label label = toolkit.createLabel(comp, str);
+         GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+         gd.horizontalSpan = horizontalSpan;
+         label.setLayoutData(gd);
+      }
+   }
+
+   public static Text createLabelText(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) throws OseeCoreException {
+      Composite topLineComp = new Composite(comp, SWT.NONE);
+      topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      toolkit.adapt(topLineComp);
+
+      Label label = toolkit.createLabel(topLineComp, labelStr);
+      if (tooltip != null && !tooltip.equals("")) {
+         label.setToolTipText(tooltip);
+      }
+      setLabelFonts(label, FontManager.getDefaultLabelFont());
+      Text text = new Text(topLineComp, SWT.NO_TRIM);
+      text.setLayoutData(new GridData());
+      toolkit.adapt(text, true, true);
+      text.setText(valueStr);
+      if (tooltip != null && !tooltip.equals("")) {
+         text.setToolTipText(tooltip);
+      }
+      return text;
+   }
+
+   public static void createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr) throws OseeCoreException {
+      createLabelValue(toolkit, comp, labelStr, valueStr, null);
+   }
+
+   public static Label createLabelValue(XFormToolkit toolkit, Composite comp, String labelStr, String valueStr, String tooltip) throws OseeCoreException {
+      Composite topLineComp = new Composite(comp, SWT.NONE);
+      topLineComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      topLineComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      toolkit.adapt(topLineComp);
+      Label label = toolkit.createLabel(topLineComp, labelStr, SWT.NONE);
+      label.setLayoutData(new GridData());
+      if (Strings.isValid(tooltip)) {
+         label.setToolTipText(tooltip);
+      }
+      setLabelFonts(label, FontManager.getDefaultLabelFont());
+      Label valueLabel = toolkit.createLabel(topLineComp, valueStr, SWT.NONE);
+      if (Strings.isValid(tooltip)) {
+         valueLabel.setToolTipText(tooltip);
+      }
+      valueLabel.setLayoutData(new GridData());
+      return valueLabel;
+   }
+
+   public static void setLabelFonts(Control parent, Font font) {
+      if (parent instanceof Label) {
+         Label label = (Label) parent;
+         label.setFont(font);
+      }
+      if (parent instanceof Composite) {
+         Composite container = (Composite) parent;
+         for (Control child : container.getChildren()) {
+            setLabelFonts(child, font);
+         }
+         container.layout();
+      }
+   }
 
    public static void addHeadingGradient(FormToolkit toolkit, ScrolledForm form, boolean add) {
       FormColors colors = toolkit.getColors();

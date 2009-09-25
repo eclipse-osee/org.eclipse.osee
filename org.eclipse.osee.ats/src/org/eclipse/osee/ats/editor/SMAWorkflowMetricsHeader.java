@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.FontManager;
 import org.eclipse.osee.framework.ui.skynet.XFormToolkit;
+import org.eclipse.osee.framework.ui.skynet.util.FormsUtil;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -46,30 +46,20 @@ public class SMAWorkflowMetricsHeader extends Composite implements IFrameworkTra
 
          toolkit.adapt(this);
          setLayout(ALayout.getZeroMarginLayout(8, false));
-         setLayoutData(new GridData());
+         setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-         Label label = toolkit.createLabel(this, "Total Percent: ", SWT.NONE);
-         SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
-         percentLabel = toolkit.createLabel(this, "", SWT.NONE);
-         label.setToolTipText("Calculation: sum of percent for all states (including all tasks and reviews) / # statusable states");
-         percentLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-         label = toolkit.createLabel(this, "Total Estimated Hours: ", SWT.NONE);
-         SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
-         estHoursLabel = toolkit.createLabel(this, "", SWT.NONE);
-         label.setToolTipText("Calculation: sum estimated hours for workflow and all tasks and reviews");
-         estHoursLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-
-         label = toolkit.createLabel(this, "Total Hours Spent: ", SWT.NONE);
-         SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
-         hoursSpentLabel = toolkit.createLabel(this, "", SWT.NONE);
-         hoursSpentLabel.setToolTipText("Calculation: sum of all hours spent for all tasks, reviews and in each state");
-         label.setToolTipText("Calculation: sum of all hours spent for all tasks, reviews and in each state");
-
-         label = toolkit.createLabel(this, "Remaining Hours: ", SWT.NONE);
-         SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
-         label.setToolTipText(WorldXViewerFactory.Remaining_Hours_Col.getDescription());
-         remainHoursLabel = toolkit.createLabel(this, "", SWT.NONE);
+         percentLabel =
+               FormsUtil.createLabelValue(toolkit, this, "Total Percent: ", "",
+                     "Calculation: sum of percent for all states (including all tasks and reviews) / # statusable states");
+         estHoursLabel =
+               FormsUtil.createLabelValue(toolkit, this, "Total Estimated Hours: ", "",
+                     "Calculation: sum estimated hours for workflow and all tasks and reviews");
+         hoursSpentLabel =
+               FormsUtil.createLabelValue(toolkit, this, "Total Hours Spent: ", "",
+                     "Calculation: sum of all hours spent for all tasks, reviews and in each state");
+         remainHoursLabel =
+               FormsUtil.createLabelValue(toolkit, this, "Remaining Hours: ", "",
+                     WorldXViewerFactory.Remaining_Hours_Col.getDescription());
 
          refresh();
 
