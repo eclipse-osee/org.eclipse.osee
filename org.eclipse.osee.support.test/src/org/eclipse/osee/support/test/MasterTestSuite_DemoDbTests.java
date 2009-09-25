@@ -24,8 +24,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {AtsTest_Config_Suite.class, AtsTest_Demo_Suite.class, FrameworkUi_Demo_Suite.class,
-      FrameworkCore_Demo_Suite.class, JdkCoreTestSuite.class})
+@Suite.SuiteClasses( {JdkCoreTestSuite.class, FrameworkCore_Demo_Suite.class, AtsTest_Config_Suite.class,
+      AtsTest_Demo_Suite.class, FrameworkUi_Demo_Suite.class})
 /**
  * This suite should contain all cases and suites that can be run against a Demo Db Init and Demo Populated osee
  * database.
