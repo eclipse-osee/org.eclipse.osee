@@ -353,7 +353,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    }
 
    public Attribute<?> getAttributeById(int attrId, boolean includeDeleted) throws OseeCoreException {
-      for (Attribute<?> attribute : getAttributes()) {
+      for (Attribute<?> attribute : getAttributes(includeDeleted)) {
          if (attribute.getAttrId() == attrId) {
             return attribute;
          }
@@ -581,7 +581,17 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws OseeCoreException
     */
    public List<Attribute<?>> getAttributes() throws OseeCoreException {
-      return getAttributesByModificationType(ModificationType.getCurrentModTypes());
+      return getAttributes(false);
+   }
+
+   public List<Attribute<?>> getAttributes(boolean includeDeleted) throws OseeCoreException {
+      List<Attribute<?>> attributes;
+      if (includeDeleted) {
+         attributes = getAttributesByModificationType(ModificationType.getAllCurrentModTypes());
+      } else {
+         attributes = getAttributesByModificationType(ModificationType.getCurrentModTypes());
+      }
+      return attributes;
    }
 
    /**

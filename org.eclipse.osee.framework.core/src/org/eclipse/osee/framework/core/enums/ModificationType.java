@@ -45,6 +45,7 @@ public enum ModificationType implements Serializable {
    INTRODUCED("Introduced", 6);
 
    private final static Set<ModificationType> ALL_NONE_HARD_DELETED = new HashSet<ModificationType>();
+   private final static Set<ModificationType> ALL_MOD_TYPES = new HashSet<ModificationType>();
    private final static Set<ModificationType> ALL_STATES = new HashSet<ModificationType>();
    private int value;
    private String displayName;
@@ -91,6 +92,15 @@ public enum ModificationType implements Serializable {
          }
       }
       return ALL_NONE_HARD_DELETED;
+   }
+
+   public static Set<ModificationType> getAllCurrentModTypes() {
+      if (ALL_MOD_TYPES.isEmpty()) {
+         synchronized (ALL_MOD_TYPES) {
+            ALL_MOD_TYPES.addAll(Arrays.asList(ModificationType.values()));
+         }
+      }
+      return ALL_MOD_TYPES;
    }
 
    public static Set<ModificationType> getAllStates() {
