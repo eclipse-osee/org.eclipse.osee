@@ -20,7 +20,8 @@ public enum CoreAttributes implements IOseeType {
    NATIVE_CONTENT("Native Content", "AAMFEcdBJGBK9nr9TTQA"),
    NATIVE_EXTENSION("Extension", "AAMFEcUbJEERZTnwJzAA"),
    WHOLE_WORD_CONTENT("Whole Word Content", "AAMFEchZmAzZo2tHjVAA"),
-   WORD_TEMPLATE_CONTENT("Word Template Content", "AAMFEcfcGS2V3SqQN2wA");
+   WORD_TEMPLATE_CONTENT("Word Template Content", "AAMFEcfcGS2V3SqQN2wA"),
+   RELATION_ORDER("Relation Order", "ABM5kHa9cFsTbI_ooyQA");
 
    private final String name;
    private final String guid;

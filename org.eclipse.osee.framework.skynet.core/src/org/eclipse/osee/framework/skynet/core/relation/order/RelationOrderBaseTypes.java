@@ -12,8 +12,9 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
  */
 public enum RelationOrderBaseTypes implements RelationOrderId {
 
-   USER_DEFINED("AAT0xogoMjMBhARkBZQA", "User Defined"), LEXICOGRAPHICAL_ASC("AAT1QW4eVE+YuzsoHFAA",
-         "Lexicographical Ascending"), LEXICOGRAPHICAL_DESC("AAmATn6R9m7VCXQQwuQA", "Lexicographical Descending"),
+   USER_DEFINED("AAT0xogoMjMBhARkBZQA", "User Defined"),
+   LEXICOGRAPHICAL_ASC("AAT1QW4eVE+YuzsoHFAA", "Lexicographical Ascending"),
+   LEXICOGRAPHICAL_DESC("AAmATn6R9m7VCXQQwuQA", "Lexicographical Descending"),
    UNORDERED("AAT1uKZpeDQExlygoIAA", "Unordered");
 
    private String guid;

@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -46,7 +47,7 @@ public class RelationOrderXmlProcessor {
    }
 
    public RelationOrderXmlProcessor(Artifact artifact) throws OseeCoreException {
-      this(artifact.getSoleAttributeValueAsString("Relation Order", ""));
+      this(artifact.getSoleAttributeValueAsString(CoreAttributes.RELATION_ORDER.getName(), ""));
    }
 
    private void parseXml(String value) throws SAXException, IOException {

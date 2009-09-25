@@ -10,30 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
+import java.util.Arrays;
 import java.util.Collection;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.window.Window;
+import java.util.List;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.ui.skynet.HTMLTransferFormatter;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
-import org.eclipse.osee.framework.ui.swt.NonBlankValidator;
 import org.eclipse.swt.dnd.Clipboard;
 import org.eclipse.swt.dnd.HTMLTransfer;
 import org.eclipse.swt.dnd.TextTransfer;
 import org.eclipse.swt.dnd.Transfer;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Jeff C. Phillips
  */
 public class ArtifactClipboard {
    private static final String STATUS = "work";
-   private Clipboard clipboard;
-   private String viewId;
+   private final Clipboard clipboard;
+   private final String viewId;
 
    public ArtifactClipboard(String viewId) {
       this.clipboard = new Clipboard(null);
@@ -67,53 +63,19 @@ public class ArtifactClipboard {
             new Transfer[] {TextTransfer.getInstance()});
    }
 
-   private static IInputValidator inputValidator = new NonBlankValidator("The new name must not be blank");
+   public boolean isEmpty() {
+      return clipboard.getContents(ArtifactTransfer.getInstance()) == null;
+   }
 
-   /**
-    * This method must be called from the display thread
-    * 
-    * @throws Exception
-    */
-   public void pasteArtifactsFromClipboard(Artifact parent) throws Exception {
-      if (parent == null) throw new IllegalArgumentException("Parent can not be null.");
-
+   public List<Artifact> getCopiedContents() {
       Object object = clipboard.getContents(ArtifactTransfer.getInstance());
-
+      List<Artifact> copiedItems;
       if (object instanceof ArtifactData) {
-         Artifact[] clipboardArtifacts = ((ArtifactData) object).getArtifacts();
-
-         if (clipboardArtifacts.length == 1) {
-            Artifact clipboardArtifact = clipboardArtifacts[0];
-            if (clipboardArtifact instanceof User) {
-               return;
-            }
-
-            InputDialog dialog =
-                  new InputDialog(Display.getCurrent().getActiveShell(), "Name Artifact", "Enter artifact name",
-                        clipboardArtifacts[0].getName(), inputValidator);
-
-            if (dialog.open() == Window.CANCEL) {
-               return;
-            } else {
-               Artifact newArtifact = null;
-               newArtifact = clipboardArtifact.duplicate(parent.getBranch());
-               newArtifact.setName(dialog.getValue());
-               parent.addChild(newArtifact);
-            }
-         } else {
-            for (Artifact clipboardArtifact : clipboardArtifacts) {
-               // We do not support duplicating user artifacts.
-               if (clipboardArtifact instanceof User) {
-                  continue;
-               }
-
-               Artifact newArtifact = null;
-               newArtifact = clipboardArtifact.duplicate(parent.getBranch());
-               parent.addChild(newArtifact);
-            }
-         }
-
-         parent.persist();
+         ArtifactData data = (ArtifactData) object;
+         copiedItems = Arrays.asList(data.getArtifacts());
+      } else {
+         copiedItems = java.util.Collections.emptyList();
       }
+      return copiedItems;
    }
 }

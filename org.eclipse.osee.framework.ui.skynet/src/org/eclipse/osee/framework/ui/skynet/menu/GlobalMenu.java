@@ -30,6 +30,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MenuEvent;
@@ -39,6 +41,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -59,14 +62,18 @@ public class GlobalMenu {
 
       public static List<GlobalMenuItem> ALL = Arrays.asList(GlobalMenuItem.values());
    };
-   private ArrayList<GlobalMenuListener> listeners = new ArrayList<GlobalMenuListener>();
+   private final ArrayList<GlobalMenuListener> listeners = new ArrayList<GlobalMenuListener>();
 
    public GlobalMenu(Menu parentMenu, IGlobalMenuHelper globalMenuHelper) {
       this.globalMenuHelper = globalMenuHelper;
       if (parentMenu != null) {
          parentMenu.addMenuListener(new EnablementMenuListener());
-         if (globalMenuHelper.getValidMenuItems().contains(GlobalMenuItem.DeleteArtifacts)) createDeleteMenuItem(parentMenu);
-         if (globalMenuHelper.getValidMenuItems().contains(GlobalMenuItem.PurgeArtifacts)) createPurgeMenuItem(parentMenu);
+         if (globalMenuHelper.getValidMenuItems().contains(GlobalMenuItem.DeleteArtifacts)) {
+            createDeleteMenuItem(parentMenu);
+         }
+         if (globalMenuHelper.getValidMenuItems().contains(GlobalMenuItem.PurgeArtifacts)) {
+            createPurgeMenuItem(parentMenu);
+         }
       }
    }
 
@@ -93,9 +100,15 @@ public class GlobalMenu {
       public void menuShown(MenuEvent e) {
          try {
             GlobalMenuPermissions permiss = new GlobalMenuPermissions(globalMenuHelper);
-            if (deleteMenuItem != null) deleteMenuItem.setEnabled(permiss.isFullAccess());
-            if (purgeMenuItem != null) purgeMenuItem.setEnabled(permiss.isHasArtifacts() && AccessControlManager.isOseeAdmin());
-            if (tagMenuItem != null) tagMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isFullAccess());
+            if (deleteMenuItem != null) {
+               deleteMenuItem.setEnabled(permiss.isFullAccess());
+            }
+            if (purgeMenuItem != null) {
+               purgeMenuItem.setEnabled(permiss.isHasArtifacts() && AccessControlManager.isOseeAdmin());
+            }
+            if (tagMenuItem != null) {
+               tagMenuItem.setEnabled(permiss.isHasArtifacts() && permiss.isFullAccess());
+            }
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -105,15 +118,17 @@ public class GlobalMenu {
    // Provided for addition to Menus
    private void createDeleteMenuItem(Menu parentMenu) {
       deleteMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+      deleteMenuItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_DELETE));
       deleteMenuItem.setText(deleteArtifactAction.getText());
       deleteMenuItem.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             deleteArtifactAction.run();
          };
       });
    }
 
-   private Action deleteArtifactAction = new Action("&Delete Artifact\tDelete", Action.AS_PUSH_BUTTON) {
+   private final Action deleteArtifactAction = new Action("&Delete Artifact\tDelete", Action.AS_PUSH_BUTTON) {
       @Override
       public void run() {
          try {
@@ -154,7 +169,7 @@ public class GlobalMenu {
       }
    };
 
-   private Action purgeArtifactAction = new Action("&Purge Artifact(s)", Action.AS_PUSH_BUTTON) {
+   private final Action purgeArtifactAction = new Action("&Purge Artifact(s)", Action.AS_PUSH_BUTTON) {
       @Override
       public void run() {
          final Collection<Artifact> artifactsToBePurged = globalMenuHelper.getArtifacts();
@@ -189,7 +204,7 @@ public class GlobalMenu {
                            artifactToPurge.purgeFromBranch();
                         }
                         monitor.worked(1);
-                     }                     
+                     }
                      toReturn = Status.OK_STATUS;
                   } catch (Exception ex) {
                      OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -218,8 +233,10 @@ public class GlobalMenu {
 
    private void createPurgeMenuItem(Menu parentMenu) {
       purgeMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+      purgeMenuItem.setImage(ImageManager.getImage(FrameworkImage.TRASH));
       purgeMenuItem.setText(purgeArtifactAction.getText());
       purgeMenuItem.addSelectionListener(new SelectionAdapter() {
+         @Override
          public void widgetSelected(SelectionEvent e) {
             purgeArtifactAction.run();
          };

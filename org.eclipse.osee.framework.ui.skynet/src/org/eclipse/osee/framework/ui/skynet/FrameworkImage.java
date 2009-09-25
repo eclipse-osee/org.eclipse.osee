@@ -128,6 +128,7 @@ public enum FrameworkImage implements OseeImage {
    OUTGOING_MODIFIED("OUTGOING_Modified.gif"),
    OUTGOING_NEW("OUTGOING_New.gif"),
    OUTLINE("outline_co.gif"),
+   PASTE_SPECIAL_WIZ("paste_wiz.png"),
    PROBLEM("greenBug.gif"),
    PREVIEW_ARTIFACT("preview_artifact.gif"),
    PRINT("print.gif"),

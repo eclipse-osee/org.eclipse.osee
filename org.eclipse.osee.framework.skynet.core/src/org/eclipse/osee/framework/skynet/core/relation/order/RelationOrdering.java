@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
@@ -82,7 +83,7 @@ public class RelationOrdering {
    }
 
    public void updateOrderOnRelationDelete(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
-      Attribute<String> attribute = artifact.getSoleAttribute("Relation Order");
+      Attribute<String> attribute = artifact.getSoleAttribute(CoreAttributes.RELATION_ORDER.getName());
       if (attribute != null) {
          RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(attribute.getValue());
          String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);

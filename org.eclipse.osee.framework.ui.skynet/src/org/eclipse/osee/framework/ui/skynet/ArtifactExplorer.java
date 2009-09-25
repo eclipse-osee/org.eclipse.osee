@@ -29,10 +29,12 @@ import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -70,10 +72,12 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
+import org.eclipse.osee.framework.ui.skynet.dialogs.ArtifactPasteSpecialDialog;
 import org.eclipse.osee.framework.ui.skynet.listener.IRebuildMenuListener;
 import org.eclipse.osee.framework.ui.skynet.menu.ArtifactTreeViewerGlobalMenuHelper;
 import org.eclipse.osee.framework.ui.skynet.menu.GlobalMenu;
@@ -85,6 +89,7 @@ import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.skywalker.SkyWalkerView;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
+import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
 import org.eclipse.osee.framework.ui.skynet.util.DbConnectionExceptionComposite;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetViews;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
@@ -117,10 +122,12 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IMemento;
+import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IViewSite;
@@ -154,6 +161,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private MenuItem goIntoMenuItem;
    private MenuItem copyMenuItem;
    private MenuItem pasteMenuItem;
+   private MenuItem pasteSpecialMenuItem;
    private MenuItem renameArtifactMenuItem;
    private MenuItem findOnAnotherBranch;
    private NeedArtifactMenuListener needArtifactListener;
@@ -422,6 +430,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       new MenuItem(popupMenu, SWT.SEPARATOR);
       createCopyMenuItem(popupMenu);
       createPasteMenuItem(popupMenu);
+      createPasteSpecialMenuItem(popupMenu);
       createExpandAllMenuItem(popupMenu);
       createSelectAllMenuItem(popupMenu);
       new MenuItem(popupMenu, SWT.SEPARATOR);
@@ -893,16 +902,14 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    private void createCopyMenuItem(Menu parentMenu) {
       copyMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+      copyMenuItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_COPY));
       copyMenuItem.setText("Copy \tCtrl+C");
-      copyMenuItem.addSelectionListener(new SelectionListener() {
+      copyMenuItem.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
             performCopy();
          }
-
-         public void widgetDefaultSelected(SelectionEvent e) {
-         }
-
       });
    }
 
@@ -927,40 +934,62 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    private void createPasteMenuItem(Menu parentMenu) {
       pasteMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+      pasteMenuItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_PASTE));
       pasteMenuItem.setText("Paste \tCtrl+V");
-      pasteMenuItem.addSelectionListener(new SelectionListener() {
+      pasteMenuItem.addSelectionListener(new SelectionAdapter() {
 
+         @Override
          public void widgetSelected(SelectionEvent e) {
-            performPaste();
+            performPasteOperation(false);
          }
+      });
+   }
 
-         public void widgetDefaultSelected(SelectionEvent e) {
+   private void createPasteSpecialMenuItem(Menu parentMenu) {
+      pasteSpecialMenuItem = new MenuItem(parentMenu, SWT.PUSH);
+      pasteSpecialMenuItem.setImage(PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_TOOL_PASTE));
+      pasteSpecialMenuItem.setText("Paste Special... \tCtrl+S");
+      pasteSpecialMenuItem.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            performPasteOperation(true);
          }
 
       });
    }
 
-   /**
-    * This method must be called from the display thread
-    */
-   private void performPaste() {
+   private void performPasteOperation(boolean isPasteSpecial) {
+      boolean performPaste = true;
+      Artifact destinationArtifact = null;
       IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
-
       if (selection != null && !selection.isEmpty()) {
          Object object = selection.getFirstElement();
 
          if (object instanceof Artifact) {
-            try {
-               artifactClipboard.pasteArtifactsFromClipboard((Artifact) object);
-            } catch (Exception ex) {
-               OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
-            }
+            destinationArtifact = (Artifact) object;
          }
+      }
+
+      ArtifactPasteConfiguration config = new ArtifactPasteConfiguration();
+
+      if (isPasteSpecial) {
+         Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+         List<Artifact> copiedArtifacts = artifactClipboard.getCopiedContents();
+         ArtifactPasteSpecialDialog dialog =
+               new ArtifactPasteSpecialDialog(shell, config, destinationArtifact, copiedArtifacts);
+         performPaste = dialog.open() == Window.OK;
+      }
+
+      if (performPaste) {
+         Operations.executeAsJob(new ArtifactPasteOperation(config, destinationArtifact,
+               artifactClipboard.getCopiedContents()), true);
       }
    }
 
    private void createExpandAllMenuItem(Menu parentMenu) {
       MenuItem menuItem = new MenuItem(parentMenu, SWT.PUSH);
+      menuItem.setImage(ImageManager.getImage(FrameworkImage.EXPAND_ALL));
       menuItem.setText("Expand All\tCtrl++");
       menuItem.addSelectionListener(new ExpandListener());
    }

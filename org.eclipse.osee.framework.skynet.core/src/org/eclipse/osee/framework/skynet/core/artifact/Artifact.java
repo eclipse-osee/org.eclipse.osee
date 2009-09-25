@@ -66,6 +66,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnot
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
@@ -1467,6 +1468,9 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
 
    private void copyAttributes(Artifact artifact) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes()) {
+         if (CoreAttributes.RELATION_ORDER.getName().equals(attribute.getAttributeType())) {
+            continue;
+         }
          artifact.addAttribute(attribute.getAttributeType().getName(), attribute.getValue());
       }
    }

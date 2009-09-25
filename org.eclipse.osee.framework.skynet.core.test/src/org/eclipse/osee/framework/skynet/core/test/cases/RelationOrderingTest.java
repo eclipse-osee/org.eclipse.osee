@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.junit.After;
@@ -32,7 +33,7 @@ public class RelationOrderingTest {
    private Artifact child1;
    private Artifact child2;
    private Artifact child3;
-   
+
    @Before
    public void setupArtifacts() throws Exception {
       branch = BranchManager.getCommonBranch();
@@ -47,15 +48,15 @@ public class RelationOrderingTest {
       parent.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child2);
       parent.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child3);
    }
-   
+
    @After
    public void cleanupArtifacts() throws Exception {
-//      parent.deleteAndPersist();
-//      child1.deleteAndPersist();
-//      child2.deleteAndPersist();
-//      child3.deleteAndPersist();
+      //      parent.deleteAndPersist();
+      //      child1.deleteAndPersist();
+      //      child2.deleteAndPersist();
+      //      child3.deleteAndPersist();
    }
-   
+
    @org.junit.Test
    public void testSetOrderAndSort() throws Exception {
 
@@ -67,38 +68,34 @@ public class RelationOrderingTest {
 
       parent.setRelationOrder(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD,
             RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
-      Attribute<Object> attribute = parent.getSoleAttribute("Relation Order");
+      Attribute<Object> attribute = parent.getSoleAttribute(CoreAttributes.RELATION_ORDER.getName());
       assertTrue("Setting the attribute back to the default type did not cause an attribute to be deleted",
             (attribute == null || attribute.isDeleted()));
-      
-      
+
       checkDesc();
-      
+
       Artifact child4 = ArtifactTypeManager.getType("User").makeNewArtifact(branch);
       child1.setSoleAttributeFromString("Name", "a_child");
       Artifact child5 = ArtifactTypeManager.getType("User").makeNewArtifact(branch);
       child2.setSoleAttributeFromString("Name", "b_child");
       Artifact child6 = ArtifactTypeManager.getType("User").makeNewArtifact(branch);
-      
+
       parent.addRelation(CoreRelationEnumeration.Users_User, child4);
       parent.addRelation(CoreRelationEnumeration.Users_User, child5);
       parent.addRelation(CoreRelationEnumeration.Users_User, child6);
       parent.persist();
-      
-      parent.setRelationOrder(CoreRelationEnumeration.Users_User,
-            RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
-   
-      parent.setRelationOrder(CoreRelationEnumeration.Users_Artifact,
-            RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
-      
+
+      parent.setRelationOrder(CoreRelationEnumeration.Users_User, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+
+      parent.setRelationOrder(CoreRelationEnumeration.Users_Artifact, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+
       parent.setRelationOrder(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD,
             RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
-      
-      attribute = parent.getSoleAttribute("Relation Order");
+
+      attribute = parent.getSoleAttribute(CoreAttributes.RELATION_ORDER.getName());
       assertTrue("The attribute was deleted even though there was a still a non default sort order on the artifact.",
             (attribute != null));
-      
-      
+
    }
 
    private void checkAsc() throws OseeCoreException {
@@ -133,19 +130,19 @@ public class RelationOrderingTest {
       assertTrue(children.get(1).getName().equals("c_child"));
       assertTrue(children.get(2).getName().equals("a_child"));
    }
-   
+
    @org.junit.Test
-   public void testUserDefinedOrderUpdatesListWhenRelationDeleted() throws OseeCoreException{
+   public void testUserDefinedOrderUpdatesListWhenRelationDeleted() throws OseeCoreException {
       checkUserDefined();
-      
+
       String artifactGuid = child3.getGuid();
-      
+
       parent.deleteRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child3);
-      
-      String orderString = parent.getSoleAttributeValue("Relation Order");
-      
+
+      String orderString = parent.getSoleAttributeValue(CoreAttributes.RELATION_ORDER.getName());
+
       assertFalse(orderString.contains(artifactGuid));
-      
+
       List<Artifact> children = parent.getRelatedArtifacts(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
       assertTrue(children.size() == 2);
       assertTrue(children.get(0).getName().equals("b_child"));

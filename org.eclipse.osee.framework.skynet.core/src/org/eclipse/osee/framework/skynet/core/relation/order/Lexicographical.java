@@ -11,6 +11,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameComparator;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
@@ -39,24 +40,25 @@ class Lexicographical implements RelationOrder {
    @Override
    public void applyOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
       RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(artifact);
-      String value = artifact.getSoleAttributeValue("Relation Order", "");
+      String value = artifact.getSoleAttributeValue(CoreAttributes.RELATION_ORDER.getName(), "");
       String guid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
       boolean isTypeToSetDefault = type.getDefaultOrderTypeGuid().equals(getOrderId().getGuid());
-      if(guid == null && isTypeToSetDefault){//nothing has been saved for this type/side pair and it's the default
+      if (guid == null && isTypeToSetDefault) {//nothing has been saved for this type/side pair and it's the default
          return;
-      } else if(guid != null && guid.equals(getOrderId().getGuid())){//already saved as this type
+      } else if (guid != null && guid.equals(getOrderId().getGuid())) {//already saved as this type
          return;
-      } else if(guid != null && isTypeToSetDefault){//going back to the default type
+      } else if (guid != null && isTypeToSetDefault) {//going back to the default type
          relationOrderXmlProcessor.removeOrder(type.getName(), getOrderId(), side);
       }
       List<String> list = Collections.emptyList();
-      if(!isTypeToSetDefault){
+      if (!isTypeToSetDefault) {
          relationOrderXmlProcessor.putOrderList(type.getName(), getOrderId(), side, list);
       }
-      if(relationOrderXmlProcessor.hasEntries()){
-         artifact.setSoleAttributeFromString("Relation Order", relationOrderXmlProcessor.getAsXmlString());
-      } else if (value != null && value.length() > 0){
-         artifact.deleteAttribute("Relation Order", value);
+      if (relationOrderXmlProcessor.hasEntries()) {
+         artifact.setSoleAttributeFromString(CoreAttributes.RELATION_ORDER.getName(),
+               relationOrderXmlProcessor.getAsXmlString());
+      } else if (value != null && value.length() > 0) {
+         artifact.deleteAttribute(CoreAttributes.RELATION_ORDER.getName(), value);
       }
    }
 }

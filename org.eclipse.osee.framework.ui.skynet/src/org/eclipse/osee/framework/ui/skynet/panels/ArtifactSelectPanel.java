@@ -31,15 +31,28 @@ import org.eclipse.ui.dialogs.ISelectionStatusValidator;
  */
 public class ArtifactSelectPanel extends AbstractItemSelectPanel<Artifact> {
 
+   private String title;
+   private String message;
+
    public ArtifactSelectPanel() {
       super(new ArtifactLabelProvider(), new ArrayContentProvider());
+      this.title = "";
+      this.message = "";
+   }
+
+   public void setDialogTitle(String title) {
+      this.title = title;
+   }
+
+   public void setDialogMessage(String message) {
+      this.message = message;
    }
 
    @Override
    protected Dialog createSelectDialog(Shell shell, Artifact lastSelected) throws OseeCoreException {
       ArtifactSelectionDialog dialog = new ArtifactSelectionDialog(shell);
-      dialog.setTitle("Select Destination Artifact");
-      dialog.setMessage("Select a destination artifact. Imported items will be added as children of the selected artifact.");
+      dialog.setTitle(title);
+      dialog.setMessage(message);
       dialog.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_EXPLORER));
       dialog.setValidator(new SingleSelectionStatusValidator());
       Branch branch = lastSelected != null ? lastSelected.getBranch() : BranchManager.getCommonBranch();

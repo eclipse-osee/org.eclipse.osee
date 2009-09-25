@@ -10,6 +10,7 @@ import java.util.List;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
@@ -29,11 +30,12 @@ class Unordered implements RelationOrder {
    @Override
    public void applyOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
       if (!type.getDefaultOrderTypeGuid().equals(getOrderId().getGuid())) {
-         String value = artifact.getOrInitializeSoleAttributeValue("Relation Order");
+         String value = artifact.getOrInitializeSoleAttributeValue(CoreAttributes.RELATION_ORDER.getName());
          RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(value);
          List<String> list = Collections.emptyList();
          relationOrderXmlProcessor.putOrderList(type.getName(), getOrderId(), side, list);
-         artifact.setSoleAttributeFromString("Relation Order", relationOrderXmlProcessor.getAsXmlString());
+         artifact.setSoleAttributeFromString(CoreAttributes.RELATION_ORDER.getName(),
+               relationOrderXmlProcessor.getAsXmlString());
       }
    }
 

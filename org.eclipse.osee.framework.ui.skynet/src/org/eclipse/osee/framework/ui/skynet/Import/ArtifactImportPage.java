@@ -88,8 +88,17 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       selectionLatch = new SelectionLatch();
       collector = new RoughArtifactCollector(new RoughArtifact(RoughArtifactKind.PRIMARY));
       artifactSelectPanel = new ArtifactSelectPanel();
+      artifactSelectPanel.setDialogTitle("Select Destination Artifact");
+      artifactSelectPanel.setDialogMessage("Select a destination artifact. Imported items will be added as children of the selected artifact.");
+
       artifactTypeSelectPanel = new ArtifactTypeSelectPanel();
+      artifactTypeSelectPanel.setDialogTitle("Import as Artifact Type");
+      artifactTypeSelectPanel.setDialogMessage("Select what artifact type data should be imported as.");
+
       attributeTypeSelectPanel = new AttributeTypeSelectPanel();
+      attributeTypeSelectPanel.setDialogTitle("Import as Attribute Type");
+      attributeTypeSelectPanel.setDialogMessage("Select what artifact type data should be imported as.");
+
       importContributionManager = new ArtifactExtractorContributionManager();
       parserSelectPanel = new ArtifactExtractorSelectPanel(importContributionManager);
 

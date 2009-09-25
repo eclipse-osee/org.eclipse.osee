@@ -25,15 +25,25 @@ import org.eclipse.swt.widgets.Shell;
 public class AttributeTypeSelectPanel extends AbstractItemSelectPanel<Collection<AttributeType>> {
 
    private Collection<AttributeType> attributeTypes;
-   private final String title = "Import as Attribute Type";
-   private final String message = "Select what artifact type data should be imported as.";
+   private String title;
+   private String message;
 
    public AttributeTypeSelectPanel() {
       super(new AttributeTypeLabelProvider(), new ArrayContentProvider());
+      this.title = "";
+      this.message = "";
    }
 
    public void setAllowedAttributeTypes(Collection<AttributeType> attributeTypes) {
       this.attributeTypes = attributeTypes;
+   }
+
+   public void setDialogTitle(String title) {
+      this.title = title;
+   }
+
+   public void setDialogMessage(String message) {
+      this.message = message;
    }
 
    @Override
