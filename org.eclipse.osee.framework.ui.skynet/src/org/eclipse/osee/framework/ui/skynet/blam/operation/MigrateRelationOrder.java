@@ -63,8 +63,8 @@ public class MigrateRelationOrder extends AbstractBlam {
             }
          }
       }
-      transaction.execute();
-      addToChildBaseilnes(transaction);
+      //transaction.execute();
+      //addToChildBaseilnes(transaction);
       //}
    }
 
@@ -96,6 +96,9 @@ public class MigrateRelationOrder extends AbstractBlam {
 
    private void getOrginalOrder(Artifact artifact, IRelationEnumeration relationEnum, List<Artifact> orginalOrder) throws OseeCoreException {
       List<RelationLink> links = artifact.getRelations(relationEnum);
+      if (links.isEmpty()) {
+         return;
+      }
       int artifactIdToFind = -1;
       while (true) {
          boolean found = false;
