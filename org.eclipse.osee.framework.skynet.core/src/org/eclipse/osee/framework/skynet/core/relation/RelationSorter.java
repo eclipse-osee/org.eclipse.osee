@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrder;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderXmlProcessor;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderStore;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrdering;
 
 /**
@@ -29,14 +29,14 @@ public class RelationSorter {
    private final RelationType type;
    private final RelationSide side;
    private final Artifact artifact;
-   RelationOrderXmlProcessor store = null;
+   RelationOrderStore store = null;
 
    public RelationSorter(RelationType type, RelationSide side, Artifact artifact) throws OseeWrappedException, OseeCoreException {
       this.type = type;
       this.side = side;
       this.artifact = artifact;
       if (artifact != null) {
-         store = new RelationOrderXmlProcessor(artifact);
+         store = new RelationOrderStore(artifact);
       }
    }
 

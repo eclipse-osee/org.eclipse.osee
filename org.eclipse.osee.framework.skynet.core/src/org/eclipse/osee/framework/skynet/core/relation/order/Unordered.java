@@ -36,7 +36,7 @@ class Unordered implements RelationOrder {
    public void applyOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
       if (!type.getDefaultOrderTypeGuid().equals(getOrderId().getGuid())) {
          String value = artifact.getOrInitializeSoleAttributeValue(CoreAttributes.RELATION_ORDER.getName());
-         RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(value);
+         RelationOrderStore relationOrderXmlProcessor = new RelationOrderStore(value);
          List<String> list = Collections.emptyList();
          relationOrderXmlProcessor.putOrderList(type.getName(), getOrderId(), side, list);
          artifact.setSoleAttributeFromString(CoreAttributes.RELATION_ORDER.getName(),

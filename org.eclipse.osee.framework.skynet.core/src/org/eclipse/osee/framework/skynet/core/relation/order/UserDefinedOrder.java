@@ -30,7 +30,7 @@ class UserDefinedOrder implements RelationOrder {
       if (relatives != null && relatives.size() > 1) {
          Attribute<String> attribute = artifact.getSoleAttribute(CoreAttributes.RELATION_ORDER.getName());
          if (attribute != null) {
-            RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(attribute.getValue());
+            RelationOrderStore relationOrderXmlProcessor = new RelationOrderStore(attribute.getValue());
             String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
             if (relationOrderGuid != null) {
                List<String> list = relationOrderXmlProcessor.findOrderList(type.getName(), side, relationOrderGuid);
@@ -60,7 +60,7 @@ class UserDefinedOrder implements RelationOrder {
    public void applyOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
       if (relatives.size() > 0) {
          String value = artifact.getOrInitializeSoleAttributeValue(CoreAttributes.RELATION_ORDER.getName());
-         RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(value);
+         RelationOrderStore relationOrderXmlProcessor = new RelationOrderStore(value);
          relationOrderXmlProcessor.putOrderList(type.getName(), getOrderId(), side, toGuidList(relatives));
          artifact.setSoleAttributeFromString(CoreAttributes.RELATION_ORDER.getName(),
                relationOrderXmlProcessor.getAsXmlString());

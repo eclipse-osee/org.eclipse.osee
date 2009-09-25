@@ -68,7 +68,7 @@ public class RelationOrdering {
    }
 
    private String getOrderGuid(Artifact artifact, RelationType type, RelationSide side) throws OseeCoreException {
-      RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(artifact);
+      RelationOrderStore relationOrderXmlProcessor = new RelationOrderStore(artifact);
       String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
       if (relationOrderGuid != null) {
          return relationOrderGuid;
@@ -85,7 +85,7 @@ public class RelationOrdering {
    public void updateOrderOnRelationDelete(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
       Attribute<String> attribute = artifact.getSoleAttribute(CoreAttributes.RELATION_ORDER.getName());
       if (attribute != null) {
-         RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(attribute.getValue());
+         RelationOrderStore relationOrderXmlProcessor = new RelationOrderStore(attribute.getValue());
          String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
          if (relationOrderGuid != null) {
             RelationOrder order = getRelationOrder(relationOrderGuid);

@@ -44,7 +44,7 @@ class Lexicographical implements RelationOrder {
 
    @Override
    public void applyOrder(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
-      RelationOrderXmlProcessor relationOrderXmlProcessor = new RelationOrderXmlProcessor(artifact);
+      RelationOrderStore relationOrderXmlProcessor = new RelationOrderStore(artifact);
       String value = artifact.getSoleAttributeValue(CoreAttributes.RELATION_ORDER.getName(), "");
       String guid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
       boolean isTypeToSetDefault = type.getDefaultOrderTypeGuid().equals(getOrderId().getGuid());

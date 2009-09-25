@@ -32,13 +32,13 @@ import org.xml.sax.helpers.XMLReaderFactory;
 /**
  * @author Andrew M. Finkbeiner
  */
-public class RelationOrderXmlProcessor {
+public class RelationOrderStore {
 
    private static final Object ROOT_ELEMENT = "OrderList";
 
    private final CompositeKeyHashMap<String, String, Pair<String, List<String>>> lists;
 
-   public RelationOrderXmlProcessor(String value) throws OseeWrappedException {
+   public RelationOrderStore(String value) throws OseeWrappedException {
       lists = new CompositeKeyHashMap<String, String, Pair<String, List<String>>>();
       try {
          if (value.trim().length() > 0) {
@@ -51,7 +51,7 @@ public class RelationOrderXmlProcessor {
       }
    }
 
-   public RelationOrderXmlProcessor(Artifact artifact) throws OseeCoreException {
+   public RelationOrderStore(Artifact artifact) throws OseeCoreException {
       this(artifact.getSoleAttributeValueAsString(CoreAttributes.RELATION_ORDER.getName(), ""));
    }
 
