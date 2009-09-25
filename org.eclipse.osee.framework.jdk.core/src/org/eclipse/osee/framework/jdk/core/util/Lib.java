@@ -411,8 +411,7 @@ public final class Lib {
          return null;
       }
       value = value.trim();
-      java.io.InputStream in = null;
-      in = new java.io.ByteArrayInputStream(value.getBytes("UTF-8"));
+      java.io.InputStream in = new java.io.ByteArrayInputStream(value.getBytes("UTF-8"));
       return in;
    }
 
