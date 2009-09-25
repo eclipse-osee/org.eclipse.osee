@@ -137,4 +137,9 @@ public class RealTime extends TimerControl {
 
    public void step() {
    }
+
+   @Override
+   public long getTimeOfDay() {
+	   return getEnvTime();
+   }
 }

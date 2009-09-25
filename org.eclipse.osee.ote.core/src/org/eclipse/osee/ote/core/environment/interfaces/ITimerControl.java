@@ -27,4 +27,5 @@ public interface ITimerControl {
    void dispose();
    public void cancelAllTasks();
    public void step();
+   long getTimeOfDay();
 }
