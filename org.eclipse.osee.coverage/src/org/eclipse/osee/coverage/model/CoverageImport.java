@@ -13,8 +13,11 @@ package org.eclipse.osee.coverage.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorProvider;
+import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
@@ -23,7 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport {
+public class CoverageImport implements ICoverageEditorProvider {
 
    private final String guid = GUID.create();
    private final Date runDate;
@@ -105,5 +108,15 @@ public class CoverageImport {
 
    public XResultData getLog() {
       return logResultData;
+   }
+
+   @Override
+   public Object getInput() {
+      return getCoverageUnits();
+   }
+
+   @Override
+   public OseeImage getTitleImage() {
+      return CoverageImage.COVERAGE;
    }
 }

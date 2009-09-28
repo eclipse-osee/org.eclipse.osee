@@ -12,17 +12,18 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorProvider;
 import org.eclipse.osee.coverage.internal.CoveragePlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
@@ -48,7 +49,8 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
       try {
          OseeContributionItem.addTo(this, true);
          createCoverageTab();
-         setPartName(getCoverageEditorInput().getName());
+         setPartName(getCoverageEditorProvider().getName());
+         setTitleImage(ImageManager.getImage(getCoverageEditorProvider().getTitleImage()));
          setActivePage(startPage);
       } catch (Exception ex) {
          OseeLog.log(CoveragePlugin.class, Level.SEVERE, ex);
@@ -84,6 +86,10 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
             firePropertyChange(IWorkbenchPart.PROP_TITLE);
          }
       });
+   }
+
+   public ICoverageEditorProvider getCoverageEditorProvider() {
+      return getCoverageEditorInput().getCoverageEditorProvider();
    }
 
    public CoverageEditorInput getCoverageEditorInput() {
@@ -180,13 +186,6 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
          };
       }
       return super.getAdapter(adapter);
-   }
-
-   public Collection<? extends Object> getInput() {
-      if (getCoverageEditorInput().getCoverageImport() != null) {
-         return getCoverageEditorInput().getCoverageImport().getCoverageUnits();
-      } else
-         return Collections.emptyList();
    }
 
    @Override

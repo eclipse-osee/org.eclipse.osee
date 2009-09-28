@@ -11,7 +11,7 @@
 package org.eclipse.osee.coverage.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorProvider;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -20,10 +20,10 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class CoverageEditorInput implements IEditorInput {
 
-   private final CoverageImport coverageImport;
+   private final ICoverageEditorProvider coverageEditorProvider;
 
-   public CoverageEditorInput(CoverageImport coverageImport) {
-      this.coverageImport = coverageImport;
+   public CoverageEditorInput(ICoverageEditorProvider coverageEditorProvider) {
+      this.coverageEditorProvider = coverageEditorProvider;
    }
 
    @Override
@@ -55,11 +55,11 @@ public class CoverageEditorInput implements IEditorInput {
 
    @Override
    public String getName() {
-      return coverageImport.getName();
+      return coverageEditorProvider.getName();
    }
 
-   public CoverageImport getCoverageImport() {
-      return coverageImport;
+   public ICoverageEditorProvider getCoverageEditorProvider() {
+      return coverageEditorProvider;
    }
 
 }
