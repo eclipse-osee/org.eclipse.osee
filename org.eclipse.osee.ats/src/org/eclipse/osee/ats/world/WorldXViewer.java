@@ -500,11 +500,13 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       if (treeColumn.getData() instanceof XViewerAttributeColumn) {
          XViewerAttributeColumn xCol = (XViewerAttributeColumn) treeColumn.getData();
          attrName = xCol.getAttributeTypeName();
-      }
-      if (treeColumn.getData() instanceof XViewerAtsAttributeColumn) {
+      } else if (treeColumn.getData() instanceof XViewerAtsAttributeColumn) {
          XViewerAtsAttributeColumn xCol = (XViewerAtsAttributeColumn) treeColumn.getData();
          attrName = xCol.getAttributeTypeName();
+      } else {
+         return false;
       }
+
       if (attrName == null) {
          AWorkbench.popup("ERROR", "Can't retrieve attribute name from attribute column " + treeColumn.getText());
          return false;
