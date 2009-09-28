@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.model;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author Donald G. Dunne
  */
@@ -20,12 +23,21 @@ public class CoverageItem {
    private String lineNum;
    private String methodNum;
    private final CoverageUnit coverageUnit;
+   private final Set<TestUnit> testUnits = new HashSet<TestUnit>();
 
    public CoverageItem(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethod, String executeNum) {
       super();
       this.coverageUnit = coverageUnit;
       this.coverageMethod = coverageMethod;
       this.executeNum = executeNum;
+   }
+
+   public Set<TestUnit> getTestUnits() {
+      return testUnits;
+   }
+
+   public void addTestUnit(TestUnit testUnit) {
+      testUnits.add(testUnit);
    }
 
    public CoverageMethodEnum getCoverageMethod() {

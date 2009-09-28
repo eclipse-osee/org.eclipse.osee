@@ -11,6 +11,7 @@
 package org.eclipse.osee.coverage.results;
 
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.ResultsEditorHtmlTab;
@@ -26,9 +27,14 @@ public class CoverageImportOverviewResultsEditorTab extends ResultsEditorHtmlTab
 
       XResultData rd = new XResultData();
       rd.log(AHTML.bold("Coverage Import for " + XDate.getDateStr(coverageImport.getRunDate(), XDate.HHMMSSSS)) + AHTML.newline());
-      rd.log(AHTML.getLabelStr("Coverage Units: ", String.valueOf(coverageImport.getCoverageUnits().size())));
-      rd.log(AHTML.getLabelStr("Coverage Items: ", String.valueOf(coverageImport.getCoverageItems().size())));
-      rd.log(AHTML.getLabelStr("Coverage Percent: ", String.format("%d", coverageImport.getPercentCoverage())));
+      rd.log(AHTML.getLabelValueStr("Coverage Units", String.valueOf(coverageImport.getCoverageUnits().size())));
+      rd.log(AHTML.getLabelValueStr("Coverage Items", String.valueOf(coverageImport.getCoverageItems().size())));
+      rd.log(AHTML.getLabelValueStr("Coverage Percent", String.format("%d", coverageImport.getPercentCoverage())));
+      rd.log(AHTML.getLabelValueStr("Coverage Method Breakdown", ""));
+      for (CoverageMethodEnum coverageMethodEnum : CoverageMethodEnum.values()) {
+         rd.log("  - " + coverageMethodEnum + " " + String.valueOf(coverageImport.getCoverageItemsCovered(
+               coverageMethodEnum).size()));
+      }
       rd.log(AHTML.newline() + AHTML.bold("Log") + AHTML.newline());
       rd.addRaw(coverageImport.getLog().getReport("").getManipulatedHtml());
       setHtml(coverageImport.getName(), rd.getReport(coverageImport.getName()).getManipulatedHtml());

@@ -13,6 +13,7 @@ package org.eclipse.osee.coverage.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -72,9 +73,14 @@ public class CoverageImport {
    }
 
    public List<CoverageItem> getCoverageItemsCovered() {
+      return getCoverageItemsCovered(CoverageMethodEnum.None, CoverageMethodEnum.Unknown);
+   }
+
+   public List<CoverageItem> getCoverageItemsCovered(CoverageMethodEnum... coverageMethodEnum) {
+      List<CoverageMethodEnum> coverageMethods = Collections.getAggregate(coverageMethodEnum);
       List<CoverageItem> items = new ArrayList<CoverageItem>();
       for (CoverageItem coverageItem : getCoverageItems()) {
-         if (coverageItem.getCoverageMethod() != CoverageMethodEnum.None) {
+         if (coverageMethods.contains(coverageItem.getCoverageMethod())) {
             items.add(coverageItem);
          }
       }

@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.swt.SWT;
@@ -25,7 +26,7 @@ import org.eclipse.swt.SWT;
 public class CoverageItemResultsTableTab extends ResultsEditorTableTab {
 
    private static enum Columns {
-      Parent_Coverage_Unit, Coverage_Unit, Method_Number, Execution_Number, Line_Number, Coverage_Method;
+      Parent_Coverage_Unit, Coverage_Unit, Method_Number, Execution_Number, Line_Number, Coverage_Method, Test_Units;
    };
 
    public CoverageItemResultsTableTab() {
@@ -41,6 +42,8 @@ public class CoverageItemResultsTableTab extends ResultsEditorTableTab {
       addColumn(new XViewerColumn(Columns.Line_Number.name(), Columns.Line_Number.name(), 80, SWT.LEFT, true,
             SortDataType.String, false, ""));
       addColumn(new XViewerColumn(Columns.Coverage_Method.name(), Columns.Coverage_Method.name(), 80, SWT.LEFT, true,
+            SortDataType.String, false, ""));
+      addColumn(new XViewerColumn(Columns.Test_Units.name(), Columns.Test_Units.name(), 80, SWT.LEFT, true,
             SortDataType.String, false, ""));
    }
 
@@ -65,7 +68,9 @@ public class CoverageItemResultsTableTab extends ResultsEditorTableTab {
                      //
                      valueOrBlank(coverageItem.getLineNum()),
                      //
-                     valueOrBlank(coverageItem.getCoverageMethod())}));
+                     valueOrBlank(coverageItem.getCoverageMethod()),
+                     //
+                     valueOrBlank(Collections.toString("; ", coverageItem.getTestUnits()))}));
       }
    }
 

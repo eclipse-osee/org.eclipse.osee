@@ -51,20 +51,66 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
       }
       CoverageDataFile coverageDataFile = new CoverageDataFile(vcastDirectory);
       CoverageImport coverageImport = new CoverageImport();
+
+      // Create file and subprogram Coverage Units and execution line Coverage Items
+      Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
       for (CoverageDataUnit coverageDataUnit : coverageDataFile.coverageDataUnits) {
          CoverageUnit coverageUnit = new CoverageUnit(null, coverageDataUnit.getName(), "");
          coverageImport.addCoverageUnit(coverageUnit);
+         int methodNum = 0;
          for (CoverageDataSubProgram coverageDataSubProgram : coverageDataUnit.getSubPrograms()) {
+            methodNum++;
             CoverageUnit childCoverageUnit = new CoverageUnit(coverageUnit, coverageDataSubProgram.getName(), "");
             coverageUnit.addCoverageUnit(childCoverageUnit);
             for (LineNumToBranches lineNumToBranches : coverageDataSubProgram.getLineNumToBranches()) {
                CoverageItem coverageItem =
                      new CoverageItem(childCoverageUnit, CoverageMethodEnum.Unknown,
                            String.valueOf(lineNumToBranches.getLineNum()));
+               coverageItem.setMethodNum(String.valueOf(methodNum));
                childCoverageUnit.addCoverageItem(coverageItem);
             }
          }
+         fileNumToCoverageUnit.put(String.valueOf(coverageDataUnit.getIndex()), coverageUnit);
       }
+
+      VCastVcp vCastVcp = null;
+      try {
+         vCastVcp = new VCastVcp(vcastDirectory);
+      } catch (Exception ex) {
+         coverageImport.getLog().logError("Exception reading vcast.vcp file: " + ex.getLocalizedMessage());
+         return coverageImport;
+      }
+      for (VcpResultsFile vcpResultsFile : vCastVcp.resultsFiles) {
+         TestUnit testUnit =
+               new TestUnit(vcpResultsFile.getValue(ResultsValue.FILENAME),
+                     vcpResultsFile.getValue(ResultsValue.DIRECTORY));
+         for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
+            CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
+            if (coverageUnit == null) {
+               coverageImport.getLog().logError(
+                     String.format("coverageUnit doesn't exist for unit_number [%s]", fileNum));
+               continue;
+            }
+            for (Pair<String, String> methodExecutionPair : vcpResultsFile.getVcpResultsDatFile().getMethodExecutionPairs(
+                  fileNum)) {
+               String methodNum = methodExecutionPair.getFirst();
+               String executeNum = methodExecutionPair.getSecond();
+               // Find or create new coverage item for mehod num /execution line
+               CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
+               if (coverageItem == null) {
+                  coverageImport.getLog().logError(
+                        String.format("Can't retrieve method [%s] from coverageUnit [%s] for test unit [%s]",
+                              methodNum, coverageUnit, testUnit));
+               }
+               coverageItem.setCoverageMethod(CoverageMethodEnum.Test_Unit);
+               // Relate that coverage item to the test unit that covers it
+               testUnit.addCoverageItem(coverageItem);
+               coverageItem.addTestUnit(testUnit);
+            }
+         }
+         coverageImport.addTestUnit(testUnit);
+      }
+
       return coverageImport;
    }
 
