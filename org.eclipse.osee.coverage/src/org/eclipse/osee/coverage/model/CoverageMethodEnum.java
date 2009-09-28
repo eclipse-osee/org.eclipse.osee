@@ -14,5 +14,5 @@ package org.eclipse.osee.coverage.model;
  * @author Donald G. Dunne
  */
 public enum CoverageMethodEnum {
-   Deactivated_Code, Exception_Handling, Test_Unit, Test_Procedure, None
+   Deactivated_Code, Exception_Handling, Test_Unit, Test_Procedure, Unknown, None
 }
