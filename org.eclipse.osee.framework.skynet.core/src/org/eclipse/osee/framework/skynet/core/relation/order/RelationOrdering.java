@@ -19,12 +19,12 @@ import java.util.concurrent.ConcurrentHashMap;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
+import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
  * @author Andrew M. Finkbeiner
+ * @author Ryan Schmitt
  */
 public class RelationOrdering {
 
@@ -48,15 +48,11 @@ public class RelationOrdering {
    }
 
    public void sort(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
-      if (type == null) {
+      if (type == null || side == null) {
          return;
       }
-      String orderGuid = getOrderGuid(artifact, type, side);
-      RelationOrder order = getRelationOrder(orderGuid);
-      if (order == null) {
-         return;
-      }
-      order.sort(artifact, type, side, relatives);
+      RelationSorter sorter = new RelationSorter(type, side, artifact);
+      sorter.sort(relatives);
    }
 
    public RelationOrder getRelationOrder(String orderGuid) throws OseeCoreException {
@@ -67,33 +63,15 @@ public class RelationOrdering {
       return order;
    }
 
-   private String getOrderGuid(Artifact artifact, RelationType type, RelationSide side) throws OseeCoreException {
-      RelationOrderStore relationOrderXmlProcessor = new RelationOrderStore(artifact);
-      String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
-      if (relationOrderGuid != null) {
-         return relationOrderGuid;
-      }
-
-      return type.getDefaultOrderTypeGuid();
-   }
-
    public void setOrder(Artifact artifact, RelationType type, RelationSide side, RelationOrderId orderId, List<Artifact> relatives) throws OseeCoreException {
-      RelationOrder order = getRelationOrder(orderId.getGuid());
-      order.applyOrder(artifact, type, side, relatives);
+      RelationSorter sorter = new RelationSorter(type, side, artifact);
+      sorter.setOrder(orderId, relatives);
    }
 
    public void updateOrderOnRelationDelete(Artifact artifact, RelationType type, RelationSide side, List<Artifact> relatives) throws OseeCoreException {
-      Attribute<String> attribute = artifact.getSoleAttribute(CoreAttributes.RELATION_ORDER.getName());
-      if (attribute != null) {
-         RelationOrderStore relationOrderXmlProcessor = new RelationOrderStore(attribute.getValue());
-         String relationOrderGuid = relationOrderXmlProcessor.findRelationOrderGuid(type.getName(), side);
-         if (relationOrderGuid != null) {
-            RelationOrder order = getRelationOrder(relationOrderGuid);
-            if (order != null) {
-               order.applyOrder(artifact, type, side, relatives);
-            }
-         }
-      }
+      RelationSorter sorter = new RelationSorter(type, side, artifact);
+      RelationOrderId orderId = sorter.getOrderId();
+      sorter.setOrder(orderId, relatives);
    }
 
    public List<RelationOrderId> getRegisteredRelationOrderIds() {

@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrdering;
 
 /**
  * @author Andrew M. Finkbeiner
+ * @author Ryan Schmitt
  */
 public class RelationSorter {
 
@@ -35,13 +37,7 @@ public class RelationSorter {
       this.type = type;
       this.side = side;
       this.artifact = artifact;
-      if (artifact != null) {
-         store = new RelationOrderStore(artifact);
-      }
-   }
-
-   public RelationSorter(RelationType type, RelationSide side) throws OseeWrappedException, OseeCoreException {
-      this(type, side, null);
+      store = new RelationOrderStore(artifact);
    }
 
    public RelationSorter(String typeName, String sideName) throws OseeCoreException {
@@ -112,11 +108,7 @@ public class RelationSorter {
    }
 
    public String getOrderGuid() {
-      String orderGuid = store.getOrderGuid(type.getName(), side);
-      if (orderGuid == null) {
-         orderGuid = type.getDefaultOrderTypeGuid();
-      }
-      return orderGuid;
+      return store.getCurrentOrderGuid(type, side);
    }
 
    public String getOrderName() {
@@ -125,7 +117,23 @@ public class RelationSorter {
    }
 
    public void setOrder(RelationOrderId orderId, List<Artifact> relatives) throws OseeCoreException {
-      RelationOrder order = RelationOrdering.getInstance().getRelationOrder(orderId.getGuid());
-      order.applyOrder(artifact, type, side, relatives);
+      store.storeRelationOrder(type, orderId, side, relatives);
+   }
+
+   public void setOrder(RelationOrderId orderId) throws OseeCoreException {
+      setOrder(orderId, new ArrayList<Artifact>());
+   }
+
+   public List<Artifact> getSortedRelatives(List<Artifact> relatives) throws OseeCoreException {
+      String orderGuid = store.getCurrentOrderGuid(type, side);
+      RelationOrder order = RelationOrdering.getInstance().getRelationOrder(orderGuid);
+      List<String> relativeOrder = store.getOrderList(type.getName(), side, orderGuid);
+      order.sort(relatives, relativeOrder);
+
+      return relatives;
+   }
+
+   public void sort(List<Artifact> relatives) throws OseeCoreException {
+      getSortedRelatives(relatives);
    }
 }

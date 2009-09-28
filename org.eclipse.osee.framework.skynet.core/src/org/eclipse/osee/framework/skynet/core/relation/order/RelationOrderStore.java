@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.skynet.core.relation.order;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -20,9 +22,11 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -31,14 +35,16 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * @author Andrew M. Finkbeiner
+ * @author Ryan Schmitt
  */
 public class RelationOrderStore {
 
    private static final Object ROOT_ELEMENT = "OrderList";
 
    private final CompositeKeyHashMap<String, String, Pair<String, List<String>>> lists;
+   private Artifact artifact;
 
-   public RelationOrderStore(String value) throws OseeWrappedException {
+   private RelationOrderStore(String value) throws OseeWrappedException {
       lists = new CompositeKeyHashMap<String, String, Pair<String, List<String>>>();
       try {
          if (value.trim().length() > 0) {
@@ -52,7 +58,8 @@ public class RelationOrderStore {
    }
 
    public RelationOrderStore(Artifact artifact) throws OseeCoreException {
-      this(artifact.getSoleAttributeValueAsString(CoreAttributes.RELATION_ORDER.getName(), ""));
+      this(artifact.getSoleAttributeValueAsString(CoreAttributes.RELATION_ORDER.getName(), Strings.emptyString()));
+      this.artifact = artifact;
    }
 
    private void parseXml(String value) throws SAXException, IOException {
@@ -62,23 +69,26 @@ public class RelationOrderStore {
       xmlReader.parse(new InputSource(new StringReader(value)));
    }
 
-   public String findRelationOrderGuid(String typeName, RelationSide side) {
-      Pair<String, List<String>> pair = lists.get(typeName, side.name());
-      if (pair != null) {
-         return pair.getFirst();
-      }
-      return null;
-   }
-
-   public List<String> findOrderList(String typeName, RelationSide side, String orderTypeGuid) {
+   public List<String> getOrderList(String typeName, RelationSide side, String orderTypeGuid) {
       Pair<String, List<String>> pair = lists.get(typeName, side.name());
       if (pair != null) {
          return pair.getSecond();
       }
-      return null;
+      return new ArrayList<String>();
    }
 
-   public String getAsXmlString() {
+   public String getCurrentOrderGuid(RelationType type, RelationSide side) {
+      Pair<String, List<String>> currentOrder = lists.get(type.getName(), side.name());
+      String ret;
+      if (currentOrder == null) {
+         ret = type.getDefaultOrderTypeGuid();
+      } else {
+         ret = currentOrder.getFirst();
+      }
+      return ret;
+   }
+
+   private String getAsXmlString() {
       StringBuilder sb = new StringBuilder();
       openRoot(sb);
       for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : lists.entrySet()) {
@@ -129,15 +139,19 @@ public class RelationOrderStore {
       sb.append(">");
    }
 
-   public void putOrderList(String typeName, RelationOrderId orderId, RelationSide side, List<String> guidList) {
-      lists.put(typeName, side.name(), new Pair<String, List<String>>(orderId.getGuid(), guidList));
+   private void putOrderList(RelationType type, RelationOrderId orderId, RelationSide side, List<String> guidList) {
+      // This if-statement is a workaround for the fact that null relation lists are being passed in
+      // as arguments at certain call sites. 
+      if (!orderId.equals(RelationOrderBaseTypes.USER_DEFINED) || guidList.size() > 0) {
+         lists.put(type.getName(), side.name(), new Pair<String, List<String>>(orderId.getGuid(), guidList));
+      }
    }
 
-   public void removeOrder(String typeName, RelationOrderId orderId, RelationSide side) {
-      lists.remove(typeName, side.name());
+   private void removeOrder(RelationType type, RelationOrderId orderId, RelationSide side) {
+      lists.remove(type.getName(), side.name());
    }
 
-   public boolean hasEntries() {
+   private boolean hasEntries() {
       return lists.size() > 0;
    }
 
@@ -155,7 +169,7 @@ public class RelationOrderStore {
             String orderType = attributes.getValue("orderType");
             String list = attributes.getValue("list");
             if (relationType != null && orderType != null && relationSide != null) {
-               List<String> guidsList = null;
+               List<String> guidsList = Collections.emptyList();
                if (list != null) {
                   String[] guids = list.split(",");
                   guidsList = Arrays.asList(guids);
@@ -166,11 +180,38 @@ public class RelationOrderStore {
       }
    }
 
-   public String getOrderGuid(String typeName, RelationSide side) {
-      Pair<String, List<String>> pair = lists.get(typeName, side.name());
-      if (pair != null) {
-         return pair.getFirst();
+   private List<String> getGuids(List<Artifact> relativeArtifacts) {
+      List<String> relativeGuids = new ArrayList<String>(relativeArtifacts.size());
+      for (Artifact artifact : relativeArtifacts) {
+         relativeGuids.add(artifact.getGuid());
       }
-      return null;
+      return relativeGuids;
+   }
+
+   public void storeRelationOrder(RelationType type, RelationOrderId orderId, RelationSide side, List<Artifact> relativeSequence) throws OseeCoreException {
+      String currentOrderGuid = getCurrentOrderGuid(type, side);
+      String defaultOrderGuid = type.getDefaultOrderTypeGuid();
+      String newOrderGuid = orderId.getGuid();
+      boolean changingOrder = !newOrderGuid.equals(currentOrderGuid);
+      boolean revertingToDefaultOrder = newOrderGuid.equals(defaultOrderGuid) && changingOrder;
+      boolean changingRelatives = orderId.equals(RelationOrderBaseTypes.USER_DEFINED) && //
+      !getGuids(relativeSequence).equals(getOrderList(type.getName(), side, newOrderGuid)) && //
+      relativeSequence.size() > 0;
+      if (changingOrder || changingRelatives) {
+         if (revertingToDefaultOrder) {
+            removeOrder(type, orderId, side);
+         } else {
+            putOrderList(type, orderId, side, getGuids(relativeSequence));
+         }
+         persistRelationOrder();
+      }
+   }
+
+   private void persistRelationOrder() throws OseeCoreException {
+      if (hasEntries()) {
+         artifact.setSoleAttributeFromString(CoreAttributes.RELATION_ORDER.getName(), getAsXmlString());
+      } else {
+         artifact.deleteSoleAttribute(CoreAttributes.RELATION_ORDER.getName());
+      }
    }
 }
