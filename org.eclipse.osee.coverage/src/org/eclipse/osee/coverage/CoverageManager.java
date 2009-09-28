@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage;
 
+import org.eclipse.osee.coverage.editor.CoverageEditor;
+import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoverageImport;
-import org.eclipse.osee.coverage.results.CoverageImportResultsEditor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -21,6 +22,6 @@ public class CoverageManager {
 
    public static void importCoverage(ICoverageImporter coverageImporter) throws OseeCoreException {
       CoverageImport coverageImport = coverageImporter.run();
-      CoverageImportResultsEditor.open(coverageImport);
+      CoverageEditor.open(new CoverageEditorInput(coverageImport));
    }
 }

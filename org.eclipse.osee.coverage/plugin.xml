@@ -10,6 +10,13 @@
 		        id="org.eclipse.osee.coverage.results.CoverageImportResultsEditor"
 		        name="Coverage Import Editor">
 		  </editor>
+      <editor
+            class="org.eclipse.osee.coverage.editor.CoverageEditor"
+            default="false"
+            icon="images/coverage.gif"
+            id="org.eclipse.osee.coverage.editor.CoverageEditor"
+            name="Coverage Editor">
+      </editor>
       </extension>
       <extension
             point="org.eclipse.ui.perspectives">
