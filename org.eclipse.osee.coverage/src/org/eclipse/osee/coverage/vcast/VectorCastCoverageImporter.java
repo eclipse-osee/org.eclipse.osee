@@ -51,6 +51,7 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
       }
       CoverageDataFile coverageDataFile = new CoverageDataFile(vcastDirectory);
       CoverageImport coverageImport = new CoverageImport();
+      coverageImport.setLocation(vcastDirectory);
 
       // Create file and subprogram Coverage Units and execution line Coverage Items
       Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();

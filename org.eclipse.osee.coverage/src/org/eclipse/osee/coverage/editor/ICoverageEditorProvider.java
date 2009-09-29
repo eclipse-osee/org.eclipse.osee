@@ -42,4 +42,6 @@ public interface ICoverageEditorProvider {
 
    public XResultData getLog();
 
+   public void getOverviewHtmlHeader(XResultData xResultData);
+
 }

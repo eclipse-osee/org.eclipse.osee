@@ -17,6 +17,7 @@ import java.util.List;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.ICoverageEditorProvider;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
@@ -35,6 +36,7 @@ public class CoverageImport implements ICoverageEditorProvider {
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    private final List<TestUnit> testUnits = new ArrayList<TestUnit>();
    private final XResultData logResultData = new XResultData();
+   private String location = "";
 
    public CoverageImport() {
       this(new Date());
@@ -120,5 +122,20 @@ public class CoverageImport implements ICoverageEditorProvider {
    @Override
    public OseeImage getTitleImage() {
       return CoverageImage.COVERAGE;
+   }
+
+   @Override
+   public void getOverviewHtmlHeader(XResultData xResultData) {
+      xResultData.log(AHTML.bold("Coverage Import for " + XDate.getDateStr(getRunDate(), XDate.HHMMSSSS)) + AHTML.newline());
+      xResultData.log(AHTML.getLabelValueStr("Location", location));
+      xResultData.log(AHTML.getLabelValueStr("Run Date", XDate.getDateStr(getRunDate(), XDate.MMDDYYHHMM)));
+   }
+
+   public String getLocation() {
+      return location;
+   }
+
+   public void setLocation(String location) {
+      this.location = location;
    }
 }

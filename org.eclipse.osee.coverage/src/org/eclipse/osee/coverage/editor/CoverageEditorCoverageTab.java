@@ -5,15 +5,18 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
- * Contributors:
- *     Boeing - initial API and implementation
- *******************************************************************************/
+ * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
+ */
 package org.eclipse.osee.coverage.editor;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
@@ -24,6 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -52,21 +56,26 @@ public class CoverageEditorCoverageTab extends FormPage {
    private WorkPage page;
    private XCoverageViewer xCoverageViewer;
    private final CoverageEditor coverageEditor;
+   private final ICoverageEditorProvider provider;
+   private ScrolledForm scrolledForm;
 
    public CoverageEditorCoverageTab(CoverageEditor coverageEditor) {
       super(coverageEditor, "Coverage Items", "Coverage Items");
       this.coverageEditor = coverageEditor;
+      this.provider = coverageEditor.getCoverageEditorProvider();
    }
 
    @Override
    protected void createFormContent(IManagedForm managedForm) {
       super.createFormContent(managedForm);
 
-      final ScrolledForm form = managedForm.getForm();
+      scrolledForm = managedForm.getForm();
+      scrolledForm.setText(provider.getName());
+      scrolledForm.setImage(ImageManager.getImage(provider.getTitleImage()));
 
-      form.getBody().setLayout(new GridLayout(2, false));
-      CoverageEditor.addToToolBar(form.getToolBarManager(), coverageEditor);
-      Composite mainComp = form.getBody();
+      scrolledForm.getBody().setLayout(new GridLayout(2, false));
+      Composite mainComp = scrolledForm.getBody();
+      coverageEditor.getToolkit().adapt(mainComp);
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
       Button runButton = new Button(mainComp, SWT.PUSH);
@@ -80,10 +89,12 @@ public class CoverageEditorCoverageTab extends FormPage {
          }
       });
       runButton.setLayoutData(gridData);
+      coverageEditor.getToolkit().adapt(runButton, true, true);
 
       Composite paramComp = new Composite(mainComp, SWT.NONE);
       paramComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       paramComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
+      coverageEditor.getToolkit().adapt(paramComp);
 
       try {
          page = new WorkPage(WIDGET_XML, new DefaultXWidgetOptionResolver());
@@ -99,10 +110,22 @@ public class CoverageEditorCoverageTab extends FormPage {
       GridData tableData = new GridData(SWT.FILL, SWT.FILL, true, true);
       tableData.horizontalSpan = 2;
       tableComp.setLayoutData(tableData);
+      coverageEditor.getToolkit().adapt(tableComp);
 
       xCoverageViewer = new XCoverageViewer(coverageEditor);
+      xCoverageViewer.setDisplayLabel(false);
       xCoverageViewer.createWidgets(managedForm, tableComp, 1);
       xCoverageViewer.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+
+      createToolbar();
+
+   }
+
+   public void createToolbar() {
+      IToolBarManager toolBarManager = scrolledForm.getToolBarManager();
+      toolBarManager.add(xCoverageViewer.getXViewer().getCustomizeAction());
+      CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
+      scrolledForm.updateToolBar();
    }
 
    @Override
@@ -143,12 +166,30 @@ public class CoverageEditorCoverageTab extends FormPage {
       return true;
    }
 
+   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+      StringBuffer sb = new StringBuffer();
+      if (getSelectedUser() != null) {
+         sb.append(" - Assignee: " + getSelectedUser());
+      }
+      if (isIncludeCompletedCancelledCheckbox()) {
+         sb.append(" - Include Completed/Cancelled");
+      }
+      if (getSelectedCoverageMethod() != null) {
+         sb.append(" - Coverage Method: " + getSelectedCoverageMethod());
+      }
+      return "Promotion Items " + sb.toString();
+   }
+
+   private boolean isIncludeCompletedCancelledCheckbox() {
+      return getIncludeCompletedCancelledCheckbox().isSelected();
+   }
+
    public XMembersCombo getAssigeeCombo() {
-      return (XMembersCombo) getXWidget("Assignee");
+      return ((XMembersCombo) getXWidget("Assignee"));
    }
 
    public XCheckBox getIncludeCompletedCancelledCheckbox() {
-      return (XCheckBox) getXWidget("Include Completed/Cancelled");
+      return ((XCheckBox) getXWidget("Include Completed/Cancelled"));
    }
 
    public void widgetsCreated() throws OseeCoreException {
@@ -160,16 +201,12 @@ public class CoverageEditorCoverageTab extends FormPage {
    }
 
    private User getSelectedUser() {
-      if (getAssigeeCombo() == null) {
-         return null;
-      }
+      if (getAssigeeCombo() == null) return null;
       return getAssigeeCombo().getUser();
    }
 
    private CoverageMethodEnum getSelectedCoverageMethod() {
-      if (getCoverageMethodCombo() == null) {
-         return null;
-      }
+      if (getCoverageMethodCombo() == null) return null;
       if (!Strings.isValid(getCoverageMethodCombo().get())) {
          return null;
       }
@@ -177,14 +214,12 @@ public class CoverageEditorCoverageTab extends FormPage {
    }
 
    public XWidget getXWidget(String attrName) {
-      if (page == null) {
-         throw new IllegalArgumentException("WorkPage == null");
-      }
+      if (page == null) throw new IllegalArgumentException("WorkPage == null");
       return page.getLayoutData(attrName).getXWidget();
    }
 
    public XCombo getCoverageMethodCombo() {
-      return (XCombo) getXWidget("Coverage Method");
+      return ((XCombo) getXWidget("Coverage Method"));
    }
 
    public Result isParameterSelectionValid() throws OseeCoreException {

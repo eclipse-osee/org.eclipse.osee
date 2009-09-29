@@ -7,12 +7,12 @@ package org.eclipse.osee.coverage.editor;
 
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultsComposite;
-import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
@@ -25,10 +25,12 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public class CoverageEditorOverviewTab extends FormPage {
 
    private final CoverageEditor coverageEditor;
+   private final ICoverageEditorProvider provider;
 
    public CoverageEditorOverviewTab(CoverageEditor coverageEditor) {
       super(coverageEditor, "Overview", "Overview");
       this.coverageEditor = coverageEditor;
+      this.provider = coverageEditor.getCoverageEditorProvider();
    }
 
    @Override
@@ -36,21 +38,23 @@ public class CoverageEditorOverviewTab extends FormPage {
       super.createFormContent(managedForm);
 
       final ScrolledForm form = managedForm.getForm();
+      form.setText(provider.getName());
+      form.setImage(ImageManager.getImage(provider.getTitleImage()));
 
-      form.getBody().setLayout(new GridLayout(2, false));
+      form.getBody().setLayout(ALayout.getZeroMarginLayout());
       CoverageEditor.addToToolBar(form.getToolBarManager(), coverageEditor);
       Composite composite = form.getBody();
       composite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-      XResultsComposite xResultsComp = new XResultsComposite(composite, SWT.BORDER);
+      XResultsComposite xResultsComp = new XResultsComposite(composite, SWT.NONE);
       xResultsComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       GridData gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 500;
       xResultsComp.setLayoutData(gd);
+      coverageEditor.getToolkit().adapt(xResultsComp);
 
-      ICoverageEditorProvider provider = coverageEditor.getCoverageEditorProvider();
       XResultData rd = new XResultData();
-      rd.log(AHTML.bold("Coverage Import for " + XDate.getDateStr(provider.getRunDate(), XDate.HHMMSSSS)) + AHTML.newline());
+      provider.getOverviewHtmlHeader(rd);
       rd.log(AHTML.getLabelValueStr("Coverage Units", String.valueOf(provider.getCoverageUnits().size())));
       rd.log(AHTML.getLabelValueStr("Coverage Items", String.valueOf(provider.getCoverageItems().size())));
       rd.log(AHTML.getLabelValueStr("Coverage Percent", String.format("%d", provider.getPercentCoverage())));

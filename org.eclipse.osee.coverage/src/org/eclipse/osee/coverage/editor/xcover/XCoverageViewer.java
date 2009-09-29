@@ -22,23 +22,16 @@ import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 
@@ -54,9 +47,6 @@ public class XCoverageViewer extends XWidget {
    private Tree tree;
    private final CoverageEditor coverageEditor;
 
-   /**
-    * @param label
-    */
    public XCoverageViewer(CoverageEditor coverageEditor) {
       super("Coverage Items");
       this.coverageEditor = coverageEditor;
@@ -104,38 +94,14 @@ public class XCoverageViewer extends XWidget {
    public void createTaskActionBar(Composite parent) {
 
       // Button composite for state transitions, etc
-      Composite bComp = new Composite(parent, SWT.NONE);
-      // bComp.setBackground(mainSComp.getDisplay().getSystemColor(SWT.COLOR_CYAN));
-      bComp.setLayout(new GridLayout(2, false));
-      bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      Composite composite = new Composite(parent, SWT.NONE);
+      composite.setLayout(ALayout.getZeroMarginLayout());
+      composite.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-      Composite leftComp = new Composite(bComp, SWT.NONE);
-      leftComp.setLayout(new GridLayout());
-      leftComp.setLayoutData(new GridData(GridData.BEGINNING | GridData.FILL_HORIZONTAL));
-
-      extraInfoLabel = new Label(leftComp, SWT.NONE);
+      extraInfoLabel = new Label(composite, SWT.NONE);
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("");
       extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-
-      Composite rightComp = new Composite(bComp, SWT.NONE);
-      rightComp.setLayout(new GridLayout());
-      rightComp.setLayoutData(new GridData(GridData.END));
-
-      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
-      GridData gd = new GridData(GridData.FILL_HORIZONTAL);
-      toolBar.setLayoutData(gd);
-      ToolItem item = null;
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.CUSTOMIZE));
-      item.setToolTipText("Customize Table");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            xViewer.getCustomizeMgr().handleTableCustomization();
-         }
-      });
 
    }
 
@@ -220,9 +186,6 @@ public class XCoverageViewer extends XWidget {
       return null;
    }
 
-   /**
-    * @return Returns the xViewer.
-    */
    public CoverageXViewer getXViewer() {
       return xViewer;
    }
