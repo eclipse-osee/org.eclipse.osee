@@ -13,7 +13,7 @@ package org.eclipse.osee.coverage.test.import1;
 import java.net.URL;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.ICoverageImporter;
-import org.eclipse.osee.coverage.internal.CoveragePlugin;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -47,7 +47,7 @@ public class CoverageTestImporter1 extends XNavigateItemAction implements ICover
          url = CoverageTestImporter1.class.getResource(PATH + "NavigationButton2.java");
          coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
       } catch (OseeCoreException ex) {
-         OseeLog.log(CoveragePlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return coverageImport;
    }

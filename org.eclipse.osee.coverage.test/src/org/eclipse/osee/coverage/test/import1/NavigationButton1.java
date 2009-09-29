@@ -11,7 +11,7 @@
 package org.eclipse.osee.coverage.test.import1;
 
 import java.util.logging.Level;
-import org.eclipse.osee.coverage.internal.CoveragePlugin;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Button;
@@ -37,10 +37,11 @@ public class NavigationButton1 extends Button {
       try {
          if (getStyle() == 4) { // 1, 1, y
             return "Navigate Here"; // 1, 2, y
-         } else
+         } else {
             return "Navigate There"; // 1, 3, y
+         }
       } catch (Exception ex) {
-         OseeLog.log(CoveragePlugin.class, Level.SEVERE, ex); // 1, 4, n
+         OseeLog.log(Activator.class, Level.SEVERE, ex); // 1, 4, n
       }
       return "Navigate";
    }
@@ -60,13 +61,14 @@ public class NavigationButton1 extends Button {
       try {
          if (getStyle() == 4) { // 4, 1, y
             return this.image; // 4, 2, n
-         } else
+         } else {
             return super.getImage(); // 4, 3, y
+         }
       } catch (IllegalArgumentException ex) {
-         OseeLog.log(CoveragePlugin.class, Level.SEVERE, ex); // 4, 4, n
+         OseeLog.log(Activator.class, Level.SEVERE, ex); // 4, 4, n
 
       } catch (Exception ex) {
-         OseeLog.log(CoveragePlugin.class, Level.SEVERE, ex); // 4, 5, n
+         OseeLog.log(Activator.class, Level.SEVERE, ex); // 4, 5, n
       }
       return null; // 4, 6, n
    }
