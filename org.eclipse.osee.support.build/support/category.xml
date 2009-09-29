@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/lba.osee.client.feature_1.0.0.qualifier.jar" id="lba.osee.client.feature" version="1.0.0.qualifier">
-      <category name="osee"/>
-   </feature>
    <feature url="features/org.eclipse.osee.ats.feature_1.0.0.qualifier.jar" id="org.eclipse.osee.ats.feature" version="1.0.0.qualifier">
       <category name="osee"/>
    </feature>
