@@ -140,11 +140,7 @@ public class RelationOrderStore {
    }
 
    private void putOrderList(RelationType type, RelationOrderId orderId, RelationSide side, List<String> guidList) {
-      // This if-statement is a workaround for the fact that null relation lists are being passed in
-      // as arguments at certain call sites. 
-      if (!orderId.equals(RelationOrderBaseTypes.USER_DEFINED) || guidList.size() > 0) {
-         lists.put(type.getName(), side.name(), new Pair<String, List<String>>(orderId.getGuid(), guidList));
-      }
+      lists.put(type.getName(), side.name(), new Pair<String, List<String>>(orderId.getGuid(), guidList));
    }
 
    private void removeOrder(RelationType type, RelationOrderId orderId, RelationSide side) {

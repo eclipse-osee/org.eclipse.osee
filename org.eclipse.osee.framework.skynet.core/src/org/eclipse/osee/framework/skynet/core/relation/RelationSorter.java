@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -40,12 +39,6 @@ public class RelationSorter {
       store = new RelationOrderStore(artifact);
    }
 
-   public RelationSorter(String typeName, String sideName) throws OseeCoreException {
-      this.type = RelationTypeManager.getType(typeName);
-      this.side = type.isSideAName(sideName) ? RelationSide.SIDE_A : RelationSide.SIDE_B;
-      this.artifact = null;
-   }
-
    public RelationType getRelationType() {
       return type;
    }
@@ -58,16 +51,8 @@ public class RelationSorter {
       return type.getSideName(side);
    }
 
-   public String getName() {
-      return type.getName();
-   }
-
    public boolean isSideA() {
       return side == RelationSide.SIDE_A;
-   }
-
-   public boolean isThisType(RelationLink link) {
-      return link.getRelationType() == type;
    }
 
    public Artifact getArtifact() {
@@ -118,10 +103,6 @@ public class RelationSorter {
 
    public void setOrder(RelationOrderId orderId, List<Artifact> relatives) throws OseeCoreException {
       store.storeRelationOrder(type, orderId, side, relatives);
-   }
-
-   public void setOrder(RelationOrderId orderId) throws OseeCoreException {
-      setOrder(orderId, new ArrayList<Artifact>());
    }
 
    public List<Artifact> getSortedRelatives(List<Artifact> relatives) throws OseeCoreException {
