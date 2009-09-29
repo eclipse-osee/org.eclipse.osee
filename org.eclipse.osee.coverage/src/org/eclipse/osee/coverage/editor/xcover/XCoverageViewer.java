@@ -79,6 +79,11 @@ public class XCoverageViewer extends XWidget {
       if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
 
       // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
+      updateExtraLabel();
+   }
+
+   public void updateExtraLabel() {
+      extraInfoLabel.setText("");
    }
 
    public void setXviewerTree(boolean expand) {

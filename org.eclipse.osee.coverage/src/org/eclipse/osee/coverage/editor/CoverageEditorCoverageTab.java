@@ -14,8 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.internal.Activator;

@@ -250,10 +250,6 @@ public class CoverageXViewer extends XViewer {
                   modified = setUser(coverageItems, selectedUser);
                }
             }
-         } else if (xCol.equals(CoverageXViewerFactory.Eng_Build_Id_Col)) {
-
-         } else if (xCol.equals(CoverageXViewerFactory.Plan_CM_Build_Id_Col)) {
-
          }
       }
       if (modified) {

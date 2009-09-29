@@ -107,7 +107,7 @@ public class CoverageImport implements ICoverageEditorProvider {
    }
 
    public String getName() {
-      return "Coverage Import - " + XDate.getDateStr(runDate, XDate.MMDDYYHHMM);
+      return "Coverage Import - " + XDate.getDateStr(runDate, XDate.MMDDYYHHMM) + " - " + getCoverageItems().size() + " Coverage Items";
    }
 
    public XResultData getLog() {
