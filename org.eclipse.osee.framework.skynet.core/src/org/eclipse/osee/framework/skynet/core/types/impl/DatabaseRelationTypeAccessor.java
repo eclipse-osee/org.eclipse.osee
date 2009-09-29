@@ -64,8 +64,8 @@ public class DatabaseRelationTypeAccessor implements IOseeDataAccessor<RelationT
             int bArtTypeId = chStmt.getInt("b_art_type_id");
             int multiplicityValue = chStmt.getInt("multiplicity");
             try {
-               ArtifactType artifactTypeSideA = artifactCache.getTypeById(aArtTypeId);
-               ArtifactType artifactTypeSideB = artifactCache.getTypeById(bArtTypeId);
+               ArtifactType artifactTypeSideA = artifactCache.getById(aArtTypeId);
+               ArtifactType artifactTypeSideB = artifactCache.getById(bArtTypeId);
                RelationTypeMultiplicity multiplicity =
                      RelationTypeMultiplicity.getRelationMultiplicity(multiplicityValue);
                boolean isUserOrdered = USER_ORDERED.equalsIgnoreCase(chStmt.getString("user_ordered"));
@@ -73,7 +73,7 @@ public class DatabaseRelationTypeAccessor implements IOseeDataAccessor<RelationT
                String sideBName = chStmt.getString("b_name");
                String defaultOrderTypeGuid = chStmt.getString("default_order_type_guid");
 
-               RelationType relationType = cache.getTypeById(typeId);
+               RelationType relationType = cache.getById(typeId);
                if (relationType == null) {
                   relationType =
                         factory.createRelationType(cache, chStmt.getString("rel_link_type_guid"), name, sideAName,
@@ -81,7 +81,7 @@ public class DatabaseRelationTypeAccessor implements IOseeDataAccessor<RelationT
                               defaultOrderTypeGuid);
                   relationType.setId(typeId);
                   relationType.setModificationType(ModificationType.MODIFIED);
-                  cache.cacheType(relationType);
+                  cache.cache(relationType);
                } else {
                   relationType.setFields(name, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB,
                         multiplicity, isUserOrdered, defaultOrderTypeGuid);

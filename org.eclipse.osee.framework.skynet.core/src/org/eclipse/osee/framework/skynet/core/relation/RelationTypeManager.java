@@ -67,11 +67,11 @@ public class RelationTypeManager {
     * @throws OseeCoreException
     */
    public static Collection<RelationType> getAllTypes() throws OseeCoreException {
-      return OseeTypeManager.getCache().getRelationTypeCache().getAllTypes();
+      return OseeTypeManager.getCache().getRelationTypeCache().getAll();
    }
 
    public static RelationType getType(int relationTypeId) throws OseeCoreException {
-      RelationType relationType = OseeTypeManager.getCache().getRelationTypeCache().getTypeById(relationTypeId);
+      RelationType relationType = OseeTypeManager.getCache().getRelationTypeCache().getById(relationTypeId);
       if (relationType == null) {
          throw new OseeTypeDoesNotExist("The relation with type id[" + relationTypeId + "] does not exist");
       }
@@ -87,7 +87,7 @@ public class RelationTypeManager {
    }
 
    public static boolean typeExists(String name) throws OseeCoreException {
-      return !OseeTypeManager.getCache().getRelationTypeCache().getTypeByName(name).isEmpty();
+      return !OseeTypeManager.getCache().getRelationTypeCache().getByName(name).isEmpty();
    }
 
    public static RelationType createType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {

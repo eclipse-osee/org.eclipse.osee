@@ -96,7 +96,7 @@ public class OseeEnumTypeCacheTest extends AbstractOseeCacheTest<OseeEnumType> {
          int typeId = 400;
          for (OseeEnumType type : oseeEnumTypes) {
             type.setId(typeId++);
-            cache.cacheType(type);
+            cache.cache(type);
          }
       }
    }

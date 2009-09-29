@@ -25,17 +25,17 @@ public final class RelationTypeCache extends AbstractOseeCache<RelationType> {
    }
 
    public RelationType createType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {
-      RelationType relationType = getTypeByGuid(guid);
+      RelationType relationType = getByGuid(guid);
       if (relationType == null) {
          relationType =
                getDataFactory().createRelationType(this, guid, typeName, sideAName, sideBName, artifactTypeSideA,
                      artifactTypeSideB, multiplicity, isUserOrdered, defaultOrderTypeGuid);
       } else {
-         decacheType(relationType);
+         decache(relationType);
          relationType.setFields(typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
                isUserOrdered, defaultOrderTypeGuid);
       }
-      cacheType(relationType);
+      cache(relationType);
       return relationType;
    }
 }

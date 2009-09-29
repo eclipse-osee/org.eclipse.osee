@@ -122,8 +122,8 @@ public class BranchUtilityTest {
       Branch expectedBranch1 = createBranch(cache, "AyH_e52bdW+WUbdQUoQA", "Test 1", 1);
       Branch expectedBranch2 = createBranch(cache, "AyH_e52bdW+WUbdQUoQB", "Test 2", 2);
 
-      cache.cacheType(expectedBranch1);
-      cache.cacheType(expectedBranch2);
+      cache.cache(expectedBranch1);
+      cache.cache(expectedBranch2);
 
       Assert.assertEquals(2, cache.size());
 

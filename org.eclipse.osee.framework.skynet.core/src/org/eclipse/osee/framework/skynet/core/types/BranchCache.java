@@ -49,11 +49,11 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    }
 
    @Override
-   public void cacheType(Branch type) throws OseeCoreException {
+   public void cache(Branch type) throws OseeCoreException {
       if (type.getBranchType().isSystemRootBranch()) {
          systemRootBranch = type;
       }
-      super.cacheType(type);
+      super.cache(type);
    }
 
    public Branch getSystemRootBranch() throws OseeCoreException {

@@ -40,15 +40,15 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
    }
 
    public ArtifactType createType(String guid, boolean isAbstract, String artifactTypeName) throws OseeCoreException {
-      ArtifactType artifactType = getTypeByGuid(guid);
+      ArtifactType artifactType = getByGuid(guid);
       if (artifactType == null) {
          artifactType = getDataFactory().createArtifactType(this, guid, isAbstract, artifactTypeName);
       } else {
-         decacheType(artifactType);
+         decache(artifactType);
          artifactType.setName(artifactTypeName);
          artifactType.setAbstract(isAbstract);
       }
-      cacheType(artifactType);
+      cache(artifactType);
       return artifactType;
    }
 

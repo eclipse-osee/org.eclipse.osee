@@ -97,7 +97,7 @@ public class AttributeTypeCacheTest extends AbstractOseeCacheTest<AttributeType>
          int typeId = 200;
          for (AttributeType type : attributeTypes) {
             type.setId(typeId++);
-            cache.cacheType(type);
+            cache.cache(type);
          }
       }
    }

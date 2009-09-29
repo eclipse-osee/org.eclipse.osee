@@ -34,7 +34,7 @@ public abstract class AbstractOseeCacheTest<T extends IOseeStorableType> {
 
    @org.junit.Test
    public void testAllItems() throws OseeCoreException {
-      List<T> actualTypes = new ArrayList<T>(cache.getAllTypes());
+      List<T> actualTypes = new ArrayList<T>(cache.getAll());
       java.util.Collections.sort(actualTypes, comparator);
 
       java.util.Collections.sort(data, comparator);
@@ -56,7 +56,7 @@ public abstract class AbstractOseeCacheTest<T extends IOseeStorableType> {
    @org.junit.Test
    public void testCacheByGuid() throws OseeCoreException {
       for (T expected : data) {
-         T actual = cache.getTypeByGuid(expected.getGuid());
+         T actual = cache.getByGuid(expected.getGuid());
          Assert.assertNotNull(actual);
          checkEquals(expected, actual);
       }
@@ -65,7 +65,7 @@ public abstract class AbstractOseeCacheTest<T extends IOseeStorableType> {
    @org.junit.Test
    public void testCacheById() throws OseeCoreException {
       for (T expected : data) {
-         T actual = cache.getTypeById(expected.getId());
+         T actual = cache.getById(expected.getId());
          Assert.assertNotNull(actual);
          checkEquals(expected, actual);
       }

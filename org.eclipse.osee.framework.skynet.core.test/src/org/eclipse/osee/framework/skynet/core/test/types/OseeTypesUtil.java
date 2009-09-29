@@ -43,13 +43,13 @@ public class OseeTypesUtil {
    }
 
    public static void checkHierarchy(BranchCache cache, String parentGuid, String... expected) throws OseeCoreException {
-      Branch parentBranch = cache.getTypeByGuid(parentGuid);
+      Branch parentBranch = cache.getByGuid(parentGuid);
       Assert.assertNotNull(parentBranch);
       Collection<Branch> children = parentBranch.getChildren();
       Assert.assertEquals(expected.length, children.size());
       int index = 0;
       for (Branch child : children) {
-         Branch expectedBranch = cache.getTypeByGuid(expected[index]);
+         Branch expectedBranch = cache.getByGuid(expected[index]);
          Assert.assertNotNull(expectedBranch);
          Assert.assertEquals(expectedBranch, child);
          Assert.assertEquals(parentBranch, child.getParentBranch());
@@ -58,20 +58,20 @@ public class OseeTypesUtil {
    }
 
    public static void createBranchHierarchy(BranchCache cache, String parentGuid, String... childrenGuids) throws OseeCoreException {
-      Branch parentBranch = cache.getTypeByGuid(parentGuid);
+      Branch parentBranch = cache.getByGuid(parentGuid);
       Assert.assertNotNull(parentBranch);
       Assert.assertNotNull(childrenGuids);
       Assert.assertTrue(childrenGuids.length > 0);
       for (String childGuid : childrenGuids) {
-         Branch childBranch = cache.getTypeByGuid(childGuid);
+         Branch childBranch = cache.getByGuid(childGuid);
          Assert.assertNotNull(childBranch);
          cache.setBranchParent(parentBranch, childBranch);
       }
    }
 
    public static RelationType createRelationType(AbstractOseeCache<RelationType> cache, AbstractOseeCache<ArtifactType> artCache, IOseeTypeFactory factory, String guid, String name, String aGUID, String bGUID, RelationTypeMultiplicity multiplicity) throws OseeCoreException {
-      ArtifactType type1 = artCache.getTypeByGuid(aGUID);
-      ArtifactType type2 = artCache.getTypeByGuid(bGUID);
+      ArtifactType type1 = artCache.getByGuid(aGUID);
+      ArtifactType type2 = artCache.getByGuid(bGUID);
       RelationType relationType =
             factory.createRelationType(cache, guid, name, name + "_A", name + "_B", type1, type2, multiplicity, true,
                   "");
@@ -160,17 +160,17 @@ public class OseeTypesUtil {
    }
 
    public static void checkInheritance(AbstractOseeCache<ArtifactType> artCache, String artTypeGuid, String... superTypeGuids) throws OseeCoreException {
-      ArtifactType target = artCache.getTypeByGuid(artTypeGuid);
+      ArtifactType target = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(target);
 
       List<ArtifactType> expectedSuperTypes = new ArrayList<ArtifactType>();
       for (String superTyperGuid : superTypeGuids) {
-         ArtifactType superArtifactType = artCache.getTypeByGuid(superTyperGuid);
+         ArtifactType superArtifactType = artCache.getByGuid(superTyperGuid);
          Assert.assertNotNull(superArtifactType);
          expectedSuperTypes.add(superArtifactType);
       }
 
-      for (ArtifactType testAgainstType : artCache.getAllTypes()) {
+      for (ArtifactType testAgainstType : artCache.getAll()) {
          boolean result = target.inheritsFrom(testAgainstType);
          if (expectedSuperTypes.contains(testAgainstType) || target.equals(testAgainstType)) {
             Assert.assertTrue(String.format("[%s] does not inherit from [%s]", target.getName(),
@@ -183,12 +183,12 @@ public class OseeTypesUtil {
    }
 
    public static void checkAttributes(AbstractOseeCache<ArtifactType> artCache, AbstractOseeCache<AttributeType> attrCache, String artTypeGuid, Branch branch, String... attributeGuids) throws OseeCoreException {
-      ArtifactType artifactType = artCache.getTypeByGuid(artTypeGuid);
+      ArtifactType artifactType = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(artifactType);
 
       List<AttributeType> expectedAttributes = new ArrayList<AttributeType>();
       for (String attrGuid : attributeGuids) {
-         AttributeType attributeType = attrCache.getTypeByGuid(attrGuid);
+         AttributeType attributeType = attrCache.getByGuid(attrGuid);
          Assert.assertNotNull(attributeType);
          expectedAttributes.add(attributeType);
       }
@@ -209,7 +209,7 @@ public class OseeTypesUtil {
    }
 
    public static void checkRelationTypeInheritance(AbstractOseeCache<RelationType> cache, AbstractOseeCache<ArtifactType> artCache, String relGuid, RelationSide relationSide, int maxValue, String... artifactTypesAllowed) throws OseeCoreException {
-      RelationType relationType = cache.getTypeByGuid(relGuid);
+      RelationType relationType = cache.getByGuid(relGuid);
       Assert.assertNotNull(relationType);
 
       Assert.assertEquals(maxValue, relationType.getMultiplicity().getLimit(relationSide));
@@ -218,12 +218,12 @@ public class OseeTypesUtil {
 
       List<ArtifactType> allowedTypes = new ArrayList<ArtifactType>();
       for (String guid : artifactTypesAllowed) {
-         ArtifactType type = artCache.getTypeByGuid(guid);
+         ArtifactType type = artCache.getByGuid(guid);
          Assert.assertNotNull(type);
          allowedTypes.add(type);
       }
 
-      for (ArtifactType artifactType : artCache.getAllTypes()) {
+      for (ArtifactType artifactType : artCache.getAll()) {
          boolean result = relationType.isArtifactTypeAllowed(relationSide, artifactType);
          if (allowedTypes.contains(artifactType)) {
             Assert.assertTrue(String.format("ArtifactType [%s] was not allowed", artifactType), result);

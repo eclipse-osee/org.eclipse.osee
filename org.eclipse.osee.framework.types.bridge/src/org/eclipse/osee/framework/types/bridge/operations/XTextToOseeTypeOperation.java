@@ -143,7 +143,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       Set<org.eclipse.osee.framework.skynet.core.artifact.ArtifactType> superTypes =
             new HashSet<org.eclipse.osee.framework.skynet.core.artifact.ArtifactType>();
       org.eclipse.osee.framework.skynet.core.artifact.ArtifactType targetArtifactType =
-            getCache().getArtifactTypeCache().getTypeByGuid(artifactType.getTypeGuid());
+            getCache().getArtifactTypeCache().getByGuid(artifactType.getTypeGuid());
 
       for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
          superTypes.add(getCache().getArtifactTypeCache().getUniqueByName(removeQuotes(superType.getName())));
@@ -163,7 +163,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          } else {
             branch = BranchManager.getBranchByGuid(branchGuid);
          }
-         items.put(branch, getCache().getAttributeTypeCache().getTypeByGuid(attributeType.getTypeGuid()));
+         items.put(branch, getCache().getAttributeTypeCache().getByGuid(attributeType.getTypeGuid()));
       }
 
       for (Branch branch : items.keySet()) {
@@ -232,7 +232,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType = null;
       OseeEnumType enumType = attributeType.getEnumType();
       if (enumType != null) {
-         oseeEnumType = getCache().getEnumTypeCache().getTypeByGuid(enumType.getTypeGuid());
+         oseeEnumType = getCache().getEnumTypeCache().getByGuid(enumType.getTypeGuid());
       }
       attributeType.setTypeGuid(getCache().getAttributeTypeCache().createType(attributeType.getTypeGuid(), //
             removeQuotes(attributeType.getName()), //

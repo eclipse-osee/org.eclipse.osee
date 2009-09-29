@@ -97,7 +97,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       loadBranchHierarchy(branchCache, childToParent);
       loadMergeBranches(branchCache);
       loadBranchAliases(branchCache);
-      for (Branch branch : cache.getAllTypes()) {
+      for (Branch branch : cache.getAll()) {
          branch.clearDirty();
       }
    }
@@ -116,7 +116,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
                boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
                IArtifact artifact = new ShallowArtifact(chStmt.getInt("associated_art_id"));
 
-               Branch branch = cache.getTypeById(branchId);
+               Branch branch = cache.getById(branchId);
                if (branch == null) {
 
                   branch =
@@ -130,7 +130,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
                   TransactionId baseTransaction = createBaselineTx(branch, chStmt);
 
                   branch.clearDirty();
-                  cache.cacheType(branch);
+                  cache.cache(branch);
                   cache.cacheTransaction(branch, baseTransaction);
                } else {
                   branch.setName(branchName);
@@ -183,7 +183,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    private void loadBranchHierarchy(BranchCache branchCache, Map<Branch, Integer> childToParent) throws OseeCoreException {
       for (Entry<Branch, Integer> entry : childToParent.entrySet()) {
          Branch childBranch = entry.getKey();
-         Branch parentBranch = branchCache.getTypeById(entry.getValue());
+         Branch parentBranch = branchCache.getById(entry.getValue());
          if (parentBranch == null) {
             throw new BranchDoesNotExist(String.format("Parent Branch id:[%s] does not exist for child branch [%s]",
                   entry.getValue(), entry.getKey()));
@@ -197,9 +197,9 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       try {
          chStmt.runPreparedQuery(1000, SELECT_MERGE_BRANCHES);
          while (chStmt.next()) {
-            Branch sourceBranch = branchCache.getTypeById(chStmt.getInt("source_branch_id"));
-            Branch destBranch = branchCache.getTypeById(chStmt.getInt("dest_branch_id"));
-            Branch mergeBranch = branchCache.getTypeById(chStmt.getInt("merge_branch_id"));
+            Branch sourceBranch = branchCache.getById(chStmt.getInt("source_branch_id"));
+            Branch destBranch = branchCache.getById(chStmt.getInt("dest_branch_id"));
+            Branch mergeBranch = branchCache.getById(chStmt.getInt("merge_branch_id"));
             branchCache.addMergeBranch(mergeBranch, sourceBranch, destBranch);
          }
       } finally {
@@ -215,7 +215,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
 
          while (chStmt.next()) {
             String alias = chStmt.getString("static_branch_name").toLowerCase();
-            Branch branch = branchCache.getTypeById(chStmt.getInt("mapped_branch_id"));
+            Branch branch = branchCache.getById(chStmt.getInt("mapped_branch_id"));
             branch.setAliases(alias);
          }
       } finally {

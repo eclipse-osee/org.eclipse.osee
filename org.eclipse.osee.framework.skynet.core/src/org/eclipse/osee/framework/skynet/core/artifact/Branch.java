@@ -196,7 +196,7 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       // TODO change this to recurse all Children and then filter by states.
 
       List<Branch> branches = new ArrayList<Branch>(500);
-      for (Branch branch : getCache().getAllTypes()) {
+      for (Branch branch : getCache().getAll()) {
          if (branch.getArchiveState().isUnArchived() && //
          branch.getBranchType().isOfType(BranchType.WORKING) && //
          this.equals(branch.getParentBranch())) {

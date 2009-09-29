@@ -77,9 +77,9 @@ public class DatabaseAttributeTypeAccessor implements IOseeDataAccessor<Attribut
                Class<? extends IAttributeDataProvider> providerAttributeClass =
                      AttributeExtensionManager.getAttributeProviderClassFor(baseProviderClassString);
                int enumTypeId = chStmt.getInt("enum_type_id");
-               OseeEnumType oseeEnumType = enumCache.getTypeById(enumTypeId);
+               OseeEnumType oseeEnumType = enumCache.getById(enumTypeId);
 
-               AttributeType attributeType = cache.getTypeById(attributeTypeId);
+               AttributeType attributeType = cache.getById(attributeTypeId);
                if (attributeType == null) {
                   attributeType =
                         factory.createAttributeType(cache, chStmt.getString("attr_type_guid"),
@@ -90,7 +90,7 @@ public class DatabaseAttributeTypeAccessor implements IOseeDataAccessor<Attribut
                               chStmt.getString("tagger_id"));
                   attributeType.setId(attributeTypeId);
                   attributeType.setModificationType(ModificationType.MODIFIED);
-                  cache.cacheType(attributeType);
+                  cache.cache(attributeType);
                } else {
                   attributeType.setFields(chStmt.getString("name"), baseClassString, baseProviderClassString,
                         baseAttributeClass, providerAttributeClass, chStmt.getString("file_type_extension"),

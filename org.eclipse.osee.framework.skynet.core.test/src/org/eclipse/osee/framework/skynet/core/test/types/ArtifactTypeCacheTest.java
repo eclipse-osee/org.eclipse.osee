@@ -113,13 +113,13 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
 
    @org.junit.Test
    public void testArtifactInheritanceByName() throws OseeCoreException {
-      Assert.assertTrue(artCache.getTypeByGuid("666").inheritsFrom("ArtifactType3")); // check inherits from using artifact name
+      Assert.assertTrue(artCache.getByGuid("666").inheritsFrom("ArtifactType3")); // check inherits from using artifact name
    }
 
    @org.junit.Test
    public void testAddArtifactSuperTypeMethod() throws OseeCoreException {
       ArtifactType artifactType = factory.createArtifactType(artCache, "myGUID", false, "TestMethodCreated");
-      artCache.cacheType(artifactType);
+      artCache.cache(artifactType);
 
       ArtifactType baseType = artCache.getUniqueByName("BaseArtifactType");
       Assert.assertFalse(artifactType.inheritsFrom(baseType));
@@ -128,13 +128,13 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
       artifactType.setSuperType(new HashSet<ArtifactType>(Arrays.asList(baseType)));
       Assert.assertEquals(1, artifactType.getSuperArtifactTypes().size());
       Assert.assertTrue(artifactType.inheritsFrom(baseType));
-      artCache.decacheType(artifactType);
+      artCache.decache(artifactType);
    }
 
    @org.junit.Test
    public void testInheritedAttributeTypes() throws OseeCoreException {
-      Branch branch1 = branchCache.getTypeByGuid("ROOT");
-      Branch branch2 = branchCache.getTypeByGuid("TEST");
+      Branch branch1 = branchCache.getByGuid("ROOT");
+      Branch branch2 = branchCache.getByGuid("TEST");
       Assert.assertNotNull(branch1);
       Assert.assertNotNull(branch2);
       OseeTypesUtil.checkAttributes(artCache, attrCache, "000", branch1, "AAA");
@@ -171,13 +171,13 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
                OseeTypesUtil.createBranch(cache, factory, "ROOT", "Root Branch", -1, BranchType.SYSTEM_ROOT,
                      BranchState.CREATED, false);
          branch1.setId(999);
-         cache.cacheType(branch1);
+         cache.cache(branch1);
 
          Branch branch2 =
                OseeTypesUtil.createBranch(cache, factory, "TEST", "Test Branch", -1, BranchType.BASELINE,
                      BranchState.CREATED, false);
          branch2.setId(998);
-         cache.cacheType(branch2);
+         cache.cache(branch2);
 
          ((BranchCache) cache).setBranchParent(branch1, branch2);
       }
@@ -212,7 +212,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
          int typeId = 200;
          for (AttributeType type : attributeTypes) {
             type.setId(typeId++);
-            cache.cacheType(type);
+            cache.cache(type);
          }
       }
    }
@@ -244,7 +244,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
          int typeId = 100;
          for (ArtifactType type : artifactTypes) {
             type.setId(typeId++);
-            cache.cacheType(type);
+            cache.cache(type);
          }
          ArtifactTypeCache artCache = (ArtifactTypeCache) cache;
          setUpArtifactTypeInheritance(artCache);
@@ -257,33 +257,33 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
          Set<ArtifactType> baseSuperType = new HashSet<ArtifactType>();
          baseSuperType.add(baseType);
          // 0<-1
-         cache.setArtifactSuperType(cache.getTypeByGuid("111"), baseSuperType);
+         cache.setArtifactSuperType(cache.getByGuid("111"), baseSuperType);
          // 0<-2
-         cache.setArtifactSuperType(cache.getTypeByGuid("222"), baseSuperType);
+         cache.setArtifactSuperType(cache.getByGuid("222"), baseSuperType);
          // 2<-3
-         cache.setArtifactSuperType(cache.getTypeByGuid("333"), Arrays.asList(cache.getTypeByGuid("222")));
+         cache.setArtifactSuperType(cache.getByGuid("333"), Arrays.asList(cache.getByGuid("222")));
          // 2,3<-4 
-         cache.setArtifactSuperType(cache.getTypeByGuid("444"), Arrays.asList(cache.getTypeByGuid("222"),
-               cache.getTypeByGuid("333"), baseType));
+         cache.setArtifactSuperType(cache.getByGuid("444"), Arrays.asList(cache.getByGuid("222"),
+               cache.getByGuid("333"), baseType));
          // 4<-5 
-         cache.setArtifactSuperType(cache.getTypeByGuid("555"), Arrays.asList(cache.getTypeByGuid("444"), baseType));
+         cache.setArtifactSuperType(cache.getByGuid("555"), Arrays.asList(cache.getByGuid("444"), baseType));
          // 3<-6 
-         cache.setArtifactSuperType(cache.getTypeByGuid("666"), Arrays.asList(cache.getTypeByGuid("333"), baseType));
+         cache.setArtifactSuperType(cache.getByGuid("666"), Arrays.asList(cache.getByGuid("333"), baseType));
       }
 
       private void setUpTypeValidity(ArtifactTypeCache cache) throws OseeCoreException {
-         Branch branch1 = branchCache.getTypeByGuid("ROOT");
-         Branch branch2 = branchCache.getTypeByGuid("TEST");
+         Branch branch1 = branchCache.getByGuid("ROOT");
+         Branch branch2 = branchCache.getByGuid("TEST");
          Assert.assertNotNull(branch1);
          Assert.assertNotNull(branch2);
-         cache.cacheTypeValidity(cache.getTypeByGuid("000"), attributeCache.getTypeByGuid("AAA"), branch1);
-         cache.cacheTypeValidity(cache.getTypeByGuid("111"), attributeCache.getTypeByGuid("BBB"), branch1);
-         cache.cacheTypeValidity(cache.getTypeByGuid("222"), attributeCache.getTypeByGuid("CCC"), branch1);
-         cache.cacheTypeValidity(cache.getTypeByGuid("333"), attributeCache.getTypeByGuid("DDD"), branch1);
-         cache.cacheTypeValidity(cache.getTypeByGuid("333"), attributeCache.getTypeByGuid("EEE"), branch2);
-         cache.cacheTypeValidity(cache.getTypeByGuid("444"), attributeCache.getTypeByGuid("FFF"), branch1);
-         cache.cacheTypeValidity(cache.getTypeByGuid("555"), attributeCache.getTypeByGuid("GGG"), branch1);
-         cache.cacheTypeValidity(cache.getTypeByGuid("666"), attributeCache.getTypeByGuid("HHH"), branch1);
+         cache.cacheTypeValidity(cache.getByGuid("000"), attributeCache.getByGuid("AAA"), branch1);
+         cache.cacheTypeValidity(cache.getByGuid("111"), attributeCache.getByGuid("BBB"), branch1);
+         cache.cacheTypeValidity(cache.getByGuid("222"), attributeCache.getByGuid("CCC"), branch1);
+         cache.cacheTypeValidity(cache.getByGuid("333"), attributeCache.getByGuid("DDD"), branch1);
+         cache.cacheTypeValidity(cache.getByGuid("333"), attributeCache.getByGuid("EEE"), branch2);
+         cache.cacheTypeValidity(cache.getByGuid("444"), attributeCache.getByGuid("FFF"), branch1);
+         cache.cacheTypeValidity(cache.getByGuid("555"), attributeCache.getByGuid("GGG"), branch1);
+         cache.cacheTypeValidity(cache.getByGuid("666"), attributeCache.getByGuid("HHH"), branch1);
       }
 
    }

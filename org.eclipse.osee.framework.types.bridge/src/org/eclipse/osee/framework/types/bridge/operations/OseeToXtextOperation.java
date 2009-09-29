@@ -90,7 +90,7 @@ public class OseeToXtextOperation extends AbstractOperation {
    }
 
    private void populateEnumTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
-      Collection<OseeEnumType> enumTypes = cache.getEnumTypeCache().getAllTypes();
+      Collection<OseeEnumType> enumTypes = cache.getEnumTypeCache().getAll();
       for (OseeEnumType enumType : enumTypes) {
          checkForCancelledStatus(monitor);
          org.eclipse.osee.framework.oseeTypes.OseeEnumType modelType = getFactory().createOseeEnumType();
@@ -115,7 +115,7 @@ public class OseeToXtextOperation extends AbstractOperation {
 
    private void populateAttributeTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
       monitor.setTaskName("Attribute Types");
-      Collection<AttributeType> attributeTypes = cache.getAttributeTypeCache().getAllTypes();
+      Collection<AttributeType> attributeTypes = cache.getAttributeTypeCache().getAll();
       for (AttributeType attributeType : attributeTypes) {
          checkForCancelledStatus(monitor);
          org.eclipse.osee.framework.oseeTypes.AttributeType modelType = getFactory().createAttributeType();
@@ -155,7 +155,7 @@ public class OseeToXtextOperation extends AbstractOperation {
 
    private void populateArtifactTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
       monitor.setTaskName("Artifact Types");
-      Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAllTypes();
+      Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
       for (ArtifactType artifactType : artifactTypes) {
          checkForCancelledStatus(monitor);
          org.eclipse.osee.framework.oseeTypes.ArtifactType modelType = getFactory().createArtifactType();
@@ -172,7 +172,7 @@ public class OseeToXtextOperation extends AbstractOperation {
 
    private void populateArtifactTypeInheritance(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
       monitor.setTaskName("Artifact Type Inheritance");
-      Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAllTypes();
+      Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
       for (ArtifactType artifactType : artifactTypes) {
          checkForCancelledStatus(monitor);
          OseeTypeModel model = getModelByNamespace(getNamespace(artifactType.getName()));
@@ -190,7 +190,7 @@ public class OseeToXtextOperation extends AbstractOperation {
 
    private void populateArtifactTypeAttributeTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
       monitor.setTaskName("Artifact Type to Attribute Types");
-      Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAllTypes();
+      Collection<ArtifactType> artifactTypes = cache.getArtifactTypeCache().getAll();
       for (ArtifactType artifactType : artifactTypes) {
          checkForCancelledStatus(monitor);
 
@@ -230,7 +230,7 @@ public class OseeToXtextOperation extends AbstractOperation {
 
    private void populateRelationTypes(IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
       monitor.setTaskName("Relation Types");
-      Collection<RelationType> relationTypes = cache.getRelationTypeCache().getAllTypes();
+      Collection<RelationType> relationTypes = cache.getRelationTypeCache().getAll();
       for (RelationType relationType : relationTypes) {
          checkForCancelledStatus(monitor);
          org.eclipse.osee.framework.oseeTypes.RelationType modelType = getFactory().createRelationType();

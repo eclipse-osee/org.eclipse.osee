@@ -127,14 +127,14 @@ public final class OseeEnumTypeCache extends AbstractOseeCache<OseeEnumType> {
    }
 
    public OseeEnumType createType(String guid, String enumTypeName) throws OseeCoreException {
-      OseeEnumType oseeEnumType = getTypeByGuid(guid);
+      OseeEnumType oseeEnumType = getByGuid(guid);
       if (oseeEnumType == null) {
          oseeEnumType = getDataFactory().createEnumType(this, guid, enumTypeName);
       } else {
-         decacheType(oseeEnumType);
+         decache(oseeEnumType);
          oseeEnumType.setName(enumTypeName);
       }
-      cacheType(oseeEnumType);
+      cache(oseeEnumType);
       return oseeEnumType;
    }
 

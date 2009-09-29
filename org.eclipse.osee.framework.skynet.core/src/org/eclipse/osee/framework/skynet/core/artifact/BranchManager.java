@@ -140,7 +140,7 @@ public class BranchManager {
 
    public static List<Branch> getBranches(BranchArchivedState archivedState, BranchControlled branchControlled, BranchType... branchTypes) throws OseeCoreException {
       List<Branch> branches = new ArrayList<Branch>(1000);
-      for (Branch branch : OseeTypeManager.getBranchCache().getAllTypes()) {
+      for (Branch branch : OseeTypeManager.getBranchCache().getAll()) {
          if (branch.getArchiveState().matches(archivedState) && //
          BranchControlled.fromBoolean(isChangeManaged(branch)).matches(branchControlled) && //
          branch.getBranchType().isOfType(branchTypes)) {
@@ -166,14 +166,14 @@ public class BranchManager {
    }
 
    public static Collection<Branch> getBranchesByName(String branchName) throws OseeCoreException {
-      return OseeTypeManager.getBranchCache().getTypeByName(branchName);
+      return OseeTypeManager.getBranchCache().getByName(branchName);
    }
 
    public static Branch getBranchByGuid(String guid) throws OseeCoreException {
       if (!GUID.isValid(guid)) {
          throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
       }
-      Branch branch = OseeTypeManager.getBranchCache().getTypeByGuid(guid);
+      Branch branch = OseeTypeManager.getBranchCache().getByGuid(guid);
       if (branch == null) {
          throw new BranchDoesNotExist(String.format("Branch with guid [%s] does not exist", guid));
       }
@@ -279,10 +279,10 @@ public class BranchManager {
       BranchCache cache = OseeTypeManager.getBranchCache();
       // If someone else made a branch on another machine, we may not know about it
       // so refresh the cache.
-      if (cache.getTypeById(branchId) == null) {
+      if (cache.getById(branchId) == null) {
          cache.reloadCache();
       }
-      Branch branch = cache.getTypeById(branchId);
+      Branch branch = cache.getById(branchId);
       if (branch == null) {
          throw new BranchDoesNotExist("Branch could not be acquired for branch id: " + branchId);
       }
@@ -591,7 +591,7 @@ public class BranchManager {
    }
 
    public static void decache(Branch branch) throws OseeCoreException {
-      OseeTypeManager.getBranchCache().decacheType(branch);
+      OseeTypeManager.getBranchCache().decache(branch);
    }
 
    public static boolean hasChanges(Branch branch) throws OseeCoreException {

@@ -66,13 +66,13 @@ public class BranchUtility {
       Branch toReturn = null;
       String branchGuid = decode(fileName);
       if (GUID.isValid(branchGuid)) {
-         toReturn = cache.getTypeByGuid(branchGuid);
+         toReturn = cache.getByGuid(branchGuid);
          if (toReturn == null) {
             throw new OseeArgumentException(String.format("Unable to find branch matching guid [%s]", branchGuid));
          }
       } else {
          int branchId = Integer.parseInt(Lib.getExtension(fileName));
-         toReturn = cache.getTypeById(branchId);
+         toReturn = cache.getById(branchId);
          if (toReturn == null) {
             throw new OseeArgumentException(String.format("Unable to find branch matching id [%s]", branchId));
          }

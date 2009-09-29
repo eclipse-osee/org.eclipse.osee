@@ -365,7 +365,7 @@ public class RemoteEventManager {
                   } else if (event instanceof NetworkDeletedBranchEvent) {
                      int branchId = ((NetworkDeletedBranchEvent) event).getBranchId();
                      try {
-                        Branch branch = OseeTypeManager.getBranchCache().getTypeById(branchId);
+                        Branch branch = OseeTypeManager.getBranchCache().getById(branchId);
                         if (branch != null) {
                            branch.setBranchState(BranchState.DELETED);
                            branch.clearDirty();

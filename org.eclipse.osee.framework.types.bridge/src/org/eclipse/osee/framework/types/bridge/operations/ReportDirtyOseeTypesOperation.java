@@ -56,10 +56,10 @@ public class ReportDirtyOseeTypesOperation extends AbstractOperation {
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       List<IResultsEditorTab> tabs = new ArrayList<IResultsEditorTab>();
-      createOseeEnumTypeReport(tabs, cache.getEnumTypeCache().getDirtyTypes());
-      createAttributeTypeReport(tabs, cache.getAttributeTypeCache().getDirtyTypes());
+      createOseeEnumTypeReport(tabs, cache.getEnumTypeCache().getAllDirty());
+      createAttributeTypeReport(tabs, cache.getAttributeTypeCache().getAllDirty());
       createArtifactTypeReport(tabs, cache.getArtifactTypeCache());
-      createRelationTypeReport(tabs, cache.getRelationTypeCache().getDirtyTypes());
+      createRelationTypeReport(tabs, cache.getRelationTypeCache().getAllDirty());
       openReport(tabs);
    }
 
@@ -84,7 +84,7 @@ public class ReportDirtyOseeTypesOperation extends AbstractOperation {
    }
 
    private void createArtifactTypeReport(List<IResultsEditorTab> tabs, ArtifactTypeCache cache) throws OseeCoreException {
-      Collection<ArtifactType> types = cache.getDirtyTypes();
+      Collection<ArtifactType> types = cache.getAllDirty();
       ReportTab tab = new ReportTab("Artifact Types", tabs);
       tab.addTableHeader("Name", "ModType", "Name Dirty", "IsAbstract Dirty", "Inherits Dirty", "Validity Dirty");
       String inheritance;

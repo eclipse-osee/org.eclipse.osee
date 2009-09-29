@@ -121,7 +121,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
          int typeId = 500;
          for (Branch type : data) {
             type.setId(typeId++);
-            cache.cacheType(type);
+            cache.cache(type);
          }
          BranchCache branchCache = (BranchCache) cache;
          loadBranchHierarchy(branchCache);

@@ -27,7 +27,7 @@ public final class AttributeTypeCache extends AbstractOseeCache<AttributeType> {
    }
 
    public AttributeType createType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
-      AttributeType attributeType = getTypeByGuid(guid);
+      AttributeType attributeType = getByGuid(guid);
       Class<? extends Attribute<?>> baseAttributeClass =
             AttributeExtensionManager.getAttributeClassFor(baseAttributeTypeId);
       Class<? extends IAttributeDataProvider> providerAttributeClass =
@@ -39,12 +39,12 @@ public final class AttributeTypeCache extends AbstractOseeCache<AttributeType> {
                      baseAttributeClass, providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType,
                      minOccurrences, maxOccurrences, description, taggerId);
       } else {
-         decacheType(attributeType);
+         decache(attributeType);
          attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, baseAttributeClass,
                providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType, minOccurrences, maxOccurrences,
                description, taggerId);
       }
-      cacheType(attributeType);
+      cache(attributeType);
       return attributeType;
    }
 }

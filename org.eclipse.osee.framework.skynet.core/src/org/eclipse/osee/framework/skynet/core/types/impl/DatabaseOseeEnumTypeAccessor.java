@@ -62,12 +62,12 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeDataAccessor<OseeEnumT
                String currentEnumTypeGuid = chStmt.getString("enum_type_guid");
                if (lastEnumTypeId != currentEnumTypeId) {
                   String enumTypeName = chStmt.getString("enum_type_name");
-                  oseeEnumType = cache.getTypeById(currentEnumTypeId);
+                  oseeEnumType = cache.getById(currentEnumTypeId);
                   if (oseeEnumType == null) {
                      oseeEnumType = factory.createEnumType(cache, currentEnumTypeGuid, enumTypeName);
                      oseeEnumType.setId(currentEnumTypeId);
                      oseeEnumType.setModificationType(ModificationType.MODIFIED);
-                     cache.cacheType(oseeEnumType);
+                     cache.cache(oseeEnumType);
                   } else {
                      oseeEnumType.setName(enumTypeName);
                   }

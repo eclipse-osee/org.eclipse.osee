@@ -26,7 +26,7 @@ public class OseeEnumTypeManager {
    }
 
    public static OseeEnumType getType(int enumTypeId) throws OseeCoreException {
-      OseeEnumType oseeEnumType = OseeTypeManager.getCache().getEnumTypeCache().getTypeById(enumTypeId);
+      OseeEnumType oseeEnumType = OseeTypeManager.getCache().getEnumTypeCache().getById(enumTypeId);
       if (oseeEnumType == null) {
          throw new OseeTypeDoesNotExist(String.format("Osee Enum Type with id:[%s] does not exist.", enumTypeId));
       }
@@ -51,7 +51,7 @@ public class OseeEnumTypeManager {
    }
 
    public static Collection<OseeEnumType> getAllTypes() throws OseeCoreException {
-      return OseeTypeManager.getCache().getEnumTypeCache().getAllTypes();
+      return OseeTypeManager.getCache().getEnumTypeCache().getAll();
    }
 
    public static boolean typeExist(String enumTypeName) throws OseeCoreException {

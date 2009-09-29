@@ -89,7 +89,7 @@ public class AttributeTypeManager {
    }
 
    public static Collection<AttributeType> getAllTypes() throws OseeCoreException {
-      return OseeTypeManager.getCache().getAttributeTypeCache().getAllTypes();
+      return OseeTypeManager.getCache().getAttributeTypeCache().getAll();
    }
 
    public static Collection<AttributeType> getTaggableTypes() throws OseeCoreException {
@@ -103,7 +103,7 @@ public class AttributeTypeManager {
    }
 
    public static boolean typeExists(String name) throws OseeCoreException {
-      return !OseeTypeManager.getCache().getAttributeTypeCache().getTypeByName(name).isEmpty();
+      return !OseeTypeManager.getCache().getAttributeTypeCache().getByName(name).isEmpty();
    }
 
    /**
@@ -116,7 +116,7 @@ public class AttributeTypeManager {
       if (!GUID.isValid(guid)) {
          throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
       }
-      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeCache().getTypeByGuid(guid);
+      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeCache().getByGuid(guid);
       if (attributeType == null) {
          throw new OseeTypeDoesNotExist("Attribute Type [" + guid + "] is not available.");
       }
@@ -144,7 +144,7 @@ public class AttributeTypeManager {
     * @throws OseeCoreException
     */
    public static AttributeType getType(int attrTypeId) throws OseeCoreException {
-      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeCache().getTypeById(attrTypeId);
+      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeCache().getById(attrTypeId);
       if (attributeType == null) {
          throw new OseeTypeDoesNotExist("Attribute type: " + attrTypeId + " is not available.");
       }

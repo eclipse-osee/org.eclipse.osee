@@ -81,7 +81,7 @@ public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactT
       loadArtifactTypes(cache, factory);
       loadTypeInheritance(getCastedObject(cache));
       loadAllTypeValidity(getCastedObject(cache), factory);
-      for (ArtifactType type : cache.getAllTypes()) {
+      for (ArtifactType type : cache.getAll()) {
          type.clearDirty();
       }
    }
@@ -97,14 +97,14 @@ public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactT
                boolean isAbstract = chStmt.getInt("is_abstract") == ABSTRACT_TYPE_INDICATOR;
                String artifactTypeName = chStmt.getString("name");
 
-               ArtifactType artifactType = cache.getTypeById(artTypeId);
+               ArtifactType artifactType = cache.getById(artTypeId);
                if (artifactType == null) {
                   artifactType =
                         factory.createArtifactType(cache, chStmt.getString("art_type_guid"), isAbstract,
                               artifactTypeName);
                   artifactType.setId(artTypeId);
                   artifactType.setModificationType(ModificationType.MODIFIED);
-                  cache.cacheType(artifactType);
+                  cache.cache(artifactType);
                } else {
                   artifactType.setName(artifactTypeName);
                   artifactType.setAbstract(isAbstract);
@@ -131,10 +131,10 @@ public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactT
                throw new OseeInvalidInheritanceException(String.format(
                      "Circular inheritance detected artifact type [%s] inherits from [%s]", artTypeId, superArtTypeId));
             }
-            superTypes.add(cache.getTypeById(superArtTypeId));
+            superTypes.add(cache.getById(superArtTypeId));
 
             if (previousBaseId != artTypeId) {
-               ArtifactType artifactType = cache.getTypeById(artTypeId);
+               ArtifactType artifactType = cache.getById(artTypeId);
                if (artifactType == null) {
                   throw new OseeInvalidInheritanceException(String.format(
                         "ArtifactType [%s] inherit from [%s] is null", artTypeId, superArtTypeId));
@@ -155,8 +155,8 @@ public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactT
          chStmt.runPreparedQuery(2000, SELECT_ARTIFACT_TYPE_ATTRIBUTES);
          while (chStmt.next()) {
             try {
-               ArtifactType artifactType = cache.getTypeById(chStmt.getInt("art_type_id"));
-               AttributeType attributeType = attributeCache.getTypeById(chStmt.getInt("attr_type_id"));
+               ArtifactType artifactType = cache.getById(chStmt.getInt("art_type_id"));
+               AttributeType attributeType = attributeCache.getById(chStmt.getInt("attr_type_id"));
 
                // TODO remove dependency on Managers
                Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id")); // Use Branch Cache
