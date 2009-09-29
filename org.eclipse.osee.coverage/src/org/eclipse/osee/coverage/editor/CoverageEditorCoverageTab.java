@@ -12,7 +12,6 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -50,8 +49,8 @@ public class CoverageEditorCoverageTab extends FormPage {
    private XCoverageViewer xCoverageViewer;
    private final CoverageEditor coverageEditor;
 
-   public CoverageEditorCoverageTab(CoverageEditor coverageEditor, String id, String title) {
-      super(coverageEditor, id, title);
+   public CoverageEditorCoverageTab(CoverageEditor coverageEditor) {
+      super(coverageEditor, "Coverage Items", "Coverage Items");
       this.coverageEditor = coverageEditor;
    }
 

@@ -11,7 +11,6 @@
 package org.eclipse.osee.coverage.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorProvider;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 

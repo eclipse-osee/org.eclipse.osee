@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorItem;
+import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 

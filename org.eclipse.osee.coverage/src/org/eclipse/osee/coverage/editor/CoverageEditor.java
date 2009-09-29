@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorProvider;
 import org.eclipse.osee.coverage.internal.CoveragePlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -48,18 +47,14 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
    protected void addPages() {
       try {
          OseeContributionItem.addTo(this, true);
-         createCoverageTab();
+         addFormPage(new CoverageEditorOverviewTab(this));
+         addFormPage(new CoverageEditorCoverageTab(this));
          setPartName(getCoverageEditorProvider().getName());
          setTitleImage(ImageManager.getImage(getCoverageEditorProvider().getTitleImage()));
          setActivePage(startPage);
       } catch (Exception ex) {
          OseeLog.log(CoveragePlugin.class, Level.SEVERE, ex);
       }
-   }
-
-   public void createCoverageTab() throws OseeCoreException {
-      CoverageEditorCoverageTab ptab = new CoverageEditorCoverageTab(this, "Coverage Items", "Coverage Items");
-      addFormPage(ptab);
    }
 
    private void addFormPage(FormPage page) {
