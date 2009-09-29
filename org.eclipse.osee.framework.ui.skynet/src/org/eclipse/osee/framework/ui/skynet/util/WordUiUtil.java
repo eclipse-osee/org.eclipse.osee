@@ -1,8 +1,13 @@
-/*
- * Created on Jun 5, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.Collection;
@@ -49,9 +54,10 @@ public class WordUiUtil {
                rd.log("Please make sure to accept/reject all tracked changes and comment references.\n");
                rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
                rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
-               for (Artifact artifact : artifacts)
+               for (Artifact artifact : artifacts) {
                   rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
                         XResultData.getHyperlink(artifact)}));
+               }
                rd.addRaw(AHTML.endMultiColumnTable());
                try {
                   rd.report("Artifacts With Tracked Changes");
@@ -72,9 +78,10 @@ public class WordUiUtil {
                rd.log(warningString + "\n");
                rd.addRaw(AHTML.beginMultiColumnTable(60, 1));
                rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Artifact Name", "HRID"}));
-               for (Artifact artifact : artifacts)
+               for (Artifact artifact : artifacts) {
                   rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {artifact.toString(),
                         XResultData.getHyperlink(artifact)}));
+               }
                rd.addRaw(AHTML.endMultiColumnTable());
                try {
                   rd.report("Unhandled Artifacts");

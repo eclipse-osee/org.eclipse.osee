@@ -1,8 +1,13 @@
-/*
- * Created on Jul 11, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.world.search;
 
 import java.util.ArrayList;
@@ -59,13 +64,13 @@ public class UserWorldSearchItem {
 
    public Collection<StateMachineArtifact> performSearch() throws OseeCoreException {
       Set<StateMachineArtifact> searchArts = new HashSet<StateMachineArtifact>();
-      if (options.contains(UserSearchOption.Originator))
+      if (options.contains(UserSearchOption.Originator)) {
          searchArts.addAll(getOriginatorArtifacts());
-      else if (options.contains(UserSearchOption.Subscribed))
+      } else if (options.contains(UserSearchOption.Subscribed)) {
          searchArts.addAll(getSubscribedArtifacts());
-      else if (options.contains(UserSearchOption.Favorites))
+      } else if (options.contains(UserSearchOption.Favorites)) {
          searchArts.addAll(getFavoritesArtifacts());
-      else {
+      } else {
          searchArts.addAll(SMAUtil.getSMAs(RelationManager.getRelatedArtifacts(Arrays.asList(user), 1,
                CoreRelationEnumeration.Users_Artifact)));
          // If include cancelled or completed, need to perform extra search
@@ -77,16 +82,26 @@ public class UserWorldSearchItem {
       }
 
       Collection<Class<?>> filterClasses = new ArrayList<Class<?>>();
-      if (!options.contains(UserSearchOption.IncludeReviews)) filterClasses.add(ReviewSMArtifact.class);
-      if (!options.contains(UserSearchOption.IncludeTeamWorkflows)) filterClasses.add(TeamWorkFlowArtifact.class);
-      if (!options.contains(UserSearchOption.IncludeTasks)) filterClasses.add(TaskArtifact.class);
+      if (!options.contains(UserSearchOption.IncludeReviews)) {
+         filterClasses.add(ReviewSMArtifact.class);
+      }
+      if (!options.contains(UserSearchOption.IncludeTeamWorkflows)) {
+         filterClasses.add(TeamWorkFlowArtifact.class);
+      }
+      if (!options.contains(UserSearchOption.IncludeTasks)) {
+         filterClasses.add(TaskArtifact.class);
+      }
 
       Collection<StateMachineArtifact> filteredArts = SMAUtil.filterOutTypes(searchArts, filterClasses);
 
-      if (teamDefs != null && teamDefs.size() > 0) filteredArts =
-            SMAUtil.getTeamDefinitionWorkflows(filteredArts, teamDefs);
+      if (teamDefs != null && teamDefs.size() > 0) {
+         filteredArts =
+               SMAUtil.getTeamDefinitionWorkflows(filteredArts, teamDefs);
+      }
 
-      if (versions != null && versions.size() > 0) filteredArts = SMAUtil.getVersionWorkflows(filteredArts, versions);
+      if (versions != null && versions.size() > 0) {
+         filteredArts = SMAUtil.getVersionWorkflows(filteredArts, versions);
+      }
 
       // Handle include completed/cancelled option
       if (options.contains(UserSearchOption.IncludeCompleted) && options.contains(UserSearchOption.IncludeCancelled)) {

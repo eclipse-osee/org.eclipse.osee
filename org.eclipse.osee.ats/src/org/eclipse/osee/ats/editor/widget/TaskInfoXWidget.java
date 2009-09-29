@@ -1,8 +1,13 @@
-/*
- * Created on Aug 3, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.editor.widget;
 
 import org.eclipse.jface.dialogs.IMessageProvider;
@@ -92,8 +97,12 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (smaMgr.isInTransition()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (smaMgr.isInTransition()) {
+         return;
+      }
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) {
+         return;
+      }
       for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts(forStateName)) {
          if (transData.isHasEvent(taskArt)) {
             Displays.ensureInDisplayThread(new Runnable() {

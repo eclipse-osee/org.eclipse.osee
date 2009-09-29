@@ -1,8 +1,12 @@
-/*
- * Created on Jun 8, 2009
- *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+******************************/
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.util.Collection;

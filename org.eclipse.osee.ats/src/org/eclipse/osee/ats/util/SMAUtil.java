@@ -1,8 +1,13 @@
-/*
- * Created on Jul 12, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.util;
 
 import java.util.ArrayList;
@@ -102,7 +107,9 @@ public class SMAUtil {
                completedCancelDate = sma.getWorldViewCompletedDate();
             }
          }
-         if (completedCancelDate == null) continue;
+         if (completedCancelDate == null) {
+            continue;
+         }
          if (completedCancelDate.after(startDate) && completedCancelDate.before(endDate)) {
             smas.add(sma);
          }
@@ -122,7 +129,9 @@ public class SMAUtil {
       List<StateMachineArtifact> smas = new ArrayList<StateMachineArtifact>();
       for (StateMachineArtifact sma : artifacts) {
          Date createDate = sma.getWorldViewCreatedDate();
-         if (createDate.after(date)) continue;
+         if (createDate.after(date)) {
+            continue;
+         }
          // Find state at date
          String currentState = sma.getSmaMgr().getStateMgr().getCurrentStateName();
          for (LogItem item : sma.getSmaMgr().getLog().getLogItems()) {
@@ -178,8 +187,12 @@ public class SMAUtil {
    public static Collection<StateMachineArtifact> getTeamDefinitionWorkflows(Collection<? extends Artifact> artifacts, Collection<TeamDefinitionArtifact> teamDefs) throws OseeCoreException {
       List<StateMachineArtifact> returnSmas = new ArrayList<StateMachineArtifact>();
       for (StateMachineArtifact sma : getSMAs(artifacts)) {
-         if (sma.getParentTeamWorkflow() == null) continue;
-         if (teamDefs.contains(sma.getParentTeamWorkflow().getTeamDefinition())) returnSmas.add(sma);
+         if (sma.getParentTeamWorkflow() == null) {
+            continue;
+         }
+         if (teamDefs.contains(sma.getParentTeamWorkflow().getTeamDefinition())) {
+            returnSmas.add(sma);
+         }
       }
       return returnSmas;
    }
@@ -187,9 +200,15 @@ public class SMAUtil {
    public static Collection<StateMachineArtifact> getVersionWorkflows(Collection<? extends Artifact> artifacts, Collection<VersionArtifact> versionArts) throws OseeCoreException {
       List<StateMachineArtifact> returnSmas = new ArrayList<StateMachineArtifact>();
       for (StateMachineArtifact sma : getSMAs(artifacts)) {
-         if (sma.getParentTeamWorkflow() == null) continue;
-         if (sma.getWorldViewTargetedVersion() == null) continue;
-         if (versionArts.contains(sma.getWorldViewTargetedVersion())) returnSmas.add(sma);
+         if (sma.getParentTeamWorkflow() == null) {
+            continue;
+         }
+         if (sma.getWorldViewTargetedVersion() == null) {
+            continue;
+         }
+         if (versionArts.contains(sma.getWorldViewTargetedVersion())) {
+            returnSmas.add(sma);
+         }
       }
       return returnSmas;
    }

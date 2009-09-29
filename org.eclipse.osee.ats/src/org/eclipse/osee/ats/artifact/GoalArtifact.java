@@ -1,8 +1,13 @@
-/*
- * Created on Jul 3, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Date;
@@ -49,8 +54,12 @@ public class GoalArtifact extends StateMachineArtifact {
    @Override
    public StateMachineArtifact getParentSMA() throws OseeCoreException {
       List<Artifact> parents = getRelatedArtifacts(AtsRelation.Goal_Goal);
-      if (parents.size() == 0) return null;
-      if (parents.size() == 1) return (StateMachineArtifact) parents.iterator().next();
+      if (parents.size() == 0) {
+         return null;
+      }
+      if (parents.size() == 1) {
+         return (StateMachineArtifact) parents.iterator().next();
+      }
       System.err.println("Two parent goals, what do here?");
       return (StateMachineArtifact) parents.iterator().next();
    }

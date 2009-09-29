@@ -1,8 +1,13 @@
-/*
- * Created on Jun 3, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.compare;
 
 import org.eclipse.compare.CompareConfiguration;
@@ -16,9 +21,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
  */
 public class CompareInput extends CompareEditorInput {
    private static final String CONFIRM_SAVE_PROPERTY = "org.eclipse.compare.internal.CONFIRM_SAVE_PROPERTY";
-   private CompareItem leftCompareItem;
-   private CompareItem rightCompareItem;
-   private CompareItem parentCompareItem;
+   private final CompareItem leftCompareItem;
+   private final CompareItem rightCompareItem;
+   private final CompareItem parentCompareItem;
    private Object differences;
 
    public CompareInput(CompareConfiguration compareConfiguration, CompareItem leftCompareItem, CompareItem rightCompareItem, CompareItem parentCompareItem) {
@@ -32,6 +37,7 @@ public class CompareInput extends CompareEditorInput {
       getCompareConfiguration().setProperty(CompareConfiguration.USE_OUTLINE_VIEW, Boolean.TRUE);
    }
 
+   @Override
    protected Object prepareInput(IProgressMonitor pm) {
       initTitle();
 

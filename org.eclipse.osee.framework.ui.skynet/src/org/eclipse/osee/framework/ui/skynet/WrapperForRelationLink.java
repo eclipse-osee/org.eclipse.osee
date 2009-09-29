@@ -1,8 +1,13 @@
-/*
- * Created on Aug 14, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -16,10 +21,10 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
  */
 class WrapperForRelationLink implements IAdaptable{
 
-   private RelationType relationType;
-   private Artifact artifactA;
-   private Artifact artifactB;
-   private Artifact other;
+   private final RelationType relationType;
+   private final Artifact artifactA;
+   private final Artifact artifactB;
+   private final Artifact other;
    
    public WrapperForRelationLink(RelationType relationType, Artifact other, Artifact artifactA, Artifact artifactB) {
       this.relationType = relationType;

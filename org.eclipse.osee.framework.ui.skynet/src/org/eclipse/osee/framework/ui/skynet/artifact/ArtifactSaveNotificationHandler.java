@@ -1,8 +1,13 @@
-/*
- * Created on Aug 12, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
 import java.util.Collection;
@@ -38,11 +43,15 @@ public class ArtifactSaveNotificationHandler implements IWorkbenchListener {
 
    @Override
    public boolean preShutdown(IWorkbench arg0, boolean arg1) {
-      if (noPopUp) return true;
+      if (noPopUp) {
+         return true;
+      }
       OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, "Verifying Artifact Persistence");
       try {
          Collection<Artifact> dirtyArts = ArtifactCache.getDirtyArtifacts();
-         if (dirtyArts.size() == 0) return true;
+         if (dirtyArts.size() == 0) {
+            return true;
+         }
          ArtifactDecorator artDecorator = new ArtifactDecorator("");
          artDecorator.addActions(null, null);
          artDecorator.setShowArtBranch(true);

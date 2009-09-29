@@ -1,8 +1,13 @@
-/*
- * Created on Aug 3, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.ats.editor.widget;
 
 import java.util.ArrayList;
@@ -198,7 +203,9 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
    }
 
    public static String toHTML(final SMAManager smaMgr, String forStateName) throws OseeCoreException {
-      if (smaMgr.getReviewManager().getReviews(forStateName).size() == 0) return "";
+      if (smaMgr.getReviewManager().getReviews(forStateName).size() == 0) {
+         return "";
+      }
       StringBuffer html = new StringBuffer();
       try {
          html.append(AHTML.addSpace(1) + AHTML.getLabelStr(AHTML.LABEL_FONT, "\"" + forStateName + "\" State Reviews"));
@@ -251,7 +258,7 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
 
       String str = "[" + revArt.getName() + "]";
       Hyperlink hyperLabel =
-            toolkit.createHyperlink(workComp, ((str.length() > 300) ? Strings.truncate(str, 300) + "..." : str),
+            toolkit.createHyperlink(workComp, (str.length() > 300 ? Strings.truncate(str, 300) + "..." : str),
                   SWT.NONE);
       hyperLabel.setToolTipText("Select to open review");
       hyperLabel.addListener(SWT.MouseUp, new Listener() {
@@ -263,8 +270,12 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (smaMgr.isInTransition()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (smaMgr.isInTransition()) {
+         return;
+      }
+      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) {
+         return;
+      }
       for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviews(forStateName)) {
          if (transData.isHasEvent(reviewArt)) {
             Displays.ensureInDisplayThread(new Runnable() {
