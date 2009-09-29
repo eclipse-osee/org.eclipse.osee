@@ -11,8 +11,10 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorProvider;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -111,7 +113,7 @@ public class CoverageImport implements ICoverageEditorProvider {
    }
 
    @Override
-   public Object getInput() {
+   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems() {
       return getCoverageUnits();
    }
 

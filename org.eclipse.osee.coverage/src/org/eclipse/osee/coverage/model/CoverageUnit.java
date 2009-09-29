@@ -12,14 +12,17 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorItem;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * Single code unit (file/procedure/function) that can contain other Coverage Unit or Coverage Items
  * 
  * @author Donald G. Dunne
  */
-public class CoverageUnit {
+public class CoverageUnit implements ICoverageEditorItem {
 
    private String name;
    private final String guid = GUID.create();
@@ -110,5 +113,19 @@ public class CoverageUnit {
    @Override
    public String toString() {
       return getName();
+   }
+
+   @Override
+   public User getUser() {
+      return null;
+   }
+
+   @Override
+   public Result isEditable() {
+      return null;
+   }
+
+   @Override
+   public void setUser(User user) {
    }
 }

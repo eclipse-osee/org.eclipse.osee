@@ -5,16 +5,19 @@
  */
 package org.eclipse.osee.coverage.editor;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
-import org.eclipse.osee.coverage.editor.xcover.CoverageItem;
+import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
+import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -47,9 +50,9 @@ public class CoverageEditorCoverageTab extends FormPage {
    private XCoverageViewer xCoverageViewer;
    private final CoverageEditor coverageEditor;
 
-   public CoverageEditorCoverageTab(CoverageEditor editor, String id, String title) {
-      super(editor, id, title);
-      this.coverageEditor = editor;
+   public CoverageEditorCoverageTab(CoverageEditor coverageEditor, String id, String title) {
+      super(coverageEditor, id, title);
+      this.coverageEditor = coverageEditor;
    }
 
    @Override
@@ -111,14 +114,23 @@ public class CoverageEditorCoverageTab extends FormPage {
             result.popup();
             return;
          }
-         Set<CoverageItem> items = new HashSet<CoverageItem>();
-         xCoverageViewer.loadTable(items);
+         xCoverageViewer.loadTable(performSearchGetResults());
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
-   private boolean promoteItemMatchesSearchCriteria(CoverageItem item) throws OseeCoreException {
+   private Collection<ICoverageEditorItem> performSearchGetResults() throws OseeCoreException {
+      Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
+      for (ICoverageEditorItem item : coverageEditor.getCoverageEditorProvider().getCoverageEditorItems()) {
+         if (coverageItemMatchesSearchCriteria(item)) {
+            items.add(item);
+         }
+      }
+      return items;
+   }
+
+   private boolean coverageItemMatchesSearchCriteria(ICoverageEditorItem item) throws OseeCoreException {
       if (getSelectedUser() != null) {
          if (!getSelectedUser().equals(item.getUser())) return false;
       }
@@ -133,6 +145,9 @@ public class CoverageEditorCoverageTab extends FormPage {
       }
       if (isIncludeCompletedCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
+      }
+      if (getSelectedCoverageMethod() != null) {
+         sb.append(" - Coverage Method: " + getSelectedCoverageMethod());
       }
       return "Promotion Items " + sb.toString();
    }
@@ -149,28 +164,11 @@ public class CoverageEditorCoverageTab extends FormPage {
       return ((XCheckBox) getXWidget("Include Completed/Cancelled"));
    }
 
-   public XCombo getPromotedXCombo() {
-      return ((XCombo) getXWidget("Promoted"));
-   }
-
-   public XHyperlabelTeamDefinitionSelection getTeamsHyperlinkSelection() {
-      return ((XHyperlabelTeamDefinitionSelection) getXWidget("Team Definitions(s)"));
-   }
-
    public void widgetsCreated() throws OseeCoreException {
       getIncludeCompletedCancelledCheckbox().set(true);
 
-      final XCombo versionCombo = getVersionCombo();
-      versionCombo.getComboBox().setVisibleItemCount(25);
-      versionCombo.setToolTip("Select Team to populate Version list");
-
-      final XCombo engBuildCombo = getEngineeringBuildCombo();
-      engBuildCombo.getComboBox().setVisibleItemCount(25);
-      engBuildCombo.setToolTip("Select Team to populate Engineering Build list");
-
-      final XCombo planCmBuildCombo = getPlannedCmBuildCombo();
-      planCmBuildCombo.getComboBox().setVisibleItemCount(25);
-      planCmBuildCombo.setToolTip("Select Team to populate Planned CM Build list");
+      final XCombo coverageMethodCombo = getCoverageMethodCombo();
+      coverageMethodCombo.getComboBox().setVisibleItemCount(25);
 
    }
 
@@ -179,21 +177,21 @@ public class CoverageEditorCoverageTab extends FormPage {
       return getAssigeeCombo().getUser();
    }
 
+   private CoverageMethodEnum getSelectedCoverageMethod() {
+      if (getCoverageMethodCombo() == null) return null;
+      if (!Strings.isValid(getCoverageMethodCombo().get())) {
+         return null;
+      }
+      return CoverageMethodEnum.valueOf(getCoverageMethodCombo().get());
+   }
+
    public XWidget getXWidget(String attrName) {
       if (page == null) throw new IllegalArgumentException("WorkPage == null");
       return page.getLayoutData(attrName).getXWidget();
    }
 
-   public XCombo getVersionCombo() {
-      return ((XCombo) getXWidget("Version"));
-   }
-
-   public XCombo getEngineeringBuildCombo() {
-      return ((XCombo) getXWidget("Engineering Build"));
-   }
-
-   public XCombo getPlannedCmBuildCombo() {
-      return ((XCombo) getXWidget("Planned CM Build"));
+   public XCombo getCoverageMethodCombo() {
+      return ((XCombo) getXWidget("Coverage Method"));
    }
 
    public Result isParameterSelectionValid() throws OseeCoreException {
@@ -216,15 +214,7 @@ public class CoverageEditorCoverageTab extends FormPage {
    public static String WIDGET_XML =
          "<xWidgets>" +
          //
-         "<XWidget xwidgetType=\"XHyperlabelTeamDefinitionSelection\" displayName=\"Team Definitions(s)\" horizontalLabel=\"true\"/>" +
-         //
-         "<XWidget xwidgetType=\"XCombo()\" beginComposite=\"6\" displayName=\"Version\" horizontalLabel=\"true\"/>" +
-         //
-         "<XWidget xwidgetType=\"XCombo()\" displayName=\"Planned CM Build\" horizontalLabel=\"true\"/>" +
-         //
-         "<XWidget xwidgetType=\"XCombo()\" displayName=\"Engineering Build\" horizontalLabel=\"true\"/>" +
-         //
-         "<XWidget xwidgetType=\"XCombo(Both,Promoted,UnPromoted)\" beginComposite=\"6\" displayName=\"Promoted\" horizontalLabel=\"true\"/>" +
+         "<XWidget xwidgetType=\"XCombo(" + Collections.toString(",", (Object[]) CoverageMethodEnum.values()) + ")\" beginComposite=\"6\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>" +
          //
          "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>" +
          //

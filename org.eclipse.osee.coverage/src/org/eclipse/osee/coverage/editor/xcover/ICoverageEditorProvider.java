@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.editor.xcover;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 
 /**
@@ -14,7 +15,7 @@ public interface ICoverageEditorProvider {
 
    public String getName();
 
-   public Object getInput();
+   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems();
 
    public OseeImage getTitleImage();
 }

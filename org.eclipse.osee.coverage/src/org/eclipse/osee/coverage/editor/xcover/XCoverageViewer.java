@@ -88,7 +88,6 @@ public class XCoverageViewer extends XWidget {
       if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
 
       // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
-      //      loadTable();
    }
 
    public void setXviewerTree(boolean expand) {
@@ -149,9 +148,9 @@ public class XCoverageViewer extends XWidget {
       return form;
    }
 
-   public void loadTable(Collection<CoverageItem> coverageItems) {
+   public void loadTable(Collection<ICoverageEditorItem> items) {
       try {
-         xViewer.set(coverageItems);
+         xViewer.set(items);
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -159,14 +158,14 @@ public class XCoverageViewer extends XWidget {
    }
 
    @SuppressWarnings("unchecked")
-   public ArrayList<CoverageItem> getSelectedPromoteItems() {
-      ArrayList<CoverageItem> items = new ArrayList<CoverageItem>();
+   public ArrayList<ICoverageEditorItem> getSelectedCoverageItems() {
+      ArrayList<ICoverageEditorItem> items = new ArrayList<ICoverageEditorItem>();
       if (xViewer == null) return items;
       if (xViewer.getSelection().isEmpty()) return items;
       Iterator i = ((IStructuredSelection) xViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         items.add((CoverageItem) obj);
+         items.add((ICoverageEditorItem) obj);
       }
       return items;
    }

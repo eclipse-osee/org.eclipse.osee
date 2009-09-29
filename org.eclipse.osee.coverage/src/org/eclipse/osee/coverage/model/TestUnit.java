@@ -7,14 +7,17 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorItem;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * Single test that can cover multiple Coverage Items
  * 
  * @author Donald G. Dunne
  */
-public class TestUnit {
+public class TestUnit implements ICoverageEditorItem {
 
    private String name;
    private final String guid = GUID.create();
@@ -67,5 +70,19 @@ public class TestUnit {
    @Override
    public String toString() {
       return getName();
+   }
+
+   @Override
+   public User getUser() {
+      return null;
+   }
+
+   @Override
+   public Result isEditable() {
+      return null;
+   }
+
+   @Override
+   public void setUser(User user) {
    }
 }

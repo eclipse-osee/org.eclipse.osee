@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 
 public class CoverageContentProvider implements ITreeContentProvider {
 
-   protected Collection<CoverageItem> rootSet = new HashSet<CoverageItem>();
+   protected Collection<ICoverageEditorItem> rootSet = new HashSet<ICoverageEditorItem>();
    private final CoverageXViewer xViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
    private final SkynetGuiDebug debug = new SkynetGuiDebug(false, "CoverageContentProvider");
@@ -32,11 +32,11 @@ public class CoverageContentProvider implements ITreeContentProvider {
       this.xViewer = WorldXViewer;
    }
 
-   public void add(final CoverageItem item) {
+   public void add(final ICoverageEditorItem item) {
       add(Arrays.asList(item));
    }
 
-   public void add(final Collection<? extends CoverageItem> items) {
+   public void add(final Collection<? extends ICoverageEditorItem> items) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -46,7 +46,7 @@ public class CoverageContentProvider implements ITreeContentProvider {
       });
    }
 
-   public void set(final Collection<? extends CoverageItem> arts) {
+   public void set(final Collection<? extends ICoverageEditorItem> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -62,16 +62,16 @@ public class CoverageContentProvider implements ITreeContentProvider {
 
    public void remove(final Collection<? extends Artifact> arts) {
       if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-      ArrayList<CoverageItem> delItems = new ArrayList<CoverageItem>();
+      ArrayList<ICoverageEditorItem> delItems = new ArrayList<ICoverageEditorItem>();
       delItems.addAll(rootSet);
       for (Artifact art : arts) {
-         for (CoverageItem wai : rootSet)
+         for (ICoverageEditorItem wai : rootSet)
             if (wai.equals(art)) delItems.add(wai);
       }
       removeItems(delItems);
    }
 
-   public void removeItems(final Collection<? extends CoverageItem> arts) {
+   public void removeItems(final Collection<? extends ICoverageEditorItem> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -124,10 +124,7 @@ public class CoverageContentProvider implements ITreeContentProvider {
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 
-   /**
-    * @return the rootSet
-    */
-   public Collection<CoverageItem> getRootSet() {
+   public Collection<ICoverageEditorItem> getRootSet() {
       return rootSet;
    }
 

@@ -12,11 +12,14 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.coverage.editor.xcover.ICoverageEditorItem;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
  * @author Donald G. Dunne
  */
-public class CoverageItem {
+public class CoverageItem implements ICoverageEditorItem {
 
    private CoverageMethodEnum coverageMethod = CoverageMethodEnum.None;
    private final String executeNum;
@@ -75,5 +78,19 @@ public class CoverageItem {
    @Override
    public String toString() {
       return getMethodNum() + ", " + getExecuteNum();
+   }
+
+   @Override
+   public User getUser() {
+      return null;
+   }
+
+   @Override
+   public Result isEditable() {
+      return null;
+   }
+
+   @Override
+   public void setUser(User user) {
    }
 }
