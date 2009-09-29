@@ -42,7 +42,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
       Branch selectedBranch = Handlers.getBranchesFromStructuredSelection(selection).iterator().next();
 
       try {
-         Artifact associatedArtifact = (Artifact) selectedBranch.getAssociatedArtifact();
+         Artifact associatedArtifact = selectedBranch.getAssociatedArtifact().getFullArtifact();
          if (associatedArtifact == null) {
             AWorkbench.popup("Open Associated Artifact", "No artifact associated with branch " + selectedBranch);
             return null;
