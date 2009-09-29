@@ -32,13 +32,19 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 public abstract class SkynetTransactionJobTemplate extends Job {
    private final Branch branch;
    protected IProgressMonitor monitor;
+   private final String transactionComment;
 
    /**
     * @param name
     */
    public SkynetTransactionJobTemplate(String name, Branch branch) {
+      this(name, branch, "");
+   }
+
+   public SkynetTransactionJobTemplate(String name, Branch branch, String transactionComment) {
       super(name);
       this.branch = branch;
+      this.transactionComment = transactionComment;
    }
 
    /**
@@ -69,7 +75,7 @@ public abstract class SkynetTransactionJobTemplate extends Job {
          return new Status(Status.ERROR, SkynetGuiPlugin.PLUGIN_ID, -1, result.getText(), null);
       }
       try {
-         SkynetTransaction transaction = new SkynetTransaction(branch);
+         SkynetTransaction transaction = new SkynetTransaction(branch, transactionComment);
          handleTxWork(transaction);
          transaction.execute();
       } catch (Exception ex) {
