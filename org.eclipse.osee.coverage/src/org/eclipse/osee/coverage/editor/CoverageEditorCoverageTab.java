@@ -9,10 +9,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
-import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -26,6 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -82,7 +81,7 @@ public class CoverageEditorCoverageTab extends FormPage {
       paramComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
       try {
-         page = new WorkPage(WIDGET_XML, ATSXWidgetOptionResolver.getInstance());
+         page = new WorkPage(WIDGET_XML, new DefaultXWidgetOptionResolver());
          page.createBody(getManagedForm(), paramComp, null, null, true);
          widgetsCreated();
       } catch (OseeCoreException ex) {
@@ -131,36 +130,20 @@ public class CoverageEditorCoverageTab extends FormPage {
 
    private boolean coverageItemMatchesSearchCriteria(ICoverageEditorItem item) throws OseeCoreException {
       if (getSelectedUser() != null) {
-         if (!getSelectedUser().equals(item.getUser())) return false;
+         if (!getSelectedUser().equals(item.getUser())) {
+            return false;
+         }
       }
 
       return true;
    }
 
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
-      if (getSelectedUser() != null) {
-         sb.append(" - Assignee: " + getSelectedUser());
-      }
-      if (isIncludeCompletedCancelledCheckbox()) {
-         sb.append(" - Include Completed/Cancelled");
-      }
-      if (getSelectedCoverageMethod() != null) {
-         sb.append(" - Coverage Method: " + getSelectedCoverageMethod());
-      }
-      return "Promotion Items " + sb.toString();
-   }
-
-   private boolean isIncludeCompletedCancelledCheckbox() {
-      return getIncludeCompletedCancelledCheckbox().isSelected();
-   }
-
    public XMembersCombo getAssigeeCombo() {
-      return ((XMembersCombo) getXWidget("Assignee"));
+      return (XMembersCombo) getXWidget("Assignee");
    }
 
    public XCheckBox getIncludeCompletedCancelledCheckbox() {
-      return ((XCheckBox) getXWidget("Include Completed/Cancelled"));
+      return (XCheckBox) getXWidget("Include Completed/Cancelled");
    }
 
    public void widgetsCreated() throws OseeCoreException {
@@ -172,12 +155,16 @@ public class CoverageEditorCoverageTab extends FormPage {
    }
 
    private User getSelectedUser() {
-      if (getAssigeeCombo() == null) return null;
+      if (getAssigeeCombo() == null) {
+         return null;
+      }
       return getAssigeeCombo().getUser();
    }
 
    private CoverageMethodEnum getSelectedCoverageMethod() {
-      if (getCoverageMethodCombo() == null) return null;
+      if (getCoverageMethodCombo() == null) {
+         return null;
+      }
       if (!Strings.isValid(getCoverageMethodCombo().get())) {
          return null;
       }
@@ -185,12 +172,14 @@ public class CoverageEditorCoverageTab extends FormPage {
    }
 
    public XWidget getXWidget(String attrName) {
-      if (page == null) throw new IllegalArgumentException("WorkPage == null");
+      if (page == null) {
+         throw new IllegalArgumentException("WorkPage == null");
+      }
       return page.getLayoutData(attrName).getXWidget();
    }
 
    public XCombo getCoverageMethodCombo() {
-      return ((XCombo) getXWidget("Coverage Method"));
+      return (XCombo) getXWidget("Coverage Method");
    }
 
    public Result isParameterSelectionValid() throws OseeCoreException {
@@ -205,7 +194,7 @@ public class CoverageEditorCoverageTab extends FormPage {
          }
          return Result.TrueResult;
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          return new Result("Exception: " + ex.getLocalizedMessage());
       }
    }

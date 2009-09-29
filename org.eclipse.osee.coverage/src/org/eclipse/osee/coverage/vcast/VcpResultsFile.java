@@ -10,7 +10,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.coverage.internal.CoveragePlugin;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -40,13 +40,13 @@ public class VcpResultsFile {
       if (m.find()) {
          ResultsValue resultsValue = ResultsValue.valueOf(m.group(1));
          if (resultsValue == null) {
-            OseeLog.log(CoveragePlugin.class, Level.SEVERE, String.format("Unhandled VcpResultsFile value [%s]",
+            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpResultsFile value [%s]",
                   m.group(1)));
          } else {
             resultsValues.put(resultsValue, m.group(2));
          }
       } else {
-         OseeLog.log(CoveragePlugin.class, Level.SEVERE, String.format("Unhandled VcpResultsFile line [%s]", line));
+         OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpResultsFile line [%s]", line));
       }
    }
 

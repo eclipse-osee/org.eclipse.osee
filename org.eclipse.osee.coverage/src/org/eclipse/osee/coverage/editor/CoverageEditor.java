@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.coverage.internal.CoveragePlugin;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,7 +53,7 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
          setTitleImage(ImageManager.getImage(getCoverageEditorProvider().getTitleImage()));
          setActivePage(startPage);
       } catch (Exception ex) {
-         OseeLog.log(CoveragePlugin.class, Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
    }
 
@@ -64,7 +64,7 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
             startPage = pageIndex;
          }
       } catch (PartInitException ex) {
-         OseeLog.log(CoveragePlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

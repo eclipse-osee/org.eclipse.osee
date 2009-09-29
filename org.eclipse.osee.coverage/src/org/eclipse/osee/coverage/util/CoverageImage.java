@@ -11,7 +11,7 @@
 package org.eclipse.osee.coverage.util;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.coverage.internal.CoveragePlugin;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 
@@ -29,11 +29,11 @@ public enum CoverageImage implements OseeImage {
 
    @Override
    public ImageDescriptor createImageDescriptor() {
-      return ImageManager.createImageDescriptor(CoveragePlugin.PLUGIN_ID, "images", fileName);
+      return ImageManager.createImageDescriptor(Activator.PLUGIN_ID, "images", fileName);
    }
 
    @Override
    public String getImageKey() {
-      return CoveragePlugin.PLUGIN_ID + "." + fileName;
+      return Activator.PLUGIN_ID + "." + fileName;
    }
 }

@@ -17,7 +17,7 @@ import org.eclipse.core.runtime.IRegistryEventListener;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.coverage.internal.CoveragePlugin;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -95,7 +95,7 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
       refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
       refreshAction.setToolTipText("Refresh");
 
-      OseeAts.addBugToViewToolbar(this, this, CoveragePlugin.getInstance(), VIEW_ID, "Coverage Navigator");
+      OseeAts.addBugToViewToolbar(this, this, Activator.getInstance(), VIEW_ID, "Coverage Navigator");
 
    }
 

@@ -15,11 +15,11 @@ import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 /**
  * @author Donald G. Dunne
  */
-public class CoveragePlugin extends OseeUiActivator {
-   private static CoveragePlugin pluginInstance; // The shared instance.
+public class Activator extends OseeUiActivator {
+   private static Activator pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.coverage";
 
-   public CoveragePlugin() {
+   public Activator() {
       super();
       pluginInstance = this;
    }
@@ -32,7 +32,7 @@ public class CoveragePlugin extends OseeUiActivator {
    /**
     * Returns the shared instance.
     */
-   public static CoveragePlugin getInstance() {
+   public static Activator getInstance() {
       return pluginInstance;
    }
 }
