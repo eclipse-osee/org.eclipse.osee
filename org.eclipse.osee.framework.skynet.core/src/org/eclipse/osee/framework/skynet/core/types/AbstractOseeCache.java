@@ -169,9 +169,10 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
    public void storeItems(Collection<T> toStore) throws OseeCoreException {
       if (!toStore.isEmpty()) {
          getDataAccessor().store(this, toStore);
-         synchronized (idToTypeMap) {
+         synchronized (this) {
             for (T type : toStore) {
-               cacheTypeById(type);
+               decacheType(type);
+               cacheType(type);
             }
          }
       }
