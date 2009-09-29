@@ -32,9 +32,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
-/**
- * The main plugin class to be used in the desktop.
- */
 public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEventListneer {
    private static SkynetGuiPlugin pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.skynet";
