@@ -15,8 +15,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
@@ -87,11 +85,6 @@ public class DefectXViewer extends XViewer {
       setColumnMultiEditEnabled(true);
       MenuManager mm = getMenuManager();
       mm.createContextMenu(getControl());
-      mm.addMenuListener(new IMenuListener() {
-         public void menuAboutToShow(IMenuManager manager) {
-            updateMenuActionsForTable();
-         }
-      });
 
       editSeverityAction = new Action("Edit Severity", Action.AS_PUSH_BUTTON) {
          @Override
@@ -235,6 +228,7 @@ public class DefectXViewer extends XViewer {
 
    }
 
+   @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
       updateEditMenuActions();
@@ -246,18 +240,15 @@ public class DefectXViewer extends XViewer {
    }
 
    public void add(Collection<DefectItem> defectItems) {
-      if (((DefectContentProvider) getContentProvider()) != null)
-         ((DefectContentProvider) getContentProvider()).add(defectItems);
+      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).add(defectItems);
    }
 
    public void set(Collection<? extends DefectItem> defectItems) {
-      if (((DefectContentProvider) getContentProvider()) != null)
-         ((DefectContentProvider) getContentProvider()).set(defectItems);
+      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).set(defectItems);
    }
 
    public void clear() {
-      if (((DefectContentProvider) getContentProvider()) != null)
-         ((DefectContentProvider) getContentProvider()).clear();
+      if (((DefectContentProvider) getContentProvider()) != null) ((DefectContentProvider) getContentProvider()).clear();
    }
 
    /**
@@ -273,12 +264,12 @@ public class DefectXViewer extends XViewer {
    public ArrayList<DefectItem> getSelectedDefectItems() {
       ArrayList<DefectItem> arts = new ArrayList<DefectItem>();
       TreeItem items[] = getTree().getSelection();
-      if (items.length > 0)
-         for (TreeItem item : items)
-            arts.add((DefectItem) item.getData());
+      if (items.length > 0) for (TreeItem item : items)
+         arts.add((DefectItem) item.getData());
       return arts;
    }
 
+   @Override
    public void handleColumnMultiEdit(TreeColumn treeColumn, Collection<TreeItem> treeItems) {
       if (!xDefectViewer.isEditable()) {
          return;
@@ -328,8 +319,7 @@ public class DefectXViewer extends XViewer {
          if (!defectItem.getInjectionActivity().equals(newInjectionActivity)) {
             defectItem.setInjectionActivity(newInjectionActivity);
             // at least one in the list has been changed.
-            if (!modified)
-               modified = true;
+            if (!modified) modified = true;
          }
       }
       return modified;
@@ -341,8 +331,7 @@ public class DefectXViewer extends XViewer {
          if (!defectItem.getUser().equals(user)) {
             defectItem.setUser(user);
             // at least one in the list has been changed.
-            if (!modified)
-               modified = true;
+            if (!modified) modified = true;
          }
       }
       return modified;
@@ -353,8 +342,7 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getLocation().equals(loc)) {
             defectItem.setLocation(loc);
-            if (!modified)
-               modified = true;
+            if (!modified) modified = true;
          }
       }
       return modified;
@@ -365,8 +353,7 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.toString().equals(desc)) {
             defectItem.setDescription(desc);
-            if (!modified)
-               modified = true;
+            if (!modified) modified = true;
          }
 
       }
@@ -378,8 +365,7 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (defectItem.isClosed() != closed) {
             defectItem.setClosed(closed);
-            if (!modified)
-               modified = true;
+            if (!modified) modified = true;
          }
       }
       return modified;
@@ -390,8 +376,7 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getSeverity().equals(severity)) {
             defectItem.setSeverity(severity);
-            if (!modified)
-               modified = true;
+            if (!modified) modified = true;
          }
       }
       return modified;
@@ -402,8 +387,7 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getDisposition().equals(disposition)) {
             defectItem.setDisposition(disposition);
-            if (!modified)
-               modified = true;
+            if (!modified) modified = true;
          }
       }
       return modified;
@@ -414,8 +398,7 @@ public class DefectXViewer extends XViewer {
       for (DefectItem defectItem : defectItems) {
          if (!defectItem.getDate().equals(date)) {
             defectItem.setDate(date);
-            if (!modified)
-               modified = true;
+            if (!modified) modified = true;
          }
       }
       return modified;
@@ -425,8 +408,7 @@ public class DefectXViewer extends XViewer {
       boolean modified = false;
       for (DefectItem defectItem : defectItems) {
          defectItem.setResolution(resolution);
-         if (!modified)
-            modified = true;
+         if (!modified) modified = true;
       }
       return modified;
    }
