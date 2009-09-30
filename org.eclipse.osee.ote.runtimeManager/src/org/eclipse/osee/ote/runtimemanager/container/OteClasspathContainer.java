@@ -111,7 +111,7 @@ public class OteClasspathContainer implements IClasspathContainer {
          runtimeLibUrls = locator.getRuntimeLibs();
          for( BundleInfo info : runtimeLibUrls )
          {
-            String binaryFilePath = info.getSystemLocation().getFile();
+            String binaryFilePath = info.getFile().getCanonicalPath();
 
             if(info.isSystemLibrary())
             {
