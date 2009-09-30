@@ -78,18 +78,9 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
                         ArtifactTypeManager.getType(chStmt.getInt("art_type_id")), chStmt.getInt("gamma_id"), artId,
                         toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, !hasBranch);
 
-            //We do not want to display artifacts that were new and then deleted
-            //The only was this could happen is if the artifact was in here twice
-            //since the sql only returns new or deleted artifacts
-            if (!artifactChangeBuilders.containsKey(artId)) {
                getArtIds().add(artId);
                getChangeBuilders().add(artifactChangeBuilder);
                artifactChangeBuilders.put(artId, artifactChangeBuilder);
-               //The same artifact can have this change many times on a branch. We only want to capture that it occurred once in the change report
-            } else if (modificationType != ModificationType.INTRODUCED) {
-               getChangeBuilders().remove(artifactChangeBuilders.get(artId));
-               getNewAndDeletedArtifactIds().add(artId);
-            }
          }
 
          getMonitor().worked(25);

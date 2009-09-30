@@ -88,6 +88,8 @@ public class ComputeNetChangeOperation extends AbstractOperation {
          netModType = ModificationType.NEW;
       } else if (change.wasIntroducedOnSource()) {
          netModType = ModificationType.INTRODUCED;
+      } else if(!change.getBase().exists() && !change.getFirst().exists() && change.getCurrent().getModType() == ModificationType.MODIFIED){
+         netModType = ModificationType.NEW;
       }
       return netModType;
    }
