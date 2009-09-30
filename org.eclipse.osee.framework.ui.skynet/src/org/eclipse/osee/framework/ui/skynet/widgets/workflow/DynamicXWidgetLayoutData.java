@@ -33,7 +33,7 @@ public class DynamicXWidgetLayoutData implements Cloneable {
    private DynamicXWidgetLayout dynamicXWidgetLayout;
    private String defaultValue;
    private String keyedBranchName;
-   private XOptionHandler xOptionHandler = new XOptionHandler();
+   private final XOptionHandler xOptionHandler = new XOptionHandler();
 
    public DynamicXWidgetLayoutData(DynamicXWidgetLayout dynamicXWidgetLayout, XOption... xOption) {
       this.dynamicXWidgetLayout = dynamicXWidgetLayout;
@@ -51,6 +51,7 @@ public class DynamicXWidgetLayoutData implements Cloneable {
       return height != DEFAULT_HEIGHT;
    }
 
+   @Override
    public String toString() {
       return getName();
    }
