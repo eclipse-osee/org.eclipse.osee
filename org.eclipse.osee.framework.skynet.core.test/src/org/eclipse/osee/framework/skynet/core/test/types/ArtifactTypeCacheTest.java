@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.types.AttributeTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
+import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 import org.junit.BeforeClass;
 
 /**
@@ -57,7 +58,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
       attributeTypes = new ArrayList<AttributeType>();
 
       BranchDataAccessor branchData = new BranchDataAccessor();
-      branchCache = new BranchCache(factory, branchData);
+      branchCache = new BranchCache(factory, branchData, null);
 
       AttributeDataAccessor attrData = new AttributeDataAccessor(attributeTypes);
       attrCache = new AttributeTypeCache(factory, attrData);

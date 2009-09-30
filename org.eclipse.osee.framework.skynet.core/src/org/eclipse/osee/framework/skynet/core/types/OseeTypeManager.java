@@ -35,7 +35,7 @@ public class OseeTypeManager {
       ArtifactTypeCache artCache = new ArtifactTypeCache(factory, new DatabaseArtifactTypeAccessor(attrCache));
       RelationTypeCache relCache = new RelationTypeCache(factory, new DatabaseRelationTypeAccessor(artCache));
 
-      branchCache = new BranchCache(factory, new DatabaseBranchAccessor());
+      branchCache = new BranchCache(factory, new DatabaseBranchAccessor(), new ShallowArtifact(-1));
       oseeTypeCache = new OseeTypeCache(new OseeTypeFactory(), artCache, attrCache, relCache, enumCache);
    }
 

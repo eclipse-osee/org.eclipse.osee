@@ -12,16 +12,25 @@ package org.eclipse.osee.framework.skynet.core.test.types;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
+import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,14 +44,15 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
    private static List<Branch> branchData;
    private static BranchCache cache;
    private static IOseeTypeFactory factory;
+   private static IArtifact defaultAssociatedArtifact;
 
    @BeforeClass
    public static void prepareTestData() throws OseeCoreException {
       factory = new OseeTypeFactory();
       branchData = new ArrayList<Branch>();
-
+      defaultAssociatedArtifact = new ShallowArtifact(-1);
       BranchDataAccessor branchAccessor = new BranchDataAccessor(branchData);
-      cache = new BranchCache(factory, branchAccessor);
+      cache = new BranchCache(factory, branchAccessor, defaultAssociatedArtifact);
 
       cache.ensurePopulated();
       Assert.assertTrue(branchAccessor.wasLoaded());
@@ -101,20 +111,122 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
    }
 
    @Test
+   public void testSetAliasForBranch() throws OseeCoreException {
+      Branch branch = cache.getByGuid("JJJ");
+      Assert.assertNotNull(branch);
+
+      branch.setAliases("One", "Two", "Three");
+      OseeTypesUtil.checkAliases(cache, "JJJ", "one", "two", "three");
+
+      branch.setAliases("One", "Three");
+      OseeTypesUtil.checkAliases(cache, "JJJ", "one", "three");
+
+      branch.setAliases();
+      OseeTypesUtil.checkAliases(cache, "JJJ");
+
+      branch.setAliases("a merge branch");
+      OseeTypesUtil.checkAliases(cache, "JJJ", "a merge branch");
+   }
+
+   @Test
    public void testBaseTransaction() throws OseeCoreException {
-      //      Branch branch = null;
-      //      TransactionId transactionId = branch.getBaseTransaction();
+      Branch branch = cache.getByGuid("BBB");
+      Assert.assertNotNull(branch);
+
+      Assert.assertNull(branch.getBaseTransaction());
+
+      TransactionId expectedTx =
+            new TransactionId(1, branch, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.Baselined);
+      cache.cacheBaseTransaction(branch, expectedTx);
+
+      TransactionId actualTx = branch.getBaseTransaction();
+      Assert.assertEquals(expectedTx, actualTx);
+   }
+
+   @Test
+   public void testInvalidBaseTransactionCaching() throws OseeCoreException {
+      Branch branch = cache.getByGuid("BBB");
+      Assert.assertNotNull(branch);
+      TransactionId expectedTx =
+            new TransactionId(1, branch, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.NonBaselined);
+
+      try {
+         cache.cacheBaseTransaction(null, expectedTx);
+         Assert.assertTrue("This line should not be executed", true);
+      } catch (Exception ex) {
+         Assert.assertTrue(ex instanceof OseeArgumentException);
+      }
+
+      try {
+         cache.cacheBaseTransaction(branch, null);
+         Assert.assertTrue("This line should not be executed", true);
+      } catch (Exception ex) {
+         Assert.assertTrue(ex instanceof OseeArgumentException);
+      }
+
+      try {
+         cache.cacheBaseTransaction(branch, expectedTx);
+         Assert.assertTrue("This line should not be executed", true);
+      } catch (Exception ex) {
+         Assert.assertTrue(ex instanceof OseeArgumentException);
+      }
    }
 
    @Test
    public void testSourceTransaction() throws OseeCoreException {
-      //      Branch branch = null;
-      //      TransactionId transactionId = branch.getBaseTransaction();
+      Branch branch = cache.getByGuid("BBB");
+      Assert.assertNotNull(branch);
+
+      Assert.assertNull(branch.getSourceTransaction());
+
+      TransactionId expectedTx =
+            new TransactionId(1, null, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.NonBaselined);
+      cache.cacheSourceTransaction(branch, expectedTx);
+
+      TransactionId actualTx = branch.getSourceTransaction();
+      Assert.assertEquals(expectedTx, actualTx);
+   }
+
+   @Test
+   public void testInvalidSourceTransaction() throws OseeCoreException {
+      Branch branch = cache.getByGuid("BBB");
+      Assert.assertNotNull(branch);
+      TransactionId expectedTx =
+            new TransactionId(1, branch, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.NonBaselined);
+      cache.cacheSourceTransaction(branch, expectedTx);
+
+      try {
+         cache.cacheSourceTransaction(null, expectedTx);
+         Assert.assertTrue("This line should not be executed", true);
+      } catch (Exception ex) {
+         Assert.assertTrue(ex instanceof OseeArgumentException);
+      }
+
+      try {
+         cache.cacheSourceTransaction(branch, null);
+         Assert.assertTrue("This line should not be executed", true);
+      } catch (Exception ex) {
+         Assert.assertTrue(ex instanceof OseeArgumentException);
+      }
    }
 
    @Test
    public void testAssociatedArtifact() throws OseeCoreException {
+      Assert.assertEquals(defaultAssociatedArtifact, cache.getDefaultAssociatedArtifact());
 
+      Branch branch = cache.getByGuid("BBB");
+      Assert.assertNotNull(branch);
+
+      Assert.assertEquals(defaultAssociatedArtifact, branch.getAssociatedArtifact());
+
+      String guid = GUID.create();
+      IArtifact expectedArtifact = new TestArtifact(100, guid, "Test Artifact");
+      branch.setAssociatedArtifact(expectedArtifact);
+
+      Assert.assertEquals(branch.getAssociatedArtifact(), expectedArtifact);
+
+      branch.setAssociatedArtifact(null);
+      Assert.assertEquals(defaultAssociatedArtifact, branch.getAssociatedArtifact());
    }
 
    @Override
@@ -137,6 +249,49 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       //      //            providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType, minOccurrences, maxOccurrences,
       //      //            description, taggerId);
 
+   }
+
+   private final static class TestArtifact implements IArtifact {
+
+      private final int artId;
+      private final String guid;
+      private final String name;
+
+      public TestArtifact(int uniqueId, String guid, String name) {
+         this.artId = uniqueId;
+         this.guid = guid;
+         this.name = name;
+      }
+
+      @Override
+      public int getArtId() {
+         return artId;
+      }
+
+      @Override
+      public ArtifactType getArtifactType() {
+         return null;
+      }
+
+      @Override
+      public Branch getBranch() {
+         return null;
+      }
+
+      @Override
+      public Artifact getFullArtifact() throws OseeCoreException {
+         return null;
+      }
+
+      @Override
+      public String getGuid() {
+         return guid;
+      }
+
+      @Override
+      public String getName() {
+         return name;
+      }
    }
 
    private final static class BranchDataAccessor extends OseeTestDataAccessor<Branch> {

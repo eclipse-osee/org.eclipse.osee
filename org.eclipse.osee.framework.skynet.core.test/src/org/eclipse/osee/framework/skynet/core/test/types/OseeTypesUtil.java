@@ -59,6 +59,7 @@ public class OseeTypesUtil {
          Collections.sort(actualAliases);
          for (String actualAlias : actualAliases) {
             String expectedAlias = expectedAliasesList.get(index++);
+            expectedAlias = expectedAlias.toLowerCase();
             Assert.assertEquals(expectedAlias, actualAlias);
             Collection<Branch> aliasedbranch = cache.getByAlias(expectedAlias);
             Assert.assertTrue(aliasedbranch.contains(branch));

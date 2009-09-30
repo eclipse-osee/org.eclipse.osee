@@ -14,10 +14,12 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -43,9 +45,9 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    private Branch systemRootBranch;
    private final IArtifact defaultAssociatedArtifact;
 
-   public BranchCache(IOseeTypeFactory factory, IOseeDataAccessor<Branch> dataAccessor) {
+   public BranchCache(IOseeTypeFactory factory, IOseeDataAccessor<Branch> dataAccessor, IArtifact defaultAssociatedArtifact) {
       super(factory, dataAccessor);
-      this.defaultAssociatedArtifact = new ShallowArtifact(-1);
+      this.defaultAssociatedArtifact = defaultAssociatedArtifact;
       this.systemRootBranch = null;
    }
 
@@ -119,13 +121,20 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    }
 
    public void setAliases(Branch branch, Collection<String> aliases) throws OseeCoreException {
+      if (branch == null) {
+         throw new OseeArgumentException("branch cannot be null");
+      }
       ensurePopulated();
+      branchToAlias.removeValues(branch);
       for (String alias : aliases) {
          branchToAlias.put(branch, alias.toLowerCase());
       }
    }
 
    public Collection<Branch> getByAlias(String alias) throws OseeCoreException {
+      if (!Strings.isValid(alias)) {
+         throw new OseeArgumentException("Alias cannot be null or empty");
+      }
       ensurePopulated();
       Collection<Branch> branches = new HashSet<Branch>();
       String aliasToMatch = alias.toLowerCase();
@@ -141,11 +150,26 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    }
 
    public void cacheBaseTransaction(Branch branch, TransactionId baseTransaction) throws OseeCoreException {
+      if (branch == null) {
+         throw new OseeArgumentException("branch cannot be null");
+      }
+      if (baseTransaction == null) {
+         throw new OseeArgumentException("base transaction cannot be null");
+      }
+      if (baseTransaction.getTxType() != TransactionDetailsType.Baselined) {
+         throw new OseeArgumentException("Transaction should be a baseline type transaction");
+      }
       ensurePopulated();
       branchToBaseTx.put(branch, baseTransaction);
    }
 
    public void cacheSourceTransaction(Branch branch, TransactionId sourceTransaction) throws OseeCoreException {
+      if (branch == null) {
+         throw new OseeArgumentException("branch cannot be null");
+      }
+      if (sourceTransaction == null) {
+         throw new OseeArgumentException("source transaction cannot be null");
+      }
       ensurePopulated();
       branchToSourceTx.put(branch, sourceTransaction);
    }
@@ -186,6 +210,14 @@ public class BranchCache extends AbstractOseeCache<Branch> {
 
    public IArtifact getAssociatedArtifact(Branch branch) throws OseeCoreException {
       ensurePopulated();
-      return branchToAssociatedArtifact.get(branch);
+      IArtifact associatedArtifact = branchToAssociatedArtifact.get(branch);
+      if (associatedArtifact == null) {
+         associatedArtifact = getDefaultAssociatedArtifact();
+      }
+      return associatedArtifact;
+   }
+
+   public IArtifact getDefaultAssociatedArtifact() {
+      return defaultAssociatedArtifact;
    }
 }

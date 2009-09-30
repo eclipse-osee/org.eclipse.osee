@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -64,7 +65,8 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
 
    private static final String SELECT_MERGE_BRANCHES = "SELECT * FROM osee_merge";
 
-   private static final String SELECT_BRANCH_ALIASES = "select * from osee_branch_definitions";
+   private static final String SELECT_BRANCH_ALIASES =
+         "select * from osee_branch_definitions order by mapped_branch_id";
    private static final String INSERT_BRANCH_ALIASES =
          "insert into osee_branch_definitions (mapped_branch_id, static_branch_name) VALUES (?, ?)";
    private static final String DELETE_BRANCH_ALIASES = "delete from osee_branch_definitions where mapped_branch_id = ?";
@@ -222,11 +224,18 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(SELECT_BRANCH_ALIASES);
-
+         HashCollection<Integer, String> aliasMap = new HashCollection<Integer, String>();
          while (chStmt.next()) {
+            int branchId = chStmt.getInt("mapped_branch_id");
             String alias = chStmt.getString("static_branch_name").toLowerCase();
-            Branch branch = branchCache.getById(chStmt.getInt("mapped_branch_id"));
-            branch.setAliases(alias);
+            aliasMap.put(branchId, alias);
+         }
+         for (Integer branchId : aliasMap.keySet()) {
+            Branch branch = branchCache.getById(branchId);
+            Collection<String> aliases = aliasMap.getValues(branchId);
+            if (aliases != null) {
+               branch.setAliases(aliases.toArray(new String[aliases.size()]));
+            }
          }
       } finally {
          chStmt.close();
