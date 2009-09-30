@@ -124,10 +124,11 @@ public class AtsBranchManager {
     * @throws OseeCoreException
     */
    public boolean isMergeBranchExists(Branch destinationBranch) throws OseeCoreException {
-      if (getWorkingBranch(true, false) == null) {
+      Branch branch = getWorkingBranch(true, false);
+      if (branch == null) {
          return false;
       }
-      return BranchManager.isMergeBranch(getWorkingBranch(true, false), destinationBranch);
+      return BranchManager.isMergeBranch(branch, destinationBranch);
    }
 
    public boolean isMergeCompleted(Branch destinationBranch) throws OseeCoreException {
@@ -516,7 +517,8 @@ public class AtsBranchManager {
     * @throws OseeCoreException
     */
    public boolean isWorkingBranchArchived() throws OseeCoreException {
-      return getWorkingBranch(true, false) != null && getWorkingBranch(true, false).getArchiveState().isArchived();
+      Branch branch = getWorkingBranch(true, false);
+      return branch != null && branch.getArchiveState().isArchived();
    }
 
    /**
