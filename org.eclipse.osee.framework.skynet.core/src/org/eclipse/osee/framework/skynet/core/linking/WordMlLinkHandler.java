@@ -194,7 +194,7 @@ public class WordMlLinkHandler {
          List<String> unknownGuids = getGuidsNotFound(guidsFromLinks, artifactsFromSearch);
 
          List<Artifact> union = new ArrayList<Artifact>();
-         union.addAll(findArtifacts(branch.getBaseTransaction(), sourceBranch, source.isHistorical(), unknownGuids));
+         union.addAll(findArtifacts(branch.getSourceTransaction(), sourceBranch, source.isHistorical(), unknownGuids));
          union.addAll(artifactsFromSearch);
          artifactsFromSearch = union;
       }

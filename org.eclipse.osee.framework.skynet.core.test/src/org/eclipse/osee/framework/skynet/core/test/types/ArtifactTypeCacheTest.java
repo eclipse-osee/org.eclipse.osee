@@ -168,13 +168,13 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
       public void load(AbstractOseeCache<Branch> cache, IOseeTypeFactory factory) throws OseeCoreException {
          super.load(cache, factory);
          Branch branch1 =
-               OseeTypesUtil.createBranch(cache, factory, "ROOT", "Root Branch", -1, BranchType.SYSTEM_ROOT,
+               OseeTypesUtil.createBranch(cache, factory, "ROOT", "Root Branch", BranchType.SYSTEM_ROOT,
                      BranchState.CREATED, false);
          branch1.setId(999);
          cache.cache(branch1);
 
          Branch branch2 =
-               OseeTypesUtil.createBranch(cache, factory, "TEST", "Test Branch", -1, BranchType.BASELINE,
+               OseeTypesUtil.createBranch(cache, factory, "TEST", "Test Branch", BranchType.BASELINE,
                      BranchState.CREATED, false);
          branch2.setId(998);
          cache.cache(branch2);

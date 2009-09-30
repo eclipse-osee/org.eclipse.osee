@@ -8,21 +8,32 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.types;
-
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.IOseeType;
+package org.eclipse.osee.framework.skynet.core.types.field;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeStorableType extends IOseeType {
+public final class OseeField<T> extends AbstractOseeField<T> {
 
-   int getId();
+   private T object;
 
-   void setId(int uniqueId) throws OseeCoreException;
+   public OseeField(T initValue) {
+      super();
+      set(initValue);
+   }
 
-   boolean isDirty();
+   public OseeField() {
+      super();
+   }
 
-   void clearDirty();
+   @Override
+   public void set(T value) {
+      isDirty |= ChangeUtil.isDifferent(get(), value);
+      this.object = value;
+   }
+
+   @Override
+   public T get() {
+      return object;
+   }
 }

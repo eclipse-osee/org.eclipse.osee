@@ -364,7 +364,7 @@ public class ConflictManagerInternal {
 
       for (Branch branch : sourceBranch.getAncestors()) {
          isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
-         parentTransactionNumber = branch.getBaseTransaction().getTransactionNumber();
+         parentTransactionNumber = branch.getSourceTransaction().getTransactionNumber();
 
          if (!isValidConflict) {
             break;

@@ -13,56 +13,63 @@ package org.eclipse.osee.framework.skynet.core.relation;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
-import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
+import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
 
 /**
  * @author Robert A. Fisher
  */
 public class RelationType extends AbstractOseeType implements Comparable<RelationType> {
-   private String sideAName;
-   private String sideBName;
-   private RelationTypeMultiplicity multiplicity;
-   private ArtifactType artifactTypeSideA;
-   private ArtifactType artifactTypeSideB;
-   private boolean isOrdered;
-   private String defaultOrderTypeGuid;
-   private final RelationTypeDirtyDetails dirtyDetails;
+
+   private static final String RELATION_SIDE_A_NAME_FIELD_KEY = "osee.relation.type.side.a.name.field";
+   private static final String RELATION_SIDE_B_NAME_FIELD_KEY = "osee.relation.type.side.b.name.field";
+   private static final String RELATION_SIDE_A_ART_TYPE_FIELD_KEY = "osee.relation.type.side.a.artifact.type.field";
+   private static final String RELATION_SIDE_B_ART_TYPE_FIELD_KEY = "osee.relation.type.side.b.artifact.type.field";
+   private static final String RELATION_IS_ORDERED_FIELD_KEY = "osee.relation.type.is.ordered.field";
+   private static final String RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY =
+         "osee.relation.type.default.order.type.guid.field";
+   private static final String RELATION_MULTIPLICITY_FIELD_KEY = "osee.relation.type.multiplicity.field";
 
    public RelationType(AbstractOseeCache<RelationType> cache, String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
       super(cache, guid, relationTypeName);
-      this.dirtyDetails = new RelationTypeDirtyDetails();
       setFields(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, isOrdered,
             defaultOrderTypeGuid);
    }
 
-   public RelationTypeDirtyDetails getDirtyDetails() {
-      return dirtyDetails;
+   @Override
+   protected void initializeFields() {
+      addField(RELATION_SIDE_A_NAME_FIELD_KEY, new OseeField<String>());
+      addField(RELATION_SIDE_B_NAME_FIELD_KEY, new OseeField<String>());
+      addField(RELATION_SIDE_A_ART_TYPE_FIELD_KEY, new OseeField<ArtifactType>());
+      addField(RELATION_SIDE_B_ART_TYPE_FIELD_KEY, new OseeField<ArtifactType>());
+      addField(RELATION_IS_ORDERED_FIELD_KEY, new OseeField<Boolean>());
+      addField(RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY, new OseeField<String>());
+      addField(RELATION_MULTIPLICITY_FIELD_KEY, new OseeField<RelationTypeMultiplicity>());
    }
 
    public void setFields(String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
-      getDirtyDetails().update(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB,
-            multiplicity, isOrdered, defaultOrderTypeGuid);
-      this.sideAName = sideAName;
-      this.sideBName = sideBName;
-      this.artifactTypeSideA = artifactTypeSideA;
-      this.artifactTypeSideB = artifactTypeSideB;
-      this.multiplicity = multiplicity;
-      this.isOrdered = isOrdered;
-      this.defaultOrderTypeGuid = defaultOrderTypeGuid;
+      setName(relationTypeName);
+      setFieldLogException(RELATION_SIDE_A_NAME_FIELD_KEY, sideAName);
+      setFieldLogException(RELATION_SIDE_B_NAME_FIELD_KEY, sideBName);
+      setFieldLogException(RELATION_SIDE_A_ART_TYPE_FIELD_KEY, artifactTypeSideA);
+      setFieldLogException(RELATION_SIDE_B_ART_TYPE_FIELD_KEY, artifactTypeSideB);
+      setFieldLogException(RELATION_IS_ORDERED_FIELD_KEY, isOrdered);
+      setFieldLogException(RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY, defaultOrderTypeGuid);
+      setFieldLogException(RELATION_MULTIPLICITY_FIELD_KEY, multiplicity);
    }
 
    public RelationTypeMultiplicity getMultiplicity() {
-      return multiplicity;
+      return getFieldValueLogException(null, RELATION_MULTIPLICITY_FIELD_KEY);
    }
 
    public ArtifactType getArtifactTypeSideA() {
-      return artifactTypeSideA;
+      return getFieldValueLogException(null, RELATION_SIDE_A_ART_TYPE_FIELD_KEY);
    }
 
    public ArtifactType getArtifactTypeSideB() {
-      return artifactTypeSideB;
+      return getFieldValueLogException(null, RELATION_SIDE_B_ART_TYPE_FIELD_KEY);
    }
 
    public ArtifactType getArtifactType(RelationSide relationSide) {
@@ -82,14 +89,14 @@ public class RelationType extends AbstractOseeType implements Comparable<Relatio
     * @return Returns the sideAName.
     */
    public String getSideAName() {
-      return sideAName;
+      return getFieldValueLogException("", RELATION_SIDE_A_NAME_FIELD_KEY);
    }
 
    /**
     * @return Returns the sideBName.
     */
    public String getSideBName() {
-      return sideBName;
+      return getFieldValueLogException("", RELATION_SIDE_B_NAME_FIELD_KEY);
    }
 
    public boolean isSideAName(String sideName) throws OseeArgumentException {
@@ -114,99 +121,10 @@ public class RelationType extends AbstractOseeType implements Comparable<Relatio
    }
 
    public boolean isOrdered() {
-      return isOrdered;
+      return getFieldValueLogException(false, RELATION_IS_ORDERED_FIELD_KEY);
    }
 
    public String getDefaultOrderTypeGuid() {
-      return defaultOrderTypeGuid;
-   }
-
-   @Override
-   public void clearDirty() {
-      getDirtyDetails().clearDirty();
-   }
-
-   @Override
-   public boolean isDirty() {
-      return getDirtyDetails().isDirty();
-   }
-
-   public final class RelationTypeDirtyDetails {
-      private boolean isSideANameDirty;
-      private boolean isSideBNameDirty;
-      private boolean isArtifactTypeSideADirty;
-      private boolean isArtifactTypeSideBDirty;
-      private boolean isMultiplicityDirty;
-      private boolean isOrderedDirty;
-      private boolean isDefaultOrderTypeGuidDirty;
-
-      private RelationTypeDirtyDetails() {
-         clearDirty();
-      }
-
-      private void update(String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
-         setName(relationTypeName);
-         isSideANameDirty |= isDifferent(getSideAName(), sideAName);
-         isSideBNameDirty |= isDifferent(getSideBName(), sideBName);
-         isArtifactTypeSideADirty |= isDifferent(getArtifactTypeSideA(), artifactTypeSideA);
-         isArtifactTypeSideBDirty |= isDifferent(getArtifactTypeSideB(), artifactTypeSideB);
-         isMultiplicityDirty |= isDifferent(getMultiplicity(), multiplicity);
-         isOrderedDirty |= isDifferent(isOrdered(), isOrdered);
-         isDefaultOrderTypeGuidDirty |= isDifferent(getDefaultOrderTypeGuid(), defaultOrderTypeGuid);
-      }
-
-      public boolean isNameDirty() {
-         return RelationType.super.isDirty();
-      }
-
-      public boolean isSideANameDirty() {
-         return isSideANameDirty;
-      }
-
-      public boolean isSideBNameDirty() {
-         return isSideBNameDirty;
-      }
-
-      public boolean isArtifactTypeSideADirty() {
-         return isArtifactTypeSideADirty;
-      }
-
-      public boolean isArtifactTypeSideBDirty() {
-         return isArtifactTypeSideBDirty;
-      }
-
-      public boolean isMultiplicityDirty() {
-         return isMultiplicityDirty;
-      }
-
-      public boolean isOrderedDirty() {
-         return isOrderedDirty;
-      }
-
-      public boolean isDefaultOrderTypeGuidDirty() {
-         return isDefaultOrderTypeGuidDirty;
-      }
-
-      public boolean isDirty() {
-         return isNameDirty() || //
-         isSideANameDirty() || //
-         isSideBNameDirty() || //
-         isArtifactTypeSideADirty() || //
-         isArtifactTypeSideBDirty() || //
-         isMultiplicityDirty() || //
-         isOrderedDirty() || //
-         isDefaultOrderTypeGuidDirty();
-      }
-
-      public void clearDirty() {
-         RelationType.super.clearDirty();
-         isSideANameDirty = false;
-         isSideBNameDirty = false;
-         isArtifactTypeSideADirty = false;
-         isArtifactTypeSideBDirty = false;
-         isMultiplicityDirty = false;
-         isOrderedDirty = false;
-         isDefaultOrderTypeGuidDirty = false;
-      }
+      return getFieldValueLogException("", RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY);
    }
 }

@@ -302,7 +302,8 @@ public final class InternalChangeManager {
                   isHistorical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }
 
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.ALL_CURRENT, null, insertParameters, true, isHistorical, true);
+         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.ALL_CURRENT, null, insertParameters, true, isHistorical,
+               true);
       }
    }
 

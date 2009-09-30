@@ -24,13 +24,14 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
+import org.eclipse.osee.framework.skynet.core.types.field.UniqueIdField;
 
 /**
  * @author Roberto E. Escobar
@@ -87,7 +88,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeDataAccessor<OseeEnumT
          chStmt.close();
       }
       for (OseeEnumType oseeEnumType : types.keySet()) {
-         Collection<OseeEnumEntry> oseeEnumEntries = types.getValues(oseeEnumType);
+         List<OseeEnumEntry> oseeEnumEntries = (List<OseeEnumEntry>) types.getValues(oseeEnumType);
          if (oseeEnumEntries != null) {
             oseeEnumType.setEntries(oseeEnumEntries);
             oseeEnumType.clearDirty();
@@ -102,7 +103,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeDataAccessor<OseeEnumT
       List<Object[]> updateData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
-         if (oseeEnumType.isDataDirty()) {
+         if (isDataDirty(oseeEnumType)) {
             switch (oseeEnumType.getModificationType()) {
                case NEW:
                   oseeEnumType.setId(SequenceManager.getNextOseeEnumTypeId());
@@ -118,7 +119,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeDataAccessor<OseeEnumT
                   break;
             }
          }
-         if (oseeEnumType.areEntriesDirty()) {
+         if (oseeEnumType.isFieldDirty(OseeEnumType.OSEE_ENUM_TYPE_ENTRIES_FIELD)) {
             if (!oseeEnumType.getModificationType().isDeleted()) {
                dirtyEntries.add(oseeEnumType);
             }
@@ -144,11 +145,15 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeDataAccessor<OseeEnumT
       }
    }
 
+   private boolean isDataDirty(OseeEnumType type) throws OseeCoreException {
+      return type.areFieldsDirty(AbstractOseeType.NAME_FIELD_KEY, AbstractOseeType.UNIQUE_ID_FIELD_KEY);
+   }
+
    private void storeOseeEnumEntries(Collection<OseeEnumType> oseeEnumTypes) throws OseeCoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (OseeEnumType type : oseeEnumTypes) {
-         if (type.getId() != AbstractOseeType.UNPERSISTTED_VALUE) {
+         if (type.getId() != UniqueIdField.UNPERSISTTED_VALUE) {
             deleteData.add(toDeleteValues(type));
          }
          for (OseeEnumEntry entry : type.values()) {

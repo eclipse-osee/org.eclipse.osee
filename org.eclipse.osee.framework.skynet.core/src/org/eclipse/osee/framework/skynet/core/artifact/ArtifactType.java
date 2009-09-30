@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -18,21 +19,33 @@ import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
+import org.eclipse.osee.framework.skynet.core.types.field.ArtifactSuperTypeField;
+import org.eclipse.osee.framework.skynet.core.types.field.ArtifactTypeAttributesField;
+import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
 
 /**
  * @author Robert A. Fisher
  */
 public class ArtifactType extends AbstractOseeType implements Comparable<ArtifactType> {
-   private boolean isAbstract;
+   public static final String ARTIFACT_IS_ABSTRACT_FIELD_KEY = "osee.artifact.type.is.abstract.field";
+   public static final String ARTIFACT_INHERITANCE_FIELD_KEY = "osee.artifact.type.inheritance.field";
+   public static final String ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY = "osee.artifact.type.attributes.field";
+
    private final ArtifactFactoryManager factoryManager;
-   private final DirtyStateDetail dirtyStateDetail;
 
    public ArtifactType(AbstractOseeCache<ArtifactType> cache, String guid, String name, boolean isAbstract, ArtifactFactoryManager factoryManager) {
       super(cache, guid, name);
-      this.dirtyStateDetail = new DirtyStateDetail();
       setAbstract(isAbstract);
       this.factoryManager = factoryManager;
+   }
+
+   @Override
+   protected void initializeFields() {
+      addField(ARTIFACT_IS_ABSTRACT_FIELD_KEY, new OseeField<Boolean>());
+      addField(ARTIFACT_INHERITANCE_FIELD_KEY, new ArtifactSuperTypeField(getCache(), this));
+      addField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY, new ArtifactTypeAttributesField(getCache(), this));
    }
 
    @Override
@@ -40,43 +53,39 @@ public class ArtifactType extends AbstractOseeType implements Comparable<Artifac
       return (ArtifactTypeCache) super.getCache();
    }
 
-   public DirtyStateDetail getDirtyDetails() {
-      return dirtyStateDetail;
-   }
-
-   public Collection<ArtifactType> getSuperArtifactTypes() {
-      return getCache().getArtifactSuperType(this);
-   }
-
-   public boolean hasSuperArtifactTypes() {
+   public boolean hasSuperArtifactTypes() throws OseeCoreException {
       Collection<ArtifactType> superTypes = getSuperArtifactTypes();
       return superTypes != null && !superTypes.isEmpty();
    }
 
+   public Collection<ArtifactType> getSuperArtifactTypes() {
+      Collection<ArtifactType> defaultValue = Collections.emptyList();
+      return getFieldValueLogException(defaultValue, ARTIFACT_INHERITANCE_FIELD_KEY);
+   }
+
    public void setSuperType(Set<ArtifactType> superType) throws OseeCoreException {
-      Collection<ArtifactType> original = getSuperArtifactTypes();
-      getCache().setArtifactSuperType(this, superType);
-      Collection<ArtifactType> newTypes = getSuperArtifactTypes();
-      getDirtyDetails().setIsInheritanceDirty(isDifferent(original, newTypes));
+      setField(ARTIFACT_INHERITANCE_FIELD_KEY, superType);
    }
 
    public void setAttributeTypeValidity(Collection<AttributeType> attributeTypes, Branch branch) throws OseeCoreException {
-      Collection<AttributeType> original = getCache().getLocalAttributeTypes(this, branch);
-      getCache().cacheTypeValidity(this, attributeTypes, branch);
-      Collection<AttributeType> newTypes = getCache().getLocalAttributeTypes(this, branch);
-      getDirtyDetails().setIsAttributeTypeValidatityDirty(isDifferent(original, newTypes));
+      setField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY, Collections.singletonMap(branch, attributeTypes));
    }
 
    public boolean isValidAttributeType(AttributeType attributeType, Branch branch) throws OseeCoreException {
       return getAttributeTypes(branch).contains(attributeType);
    }
 
-   public Set<AttributeType> getAttributeTypes(Branch branch) throws OseeCoreException {
+   public Collection<AttributeType> getAttributeTypes(Branch branch) throws OseeCoreException {
+      // Do not use ARTIFACT_TYPE_ATTRIBUTES_FIELD for this call since it must use branch inheritance to get all attribute types
       return getCache().getAttributeTypes(this, branch);
    }
 
    public boolean isAbstract() {
-      return isAbstract;
+      return getFieldValueLogException(false, ARTIFACT_IS_ABSTRACT_FIELD_KEY);
+   }
+
+   public void setAbstract(boolean isAbstract) {
+      setFieldLogException(ARTIFACT_IS_ABSTRACT_FIELD_KEY, isAbstract);
    }
 
    /**
@@ -161,69 +170,5 @@ public class ArtifactType extends AbstractOseeType implements Comparable<Artifac
          result = getName().compareTo(other.getName());
       }
       return result;
-   }
-
-   public void setAbstract(boolean isAbstract) {
-      getDirtyDetails().updateAbstract(isAbstract);
-      this.isAbstract = isAbstract;
-   }
-
-   @Override
-   public boolean isDirty() {
-      return getDirtyDetails().isDirty();
-   }
-
-   @Override
-   public void clearDirty() {
-      getDirtyDetails().clear();
-   }
-
-   public final class DirtyStateDetail {
-      private boolean isInheritanceDirty;
-      private boolean isAttributeTypeValidatityDirty;
-      private boolean isAbstractDirty;
-
-      private DirtyStateDetail() {
-      }
-
-      public void setIsAttributeTypeValidatityDirty(boolean different) {
-         isAttributeTypeValidatityDirty |= different;
-      }
-
-      public void setIsInheritanceDirty(boolean different) {
-         isInheritanceDirty |= different;
-      }
-
-      private void updateAbstract(boolean isAbstract) {
-         isAbstractDirty |= isDifferent(isAbstract(), isAbstract);
-      }
-
-      public boolean isInheritanceDirty() {
-         return isInheritanceDirty;
-      }
-
-      public boolean isAttributeTypeValidityDirty() {
-         return isAttributeTypeValidatityDirty;
-      }
-
-      public boolean isAbstractDirty() {
-         return isAbstractDirty;
-      }
-
-      public boolean isNameDirty() {
-         return ArtifactType.super.isDirty();
-      }
-
-      public boolean isDirty() {
-         return isNameDirty() || isAbstractDirty() || //
-         isInheritanceDirty() || isAttributeTypeValidityDirty();
-      }
-
-      private void clear() {
-         ArtifactType.super.clearDirty();
-         isInheritanceDirty = false;
-         isAttributeTypeValidatityDirty = false;
-         isAbstractDirty = false;
-      }
    }
 }

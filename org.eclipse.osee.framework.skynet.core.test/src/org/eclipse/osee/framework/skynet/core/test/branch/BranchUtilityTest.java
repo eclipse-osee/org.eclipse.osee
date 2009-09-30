@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchUtility;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeTestDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
 import org.junit.Test;
@@ -145,13 +146,13 @@ public class BranchUtilityTest {
    }
 
    private Branch createBranch(AbstractOseeCache<Branch> cache, String guid, String name, int id) throws OseeCoreException {
-      Branch branch = factory.createBranch(cache, guid, name, -1, BranchType.WORKING, BranchState.MODIFIED, false);
+      Branch branch = factory.createBranch(cache, guid, name, BranchType.WORKING, BranchState.MODIFIED, false);
       Assert.assertNotNull(branch);
       branch.setId(id);
       return branch;
    }
 
-   private final class TestCache extends AbstractOseeCache<Branch> {
+   private final class TestCache extends BranchCache {
       public TestCache(IOseeTypeFactory factory) {
          super(factory, new OseeTestDataAccessor<Branch>());
       }

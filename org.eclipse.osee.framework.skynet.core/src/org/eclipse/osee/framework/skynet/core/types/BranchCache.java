@@ -38,6 +38,7 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    private final Map<Branch, IArtifact> branchToAssociatedArtifact = new HashMap<Branch, IArtifact>();
 
    private final Map<Branch, TransactionId> branchToBaseTx = new HashMap<Branch, TransactionId>();
+   private final Map<Branch, TransactionId> branchToSourceTx = new HashMap<Branch, TransactionId>();
 
    private Branch systemRootBranch;
    private final IArtifact defaultAssociatedArtifact;
@@ -93,7 +94,7 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       childToParent.put(childBranch, parentBranch);
    }
 
-   public void addMergeBranch(Branch mergeBranch, Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
+   public void cacheMergeBranch(Branch mergeBranch, Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
       if (mergeBranch == null) {
          throw new OseeArgumentException("Merge Branch cannot be null");
       }
@@ -117,7 +118,7 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       return aliases;
    }
 
-   public void setAliases(Branch branch, String... aliases) throws OseeCoreException {
+   public void setAliases(Branch branch, Collection<String> aliases) throws OseeCoreException {
       ensurePopulated();
       for (String alias : aliases) {
          branchToAlias.put(branch, alias.toLowerCase());
@@ -139,14 +140,24 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       return branches;
    }
 
-   public void cacheTransaction(Branch branch, TransactionId baseTransaction) throws OseeCoreException {
+   public void cacheBaseTransaction(Branch branch, TransactionId baseTransaction) throws OseeCoreException {
       ensurePopulated();
       branchToBaseTx.put(branch, baseTransaction);
+   }
+
+   public void cacheSourceTransaction(Branch branch, TransactionId sourceTransaction) throws OseeCoreException {
+      ensurePopulated();
+      branchToSourceTx.put(branch, sourceTransaction);
    }
 
    public TransactionId getBaseTransaction(Branch branch) throws OseeCoreException {
       ensurePopulated();
       return branchToBaseTx.get(branch);
+   }
+
+   public TransactionId getSourceTransaction(Branch branch) throws OseeCoreException {
+      ensurePopulated();
+      return branchToSourceTx.get(branch);
    }
 
    public void setAssociatedArtifact(Branch branch, IArtifact artifact) throws OseeCoreException {

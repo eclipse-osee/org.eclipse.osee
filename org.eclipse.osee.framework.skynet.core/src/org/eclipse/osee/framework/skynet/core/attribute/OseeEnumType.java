@@ -12,29 +12,31 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
+import org.eclipse.osee.framework.skynet.core.types.field.EnumEntryField;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnumType> {
 
-   private boolean areEntriesDirty;
+   public static final String OSEE_ENUM_TYPE_ENTRIES_FIELD = "osee.enum.type.entries.field";
 
    public OseeEnumType(AbstractOseeCache<OseeEnumType> cache, String guid, String enumTypeName) {
       super(cache, guid, enumTypeName);
+   }
+
+   @Override
+   protected void initializeFields() {
+      addField(OSEE_ENUM_TYPE_ENTRIES_FIELD, new EnumEntryField(getCache(), this));
    }
 
    @Override
@@ -56,7 +58,7 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
    }
 
    public OseeEnumEntry[] values() throws OseeCoreException {
-      List<OseeEnumEntry> entries = getCache().getEnumEntries(this);
+      List<OseeEnumEntry> entries = getFieldValue(OSEE_ENUM_TYPE_ENTRIES_FIELD);
       Collections.sort(entries);
       return entries.toArray(new OseeEnumEntry[entries.size()]);
    }
@@ -95,11 +97,8 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
       return toReturn;
    }
 
-   public void setEntries(Collection<OseeEnumEntry> entries) throws OseeCoreException {
-      List<OseeEnumEntry> oldEntries = getCache().getEnumEntries(this);
-      getCache().cacheEnumEntries(this, entries);
-      List<OseeEnumEntry> newEntries = getCache().getEnumEntries(this);
-      areEntriesDirty |= isDifferent(oldEntries, newEntries);
+   public void setEntries(List<OseeEnumEntry> entries) throws OseeCoreException {
+      setField(OSEE_ENUM_TYPE_ENTRIES_FIELD, entries);
    }
 
    public void addEntry(OseeEnumEntry entry) throws OseeCoreException {
@@ -119,23 +118,6 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
       setEntries(entries);
    }
 
-   void internalUpdateDirtyEntries(boolean areEntriesDirty) {
-      this.areEntriesDirty |= areEntriesDirty;
-   }
-
-   public boolean areEntriesDirty() {
-      return areEntriesDirty;
-   }
-
-   public boolean isDataDirty() {
-      return super.isDirty();
-   }
-
-   @Override
-   public boolean isDirty() {
-      return isDataDirty() || areEntriesDirty();
-   }
-
    @Override
    public int compareTo(OseeEnumType other) {
       int result = -1;
@@ -143,18 +125,5 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
          result = getName().compareTo(other.getName());
       }
       return result;
-   }
-
-   @Override
-   public void clearDirty() {
-      super.clearDirty();
-      areEntriesDirty = false;
-      try {
-         for (OseeEnumEntry entry : values()) {
-            entry.clearDirty();
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
    }
 }

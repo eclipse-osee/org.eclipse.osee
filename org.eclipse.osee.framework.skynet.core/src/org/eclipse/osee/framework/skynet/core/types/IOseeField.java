@@ -11,18 +11,17 @@
 package org.eclipse.osee.framework.skynet.core.types;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.IOseeType;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeStorableType extends IOseeType {
+public interface IOseeField<T> {
 
-   int getId();
+   void set(T value) throws OseeCoreException;
 
-   void setId(int uniqueId) throws OseeCoreException;
-
-   boolean isDirty();
+   T get() throws OseeCoreException;
 
    void clearDirty();
+
+   boolean isDirty();
 }

@@ -106,6 +106,10 @@ public final class TransactionIdManager {
       instance.transactionIdCache.put(transaction.getTransactionNumber(), transaction);
    }
 
+   public synchronized static TransactionId getTransactionFromCache(int txNumber) throws OseeCoreException {
+      return instance.transactionIdCache.get(txNumber);
+   }
+
    /**
     * @param branch
     * @return the largest (most recent) transaction on the given branch

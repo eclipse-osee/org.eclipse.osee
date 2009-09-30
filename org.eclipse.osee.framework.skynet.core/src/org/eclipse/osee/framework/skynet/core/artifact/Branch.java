@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -25,8 +26,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.access.IAccessControllable;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.skynet.core.types.field.AliasesField;
+import org.eclipse.osee.framework.skynet.core.types.field.AssociatedArtifactField;
+import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
 
 /**
  * @author Roberto E. Escobar
@@ -34,17 +39,26 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 public class Branch extends AbstractOseeType implements Comparable<Branch>, IAccessControllable, IAdaptable {
    private static final int SHORT_NAME_LIMIT = 25;
 
-   private BranchType branchType;
-   private BranchState branchState;
-   private BranchArchivedState archivedState;
-   private final DirtyStateDetails dirtyStateDetails;
+   public static final String BRANCH_TYPE_FIELD_KEY = "osee.branch.type.field";
+   public static final String BRANCH_STATE_FIELD_KEY = "osee.branch.state.field";
+   public static final String BRANCH_ARCHIVED_STATE_FIELD_KEY = "osee.branch.archived.state.field";
+   public static final String BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY = "osee.branch.associated.artifact.field";
+   public static final String BRANCH_ALIASES_FIELD_KEY = "osee.branch.aliases.field";
 
-   public Branch(AbstractOseeCache<Branch> cache, String guid, String name, int parentTxNumber, BranchType branchType, BranchState branchState, boolean isArchived) {
+   public Branch(AbstractOseeCache<Branch> cache, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
       super(cache, guid, name);
-      this.dirtyStateDetails = new DirtyStateDetails();
-      this.archivedState = BranchArchivedState.fromBoolean(isArchived);
-      this.branchType = branchType;
-      this.branchState = branchState;
+      setFieldLogException(BRANCH_TYPE_FIELD_KEY, branchType);
+      setFieldLogException(BRANCH_STATE_FIELD_KEY, branchState);
+      setFieldLogException(BRANCH_ARCHIVED_STATE_FIELD_KEY, BranchArchivedState.fromBoolean(isArchived));
+   }
+
+   @Override
+   protected void initializeFields() {
+      addField(BRANCH_TYPE_FIELD_KEY, new OseeField<BranchType>());
+      addField(BRANCH_STATE_FIELD_KEY, new OseeField<BranchState>());
+      addField(BRANCH_ARCHIVED_STATE_FIELD_KEY, new OseeField<BranchArchivedState>());
+      addField(BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, new AssociatedArtifactField(getCache(), this));
+      addField(BRANCH_ALIASES_FIELD_KEY, new AliasesField(getCache(), this));
    }
 
    @Override
@@ -69,57 +83,52 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
    }
 
    public BranchType getBranchType() {
-      return branchType;
+      return getFieldValueLogException(null, BRANCH_TYPE_FIELD_KEY);
    }
 
    public BranchState getBranchState() {
-      return branchState;
+      return getFieldValueLogException(null, BRANCH_STATE_FIELD_KEY);
+   }
+
+   public BranchArchivedState getArchiveState() {
+      return getFieldValueLogException(null, BRANCH_ARCHIVED_STATE_FIELD_KEY);
    }
 
    public IArtifact getAssociatedArtifact() throws OseeCoreException {
-      return getCache().getAssociatedArtifact(this);
+      return getFieldValue(BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY);
    }
 
    public void setAssociatedArtifact(IArtifact artifact) throws OseeCoreException {
-      IArtifact oldArtifact = getCache().getAssociatedArtifact(this);
-      getCache().setAssociatedArtifact(this, artifact);
-      IArtifact newArtifact = getCache().getAssociatedArtifact(this);
-      getDirtyDetails().isAssociatedArtifactDirty |= isDifferent(oldArtifact, newArtifact);
+      setField(BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, artifact);
    }
 
    public TransactionId getBaseTransaction() throws OseeCoreException {
       return getCache().getBaseTransaction(this);
    }
 
-   public BranchArchivedState getArchiveState() {
-      return archivedState;
+   public TransactionId getSourceTransaction() throws OseeCoreException {
+      return getCache().getSourceTransaction(this);
    }
 
    public Collection<String> getAliases() throws OseeCoreException {
-      return getCache().getAliases(this);
+      return getFieldValue(BRANCH_ALIASES_FIELD_KEY);
    }
 
    public void setAliases(String... alias) throws OseeCoreException {
-      Collection<String> original = getAliases();
-      getCache().setAliases(this, alias);
-      Collection<String> other = getAliases();
-      getDirtyDetails().areAliasesDirty |= isDifferent(original, other);
+      setField(BRANCH_ALIASES_FIELD_KEY, Arrays.asList(alias));
    }
 
    public void setArchived(boolean isArchived) {
       BranchArchivedState newValue = BranchArchivedState.fromBoolean(isArchived);
-      getDirtyDetails().isArchivedStateDirty |= isDifferent(this.archivedState, newValue);
-      this.archivedState = newValue;
+      setFieldLogException(BRANCH_ARCHIVED_STATE_FIELD_KEY, newValue);
    }
 
    public void setBranchState(BranchState branchState) {
-      getDirtyDetails().isBranchStateDirty |= isDifferent(this.branchState, branchState);
-      this.branchState = branchState;
+      setFieldLogException(BRANCH_STATE_FIELD_KEY, branchState);
    }
 
    public void setBranchType(BranchType branchType) {
-      getDirtyDetails().isBranchTypeDirty |= isDifferent(this.branchType, branchType);
-      this.branchType = branchType;
+      setFieldLogException(BRANCH_TYPE_FIELD_KEY, branchType);
    }
 
    public boolean isEditable() {
@@ -204,80 +213,6 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
          }
       }
       return branches;
-   }
-
-   @Override
-   public void clearDirty() {
-      getDirtyDetails().clearDirty();
-   }
-
-   @Override
-   public boolean isDirty() {
-      return getDirtyDetails().isDirty();
-   }
-
-   public DirtyStateDetails getDirtyDetails() {
-      return dirtyStateDetails;
-   }
-
-   public final class DirtyStateDetails {
-      private boolean isBranchTypeDirty;
-      private boolean isBranchStateDirty;
-      private boolean isArchivedStateDirty;
-      private boolean isAssociatedArtifactDirty;
-      private boolean areAliasesDirty;
-
-      private DirtyStateDetails() {
-         clearDirty();
-      }
-
-      public boolean isBranchTypeDirty() {
-         return isBranchTypeDirty;
-      }
-
-      public boolean isBranchStateDirty() {
-         return isBranchStateDirty;
-      }
-
-      public boolean isArchivedStateDirty() {
-         return isArchivedStateDirty;
-      }
-
-      public boolean isAssociatedArtifactDirty() {
-         return isAssociatedArtifactDirty;
-      }
-
-      public boolean isNameDirty() {
-         return Branch.super.isDirty();
-      }
-
-      public boolean areAliasesDirty() {
-         return areAliasesDirty;
-      }
-
-      public boolean isDirty() {
-         return isBranchTypeDirty() || //
-         isBranchStateDirty() || //
-         isArchivedStateDirty() || //
-         isAssociatedArtifactDirty() || //
-         isNameDirty() || areAliasesDirty();
-      }
-
-      public boolean isDataDirty() {
-         return isBranchTypeDirty() || //
-         isBranchStateDirty() || //
-         isArchivedStateDirty() || //
-         isAssociatedArtifactDirty() || //
-         isNameDirty();
-      }
-
-      public void clearDirty() {
-         Branch.super.clearDirty();
-         isBranchTypeDirty = false;
-         isBranchStateDirty = false;
-         isArchivedStateDirty = false;
-         isAssociatedArtifactDirty = false;
-      }
    }
 
    @SuppressWarnings("unchecked")

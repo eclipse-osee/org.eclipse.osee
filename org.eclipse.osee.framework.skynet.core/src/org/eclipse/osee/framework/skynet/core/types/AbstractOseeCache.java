@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
+import org.eclipse.osee.framework.skynet.core.types.field.UniqueIdField;
 
 /**
  * @author Roberto E. Escobar
@@ -63,7 +63,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       }
       guidToTypeMap.remove(type.getGuid());
       nameToTypeMap.removeValue(type.getName(), type);
-      if (type.getId() != AbstractOseeType.UNPERSISTTED_VALUE) {
+      if (type.getId() != UniqueIdField.UNPERSISTTED_VALUE) {
          idToTypeMap.remove(type.getId());
       }
    }
@@ -81,7 +81,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       if (type == null) {
          throw new OseeArgumentException("Caching a null value is not allowed");
       }
-      if (type.getId() != AbstractOseeType.UNPERSISTTED_VALUE) {
+      if (type.getId() != UniqueIdField.UNPERSISTTED_VALUE) {
          idToTypeMap.put(type.getId(), type);
       }
    }

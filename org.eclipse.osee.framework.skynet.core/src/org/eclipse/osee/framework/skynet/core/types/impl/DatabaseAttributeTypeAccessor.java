@@ -112,16 +112,18 @@ public class DatabaseAttributeTypeAccessor implements IOseeDataAccessor<Attribut
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> updateData = new ArrayList<Object[]>();
       for (AttributeType type : types) {
-         switch (type.getModificationType()) {
-            case NEW:
-               type.setId(SequenceManager.getNextAttributeTypeId());
-               insertData.add(toInsertValues(type));
-               break;
-            case MODIFIED:
-               updateData.add(toUpdateValues(type));
-               break;
-            default:
-               break;
+         if (type.isDirty()) {
+            switch (type.getModificationType()) {
+               case NEW:
+                  type.setId(SequenceManager.getNextAttributeTypeId());
+                  insertData.add(toInsertValues(type));
+                  break;
+               case MODIFIED:
+                  updateData.add(toUpdateValues(type));
+                  break;
+               default:
+                  break;
+            }
          }
       }
       ConnectionHandler.runBatchUpdate(INSERT_ATTRIBUTE_TYPE, insertData);

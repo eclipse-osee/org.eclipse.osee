@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.test.types;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -66,10 +67,60 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
 
    @Test
    public void testMergeBranches() throws OseeCoreException {
+      OseeTypesUtil.checkMergeBranch(cache, null, "HHH", "AAA");
+      OseeTypesUtil.checkMergeBranch(cache, "III", "DDD", "BBB");
+      OseeTypesUtil.checkMergeBranch(cache, "JJJ", "GGG", "CCC");
+      OseeTypesUtil.checkMergeBranch(cache, "KKK", "HHH", "CCC");
+   }
+
+   @Test
+   public void testBranchAliases() throws OseeCoreException {
+      OseeTypesUtil.checkAliases(cache, "AAA", "root", "system", "main");
+      OseeTypesUtil.checkAliases(cache, "BBB", "base 1", "build 1");
+      OseeTypesUtil.checkAliases(cache, "CCC", "base 2", "build 2");
+
+      OseeTypesUtil.checkAliases(cache, "DDD");
+      OseeTypesUtil.checkAliases(cache, "EEE");
+      OseeTypesUtil.checkAliases(cache, "FFF");
+      OseeTypesUtil.checkAliases(cache, "GGG");
+      OseeTypesUtil.checkAliases(cache, "HHH");
+      OseeTypesUtil.checkAliases(cache, "III");
+   }
+
+   @Test
+   public void testSameAliasForMultipleBranches() throws OseeCoreException {
+      OseeTypesUtil.checkAliases(cache, "JJJ", "a merge branch");
+      OseeTypesUtil.checkAliases(cache, "KKK", "a merge branch");
+
+      List<Branch> aliasedbranch = new ArrayList<Branch>(cache.getByAlias("a merge branch"));
+      Assert.assertEquals(2, aliasedbranch.size());
+
+      Collections.sort(aliasedbranch);
+      Assert.assertEquals(cache.getByGuid("JJJ"), aliasedbranch.get(0));
+      Assert.assertEquals(cache.getByGuid("KKK"), aliasedbranch.get(1));
+   }
+
+   @Test
+   public void testBaseTransaction() throws OseeCoreException {
+      //      Branch branch = null;
+      //      TransactionId transactionId = branch.getBaseTransaction();
+   }
+
+   @Test
+   public void testSourceTransaction() throws OseeCoreException {
+      //      Branch branch = null;
+      //      TransactionId transactionId = branch.getBaseTransaction();
+   }
+
+   @Test
+   public void testAssociatedArtifact() throws OseeCoreException {
+
    }
 
    @Override
    public void testDirty() throws OseeCoreException {
+      // TODO test Rename
+
       //      AttributeType attributeType = OseeTypesUtil.createAttributeType(attrCache, factory, "GUID", "AttributeDirtyTest");
       //      Assert.assertTrue(attributeType.isDirty());
       //      attributeType.clearDirty();
@@ -100,24 +151,34 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       @Override
       public void load(AbstractOseeCache<Branch> cache, IOseeTypeFactory factory) throws OseeCoreException {
          super.load(cache, factory);
-         data.add(OseeTypesUtil.createBranch(cache, factory, "AAA", "Root", -1, BranchType.SYSTEM_ROOT,
+         data.add(OseeTypesUtil.createBranch(cache, factory, "AAA", "Root", BranchType.SYSTEM_ROOT,
                BranchState.CREATED, false));
-         data.add(OseeTypesUtil.createBranch(cache, factory, "BBB", "B-Branch", -1, BranchType.BASELINE,
+
+         data.add(OseeTypesUtil.createBranch(cache, factory, "BBB", "B-Branch", BranchType.BASELINE,
                BranchState.CREATED, false));
-         data.add(OseeTypesUtil.createBranch(cache, factory, "CCC", "C-Branch", -1, BranchType.BASELINE,
+         data.add(OseeTypesUtil.createBranch(cache, factory, "CCC", "C-Branch", BranchType.BASELINE,
                BranchState.MODIFIED, false));
 
-         data.add(OseeTypesUtil.createBranch(cache, factory, "DDD", "D-Branch", -1, BranchType.WORKING,
+         data.add(OseeTypesUtil.createBranch(cache, factory, "DDD", "D-Branch", BranchType.WORKING,
                BranchState.MODIFIED, false));
-         data.add(OseeTypesUtil.createBranch(cache, factory, "EEE", "E-Branch", -1, BranchType.WORKING,
+         data.add(OseeTypesUtil.createBranch(cache, factory, "EEE", "E-Branch", BranchType.WORKING,
                BranchState.MODIFIED, false));
 
-         data.add(OseeTypesUtil.createBranch(cache, factory, "FFF", "F-Branch", -1, BranchType.WORKING,
+         data.add(OseeTypesUtil.createBranch(cache, factory, "FFF", "F-Branch", BranchType.WORKING,
                BranchState.MODIFIED, false));
-         data.add(OseeTypesUtil.createBranch(cache, factory, "GGG", "G-Branch", -1, BranchType.WORKING,
+         data.add(OseeTypesUtil.createBranch(cache, factory, "GGG", "G-Branch", BranchType.WORKING,
                BranchState.MODIFIED, true));
-         data.add(OseeTypesUtil.createBranch(cache, factory, "HHH", "H-Branch", -1, BranchType.WORKING,
+         data.add(OseeTypesUtil.createBranch(cache, factory, "HHH", "H-Branch", BranchType.WORKING,
                BranchState.MODIFIED, true));
+
+         // Merge Branches
+         data.add(OseeTypesUtil.createBranch(cache, factory, "III", "Merge-A", BranchType.MERGE, BranchState.CREATED,
+               false));
+         data.add(OseeTypesUtil.createBranch(cache, factory, "JJJ", "Merge-B", BranchType.MERGE, BranchState.CREATED,
+               false));
+         data.add(OseeTypesUtil.createBranch(cache, factory, "KKK", "Merge-C", BranchType.MERGE, BranchState.CREATED,
+               false));
+
          int typeId = 500;
          for (Branch type : data) {
             type.setId(typeId++);
@@ -126,6 +187,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
          BranchCache branchCache = (BranchCache) cache;
          loadBranchHierarchy(branchCache);
          loadMergeBranches(branchCache);
+         loadBranchAliases(branchCache);
       }
 
       private void loadBranchHierarchy(BranchCache cache) throws OseeCoreException {
@@ -134,8 +196,19 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
          OseeTypesUtil.createBranchHierarchy(cache, "CCC", "FFF", "GGG", "HHH");
       }
 
-      private void loadMergeBranches(BranchCache branchCache) {
+      private void loadMergeBranches(BranchCache branchCache) throws OseeCoreException {
+         OseeTypesUtil.createMergeBranch(cache, "III", "DDD", "BBB");
+         OseeTypesUtil.createMergeBranch(cache, "JJJ", "GGG", "CCC");
+         OseeTypesUtil.createMergeBranch(cache, "KKK", "HHH", "CCC");
+      }
 
+      private void loadBranchAliases(BranchCache branchCache) throws OseeCoreException {
+         OseeTypesUtil.createAlias(cache, "AAA", "Root", "System", "Main");
+         OseeTypesUtil.createAlias(cache, "BBB", "Base 1", "Build 1");
+         OseeTypesUtil.createAlias(cache, "CCC", "Base 2", "Build 2");
+
+         OseeTypesUtil.createAlias(cache, "JJJ", "a merge branch");
+         OseeTypesUtil.createAlias(cache, "KKK", "a merge branch");
       }
    }
 }

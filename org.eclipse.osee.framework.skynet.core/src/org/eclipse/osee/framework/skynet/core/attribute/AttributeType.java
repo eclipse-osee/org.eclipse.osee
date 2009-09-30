@@ -11,10 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
+import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
 
 /**
  * Type information for dynamic attributes.
@@ -23,18 +24,18 @@ import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
  * @author Ryan D. Brooks
  */
 public class AttributeType extends AbstractOseeType implements Comparable<AttributeType> {
-   private Class<? extends Attribute<?>> baseAttributeClass;
-   private Class<? extends IAttributeDataProvider> providerAttributeClass;
-   private String defaultValue;
-   private OseeEnumType oseeEnumType;
-   private int maxOccurrences;
-   private int minOccurrences;
-   private String description;
-   private String fileTypeExtension;
-   private String taggerId;
-   private String baseAttributeTypeId;
-   private String attributeProviderNameId;
-   private final DirtyStateDetail dirtyStateDetails;
+
+   private static final String ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY = "osee.base.attribute.type.id.field";
+   private static final String ATTRIBUTE_PROVIDER_ID_FIELD_KEY = "osee.attribute.provider.id.field";
+   private static final String ATTRIBUTE_BASE_TYPE_CLASS_FIELD_KEY = "osee.base.attribute.type.class.field";
+   private static final String ATTRIBUTE_PROVIDER_CLASS_FIELD_KEY = "osee.attribute.provider.class.field";
+   private static final String ATTRIBUTE_DEFAULT_VALUE_FIELD_KEY = "osee.attribute.default.value.field";
+   private static final String ATTRIBUTE_ENUM_TYPE_ID_FIELD_KEY = "osee.attribute.enum.type.field";
+   private static final String ATTRIBUTE_MAX_OCCURRENCE_FIELD_KEY = "osee.attribute.max.occurrence.field";
+   private static final String ATTRIBUTE_MIN_OCCURRENCE_FIELD_KEY = "osee.attribute.min.occurrence.field";
+   private static final String ATTRIBUTE_DESCRIPTION_FIELD_KEY = "osee.attribute.description.field";
+   private static final String ATTRIBUTE_FILE_EXTENSION_FIELD_KEY = "osee.attribute.file.type.extension.field";
+   private static final String ATTRIBUTE_TAGGER_ID_FIELD_KEY = "osee.attribute.tagger.id.field";
 
    /**
     * Create a dynamic attribute descriptor. Descriptors can be acquired for application use from the
@@ -50,80 +51,88 @@ public class AttributeType extends AbstractOseeType implements Comparable<Attrib
     */
    public AttributeType(AbstractOseeCache<AttributeType> cache, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
       super(cache, guid, typeName);
-      this.dirtyStateDetails = new DirtyStateDetail();
       setFields(typeName, baseAttributeTypeId, attributeProviderNameId, baseAttributeClass, providerAttributeClass,
             fileTypeExtension, defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
    }
 
-   public void setFields(String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
-      String fileExtensionToSet = fileTypeExtension != null ? fileTypeExtension : "";
-      getDirtyDetails().updateDirty(baseAttributeTypeId, attributeProviderNameId, baseAttributeClass,
-            providerAttributeClass, fileExtensionToSet, defaultValue, oseeEnumType, minOccurrences, maxOccurrences,
-            description, taggerId);
-      setName(name);
-      this.baseAttributeTypeId = baseAttributeTypeId;
-      this.attributeProviderNameId = attributeProviderNameId;
-      this.baseAttributeClass = baseAttributeClass;
-      this.providerAttributeClass = providerAttributeClass;
-      this.defaultValue = defaultValue;
-      this.oseeEnumType = oseeEnumType;
-      this.maxOccurrences = maxOccurrences;
-      this.minOccurrences = minOccurrences;
-      this.description = description;
-      this.fileTypeExtension = fileExtensionToSet;
-      this.taggerId = taggerId;
+   @Override
+   protected void initializeFields() {
+      addField(ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY, new OseeField<String>());
+      addField(ATTRIBUTE_PROVIDER_ID_FIELD_KEY, new OseeField<String>());
+      addField(ATTRIBUTE_BASE_TYPE_CLASS_FIELD_KEY, new OseeField<Class<? extends Attribute<?>>>());
+      addField(ATTRIBUTE_PROVIDER_CLASS_FIELD_KEY, new OseeField<Class<? extends IAttributeDataProvider>>());
+      addField(ATTRIBUTE_DEFAULT_VALUE_FIELD_KEY, new OseeField<String>());
+      addField(ATTRIBUTE_ENUM_TYPE_ID_FIELD_KEY, new OseeField<OseeEnumType>());
+      addField(ATTRIBUTE_MAX_OCCURRENCE_FIELD_KEY, new OseeField<Integer>());
+      addField(ATTRIBUTE_MIN_OCCURRENCE_FIELD_KEY, new OseeField<Integer>());
+      addField(ATTRIBUTE_DESCRIPTION_FIELD_KEY, new OseeField<String>());
+      addField(ATTRIBUTE_FILE_EXTENSION_FIELD_KEY, new OseeField<String>());
+      addField(ATTRIBUTE_TAGGER_ID_FIELD_KEY, new OseeField<String>());
    }
 
-   public DirtyStateDetail getDirtyDetails() {
-      return dirtyStateDetails;
+   public void setFields(String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
+      String fileExtensionToSet = fileTypeExtension != null ? fileTypeExtension : "";
+      setName(name);
+      setFieldLogException(ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY, baseAttributeTypeId);
+      setFieldLogException(ATTRIBUTE_PROVIDER_ID_FIELD_KEY, attributeProviderNameId);
+      setFieldLogException(ATTRIBUTE_BASE_TYPE_CLASS_FIELD_KEY, baseAttributeClass);
+      setFieldLogException(ATTRIBUTE_PROVIDER_CLASS_FIELD_KEY, providerAttributeClass);
+      setFieldLogException(ATTRIBUTE_DEFAULT_VALUE_FIELD_KEY, defaultValue);
+      setFieldLogException(ATTRIBUTE_ENUM_TYPE_ID_FIELD_KEY, oseeEnumType);
+      setFieldLogException(ATTRIBUTE_MAX_OCCURRENCE_FIELD_KEY, maxOccurrences);
+      setFieldLogException(ATTRIBUTE_MIN_OCCURRENCE_FIELD_KEY, minOccurrences);
+      setFieldLogException(ATTRIBUTE_DESCRIPTION_FIELD_KEY, description);
+      setFieldLogException(ATTRIBUTE_FILE_EXTENSION_FIELD_KEY, fileExtensionToSet);
+      setFieldLogException(ATTRIBUTE_TAGGER_ID_FIELD_KEY, taggerId);
    }
 
    public String getBaseAttributeTypeId() {
-      return baseAttributeTypeId;
+      return getFieldValueLogException("", ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY);
    }
 
    public String getAttributeProviderId() {
-      return attributeProviderNameId;
+      return getFieldValueLogException("", ATTRIBUTE_PROVIDER_ID_FIELD_KEY);
    }
 
    /**
     * @return Returns the baseAttributeClass.
     */
    public Class<? extends Attribute<?>> getBaseAttributeClass() {
-      return baseAttributeClass;
+      return getFieldValueLogException(null, ATTRIBUTE_BASE_TYPE_CLASS_FIELD_KEY);
    }
 
    /**
     * @return Returns the defaultValue.
     */
    public String getDefaultValue() {
-      return defaultValue;
+      return getFieldValueLogException(null, ATTRIBUTE_DEFAULT_VALUE_FIELD_KEY);
    }
 
    /**
     * @return Returns the maxOccurrences.
     */
    public int getMaxOccurrences() {
-      return maxOccurrences;
+      return getFieldValueLogException(0, ATTRIBUTE_MAX_OCCURRENCE_FIELD_KEY);
    }
 
    /**
     * @return Returns the minOccurrences.
     */
    public int getMinOccurrences() {
-      return minOccurrences;
+      return getFieldValueLogException(0, ATTRIBUTE_MIN_OCCURRENCE_FIELD_KEY);
    }
 
    public String getDescription() {
-      return description;
+      return getFieldValueLogException("", ATTRIBUTE_DESCRIPTION_FIELD_KEY);
    }
 
    public int getOseeEnumTypeId() {
+      OseeEnumType oseeEnumType = getOseeEnumType();
       return oseeEnumType == null ? OseeEnumTypeManager.getDefaultEnumTypeId() : oseeEnumType.getId();
    }
 
    public OseeEnumType getOseeEnumType() {
-      return oseeEnumType;
+      return getFieldValueLogException(null, ATTRIBUTE_ENUM_TYPE_ID_FIELD_KEY);
    }
 
    @Override
@@ -132,7 +141,7 @@ public class AttributeType extends AbstractOseeType implements Comparable<Attrib
    }
 
    public String getFileTypeExtension() {
-      return fileTypeExtension;
+      return getFieldValueLogException("", ATTRIBUTE_FILE_EXTENSION_FIELD_KEY);
    }
 
    public int compareTo(AttributeType other) {
@@ -147,7 +156,7 @@ public class AttributeType extends AbstractOseeType implements Comparable<Attrib
     * @return the providerAttributeClass
     */
    public Class<? extends IAttributeDataProvider> getProviderAttributeClass() {
-      return providerAttributeClass;
+      return getFieldValueLogException(null, ATTRIBUTE_PROVIDER_CLASS_FIELD_KEY);
    }
 
    /**
@@ -156,7 +165,7 @@ public class AttributeType extends AbstractOseeType implements Comparable<Attrib
     * @return tagger id
     */
    public String getTaggerId() {
-      return taggerId;
+      return getFieldValueLogException("", ATTRIBUTE_TAGGER_ID_FIELD_KEY);
    }
 
    /**
@@ -166,6 +175,7 @@ public class AttributeType extends AbstractOseeType implements Comparable<Attrib
     */
    public boolean isTaggable() {
       boolean toReturn = false;
+      String taggerId = getTaggerId();
       if (taggerId != null) {
          toReturn = Strings.isValid(taggerId.trim());
       }
@@ -173,126 +183,6 @@ public class AttributeType extends AbstractOseeType implements Comparable<Attrib
    }
 
    public boolean isEnumerated() {
-      return EnumeratedAttribute.class.isAssignableFrom(baseAttributeClass);
-   }
-
-   @Override
-   public boolean isDirty() {
-      return getDirtyDetails().isDirty();
-   }
-
-   @Override
-   public void clearDirty() {
-      getDirtyDetails().clear();
-   }
-
-   public final class DirtyStateDetail {
-      private boolean isFileExtensionDirty;
-      private boolean isTaggerIdDirty;
-      private boolean isDescriptionDirty;
-      private boolean isMinOccurrencesDirty;
-      private boolean isMaxOccurrencesDirty;
-      private boolean isOseeEnumTypeDirty;
-      private boolean isDefaultValueDirty;
-      private boolean isAttributeProviderClassDirty;
-      private boolean isBaseAttributeClassDirty;
-      private boolean isAttributeProviderNameIdDirty;
-      private boolean isBaseAttributeTypeIdDirty;
-
-      private DirtyStateDetail() {
-         clear();
-      }
-
-      protected void updateDirty(String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileExtensionToSet, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
-         isFileExtensionDirty |= isDifferent(getBaseAttributeTypeId(), baseAttributeTypeId);
-         isTaggerIdDirty |= isDifferent(getAttributeProviderId(), attributeProviderNameId);
-         isDescriptionDirty |= isDifferent(getBaseAttributeClass(), baseAttributeClass);
-         isMinOccurrencesDirty |= isDifferent(getProviderAttributeClass(), providerAttributeClass);
-         isMaxOccurrencesDirty |= isDifferent(getDefaultValue(), defaultValue);
-         isOseeEnumTypeDirty |= isDifferent(getOseeEnumType(), oseeEnumType);
-         isDefaultValueDirty |= isDifferent(getMaxOccurrences(), maxOccurrences);
-         isAttributeProviderClassDirty |= isDifferent(getMinOccurrences(), minOccurrences);
-         isBaseAttributeClassDirty |= isDifferent(getDescription(), description);
-         isAttributeProviderNameIdDirty |= isDifferent(getFileTypeExtension(), fileExtensionToSet);
-         isBaseAttributeTypeIdDirty |= isDifferent(getTaggerId(), taggerId);
-      }
-
-      public boolean isFileExtensionDirty() {
-         return isFileExtensionDirty;
-      }
-
-      public boolean isTaggerIdDirty() {
-         return isTaggerIdDirty;
-      }
-
-      public boolean isDescriptionDirty() {
-         return isDescriptionDirty;
-      }
-
-      public boolean isMinOccurrencesDirty() {
-         return isMinOccurrencesDirty;
-      }
-
-      public boolean isMaxOccurrencesDirty() {
-         return isMaxOccurrencesDirty;
-      }
-
-      public boolean isOseeEnumTypeDirty() {
-         return isOseeEnumTypeDirty;
-      }
-
-      public boolean isDefaultValueDirty() {
-         return isDefaultValueDirty;
-      }
-
-      public boolean isAttributeProviderClassDirty() {
-         return isAttributeProviderClassDirty;
-      }
-
-      public boolean isBaseAttributeClassDirty() {
-         return isBaseAttributeClassDirty;
-      }
-
-      public boolean isAttributeProviderNameIdDirty() {
-         return isAttributeProviderNameIdDirty;
-      }
-
-      public boolean isBaseAttributeTypeIdDirty() {
-         return isBaseAttributeTypeIdDirty;
-      }
-
-      public boolean isNameDirty() {
-         return AttributeType.super.isDirty();
-      }
-
-      public boolean isDirty() {
-         return isFileExtensionDirty() || //
-         isTaggerIdDirty() || // 
-         isDescriptionDirty() || //
-         isMinOccurrencesDirty() || //
-         isMaxOccurrencesDirty() || //
-         isOseeEnumTypeDirty() || //
-         isDefaultValueDirty() || //
-         isAttributeProviderClassDirty() || //
-         isBaseAttributeClassDirty() || // 
-         isAttributeProviderNameIdDirty() || //
-         isBaseAttributeTypeIdDirty() || //
-         isNameDirty();
-      }
-
-      private void clear() {
-         AttributeType.super.clearDirty();
-         isFileExtensionDirty = false;
-         isTaggerIdDirty = false;
-         isDescriptionDirty = false;
-         isMinOccurrencesDirty = false;
-         isMaxOccurrencesDirty = false;
-         isOseeEnumTypeDirty = false;
-         isDefaultValueDirty = false;
-         isAttributeProviderClassDirty = false;
-         isBaseAttributeClassDirty = false;
-         isAttributeProviderNameIdDirty = false;
-         isBaseAttributeTypeIdDirty = false;
-      }
+      return EnumeratedAttribute.class.isAssignableFrom(getBaseAttributeClass());
    }
 }

@@ -13,7 +13,9 @@ package org.eclipse.osee.framework.skynet.core.test.types;
 
 import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -40,6 +42,60 @@ public class OseeTypesUtil {
 
    private OseeTypesUtil() {
 
+   }
+
+   public static void checkAliases(BranchCache cache, String branchGuid, String... expectedAliases) throws OseeCoreException {
+      Branch branch = cache.getByGuid(branchGuid);
+      Assert.assertNotNull(branch);
+
+      List<String> actualAliases = new ArrayList<String>(branch.getAliases());
+      Assert.assertEquals(expectedAliases != null ? expectedAliases.length : 0, actualAliases.size());
+
+      if (expectedAliases != null) {
+         int index = 0;
+
+         List<String> expectedAliasesList = Arrays.asList(expectedAliases);
+         Collections.sort(expectedAliasesList);
+         Collections.sort(actualAliases);
+         for (String actualAlias : actualAliases) {
+            String expectedAlias = expectedAliasesList.get(index++);
+            Assert.assertEquals(expectedAlias, actualAlias);
+            Collection<Branch> aliasedbranch = cache.getByAlias(expectedAlias);
+            Assert.assertTrue(aliasedbranch.contains(branch));
+         }
+      }
+   }
+
+   public static void createAlias(BranchCache cache, String branchGuid, String... aliases) throws OseeCoreException {
+      Branch branch = cache.getByGuid(branchGuid);
+      Assert.assertNotNull(branch);
+      cache.setAliases(branch, Arrays.asList(aliases));
+   }
+
+   public static void checkMergeBranch(BranchCache cache, String expectedMergeBranchGuid, String sourceBranchGuid, String destinationBranchGuid) throws OseeCoreException {
+      Branch sourceBranch = cache.getByGuid(sourceBranchGuid);
+      Assert.assertNotNull(sourceBranch);
+      Branch destionationBranch = cache.getByGuid(destinationBranchGuid);
+      Assert.assertNotNull(destionationBranch);
+
+      Branch actualMergeBranch = cache.getMergeBranch(sourceBranch, destionationBranch);
+      if (expectedMergeBranchGuid == null) {
+         Assert.assertNull(actualMergeBranch);
+      } else {
+         Branch mergeBranch = cache.getByGuid(expectedMergeBranchGuid);
+         Assert.assertNotNull(mergeBranch);
+         Assert.assertEquals(mergeBranch, actualMergeBranch);
+      }
+   }
+
+   public static void createMergeBranch(BranchCache cache, String mergeBranchGuid, String sourceBranchGuid, String destinationBranchGuid) throws OseeCoreException {
+      Branch mergeBranch = cache.getByGuid(mergeBranchGuid);
+      Assert.assertNotNull(mergeBranch);
+      Branch sourceBranch = cache.getByGuid(sourceBranchGuid);
+      Assert.assertNotNull(sourceBranch);
+      Branch destionationBranch = cache.getByGuid(destinationBranchGuid);
+      Assert.assertNotNull(destionationBranch);
+      cache.cacheMergeBranch(mergeBranch, sourceBranch, destionationBranch);
    }
 
    public static void checkHierarchy(BranchCache cache, String parentGuid, String... expected) throws OseeCoreException {
@@ -79,8 +135,8 @@ public class OseeTypesUtil {
       return relationType;
    }
 
-   public static Branch createBranch(AbstractOseeCache<Branch> cache, IOseeTypeFactory factory, String guid, String name, int parentTxNumber, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
-      Branch branch = factory.createBranch(cache, guid, name, parentTxNumber, branchType, branchState, isArchived);
+   public static Branch createBranch(AbstractOseeCache<Branch> cache, IOseeTypeFactory factory, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+      Branch branch = factory.createBranch(cache, guid, name, branchType, branchState, isArchived);
       Assert.assertNotNull(branch);
       return branch;
    }

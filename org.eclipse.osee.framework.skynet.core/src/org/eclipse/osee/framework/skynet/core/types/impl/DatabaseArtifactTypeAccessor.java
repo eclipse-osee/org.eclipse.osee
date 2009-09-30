@@ -29,10 +29,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType.DirtyStateDetail;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.AttributeTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
@@ -178,8 +178,7 @@ public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactT
       List<Object[]> updateData = new ArrayList<Object[]>();
 
       for (ArtifactType type : types) {
-         DirtyStateDetail dirtyDetails = type.getDirtyDetails();
-         if (dirtyDetails.isNameDirty() || dirtyDetails.isAbstractDirty()) {
+         if (isDataDirty(type)) {
             int abstractValue = type.isAbstract() ? ABSTRACT_TYPE_INDICATOR : CONCRETE_TYPE_INDICATOR;
             switch (type.getModificationType()) {
                case NEW:
@@ -193,11 +192,11 @@ public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactT
                   break;
             }
          }
-         if (dirtyDetails.isInheritanceDirty()) {
+         if (type.isFieldDirty(ArtifactType.ARTIFACT_INHERITANCE_FIELD_KEY)) {
             typeInheritanceChanges.add(type);
 
          }
-         if (dirtyDetails.isAttributeTypeValidityDirty()) {
+         if (type.isFieldDirty(ArtifactType.ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY)) {
             typeValidityChanges.add(type);
          }
       }
@@ -210,6 +209,11 @@ public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactT
       for (ArtifactType type : types) {
          type.clearDirty();
       }
+   }
+
+   private boolean isDataDirty(ArtifactType type) throws OseeCoreException {
+      return type.areFieldsDirty(AbstractOseeType.NAME_FIELD_KEY, AbstractOseeType.UNIQUE_ID_FIELD_KEY,
+            ArtifactType.ARTIFACT_IS_ABSTRACT_FIELD_KEY);
    }
 
    private void storeArtifactTypeInheritance(Collection<ArtifactType> types) throws OseeDataStoreException {

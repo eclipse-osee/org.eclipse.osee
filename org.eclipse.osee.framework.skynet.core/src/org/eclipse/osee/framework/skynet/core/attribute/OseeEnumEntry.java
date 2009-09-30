@@ -12,19 +12,25 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.artifact.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
+import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeEnumEntry extends AbstractOseeType implements Comparable<OseeEnumEntry> {
-   private int ordinal;
+   private final static String ENUM_ENTRY_ORDINAL_FIELD = "osee.enum.entry.ordinal.field";
 
    public OseeEnumEntry(AbstractOseeCache<OseeEnumType> cache, String guid, String name, int ordinal) {
       super(cache, guid, name);
-      this.ordinal = ordinal;
+      setOrdinal(ordinal);
+   }
+
+   @Override
+   protected void initializeFields() {
+      addField(ENUM_ENTRY_ORDINAL_FIELD, new OseeField<Integer>());
    }
 
    @Override
@@ -33,32 +39,15 @@ public class OseeEnumEntry extends AbstractOseeType implements Comparable<OseeEn
    }
 
    public int ordinal() {
-      return ordinal;
+      return getFieldValueLogException(Integer.MIN_VALUE, ENUM_ENTRY_ORDINAL_FIELD);
    }
 
    public void setOrdinal(int ordinal) {
-      updateDirty(this.ordinal, ordinal);
-      this.ordinal = ordinal;
+      setFieldLogException(ENUM_ENTRY_ORDINAL_FIELD, ordinal);
    }
 
    public Pair<String, Integer> asPair() {
       return new Pair<String, Integer>(getName(), ordinal());
-   }
-
-   @Override
-   protected void updateDirty(Object original, Object other) {
-      super.updateDirty(original, other);
-      if (isDirty()) {
-         OseeEnumType type = null;
-         try {
-            type = getDeclaringClass();
-            if (type != null) {
-               type.internalUpdateDirtyEntries(true);
-            }
-         } catch (OseeCoreException ex) {
-            // Do Nothing
-         }
-      }
    }
 
    public OseeEnumType getDeclaringClass() throws OseeCoreException {
@@ -69,7 +58,7 @@ public class OseeEnumEntry extends AbstractOseeType implements Comparable<OseeEn
    public boolean equals(Object object) {
       if (object instanceof OseeEnumEntry) {
          OseeEnumEntry other = (OseeEnumEntry) object;
-         return super.equals(other) && ordinal == other.ordinal;
+         return super.equals(other) && ordinal() == other.ordinal();
       }
       return false;
    }
@@ -78,13 +67,13 @@ public class OseeEnumEntry extends AbstractOseeType implements Comparable<OseeEn
    public int hashCode() {
       final int prime = 37;
       int result = super.hashCode();
-      result = prime * result + ordinal;
+      result = prime * result + ordinal();
       return result;
    }
 
    @Override
    public String toString() {
-      return String.format("%s:%s", getName(), ordinal);
+      return String.format("%s:%s", getName(), ordinal());
    }
 
    @Override

@@ -38,5 +38,5 @@ public interface IOseeTypeFactory {
 
    public OseeEnumEntry createEnumEntry(AbstractOseeCache<OseeEnumType> cache, String guid, String name, int ordinal) throws OseeCoreException;
 
-   public Branch createBranch(AbstractOseeCache<Branch> cache, String guid, String name, int parentTxNumber, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException;
+   public Branch createBranch(AbstractOseeCache<Branch> cache, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException;
 }

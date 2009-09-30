@@ -20,7 +20,6 @@ public final class VersionedChange {
    private ModificationType modType;
    private String value;
    private Long transactionNumber;
-   
 
    public VersionedChange() {
       this(null, null, null);
@@ -40,19 +39,19 @@ public final class VersionedChange {
    public ModificationType getModType() {
       return modType;
    }
-   
+
    public String getValue() {
       return value;
    }
 
-   public Long getTransactionNumber(){
+   public Long getTransactionNumber() {
       return transactionNumber;
    }
-   
-   public void setTransactionNumber(long transactionNumber){
+
+   public void setTransactionNumber(long transactionNumber) {
       this.transactionNumber = transactionNumber;
    }
-   
+
    public void setValue(String value) {
       this.value = value;
    }
@@ -78,7 +77,7 @@ public final class VersionedChange {
    }
 
    public boolean exists() {
-      return getModType() != null && getGammaId() != null;
+      return getModType() != null && getGammaId() != null && getTransactionNumber() != null;
    }
 
    public boolean sameGammaAs(VersionedChange other) {

@@ -132,7 +132,7 @@ public class OseeTypeFactory implements IOseeTypeFactory {
    }
 
    @Override
-   public Branch createBranch(AbstractOseeCache<Branch> cache, String guid, String name, int parentTxNumber, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
+   public Branch createBranch(AbstractOseeCache<Branch> cache, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException {
       checkName(cache, name);
       if (branchType == null) {
          throw new OseeArgumentException("branchType cannot be null.");
@@ -140,6 +140,6 @@ public class OseeTypeFactory implements IOseeTypeFactory {
       if (branchState == null) {
          throw new OseeArgumentException("branchState cannot be null.");
       }
-      return new Branch(cache, createGuidIfNeeded(guid), name, parentTxNumber, branchType, branchState, isArchived);
+      return new Branch(cache, createGuidIfNeeded(guid), name, branchType, branchState, isArchived);
    }
 }

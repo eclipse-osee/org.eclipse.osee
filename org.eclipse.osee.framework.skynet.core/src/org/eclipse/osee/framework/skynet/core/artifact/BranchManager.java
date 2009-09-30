@@ -224,7 +224,7 @@ public class BranchManager {
             time = System.currentTimeMillis();
          }
          mergeBranch = createMergeBranch(sourceBranch, destBranch, expectedArtIds);
-         OseeTypeManager.getBranchCache().addMergeBranch(mergeBranch, sourceBranch, destBranch);
+         OseeTypeManager.getBranchCache().cacheMergeBranch(mergeBranch, sourceBranch, destBranch);
 
          if (MERGE_DEBUG) {
             System.out.println(String.format("     Branch created in %s", Lib.getElapseString(time)));
