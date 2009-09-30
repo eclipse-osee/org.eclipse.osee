@@ -31,6 +31,7 @@ Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.skynet.core.attribute,
  org.eclipse.osee.framework.skynet.core.importing,
  org.eclipse.osee.framework.skynet.core.relation,
+ org.eclipse.osee.framework.skynet.core.types,
  org.eclipse.osee.framework.ui.plugin.util,
  org.eclipse.osee.framework.ui.plugin.views.property,
  org.eclipse.osee.framework.ui.swt

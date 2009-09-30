@@ -63,7 +63,7 @@ public class GraphLoader {
          List<Branch> branches = new ArrayList<Branch>(current.getBranch().getChildBranches(recurse));
          branches.add(current.getBranch());
          for (Branch branch : branches) {
-            txJoinQuery.add(-1L, branch.getBaseTransaction().getTransactionNumber());
+            txJoinQuery.add(-1L, branch.getSourceTransaction().getTransactionNumber());
          }
          txJoinQuery.store();
 
@@ -94,7 +94,7 @@ public class GraphLoader {
          } else {
             long parentTxId = 0;
             try {
-               parentTxId = branchModel.getBranch().getBaseTransaction().getTransactionNumber();
+               parentTxId = branchModel.getBranch().getSourceTransaction().getTransactionNumber();
             } catch (OseeCoreException ex) {
                OseeLog.log(BranchGraphActivator.class, Level.SEVERE, ex);
             }

@@ -141,7 +141,6 @@ public class RenameBranchHandler extends CommandHandler {
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-
       return branches.size() == 1 && (AccessControlManager.isOseeAdmin() || branches.get(0).getBranchType().isWorkingBranch() || branches.get(
             0).getBaseTransaction().getAuthorArtId() == UserManager.getUser().getArtId());
    }
