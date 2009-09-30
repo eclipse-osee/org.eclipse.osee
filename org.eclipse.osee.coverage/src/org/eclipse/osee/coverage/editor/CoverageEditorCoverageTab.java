@@ -14,7 +14,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.ats.world.search.WorldSearchItem.SearchType;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
@@ -164,7 +163,7 @@ public class CoverageEditorCoverageTab extends FormPage {
       return true;
    }
 
-   public String getSelectedName(SearchType searchType) throws OseeCoreException {
+   public String getSelectedName(/*SearchType searchType*/) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       if (getSelectedUser() != null) {
          sb.append(" - Assignee: " + getSelectedUser());
@@ -183,11 +182,11 @@ public class CoverageEditorCoverageTab extends FormPage {
    }
 
    public XMembersCombo getAssigeeCombo() {
-      return ((XMembersCombo) getXWidget("Assignee"));
+      return (XMembersCombo) getXWidget("Assignee");
    }
 
    public XCheckBox getIncludeCompletedCancelledCheckbox() {
-      return ((XCheckBox) getXWidget("Include Completed/Cancelled"));
+      return (XCheckBox) getXWidget("Include Completed/Cancelled");
    }
 
    public void widgetsCreated() throws OseeCoreException {
@@ -199,12 +198,16 @@ public class CoverageEditorCoverageTab extends FormPage {
    }
 
    private User getSelectedUser() {
-      if (getAssigeeCombo() == null) return null;
+      if (getAssigeeCombo() == null) {
+         return null;
+      }
       return getAssigeeCombo().getUser();
    }
 
    private CoverageMethodEnum getSelectedCoverageMethod() {
-      if (getCoverageMethodCombo() == null) return null;
+      if (getCoverageMethodCombo() == null) {
+         return null;
+      }
       if (!Strings.isValid(getCoverageMethodCombo().get())) {
          return null;
       }
@@ -212,12 +215,14 @@ public class CoverageEditorCoverageTab extends FormPage {
    }
 
    public XWidget getXWidget(String attrName) {
-      if (page == null) throw new IllegalArgumentException("WorkPage == null");
+      if (page == null) {
+         throw new IllegalArgumentException("WorkPage == null");
+      }
       return page.getLayoutData(attrName).getXWidget();
    }
 
    public XCombo getCoverageMethodCombo() {
-      return ((XCombo) getXWidget("Coverage Method"));
+      return (XCombo) getXWidget("Coverage Method");
    }
 
    public Result isParameterSelectionValid() throws OseeCoreException {
