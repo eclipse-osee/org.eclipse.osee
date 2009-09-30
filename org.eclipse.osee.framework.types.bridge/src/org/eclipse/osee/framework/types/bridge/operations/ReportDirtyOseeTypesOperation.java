@@ -27,9 +27,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType.DirtyStateDetail;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType.RelationTypeDirtyDetails;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
@@ -86,80 +85,92 @@ public class ReportDirtyOseeTypesOperation extends AbstractOperation {
    private void createArtifactTypeReport(List<IResultsEditorTab> tabs, ArtifactTypeCache cache) throws OseeCoreException {
       Collection<ArtifactType> types = cache.getAllDirty();
       ReportTab tab = new ReportTab("Artifact Types", tabs);
-      tab.addTableHeader("Name", "ModType", "Name Dirty", "IsAbstract Dirty", "Inherits Dirty", "Validity Dirty");
-      String inheritance;
-      String validity;
+      addHeader(tab, types);
       for (ArtifactType type : types) {
-         if (type.getDirtyDetails().isAttributeTypeValidityDirty()) {
-            validity = cache.getLocalAttributeTypes(type).toString();
-         } else {
-            validity = "false";
+         List<String> data = new ArrayList<String>();
+         data.add(type.getName());
+         data.add(type.getModificationType().getDisplayName());
+         for (String fieldName : type.getFieldNames()) {
+            boolean isDirty = type.isFieldDirty(fieldName);
+            if (isDirty && ArtifactType.ARTIFACT_INHERITANCE_FIELD_KEY.equals(fieldName)) {
+               data.add(cache.getArtifactSuperType(type).toString());
+            } else if (isDirty && ArtifactType.ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY.equals(fieldName)) {
+               data.add(cache.getLocalAttributeTypes(type).toString());
+            } else {
+               data.add(String.valueOf(isDirty));
+            }
          }
-         if (type.getDirtyDetails().isInheritanceDirty()) {
-            inheritance = cache.getArtifactSuperType(type).toString();
-         } else {
-            inheritance = "false";
-         }
-         tab.addRow(type.getName(), type.getModificationType().getDisplayName(),
-               String.valueOf(type.getDirtyDetails().isNameDirty()),
-               String.valueOf(type.getDirtyDetails().isAbstractDirty()), inheritance, validity);
+         tab.addRow(data);
       }
       tab.endTable();
    }
 
-   private void createAttributeTypeReport(List<IResultsEditorTab> tabs, Collection<AttributeType> types) {
+   private void createAttributeTypeReport(List<IResultsEditorTab> tabs, Collection<AttributeType> types) throws OseeCoreException {
       ReportTab tab = new ReportTab("Attribute Types", tabs);
-      tab.addTableHeader("Name", "ModType", "Name Dirty", "Min Dirty", "Max Dirty", "Base Type Dirty",
-            "Data Provider Dirty", "Default Value Dirty", "Description Dirty", "File Ext Dirty", "Tagger Dirty",
-            "Related Enum Dirty");
+      addHeader(tab, types);
       for (AttributeType type : types) {
-         DirtyStateDetail detail = type.getDirtyDetails();
-         tab.addRow(type.getName(), type.getModificationType().getDisplayName(), String.valueOf(detail.isNameDirty()),
-               String.valueOf(detail.isMinOccurrencesDirty()), String.valueOf(detail.isMaxOccurrencesDirty()),
-               String.valueOf(detail.isBaseAttributeTypeIdDirty()),
-               String.valueOf(detail.isAttributeProviderNameIdDirty()), String.valueOf(detail.isDefaultValueDirty()),
-               String.valueOf(detail.isDescriptionDirty()), String.valueOf(detail.isFileExtensionDirty()),
-               String.valueOf(detail.isTaggerIdDirty()), String.valueOf(detail.isOseeEnumTypeDirty()));
+         List<String> data = new ArrayList<String>();
+         data.add(type.getName());
+         data.add(type.getModificationType().getDisplayName());
+         for (String fieldName : type.getFieldNames()) {
+            data.add(String.valueOf(type.isFieldDirty(fieldName)));
+         }
+         tab.addRow(data);
       }
       tab.endTable();
    }
 
-   private void createRelationTypeReport(List<IResultsEditorTab> tabs, Collection<RelationType> types) {
-      ReportTab tab = new ReportTab("Relation Types", tabs);
-      tab.addTableHeader("Name", "ModType", "Name Dirty", "A Name Dirty", "B Name Dirty", "A Type Dirty",
-            "B Type Dirty", "Multiplicity Dirty", "Ordered Dirty", "Order GUID Dirty");
-      for (RelationType type : types) {
-         RelationTypeDirtyDetails details = type.getDirtyDetails();
+   private void addHeader(ReportTab tab, Collection<?> types) {
+      List<String> columns = new ArrayList<String>();
+      columns.add("Name");
+      columns.add("ModType");
+      if (!types.isEmpty()) {
+         AbstractOseeType type = (AbstractOseeType) types.iterator().next();
+         columns.addAll(type.getFieldNames());
+      }
+      tab.addTableHeader(columns.toArray(new String[columns.size()]));
+   }
 
-         tab.addRow(type.getName(), type.getModificationType().getDisplayName(), String.valueOf(details.isNameDirty()),
-               String.valueOf(details.isSideANameDirty()), String.valueOf(details.isSideBNameDirty()),
-               String.valueOf(details.isArtifactTypeSideADirty()), String.valueOf(details.isArtifactTypeSideBDirty()),
-               String.valueOf(details.isMultiplicityDirty()), String.valueOf(details.isOrderedDirty()),
-               String.valueOf(details.isDefaultOrderTypeGuidDirty()));
+   private void createRelationTypeReport(List<IResultsEditorTab> tabs, Collection<RelationType> types) throws OseeCoreException {
+      ReportTab tab = new ReportTab("Relation Types", tabs);
+      addHeader(tab, types);
+      for (RelationType type : types) {
+         List<String> data = new ArrayList<String>();
+         data.add(type.getName());
+         data.add(type.getModificationType().getDisplayName());
+         for (String fieldName : type.getFieldNames()) {
+            data.add(String.valueOf(type.isFieldDirty(fieldName)));
+         }
+         tab.addRow(data);
       }
       tab.endTable();
    }
 
    private void createOseeEnumTypeReport(List<IResultsEditorTab> tabs, Collection<OseeEnumType> types) throws OseeCoreException {
       ReportTab tab = new ReportTab("OseeEnum Types", tabs);
-      tab.addTableHeader("Name", "ModType", "isDataDirty", "areEntriesDirty");
+      addHeader(tab, types);
       String dirtyEntries;
       for (OseeEnumType type : types) {
-         if (type.areEntriesDirty()) {
-            List<String> data = new ArrayList<String>();
-            for (OseeEnumEntry entry : type.values()) {
-               if (entry.isDirty()) {
-                  data.add(String.format("*{%s}", entry.toString()));
-               } else {
-                  data.add(entry.toString());
+         List<String> data = new ArrayList<String>();
+         data.add(type.getName());
+         data.add(type.getModificationType().getDisplayName());
+         for (String fieldName : type.getFieldNames()) {
+            boolean isDirty = type.isFieldDirty(fieldName);
+            if (isDirty && OseeEnumType.OSEE_ENUM_TYPE_ENTRIES_FIELD.equals(fieldName)) {
+               List<String> dirtyItems = new ArrayList<String>();
+               for (OseeEnumEntry entry : type.values()) {
+                  if (entry.isDirty()) {
+                     dirtyItems.add(String.format("*{%s}", entry.toString()));
+                  } else {
+                     dirtyItems.add(entry.toString());
+                  }
                }
+               data.add(Collections.toString(dirtyItems, ","));
+            } else {
+               data.add(String.valueOf(isDirty));
             }
-            dirtyEntries = Collections.toString(data, ",");
-         } else {
-            dirtyEntries = "Not Changed";
          }
-         tab.addRow(type.getName(), type.getModificationType().getDisplayName(), String.valueOf(type.isDataDirty()),
-               dirtyEntries);
+         tab.addRow(data);
       }
       tab.endTable();
    }
@@ -196,11 +207,11 @@ public class ReportDirtyOseeTypesOperation extends AbstractOperation {
          this.resultsTabs = resultsTabs;
       }
 
-      public void addRow(String... data) {
+      public void addRow(Collection<String> data) {
          if (rows == null) {
             rows = new ArrayList<IResultsXViewerRow>();
          }
-         rows.add(new ResultsXViewerRow(data));
+         rows.add(new ResultsXViewerRow(data.toArray(new String[data.size()])));
       }
 
       public void addTableHeader(String... header) {
