@@ -48,7 +48,7 @@ public class OpenAssociatedArtifactHandler extends CommandHandler {
             return null;
          }
          if (AccessControlManager.hasPermission(associatedArtifact, PermissionEnum.READ)) {
-            if (selectedBranch.getAssociatedArtifact() instanceof IATSArtifact) {
+            if (associatedArtifact instanceof IATSArtifact) {
                OseeAts.openATSArtifact(associatedArtifact);
             } else {
                ArtifactEditor.editArtifact(associatedArtifact);
