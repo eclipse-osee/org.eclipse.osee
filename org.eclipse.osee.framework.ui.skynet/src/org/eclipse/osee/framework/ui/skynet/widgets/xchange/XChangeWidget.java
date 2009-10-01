@@ -44,6 +44,7 @@ import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.search.QuickSearchView;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetDragAndDrop;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -60,6 +61,8 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.swt.widgets.Tree;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author Donald G. Dunne
@@ -200,11 +203,35 @@ public class XChangeWidget extends XWidget implements IActionable {
          }
       });
 
+      openQuickSearchActionToolItem = new ToolItem(toolBar, SWT.PUSH);
+      openQuickSearchActionToolItem.setImage(ImageManager.getImage(FrameworkImage.ARTIFACT_SEARCH));
+      openQuickSearchActionToolItem.setToolTipText("Open Quick Search");
+      openQuickSearchActionToolItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            try {
+               IViewPart viewPart =
+                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                           QuickSearchView.VIEW_ID);
+               if (viewPart != null) {
+                  Branch branch =
+                        getBranch() != null ? getBranch() : (getTransactionId() != null ? getTransactionId().getBranch() : null);
+                  if (branch != null) {
+                     ((QuickSearchView) viewPart).setBranch(branch);
+                  }
+               }
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      });
+
       OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, ChangeView.VIEW_ID,
             "Change Report");
    }
 
    private ToolItem associatedArtifactToolItem;
+   private ToolItem openQuickSearchActionToolItem;
 
    private void refreshAssociatedArtifact() throws OseeCoreException {
       try {
