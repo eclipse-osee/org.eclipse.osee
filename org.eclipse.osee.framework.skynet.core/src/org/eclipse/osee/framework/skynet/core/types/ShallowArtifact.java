@@ -97,6 +97,12 @@ public class ShallowArtifact implements IArtifact {
    }
 
    @Override
+   public String toString() {
+      Artifact artifact = getArtifact();
+      return artifact != null ? artifact.toString() : String.format("ArtId:[%s]", getArtId());
+   }
+
+   @Override
    public Artifact getFullArtifact() throws OseeCoreException {
       Artifact associatedArtifact = null;
       if (getArtId() > 0) {

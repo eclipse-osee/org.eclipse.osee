@@ -300,7 +300,8 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
             AbstractOseeType.UNIQUE_ID_FIELD_KEY, //
             Branch.BRANCH_ARCHIVED_STATE_FIELD_KEY, //
             Branch.BRANCH_STATE_FIELD_KEY, //
-            Branch.BRANCH_TYPE_FIELD_KEY);
+            Branch.BRANCH_TYPE_FIELD_KEY, //
+            Branch.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY);
    }
 
    private void storeAliases(Collection<Branch> branches) throws OseeCoreException {
