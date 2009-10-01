@@ -41,6 +41,7 @@ import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
+import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
@@ -198,82 +199,86 @@ public final class InternalChangeManager {
       boolean isHistorical = sourceBranch == null;
       ArrayList<Change> changes = new ArrayList<Change>();
       List<ChangeItem> changeItems = loadChangeItems(sourceBranch, transactionId, monitor, isHistorical);
-
       preloadArtifacts(changeItems, sourceBranch, transactionId, isHistorical, monitor);
 
       for (ChangeItem item : changeItems) {
-         Change change;
-         TransactionId toTransactionId =
-               TransactionIdManager.getTransactionId((int) item.getCurrent().getTransactionNumber().longValue());
-         TransactionId fromTransactionId;
-         String wasValue = "";
-         Branch branch = isHistorical ? transactionId.getBranch() : sourceBranch;
-         Artifact artifact;
+         Change change = null;
+         Branch branch = null;
+         Artifact artifact = null;
+         try {
+            TransactionId toTransactionId =
+                  TransactionIdManager.getTransactionId((int) item.getCurrent().getTransactionNumber().longValue());
+            TransactionId fromTransactionId;
+            String wasValue = "";
+            branch = isHistorical ? transactionId.getBranch() : sourceBranch;
 
-         if (isHistorical) {
-            fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
-            artifact = ArtifactCache.getHistorical(item.getArtId(), transactionId.getTransactionNumber());
-            branch = transactionId.getBranch();
-         } else {
-            branch = sourceBranch;
-            artifact = ArtifactCache.getActive(item.getArtId(), branch);
-
-            if (item.getCurrent().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.INTRODUCED) {
-               fromTransactionId = toTransactionId;
+            if (isHistorical) {
+               fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
+               artifact = ArtifactCache.getHistorical(item.getArtId(), transactionId.getTransactionNumber());
+               branch = transactionId.getBranch();
             } else {
-               if (item.getBase().exists()) {
-                  fromTransactionId =
-                        TransactionIdManager.getTransactionId((int) item.getBase().getTransactionNumber().longValue());
-                  wasValue = item.getBase().getValue();
+               branch = sourceBranch;
+               artifact = ArtifactCache.getActive(item.getArtId(), branch);
+
+               if (item.getCurrent().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.INTRODUCED) {
+                  fromTransactionId = toTransactionId;
                } else {
-                  fromTransactionId =
-                        TransactionIdManager.getTransactionId((int) item.getFirst().getTransactionNumber().longValue());
-                  wasValue = item.getFirst().getValue();
+                  if (item.getBase().exists()) {
+                     fromTransactionId =
+                           TransactionIdManager.getTransactionId((int) item.getBase().getTransactionNumber().longValue());
+                     wasValue = item.getBase().getValue();
+                  } else {
+                     fromTransactionId =
+                           TransactionIdManager.getTransactionId((int) item.getFirst().getTransactionNumber().longValue());
+                     wasValue = item.getFirst().getValue();
+                  }
                }
             }
-         }
 
-         //Added for testing ... It will be removed
-         if (artifact == null) {
-            System.out.println(item.getKind() + " " + item.getArtId() + " " + item.getCurrent().getTransactionNumber());
-            continue;
-         }
-         monitor.subTask("Build Change Display Objects");
-         //The artifacts have been previously bulk loaded for performance
+            //Added for testing ... It will be removed
+            if (artifact == null) {
+               System.out.println(item.getKind() + " " + item.getArtId() + " " + item.getCurrent().getTransactionNumber());
+               continue;
+            }
+            monitor.subTask("Build Change Display Objects");
+            //The artifacts have been previously bulk loaded for performance         
+            switch (item.getKind()) {
+               case Artifact:
+                  change =
+                        new ArtifactChange(branch, artifact.getArtifactType(),
+                              (int) item.getCurrent().getGammaId().longValue(), item.getItemId(), toTransactionId,
+                              fromTransactionId, item.getNet().getModType(), ChangeType.OUTGOING, isHistorical,
+                              artifact);
+                  break;
+               case Attribute:
+                  change =
+                        new AttributeChange(branch, artifact.getArtifactType(),
+                              (int) item.getCurrent().getGammaId().longValue(), item.getArtId(), toTransactionId,
+                              fromTransactionId, item.getNet().getModType(), ChangeType.OUTGOING,
+                              item.getCurrent().getValue(), wasValue, item.getItemId(), artifact.getAttributeById(
+                                    item.getItemId(), true).getAttributeType().getId(), item.getNet().getModType(),
+                              isHistorical, artifact);
+                  break;
+               case Relation:
+                  RelationChangeItem relationChangeItem = (RelationChangeItem) item;
+                  Artifact bArtifact = ArtifactQuery.getArtifactFromId(relationChangeItem.getBArtId(), branch, true);
+                  change =
+                        new RelationChange(branch, artifact.getArtifactType(),
+                              (int) relationChangeItem.getCurrent().getGammaId().longValue(), item.getArtId(),
+                              toTransactionId, fromTransactionId, relationChangeItem.getNet().getModType(),
+                              ChangeType.OUTGOING, bArtifact.getArtId(), relationChangeItem.getItemId(),
+                              relationChangeItem.getRationale(),
+                              RelationTypeManager.getType(relationChangeItem.getRelTypeId()), isHistorical, artifact,
+                              bArtifact);
+                  break;
+               default:
+                  throw new OseeCoreException(
+                        "The change item must map to either a artifact, attribute or relation change");
+            }
 
-         switch (item.getKind()) {
-            case Artifact:
-               change =
-                     new ArtifactChange(branch, artifact.getArtifactType(),
-                           (int) item.getCurrent().getGammaId().longValue(), item.getItemId(), toTransactionId,
-                           fromTransactionId, item.getNet().getModType(), ChangeType.OUTGOING, isHistorical, artifact);
-               break;
-            case Attribute:
-               change =
-                     new AttributeChange(branch, artifact.getArtifactType(),
-                           (int) item.getCurrent().getGammaId().longValue(), item.getArtId(), toTransactionId,
-                           fromTransactionId, item.getNet().getModType(), ChangeType.OUTGOING,
-                           item.getCurrent().getValue(), wasValue, item.getItemId(), artifact.getAttributeById(
-                                 item.getItemId(), true).getAttributeType().getId(), item.getNet().getModType(),
-                           isHistorical, artifact);
-               break;
-            case Relation:
-               RelationChangeItem relationChangeItem = (RelationChangeItem) item;
-               Artifact bArtifact = ArtifactQuery.getArtifactFromId(relationChangeItem.getBArtId(), branch, true);
-               change =
-                     new RelationChange(branch, artifact.getArtifactType(),
-                           (int) relationChangeItem.getCurrent().getGammaId().longValue(), item.getArtId(),
-                           toTransactionId, fromTransactionId, relationChangeItem.getNet().getModType(),
-                           ChangeType.OUTGOING, bArtifact.getArtId(), relationChangeItem.getItemId(),
-                           relationChangeItem.getRationale(),
-                           RelationTypeManager.getType(relationChangeItem.getRelTypeId()), isHistorical, artifact,
-                           bArtifact);
-               break;
-            default:
-               throw new OseeCoreException(
-                     "The change item must map to either a artifact, attribute or relation change");
+         } catch (Exception ex) {
+            change = new ErrorChange(branch, item.getArtId(), ex.toString());
          }
-
          changes.add(change);
       }
       monitor.done();

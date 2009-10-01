@@ -47,7 +47,7 @@ public abstract class Change implements IAdaptable {
     * @param changeType
     * @throws OseeTypeDoesNotExist
     * @throws OseeDataStoreException
-    * @throws ArtifactDoesNotExist 
+    * @throws ArtifactDoesNotExist
     */
    public Change(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super();
@@ -86,7 +86,10 @@ public abstract class Change implements IAdaptable {
 
    @Override
    public int hashCode() {
-      return artId + sourceGamma + branch.hashCode() + toTransactionId.hashCode() + fromTransactionId.hashCode() + modType.hashCode() + changeType.hashCode();
+      if (branch != null && toTransactionId != null && fromTransactionId != null && changeType != null) {
+         return artId + sourceGamma + branch.hashCode() + toTransactionId.hashCode() + fromTransactionId.hashCode() + modType.hashCode() + changeType.hashCode();
+      }
+      return 0;
    }
 
    public boolean isHistorical() {
@@ -114,10 +117,10 @@ public abstract class Change implements IAdaptable {
       return changeType;
    }
 
-   public Artifact getArtifact(){
+   public Artifact getArtifact() {
       return artifact;
    }
-   
+
    public String getArtifactName() throws IllegalArgumentException, ArtifactDoesNotExist, MultipleArtifactsExist {
       return getArtifact().getName();
    }
