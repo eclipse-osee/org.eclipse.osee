@@ -19,6 +19,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.change.Change;
+import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Font;
@@ -97,7 +99,11 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          Change change = (Change) element;
          if (xCol.equals(ChangeXViewerFactory.Name)) {
             try {
-               return ImageManager.getChangeKindImage(change);
+               if (change instanceof ErrorChange) {
+                  return ImageManager.getImage(FrameworkImage.ERROR);
+               } else {
+                  return ImageManager.getChangeKindImage(change);
+               }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
