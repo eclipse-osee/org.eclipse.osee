@@ -76,13 +76,9 @@ plugin@org.eclipse.osee.framework.types.generator=SVN,url=https://dev.eclipse.or
 plugin@org.eclipse.osee.framework.types.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.types.ui
 
 feature@org.eclipse.osee.external.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.external.feature
-!plugin@org.eclipse.team.svn=SVN,url=http://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=trunk,path=org.eclipse.team.svn
-!plugin@org.eclipse.team.svn.ui=SVN,url=http://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=trunk,path=org.eclipse.team.svn.ui
-!plugin@org.eclipse.team.svn.core=SVN,url=http://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=trunk,path=org.eclipse.team.svn.core
-
-plugin@org.eclipse.team.svn=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn_0.7.8.I20090506-1500.jar
-plugin@org.eclipse.team.svn.ui=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn.ui_0.7.8.I20090506-1500.jar
-plugin@org.eclipse.team.svn.core=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn.core_0.7.8.I20090506-1500.jar
+plugin@org.eclipse.team.svn=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn_0.7.8.I20090904-1300.jar
+plugin@org.eclipse.team.svn.ui=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn.ui_0.7.8.I20090904-1300.jar
+plugin@org.eclipse.team.svn.core=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn.core_0.7.8.I20090904-1300.jar
 
 plugin@org.apache.derby=CVS,tag=v200909181945,cvsRoot=:pserver:anonymous@dev.eclipse.org:/cvsroot/tools,path=org.eclipse.orbit/org.apache.derby
 plugin@org.eclipse.nebula.widgets.calendarcombo=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.nebula.widgets.calendarcombo_1.0.0.jar
