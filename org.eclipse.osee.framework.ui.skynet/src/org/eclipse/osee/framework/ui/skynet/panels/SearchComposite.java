@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.panels;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -32,6 +33,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Listener;
@@ -294,4 +296,11 @@ public class SearchComposite extends Composite implements Listener {
       }
    }
 
+   public List<Control> getSearchChildren() {
+      List<Control> children = new ArrayList<Control>();
+      if (Widgets.isAccessible(this.searchArea) && Widgets.isAccessible(this.executeSearch) && Widgets.isAccessible(this.clear)) {
+         children = Arrays.asList(this, searchArea, executeSearch, clear);
+      }
+      return children;
+   }
 }

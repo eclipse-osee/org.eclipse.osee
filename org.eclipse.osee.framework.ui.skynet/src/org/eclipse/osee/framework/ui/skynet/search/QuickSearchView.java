@@ -142,14 +142,13 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
 
       searchComposite = new SearchComposite(panel, SWT.NONE);
       searchComposite.addListener(this);
-      compositeEnablement(searchComposite, false);
 
       optionsComposite = new QuickSearchOptionComposite(panel, SWT.NONE);
       optionsComposite.setLayout(ALayout.getZeroMarginLayout());
       optionsComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       loadState();
-
+      compositeEnablement(searchComposite, false);
       searchComposite.setHelpContext(MAIN_HELP_CONTEXT);
 
       branchLabel = new Label(parent, SWT.NONE);
@@ -162,9 +161,9 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
       OseeAts.addBugToViewToolbar(this, this, SkynetGuiPlugin.getInstance(), VIEW_ID, "Quick Search");
    }
 
-   private void compositeEnablement(Composite composite, boolean enable) {
+   private void compositeEnablement(SearchComposite composite, boolean enable) {
       if (Widgets.isAccessible(composite)) {
-         for (Control cntrl : composite.getChildren()) {
+         for (Control cntrl : composite.getSearchChildren()) {
             cntrl.setEnabled(enable);
          }
       }
