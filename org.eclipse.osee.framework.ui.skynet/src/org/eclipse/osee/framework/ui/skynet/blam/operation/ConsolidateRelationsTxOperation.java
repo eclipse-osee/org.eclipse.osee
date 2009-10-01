@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2009 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -17,14 +22,17 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.ExportImportJoinQuery;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
@@ -47,6 +55,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    private final StringBuilder addressingBackup = new StringBuilder(100000);
    private final List<Object[]> addressingToDelete = new ArrayList<Object[]>(13000);
    private final List<Object[]> updateAddressingData = new ArrayList<Object[]>(5000);
+   private Writer backupWriter;
    private ExportImportJoinQuery gammaJoin;
    private OseeConnection connection;
    private int previousRelationTypeId;
@@ -58,6 +67,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    private String netRationale;
    boolean materiallyDifferent;
    boolean updateAddressing;
+   private int counter;
 
    long previousNetGammaId;
    long previousObsoleteGammaId;
@@ -69,7 +79,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       super("Consolidate Relations", SkynetGuiPlugin.PLUGIN_ID);
    }
 
-   private void init() {
+   private void init() throws OseeWrappedException, IOException {
       previousRelationTypeId = -1;
       previousArtifactAId = -1;
       previousArtiafctBId = -1;
@@ -84,20 +94,29 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       previousNetGammaId = -1;
       previousTransactionId = -1;
       gammaJoin = JoinUtility.createExportImportJoinQuery();
+
+      File iFile = OseeData.getFile("consolidateRelations_" + Lib.getDateTimeString() + ".csv");
+      backupWriter = new BufferedWriter(new FileWriter(iFile));
+
+      counter = 0;
    }
 
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       this.connection = connection;
-      init();
+      try {
+         init();
 
-      findObsoleteRelatins();
+         findObsoleteRelatins();
 
-      System.out.println("gamma join size: " + gammaJoin.size());
+         System.out.println("gamma join size: " + gammaJoin.size());
 
-      determineAffectedAddressing();
+         determineAffectedAddressing();
 
-      updateGammas();
+         updateGammas();
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 
    private void findObsoleteRelatins() throws OseeCoreException {
@@ -129,12 +148,17 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
             relationDeleteData.add(new Long[] {obsoleteGamma});
          }
       }
+      if (materiallyDifferent) {
+         counter++;
+         System.out.println("rel type: " + previousRelationTypeId + "   A art id: " + previousArtifactAId + "   B art id: " + previousArtiafctBId);
+      }
    }
 
-   private void determineAffectedAddressing() throws OseeCoreException {
+   private void determineAffectedAddressing() throws OseeCoreException, IOException {
       gammaJoin.store();
 
       try {
+         System.out.println("counter: " + counter);
          System.out.println("query id: " + gammaJoin.getQueryId());
          chStmt.runPreparedQuery(10000, SELECT_RELATION_ADDRESSING, gammaJoin.getQueryId());
 
@@ -209,14 +233,8 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       return ignore || netModType == ModificationType.ARTIFACT_DELETED && modificationType == ModificationType.DELETED;
    }
 
-   private void updateGammas() throws OseeCoreException {
-      //IFile iFile = OseeData.getIFile("consolidateRelations_" + Lib.getDateTimeString() + ".csv");
-
-      //      try {
-      //         AIFile.writeToFile(iFile, Lib.stringToInputStream(addressingBackup.toString()));
-      //      } catch (Exception ex) {
-      //         throw new OseeWrappedException(ex);
-      //      }
+   private void updateGammas() throws OseeCoreException, IOException {
+      backupWriter.close();
 
       System.out.println("Number of txs rows deleted: " + ConnectionHandler.runBatchUpdate(connection, DELETE_TXS,
             addressingToDelete));
@@ -226,21 +244,22 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
 
       System.out.println("Number of txs rows updated: " + ConnectionHandler.runBatchUpdate(connection,
             UPDATE_TXS_GAMMAS, updateAddressingData));
-
-      //throw new OseeStateException("need to prove this code on the test database first");
    }
 
-   private void writeAddressingBackup(long obsoleteGammaId, int transactionId, long netGammaId, int modType, TxChange txCurrent) {
-      addressingBackup.append(obsoleteGammaId);
-      addressingBackup.append(",");
-      addressingBackup.append(transactionId);
-      addressingBackup.append(",");
-      addressingBackup.append(netGammaId);
-      addressingBackup.append(",");
-      addressingBackup.append(modType);
-      addressingBackup.append(",");
-      addressingBackup.append(txCurrent.getValue());
-      addressingBackup.append("\n");
+   private void writeAddressingBackup(long obsoleteGammaId, int transactionId, long netGammaId, int modType, TxChange txCurrent) throws IOException {
+      StringBuilder strB = new StringBuilder(30);
+
+      strB.append(obsoleteGammaId);
+      strB.append(",");
+      strB.append(transactionId);
+      strB.append(",");
+      strB.append(netGammaId);
+      strB.append(",");
+      strB.append(modType);
+      strB.append(",");
+      strB.append(txCurrent.getValue());
+      strB.append("\n");
+      backupWriter.append(strB);
    }
 
    private boolean isNextConceptualRelation(int relationTypeId, int artifactAId, int artiafctBId) {
@@ -248,7 +267,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    }
 
    private void relationMateriallyDifferes(ConnectionHandlerStatement chStmt) throws OseeCoreException {
-      if (materiallyDifferent) {
+      if (!materiallyDifferent) {
          String currentRationale = chStmt.getString("rationale");
          materiallyDifferent |= Strings.isValid(currentRationale) && !currentRationale.equals(netRationale);
          if (RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")).isOrdered()) {
