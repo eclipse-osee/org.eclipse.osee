@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
@@ -107,12 +106,14 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       Map<Branch, Integer> childToParent = new HashMap<Branch, Integer>();
       Map<Branch, Integer> branchToSourceTx = new HashMap<Branch, Integer>();
       Map<Branch, Integer> branchToBaseTx = new HashMap<Branch, Integer>();
+      Map<Branch, Integer> associatedArtifact = new HashMap<Branch, Integer>();
 
       BranchCache branchCache = getCastedObject(cache);
-      loadBranches(branchCache, factory, childToParent, branchToBaseTx, branchToSourceTx);
+      loadBranches(branchCache, factory, childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact);
       loadBranchHierarchy(branchCache, childToParent);
       loadMergeBranches(branchCache);
       loadBranchAliases(branchCache);
+      loadAssociatedArtifacts(branchCache, associatedArtifact);
       loadBranchRelatedTransactions(branchCache, branchToBaseTx, branchToSourceTx);
 
       for (Branch branch : cache.getAll()) {
@@ -120,6 +121,16 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       }
       OseeLog.log(Activator.class, Level.INFO,
             String.format("Branch Cache loaded [%s]", Lib.getElapseString(startTime)));
+   }
+
+   private void loadAssociatedArtifacts(BranchCache cache, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
+      if (cache.getDefaultAssociatedArtifact() == null) {
+         cache.setDefaultAssociatedArtifact(new ShallowArtifact(cache, -1));
+      }
+      for (Entry<Branch, Integer> entry : associatedArtifact.entrySet()) {
+         Branch branch = entry.getKey();
+         branch.setAssociatedArtifact(new ShallowArtifact(cache, entry.getValue()));
+      }
    }
 
    @SuppressWarnings("unchecked")
@@ -144,7 +155,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       }
    }
 
-   private void loadBranches(BranchCache cache, IOseeTypeFactory factory, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {
+   private void loadBranches(BranchCache cache, IOseeTypeFactory factory, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_BRANCHES);
@@ -156,8 +167,6 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
                BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
                BranchType branchType = BranchType.getBranchType(chStmt.getInt("branch_type"));
                boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
-               IArtifact artifact = new ShallowArtifact(chStmt.getInt("associated_art_id"));
-
                Branch branch = cache.getById(branchId);
                if (branch == null) {
 
@@ -166,7 +175,6 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
                               branchState, isArchived);
                   branch.setId(branchId);
                   branch.setModificationType(ModificationType.MODIFIED);
-                  branch.setAssociatedArtifact(artifact);
                   branch.clearDirty();
                   cache.cache(branch);
                } else {
@@ -174,7 +182,6 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
                   branch.setArchived(isArchived);
                   branch.setBranchType(branchType);
                   branch.setBranchState(branchState);
-                  branch.setAssociatedArtifact(artifact);
                   branch.setModificationType(ModificationType.MODIFIED);
                }
                Integer parentBranchId = chStmt.getInt("parent_branch_id");
@@ -183,6 +190,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
                }
                branchToSourceTx.put(branch, chStmt.getInt("parent_transaction_id"));
                branchToBaseTx.put(branch, chStmt.getInt("transaction_id"));
+               associatedArtifact.put(branch, chStmt.getInt("associated_art_id"));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
@@ -221,24 +229,24 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    }
 
    private void loadBranchAliases(BranchCache branchCache) throws OseeCoreException {
+      HashCollection<Integer, String> aliasMap = new HashCollection<Integer, String>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(SELECT_BRANCH_ALIASES);
-         HashCollection<Integer, String> aliasMap = new HashCollection<Integer, String>();
          while (chStmt.next()) {
             int branchId = chStmt.getInt("mapped_branch_id");
             String alias = chStmt.getString("static_branch_name").toLowerCase();
             aliasMap.put(branchId, alias);
          }
-         for (Integer branchId : aliasMap.keySet()) {
-            Branch branch = branchCache.getById(branchId);
-            Collection<String> aliases = aliasMap.getValues(branchId);
-            if (aliases != null) {
-               branch.setAliases(aliases.toArray(new String[aliases.size()]));
-            }
-         }
       } finally {
          chStmt.close();
+      }
+      for (Integer branchId : aliasMap.keySet()) {
+         Branch branch = branchCache.getById(branchId);
+         Collection<String> aliases = aliasMap.getValues(branchId);
+         if (aliases != null) {
+            branch.setAliases(aliases.toArray(new String[aliases.size()]));
+         }
       }
    }
 

@@ -57,7 +57,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
       attributeTypes = new ArrayList<AttributeType>();
 
       BranchDataAccessor branchData = new BranchDataAccessor();
-      branchCache = new BranchCache(factory, branchData, null);
+      branchCache = new BranchCache(factory, branchData);
 
       AttributeDataAccessor attrData = new AttributeDataAccessor(attributeTypes);
       attrCache = new AttributeTypeCache(factory, attrData);

@@ -15,6 +15,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -22,13 +24,13 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Roberto E. Escobar
  */
 public class BranchCache extends AbstractOseeCache<Branch> {
+   public static final String COMMON_BRANCH_ALIAS = "Common";
 
    private final HashCollection<Branch, Branch> parentToChildrenBranches = new HashCollection<Branch, Branch>();
    private final Map<Branch, Branch> childToParent = new HashMap<Branch, Branch>();
@@ -43,11 +45,11 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    private final Map<Branch, TransactionId> branchToSourceTx = new HashMap<Branch, TransactionId>();
 
    private Branch systemRootBranch;
-   private final IArtifact defaultAssociatedArtifact;
+   private IArtifact defaultAssociatedArtifact;
 
-   public BranchCache(IOseeTypeFactory factory, IOseeDataAccessor<Branch> dataAccessor, IArtifact defaultAssociatedArtifact) {
+   public BranchCache(IOseeTypeFactory factory, IOseeDataAccessor<Branch> dataAccessor) {
       super(factory, dataAccessor);
-      this.defaultAssociatedArtifact = defaultAssociatedArtifact;
+      this.defaultAssociatedArtifact = null;
       this.systemRootBranch = null;
    }
 
@@ -149,6 +151,19 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       return branches;
    }
 
+   public Branch getUniqueByAlias(String alias) throws OseeCoreException {
+      ensurePopulated();
+      Collection<Branch> branches = getByAlias(alias);
+      if (branches.isEmpty()) {
+         throw new BranchDoesNotExist(String.format("The alias [%s] does not refer to any branch", alias));
+      }
+      if (branches.size() > 1) {
+         throw new MultipleBranchesExist(String.format("The alias [%s] refers to more than 1 branch [%s]", alias,
+               branches));
+      }
+      return branches.iterator().next();
+   }
+
    public void cacheBaseTransaction(Branch branch, TransactionId baseTransaction) throws OseeCoreException {
       if (branch == null) {
          throw new OseeArgumentException("branch cannot be null");
@@ -186,25 +201,25 @@ public class BranchCache extends AbstractOseeCache<Branch> {
 
    public void setAssociatedArtifact(Branch branch, IArtifact artifact) throws OseeCoreException {
       ensurePopulated();
-      if (artifact == null) {
-         branchToAssociatedArtifact.put(branch, defaultAssociatedArtifact);
-      } else {
+      if (artifact != null) {
+         // Artifact has already been loaded so check
+         // TODO: this method should allow the artifact to be on any branch, not just common
          if (artifact instanceof Artifact) {
-            // Artifact has already been loaded so check
-            // TODO: this method should allow the artifact to be on any branch, not just common
-            if (artifact.getBranch() != BranchManager.getCommonBranch()) {
+            if (artifact.getBranch() != getCommonBranch()) {
                throw new OseeArgumentException(
                      "Setting associated artifact for branch only valid for common branch artifact.");
             }
          }
          IArtifact lastArtifact = branchToAssociatedArtifact.get(branch);
          if (lastArtifact != null) {
-            if (lastArtifact.getArtId() != artifact.getArtId()) {
+            if (!lastArtifact.equals(artifact)) {
                branchToAssociatedArtifact.put(branch, artifact);
             }
          } else {
             branchToAssociatedArtifact.put(branch, artifact);
          }
+      } else {
+         branchToAssociatedArtifact.remove(branch);
       }
    }
 
@@ -217,7 +232,17 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       return associatedArtifact;
    }
 
-   public IArtifact getDefaultAssociatedArtifact() {
+   public IArtifact getDefaultAssociatedArtifact() throws OseeCoreException {
+      ensurePopulated();
       return defaultAssociatedArtifact;
+   }
+
+   public void setDefaultAssociatedArtifact(IArtifact artifact) {
+      this.defaultAssociatedArtifact = artifact;
+   }
+
+   public Branch getCommonBranch() throws OseeCoreException {
+      ensurePopulated();
+      return getUniqueByAlias(COMMON_BRANCH_ALIAS);
    }
 }

@@ -45,7 +45,6 @@ import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -68,7 +67,7 @@ import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
  * @author Ryan D. Brooks
  */
 public class BranchManager {
-   public static final String COMMON_BRANCH_CONFIG_ID = "Common";
+   public static final String COMMON_BRANCH_CONFIG_ID = BranchCache.COMMON_BRANCH_ALIAS;
 
    private static final int NULL_PARENT_BRANCH_ID = -1;
 
@@ -109,7 +108,7 @@ public class BranchManager {
    }
 
    public static Branch getCommonBranch() throws OseeCoreException {
-      return getKeyedBranch(COMMON_BRANCH_CONFIG_ID);
+      return OseeTypeManager.getBranchCache().getCommonBranch();
    }
 
    /**
@@ -576,18 +575,7 @@ public class BranchManager {
    }
 
    public static Branch getKeyedBranch(String alias) throws OseeCoreException {
-      if (!Strings.isValid(alias)) {
-         throw new OseeArgumentException("alias can not be null or empty");
-      }
-      Collection<Branch> branches = OseeTypeManager.getBranchCache().getByAlias(alias);
-      if (branches.isEmpty()) {
-         throw new BranchDoesNotExist(String.format("The alias [%s] does not refer to any branch", alias));
-      }
-      if (branches.size() > 1) {
-         throw new MultipleBranchesExist(String.format("The alias [%s] refers to more than 1 branch [%s]", alias,
-               branches));
-      }
-      return branches.iterator().next();
+      return OseeTypeManager.getBranchCache().getUniqueByAlias(alias);
    }
 
    public static void decache(Branch branch) throws OseeCoreException {

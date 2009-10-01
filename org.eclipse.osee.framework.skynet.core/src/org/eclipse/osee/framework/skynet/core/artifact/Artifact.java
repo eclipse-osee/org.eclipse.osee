@@ -1681,7 +1681,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
 
    @Override
    public final int hashCode() {
-      return 37 * guid.hashCode() + branch.hashCode();
+      return 37 * getArtId() + getBranch().hashCode();
    }
 
    /**
@@ -1690,9 +1690,9 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     */
    @Override
    public final boolean equals(Object obj) {
-      if (obj instanceof Artifact) {
-         Artifact otherArtifact = (Artifact) obj;
-         return guid.equals(otherArtifact.guid) && branch.equals(otherArtifact.branch);
+      if (obj instanceof IArtifact) {
+         IArtifact other = (IArtifact) obj;
+         return getArtId() == other.getArtId() && getBranch().equals(other.getBranch());
       }
       return false;
    }

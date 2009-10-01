@@ -14,10 +14,8 @@ import static org.junit.Assert.assertFalse;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -97,8 +95,6 @@ public class ArtifactPurgeTest {
    public void testPurgeArtifacts() throws Exception {
       // Count rows in tables prior to purge
       DbUtil.getTableRowCounts(preCreateArtifactsCount, tables);
-
-      Set<Artifact> artsToPurge = new HashSet<Artifact>();
 
       // Create some software artifacts      
       Branch branch = BranchManager.getBranch(DemoSawBuilds.SAW_Bld_2.name());

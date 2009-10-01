@@ -63,9 +63,10 @@ public class BranchPurgeTest {
       DbUtil.getTableRowCounts(preCreateCount, tables);
 
       // create a new working branch
+      Branch parentBranch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name());
       Branch branch =
-            BranchManager.createWorkingBranch(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
-                  getClass().getSimpleName(), UserManager.getUser(SystemUser.OseeSystem));
+            BranchManager.createWorkingBranch(parentBranch, getClass().getSimpleName(),
+                  UserManager.getUser(SystemUser.OseeSystem));
 
       TestUtil.sleep(4000);
 

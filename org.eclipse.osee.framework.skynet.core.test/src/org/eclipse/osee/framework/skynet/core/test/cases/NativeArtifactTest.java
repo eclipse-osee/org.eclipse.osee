@@ -21,6 +21,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
@@ -90,14 +91,13 @@ public class NativeArtifactTest {
    }
 
    private Artifact getNativeArtifact() throws Exception {
-      return CsvArtifact.getCsvArtifact(getClass().getSimpleName(),
-            BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false).getArtifact();
+      Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
+      return CsvArtifact.getCsvArtifact(getClass().getSimpleName(), branch, false).getArtifact();
    }
 
    private void cleanup() throws Exception {
-      Collection<Artifact> arts =
-            ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(),
-                  BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), false);
+      Branch branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
+      Collection<Artifact> arts = ArtifactQuery.getArtifactListFromName(getClass().getSimpleName(), branch, false);
       FrameworkTestUtil.purgeArtifacts(arts);
    }
 }

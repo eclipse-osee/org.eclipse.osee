@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
@@ -29,9 +28,11 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ShallowArtifact implements IArtifact {
 
    private int artifactId;
+   private final BranchCache cache;
 
-   public ShallowArtifact(int artifactId) {
+   public ShallowArtifact(BranchCache cache, int artifactId) {
       this.artifactId = artifactId;
+      this.cache = cache;
    }
 
    @Override
@@ -56,7 +57,13 @@ public class ShallowArtifact implements IArtifact {
 
    @Override
    public Branch getBranch() {
-      return getArtifact().getBranch();
+      Branch branch = null;
+      try {
+         branch = cache.getCommonBranch();
+      } catch (OseeCoreException ex) {
+         //         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+      return branch;
    }
 
    private Artifact getArtifact() {
@@ -71,14 +78,20 @@ public class ShallowArtifact implements IArtifact {
 
    @Override
    public final int hashCode() {
-      return 37 * getArtId();
+      return 37 * getArtId() + (getBranch() != null ? getBranch().hashCode() : 0);
    }
 
    @Override
    public final boolean equals(Object obj) {
       if (obj instanceof IArtifact) {
          IArtifact other = (IArtifact) obj;
-         return getArtId() == other.getArtId();
+         boolean result = false;
+         if (getBranch() == null && other.getBranch() == null) {
+            result = true;
+         } else if (getBranch() != null && other.getBranch() != null) {
+            result = getBranch().equals(other.getBranch());
+         }
+         return result && getArtId() == other.getArtId();
       }
       return false;
    }
@@ -86,8 +99,8 @@ public class ShallowArtifact implements IArtifact {
    @Override
    public Artifact getFullArtifact() throws OseeCoreException {
       Artifact associatedArtifact = null;
-      if (artifactId > 0) {
-         associatedArtifact = ArtifactQuery.getArtifactFromId(artifactId, BranchManager.getCommonBranch());
+      if (getArtId() > 0) {
+         associatedArtifact = ArtifactQuery.getArtifactFromId(getArtId(), getBranch());
       } else {
          associatedArtifact = UserManager.getUser(SystemUser.OseeSystem);
          artifactId = associatedArtifact.getArtId();

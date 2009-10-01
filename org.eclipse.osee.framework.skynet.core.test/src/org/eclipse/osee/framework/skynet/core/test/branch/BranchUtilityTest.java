@@ -154,7 +154,7 @@ public class BranchUtilityTest {
 
    private final class TestCache extends BranchCache {
       public TestCache(IOseeTypeFactory factory) {
-         super(factory, new OseeTestDataAccessor<Branch>(), null);
+         super(factory, new OseeTestDataAccessor<Branch>());
       }
    }
 }

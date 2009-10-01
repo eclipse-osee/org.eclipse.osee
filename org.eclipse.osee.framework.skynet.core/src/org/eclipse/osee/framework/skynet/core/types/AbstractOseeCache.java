@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -62,9 +63,24 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
          throw new OseeArgumentException("Caching a null value is not allowed");
       }
       guidToTypeMap.remove(type.getGuid());
-      nameToTypeMap.removeValue(type.getName(), type);
+      decacheByName(type);
       if (type.getId() != UniqueIdField.UNPERSISTTED_VALUE) {
          idToTypeMap.remove(type.getId());
+      }
+   }
+
+   private void decacheByName(T type) {
+      Set<String> keysToRemove = new HashSet<String>();
+
+      for (String name : nameToTypeMap.keySet()) {
+         Collection<T> items = nameToTypeMap.getValues(name);
+         if (items != null && items.contains(type)) {
+            keysToRemove.add(name);
+         }
+      }
+
+      for (String key : keysToRemove) {
+         nameToTypeMap.removeValue(key, type);
       }
    }
 

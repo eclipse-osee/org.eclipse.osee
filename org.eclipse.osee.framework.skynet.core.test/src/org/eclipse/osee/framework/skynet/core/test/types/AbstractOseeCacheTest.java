@@ -11,11 +11,13 @@
 package org.eclipse.osee.framework.skynet.core.test.types;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.IOseeStorableType;
 
 /**
@@ -77,6 +79,75 @@ public abstract class AbstractOseeCacheTest<T extends IOseeStorableType> {
          T actual = cache.getUniqueByName(expected.getName());
          Assert.assertNotNull(actual);
          checkEquals(expected, actual);
+      }
+   }
+
+   @org.junit.Test
+   public void testDecache() throws OseeCoreException {
+      T item = data.get(0);
+      Assert.assertEquals(item, cache.getByGuid(item.getGuid()));
+      Assert.assertEquals(item, cache.getById(item.getId()));
+      Assert.assertEquals(item, cache.getUniqueByName(item.getName()));
+      Assert.assertTrue(cache.getAll().contains(item));
+
+      cache.decache(item);
+      Assert.assertNull(cache.getByGuid(item.getGuid()));
+      Assert.assertNull(cache.getById(item.getId()));
+      Assert.assertNull(cache.getUniqueByName(item.getName()));
+      Assert.assertFalse(cache.getAll().contains(item));
+
+      cache.cache(item);
+      Assert.assertEquals(item, cache.getByGuid(item.getGuid()));
+      Assert.assertEquals(item, cache.getById(item.getId()));
+      Assert.assertEquals(item, cache.getUniqueByName(item.getName()));
+      Assert.assertTrue(cache.getAll().contains(item));
+   }
+
+   @org.junit.Test
+   public void testGetByName() throws OseeCoreException {
+      for (T expected : data) {
+         Collection<T> actual = cache.getByName(expected.getName());
+         Assert.assertNotNull(actual);
+         Assert.assertEquals(1, actual.size());
+         checkEquals(expected, actual.iterator().next());
+      }
+   }
+
+   @org.junit.Test
+   public void testMultipleGetByName() throws OseeCoreException {
+      T item1 = data.get(0);
+      T item2 = data.get(1);
+      Assert.assertNotNull(item1);
+      Assert.assertNotNull(item2);
+
+      Collection<T> actual = cache.getByName(item1.getName());
+      Assert.assertNotNull(actual);
+      Assert.assertEquals(1, actual.size());
+      checkEquals(item1, actual.iterator().next());
+
+      actual = cache.getByName(item2.getName());
+      Assert.assertNotNull(actual);
+      Assert.assertEquals(1, actual.size());
+      checkEquals(item2, actual.iterator().next());
+
+      String originalName = item1.getName();
+      if (item1 instanceof AbstractOseeType) {
+         ((AbstractOseeType) item1).setName(item2.getName());
+
+         cache.decache(item1);
+         cache.cache(item1);
+
+         actual = cache.getByName(originalName);
+         Assert.assertNotNull(actual);
+         Assert.assertEquals(0, actual.size());
+
+         actual = cache.getByName(item2.getName());
+         Assert.assertNotNull(actual);
+         Assert.assertEquals(2, actual.size());
+
+         checkEquals(item2, actual.iterator().next());
+
+         ((AbstractOseeType) item1).setName(originalName);
       }
    }
 

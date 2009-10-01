@@ -50,12 +50,15 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
    public static void prepareTestData() throws OseeCoreException {
       factory = new OseeTypeFactory();
       branchData = new ArrayList<Branch>();
-      defaultAssociatedArtifact = new ShallowArtifact(-1);
-      BranchDataAccessor branchAccessor = new BranchDataAccessor(branchData);
-      cache = new BranchCache(factory, branchAccessor, defaultAssociatedArtifact);
 
+      BranchDataAccessor branchAccessor = new BranchDataAccessor(branchData);
+      cache = new BranchCache(factory, branchAccessor);
       cache.ensurePopulated();
+
       Assert.assertTrue(branchAccessor.wasLoaded());
+
+      defaultAssociatedArtifact = new ShallowArtifact(cache, -1);
+      cache.setDefaultAssociatedArtifact(defaultAssociatedArtifact);
    }
 
    public BranchCacheTest() {
@@ -86,7 +89,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
    @Test
    public void testBranchAliases() throws OseeCoreException {
       OseeTypesUtil.checkAliases(cache, "AAA", "root", "system", "main");
-      OseeTypesUtil.checkAliases(cache, "BBB", "base 1", "build 1");
+      OseeTypesUtil.checkAliases(cache, "BBB", "base 1", "build 1", "common");
       OseeTypesUtil.checkAliases(cache, "CCC", "base 2", "build 2");
 
       OseeTypesUtil.checkAliases(cache, "DDD");
@@ -220,7 +223,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       Assert.assertEquals(defaultAssociatedArtifact, branch.getAssociatedArtifact());
 
       String guid = GUID.create();
-      IArtifact expectedArtifact = new TestArtifact(100, guid, "Test Artifact");
+      IArtifact expectedArtifact = new TestArtifact(100, guid, "Test Artifact", cache);
       branch.setAssociatedArtifact(expectedArtifact);
 
       Assert.assertEquals(branch.getAssociatedArtifact(), expectedArtifact);
@@ -251,13 +254,14 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
 
    }
 
-   private final static class TestArtifact implements IArtifact {
+   private final static class TestArtifact extends ShallowArtifact {
 
       private final int artId;
       private final String guid;
       private final String name;
 
-      public TestArtifact(int uniqueId, String guid, String name) {
+      public TestArtifact(int uniqueId, String guid, String name, BranchCache cache) {
+         super(cache, uniqueId);
          this.artId = uniqueId;
          this.guid = guid;
          this.name = name;
@@ -270,11 +274,6 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
 
       @Override
       public ArtifactType getArtifactType() {
-         return null;
-      }
-
-      @Override
-      public Branch getBranch() {
          return null;
       }
 
@@ -359,7 +358,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
 
       private void loadBranchAliases(BranchCache branchCache) throws OseeCoreException {
          OseeTypesUtil.createAlias(cache, "AAA", "Root", "System", "Main");
-         OseeTypesUtil.createAlias(cache, "BBB", "Base 1", "Build 1");
+         OseeTypesUtil.createAlias(cache, "BBB", "Base 1", "Build 1", "common");
          OseeTypesUtil.createAlias(cache, "CCC", "Base 2", "Build 2");
 
          OseeTypesUtil.createAlias(cache, "JJJ", "a merge branch");
