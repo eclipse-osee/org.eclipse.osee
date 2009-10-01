@@ -11,13 +11,14 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.Date;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Jeff C. Phillips
  */
-public class TransactionId {
+public class TransactionId implements IAdaptable {
    private final int transactionNumber;
    private final Branch branch;
    private final TransactionDetailsType txType;
@@ -87,6 +88,19 @@ public class TransactionId {
          return other.transactionNumber == transactionNumber;
       }
       return false;
+   }
+
+   @SuppressWarnings("unchecked")
+   @Override
+   public Object getAdapter(Class adapter) {
+      if (adapter == null) {
+         throw new IllegalArgumentException("adapter can not be null");
+      }
+
+      if (adapter.isInstance(this)) {
+         return this;
+      }
+      return null;
    }
 
    @Override
