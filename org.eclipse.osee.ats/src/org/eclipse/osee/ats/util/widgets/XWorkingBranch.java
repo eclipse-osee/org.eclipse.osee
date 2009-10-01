@@ -160,8 +160,9 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    }
 
    private String getWorkingBranchShortName() {
-      if (getWorkingBranch() != null) {
-         return getWorkingBranch().getShortName();
+      Branch branch = getWorkingBranch();
+      if (branch != null) {
+         return branch.getShortName();
       }
       return "";
    }
@@ -220,38 +221,47 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    @Override
    public void refresh() {
-      if (labelWidget == null || labelWidget.isDisposed()) {
+      if (smaMgr == null || smaMgr.getBranchMgr() == null || labelWidget == null || labelWidget.isDisposed()) {
          return;
       }
-      labelWidget.setText(getLabel() + ": " + getWorkingBranchShortName() + " " + getStatus());
-      try {
-         if (smaMgr != null && smaMgr.getBranchMgr() != null) {
-            if (createBranchButton != null) {
-               createBranchButton.setEnabled(!smaMgr.getBranchMgr().isWorkingBranchInWork() && !smaMgr.getBranchMgr().isCommittedBranchExists());
-            }
-            if (showArtifactExplorer != null) {
-               if (getWorkingBranch() == null)
-                  showArtifactExplorer.setEnabled(false);
-               else {
-                  if (getStatus().equals(BranchStatus.Changes_NotPermitted.name())) {
-                     showArtifactExplorer.setEnabled(false);
-                  } else
-                     showArtifactExplorer.setEnabled(true);
-               }
-            }
-            if (showChangeReport != null) {
-               if (smaMgr.getBranchMgr().isWorkingBranchInWork() || smaMgr.getBranchMgr().isCommittedBranchExists())
-                  showChangeReport.setEnabled(true);
-               else
-                  showChangeReport.setEnabled(false);
-            }
-            if (purgeBranchButton != null) {
-               purgeBranchButton.setEnabled(smaMgr.getBranchMgr().isWorkingBranchInWork() && !smaMgr.getBranchMgr().isCommittedBranchExists());
+      Thread thread = new Thread() {
+         @Override
+         public void run() {
+            try {
+               final boolean workingBranchInWork = smaMgr.getBranchMgr().isWorkingBranchInWork();
+               final boolean committedBranchExists = smaMgr.getBranchMgr().isCommittedBranchExists();
+               final Branch workingBranch = smaMgr.getBranchMgr().getWorkingBranch();
+               final String status = getStatus();
+               final boolean changesNotPermitted = status.equals(BranchStatus.Changes_NotPermitted.name());
+               final String labelStr =
+                     getLabel() + ": " + (workingBranch == null ? "" : workingBranch.getShortName()) + " " + status;
+               Displays.ensureInDisplayThread(new Runnable() {
+                  public void run() {
+                     labelWidget.setText(labelStr);
+                     if (createBranchButton != null) {
+                        createBranchButton.setEnabled(!workingBranchInWork && !committedBranchExists);
+                     }
+                     if (showArtifactExplorer != null) {
+                        if (workingBranch == null)
+                           showArtifactExplorer.setEnabled(false);
+                        else {
+                           showArtifactExplorer.setEnabled(changesNotPermitted);
+                        }
+                     }
+                     if (showChangeReport != null) {
+                        showChangeReport.setEnabled(workingBranchInWork || committedBranchExists);
+                     }
+                     if (purgeBranchButton != null) {
+                        purgeBranchButton.setEnabled(workingBranchInWork && !committedBranchExists);
+                     }
+                  }
+               });
+            } catch (OseeCoreException ex) {
+               OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
             }
          }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-      }
+      };
+      thread.start();
    }
 
    @Override
@@ -283,12 +293,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) throws OseeCoreException {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            refresh();
-         }
-      });
+      refresh();
    }
 
    @Override
@@ -297,12 +302,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      Displays.ensureInDisplayThread(new Runnable() {
-         @Override
-         public void run() {
-            refresh();
-         }
-      });
+      refresh();
    }
 
    public Button getCreateBranchButton() {

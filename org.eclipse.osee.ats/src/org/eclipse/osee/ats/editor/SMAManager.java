@@ -78,7 +78,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class SMAManager {
 
-   private WeakReference<StateMachineArtifact> smaRef;
+   private final WeakReference<StateMachineArtifact> smaRef;
    private Collection<User> transitionAssignees;
    private static String SEPERATOR = ";  ";
    private final TaskManager taskMgr;
@@ -197,7 +197,7 @@ public class SMAManager {
       try {
          return ((TeamWorkFlowArtifact) getSma()).getTeamDefinition().isTeamUsesVersions();
       } catch (Exception ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
          return false;
       }
    }

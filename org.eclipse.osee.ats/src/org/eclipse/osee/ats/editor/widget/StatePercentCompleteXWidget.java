@@ -71,14 +71,12 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
    "Total State Percent: state percent + all task percents + all review percents / 1 + num tasks + num reviews";
 
    @Override
-   public void refresh() {
-      super.refresh();
-      if (getControl().isDisposed()) {
-         setValueLabel("State Percent Error: page == null");
-         return;
-      } else if (page == null) return;
-
+   public String getCurrentValue() {
+      if (page == null) {
+         return "page == null";
+      }
       try {
+         setEditable(!smaMgr.getSma().isReadOnly());
          StringBuffer sb =
                new StringBuffer(String.format("        State Percent: %d", smaMgr.getStateMgr().getPercentComplete(
                      page.getName())));
@@ -94,16 +92,16 @@ public class StatePercentCompleteXWidget extends XHyperlinkLabelValueSelection {
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
-            setValueLabel(String.valueOf(smaMgr.getSma().getPercentCompleteSMAStateTotal(page.getName())));
             if (!getControl().isDisposed()) {
                setToolTip(sb.toString() + "\n" + TOOLTIP);
             }
+            return String.valueOf(smaMgr.getSma().getPercentCompleteSMAStateTotal(page.getName()));
          } else {
-            setValueLabel(String.valueOf(smaMgr.getStateMgr().getPercentComplete(page.getName())));
+            return String.valueOf(smaMgr.getStateMgr().getPercentComplete(page.getName()));
          }
-         setEditable(!smaMgr.getSma().isReadOnly());
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return ex.getLocalizedMessage();
       }
    }
 

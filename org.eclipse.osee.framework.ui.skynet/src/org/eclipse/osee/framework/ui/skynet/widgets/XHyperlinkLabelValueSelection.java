@@ -36,9 +36,10 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
       super(label);
    }
 
-   public String getCurrentValue() {
-      return "";
-   }
+   /**
+    * Override this method to provide changing value
+    */
+   public abstract String getCurrentValue();
 
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
@@ -84,12 +85,12 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
             }
          }
       });
-
       refresh();
    }
 
    @Override
    public void refresh() {
+      if (getControl() == null || getControl().isDisposed() || getCurrentValue().equals(valueHyperlinkLabel.getText())) return;
       valueHyperlinkLabel.setText(getCurrentValue());
       valueHyperlinkLabel.update();
       valueHyperlinkLabel.getParent().update();
@@ -149,7 +150,4 @@ public abstract class XHyperlinkLabelValueSelection extends XWidget {
    public void setXmlData(String str) {
    }
 
-   public void setValueLabel(String str) {
-      valueHyperlinkLabel.setText(str);
-   }
 }

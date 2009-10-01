@@ -124,11 +124,18 @@ public class AtsBranchManager {
     * @throws OseeCoreException
     */
    public boolean isMergeBranchExists(Branch destinationBranch) throws OseeCoreException {
-      Branch branch = getWorkingBranch(true, false);
-      if (branch == null) {
+      return isMergeBranchExists(getWorkingBranch(true, false), destinationBranch);
+   }
+
+   /**
+    * Method available for optimized checking of merge branches so don't have to re-acquire working branch if already
+    * have
+    */
+   public boolean isMergeBranchExists(Branch workingBranch, Branch destinationBranch) throws OseeCoreException {
+      if (workingBranch == null) {
          return false;
       }
-      return BranchManager.isMergeBranch(branch, destinationBranch);
+      return BranchManager.isMergeBranch(workingBranch, destinationBranch);
    }
 
    public boolean isMergeCompleted(Branch destinationBranch) throws OseeCoreException {
@@ -261,10 +268,11 @@ public class AtsBranchManager {
     */
    public Collection<TransactionId> getTransactionIds(boolean showMergeManager) throws OseeCoreException {
       if (showMergeManager) {
+         Branch workingBranch = getWorkingBranch();
          // grab only the transaction that had merge conflicts
          Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
          for (TransactionId transactionId : getTransactionIdsForBaslineBranches()) {
-            if (isMergeBranchExists(transactionId.getBranch())) {
+            if (isMergeBranchExists(workingBranch, transactionId.getBranch())) {
                transactionIds.add(transactionId);
             }
          }

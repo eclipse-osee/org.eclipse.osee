@@ -78,7 +78,9 @@ public final class TransactionIdManager {
 
    public synchronized static Collection<TransactionId> getCommittedArtifactTransactionIds(IArtifact artifact) throws OseeCoreException {
       List<TransactionId> transactionIds = commitArtifactMap.get(artifact);
-      if (transactionIds == null || transactionIds.isEmpty()) {
+      // Cache the transactionIds first time through.  Other commits will be added to cache as they
+      // happen in this client or as remote commit events come through
+      if (transactionIds == null) {
          transactionIds = new ArrayList<TransactionId>(5);
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
@@ -93,6 +95,17 @@ public final class TransactionIdManager {
          }
       }
       return transactionIds;
+   }
+
+   /**
+    * Allow commitArtifactMap cache to be cleared for a given associatedArtifact. This will force a refresh of the cache
+    * the next time it's accessed. This is provided for remote event commits. All other updates to cache should be
+    * performed through cacheCommittedArtifactTransaction.
+    */
+   public static void clearCommitArtifactCacheForAssociatedArtifact(IArtifact associatedArtifact) throws OseeCoreException {
+      if (associatedArtifact != null) {
+         commitArtifactMap.remove(associatedArtifact);
+      }
    }
 
    public synchronized static void cacheCommittedArtifactTransaction(IArtifact artifact, TransactionId transactionId) throws OseeCoreException {

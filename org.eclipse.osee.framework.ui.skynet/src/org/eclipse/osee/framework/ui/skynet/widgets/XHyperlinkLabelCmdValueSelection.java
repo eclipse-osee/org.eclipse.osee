@@ -126,14 +126,26 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
 
    @Override
    public void refresh() {
-      selectHyperLinkLabel.setText(getHyperlinkLabelString());
-      if (supportClear) {
-         clearHyperLinkLabel.setText(getClearHyperlinkLabelString());
+      if (getControl() == null || getControl().isDisposed()) {
+         return;
       }
-      valueLabel.setText(getCurrentValue());
-      valueLabel.getParent().layout();
+      boolean updated = false;
+      if (!getHyperlinkLabelString().equals(selectHyperLinkLabel.getText())) {
+         selectHyperLinkLabel.setText(getHyperlinkLabelString());
+         updated = true;
+      }
+      if (supportClear && !getClearHyperlinkLabelString().equals(clearHyperLinkLabel.getText())) {
+         clearHyperLinkLabel.setText(getClearHyperlinkLabelString());
+         updated = true;
+      }
+      if (!getCurrentValue().equals(valueLabel.getText())) {
+         valueLabel.setText(getCurrentValue());
+         updated = true;
+      }
+      if (updated) {
+         valueLabel.getParent().layout();
+      }
       validate();
-
    }
 
    @Override
@@ -187,7 +199,4 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
    public void setXmlData(String str) {
    }
 
-   public void setValueLabel(String str) {
-      valueLabel.setText(str);
-   }
 }

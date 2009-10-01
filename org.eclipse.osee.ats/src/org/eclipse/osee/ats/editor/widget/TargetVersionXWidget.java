@@ -47,29 +47,6 @@ public class TargetVersionXWidget extends XHyperlinkLabelValueSelection {
    }
 
    @Override
-   public void refresh() {
-      super.refresh();
-      if (getControl().isDisposed()) {
-         return;
-      }
-      try {
-         String str = "";
-         if (smaMgr.getTargetedForVersion() != null) {
-            str = smaMgr.getTargetedForVersion() + "";
-         } else {
-            str = "<edit>";
-         }
-         setValueLabel(str);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-
-   }
-
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.ui.skynet.widgets.XText#isValid()
-    */
-   @Override
    public IStatus isValid() {
       IStatus status = super.isValid();
       // Don't transition without targeted version if so configured
@@ -100,6 +77,20 @@ public class TargetVersionXWidget extends XHyperlinkLabelValueSelection {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return false;
+   }
+
+   @Override
+   public String getCurrentValue() {
+      try {
+         if (smaMgr.getTargetedForVersion() != null) {
+            return String.valueOf(smaMgr.getTargetedForVersion());
+         } else {
+            return "<edit>";
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         return ex.getLocalizedMessage();
+      }
    }
 
 }

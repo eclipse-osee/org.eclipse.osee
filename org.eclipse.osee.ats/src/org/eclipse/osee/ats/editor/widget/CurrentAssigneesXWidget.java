@@ -43,26 +43,6 @@ public class CurrentAssigneesXWidget extends XHyperlinkLabelCmdValueSelection {
       super.createWidgets(managedForm, composite, horizontalSpan);
    }
 
-   @Override
-   public void refresh() {
-      super.refresh();
-      if (getControl().isDisposed()) {
-         return;
-      }
-      try {
-         if (smaMgr.getStateMgr().getAssignees().size() == 0) {
-            setValueLabel("Error: State has no assignees");
-            setErrorState(true);
-         } else {
-            setValueLabel(smaMgr.getStateMgr().getAssigneesStr(80));
-            setToolTip(smaMgr.getStateMgr().getAssigneesStr());
-            setErrorState(false);
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
-   }
-
    private void handleChangeCurrentAssignees() throws OseeCoreException {
       if (!isEditable && !smaMgr.getStateMgr().getAssignees().contains(UserManager.getUser(SystemUser.UnAssigned)) && !smaMgr.getStateMgr().getAssignees().contains(
             UserManager.getUser())) {
@@ -90,6 +70,23 @@ public class CurrentAssigneesXWidget extends XHyperlinkLabelCmdValueSelection {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return true;
+   }
+
+   @Override
+   public String getCurrentValue() {
+      try {
+         if (smaMgr.getStateMgr().getAssignees().size() == 0) {
+            setErrorState(true);
+            return "Error: State has no assignees";
+         } else {
+            setToolTip(smaMgr.getStateMgr().getAssigneesStr());
+            setErrorState(false);
+            return smaMgr.getStateMgr().getAssigneesStr(80);
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         return ex.getLocalizedMessage();
+      }
    }
 
 }

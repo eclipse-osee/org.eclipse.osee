@@ -217,11 +217,12 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
             Collection<ICommitConfigArtifact> configArtSet =
                   teamArt.getSmaMgr().getBranchMgr().getConfigArtifactsConfiguredToCommitTo();
             xCommitManager.setInput(configArtSet);
+            xCommitManager.refresh();
+            refresh();
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      refresh();
    }
 
    @SuppressWarnings("unchecked")
@@ -257,33 +258,47 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    @Override
    public void refresh() {
       if (xCommitManager == null || xCommitManager.getTree() == null || xCommitManager.getTree().isDisposed()) return;
-      xCommitManager.refresh();
       validate();
       setXviewerTree();
    }
 
+   private void updateExtraInfoLabel(final int color, final String infoStr) {
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            if (!infoStr.equals(extraInfoLabel.getText())) {
+               extraInfoLabel.setText("Double-click item to perform Action");
+            }
+            extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(color));
+         }
+      });
+   }
+
    @Override
    public IStatus isValid() {
+      Status returnStatus = new Status(IStatus.OK, getClass().getSimpleName(), "");
       try {
+         int backgroundColor = SWT.COLOR_BLACK;
+         String infoStr = "Double-click item to perform Action";
          if (xCommitManager != null && xCommitManager.getXCommitViewer() != null && xCommitManager.getXCommitViewer().getTeamArt() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr() != null && xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr() != null) {
             if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isAllObjectsToCommitToConfigured()) {
-               extraInfoLabel.setText("All branches must be configured and committed - Double-click item to perform Action");
-               extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-               return new Status(IStatus.ERROR, getClass().getSimpleName(),
-                     "All branches must be configured and committed.");
+               infoStr = "All branches must be configured and committed - Double-click item to perform Action";
+               backgroundColor = SWT.COLOR_RED;
+               returnStatus =
+                     new Status(IStatus.ERROR, getClass().getSimpleName(),
+                           "All branches must be configured and committed.");
+            } else if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isBranchesAllCommitted()) {
+               infoStr = "All branches must be committed - Double-click item to perform Action";
+               backgroundColor = SWT.COLOR_RED;
+               returnStatus = new Status(IStatus.ERROR, getClass().getSimpleName(), "All branches must be committed.");
             }
-            if (!xCommitManager.getXCommitViewer().getTeamArt().getSmaMgr().getBranchMgr().isBranchesAllCommitted()) {
-               extraInfoLabel.setText("All branches must be committed - Double-click item to perform Action");
-               extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-               return new Status(IStatus.ERROR, getClass().getSimpleName(), "All branches must be committed.");
-            }
-            extraInfoLabel.setText("Double-click item to perform Action");
-            extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
          }
+         updateExtraInfoLabel(backgroundColor, infoStr);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         return new Status(IStatus.ERROR, getClass().getSimpleName(), ex.getLocalizedMessage());
       }
-      return new Status(IStatus.OK, getClass().getSimpleName(), "");
+      return returnStatus;
    }
 
    @Override
@@ -376,6 +391,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
+            xCommitManager.refresh();
             refresh();
          }
       });

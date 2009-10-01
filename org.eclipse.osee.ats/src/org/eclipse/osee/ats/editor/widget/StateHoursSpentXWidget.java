@@ -71,16 +71,10 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
    "Total State Hours Spent: state hours + all task hours + all review hours";
 
    @Override
-   public void refresh() {
-      super.refresh();
-      if (getControl().isDisposed()) {
-         setValueLabel("State Percent Error: page == null");
-         return;
-      } else if (page == null) {
-         setValueLabel("page == null");
-         return;
+   public String getCurrentValue() {
+      if (page == null) {
+         return "page == null";
       }
-
       try {
          StringBuffer sb =
                new StringBuffer(String.format("        State Hours: %5.2f", smaMgr.getStateMgr().getHoursSpent(
@@ -96,14 +90,14 @@ public class StateHoursSpentXWidget extends XHyperlinkLabelValueSelection {
             breakoutNeeded = true;
          }
          if (breakoutNeeded) {
-            setValueLabel(String.format("%5.2f", smaMgr.getSma().getHoursSpentSMAStateTotal(page.getName())));
             setToolTip(sb.toString());
+            return String.format("%5.2f", smaMgr.getSma().getHoursSpentSMAStateTotal(page.getName()));
          } else {
-            setValueLabel(String.format("%5.2f", smaMgr.getStateMgr().getHoursSpent(page.getName())));
+            return String.format("%5.2f", smaMgr.getStateMgr().getHoursSpent(page.getName()));
          }
-
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+         return ex.getLocalizedMessage();
       }
    }
 

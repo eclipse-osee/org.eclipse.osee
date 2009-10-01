@@ -996,8 +996,7 @@ public class InternalEventManager {
                if (artA != null || artB != null) {
                   try {
                      loadedRelation =
-                           new LoadedRelation(artA, artB,
-                                 RelationTypeManager.getType(unloadedRelation.getTypeId()),
+                           new LoadedRelation(artA, artB, RelationTypeManager.getType(unloadedRelation.getTypeId()),
                                  artA != null ? artA.getBranch() : artB.getBranch(), unloadedRelation);
                   } catch (OseeCoreException ex) {
                      OseeLog.log(Activator.class, Level.SEVERE, ex);
