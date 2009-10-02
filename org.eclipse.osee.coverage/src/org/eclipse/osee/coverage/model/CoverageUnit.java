@@ -12,10 +12,14 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
+import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
+import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 
 /**
  * Single code unit (file/procedure/function) that can contain other Coverage Unit or Coverage Items
@@ -71,9 +75,6 @@ public class CoverageUnit implements ICoverageEditorItem {
       return null;
    }
 
-   /**
-    * Get child coverage unit
-    */
    public CoverageUnit getCoverageUnit(String index) {
       return coverageUnits.get(new Integer(index).intValue() - 1);
    }
@@ -128,4 +129,43 @@ public class CoverageUnit implements ICoverageEditorItem {
    @Override
    public void setUser(User user) {
    }
+
+   @Override
+   public boolean isCompleted() {
+      for (CoverageItem coverageItem : getCoverageItems(true)) {
+         if (!coverageItem.isCompleted()) return false;
+      }
+      return true;
+   }
+
+   @Override
+   public String getCoverageEditorValue(XViewerColumn xCol) {
+      if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return getParentCoverageUnit() == null ? "" : getParentCoverageUnit().getName();
+      return "";
+   }
+
+   @Override
+   public Object[] getChildren() {
+      List<ICoverageEditorItem> children = new ArrayList<ICoverageEditorItem>();
+      children.addAll(getCoverageUnits());
+      children.addAll(getCoverageItems(false));
+      return children.toArray(new Object[children.size()]);
+   }
+
+   @Override
+   public OseeImage getOseeImage() {
+      if (isCovered()) {
+         return CoverageImage.UNIT_GREEN;
+      }
+      return CoverageImage.UNIT_RED;
+   }
+
+   @Override
+   public boolean isCovered() {
+      for (CoverageItem coverageItem : getCoverageItems(true)) {
+         if (!coverageItem.isCovered()) return false;
+      }
+      return true;
+   }
+
 }

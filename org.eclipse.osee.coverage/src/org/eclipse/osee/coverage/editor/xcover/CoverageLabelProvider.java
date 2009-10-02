@@ -28,19 +28,19 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
    }
 
    @Override
-   public Image getColumnImage(Object element, XViewerColumn dCol, int columnIndex) throws OseeCoreException {
+   public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
-      if (dCol.equals(CoverageXViewerFactory.User_Col)) {
-         return ImageManager.getImage(coverageItem.getUser());
-      }
+      if (xCol.equals(CoverageXViewerFactory.User_Col)) return ImageManager.getImage(coverageItem.getUser());
+      if (xCol.equals(CoverageXViewerFactory.Name)) return ImageManager.getImage(coverageItem.getOseeImage());
       return null;
    }
 
    @Override
-   public String getColumnText(Object element, XViewerColumn aCol, int columnIndex) throws OseeCoreException {
+   public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
-      if (aCol.equals(CoverageXViewerFactory.User_Col)) return coverageItem.getUser().getName();
-      return "Unhandled Column";
+      if (xCol.equals(CoverageXViewerFactory.User_Col)) return coverageItem.getUser() == null ? "" : coverageItem.getUser().getName();
+      if (xCol.equals(CoverageXViewerFactory.Name)) return coverageItem.getName();
+      return coverageItem.getCoverageEditorValue(xCol);
    }
 
    public void dispose() {

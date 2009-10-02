@@ -10,24 +10,25 @@
 package org.eclipse.osee.coverage.editor;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
@@ -120,6 +121,7 @@ public class CoverageEditorCoverageTab extends FormPage {
 
    public void createToolbar() {
       IToolBarManager toolBarManager = scrolledForm.getToolBarManager();
+      toolBarManager.add(new CollapseAllAction(xCoverageViewer.getXViewer()));
       toolBarManager.add(xCoverageViewer.getXViewer().getCustomizeAction());
       CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
       scrolledForm.updateToolBar();
@@ -145,22 +147,24 @@ public class CoverageEditorCoverageTab extends FormPage {
 
    private Collection<ICoverageEditorItem> performSearchGetResults() throws OseeCoreException {
       Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
+      Collection<CoverageMethodEnum> coverageMethods = getSelectedCoverageMethods();
+      User assignee = getSelectedUser();
+      boolean includeCompleted = isIncludeCompletedCancelledCheckbox();
       for (ICoverageEditorItem item : coverageEditor.getCoverageEditorProvider().getCoverageEditorItems()) {
-         if (coverageItemMatchesSearchCriteria(item)) {
+         if (assignee != null && item.getUser().equals(assignee)) {
+            items.add(item);
+         }
+         if (item instanceof CoverageItem) {
+            CoverageItem coverageItem = (CoverageItem) item;
+            if (coverageMethods.contains(coverageItem.getCoverageMethod())) {
+               items.add(item);
+            }
+         }
+         if ((!includeCompleted && !item.isCompleted()) || includeCompleted) {
             items.add(item);
          }
       }
       return items;
-   }
-
-   private boolean coverageItemMatchesSearchCriteria(ICoverageEditorItem item) throws OseeCoreException {
-      if (getSelectedUser() != null) {
-         if (!getSelectedUser().equals(item.getUser())) {
-            return false;
-         }
-      }
-
-      return true;
    }
 
    public String getSelectedName(/*SearchType searchType*/) throws OseeCoreException {
@@ -171,8 +175,9 @@ public class CoverageEditorCoverageTab extends FormPage {
       if (isIncludeCompletedCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
       }
-      if (getSelectedCoverageMethod() != null) {
-         sb.append(" - Coverage Method: " + getSelectedCoverageMethod());
+      if (getSelectedCoverageMethods().size() > 1) {
+         sb.append(" - Coverage Method: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ",
+               getSelectedCoverageMethods()));
       }
       return "Promotion Items " + sb.toString();
    }
@@ -192,9 +197,6 @@ public class CoverageEditorCoverageTab extends FormPage {
    public void widgetsCreated() throws OseeCoreException {
       getIncludeCompletedCancelledCheckbox().set(true);
 
-      final XCombo coverageMethodCombo = getCoverageMethodCombo();
-      coverageMethodCombo.getComboBox().setVisibleItemCount(25);
-
    }
 
    private User getSelectedUser() {
@@ -204,14 +206,11 @@ public class CoverageEditorCoverageTab extends FormPage {
       return getAssigeeCombo().getUser();
    }
 
-   private CoverageMethodEnum getSelectedCoverageMethod() {
-      if (getCoverageMethodCombo() == null) {
-         return null;
+   private Collection<CoverageMethodEnum> getSelectedCoverageMethods() {
+      if (getCoverageMethodHyperlinkSelection() == null) {
+         return Collections.emptyList();
       }
-      if (!Strings.isValid(getCoverageMethodCombo().get())) {
-         return null;
-      }
-      return CoverageMethodEnum.valueOf(getCoverageMethodCombo().get());
+      return getCoverageMethodHyperlinkSelection().getSelectedCoverageMethods();
    }
 
    public XWidget getXWidget(String attrName) {
@@ -221,19 +220,14 @@ public class CoverageEditorCoverageTab extends FormPage {
       return page.getLayoutData(attrName).getXWidget();
    }
 
-   public XCombo getCoverageMethodCombo() {
-      return (XCombo) getXWidget("Coverage Method");
+   public XHyperlabelCoverageMethodSelection getCoverageMethodHyperlinkSelection() {
+      return (XHyperlabelCoverageMethodSelection) getXWidget("Coverage Method");
    }
 
    public Result isParameterSelectionValid() throws OseeCoreException {
       try {
-         boolean selected = false;
-         User user = getSelectedUser();
-         if (user != null) {
-            selected = true;
-         }
-         if (!selected) {
-            return new Result("You must select at least Team, Version or Assignee.");
+         if (getSelectedCoverageMethods().size() == 0) {
+            return new Result("You must select at least one Coverage Method");
          }
          return Result.TrueResult;
       } catch (Exception ex) {
@@ -245,9 +239,9 @@ public class CoverageEditorCoverageTab extends FormPage {
    public static String WIDGET_XML =
          "<xWidgets>" +
          //
-         "<XWidget xwidgetType=\"XCombo(" + Collections.toString(",", (Object[]) CoverageMethodEnum.values()) + ")\" beginComposite=\"6\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>" +
+         "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>" +
          //
-         "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>" +
+         "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" beginComposite=\"4\" horizontalLabel=\"true\"/>" +
          //
          "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
          //

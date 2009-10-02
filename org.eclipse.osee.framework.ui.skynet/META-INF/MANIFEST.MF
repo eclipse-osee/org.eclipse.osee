@@ -63,6 +63,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.framework.ui.skynet,
  org.eclipse.osee.framework.ui.skynet.Import,
  org.eclipse.osee.framework.ui.skynet.access,
+ org.eclipse.osee.framework.ui.skynet.action,
  org.eclipse.osee.framework.ui.skynet.artifact,
  org.eclipse.osee.framework.ui.skynet.artifact.annotation,
  org.eclipse.osee.framework.ui.skynet.artifact.editor,

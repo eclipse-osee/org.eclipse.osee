@@ -17,6 +17,7 @@ import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
+import org.eclipse.osee.framework.jdk.core.util.ArrayUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
@@ -25,7 +26,6 @@ public class CoverageContentProvider implements ITreeContentProvider {
 
    protected Collection<ICoverageEditorItem> rootSet = new HashSet<ICoverageEditorItem>();
    private final CoverageXViewer xViewer;
-   private static Object[] EMPTY_ARRAY = new Object[0];
    private final SkynetGuiDebug debug = new SkynetGuiDebug(false, "CoverageContentProvider");
 
    public CoverageContentProvider(CoverageXViewer WorldXViewer) {
@@ -94,13 +94,16 @@ public class CoverageContentProvider implements ITreeContentProvider {
 
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
+      if (parentElement instanceof ICoverageEditorItem) {
+         return ((ICoverageEditorItem) parentElement).getChildren();
+      }
       if (parentElement instanceof Object[]) {
          return (Object[]) parentElement;
       }
       if (parentElement instanceof Collection) {
          return ((Collection) parentElement).toArray();
       }
-      return EMPTY_ARRAY;
+      return ArrayUtil.EMPTY_ARRAY;
    }
 
    public Object getParent(Object element) {
@@ -109,8 +112,7 @@ public class CoverageContentProvider implements ITreeContentProvider {
    }
 
    public boolean hasChildren(Object element) {
-      debug.report("hasChildren");
-      return false;
+      return getChildren(element).length > 0;
    }
 
    public Object[] getElements(Object inputElement) {

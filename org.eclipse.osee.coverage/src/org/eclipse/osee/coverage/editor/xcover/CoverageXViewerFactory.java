@@ -22,10 +22,7 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
 
    private static String NAMESPACE = "osee.ats.Coverage";
 
-   public static XViewerColumn Parent_Coverage_Unit =
-         new XViewerColumn(NAMESPACE + ".parentCoverageUnit", "Parent Coverage Unit", 80, SWT.LEFT, true,
-               SortDataType.String, false, "");
-   public static XViewerColumn Coverage_Unit =
+   public static XViewerColumn Name =
          new XViewerColumn(NAMESPACE + ".coverageUnit", "Coverage Unit", 80, SWT.LEFT, true, SortDataType.String,
                false, "");
    public static XViewerColumn Method_Number =
@@ -44,10 +41,15 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn(NAMESPACE + ".testUnits", "Test Units", 80, SWT.LEFT, true, SortDataType.String, false, "");
    public static XViewerColumn User_Col =
          new XViewerColumn(NAMESPACE + ".user", "User", 100, SWT.LEFT, true, SortDataType.String, false, null);
+   public static XViewerColumn Location =
+         new XViewerColumn(NAMESPACE + ".location", "Location", 80, SWT.LEFT, true, SortDataType.String, false, "");
+   public static XViewerColumn Parent_Coverage_Unit =
+         new XViewerColumn(NAMESPACE + ".parentCoverageUnit", "Parent Coverage Unit", 80, SWT.LEFT, true,
+               SortDataType.String, false, "");
 
    public CoverageXViewerFactory() {
       super(NAMESPACE);
-      registerColumns(Parent_Coverage_Unit, Coverage_Unit, Method_Number, Execution_Number, Line_Number,
-            Coverage_Method, Test_Units, User_Col);
+      registerColumns(Name, Method_Number, Execution_Number, Line_Number, Coverage_Method, Test_Units, User_Col,
+            Parent_Coverage_Unit, Location);
    }
 }

@@ -7,10 +7,13 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
+import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 
 /**
  * Single test that can cover multiple Coverage Items
@@ -85,4 +88,34 @@ public class TestUnit implements ICoverageEditorItem {
    @Override
    public void setUser(User user) {
    }
+
+   @Override
+   public boolean isCompleted() {
+      return true;
+   }
+
+   @Override
+   public String getCoverageEditorValue(XViewerColumn xCol) {
+      return "";
+   }
+
+   @Override
+   public Object[] getChildren() {
+      return coverageItems.toArray(new Object[coverageItems.size()]);
+   }
+
+   @Override
+   public OseeImage getOseeImage() {
+      if (isCovered()) {
+         return CoverageImage.TEST_UNIT_GREEN;
+      }
+      return CoverageImage.TEST_UNIT_RED;
+   }
+
+   @Override
+   public boolean isCovered() {
+      if (getCoverageItems().size() > 0) return true;
+      return false;
+   }
+
 }

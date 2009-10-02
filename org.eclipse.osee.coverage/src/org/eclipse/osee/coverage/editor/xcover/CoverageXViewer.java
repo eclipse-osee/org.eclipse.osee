@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuListener;
-import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -45,9 +43,9 @@ import org.eclipse.swt.widgets.TreeItem;
 public class CoverageXViewer extends XViewer {
 
    private final XCoverageViewer xCoverageViewer;
-   Action editPromotedAction;
-   Action editEngBuildIdAction;
-   Action editPlannedCMBuildIdAction;
+   Action editAction1;
+   Action editAction2;
+   Action editAction3;
 
    /**
     * @param parent
@@ -76,27 +74,22 @@ public class CoverageXViewer extends XViewer {
    public void createMenuActions() {
       MenuManager mm = getMenuManager();
       mm.createContextMenu(getControl());
-      mm.addMenuListener(new IMenuListener() {
-         public void menuAboutToShow(IMenuManager manager) {
-            updateMenuActionsForTable();
-         }
-      });
 
-      editPromotedAction = new Action("Edit Promoted", Action.AS_PUSH_BUTTON) {
+      editAction1 = new Action("Edit 1", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             AWorkbench.popup("Not Implemented Yet");
          }
       };
 
-      editEngBuildIdAction = new Action("Edit Engineering Build ID", Action.AS_PUSH_BUTTON) {
+      editAction2 = new Action("Edit 2", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             AWorkbench.popup("Not Implemented Yet");
          }
       };
 
-      editPlannedCMBuildIdAction = new Action("Edit Planned CM Build ID", Action.AS_PUSH_BUTTON) {
+      editAction3 = new Action("2", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             AWorkbench.popup("Not Implemented Yet");
@@ -108,12 +101,12 @@ public class CoverageXViewer extends XViewer {
    public void updateEditMenuActions() {
       MenuManager mm = getMenuManager();
       // EDIT MENU BLOCK
-      mm.insertBefore(MENU_GROUP_PRE, editPromotedAction);
-      editPromotedAction.setEnabled(true);
-      mm.insertBefore(MENU_GROUP_PRE, editEngBuildIdAction);
-      editEngBuildIdAction.setEnabled(true);
-      mm.insertBefore(MENU_GROUP_PRE, editPlannedCMBuildIdAction);
-      editPlannedCMBuildIdAction.setEnabled(true);
+      mm.insertBefore(MENU_GROUP_PRE, editAction1);
+      editAction1.setEnabled(true);
+      mm.insertBefore(MENU_GROUP_PRE, editAction2);
+      editAction2.setEnabled(true);
+      mm.insertBefore(MENU_GROUP_PRE, editAction3);
+      editAction3.setEnabled(true);
    }
 
    @Override
@@ -121,6 +114,8 @@ public class CoverageXViewer extends XViewer {
       MenuManager mm = getMenuManager();
       updateEditMenuActions();
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
+      mm.insertBefore(MENU_GROUP_PRE, new org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction(
+            xCoverageViewer.getXViewer(), true));
    }
 
    public Collection<ICoverageEditorItem> getLoadedItems() {
@@ -196,8 +191,8 @@ public class CoverageXViewer extends XViewer {
          // System.out.println("Column " + treeColumn.getText() + " item " +
          // treeItem);
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         CoverageItem coverageItem = (CoverageItem) treeItem.getData();
-         List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
+         ICoverageEditorItem coverageItem = (ICoverageEditorItem) treeItem.getData();
+         List<ICoverageEditorItem> coverageItems = new ArrayList<ICoverageEditorItem>();
          coverageItems.add(coverageItem);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

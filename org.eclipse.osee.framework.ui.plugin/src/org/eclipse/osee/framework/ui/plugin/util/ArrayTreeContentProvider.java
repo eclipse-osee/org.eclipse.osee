@@ -19,16 +19,18 @@ import org.eclipse.jface.viewers.Viewer;
  */
 public class ArrayTreeContentProvider implements ITreeContentProvider {
 
-   /**
-    * 
-    */
    public ArrayTreeContentProvider() {
       super();
    }
 
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof Collection) return ((Collection) parentElement).toArray();
+      if (parentElement instanceof Object[]) {
+         return (Object[]) parentElement;
+      }
+      if (parentElement instanceof Collection) {
+         return ((Collection) parentElement).toArray();
+      }
       return new Object[] {};
    }
 

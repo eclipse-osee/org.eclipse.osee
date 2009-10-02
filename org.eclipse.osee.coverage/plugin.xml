@@ -55,4 +55,10 @@
             id="org.eclipse.osee.coverage.navigate.CoverageNavigateView"
             name="Coverage Navigator"/>
    </extension>
+      <extension
+            point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
+         <XWidgetProvider
+               classname="org.eclipse.osee.coverage.util.widget.CoverageXWidgetFactory">
+         </XWidgetProvider>
+      </extension>
 </plugin>
