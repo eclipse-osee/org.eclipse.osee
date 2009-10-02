@@ -12,11 +12,11 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.HashSet;
 import java.util.Set;
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.util.CoverageImage;
-import org.eclipse.osee.framework.jdk.core.util.ArrayUtil;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -111,18 +111,30 @@ public class CoverageItem implements ICoverageEditorItem {
 
    @Override
    public String getCoverageEditorValue(XViewerColumn xCol) {
-      if (xCol.equals(CoverageXViewerFactory.Line_Number)) return getLineNum();
-      if (xCol.equals(CoverageXViewerFactory.Method_Number)) return getMethodNum();
-      if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return getExecuteNum();
-      if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return getCoverageMethod().toString();
-      if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return getCoverageUnit().getName();
-      if (xCol.equals(CoverageXViewerFactory.Test_Units)) return Collections.toString(", ", getTestUnits());
+      if (xCol.equals(CoverageXViewerFactory.Line_Number)) {
+         return getLineNum();
+      }
+      if (xCol.equals(CoverageXViewerFactory.Method_Number)) {
+         return getMethodNum();
+      }
+      if (xCol.equals(CoverageXViewerFactory.Execution_Number)) {
+         return getExecuteNum();
+      }
+      if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) {
+         return getCoverageMethod().toString();
+      }
+      if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {
+         return getCoverageUnit().getName();
+      }
+      if (xCol.equals(CoverageXViewerFactory.Test_Units)) {
+         return Collections.toString(", ", getTestUnits());
+      }
       return "";
    }
 
    @Override
    public Object[] getChildren() {
-      return ArrayUtil.EMPTY_ARRAY;
+      return ArrayUtils.EMPTY_OBJECT_ARRAY;
    }
 
    @Override
