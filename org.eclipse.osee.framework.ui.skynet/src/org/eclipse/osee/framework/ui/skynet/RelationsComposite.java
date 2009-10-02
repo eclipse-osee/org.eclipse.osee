@@ -149,7 +149,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    }
 
    private void createTreeArea(Composite parent) {
-      treeViewer = new TreeViewer(parent, SWT.FULL_SELECTION | SWT.MULTI);
+      treeViewer = new TreeViewer(parent, SWT.FULL_SELECTION | SWT.MULTI | SWT.NO_SCROLL);
       tree = treeViewer.getTree();
       tree.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       tree.setHeaderVisible(true);

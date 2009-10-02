@@ -98,7 +98,7 @@ public class ArtifactEditor extends AbstractEventArtifactEditor {
    @Override
    public void dispose() {
       try {
-         // If the artifact is dirty when the editor get's disposed, then it needs to be reverted
+         // If the artifact is dirty when the editor gets disposed, then it needs to be reverted
          Artifact artifact = getEditorInput().getArtifact();
          if (!artifact.isDeleted() && artifact.isDirty()) {
             try {

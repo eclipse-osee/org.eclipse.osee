@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
@@ -61,9 +62,9 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       toolkit.adapt(dragDropLabel, true, true);
 
       relationComposite =
-            new RelationsComposite(getEditor(),sectionBody, SWT.NONE, getEditor().getEditorInput().getArtifact());
-   
-      relationComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+            new RelationsComposite(getEditor(), sectionBody, SWT.NONE, getEditor().getEditorInput().getArtifact());
+
+      relationComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
@@ -72,12 +73,20 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
 
          @Override
          public void treeCollapsed(TreeEvent e) {
-            getManagedForm().getForm().getBody().layout();
+            redrawPage();
          }
 
          @Override
          public void treeExpanded(TreeEvent e) {
-            getManagedForm().getForm().getBody().layout();
+            redrawPage();
+         }
+
+         private void redrawPage() {
+            Display.getDefault().asyncExec(new Runnable() {
+               public void run() {
+                  ((ArtifactFormPage) getEditor().getSelectedPage()).refresh();
+               }
+            });
          }
       });
    }
