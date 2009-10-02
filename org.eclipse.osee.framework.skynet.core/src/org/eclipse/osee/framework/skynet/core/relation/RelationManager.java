@@ -678,12 +678,8 @@ public class RelationManager {
       List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
-            if (relationSide == null) {
+            if (relation.getSide(artifact) != relationSide) {
                relation.delete(true);
-            } else {
-               if (relation.getSide(artifact) != relationSide) {
-                  relation.delete(true);
-               }
             }
          }
       }

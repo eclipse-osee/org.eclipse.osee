@@ -609,15 +609,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
-         } else if (object instanceof RelationType) {
-            RelationType relationType = (RelationType) object;
-            try {
-               RelationManager.deleteRelations(artifact, relationType, null);
-               treeViewer.refresh(relationType);
-            } catch (OseeCoreException ex) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-            }
-         } else if (object instanceof RelationSorter) {
+         }else if (object instanceof RelationSorter) {
             RelationSorter group = (RelationSorter) object;
             try {
                RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
