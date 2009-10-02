@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types.field;
 
+import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
@@ -29,6 +30,8 @@ public class ChangeUtil {
       } else if (original != null && other != null) {
          if (original instanceof Collection<?> && other instanceof Collection<?>) {
             result = isDifferent((Collection<Object>) original, (Collection<Object>) other);
+         } else if (original instanceof Object[] && other instanceof Object[]) {
+            result = isDifferent(Arrays.asList((Object[]) original), Arrays.asList((Object[]) other));
          } else {
             result = !original.equals(other);
          }
@@ -36,8 +39,9 @@ public class ChangeUtil {
       return result;
    }
 
-   public static boolean isDifferent(Collection<Object> original, Collection<Object> other) {
-      return !Collections.setComplement(original, other).isEmpty() || //
+   private static boolean isDifferent(Collection<Object> original, Collection<Object> other) {
+      return original.size() != other.size() || //
+      !Collections.setComplement(original, other).isEmpty() || //
       !Collections.setComplement(other, original).isEmpty();
    }
 }
