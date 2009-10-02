@@ -45,7 +45,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
     * @param teamDefHoldingVersions Team Definition Artifact that is related to versions or null for popup selection
     */
    public CreateNewVersionItem(XNavigateItem parent, TeamDefinitionArtifact teamDefHoldingVersions) {
-      super(parent, "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + " Version",
+      super(parent, "Create New " + (teamDefHoldingVersions != null ? teamDefHoldingVersions + " " : "") + "Version",
             FrameworkImage.VERSION);
       this.teamDefHoldingVersions = teamDefHoldingVersions;
    }
@@ -58,7 +58,9 @@ public class CreateNewVersionItem extends XNavigateItemAction {
       } catch (Exception ex) {
          // do nothing
       }
-      if (teamDefHoldingVersions == null) return;
+      if (teamDefHoldingVersions == null) {
+         return;
+      }
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Version", null, "Enter Version Name",
                   MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
@@ -86,7 +88,9 @@ public class CreateNewVersionItem extends XNavigateItemAction {
    }
 
    public TeamDefinitionArtifact getReleaseableTeamDefinitionArtifact() throws OseeCoreException {
-      if (teamDefHoldingVersions != null) return teamDefHoldingVersions;
+      if (teamDefHoldingVersions != null) {
+         return teamDefHoldingVersions;
+      }
       TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
       ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Active));
       int result = ld.open();
