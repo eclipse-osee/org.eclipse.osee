@@ -161,7 +161,6 @@ public class XCoverageViewer extends XWidget {
    public void refresh() {
       if (xViewer == null || xViewer.getTree() == null || xViewer.getTree().isDisposed()) return;
       xViewer.refresh();
-      validate();
    }
 
    @Override

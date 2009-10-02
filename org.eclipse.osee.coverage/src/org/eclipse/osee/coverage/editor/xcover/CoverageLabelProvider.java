@@ -30,7 +30,9 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
-      if (xCol.equals(CoverageXViewerFactory.User_Col)) return ImageManager.getImage(coverageItem.getUser());
+      if (xCol.equals(CoverageXViewerFactory.User_Col)) {
+         return coverageItem.getUser() == null ? null : ImageManager.getImage(coverageItem.getUser());
+      }
       if (xCol.equals(CoverageXViewerFactory.Name)) return ImageManager.getImage(coverageItem.getOseeImage());
       return null;
    }
