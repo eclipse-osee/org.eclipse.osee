@@ -52,6 +52,7 @@ public class CoverageEditorImportTab extends FormPage {
    private BlamInputSection blamInputSection;
    private BlamOutputSection blamOutputSection;
    private CoverageImport coverageImport;
+   private Composite destroyableComposite;
 
    public CoverageEditorImportTab(CoverageEditor coverageEditor) {
       super(coverageEditor, "Import", "Import");
@@ -69,16 +70,9 @@ public class CoverageEditorImportTab extends FormPage {
 
       scrolledForm.getBody().setLayout(ALayout.getZeroMarginLayout());
       CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
-      Composite composite = scrolledForm.getBody();
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-      GridLayout layout = new GridLayout();
-      layout.numColumns = 1;
-      layout.marginHeight = 10;
-      layout.marginWidth = 6;
-      layout.horizontalSpacing = 20;
-      scrolledForm.getBody().setLayout(layout);
-      scrolledForm.getBody().setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true));
+      scrolledForm.getBody().setLayout(new GridLayout(1, false));
+      scrolledForm.getBody().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       managedForm.getMessageManager().setAutoUpdate(false);
 
@@ -87,12 +81,16 @@ public class CoverageEditorImportTab extends FormPage {
       combo.setContentProvider(new ArrayTreeContentProvider());
       combo.createWidgets(managedForm, scrolledForm.getBody(), 1);
       combo.setInput(Collections.castAll(CoverageManager.getCoverageBlams()));
+      combo.getCombo().setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
       combo.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             createBlamSections();
          }
       });
+
+      createDestroyableComposite();
+
    }
 
    private AbstractCoverageBlam getBlam() {
@@ -102,29 +100,48 @@ public class CoverageEditorImportTab extends FormPage {
       return null;
    }
 
+   private void createDestroyableComposite() {
+      if (destroyableComposite != null) destroyableComposite.dispose();
+      destroyableComposite =
+            getManagedForm().getToolkit().createComposite(getManagedForm().getForm().getBody(), SWT.NONE);
+      destroyableComposite.setLayout(new GridLayout());
+      destroyableComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+   }
+
    private void createBlamSections() {
       if (blamUsageSection != null) {
+         if (blamUsageSection != null) getManagedForm().removePart(blamUsageSection);
          blamUsageSection.dispose();
+         if (blamInputSection != null) getManagedForm().removePart(blamInputSection);
          blamInputSection.dispose();
+         if (blamOutputSection != null) getManagedForm().removePart(blamOutputSection);
          blamOutputSection.dispose();
+         createDestroyableComposite();
       }
       int sectionStyle = Section.TITLE_BAR | Section.EXPANDED | Section.TWISTIE;
       blamUsageSection =
-            new BlamUsageSection(getEditor(), getBlam(), getManagedForm().getForm().getBody(),
-                  getManagedForm().getToolkit(), sectionStyle);
+            new BlamUsageSection(getEditor(), getBlam(), destroyableComposite, getManagedForm().getToolkit(),
+                  sectionStyle);
+
       blamInputSection =
-            new BlamInputSection(getEditor(), getBlam(), getManagedForm().getForm().getBody(),
-                  getManagedForm().getToolkit(), sectionStyle);
+            new BlamInputSection(getEditor(), getBlam(), destroyableComposite, getManagedForm().getToolkit(),
+                  sectionStyle);
+
       blamOutputSection =
-            new BlamOutputSection(getEditor(), getBlam(), getManagedForm().getForm().getBody(),
-                  getManagedForm().getToolkit(), sectionStyle, new ExecuteBlamAction());
+            new BlamOutputSection(getEditor(), getBlam(), destroyableComposite, getManagedForm().getToolkit(),
+                  sectionStyle, new ExecuteBlamAction());
 
       getManagedForm().addPart(blamUsageSection);
       getManagedForm().addPart(blamInputSection);
+      blamInputSection.getSection().setExpanded(true);
       getManagedForm().addPart(blamOutputSection);
-      getManagedForm().reflow(true);
-   }
+      blamInputSection.getSection().setExpanded(true);
 
+      getManagedForm().refresh();
+      getManagedForm().getForm().layout();
+
+   }
    private final class BlamEditorExecutionAdapter extends JobChangeAdapter {
       private long startTime = 0;
 
