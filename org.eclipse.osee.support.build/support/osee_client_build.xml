@@ -1,5 +1,5 @@
 <project name="Osee Client Build" default="build" basedir=".">
-	<!-- since this ant file is assumed to be located at <workspace>\org.eclipse.osee.buildsupport, basedir will be the same -->
+	<!-- since this ant file is assumed to be located at <workspace>\org.eclipse.osee.buildsupport\support, basedir will be the same -->
 	<import file="${basedir}/osee_common_build.xml" />
 
 	<target name="build">
@@ -11,7 +11,7 @@
 		<property name="topLevelElementId" value="org.eclipse.osee.client.feature" />
 		<property name="filteredDependencyCheck" value="false" />
 		<property name="buildHelp" value="true" />
-		<property name="p2.category.definition" value="file:${basedir}/category.xml" />
+		<property name="p2.category.definition" value="file:${basedir}/client_category.xml" />
 
 		<antcall target="PdeBuild" />
 	</target>
