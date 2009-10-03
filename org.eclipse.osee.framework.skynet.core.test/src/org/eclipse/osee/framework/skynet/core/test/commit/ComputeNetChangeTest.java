@@ -21,11 +21,12 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeVersion;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
-import org.eclipse.osee.framework.skynet.core.commit.VersionedChange;
 import org.junit.Test;
 
 /**
@@ -35,68 +36,60 @@ import org.junit.Test;
  */
 public class ComputeNetChangeTest {
 
-   private List<TestData> getTestData() {
+   public List<TestData> getTestData() throws OseeCoreException {
       List<TestData> data = new ArrayList<TestData>();
 
       // New Or Introduced
-      data.add(createTest(1, null, new VersionedChange(4L, NEW, 1L), new VersionedChange(5L, MODIFIED, 1L), null,
-            new VersionedChange(5L, NEW, 1L), false));
-      data.add(createTest(2, null, new VersionedChange(6L, INTRODUCED, 1L), new VersionedChange(7L, MODIFIED, 1L), null, new VersionedChange(
-            7L, INTRODUCED, 1L), false));
+      data.add(createTest(1, null, entry(4L, NEW), entry(5L, MODIFIED), null, entry(5L, NEW), false));
+      data.add(createTest(2, null, entry(6L, INTRODUCED), entry(7L, MODIFIED), null, entry(7L, INTRODUCED), false));
 
       // Modified Once
-      data.add(createTest(3, new VersionedChange(10L, MODIFIED, 1L), null, new VersionedChange(11L, MODIFIED, 1L), new VersionedChange(10L,
-            MODIFIED, 1L), new VersionedChange(11L, MODIFIED, 1L), false));
+      data.add(createTest(3, entry(10L, MODIFIED), null, entry(11L, MODIFIED), entry(10L, MODIFIED), entry(11L,
+            MODIFIED), false));
 
       // Modified Twice
-      data.add(createTest(4, new VersionedChange(10L, NEW, 1L), new VersionedChange(11L, MODIFIED, 1L), new VersionedChange(12L, MODIFIED, 1L),
-            new VersionedChange(10L, NEW, 1L), new VersionedChange(12L, MODIFIED, 1L), false));
+      data.add(createTest(4, entry(10L, NEW), entry(11L, MODIFIED), entry(12L, MODIFIED), entry(10L, NEW), entry(12L,
+            MODIFIED), false));
 
       // Removal - new/intro and deleted
-      data.add(createTest(5, null, new VersionedChange(1L, NEW, 1L), new VersionedChange(2L, DELETED, 1L), null, null, true));
-      data.add(createTest(6, null, new VersionedChange(2L, INTRODUCED, 1L), new VersionedChange(3L, DELETED, 1L), null, null, true));
-      data.add(createTest(7, null, new VersionedChange(4L, NEW, 1L), new VersionedChange(5L, ARTIFACT_DELETED, 1L), null, null, true));
-      data.add(createTest(8, null, new VersionedChange(6L, INTRODUCED, 1L), new VersionedChange(7L, ARTIFACT_DELETED, 1L), null, null,
-            true));
-      data.add(createTest(9, null, null, new VersionedChange(7693330L, INTRODUCED, 1L), new VersionedChange(7693330L, NEW, 1L), null,
-            true));
-      data.add(createTest(10, null, null, new VersionedChange(21345L, NEW, 1L), new VersionedChange(21345L, NEW, 1L), null, true));
+      data.add(createTest(5, null, entry(1L, NEW), entry(2L, DELETED), null, null, true));
+      data.add(createTest(6, null, entry(2L, INTRODUCED), entry(3L, DELETED), null, null, true));
+      data.add(createTest(7, null, entry(4L, NEW), entry(5L, ARTIFACT_DELETED), null, null, true));
+      data.add(createTest(8, null, entry(6L, INTRODUCED), entry(7L, ARTIFACT_DELETED), null, null, true));
+      data.add(createTest(9, null, null, entry(7693330L, INTRODUCED), entry(7693330L, NEW), null, true));
+      data.add(createTest(10, null, null, entry(21345L, NEW), entry(21345L, NEW), null, true));
 
-      data.add(createTest(11, null, null, new VersionedChange(1L, NEW, 1L), new VersionedChange(2L, MODIFIED, 1L), null, null, true));
-      data.add(createTest(12, null, null, new VersionedChange(1L, INTRODUCED, 1L), new VersionedChange(2L, DELETED, 1L), null, null, true));
+      data.add(createTest(11, null, null, entry(1L, NEW), entry(2L, MODIFIED), null, null, true));
+      data.add(createTest(12, null, null, entry(1L, INTRODUCED), entry(2L, DELETED), null, null, true));
 
       // Undelete then delete again
-      data.add(createTest(13, new VersionedChange(4L, DELETED,1L), new VersionedChange(3L, MODIFIED,1L), new VersionedChange(4L, DELETED,1L),
-            new VersionedChange(4L, DELETED,1L), null, true));
-      data.add(createTest(14, new VersionedChange(4L, ARTIFACT_DELETED,1L), null, new VersionedChange(5L, MODIFIED,1L), new VersionedChange(
-            4L, ARTIFACT_DELETED,1L), null, true));
+      data.add(createTest(13, entry(4L, DELETED), entry(3L, MODIFIED), entry(4L, DELETED), entry(4L, DELETED), null,
+            true));
+      data.add(createTest(14, entry(4L, ARTIFACT_DELETED), null, entry(5L, MODIFIED), entry(4L, ARTIFACT_DELETED),
+            null, true));
 
       // Delete Cases -
-      data.add(createTest(15, new VersionedChange(10L, MODIFIED,1L), null, new VersionedChange(10L, DELETED,1L), new VersionedChange(10L,
-            MODIFIED,1L), new VersionedChange(10L, DELETED,1L), false));
-      data.add(createTest(16, new VersionedChange(330L, NEW,1L), null, new VersionedChange(331L, ARTIFACT_DELETED,1L), new VersionedChange(
-            330L, NEW,1L), new VersionedChange(331L, ARTIFACT_DELETED,1L), false));
-      data.add(createTest(17, new VersionedChange(330L, NEW, 1L), new VersionedChange(331L, ARTIFACT_DELETED, 1L), new VersionedChange(331L,
-            ARTIFACT_DELETED, 1L), new VersionedChange(330L, NEW, 1L), new VersionedChange(331L, ARTIFACT_DELETED, 1L), false));
+      data.add(createTest(15, entry(10L, MODIFIED), null, entry(10L, DELETED), entry(10L, MODIFIED),
+            entry(10L, DELETED), false));
+      data.add(createTest(16, entry(330L, NEW), null, entry(331L, ARTIFACT_DELETED), entry(330L, NEW), entry(331L,
+            ARTIFACT_DELETED), false));
+      data.add(createTest(17, entry(330L, NEW), entry(331L, ARTIFACT_DELETED), entry(331L, ARTIFACT_DELETED), entry(
+            330L, NEW), entry(331L, ARTIFACT_DELETED), false));
 
       // Parent to Child Intro
-      data.add(createTest(18, null, new VersionedChange(10L, INTRODUCED, 1L), new VersionedChange(11L, MODIFIED, 1L), new VersionedChange(10L,
-            MODIFIED, 1L), new VersionedChange(11L, MODIFIED, 1L), false));
+      data.add(createTest(18, null, entry(10L, INTRODUCED), entry(11L, MODIFIED), entry(10L, MODIFIED), entry(11L,
+            MODIFIED), false));
 
       // Attribute Modified/New
-      data.add(createTest(19, null, null, new VersionedChange(11L, MODIFIED, 1L), null, new VersionedChange(11L, NEW, 1L), false));
+      data.add(createTest(19, null, null, entry(11L, MODIFIED), null, entry(11L, NEW), false));
 
       // Test Merge Items
-      data.add(createTest(20, null, null, new VersionedChange(12L, MODIFIED, 1L), null, new VersionedChange(13L, MERGED, 1L),
-            new VersionedChange(13L, MERGED, 1L), false));
-      data.add(createTest(21, null, null, new VersionedChange(12L, NEW, 1L), null, new VersionedChange(14L, MERGED, 1L), new VersionedChange(
-            14L, MERGED, 1L), false));
-      data.add(createTest(22, new VersionedChange(96915L, MODIFIED, 1L), new VersionedChange(7290448L, MODIFIED, 1L), new VersionedChange(
-            7865315L, DELETED, 1L), new VersionedChange(7432082L, MODIFIED, 1L), new VersionedChange(7865315L, MERGED, 1L), new VersionedChange(
-            7865315L, DELETED, 1L), false));
-      data.add(createTest(21, new VersionedChange(96915L, MODIFIED, 1L), new VersionedChange(7290448L, MODIFIED, 1L), new VersionedChange(
-            7865315L, ARTIFACT_DELETED, 1L), new VersionedChange(7432082L, MODIFIED, 1L), new VersionedChange(7865315L, MERGED, 1L),
-            new VersionedChange(7865315L, ARTIFACT_DELETED, 1L), false));
+      data.add(createTest(20, null, null, entry(12L, MODIFIED), null, entry(13L, MERGED), entry(13L, MERGED), false));
+      data.add(createTest(21, null, null, entry(12L, NEW), null, entry(14L, MERGED), entry(14L, MERGED), false));
+      data.add(createTest(22, entry(96915L, MODIFIED), entry(7290448L, MODIFIED), entry(7865315L, DELETED), entry(
+            7432082L, MODIFIED), entry(7865315L, MERGED), entry(7865315L, DELETED), false));
+      data.add(createTest(21, entry(96915L, MODIFIED), entry(7290448L, MODIFIED), entry(7865315L, ARTIFACT_DELETED),
+            entry(7432082L, MODIFIED), entry(7865315L, MERGED), entry(7865315L, ARTIFACT_DELETED), false));
 
       return data;
    }
@@ -125,9 +118,10 @@ public class ComputeNetChangeTest {
    @Test
    public void testErrorStates() {
       List<ChangeItem> items = new ArrayList<ChangeItem>();
-      items.clear();
+
       // Source to Non-Parent commit
-      items.add(CommitUtil.createItem(3, new VersionedChange(10L, MODIFIED, 1L), null, new VersionedChange(11L, MODIFIED, 1L), null, null));
+      items.add(CommitUtil.createItem(3, entry(10L, MODIFIED), null, entry(11L, MODIFIED), null, null));
+
       computeNetChange(items, IStatus.ERROR);
    }
 
@@ -138,20 +132,25 @@ public class ComputeNetChangeTest {
       Assert.assertEquals(message, status, operation.getStatus().getSeverity());
    }
 
-   private TestData createTest(int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange expected, boolean isRemoved) {
+   private static TestData createTest(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion expected, boolean isRemoved) {
       return new TestData(CommitUtil.createItem(itemId, base, first, current, destination, null), expected, isRemoved);
    }
 
-   private TestData createTest(int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange net, VersionedChange expected, boolean isRemoved) {
+   private static TestData createTest(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net, ChangeVersion expected, boolean isRemoved) {
       return new TestData(CommitUtil.createItem(itemId, base, first, current, destination, net), expected, isRemoved);
    }
 
-   private final class TestData {
+   private static ChangeVersion entry(Long gammaId, ModificationType modType) {
+      double transaction = Math.random();
+      return new ChangeVersion(gammaId, modType, (long) transaction);
+   }
+
+   private static final class TestData {
       private final ChangeItem item;
-      private final VersionedChange expectedNet;
+      private final ChangeVersion expectedNet;
       private final boolean isRemoved;
 
-      public TestData(ChangeItem item, VersionedChange expectedNet, boolean isRemoved) {
+      public TestData(ChangeItem item, ChangeVersion expectedNet, boolean isRemoved) {
          super();
          this.item = item;
          this.expectedNet = expectedNet;
@@ -162,7 +161,7 @@ public class ComputeNetChangeTest {
          return item;
       }
 
-      public VersionedChange getExpectedNet() {
+      public ChangeVersion getExpectedNet() {
          return expectedNet;
       }
 

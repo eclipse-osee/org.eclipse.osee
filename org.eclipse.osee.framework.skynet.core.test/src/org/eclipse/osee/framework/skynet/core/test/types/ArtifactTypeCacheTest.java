@@ -84,7 +84,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
       baseSuperType.add(baseType);
 
       try {
-         artCache.setArtifactSuperType(baseType, baseSuperType);
+         artCache.cacheArtifactSuperType(baseType, baseSuperType);
          Assert.assertTrue(
                "This line should not be execute, an inheritance cycle should have been detected and an exception should have been thrown",
                false);
@@ -257,18 +257,18 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
          Set<ArtifactType> baseSuperType = new HashSet<ArtifactType>();
          baseSuperType.add(baseType);
          // 0<-1
-         cache.setArtifactSuperType(cache.getByGuid("111"), baseSuperType);
+         cache.cacheArtifactSuperType(cache.getByGuid("111"), baseSuperType);
          // 0<-2
-         cache.setArtifactSuperType(cache.getByGuid("222"), baseSuperType);
+         cache.cacheArtifactSuperType(cache.getByGuid("222"), baseSuperType);
          // 2<-3
-         cache.setArtifactSuperType(cache.getByGuid("333"), Arrays.asList(cache.getByGuid("222")));
+         cache.cacheArtifactSuperType(cache.getByGuid("333"), Arrays.asList(cache.getByGuid("222")));
          // 2,3<-4 
-         cache.setArtifactSuperType(cache.getByGuid("444"), Arrays.asList(cache.getByGuid("222"),
+         cache.cacheArtifactSuperType(cache.getByGuid("444"), Arrays.asList(cache.getByGuid("222"),
                cache.getByGuid("333"), baseType));
          // 4<-5 
-         cache.setArtifactSuperType(cache.getByGuid("555"), Arrays.asList(cache.getByGuid("444"), baseType));
+         cache.cacheArtifactSuperType(cache.getByGuid("555"), Arrays.asList(cache.getByGuid("444"), baseType));
          // 3<-6 
-         cache.setArtifactSuperType(cache.getByGuid("666"), Arrays.asList(cache.getByGuid("333"), baseType));
+         cache.cacheArtifactSuperType(cache.getByGuid("666"), Arrays.asList(cache.getByGuid("333"), baseType));
       }
 
       private void setUpTypeValidity(ArtifactTypeCache cache) throws OseeCoreException {

@@ -11,12 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.test.commit;
 
 import junit.framework.Assert;
-import org.eclipse.osee.framework.skynet.core.commit.ArtifactChangeItem;
-import org.eclipse.osee.framework.skynet.core.commit.AttributeChangeItem;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
-import org.eclipse.osee.framework.skynet.core.commit.RelationChangeItem;
-import org.eclipse.osee.framework.skynet.core.commit.VersionedChange;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeItem.GammaKind;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeVersion;
 
 /**
  * @author Roberto E. Escobar
@@ -26,37 +23,15 @@ public class CommitUtil {
    private CommitUtil() {
    }
 
-   public static void checkChange(String message, VersionedChange expected, VersionedChange actual) {
+   public static void checkChange(String message, ChangeVersion expected, ChangeVersion actual) {
       Assert.assertEquals(message, expected.getGammaId(), actual.getGammaId());
       Assert.assertEquals(message, expected.getModType(), actual.getModType());
    }
 
-   public static ChangeItem createItem(int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange net) {
-      GammaKind[] kinds = GammaKind.values();
-      return createItem(kinds[itemId % kinds.length], itemId, base, first, current, destination, net);
-   }
-
-   public static ChangeItem createItem(GammaKind gammaKind, int itemId, VersionedChange base, VersionedChange first, VersionedChange current, VersionedChange destination, VersionedChange net) {
-      ChangeItem change = null;
-
-      switch (gammaKind) {
-         case Artifact:
-            change =
-                  new ArtifactChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(),
-                        itemId, true);
-            break;
-         case Attribute:
-            change =
-                  new AttributeChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(),
-                        itemId, -1, "", true);
-            break;
-         case Relation:
-            change =
-                  new RelationChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber(),
-                        -1, -1, itemId, -1, "", true);
-            break;
-      }
-
+   public static ChangeItem createItem(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
+      MockChangeItem change =
+            new MockChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber());
+      change.setItemId(itemId);
       if (base != null) {
          change.getBase().setModType(base.getModType());
          change.getBase().setGammaId(base.getGammaId());
@@ -74,5 +49,17 @@ public class CommitUtil {
          change.getNet().setModType(net.getModType());
       }
       return change;
+   }
+
+   private static final class MockChangeItem extends ChangeItem {
+
+      protected MockChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber) {
+         super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
+      }
+
+      @Override
+      public void setItemId(int itemId) {
+         super.setItemId(itemId);
+      }
    }
 }

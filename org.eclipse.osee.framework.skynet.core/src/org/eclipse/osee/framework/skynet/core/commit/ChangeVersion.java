@@ -15,17 +15,17 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 /**
  * @author Roberto E. Escobar
  */
-public final class VersionedChange {
+public final class ChangeVersion {
    private Long gammaId;
    private ModificationType modType;
    private String value;
    private Long transactionNumber;
 
-   public VersionedChange() {
+   public ChangeVersion() {
       this(null, null, null);
    }
 
-   public VersionedChange(Long gammaId, ModificationType modType, Long transactionNumber) {
+   public ChangeVersion(Long gammaId, ModificationType modType, Long transactionNumber) {
       super();
       this.gammaId = gammaId;
       this.modType = modType;
@@ -80,7 +80,7 @@ public final class VersionedChange {
       return getModType() != null && getGammaId() != null && getTransactionNumber() != null;
    }
 
-   public boolean sameGammaAs(VersionedChange other) {
+   public boolean sameGammaAs(ChangeVersion other) {
       boolean result = false;
       if (this.getGammaId() == other.getGammaId()) {
          result = true;
@@ -92,7 +92,7 @@ public final class VersionedChange {
 
    @Override
    public String toString() {
-      return String.format("[%s,%s]", getGammaId(), getModType());
+      return String.format("[%s,%s,%s]", getTransactionNumber(), getGammaId(), getModType());
    }
 
 }

@@ -52,11 +52,8 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
       return artifactType;
    }
 
-   public void cacheArtifactTypeInheritance(ArtifactType artifactType, Collection<ArtifactType> superType) throws OseeCoreException {
-      artifactTypeToSuperTypeMap.put(artifactType, superType);
-   }
-
    public void cacheTypeValidity(ArtifactType artifactType, AttributeType attributeType, Branch branch) throws OseeCoreException {
+      ensurePopulated();
       Collection<AttributeType> attributeTypes = artifactToAttributeMap.get(artifactType, branch);
       if (attributeTypes == null) {
          attributeTypes = new HashSet<AttributeType>();
@@ -66,17 +63,29 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
    }
 
    public void cacheTypeValidity(ArtifactType artifactType, Collection<AttributeType> attributeTypes, Branch branch) throws OseeCoreException {
-      Collection<AttributeType> cachedItems = artifactToAttributeMap.get(artifactType, branch);
-      if (cachedItems == null) {
-         cachedItems = new HashSet<AttributeType>(attributeTypes);
-         artifactToAttributeMap.put(artifactType, branch, cachedItems);
+      if (branch == null) {
+         throw new OseeArgumentException("branch cannot be null");
+      }
+      if (attributeTypes == null) {
+         throw new OseeArgumentException("attribute type list cannot be null");
+      }
+      ensurePopulated();
+      if (attributeTypes.isEmpty()) {
+         artifactToAttributeMap.remove(artifactType, branch);
       } else {
-         cachedItems.clear();
-         cachedItems.addAll(attributeTypes);
+         Collection<AttributeType> cachedItems = artifactToAttributeMap.get(artifactType, branch);
+         if (cachedItems == null) {
+            cachedItems = new HashSet<AttributeType>(attributeTypes);
+            artifactToAttributeMap.put(artifactType, branch, cachedItems);
+         } else {
+            cachedItems.clear();
+            cachedItems.addAll(attributeTypes);
+         }
       }
    }
 
-   public Collection<ArtifactType> getArtifactSuperType(ArtifactType artifactType) {
+   public Collection<ArtifactType> getArtifactSuperType(ArtifactType artifactType) throws OseeCoreException {
+      ensurePopulated();
       Collection<ArtifactType> types = new HashSet<ArtifactType>();
       Collection<ArtifactType> stored = artifactTypeToSuperTypeMap.getValues(artifactType);
       if (stored != null) {
@@ -85,26 +94,29 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
       return types;
    }
 
-   public void setArtifactSuperType(ArtifactType artifactType, Collection<ArtifactType> superTypes) throws OseeCoreException {
-      ensurePopulated();
+   public void cacheArtifactSuperType(ArtifactType artifactType, Collection<ArtifactType> superTypes) throws OseeCoreException {
       if (artifactType == null) {
          throw new OseeArgumentException("artifactType cannot be null");
       }
-      if (superTypes.isEmpty() || superTypes == null) {
+      if (superTypes == null || superTypes.isEmpty()) {
          if (!artifactType.getName().equals("Artifact")) {
             throw new OseeInvalidInheritanceException(String.format(
-                  "Attempting to set [%s] as the root inheritance object - only [Artifact] is allowed", artifactType));
+                  "All artifacts must inherit from [Artifact] - attempted make [%s] have null inheritance",
+                  artifactType));
          }
       } else {
          if (superTypes.contains(artifactType)) {
             throw new OseeInvalidInheritanceException(String.format(
                   "Circular inheritance detected for artifact type [%s]", artifactType));
          }
-         cacheArtifactTypeInheritance(artifactType, superTypes);
+         ensurePopulated();
+         artifactTypeToSuperTypeMap.removeValues(artifactType);
+         artifactTypeToSuperTypeMap.put(artifactType, superTypes);
       }
    }
 
-   public Collection<AttributeType> getLocalAttributeTypes(ArtifactType artifactType, Branch branch) {
+   public Collection<AttributeType> getLocalAttributeTypes(ArtifactType artifactType, Branch branch) throws OseeCoreException {
+      ensurePopulated();
       Collection<AttributeType> types = new HashSet<AttributeType>();
       Collection<AttributeType> data = artifactToAttributeMap.get(artifactType, branch);
       if (data != null) {
@@ -113,7 +125,8 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
       return types;
    }
 
-   public Map<Branch, Collection<AttributeType>> getLocalAttributeTypes(ArtifactType artifactType) {
+   public Map<Branch, Collection<AttributeType>> getLocalAttributeTypes(ArtifactType artifactType) throws OseeCoreException {
+      ensurePopulated();
       Map<Branch, Collection<AttributeType>> types = new HashMap<Branch, Collection<AttributeType>>();
       Map<Branch, Collection<AttributeType>> data = artifactToAttributeMap.getKeyedValues(artifactType);
       if (data != null) {
@@ -123,12 +136,13 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
    }
 
    public Set<AttributeType> getAttributeTypes(ArtifactType artifactType, Branch branch) throws OseeCoreException {
-      HashSet<AttributeType> attributeTypes = new HashSet<AttributeType>();
+      ensurePopulated();
+      Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
       getAttributeTypes(attributeTypes, artifactType, branch);
       return attributeTypes;
    }
 
-   private void getAttributeTypes(HashSet<AttributeType> attributeTypes, ArtifactType artifactType, Branch branch) throws OseeCoreException {
+   private void getAttributeTypes(Set<AttributeType> attributeTypes, ArtifactType artifactType, Branch branch) throws OseeCoreException {
       Branch branchCursor = branch;
       while (true) {
          Collection<AttributeType> items = artifactToAttributeMap.get(artifactType, branchCursor);

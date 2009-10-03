@@ -61,6 +61,12 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       super.cache(type);
    }
 
+   @Override
+   public void decache(Branch type) throws OseeCoreException {
+      super.decache(type);
+      // TODO add decache from all maps
+   }
+
    public Branch getSystemRootBranch() throws OseeCoreException {
       ensurePopulated();
       return systemRootBranch;

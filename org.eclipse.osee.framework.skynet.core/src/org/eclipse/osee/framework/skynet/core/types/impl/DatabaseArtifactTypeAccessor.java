@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SequenceManager;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -122,26 +123,29 @@ public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactT
       ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
       try {
          chStmt2.runPreparedQuery(SELECT_ARTIFACT_TYPE_INHERITANCE);
-         int previousBaseId = -1;
-         Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+         HashCollection<ArtifactType, ArtifactType> baseToSuperTypes =
+               new HashCollection<ArtifactType, ArtifactType>(false, HashSet.class);
+
          while (chStmt2.next()) {
             int artTypeId = chStmt2.getInt("art_type_id");
             int superArtTypeId = chStmt2.getInt("super_art_type_id");
-            if (artTypeId == superArtTypeId) {
-               throw new OseeInvalidInheritanceException(String.format(
-                     "Circular inheritance detected artifact type [%s] inherits from [%s]", artTypeId, superArtTypeId));
-            }
-            superTypes.add(cache.getById(superArtTypeId));
+            ArtifactType baseArtType = cache.getById(artTypeId);
+            ArtifactType superArtType = cache.getById(superArtTypeId);
 
-            if (previousBaseId != artTypeId) {
-               ArtifactType artifactType = cache.getById(artTypeId);
-               if (artifactType == null) {
-                  throw new OseeInvalidInheritanceException(String.format(
-                        "ArtifactType [%s] inherit from [%s] is null", artTypeId, superArtTypeId));
-               }
-               cache.cacheArtifactTypeInheritance(artifactType, superTypes);
-               superTypes.clear();
-               previousBaseId = artTypeId;
+            if (baseArtType == null) {
+               throw new OseeInvalidInheritanceException(String.format(
+                     "ArtifactType [%s] which inherits from [%s] is null", artTypeId, superArtType));
+            }
+            if (superArtType == null) {
+               throw new OseeInvalidInheritanceException(String.format(
+                     "ArtifactType [%s] which inherits from null artifact [%s]", artTypeId, superArtType));
+            }
+            baseToSuperTypes.put(baseArtType, superArtType);
+         }
+         for (ArtifactType artifactType : baseToSuperTypes.keySet()) {
+            Collection<ArtifactType> superTypes = baseToSuperTypes.getValues(artifactType);
+            if (superTypes != null) {
+               cache.cacheArtifactSuperType(artifactType, superTypes);
             }
          }
       } finally {
@@ -229,7 +233,7 @@ public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactT
       ConnectionHandler.runBatchUpdate(INSERT_ARTIFACT_TYPE_INHERITANCE, insertInheritanceData);
    }
 
-   private void storeAttributeTypeValidity(ArtifactTypeCache cache, Collection<ArtifactType> types) throws OseeDataStoreException {
+   private void storeAttributeTypeValidity(ArtifactTypeCache cache, Collection<ArtifactType> types) throws OseeCoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (ArtifactType artifactType : types) {

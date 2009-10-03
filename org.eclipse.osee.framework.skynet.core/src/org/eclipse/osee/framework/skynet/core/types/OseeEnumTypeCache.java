@@ -36,6 +36,15 @@ public final class OseeEnumTypeCache extends AbstractOseeCache<OseeEnumType> {
       super(factory, dataAccessor);
    }
 
+   @Override
+   public void decache(OseeEnumType type) throws OseeCoreException {
+      super.decache(type);
+      //      for (OseeEnumEntry entry : type.values()) {
+      //         enumEntryToEnumType.remove(entry);
+      //      }
+      //      enumTypeToEntryMap.removeValues(type);
+   }
+
    public void cacheEnumEntries(OseeEnumType oseeEnumType, Collection<OseeEnumEntry> oseeEnumEntries) throws OseeCoreException {
       checkEnumEntryIntegrity(oseeEnumEntries);
       List<OseeEnumEntry> newEntries = new ArrayList<OseeEnumEntry>();

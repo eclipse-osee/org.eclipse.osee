@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -43,11 +42,12 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
+import org.eclipse.osee.framework.skynet.core.commit.ArtifactChangeItem;
+import org.eclipse.osee.framework.skynet.core.commit.AttributeChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
 import org.eclipse.osee.framework.skynet.core.commit.RelationChangeItem;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeItem.GammaKind;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.ArtifactChangeAcquirer;
@@ -62,14 +62,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  * @author Jeff C. Phillips
  */
 public final class InternalChangeManager {
-   private static InternalChangeManager instance = new InternalChangeManager();
 
-   private InternalChangeManager() {
+   protected InternalChangeManager() {
       super();
-   }
-
-   public static InternalChangeManager getInstance() {
-      return instance;
    }
 
    /**
@@ -120,13 +115,6 @@ public final class InternalChangeManager {
       }
 
       return transactionIds;
-   }
-
-   /**
-    * Acquires artifact, relation and attribute changes from a source branch since its creation.
-    */
-   Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
-      return getChanges(sourceBranch, transactionId, monitor, null);
    }
 
    /**
@@ -187,11 +175,11 @@ public final class InternalChangeManager {
       return changes;
    }
 
-   public Collection<Change> getChangeReportChanges(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
+   public Collection<Change> getChangesPerBranch(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
       return getChangeReportChanges(sourceBranch, null, monitor);
    }
 
-   public Collection<Change> getChangeReportChanges(TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
+   public Collection<Change> getChangesPerTransaction(TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
       return getChangeReportChanges(null, transactionId, monitor);
    }
 
@@ -207,7 +195,7 @@ public final class InternalChangeManager {
          Artifact artifact = null;
          try {
             TransactionId toTransactionId =
-                  TransactionIdManager.getTransactionId((int) item.getCurrent().getTransactionNumber().longValue());
+                  TransactionIdManager.getTransactionId(item.getCurrent().getTransactionNumber().intValue());
             TransactionId fromTransactionId;
             String wasValue = "";
             branch = isHistorical ? transactionId.getBranch() : sourceBranch;
@@ -237,45 +225,12 @@ public final class InternalChangeManager {
 
             //Added for testing ... It will be removed
             if (artifact == null) {
-               System.out.println(item.getKind() + " " + item.getArtId() + " " + item.getCurrent().getTransactionNumber());
+               System.out.println(item.getClass().getSimpleName() + " " + item.getArtId() + " " + item.getCurrent().getTransactionNumber());
                continue;
             }
             monitor.subTask("Build Change Display Objects");
-            //The artifacts have been previously bulk loaded for performance         
-            switch (item.getKind()) {
-               case Artifact:
-                  change =
-                        new ArtifactChange(branch, artifact.getArtifactType(),
-                              (int) item.getCurrent().getGammaId().longValue(), item.getItemId(), toTransactionId,
-                              fromTransactionId, item.getNet().getModType(), ChangeType.OUTGOING, isHistorical,
-                              artifact);
-                  break;
-               case Attribute:
-                  change =
-                        new AttributeChange(branch, artifact.getArtifactType(),
-                              (int) item.getCurrent().getGammaId().longValue(), item.getArtId(), toTransactionId,
-                              fromTransactionId, item.getNet().getModType(), ChangeType.OUTGOING,
-                              item.getCurrent().getValue(), wasValue, item.getItemId(), artifact.getAttributeById(
-                                    item.getItemId(), true).getAttributeType().getId(), item.getNet().getModType(),
-                              isHistorical, artifact);
-                  break;
-               case Relation:
-                  RelationChangeItem relationChangeItem = (RelationChangeItem) item;
-                  Artifact bArtifact = ArtifactQuery.getArtifactFromId(relationChangeItem.getBArtId(), branch, true);
-                  change =
-                        new RelationChange(branch, artifact.getArtifactType(),
-                              (int) relationChangeItem.getCurrent().getGammaId().longValue(), item.getArtId(),
-                              toTransactionId, fromTransactionId, relationChangeItem.getNet().getModType(),
-                              ChangeType.OUTGOING, bArtifact.getArtId(), relationChangeItem.getItemId(),
-                              relationChangeItem.getRationale(),
-                              RelationTypeManager.getType(relationChangeItem.getRelTypeId()), isHistorical, artifact,
-                              bArtifact);
-                  break;
-               default:
-                  throw new OseeCoreException(
-                        "The change item must map to either a artifact, attribute or relation change");
-            }
-
+            //The artifacts have been previously bulk loaded for performance      
+            change = asChange(item, artifact, branch, fromTransactionId, toTransactionId, wasValue, isHistorical);
          } catch (Exception ex) {
             change = new ErrorChange(branch, item.getArtId(), ex.toString());
          }
@@ -283,6 +238,36 @@ public final class InternalChangeManager {
       }
       monitor.done();
       return changes;
+   }
+
+   private Change asChange(ChangeItem item, Artifact artifact, Branch branch, TransactionId fromTransactionId, TransactionId toTransactionId, String wasValue, boolean isHistorical) throws OseeCoreException {
+      Change change = null;
+      if (item instanceof ArtifactChangeItem) {
+         change =
+               new ArtifactChange(branch, artifact.getArtifactType(), (int) item.getCurrent().getGammaId().longValue(),
+                     item.getItemId(), toTransactionId, fromTransactionId, item.getNet().getModType(),
+                     ChangeType.OUTGOING, isHistorical, artifact);
+      } else if (item instanceof AttributeChangeItem) {
+         change =
+               new AttributeChange(branch, artifact.getArtifactType(),
+                     (int) item.getCurrent().getGammaId().longValue(), item.getArtId(), toTransactionId,
+                     fromTransactionId, item.getNet().getModType(), ChangeType.OUTGOING, item.getCurrent().getValue(),
+                     wasValue, item.getItemId(),
+                     artifact.getAttributeById(item.getItemId(), true).getAttributeType().getId(),
+                     item.getNet().getModType(), isHistorical, artifact);
+      } else if (item instanceof RelationChangeItem) {
+         RelationChangeItem relationChangeItem = (RelationChangeItem) item;
+         Artifact bArtifact = ArtifactQuery.getArtifactFromId(relationChangeItem.getBArtId(), branch, true);
+         change =
+               new RelationChange(branch, artifact.getArtifactType(),
+                     (int) relationChangeItem.getCurrent().getGammaId().longValue(), item.getArtId(), toTransactionId,
+                     fromTransactionId, relationChangeItem.getNet().getModType(), ChangeType.OUTGOING,
+                     bArtifact.getArtId(), relationChangeItem.getItemId(), relationChangeItem.getRationale(),
+                     RelationTypeManager.getType(relationChangeItem.getRelTypeId()), isHistorical, artifact, bArtifact);
+      } else {
+         throw new OseeCoreException("The change item must map to either a artifact, attribute or relation change");
+      }
+      return change;
    }
 
    private static void preloadArtifacts(List<ChangeItem> changeItems, Branch sourceBranch, TransactionId transactionId, boolean isHistorical, IProgressMonitor monitor) throws OseeCoreException {
@@ -296,7 +281,7 @@ public final class InternalChangeManager {
          for (ChangeItem item : changeItems) {
             artIds.add(item.getArtId());
 
-            if (item.getKind() == GammaKind.Relation) {
+            if (item instanceof RelationChangeItem) {
                artIds.add(((RelationChangeItem) item).getBArtId());
             }
          }
@@ -347,11 +332,4 @@ public final class InternalChangeManager {
       return changeItems;
    }
 
-   boolean isChangesOnWorkingBranch(Branch workingBranch) throws OseeCoreException {
-      Pair<TransactionId, TransactionId> transactionToFrom = TransactionIdManager.getStartEndPoint(workingBranch);
-      if (transactionToFrom.getFirst().equals(transactionToFrom.getSecond())) {
-         return false;
-      }
-      return true;
-   }
 }

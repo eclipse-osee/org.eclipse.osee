@@ -1,29 +1,32 @@
-/*
- * Created on Sep 21, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.commit;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 
 /**
  * @author Jeff C. Phillips
- *
  */
-public class RelationChangeItem extends ChangeItem{
-   private int bArtId;
-   private int relTypeId;
-   private String rationale;
-   
-   public RelationChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber, int aArtId, int bArtId, int relLinkId, int relTypeId, String rationale, boolean hasDestinationBranch) {
-      super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber, hasDestinationBranch);
-      
-      this.setKind(GammaKind.Relation);
+public class RelationChangeItem extends ChangeItem {
+   private final int bArtId;
+   private final int relTypeId;
+   private final String rationale;
+
+   public RelationChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber, int aArtId, int bArtId, int relLinkId, int relTypeId, String rationale) {
+      super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
+
       this.setItemId(relLinkId);
       this.getCurrent().setValue(rationale);
-      this.setArt_id(aArtId);
-      
+      this.setArtId(aArtId);
+
       this.bArtId = bArtId;
       this.relTypeId = relTypeId;
       this.rationale = rationale;
@@ -36,8 +39,8 @@ public class RelationChangeItem extends ChangeItem{
    public int getRelTypeId() {
       return relTypeId;
    }
-   
-   public String getRationale(){
+
+   public String getRationale() {
       return rationale;
    }
 }

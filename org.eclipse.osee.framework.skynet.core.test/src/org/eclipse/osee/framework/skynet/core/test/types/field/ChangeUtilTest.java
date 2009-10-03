@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.skynet.core.test.types.field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.skynet.core.types.field.ChangeUtil;
 import org.junit.Test;
@@ -65,6 +67,25 @@ public class ChangeUtilTest {
       data.add(new Object[] {new String[] {"two", "one", "three"}, new String[] {"three", "one", "two"}, false});
       data.add(new Object[] {new String[] {"one", "three"}, new String[] {"one", "two", "three"}, true});
       data.add(new Object[] {new String[] {"one", "two", "two", "three"}, new String[] {"one", "two", "three"}, true});
+
+      data.add(new Object[] {map("a", "b", "c", "d"), map("a", "b", "c", "d"), false});
+      data.add(new Object[] {map("a", "b", "c", "d"), map("a", "c", "b", "d"), false});
+      data.add(new Object[] {map("a", "b", "c", "d"), map("a", "c", "b", "b", "d"), true});
       return data;
+   }
+
+   private static Map<Object, Collection<Object>> map(Object key, Object... values) {
+      Map<Object, Collection<Object>> map = new HashMap<Object, Collection<Object>>();
+      Collection<Object> objects = map.get(key);
+      if (objects == null) {
+         objects = new ArrayList<Object>();
+         map.put(key, objects);
+      } else {
+         objects.clear();
+      }
+      if (values != null && values.length > 0) {
+         objects.addAll(Arrays.asList(values));
+      }
+      return map;
    }
 }

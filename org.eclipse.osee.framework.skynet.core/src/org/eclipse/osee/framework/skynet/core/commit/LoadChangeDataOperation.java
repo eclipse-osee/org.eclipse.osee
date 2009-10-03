@@ -53,15 +53,17 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private final Branch sourceBranch;
    private final Branch destinationBranch;
    private final Branch mergeBranch;
-   private Long transactionNumber;
-   boolean isHistorical = false;
+   private final Long transactionNumber;
+
+   private enum LoadChanges {
+      FROM_SINGLE_TRANSACTION, FROM_ALL_BRANCH_TRANSACTIONS;
+   }
+
+   private final LoadChanges loadChangesEnum;
    boolean hasDestinationBranch = false;
-   IProgressMonitor monitor;
 
    public LoadChangeDataOperation(Long transactionNumber, Collection<ChangeItem> changeData) {
-      this(null, null, null, changeData);
-      this.transactionNumber = transactionNumber;
-      this.isHistorical = true;
+      this(null, null, null, changeData, LoadChanges.FROM_SINGLE_TRANSACTION, transactionNumber);
    }
 
    public LoadChangeDataOperation(Branch sourceBranch, Collection<ChangeItem> changeData) {
@@ -69,13 +71,17 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    public LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<ChangeItem> changeData) {
+      this(sourceBranch, destinationBranch, mergeBranch, changeData, LoadChanges.FROM_ALL_BRANCH_TRANSACTIONS, null);
+   }
+
+   private LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<ChangeItem> changeData, LoadChanges loadMode, Long transactionNumber) {
       super("Load Change Data", Activator.PLUGIN_ID);
       this.mergeBranch = mergeBranch;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.changeData = changeData;
-      this.isHistorical = false;
-      this.hasDestinationBranch = destinationBranch != null;
+      this.loadChangesEnum = loadMode;
+      this.transactionNumber = transactionNumber;
    }
 
    private int getSourceBranchId() {
@@ -84,37 +90,42 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      this.monitor = monitor;
-      TransactionJoinQuery txJoin = loadSourceBranchChanges();
-      loadArtifactItemIdsBasedOnGammas(txJoin.getQueryId(), artifactChangesByItemId);
-      loadAttributeItemIdsBasedOnGammas(txJoin.getQueryId(), attributeChangesByItemId);
-      loadRelationItemIdsBasedOnGammas(txJoin.getQueryId(), relationChangesByItemId);
+      TransactionJoinQuery txJoin = loadSourceBranchChanges(monitor);
+      loadArtifactItemIdsBasedOnGammas(monitor, txJoin.getQueryId(), artifactChangesByItemId);
+      loadAttributeItemIdsBasedOnGammas(monitor, txJoin.getQueryId(), attributeChangesByItemId);
+      loadRelationItemIdsBasedOnGammas(monitor, txJoin.getQueryId(), relationChangesByItemId);
       txJoin.delete();
 
-      loadByItemId("osee_artifact_version", "art_id", artifactChangesByItemId, null);
-      loadByItemId("osee_attribute", "attr_id", attributeChangesByItemId, "value");
-      loadByItemId("osee_relation_link", "rel_link_id", relationChangesByItemId, "rationale");
+      loadByItemId(monitor, "osee_artifact_version", "art_id", artifactChangesByItemId, null);
+      loadByItemId(monitor, "osee_attribute", "attr_id", attributeChangesByItemId, "value");
+      loadByItemId(monitor, "osee_relation_link", "rel_link_id", relationChangesByItemId, "rationale");
 
       changeData.addAll(artifactChangesByItemId.values());
       changeData.addAll(attributeChangesByItemId.values());
       changeData.addAll(relationChangesByItemId.values());
    }
 
-   private TransactionJoinQuery loadSourceBranchChanges() throws OseeCoreException {
+   private TransactionJoinQuery loadSourceBranchChanges(IProgressMonitor monitor) throws OseeCoreException {
       TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       Long currentTransactionNumber;
 
       try {
-         if (isHistorical) {
-            chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionNumber,
-                  TransactionDetailsType.NonBaselined.getId());
-            currentTransactionNumber = transactionNumber;
-         } else {
-            chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
-                  TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
-            currentTransactionNumber =
-                  Long.valueOf(TransactionIdManager.getlatestTransactionForBranch(getSourceBranchId()).getTransactionNumber());
+         switch (loadChangesEnum) {
+            case FROM_ALL_BRANCH_TRANSACTIONS:
+               chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
+                     TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
+               currentTransactionNumber =
+                     Long.valueOf(TransactionIdManager.getlatestTransactionForBranch(getSourceBranchId()).getTransactionNumber());
+               break;
+            case FROM_SINGLE_TRANSACTION:
+               chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionNumber,
+                     TransactionDetailsType.NonBaselined.getId());
+               currentTransactionNumber = transactionNumber;
+               break;
+            default:
+               throw new UnsupportedOperationException(String.format("Invalid load changes [%s] mode not supported",
+                     loadChangesEnum));
          }
 
          while (chStmt.next()) {
@@ -130,7 +141,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       return txJoin;
    }
 
-   private void loadArtifactItemIdsBasedOnGammas(int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
+   private void loadArtifactItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       String query =
             "select art_id, txj.gamma_id from osee_artifact_version id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
@@ -142,7 +153,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             Pair<Long, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
             ArtifactChangeItem changeItem =
                   new ArtifactChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
-                        chStmt.getInt("art_id"), hasDestinationBranch);
+                        chStmt.getInt("art_id"));
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }
       } finally {
@@ -150,7 +161,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadAttributeItemIdsBasedOnGammas(int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
+   private void loadAttributeItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       String query =
             "select art_id, attr_id, value, txj.gamma_id from osee_attribute id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
@@ -163,7 +174,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             AttributeChangeItem changeItem =
                   new AttributeChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(),
                         txsTableData.getFirst(), chStmt.getInt("attr_id"), chStmt.getInt("art_id"),
-                        chStmt.getString("value"), hasDestinationBranch);
+                        chStmt.getString("value"));
 
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }
@@ -172,7 +183,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadRelationItemIdsBasedOnGammas(int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
+   private void loadRelationItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       String query =
             "select a_art_id, b_art_id, rel_link_id, rel_link_type_id, rationale, txj.gamma_id from osee_relation_link id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
@@ -185,7 +196,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             RelationChangeItem changeItem =
                   new RelationChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
                         chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"), chStmt.getInt("rel_link_id"),
-                        chStmt.getInt("rel_link_type_id"), chStmt.getString("rationale"), hasDestinationBranch);
+                        chStmt.getInt("rel_link_type_id"), chStmt.getString("rationale"));
 
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }
@@ -194,7 +205,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadByItemId(String tableName, String columnName, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName) throws OseeCoreException {
+   private void loadByItemId(IProgressMonitor monitor, String tableName, String columnName, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName) throws OseeCoreException {
       IdJoinQuery idJoin = JoinUtility.createIdJoinQuery();
       for (Entry<Integer, ChangeItem> entry : changesByItemId.entrySet()) {
          idJoin.add(entry.getKey());
@@ -202,15 +213,15 @@ public class LoadChangeDataOperation extends AbstractOperation {
       idJoin.store();
 
       if (hasMergeBranch()) {
-         loadCurrentData(tableName, columnName, idJoin, mergeBranch, changesByItemId);
+         loadCurrentData(monitor, tableName, columnName, idJoin, mergeBranch, changesByItemId);
       }
 
       if (hasDestinationBranch()) {
-         loadCurrentData(tableName, columnName, idJoin, destinationBranch, changesByItemId);
+         loadCurrentData(monitor, tableName, columnName, idJoin, destinationBranch, changesByItemId);
       }
 
       if (hasSourceBranch()) {
-         loadNonCurrentSourceData(tableName, columnName, idJoin, changesByItemId, columnValueName);
+         loadNonCurrentSourceData(monitor, tableName, columnName, idJoin, changesByItemId, columnValueName);
       }
 
       idJoin.delete();
@@ -228,7 +239,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       return sourceBranch != null;
    }
 
-   private void loadCurrentData(String tableName, String columnName, IdJoinQuery idJoin, Branch branch, HashMap<Integer, ChangeItem> changesByItemId) throws OseeCoreException {
+   private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, Branch branch, HashMap<Integer, ChangeItem> changesByItemId) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       String query =
@@ -258,7 +269,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadNonCurrentSourceData(String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName) throws OseeCoreException {
+   private void loadNonCurrentSourceData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       String query;
 
@@ -302,7 +313,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadVersionData(ConnectionHandlerStatement chStmt, VersionedChange versionedChange, String columnValueName) throws OseeArgumentException, OseeDataStoreException {
+   private void loadVersionData(ConnectionHandlerStatement chStmt, ChangeVersion versionedChange, String columnValueName) throws OseeArgumentException, OseeDataStoreException {
       if (columnValueName != null) {
          versionedChange.setValue(chStmt.getString(columnValueName));
       }

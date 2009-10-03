@@ -24,16 +24,16 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class ComputeNetChangeOperation extends AbstractOperation {
    private final Collection<ChangeItem> changes;
-   private final boolean hasDestinationBranch;
+   private final boolean isCommitCase;
 
    public ComputeNetChangeOperation(Collection<ChangeItem> changes) {
       this(changes, true);
    }
-   
+
    public ComputeNetChangeOperation(Collection<ChangeItem> changes, boolean hasDestinationBranch) {
       super("Compute Net Change", Activator.PLUGIN_ID);
       this.changes = changes;
-      this.hasDestinationBranch = hasDestinationBranch;
+      this.isCommitCase = hasDestinationBranch;
    }
 
    @Override
@@ -45,7 +45,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
          while (iterator.hasNext()) {
             checkForCancelledStatus(monitor);
             ChangeItem change = iterator.next();
-            if (change.isIgnoreCase()) {
+            if (ChangeItemUtil.isIgnoreCase(isCommitCase, change)) {
                iterator.remove();
             } else {
                checkForInvalidStates(change);
@@ -66,17 +66,19 @@ public class ComputeNetChangeOperation extends AbstractOperation {
             }
             monitor.worked(calculateWork(workPercentage));
          }
+      } else {
+         monitor.worked(calculateWork(1.0));
       }
       System.out.println("Commit change size: " + changes.size());
    }
 
    private ModificationType getNetModType(ChangeItem change) {
       ModificationType modificationType;
-      
-      if(hasDestinationBranch){
+
+      if (isCommitCase) {
          modificationType = calculateNetWithDestinationBranch(change);
-      }else{
-         modificationType = calculateNetWithoutDestinationBranch(change); 
+      } else {
+         modificationType = calculateNetWithoutDestinationBranch(change);
       }
       return modificationType;
    }
@@ -84,23 +86,23 @@ public class ComputeNetChangeOperation extends AbstractOperation {
    private ModificationType calculateNetWithoutDestinationBranch(ChangeItem change) {
       ModificationType netModType = change.getCurrent().getModType();
 
-      if (change.wasNewOnSource()) {
+      if (ChangeItemUtil.wasNewOnSource(change)) {
          netModType = ModificationType.NEW;
-      } else if (change.wasIntroducedOnSource()) {
+      } else if (ChangeItemUtil.wasIntroducedOnSource(change)) {
          netModType = ModificationType.INTRODUCED;
-      } else if(!change.getBase().exists() && !change.getFirst().exists() && change.getCurrent().getModType() == ModificationType.MODIFIED){
+      } else if (!change.getBase().exists() && !change.getFirst().exists() && change.getCurrent().getModType() == ModificationType.MODIFIED) {
          netModType = ModificationType.NEW;
       }
       return netModType;
    }
-   
+
    private ModificationType calculateNetWithDestinationBranch(ChangeItem change) {
       ModificationType netModType = null;
       if (change.getDestination().exists() && (change.getBase().exists() || change.getFirst().exists())) {
          netModType = change.getCurrent().getModType();
-      } else if (change.wasNewOnSource()) {
+      } else if (ChangeItemUtil.wasNewOnSource(change)) {
          netModType = ModificationType.NEW;
-      } else if (change.wasIntroducedOnSource()) {
+      } else if (ChangeItemUtil.wasIntroducedOnSource(change)) {
          netModType = ModificationType.INTRODUCED;
       } else if (!change.getDestination().exists()) {
          if (!change.getBase().exists()) {
@@ -115,9 +117,11 @@ public class ComputeNetChangeOperation extends AbstractOperation {
 
    private void checkForInvalidStates(ChangeItem change) throws OseeCoreException {
       // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
-      if (hasDestinationBranch && (!change.getDestination().exists() && change.getBase().exists())) {
-         throw new OseeStateException(
-               "This should be supported in the future - destination branch is not the source's parent: " + change);
+      if (isCommitCase) {
+         if (!change.getDestination().exists() && change.getBase().exists()) {
+            throw new OseeStateException(
+                  "This should be supported in the future - destination branch is not the source's parent: " + change);
+         }
       }
 
       if (change.getDestination().exists() && change.getDestination().getModType().isDeleted()) {

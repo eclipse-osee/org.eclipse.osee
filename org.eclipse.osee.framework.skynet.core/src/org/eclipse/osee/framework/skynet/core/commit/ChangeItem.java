@@ -16,36 +16,29 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
  * @author Roberto E. Escobar
  */
 public abstract class ChangeItem {
-   public static enum GammaKind {
-      Artifact, Attribute, Relation
-   };
-
    private int artId;
    private int itemId;
-   private GammaKind kind;
-   private final VersionedChange baseEntry;
-   private final VersionedChange firstChange;
-   private final VersionedChange currentEntry;
-   private final VersionedChange destinationEntry;
-   private final VersionedChange netEntry;
-   private final boolean hasDestinationBranch;
+   private final ChangeVersion baseEntry;
+   private final ChangeVersion firstChange;
+   private final ChangeVersion currentEntry;
+   private final ChangeVersion destinationEntry;
+   private final ChangeVersion netEntry;
 
-   public ChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber, boolean hasDestinationBranch) {
+   protected ChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber) {
       super();
-      this.baseEntry = new VersionedChange();
-      this.firstChange = new VersionedChange();
-      this.currentEntry =
-            new VersionedChange(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
-      this.destinationEntry = new VersionedChange();
-      this.netEntry = new VersionedChange();
-      this.hasDestinationBranch = hasDestinationBranch;
+      this.currentEntry = new ChangeVersion(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
+
+      this.baseEntry = new ChangeVersion();
+      this.firstChange = new ChangeVersion();
+      this.destinationEntry = new ChangeVersion();
+      this.netEntry = new ChangeVersion();
    }
 
    public int getArtId() {
       return artId;
    }
 
-   public void setArt_id(int artId) {
+   public void setArtId(int artId) {
       this.artId = artId;
    }
 
@@ -57,73 +50,29 @@ public abstract class ChangeItem {
       this.itemId = itemId;
    }
 
-   public GammaKind getKind() {
-      return kind;
-   }
-
-   protected void setKind(GammaKind kind) {
-      this.kind = kind;
-   }
-
-   public VersionedChange getBase() {
+   public ChangeVersion getBase() {
       return baseEntry;
    }
 
-   public VersionedChange getFirst() {
+   public ChangeVersion getFirst() {
       return firstChange;
    }
 
-   public VersionedChange getCurrent() {
+   public ChangeVersion getCurrent() {
       return currentEntry;
    }
 
-   public VersionedChange getDestination() {
+   public ChangeVersion getDestination() {
       return destinationEntry;
    }
 
-   public VersionedChange getNet() {
+   public ChangeVersion getNet() {
       return netEntry;
-   }
-
-   public boolean wasNewOnSource() {
-      return getFirst().isNew() || getCurrent().isNew();
-   }
-
-   public boolean wasIntroducedOnSource() {
-      return getFirst().isIntroduced() || getCurrent().isIntroduced();
-   }
-
-   public boolean wasNewOrIntroducedOnSource() {
-      return wasNewOnSource() || wasIntroducedOnSource();
-   }
-
-   public boolean isAlreadyOnDestination() {
-      return getCurrent().sameGammaAs(getDestination()) && getCurrent().getModType().isDeleted() == getDestination().getModType().isDeleted();
-   }
-
-   public boolean isIgnoreCase() {
-      return wasCreatedAndDeleted() || isAlreadyOnDestination() || isDeletedAndDoestNotExistInDestination() || hasBeenDeletedInDestination() || isDestinationEqualOrNewerThanCurrent();
-   }
-
-   private boolean wasCreatedAndDeleted() {
-      return wasNewOrIntroducedOnSource() && getCurrent().getModType().isDeleted();
-   }
-
-   private boolean isDeletedAndDoestNotExistInDestination() {
-      return hasDestinationBranch && (!getDestination().exists() && getCurrent().getModType().isDeleted());
-   }
-
-   private boolean hasBeenDeletedInDestination() {
-      return getDestination().exists() && getDestination().getModType().isDeleted();
-   }
-
-   private boolean isDestinationEqualOrNewerThanCurrent() {
-      return (getCurrent().isNew() || getCurrent().isIntroduced()) && getDestination().exists();
    }
 
    @Override
    public String toString() {
-      return String.format("CommitItem - kind:[%s] itemId:[%s] base:%s first:%s current:%s destination:%s net:%s",
-            kind, itemId, getBase(), getFirst(), getCurrent(), getDestination(), getNet());
+      return String.format("CommitItem - itemId:[%s] base:%s first:%s current:%s destination:%s net:%s", itemId,
+            getBase(), getFirst(), getCurrent(), getDestination(), getNet());
    }
 }

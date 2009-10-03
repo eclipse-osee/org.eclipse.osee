@@ -39,48 +39,42 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
  */
 public class ChangeManager {
 
+   private final static InternalChangeManager changeManager = new InternalChangeManager();
+
+   /**
+    * Acquires changes for a particular artifact
+    * 
+    * @param artifact
+    * @param monitor
+    * @return changes
+    * @throws OseeCoreException
+    */
    public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      return InternalChangeManager.getInstance().getChangesPerArtifact(artifact, monitor);
+      return changeManager.getChangesPerArtifact(artifact, monitor);
    }
 
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     * 
-    * @param sourceBranch
-    * @param baselineTransactionId
+    * @param transactionId
+    * @param monitor
     * @return changes
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerTransaction(TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
-      return InternalChangeManager.getInstance().getChangeReportChanges(transactionId, monitor);
-   }
-
-   public static ChangeData getChangeDataPerTransaction(TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
-      return new ChangeData(getChangesPerTransaction(transactionId, monitor));
+      return changeManager.getChangesPerTransaction(transactionId, monitor);
    }
 
    /**
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     * 
     * @param sourceBranch
-    * @param baselineTransactionId
+    * @param monitor
     * @return changes
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerBranch(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
-      return InternalChangeManager.getInstance().getChangeReportChanges(sourceBranch, monitor);
-   }
-
-   public static ChangeData getChangeDataPerBranch(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
-      return new ChangeData(getChangesPerBranch(sourceBranch, monitor));
-   }
-
-   /**
-    * @return true changes exist
-    * @throws OseeCoreException
-    */
-   public static boolean isChangesOnWorkingBranch(Branch workingBranch) throws OseeCoreException {
-      return InternalChangeManager.getInstance().isChangesOnWorkingBranch(workingBranch);
+      return changeManager.getChangesPerBranch(sourceBranch, monitor);
    }
 
    /**

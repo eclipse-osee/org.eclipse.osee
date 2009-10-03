@@ -14,20 +14,38 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
+import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
+import org.eclipse.osee.framework.skynet.core.test.types.MockShallowArtifact;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeTestDataAccessor;
+import org.eclipse.osee.framework.skynet.core.test.types.OseeTypesUtil;
+import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
+import org.eclipse.osee.framework.skynet.core.types.AttributeTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.types.IOseeField;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
+import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.field.AliasesField;
+import org.eclipse.osee.framework.skynet.core.types.field.ArtifactSuperTypeField;
+import org.eclipse.osee.framework.skynet.core.types.field.ArtifactTypeAttributesField;
+import org.eclipse.osee.framework.skynet.core.types.field.AssociatedArtifactField;
 import org.eclipse.osee.framework.skynet.core.types.field.ChangeUtil;
+import org.eclipse.osee.framework.skynet.core.types.field.EnumEntryField;
 import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
 import org.eclipse.osee.framework.skynet.core.types.field.UniqueIdField;
 import org.junit.Test;
@@ -82,11 +100,8 @@ public class OseeFieldMainTest {
    }
 
    private void checkObjects(String message, Object expected, Object actual) {
-      if (expected instanceof Collection<?> && actual instanceof Collection<?> || expected instanceof Object[] && actual instanceof Object[]) {
-         Assert.assertFalse(message, ChangeUtil.isDifferent(expected, actual));
-      } else {
-         Assert.assertEquals(message, expected, actual);
-      }
+      Assert.assertFalse(String.format("%s expected[%s] actual[%s]", message, expected, actual),
+            ChangeUtil.isDifferent(expected, actual));
    }
 
    @SuppressWarnings("unchecked")
@@ -142,14 +157,24 @@ public class OseeFieldMainTest {
       )});
 
       IOseeTypeFactory factory = new OseeTypeFactory();
+      data.add(createBranchFieldTest(factory));
+      data.add(createAssociatedArtifactTest(factory));
+      data.add(createEnumEntryFieldTest(factory));
+      data.add(createSuperArtifactTypeFieldTest(factory));
+      data.add(createArtifactTypeAttributesFieldTest(factory));
+      return data;
+   }
+
+   @SuppressWarnings("unchecked")
+   private static Object[] createBranchFieldTest(IOseeTypeFactory factory) throws OseeCoreException {
       BranchCache branchCache = new BranchCache(factory, new OseeTestDataAccessor<Branch>());
       Branch branch =
-            factory.createBranch(branchCache, GUID.create(), "Test Branch", BranchType.WORKING, BranchState.MODIFIED,
-                  false);
+            OseeTypesUtil.createBranch(branchCache, factory, null, "Test Branch", BranchType.WORKING,
+                  BranchState.MODIFIED, false);
       branch.setAliases("Alias 1", "Alias2");
 
       Collection<String> emptyList = Collections.emptyList();
-      data.add(new Object[] {//
+      return new Object[] {//
       new OseeFieldTest<Collection<String>>(
             //
             new AliasesField(branchCache, branch), //
@@ -159,16 +184,134 @@ public class OseeFieldMainTest {
                   "alias2"), false),//
             new TestData<Collection<String>>(false, Arrays.asList("alias 1"), Arrays.asList("alias 1"), true),
             new TestData<Collection<String>>(true, emptyList, emptyList, true)//
-      )});
-
-      // TODO Add set tests
-      //      data.add(new Object[] {new OseeFieldTest<IArtifact>(new AssociatedArtifactField(null, null)});
-      //      data.add(new Object[] {new OseeFieldTest<Collection<ArtifactType>>(new ArtifactSuperTypeField(null, null)});
-      //      data.add(new Object[] {new OseeFieldTest<Map<Branch, Collection<AttributeType>>>(new ArtifactTypeAttributesField(null, null)});
-      //      data.add(new Object[] {new OseeFieldTest<List<OseeEnumEntry>>(new EnumEntryField(null, null)});
-
-      return data;
+      )};
    }
+
+   @SuppressWarnings("unchecked")
+   private static Object[] createAssociatedArtifactTest(IOseeTypeFactory factory) throws OseeCoreException {
+      BranchCache branchCache = new BranchCache(factory, new OseeTestDataAccessor<Branch>());
+      Branch branch =
+            OseeTypesUtil.createBranch(branchCache, factory, null, "Test Branch", BranchType.WORKING,
+                  BranchState.MODIFIED, false);
+
+      IArtifact defaultAssociatedArtifact = null;
+      branchCache.setDefaultAssociatedArtifact(defaultAssociatedArtifact);
+
+      IArtifact artifact1 = new MockShallowArtifact(branchCache, 100);
+      IArtifact artifact2 = new MockShallowArtifact(branchCache, 200);
+      return new Object[] {new OseeFieldTest<IArtifact>( //
+            new AssociatedArtifactField(branchCache, branch), //
+            null, false, //
+            new TestData<IArtifact>(false, artifact1, artifact1, true), //
+            new TestData<IArtifact>(false, artifact2, artifact2, true), //
+            new TestData<IArtifact>(true, null, null, true), //
+            new TestData<IArtifact>(true, artifact1, artifact1, true), //
+            new TestData<IArtifact>(true, artifact1, artifact1, false)//
+      )};
+   }
+
+   @SuppressWarnings("unchecked")
+   private static Object[] createEnumEntryFieldTest(IOseeTypeFactory factory) throws OseeCoreException {
+      OseeEnumTypeCache enumTypeCache = new OseeEnumTypeCache(factory, new OseeTestDataAccessor<OseeEnumType>());
+      OseeEnumType oseeEnumType = OseeTypesUtil.createEnumType(enumTypeCache, factory, null, "Enum Data 1");
+      OseeEnumEntry entry1 = factory.createEnumEntry(enumTypeCache, null, "Entry 1", 1);
+      OseeEnumEntry entry2 = factory.createEnumEntry(enumTypeCache, null, "Entry 2", 2);
+      OseeEnumEntry entry3 = factory.createEnumEntry(enumTypeCache, null, "Entry 3", 3);
+
+      oseeEnumType.setEntries(Arrays.asList(entry1, entry2, entry3));
+      oseeEnumType.clearDirty();
+
+      List<OseeEnumEntry> emptyEnumList = Collections.emptyList();
+
+      return new Object[] { //
+      new OseeFieldTest<List<OseeEnumEntry>>(
+            new EnumEntryField(//
+                  enumTypeCache, oseeEnumType),//
+            Arrays.asList(entry1, entry2, entry3),
+            false, //
+            new TestData<List<OseeEnumEntry>>(false, Arrays.asList(entry1, entry2, entry3), Arrays.asList(entry1,
+                  entry2, entry3), false), //
+            new TestData<List<OseeEnumEntry>>(false, Arrays.asList(entry1, entry2, entry2, entry3), Arrays.asList(
+                  entry1, entry2, entry3), false), //
+            new TestData<List<OseeEnumEntry>>(false, Arrays.asList(entry1, entry3), Arrays.asList(entry1, entry3), true),//
+            new TestData<List<OseeEnumEntry>>(true, emptyEnumList, emptyEnumList, true), //
+            new TestData<List<OseeEnumEntry>>(true, Arrays.asList(entry1, entry2, entry3), Arrays.asList(entry1,
+                  entry2, entry3), true) //
+      )};
+   }
+
+   @SuppressWarnings("unchecked")
+   private static Object[] createSuperArtifactTypeFieldTest(IOseeTypeFactory factory) throws OseeCoreException {
+      ArtifactTypeCache artTypeCache = new ArtifactTypeCache(factory, new OseeTestDataAccessor<ArtifactType>());
+      ArtifactType artifactType = factory.createArtifactType(artTypeCache, null, false, "Test Artifact Type");
+
+      ArtifactType art1 = factory.createArtifactType(artTypeCache, null, false, "Art 1");
+      ArtifactType art2 = factory.createArtifactType(artTypeCache, null, false, "Art 2");
+      ArtifactType art3 = factory.createArtifactType(artTypeCache, null, false, "Art 3");
+
+      List<ArtifactType> emptyArtTypeList = Collections.emptyList();
+      return new Object[] {new OseeFieldTest<Collection<ArtifactType>>( //
+            new ArtifactSuperTypeField(artTypeCache, artifactType), //
+            emptyArtTypeList, false, //
+            new TestData<Collection<ArtifactType>>(false, Arrays.asList(art1, art2, art3), Arrays.asList(art1, art2,
+                  art3), true), //
+            new TestData<Collection<ArtifactType>>(true, Arrays.asList(art2, art3, art1), Arrays.asList(art1, art2,
+                  art3), false), //
+            new TestData<Collection<ArtifactType>>(false, Arrays.asList(art1, art2, art3, art1), Arrays.asList(art1,
+                  art2, art3), false), //
+            new TestData<Collection<ArtifactType>>(false, emptyArtTypeList, Arrays.asList(art1, art2, art3), false,
+                  OseeInvalidInheritanceException.class), //
+            new TestData<Collection<ArtifactType>>(false, Arrays.asList(art1), Arrays.asList(art1), true) //
+      )};
+   }
+
+   @SuppressWarnings("unchecked")
+   private static Object[] createArtifactTypeAttributesFieldTest(IOseeTypeFactory factory) throws OseeCoreException {
+      ArtifactTypeCache artTypeCache = new ArtifactTypeCache(factory, new OseeTestDataAccessor<ArtifactType>());
+      ArtifactType artifactType = factory.createArtifactType(artTypeCache, null, false, "Test Super Artifact Type");
+
+      AttributeTypeCache attrCache = new AttributeTypeCache(factory, new OseeTestDataAccessor<AttributeType>());
+      AttributeType attr1 = OseeTypesUtil.createAttributeType(attrCache, factory, null, "Attribute Type 1");
+      AttributeType attr2 = OseeTypesUtil.createAttributeType(attrCache, factory, null, "Attribute Type 2");
+      AttributeType attr3 = OseeTypesUtil.createAttributeType(attrCache, factory, null, "Attribute Type 3");
+
+      BranchCache branchCache = new BranchCache(factory, new OseeTestDataAccessor<Branch>());
+      Branch br1 =
+            OseeTypesUtil.createBranch(branchCache, factory, null, "Dummy Branch", BranchType.SYSTEM_ROOT,
+                  BranchState.CREATED, false);
+      Branch br2 =
+            OseeTypesUtil.createBranch(branchCache, factory, null, "Dummy Branch2", BranchType.WORKING,
+                  BranchState.MODIFIED, false);
+
+      artifactType.setAttributeTypeValidity(Arrays.asList(attr1, attr2, attr3), br1);
+      artifactType.clearDirty();
+      Map<Branch, Collection<AttributeType>> emptyMap = Collections.emptyMap();
+
+      Map<Branch, Collection<AttributeType>> twoEntry = new HashMap<Branch, Collection<AttributeType>>();
+      twoEntry.putAll(map(br2, attr3));
+      twoEntry.putAll(map(br1, attr2));
+
+      return new Object[] {new OseeFieldTest<Map<Branch, Collection<AttributeType>>>(
+            new ArtifactTypeAttributesField(artTypeCache, artifactType),//
+            map(br1, attr1, attr2, attr3),
+            false, //
+            new TestData<Map<Branch, Collection<AttributeType>>>(false, map(br1, attr3, attr1, attr2), map(br1, attr1,
+                  attr2, attr3), false), //
+            new TestData<Map<Branch, Collection<AttributeType>>>(false, map(br1, attr3, attr1, attr2, attr1), map(br1,
+                  attr1, attr2, attr3), false), //
+            new TestData<Map<Branch, Collection<AttributeType>>>(false, map(br1, attr1), map(br1, attr1), true), //
+            new TestData<Map<Branch, Collection<AttributeType>>>(true, map(br1), emptyMap, true), //
+            new TestData<Map<Branch, Collection<AttributeType>>>(true, map(br2, attr3), map(br2, attr3), true),
+            new TestData<Map<Branch, Collection<AttributeType>>>(true, map(br1, attr2), twoEntry, true)//
+      )};//
+   }
+
+   private static Map<Branch, Collection<AttributeType>> map(Branch branch, AttributeType... attrs) {
+      Map<Branch, Collection<AttributeType>> map = new LinkedHashMap<Branch, Collection<AttributeType>>();
+      map.put(branch, Arrays.asList(attrs));
+      return map;
+   }
+
    private final static class OseeFieldTest<T> {
       private final IOseeField<T> field;
       private final Object initExpectedValue;
@@ -205,7 +348,6 @@ public class OseeFieldMainTest {
       public void doSetValue(TestData<T> testData) throws OseeCoreException {
          getField().set(testData.getSetValue());
       }
-
    }
 
    private final static class TestData<T> {
@@ -251,4 +393,5 @@ public class OseeFieldMainTest {
          return error;
       }
    }
+
 }

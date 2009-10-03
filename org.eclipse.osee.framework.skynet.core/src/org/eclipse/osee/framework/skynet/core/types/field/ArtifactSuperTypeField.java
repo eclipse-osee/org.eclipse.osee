@@ -30,14 +30,14 @@ public final class ArtifactSuperTypeField extends AbstractOseeField<Collection<A
    }
 
    @Override
-   public Collection<ArtifactType> get() {
+   public Collection<ArtifactType> get() throws OseeCoreException {
       return cache.getArtifactSuperType(artifactType);
    }
 
    @Override
    public void set(Collection<ArtifactType> superType) throws OseeCoreException {
       Collection<ArtifactType> original = get();
-      cache.setArtifactSuperType(artifactType, superType);
+      cache.cacheArtifactSuperType(artifactType, superType);
       Collection<ArtifactType> newTypes = artifactType.getSuperArtifactTypes();
       isDirty |= ChangeUtil.isDifferent(original, newTypes);
    }

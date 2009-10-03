@@ -30,22 +30,19 @@ import org.eclipse.osee.framework.skynet.core.change.RelationChange;
  */
 public class ChangeData {
 
-   Collection<Change> changes;
-
-   /**
-    * @return the changes
-    */
-   public Collection<Change> getChanges() {
-      return changes;
-   }
-
    public static enum KindType {
       Artifact, Relation, ArtifactOrRelation, RelationOnly
    };
+
+   private final Collection<Change> changes;
    public boolean artifactsBulkLoaded = false;
 
    public ChangeData(Collection<Change> changes) {
       this.changes = changes;
+   }
+
+   public Collection<Change> getChanges() {
+      return changes;
    }
 
    public Collection<Change> getChangesByName(String name) throws OseeCoreException {
@@ -99,13 +96,13 @@ public class ChangeData {
       if (kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation || kindType == KindType.Relation) {
          if (changes != null) {
             for (Change change : changes) {
-               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && (change instanceof ArtifactChange)) {
+               if ((kindType == KindType.Artifact || kindType == KindType.ArtifactOrRelation) && change instanceof ArtifactChange) {
                   if (modTypes.contains(change.getModificationType())) {
                      artifacts.add(change.getArtifact());
                   }
                }
                // 
-               else if ((kindType == KindType.Relation || kindType == KindType.ArtifactOrRelation) && (change instanceof RelationChange)) {
+               else if ((kindType == KindType.Relation || kindType == KindType.ArtifactOrRelation) && change instanceof RelationChange) {
                   if (modTypes.contains(change.getModificationType())) {
                      artifacts.add(((RelationChange) change).getArtifact());
                      artifacts.add(((RelationChange) change).getBArtifact());
@@ -126,7 +123,7 @@ public class ChangeData {
    @Override
    public String toString() {
       try {
-         StringBuffer sb = new StringBuffer();
+         StringBuilder sb = new StringBuilder();
          for (KindType kindType : KindType.values()) {
             for (ModificationType modificationType : ModificationType.values()) {
                sb.append("Kind: " + kindType + " ModType: " + modificationType.getDisplayName() + " Num: " + getArtifacts(

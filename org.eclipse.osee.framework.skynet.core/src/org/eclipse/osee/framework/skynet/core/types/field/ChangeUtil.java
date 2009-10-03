@@ -12,6 +12,8 @@ package org.eclipse.osee.framework.skynet.core.types.field;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 
 /**
@@ -28,7 +30,9 @@ public class ChangeUtil {
       if (original == null && other == null) {
          result = false;
       } else if (original != null && other != null) {
-         if (original instanceof Collection<?> && other instanceof Collection<?>) {
+         if (original instanceof Map<?, ?> && other instanceof Map<?, ?>) {
+            result = isDifferent((Map<Object, Object>) original, (Map<Object, Object>) other);
+         } else if (original instanceof Collection<?> && other instanceof Collection<?>) {
             result = isDifferent((Collection<Object>) original, (Collection<Object>) other);
          } else if (original instanceof Object[] && other instanceof Object[]) {
             result = isDifferent(Arrays.asList((Object[]) original), Arrays.asList((Object[]) other));
@@ -43,5 +47,25 @@ public class ChangeUtil {
       return original.size() != other.size() || //
       !Collections.setComplement(original, other).isEmpty() || //
       !Collections.setComplement(other, original).isEmpty();
+   }
+
+   private static boolean isDifferent(Map<Object, Object> original, Map<Object, Object> other) {
+      boolean result = true;
+      if (original.size() == other.size()) {
+         Set<Object> set1 = original.keySet();
+         Set<Object> set2 = other.keySet();
+         if (!isDifferent(set1, set2)) {
+            result = false;
+            for (Object key : set1) {
+               Object value1 = original.get(key);
+               Object value2 = other.get(key);
+               if (isDifferent(value1, value2)) {
+                  result = true;
+                  break;
+               }
+            }
+         }
+      }
+      return result;
    }
 }

@@ -35,7 +35,7 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<Bra
    }
 
    @Override
-   public Map<Branch, Collection<AttributeType>> get() {
+   public Map<Branch, Collection<AttributeType>> get() throws OseeCoreException {
       return cache.getLocalAttributeTypes(artifactType);
    }
 
@@ -51,12 +51,6 @@ public final class ArtifactTypeAttributesField extends AbstractOseeField<Map<Bra
    }
 
    private void set(Branch branch, Collection<AttributeType> attributeTypes) throws OseeCoreException {
-      if (branch == null) {
-         throw new OseeArgumentException("branch cannot be null");
-      }
-      if (attributeTypes == null) {
-         throw new OseeArgumentException("attribute type list cannot be null");
-      }
       Collection<AttributeType> original = cache.getLocalAttributeTypes(artifactType, branch);
       cache.cacheTypeValidity(artifactType, attributeTypes, branch);
       Collection<AttributeType> newTypes = cache.getLocalAttributeTypes(artifactType, branch);

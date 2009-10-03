@@ -23,10 +23,12 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.commit.ArtifactChangeItem;
+import org.eclipse.osee.framework.skynet.core.commit.AttributeChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeItem.GammaKind;
+import org.eclipse.osee.framework.skynet.core.commit.RelationChangeItem;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.Test;
 
@@ -105,15 +107,15 @@ public class LoadCommitItemsFromDbTest {
    }
 
    private void checkNetItems(Collection<ChangeItem> items, ModificationType modType, int artifacts, int attributes, int relations) {
-      Assert.assertEquals(artifacts, getCount(items, GammaKind.Artifact, modType));
-      Assert.assertEquals(attributes, getCount(items, GammaKind.Attribute, modType));
-      Assert.assertEquals(relations, getCount(items, GammaKind.Relation, modType));
+      Assert.assertEquals(artifacts, getCount(items, ArtifactChangeItem.class, modType));
+      Assert.assertEquals(attributes, getCount(items, AttributeChangeItem.class, modType));
+      Assert.assertEquals(relations, getCount(items, RelationChangeItem.class, modType));
    }
 
-   private int getCount(Collection<ChangeItem> items, GammaKind gammaKind, ModificationType type) {
+   private int getCount(Collection<ChangeItem> items, Class<? extends ChangeItem> changeType, ModificationType type) {
       int count = 0;
       for (ChangeItem item : items) {
-         if (item.getKind() == gammaKind && item.getNet().getModType() == type) {
+         if (item.getClass().isAssignableFrom(changeType) && item.getNet().getModType() == type) {
             count++;
          }
       }

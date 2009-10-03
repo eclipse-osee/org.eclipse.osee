@@ -11,6 +11,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
@@ -234,7 +235,10 @@ public class BranchStateTest {
          Job job = BranchManager.updateBranch(workingBranch, resolverOperation);
          job.join();
 
-         assertTrue("UpdateBranch was not successful\n" + job.getResult().getMessage(), job.getResult().isOK());
+         IStatus status = getCauseStatus(job.getResult());
+         String message =
+               String.format("UpdateBranch was not successful\n %s", status.getMessage(), status.getException());
+         assertTrue(message, job.getResult().isOK());
          assertTrue("Resolver not executed", resolverOperation.wasExecuted());
 
          assertTrue("Branch was archived", !workingBranch.getArchiveState().isArchived());
@@ -262,7 +266,11 @@ public class BranchStateTest {
                new FinishUpdateBranchOperation("Update Branch Test 2", resolverOperation.getConflictManager(), true,
                      true);
          Operations.executeWork(finishUpdateOperation, new NullProgressMonitor(), -1);
-         assertTrue("FinishUpdateBranch was not successful", finishUpdateOperation.getStatus().isOK());
+
+         IStatus status1 = getCauseStatus(finishUpdateOperation.getStatus());
+         message =
+               String.format("FinishUpdateBranch was not successful\n %s", status1.getMessage(), status1.getException());
+         assertTrue(message, status1.isOK());
 
          checkBranchWasRebaselined(originalBranchName, workingBranch);
 
@@ -276,27 +284,52 @@ public class BranchStateTest {
 
          // Swapped successfully
          assertEquals(destinationBranch.getBranchId(), newWorkingBranch.getBranchId());
+      } catch (Exception ex) {
+         throw ex;
       } finally {
          cleanup(originalBranchName, workingBranch, mergeBranch, sameArtifact, baseArtifact);
+
       }
    }
 
-   private void cleanup(String originalBranchName, Branch workingBranch, Branch mergeBranch, Artifact... toDelete) throws Exception {
-      for (Branch branch : BranchManager.getBranchesByName(originalBranchName)) {
-         for (Branch child : branch.getChildBranches(true)) {
-            BranchManager.purgeBranch(child);
+   private IStatus getCauseStatus(IStatus status) {
+      IStatus toReturn = status;
+      if (!status.isOK() && status.isMultiStatus()) {
+         for (IStatus child : status.getChildren()) {
+            Throwable error = child.getException();
+            if (error != null) {
+               toReturn = child;
+               break;
+            }
          }
-         BranchManager.purgeBranch(branch);
       }
-      if (mergeBranch != null) {
-         BranchManager.purgeBranch(mergeBranch);
+      return toReturn;
+   }
+
+   private void cleanup(String originalBranchName, Branch workingBranch, Branch mergeBranch, Artifact... toDelete) {
+      try {
+         if (mergeBranch != null) {
+            BranchManager.purgeBranch(mergeBranch);
+         }
+         if (workingBranch != null) {
+            purgeBranchAndChildren(workingBranch);
+         }
+         for (Branch branch : BranchManager.getBranchesByName(originalBranchName)) {
+            purgeBranchAndChildren(branch);
+         }
+         if (toDelete != null) {
+            FrameworkTestUtil.purgeArtifacts(Arrays.asList(toDelete));
+         }
+      } catch (Exception ex) {
+         // Do Nothing;
       }
-      if (workingBranch != null) {
-         BranchManager.purgeBranch(workingBranch);
+   }
+
+   private void purgeBranchAndChildren(Branch branch) throws OseeCoreException {
+      for (Branch child : branch.getChildBranches(true)) {
+         BranchManager.purgeBranch(child);
       }
-      if (toDelete != null) {
-         FrameworkTestUtil.purgeArtifacts(Arrays.asList(toDelete));
-      }
+      BranchManager.purgeBranch(branch);
    }
 
    private void checkBranchWasRebaselined(String originalBranchName, Branch branchToCheck) {

@@ -4,14 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeItem.GammaKind;
 
 /**
  * @author Ryan D. Brooks
@@ -28,22 +26,6 @@ public class UpdatePreviuosTxCurrent {
    public UpdatePreviuosTxCurrent(Branch branch, OseeConnection connection) {
       this.branch = branch;
       this.connection = connection;
-   }
-
-   public void addItem(GammaKind kind, int itemId) throws OseeStateException {
-      switch (kind) {
-         case Artifact:
-            addArtifact(itemId);
-            break;
-         case Attribute:
-            addAttribute(itemId);
-            break;
-         case Relation:
-            addRelation(itemId);
-            break;
-         default:
-            throw new OseeStateException("Unexpected gamma kind");
-      }
    }
 
    public void addAttribute(int attributeId) {
