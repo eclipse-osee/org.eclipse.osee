@@ -26,26 +26,28 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
 /**
- * Single import of coverage information that includes
+ * Effort of coverage that includes multiple imports, reports, exports and metrics
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProvider {
+public class CoveragePackage implements ICoverageEditorProvider, ICoverageTabProvider {
 
    private final String guid = GUID.create();
-   private final Date runDate;
+   private String name;
+   private final Date creationDate;
+   private final List<CoverageImport> coverageImports = new ArrayList<CoverageImport>();
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    private final List<TestUnit> testUnits = new ArrayList<TestUnit>();
    private final XResultData logResultData = new XResultData();
-   private String location = "";
 
-   public CoverageImport() {
-      this(new Date());
+   public CoveragePackage() {
+      this("Coverage Package", new Date());
    }
 
-   public CoverageImport(Date runDate) {
+   public CoveragePackage(String name, Date runDate) {
       super();
-      this.runDate = runDate;
+      this.creationDate = runDate;
+      this.name = name;
    }
 
    public void addTestUnit(TestUnit testUnit) {
@@ -70,6 +72,14 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProv
          items.addAll(coverageUnit.getCoverageItems(true));
       }
       return items;
+   }
+
+   public void addCoverageImport(CoverageImport CoverageImport) {
+      coverageImports.add(CoverageImport);
+   }
+
+   public List<CoverageImport> getCoverageImports() {
+      return coverageImports;
    }
 
    public int getPercentCoverage() {
@@ -100,7 +110,7 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProv
    }
 
    public Date getRunDate() {
-      return runDate;
+      return creationDate;
    }
 
    public void setCoverageUnits(List<CoverageUnit> coverageUnits) {
@@ -108,7 +118,7 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProv
    }
 
    public String getName() {
-      return "Coverage Import - " + XDate.getDateStr(runDate, XDate.MMDDYYHHMM) + " - " + getCoverageItems().size() + " Coverage Items";
+      return name + " - " + XDate.getDateStr(creationDate, XDate.MMDDYYHHMM) + " - " + getCoverageItems().size() + " Coverage Items";
    }
 
    public XResultData getLog() {
@@ -122,26 +132,24 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProv
 
    @Override
    public OseeImage getTitleImage() {
-      return CoverageImage.COVERAGE_IMPORT;
+      return CoverageImage.COVERAGE_PACKAGE;
    }
 
    @Override
    public void getOverviewHtmlHeader(XResultData xResultData) {
-      xResultData.log(AHTML.bold("Coverage Import for " + XDate.getDateStr(getRunDate(), XDate.HHMMSSSS)) + AHTML.newline());
-      xResultData.log(AHTML.getLabelValueStr("Location", location));
-      xResultData.log(AHTML.getLabelValueStr("Run Date", XDate.getDateStr(getRunDate(), XDate.MMDDYYHHMM)));
+      xResultData.log(AHTML.bold("Coverage Package " + getName()) + AHTML.newline());
+      xResultData.log(AHTML.getLabelValueStr("Creation Date", XDate.getDateStr(getRunDate(), XDate.MMDDYYHHMM)));
+
+      xResultData.log(AHTML.getLabelValueStr("Number of Coverage Imports", String.valueOf(coverageImports.size())));
    }
 
-   public String getLocation() {
-      return location;
-   }
-
-   public void setLocation(String location) {
-      this.location = location;
+   public void setName(String name) {
+      this.name = name;
    }
 
    @Override
    public boolean isImportAllowed() {
-      return false;
+      return true;
    }
+
 }

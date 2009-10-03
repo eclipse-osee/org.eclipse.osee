@@ -7,5 +7,11 @@
             classname="org.eclipse.osee.coverage.test.navigate.CoverageTestNavigateViews">
       </ICoverageNavigateItem>
    </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.coverage.test.import1.CoverageImportTest1Blam">
+      </Operation>
+   </extension>
 
 </fragment>

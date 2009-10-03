@@ -53,14 +53,14 @@ public class CoverageEditorCoverageTab extends FormPage {
 
    private WorkPage page;
    private XCoverageViewer xCoverageViewer;
-   private final CoverageEditor coverageEditor;
-   private final ICoverageEditorProvider provider;
    private ScrolledForm scrolledForm;
+   private final ICoverageTabProvider provider;
+   private final CoverageEditor coverageEditor;
 
-   public CoverageEditorCoverageTab(CoverageEditor coverageEditor) {
-      super(coverageEditor, "Coverage Items", "Coverage Items");
+   public CoverageEditorCoverageTab(String name, CoverageEditor coverageEditor, ICoverageTabProvider provider) {
+      super(coverageEditor, name, name);
       this.coverageEditor = coverageEditor;
-      this.provider = coverageEditor.getCoverageEditorProvider();
+      this.provider = provider;
    }
 
    @Override
@@ -110,7 +110,7 @@ public class CoverageEditorCoverageTab extends FormPage {
       tableComp.setLayoutData(tableData);
       coverageEditor.getToolkit().adapt(tableComp);
 
-      xCoverageViewer = new XCoverageViewer(coverageEditor);
+      xCoverageViewer = new XCoverageViewer();
       xCoverageViewer.setDisplayLabel(false);
       xCoverageViewer.createWidgets(managedForm, tableComp, 1);
       xCoverageViewer.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -150,7 +150,7 @@ public class CoverageEditorCoverageTab extends FormPage {
       Collection<CoverageMethodEnum> coverageMethods = getSelectedCoverageMethods();
       User assignee = getSelectedUser();
       boolean includeCompleted = isIncludeCompletedCancelledCheckbox();
-      for (ICoverageEditorItem item : coverageEditor.getCoverageEditorProvider().getCoverageEditorItems()) {
+      for (ICoverageEditorItem item : provider.getCoverageEditorItems()) {
          if (assignee != null && item.getUser().equals(assignee)) {
             items.add(item);
          }

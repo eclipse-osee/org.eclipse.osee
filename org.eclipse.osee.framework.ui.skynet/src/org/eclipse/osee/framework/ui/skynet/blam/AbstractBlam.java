@@ -18,8 +18,13 @@ import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -82,6 +87,15 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    public void println(String value) {
       if (Strings.isValid(value)) {
          print(value + "\n");
+      }
+   }
+
+   public void execute(String jobName, Appendable appendable, VariableMap variableMap, JobChangeAdapter jobChangeAdapter) {
+      try {
+         IOperation blamOperation = new ExecuteBlamOperation(jobName, appendable, variableMap, this);
+         Operations.executeAsJob(blamOperation, true, Job.LONG, jobChangeAdapter);
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 /**
  * @author Donald G. Dunne
  */
-public interface ICoverageEditorProvider {
+public interface ICoverageTabProvider {
 
    public String getName();
 
@@ -43,7 +43,5 @@ public interface ICoverageEditorProvider {
    public XResultData getLog();
 
    public void getOverviewHtmlHeader(XResultData xResultData);
-
-   public boolean isImportAllowed();
 
 }

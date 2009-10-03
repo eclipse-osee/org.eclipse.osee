@@ -14,7 +14,7 @@ import java.io.IOException;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -22,6 +22,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -32,15 +33,11 @@ public class BlamOutputSection extends BaseBlamSection {
 
    private Text formText;
    private Appendable appendableOutput;
+   private final Action executBlamAction;
 
-   /**
-    * @param editor
-    * @param parent
-    * @param toolkit
-    * @param style
-    */
-   public BlamOutputSection(BlamEditor editor, Composite parent, FormToolkit toolkit, int style) {
-      super(editor, parent, toolkit, style);
+   public BlamOutputSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style, Action executBlamAction) {
+      super(editor, abstractBlam, parent, toolkit, style);
+      this.executBlamAction = executBlamAction;
    }
 
    @Override
@@ -56,10 +53,11 @@ public class BlamOutputSection extends BaseBlamSection {
       composite.setLayout(new GridLayout());
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      final Action action = getEditor().getActionBarContributor().getExecuteBlamAction();
-      ActionContributionItem contributionItem = new ActionContributionItem(action);
-      contributionItem.setMode(ActionContributionItem.MODE_FORCE_TEXT);
-      contributionItem.fill(composite);
+      if (executBlamAction != null) {
+         ActionContributionItem contributionItem = new ActionContributionItem(executBlamAction);
+         contributionItem.setMode(ActionContributionItem.MODE_FORCE_TEXT);
+         contributionItem.fill(composite);
+      }
 
       formText = toolkit.createText(composite, "BLAM has not yet run\n", SWT.WRAP);
       GridData gd = new GridData(SWT.FILL, SWT.FILL, true, true);

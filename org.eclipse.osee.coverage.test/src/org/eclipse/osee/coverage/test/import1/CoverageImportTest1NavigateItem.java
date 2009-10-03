@@ -26,25 +26,25 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 /**
  * @author Donald G. Dunne
  */
-public class CoverageTestImporter1 extends XNavigateItemAction implements ICoverageImporter {
+public class CoverageImportTest1NavigateItem extends XNavigateItemAction implements ICoverageImporter {
 
    public static String PATH = "../../../../../../../src/org/eclipse/osee/coverage/test/import1/";
 
-   public CoverageTestImporter1() {
+   public CoverageImportTest1NavigateItem() {
       super(null, "");
    }
 
-   public CoverageTestImporter1(XNavigateItem parent) {
-      super(parent, "Coverage Test Importer1");
+   public CoverageImportTest1NavigateItem(XNavigateItem parent) {
+      super(parent, "Open Coverage Import 1");
    }
 
    @Override
    public CoverageImport run() {
       CoverageImport coverageImport = new CoverageImport();
       try {
-         URL url = CoverageTestImporter1.class.getResource(PATH + "NavigationButton1.java");
+         URL url = CoverageImportTest1NavigateItem.class.getResource(PATH + "NavigationButton1.java");
          coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
-         url = CoverageTestImporter1.class.getResource(PATH + "NavigationButton2.java");
+         url = CoverageImportTest1NavigateItem.class.getResource(PATH + "NavigationButton2.java");
          coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
          coverageImport.setLocation(PATH);
       } catch (OseeCoreException ex) {
@@ -55,7 +55,7 @@ public class CoverageTestImporter1 extends XNavigateItemAction implements ICover
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      CoverageManager.importCoverage(new CoverageTestImporter1());
+      CoverageManager.importCoverage(new CoverageImportTest1NavigateItem());
    }
 
 }

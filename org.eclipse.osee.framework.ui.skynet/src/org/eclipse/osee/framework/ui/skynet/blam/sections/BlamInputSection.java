@@ -16,7 +16,7 @@ import java.util.List;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.blam.BlamEditor;
+import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -32,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.IManagedForm;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -48,8 +49,8 @@ public class BlamInputSection extends BaseBlamSection {
     * @param toolkit
     * @param style
     */
-   public BlamInputSection(BlamEditor editor, Composite parent, FormToolkit toolkit, int style) {
-      super(editor, parent, toolkit, style);
+   public BlamInputSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
+      super(editor, abstractBlam, parent, toolkit, style);
       this.dynamicInputLayouts = new ArrayList<DynamicXWidgetLayoutData>();
    }
 
@@ -98,8 +99,7 @@ public class BlamInputSection extends BaseBlamSection {
    private void createWidgets(Composite parent) {
       try {
          List<DynamicXWidgetLayoutData> layoutDatas = getDynamicXWidgetLayouts();
-         WorkPage workPage =
-               new WorkPage(layoutDatas, new DefaultXWidgetOptionResolver(), getEditorInput().getBlamOperation());
+         WorkPage workPage = new WorkPage(layoutDatas, new DefaultXWidgetOptionResolver(), getAbstractBlam());
          workPage.createBody(getManagedForm(), parent, null, new XModifiedListener() {
 
             @Override
@@ -115,7 +115,7 @@ public class BlamInputSection extends BaseBlamSection {
 
    private List<DynamicXWidgetLayoutData> getDynamicXWidgetLayouts() throws Exception {
       List<DynamicXWidgetLayoutData> itemsToReturn = new ArrayList<DynamicXWidgetLayoutData>();
-      itemsToReturn.addAll(getEditorInput().getBlamOperation().getLayoutDatas());
+      itemsToReturn.addAll(getAbstractBlam().getLayoutDatas());
       itemsToReturn.addAll(dynamicInputLayouts);
       return itemsToReturn;
    }

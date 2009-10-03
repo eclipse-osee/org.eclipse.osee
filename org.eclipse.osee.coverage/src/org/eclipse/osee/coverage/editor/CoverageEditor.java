@@ -48,7 +48,11 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
       try {
          OseeContributionItem.addTo(this, true);
          addFormPage(new CoverageEditorOverviewTab(this));
-         addFormPage(new CoverageEditorCoverageTab(this));
+         addFormPage(new CoverageEditorCoverageTab("Coverage Items", this,
+               (ICoverageTabProvider) getCoverageEditorProvider()));
+         if (getCoverageEditorProvider().isImportAllowed()) {
+            addFormPage(new CoverageEditorImportTab(this));
+         }
          setPartName(getCoverageEditorProvider().getName());
          setTitleImage(ImageManager.getImage(getCoverageEditorProvider().getTitleImage()));
          setActivePage(startPage);

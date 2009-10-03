@@ -44,9 +44,6 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
    public void setFocus() {
    }
 
-   /*
-    * @see IWorkbenchPart#createPartControl(Composite)
-    */
    @Override
    public void createPartControl(Composite parent) {
       xNavComp = new XNavigateComposite(new CoverageNavigateViewItems(), parent, SWT.NONE);
@@ -81,7 +78,7 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
          public void removed(IExtensionPoint[] extensionPoints) {
             refresh();
          }
-      }, "org.eclipse.osee.ote.ui.OteNavigateItem");
+      }, "org.eclipse.osee.coverage.CoverageNavigateItem");
    }
 
    protected void createActions() {

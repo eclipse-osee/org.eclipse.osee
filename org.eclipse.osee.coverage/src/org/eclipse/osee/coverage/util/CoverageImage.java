@@ -20,6 +20,8 @@ import org.eclipse.osee.framework.ui.skynet.OseeImage;
  */
 public enum CoverageImage implements OseeImage {
    COVERAGE("coverage.gif"),
+   COVERAGE_IMPORT("coverageImport.gif"),
+   COVERAGE_PACKAGE("coveragePackage.gif"),
    UNIT("unit.gif"),
    UNIT_EDIT("unitEdit.gif"),
    UNIT_GREEN("unitGreenPlus.gif"),

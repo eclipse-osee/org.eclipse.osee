@@ -5,14 +5,22 @@
  */
 package org.eclipse.osee.coverage.blam;
 
-import java.util.Collection;
-import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
 /**
  * @author Donald G. Dunne
  */
 public abstract class AbstractCoverageBlam extends AbstractBlam {
+
+   CoverageImport coverageImport;
+
+   public CoverageImport getCoverageImport() {
+      return coverageImport;
+   }
+
+   public void setCoverageImport(CoverageImport coverageImport) {
+      this.coverageImport = coverageImport;
+   }
 
 }

@@ -17,7 +17,6 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -45,11 +44,9 @@ public class XCoverageViewer extends XWidget {
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
    private Tree tree;
-   private final CoverageEditor coverageEditor;
 
-   public XCoverageViewer(CoverageEditor coverageEditor) {
+   public XCoverageViewer() {
       super("Coverage Items");
-      this.coverageEditor = coverageEditor;
    }
 
    @Override

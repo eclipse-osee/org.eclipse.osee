@@ -12,11 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.blam;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -94,14 +91,8 @@ public class BlamEditor extends FormEditor implements IDirtiableEditor {
    }
 
    public void executeBlam() {
-      try {
-         IOperation blamOperation =
-               new ExecuteBlamOperation(getPartName(), overviewPage.getOutput(), getBlamVariableMap(),
-                     getEditorInput().getBlamOperation());
-         Operations.executeAsJob(blamOperation, true, Job.LONG, new BlamEditorExecutionAdapter());
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+      getEditorInput().getBlamOperation().execute(getPartName(), overviewPage.getOutput(), getBlamVariableMap(),
+            new BlamEditorExecutionAdapter());
    }
 
    public static void edit(final BlamEditorInput blamEditorInput) {

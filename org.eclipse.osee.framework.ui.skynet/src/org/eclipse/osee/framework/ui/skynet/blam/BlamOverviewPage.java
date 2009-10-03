@@ -72,9 +72,14 @@ public class BlamOverviewPage extends FormPage {
 
       int sectionStyle = Section.TITLE_BAR | Section.EXPANDED | Section.TWISTIE;
 
-      managedForm.addPart(new BlamUsageSection(getEditor(), form.getBody(), managedForm.getToolkit(), sectionStyle));
-      inputSection = new BlamInputSection(getEditor(), form.getBody(), managedForm.getToolkit(), sectionStyle);
-      outputSection = new BlamOutputSection(getEditor(), form.getBody(), managedForm.getToolkit(), sectionStyle);
+      managedForm.addPart(new BlamUsageSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
+            managedForm.getToolkit(), sectionStyle));
+      inputSection =
+            new BlamInputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
+                  managedForm.getToolkit(), sectionStyle);
+      outputSection =
+            new BlamOutputSection(getEditor(), getEditorInput().getBlamOperation(), form.getBody(),
+                  managedForm.getToolkit(), sectionStyle, getEditor().getActionBarContributor().getExecuteBlamAction());
 
       managedForm.addPart(inputSection);
       managedForm.addPart(outputSection);
