@@ -890,7 +890,7 @@ public class AtsBranchManager {
       }
       ChangeData changeData = null;
       if (smaMgr.getBranchMgr().isWorkingBranchInWork()) {
-         changeData = ChangeManager.getChangeDataPerBranch(getWorkingBranch(), new NullProgressMonitor());
+         changeData = new ChangeData(ChangeManager.getChangesPerBranch(getWorkingBranch(), new NullProgressMonitor()));
       } else if (smaMgr.getBranchMgr().isCommittedBranchExists()) {
          TransactionId transactionId = null;
          if (commitConfigArt == null) {
@@ -902,11 +902,12 @@ public class AtsBranchManager {
                }
             }
          }
-         if (changeDataCacheForCommittedBranch.get(transactionId) == null) {
-            changeDataCacheForCommittedBranch.put(transactionId, ChangeManager.getChangeDataPerTransaction(
-                  transactionId, new NullProgressMonitor()));
-         }
          changeData = changeDataCacheForCommittedBranch.get(transactionId);
+         if (changeData == null) {
+            changeData =
+                  new ChangeData(ChangeManager.getChangesPerTransaction(transactionId, new NullProgressMonitor()));
+            changeDataCacheForCommittedBranch.put(transactionId, changeData);
+         }
       } else {
          changeData = new ChangeData(new ArrayList<Change>());
       }
@@ -919,10 +920,8 @@ public class AtsBranchManager {
     * @throws BranchDoesNotExist
     */
    public Boolean isWorkingBranchHaveChanges() throws OseeCoreException {
-      if (isWorkingBranchInWork()) {
-         return ChangeManager.isChangesOnWorkingBranch(getWorkingBranch());
-      }
-      return false;
+      Branch branch = getWorkingBranch();
+      return branch != null && BranchManager.hasChanges(branch);
    }
 
    /**
