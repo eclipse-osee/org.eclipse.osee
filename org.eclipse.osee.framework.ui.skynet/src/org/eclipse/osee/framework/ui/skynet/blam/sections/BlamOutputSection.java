@@ -67,6 +67,10 @@ public class BlamOutputSection extends BaseBlamSection {
 
       getSection().setClient(composite);
       toolkit.paintBordersFor(composite);
+
+      section.layout(true);
+      form.getForm().getBody().layout(true);
+
    }
 
    public void appendText(final String text) {

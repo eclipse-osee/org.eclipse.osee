@@ -152,4 +152,9 @@ public class CoveragePackage implements ICoverageEditorProvider, ICoverageTabPro
       return true;
    }
 
+   @Override
+   public boolean isAssignable() {
+      return true;
+   }
+
 }

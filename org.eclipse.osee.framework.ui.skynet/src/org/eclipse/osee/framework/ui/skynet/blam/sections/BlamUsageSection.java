@@ -30,6 +30,7 @@ import org.eclipse.ui.forms.widgets.Section;
 public class BlamUsageSection extends BaseBlamSection {
 
    private FormText formText;
+   private IManagedForm form;
 
    public BlamUsageSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
       super(editor, abstractBlam, parent, toolkit, style);
@@ -37,6 +38,7 @@ public class BlamUsageSection extends BaseBlamSection {
 
    @Override
    public void initialize(IManagedForm form) {
+      this.form = form;
       super.initialize(form);
       Section section = getSection();
       section.setText("Description and Usage");
@@ -61,6 +63,10 @@ public class BlamUsageSection extends BaseBlamSection {
 
          getSection().setClient(composite);
          toolkit.paintBordersFor(composite);
+
+         getSection().layout(true);
+         form.getForm().getBody().layout(true);
+
       }
 
       if (Widgets.isAccessible(formText)) {

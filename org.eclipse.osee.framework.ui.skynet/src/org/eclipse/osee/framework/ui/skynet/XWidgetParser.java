@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
  */
 public class XWidgetParser {
 
-   public static String EMPTY_WIDGETS = "<xWidgets></xWidgets>";
+   public static String EMPTY_WIDGETS = "<xWidgets><XWidget xwidgetType=\"XLabel\" displayName=\" \" /></xWidgets>";
 
    public static List<DynamicXWidgetLayoutData> extractWorkAttributes(DynamicXWidgetLayout dynamicXWidgetLayout, String xml) throws ParserConfigurationException, SAXException, IOException {
       Document document = Jaxp.readXmlDocument(xml);

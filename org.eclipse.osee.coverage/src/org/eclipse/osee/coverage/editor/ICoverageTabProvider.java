@@ -44,4 +44,6 @@ public interface ICoverageTabProvider {
 
    public void getOverviewHtmlHeader(XResultData xResultData);
 
+   public boolean isAssignable();
+
 }

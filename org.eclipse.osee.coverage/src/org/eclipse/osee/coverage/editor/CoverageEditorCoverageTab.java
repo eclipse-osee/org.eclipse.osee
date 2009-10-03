@@ -95,7 +95,7 @@ public class CoverageEditorCoverageTab extends FormPage {
       coverageEditor.getToolkit().adapt(paramComp);
 
       try {
-         page = new WorkPage(WIDGET_XML, new DefaultXWidgetOptionResolver());
+         page = new WorkPage(getWidgetXml(), new DefaultXWidgetOptionResolver());
          page.createBody(getManagedForm(), paramComp, null, null, true);
          widgetsCreated();
       } catch (OseeCoreException ex) {
@@ -183,6 +183,9 @@ public class CoverageEditorCoverageTab extends FormPage {
    }
 
    private boolean isIncludeCompletedCancelledCheckbox() {
+      if (getIncludeCompletedCancelledCheckbox() == null) {
+         return false;
+      }
       return getIncludeCompletedCancelledCheckbox().isSelected();
    }
 
@@ -195,8 +198,9 @@ public class CoverageEditorCoverageTab extends FormPage {
    }
 
    public void widgetsCreated() throws OseeCoreException {
-      getIncludeCompletedCancelledCheckbox().set(true);
-
+      if (getIncludeCompletedCancelledCheckbox() != null) {
+         getIncludeCompletedCancelledCheckbox().set(true);
+      }
    }
 
    private User getSelectedUser() {
@@ -217,6 +221,9 @@ public class CoverageEditorCoverageTab extends FormPage {
       if (page == null) {
          throw new IllegalArgumentException("WorkPage == null");
       }
+      if (page.getLayoutData(attrName) == null) {
+         return null;
+      }
       return page.getLayoutData(attrName).getXWidget();
    }
 
@@ -236,15 +243,20 @@ public class CoverageEditorCoverageTab extends FormPage {
       }
    }
 
-   public static String WIDGET_XML =
-         "<xWidgets>" +
-         //
-         "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>" +
+   public String getWidgetXml() {
+      StringBuffer sb =
+            new StringBuffer(
+                  "<xWidgets>" +
+                  //
+                  "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>");
+      if (provider.isAssignable()) {
+         sb.append("" +
          //
          "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" beginComposite=\"4\" horizontalLabel=\"true\"/>" +
          //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
-         //
-         "</xWidgets>";
-
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      }
+      sb.append("</xWidgets>");
+      return sb.toString();
+   }
 }

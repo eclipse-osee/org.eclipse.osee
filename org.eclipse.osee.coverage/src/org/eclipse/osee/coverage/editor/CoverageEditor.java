@@ -61,15 +61,17 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
       }
    }
 
-   private void addFormPage(FormPage page) {
+   public int addFormPage(FormPage page) {
       try {
          int pageIndex = addPage(page);
          if (startPage == null) {
             startPage = pageIndex;
          }
+         return pageIndex;
       } catch (PartInitException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
+      return 0;
    }
 
    public static void addToToolBar(IToolBarManager manager, CoverageEditor coverageEditor) {

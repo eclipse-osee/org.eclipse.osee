@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -52,6 +53,8 @@ public class CoverageEditorImportTab extends FormPage {
    private BlamInputSection blamInputSection;
    private BlamOutputSection blamOutputSection;
    private CoverageImport coverageImport;
+   private CoverageEditorCoverageTab coverageImportTab;
+   private int coverageImportIndex;
    private Composite destroyableComposite;
 
    public CoverageEditorImportTab(CoverageEditor coverageEditor) {
@@ -163,6 +166,13 @@ public class CoverageEditorImportTab extends FormPage {
          super.done(event);
          blamOutputSection.appendText(String.format("BLAM completed in [%s]\n", Lib.getElapseString(startTime)));
          showBusy(false);
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               coverageImport = getBlam().getCoverageImport();
+               createImportParts();
+            }
+         });
       }
    }
 
@@ -177,13 +187,25 @@ public class CoverageEditorImportTab extends FormPage {
       @Override
       public void run() {
          try {
+            if (coverageImportTab != null) {
+               if (coverageImportIndex != 0) {
+                  coverageEditor.removePage(coverageImportIndex);
+               }
+               coverageImport = null;
+            }
             getBlam().execute(getBlam().getName(), blamOutputSection.getOutput(), blamInputSection.getData(),
                   new BlamEditorExecutionAdapter());
-            coverageImport = getBlam().getCoverageImport();
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
       }
+   }
+
+   public void createImportParts() {
+      coverageImportTab =
+            new CoverageEditorCoverageTab(coverageImport.getCoverageItems().size() + " Imported Items", coverageEditor,
+                  coverageImport);
+      coverageImportIndex = coverageEditor.addFormPage(coverageImportTab);
    }
 
    @Override

@@ -43,12 +43,6 @@ public class BlamInputSection extends BaseBlamSection {
 
    private final Collection<DynamicXWidgetLayoutData> dynamicInputLayouts;
 
-   /**
-    * @param editor
-    * @param parent
-    * @param toolkit
-    * @param style
-    */
    public BlamInputSection(FormEditor editor, AbstractBlam abstractBlam, Composite parent, FormToolkit toolkit, int style) {
       super(editor, abstractBlam, parent, toolkit, style);
       this.dynamicInputLayouts = new ArrayList<DynamicXWidgetLayoutData>();

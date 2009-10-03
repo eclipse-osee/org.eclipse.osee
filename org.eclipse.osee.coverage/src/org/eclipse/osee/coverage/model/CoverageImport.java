@@ -144,4 +144,9 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProv
    public boolean isImportAllowed() {
       return false;
    }
+
+   @Override
+   public boolean isAssignable() {
+      return false;
+   }
 }
