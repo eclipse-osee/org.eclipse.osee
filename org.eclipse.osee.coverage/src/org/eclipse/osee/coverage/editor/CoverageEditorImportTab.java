@@ -147,6 +147,11 @@ public class CoverageEditorImportTab extends FormPage {
    }
    private final class BlamEditorExecutionAdapter extends JobChangeAdapter {
       private long startTime = 0;
+      private final String name;
+
+      public BlamEditorExecutionAdapter(String name) {
+         this.name = name;
+      }
 
       @Override
       public void scheduled(IJobChangeEvent event) {
@@ -158,13 +163,14 @@ public class CoverageEditorImportTab extends FormPage {
       public void aboutToRun(IJobChangeEvent event) {
          super.aboutToRun(event);
          startTime = System.currentTimeMillis();
-         blamOutputSection.setText(String.format("Starting BLAM at [%s]\n", Lib.getElapseString(startTime)));
+         blamOutputSection.setText(String.format("Starting [%s] BLAM at [%s]\n", name, Lib.getElapseString(startTime)));
       }
 
       @Override
       public void done(IJobChangeEvent event) {
          super.done(event);
-         blamOutputSection.appendText(String.format("BLAM completed in [%s]\n", Lib.getElapseString(startTime)));
+         blamOutputSection.appendText(String.format("[%s] BLAM completed in [%s]\n", name,
+               Lib.getElapseString(startTime)));
          showBusy(false);
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
@@ -194,7 +200,7 @@ public class CoverageEditorImportTab extends FormPage {
                coverageImport = null;
             }
             getBlam().execute(getBlam().getName(), blamOutputSection.getOutput(), blamInputSection.getData(),
-                  new BlamEditorExecutionAdapter());
+                  new BlamEditorExecutionAdapter(getBlam().getName()));
          } catch (Exception ex) {
             OseeLog.log(getClass(), OseeLevel.SEVERE_POPUP, ex);
          }
