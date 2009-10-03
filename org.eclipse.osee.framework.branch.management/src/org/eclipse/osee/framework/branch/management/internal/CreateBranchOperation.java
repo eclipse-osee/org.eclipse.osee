@@ -96,15 +96,17 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    }
 
    public void checkPreconditions(IProgressMonitor monitor) throws OseeCoreException {
-      int associatedArtifactId = branch.getAssociatedArtifactId();
-      int systemUserId = getSystemUserId();
-      if (associatedArtifactId > -1 && associatedArtifactId != systemUserId) {
-         int count =
-               ConnectionHandler.runPreparedQueryFetchInt(0,
-                     "select (1) from osee_branch where associated_art_id=? and branch_state <> ?",
-                     branch.getAssociatedArtifactId(), BranchState.DELETED.getValue());
-         if (count > 0) {
-            throw new OseeStateException(String.format("Existing branch creation detected for [%s]", branch));
+      if (!branch.getBranchType().isMergeBranch() && !branch.getBranchType().isSystemRootBranch()) {
+         int associatedArtifactId = branch.getAssociatedArtifactId();
+         int systemUserId = getSystemUserId();
+         if (associatedArtifactId > -1 && associatedArtifactId != systemUserId) {
+            int count =
+                  ConnectionHandler.runPreparedQueryFetchInt(0,
+                        "select (1) from osee_branch where associated_art_id=? and branch_state <> ?",
+                        branch.getAssociatedArtifactId(), BranchState.DELETED.getValue());
+            if (count > 0) {
+               throw new OseeStateException(String.format("Existing branch creation detected for [%s]", branch));
+            }
          }
       }
    }
