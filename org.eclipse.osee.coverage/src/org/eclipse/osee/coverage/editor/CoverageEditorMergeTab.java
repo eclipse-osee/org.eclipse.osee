@@ -15,7 +15,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -26,6 +25,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.ToolBarUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -42,6 +43,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -106,38 +108,61 @@ public class CoverageEditorMergeTab extends FormPage {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
-      Composite tableComp = new Composite(mainComp, SWT.NONE);
+      Composite tableComp = coverageEditor.getToolkit().createComposite(mainComp, SWT.NONE);
       tableComp.setLayout(ALayout.getZeroMarginLayout(2, false));
-      coverageEditor.getToolkit().adapt(tableComp);
       GridData tableData = new GridData(SWT.FILL, SWT.FILL, true, true);
       tableData.horizontalSpan = 2;
       tableComp.setLayoutData(tableData);
       coverageEditor.getToolkit().adapt(tableComp);
 
-      managedForm.getToolkit().createLabel(tableComp, "Coverage Package");
-      managedForm.getToolkit().createLabel(tableComp, "Coverage Import");
+      Composite leftComp = coverageEditor.getToolkit().createComposite(tableComp, SWT.NONE);
+      leftComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+      leftComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      Composite rightComp = coverageEditor.getToolkit().createComposite(tableComp, SWT.NONE);
+      rightComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+      rightComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+      // Fill LEFT Composite
+      managedForm.getToolkit().createLabel(leftComp, provider1.getName());
+
+      ToolBar leftToolBar = new ToolBar(leftComp, SWT.FLAT | SWT.RIGHT);
+      leftToolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      managedForm.getToolkit().adapt(leftToolBar);
 
       xCoverageViewer1 = new XCoverageMergeViewer();
       xCoverageViewer1.setDisplayLabel(false);
-      xCoverageViewer1.createWidgets(managedForm, tableComp, 1);
+      xCoverageViewer1.createWidgets(managedForm, leftComp, 1);
       xCoverageViewer1.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+
+      ToolBarUtil.actionToToolItem(leftToolBar, SWT.FLAT | SWT.RIGHT, new CollapseAllAction(
+            xCoverageViewer1.getXViewer()), ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
+      ToolBarUtil.actionToToolItem(leftToolBar, SWT.FLAT | SWT.RIGHT,
+            xCoverageViewer1.getXViewer().getCustomizeAction(), ImageManager.getImage(FrameworkImage.CUSTOMIZE));
+
+      // Fill RIGHT Composite
+      managedForm.getToolkit().createLabel(rightComp, provider2.getName());
+
+      ToolBar rightToolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      rightToolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      managedForm.getToolkit().adapt(rightToolBar);
 
       xCoverageViewer2 = new XCoverageMergeViewer();
       xCoverageViewer2.setDisplayLabel(false);
-      xCoverageViewer2.createWidgets(managedForm, tableComp, 1);
+      xCoverageViewer2.createWidgets(managedForm, rightComp, 1);
       xCoverageViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      createToolbar();
+      ToolBarUtil.actionToToolItem(rightToolBar, SWT.FLAT | SWT.RIGHT, new CollapseAllAction(
+            xCoverageViewer2.getXViewer()), ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
+      ToolBarUtil.actionToToolItem(rightToolBar, SWT.FLAT | SWT.RIGHT,
+            xCoverageViewer2.getXViewer().getCustomizeAction(), ImageManager.getImage(FrameworkImage.CUSTOMIZE));
+
+      createEditorToolbar();
 
    }
 
-   public void createToolbar() {
+   public void createEditorToolbar() {
       IToolBarManager toolBarManager = scrolledForm.getToolBarManager();
-      toolBarManager.add(new CollapseAllAction(xCoverageViewer1.getXViewer()));
-      toolBarManager.add(xCoverageViewer1.getXViewer().getCustomizeAction());
-      toolBarManager.add(new Separator());
-      toolBarManager.add(new CollapseAllAction(xCoverageViewer2.getXViewer()));
-      toolBarManager.add(xCoverageViewer2.getXViewer().getCustomizeAction());
       CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
       scrolledForm.updateToolBar();
    }
