@@ -23,8 +23,7 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
    private static String NAMESPACE = "osee.ats.Coverage";
 
    public static XViewerColumn Name =
-         new XViewerColumn(NAMESPACE + ".coverageUnit", "Coverage Unit", 80, SWT.LEFT, true, SortDataType.String,
-               false, "");
+         new XViewerColumn(NAMESPACE + ".name", "Name", 180, SWT.LEFT, true, SortDataType.String, false, "");
    public static XViewerColumn Method_Number =
          new XViewerColumn(NAMESPACE + ".methodNumber", "Method Number", 80, SWT.LEFT, true, SortDataType.String,
                false, "");

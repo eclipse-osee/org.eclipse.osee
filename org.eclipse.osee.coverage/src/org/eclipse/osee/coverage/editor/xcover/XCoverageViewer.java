@@ -39,7 +39,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class XCoverageViewer extends XWidget {
 
-   private CoverageXViewer xViewer;
+   protected CoverageXViewer xViewer;
    private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;

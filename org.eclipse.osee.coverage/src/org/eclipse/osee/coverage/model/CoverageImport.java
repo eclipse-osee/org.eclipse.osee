@@ -134,7 +134,6 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProv
       if (Strings.isValid(getBlamName())) {
          xResultData.log(AHTML.getLabelValueStr("Blam Name", getBlamName()));
       }
-      xResultData.log(AHTML.getLabelValueStr("Location", location));
       xResultData.log(AHTML.getLabelValueStr("Run Date", XDate.getDateStr(getRunDate(), XDate.MMDDYYHHMM)));
    }
 

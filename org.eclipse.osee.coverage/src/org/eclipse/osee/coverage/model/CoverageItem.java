@@ -111,24 +111,12 @@ public class CoverageItem implements ICoverageEditorItem {
 
    @Override
    public String getCoverageEditorValue(XViewerColumn xCol) {
-      if (xCol.equals(CoverageXViewerFactory.Line_Number)) {
-         return getLineNum();
-      }
-      if (xCol.equals(CoverageXViewerFactory.Method_Number)) {
-         return getMethodNum();
-      }
-      if (xCol.equals(CoverageXViewerFactory.Execution_Number)) {
-         return getExecuteNum();
-      }
-      if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) {
-         return getCoverageMethod().toString();
-      }
-      if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {
-         return getCoverageUnit().getName();
-      }
-      if (xCol.equals(CoverageXViewerFactory.Test_Units)) {
-         return Collections.toString(", ", getTestUnits());
-      }
+      if (xCol.equals(CoverageXViewerFactory.Line_Number)) return getLineNum();
+      if (xCol.equals(CoverageXViewerFactory.Method_Number)) return getMethodNum();
+      if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return getExecuteNum();
+      if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return getCoverageMethod().toString();
+      if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return getCoverageUnit().getName();
+      if (xCol.equals(CoverageXViewerFactory.Test_Units)) return Collections.toString(", ", getTestUnits());
       return "";
    }
 

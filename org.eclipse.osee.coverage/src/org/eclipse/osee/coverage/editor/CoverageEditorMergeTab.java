@@ -15,7 +15,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
+import org.eclipse.jface.action.Separator;
+import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
@@ -49,18 +50,21 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditorCoverageTab extends FormPage {
+public class CoverageEditorMergeTab extends FormPage {
 
    private WorkPage page;
-   private XCoverageViewer xCoverageViewer;
+   private XCoverageMergeViewer xCoverageViewer1;
+   private final ICoverageTabProvider provider1;
+   private XCoverageMergeViewer xCoverageViewer2;
+   private final ICoverageTabProvider provider2;
    private ScrolledForm scrolledForm;
-   private final ICoverageTabProvider provider;
    private final CoverageEditor coverageEditor;
 
-   public CoverageEditorCoverageTab(String name, CoverageEditor coverageEditor, ICoverageTabProvider provider) {
+   public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, ICoverageTabProvider provider1, ICoverageTabProvider provider2) {
       super(coverageEditor, name, name);
       this.coverageEditor = coverageEditor;
-      this.provider = provider;
+      this.provider1 = provider1;
+      this.provider2 = provider2;
    }
 
    @Override
@@ -68,8 +72,8 @@ public class CoverageEditorCoverageTab extends FormPage {
       super.createFormContent(managedForm);
 
       scrolledForm = managedForm.getForm();
-      scrolledForm.setText(provider.getName());
-      scrolledForm.setImage(ImageManager.getImage(provider.getTitleImage()));
+      scrolledForm.setText("Merge of " + provider2.getName());
+      scrolledForm.setImage(ImageManager.getImage(provider1.getTitleImage()));
 
       scrolledForm.getBody().setLayout(new GridLayout(2, false));
       Composite mainComp = scrolledForm.getBody();
@@ -103,17 +107,25 @@ public class CoverageEditorCoverageTab extends FormPage {
       }
 
       Composite tableComp = new Composite(mainComp, SWT.NONE);
-      tableComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+      tableComp.setLayout(ALayout.getZeroMarginLayout(2, false));
       coverageEditor.getToolkit().adapt(tableComp);
       GridData tableData = new GridData(SWT.FILL, SWT.FILL, true, true);
       tableData.horizontalSpan = 2;
       tableComp.setLayoutData(tableData);
       coverageEditor.getToolkit().adapt(tableComp);
 
-      xCoverageViewer = new XCoverageViewer();
-      xCoverageViewer.setDisplayLabel(false);
-      xCoverageViewer.createWidgets(managedForm, tableComp, 1);
-      xCoverageViewer.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+      managedForm.getToolkit().createLabel(tableComp, "Coverage Package");
+      managedForm.getToolkit().createLabel(tableComp, "Coverage Import");
+
+      xCoverageViewer1 = new XCoverageMergeViewer();
+      xCoverageViewer1.setDisplayLabel(false);
+      xCoverageViewer1.createWidgets(managedForm, tableComp, 1);
+      xCoverageViewer1.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
+
+      xCoverageViewer2 = new XCoverageMergeViewer();
+      xCoverageViewer2.setDisplayLabel(false);
+      xCoverageViewer2.createWidgets(managedForm, tableComp, 1);
+      xCoverageViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       createToolbar();
 
@@ -121,8 +133,11 @@ public class CoverageEditorCoverageTab extends FormPage {
 
    public void createToolbar() {
       IToolBarManager toolBarManager = scrolledForm.getToolBarManager();
-      toolBarManager.add(new CollapseAllAction(xCoverageViewer.getXViewer()));
-      toolBarManager.add(xCoverageViewer.getXViewer().getCustomizeAction());
+      toolBarManager.add(new CollapseAllAction(xCoverageViewer1.getXViewer()));
+      toolBarManager.add(xCoverageViewer1.getXViewer().getCustomizeAction());
+      toolBarManager.add(new Separator());
+      toolBarManager.add(new CollapseAllAction(xCoverageViewer2.getXViewer()));
+      toolBarManager.add(xCoverageViewer2.getXViewer().getCustomizeAction());
       CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
       scrolledForm.updateToolBar();
    }
@@ -139,13 +154,14 @@ public class CoverageEditorCoverageTab extends FormPage {
             result.popup();
             return;
          }
-         xCoverageViewer.loadTable(performSearchGetResults());
+         xCoverageViewer1.loadTable(performSearchGetResults(provider1));
+         xCoverageViewer2.loadTable(performSearchGetResults(provider2));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
 
-   private Collection<ICoverageEditorItem> performSearchGetResults() throws OseeCoreException {
+   private Collection<ICoverageEditorItem> performSearchGetResults(ICoverageTabProvider provider) throws OseeCoreException {
       Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
       Collection<CoverageMethodEnum> coverageMethods = getSelectedCoverageMethods();
       User assignee = getSelectedUser();
@@ -249,7 +265,7 @@ public class CoverageEditorCoverageTab extends FormPage {
                   "<xWidgets>" +
                   //
                   "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>");
-      if (provider.isAssignable()) {
+      if (provider1.isAssignable()) {
          sb.append("" +
          //
          "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" beginComposite=\"4\" horizontalLabel=\"true\"/>" +

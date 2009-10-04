@@ -47,10 +47,6 @@ public class CoverageXViewer extends XViewer {
    Action editAction2;
    Action editAction3;
 
-   /**
-    * @param parent
-    * @param style
-    */
    public CoverageXViewer(Composite parent, int style, XCoverageViewer xCoverageViewer) {
       this(parent, style, new CoverageXViewerFactory(), xCoverageViewer);
    }

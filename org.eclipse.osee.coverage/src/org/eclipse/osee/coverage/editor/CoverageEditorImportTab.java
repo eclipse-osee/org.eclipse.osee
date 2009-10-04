@@ -13,6 +13,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -55,7 +56,8 @@ public class CoverageEditorImportTab extends FormPage {
    private CoverageImport coverageImport;
    private CoverageEditorCoverageTab coverageImportTab;
    private CoverageEditorOverviewTab coverageImportOverviewTab;
-   private int coverageImportIndex, coverageImportOverviewIndex;
+   private CoverageEditorMergeTab coverageEditorMergeTab;
+   private int coverageImportIndex, coverageImportOverviewIndex, coverageEditorMergeIndex;
    private Composite destroyableComposite;
 
    public CoverageEditorImportTab(CoverageEditor coverageEditor) {
@@ -206,6 +208,11 @@ public class CoverageEditorImportTab extends FormPage {
                   coverageEditor.removePage(coverageImportOverviewIndex);
                }
             }
+            if (coverageEditorMergeTab != null) {
+               if (coverageEditorMergeIndex != 0) {
+                  coverageEditor.removePage(coverageEditorMergeIndex);
+               }
+            }
             getBlam().execute(getBlam().getName(), blamOutputSection.getOutput(), blamInputSection.getData(),
                   new BlamEditorExecutionAdapter(getBlam().getName()));
          } catch (Exception ex) {
@@ -222,6 +229,11 @@ public class CoverageEditorImportTab extends FormPage {
             new CoverageEditorCoverageTab(String.format("Import Items (%d)", coverageImport.getCoverageItems().size()),
                   coverageEditor, coverageImport);
       coverageImportIndex = coverageEditor.addFormPage(coverageImportTab);
+
+      coverageEditorMergeTab =
+            new CoverageEditorMergeTab("Import Merge", coverageEditor,
+                  (CoveragePackage) coverageEditor.getCoverageEditorProvider(), coverageImport);
+      coverageEditorMergeIndex = coverageEditor.addFormPage(coverageEditorMergeTab);
    }
 
    @Override
