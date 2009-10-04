@@ -27,10 +27,10 @@ public class CoverageEditorOverviewTab extends FormPage {
    private final CoverageEditor coverageEditor;
    private final ICoverageEditorProvider provider;
 
-   public CoverageEditorOverviewTab(CoverageEditor coverageEditor) {
-      super(coverageEditor, "Overview", "Overview");
+   public CoverageEditorOverviewTab(String name, CoverageEditor coverageEditor, ICoverageEditorProvider provider) {
+      super(coverageEditor, name, name);
       this.coverageEditor = coverageEditor;
-      this.provider = coverageEditor.getCoverageEditorProvider();
+      this.provider = provider;
    }
 
    @Override

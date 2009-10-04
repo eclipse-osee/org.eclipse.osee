@@ -21,6 +21,7 @@ import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -38,6 +39,7 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProv
    private final List<TestUnit> testUnits = new ArrayList<TestUnit>();
    private final XResultData logResultData = new XResultData();
    private String location = "";
+   private String blamName = "";
 
    public CoverageImport() {
       this(new Date());
@@ -129,6 +131,10 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProv
    public void getOverviewHtmlHeader(XResultData xResultData) {
       xResultData.log(AHTML.bold("Coverage Import for " + XDate.getDateStr(getRunDate(), XDate.HHMMSSSS)) + AHTML.newline());
       xResultData.log(AHTML.getLabelValueStr("Location", location));
+      if (Strings.isValid(getBlamName())) {
+         xResultData.log(AHTML.getLabelValueStr("Blam Name", getBlamName()));
+      }
+      xResultData.log(AHTML.getLabelValueStr("Location", location));
       xResultData.log(AHTML.getLabelValueStr("Run Date", XDate.getDateStr(getRunDate(), XDate.MMDDYYHHMM)));
    }
 
@@ -148,5 +154,13 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProv
    @Override
    public boolean isAssignable() {
       return false;
+   }
+
+   public String getBlamName() {
+      return blamName;
+   }
+
+   public void setBlamName(String blamName) {
+      this.blamName = blamName;
    }
 }

@@ -54,7 +54,8 @@ public class CoverageEditorImportTab extends FormPage {
    private BlamOutputSection blamOutputSection;
    private CoverageImport coverageImport;
    private CoverageEditorCoverageTab coverageImportTab;
-   private int coverageImportIndex;
+   private CoverageEditorOverviewTab coverageImportOverviewTab;
+   private int coverageImportIndex, coverageImportOverviewIndex;
    private Composite destroyableComposite;
 
    public CoverageEditorImportTab(CoverageEditor coverageEditor) {
@@ -176,6 +177,7 @@ public class CoverageEditorImportTab extends FormPage {
             @Override
             public void run() {
                coverageImport = getBlam().getCoverageImport();
+               coverageImport.setBlamName(name);
                createImportParts();
             }
          });
@@ -199,6 +201,11 @@ public class CoverageEditorImportTab extends FormPage {
                }
                coverageImport = null;
             }
+            if (coverageImportOverviewTab != null) {
+               if (coverageImportOverviewIndex != 0) {
+                  coverageEditor.removePage(coverageImportOverviewIndex);
+               }
+            }
             getBlam().execute(getBlam().getName(), blamOutputSection.getOutput(), blamInputSection.getData(),
                   new BlamEditorExecutionAdapter(getBlam().getName()));
          } catch (Exception ex) {
@@ -208,9 +215,12 @@ public class CoverageEditorImportTab extends FormPage {
    }
 
    public void createImportParts() {
+      coverageImportOverviewTab = new CoverageEditorOverviewTab("Import Overview", coverageEditor, coverageImport);
+      coverageImportOverviewIndex = coverageEditor.addFormPage(coverageImportOverviewTab);
+
       coverageImportTab =
-            new CoverageEditorCoverageTab(coverageImport.getCoverageItems().size() + " Imported Items", coverageEditor,
-                  coverageImport);
+            new CoverageEditorCoverageTab(String.format("Import Items (%d)", coverageImport.getCoverageItems().size()),
+                  coverageEditor, coverageImport);
       coverageImportIndex = coverageEditor.addFormPage(coverageImportTab);
    }
 

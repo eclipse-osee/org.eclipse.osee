@@ -47,7 +47,7 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
    protected void addPages() {
       try {
          OseeContributionItem.addTo(this, true);
-         addFormPage(new CoverageEditorOverviewTab(this));
+         addFormPage(new CoverageEditorOverviewTab("Overview", this, getCoverageEditorProvider()));
          addFormPage(new CoverageEditorCoverageTab("Coverage Items", this,
                (ICoverageTabProvider) getCoverageEditorProvider()));
          if (getCoverageEditorProvider().isImportAllowed()) {
