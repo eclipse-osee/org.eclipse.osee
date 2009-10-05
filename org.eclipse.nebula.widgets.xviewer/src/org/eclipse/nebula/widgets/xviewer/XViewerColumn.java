@@ -179,44 +179,26 @@ public class XViewerColumn {
       this.show = show;
    }
 
-   /**
-    * @return alternateName if exists, otherwise systemName
-    */
    public String getName() {
       return name;
    }
 
-   /**
-    * @return the sortDataType
-    */
    public SortDataType getSortDataType() {
       return sortDataType;
    }
 
-   /**
-    * @param sortDataType the sortDataType to set
-    */
    public void setSortDataType(SortDataType sortDataType) {
       this.sortDataType = sortDataType;
    }
 
-   /**
-    * @param treeViewer the treeViewer to set
-    */
    public void setXViewer(XViewer treeViewer) {
       this.xViewer = treeViewer;
    }
 
-   /**
-    * @return the toolTip
-    */
    public String getToolTip() {
       return toolTip;
    }
 
-   /**
-    * @param toolTip the toolTip to set
-    */
    public void setToolTip(String toolTip) {
       if (toolTip != null) this.toolTip = toolTip;
    }

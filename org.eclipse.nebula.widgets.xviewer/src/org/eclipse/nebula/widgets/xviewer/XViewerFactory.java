@@ -80,6 +80,11 @@ public abstract class XViewerFactory implements IXViewerFactory {
       return col.copy();
    }
 
+   public void overrideShowDefault(String id, boolean show) {
+      XViewerColumn col = idToColumn.get(id);
+      col.setShow(show);
+   }
+
    @Override
    public IXViewerCustomizations getXViewerCustomizations() {
       return new XViewerCustomizations();
