@@ -394,7 +394,8 @@ public class WordTemplateProcessor {
 
          if (attributeElement.getAttributeName().equals("*")) {
             for (String attributeTypeName : orderAttributeNames(artifact.getAttributeTypes())) {
-               if (attributeTypeName.equals("Relation Order")) {
+               // TODO: the following needs to be re-visited
+               if (attributeTypeName.equals(CoreAttributes.RELATION_ORDER.getName())) {
                   continue;
                }
                if (!outlining || !attributeTypeName.equals(headingAttributeName)) {
