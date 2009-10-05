@@ -75,14 +75,7 @@ public class ViewWordChangeAndDiffTest {
 
    @org.junit.Test
    public void testViewWordChangeReport() throws Exception {
-      ITestBranch testBranch;
-      // get the changes on the specified branch
-      if (BranchManager.branchExists(DemoSawBuilds.SAW_Bld_2.name())) {
-         testBranch = DemoSawBuilds.SAW_Bld_2;
-      } else {
-         testBranch = DemoSawBuilds.SAW_Bld_1;
-      }
-      Branch theBranch = BranchManager.getKeyedBranch(testBranch.name());
+      Branch theBranch = BranchManager.getKeyedBranch(getTestBranch().name());
       artifactChanges = ChangeManager.getChangesPerBranch(theBranch, new NullProgressMonitor());
       // get the artifacts from the changed list
       artifacts = getArtifacts();
@@ -103,7 +96,7 @@ public class ViewWordChangeAndDiffTest {
    @org.junit.Test
    public void testSingleNativeDiff() throws Exception {
       artifactChanges =
-            ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
+            ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(getTestBranch().name()),
                   new NullProgressMonitor());
       // get the artifacts from the changed list
       artifacts = getArtifacts();
@@ -118,9 +111,10 @@ public class ViewWordChangeAndDiffTest {
 
    @org.junit.Test
    public void testCompareTwoArtifacts() throws Exception {
+
       try {
          artifactChanges =
-               ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_2.name()),
+               ChangeManager.getChangesPerBranch(BranchManager.getKeyedBranch(getTestBranch().name()),
                      new NullProgressMonitor());
          // get the artifacts from the changed list
          artifacts = getArtifacts();
@@ -138,6 +132,17 @@ public class ViewWordChangeAndDiffTest {
          throw ex;
       }
 
+   }
+
+   private ITestBranch getTestBranch() throws OseeCoreException {
+      ITestBranch testBranch;
+      // get the changes on the specified branch
+      if (BranchManager.branchExists(DemoSawBuilds.SAW_Bld_2.name())) {
+         testBranch = DemoSawBuilds.SAW_Bld_2;
+      } else {
+         testBranch = DemoSawBuilds.SAW_Bld_1;
+      }
+      return testBranch;
    }
 
    /**
