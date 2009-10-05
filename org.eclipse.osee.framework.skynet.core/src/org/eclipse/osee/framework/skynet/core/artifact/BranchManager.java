@@ -269,7 +269,15 @@ public class BranchManager {
    }
 
    public static Branch getBranch(Integer branchId) throws OseeCoreException {
-      // Always exception for invalid id's, they won't ever be found in the
+      return getBranch(branchId, true);
+   }
+
+   public static Branch getBranchNoExistenceExcpetion(Integer branchId) throws OseeCoreException {
+      return getBranch(branchId, false);
+   }
+
+   // Always exception for invalid id's, they won't ever be found in the
+   private static Branch getBranch(Integer branchId, boolean throwExcpetion) throws OseeCoreException {
       // database or cache.
       if (branchId == null) {
          throw new BranchDoesNotExist("Branch Id is null");
@@ -282,7 +290,7 @@ public class BranchManager {
          cache.reloadCache();
       }
       Branch branch = cache.getById(branchId);
-      if (branch == null) {
+      if (throwExcpetion && branch == null) {
          throw new BranchDoesNotExist("Branch could not be acquired for branch id: " + branchId);
       }
       return branch;
@@ -485,10 +493,14 @@ public class BranchManager {
             lastBranch = getDefaultInitialBranch();
             UserManager.getUser().setSetting(LAST_DEFAULT_BRANCH, String.valueOf(lastBranch.getBranchId()));
          } else {
-            lastBranch = getBranch(Integer.parseInt(branchIdStr));
+            lastBranch = getBranchNoExistenceExcpetion(Integer.parseInt(branchIdStr));
+            if (lastBranch == null) {
+               lastBranch = getDefaultInitialBranch();
+            }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
+
       }
    }
 

@@ -77,7 +77,7 @@ public final class ChangeVersion {
    }
 
    public boolean exists() {
-      return getModType() != null && getGammaId() != null && getTransactionNumber() != null;
+      return getModType() != null && getGammaId() != null;// && getTransactionNumber() != null;
    }
 
    public boolean sameGammaAs(ChangeVersion other) {
