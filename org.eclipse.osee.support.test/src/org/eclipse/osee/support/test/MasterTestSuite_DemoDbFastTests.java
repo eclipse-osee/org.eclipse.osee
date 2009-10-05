@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.jdk.core.test.JdkCoreTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.FrameworkCore_Demo_Fast_Suite;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactSaveNotificationHandler;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -39,5 +40,11 @@ public class MasterTestSuite_DemoDbFastTests {
       assertTrue("Client must authenticate using demo protocol",
             ClientSessionManager.getSession().getAuthenticationProtocol().equals("demo"));
       ArtifactSaveNotificationHandler.setNoPopUp(true);
+      TestUtil.setIsInTest(true);
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      TestUtil.setIsInTest(false);
    }
 }

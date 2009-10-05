@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.test.FrameworkCore_Production_Suite;
 import org.eclipse.osee.framework.ui.skynet.test.FrameworkUi_Production_Suite;
 import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -36,5 +37,11 @@ public class MasterTestSuite_ProductionDbTests {
       assertTrue("Should be run on production datbase.", TestUtil.isProductionDb());
       assertTrue("Application Server must be running.", ClientSessionManager.getAuthenticationProtocols().contains(
             "lba"));
+      TestUtil.setIsInTest(true);
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      TestUtil.setIsInTest(false);
    }
 }

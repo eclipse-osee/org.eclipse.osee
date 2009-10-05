@@ -17,6 +17,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -224,7 +225,8 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       if (smaMgr == null || smaMgr.getBranchMgr() == null || labelWidget == null || labelWidget.isDisposed()) {
          return;
       }
-      Thread thread = new Thread() {
+      final boolean forcePend = OseeProperties.isInTest();
+      Runnable runnable = new Runnable() {
          @Override
          public void run() {
             try {
@@ -242,11 +244,7 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
                         createBranchButton.setEnabled(!workingBranchInWork && !committedBranchExists);
                      }
                      if (showArtifactExplorer != null) {
-                        if (workingBranch == null)
-                           showArtifactExplorer.setEnabled(false);
-                        else {
-                           showArtifactExplorer.setEnabled(changesNotPermitted);
-                        }
+                        showArtifactExplorer.setEnabled(workingBranch != null && !changesNotPermitted);
                      }
                      if (showChangeReport != null) {
                         showChangeReport.setEnabled(workingBranchInWork || committedBranchExists);
@@ -255,13 +253,18 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
                         purgeBranchButton.setEnabled(workingBranchInWork && !committedBranchExists);
                      }
                   }
-               });
+               }, forcePend);
             } catch (OseeCoreException ex) {
                OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
             }
          }
       };
-      thread.start();
+      if (forcePend) {
+         runnable.run();
+      } else {
+         Thread thread = new Thread(runnable);
+         thread.start();
+      }
    }
 
    @Override

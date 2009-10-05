@@ -33,6 +33,7 @@ public class TestUtil {
    public static final String DEMO_TEST_TEAM_WORKFLOW_ARTIFACT = "Demo Test Team Workflow";
    public static final Collection<String> ignoreLogging =
          Arrays.asList("No image was defined for art type", "Unable to load the image for [SAVED]");
+   public static boolean isInTest = false;
 
    public static boolean isProductionDb() throws OseeCoreException {
       return ClientSessionManager.isProductionDataStore();
@@ -44,6 +45,20 @@ public class TestUtil {
 
    public static boolean isDemoDb() throws OseeCoreException {
       return DEMO_DB_TYPE.equals(OseeInfo.getCachedValue(OseeInfo.DB_TYPE_KEY));
+   }
+
+   /**
+    * Need to match methods in OseeProperties
+    */
+   public static boolean isInTest() {
+      return Boolean.valueOf(System.getProperty("osee.isInTest"));
+   }
+
+   /**
+    * Need to match methods in OseeProperties
+    */
+   public static void setIsInTest(boolean isInTest) {
+      System.setProperty("osee.isInTest", String.valueOf(isInTest));
    }
 
    public static void sleep(long milliseconds) throws Exception {

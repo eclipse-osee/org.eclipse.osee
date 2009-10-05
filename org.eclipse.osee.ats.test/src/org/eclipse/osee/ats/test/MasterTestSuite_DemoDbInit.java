@@ -30,6 +30,7 @@ public class MasterTestSuite_DemoDbInit {
 
       assertTrue("Demo Application Server must be running", ClientSessionManager.getAuthenticationProtocols().contains(
             "demo"));
+      TestUtil.setIsInTest(true);
       try {
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
          DatabaseInitializationOperation.executeWithoutPrompting("OSEE Demo Database");
@@ -39,5 +40,7 @@ public class MasterTestSuite_DemoDbInit {
          Assert.assertNull(ex.getLocalizedMessage(), ex);
          OseeLog.log(DatabaseInitializationOperation.class, Level.SEVERE, "Error during database initialization");
       }
+      TestUtil.setIsInTest(false);
+
    }
 }

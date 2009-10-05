@@ -21,6 +21,8 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.support.test.util.TestUtil;
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.Before;
 
@@ -52,6 +54,12 @@ public class MasterTestSuite_DemoDbPopulate {
          System.err.println(OseeLog.getStatusReport() + ". \nExiting.");
          return;
       }
+      TestUtil.setIsInTest(true);
+   }
+
+   @AfterClass
+   public static void tearDown() throws Exception {
+      TestUtil.setIsInTest(false);
    }
 
    /**
