@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport;
@@ -45,7 +46,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.ToolBarUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -203,10 +203,8 @@ public class CoverageEditorMergeTab extends FormPage {
       xCoverageViewer1.createWidgets(managedForm, leftComp, 1);
       xCoverageViewer1.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      ToolBarUtil.actionToToolItem(leftToolBar, SWT.FLAT | SWT.RIGHT, new CollapseAllAction(
-            xCoverageViewer1.getXViewer()), ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
-      ToolBarUtil.actionToToolItem(leftToolBar, SWT.FLAT | SWT.RIGHT,
-            xCoverageViewer1.getXViewer().getCustomizeAction(), ImageManager.getImage(FrameworkImage.CUSTOMIZE));
+      (new ActionContributionItem(xCoverageViewer1.getXViewer().getCustomizeAction())).fill(leftToolBar, 0);
+      (new ActionContributionItem(new CollapseAllAction(xCoverageViewer1.getXViewer()))).fill(leftToolBar, 0);
    }
 
    public void createRightComposite(IManagedForm managedForm, Composite rightComp) {
@@ -222,10 +220,8 @@ public class CoverageEditorMergeTab extends FormPage {
       xCoverageViewer2.createWidgets(managedForm, rightComp, 1);
       xCoverageViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      ToolBarUtil.actionToToolItem(rightToolBar, SWT.FLAT | SWT.RIGHT, new CollapseAllAction(
-            xCoverageViewer2.getXViewer()), ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
-      ToolBarUtil.actionToToolItem(rightToolBar, SWT.FLAT | SWT.RIGHT,
-            xCoverageViewer2.getXViewer().getCustomizeAction(), ImageManager.getImage(FrameworkImage.CUSTOMIZE));
+      (new ActionContributionItem(xCoverageViewer2.getXViewer().getCustomizeAction())).fill(rightToolBar, 0);
+      (new ActionContributionItem(new CollapseAllAction(xCoverageViewer2.getXViewer()))).fill(rightToolBar, 0);
    }
 
    public void simulateSearchAll() {
