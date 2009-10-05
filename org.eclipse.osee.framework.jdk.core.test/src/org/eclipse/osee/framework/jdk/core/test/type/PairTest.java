@@ -65,7 +65,7 @@ public class PairTest extends TestCase {
       assertTrue(b.equals(newPair.getSecond()));
       assertFalse(b.equals(newPair.getFirst()));
       assertFalse(a.equals(newPair.getSecond()));
-      assertTrue(newPair.setCompositeKey(a, b).equals(newPair));
+      assertTrue(newPair.set(a, b).equals(newPair));
    }
 
    @org.junit.Test

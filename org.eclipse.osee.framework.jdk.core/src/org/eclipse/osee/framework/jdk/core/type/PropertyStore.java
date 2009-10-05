@@ -197,11 +197,13 @@ public class PropertyStore implements IPropertyStore, Serializable {
       storeWriter.save(this, outputStream);
    }
 
+   @SuppressWarnings("unchecked")
    public Set<String> arrayKeySet() {
       List<String> items = Collections.castAll(this.storageArrays.keySet());
       return Collections.toSet(items);
    }
 
+   @SuppressWarnings("unchecked")
    public Set<String> keySet() {
       List<String> items = Collections.castAll(this.storageData.keySet());
       return Collections.toSet(items);

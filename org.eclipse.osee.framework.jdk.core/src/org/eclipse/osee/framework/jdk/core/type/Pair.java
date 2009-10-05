@@ -32,7 +32,7 @@ public class Pair<T, K> implements Serializable {
    public K getSecond() {
       return second;
    }
-   
+
    public void setFirst(T key) {
       this.first = key;
    }
@@ -41,12 +41,7 @@ public class Pair<T, K> implements Serializable {
       this.second = value;
    }
 
-   public void setBoth(T first, K second) {
-      this.first = first;
-      this.second = second;
-   }
-
-   public Pair<T, K> setCompositeKey(T first, K second) {
+   public Pair<T, K> set(T first, K second) {
       this.first = first;
       this.second = second;
       return this;

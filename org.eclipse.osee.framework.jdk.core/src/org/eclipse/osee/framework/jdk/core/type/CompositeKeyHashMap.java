@@ -65,6 +65,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
     * @param keyOne
     * @return whether the map contains the key keyOne
     */
+   @SuppressWarnings("unchecked")
    public boolean containsKey(Object key1) {
       return singleKeyMap.containsKey((KeyOne) key1);
    }
@@ -75,7 +76,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
     * @return whether the map contains the compound key <keyOne, keyTwo>
     */
    public boolean containsKey(KeyOne key1, KeyTwo key2) {
-      return map.containsKey(threadLocalKey.get().setCompositeKey(key1, key2));
+      return map.containsKey(threadLocalKey.get().set(key1, key2));
    }
 
    /**
@@ -121,7 +122,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
    }
 
    public Value get(KeyOne key1, KeyTwo key2) {
-      return map.get(threadLocalKey.get().setCompositeKey(key1, key2));
+      return map.get(threadLocalKey.get().set(key1, key2));
    }
 
    public boolean isEmpty() {
@@ -165,14 +166,14 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       }
       ArrayList<Value> values = new ArrayList<Value>(key2s.size());
       for (KeyTwo key2 : key2s) {
-         values.add(map.remove(threadLocalKey.get().setCompositeKey(key1, key2)));
+         values.add(map.remove(threadLocalKey.get().set(key1, key2)));
       }
       singleKeyMap.removeValues(key1);
       return values;
    }
 
    public Value remove(KeyOne key1, KeyTwo key2) {
-      Value value = map.remove(threadLocalKey.get().setCompositeKey(key1, key2));
+      Value value = map.remove(threadLocalKey.get().set(key1, key2));
       singleKeyMap.removeValue(key1, key2);
       return value;
    }
