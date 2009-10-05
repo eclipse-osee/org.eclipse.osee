@@ -105,6 +105,24 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
    }
 
    @org.junit.Test
+   public void testArtifactInheritanceDescendants() throws OseeCoreException {
+      OseeTypesUtil.checkDescendants(artCache, "000", false, "111", "222");
+      OseeTypesUtil.checkDescendants(artCache, "000", true, "111", "222", "333", "444", "555", "666");
+
+      OseeTypesUtil.checkDescendants(artCache, "111", false);
+      OseeTypesUtil.checkDescendants(artCache, "111", true);
+
+      OseeTypesUtil.checkDescendants(artCache, "222", false, "333");
+      OseeTypesUtil.checkDescendants(artCache, "222", true, "333", "444", "555", "666");
+
+      OseeTypesUtil.checkDescendants(artCache, "333", false, "333", "444");
+      OseeTypesUtil.checkDescendants(artCache, "333", true, "444", "555", "666");
+
+      OseeTypesUtil.checkDescendants(artCache, "444", false, "555");
+      OseeTypesUtil.checkDescendants(artCache, "444", true, "555");
+   }
+
+   @org.junit.Test
    public void testNullArtifactInheritanceCheck() throws OseeCoreException {
       ArtifactType baseType = artCache.getUniqueByName("BaseArtifactType");
       // Check for null inheritance
@@ -262,13 +280,12 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
          cache.cacheArtifactSuperType(cache.getByGuid("222"), baseSuperType);
          // 2<-3
          cache.cacheArtifactSuperType(cache.getByGuid("333"), Arrays.asList(cache.getByGuid("222")));
-         // 2,3<-4 
-         cache.cacheArtifactSuperType(cache.getByGuid("444"), Arrays.asList(cache.getByGuid("222"),
-               cache.getByGuid("333"), baseType));
+         // 3<-4 
+         cache.cacheArtifactSuperType(cache.getByGuid("444"), Arrays.asList(cache.getByGuid("333")));
          // 4<-5 
-         cache.cacheArtifactSuperType(cache.getByGuid("555"), Arrays.asList(cache.getByGuid("444"), baseType));
+         cache.cacheArtifactSuperType(cache.getByGuid("555"), Arrays.asList(cache.getByGuid("444")));
          // 3<-6 
-         cache.cacheArtifactSuperType(cache.getByGuid("666"), Arrays.asList(cache.getByGuid("333"), baseType));
+         cache.cacheArtifactSuperType(cache.getByGuid("666"), Arrays.asList(cache.getByGuid("333")));
       }
 
       private void setUpTypeValidity(ArtifactTypeCache cache) throws OseeCoreException {

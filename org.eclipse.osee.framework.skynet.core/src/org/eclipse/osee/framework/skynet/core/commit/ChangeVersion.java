@@ -64,30 +64,8 @@ public final class ChangeVersion {
       this.modType = modType;
    }
 
-   public boolean isNew() {
-      return getModType() == ModificationType.NEW;
-   }
-
-   public boolean isIntroduced() {
-      return getModType() == ModificationType.INTRODUCED;
-   }
-
-   public boolean isDeleted() {
-      return getModType().isDeleted();
-   }
-
    public boolean exists() {
       return getModType() != null && getGammaId() != null;// && getTransactionNumber() != null;
-   }
-
-   public boolean sameGammaAs(ChangeVersion other) {
-      boolean result = false;
-      if (this.getGammaId() == other.getGammaId()) {
-         result = true;
-      } else if (this.getGammaId() != null) {
-         result = this.getGammaId().equals(other.getGammaId());
-      }
-      return result;
    }
 
    @Override

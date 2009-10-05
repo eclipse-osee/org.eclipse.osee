@@ -67,6 +67,14 @@ public class ArtifactType extends AbstractOseeType implements Comparable<Artifac
       setField(ARTIFACT_INHERITANCE_FIELD_KEY, superType);
    }
 
+   public Collection<ArtifactType> getFirstLevelDescendantTypes() throws OseeCoreException {
+      return getCache().getDescendants(this, false);
+   }
+
+   public Collection<ArtifactType> getAllDescendantTypes() throws OseeCoreException {
+      return getCache().getDescendants(this, true);
+   }
+
    public void setAttributeTypeValidity(Collection<AttributeType> attributeTypes, Branch branch) throws OseeCoreException {
       setField(ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY, Collections.singletonMap(branch, attributeTypes));
    }

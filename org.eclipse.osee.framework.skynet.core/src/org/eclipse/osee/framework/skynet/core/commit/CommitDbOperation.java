@@ -123,6 +123,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       updater.updateTxNotCurrents();
    }
 
+   @SuppressWarnings("unchecked")
    private int addCommitTransactionToDatabase(User userToBlame) throws OseeCoreException {
       int newTransactionNumber = SequenceManager.getNextTransactionId();
 

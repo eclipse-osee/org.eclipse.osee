@@ -48,6 +48,12 @@ public class CommitUtil {
          change.getNet().setGammaId(net.getGammaId());
          change.getNet().setModType(net.getModType());
       }
+      Assert.assertNotNull(change);
+      Assert.assertNotNull(change.getBase());
+      Assert.assertNotNull(change.getFirst());
+      Assert.assertNotNull(change.getCurrent());
+      Assert.assertNotNull(change.getDestination());
+      Assert.assertNotNull(change.getNet());
       return change;
    }
 

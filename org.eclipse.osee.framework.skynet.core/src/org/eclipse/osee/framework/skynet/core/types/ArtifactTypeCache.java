@@ -161,4 +161,21 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
       }
    }
 
+   public Collection<ArtifactType> getDescendants(ArtifactType artifactType, boolean isRecursionAllowed) throws OseeCoreException {
+      ensurePopulated();
+      Collection<ArtifactType> descendants = new HashSet<ArtifactType>();
+      populateDescendants(artifactType, descendants, isRecursionAllowed);
+      return descendants;
+   }
+
+   private void populateDescendants(ArtifactType artifactType, Collection<ArtifactType> descendants, boolean isRecursionAllowed) throws OseeCoreException {
+      for (ArtifactType type : getAll()) {
+         if (type.getSuperArtifactTypes().contains(artifactType)) {
+            if (isRecursionAllowed) {
+               populateDescendants(type, descendants, isRecursionAllowed);
+            }
+            descendants.add(type);
+         }
+      }
+   }
 }

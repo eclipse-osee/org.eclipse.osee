@@ -173,7 +173,6 @@ public class ChangeManager {
       } finally {
          ArtifactLoader.clearQuery(queryId);
       }
-
       return branchMap;
    }
 }

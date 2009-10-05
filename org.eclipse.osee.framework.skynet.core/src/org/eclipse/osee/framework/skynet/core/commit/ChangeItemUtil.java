@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.commit;
 
+import org.eclipse.osee.framework.core.enums.ModificationType;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -18,12 +20,28 @@ public class ChangeItemUtil {
    private ChangeItemUtil() {
    }
 
+   public static boolean isModType(ChangeVersion changeVersion, ModificationType matchModType) {
+      return changeVersion != null && changeVersion.getModType() == matchModType;
+   }
+
+   public static boolean isNew(ChangeVersion changeVersion) {
+      return isModType(changeVersion, ModificationType.NEW);
+   }
+
+   public static boolean isIntroduced(ChangeVersion changeVersion) {
+      return isModType(changeVersion, ModificationType.INTRODUCED);
+   }
+
+   public static boolean isDeleted(ChangeVersion changeVersion) {
+      return changeVersion != null && changeVersion.getModType() != null && changeVersion.getModType().isDeleted();
+   }
+
    public static boolean wasNewOnSource(ChangeItem changeItem) {
-      return changeItem.getFirst().isNew() || changeItem.getCurrent().isNew();
+      return isNew(changeItem.getFirst()) || isNew(changeItem.getCurrent());
    }
 
    public static boolean wasIntroducedOnSource(ChangeItem changeItem) {
-      return changeItem.getFirst().isIntroduced() || changeItem.getCurrent().isIntroduced();
+      return isIntroduced(changeItem.getFirst()) || isIntroduced(changeItem.getCurrent());
    }
 
    public static boolean wasNewOrIntroducedOnSource(ChangeItem changeItem) {
@@ -31,8 +49,22 @@ public class ChangeItemUtil {
    }
 
    public static boolean isAlreadyOnDestination(ChangeItem changeItem) {
-      return changeItem.getCurrent().sameGammaAs(changeItem.getDestination()) && //
-      changeItem.getCurrent().getModType().isDeleted() == changeItem.getDestination().getModType().isDeleted();
+      return areGammasEqual(changeItem.getCurrent(), changeItem.getDestination()) && //
+      isDeleted(changeItem.getCurrent()) == isDeleted(changeItem.getDestination());
+   }
+
+   public static boolean areGammasEqual(ChangeVersion object1, ChangeVersion object2) {
+      boolean result = false;
+      if (object1 == null && object2 == null) {
+         result = true;
+      } else if (object1 != null && object2 != null) {
+         if (object1.getGammaId() == object2.getGammaId()) {
+            result = true;
+         } else if (object1.getGammaId() != null) {
+            result = object1.getGammaId().equals(object2.getGammaId());
+         }
+      }
+      return result;
    }
 
    public static boolean isIgnoreCase(boolean hasDestinationBranch, ChangeItem changeItem) {
@@ -57,6 +89,6 @@ public class ChangeItemUtil {
    }
 
    public static boolean isDestinationEqualOrNewerThanCurrent(ChangeItem changeItem) {
-      return (changeItem.getCurrent().isNew() || changeItem.getCurrent().isIntroduced()) && changeItem.getDestination().exists();
+      return (isNew(changeItem.getCurrent()) || isIntroduced(changeItem.getCurrent())) && changeItem.getDestination().exists();
    }
 }

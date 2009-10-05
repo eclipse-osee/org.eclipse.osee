@@ -71,7 +71,7 @@ public final class InternalChangeManager {
     * @return Returns artifact, relation and attribute changes from a specific artifact
     * @throws OseeCoreException
     */
-   Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
+   public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
       ArrayList<Change> changes = new ArrayList<Change>();
       Branch branch = artifact.getBranch();
       ArrayList<TransactionId> transactionIds = new ArrayList<TransactionId>();
@@ -213,7 +213,7 @@ public final class InternalChangeManager {
                } else {
                   if (item.getBase().exists()) {
                      fromTransactionId =
-                           TransactionIdManager.getTransactionId((int) item.getBase().getTransactionNumber().longValue());
+                           TransactionIdManager.getTransactionId(item.getBase().getTransactionNumber().intValue());
                      wasValue = item.getBase().getValue();
                   } else {
                      fromTransactionId =
@@ -270,7 +270,7 @@ public final class InternalChangeManager {
       return change;
    }
 
-   private static void preloadArtifacts(List<ChangeItem> changeItems, Branch sourceBranch, TransactionId transactionId, boolean isHistorical, IProgressMonitor monitor) throws OseeCoreException {
+   private void preloadArtifacts(List<ChangeItem> changeItems, Branch sourceBranch, TransactionId transactionId, boolean isHistorical, IProgressMonitor monitor) throws OseeCoreException {
       if (!changeItems.isEmpty()) {
          monitor.subTask("Preload artifacts");
          int queryId = ArtifactLoader.getNewQueryId();
@@ -304,7 +304,7 @@ public final class InternalChangeManager {
     * @throws OseeCoreException
     * @throws OseeWrappedException
     */
-   private static List<ChangeItem> loadChangeItems(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException, OseeWrappedException {
+   private List<ChangeItem> loadChangeItems(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException, OseeWrappedException {
       List<ChangeItem> changeItems = new ArrayList<ChangeItem>();
       List<IOperation> ops = new ArrayList<IOperation>();
 

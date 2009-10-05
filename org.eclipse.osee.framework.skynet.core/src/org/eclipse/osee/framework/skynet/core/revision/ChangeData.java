@@ -35,7 +35,6 @@ public class ChangeData {
    };
 
    private final Collection<Change> changes;
-   public boolean artifactsBulkLoaded = false;
 
    public ChangeData(Collection<Change> changes) {
       this.changes = changes;
@@ -82,9 +81,6 @@ public class ChangeData {
     * @throws OseeCoreException
     */
    public Collection<Artifact> getArtifacts(KindType kindType, ModificationType... modificationType) throws OseeCoreException {
-      if (!artifactsBulkLoaded) {
-         artifactsBulkLoaded = true;
-      }
       if (kindType == KindType.RelationOnly) {
          return getArtifactsRelationOnly(modificationType);
       }

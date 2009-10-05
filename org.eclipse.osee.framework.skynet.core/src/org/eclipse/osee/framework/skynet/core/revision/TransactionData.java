@@ -109,6 +109,7 @@ public class TransactionData implements IAdaptable {
       return commitArtId;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
       if (adapter == null) {

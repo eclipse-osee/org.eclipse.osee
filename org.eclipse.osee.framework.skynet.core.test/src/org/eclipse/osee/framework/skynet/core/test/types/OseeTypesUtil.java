@@ -239,6 +239,35 @@ public class OseeTypesUtil {
       }
    }
 
+   public static void checkDescendants(AbstractOseeCache<ArtifactType> artCache, String artTypeGuid, boolean isAllLevels, String... descendantGuids) throws OseeCoreException {
+      ArtifactType target = artCache.getByGuid(artTypeGuid);
+      Assert.assertNotNull(target);
+
+      List<ArtifactType> expectedDescendants = new ArrayList<ArtifactType>();
+      for (String type : descendantGuids) {
+         ArtifactType childType = artCache.getByGuid(type);
+         Assert.assertNotNull(childType);
+         expectedDescendants.add(childType);
+      }
+
+      Collection<ArtifactType> descendants =
+            isAllLevels ? target.getAllDescendantTypes() : target.getFirstLevelDescendantTypes();
+
+      Assert.assertEquals(expectedDescendants.size(), descendants.size());
+      for (ArtifactType child : descendants) {
+         boolean result = expectedDescendants.contains(target);
+         if (result) {
+            Assert.assertTrue(String.format("[%s] inherits from [%s]", child.getName(), target.getName()), result);
+         } else {
+            Assert.assertFalse(String.format("[%s] does not inherit from [%s]", child.getName(), target.getName()),
+                  result);
+         }
+         if (target.hasSuperArtifactTypes()) {
+            Assert.assertEquals(true, child.inheritsFrom(target));
+         }
+      }
+   }
+
    public static void checkAttributes(AbstractOseeCache<ArtifactType> artCache, AbstractOseeCache<AttributeType> attrCache, String artTypeGuid, Branch branch, String... attributeGuids) throws OseeCoreException {
       ArtifactType artifactType = artCache.getByGuid(artTypeGuid);
       Assert.assertNotNull(artifactType);

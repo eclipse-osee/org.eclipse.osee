@@ -297,6 +297,10 @@ public class ArtifactQuery {
             1000, null);
    }
 
+   public static List<Artifact> getArtifactListFromArtifactTypes(Collection<ArtifactType> artifactTypes, Branch branch, boolean allowDeleted) throws OseeCoreException {
+      return new ArtifactQueryBuilder(artifactTypes, branch, FULL, allowDeleted).getArtifacts(1000, null);
+   }
+
    /**
     * search for artifacts of the given type on a particular branch that satisfy the given criteria
     * 

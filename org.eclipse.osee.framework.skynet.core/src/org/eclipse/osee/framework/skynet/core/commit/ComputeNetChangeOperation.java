@@ -50,7 +50,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
             } else {
                checkForInvalidStates(change);
 
-               if (change.getNet().getModType() != ModificationType.MERGED) {
+               if (!ChangeItemUtil.isModType(change.getNet(), ModificationType.MERGED)) {
                   ModificationType netModType = getNetModType(change);
                   if (netModType == null) {
                      throw new OseeStateException("Net Mod Type was null");
@@ -58,7 +58,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
                   change.getNet().setModType(netModType);
                   change.getNet().setGammaId(change.getCurrent().getGammaId());
                } else {
-                  if (change.getCurrent().isDeleted()) {
+                  if (ChangeItemUtil.isDeleted(change.getCurrent())) {
                      change.getNet().setGammaId(change.getCurrent().getGammaId());
                      change.getNet().setModType(change.getCurrent().getModType());
                   }
@@ -124,11 +124,12 @@ public class ComputeNetChangeOperation extends AbstractOperation {
          }
       }
 
-      if (change.getDestination().exists() && change.getDestination().getModType().isDeleted()) {
+      if (change.getDestination().exists() && ChangeItemUtil.isDeleted(change.getDestination())) {
          throw new OseeStateException("Destination was deleted - source should not modify: " + change);
       }
 
-      if ((change.getCurrent().isIntroduced() || change.getCurrent().isNew()) && change.getDestination().exists()) {
+      if ((ChangeItemUtil.isIntroduced(change.getCurrent()) || ChangeItemUtil.isNew(change.getCurrent())) //
+            && change.getDestination().exists()) {
          throw new OseeStateException(
                "Source item marked as new/introduced but destination already has item: " + change);
       }
