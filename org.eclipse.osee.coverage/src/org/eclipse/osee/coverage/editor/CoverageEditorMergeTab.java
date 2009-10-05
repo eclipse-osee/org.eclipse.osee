@@ -53,6 +53,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.IManagedForm;
@@ -71,6 +72,7 @@ public class CoverageEditorMergeTab extends FormPage {
    private XCoverageMergeViewer xCoverageViewer2;
    private final ICoverageTabProvider provider2;
    private ScrolledForm scrolledForm;
+   private Label titleLabel1, titleLabel2;
    private final CoverageEditor coverageEditor;
 
    public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, ICoverageTabProvider provider1, ICoverageTabProvider provider2) {
@@ -143,7 +145,7 @@ public class CoverageEditorMergeTab extends FormPage {
       createRightComposite(managedForm, rightComp);
 
       createEditorToolbar();
-
+      updateTitles();
    }
 
    public void createCenterComposite(IManagedForm managedForm, Composite centerComp) {
@@ -176,6 +178,12 @@ public class CoverageEditorMergeTab extends FormPage {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       handleSearchButtonPressed();
+      updateTitles();
+   }
+
+   private void updateTitles() {
+      titleLabel1.setText(provider1.getName());
+      titleLabel2.setText(provider2.getName());
    }
 
    private Collection<ICoverageEditorItem> getSelectedImportItems() {
@@ -184,7 +192,7 @@ public class CoverageEditorMergeTab extends FormPage {
 
    public void createLeftComposite(IManagedForm managedForm, Composite leftComp) {
       // Fill LEFT Composite
-      managedForm.getToolkit().createLabel(leftComp, provider1.getName());
+      titleLabel1 = managedForm.getToolkit().createLabel(leftComp, provider1.getName());
 
       ToolBar leftToolBar = new ToolBar(leftComp, SWT.FLAT | SWT.RIGHT);
       leftToolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
@@ -203,7 +211,7 @@ public class CoverageEditorMergeTab extends FormPage {
 
    public void createRightComposite(IManagedForm managedForm, Composite rightComp) {
       // Fill RIGHT Composite
-      managedForm.getToolkit().createLabel(rightComp, provider2.getName());
+      titleLabel2 = managedForm.getToolkit().createLabel(rightComp, provider2.getName());
 
       ToolBar rightToolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       rightToolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
