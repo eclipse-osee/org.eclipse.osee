@@ -53,7 +53,7 @@ public final class ChangeVersion {
       return transactionNumber;
    }
 
-   public void setTransactionNumber(long transactionNumber) {
+   public void setTransactionNumber(Long transactionNumber) {
       this.transactionNumber = transactionNumber;
    }
 
@@ -69,7 +69,7 @@ public final class ChangeVersion {
       this.modType = modType;
    }
 
-   public boolean exists() {
+   public boolean isValid() {
       return getModType() != null && getGammaId() != null;// && getTransactionNumber() != null;
    }
 
@@ -83,6 +83,60 @@ public final class ChangeVersion {
    @Override
    public String toString() {
       return String.format("[%s,%s,%s]", getTransactionNumber(), getGammaId(), getModType());
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + (gammaId == null ? 0 : gammaId.hashCode());
+      result = prime * result + (modType == null ? 0 : modType.hashCode());
+      result = prime * result + (transactionNumber == null ? 0 : transactionNumber.hashCode());
+      result = prime * result + (value == null ? 0 : value.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) {
+         return true;
+      }
+      if (obj == null) {
+         return false;
+      }
+      if (getClass() != obj.getClass()) {
+         return false;
+      }
+      ChangeVersion other = (ChangeVersion) obj;
+      if (gammaId == null) {
+         if (other.gammaId != null) {
+            return false;
+         }
+      } else if (!gammaId.equals(other.gammaId)) {
+         return false;
+      }
+      if (modType == null) {
+         if (other.modType != null) {
+            return false;
+         }
+      } else if (!modType.equals(other.modType)) {
+         return false;
+      }
+      if (transactionNumber == null) {
+         if (other.transactionNumber != null) {
+            return false;
+         }
+      } else if (!transactionNumber.equals(other.transactionNumber)) {
+         return false;
+      }
+      if (value == null) {
+         if (other.value != null) {
+            return false;
+         }
+      } else if (!value.equals(other.value)) {
+         return false;
+      }
+      return true;
    }
 
 }

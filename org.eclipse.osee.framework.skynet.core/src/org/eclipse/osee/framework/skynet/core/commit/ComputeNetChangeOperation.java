@@ -30,10 +30,10 @@ public class ComputeNetChangeOperation extends AbstractOperation {
       this(changes, true);
    }
 
-   public ComputeNetChangeOperation(Collection<ChangeItem> changes, boolean hasDestinationBranch) {
+   public ComputeNetChangeOperation(Collection<ChangeItem> changes, boolean isCommitCase) {
       super("Compute Net Change", Activator.PLUGIN_ID);
       this.changes = changes;
-      this.isCommitCase = hasDestinationBranch;
+      this.isCommitCase = isCommitCase;
    }
 
    @Override
@@ -89,7 +89,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
          netModType = ModificationType.NEW;
       } else if (ChangeItemUtil.wasIntroducedOnSource(change)) {
          netModType = ModificationType.INTRODUCED;
-      } else if (!change.getBase().exists() && !change.getFirst().exists() && change.getCurrent().getModType() == ModificationType.MODIFIED) {
+      } else if (!change.getBase().isValid() && !change.getFirst().isValid() && change.getCurrent().getModType() == ModificationType.MODIFIED) {
          netModType = ModificationType.NEW;
       }
       return netModType;
@@ -97,14 +97,14 @@ public class ComputeNetChangeOperation extends AbstractOperation {
 
    private ModificationType calculateNetWithDestinationBranch(ChangeItem change) {
       ModificationType netModType = null;
-      if (change.getDestination().exists() && (change.getBase().exists() || change.getFirst().exists())) {
+      if (change.getDestination().isValid() && (change.getBase().isValid() || change.getFirst().isValid())) {
          netModType = change.getCurrent().getModType();
       } else if (ChangeItemUtil.wasNewOnSource(change)) {
          netModType = ModificationType.NEW;
       } else if (ChangeItemUtil.wasIntroducedOnSource(change)) {
          netModType = ModificationType.INTRODUCED;
-      } else if (!change.getDestination().exists()) {
-         if (!change.getBase().exists()) {
+      } else if (!change.getDestination().isValid()) {
+         if (!change.getBase().isValid()) {
             netModType = ModificationType.NEW;
          } else {
             // Case when committing into non-parent
@@ -117,18 +117,18 @@ public class ComputeNetChangeOperation extends AbstractOperation {
    private void checkForInvalidStates(ChangeItem change) throws OseeCoreException {
       // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
       if (isCommitCase) {
-         if (!change.getDestination().exists() && change.getBase().exists()) {
+         if (!change.getDestination().isValid() && change.getBase().isValid()) {
             throw new OseeStateException(
                   "This should be supported in the future - destination branch is not the source's parent: " + change);
          }
       }
 
-      if (change.getDestination().exists() && ChangeItemUtil.isDeleted(change.getDestination())) {
+      if (change.getDestination().isValid() && ChangeItemUtil.isDeleted(change.getDestination())) {
          throw new OseeStateException("Destination was deleted - source should not modify: " + change);
       }
 
       if ((ChangeItemUtil.isIntroduced(change.getCurrent()) || ChangeItemUtil.isNew(change.getCurrent())) //
-            && change.getDestination().exists()) {
+            && change.getDestination().isValid()) {
          throw new OseeStateException(
                "Source item marked as new/introduced but destination already has item: " + change);
       }

@@ -18,9 +18,9 @@ import org.eclipse.osee.framework.skynet.core.commit.ChangeVersion;
 /**
  * @author Roberto E. Escobar
  */
-public class CommitUtil {
+public class ChangeItemTestUtil {
 
-   private CommitUtil() {
+   private ChangeItemTestUtil() {
    }
 
    public static ChangeVersion createChange(Long long1, ModificationType mod1) {

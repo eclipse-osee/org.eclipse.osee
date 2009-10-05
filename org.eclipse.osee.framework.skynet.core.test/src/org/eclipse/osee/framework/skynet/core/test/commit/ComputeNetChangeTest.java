@@ -110,7 +110,7 @@ public class ComputeNetChangeTest {
             Assert.assertFalse(message, items.contains(testData.getItem()));
          } else {
             Assert.assertTrue(message, items.contains(testData.getItem()));
-            CommitUtil.checkChange(message, testData.getExpectedNet(), testData.getItem().getNet());
+            ChangeItemTestUtil.checkChange(message, testData.getExpectedNet(), testData.getItem().getNet());
          }
       }
    }
@@ -120,7 +120,7 @@ public class ComputeNetChangeTest {
       List<ChangeItem> items = new ArrayList<ChangeItem>();
 
       // Source to Non-Parent commit
-      items.add(CommitUtil.createItem(3, entry(10L, MODIFIED), null, entry(11L, MODIFIED), null, null));
+      items.add(ChangeItemTestUtil.createItem(3, entry(10L, MODIFIED), null, entry(11L, MODIFIED), null, null));
 
       computeNetChange(items, IStatus.ERROR);
    }
@@ -133,15 +133,15 @@ public class ComputeNetChangeTest {
    }
 
    private static TestData createTest(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion expected, boolean isRemoved) {
-      return new TestData(CommitUtil.createItem(itemId, base, first, current, destination, null), expected, isRemoved);
+      return new TestData(ChangeItemTestUtil.createItem(itemId, base, first, current, destination, null), expected, isRemoved);
    }
 
    private static TestData createTest(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net, ChangeVersion expected, boolean isRemoved) {
-      return new TestData(CommitUtil.createItem(itemId, base, first, current, destination, net), expected, isRemoved);
+      return new TestData(ChangeItemTestUtil.createItem(itemId, base, first, current, destination, net), expected, isRemoved);
    }
 
    private static ChangeVersion entry(Long gammaId, ModificationType modType) {
-      return CommitUtil.createChange(gammaId, modType);
+      return ChangeItemTestUtil.createChange(gammaId, modType);
    }
 
    private static final class TestData {

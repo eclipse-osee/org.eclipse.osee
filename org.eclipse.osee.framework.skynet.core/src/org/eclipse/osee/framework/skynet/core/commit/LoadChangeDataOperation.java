@@ -55,15 +55,14 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private final Branch mergeBranch;
    private final Long transactionNumber;
 
-   private enum LoadChanges {
+   private static enum LoadingMode {
       FROM_SINGLE_TRANSACTION, FROM_ALL_BRANCH_TRANSACTIONS;
    }
 
-   private final LoadChanges loadChangesEnum;
-   boolean hasDestinationBranch = false;
+   private final LoadingMode loadChangesEnum;
 
    public LoadChangeDataOperation(Long transactionNumber, Collection<ChangeItem> changeData) {
-      this(null, null, null, changeData, LoadChanges.FROM_SINGLE_TRANSACTION, transactionNumber);
+      this(null, null, null, changeData, transactionNumber, LoadingMode.FROM_SINGLE_TRANSACTION);
    }
 
    public LoadChangeDataOperation(Branch sourceBranch, Collection<ChangeItem> changeData) {
@@ -71,10 +70,10 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    public LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<ChangeItem> changeData) {
-      this(sourceBranch, destinationBranch, mergeBranch, changeData, LoadChanges.FROM_ALL_BRANCH_TRANSACTIONS, null);
+      this(sourceBranch, destinationBranch, mergeBranch, changeData, null, LoadingMode.FROM_ALL_BRANCH_TRANSACTIONS);
    }
 
-   private LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<ChangeItem> changeData, LoadChanges loadMode, Long transactionNumber) {
+   private LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<ChangeItem> changeData, Long transactionNumber, LoadingMode loadMode) {
       super("Load Change Data", Activator.PLUGIN_ID);
       this.mergeBranch = mergeBranch;
       this.sourceBranch = sourceBranch;

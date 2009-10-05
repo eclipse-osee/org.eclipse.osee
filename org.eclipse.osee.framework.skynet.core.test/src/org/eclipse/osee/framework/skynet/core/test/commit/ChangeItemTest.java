@@ -26,33 +26,41 @@ import org.junit.Test;
 public class ChangeItemTest {
 
    public ChangeItemTest() {
-
    }
 
+   @Test
    public void testGetSet() {
-      ChangeVersion base = CommitUtil.createChange(1111L, ModificationType.NEW);
-      ChangeVersion first = CommitUtil.createChange(2222L, ModificationType.MODIFIED);
-      ChangeVersion current = CommitUtil.createChange(3333L, ModificationType.INTRODUCED);
-      ChangeVersion destination = CommitUtil.createChange(4444L, ModificationType.MERGED);
-      ChangeVersion net = CommitUtil.createChange(5555L, ModificationType.DELETED);
+      ChangeVersion base = ChangeItemTestUtil.createChange(1111L, ModificationType.NEW);
+      ChangeVersion first = ChangeItemTestUtil.createChange(2222L, ModificationType.MODIFIED);
+      ChangeVersion current = ChangeItemTestUtil.createChange(3333L, ModificationType.INTRODUCED);
+      ChangeVersion destination = ChangeItemTestUtil.createChange(4444L, ModificationType.MERGED);
+      ChangeVersion net = ChangeItemTestUtil.createChange(5555L, ModificationType.DELETED);
 
-      ChangeItem item = CommitUtil.createItem(200, base, first, current, destination, net);
-      Assert.assertEquals(200, item.getArtId());
+      ChangeItem item = ChangeItemTestUtil.createItem(200, base, first, current, destination, net);
+      Assert.assertEquals(0, item.getArtId());
       Assert.assertEquals(200, item.getItemId());
-      CommitUtil.checkChange(base, item.getBase());
-      CommitUtil.checkChange(first, item.getFirst());
-      CommitUtil.checkChange(current, item.getCurrent());
-      CommitUtil.checkChange(destination, item.getDestination());
-      CommitUtil.checkChange(net, item.getNet());
+      ChangeItemTestUtil.checkChange(base, item.getBase());
+      ChangeItemTestUtil.checkChange(first, item.getFirst());
+      ChangeItemTestUtil.checkChange(current, item.getCurrent());
+      ChangeItemTestUtil.checkChange(destination, item.getDestination());
+      ChangeItemTestUtil.checkChange(net, item.getNet());
 
       item.setArtId(400);
       Assert.assertEquals(400, item.getArtId());
    }
 
    @Test
+   public void testHasBeenDeletedInDestination() {
+      //      ChangeItemUtil.hasBeenDeletedInDestination(changeItem)
+   }
+
+   @Test
+   public void testAlreadyOnDestination() {
+      //      ChangeItemUtil.isAlreadyOnDestination(changeItem)
+   }
+
+   @Test
    public void test() {
-      //      ChangeItemUtil.hasBeenDeletedInDestination(changeItem);
-      //      ChangeItemUtil.isAlreadyOnDestination(changeItem);
 
       //      ChangeItemUtil.isDeletedAndDoestNotExistInDestination(changeItem);
       //      ChangeItemUtil.isDestinationEqualOrNewerThanCurrent(changeItem);
@@ -65,7 +73,7 @@ public class ChangeItemTest {
 
    @Test
    public void testIsNewIntroducedDeleted() {
-      ChangeVersion object1 = CommitUtil.createChange(200L, null);
+      ChangeVersion object1 = ChangeItemTestUtil.createChange(200L, null);
       for (ModificationType modType : ModificationType.values()) {
          object1.setModType(null);
          Assert.assertNull(object1.getModType());
@@ -90,7 +98,7 @@ public class ChangeItemTest {
 
    @Test
    public void testIsModType() {
-      ChangeVersion object1 = CommitUtil.createChange(200L, null);
+      ChangeVersion object1 = ChangeItemTestUtil.createChange(200L, null);
       Assert.assertNull(object1.getModType());
       Assert.assertEquals(true, ChangeItemUtil.isModType(object1, null));
 
@@ -127,8 +135,8 @@ public class ChangeItemTest {
 
    private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2, ModificationType mod2, boolean expected) {
       return new Triplet<ChangeVersion, ChangeVersion, Boolean>(//
-            CommitUtil.createChange(long1, mod1), //
-            CommitUtil.createChange(long2, mod2), //
+            ChangeItemTestUtil.createChange(long1, mod1), //
+            ChangeItemTestUtil.createChange(long2, mod2), //
             expected);
    }
 }

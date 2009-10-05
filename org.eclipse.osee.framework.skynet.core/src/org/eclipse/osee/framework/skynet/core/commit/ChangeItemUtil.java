@@ -77,18 +77,18 @@ public class ChangeItemUtil {
    }
 
    public static boolean wasCreatedAndDeleted(ChangeItem changeItem) {
-      return wasNewOrIntroducedOnSource(changeItem) && changeItem.getCurrent().getModType().isDeleted();
+      return wasNewOrIntroducedOnSource(changeItem) && isDeleted(changeItem.getCurrent());
    }
 
    public static boolean isDeletedAndDoestNotExistInDestination(ChangeItem changeItem) {
-      return !changeItem.getDestination().exists() && changeItem.getCurrent().getModType().isDeleted();
+      return !changeItem.getDestination().isValid() && isDeleted(changeItem.getCurrent());
    }
 
    public static boolean hasBeenDeletedInDestination(ChangeItem changeItem) {
-      return changeItem.getDestination().exists() && changeItem.getDestination().getModType().isDeleted();
+      return changeItem.getDestination().isValid() && isDeleted(changeItem.getDestination());
    }
 
    public static boolean isDestinationEqualOrNewerThanCurrent(ChangeItem changeItem) {
-      return (isNew(changeItem.getCurrent()) || isIntroduced(changeItem.getCurrent())) && changeItem.getDestination().exists();
+      return (isNew(changeItem.getCurrent()) || isIntroduced(changeItem.getCurrent())) && changeItem.getDestination().isValid();
    }
 }

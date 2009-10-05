@@ -211,7 +211,7 @@ public final class InternalChangeManager {
                if (item.getCurrent().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.INTRODUCED) {
                   fromTransactionId = toTransactionId;
                } else {
-                  if (item.getBase().exists()) {
+                  if (item.getBase().isValid()) {
                      fromTransactionId =
                            TransactionIdManager.getTransactionId(item.getBase().getTransactionNumber().intValue());
                      wasValue = item.getBase().getValue();
