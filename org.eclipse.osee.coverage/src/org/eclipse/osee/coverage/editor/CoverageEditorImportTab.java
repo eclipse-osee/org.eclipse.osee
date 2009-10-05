@@ -10,12 +10,17 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
@@ -97,6 +102,27 @@ public class CoverageEditorImportTab extends FormPage {
 
       createDestroyableComposite();
 
+   }
+
+   public void simulateImport(String importName) throws OseeCoreException {
+      if (!Strings.isValid(importName)) throw new OseeStateException(String.format("Invalid importName [%s]",
+            importName));
+      AbstractCoverageBlam blam = null;
+      for (AbstractCoverageBlam abstractCoverageBlam : CoverageManager.getCoverageBlams()) {
+         if (abstractCoverageBlam.getName().equals(importName)) {
+            blam = abstractCoverageBlam;
+         }
+      }
+      if (blam == null) {
+         throw new OseeArgumentException(String.format("Can't find blam matching name [%s]", importName));
+      }
+      combo.getComboViewer().setSelection(new StructuredSelection(blam), true);
+      createBlamSections();
+      blamOutputSection.simluateRun();
+   }
+
+   public void simulateImportSearch() {
+      coverageEditorMergeTab.simulateSearchAll();
    }
 
    private AbstractCoverageBlam getBlam() {

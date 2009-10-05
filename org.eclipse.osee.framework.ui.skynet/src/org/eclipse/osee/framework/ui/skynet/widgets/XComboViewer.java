@@ -225,6 +225,10 @@ public class XComboViewer extends XWidget {
       return comboViewer.getCombo();
    }
 
+   public ComboViewer getComboViewer() {
+      return comboViewer;
+   }
+
    protected void updateListWidget() {
       comboViewer.refresh();
       validate();

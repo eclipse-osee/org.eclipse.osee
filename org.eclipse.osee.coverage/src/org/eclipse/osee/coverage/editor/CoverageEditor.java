@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -42,6 +43,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 public class CoverageEditor extends AbstractArtifactEditor implements IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.coverage.editor.CoverageEditor";
    private Integer startPage = null;
+   private CoverageEditorImportTab coverageEditorImportTab = null;
 
    @Override
    protected void addPages() {
@@ -51,7 +53,8 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
          addFormPage(new CoverageEditorCoverageTab("Coverage Items", this,
                (ICoverageTabProvider) getCoverageEditorProvider()));
          if (getCoverageEditorProvider().isImportAllowed()) {
-            addFormPage(new CoverageEditorImportTab(this));
+            coverageEditorImportTab = new CoverageEditorImportTab(this);
+            addFormPage(coverageEditorImportTab);
          }
          setPartName(getCoverageEditorProvider().getName());
          setTitleImage(ImageManager.getImage(getCoverageEditorProvider().getTitleImage()));
@@ -59,6 +62,34 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+   }
+
+   public void simulateImport(String importName) throws OseeCoreException {
+      if (coverageEditorImportTab == null) throw new OseeStateException("Import page == null");
+      setActivePage(2);
+      coverageEditorImportTab.simulateImport(importName);
+      Thread thread = new Thread() {
+         @Override
+         public void run() {
+            try {
+               Thread.sleep(1000);
+               Displays.ensureInDisplayThread(new Runnable() {
+                  @Override
+                  public void run() {
+                     simulateImportPostRun();
+                  }
+               });
+            } catch (InterruptedException ex) {
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
+            }
+         }
+      };
+      thread.start();
+   }
+
+   private void simulateImportPostRun() {
+      setActivePage(5);
+      coverageEditorImportTab.simulateImportSearch();
    }
 
    public int addFormPage(FormPage page) {

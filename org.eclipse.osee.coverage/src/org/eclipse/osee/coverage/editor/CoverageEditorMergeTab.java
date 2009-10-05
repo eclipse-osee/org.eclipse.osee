@@ -9,9 +9,11 @@
  */
 package org.eclipse.osee.coverage.editor;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
@@ -159,6 +161,16 @@ public class CoverageEditorMergeTab extends FormPage {
 
       createEditorToolbar();
 
+   }
+
+   public void simulateSearchAll() {
+      XHyperlabelCoverageMethodSelection methodSelectionWidget = getCoverageMethodHyperlinkSelection();
+      List<CoverageMethodEnum> values = new ArrayList<CoverageMethodEnum>();
+      for (CoverageMethodEnum method : CoverageMethodEnum.values()) {
+         values.add(method);
+      }
+      methodSelectionWidget.setSelectedCoverageMethods(values);
+      handleSearchButtonPressed();
    }
 
    public void createEditorToolbar() {

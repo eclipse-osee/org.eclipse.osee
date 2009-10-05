@@ -40,6 +40,10 @@ public class BlamOutputSection extends BaseBlamSection {
       this.executBlamAction = executBlamAction;
    }
 
+   public void simluateRun() {
+      this.executBlamAction.run();
+   }
+
    @Override
    public void initialize(IManagedForm form) {
       super.initialize(form);

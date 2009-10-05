@@ -48,9 +48,10 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
       return Collections.toString(selectedCoverageMethods, ", ");
    }
 
-   public void setSelectedTeamDefs(Collection<CoverageMethodEnum> selectedTeamDefs) {
-      this.selectedCoverageMethods = selectedTeamDefs;
+   public void setSelectedCoverageMethods(Collection<CoverageMethodEnum> selectedCoverageMethods) {
+      this.selectedCoverageMethods = selectedCoverageMethods;
       notifyXModifiedListeners();
+      refresh();
    }
 
    @Override

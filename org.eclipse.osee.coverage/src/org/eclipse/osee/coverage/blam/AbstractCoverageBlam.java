@@ -23,4 +23,24 @@ public abstract class AbstractCoverageBlam extends AbstractBlam {
       this.coverageImport = coverageImport;
    }
 
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((coverageImport.getName() == null) ? 0 : coverageImport.getName().hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
+      AbstractCoverageBlam other = (AbstractCoverageBlam) obj;
+      if (coverageImport == null) {
+         if (other.coverageImport != null) return false;
+      } else if (!coverageImport.getName().equals(other.coverageImport.getName())) return false;
+      return true;
+   }
+
 }

@@ -30,10 +30,11 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 public class CoverageImportTest1Blam extends AbstractCoverageBlam {
 
    public static String COVERAGE_IMPORT_DIR = "Coverage Import Directory";
+   public static String NAME = "Test Import 1";
 
    @Override
    public String getName() {
-      return "Test Import 1";
+      return NAME;
    }
 
    @Override
