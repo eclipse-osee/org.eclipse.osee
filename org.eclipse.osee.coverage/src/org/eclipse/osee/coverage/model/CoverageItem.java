@@ -170,4 +170,9 @@ public class CoverageItem implements ICoverageEditorItem {
       return guid;
    }
 
+   @Override
+   public ICoverageEditorItem getParent() {
+      return coverageUnit;
+   }
+
 }

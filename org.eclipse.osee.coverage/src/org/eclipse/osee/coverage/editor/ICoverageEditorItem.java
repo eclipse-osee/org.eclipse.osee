@@ -36,4 +36,6 @@ public interface ICoverageEditorItem {
 
    public boolean isCovered();
 
+   public ICoverageEditorItem getParent();
+
 }

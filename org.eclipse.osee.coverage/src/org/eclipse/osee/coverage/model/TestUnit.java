@@ -124,4 +124,9 @@ public class TestUnit implements ICoverageEditorItem {
       return null;
    }
 
+   @Override
+   public ICoverageEditorItem getParent() {
+      return null;
+   }
+
 }

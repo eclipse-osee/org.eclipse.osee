@@ -22,8 +22,11 @@ import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryPackage;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.util.CoveragePackageImport;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -35,6 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -163,6 +167,15 @@ public class CoverageEditorMergeTab extends FormPage {
          AWorkbench.popup("Select Items to Import via Import Column");
          return;
       }
+      CoveragePackageImport importer =
+            new CoveragePackageImport((CoveragePackage) provider1, (CoverageImport) provider2);
+      XResultData rd = importer.importItems(importItems);
+      try {
+         rd.report("Import");
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+      handleSearchButtonPressed();
    }
 
    private Collection<ICoverageEditorItem> getSelectedImportItems() {

@@ -194,4 +194,8 @@ public class CoverageUnit implements ICoverageEditorItem {
       return true;
    }
 
+   @Override
+   public ICoverageEditorItem getParent() {
+      return parentCoverageUnit;
+   }
 }
