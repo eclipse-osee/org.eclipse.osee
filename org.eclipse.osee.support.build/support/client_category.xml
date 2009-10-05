@@ -24,19 +24,19 @@
    <feature url="features/org.eclipse.osee.ote.feature_1.0.0.qualifier.jar" id="org.eclipse.osee.ote.feature" version="1.0.0.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ats.feature.source_1.0.0.200909211325.jar" id="org.eclipse.osee.ats.feature.source" version="1.0.0.qualifier">
+   <feature url="features/org.eclipse.osee.ats.feature.source_1.0.0.qualifier.jar" id="org.eclipse.osee.ats.feature.source" version="1.0.0.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.define.feature.source_1.0.0.200909211325.jar" id="org.eclipse.osee.define.feature.source" version="1.0.0.qualifier">
+   <feature url="features/org.eclipse.osee.define.feature.source_1.0.0.qualifier.jar" id="org.eclipse.osee.define.feature.source" version="1.0.0.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.framework.feature.source_1.0.0.200909211325.jar" id="org.eclipse.osee.framework.feature.source" version="1.0.0.qualifier">
+   <feature url="features/org.eclipse.osee.framework.feature.source_1.0.0.qualifier.jar" id="org.eclipse.osee.framework.feature.source" version="1.0.0.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.framework.ui.feature.source_1.0.0.200909211325.jar" id="org.eclipse.osee.framework.ui.feature.source" version="1.0.0.qualifier">
+   <feature url="features/org.eclipse.osee.framework.ui.feature.source_1.0.0.qualifier.jar" id="org.eclipse.osee.framework.ui.feature.source" version="1.0.0.qualifier">
       <category name="osee"/>
    </feature>
-   <feature url="features/org.eclipse.osee.ote.feature.source_1.0.0.200909211325.jar" id="org.eclipse.osee.ote.feature.source" version="1.0.0.qualifier">
+   <feature url="features/org.eclipse.osee.ote.feature.source_1.0.0.qualifier.jar" id="org.eclipse.osee.ote.feature.source" version="1.0.0.qualifier">
       <category name="osee"/>
    </feature>
    <category-def name="osee" label="Open System Engineering Environment"/>
