@@ -26,7 +26,12 @@ public final class ChangeVersion {
    }
 
    public ChangeVersion(Long gammaId, ModificationType modType, Long transactionNumber) {
+      this(null, gammaId, modType, transactionNumber);
+   }
+
+   public ChangeVersion(String value, Long gammaId, ModificationType modType, Long transactionNumber) {
       super();
+      this.value = value;
       this.gammaId = gammaId;
       this.modType = modType;
       this.transactionNumber = transactionNumber;
@@ -66,6 +71,13 @@ public final class ChangeVersion {
 
    public boolean exists() {
       return getModType() != null && getGammaId() != null;// && getTransactionNumber() != null;
+   }
+
+   public void copy(ChangeVersion item) {
+      setGammaId(item.getGammaId());
+      setModType(item.getModType());
+      setTransactionNumber(item.getTransactionNumber());
+      setValue(item.getValue());
    }
 
    @Override

@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 public abstract class ChangeItem {
    private int artId;
    private int itemId;
+
    private final ChangeVersion baseEntry;
    private final ChangeVersion firstChange;
    private final ChangeVersion currentEntry;

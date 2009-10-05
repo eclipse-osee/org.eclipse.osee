@@ -23,9 +23,21 @@ public class CommitUtil {
    private CommitUtil() {
    }
 
+   public static ChangeVersion createChange(Long long1, ModificationType mod1) {
+      double tx1 = Math.random();
+      return new ChangeVersion(long1, mod1, (long) tx1);
+   }
+
    public static void checkChange(String message, ChangeVersion expected, ChangeVersion actual) {
       Assert.assertEquals(message, expected.getGammaId(), actual.getGammaId());
       Assert.assertEquals(message, expected.getModType(), actual.getModType());
+
+      Assert.assertEquals(message, expected.getValue(), actual.getValue());
+      Assert.assertEquals(message, expected.getTransactionNumber(), actual.getTransactionNumber());
+   }
+
+   public static void checkChange(ChangeVersion expected, ChangeVersion actual) {
+      checkChange(null, expected, actual);
    }
 
    public static ChangeItem createItem(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net) {
@@ -33,20 +45,16 @@ public class CommitUtil {
             new MockChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber());
       change.setItemId(itemId);
       if (base != null) {
-         change.getBase().setModType(base.getModType());
-         change.getBase().setGammaId(base.getGammaId());
+         change.getBase().copy(base);
       }
       if (first != null) {
-         change.getFirst().setGammaId(first.getGammaId());
-         change.getFirst().setModType(first.getModType());
+         change.getFirst().copy(first);
       }
       if (destination != null) {
-         change.getDestination().setGammaId(destination.getGammaId());
-         change.getDestination().setModType(destination.getModType());
+         change.getDestination().copy(destination);
       }
       if (net != null) {
-         change.getNet().setGammaId(net.getGammaId());
-         change.getNet().setModType(net.getModType());
+         change.getNet().copy(net);
       }
       Assert.assertNotNull(change);
       Assert.assertNotNull(change.getBase());

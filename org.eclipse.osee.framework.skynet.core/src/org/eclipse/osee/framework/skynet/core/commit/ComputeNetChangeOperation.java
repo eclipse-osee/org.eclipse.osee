@@ -55,12 +55,11 @@ public class ComputeNetChangeOperation extends AbstractOperation {
                   if (netModType == null) {
                      throw new OseeStateException("Net Mod Type was null");
                   }
+                  change.getNet().copy(change.getCurrent());
                   change.getNet().setModType(netModType);
-                  change.getNet().setGammaId(change.getCurrent().getGammaId());
                } else {
                   if (ChangeItemUtil.isDeleted(change.getCurrent())) {
-                     change.getNet().setGammaId(change.getCurrent().getGammaId());
-                     change.getNet().setModType(change.getCurrent().getModType());
+                     change.getNet().copy(change.getCurrent());
                   }
                }
             }

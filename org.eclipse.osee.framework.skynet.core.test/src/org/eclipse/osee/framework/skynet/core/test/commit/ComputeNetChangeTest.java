@@ -141,8 +141,7 @@ public class ComputeNetChangeTest {
    }
 
    private static ChangeVersion entry(Long gammaId, ModificationType modType) {
-      double transaction = Math.random();
-      return new ChangeVersion(gammaId, modType, (long) transaction);
+      return CommitUtil.createChange(gammaId, modType);
    }
 
    private static final class TestData {

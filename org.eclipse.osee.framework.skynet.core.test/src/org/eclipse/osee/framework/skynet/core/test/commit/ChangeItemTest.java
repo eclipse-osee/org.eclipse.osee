@@ -15,6 +15,7 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
+import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItemUtil;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeVersion;
 import org.junit.Test;
@@ -26,6 +27,26 @@ public class ChangeItemTest {
 
    public ChangeItemTest() {
 
+   }
+
+   public void testGetSet() {
+      ChangeVersion base = CommitUtil.createChange(1111L, ModificationType.NEW);
+      ChangeVersion first = CommitUtil.createChange(2222L, ModificationType.MODIFIED);
+      ChangeVersion current = CommitUtil.createChange(3333L, ModificationType.INTRODUCED);
+      ChangeVersion destination = CommitUtil.createChange(4444L, ModificationType.MERGED);
+      ChangeVersion net = CommitUtil.createChange(5555L, ModificationType.DELETED);
+
+      ChangeItem item = CommitUtil.createItem(200, base, first, current, destination, net);
+      Assert.assertEquals(200, item.getArtId());
+      Assert.assertEquals(200, item.getItemId());
+      CommitUtil.checkChange(base, item.getBase());
+      CommitUtil.checkChange(first, item.getFirst());
+      CommitUtil.checkChange(current, item.getCurrent());
+      CommitUtil.checkChange(destination, item.getDestination());
+      CommitUtil.checkChange(net, item.getNet());
+
+      item.setArtId(400);
+      Assert.assertEquals(400, item.getArtId());
    }
 
    @Test
@@ -44,7 +65,7 @@ public class ChangeItemTest {
 
    @Test
    public void testIsNewIntroducedDeleted() {
-      ChangeVersion object1 = createChange(200L, null);
+      ChangeVersion object1 = CommitUtil.createChange(200L, null);
       for (ModificationType modType : ModificationType.values()) {
          object1.setModType(null);
          Assert.assertNull(object1.getModType());
@@ -69,7 +90,7 @@ public class ChangeItemTest {
 
    @Test
    public void testIsModType() {
-      ChangeVersion object1 = createChange(200L, null);
+      ChangeVersion object1 = CommitUtil.createChange(200L, null);
       Assert.assertNull(object1.getModType());
       Assert.assertEquals(true, ChangeItemUtil.isModType(object1, null));
 
@@ -104,15 +125,10 @@ public class ChangeItemTest {
       }
    }
 
-   private ChangeVersion createChange(Long long1, ModificationType mod1) {
-      double tx1 = Math.random();
-      return new ChangeVersion(long1, mod1, (long) tx1);
-   }
-
    private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2, ModificationType mod2, boolean expected) {
       return new Triplet<ChangeVersion, ChangeVersion, Boolean>(//
-            createChange(long1, mod1), //
-            createChange(long2, mod2), //
+            CommitUtil.createChange(long1, mod1), //
+            CommitUtil.createChange(long2, mod2), //
             expected);
    }
 }
