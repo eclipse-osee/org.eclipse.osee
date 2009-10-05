@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageLabelProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -34,7 +35,16 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
          return coverageItem.getUser() == null ? null : ImageManager.getImage(coverageItem.getUser());
       }
       if (xCol.equals(CoverageMergeXViewerFactory.Name)) return ImageManager.getImage(coverageItem.getOseeImage());
-      return null;
+      if (xCol.equals(CoverageMergeXViewerFactoryImport.Import)) {
+         if (!mergeXViewer.isImportAllowed(coverageItem)) {
+            return null;
+         }
+         if (mergeXViewer.isImportChecked(coverageItem)) {
+            return ImageManager.getImage(FrameworkImage.CHECKBOX_ENABLED);
+         }
+         return ImageManager.getImage(FrameworkImage.CHECKBOX_DISABLED);
+      }
+      return coverageItem.getCoverageEditorImage(xCol);
    }
 
    @Override

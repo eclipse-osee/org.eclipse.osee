@@ -18,9 +18,11 @@ import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -33,6 +35,7 @@ public class CoverageItem implements ICoverageEditorItem {
    private String methodNum;
    private final CoverageUnit coverageUnit;
    private final Set<TestUnit> testUnits = new HashSet<TestUnit>();
+   private final String guid = GUID.create();
 
    public CoverageItem(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethod, String executeNum) {
       super();
@@ -137,4 +140,34 @@ public class CoverageItem implements ICoverageEditorItem {
    public boolean isCovered() {
       return getCoverageMethod() != CoverageMethodEnum.None && getCoverageMethod() != CoverageMethodEnum.Unknown;
    }
+
+   @Override
+   public Image getCoverageEditorImage(XViewerColumn xCol) {
+      return null;
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((guid == null) ? 0 : guid.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
+      CoverageItem other = (CoverageItem) obj;
+      if (guid == null) {
+         if (other.guid != null) return false;
+      } else if (!guid.equals(other.guid)) return false;
+      return true;
+   }
+
+   public String getGuid() {
+      return guid;
+   }
+
 }

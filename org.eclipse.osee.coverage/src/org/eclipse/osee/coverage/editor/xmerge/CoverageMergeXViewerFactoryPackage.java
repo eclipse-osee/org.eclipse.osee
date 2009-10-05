@@ -10,23 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.editor.xmerge;
 
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
-
 /**
  * @author Donald G. Dunne
  */
-public abstract class CoverageMergeXViewerFactory extends CoverageXViewerFactory {
+public class CoverageMergeXViewerFactoryPackage extends CoverageMergeXViewerFactory {
 
-   public CoverageMergeXViewerFactory() {
+   protected static String NAMESPACE = "osee.ats.CoverageMergePackage";
+
+   public CoverageMergeXViewerFactoryPackage() {
       super();
-   }
-
-   public void registerMergeColumns() {
-      registerColumns();
-      for (XViewerColumn xCol : getColumns()) {
-         overrideShowDefault(xCol.getId(),
-               xCol.equals(CoverageXViewerFactory.Name) || xCol.equals(CoverageXViewerFactory.Coverage_Method));
-      }
+      clearColumnRegistration();
+      registerMergeColumns();
    }
 }

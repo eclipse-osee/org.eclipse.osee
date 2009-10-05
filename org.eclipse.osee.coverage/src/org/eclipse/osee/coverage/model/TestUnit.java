@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * Single test that can cover multiple Coverage Items
@@ -116,6 +117,11 @@ public class TestUnit implements ICoverageEditorItem {
    public boolean isCovered() {
       if (getCoverageItems().size() > 0) return true;
       return false;
+   }
+
+   @Override
+   public Image getCoverageEditorImage(XViewerColumn xCol) {
+      return null;
    }
 
 }

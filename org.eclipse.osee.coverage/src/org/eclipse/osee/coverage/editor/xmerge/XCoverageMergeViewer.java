@@ -18,9 +18,11 @@ import org.eclipse.swt.widgets.Label;
 public class XCoverageMergeViewer extends XCoverageViewer {
 
    CoverageMergeXViewer mergeXViewer;
+   private final CoverageMergeXViewerFactory coverageMergeXViewerFactory;
 
-   public XCoverageMergeViewer() {
+   public XCoverageMergeViewer(CoverageMergeXViewerFactory coverageMergeXViewerFactory) {
       super();
+      this.coverageMergeXViewerFactory = coverageMergeXViewerFactory;
    }
 
    @Override
@@ -41,7 +43,9 @@ public class XCoverageMergeViewer extends XCoverageViewer {
 
       createTaskActionBar(mainComp);
 
-      xViewer = new CoverageMergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION, this);
+      xViewer =
+            new CoverageMergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+                  coverageMergeXViewerFactory, this);
       mergeXViewer = (CoverageMergeXViewer) xViewer;
       xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 

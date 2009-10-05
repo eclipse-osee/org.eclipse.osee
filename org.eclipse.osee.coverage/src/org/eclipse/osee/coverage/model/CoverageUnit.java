@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * Single code unit (file/procedure/function) that can contain other Coverage Unit or Coverage Items
@@ -139,12 +140,6 @@ public class CoverageUnit implements ICoverageEditorItem {
    }
 
    @Override
-   public String getCoverageEditorValue(XViewerColumn xCol) {
-      if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return getParentCoverageUnit() == null ? "" : getParentCoverageUnit().getName();
-      return "";
-   }
-
-   @Override
    public Object[] getChildren() {
       List<ICoverageEditorItem> children = new ArrayList<ICoverageEditorItem>();
       children.addAll(getCoverageUnits());
@@ -165,6 +160,37 @@ public class CoverageUnit implements ICoverageEditorItem {
       for (CoverageItem coverageItem : getCoverageItems(true)) {
          if (!coverageItem.isCovered()) return false;
       }
+      return true;
+   }
+
+   @Override
+   public String getCoverageEditorValue(XViewerColumn xCol) {
+      if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return getParentCoverageUnit() == null ? "" : getParentCoverageUnit().getName();
+      return "";
+   }
+
+   @Override
+   public Image getCoverageEditorImage(XViewerColumn xCol) {
+      return null;
+   }
+
+   @Override
+   public int hashCode() {
+      final int prime = 31;
+      int result = 1;
+      result = prime * result + ((guid == null) ? 0 : guid.hashCode());
+      return result;
+   }
+
+   @Override
+   public boolean equals(Object obj) {
+      if (this == obj) return true;
+      if (obj == null) return false;
+      if (getClass() != obj.getClass()) return false;
+      CoverageUnit other = (CoverageUnit) obj;
+      if (guid == null) {
+         if (other.guid != null) return false;
+      } else if (!guid.equals(other.guid)) return false;
       return true;
    }
 

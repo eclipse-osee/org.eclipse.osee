@@ -22,7 +22,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -42,7 +41,7 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class CoverageXViewer extends XViewer {
 
-   private final XCoverageViewer xCoverageViewer;
+   protected final XCoverageViewer xCoverageViewer;
    Action editAction1;
    Action editAction2;
    Action editAction3;
@@ -85,7 +84,7 @@ public class CoverageXViewer extends XViewer {
          }
       };
 
-      editAction3 = new Action("2", Action.AS_PUSH_BUTTON) {
+      editAction3 = new Action("Edit 3", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
             AWorkbench.popup("Not Implemented Yet");
@@ -146,12 +145,12 @@ public class CoverageXViewer extends XViewer {
       getLabelProvider().dispose();
    }
 
-   public ArrayList<CoverageItem> getSelectedDefectItems() {
-      ArrayList<CoverageItem> arts = new ArrayList<CoverageItem>();
+   public ArrayList<ICoverageEditorItem> getSelectedCoverageEditorItems() {
+      ArrayList<ICoverageEditorItem> arts = new ArrayList<ICoverageEditorItem>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            arts.add((CoverageItem) item.getData());
+            arts.add((ICoverageEditorItem) item.getData());
          }
       }
       return arts;
@@ -198,7 +197,7 @@ public class CoverageXViewer extends XViewer {
 
    @Override
    public void handleDoubleClick() {
-      if (getSelectedDefectItems().size() > 0) {
+      if (getSelectedCoverageEditorItems().size() > 0) {
       }
    }
 

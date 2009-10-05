@@ -28,6 +28,7 @@ public enum FrameworkImage implements OseeImage {
    ARROW_RIGHT_YELLOW("nav_forward.gif"),
    ARROW_UP_YELLOW("up.gif"),
    ARROW_DOWN_YELLOW("down.gif"),
+   ARROW_LEFT_YELLOW("nav_backward.gif"),
    ATTRIBUTE_MOLECULE("molecule.gif"),
    ATTRIBUTE_SUB_A("attribute.gif"),
    ATTRIBUTE_DISABLED("disabled_attribute.gif"),

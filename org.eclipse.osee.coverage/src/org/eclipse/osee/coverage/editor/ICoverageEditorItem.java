@@ -9,6 +9,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
@@ -26,6 +27,8 @@ public interface ICoverageEditorItem {
    public String getName();
 
    public String getCoverageEditorValue(XViewerColumn xCol);
+
+   public Image getCoverageEditorImage(XViewerColumn xCol);
 
    public Object[] getChildren();
 

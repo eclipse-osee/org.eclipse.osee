@@ -48,6 +48,10 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
 
    public CoverageXViewerFactory() {
       super(NAMESPACE);
+      registerColumns();
+   }
+
+   public void registerColumns() {
       registerColumns(Name, Method_Number, Execution_Number, Line_Number, Coverage_Method, Test_Units, User_Col,
             Parent_Coverage_Unit, Location);
    }

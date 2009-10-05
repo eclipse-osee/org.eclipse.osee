@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer;
+import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport;
+import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryPackage;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -26,6 +29,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -46,6 +50,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.ToolBar;
+import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -111,7 +116,7 @@ public class CoverageEditorMergeTab extends FormPage {
       }
 
       Composite tableComp = coverageEditor.getToolkit().createComposite(mainComp, SWT.NONE);
-      tableComp.setLayout(ALayout.getZeroMarginLayout(2, false));
+      tableComp.setLayout(ALayout.getZeroMarginLayout(3, false));
       GridData tableData = new GridData(SWT.FILL, SWT.FILL, true, true);
       tableData.horizontalSpan = 2;
       tableComp.setLayoutData(tableData);
@@ -121,10 +126,50 @@ public class CoverageEditorMergeTab extends FormPage {
       leftComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       leftComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+      Composite centerComp = coverageEditor.getToolkit().createComposite(tableComp, SWT.NONE);
+      centerComp.setLayout(ALayout.getZeroMarginLayout(1, false));
+      centerComp.setLayoutData(new GridData(SWT.NONE, SWT.CENTER, false, true));
+
       Composite rightComp = coverageEditor.getToolkit().createComposite(tableComp, SWT.NONE);
       rightComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       rightComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
+      createLeftComposite(managedForm, leftComp);
+      createCenterComposite(managedForm, centerComp);
+      createRightComposite(managedForm, rightComp);
+
+      createEditorToolbar();
+
+   }
+
+   public void createCenterComposite(IManagedForm managedForm, Composite centerComp) {
+      ToolBar centerToolBar = new ToolBar(centerComp, SWT.FLAT | SWT.RIGHT);
+      centerToolBar.setLayoutData(new GridData(GridData.FILL_VERTICAL));
+      managedForm.getToolkit().adapt(centerToolBar);
+
+      ToolItem toolItem = new ToolItem(centerToolBar, SWT.NONE);
+      toolItem.setImage(ImageManager.getImage(FrameworkImage.ARROW_LEFT_YELLOW));
+      toolItem.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            handleImportSelected();
+         }
+      });
+   }
+
+   private void handleImportSelected() {
+      Collection<ICoverageEditorItem> importItems = getSelectedImportItems();
+      if (importItems.size() == 0) {
+         AWorkbench.popup("Select Items to Import via Import Column");
+         return;
+      }
+   }
+
+   private Collection<ICoverageEditorItem> getSelectedImportItems() {
+      return ((CoverageMergeXViewer) xCoverageViewer2.getXViewer()).getSelectedImportItems();
+   }
+
+   public void createLeftComposite(IManagedForm managedForm, Composite leftComp) {
       // Fill LEFT Composite
       managedForm.getToolkit().createLabel(leftComp, provider1.getName());
 
@@ -132,7 +177,7 @@ public class CoverageEditorMergeTab extends FormPage {
       leftToolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       managedForm.getToolkit().adapt(leftToolBar);
 
-      xCoverageViewer1 = new XCoverageMergeViewer();
+      xCoverageViewer1 = new XCoverageMergeViewer(new CoverageMergeXViewerFactoryPackage());
       xCoverageViewer1.setDisplayLabel(false);
       xCoverageViewer1.createWidgets(managedForm, leftComp, 1);
       xCoverageViewer1.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -141,7 +186,9 @@ public class CoverageEditorMergeTab extends FormPage {
             xCoverageViewer1.getXViewer()), ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
       ToolBarUtil.actionToToolItem(leftToolBar, SWT.FLAT | SWT.RIGHT,
             xCoverageViewer1.getXViewer().getCustomizeAction(), ImageManager.getImage(FrameworkImage.CUSTOMIZE));
+   }
 
+   public void createRightComposite(IManagedForm managedForm, Composite rightComp) {
       // Fill RIGHT Composite
       managedForm.getToolkit().createLabel(rightComp, provider2.getName());
 
@@ -149,7 +196,7 @@ public class CoverageEditorMergeTab extends FormPage {
       rightToolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       managedForm.getToolkit().adapt(rightToolBar);
 
-      xCoverageViewer2 = new XCoverageMergeViewer();
+      xCoverageViewer2 = new XCoverageMergeViewer(new CoverageMergeXViewerFactoryImport());
       xCoverageViewer2.setDisplayLabel(false);
       xCoverageViewer2.createWidgets(managedForm, rightComp, 1);
       xCoverageViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -158,9 +205,6 @@ public class CoverageEditorMergeTab extends FormPage {
             xCoverageViewer2.getXViewer()), ImageManager.getImage(FrameworkImage.COLLAPSE_ALL));
       ToolBarUtil.actionToToolItem(rightToolBar, SWT.FLAT | SWT.RIGHT,
             xCoverageViewer2.getXViewer().getCustomizeAction(), ImageManager.getImage(FrameworkImage.CUSTOMIZE));
-
-      createEditorToolbar();
-
    }
 
    public void simulateSearchAll() {
