@@ -116,7 +116,9 @@ public class XBranchWidget extends XWidget implements IActionable {
       Composite mainComp = new Composite(parent, SWT.BORDER);
       mainComp.setLayout(ALayout.getZeroMarginLayout());
       mainComp.setLayoutData(new GridData(GridData.FILL_BOTH));
-      if (toolkit != null) toolkit.paintBordersFor(mainComp);
+      if (toolkit != null) {
+         toolkit.paintBordersFor(mainComp);
+      }
 
       try {
          createTaskActionBar(mainComp);
@@ -136,7 +138,9 @@ public class XBranchWidget extends XWidget implements IActionable {
       sorter = new FavoriteSorter(branchXViewer);
       branchXViewer.setSorter(sorter);
 
-      if (toolkit != null) toolkit.adapt(branchXViewer.getStatusLabel(), false, false);
+      if (toolkit != null) {
+         toolkit.adapt(branchXViewer.getStatusLabel(), false, false);
+      }
 
       Tree tree = branchXViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -195,8 +199,12 @@ public class XBranchWidget extends XWidget implements IActionable {
    @SuppressWarnings("unchecked")
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
-      if (branchXViewer == null) return items;
-      if (branchXViewer.getSelection().isEmpty()) return items;
+      if (branchXViewer == null) {
+         return items;
+      }
+      if (branchXViewer.getSelection().isEmpty()) {
+         return items;
+      }
       Iterator i = ((IStructuredSelection) branchXViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();

@@ -1807,5 +1807,10 @@
            <Operation
                  className="org.eclipse.osee.framework.ui.skynet.blam.operation.ConsolidateRelations">
            </Operation>
+        </extension>
+        <extension
+              point="org.eclipse.ui.startup">
+           <startup
+                 class="org.eclipse.osee.framework.ui.skynet.OseeUiEarlyStartup"></startup>
         </extension>      
 </plugin>

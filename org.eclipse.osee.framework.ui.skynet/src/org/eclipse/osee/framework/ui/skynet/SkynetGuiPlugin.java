@@ -104,7 +104,7 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
    public void handleBroadcastEvent(Sender sender, BroadcastEventType broadcastEventType, String[] userIds, final String message) {
       boolean isShutdownAllowed = false;
 
-      // Determine whetherf this is a shutdown event
+      // Determine whether this is a shutdown event
       // Prevent shutting down users without a valid message
       if (broadcastEventType == BroadcastEventType.Force_Shutdown) {
          if (message == null || message.length() == 0) {
