@@ -59,7 +59,6 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
    }
 
    private AtsCacheManager() {
-      AtsBulkLoadCache.run(false);
       OseeEventManager.addListener(this);
    }
 
