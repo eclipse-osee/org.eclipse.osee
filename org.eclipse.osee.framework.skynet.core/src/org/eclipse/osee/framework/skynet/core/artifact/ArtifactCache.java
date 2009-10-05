@@ -131,7 +131,7 @@ public class ArtifactCache {
       if (obj != null) {
          if (obj instanceof Artifact) {
             Artifact artifact = (Artifact) obj;
-            if (!artifact.isDirty() && !eternalArtifactTypes.contains(artifact.getArtifactType())) {
+            if (!artifact.isDirty()) {
                cache(artifact);
             }
          } else if (obj instanceof WeakReference) {
