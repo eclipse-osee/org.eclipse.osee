@@ -93,15 +93,15 @@ public class ChangeItemTest {
       current = ChangeItemTestUtil.createChange(2222L, ModificationType.DELETED);
       dest = null;
       item = ChangeItemTestUtil.createItem(200, null, null, current, dest, null);
-      assertTrue(ChangeItemUtil.isDeletedAndDoestNotExistInDestination(item));
+      assertTrue(ChangeItemUtil.isDeletedAndDoesNotExistInDestination(item));
 
       dest = ChangeItemTestUtil.createChange(3333L, ModificationType.NEW);
       item = ChangeItemTestUtil.createItem(200, null, null, current, dest, null);
-      assertFalse(ChangeItemUtil.isDeletedAndDoestNotExistInDestination(item));
+      assertFalse(ChangeItemUtil.isDeletedAndDoesNotExistInDestination(item));
 
       dest = ChangeItemTestUtil.createChange(3333L, null);
       item = ChangeItemTestUtil.createItem(200, null, null, current, dest, null);
-      assertTrue(ChangeItemUtil.isDeletedAndDoestNotExistInDestination(item));
+      assertTrue(ChangeItemUtil.isDeletedAndDoesNotExistInDestination(item));
    }
 
    @Test
