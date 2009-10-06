@@ -394,10 +394,6 @@ public class WordTemplateProcessor {
 
          if (attributeElement.getAttributeName().equals("*")) {
             for (String attributeTypeName : orderAttributeNames(artifact.getAttributeTypes())) {
-               // TODO: the following needs to be re-visited
-               if (attributeTypeName.equals(CoreAttributes.RELATION_ORDER.getName())) {
-                  continue;
-               }
                if (!outlining || !attributeTypeName.equals(headingAttributeName)) {
                   processAttribute(variableMap, artifact, wordMl, attributeElement, attributeTypeName, true,
                         presentationType, multipleArtifacts);

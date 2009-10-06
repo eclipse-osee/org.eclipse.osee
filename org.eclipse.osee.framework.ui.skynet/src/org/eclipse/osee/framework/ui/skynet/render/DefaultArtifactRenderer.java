@@ -17,7 +17,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -138,12 +140,17 @@ public class DefaultArtifactRenderer implements IRenderer {
       wordMl.startParagraph();
       // assumption: the label is of the form <w:r><w:t> text </w:t></w:r>
       if (allAttrs) {
-         wordMl.addWordMl("<w:r><w:t> " + attributeTypeName + ": </w:t></w:r>");
+         wordMl.addWordMl("<w:r><w:t> " + Xml.escape(attributeTypeName) + ": </w:t></w:r>");
       } else {
-         wordMl.addWordMl(attributeElement.getLabel());
+         wordMl.addWordMl(Xml.escape(attributeElement.getLabel()));
       }
 
-      String valueList = Collections.toString(", ", artifact.getAttributes(attributeTypeName));
+      List<String> entries = new ArrayList<String>();
+      for (Attribute<?> attributes : artifact.getAttributes(attributeTypeName)) {
+         entries.add(Xml.escape(attributes.toString()).toString());
+      }
+
+      String valueList = Collections.toString(", ", entries);
 
       if (attributeElement.getFormat().contains(">x<")) {
          wordMl.addWordMl(format.replace(">x<", ">" + valueList + "<"));

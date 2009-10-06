@@ -242,7 +242,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       String query =
-            "select txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
+            "select txs.transaction_id, txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
                   + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
                   " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
 
@@ -252,15 +252,18 @@ public class LoadChangeDataOperation extends AbstractOperation {
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
             int itemId = chStmt.getInt(columnName);
-            long gammaId = chStmt.getLong("gamma_id");
+            Long gammaId = chStmt.getLong("gamma_id");
+            Long transactionId = chStmt.getLong("transactionId");
             ChangeItem change = changesByItemId.get(itemId);
 
             if (branch.getBranchType().isMergeBranch()) {
+               change.getNet().setTransactionNumber(transactionId);
                change.getNet().setGammaId(gammaId);
                change.getNet().setModType(ModificationType.MERGED);
             } else {
                change.getDestination().setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
                change.getDestination().setGammaId(gammaId);
+               change.getDestination().setTransactionNumber(transactionId);
             }
          }
       } finally {
