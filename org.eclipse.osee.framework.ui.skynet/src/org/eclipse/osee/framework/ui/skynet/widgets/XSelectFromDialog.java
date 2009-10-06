@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -169,8 +171,11 @@ public abstract class XSelectFromDialog<T> extends XText {
       } else {
          try {
             MinMaxOSEECheckedFilteredTreeDialog dialog = createDialog();
+            Set<T> choices = new HashSet<T>(selected);
+            choices.addAll(input);
+            dialog.setInput(choices);
             dialog.setInitialSelections(getSelected());
-            dialog.setInput(getSelectableItems());
+
             int result = dialog.open();
             if (result == 0) {
                List<T> dialogSelections = new ArrayList<T>();
