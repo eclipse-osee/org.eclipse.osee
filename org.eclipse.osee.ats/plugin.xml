@@ -8,6 +8,7 @@
    <extension-point id="AtsTeamWorkflow" name="AtsTeamWorkflow" schema="schema/AtsTeamWorkflow.exsd"/>
    <extension-point id="AtsNotification" name="AtsNotification" schema="schema/AtsNotification.exsd"/>
    <extension-point id="AtsWorldEditorItem" name="AtsWorldEditorItem" schema="schema/AtsWorldEditorItem.exsd"/>
+   <extension-point id="AtsValidateDatabase" name="AtsValidateDatabase" schema="schema/AtsValidateDatabase.exsd"/>
          <extension
          point="org.eclipse.ui.editors">
          <editor

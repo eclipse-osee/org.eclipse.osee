@@ -155,6 +155,9 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          testVersionArtifacts(artifacts);
          testStateMachineAssignees(artifacts);
          testAtsLogs(artifacts);
+         for (IAtsHealthCheck atsHealthCheck : AtsHealthCheck.getAtsHealthCheckItems()) {
+            atsHealthCheck.check(artifacts, xResultData);
+         }
          if (monitor != null) {
             monitor.worked(1);
          }
