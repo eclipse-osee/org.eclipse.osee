@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 
 /**
@@ -48,8 +49,6 @@ public class ArtifactCache {
 
    private static final HashCollection<ArtifactType, Object> byArtifactTypeCache =
          new HashCollection<ArtifactType, Object>(true);
-
-   private static final Set<ArtifactType> eternalArtifactTypes = new HashSet<ArtifactType>();
 
    //   private static final Set<Artifact> nomoreWeakReferences = new HashSet<Artifact>();
 
@@ -108,8 +107,8 @@ public class ArtifactCache {
       }
    }
 
-   private static Object getCacheObject(Artifact artifact) {
-      if (eternalArtifactTypes.contains(artifact.getArtifactType())) {
+   private static Object getCacheObject(Artifact artifact) throws OseeCoreException {
+      if (ArtifactFactoryManager.getEternalArtifactTypes().contains(artifact.getArtifactType())) {
          return artifact;
       } else if (artifact.isDirty()) {
          return artifact;
@@ -156,7 +155,7 @@ public class ArtifactCache {
       }
    }
 
-   public static void cacheByStaticId(String staticId, Artifact artifact) {
+   public static void cacheByStaticId(String staticId, Artifact artifact) throws OseeCoreException {
       if (!artifact.isHistorical()) {
          staticIdArtifactCache.put(staticId, getCacheObject(artifact));
       }
@@ -229,9 +228,6 @@ public class ArtifactCache {
    /**
     * returns the active artifact with the given artifact id from the given branch if it is in the cache and null
     * otherwise
-    * 
-    * @param artId
-    * @param branch
     */
    public static Artifact getActive(Integer artId, Branch branch) {
       return getActive(artId, branch.getBranchId());
@@ -240,9 +236,6 @@ public class ArtifactCache {
    /**
     * returns the active artifact with the given artifact id from the given branch if it is in the cache and null
     * otherwise
-    * 
-    * @param artId
-    * @param branchId
     */
    public static Artifact getActive(Integer artId, Integer branchId) {
       return getArtifact(artifactIdCache.get(artId, branchId));
@@ -251,9 +244,6 @@ public class ArtifactCache {
    /**
     * returns the active artifact with the given artifact id from the given branch if it is in the cache and null
     * otherwise
-    * 
-    * @param artId
-    * @param branchId
     */
    public static Artifact getActive(String artGuid, Integer branchId) {
       return getArtifact(artifactGuidCache.get(artGuid, branchId));
@@ -261,9 +251,6 @@ public class ArtifactCache {
 
    /**
     * returns the active artifact based on the previously provided text key and branch
-    * 
-    * @param key
-    * @param branch
     */
    public static Artifact getByTextId(String key, Branch branch) {
       return getArtifact(keyedArtifactCache.get(key, branch));
@@ -271,20 +258,9 @@ public class ArtifactCache {
 
    /**
     * used to cache an artifact based on a text identifier and its branch
-    * 
-    * @param key
-    * @param artifact
     */
-   public static Artifact cacheByTextId(String key, Artifact artifact) {
+   public static Artifact cacheByTextId(String key, Artifact artifact) throws OseeCoreException {
       return getArtifact(keyedArtifactCache.put(key, artifact.getBranch(), getCacheObject(artifact)));
    }
 
-   /**
-    * Register artifact types that should never be decached
-    * 
-    * @param artifactType
-    */
-   public static void registerEternalArtifactType(ArtifactType artifactType) {
-      eternalArtifactTypes.add(artifactType);
-   }
 }

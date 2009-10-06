@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -31,6 +35,7 @@ public final class ArtifactFactoryManager {
          new ExtensionDefinedObjects<ArtifactFactory>(EXTENSION_ID, ARTIFACT_FACTORY_EXTENSION, CLASSNAME_ATTRIBUTE);
 
    private static final DefaultArtifactFactory defaultArtifactFactory = new DefaultArtifactFactory();
+   private static Set<ArtifactType> eternalArtifactTypes = null;
 
    public ArtifactFactoryManager() {
    }
@@ -56,11 +61,21 @@ public final class ArtifactFactoryManager {
       return getDefaultArtifactFactory();
    }
 
+   public static Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
+      if (eternalArtifactTypes == null) {
+         eternalArtifactTypes = new HashSet<ArtifactType>();
+         for (ArtifactFactory factory : getFactories()) {
+            eternalArtifactTypes.addAll(factory.getEternalArtifactTypes());
+         }
+      }
+      return eternalArtifactTypes;
+   }
+
    private ArtifactFactory getDefaultArtifactFactory() {
       return defaultArtifactFactory;
    }
 
-   private synchronized List<ArtifactFactory> getFactories() {
+   private static synchronized List<ArtifactFactory> getFactories() {
       return extensionDefinedObjects.getObjects();
    }
 }

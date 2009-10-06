@@ -17,25 +17,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemDefinitionFactory;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 
 /**
  * @author Donald G. Dunne
@@ -44,17 +33,6 @@ public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
 
    private AtsBulkLoadCache() {
       super("Bulk Loading ATS Config Artifacts");
-      try {
-         ArtifactCache.registerEternalArtifactType(ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME));
-         ArtifactCache.registerEternalArtifactType(ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME));
-         ArtifactCache.registerEternalArtifactType(ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME));
-         ArtifactCache.registerEternalArtifactType(ArtifactTypeManager.getType(WorkRuleDefinition.ARTIFACT_NAME));
-         ArtifactCache.registerEternalArtifactType(ArtifactTypeManager.getType(WorkFlowDefinition.ARTIFACT_NAME));
-         ArtifactCache.registerEternalArtifactType(ArtifactTypeManager.getType(WorkWidgetDefinition.ARTIFACT_NAME));
-         ArtifactCache.registerEternalArtifactType(ArtifactTypeManager.getType(WorkPageDefinition.ARTIFACT_NAME));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-      }
    }
 
    private static AtsBulkLoadCache bulkLoadAtsCacheJob;

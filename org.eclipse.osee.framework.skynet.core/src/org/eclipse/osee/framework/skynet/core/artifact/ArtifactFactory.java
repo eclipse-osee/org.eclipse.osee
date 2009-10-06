@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -19,6 +20,10 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
+/**
+ * @author Ryan D. Brooks
+ * @author Donald G. Dunne
+ */
 public abstract class ArtifactFactory {
 
    private final Collection<String> artifactTypeNames;
@@ -38,13 +43,6 @@ public abstract class ArtifactFactory {
 
    /**
     * Used to create a new artifact (one that has never been saved into the datastore)
-    * 
-    * @param branch
-    * @param artifactType
-    * @param guid
-    * @param humandReadableId
-    * @param earlyArtifactInitialization
-    * @return the new artifact instance
     */
    public Artifact makeNewArtifact(Branch branch, ArtifactType artifactType, String guid, String humandReadableId, ArtifactProcessor earlyArtifactInitialization) throws OseeCoreException {
       if (artifactType.isAbstract()) {
@@ -93,8 +91,6 @@ public abstract class ArtifactFactory {
     * come up with it on its own.
     * 
     * @param branch branch on which this instance of this artifact will be associated
-    * @return Return artifact reference
-    * @throws OseeCoreException
     */
    protected abstract Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException;
 
@@ -105,12 +101,16 @@ public abstract class ArtifactFactory {
 
    /**
     * Return true if this artifact factory is responsible for creating artifactType.
-    * 
-    * @param artifactTypeName
-    * @return true if responsible
-    * @throws OseeCoreException
     */
    public boolean isResponsibleFor(String artifactTypeName) throws OseeDataStoreException {
       return artifactTypeNames != null && artifactTypeNames.contains(artifactTypeName);
+   }
+
+   /**
+    * Return any artifact types of artifacts that should never be garbage collected. This includes artifacts like user
+    * artifacts and config artifacts that should always stay loaded for performance reasons.
+    */
+   public Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
+      return Collections.emptyList();
    }
 }

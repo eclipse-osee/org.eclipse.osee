@@ -10,13 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.factory;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -33,6 +40,17 @@ public class UserArtifactFactory extends ArtifactFactory {
          return new User(this, guid, humandReadableId, branch, artifactType);
       }
       throw new OseeArgumentException("did not recognize the artifact type: " + artifactType.getName());
+   }
+
+   @Override
+   public Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
+      List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
+      try {
+         artifactTypes.add(ArtifactTypeManager.getType(User.ARTIFACT_NAME));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+      }
+      return artifactTypes;
    }
 
 }

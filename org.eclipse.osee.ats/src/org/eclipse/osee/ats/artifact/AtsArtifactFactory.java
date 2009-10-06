@@ -10,13 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkFlowDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkRuleDefinition;
+import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 
 /**
  * @author Ryan D. Brooks
@@ -52,4 +63,22 @@ public class AtsArtifactFactory extends ArtifactFactory {
             humandReadableId, branch, artifactType);
       throw new OseeArgumentException("did not recognize the artifact type: " + artifactType.getName());
    }
+
+   @Override
+   public Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
+      List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
+      try {
+         artifactTypes.add(ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME));
+         artifactTypes.add(ArtifactTypeManager.getType(TeamDefinitionArtifact.ARTIFACT_NAME));
+         artifactTypes.add(ArtifactTypeManager.getType(ActionableItemArtifact.ARTIFACT_NAME));
+         artifactTypes.add(ArtifactTypeManager.getType(WorkRuleDefinition.ARTIFACT_NAME));
+         artifactTypes.add(ArtifactTypeManager.getType(WorkFlowDefinition.ARTIFACT_NAME));
+         artifactTypes.add(ArtifactTypeManager.getType(WorkWidgetDefinition.ARTIFACT_NAME));
+         artifactTypes.add(ArtifactTypeManager.getType(WorkPageDefinition.ARTIFACT_NAME));
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+      }
+      return artifactTypes;
+   }
+
 }
