@@ -20,14 +20,15 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameComparator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
@@ -44,6 +45,7 @@ public class MigrateRelationOrder extends AbstractBlam {
 
    private static final String SELECT_GAMMA_FROM_TXS = "select gamma_id from osee_txs where transaction_id = ?";
    private final ArtifactNameComparator nameComparator = new ArtifactNameComparator();
+   private final ComputeLegacyOrder computeLegacyOrder = new ComputeLegacyOrder();
 
    @Override
    public String getName() {
@@ -55,11 +57,15 @@ public class MigrateRelationOrder extends AbstractBlam {
       Branch baselineBranch = variableMap.getBranch("Branch");
       //for (Branch baselineBranch : BranchManager.getBaselineBranches()) {
       SkynetTransaction transaction = new SkynetTransaction(baselineBranch);
+
+      testOneArtifact(transaction, "AAABEUwr_BEBJbJ8cW3woQ");
+
       for (RelationType relationType : RelationTypeManager.getAllTypes()) {
          if (relationType.isOrdered()) {
             for (Artifact artifact : ArtifactQuery.getArtifactListFromRelation(relationType, RelationSide.SIDE_A,
                   baselineBranch)) {
-               writeNewOrder(transaction, relationType, artifact);
+               IRelationEnumeration relationEnum = new RelationTypeSide(relationType, RelationSide.SIDE_B);
+               writeNewOrder(transaction, relationEnum, artifact);
             }
          }
       }
@@ -68,8 +74,12 @@ public class MigrateRelationOrder extends AbstractBlam {
       //}
    }
 
-   private void writeNewOrder(SkynetTransaction transaction, RelationType relationType, Artifact artifact) throws OseeCoreException {
-      IRelationEnumeration relationEnum = new RelationTypeSide(relationType, RelationSide.SIDE_B);
+   private void testOneArtifact(SkynetTransaction transaction, String guid) throws OseeCoreException {
+      writeNewOrder(transaction, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, ArtifactQuery.getArtifactFromId(
+            guid, transaction.getBranch()));
+   }
+
+   private void writeNewOrder(SkynetTransaction transaction, IRelationEnumeration relationEnum, Artifact artifact) throws OseeCoreException {
       List<Artifact> relatedArtiafcts = artifact.getRelatedArtifacts(relationEnum);
 
       if (relatedArtiafcts.size() == 1) {
@@ -78,42 +88,20 @@ public class MigrateRelationOrder extends AbstractBlam {
       if (relatedArtiafcts.size() == 0) {
          return; // how did this happened?
       }
-      List<Artifact> orginalOrder = new ArrayList<Artifact>(relatedArtiafcts.size());
-      getOrginalOrder(artifact, relationEnum, orginalOrder);
 
-      if (orginalOrder.size() != relatedArtiafcts.size()) {
-         return; // link list is broken
+      List<Artifact> legacyOrder = computeLegacyOrder.getOrginalOrder(artifact, relationEnum);
+
+      if (legacyOrder.size() != relatedArtiafcts.size()) {
+         throw new OseeStateException("sizes don't match");
       }
 
       Collections.sort(relatedArtiafcts, nameComparator);
-      if (relatedArtiafcts.equals(orginalOrder)) {
+      if (relatedArtiafcts.equals(legacyOrder)) {
          return; // these are already sorted lexicographically
       }
 
-      artifact.setRelationOrder(relationEnum, orginalOrder);
+      artifact.setRelationOrder(relationEnum, legacyOrder);
       artifact.persist(transaction);
-   }
-
-   private void getOrginalOrder(Artifact artifact, IRelationEnumeration relationEnum, List<Artifact> orginalOrder) throws OseeCoreException {
-      List<RelationLink> links = artifact.getRelations(relationEnum);
-      if (links.isEmpty()) {
-         return;
-      }
-      int artifactIdToFind = -1;
-      while (true) {
-         boolean found = false;
-         for (RelationLink link : links) {
-            if (link.getBOrder() == artifactIdToFind) {
-               orginalOrder.add(link.getArtifactB());
-               artifactIdToFind = link.getBArtifactId();
-               found = true;
-               break;
-            }
-         }
-         if (!found) {
-            break;
-         }
-      }
    }
 
    private void addToChildBaseilnes(SkynetTransaction updatedTransaction) throws OseeCoreException {
