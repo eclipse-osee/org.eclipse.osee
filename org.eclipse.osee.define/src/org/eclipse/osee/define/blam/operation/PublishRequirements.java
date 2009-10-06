@@ -14,7 +14,6 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -44,8 +43,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
-import org.eclipse.osee.framework.ui.skynet.templates.ITemplateProvider;
-import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 
 /**
  * @author Jeff C. Phillips
@@ -184,15 +181,6 @@ public class PublishRequirements extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      List<Artifact> templates = new ArrayList<Artifact>();
-      try {
-         for (ITemplateProvider provider : TemplateManager.getTemplateProviders()) {
-            templates.addAll(provider.getAllTemplates());
-         }
-         Collections.sort(templates);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(getClass(), Level.SEVERE, ex);
-      }
       StringBuilder builder = new StringBuilder();
       builder.append("<xWidgets>");
       builder.append("<XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Update Paragraph Numbers\" />");

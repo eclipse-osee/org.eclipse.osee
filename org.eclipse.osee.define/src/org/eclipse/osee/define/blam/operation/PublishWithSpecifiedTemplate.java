@@ -10,15 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.define.blam.operation;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -27,7 +23,6 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
-import org.eclipse.osee.framework.ui.skynet.templates.ITemplateProvider;
 import org.eclipse.osee.framework.ui.skynet.templates.TemplateManager;
 
 /**
@@ -42,7 +37,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       return "Publish With Specified Template";
    }
 
-   
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       populateTemplateList();
       Boolean updateParagraphNumber = variableMap.getBoolean("Update Paragraph Numbers");
@@ -71,13 +66,11 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       transaction.execute();
    }
 
-   
    @Override
    public String getDescriptionUsage() {
       return "Select a Master or Master/Slave template and click the play button at the top right.";
    }
 
-   
    @Override
    public String getXWidgetsXml() {
       populateTemplateList();
@@ -104,17 +97,8 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
    }
 
    private void populateTemplateList() {
-      if (templates == null) {
-         templates = new ArrayList<Artifact>();
-         try {
-            for (ITemplateProvider provider : TemplateManager.getTemplateProviders()) {
-               templates.addAll(provider.getAllTemplates());
-            }
-            Collections.sort(templates);
-         } catch (OseeCoreException ex) {
-            OseeLog.log(getClass(), Level.SEVERE, ex);
-         }
-      }
+      templates = TemplateManager.getAllTemplates();
+      Collections.sort(templates);
    }
 
    private Artifact getTemplate(String templateName) {
@@ -126,6 +110,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
       return null;
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Publish");
    }

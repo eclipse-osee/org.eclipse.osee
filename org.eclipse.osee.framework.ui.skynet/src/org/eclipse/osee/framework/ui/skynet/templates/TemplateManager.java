@@ -11,10 +11,15 @@
 
 package org.eclipse.osee.framework.ui.skynet.templates;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.IRenderer;
 
 /**
@@ -46,7 +51,16 @@ public class TemplateManager {
       return bestTemplateProvider.getTemplate(renderer, artifact, presentationType, option);
    }
 
-   public static List<ITemplateProvider> getTemplateProviders() {
-      return instance.templateProviders;
+   public static List<Artifact> getAllTemplates() {
+      List<Artifact> templates = new ArrayList<Artifact>();
+      try {
+         for (ITemplateProvider provider : instance.templateProviders) {
+            templates.addAll(provider.getAllTemplates());
+         }
+         Collections.sort(templates);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      return templates;
    }
 }
