@@ -44,30 +44,18 @@ public abstract class WorkItemDefinition {
       Update, New
    };
 
-   /**
-    * @return the workDataKeyValueMap
-    */
    public Map<String, String> getWorkDataKeyValueMap() {
       return workDataKeyValueMap;
    }
 
-   /**
-    * @param workDataKeyValueMap the workDataKeyValueMap to set
-    */
    public void setWorkDataKeyValueMap(Map<String, String> workDataKeyValueMap) {
       this.workDataKeyValueMap = workDataKeyValueMap;
    }
 
-   /**
-    * @param description the description to set
-    */
    public void setDescription(String description) {
       this.description = description;
    }
 
-   /**
-    * @return the description
-    */
    public String getDescription() {
       return description;
    }
@@ -154,37 +142,22 @@ public abstract class WorkItemDefinition {
       (parentId != null ? "   Parent: " + parentId : "");
    }
 
-   /**
-    * @return the id
-    */
    public String getId() {
       return id;
    }
 
-   /**
-    * @param id the id to set
-    */
    public void setId(String id) {
       this.id = id;
    }
 
-   /**
-    * @return the name
-    */
    public String getName() {
       return name;
    }
 
-   /**
-    * @return the name
-    */
    public String getType() {
       return type;
    }
 
-   /**
-    * @return the parentId
-    */
    public String getParentId() {
       return parentId;
    }
@@ -254,16 +227,10 @@ public abstract class WorkItemDefinition {
       workDataKeyValueMap.put(key, value);
    }
 
-   /**
-    * @param name the name to set
-    */
    public void setName(String name) {
       this.name = name;
    }
 
-   /**
-    * @param parentId the parentId to set
-    */
    public void setParentId(String parentId) {
       this.parentId = parentId;
    }
