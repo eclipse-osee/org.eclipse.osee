@@ -71,7 +71,7 @@ public class ChangeItemUtil {
       return //
       wasCreatedAndDeleted(changeItem) || //
       isAlreadyOnDestination(changeItem) || //
-      hasDestinationBranch && isDeletedAndDoestNotExistInDestination(changeItem) || //
+      hasDestinationBranch && isDeletedAndDoesNotExistInDestination(changeItem) || //
       hasBeenDeletedInDestination(changeItem) || //
       isDestinationEqualOrNewerThanCurrent(changeItem);
    }
@@ -80,7 +80,7 @@ public class ChangeItemUtil {
       return wasNewOrIntroducedOnSource(changeItem) && isDeleted(changeItem.getCurrent());
    }
 
-   public static boolean isDeletedAndDoestNotExistInDestination(ChangeItem changeItem) {
+   public static boolean isDeletedAndDoesNotExistInDestination(ChangeItem changeItem) {
       return !changeItem.getDestination().isValid() && isDeleted(changeItem.getCurrent());
    }
 
