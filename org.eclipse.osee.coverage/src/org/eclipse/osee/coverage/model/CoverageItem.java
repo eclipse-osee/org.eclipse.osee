@@ -10,16 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.model;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.swt.graphics.Image;
@@ -35,13 +43,27 @@ public class CoverageItem implements ICoverageEditorItem {
    private String methodNum;
    private final CoverageUnit coverageUnit;
    private final Set<TestUnit> testUnits = new HashSet<TestUnit>();
-   private final String guid = GUID.create();
+   private String guid = GUID.create();
 
    public CoverageItem(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethod, String executeNum) {
       super();
       this.coverageUnit = coverageUnit;
       this.coverageMethod = coverageMethod;
       this.executeNum = executeNum;
+   }
+
+   public CoverageItem(CoverageUnit parentCoverageUnit, String xml) throws OseeCoreException {
+      CoverageMethodEnum coverageMethod = CoverageMethodEnum.valueOf(AXml.getTagData(xml, "method"));
+      String execNum = AXml.getTagData(xml, "execNum");
+      this.coverageUnit = parentCoverageUnit;
+      this.coverageMethod = coverageMethod;
+      this.executeNum = execNum;
+      setGuid(AXml.getTagData(xml, "guid"));
+      String lineNum = AXml.getTagData(xml, "line");
+      if (Strings.isValid(lineNum)) setLineNum(lineNum);
+      String userId = AXml.getTagData(xml, "user");
+      String location = AXml.getTagData(xml, "location");
+      if (Strings.isValid(location)) setUser(UserManager.getUserByUserId(userId));
    }
 
    public Set<TestUnit> getTestUnits() {
@@ -173,6 +195,38 @@ public class CoverageItem implements ICoverageEditorItem {
    @Override
    public ICoverageEditorItem getParent() {
       return coverageUnit;
+   }
+
+   public void setGuid(String guid) {
+      this.guid = guid;
+   }
+
+   public String toXml() throws OseeCoreException {
+      StringBuffer sb = new StringBuffer(200);
+      sb.append("<CvgItem>");
+      sb.append(AXml.addTagData("guid", getGuid()));
+      sb.append(AXml.addTagData("method", getMethodNum()));
+      sb.append(AXml.addTagData("line", getLineNum()));
+      sb.append(AXml.addTagData("execNum", getExecuteNum()));
+      sb.append(AXml.addTagData("user", getUser().getUserId()));
+      sb.append(AXml.addTagData("method", getCoverageMethod().toString()));
+      sb.append(AXml.addTagData("testUnits", getTestUnitGuidList(getTestUnits())));
+      sb.append("</CvgItem>");
+      return sb.toString();
+   }
+
+   public String getTestUnitGuidList(Collection<TestUnit> testUnits) {
+      List<String> guids = new ArrayList<String>();
+      for (TestUnit testUnit : testUnits) {
+         guids.add(testUnit.getGuid());
+      }
+      return Collections.toString(guids, ",");
+   }
+
+   public void save(SkynetTransaction transaction) throws OseeCoreException {
+      for (TestUnit testUnit : testUnits) {
+         testUnit.save(transaction);
+      }
    }
 
 }

@@ -16,8 +16,15 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
+import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.swt.graphics.Image;
@@ -30,18 +37,24 @@ import org.eclipse.swt.graphics.Image;
 public class CoverageUnit implements ICoverageEditorItem {
 
    private String name;
-   private final String guid = GUID.create();
+   private String guid = GUID.create();
    private String text;
    private final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    private String location;
    private final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
-   private final CoverageUnit parentCoverageUnit;
+   private CoverageUnit parentCoverageUnit;
+   private Artifact artifact;
 
    public CoverageUnit(CoverageUnit parentCoverageUnit, String name, String location) {
       super();
       this.parentCoverageUnit = parentCoverageUnit;
       this.name = name;
       this.location = location;
+   }
+
+   public CoverageUnit(Artifact artifact) throws OseeCoreException {
+      this.artifact = artifact;
+      load();
    }
 
    public void addCoverageUnit(CoverageUnit coverageUnit) {
@@ -197,5 +210,66 @@ public class CoverageUnit implements ICoverageEditorItem {
    @Override
    public ICoverageEditorItem getParent() {
       return parentCoverageUnit;
+   }
+
+   public Artifact getArtifact(boolean create) throws OseeCoreException {
+      if (artifact == null && create) {
+         artifact = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
+      }
+      return artifact;
+   }
+
+   public void load() throws OseeCoreException {
+      coverageItems.clear();
+      coverageUnits.clear();
+      getArtifact(false);
+      if (artifact != null) {
+         setName(artifact.getName());
+         KeyValueArtifact keyValueArtifact =
+               new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+         setGuid(keyValueArtifact.getWorkDataValue("guid"));
+         for (String line : artifact.getAttributesToStringList(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME)) {
+            if (line.startsWith("<CvgItem>")) {
+               coverageItems.add(new CoverageItem(this, line));
+            }
+         }
+         for (Artifact childArt : artifact.getChildren()) {
+            if (childArt.getArtifactTypeName().equals(GeneralData.ARTIFACT_TYPE)) {
+               coverageUnits.add(new CoverageUnit(childArt));
+            }
+         }
+      }
+   }
+
+   public void save(SkynetTransaction transaction) throws OseeCoreException {
+      List<String> items = new ArrayList<String>();
+      for (CoverageItem coverageItem : coverageItems) {
+         items.add(coverageItem.toXml());
+         coverageItem.save(transaction);
+      }
+      getArtifact(true);
+      artifact.setName(getName());
+      artifact.setAttributeValues(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, items);
+      KeyValueArtifact keyValueArtifact =
+            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+      keyValueArtifact.addWorkDataKeyValue("text", text);
+      keyValueArtifact.addWorkDataKeyValue("guid", guid);
+      keyValueArtifact.addWorkDataKeyValue("location", text);
+      keyValueArtifact.save();
+      if (parentCoverageUnit != null) {
+         parentCoverageUnit.getArtifact(true).addChild(artifact);
+      }
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         coverageUnit.save(transaction);
+      }
+      artifact.persist(transaction);
+   }
+
+   public void setParentCoverageUnit(CoverageUnit parentCoverageUnit) {
+      this.parentCoverageUnit = parentCoverageUnit;
+   }
+
+   public void setGuid(String guid) {
+      this.guid = guid;
    }
 }

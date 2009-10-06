@@ -18,9 +18,16 @@ import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.ICoverageEditorProvider;
 import org.eclipse.osee.coverage.editor.ICoverageTabProvider;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
+import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -32,13 +39,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  */
 public class CoveragePackage implements ICoverageEditorProvider, ICoverageTabProvider {
 
-   private final String guid = GUID.create();
+   private String guid = GUID.create();
    private String name;
-   private final Date creationDate;
+   private Date creationDate;
    private final List<CoverageImport> coverageImports = new ArrayList<CoverageImport>();
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    private final List<TestUnit> testUnits = new ArrayList<TestUnit>();
    private final XResultData logResultData = new XResultData();
+   private Artifact artifact;
 
    public CoveragePackage() {
       this("Coverage Package", new Date());
@@ -175,6 +183,48 @@ public class CoveragePackage implements ICoverageEditorProvider, ICoverageTabPro
          if (other.guid != null) return false;
       } else if (!guid.equals(other.guid)) return false;
       return true;
+   }
+
+   public Artifact getArtifact(boolean create) throws OseeCoreException {
+      if (artifact == null && create) {
+         artifact = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
+      }
+      return artifact;
+   }
+
+   public void load() throws OseeCoreException {
+      coverageUnits.clear();
+      getArtifact(false);
+      if (artifact != null) {
+         setName(artifact.getName());
+         for (Artifact childArt : artifact.getChildren()) {
+            if (childArt.getArtifactTypeName().equals(GeneralData.ARTIFACT_TYPE)) {
+               addCoverageUnit(new CoverageUnit(childArt));
+            }
+         }
+      }
+   }
+
+   public void save(SkynetTransaction transaction) throws OseeCoreException {
+      getArtifact(true);
+      artifact.setName(getName());
+      KeyValueArtifact keyValueArtifact =
+            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+      keyValueArtifact.addWorkDataKeyValue("date", String.valueOf(creationDate.getTime()));
+      keyValueArtifact.addWorkDataKeyValue("guid", guid);
+      keyValueArtifact.save();
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         coverageUnit.save(transaction);
+      }
+      artifact.persist(transaction);
+   }
+
+   public void setGuid(String guid) {
+      this.guid = guid;
+   }
+
+   public void setCreationDate(Date creationDate) {
+      this.creationDate = creationDate;
    }
 
 }
