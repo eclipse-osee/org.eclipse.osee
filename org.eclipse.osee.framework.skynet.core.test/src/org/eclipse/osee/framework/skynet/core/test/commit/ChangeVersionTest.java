@@ -21,24 +21,24 @@ public class ChangeVersionTest {
       ChangeVersion expected = new ChangeVersion();
       ChangeItemTestUtil.checkChange(expected, actual);
 
-      actual = new ChangeVersion(45L, ModificationType.NEW, 54L);
+      actual = new ChangeVersion(45L, ModificationType.NEW, 54);
       expected.setValue(null);
       expected.setGammaId(45L);
       expected.setModType(ModificationType.NEW);
-      expected.setTransactionNumber(54L);
+      expected.setTransactionNumber(54);
       ChangeItemTestUtil.checkChange(expected, actual);
 
-      actual = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46L);
+      actual = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46);
       expected.setValue("hello");
       expected.setGammaId(47L);
       expected.setModType(ModificationType.MERGED);
-      expected.setTransactionNumber(46L);
+      expected.setTransactionNumber(46);
       ChangeItemTestUtil.checkChange(expected, actual);
    }
 
    @Test
    public void testCopy() {
-      ChangeVersion expected = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46L);
+      ChangeVersion expected = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46);
       ChangeVersion actual = new ChangeVersion();
       actual.copy(expected);
       ChangeItemTestUtil.checkChange(expected, actual);
@@ -62,8 +62,8 @@ public class ChangeVersionTest {
 
    @Test
    public void testEquals() {
-      ChangeVersion actual1 = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46L);
-      ChangeVersion actual2 = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46L);
+      ChangeVersion actual1 = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46);
+      ChangeVersion actual2 = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46);
       ChangeVersion expected = new ChangeVersion();
 
       Assert.assertEquals(actual2, actual1);
@@ -83,7 +83,7 @@ public class ChangeVersionTest {
 
    @Test
    public void testToString() {
-      ChangeVersion actual1 = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46L);
+      ChangeVersion actual1 = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46);
       Assert.assertEquals("[46,47,MERGED]", actual1.toString());
 
       ChangeVersion expected = new ChangeVersion();

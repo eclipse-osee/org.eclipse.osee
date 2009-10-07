@@ -46,14 +46,14 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private final HashMap<Integer, ChangeItem> artifactChangesByItemId = new HashMap<Integer, ChangeItem>();
    private final HashMap<Integer, ChangeItem> relationChangesByItemId = new HashMap<Integer, ChangeItem>();
    private final HashMap<Integer, ChangeItem> attributeChangesByItemId = new HashMap<Integer, ChangeItem>();
-   private final HashMap<Long, Pair<Long, ModificationType>> changeByGammaId =
-         new HashMap<Long, Pair<Long, ModificationType>>();
+   private final HashMap<Long, Pair<Integer, ModificationType>> changeByGammaId =
+         new HashMap<Long, Pair<Integer, ModificationType>>();
 
    private final Collection<ChangeItem> changeData;
    private final Branch sourceBranch;
    private final Branch destinationBranch;
    private final Branch mergeBranch;
-   private final Long transactionNumber;
+   private final Integer transactionNumber;
 
    private static enum LoadingMode {
       FROM_SINGLE_TRANSACTION, FROM_ALL_BRANCH_TRANSACTIONS;
@@ -61,7 +61,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
    private final LoadingMode loadChangesEnum;
 
-   public LoadChangeDataOperation(Long transactionNumber, Collection<ChangeItem> changeData) {
+   public LoadChangeDataOperation(Integer transactionNumber, Collection<ChangeItem> changeData) {
       this(null, null, null, changeData, transactionNumber, LoadingMode.FROM_SINGLE_TRANSACTION);
    }
 
@@ -73,7 +73,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       this(sourceBranch, destinationBranch, mergeBranch, changeData, null, LoadingMode.FROM_ALL_BRANCH_TRANSACTIONS);
    }
 
-   private LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<ChangeItem> changeData, Long transactionNumber, LoadingMode loadMode) {
+   private LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<ChangeItem> changeData, Integer transactionNumber, LoadingMode loadMode) {
       super("Load Change Data", Activator.PLUGIN_ID);
       this.mergeBranch = mergeBranch;
       this.sourceBranch = sourceBranch;
@@ -107,7 +107,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private TransactionJoinQuery loadSourceBranchChanges(IProgressMonitor monitor) throws OseeCoreException {
       TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      Long currentTransactionNumber;
+      Integer currentTransactionNumber;
 
       try {
          switch (loadChangesEnum) {
@@ -115,7 +115,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
                chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
                      TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
                currentTransactionNumber =
-                     Long.valueOf(TransactionIdManager.getlatestTransactionForBranch(getSourceBranchId()).getTransactionNumber());
+                     Integer.valueOf(TransactionIdManager.getlatestTransactionForBranch(getSourceBranchId()).getTransactionNumber());
                break;
             case FROM_SINGLE_TRANSACTION:
                chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionNumber,
@@ -130,7 +130,8 @@ public class LoadChangeDataOperation extends AbstractOperation {
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
             txJoin.add(chStmt.getLong("gamma_id"), -1);
-            changeByGammaId.put(chStmt.getLong("gamma_id"), new Pair<Long, ModificationType>(currentTransactionNumber,
+            changeByGammaId.put(chStmt.getLong("gamma_id"), new Pair<Integer, ModificationType>(
+                  currentTransactionNumber,
                   ModificationType.getMod(chStmt.getInt("mod_type"))));
          }
          txJoin.store();
@@ -149,7 +150,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
          chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            Pair<Long, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
+            Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
             ArtifactChangeItem changeItem =
                   new ArtifactChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
                         chStmt.getInt("art_id"));
@@ -169,7 +170,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
          chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            Pair<Long, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
+            Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
             AttributeChangeItem changeItem =
                   new AttributeChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(),
                         txsTableData.getFirst(), chStmt.getInt("attr_id"), chStmt.getInt("art_id"),
@@ -191,7 +192,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
          chStmt.runPreparedQuery(10000, query, queryId);
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
-            Pair<Long, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
+            Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
             RelationChangeItem changeItem =
                   new RelationChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
                         chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"), chStmt.getInt("rel_link_id"),
@@ -253,7 +254,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             checkForCancelledStatus(monitor);
             int itemId = chStmt.getInt(columnName);
             Long gammaId = chStmt.getLong("gamma_id");
-            Long transactionId = chStmt.getLong("transactionId");
+            Integer transactionId = chStmt.getInt("transaction_id");
             ChangeItem change = changesByItemId.get(itemId);
 
             if (branch.getBranchType().isMergeBranch()) {
@@ -322,6 +323,6 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
       versionedChange.setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
       versionedChange.setGammaId(chStmt.getLong("gamma_id"));
-      versionedChange.setTransactionNumber(chStmt.getLong("transaction_id"));
+      versionedChange.setTransactionNumber(chStmt.getInt("transaction_id"));
    }
 }

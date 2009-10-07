@@ -19,17 +19,17 @@ public final class ChangeVersion {
    private Long gammaId;
    private ModificationType modType;
    private String value;
-   private Long transactionNumber;
+   private Integer transactionNumber;
 
    public ChangeVersion() {
       this(null, null, null);
    }
 
-   public ChangeVersion(Long gammaId, ModificationType modType, Long transactionNumber) {
+   public ChangeVersion(Long gammaId, ModificationType modType, Integer transactionNumber) {
       this(null, gammaId, modType, transactionNumber);
    }
 
-   public ChangeVersion(String value, Long gammaId, ModificationType modType, Long transactionNumber) {
+   public ChangeVersion(String value, Long gammaId, ModificationType modType, Integer transactionNumber) {
       super();
       this.value = value;
       this.gammaId = gammaId;
@@ -49,11 +49,11 @@ public final class ChangeVersion {
       return value;
    }
 
-   public Long getTransactionNumber() {
+   public Integer getTransactionNumber() {
       return transactionNumber;
    }
 
-   public void setTransactionNumber(Long transactionNumber) {
+   public void setTransactionNumber(Integer transactionNumber) {
       this.transactionNumber = transactionNumber;
    }
 

@@ -213,11 +213,11 @@ public final class InternalChangeManager {
                } else {
                   if (item.getBase().isValid()) {
                      fromTransactionId =
-                           TransactionIdManager.getTransactionId(item.getBase().getTransactionNumber().intValue());
+ TransactionIdManager.getTransactionId(item.getBase().getTransactionNumber());
                      wasValue = item.getBase().getValue();
                   } else {
                      fromTransactionId =
-                           TransactionIdManager.getTransactionId((int) item.getFirst().getTransactionNumber().longValue());
+ TransactionIdManager.getTransactionId(item.getFirst().getTransactionNumber());
                      wasValue = item.getFirst().getValue();
                   }
                }
@@ -309,7 +309,7 @@ public final class InternalChangeManager {
       List<IOperation> ops = new ArrayList<IOperation>();
 
       if (isHistorical) {
-         ops.add(new LoadChangeDataOperation(Long.valueOf(transactionId.getTransactionNumber()), changeItems));
+         ops.add(new LoadChangeDataOperation(Integer.valueOf(transactionId.getTransactionNumber()), changeItems));
       } else {
          ops.add(new LoadChangeDataOperation(sourceBranch, changeItems));
       }

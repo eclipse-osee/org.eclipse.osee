@@ -24,8 +24,7 @@ public class ChangeItemTestUtil {
    }
 
    public static ChangeVersion createChange(Long long1, ModificationType mod1) {
-      double tx1 = Math.random();
-      return new ChangeVersion(long1, mod1, (long) tx1);
+      return new ChangeVersion(long1, mod1, 0);
    }
 
    public static void checkChange(String message, ChangeVersion expected, ChangeVersion actual) {
@@ -67,8 +66,8 @@ public class ChangeItemTestUtil {
 
    private static final class MockChangeItem extends ChangeItem {
 
-      protected MockChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, long currentSourceTansactionNumber) {
-         super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
+      protected MockChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, int currentSourceTransactionNumber) {
+         super(currentSourceGammaId, currentSourceModType, currentSourceTransactionNumber);
       }
 
       @Override
