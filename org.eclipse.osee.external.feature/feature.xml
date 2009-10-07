@@ -21,6 +21,12 @@
       <update label="Osee Update Site" url="http://www.eclipse.org/downloads/download.php?file=/technology/osee/updatesite"/>
    </url>
 
+   <plugin
+         id="javax.servlet"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
          id="org.apache.commons.logging"
@@ -28,14 +34,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-         
-   <plugin
-         id="javax.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-         
 
    <plugin
          id="org.apache.commons.lang"
