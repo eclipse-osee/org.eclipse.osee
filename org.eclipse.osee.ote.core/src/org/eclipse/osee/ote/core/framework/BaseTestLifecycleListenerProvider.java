@@ -38,7 +38,7 @@ public class BaseTestLifecycleListenerProvider implements ITestLifecycleListener
 
    public IMethodResult notifyPostDispose(IPropertyStore propertyStore, TestEnvironment env) {
       IEventData eventData = eventProvider.getEventData(propertyStore, null);
-      MethodResultImpl result = MethodResultImpl.OK;
+      MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       for (ITestLifecycleListener listener : listeners) {
     	  result = collectStatus(result, listener.postDispose(eventData, env));
       }
@@ -47,7 +47,7 @@ public class BaseTestLifecycleListenerProvider implements ITestLifecycleListener
 
    public IMethodResult notifyPostInstantiation(IPropertyStore propertyStore, TestScript test, TestEnvironment env)  {
       IEventData eventData = eventProvider.getEventData(propertyStore, test);
-      MethodResultImpl result = MethodResultImpl.OK;
+      MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       for (ITestLifecycleListener listener : listeners) {
     	  result = collectStatus(result, listener.postInstantiation(eventData, env));
       }
@@ -56,7 +56,7 @@ public class BaseTestLifecycleListenerProvider implements ITestLifecycleListener
 
    public IMethodResult notifyPreDispose(IPropertyStore propertyStore, TestScript test, TestEnvironment env)   {
       IEventData eventData = eventProvider.getEventData(propertyStore, test);
-      MethodResultImpl result = MethodResultImpl.OK;
+      MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       for (ITestLifecycleListener listener : listeners) {
     	  result = collectStatus(result, listener.preDispose(eventData, env));
       }
@@ -65,7 +65,8 @@ public class BaseTestLifecycleListenerProvider implements ITestLifecycleListener
 
    public IMethodResult notifyPreInstantiation(IPropertyStore propertyStore, TestEnvironment env)   {
       IEventData eventData = eventProvider.getEventData(propertyStore, null);
-      MethodResultImpl result = MethodResultImpl.OK;
+      MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
+
       for (ITestLifecycleListener listener : listeners) {
     	  result = collectStatus(result, listener.preInstantiation(eventData, env));
       }
@@ -79,8 +80,8 @@ public class BaseTestLifecycleListenerProvider implements ITestLifecycleListener
    private MethodResultImpl collectStatus(MethodResultImpl result,
 			IMethodResult listenerResult) {
 		if (listenerResult.getReturnCode() != ReturnCode.OK) {
-			if (result == MethodResultImpl.OK) {
-				result = new MethodResultImpl();
+			if (result.getReturnCode() == ReturnCode.OK) {
+				result = new MethodResultImpl(ReturnCode.OK);
 			}
 			result.setReturnCode(listenerResult.getReturnCode());
 			result.addStatus(listenerResult.getStatus());

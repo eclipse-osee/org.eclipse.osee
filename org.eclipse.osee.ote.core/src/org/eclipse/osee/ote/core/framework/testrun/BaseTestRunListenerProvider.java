@@ -37,7 +37,7 @@ public class BaseTestRunListenerProvider implements ITestRunListenerProvider {
 	}
 
 	public IMethodResult notifyPostRun(IEventData eventData) {
-		MethodResultImpl result = MethodResultImpl.OK;
+		MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
 		boolean failed = false;
 		for (ITestRunListener listener : listeners) {
 		   try{
@@ -54,7 +54,7 @@ public class BaseTestRunListenerProvider implements ITestRunListenerProvider {
 	}
 
 	public IMethodResult notifyPostTestCase(IEventData eventData) {
-		MethodResultImpl result = MethodResultImpl.OK;
+		MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
 		boolean failed = false;
 		for (ITestRunListener listener : listeners) {
 			try{
@@ -71,7 +71,7 @@ public class BaseTestRunListenerProvider implements ITestRunListenerProvider {
 	}
 
 	public IMethodResult notifyPreRun(IEventData eventData) {
-		MethodResultImpl result = MethodResultImpl.OK;
+		MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
 		boolean failed = false;
 		for (ITestRunListener listener : listeners) {
 		   try{
@@ -88,7 +88,7 @@ public class BaseTestRunListenerProvider implements ITestRunListenerProvider {
 	}
 
 	public IMethodResult notifyPreTestCase(IEventData eventData) {
-		MethodResultImpl result = MethodResultImpl.OK;
+		MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
 		boolean failed = false;
 		for (ITestRunListener listener : listeners) {
 		   try{
@@ -107,8 +107,8 @@ public class BaseTestRunListenerProvider implements ITestRunListenerProvider {
 	private MethodResultImpl collectStatus(MethodResultImpl result,
 			IMethodResult listenerResult) {
 		if (listenerResult.getReturnCode() != ReturnCode.OK) {
-			if (result == MethodResultImpl.OK) {
-				result = new MethodResultImpl();
+			if (result.getReturnCode() == ReturnCode.OK) {
+				result = new MethodResultImpl(ReturnCode.OK);
 			}
 			result.setReturnCode(listenerResult.getReturnCode());
 			result.addStatus(listenerResult.getStatus());

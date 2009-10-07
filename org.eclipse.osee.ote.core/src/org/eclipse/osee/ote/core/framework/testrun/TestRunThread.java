@@ -80,8 +80,7 @@ public class TestRunThread extends OseeTestThread {
                   } else {
                      abort = true;
                      this.test.setAborted(true);
-                     MethodResultImpl methodresult = new MethodResultImpl();
-                     methodresult.setReturnCode(ReturnCode.ERROR);
+                     MethodResultImpl methodresult = new MethodResultImpl(ReturnCode.ABORTED);
                      methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, ex));
                      rb.append(methodresult);
                      OseeLog.log(
@@ -107,8 +106,7 @@ public class TestRunThread extends OseeTestThread {
     */
    private void addAbortResult(Throwable th) {
       if (rb.isReturnStatusOK()) {
-         MethodResultImpl methodresult = new MethodResultImpl();
-         methodresult.setReturnCode(ReturnCode.ABORTED);
+         MethodResultImpl methodresult = new MethodResultImpl(ReturnCode.ABORTED);
          if (th == null) {
             methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, "USER ABORTED"));
          } else {

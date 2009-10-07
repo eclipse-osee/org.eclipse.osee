@@ -23,7 +23,7 @@ public class ResultBuilder {
 	private boolean logToHM;
 	
 	public ResultBuilder(boolean logToHM){
-		result = new MethodResultImpl();
+		result = new MethodResultImpl(ReturnCode.OK);
 		this.logToHM = logToHM;
 	}
 	

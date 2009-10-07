@@ -49,11 +49,10 @@ public class BaseTestRunManager implements ITestRunManager {
    }
 
    public IMethodResult run(IPropertyStore propertyStore, TestEnvironment environment) {
-      IMethodResult result = MethodResultImpl.OK;
+      IMethodResult result = new MethodResultImpl(ReturnCode.OK);
       if (aborted) {
          aborted = false;
-         MethodResultImpl methodresult = new MethodResultImpl();
-         methodresult.setReturnCode(ReturnCode.ABORTED);
+         MethodResultImpl methodresult = new MethodResultImpl(ReturnCode.ABORTED);
          methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, "USER ABORTED"));
          result = methodresult;
          return result;
@@ -64,8 +63,7 @@ public class BaseTestRunManager implements ITestRunManager {
          testRunThread.join();
          result = testRunThread.getResult();
       } catch (Exception ex) {
-         MethodResultImpl methodresult = new MethodResultImpl();
-         methodresult.setReturnCode(ReturnCode.ERROR);
+         MethodResultImpl methodresult = new MethodResultImpl(ReturnCode.ERROR);
          methodresult.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, ex));
          result = methodresult;
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -81,7 +79,7 @@ public class BaseTestRunManager implements ITestRunManager {
    }
 
    public IMethodResult dispose() {
-      MethodResultImpl result = MethodResultImpl.OK;
+      MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       try {
          this.test.disposeTest();
          this.dataProvider = null;
@@ -89,8 +87,7 @@ public class BaseTestRunManager implements ITestRunManager {
          this.listenerProvider = null;
          this.test = null;
       } catch (Exception ex) {
-         result = new MethodResultImpl();
-         result.setReturnCode(ReturnCode.ERROR);
+         result = new MethodResultImpl(ReturnCode.ERROR);
          result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, ex));
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
@@ -98,7 +95,7 @@ public class BaseTestRunManager implements ITestRunManager {
    }
 
    public IMethodResult initialize(TestEnvironment env, IPropertyStore propertyStore) {
-      MethodResultImpl result = MethodResultImpl.OK;
+      MethodResultImpl result = new MethodResultImpl(ReturnCode.OK);
       try {
          aborted = false;
          this.dataProvider = testRunListenerProviderFactory.createListenerDataProvider();
@@ -106,8 +103,7 @@ public class BaseTestRunManager implements ITestRunManager {
          this.test = testFactory.createInstance(env, propertyStore);
          this.test.setListenerProvider(listenerProvider);
       } catch (Exception ex) {
-         result = new MethodResultImpl();
-         result.setReturnCode(ReturnCode.ERROR);
+         result = new MethodResultImpl(ReturnCode.ERROR);
          result.addStatus(new BaseStatus(TestEnvironment.class.getName(), Level.SEVERE, ex));
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }

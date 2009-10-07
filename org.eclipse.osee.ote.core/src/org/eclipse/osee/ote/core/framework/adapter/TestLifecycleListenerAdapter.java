@@ -14,6 +14,7 @@ import org.eclipse.osee.ote.core.environment.TestEnvironment;
 import org.eclipse.osee.ote.core.framework.IMethodResult;
 import org.eclipse.osee.ote.core.framework.ITestLifecycleListener;
 import org.eclipse.osee.ote.core.framework.MethodResultImpl;
+import org.eclipse.osee.ote.core.framework.ReturnCode;
 import org.eclipse.osee.ote.core.framework.event.IEventData;
 
 /**
@@ -22,18 +23,18 @@ import org.eclipse.osee.ote.core.framework.event.IEventData;
 public class TestLifecycleListenerAdapter implements ITestLifecycleListener {
 
    public IMethodResult postDispose(IEventData eventData, TestEnvironment env)   {
-	   return MethodResultImpl.OK;
+	   return new MethodResultImpl(ReturnCode.OK);
    }
 
    public IMethodResult postInstantiation(IEventData eventData, TestEnvironment env)   {
-	   return MethodResultImpl.OK;
+	   return new MethodResultImpl(ReturnCode.OK);
    }
 
    public IMethodResult preDispose(IEventData eventData, TestEnvironment env)   {
-	   return MethodResultImpl.OK;
+	   return new MethodResultImpl(ReturnCode.OK);
    }
 
    public IMethodResult preInstantiation(IEventData eventData, TestEnvironment env)  {
-	   return MethodResultImpl.OK;
+	   return new MethodResultImpl(ReturnCode.OK);
    }
 }

@@ -20,11 +20,9 @@ import org.eclipse.osee.framework.logging.IHealthStatus;
  */
 public class MethodResultImpl implements IMethodResult {
 
-	public static final MethodResultImpl OK = new MethodResultImpl();
-	
 	public static MethodResultImpl combine(IMethodResult result1, IMethodResult result2){
-		if(result1== OK && result2 == OK){
-			return OK;
+		if(result1.getReturnCode() == ReturnCode.OK && result2.getReturnCode() == ReturnCode.OK){
+			return new MethodResultImpl(ReturnCode.OK);
 		} else {
 			return new MethodResultImpl(result1, result2);
 		}
@@ -33,17 +31,17 @@ public class MethodResultImpl implements IMethodResult {
 	private List<IHealthStatus> statuses;
 	private ReturnCode returnCode;
 	
-	public MethodResultImpl(){
+	public MethodResultImpl(ReturnCode returnCode){
 		statuses = new ArrayList<IHealthStatus>();
-		returnCode = ReturnCode.OK;
+		returnCode = returnCode;
 	}
 	
 	private MethodResultImpl(IMethodResult result1, IMethodResult result2){
-		if(result1 != OK){
+		if(result1.getReturnCode() != ReturnCode.OK){
 			addStatus(result1.getStatus());
 			setReturnCode(result1.getReturnCode());
 		}
-		if(result2 != OK){
+		if(result2.getReturnCode() != ReturnCode.OK){
 			addStatus(result2.getStatus());
 			setReturnCode(result2.getReturnCode());
 		}

@@ -72,8 +72,7 @@ public class BaseRunManager implements IRunManager {
    		return rb.get();
       } catch (Throwable th){
          th.printStackTrace();
-         MethodResultImpl status = new MethodResultImpl();
-         status.setReturnCode(ReturnCode.ERROR);
+         MethodResultImpl status = new MethodResultImpl(ReturnCode.ERROR);
          status.addStatus(new BaseStatus(BaseRunManager.class.getName(), Level.SEVERE, th));
          return status;
       }
