@@ -112,8 +112,8 @@ public class ConflictTest {
       }
       assertEquals("Number of conflicts found is not equal to the number of conflicts expected",
             ConflictTestManager.numberOfConflicts(), conflicts.toArray().length);
-      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getAllLogs().size()),
-            monitorLog.getAllLogs().size() == 0);
+      assertTrue(String.format("%d SevereLogs during test.", monitorLog.getSevereLogs().size()),
+            monitorLog.getSevereLogs().size() == 0);
    }
 
    /**
