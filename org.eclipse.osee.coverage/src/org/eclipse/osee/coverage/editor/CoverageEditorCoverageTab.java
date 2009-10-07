@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
+import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
@@ -118,11 +119,23 @@ public class CoverageEditorCoverageTab extends FormPage {
 
       createToolbar();
 
+      getShowAllCheckbox().getCheckButton().addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (getIncludeCompletedCancelledCheckbox() != null) {
+               if (isIncludeCompletedCancelledCheckbox()) {
+                  getIncludeCompletedCancelledCheckbox().set(false);
+               }
+            }
+         }
+      });
+
    }
 
    public void createToolbar() {
       IToolBarManager toolBarManager = scrolledForm.getToolBarManager();
       toolBarManager.add(new CollapseAllAction(xCoverageViewer.getXViewer()));
+      toolBarManager.add(new ExpandAllAction(xCoverageViewer.getXViewer()));
       toolBarManager.add(xCoverageViewer.getXViewer().getCustomizeAction());
       CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
       scrolledForm.updateToolBar();
@@ -149,20 +162,22 @@ public class CoverageEditorCoverageTab extends FormPage {
    private Collection<ICoverageEditorItem> performSearchGetResults() throws OseeCoreException {
       Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
       Collection<CoverageMethodEnum> coverageMethods = getSelectedCoverageMethods();
-      User assignee = getSelectedUser();
+      User assignee = getAssignee();
       boolean includeCompleted = isIncludeCompletedCancelledCheckbox();
       for (ICoverageEditorItem item : provider.getCoverageEditorItems()) {
-         if (assignee != null && item.getUser().equals(assignee)) {
+         if (isShowAll()) {
             items.add(item);
-         }
-         if (item instanceof CoverageItem) {
-            CoverageItem coverageItem = (CoverageItem) item;
-            if (coverageMethods.contains(coverageItem.getCoverageMethod())) {
+         } else {
+            if (assignee != null && item.getUser().equals(assignee)) {
+               items.add(item);
+            } else if (item instanceof CoverageItem) {
+               CoverageItem coverageItem = (CoverageItem) item;
+               if (coverageMethods.contains(coverageItem.getCoverageMethod())) {
+                  items.add(item);
+               }
+            } else if ((!includeCompleted && !item.isCompleted()) || includeCompleted) {
                items.add(item);
             }
-         }
-         if ((!includeCompleted && !item.isCompleted()) || includeCompleted) {
-            items.add(item);
          }
       }
       return items;
@@ -170,8 +185,11 @@ public class CoverageEditorCoverageTab extends FormPage {
 
    public String getSelectedName(/*SearchType searchType*/) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      if (getSelectedUser() != null) {
-         sb.append(" - Assignee: " + getSelectedUser());
+      if (isShowAll()) {
+         sb.append(" - Show All");
+      }
+      if (getAssignee() != null) {
+         sb.append(" - Assignee: " + getAssignee());
       }
       if (isIncludeCompletedCancelledCheckbox()) {
          sb.append(" - Include Completed/Cancelled");
@@ -190,6 +208,13 @@ public class CoverageEditorCoverageTab extends FormPage {
       return getIncludeCompletedCancelledCheckbox().isSelected();
    }
 
+   private boolean isShowAll() {
+      if (getShowAllCheckbox() == null) {
+         return false;
+      }
+      return getShowAllCheckbox().isSelected();
+   }
+
    public XMembersCombo getAssigeeCombo() {
       return (XMembersCombo) getXWidget("Assignee");
    }
@@ -198,13 +223,17 @@ public class CoverageEditorCoverageTab extends FormPage {
       return (XCheckBox) getXWidget("Include Completed/Cancelled");
    }
 
+   public XCheckBox getShowAllCheckbox() {
+      return (XCheckBox) getXWidget("Show All");
+   }
+
    public void widgetsCreated() throws OseeCoreException {
       if (getIncludeCompletedCancelledCheckbox() != null) {
          getIncludeCompletedCancelledCheckbox().set(true);
       }
    }
 
-   private User getSelectedUser() {
+   private User getAssignee() {
       if (getAssigeeCombo() == null) {
          return null;
       }
@@ -234,8 +263,21 @@ public class CoverageEditorCoverageTab extends FormPage {
 
    public Result isParameterSelectionValid() throws OseeCoreException {
       try {
-         if (getSelectedCoverageMethods().size() == 0) {
-            return new Result("You must select at least one Coverage Method");
+         if (isShowAll()) {
+            if (getSelectedCoverageMethods().size() > 0) {
+               return new Result("Can't have Show All and Coverage Methods");
+            }
+            if (isIncludeCompletedCancelledCheckbox()) {
+               return new Result("Can't have Show All and Include Completed/Cancelled selected");
+            }
+            if (getAssignee() != null) {
+               return new Result("Can't have Show All and Assignee selected");
+            }
+         }
+         if (!isShowAll()) {
+            if (getSelectedCoverageMethods().size() == 0) {
+               return new Result("You must select at least one Coverage Method");
+            }
          }
          return Result.TrueResult;
       } catch (Exception ex) {
@@ -253,9 +295,12 @@ public class CoverageEditorCoverageTab extends FormPage {
       if (provider.isAssignable()) {
          sb.append("" +
          //
-         "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" beginComposite=\"4\" horizontalLabel=\"true\"/>" +
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show All\" beginComposite=\"6\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
          //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
+         //
+         "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>");
+
       }
       sb.append("</xWidgets>");
       return sb.toString();
