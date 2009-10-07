@@ -58,8 +58,8 @@ public class CoveragePackage implements ICoverageEditorItem, ICoverageEditorProv
    private final XResultData logResultData = new XResultData();
    private Artifact artifact;
 
-   public CoveragePackage() {
-      this(ARTIFACT_NAME, new Date());
+   public CoveragePackage(String name) {
+      this(name, new Date());
    }
 
    public CoveragePackage(String name, Date runDate) {

@@ -34,7 +34,7 @@ public class CoveragePackage1Import1 extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      CoveragePackage coveragePackage = new CoveragePackage();
+      CoveragePackage coveragePackage = new CoveragePackage(getName());
       CoverageEditor.open(new CoverageEditorInput(coveragePackage));
       // Process Import 1
       CoverageEditor editor = null;

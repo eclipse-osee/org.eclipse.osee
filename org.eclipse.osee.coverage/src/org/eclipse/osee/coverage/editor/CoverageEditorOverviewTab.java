@@ -8,6 +8,8 @@ package org.eclipse.osee.coverage.editor;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
+import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultsComposite;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -22,10 +24,11 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditorOverviewTab extends FormPage {
+public class CoverageEditorOverviewTab extends FormPage implements IRefreshActionHandler {
 
    private final CoverageEditor coverageEditor;
    private final ICoverageEditorProvider provider;
+   XResultsComposite xResultsComp;
 
    public CoverageEditorOverviewTab(String name, CoverageEditor coverageEditor, ICoverageEditorProvider provider) {
       super(coverageEditor, name, name);
@@ -42,17 +45,21 @@ public class CoverageEditorOverviewTab extends FormPage {
       form.setImage(ImageManager.getImage(provider.getTitleImage()));
 
       form.getBody().setLayout(ALayout.getZeroMarginLayout());
-      CoverageEditor.addToToolBar(form.getToolBarManager(), coverageEditor);
+      createToolBar();
       Composite composite = form.getBody();
       composite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-      XResultsComposite xResultsComp = new XResultsComposite(composite, SWT.NONE);
+      xResultsComp = new XResultsComposite(composite, SWT.NONE);
       xResultsComp.setLayoutData(new GridData(GridData.FILL_BOTH | GridData.VERTICAL_ALIGN_BEGINNING));
       GridData gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 500;
       xResultsComp.setLayoutData(gd);
       coverageEditor.getToolkit().adapt(xResultsComp);
 
+      refreshHtml();
+   }
+
+   public void refreshHtml() {
       XResultData rd = new XResultData();
       provider.getOverviewHtmlHeader(rd);
       rd.log(AHTML.getLabelValueStr("Coverage Units", String.valueOf(provider.getCoverageUnits().size())));
@@ -69,9 +76,19 @@ public class CoverageEditorOverviewTab extends FormPage {
       xResultsComp.setHtmlText(rd.getReport(provider.getName()).getManipulatedHtml(), provider.getName());
    }
 
+   public void createToolBar() {
+      getManagedForm().getForm().getToolBarManager().add(new RefreshAction(this));
+      CoverageEditor.addToToolBar(getManagedForm().getForm().getToolBarManager(), coverageEditor);
+   }
+
    @Override
    public FormEditor getEditor() {
       return super.getEditor();
+   }
+
+   @Override
+   public void refreshActionHandler() {
+      refreshHtml();
    }
 
 }

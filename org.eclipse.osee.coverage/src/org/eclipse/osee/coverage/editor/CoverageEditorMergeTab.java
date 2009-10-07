@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.ActionContributionItem;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryPackage;
@@ -235,7 +234,6 @@ public class CoverageEditorMergeTab extends FormPage {
    }
 
    public void createEditorToolbar() {
-      IToolBarManager toolBarManager = scrolledForm.getToolBarManager();
       CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);
       scrolledForm.updateToolBar();
    }

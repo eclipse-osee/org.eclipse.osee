@@ -48,6 +48,7 @@ public class CoverageNavigateViewItems extends XNavigateViewItems {
    }
 
    private void addExtensionPointItems(List<XNavigateItem> items) {
+      items.add(new NewCoveragePackageItem(null));
       items.add(new OpenCoveragePackageItem(null));
       items.add(new DeleteCoveragePackageItem(null));
 

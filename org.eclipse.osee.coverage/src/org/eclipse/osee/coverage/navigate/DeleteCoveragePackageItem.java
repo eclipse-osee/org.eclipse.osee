@@ -38,9 +38,10 @@ public class DeleteCoveragePackageItem extends XNavigateItem {
                            coveragePackage.getName()), "Purge");
          if (cDialog.open() == 0) {
             boolean purge = cDialog.isChecked();
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+            SkynetTransaction transaction = null;
+            if (!purge) transaction = new SkynetTransaction(BranchManager.getCommonBranch());
             coveragePackage.delete(transaction, purge);
-            transaction.execute();
+            if (!purge) transaction.execute();
          }
       }
    }
