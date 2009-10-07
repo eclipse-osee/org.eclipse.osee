@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.core.framework;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.osee.framework.logging.IHealthStatus;
 
 /**
@@ -71,7 +70,8 @@ public class MethodResultImpl implements IMethodResult {
 		statuses.addAll(status);
 	}
 
-	public String toString(){
+   @Override
+   public String toString(){
 	   StringBuilder sb = new StringBuilder();
 	   sb.append(returnCode.toString());
 	   sb.append("\n");
