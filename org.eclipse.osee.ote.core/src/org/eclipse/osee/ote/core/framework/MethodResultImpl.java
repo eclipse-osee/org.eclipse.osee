@@ -12,6 +12,7 @@ package org.eclipse.osee.ote.core.framework;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.osee.framework.logging.IHealthStatus;
 
 /**
@@ -33,7 +34,7 @@ public class MethodResultImpl implements IMethodResult {
 	
 	public MethodResultImpl(ReturnCode returnCode){
 		statuses = new ArrayList<IHealthStatus>();
-		returnCode = returnCode;
+		this.returnCode = returnCode;
 	}
 	
 	private MethodResultImpl(IMethodResult result1, IMethodResult result2){
