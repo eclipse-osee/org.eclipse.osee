@@ -12,14 +12,18 @@ package org.eclipse.osee.ats.health;
 
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
  * @author Donald G. Dunne
  */
 public interface IAtsHealthCheck {
 
-   public void check(Collection<Artifact> artifacts, XResultData rd) throws OseeCoreException;
+   /**
+    * Check artifacts for problems. Log results in resultsMap indexed by test name as key (they will be organized by key
+    * in report). Insert "Error: " at beginning of resultMap value if log item is an error. This will be highlighted.
+    */
+   public void check(Collection<Artifact> artifacts, HashCollection<String, String> resultsMap) throws OseeCoreException;
 
 }
