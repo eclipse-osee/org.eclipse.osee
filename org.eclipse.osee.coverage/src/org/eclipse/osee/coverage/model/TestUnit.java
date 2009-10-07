@@ -139,7 +139,8 @@ public class TestUnit implements ICoverageEditorItem {
 
    public Artifact getArtifact(boolean create) throws OseeCoreException {
       if (artifact == null && create) {
-         artifact = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
+         artifact =
+               ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch(), guid, null);
       }
       return artifact;
    }
@@ -149,11 +150,11 @@ public class TestUnit implements ICoverageEditorItem {
       getArtifact(false);
       if (artifact != null) {
          setName(artifact.getName());
+         setGuid(artifact.getGuid());
          KeyValueArtifact keyValueArtifact =
                new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-         setGuid(keyValueArtifact.getWorkDataValue("guid"));
-         setLocation(keyValueArtifact.getWorkDataValue("location"));
-         setPreviewHtml(keyValueArtifact.getWorkDataValue("previewHtml"));
+         setLocation(keyValueArtifact.getValue("location"));
+         setPreviewHtml(keyValueArtifact.getValue("previewHtml"));
       }
    }
 
@@ -164,9 +165,8 @@ public class TestUnit implements ICoverageEditorItem {
       artifact.setAttributeValues(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, items);
       KeyValueArtifact keyValueArtifact =
             new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-      keyValueArtifact.addWorkDataKeyValue("previewHtml", getPreviewHtml());
-      keyValueArtifact.addWorkDataKeyValue("location", getLocation());
-      keyValueArtifact.addWorkDataKeyValue("guid", guid);
+      keyValueArtifact.setValue("previewHtml", getPreviewHtml());
+      keyValueArtifact.setValue("location", getLocation());
       keyValueArtifact.save();
       artifact.persist(transaction);
    }
@@ -175,4 +175,12 @@ public class TestUnit implements ICoverageEditorItem {
       this.guid = guid;
    }
 
+   public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
+      if (getArtifact(false) != null) {
+         if (purge)
+            getArtifact(false).purgeFromBranch();
+         else
+            getArtifact(false).deleteAndPersist(transaction);
+      }
+   }
 }

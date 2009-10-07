@@ -14,32 +14,45 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.ICoverageEditorProvider;
 import org.eclipse.osee.coverage.editor.ICoverageTabProvider;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
+import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
+import org.eclipse.swt.graphics.Image;
 
 /**
  * Single import of coverage information that includes
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProvider {
+public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorItem, ICoverageTabProvider {
 
-   private final String guid = GUID.create();
-   private final Date runDate;
+   private String guid = GUID.create();
+   private Date runDate;
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    private final List<TestUnit> testUnits = new ArrayList<TestUnit>();
    private final XResultData logResultData = new XResultData();
    private String location = "";
    private String blamName = "";
+   private String name;
+   private Artifact artifact;
 
    public CoverageImport() {
       this(new Date());
@@ -59,6 +72,7 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProv
    }
 
    public void addCoverageUnit(CoverageUnit coverageUnit) {
+      coverageUnit.setParentCoverageEditorItem(this);
       coverageUnits.add(coverageUnit);
    }
 
@@ -162,4 +176,114 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageTabProv
    public void setBlamName(String blamName) {
       this.blamName = blamName;
    }
+
+   public Artifact getArtifact(boolean create) throws OseeCoreException {
+      if (artifact == null && create) {
+         artifact =
+               ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch(), guid, null);
+      }
+      return artifact;
+   }
+
+   public void load() throws OseeCoreException {
+      coverageUnits.clear();
+      getArtifact(false);
+      if (artifact != null) {
+         setName(artifact.getName());
+         KeyValueArtifact keyValueArtifact =
+               new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+         if (Strings.isValid(keyValueArtifact.getValue("location"))) {
+            setLocation(keyValueArtifact.getValue("location"));
+         }
+         if (Strings.isValid(keyValueArtifact.getValue("blamName"))) {
+            setBlamName(keyValueArtifact.getValue("blamName"));
+         }
+         for (Artifact childArt : artifact.getChildren()) {
+            if (childArt.getArtifactTypeName().equals(GeneralData.ARTIFACT_TYPE)) {
+               coverageUnits.add(new CoverageUnit(childArt));
+            }
+         }
+      }
+   }
+
+   public void save(SkynetTransaction transaction) throws OseeCoreException {
+      List<String> items = new ArrayList<String>();
+      getArtifact(true);
+      artifact.setName(getName());
+      artifact.setAttributeValues(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, items);
+      KeyValueArtifact keyValueArtifact =
+            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+      keyValueArtifact.setValue("location", location);
+      keyValueArtifact.setValue("blamName", blamName);
+      keyValueArtifact.save();
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         coverageUnit.save(transaction);
+      }
+      artifact.persist(transaction);
+   }
+
+   public void setGuid(String guid) {
+      this.guid = guid;
+   }
+
+   public void setRunDate(Date runDate) {
+      this.runDate = runDate;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   @Override
+   public Object[] getChildren() {
+      return null;
+   }
+
+   @Override
+   public Image getCoverageEditorImage(XViewerColumn xCol) {
+      return null;
+   }
+
+   @Override
+   public String getCoverageEditorValue(XViewerColumn xCol) {
+      return null;
+   }
+
+   @Override
+   public OseeImage getOseeImage() {
+      return null;
+   }
+
+   @Override
+   public ICoverageEditorItem getParent() {
+      return null;
+   }
+
+   @Override
+   public User getUser() {
+      return null;
+   }
+
+   @Override
+   public boolean isCompleted() {
+      return false;
+   }
+
+   @Override
+   public Result isEditable() {
+      return null;
+   }
+
+   @Override
+   public void setUser(User user) {
+   }
+
+   @Override
+   public boolean isCovered() {
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         if (!coverageUnit.isCovered()) return false;
+      }
+      return true;
+   }
+
 }

@@ -36,18 +36,19 @@ import org.eclipse.swt.graphics.Image;
  */
 public class CoverageUnit implements ICoverageEditorItem {
 
+   public static String ARTIFACT_NAME = "Coverage Unit";
    private String name;
    private String guid = GUID.create();
    private String text;
    private final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    private String location;
    private final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
-   private CoverageUnit parentCoverageUnit;
+   private ICoverageEditorItem parentCoverageEditorItem;
    private Artifact artifact;
 
-   public CoverageUnit(CoverageUnit parentCoverageUnit, String name, String location) {
+   public CoverageUnit(ICoverageEditorItem parentCoverageEditorItem, String name, String location) {
       super();
-      this.parentCoverageUnit = parentCoverageUnit;
+      this.parentCoverageEditorItem = parentCoverageEditorItem;
       this.name = name;
       this.location = location;
    }
@@ -122,7 +123,10 @@ public class CoverageUnit implements ICoverageEditorItem {
    }
 
    public CoverageUnit getParentCoverageUnit() {
-      return parentCoverageUnit;
+      if (parentCoverageEditorItem instanceof CoverageUnit) {
+         return (CoverageUnit) parentCoverageEditorItem;
+      }
+      return null;
    }
 
    @Override
@@ -209,12 +213,12 @@ public class CoverageUnit implements ICoverageEditorItem {
 
    @Override
    public ICoverageEditorItem getParent() {
-      return parentCoverageUnit;
+      return parentCoverageEditorItem;
    }
 
    public Artifact getArtifact(boolean create) throws OseeCoreException {
       if (artifact == null && create) {
-         artifact = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
+         artifact = ArtifactTypeManager.addArtifact(ARTIFACT_NAME, BranchManager.getCommonBranch(), guid, null);
       }
       return artifact;
    }
@@ -225,16 +229,14 @@ public class CoverageUnit implements ICoverageEditorItem {
       getArtifact(false);
       if (artifact != null) {
          setName(artifact.getName());
+         setGuid(artifact.getGuid());
          KeyValueArtifact keyValueArtifact =
                new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-         setGuid(keyValueArtifact.getWorkDataValue("guid"));
-         for (String line : artifact.getAttributesToStringList(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME)) {
-            if (line.startsWith("<CvgItem>")) {
-               coverageItems.add(new CoverageItem(this, line));
-            }
+         for (String line : keyValueArtifact.getValues("cvgItem")) {
+            coverageItems.add(new CoverageItem(this, line));
          }
          for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.getArtifactTypeName().equals(GeneralData.ARTIFACT_TYPE)) {
+            if (childArt.getArtifactTypeName().equals(CoverageUnit.ARTIFACT_NAME)) {
                coverageUnits.add(new CoverageUnit(childArt));
             }
          }
@@ -242,22 +244,22 @@ public class CoverageUnit implements ICoverageEditorItem {
    }
 
    public void save(SkynetTransaction transaction) throws OseeCoreException {
+      getArtifact(true);
+      artifact.setName(getName());
+
+      KeyValueArtifact keyValueArtifact =
+            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
       List<String> items = new ArrayList<String>();
       for (CoverageItem coverageItem : coverageItems) {
          items.add(coverageItem.toXml());
          coverageItem.save(transaction);
       }
-      getArtifact(true);
-      artifact.setName(getName());
-      artifact.setAttributeValues(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, items);
-      KeyValueArtifact keyValueArtifact =
-            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-      keyValueArtifact.addWorkDataKeyValue("text", text);
-      keyValueArtifact.addWorkDataKeyValue("guid", guid);
-      keyValueArtifact.addWorkDataKeyValue("location", text);
+      keyValueArtifact.setValues("cvgItem", items);
+      keyValueArtifact.setValue("text", text);
+      keyValueArtifact.setValue("location", location);
       keyValueArtifact.save();
-      if (parentCoverageUnit != null) {
-         parentCoverageUnit.getArtifact(true).addChild(artifact);
+      if (parentCoverageEditorItem != null) {
+         parentCoverageEditorItem.getArtifact(true).addChild(artifact);
       }
       for (CoverageUnit coverageUnit : coverageUnits) {
          coverageUnit.save(transaction);
@@ -265,8 +267,23 @@ public class CoverageUnit implements ICoverageEditorItem {
       artifact.persist(transaction);
    }
 
-   public void setParentCoverageUnit(CoverageUnit parentCoverageUnit) {
-      this.parentCoverageUnit = parentCoverageUnit;
+   public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
+      if (getArtifact(false) != null) {
+         if (purge)
+            getArtifact(false).purgeFromBranch();
+         else
+            getArtifact(false).deleteAndPersist(transaction);
+      }
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         coverageUnit.delete(transaction, purge);
+      }
+      for (CoverageItem coverageItem : coverageItems) {
+         coverageItem.delete(transaction, purge);
+      }
+   }
+
+   public void setParentCoverageEditorItem(ICoverageEditorItem parent) {
+      this.parentCoverageEditorItem = parent;
    }
 
    public void setGuid(String guid) {

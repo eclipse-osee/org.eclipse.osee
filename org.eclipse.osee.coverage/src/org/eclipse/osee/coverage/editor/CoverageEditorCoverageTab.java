@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
+import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
@@ -68,7 +69,7 @@ public class CoverageEditorCoverageTab extends FormPage {
       super.createFormContent(managedForm);
 
       scrolledForm = managedForm.getForm();
-      scrolledForm.setText(provider.getName());
+      scrolledForm.setText(provider.getName() + " - " + XDate.getDateStr(provider.getRunDate(), XDate.MMDDYYHHMM) + " - " + provider.getCoverageItems().size() + " Coverage Items");
       scrolledForm.setImage(ImageManager.getImage(provider.getTitleImage()));
 
       scrolledForm.getBody().setLayout(new GridLayout(2, false));

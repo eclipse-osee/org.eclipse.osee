@@ -61,4 +61,12 @@
                classname="org.eclipse.osee.coverage.util.widget.CoverageXWidgetFactory">
          </XWidgetProvider>
       </extension>
+      <extension
+            id="OseeTypes_Coverage"
+            name="OseeTypes_Coverage"
+            point="org.eclipse.osee.framework.skynet.core.OseeTypes">
+         <OseeTypes
+               resource="support/OseeTypes_Coverage.osee">
+         </OseeTypes>
+      </extension>
 </plugin>

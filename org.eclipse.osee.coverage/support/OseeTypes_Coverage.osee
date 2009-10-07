@@ -1,0 +1,10 @@
+import "platform:/plugin/org.eclipse.osee.ats/support/OseeTypes_ATS.osee"
+
+artifactType "Coverage Package" extends "General Data" {
+   guid "AAMFDit0v3dmftS2OVQZ"
+}
+
+artifactType "Coverage Unit" extends "General Data" {
+   guid "AbMFDit0v2dmftS2OVDZ"
+}
+

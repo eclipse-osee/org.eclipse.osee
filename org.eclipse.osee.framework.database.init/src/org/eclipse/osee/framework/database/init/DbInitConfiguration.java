@@ -40,6 +40,7 @@ public class DbInitConfiguration {
       List<String> oseeTypes = new ArrayList<String>();
       oseeTypes.add("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework");
       oseeTypes.add("org.eclipse.osee.ats.OseeTypes_ATS");
+      oseeTypes.add("org.eclipse.osee.coverage.OseeTypes_Coverage");
       oseeTypes.addAll(oseeTypeIds);
       return oseeTypes;
    }

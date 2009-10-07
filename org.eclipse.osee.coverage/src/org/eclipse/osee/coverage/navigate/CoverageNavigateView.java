@@ -48,8 +48,6 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
    public void createPartControl(Composite parent) {
       xNavComp = new XNavigateComposite(new CoverageNavigateViewItems(), parent, SWT.NONE);
 
-      xNavComp.getFilteredTree().getViewer().setSorter(new CoverageNavigateViewerSorter());
-
       createActions();
       xNavComp.refresh();
 

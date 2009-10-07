@@ -10,18 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import java.util.HashMap;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 
 /**
- * Allows easy storage/loading of key/value pairs for any artifact with string attribute type
+ * Allows easy storage/loading of key/value pairs for any artifact with string attribute type. Any attributes that match
+ * key=value will be processed. All others will be ignored. Multiple instances of same key are allowed.
  * 
  * @author Donald G. Dunne
  */
@@ -35,22 +35,23 @@ public class KeyValueArtifact {
       this.keyValueAttributeName = keyValueAttributeName;
       load();
    }
-   protected Map<String, String> workDataKeyValueMap = new HashMap<String, String>();
+   protected HashCollection<String, String> keyValueMap = new HashCollection<String, String>(20);
    private final Pattern keyValuePattern = Pattern.compile("^(.*?)=(.*)$", Pattern.MULTILINE | Pattern.DOTALL);
 
-   public Map<String, String> getWorkDataKeyValueMap() {
-      return workDataKeyValueMap;
+   public HashCollection<String, String> getHashCollection() {
+      return keyValueMap;
    }
 
-   public void setWorkDataKeyValueMap(Map<String, String> workDataKeyValueMap) {
-      this.workDataKeyValueMap = workDataKeyValueMap;
+   public void setWorkDataKeyValueMap(HashCollection<String, String> hashCollection) {
+      this.keyValueMap = hashCollection;
    }
 
    public void save() throws OseeCoreException {
-      if (workDataKeyValueMap.size() > 0) {
+      if (keyValueMap.size() > 0) {
          Set<String> keyValues = new HashSet<String>();
-         for (Entry<String, String> entry : workDataKeyValueMap.entrySet()) {
-            keyValues.add(entry.getKey() + "=" + entry.getValue());
+         for (String key : keyValueMap.keySet()) {
+            for (String value : keyValueMap.getValues(key))
+               keyValues.add(key + "=" + value);
          }
          artifact.setAttributeValues(keyValueAttributeName, keyValues);
       }
@@ -60,19 +61,38 @@ public class KeyValueArtifact {
       for (String value : artifact.getAttributesToStringList(keyValueAttributeName)) {
          Matcher m = keyValuePattern.matcher(value);
          if (m.find()) {
-            addWorkDataKeyValue(m.group(1), m.group(2));
-         } else {
-            throw new OseeStateException("Illegal value for WorkData; must be key=value");
+            addValue(m.group(1), m.group(2));
          }
       }
    }
 
-   public String getWorkDataValue(String key) {
-      return workDataKeyValueMap.get(key);
+   public Collection<String> getValues(String key) {
+      if (keyValueMap.containsKey(key)) {
+         return keyValueMap.getValues(key);
+      }
+      return Collections.emptyList();
    }
 
-   public void addWorkDataKeyValue(String key, String value) {
-      workDataKeyValueMap.put(key, value);
+   /**
+    * Gets first value even if there are more. Returns null if none.
+    */
+   public String getValue(String key) {
+      if (keyValueMap.getValues(key).size() > 0) return keyValueMap.getValues(key).iterator().next();
+      return null;
+   }
+
+   public void setValues(String key, Collection<String> values) {
+      keyValueMap.removeValues(key);
+      keyValueMap.put(key, values);
+   }
+
+   public void setValue(String key, String value) {
+      keyValueMap.removeValues(key);
+      keyValueMap.put(key, value);
+   }
+
+   public void addValue(String key, String value) {
+      keyValueMap.put(key, value);
    }
 
 }

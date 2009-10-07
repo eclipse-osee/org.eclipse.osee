@@ -16,6 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.CountingMap;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.IHealthStatus;
@@ -44,6 +45,7 @@ public class XResultData {
    private static enum Type {
       Severe, Warning, Info;
    }
+   CountingMap<Type> count = new CountingMap<Type>();
 
    public static void runExample() {
       runExample("This is my report title");
@@ -123,6 +125,7 @@ public class XResultData {
    }
 
    public void logStr(Type type, final String str, final IProgressMonitor monitor) {
+      count.put(type);
       String resultStr = "";
       if (type == Type.Warning)
          resultStr = "Warning: " + str;
@@ -218,4 +221,15 @@ public class XResultData {
             XResultBrowserHyperCmd.getHyperCmdStr(XResultBrowserHyperCmd.openAction, art.getGuid()), name);
    }
 
+   private int getCount(Type type) {
+      return count.get(type);
+   }
+
+   public int getNumErrors() {
+      return getCount(Type.Severe);
+   }
+
+   public int getNumWarnings() {
+      return getCount(Type.Warning);
+   }
 }

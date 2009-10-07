@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
@@ -53,7 +54,7 @@ public class CoverageItem implements ICoverageEditorItem {
    }
 
    public CoverageItem(CoverageUnit parentCoverageUnit, String xml) throws OseeCoreException {
-      CoverageMethodEnum coverageMethod = CoverageMethodEnum.valueOf(AXml.getTagData(xml, "method"));
+      CoverageMethodEnum coverageMethod = CoverageMethodEnum.valueOf(AXml.getTagData(xml, "methodType"));
       String execNum = AXml.getTagData(xml, "execNum");
       this.coverageUnit = parentCoverageUnit;
       this.coverageMethod = coverageMethod;
@@ -61,6 +62,8 @@ public class CoverageItem implements ICoverageEditorItem {
       setGuid(AXml.getTagData(xml, "guid"));
       String lineNum = AXml.getTagData(xml, "line");
       if (Strings.isValid(lineNum)) setLineNum(lineNum);
+      String methodNum = AXml.getTagData(xml, "methodNum");
+      if (Strings.isValid(methodNum)) setMethodNum(methodNum);
       String userId = AXml.getTagData(xml, "user");
       String location = AXml.getTagData(xml, "location");
       if (Strings.isValid(location)) setUser(UserManager.getUserByUserId(userId));
@@ -205,11 +208,13 @@ public class CoverageItem implements ICoverageEditorItem {
       StringBuffer sb = new StringBuffer(200);
       sb.append("<CvgItem>");
       sb.append(AXml.addTagData("guid", getGuid()));
-      sb.append(AXml.addTagData("method", getMethodNum()));
+      sb.append(AXml.addTagData("methodNum", getMethodNum()));
       sb.append(AXml.addTagData("line", getLineNum()));
       sb.append(AXml.addTagData("execNum", getExecuteNum()));
-      sb.append(AXml.addTagData("user", getUser().getUserId()));
-      sb.append(AXml.addTagData("method", getCoverageMethod().toString()));
+      if (getUser() != null) {
+         sb.append(AXml.addTagData("user", getUser().getUserId()));
+      }
+      sb.append(AXml.addTagData("methodType", getCoverageMethod().toString()));
       sb.append(AXml.addTagData("testUnits", getTestUnitGuidList(getTestUnits())));
       sb.append("</CvgItem>");
       return sb.toString();
@@ -223,10 +228,27 @@ public class CoverageItem implements ICoverageEditorItem {
       return Collections.toString(guids, ",");
    }
 
+   public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
+      if (getArtifact(false) != null) {
+         if (purge)
+            getArtifact(false).purgeFromBranch();
+         else
+            getArtifact(false).deleteAndPersist(transaction);
+      }
+      for (TestUnit testUnit : testUnits) {
+         testUnit.delete(transaction, purge);
+      }
+   }
+
    public void save(SkynetTransaction transaction) throws OseeCoreException {
       for (TestUnit testUnit : testUnits) {
          testUnit.save(transaction);
       }
+   }
+
+   @Override
+   public Artifact getArtifact(boolean create) throws OseeCoreException {
+      return null;
    }
 
 }
