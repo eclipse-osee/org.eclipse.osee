@@ -179,7 +179,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          }
       }
       // Log resultMap data into xResultData
-      String[] keys = testNameToResultsMap.keySet().toArray(new String[testNameToResultsMap.size()]);
+      String[] keys = testNameToResultsMap.keySet().toArray(new String[testNameToResultsMap.keySet().size()]);
       Arrays.sort(keys);
       for (String testName : keys) {
          xResultData.log(testName);
