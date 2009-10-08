@@ -23,17 +23,17 @@ import org.eclipse.osee.framework.skynet.core.test.cases.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
 import org.eclipse.osee.framework.skynet.core.test.commit.ChangesTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.commit.LoadCommitItemsFromDbTest;
-import org.eclipse.osee.framework.skynet.core.test.relation.RelationSorterTest;
+import org.eclipse.osee.framework.skynet.core.test.relation.RelationTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeCacheTestSuite;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {BranchTestSuite.class, OseeCacheTestSuite.class, ChangesTestSuite.class,
+@Suite.SuiteClasses( {BranchTestSuite.class, RelationTestSuite.class, OseeCacheTestSuite.class, ChangesTestSuite.class,
       LoadCommitItemsFromDbTest.class, ArtifactTypeInheritanceTest.class, Artifact_setAttributeValues.class,
       CsvArtifactTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class, StaticIdManagerTest.class,
-      DuplicateHridTest.class, RelationOrderingTest.class, RelationSorterTest.class})
+      DuplicateHridTest.class, RelationOrderingTest.class})
 /**
  * @author Donald G. Dunne
  */

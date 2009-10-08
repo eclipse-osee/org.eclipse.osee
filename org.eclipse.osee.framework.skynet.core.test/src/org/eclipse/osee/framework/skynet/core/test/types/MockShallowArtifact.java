@@ -9,20 +9,25 @@ import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 // It purposely avoids using the getFullArtifact method from the base class
 public final class MockShallowArtifact extends ShallowArtifact {
 
+   private boolean wasGetFullArtifactCalled;
+
    public MockShallowArtifact(BranchCache cache, int artifactId) {
       super(cache, artifactId);
+      clear();
+   }
+
+   public void clear() {
+      wasGetFullArtifactCalled = false;
+   }
+
+   public boolean wasGetFullArtifactCalled() {
+      return wasGetFullArtifactCalled;
    }
 
    @Override
    public Artifact getFullArtifact() throws OseeCoreException {
-      Artifact associatedArtifact = null;
-      //         if (getArtId() > 0) {
-      //            associatedArtifact = ArtifactQuery.getArtifactFromId(getArtId(), getBranch());
-      //         } else {
-      //            associatedArtifact = UserManager.getUser(SystemUser.OseeSystem);
-      //            artifactId = associatedArtifact.getArtId();
-      //         }
-      return associatedArtifact;
+      wasGetFullArtifactCalled = true;
+      return null;
    }
 
 }

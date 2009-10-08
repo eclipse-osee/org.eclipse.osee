@@ -82,25 +82,42 @@ public abstract class AbstractOseeCacheTest<T extends IOseeStorableType> {
       }
    }
 
+   @SuppressWarnings("unchecked")
    @org.junit.Test
    public void testDecache() throws OseeCoreException {
-      T item = data.get(0);
-      Assert.assertEquals(item, cache.getByGuid(item.getGuid()));
-      Assert.assertEquals(item, cache.getById(item.getId()));
-      Assert.assertEquals(item, cache.getUniqueByName(item.getName()));
-      Assert.assertTrue(cache.getAll().contains(item));
+      T item1 = data.get(0);
+      checkCached(item1, true);
 
-      cache.decache(item);
-      Assert.assertNull(cache.getByGuid(item.getGuid()));
-      Assert.assertNull(cache.getById(item.getId()));
-      Assert.assertNull(cache.getUniqueByName(item.getName()));
-      Assert.assertFalse(cache.getAll().contains(item));
+      cache.decache(item1);
+      checkCached(item1, false);
 
-      cache.cache(item);
-      Assert.assertEquals(item, cache.getByGuid(item.getGuid()));
-      Assert.assertEquals(item, cache.getById(item.getId()));
-      Assert.assertEquals(item, cache.getUniqueByName(item.getName()));
-      Assert.assertTrue(cache.getAll().contains(item));
+      cache.cache(item1);
+      checkCached(item1, true);
+
+      T item2 = data.get(1);
+      checkCached(item2, true);
+
+      cache.decache(item1, item2);
+      checkCached(item1, false);
+      checkCached(item2, false);
+
+      cache.cache(item1, item2);
+      checkCached(item1, true);
+      checkCached(item2, true);
+   }
+
+   private void checkCached(T item, boolean isInCacheExpected) throws OseeCoreException {
+      if (isInCacheExpected) {
+         Assert.assertEquals(item, cache.getByGuid(item.getGuid()));
+         Assert.assertEquals(item, cache.getById(item.getId()));
+         Assert.assertEquals(item, cache.getUniqueByName(item.getName()));
+         Assert.assertTrue(cache.getAll().contains(item));
+      } else {
+         Assert.assertNull(cache.getByGuid(item.getGuid()));
+         Assert.assertNull(cache.getById(item.getId()));
+         Assert.assertNull(cache.getUniqueByName(item.getName()));
+         Assert.assertFalse(cache.getAll().contains(item));
+      }
    }
 
    @org.junit.Test

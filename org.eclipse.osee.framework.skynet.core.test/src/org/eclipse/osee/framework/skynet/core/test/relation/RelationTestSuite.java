@@ -8,21 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-
 package org.eclipse.osee.framework.skynet.core.test.relation;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {RelationOrderTestSuite.class, RelationTypeSideSorterTest.class})
 /**
- * @author Ryan Schmitt
+ * @author Roberto E. Escobar
  */
-public class RelationSorterTest {
-   @Test
-   public void testEquals() throws OseeCoreException {
-      //      RelationSorter a = new RelationSorter(RelationTypeManager.getType(6), RelationSide.SIDE_A);
-      //      RelationSorter b = new RelationSorter(RelationTypeManager.getType(7), RelationSide.SIDE_B);
-      //      assertFalse(a.equals(b));
-      //      assertTrue(a.equals(a));
-   }
+public class RelationTestSuite {
+
 }
