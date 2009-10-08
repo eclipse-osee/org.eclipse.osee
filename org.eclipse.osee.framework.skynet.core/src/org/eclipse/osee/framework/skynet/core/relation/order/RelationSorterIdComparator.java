@@ -16,10 +16,10 @@ import java.util.Comparator;
  * @author Andrew M. Finkbeiner
  *
  */
-public class RelationOrderIdComparator implements Comparator<RelationOrderId> {
+public class RelationSorterIdComparator implements Comparator<IRelationSorterId> {
 
    @Override
-   public int compare(RelationOrderId o1, RelationOrderId o2) {
+   public int compare(IRelationSorterId o1, IRelationSorterId o2) {
       return o1.prettyName().compareToIgnoreCase(o2.prettyName());
    }
 

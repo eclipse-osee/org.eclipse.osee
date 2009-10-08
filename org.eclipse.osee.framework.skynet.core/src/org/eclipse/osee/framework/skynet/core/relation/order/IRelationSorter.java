@@ -11,15 +11,14 @@
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
 import java.util.List;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Andrew M. Finkbeiner
- *
  */
-public interface RelationOrder {
+public interface IRelationSorter {
 
-   RelationOrderId getOrderId();
+   IRelationSorterId getSorterId();
 
-   void sort(List<Artifact> relatives, List<String> relativeSequence);
+   void sort(List<? extends IArtifact> relatives, List<String> relativeSequence);
 }

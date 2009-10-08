@@ -8,24 +8,27 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.relation.order;
+package org.eclipse.osee.framework.skynet.core.relation.sorters;
 
 import java.util.Collections;
 import java.util.List;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
+import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Andrew M. Finkbeiner
  */
-public class UserDefinedOrder implements RelationOrder {
+public class UserDefinedRelationSorter implements IRelationSorter {
 
    @Override
-   public RelationOrderId getOrderId() {
+   public IRelationSorterId getSorterId() {
       return RelationOrderBaseTypes.USER_DEFINED;
    }
 
    @Override
-   public void sort(List<Artifact> relatives, List<String> relativeSequence) {
+   public void sort(List<? extends IArtifact> relatives, List<String> relativeSequence) {
       if (relatives.size() > 1) {
          Collections.sort(relatives, new UserDefinedOrderComparator(relativeSequence));
       }

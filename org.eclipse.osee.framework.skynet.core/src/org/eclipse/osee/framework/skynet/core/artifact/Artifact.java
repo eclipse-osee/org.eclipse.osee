@@ -72,12 +72,12 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
+import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -182,7 +182,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return RelationManager.getRelatedArtifacts(this, relationType);
    }
 
-   public List<Artifact> getRelatedArtifacts(RelationSorter relationSorter) throws OseeCoreException {
+   public List<Artifact> getRelatedArtifacts(RelationTypeSideSorter relationSorter) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationSorter.getRelationType(),
             relationSorter.getSide()));
    }
@@ -245,7 +245,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return RelationManager.getRelatedArtifactsCount(this, relationEnum.getRelationType(), relationEnum.getSide());
    }
 
-   public int getRelatedArtifactsCount(RelationSorter relationSorter) throws OseeCoreException {
+   public int getRelatedArtifactsCount(RelationTypeSideSorter relationSorter) throws OseeCoreException {
       return RelationManager.getRelatedArtifactsCount(relationSorter.getArtifact(), relationSorter.getRelationType(),
             relationSorter.getSide());
    }
@@ -1284,7 +1284,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       setRelationOrder(targetArtifact, insertAfterTarget, relationSide, artifact);
    }
 
-   public void setRelationOrder(IRelationEnumeration relationSide, RelationOrderId orderId) throws OseeCoreException {
+   public void setRelationOrder(IRelationEnumeration relationSide, IRelationSorterId orderId) throws OseeCoreException {
       List<Artifact> empty = java.util.Collections.emptyList();
       RelationManager.setRelationOrder(this, relationSide.getRelationType(), relationSide.getSide(), orderId, empty);
    }
@@ -1294,12 +1294,12 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
             RelationOrderBaseTypes.USER_DEFINED, artifactsInNewOrder);
    }
 
-   public void setRelationOrder(RelationSorter sorter, RelationOrderId orderId) throws OseeCoreException {
+   public void setRelationOrder(RelationTypeSideSorter sorter, IRelationSorterId orderId) throws OseeCoreException {
       List<Artifact> empty = java.util.Collections.emptyList();
       RelationManager.setRelationOrder(this, sorter.getRelationType(), sorter.getSide(), orderId, empty);
    }
 
-   public void setRelationOrder(Artifact targetArtifact, boolean insertAfterTarget, RelationSorter sorter, Artifact artifact) throws OseeCoreException {
+   public void setRelationOrder(Artifact targetArtifact, boolean insertAfterTarget, RelationTypeSideSorter sorter, Artifact artifact) throws OseeCoreException {
       setRelationOrder(targetArtifact, insertAfterTarget, new RelationTypeSide(sorter.getRelationType(),
             sorter.getSide()), artifact);
    }

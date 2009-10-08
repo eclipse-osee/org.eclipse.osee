@@ -58,9 +58,18 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       return guidToTypeMap.containsKey(guid);
    }
 
+   public void decache(T... types) throws OseeCoreException {
+      if (types == null) {
+         throw new OseeArgumentException("De-Caching a null value is not allowed");
+      }
+      for (T type : types) {
+         decache(type);
+      }
+   }
+
    public void decache(T type) throws OseeCoreException {
       if (type == null) {
-         throw new OseeArgumentException("Caching a null value is not allowed");
+         throw new OseeArgumentException("De-Caching a null value is not allowed");
       }
       ensurePopulated();
       guidToTypeMap.remove(type.getGuid());
@@ -82,6 +91,15 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
 
       for (String key : keysToRemove) {
          nameToTypeMap.removeValue(key, type);
+      }
+   }
+
+   public void cache(T... types) throws OseeCoreException {
+      if (types == null) {
+         throw new OseeArgumentException("Caching a null value is not allowed");
+      }
+      for (T type : types) {
+         cache(type);
       }
    }
 

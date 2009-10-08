@@ -44,9 +44,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManage
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrdering;
+import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderFactory;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Ryan D. Brooks
@@ -65,7 +68,8 @@ public class RelationManager {
    private static final String GET_DELETED_ARTIFACT_B = DELETED[0] + "b_art_id" + DELETED[1] + "a_art_id" + DELETED[2];
    private static final String GET_DELETED_ARTIFACT_A = DELETED[0] + "a_art_id" + DELETED[1] + "b_art_id" + DELETED[2];
 
-   private static RelationOrdering relationOrdering = RelationOrdering.getInstance();
+   private static RelationSorterProvider relationSorterProvider = new RelationSorterProvider();
+   private static RelationOrderFactory relationOrderFactory = new RelationOrderFactory();
 
    private static final ThreadLocal<ArtifactKey> threadLocalKey = new ThreadLocal<ArtifactKey>() {
 
@@ -213,10 +217,6 @@ public class RelationManager {
       }
    }
 
-   /**
-    * @param values
-    * @return
-    */
    private static List<RelationLink> getFlattenedList(List<List<RelationLink>> values) {
       List<RelationLink> links = new ArrayList<RelationLink>();
       for (List<RelationLink> valueLinks : values) {
@@ -271,9 +271,7 @@ public class RelationManager {
             }
          }
       }
-
-      relationOrdering.sort(artifact, relationType, relationSide, relatedArtifacts);
-
+      sort(artifact, relationType, relationSide, relatedArtifacts);
       return relatedArtifacts;
    }
 
@@ -364,6 +362,7 @@ public class RelationManager {
       return getRelatedArtifacts(artifact, relationType, null);
    }
 
+   @SuppressWarnings("unchecked")
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum, boolean includeDeleted) throws OseeCoreException {
       if (includeDeleted) {
          List<Artifact> artifacts =
@@ -445,9 +444,6 @@ public class RelationManager {
       return artifactCount;
    }
 
-   /**
-    * @param artifact
-    */
    public static void prepareRelationsForReload(Artifact artifact) {
       // weakness:  references held to links by other applications will continue to exist.
       relationsByType.removeValues(threadLocalKey.get().getKey(artifact));
@@ -575,13 +571,6 @@ public class RelationManager {
       return relations;
    }
 
-   /**
-    * @param relationType
-    * @param artifactA
-    * @param artifactB
-    * @param rationale
-    * @throws OseeCoreException
-    */
    public static void addRelation(RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       RelationLink relation =
             getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
@@ -670,10 +659,6 @@ public class RelationManager {
       }
    }
 
-   private static void updateOrderListOnDelete(Artifact artifact, RelationType relationType, RelationSide relationSide, List<Artifact> relatives) throws OseeCoreException {
-      relationOrdering.updateOrderOnRelationDelete(artifact, relationType, relationSide, relatives);
-   }
-
    public static void deleteRelations(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
       List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
       if (selectedRelations != null) {
@@ -731,16 +716,6 @@ public class RelationManager {
       }
    }
 
-   /**
-    * @param sideA
-    * @param targetArtifact
-    * @param insertAfterTarget
-    * @param relationType
-    * @param artifactA
-    * @param artifactB
-    * @param rationale
-    * @throws OseeCoreException
-    */
    public static void addRelation(Artifact artifactATarget, boolean insertAfterATarget, Artifact artifactBTarget, boolean insertAfterBTarget, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       ensureRelationCanBeAdded(relationType, artifactA, artifactB);
       RelationLink relation =
@@ -753,16 +728,6 @@ public class RelationManager {
 
       OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Added, relation,
             relation.getBranch(), relation.getRelationType().getName());
-   }
-
-   /**
-    * @param artifact
-    * @param relationType
-    * @param currentOrder
-    * @throws OseeCoreException
-    */
-   public static void setRelationOrder(Artifact artifact, RelationType relationType, RelationSide side, RelationOrderId orderId, List<Artifact> relatives) throws OseeCoreException {
-      relationOrdering.setOrder(artifact, relationType, side, orderId, relatives);
    }
 
    public static void setRelationRationale(Artifact artifactA, Artifact artifactB, RelationType relationType, String rationale) throws OseeCoreException {
@@ -786,13 +751,43 @@ public class RelationManager {
             relationType.getName(), artifactA.getName(), artifactB.getName()));
    }
 
-   public static List<RelationOrderId> getRelationOrderTypes() {
-      return relationOrdering.getRegisteredRelationOrderIds();
+   public static RelationSorterProvider getSorterProvider() {
+      return relationSorterProvider;
    }
 
-   private static class ArtifactKey {
-      int artId;
-      int branchId;
+   public static List<IRelationSorterId> getRelationOrderTypes() {
+      return relationSorterProvider.getAllRelationOrderIds();
+   }
+
+   public static RelationTypeSideSorter createTypeSideSorter(IArtifact artifact, RelationType relationType, RelationSide side) throws OseeCoreException {
+      return relationOrderFactory.createTypeSideSorter(relationSorterProvider, artifact, relationType, side);
+   }
+
+   public static RelationOrderData createRelationOrderData(IArtifact artifact) throws OseeCoreException {
+      return relationOrderFactory.createRelationOrderData(artifact);
+   }
+
+   public static void setRelationOrder(IArtifact artifact, RelationType relationType, RelationSide side, IRelationSorterId orderId, List<Artifact> relatives) throws OseeCoreException {
+      RelationTypeSideSorter sorter = createTypeSideSorter(artifact, relationType, side);
+      sorter.setOrder(relatives, orderId);
+   }
+
+   private static void sort(IArtifact artifact, RelationType type, RelationSide side, List<Artifact> listToOrder) throws OseeCoreException {
+      if (type == null || side == null) {
+         return;
+      }
+      RelationTypeSideSorter sorter = createTypeSideSorter(artifact, type, side);
+      sorter.sort(listToOrder);
+   }
+
+   private static void updateOrderListOnDelete(Artifact artifact, RelationType relationType, RelationSide relationSide, List<Artifact> relatives) throws OseeCoreException {
+      RelationTypeSideSorter sorter = createTypeSideSorter(artifact, relationType, relationSide);
+      sorter.setOrder(relatives, sorter.getSorterId());
+   }
+
+   private static final class ArtifactKey {
+      private int artId;
+      private int branchId;
 
       public ArtifactKey(Artifact artifact) {
          this.artId = artifact.getArtId();

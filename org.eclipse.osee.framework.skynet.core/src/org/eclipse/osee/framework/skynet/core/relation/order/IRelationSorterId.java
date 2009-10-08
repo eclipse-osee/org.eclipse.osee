@@ -10,20 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
-import java.util.List;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-
 /**
  * @author Andrew M. Finkbeiner
  */
-class Unordered implements RelationOrder {
+public interface IRelationSorterId {
+   String getGuid();
 
-   @Override
-   public RelationOrderId getOrderId() {
-      return RelationOrderBaseTypes.UNORDERED;
-   }
-
-   @Override
-   public void sort(List<Artifact> relatives, List<String> relativeSequence) {
-   }
+   String prettyName();
 }

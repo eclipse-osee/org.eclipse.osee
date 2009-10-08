@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * Utility methods for common tasks performed on Artifact's.
@@ -37,6 +38,14 @@ public final class Artifacts {
 
    private Artifacts() {
       // This constructor is private because there is no reason to instantiate this class
+   }
+
+   public static List<String> toGuids(Collection<? extends IArtifact> artifacts) {
+      List<String> guids = new ArrayList<String>(artifacts.size());
+      for (IArtifact artifact : artifacts) {
+         guids.add(artifact.getGuid());
+      }
+      return guids;
    }
 
    public static String commaArts(Collection<? extends Artifact> artifacts) {

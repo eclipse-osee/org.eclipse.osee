@@ -117,7 +117,7 @@ public class RelationType extends AbstractOseeType implements Comparable<Relatio
 
    @Override
    public String toString() {
-      return String.format("[%s] <- [%s] -> [%s]", getSideAName(), getName(), getSideBName());
+      return String.format("[%s]<-[%s]->[%s]", getSideAName(), getName(), getSideBName());
    }
 
    public boolean isOrdered() {
