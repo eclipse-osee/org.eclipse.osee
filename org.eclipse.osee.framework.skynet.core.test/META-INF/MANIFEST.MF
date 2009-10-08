@@ -9,6 +9,7 @@ Require-Bundle: org.junit4,
  org.eclipse.osee.support.test.util
 Export-Package: org.eclipse.osee.framework.skynet.core.test,
  org.eclipse.osee.framework.skynet.core.test.cases,
+ org.eclipse.osee.framework.skynet.core.test.types,
  org.eclipse.osee.framework.skynet.core.test.util
 Import-Package: org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.jdk.core.util
