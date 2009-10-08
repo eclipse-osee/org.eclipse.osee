@@ -25,15 +25,17 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ComputeNetChangeOperation extends AbstractOperation {
    private final Collection<ChangeItem> changes;
    private final boolean isCommitCase;
+   private final boolean isTransactionChanges;
 
    public ComputeNetChangeOperation(Collection<ChangeItem> changes) {
-      this(changes, true);
+      this(changes, true, false);
    }
 
-   public ComputeNetChangeOperation(Collection<ChangeItem> changes, boolean isCommitCase) {
+   public ComputeNetChangeOperation(Collection<ChangeItem> changes, boolean isCommitCase, boolean isTransactionChanges) {
       super("Compute Net Change", Activator.PLUGIN_ID);
       this.changes = changes;
       this.isCommitCase = isCommitCase;
+      this.isTransactionChanges = isTransactionChanges;
    }
 
    @Override
@@ -84,13 +86,16 @@ public class ComputeNetChangeOperation extends AbstractOperation {
 
    private ModificationType calculateNetWithoutDestinationBranch(ChangeItem change) {
       ModificationType netModType = change.getCurrent().getModType();
-
-      if (ChangeItemUtil.wasNewOnSource(change)) {
-         netModType = ModificationType.NEW;
-      } else if (ChangeItemUtil.wasIntroducedOnSource(change)) {
-         netModType = ModificationType.INTRODUCED;
-      } else if (!change.getBase().isValid() && !change.getFirst().isValid() && change.getCurrent().getModType() == ModificationType.MODIFIED) {
-         netModType = ModificationType.NEW;
+     
+      if(!isTransactionChanges){
+         if (ChangeItemUtil.wasNewOnSource(change)) {
+            netModType = ModificationType.NEW;
+         } else if (ChangeItemUtil.wasIntroducedOnSource(change)) {
+            netModType = ModificationType.INTRODUCED;
+            //This is to handle bad data ... it should be moved out
+         } else if (!change.getBase().isValid() && !change.getFirst().isValid() && change.getCurrent().getModType() == ModificationType.MODIFIED) {
+            netModType = ModificationType.NEW;
+         }
       }
       return netModType;
    }

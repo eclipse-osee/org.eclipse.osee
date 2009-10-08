@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -193,6 +192,7 @@ public final class InternalChangeManager {
          Change change = null;
          Branch branch = null;
          Artifact artifact = null;
+         
          try {
             TransactionId toTransactionId =
                   TransactionIdManager.getTransactionId(item.getCurrent().getTransactionNumber().intValue());
@@ -202,32 +202,25 @@ public final class InternalChangeManager {
 
             if (isHistorical) {
                fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
-               artifact = ArtifactCache.getHistorical(item.getArtId(), transactionId.getTransactionNumber());
+               artifact =  ArtifactQuery.getHistoricalArtifactFromId(item.getArtId(), transactionId, true);
                branch = transactionId.getBranch();
             } else {
                branch = sourceBranch;
-               artifact = ArtifactCache.getActive(item.getArtId(), branch);
+               artifact = ArtifactQuery.getArtifactFromId(item.getArtId(), branch, true);
 
                if (item.getCurrent().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.NEW || item.getNet().getModType() == ModificationType.INTRODUCED) {
                   fromTransactionId = toTransactionId;
                } else {
                   if (item.getBase().isValid()) {
-                     fromTransactionId =
- TransactionIdManager.getTransactionId(item.getBase().getTransactionNumber());
+                     fromTransactionId = TransactionIdManager.getTransactionId(item.getBase().getTransactionNumber());
                      wasValue = item.getBase().getValue();
                   } else {
-                     fromTransactionId =
- TransactionIdManager.getTransactionId(item.getFirst().getTransactionNumber());
+                     fromTransactionId = TransactionIdManager.getTransactionId(item.getFirst().getTransactionNumber());
                      wasValue = item.getFirst().getValue();
                   }
                }
             }
 
-            //Added for testing ... It will be removed
-            if (artifact == null) {
-               System.out.println(item.getClass().getSimpleName() + " " + item.getArtId() + " " + item.getCurrent().getTransactionNumber());
-               continue;
-            }
             monitor.subTask("Build Change Display Objects");
             //The artifacts have been previously bulk loaded for performance      
             change = asChange(item, artifact, branch, fromTransactionId, toTransactionId, wasValue, isHistorical);
@@ -313,7 +306,7 @@ public final class InternalChangeManager {
       } else {
          ops.add(new LoadChangeDataOperation(sourceBranch, changeItems));
       }
-      ops.add(new ComputeNetChangeOperation(changeItems, false));
+      ops.add(new ComputeNetChangeOperation(changeItems, false, isHistorical));
 
       String opName =
             String.format("Gathering changes for %s",
