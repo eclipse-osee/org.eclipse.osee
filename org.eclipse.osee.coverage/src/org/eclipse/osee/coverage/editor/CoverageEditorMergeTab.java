@@ -27,6 +27,8 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.util.CoveragePackageImport;
+import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.coverage.util.NotSaveable;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -58,7 +60,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditorMergeTab extends FormPage {
+public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    private XCoverageMergeViewer xCoverageViewer1;
    private final ICoverageTabProvider provider1;
@@ -147,7 +149,7 @@ public class CoverageEditorMergeTab extends FormPage {
       }
       CoveragePackageImport importer =
             new CoveragePackageImport((CoveragePackage) provider1, (CoverageImport) provider2);
-      XResultData rd = importer.importItems(importItems);
+      XResultData rd = importer.importItems(this, importItems);
       try {
          rd.report("Import");
       } catch (OseeCoreException ex) {
@@ -174,7 +176,8 @@ public class CoverageEditorMergeTab extends FormPage {
       leftToolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       managedForm.getToolkit().adapt(leftToolBar);
 
-      xCoverageViewer1 = new XCoverageMergeViewer(new CoverageMergeXViewerFactoryPackage(), TableType.Package, TableType.Merge);
+      xCoverageViewer1 =
+            new XCoverageMergeViewer(this, new CoverageMergeXViewerFactoryPackage(), TableType.Package, TableType.Merge);
       xCoverageViewer1.setDisplayLabel(false);
       xCoverageViewer1.createWidgets(managedForm, leftComp, 1);
       xCoverageViewer1.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -192,7 +195,9 @@ public class CoverageEditorMergeTab extends FormPage {
       rightToolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       managedForm.getToolkit().adapt(rightToolBar);
 
-      xCoverageViewer2 = new XCoverageMergeViewer(new CoverageMergeXViewerFactoryImport(), TableType.Import, TableType.Merge);
+      xCoverageViewer2 =
+            new XCoverageMergeViewer(new NotSaveable(), new CoverageMergeXViewerFactoryImport(), TableType.Import,
+                  TableType.Merge);
       xCoverageViewer2.setDisplayLabel(false);
       xCoverageViewer2.createWidgets(managedForm, rightComp, 1);
       xCoverageViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -256,6 +261,22 @@ public class CoverageEditorMergeTab extends FormPage {
          }
       }
       return items;
+   }
+
+   @Override
+   public Result isEditable() {
+      if (!(provider1 instanceof ISaveable)) {
+         return new Result("Not Editable");
+      }
+      return ((ISaveable) provider1).isEditable();
+   }
+
+   @Override
+   public Result save() {
+      if (!(provider1 instanceof ISaveable)) {
+         return new Result("Not Saveable");
+      }
+      return ((ISaveable) provider1).save();
    }
 
 }

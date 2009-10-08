@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.ui.IEditorInput;
@@ -34,24 +33,27 @@ import org.eclipse.ui.IEditorReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditor extends AbstractArtifactEditor implements IActionable {
+public class CoverageEditor extends FormEditor implements IActionable {
    public static final String EDITOR_ID = "org.eclipse.osee.coverage.editor.CoverageEditor";
    private Integer startPage = null;
    private CoverageEditorImportTab coverageEditorImportTab = null;
+   private CoverageEditorCoverageTab coverageEditorCoverageTab = null;
 
    @Override
    protected void addPages() {
       try {
          OseeContributionItem.addTo(this, true);
          addFormPage(new CoverageEditorOverviewTab("Overview", this, getCoverageEditorProvider()));
-         addFormPage(new CoverageEditorCoverageTab("Coverage Items", this,
-               (ICoverageTabProvider) getCoverageEditorProvider()));
+         coverageEditorCoverageTab =
+               new CoverageEditorCoverageTab("Coverage Items", this, (ICoverageTabProvider) getCoverageEditorProvider());
+         addFormPage(coverageEditorCoverageTab);
          if (getCoverageEditorProvider().isImportAllowed()) {
             coverageEditorImportTab = new CoverageEditorImportTab(this);
             addFormPage(coverageEditorImportTab);
@@ -224,4 +226,14 @@ public class CoverageEditor extends AbstractArtifactEditor implements IActionabl
    public String getActionDescription() {
       return null;
    }
+
+   @Override
+   public void doSaveAs() {
+   }
+
+   @Override
+   public boolean isSaveAsAllowed() {
+      return false;
+   }
+
 }

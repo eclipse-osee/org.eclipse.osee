@@ -19,6 +19,7 @@ import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -43,7 +44,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditorCoverageTab extends FormPage {
+public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
 
    private XCoverageViewer xCoverageViewer;
    private ScrolledForm scrolledForm;
@@ -87,7 +88,8 @@ public class CoverageEditorCoverageTab extends FormPage {
       tableComp.setLayoutData(tableData);
       coverageEditor.getToolkit().adapt(tableComp);
 
-      xCoverageViewer = new XCoverageViewer(provider instanceof CoverageImport ? TableType.Import : TableType.Package);
+      xCoverageViewer =
+            new XCoverageViewer(this, provider instanceof CoverageImport ? TableType.Import : TableType.Package);
       xCoverageViewer.setDisplayLabel(false);
       xCoverageViewer.createWidgets(managedForm, tableComp, 1);
       xCoverageViewer.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -145,6 +147,22 @@ public class CoverageEditorCoverageTab extends FormPage {
    @Override
    public FormEditor getEditor() {
       return super.getEditor();
+   }
+
+   @Override
+   public Result isEditable() {
+      if (!(provider instanceof ISaveable)) {
+         return new Result("Not Editable");
+      }
+      return ((ISaveable) provider).isEditable();
+   }
+
+   @Override
+   public Result save() {
+      if (!(provider instanceof ISaveable)) {
+         return new Result("Not Saveable");
+      }
+      return ((ISaveable) provider).save();
    }
 
 }

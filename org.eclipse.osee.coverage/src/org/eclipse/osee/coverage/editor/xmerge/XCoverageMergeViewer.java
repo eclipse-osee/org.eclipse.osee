@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.editor.xmerge;
 
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
+import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -20,8 +21,8 @@ public class XCoverageMergeViewer extends XCoverageViewer {
    CoverageMergeXViewer mergeXViewer;
    private final CoverageMergeXViewerFactory coverageMergeXViewerFactory;
 
-   public XCoverageMergeViewer(CoverageMergeXViewerFactory coverageMergeXViewerFactory, TableType tableType, TableType... types) {
-      super(tableType, types);
+   public XCoverageMergeViewer(ISaveable saveable, CoverageMergeXViewerFactory coverageMergeXViewerFactory, TableType tableType, TableType... types) {
+      super(saveable, tableType, types);
       this.coverageMergeXViewerFactory = coverageMergeXViewerFactory;
    }
 

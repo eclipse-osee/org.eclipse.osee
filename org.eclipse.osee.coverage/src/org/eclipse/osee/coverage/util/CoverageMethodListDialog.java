@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,13 +31,17 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
  */
 public class CoverageMethodListDialog extends CheckedTreeSelectionDialog {
 
-   public CoverageMethodListDialog(CoverageMethodEnum[] values, Collection<CoverageMethodEnum> selected) {
+   public CoverageMethodListDialog(Collection<CoverageMethodEnum> values) {
+      this(values, new ArrayList<CoverageMethodEnum>());
+   }
+
+   public CoverageMethodListDialog(Collection<CoverageMethodEnum> values, Collection<CoverageMethodEnum> selected) {
       super(Display.getCurrent().getActiveShell(), labelProvider, new ArrayTreeContentProvider());
       setTitle("Select Coverage Method(s)");
       setMessage("Select Coverage Method(s)");
       setComparator(new ArtifactNameSorter());
       try {
-         setInput(values);
+         setInput(values.toArray(new CoverageMethodEnum[values.size()]));
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

@@ -21,6 +21,7 @@ import org.eclipse.osee.coverage.editor.ICoverageEditorProvider;
 import org.eclipse.osee.coverage.editor.ICoverageTabProvider;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -46,7 +47,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @author Donald G. Dunne
  */
-public class CoveragePackage implements ICoverageEditorItem, ICoverageEditorProvider, ICoverageTabProvider {
+public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverageEditorProvider, ICoverageTabProvider {
 
    public static String ARTIFACT_NAME = "Coverage Package";
    private String guid = GUID.create();
@@ -235,22 +236,6 @@ public class CoveragePackage implements ICoverageEditorItem, ICoverageEditorProv
       }
    }
 
-   public void save(SkynetTransaction transaction) throws OseeCoreException {
-      getArtifact(true);
-      System.out.println("coveragePackage " + guid);
-
-      artifact.setName(getName());
-      KeyValueArtifact keyValueArtifact =
-            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-      keyValueArtifact.setValue("date", String.valueOf(creationDate.getTime()));
-      keyValueArtifact.save();
-      for (CoverageUnit coverageUnit : coverageUnits) {
-         coverageUnit.save(transaction);
-         artifact.addChild(artifact);
-      }
-      artifact.persist(transaction);
-   }
-
    public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
       if (getArtifact(false) != null) {
          if (purge)
@@ -321,6 +306,35 @@ public class CoveragePackage implements ICoverageEditorItem, ICoverageEditorProv
 
    @Override
    public void setUser(User user) {
+   }
+
+   public void save(SkynetTransaction transaction) throws OseeCoreException {
+      getArtifact(true);
+      System.out.println("coveragePackage " + guid);
+
+      artifact.setName(getName());
+      KeyValueArtifact keyValueArtifact =
+            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+      keyValueArtifact.setValue("date", String.valueOf(creationDate.getTime()));
+      keyValueArtifact.save();
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         coverageUnit.save(transaction);
+         artifact.addChild(artifact);
+      }
+      artifact.persist(transaction);
+   }
+
+   @Override
+   public Result save() {
+      try {
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+         save(transaction);
+         transaction.execute();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+         return new Result("Save Failed: " + ex.getLocalizedMessage());
+      }
+      return Result.TrueResult;
    }
 
 }

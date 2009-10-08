@@ -16,12 +16,10 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
 /**
@@ -52,8 +50,14 @@ public class CoveragePackageImport {
       return rd;
    }
 
-   public XResultData importItems(Collection<ICoverageEditorItem> importItems) {
+   public XResultData importItems(ISaveable saveable, Collection<ICoverageEditorItem> importItems) {
       XResultData rd = new XResultData();
+
+      Result result = saveable.isEditable();
+      if (result.isFalse()) {
+         rd.logError(result.getText());
+         return rd;
+      }
 
       validateItems(importItems, rd);
       if (rd.getNumErrors() > 0) return rd;
@@ -71,13 +75,11 @@ public class CoveragePackageImport {
          AWorkbench.popup(rd.getNumErrors() + " Errors Found; Not Persisting");
          rd.logError(rd.getNumErrors() + " Errors Found; Not Persisting");
       } else {
-         try {
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
-            coveragePackage.save(transaction);
-            transaction.execute();
-            rd.log("Changes Persisted");
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         result = saveable.save();
+         if (result.isTrue()) {
+            rd.log("\nChanges Persisted");
+         } else {
+            rd.logError("\n" + result.getText());
          }
       }
 

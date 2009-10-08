@@ -27,14 +27,14 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
 
    public static final String WIDGET_ID = XHyperlabelCoverageMethodSelection.class.getSimpleName();
    Collection<CoverageMethodEnum> selectedCoverageMethods = new HashSet<CoverageMethodEnum>();
-   CoverageMethodEnum[] coverageMethods;
+   Collection<CoverageMethodEnum> coverageMethods;
    CoverageMethodListDialog dialog = null;
 
    public XHyperlabelCoverageMethodSelection() {
       super("Coverage Methods", true);
    }
 
-   public XHyperlabelCoverageMethodSelection(String label, CoverageMethodEnum[] coverageMethods) {
+   public XHyperlabelCoverageMethodSelection(String label, Collection<CoverageMethodEnum> coverageMethods) {
       super(label, true);
       this.coverageMethods = coverageMethods;
    }
@@ -64,10 +64,10 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
    @Override
    public boolean handleSelection() {
       try {
-         if (coverageMethods != null && coverageMethods.length > 0) {
+         if (coverageMethods != null && coverageMethods.size() > 0) {
             dialog = new CoverageMethodListDialog(coverageMethods, selectedCoverageMethods);
          } else {
-            dialog = new CoverageMethodListDialog(CoverageMethodEnum.values(), selectedCoverageMethods);
+            dialog = new CoverageMethodListDialog(CoverageMethodEnum.getCollection(), selectedCoverageMethods);
          }
          int result = dialog.open();
          if (result == 0) {
@@ -84,7 +84,7 @@ public class XHyperlabelCoverageMethodSelection extends XHyperlinkLabelCmdValueS
       return false;
    }
 
-   public void setCoverageMethods(CoverageMethodEnum[] coverageMethods) {
+   public void setCoverageMethods(Collection<CoverageMethodEnum> coverageMethods) {
       this.coverageMethods = coverageMethods;
       if (dialog != null) {
          dialog.setInput(coverageMethods);

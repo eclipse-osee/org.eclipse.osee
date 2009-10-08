@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
+import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
@@ -41,17 +41,18 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public class XCoverageViewer extends XWidget {
 
    protected CoverageXViewer xViewer;
-   private IDirtiableEditor editor;
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
    private Tree tree;
    private final Collection<TableType> tableTypes;
+   private final ISaveable saveable;
    public static enum TableType {
       Package, Merge, Import
    };
 
-   public XCoverageViewer(TableType tableType, TableType... types) {
+   public XCoverageViewer(ISaveable saveable, TableType tableType, TableType... types) {
       super("Coverage Items");
+      this.saveable = saveable;
       this.tableTypes = Collections.getAggregate(types);
       this.tableTypes.add(tableType);
    }
@@ -203,14 +204,6 @@ public class XCoverageViewer extends XWidget {
       return xViewer.getInput();
    }
 
-   public IDirtiableEditor getEditor() {
-      return editor;
-   }
-
-   public void setEditor(IDirtiableEditor editor) {
-      this.editor = editor;
-   }
-
    @Override
    public Control getErrorMessageControl() {
       return labelWidget;
@@ -221,6 +214,10 @@ public class XCoverageViewer extends XWidget {
          return true;
       }
       return false;
+   }
+
+   public ISaveable getSaveable() {
+      return saveable;
    }
 
 }
