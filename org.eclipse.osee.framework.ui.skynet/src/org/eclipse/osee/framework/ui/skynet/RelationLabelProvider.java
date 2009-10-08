@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.swt.graphics.Image;
 
@@ -48,8 +48,8 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    }
 
    public String getColumnText(Object element, int columnIndex) {
-      if (element instanceof RelationSorter && columnIndex == 0) {
-         RelationSorter side = (RelationSorter) element;
+      if (element instanceof RelationTypeSideSorter && columnIndex == 0) {
+         RelationTypeSideSorter side = (RelationTypeSideSorter) element;
          String sideDescription;
          try {
             sideDescription = " has [" + side.getRelationType().getMultiplicity().asLimitLabel(side.getSide()) + "] ";

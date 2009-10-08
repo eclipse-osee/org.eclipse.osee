@@ -47,10 +47,10 @@ import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderId;
+import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
@@ -274,8 +274,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       Menu subMenu = new Menu(parentMenu);
       orderRelationMenuItem.setMenu(subMenu);
 
-      List<RelationOrderId> orderTypes = RelationManager.getRelationOrderTypes();
-      for (RelationOrderId id : orderTypes) {
+      List<IRelationSorterId> orderTypes = RelationManager.getRelationOrderTypes();
+      for (IRelationSorterId id : orderTypes) {
          MenuItem idMenu = new MenuItem(subMenu, SWT.CASCADE | SWT.CHECK);
          idMenu.setText(id.prettyName());
          idMenu.addSelectionListener(new SelectionId(id));
@@ -287,10 +287,10 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          public void handleEvent(Event event) {
             IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
             Object[] objects = selection.toArray();
-            if (objects.length == 1 && objects[0] instanceof RelationSorter) {
+            if (objects.length == 1 && objects[0] instanceof RelationTypeSideSorter) {
                orderRelationMenuItem.setEnabled(true);
                try {
-                  checkCurrentOrderStrategy(orderRelationMenuItem.getMenu(), (RelationSorter) objects[0]);
+                  checkCurrentOrderStrategy(orderRelationMenuItem.getMenu(), (RelationTypeSideSorter) objects[0]);
                } catch (OseeCoreException ex) {
                }
             } else {
@@ -302,7 +302,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       orderRelationMenuItem.setEnabled(true);
    }
 
-   private void checkCurrentOrderStrategy(Menu menu, RelationSorter rts) throws OseeCoreException {
+   private void checkCurrentOrderStrategy(Menu menu, RelationTypeSideSorter rts) throws OseeCoreException {
       String relationOrderName = rts.getOrderName();
 
       for (MenuItem item : menu.getItems()) {
@@ -317,9 +317,9 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
 
    private class SelectionId implements SelectionListener {
 
-      private final RelationOrderId id;
+      private final IRelationSorterId id;
 
-      SelectionId(RelationOrderId id) {
+      SelectionId(IRelationSorterId id) {
          this.id = id;
       }
 
@@ -331,8 +331,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       public void widgetSelected(SelectionEvent e) {
          IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
          Object[] objects = selection.toArray();
-         if (objects.length == 1 && objects[0] instanceof RelationSorter) {
-            RelationSorter typeSide = (RelationSorter) objects[0];
+         if (objects.length == 1 && objects[0] instanceof RelationTypeSideSorter) {
+            RelationTypeSideSorter typeSide = (RelationTypeSideSorter) objects[0];
             try {
                typeSide.getArtifact().setRelationOrder(typeSide, id);
             } catch (OseeCoreException ex) {
@@ -609,8 +609,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
-         }else if (object instanceof RelationSorter) {
-            RelationSorter group = (RelationSorter) object;
+         }else if (object instanceof RelationTypeSideSorter) {
+            RelationTypeSideSorter group = (RelationTypeSideSorter) object;
             try {
                RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
                treeViewer.refresh(group);
@@ -695,7 +695,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
          event.feedback = DND.FEEDBACK_EXPAND;
          event.detail = DND.DROP_NONE;
 
-         if (selected != null && selected.getData() instanceof RelationSorter) {
+         if (selected != null && selected.getData() instanceof RelationTypeSideSorter) {
             if (artifact.isReadOnly()) {
                event.detail = DND.DROP_NONE;
 
@@ -779,8 +779,8 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                }
                treeViewer.refresh();
                editor.onDirtied();
-            } else if (object instanceof RelationSorter) {
-               RelationSorter group = (RelationSorter) object;
+            } else if (object instanceof RelationTypeSideSorter) {
+               RelationTypeSideSorter group = (RelationTypeSideSorter) object;
 
                RelationExplorerWindow window = new RelationExplorerWindow(treeViewer, group);
 

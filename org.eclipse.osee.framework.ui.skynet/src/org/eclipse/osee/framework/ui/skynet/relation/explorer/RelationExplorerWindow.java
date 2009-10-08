@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.relation.RelationSorter;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -45,7 +45,7 @@ import org.eclipse.swt.widgets.Table;
 public class RelationExplorerWindow {
 
    private RelationTableViewer relationTableViewer;
-   private final RelationSorter relationGroup;
+   private final RelationTypeSideSorter relationGroup;
    private final boolean persistOnOk;
    private boolean cancelled = false;
 
@@ -76,7 +76,7 @@ public class RelationExplorerWindow {
    public static final int NAME_NUM = 0;
    public static final int REASON_NUM = 1;
 
-   public RelationExplorerWindow(StructuredViewer viewer, RelationSorter group, boolean persistOnOk) {
+   public RelationExplorerWindow(StructuredViewer viewer, RelationTypeSideSorter group, boolean persistOnOk) {
       this.validArtifacts = new ArrayList<Artifact>();
       this.invalidArtifacts = new ArrayList<Artifact>();
 
@@ -93,7 +93,7 @@ public class RelationExplorerWindow {
 
    }
 
-   public RelationExplorerWindow(StructuredViewer viewer, RelationSorter group) {
+   public RelationExplorerWindow(StructuredViewer viewer, RelationTypeSideSorter group) {
       this(viewer, group, false);
    }
 
@@ -327,7 +327,7 @@ public class RelationExplorerWindow {
       shell.dispose();
    }
 
-   public RelationSorter getRelationGroup() {
+   public RelationTypeSideSorter getRelationGroup() {
       return relationGroup;
    }
 
