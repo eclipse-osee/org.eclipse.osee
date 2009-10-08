@@ -85,8 +85,6 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
 
       statusLabel = new Label(parent, SWT.NONE);
       statusLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
-      updateStatusLabel();
-
       createPreCustomArea(parent);
 
       Composite aiComp = new Composite(parent, SWT.NONE);
@@ -107,6 +105,8 @@ public abstract class OSEECheckedFilteredTreeDialog extends MessageDialog {
       });
       if (input != null) treeViewer.getViewer().setInput(input);
       if (initialSelections != null) treeViewer.setInitalChecked(initialSelections);
+      updateStatusLabel();
+
       return parent;
    }
 
