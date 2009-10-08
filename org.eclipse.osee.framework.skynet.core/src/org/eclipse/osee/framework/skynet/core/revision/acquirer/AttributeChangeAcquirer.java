@@ -118,8 +118,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer{
             //This will be false iff the artifact was new and then deleted
             if (!newAndDeletedArtifactIds.contains(artId)) {
                // Want to add an artifact changed item once if any attribute was modified && artifact was not
-               // NEW or DELETED and these chnages are not for a specific artifact
-               if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId) && !hasSpecificArtifact) {
+               // NEW or DELETED and these changes are not for a specific artifact
+               if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId)){
                   ArtifactChangeBuilder artifactChangeBuilder =
                         new ArtifactChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), -1, artId,
                               toTransactionId, fromTransactionId, ModificationType.MODIFIED, ChangeType.OUTGOING,

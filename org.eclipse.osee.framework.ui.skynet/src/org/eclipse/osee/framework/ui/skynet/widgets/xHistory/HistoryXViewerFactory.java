@@ -25,7 +25,7 @@ public class HistoryXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn("framework.history.transaction", "Transaction", 70, SWT.LEFT, true, SortDataType.Integer,
                false, null);
    public static XViewerColumn gamma =
-         new XViewerColumn("framework.history.gamma", "Gamma", 60, SWT.LEFT, true, SortDataType.Integer, false, null);
+         new XViewerColumn("framework.history.gamma", "Gamma", 60, SWT.LEFT, false, SortDataType.Integer, false, null);
    public static XViewerColumn itemType =
          new XViewerColumn("framework.history.itemType", "Item Type", 150, SWT.LEFT, true, SortDataType.String, false,
                null);
