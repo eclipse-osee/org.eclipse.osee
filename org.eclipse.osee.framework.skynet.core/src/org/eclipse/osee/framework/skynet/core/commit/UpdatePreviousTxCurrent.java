@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 /**
  * @author Ryan D. Brooks
  */
-public class UpdatePreviuosTxCurrent {
+public class UpdatePreviousTxCurrent {
    private final Branch branch;
    private final OseeConnection connection;
    private final IdJoinQuery artifactJoin = JoinUtility.createIdJoinQuery();
@@ -23,7 +23,7 @@ public class UpdatePreviuosTxCurrent {
    private static final String UPDATE_TXS_NOT_CURRENT =
          "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " where transaction_id = ? AND gamma_id = ?";
 
-   public UpdatePreviuosTxCurrent(Branch branch, OseeConnection connection) {
+   public UpdatePreviousTxCurrent(Branch branch, OseeConnection connection) {
       this.branch = branch;
       this.connection = connection;
    }

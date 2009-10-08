@@ -108,7 +108,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    }
 
    private void updatePreviousCurrentsOnDestinationBranch() throws OseeStateException, OseeDataStoreException {
-      UpdatePreviuosTxCurrent updater = new UpdatePreviuosTxCurrent(destinationBranch, connection);
+      UpdatePreviousTxCurrent updater = new UpdatePreviousTxCurrent(destinationBranch, connection);
       for (ChangeItem change : changes) {
          if (change instanceof ArtifactChangeItem) {
             updater.addArtifact(change.getItemId());
