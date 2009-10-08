@@ -42,7 +42,6 @@ import org.eclipse.swt.widgets.TreeItem;
 public class CoverageXViewer extends XViewer {
 
    protected final XCoverageViewer xCoverageViewer;
-   Action editAction1;
    Action editAction2;
    Action editAction3;
 
@@ -67,15 +66,6 @@ public class CoverageXViewer extends XViewer {
    }
 
    public void createMenuActions() {
-      MenuManager mm = getMenuManager();
-      mm.createContextMenu(getControl());
-
-      editAction1 = new Action("Edit 1", Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            AWorkbench.popup("Not Implemented Yet");
-         }
-      };
 
       editAction2 = new Action("Edit 2", Action.AS_PUSH_BUTTON) {
          @Override
@@ -96,8 +86,6 @@ public class CoverageXViewer extends XViewer {
    public void updateEditMenuActions() {
       MenuManager mm = getMenuManager();
       // EDIT MENU BLOCK
-      mm.insertBefore(MENU_GROUP_PRE, editAction1);
-      editAction1.setEnabled(true);
       mm.insertBefore(MENU_GROUP_PRE, editAction2);
       editAction2.setEnabled(true);
       mm.insertBefore(MENU_GROUP_PRE, editAction3);

@@ -38,6 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
+import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
@@ -204,6 +205,7 @@ public class CoverageEditorMergeTab extends FormPage {
 
       (new ActionContributionItem(xCoverageViewer1.getXViewer().getCustomizeAction())).fill(leftToolBar, 0);
       (new ActionContributionItem(new CollapseAllAction(xCoverageViewer1.getXViewer()))).fill(leftToolBar, 0);
+      (new ActionContributionItem(new ExpandAllAction(xCoverageViewer1.getXViewer()))).fill(leftToolBar, 0);
    }
 
    public void createRightComposite(IManagedForm managedForm, Composite rightComp) {
@@ -221,6 +223,7 @@ public class CoverageEditorMergeTab extends FormPage {
 
       (new ActionContributionItem(xCoverageViewer2.getXViewer().getCustomizeAction())).fill(rightToolBar, 0);
       (new ActionContributionItem(new CollapseAllAction(xCoverageViewer2.getXViewer()))).fill(rightToolBar, 0);
+      (new ActionContributionItem(new ExpandAllAction(xCoverageViewer2.getXViewer()))).fill(rightToolBar, 0);
    }
 
    public void simulateSearchAll() {

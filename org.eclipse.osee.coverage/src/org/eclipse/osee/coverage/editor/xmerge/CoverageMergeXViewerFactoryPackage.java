@@ -22,4 +22,10 @@ public class CoverageMergeXViewerFactoryPackage extends CoverageMergeXViewerFact
       clearColumnRegistration();
       registerMergeColumns();
    }
+
+   @Override
+   public boolean isMergeTable() {
+      return false;
+   }
+
 }

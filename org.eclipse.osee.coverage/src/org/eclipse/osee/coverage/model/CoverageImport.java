@@ -271,7 +271,7 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
 
    @Override
    public Result isEditable() {
-      return null;
+      return Result.FalseResult;
    }
 
    @Override

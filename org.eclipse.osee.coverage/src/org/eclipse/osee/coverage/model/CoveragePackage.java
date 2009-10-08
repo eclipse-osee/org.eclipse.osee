@@ -314,7 +314,7 @@ public class CoveragePackage implements ICoverageEditorItem, ICoverageEditorProv
 
    @Override
    public Result isEditable() {
-      return null;
+      return Result.TrueResult;
    }
 
    @Override

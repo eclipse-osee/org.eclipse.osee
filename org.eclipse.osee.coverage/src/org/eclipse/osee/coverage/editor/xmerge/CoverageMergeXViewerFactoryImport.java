@@ -36,4 +36,9 @@ public class CoverageMergeXViewerFactoryImport extends CoverageMergeXViewerFacto
                xCol.equals(CoverageXViewerFactory.Name) || xCol.equals(Import) || xCol.equals(CoverageXViewerFactory.Coverage_Method));
       }
    }
+
+   @Override
+   public boolean isMergeTable() {
+      return true;
+   }
 }

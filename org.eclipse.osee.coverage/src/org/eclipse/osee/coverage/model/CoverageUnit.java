@@ -141,7 +141,7 @@ public class CoverageUnit implements ICoverageEditorItem {
 
    @Override
    public Result isEditable() {
-      return null;
+      return Result.TrueResult;
    }
 
    @Override

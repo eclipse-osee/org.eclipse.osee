@@ -91,7 +91,7 @@ public class TestUnit implements ICoverageEditorItem {
 
    @Override
    public Result isEditable() {
-      return null;
+      return Result.FalseResult;
    }
 
    @Override

@@ -29,4 +29,6 @@ public abstract class CoverageMergeXViewerFactory extends CoverageXViewerFactory
                xCol.equals(CoverageXViewerFactory.Name) || xCol.equals(CoverageXViewerFactory.Coverage_Method));
       }
    }
+
+   public abstract boolean isMergeTable();
 }
