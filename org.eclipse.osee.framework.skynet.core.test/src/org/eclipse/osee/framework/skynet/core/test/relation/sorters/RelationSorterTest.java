@@ -23,9 +23,11 @@ import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UnorderedRelationSorter;
+import org.eclipse.osee.framework.skynet.core.relation.sorters.UserDefinedRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter.SortMode;
 import org.eclipse.osee.framework.skynet.core.test.types.MockIArtifact;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -87,7 +89,7 @@ public class RelationSorterTest {
       data.add(createLexicographicalTest(SortMode.DESCENDING, "d", "c", "b", "a"));
       data.add(createLexicographicalTest(SortMode.DESCENDING, "b", "a", "1", "!"));
 
-      //      data.add(getTestUserDefined());
+      data.add(getTestUserDefined("1", "2", "3", "4"));
       return data;
    }
 
@@ -117,15 +119,18 @@ public class RelationSorterTest {
             itemsToOrder, expectedOrder};
    }
 
-   //   private static Object[] getTestUserDefined(String... guids) {
-   //      List<IArtifact> artifacts = new ArrayList<IArtifact>();
-   //      artifacts.add(createArtifact("a art", GUID.create()));
-   //      artifacts.add(createArtifact("1 art", GUID.create()));
-   //      artifacts.add(createArtifact("2 art", GUID.create()));
-   //      artifacts.add(createArtifact("3 art", GUID.create()));
-   //      return new Object[] {"UserDefined", new UserDefinedRelationSorter(), RelationOrderBaseTypes.USER_DEFINED, null,
-   //            artifacts, artifacts};
-   //   }
+   private static Object[] getTestUserDefined(String... names) {
+      IArtifact art1 = createArtifact(names[0], GUID.create());
+      IArtifact art2 = createArtifact(names[1], GUID.create());
+      IArtifact art3 = createArtifact(names[2], GUID.create());
+      IArtifact art4 = createArtifact(names[3], GUID.create());
+
+      List<IArtifact> itemsToOrder = Arrays.asList(art2, art1, art3, art4);
+      List<IArtifact> expectedOrder = Arrays.asList(art1, art2, art3, art4);
+      List<String> relatives = Artifacts.toGuids(Arrays.asList(art1, art2, art3, art4));
+      return new Object[] {"UserDefined", new UserDefinedRelationSorter(), RelationOrderBaseTypes.USER_DEFINED,
+            relatives, itemsToOrder, expectedOrder};
+   }
 
    private static IArtifact createArtifact(String name, String guid) {
       int uniqueId = randomGenerator.nextInt();
