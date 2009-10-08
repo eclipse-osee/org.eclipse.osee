@@ -6,6 +6,8 @@
 package org.eclipse.osee.coverage.util;
 
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
@@ -53,15 +55,17 @@ public class CoveragePackageImport {
       validateItems(importItems, rd);
       if (rd.getNumErrors() > 0) return rd;
 
+      Set<ICoverageEditorItem> imported = new HashSet<ICoverageEditorItem>();
       try {
          for (ICoverageEditorItem importItem : importItems) {
             rd.log("Processing " + importItem.getName());
             if (!(importItem instanceof CoverageUnit)) {
-               rd.logError(String.format("Invalid Item for Import; Don't import [%s]",
+               rd.logError(String.format("[%s] invalid for Import; Only import CoverageUnits",
                      importItem.getClass().getSimpleName()));
                continue;
             }
             CoverageUnit importCoverageUnit = (CoverageUnit) importItem;
+            if (imported.equals(importCoverageUnit)) continue;
 
             ICoverageEditorItem packageItem = getPackageCoverageItem(importItem);
             // Determine if item already exists first
@@ -77,6 +81,7 @@ public class CoveragePackageImport {
             if (parentImportItem instanceof CoverageImport) {
                coveragePackage.addCoverageUnit((CoverageUnit) importItem);
                rd.log(String.format("Added [%s] as top level CoverageUnit", importCoverageUnit));
+               imported.add(importItem);
                continue;
             }
             if (!(parentImportItem instanceof CoverageUnit)) {
@@ -85,6 +90,8 @@ public class CoveragePackageImport {
             // Else, want to add item to same parent
             CoverageUnit parentCoverageUnit = (CoverageUnit) importItem.getParent();
             parentCoverageUnit.addCoverageUnit(importCoverageUnit);
+            imported.add(importCoverageUnit);
+
             rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
             rd.log("");
          }

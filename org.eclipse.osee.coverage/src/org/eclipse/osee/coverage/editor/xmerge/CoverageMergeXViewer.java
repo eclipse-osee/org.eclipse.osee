@@ -37,9 +37,31 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    public void setImportChecked(ICoverageEditorItem coverageItem, boolean checked) {
       importChecked.put(coverageItem, checked);
       xCoverageViewer.getXViewer().update(coverageItem, null);
+      // Check or un-check any children based on parent
       for (CoverageUnit coverageUnit : ((CoverageUnit) coverageItem).getCoverageUnits()) {
          importChecked.put(coverageUnit, checked);
          xCoverageViewer.getXViewer().update(coverageUnit, null);
+      }
+      // Check any parent based on child
+      ICoverageEditorItem parent = coverageItem.getParent();
+      if (isImportAllowed(parent)) {
+         // If child is cheked and parent not, check parent
+         if (checked && !isImportChecked(parent)) {
+            importChecked.put(parent, checked);
+            xCoverageViewer.getXViewer().update(parent, null);
+         }
+         // If all children not checked and parent checked, uncheck parent
+         boolean childChecked = false;
+         for (Object child : parent.getChildren()) {
+            if (child instanceof ICoverageEditorItem && isImportAllowed((ICoverageEditorItem) child) && isImportAllowed((ICoverageEditorItem) child)) {
+               childChecked = true;
+               break;
+            }
+         }
+         if (!childChecked && isImportChecked(parent)) {
+            importChecked.put(parent, false);
+            xCoverageViewer.getXViewer().update(parent, null);
+         }
       }
    }
 
@@ -115,5 +137,4 @@ public class CoverageMergeXViewer extends CoverageXViewer {
          }
       };
    }
-
 }

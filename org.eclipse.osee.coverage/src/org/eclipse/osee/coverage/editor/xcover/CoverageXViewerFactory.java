@@ -34,8 +34,11 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn(NAMESPACE + ".lineNumber", "File Line Number", 80, SWT.LEFT, true, SortDataType.String,
                false, "");
    public static XViewerColumn Coverage_Method =
-         new XViewerColumn(NAMESPACE + ".coverateMethod", "Coverage Method", 80, SWT.LEFT, true, SortDataType.String,
+         new XViewerColumn(NAMESPACE + ".coverateMethod", "Coverage Method", 100, SWT.LEFT, true, SortDataType.String,
                false, "");
+   public static XViewerColumn Coverage_Rationale =
+         new XViewerColumn(NAMESPACE + ".coverageRationale", "Coverage Rationale", 100, SWT.LEFT, true,
+               SortDataType.String, false, "");
    public static XViewerColumn Test_Units =
          new XViewerColumn(NAMESPACE + ".testUnits", "Test Units", 80, SWT.LEFT, true, SortDataType.String, false, "");
    public static XViewerColumn User_Col =
@@ -45,6 +48,8 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Parent_Coverage_Unit =
          new XViewerColumn(NAMESPACE + ".parentCoverageUnit", "Parent Coverage Unit", 80, SWT.LEFT, true,
                SortDataType.String, false, "");
+   public static XViewerColumn Guid =
+         new XViewerColumn(NAMESPACE + ".guid", "Guid", 80, SWT.LEFT, true, SortDataType.String, false, "");
 
    public CoverageXViewerFactory() {
       super(NAMESPACE);
@@ -52,7 +57,7 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
    }
 
    public void registerColumns() {
-      registerColumns(Name, Method_Number, Execution_Number, Line_Number, Coverage_Method, Test_Units, User_Col,
-            Parent_Coverage_Unit, Location);
+      registerColumns(Name, Method_Number, Execution_Number, Line_Number, Coverage_Method, Coverage_Rationale,
+            Test_Units, User_Col, Parent_Coverage_Unit, Location, Guid);
    }
 }

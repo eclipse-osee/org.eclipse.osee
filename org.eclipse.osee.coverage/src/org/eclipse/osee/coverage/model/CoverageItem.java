@@ -39,6 +39,7 @@ import org.eclipse.swt.graphics.Image;
 public class CoverageItem implements ICoverageEditorItem {
 
    private CoverageMethodEnum coverageMethod = CoverageMethodEnum.None;
+   private String coverageRationale;
    private final String executeNum;
    private String lineNum;
    private String methodNum;
@@ -62,6 +63,8 @@ public class CoverageItem implements ICoverageEditorItem {
       setGuid(AXml.getTagData(xml, "guid"));
       String lineNum = AXml.getTagData(xml, "line");
       if (Strings.isValid(lineNum)) setLineNum(lineNum);
+      String rationale = AXml.getTagData(xml, "rationale");
+      if (Strings.isValid(rationale)) setCoverageRationale(rationale);
       String methodNum = AXml.getTagData(xml, "methodNum");
       if (Strings.isValid(methodNum)) setMethodNum(methodNum);
       String userId = AXml.getTagData(xml, "user");
@@ -140,6 +143,7 @@ public class CoverageItem implements ICoverageEditorItem {
    @Override
    public String getCoverageEditorValue(XViewerColumn xCol) {
       if (xCol.equals(CoverageXViewerFactory.Line_Number)) return getLineNum();
+      if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) return getCoverageRationale();
       if (xCol.equals(CoverageXViewerFactory.Method_Number)) return getMethodNum();
       if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return getExecuteNum();
       if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return getCoverageMethod().toString();
@@ -210,6 +214,7 @@ public class CoverageItem implements ICoverageEditorItem {
       sb.append(AXml.addTagData("guid", getGuid()));
       sb.append(AXml.addTagData("methodNum", getMethodNum()));
       sb.append(AXml.addTagData("line", getLineNum()));
+      sb.append(AXml.addTagData("rationale", getCoverageRationale()));
       sb.append(AXml.addTagData("execNum", getExecuteNum()));
       if (getUser() != null) {
          sb.append(AXml.addTagData("user", getUser().getUserId()));
@@ -249,6 +254,14 @@ public class CoverageItem implements ICoverageEditorItem {
    @Override
    public Artifact getArtifact(boolean create) throws OseeCoreException {
       return null;
+   }
+
+   public String getCoverageRationale() {
+      return coverageRationale;
+   }
+
+   public void setCoverageRationale(String rationale) {
+      this.coverageRationale = rationale;
    }
 
 }

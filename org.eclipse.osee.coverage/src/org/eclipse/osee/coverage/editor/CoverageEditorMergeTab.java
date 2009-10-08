@@ -11,7 +11,6 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -40,18 +39,12 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
-import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
@@ -66,7 +59,6 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
  */
 public class CoverageEditorMergeTab extends FormPage {
 
-   private WorkPage page;
    private XCoverageMergeViewer xCoverageViewer1;
    private final ICoverageTabProvider provider1;
    private XCoverageMergeViewer xCoverageViewer2;
@@ -74,6 +66,7 @@ public class CoverageEditorMergeTab extends FormPage {
    private ScrolledForm scrolledForm;
    private Label titleLabel1, titleLabel2;
    private final CoverageEditor coverageEditor;
+   private CoverageEditorCoverageParameters parameters;
 
    public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, ICoverageTabProvider provider1, ICoverageTabProvider provider2) {
       super(coverageEditor, name, name);
@@ -95,31 +88,13 @@ public class CoverageEditorMergeTab extends FormPage {
       coverageEditor.getToolkit().adapt(mainComp);
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-      Button runButton = new Button(mainComp, SWT.PUSH);
-      runButton.setText("Search");
-      GridData gridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-      runButton.setLayoutData(gridData);
-      runButton.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleSearchButtonPressed();
-         }
-      });
-      runButton.setLayoutData(gridData);
-      coverageEditor.getToolkit().adapt(runButton, true, true);
-
-      Composite paramComp = new Composite(mainComp, SWT.NONE);
-      paramComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-      paramComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
-      coverageEditor.getToolkit().adapt(paramComp);
-
-      try {
-         page = new WorkPage(getWidgetXml(), new DefaultXWidgetOptionResolver());
-         page.createBody(getManagedForm(), paramComp, null, null, true);
-         widgetsCreated();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-      }
+      parameters =
+            new CoverageEditorCoverageParameters(mainComp, managedForm, coverageEditor, true, new SelectionAdapter() {
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  handleSearchButtonPressed();
+               }
+            });
 
       Composite tableComp = coverageEditor.getToolkit().createComposite(mainComp, SWT.NONE);
       tableComp.setLayout(ALayout.getZeroMarginLayout(3, false));
@@ -227,7 +202,7 @@ public class CoverageEditorMergeTab extends FormPage {
    }
 
    public void simulateSearchAll() {
-      XHyperlabelCoverageMethodSelection methodSelectionWidget = getCoverageMethodHyperlinkSelection();
+      XHyperlabelCoverageMethodSelection methodSelectionWidget = parameters.getCoverageMethodHyperlinkSelection();
       List<CoverageMethodEnum> values = new ArrayList<CoverageMethodEnum>();
       for (CoverageMethodEnum method : CoverageMethodEnum.values()) {
          values.add(method);
@@ -248,7 +223,7 @@ public class CoverageEditorMergeTab extends FormPage {
 
    private void handleSearchButtonPressed() {
       try {
-         Result result = isParameterSelectionValid();
+         Result result = parameters.isParameterSelectionValid();
          if (result.isFalse()) {
             result.popup();
             return;
@@ -262,9 +237,9 @@ public class CoverageEditorMergeTab extends FormPage {
 
    private Collection<ICoverageEditorItem> performSearchGetResults(ICoverageTabProvider provider) throws OseeCoreException {
       Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
-      Collection<CoverageMethodEnum> coverageMethods = getSelectedCoverageMethods();
-      User assignee = getSelectedUser();
-      boolean includeCompleted = isIncludeCompletedCancelledCheckbox();
+      Collection<CoverageMethodEnum> coverageMethods = parameters.getSelectedCoverageMethods();
+      User assignee = parameters.getAssignee();
+      boolean includeCompleted = parameters.isIncludeCompletedCancelled();
       for (ICoverageEditorItem item : provider.getCoverageEditorItems()) {
          if (assignee != null && item.getUser().equals(assignee)) {
             items.add(item);
@@ -282,96 +257,4 @@ public class CoverageEditorMergeTab extends FormPage {
       return items;
    }
 
-   public String getSelectedName(/*SearchType searchType*/) throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
-      if (getSelectedUser() != null) {
-         sb.append(" - Assignee: " + getSelectedUser());
-      }
-      if (isIncludeCompletedCancelledCheckbox()) {
-         sb.append(" - Include Completed/Cancelled");
-      }
-      if (getSelectedCoverageMethods().size() > 1) {
-         sb.append(" - Coverage Method: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ",
-               getSelectedCoverageMethods()));
-      }
-      return "Coverage Items " + sb.toString();
-   }
-
-   private boolean isIncludeCompletedCancelledCheckbox() {
-      if (getIncludeCompletedCancelledCheckbox() == null) {
-         return false;
-      }
-      return getIncludeCompletedCancelledCheckbox().isSelected();
-   }
-
-   public XMembersCombo getAssigeeCombo() {
-      return (XMembersCombo) getXWidget("Assignee");
-   }
-
-   public XCheckBox getIncludeCompletedCancelledCheckbox() {
-      return (XCheckBox) getXWidget("Include Completed/Cancelled");
-   }
-
-   public void widgetsCreated() throws OseeCoreException {
-      if (getIncludeCompletedCancelledCheckbox() != null) {
-         getIncludeCompletedCancelledCheckbox().set(true);
-      }
-   }
-
-   private User getSelectedUser() {
-      if (getAssigeeCombo() == null) {
-         return null;
-      }
-      return getAssigeeCombo().getUser();
-   }
-
-   private Collection<CoverageMethodEnum> getSelectedCoverageMethods() {
-      if (getCoverageMethodHyperlinkSelection() == null) {
-         return Collections.emptyList();
-      }
-      return getCoverageMethodHyperlinkSelection().getSelectedCoverageMethods();
-   }
-
-   public XWidget getXWidget(String attrName) {
-      if (page == null) {
-         throw new IllegalArgumentException("WorkPage == null");
-      }
-      if (page.getLayoutData(attrName) == null) {
-         return null;
-      }
-      return page.getLayoutData(attrName).getXWidget();
-   }
-
-   public XHyperlabelCoverageMethodSelection getCoverageMethodHyperlinkSelection() {
-      return (XHyperlabelCoverageMethodSelection) getXWidget("Coverage Method");
-   }
-
-   public Result isParameterSelectionValid() throws OseeCoreException {
-      try {
-         if (getSelectedCoverageMethods().size() == 0) {
-            return new Result("You must select at least one Coverage Method");
-         }
-         return Result.TrueResult;
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         return new Result("Exception: " + ex.getLocalizedMessage());
-      }
-   }
-
-   public String getWidgetXml() {
-      StringBuffer sb =
-            new StringBuffer(
-                  "<xWidgets>" +
-                  //
-                  "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>");
-      if (provider1.isAssignable()) {
-         sb.append("" +
-         //
-         "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" beginComposite=\"4\" horizontalLabel=\"true\"/>" +
-         //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      }
-      sb.append("</xWidgets>");
-      return sb.toString();
-   }
 }

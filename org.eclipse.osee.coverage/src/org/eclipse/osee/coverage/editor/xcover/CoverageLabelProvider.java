@@ -42,6 +42,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
       if (xCol.equals(CoverageXViewerFactory.User_Col)) return coverageItem.getUser() == null ? "" : coverageItem.getUser().getName();
       if (xCol.equals(CoverageXViewerFactory.Name)) return coverageItem.getName();
+      if (xCol.equals(CoverageXViewerFactory.Guid)) return coverageItem.getGuid();
       return coverageItem.getCoverageEditorValue(xCol);
    }
 

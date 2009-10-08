@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test.package1;
 
+import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -34,7 +35,8 @@ public class CoveragePackage1Import1 extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      CoveragePackage coveragePackage = new CoveragePackage(getName());
+      CoveragePackage coveragePackage =
+            new CoveragePackage(getName() + " - #" + AtsUtil.getAtsDeveloperIncrementingNum());
       CoverageEditor.open(new CoverageEditorInput(coveragePackage));
       // Process Import 1
       CoverageEditor editor = null;

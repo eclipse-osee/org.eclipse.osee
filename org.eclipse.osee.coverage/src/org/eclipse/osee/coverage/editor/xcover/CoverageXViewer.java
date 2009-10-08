@@ -12,7 +12,9 @@ package org.eclipse.osee.coverage.editor.xcover;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -21,13 +23,17 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
+import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactory;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -42,8 +48,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class CoverageXViewer extends XViewer {
 
    protected final XCoverageViewer xCoverageViewer;
-   Action editAction2;
-   Action editAction3;
+   Action editAction2, editAction3, editRationale;
 
    public CoverageXViewer(Composite parent, int style, XCoverageViewer xCoverageViewer) {
       this(parent, style, new CoverageXViewerFactory(), xCoverageViewer);
@@ -80,12 +85,49 @@ public class CoverageXViewer extends XViewer {
             AWorkbench.popup("Not Implemented Yet");
          }
       };
+      editRationale = new Action("Edit Rationale", Action.AS_PUSH_BUTTON) {
+         @Override
+         public void run() {
+            Set<String> rationale = new HashSet<String>();
+            for (ICoverageEditorItem coverageItem : xCoverageViewer.getSelectedCoverageItems()) {
+               if (coverageItem instanceof CoverageItem) {
+                  rationale.add(((CoverageItem) coverageItem).getCoverageRationale());
+               }
+            }
+            EntryDialog ed = new EntryDialog("Coverage Rationale", "Enter Coverage Rationale");
+            if (rationale.size() == 1 && Strings.isValid(rationale.iterator().next())) {
+               ed.setEntry(rationale.iterator().next());
+            }
+            if (ed.open() == 0) {
+               for (ICoverageEditorItem coverageItem : xCoverageViewer.getSelectedCoverageItems()) {
+                  if (coverageItem instanceof CoverageItem) {
+                     ((CoverageItem) coverageItem).setCoverageRationale(ed.getEntry());
+                     xCoverageViewer.getXViewer().update(coverageItem, null);
+                  }
+               }
+            }
+         }
+      };
 
+   }
+
+   private boolean isEditRationaleEnabled() {
+
+      for (ICoverageEditorItem item : xCoverageViewer.getSelectedCoverageItems()) {
+         if (!(item instanceof CoverageItem)) {
+            return false;
+         }
+      }
+      return true;
    }
 
    public void updateEditMenuActions() {
       MenuManager mm = getMenuManager();
       // EDIT MENU BLOCK
+      if (((CoverageMergeXViewerFactory) xViewerFactory).isPackageTable()) {
+         mm.insertBefore(MENU_GROUP_PRE, editRationale);
+         editRationale.setEnabled(isEditRationaleEnabled());
+      }
       mm.insertBefore(MENU_GROUP_PRE, editAction2);
       editAction2.setEnabled(true);
       mm.insertBefore(MENU_GROUP_PRE, editAction3);
