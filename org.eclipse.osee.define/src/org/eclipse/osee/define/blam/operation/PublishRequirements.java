@@ -92,13 +92,18 @@ public class PublishRequirements extends AbstractBlam {
       RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
 
       SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch());
-      String templateOption =
-            publishAsDiff ? (includeAttributes ? ITemplateRenderer.DIFF_VALUE : ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE) : includeAttributes ? ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE : ITemplateRenderer.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE;
+      String templateOption;
+      if (publishAsDiff) {
+         templateOption = includeAttributes ? ITemplateRenderer.DIFF_VALUE : ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE;
+      } else {
+         templateOption =
+               includeAttributes ? ITemplateRenderer.PREVIEW_WITH_RECURSE_VALUE : ITemplateRenderer.PREVIEW_WITH_RECURSE_NO_ATTRIBUTES_VALUE;
+      }
 
       VariableMap options =
             new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber,
                   ITemplateRenderer.TEMPLATE_OPTION, templateOption, ITemplateRenderer.TRANSACTION_OPTION, transaction,
-                  "linkType", linkType);
+                  "linkType", linkType, "inPublishMode", true);
       for (Artifact artifact : artifacts) {
          try {
             publish(monitor, artifact, options);

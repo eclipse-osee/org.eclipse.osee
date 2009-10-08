@@ -12,16 +12,21 @@ package org.eclipse.osee.framework.ui.skynet.render;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
+import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.render.word.AttributeElement;
@@ -145,19 +150,35 @@ public class DefaultArtifactRenderer implements IRenderer {
          wordMl.addWordMl(Xml.escape(attributeElement.getLabel()));
       }
 
-      List<String> entries = new ArrayList<String>();
-      for (Attribute<?> attributes : artifact.getAttributes(attributeTypeName)) {
-         entries.add(Xml.escape(attributes.toString()).toString());
-      }
-
-      String valueList = Collections.toString(", ", entries);
-
-      if (attributeElement.getFormat().contains(">x<")) {
-         wordMl.addWordMl(format.replace(">x<", ">" + valueList + "<"));
+      if (attributeTypeName.equals(CoreAttributes.RELATION_ORDER.getName())) {
+         wordMl.endParagraph();
+         String data = renderRelationOrder(artifact);
+         wordMl.addWordMl(data);
       } else {
-         wordMl.addTextInsideParagraph(valueList);
+         String valueList = Xml.escape(artifact.getAttributesToString(attributeTypeName)).toString();
+         if (attributeElement.getFormat().contains(">x<")) {
+            wordMl.addWordMl(format.replace(">x<", ">" + valueList + "<"));
+         } else {
+            wordMl.addTextInsideParagraph(valueList);
+         }
+         wordMl.endParagraph();
       }
-      wordMl.endParagraph();
+
+   }
+
+   private String renderRelationOrder(Artifact artifact) throws OseeCoreException {
+      StringBuilder builder = new StringBuilder();
+      try {
+         ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
+         RelationOrderRenderer renderer = new RelationOrderRenderer(guidResolver, RelationManager.getSorterProvider());
+
+         WordMLProducer producer = new WordMLProducer(builder);
+         RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);
+         renderer.toWordML(producer, artifact.getBranch(), relationOrderData);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+      return builder.toString();
    }
 
    @Override

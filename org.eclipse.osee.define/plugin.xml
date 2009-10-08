@@ -90,12 +90,6 @@
       </attribute>
    </extension>
    <extension
-         point="org.eclipse.osee.framework.ui.skynet.IgnorePublishAttribute">
-      <attribute
-            name="Relation Order">
-      </attribute>
-   </extension>
-   <extension
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRendererTemplate">
       <Template
             presentationType="ALL"

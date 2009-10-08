@@ -47,12 +47,12 @@ public class WordMLProducer extends Producer {
          "<wx:sect><w:p><w:pPr><w:sectPr><w:pgSz w:w=\"12240\" w:h=\"15840\"/><w:pgMar w:top=\"1440\" w:right=\"1800\" w:bottom=\"1440\" w:left=\"1800\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/><w:cols w:space=\"720\"/><w:docGrid w:line-pitch=\"360\"/></w:sectPr></w:pPr></w:p><w:subDoc w:link=\"" + FILE_NAME + "\"/></wx:sect><wx:sect><wx:sub-section><w:p><w:pPr><w:pStyle w:val=\"Heading1\"/></w:pPr></w:p><w:sectPr><w:type w:val=\"continuous\"/><w:pgSz w:w=\"12240\" w:h=\"15840\"/><w:pgMar w:top=\"1440\" w:right=\"1800\" w:bottom=\"1440\" w:left=\"1800\" w:header=\"720\" w:footer=\"720\" w:gutter=\"0\"/><w:cols w:space=\"720\"/><w:docGrid w:line-pitch=\"360\"/></w:sectPr></wx:sub-section></wx:sect>";
    private static final String HYPER_LINK_DOC =
          "<w:p><w:hlink w:dest=\"fileName\"><w:r wsp:rsidRPr=\"00CE6681\"><w:rPr><w:rStyle w:val=\"Hyperlink\"/></w:rPr><w:t>fileName</w:t></w:r></w:hlink></w:p>";
-   private Appendable strB;
+   private final Appendable strB;
    private final int[] outlineNumber;
    private int outlineLevel;
    private int flattenedLevelCount;
    private boolean previousPageLandsacpe;
-   private Map<String, Integer> alphabetMap;
+   private final Map<String, Integer> alphabetMap;
 
    public WordMLProducer(Appendable strB) {
       this.strB = strB;
@@ -157,7 +157,9 @@ public class WordMLProducer extends Producer {
          flattenedLevelCount--;
       } else {
          append("</wx:sub-section>");
-         if (outlineLevel + 1 < outlineNumber.length) outlineNumber[outlineLevel + 1] = 0;
+         if (outlineLevel + 1 < outlineNumber.length) {
+            outlineNumber[outlineLevel + 1] = 0;
+         }
          outlineLevel--;
       }
    }
@@ -200,6 +202,50 @@ public class WordMLProducer extends Producer {
       append("</w:p>");
    }
 
+   public void startTable() throws OseeWrappedException {
+      append("<wx:sub-section><w:tbl>");
+   }
+
+   public void endTable() throws OseeWrappedException {
+      append("</w:tbl></wx:sub-section>");
+   }
+
+   public void startTableRow() throws OseeWrappedException {
+      append("<w:tr>");
+   }
+
+   public void endTableRow() throws OseeWrappedException {
+      append("</w:tr>");
+   }
+
+   public void startTableColumn() throws OseeWrappedException {
+      append("<w:tc>");
+   }
+
+   public void endTableColumn() throws OseeWrappedException {
+      append("</w:tc>");
+   }
+
+   public void addTableColumns(String... datas) throws OseeWrappedException {
+      for (String data : datas) {
+         startTableColumn();
+         addParagraph(data);
+         endTableColumn();
+      }
+   }
+
+   public void addTableRow(String... datas) throws OseeWrappedException {
+      startTableRow();
+      addTableColumns(datas);
+      endTableRow();
+   }
+
+   public void addParagraphNoEscape(CharSequence text) throws OseeWrappedException {
+      append("<w:p><w:r><w:t>");
+      append(text);
+      append("</w:t></w:r></w:p>");
+   }
+
    public void addParagraph(CharSequence text) throws OseeWrappedException {
       append("<w:p><w:r><w:t>");
       append(Xml.escape(text));
@@ -219,9 +265,12 @@ public class WordMLProducer extends Producer {
    }
 
    public void addTextInsideParagraph(CharSequence text, String rgbHexColor) throws OseeWrappedException {
-      if (rgbHexColor == null) throw new IllegalArgumentException("rgbHexColor can not be null");
-      if (rgbHexColor.length() != 6) throw new IllegalArgumentException(
-            "rgbHexColor should be a hex string 6 characters long");
+      if (rgbHexColor == null) {
+         throw new IllegalArgumentException("rgbHexColor can not be null");
+      }
+      if (rgbHexColor.length() != 6) {
+         throw new IllegalArgumentException("rgbHexColor should be a hex string 6 characters long");
+      }
 
       append("<w:r><w:rPr><w:color w:val=\"");
       append(rgbHexColor);
@@ -283,7 +332,7 @@ public class WordMLProducer extends Producer {
          pageTypeValue = artifact.getSoleAttributeValue("Page Type", "Portrait");
       }
 
-      boolean landscape = (pageTypeValue != null && pageTypeValue.equals("Landscape"));
+      boolean landscape = pageTypeValue != null && pageTypeValue.equals("Landscape");
 
       if (landscape || previousPageLandsacpe) {
          append("<w:p>");

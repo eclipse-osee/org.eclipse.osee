@@ -448,8 +448,17 @@ public class WordTemplateProcessor {
          if (ignoreAttributeExtensions.contains(attributeType.getName())) {
             return;
          }
-
          variableMap = ensureMapIsSetForDocLinks(variableMap, allAttrs);
+
+         Boolean isInPublishMode =
+               variableMap != null ? Boolean.TRUE.equals(variableMap.getBoolean("inPublishMode")) : false;
+         if (variableMap != null && isInPublishMode) {
+            // Do not publish relation order during publishing
+            if (CoreAttributes.RELATION_ORDER.equals(attributeType.getName())) {
+               return;
+            }
+         }
+
          RendererManager.renderAttribute(attributeTypeName, presentationType, artifact, variableMap, wordMl,
                attributeElement);
       }
@@ -457,17 +466,18 @@ public class WordTemplateProcessor {
 
    private VariableMap ensureMapIsSetForDocLinks(VariableMap variableMap, boolean allAttrs) throws OseeArgumentException {
       //Do not try to use a null map
-      if (variableMap == null) {
-         variableMap = new VariableMap();
+      VariableMap theMap = variableMap;
+      if (theMap == null) {
+         theMap = new VariableMap();
       }
       //If someone else set the link leave it set else set it to OSEE server link
-      if (variableMap.getValue("linkType") == null) {
-         variableMap.setValue("linkType", LinkType.OSEE_SERVER_LINK);
+      if (theMap.getValue("linkType") == null) {
+         theMap.setValue("linkType", LinkType.OSEE_SERVER_LINK);
       }
       //set all attrs
-      variableMap.setValue("allAttrs", allAttrs);
+      theMap.setValue("allAttrs", allAttrs);
 
-      return variableMap;
+      return theMap;
    }
 
    public static String elementNameFor(String artifactName) {
