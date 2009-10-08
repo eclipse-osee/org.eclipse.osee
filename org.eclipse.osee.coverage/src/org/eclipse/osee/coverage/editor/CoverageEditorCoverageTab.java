@@ -291,11 +291,11 @@ public class CoverageEditorCoverageTab extends FormPage {
             new StringBuffer(
                   "<xWidgets>" +
                   //
-                  "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>");
+                  "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>" +
+                  //
+                  "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show All\" beginComposite=\"6\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       if (provider.isAssignable()) {
          sb.append("" +
-         //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show All\" beginComposite=\"6\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
          //
          "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
          //
