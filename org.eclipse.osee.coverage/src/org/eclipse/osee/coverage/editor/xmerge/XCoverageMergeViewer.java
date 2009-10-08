@@ -20,8 +20,8 @@ public class XCoverageMergeViewer extends XCoverageViewer {
    CoverageMergeXViewer mergeXViewer;
    private final CoverageMergeXViewerFactory coverageMergeXViewerFactory;
 
-   public XCoverageMergeViewer(CoverageMergeXViewerFactory coverageMergeXViewerFactory) {
-      super();
+   public XCoverageMergeViewer(CoverageMergeXViewerFactory coverageMergeXViewerFactory, TableType tableType, TableType... types) {
+      super(tableType, types);
       this.coverageMergeXViewerFactory = coverageMergeXViewerFactory;
    }
 

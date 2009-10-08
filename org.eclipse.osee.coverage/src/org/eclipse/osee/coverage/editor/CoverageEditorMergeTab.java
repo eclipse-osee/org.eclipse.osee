@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryPackage;
@@ -173,7 +174,7 @@ public class CoverageEditorMergeTab extends FormPage {
       leftToolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       managedForm.getToolkit().adapt(leftToolBar);
 
-      xCoverageViewer1 = new XCoverageMergeViewer(new CoverageMergeXViewerFactoryPackage());
+      xCoverageViewer1 = new XCoverageMergeViewer(new CoverageMergeXViewerFactoryPackage(), TableType.Package, TableType.Merge);
       xCoverageViewer1.setDisplayLabel(false);
       xCoverageViewer1.createWidgets(managedForm, leftComp, 1);
       xCoverageViewer1.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -191,7 +192,7 @@ public class CoverageEditorMergeTab extends FormPage {
       rightToolBar.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       managedForm.getToolkit().adapt(rightToolBar);
 
-      xCoverageViewer2 = new XCoverageMergeViewer(new CoverageMergeXViewerFactoryImport());
+      xCoverageViewer2 = new XCoverageMergeViewer(new CoverageMergeXViewerFactoryImport(), TableType.Import, TableType.Merge);
       xCoverageViewer2.setDisplayLabel(false);
       xCoverageViewer2.createWidgets(managedForm, rightComp, 1);
       xCoverageViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));

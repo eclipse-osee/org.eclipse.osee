@@ -30,7 +30,4 @@ public abstract class CoverageMergeXViewerFactory extends CoverageXViewerFactory
       }
    }
 
-   public abstract boolean isMergeTable();
-
-   public abstract boolean isPackageTable();
 }

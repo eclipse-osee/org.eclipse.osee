@@ -23,7 +23,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
-import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactory;
+import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -124,7 +124,7 @@ public class CoverageXViewer extends XViewer {
    public void updateEditMenuActions() {
       MenuManager mm = getMenuManager();
       // EDIT MENU BLOCK
-      if (((CoverageMergeXViewerFactory) xViewerFactory).isPackageTable()) {
+      if (xCoverageViewer.isType(TableType.Package)) {
          mm.insertBefore(MENU_GROUP_PRE, editRationale);
          editRationale.setEnabled(isEditRationaleEnabled());
       }

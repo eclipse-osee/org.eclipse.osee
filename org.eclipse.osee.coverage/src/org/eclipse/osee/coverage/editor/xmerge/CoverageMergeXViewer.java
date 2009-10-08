@@ -17,6 +17,7 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
+import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -107,7 +108,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    @Override
    public void updateEditMenuActions() {
       MenuManager mm = getMenuManager();
-      if (((CoverageMergeXViewerFactory) xViewerFactory).isMergeTable()) {
+      if (xCoverageViewer.isType(TableType.Merge)) {
          mm.insertBefore(MENU_GROUP_PRE, toggleImport);
          toggleImport.setEnabled(isToggleImportEnabled());
       }

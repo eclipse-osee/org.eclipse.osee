@@ -15,6 +15,8 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
+import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
+import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -85,7 +87,7 @@ public class CoverageEditorCoverageTab extends FormPage {
       tableComp.setLayoutData(tableData);
       coverageEditor.getToolkit().adapt(tableComp);
 
-      xCoverageViewer = new XCoverageViewer();
+      xCoverageViewer = new XCoverageViewer(provider instanceof CoverageImport ? TableType.Import : TableType.Package);
       xCoverageViewer.setDisplayLabel(false);
       xCoverageViewer.createWidgets(managedForm, tableComp, 1);
       xCoverageViewer.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));

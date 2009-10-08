@@ -37,13 +37,4 @@ public class CoverageMergeXViewerFactoryImport extends CoverageMergeXViewerFacto
       }
    }
 
-   @Override
-   public boolean isMergeTable() {
-      return true;
-   }
-
-   @Override
-   public boolean isPackageTable() {
-      return false;
-   }
 }

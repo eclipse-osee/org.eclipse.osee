@@ -60,4 +60,5 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
       registerColumns(Name, Method_Number, Execution_Number, Line_Number, Coverage_Method, Coverage_Rationale,
             Test_Units, User_Col, Parent_Coverage_Unit, Location, Guid);
    }
+
 }

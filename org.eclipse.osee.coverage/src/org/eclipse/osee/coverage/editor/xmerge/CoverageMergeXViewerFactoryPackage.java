@@ -27,21 +27,11 @@ public class CoverageMergeXViewerFactoryPackage extends CoverageMergeXViewerFact
    }
 
    @Override
-   public boolean isMergeTable() {
-      return false;
-   }
-
-   @Override
    public void registerMergeColumns() {
       super.registerMergeColumns();
       for (XViewerColumn xCol : getColumns()) {
          if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) overrideShowDefault(xCol.getId(), true);
       }
-   }
-
-   @Override
-   public boolean isPackageTable() {
-      return true;
    }
 
 }

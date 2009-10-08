@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -44,9 +45,15 @@ public class XCoverageViewer extends XWidget {
    public final static String normalColor = "#EEEEEE";
    private Label extraInfoLabel;
    private Tree tree;
+   private final Collection<TableType> tableTypes;
+   public static enum TableType {
+      Package, Merge, Import
+   };
 
-   public XCoverageViewer() {
+   public XCoverageViewer(TableType tableType, TableType... types) {
       super("Coverage Items");
+      this.tableTypes = Collections.getAggregate(types);
+      this.tableTypes.add(tableType);
    }
 
    @Override
@@ -208,4 +215,12 @@ public class XCoverageViewer extends XWidget {
    public Control getErrorMessageControl() {
       return labelWidget;
    }
+
+   public boolean isType(TableType tableType) {
+      if (tableTypes.contains(tableType)) {
+         return true;
+      }
+      return false;
+   }
+
 }
