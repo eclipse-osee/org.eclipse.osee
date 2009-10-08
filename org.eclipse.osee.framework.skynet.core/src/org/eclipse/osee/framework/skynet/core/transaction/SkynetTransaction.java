@@ -73,6 +73,8 @@ public class SkynetTransaction extends DbTransaction {
    private boolean executedWithException = false;
    private final String comment;
 
+   @Deprecated
+   // please provide a more meaningful comment than empty quote
    public SkynetTransaction(Branch branch) throws OseeCoreException {
       this(branch, "");
    }
