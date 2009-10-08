@@ -214,7 +214,9 @@ public class CoverageItem implements ICoverageEditorItem {
       sb.append(AXml.addTagData("guid", getGuid()));
       sb.append(AXml.addTagData("methodNum", getMethodNum()));
       sb.append(AXml.addTagData("line", getLineNum()));
-      sb.append(AXml.addTagData("rationale", getCoverageRationale()));
+      if (Strings.isValid(getCoverageRationale())) {
+         sb.append(AXml.addTagData("rationale", getCoverageRationale()));
+      }
       sb.append(AXml.addTagData("execNum", getExecuteNum()));
       if (getUser() != null) {
          sb.append(AXml.addTagData("user", getUser().getUserId()));

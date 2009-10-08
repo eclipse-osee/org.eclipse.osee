@@ -15,7 +15,6 @@ import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.ICoverageImporter;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
-import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -44,9 +43,10 @@ public class CoverageImportTest1NavigateItem extends XNavigateItemAction impleme
       CoverageImport coverageImport = new CoverageImport();
       try {
          URL url = CoverageImportTest1NavigateItem.class.getResource(PATH + "NavigationButton1.java");
-         CoverageUnit coverageUnit = SampleJavaFileParser.createCodeUnit(url);
-         coverageImport.addCoverageUnit(coverageUnit);
+         coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
          url = CoverageImportTest1NavigateItem.class.getResource(PATH + "NavigationButton2.java");
+         coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
+         url = CoverageImportTest1NavigateItem.class.getResource(PATH + "NavigationButton3.java");
          coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
          coverageImport.setLocation(PATH);
       } catch (OseeCoreException ex) {

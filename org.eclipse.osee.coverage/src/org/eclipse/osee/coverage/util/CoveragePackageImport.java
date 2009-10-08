@@ -5,8 +5,11 @@
  */
 package org.eclipse.osee.coverage.util;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -28,15 +31,18 @@ public class CoveragePackageImport {
 
    private final CoveragePackage coveragePackage;
    private final CoverageImport coverageImport;
+   private Collection<ICoverageEditorItem> allImportItems;
+   private Set<ICoverageEditorItem> imported;
 
    public CoveragePackageImport(CoveragePackage coveragePackage, CoverageImport coverageImport) {
       this.coveragePackage = coveragePackage;
       this.coverageImport = coverageImport;
    }
 
-   public XResultData validateItems(Collection<ICoverageEditorItem> importItems, XResultData rd) {
+   public XResultData validateItems(Collection<ICoverageEditorItem> allImportItems, XResultData rd) {
+      this.allImportItems = allImportItems;
       if (rd == null) rd = new XResultData();
-      for (ICoverageEditorItem importItem : importItems) {
+      for (ICoverageEditorItem importItem : allImportItems) {
          if (!(importItem instanceof CoverageUnit)) {
             rd.logError(String.format("Invalid Item for Import; Don't import [%s]",
                   importItem.getClass().getSimpleName()));
@@ -46,18 +52,45 @@ public class CoveragePackageImport {
       return rd;
    }
 
-   /**
-    * Takes import items from coverageImport and applies them to coveragePackage
-    */
    public XResultData importItems(Collection<ICoverageEditorItem> importItems) {
       XResultData rd = new XResultData();
 
       validateItems(importItems, rd);
       if (rd.getNumErrors() > 0) return rd;
+      imported = new HashSet<ICoverageEditorItem>();
 
-      Set<ICoverageEditorItem> imported = new HashSet<ICoverageEditorItem>();
+      List<ICoverageEditorItem> parentItems = new ArrayList<ICoverageEditorItem>();
+      for (ICoverageEditorItem importItem : importItems) {
+         if (importItem.getParent() instanceof CoverageImport) {
+            parentItems.add(importItem);
+         }
+      }
+      importItemsRecurse(parentItems, rd);
+
+      if (rd.getNumErrors() > 0) {
+         AWorkbench.popup(rd.getNumErrors() + " Errors Found; Not Persisting");
+         rd.logError(rd.getNumErrors() + " Errors Found; Not Persisting");
+      } else {
+         try {
+            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+            coveragePackage.save(transaction);
+            transaction.execute();
+            rd.log("Changes Persisted");
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+
+      return rd;
+   }
+
+   /**
+    * Takes import items from coverageImport and applies them to coveragePackage
+    */
+   public XResultData importItemsRecurse(Collection<ICoverageEditorItem> localImportItems, XResultData rd) {
+      System.out.println("importItemsRecurse => " + localImportItems);
       try {
-         for (ICoverageEditorItem importItem : importItems) {
+         for (ICoverageEditorItem importItem : localImportItems) {
             rd.log("Processing " + importItem.getName());
             if (!(importItem instanceof CoverageUnit)) {
                rd.logError(String.format("[%s] invalid for Import; Only import CoverageUnits",
@@ -79,33 +112,25 @@ public class CoveragePackageImport {
             ICoverageEditorItem parentImportItem = importItem.getParent();
             // If null, this is top level item, just add to package
             if (parentImportItem instanceof CoverageImport) {
-               coveragePackage.addCoverageUnit((CoverageUnit) importItem);
+               coveragePackage.addCoverageUnit(((CoverageUnit) importItem).copy(true));
                rd.log(String.format("Added [%s] as top level CoverageUnit", importCoverageUnit));
                imported.add(importItem);
-               continue;
+               rd.log("");
+            } else {
+               // Else, want to add item to same parent
+               CoverageUnit parentCoverageUnit = (CoverageUnit) importItem.getParent();
+               CoverageUnit parentPackageItem = (CoverageUnit) getPackageCoverageItem(parentCoverageUnit);
+               parentPackageItem.addCoverageUnit(importCoverageUnit.copy(true));
+               imported.add(importCoverageUnit);
+               rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
+               rd.log("");
             }
-            if (!(parentImportItem instanceof CoverageUnit)) {
-               continue;
-            }
-            // Else, want to add item to same parent
-            CoverageUnit parentCoverageUnit = (CoverageUnit) importItem.getParent();
-            parentCoverageUnit.addCoverageUnit(importCoverageUnit);
-            imported.add(importCoverageUnit);
 
-            rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
-            rd.log("");
-         }
-         if (rd.getNumErrors() > 0) {
-            AWorkbench.popup(rd.getNumErrors() + " Errors Found; Not Persisting");
-            rd.logError(rd.getNumErrors() + " Errors Found; Not Persisting");
-         } else {
-            try {
-               SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
-               coveragePackage.save(transaction);
-               transaction.execute();
-               rd.log("Changes Persisted");
-            } catch (OseeCoreException ex) {
-               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            // Import children that are in import list
+            for (ICoverageEditorItem child : importCoverageUnit.getCoverageUnits()) {
+               if (allImportItems.contains(child) && !imported.contains(child)) {
+                  importItemsRecurse(Collections.singleton(child), rd);
+               }
             }
          }
       } catch (Exception ex) {

@@ -159,15 +159,15 @@ public class TestUnit implements ICoverageEditorItem {
    }
 
    public void save(SkynetTransaction transaction) throws OseeCoreException {
-      List<String> items = new ArrayList<String>();
       getArtifact(true);
       artifact.setName(getName());
-      artifact.setAttributeValues(GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME, items);
       KeyValueArtifact keyValueArtifact =
             new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
       keyValueArtifact.setValue("previewHtml", getPreviewHtml());
       keyValueArtifact.setValue("location", getLocation());
       keyValueArtifact.save();
+      // TODO Need to relate TestUnit to CoverageItem
+      System.err.println("Need to relate TestUnit to CoverageItem");
       artifact.persist(transaction);
    }
 

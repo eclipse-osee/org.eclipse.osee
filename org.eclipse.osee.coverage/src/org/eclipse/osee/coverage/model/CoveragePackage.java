@@ -237,6 +237,8 @@ public class CoveragePackage implements ICoverageEditorItem, ICoverageEditorProv
 
    public void save(SkynetTransaction transaction) throws OseeCoreException {
       getArtifact(true);
+      System.out.println("coveragePackage " + guid);
+
       artifact.setName(getName());
       KeyValueArtifact keyValueArtifact =
             new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
@@ -244,7 +246,7 @@ public class CoveragePackage implements ICoverageEditorItem, ICoverageEditorProv
       keyValueArtifact.save();
       for (CoverageUnit coverageUnit : coverageUnits) {
          coverageUnit.save(transaction);
-         artifact.addChild(coverageUnit.getArtifact(false));
+         artifact.addChild(artifact);
       }
       artifact.persist(transaction);
    }

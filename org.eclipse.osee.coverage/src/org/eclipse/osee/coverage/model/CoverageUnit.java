@@ -59,6 +59,7 @@ public class CoverageUnit implements ICoverageEditorItem {
    }
 
    public void addCoverageUnit(CoverageUnit coverageUnit) {
+      coverageUnit.setParentCoverageEditorItem(this);
       coverageUnits.add(coverageUnit);
    }
 
@@ -243,9 +244,22 @@ public class CoverageUnit implements ICoverageEditorItem {
       }
    }
 
+   public CoverageUnit copy(boolean includeItems) throws OseeCoreException {
+      CoverageUnit coverageUnit = new CoverageUnit(parentCoverageEditorItem, name, location);
+      coverageUnit.setGuid(guid);
+      coverageUnit.setText(text);
+      if (includeItems) {
+         for (CoverageItem coverageItem : coverageItems) {
+            coverageUnit.addCoverageItem(new CoverageItem(coverageUnit, coverageItem.toXml()));
+         }
+      }
+      return coverageUnit;
+   }
+
    public void save(SkynetTransaction transaction) throws OseeCoreException {
       getArtifact(true);
       artifact.setName(getName());
+      System.out.println("coverageUnit " + guid);
 
       KeyValueArtifact keyValueArtifact =
             new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
@@ -259,7 +273,7 @@ public class CoverageUnit implements ICoverageEditorItem {
       keyValueArtifact.setValue("location", location);
       keyValueArtifact.save();
       if (parentCoverageEditorItem != null) {
-         parentCoverageEditorItem.getArtifact(true).addChild(artifact);
+         parentCoverageEditorItem.getArtifact(false).addChild(artifact);
       }
       for (CoverageUnit coverageUnit : coverageUnits) {
          coverageUnit.save(transaction);
