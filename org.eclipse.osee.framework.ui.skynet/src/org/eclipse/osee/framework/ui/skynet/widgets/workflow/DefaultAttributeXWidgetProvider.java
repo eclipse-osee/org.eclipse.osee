@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.EnumeratedAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
@@ -67,7 +68,8 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
          } else {
             defaultData.setXWidgetName("XComboBooleanDam");
          }
-      } else if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
+      } else if (attributeType.getBaseAttributeClass().equals(WordAttribute.class) || CoreAttributes.RELATION_ORDER.getGuid().equals(
+            attributeType.getGuid())) {
          defaultData.setXWidgetName("XStackedDam");
          defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
       } else {

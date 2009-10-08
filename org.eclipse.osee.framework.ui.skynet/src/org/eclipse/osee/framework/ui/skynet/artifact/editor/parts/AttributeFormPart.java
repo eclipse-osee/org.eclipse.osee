@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FontManager;
@@ -76,7 +77,8 @@ public class AttributeFormPart extends AbstractFormPart {
          List<AttributeType> types = Arrays.asList(AttributeTypeUtil.getTypesWithData(artifact));
          boolean willHaveASection = hasWordAttribute(types);
          for (AttributeType attributeType : types) {
-            if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
+            if (attributeType.getBaseAttributeClass().equals(WordAttribute.class) || CoreAttributes.RELATION_ORDER.getGuid().equals(
+                  attributeType.getGuid())) {
                createAttributeTypeControlsInSection(parent, toolkit, attributeType, willHaveASection, false);
             } else {
                createAttributeTypeControls(composite, toolkit, artifact, attributeType, willHaveASection, isEditable,
