@@ -100,7 +100,7 @@ public class RelationTypeSideSorter {
       return getSorter().getSorterId();
    }
 
-   public String getOrderName() throws OseeCoreException {
+   public String getSorterName() throws OseeCoreException {
       IRelationSorterId id = getSorterId();
       return id.prettyName();
    }

@@ -11,138 +11,142 @@
 
 package org.eclipse.osee.framework.skynet.core.test.relation;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
+import java.util.Random;
+import java.util.Map.Entry;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationOrderAccessor;
+import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
 import org.eclipse.osee.framework.skynet.core.test.types.MockIArtifact;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeTestDataAccessor;
-import org.eclipse.osee.framework.skynet.core.test.types.OseeTypesUtil;
-import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.RelationTypeCache;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
- * @author Ryan Schmitt
+ * @author Roberto E. Escobar
  */
+@RunWith(Parameterized.class)
 public class RelationTypeSideSorterTest {
+   private final static Random randomGenerator = new Random();
 
-   private static RelationType relationType1;
-   private static RelationType relationType2;
+   private final RelationType relationType;
+   private final RelationSide relationSide;
+   private final RelationOrderData orderData;
+   private final RelationSorterProvider sorterProvider;
+   private final RelationTypeSideSorter sorter;
+   private final List<Object[]> expected;
 
-   private static RelationOrderData orderData1;
-   private static RelationOrderData orderData2;
-
-   private static RelationSorterProvider provider;
-
-   private static ArtifactType artType1;
-   private static ArtifactType artType2;
-   private static ArtifactType artType3;
-   private static ArtifactType artType4;
-
-   private static IArtifact artifact1;
-   private static IArtifact artifact2;
-
-   private static IRelationOrderAccessor accessor;
-
-   @BeforeClass
-   public static void beforeTestClass() throws OseeCoreException {
-      provider = new RelationSorterProvider();
-      accessor = new TestRelationOrderAccessor();
-      OseeTypeFactory factory = new OseeTypeFactory();
-      RelationTypeCache typeCache = new RelationTypeCache(factory, new OseeTestDataAccessor<RelationType>());
-      ArtifactTypeCache artCache = new ArtifactTypeCache(factory, new OseeTestDataAccessor<ArtifactType>());
-
-      artType1 = factory.createArtifactType(artCache, GUID.create(), false, "Artifact Type 1");
-      artType2 = factory.createArtifactType(artCache, GUID.create(), false, "Artifact Type 2");
-      artType3 = factory.createArtifactType(artCache, GUID.create(), false, "Artifact Type 3");
-      artType4 = factory.createArtifactType(artCache, GUID.create(), false, "Artifact Type 4");
-      artCache.cache(artType1, artType2, artType3, artType4);
-
-      relationType1 =
-            OseeTypesUtil.createRelationType(typeCache, artCache, factory, GUID.create(), "RelationType1",
-                  artType1.getGuid(), artType2.getGuid(), RelationTypeMultiplicity.MANY_TO_MANY);
-      relationType2 =
-            OseeTypesUtil.createRelationType(typeCache, artCache, factory, GUID.create(), "RelationType2",
-                  artType3.getGuid(), artType4.getGuid(), RelationTypeMultiplicity.ONE_TO_MANY);
-
-      IArtifact artifact1 = new MockIArtifact(100, "Mock Artifact 1", GUID.create(), null, artType1);
-      IArtifact artifact2 = new MockIArtifact(100, "Mock Artifact 1", GUID.create(), null, artType2);
-
-      orderData1 = new RelationOrderData(accessor, artifact1);
-      orderData2 = new RelationOrderData(accessor, artifact2);
-   }
-
-   @AfterClass
-   public static void afterTestClass() {
-      relationType1 = null;
-      relationType2 = null;
-
-      orderData1 = null;
-      orderData2 = null;
-
-      provider = null;
-
-      artType1 = null;
-      artType2 = null;
-      artType3 = null;
-      artType4 = null;
-
-      artifact1 = null;
-      artifact2 = null;
-
-      accessor = null;
+   public RelationTypeSideSorterTest(RelationSorterProvider sorterProvider, RelationType relationType, RelationSide relationSide, RelationOrderData orderData, List<Object[]> expected) {
+      this.relationType = relationType;
+      this.relationSide = relationSide;
+      this.orderData = orderData;
+      this.sorterProvider = sorterProvider;
+      this.expected = expected;
+      this.sorter = new RelationTypeSideSorter(relationType, relationSide, sorterProvider, orderData);
    }
 
    @Test
    public void testConstruction() throws OseeCoreException {
-      RelationTypeSideSorter relationSorter =
-            new RelationTypeSideSorter(relationType1, RelationSide.SIDE_A, provider, orderData1);
-      checkSorterData(relationType1, RelationSide.SIDE_A, relationSorter);
-
-      relationSorter = new RelationTypeSideSorter(relationType1, RelationSide.SIDE_B, provider, orderData1);
-      checkSorterData(relationType1, RelationSide.SIDE_B, relationSorter);
+      Assert.assertNotNull(sorter);
    }
 
    @Test
-   public void testOrderId() throws OseeCoreException {
-      //      RelationTypeSideSorter sorter =
-      //            new RelationTypeSideSorter(relationType1, RelationSide.SIDE_A, provider, orderData1);
-      //      IRelationOrderId actual = sorter.getOrderId();
+   public void testGetIArtifact() throws OseeCoreException {
+      Assert.assertNotNull(orderData.getIArtifact());
+      Assert.assertEquals(orderData.getIArtifact(), sorter.getIArtifact());
 
-      //      Assert.assertEquals("", actual.getGuid());
-      //      Assert.assertEquals("", actual.prettyName());
+      Assert.assertTrue(sorter.getIArtifact() instanceof MockIArtifact);
+      MockIArtifact mockArtifact = (MockIArtifact) sorter.getIArtifact();
+      mockArtifact.clear();
+
+      // Test Get Full Artifact is Called from IArtifact
+      sorter.getArtifact();
+      Assert.assertTrue(mockArtifact.wasGetFullArtifactCalled());
    }
 
    @Test
-   public void testOrderGuid() throws OseeCoreException {
-      //      RelationTypeSideSorter sorter = new RelationTypeSideSorter(provider, relationType1, RelationSide.SIDE_A, orderData1);
-      //      sorter.getOrderGuid();
-
+   public void testGetRelationType() {
+      Assert.assertEquals(relationType, sorter.getRelationType());
    }
 
    @Test
-   public void testOrderName() throws OseeCoreException {
-      //      RelationSorter sorter = null;
-      //      sorter.getOrderGuid();
+   public void testGetRelationSide() {
+      Assert.assertEquals(relationSide, sorter.getSide());
    }
 
    @Test
-   public void testSortedRelatives() throws OseeCoreException {
+   public void testGetSideName() {
+      String expectedSideName =
+            relationSide == RelationSide.SIDE_A ? relationType.getSideAName() : relationType.getSideBName();
+      Assert.assertEquals(expectedSideName, sorter.getSideName());
+   }
+
+   @Test
+   public void testGetSorterId() throws OseeCoreException {
+      String sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
+      IRelationSorterId expected = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
+      Assert.assertNotNull(sorterGuid);
+      Assert.assertEquals(expected, sorter.getSorterId());
+      Assert.assertEquals(expected.getGuid(), sorter.getSorterId().getGuid());
+      Assert.assertEquals(expected.prettyName(), sorter.getSorterId().prettyName());
+   }
+
+   @Test
+   public void testSorterName() throws OseeCoreException {
+      String sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
+      IRelationSorterId expected = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
+      Assert.assertNotNull(sorterGuid);
+      Assert.assertEquals(expected.prettyName(), sorter.getSorterName());
+   }
+
+   @Test
+   public void testIsSideA() {
+      Assert.assertEquals(relationSide == RelationSide.SIDE_A, sorter.isSideA());
+   }
+
+   @Test
+   public void testSetOrder() throws OseeCoreException {
+      IArtifact art3 = createArtifact("c", GUID.create());
+      IArtifact art4 = createArtifact("d", GUID.create());
+
+      List<IArtifact> relatives = Arrays.asList(art3, art4);
+      List<String> expected = Artifacts.toGuids(relatives);
+
+      // set same sorter id
+      sorter.setOrder(relatives, sorter.getSorterId());
+      List<String> actual = orderData.getOrderList(sorter.getRelationType(), sorter.getSide());
+      Assert.assertFalse(actual.equals(expected));
+
+      // Set Different sorter id
+      sorter.setOrder(relatives, RelationOrderBaseTypes.USER_DEFINED);
+      actual = orderData.getOrderList(sorter.getRelationType(), sorter.getSide());
+      expected = Artifacts.toGuids(relatives);
+      Assert.assertTrue(actual.equals(expected));
+   }
+
+   @Test
+   public void testSort() throws OseeCoreException {
+      //      sorter.sort(listToOrder)
       //      RelationSorter sorter = null;
       //      List<IArtifact> sorted = sorter.getSortedRelatives(relatives);
 
@@ -157,59 +161,99 @@ public class RelationTypeSideSorterTest {
    }
 
    @Test
-   public void testSetOrder() throws OseeCoreException {
-      //      RelationSorter sorter;
-      //      sorter.setOrder(orderId, relatives);
-   }
-
-   @Test
-   public void testSort() throws OseeCoreException {
-
-   }
-
-   @Test
    public void testToString() throws OseeCoreException {
-      RelationTypeSideSorter sorter =
-            new RelationTypeSideSorter(relationType1, RelationSide.SIDE_A, provider, orderData1);
       String artGuid = sorter.getIArtifact().getGuid();
+      String sorterGuid = orderData.getCurrentSorterGuid(relationType, relationSide);
+      IRelationSorterId expected = sorterProvider.getRelationOrder(sorterGuid).getSorterId();
       Assert.assertEquals(
-            "Relation Sorter {relationType=[RelationType1_A]<-[RelationType1]->[RelationType1_B], relationSide=[SIDE_A,RelationType1_A], artifact=[" + artGuid + "], sorterId=null}",
+            "Relation Sorter {relationType=" + relationType.toString() + ", relationSide=[" + relationSide.toString() + //
+            "," + relationType.getSideName(relationSide) + "], artifact=[" + artGuid + "], sorterId=" + expected + "}",
             sorter.toString());
    }
 
-   private void checkSorterData(RelationType expectedRelationType, RelationSide expectedSide, RelationTypeSideSorter actual) throws OseeCoreException {
-      Assert.assertEquals(expectedRelationType, actual.getRelationType());
-      Assert.assertEquals(expectedSide, actual.getSide());
-      Assert.assertEquals(orderData1.getIArtifact(), actual.getIArtifact());
+   @Parameters
+   public static Collection<Object[]> data() throws OseeCoreException {
+      RelationSorterProvider provider = new RelationSorterProvider();
+      IRelationOrderAccessor accessor = new DoNothingAccessor();
 
-      String expectedSideName;
-      if (expectedSide == RelationSide.SIDE_A) {
-         expectedSideName = expectedRelationType.getSideAName();
-      } else {
-         expectedSideName = expectedRelationType.getSideBName();
-      }
-      Assert.assertEquals(expectedSideName, actual.getSideName());
+      OseeTypeFactory factory = new OseeTypeFactory();
+      RelationTypeCache cache = new RelationTypeCache(factory, new OseeTestDataAccessor<RelationType>());
 
-      Assert.assertTrue(actual.getIArtifact() instanceof MockIArtifact);
-      MockIArtifact mockArtifact = (MockIArtifact) actual.getIArtifact();
-      mockArtifact.clear();
+      RelationType relationType1 =
+            createRelationType(cache, factory, "Rel 1", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
+      RelationType relationType2 =
+            createRelationType(cache, factory, "Rel 2", RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
+      IArtifact art1 = createArtifact("a", GUID.create());
+      IArtifact art2 = createArtifact("b", GUID.create());
 
-      // Test Get Full Artifact is Called from IArtifact
-      actual.getArtifact();
-      Assert.assertTrue(mockArtifact.wasGetFullArtifactCalled());
+      RelationOrderData data1 = new RelationOrderData(accessor, art1);
+      RelationOrderData data2 = new RelationOrderData(accessor, art2);
+
+      List<Object[]> expected1 = new ArrayList<Object[]>();
+      List<Object[]> expected2 = new ArrayList<Object[]>();
+
+      addData(cache, data1, expected1);
+      addData(cache, data2, expected2);
+
+      Collection<Object[]> data = new ArrayList<Object[]>();
+      data.add(new Object[] {provider, relationType1, RelationSide.SIDE_A, data1, expected1});
+      data.add(new Object[] {provider, relationType2, RelationSide.SIDE_B, data2, expected2});
+      return data;
    }
 
-   private static final class TestRelationOrderAccessor implements IRelationOrderAccessor {
+   private static IArtifact createArtifact(String name, String guid) {
+      int uniqueId = randomGenerator.nextInt();
+      return new MockIArtifact(uniqueId, name, guid, null, null);
+   }
 
-      public TestRelationOrderAccessor() {
+   private static RelationType createRelationType(RelationTypeCache cache, OseeTypeFactory factory, String name, String delationRelationOrderGuid) throws OseeCoreException {
+      ArtifactType type1 = new ArtifactType(null, GUID.create(), "1", false, null);
+      ArtifactType type2 = new ArtifactType(null, GUID.create(), "2", false, null);
+      RelationType relationType =
+            factory.createRelationType(cache, GUID.create(), name, name + "_A", name + "_B", type1, type2,
+                  RelationTypeMultiplicity.MANY_TO_MANY, true, delationRelationOrderGuid);
+      Assert.assertNotNull(relationType);
+      cache.cache(relationType);
+      return relationType;
+   }
 
+   private static void addData(RelationTypeCache cache, RelationOrderData data, List<Object[]> expected) throws OseeCoreException {
+      addData(data, expected, cache.getUniqueByName("Rel 1"), RelationSide.SIDE_A, //
+            RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid(), "1", "2", "3");
+      addData(data, expected, cache.getUniqueByName("Rel 2"), RelationSide.SIDE_B, //
+            RelationOrderBaseTypes.UNORDERED.getGuid(), "4", "5", "6");
+
+      checkData(data, expected);
+   }
+
+   private static void checkData(RelationOrderData orderData, List<Object[]> expectedValues) {
+      int index = 0;
+      Assert.assertEquals(expectedValues.size(), orderData.size());
+      for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : orderData.getOrderedEntrySet()) {
+         Object[] actual =
+               new Object[] {entry.getKey().getFirst(), entry.getKey().getSecond(), entry.getValue().getFirst(),
+                     entry.getValue().getSecond()};
+         Object[] expected = expectedValues.get(index++);
+         Assert.assertEquals(expected.length, actual.length);
+         for (int index2 = 0; index2 < expected.length; index2++) {
+            Assert.assertEquals(expected[index2], actual[index2]);
+         }
       }
+   }
+
+   private static void addData(RelationOrderData orderData, List<Object[]> expectedData, RelationType relationType, RelationSide side, String relationOrderIdGuid, String... guids) {
+      List<String> artGuids = new ArrayList<String>();
+      if (guids != null && guids.length > 0) {
+         artGuids.addAll(Arrays.asList(guids));
+      }
+      orderData.addOrderList(relationType.getName(), side.name(), relationOrderIdGuid, artGuids);
+      expectedData.add(new Object[] {relationType.getName(), side.name(), relationOrderIdGuid, artGuids});
+   }
+
+   private static final class DoNothingAccessor implements IRelationOrderAccessor {
 
       @Override
       public void load(IArtifact artifact, RelationOrderData orderData) throws OseeCoreException {
-         List<String> guids = Collections.emptyList();
-         orderData.addOrderList(relationType1, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC, guids);
-         orderData.addOrderList(relationType2, RelationSide.SIDE_A, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC, guids);
       }
 
       @Override

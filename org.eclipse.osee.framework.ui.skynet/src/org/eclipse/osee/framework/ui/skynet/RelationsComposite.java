@@ -303,7 +303,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
    }
 
    private void checkCurrentOrderStrategy(Menu menu, RelationTypeSideSorter rts) throws OseeCoreException {
-      String relationOrderName = rts.getOrderName();
+      String relationOrderName = rts.getSorterName();
 
       for (MenuItem item : menu.getItems()) {
          String itemName = item.getText();

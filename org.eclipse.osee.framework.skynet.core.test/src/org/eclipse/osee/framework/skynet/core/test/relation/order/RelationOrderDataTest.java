@@ -276,6 +276,7 @@ public class RelationOrderDataTest {
             factory.createRelationType(cache, GUID.create(), name, name + "_A", name + "_B", type1, type2,
                   RelationTypeMultiplicity.MANY_TO_MANY, true, delationRelationOrderGuid);
       Assert.assertNotNull(relationType);
+      cache.cache(relationType);
       return relationType;
    }
 
