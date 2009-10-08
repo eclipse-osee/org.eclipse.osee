@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+
 /**
  * @author Ryan D. Brooks
  */
@@ -30,14 +34,24 @@ public enum RelationSide {
       return this == RelationSide.SIDE_A;
    }
 
-   /**
-    * @return RelationSide
-    */
    public static RelationSide[] getSides() {
       return sides;
    }
 
    public boolean isOppositeSide(RelationSide side) {
       return this != side;
+   }
+
+   public static RelationSide fromString(String name) throws OseeCoreException {
+      if (!Strings.isValid(name)) {
+         throw new OseeArgumentException("Name cannot be null or empty");
+      }
+      String toMatch = name.toUpperCase();
+      for (RelationSide side : RelationSide.values()) {
+         if (side.name().equals(toMatch)) {
+            return side;
+         }
+      }
+      throw new OseeCoreException("Invalid name - Relation Side was not found");
    }
 }

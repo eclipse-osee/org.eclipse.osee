@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
+import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -170,7 +171,9 @@ public class DefaultArtifactRenderer implements IRenderer {
       StringBuilder builder = new StringBuilder();
       try {
          ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
-         RelationOrderRenderer renderer = new RelationOrderRenderer(guidResolver, RelationManager.getSorterProvider());
+         RelationOrderRenderer renderer =
+               new RelationOrderRenderer(OseeTypeManager.getCache().getRelationTypeCache(), guidResolver,
+                     RelationManager.getSorterProvider());
 
          WordMLProducer producer = new WordMLProducer(builder);
          RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);

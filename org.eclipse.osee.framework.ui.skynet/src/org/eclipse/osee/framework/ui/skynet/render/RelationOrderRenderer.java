@@ -13,13 +13,16 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.util.List;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
+import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.render.word.Producer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -31,8 +34,10 @@ public class RelationOrderRenderer {
    private static final String NO_DATA_TAG = "None";
    private final ArtifactGuidToWordML guidResolver;
    private final RelationSorterProvider sorterProvider;
+   private final AbstractOseeCache<RelationType> relationCache;
 
-   public RelationOrderRenderer(ArtifactGuidToWordML guidResolver, RelationSorterProvider sorterProvider) {
+   public RelationOrderRenderer(AbstractOseeCache<RelationType> relationCache, ArtifactGuidToWordML guidResolver, RelationSorterProvider sorterProvider) {
+      this.relationCache = relationCache;
       this.guidResolver = guidResolver;
       this.sorterProvider = sorterProvider;
    }
@@ -48,35 +53,45 @@ public class RelationOrderRenderer {
       return toReturn;
    }
 
+   private void writeTableRow(WordMLProducer writer, RelationType relationType, RelationSide side, String sorterName, List<String> orderedData) throws OseeCoreException {
+      writer.startTableRow();
+      String relationName = relationType.getName();
+      String relationSideName = relationType.getSideName(side);
+      String sideName = side.name().toLowerCase();
+      if (orderedData.isEmpty()) {
+         writer.addTableColumns(relationName, relationSideName, sideName, sorterName, NO_DATA_TAG);
+      } else {
+         writer.addTableColumns(relationName, relationSideName, sideName, sorterName);
+         writer.startTableColumn();
+         for (String link : orderedData) {
+            writer.addParagraphNoEscape(link);
+         }
+         writer.endTableColumn();
+      }
+      writer.endTableRow();
+
+   }
+
    public void toWordML(Producer producer, Branch branch, RelationOrderData relationOrderData) throws OseeCoreException {
       try {
          WordMLProducer writer = (WordMLProducer) producer;
          writer.startTable();
-         writer.addWordMl("<w:tblPr><w:tblW w:w=\"7200\" w:type=\"dxa\"/><w:jc w:val=\"center\"/></w:tblPr>");
+         writer.addWordMl("<w:tblPr><w:tblW w:w=\"8200\" w:type=\"dxa\"/><w:jc w:val=\"center\"/></w:tblPr>");
          if (!relationOrderData.hasEntries()) {
             writer.addTableRow(NO_DATA_TAG);
          } else {
+            writer.addTableRow("Relation Type", "Side Name", "Side", "Order Type", "Related Artifacts");
             for (Entry<Pair<String, String>, Pair<String, List<String>>> entry : relationOrderData.getOrderedEntrySet()) {
-               String relationType = entry.getKey().getFirst();
+               String relationTypeName = entry.getKey().getFirst();
                String relationSide = entry.getKey().getSecond();
                String sorterGuid = entry.getValue().getFirst();
 
                List<String> guidList = entry.getValue().getSecond();
                List<String> mlLinks = guidResolver.resolveAsOseeLinks(branch, guidList);
-
+               RelationType relationType = relationCache.getUniqueByName(relationTypeName);
+               RelationSide side = RelationSide.fromString(relationSide);
                try {
-                  writer.startTableRow();
-                  if (mlLinks.isEmpty()) {
-                     writer.addTableColumns(relationType, relationSide, resolveSorter(sorterGuid), NO_DATA_TAG);
-                  } else {
-                     writer.addTableColumns(relationType, relationSide, resolveSorter(sorterGuid));
-                     writer.startTableColumn();
-                     for (String link : mlLinks) {
-                        writer.addParagraphNoEscape(link);
-                     }
-                     writer.endTableColumn();
-                  }
-                  writer.endTableRow();
+                  writeTableRow(writer, relationType, side, resolveSorter(sorterGuid), mlLinks);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
@@ -87,5 +102,4 @@ public class RelationOrderRenderer {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
    }
-
 }
