@@ -17,7 +17,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameComparator;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 /**
@@ -27,22 +26,20 @@ public class ComputeLegacyOrder {
    private final List<Artifact> legacyOrder = new ArrayList<Artifact>();
    private final ArtifactNameComparator nameComparator = new ArtifactNameComparator();
    private List<RelationLink> relations;
-   private final List<Artifact> detachedArtifacts = new ArrayList<Artifact>();
+   private final List<Artifact> remainingArtifacts = new ArrayList<Artifact>();
    private final List<Artifact> candidates = new ArrayList<Artifact>();
 
-   public List<Artifact> getOrginalOrder(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
+   public List<Artifact> getOrginalOrder(List<RelationLink> relations) throws OseeCoreException {
       legacyOrder.clear();
-      detachedArtifacts.clear();
-
-      relations = artifact.getRelations(relationEnum);
+      remainingArtifacts.clear();
+      this.relations = relations;
       assertRelationState(relations);
 
-      if (relations.isEmpty()) {
-         throw new OseeStateException("is empty");
-         //return legacyOrder;
+      for (RelationLink relation : relations) {
+         remainingArtifacts.add(relation.getArtifactB());
       }
+      Collections.sort(remainingArtifacts, nameComparator);
 
-      gatherDetachedArtifacts();
       determineLegacyOrder();
 
       return legacyOrder;
@@ -55,24 +52,25 @@ public class ComputeLegacyOrder {
          candidates.clear();
          for (RelationLink relation : relations) {
             if (relation.getBOrder() == artifactIdToFind) {
-               candidates.add(relation.getArtifactB());
+               if (remainingArtifacts.contains(relation.getArtifactB())) {
+                  candidates.add(relation.getArtifactB());
+               }
             }
          }
 
          Artifact selectedArtifact;
          if (candidates.size() == 0) {
-            if (detachedArtifacts.isEmpty()) {
+            if (remainingArtifacts.isEmpty()) {
                return;
             } else {
-               selectedArtifact = detachedArtifacts.remove(0);
+               selectedArtifact = remainingArtifacts.remove(0);
             }
          } else {
             if (candidates.size() > 1) {
                Collections.sort(candidates, nameComparator);
-               detachedArtifacts.addAll(candidates);
             }
             selectedArtifact = candidates.get(0);
-            detachedArtifacts.remove(selectedArtifact);
+            remainingArtifacts.remove(selectedArtifact);
          }
 
          legacyOrder.add(selectedArtifact);
@@ -80,32 +78,14 @@ public class ComputeLegacyOrder {
       }
    }
 
-   private void gatherDetachedArtifacts() throws OseeCoreException {
-      for (RelationLink relation : relations) {
-         if (relation.getBOrder() != -1 && !previousArtifactExists(relation.getBOrder())) {
-            detachedArtifacts.add(relation.getArtifactB());
-         }
-      }
-      if (detachedArtifacts.size() > 1) {
-         Collections.sort(detachedArtifacts, nameComparator);
-      }
-   }
-
-   private boolean previousArtifactExists(int artifactIdToFind) {
-      for (RelationLink relation : relations) {
-         if (relation.getBArtifactId() == artifactIdToFind) {
-            return true;
-         }
-      }
-      return false;
-   }
-
    private void assertRelationState(List<RelationLink> relations) throws OseeCoreException {
+      if (relations.isEmpty()) {
+         throw new OseeStateException("is empty");
+      }
       for (RelationLink relation : relations) {
          if (relation.isDeleted() || relation.getArtifactA().isDeleted() || relation.getArtifactB().isDeleted()) {
             throw new OseeStateException("is deleted");
          }
       }
-
    }
 }

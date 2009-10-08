@@ -55,23 +55,21 @@ public class MigrateRelationOrder extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch baselineBranch = variableMap.getBranch("Branch");
-      //for (Branch baselineBranch : BranchManager.getBaselineBranches()) {
-      SkynetTransaction transaction = new SkynetTransaction(baselineBranch);
+      SkynetTransaction transaction = new SkynetTransaction(baselineBranch, getName());
 
       testOneArtifact(transaction, "AAABEUwr_BEBJbJ8cW3woQ");
 
       for (RelationType relationType : RelationTypeManager.getAllTypes()) {
          if (relationType.isOrdered()) {
+            IRelationEnumeration relationEnum = new RelationTypeSide(relationType, RelationSide.SIDE_B);
             for (Artifact artifact : ArtifactQuery.getArtifactListFromRelation(relationType, RelationSide.SIDE_A,
                   baselineBranch)) {
-               IRelationEnumeration relationEnum = new RelationTypeSide(relationType, RelationSide.SIDE_B);
                writeNewOrder(transaction, relationEnum, artifact);
             }
          }
       }
-      //transaction.execute();
-      //addToChildBaseilnes(transaction);
-      //}
+      transaction.execute();
+      addToChildBaseilnes(transaction);
    }
 
    private void testOneArtifact(SkynetTransaction transaction, String guid) throws OseeCoreException {
@@ -82,14 +80,11 @@ public class MigrateRelationOrder extends AbstractBlam {
    private void writeNewOrder(SkynetTransaction transaction, IRelationEnumeration relationEnum, Artifact artifact) throws OseeCoreException {
       List<Artifact> relatedArtiafcts = artifact.getRelatedArtifacts(relationEnum);
 
-      if (relatedArtiafcts.size() == 1) {
+      if (relatedArtiafcts.size() <= 1) {
          return; // user defined ordering is not needed
       }
-      if (relatedArtiafcts.size() == 0) {
-         return; // how did this happened?
-      }
 
-      List<Artifact> legacyOrder = computeLegacyOrder.getOrginalOrder(artifact, relationEnum);
+      List<Artifact> legacyOrder = computeLegacyOrder.getOrginalOrder(artifact.getRelations(relationEnum));
 
       if (legacyOrder.size() != relatedArtiafcts.size()) {
          throw new OseeStateException("sizes don't match");
@@ -136,7 +131,7 @@ public class MigrateRelationOrder extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Migrate relation ordering information from OSEE 0.7.0 stype to OSEE 0.8.2";
+      return "Migrate relation ordering information from OSEE 0.7.0 storage type to OSEE 0.8.2";
    }
 
    @Override
