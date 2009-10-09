@@ -609,7 +609,7 @@ public class RelationManager {
                String.format(
                      "Artifact [%s] of type [%s] cannot be added to [%s] of relation [%s] because doing so would exceed the side maximum of [%s] for this artifact type",
                      artifact.getName(), artifact.getArtifactTypeName(), relationSide.toString(),
-                     relationType.getName(), multiplicity.asLimitLabel(relationSide)));
+                     relationType.getName(), multiplicity.asLimitLabel(relationSide.oppositeSide())));
       }
    }
 
@@ -703,11 +703,12 @@ public class RelationManager {
    }
 
    public static void addRelation(IRelationSorterId sorterId, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
-      ensureRelationCanBeAdded(relationType, artifactA, artifactB);
-
       RelationLink relation =
             getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
+
       if (relation == null) {
+         ensureRelationCanBeAdded(relationType, artifactA, artifactB);
+
          relation = RelationLink.getOrCreate(artifactA, artifactB, relationType, rationale, ModificationType.NEW);
          relation.setDirty();
 
