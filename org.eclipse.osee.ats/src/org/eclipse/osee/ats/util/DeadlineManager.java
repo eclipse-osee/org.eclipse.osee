@@ -58,7 +58,7 @@ public class DeadlineManager {
 
    public Result isDeadlineDateOverdue() throws OseeCoreException {
       if (smaMgr.isCompleted() || smaMgr.isCancelled()) return Result.FalseResult;
-      if ((new Date()).after(getDeadlineDate())) return new Result(true, "Deadline Date has passed.");
+      if ((new Date()).after(getDeadlineDate())) return new Result(true, "Need By Date has passed.");
       return Result.FalseResult;
    }
 
@@ -79,7 +79,7 @@ public class DeadlineManager {
          if (deadDate == null) return Result.FalseResult;
          Date releaseDate = smaMgr.getSma().getWorldViewEstimatedReleaseDate();
          if (releaseDate == null) return Result.FalseResult;
-         if (releaseDate.after(deadDate)) return new Result(true, "Deadline Date is past current Release Date.");
+         if (releaseDate.after(deadDate)) return new Result(true, "Need By Date is past current Release Date.");
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }
