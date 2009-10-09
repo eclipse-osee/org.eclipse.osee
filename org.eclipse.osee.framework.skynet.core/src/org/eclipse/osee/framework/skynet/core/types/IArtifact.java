@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
+import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
  * @author Roberto E. Escobar
@@ -31,4 +33,6 @@ public interface IArtifact {
    ArtifactType getArtifactType();
 
    Artifact getFullArtifact() throws OseeCoreException;
+
+   List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException;
 }

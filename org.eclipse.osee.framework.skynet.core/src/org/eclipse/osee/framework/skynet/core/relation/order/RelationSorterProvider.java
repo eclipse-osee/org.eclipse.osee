@@ -45,6 +45,13 @@ public class RelationSorterProvider {
       orderMap.put(order.getSorterId().getGuid(), order);
    }
 
+   public boolean exists(String orderGuid) throws OseeCoreException {
+      if (!GUID.isValid(orderGuid)) {
+         throw new OseeArgumentException("Error invalid guid argument");
+      }
+      return orderMap.get(orderGuid) != null;
+   }
+
    public IRelationSorter getRelationOrder(String orderGuid) throws OseeCoreException {
       if (!GUID.isValid(orderGuid)) {
          throw new OseeArgumentException("Error invalid guid argument");

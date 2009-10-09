@@ -72,12 +72,12 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
@@ -178,7 +178,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return RelationManager.getRelatedArtifacts(this, RelationTypeManager.getType(relationTypeName));
    }
 
-   public List<Artifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
+   public List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, relationType);
    }
 
@@ -1260,33 +1260,27 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       linksLoaded = loaded;
    }
 
-   public void addRelation(IRelationEnumeration relationSide, Artifact artifact, String rationale) throws OseeCoreException {
+   public void addRelation(IRelationSorterId sorterId, IRelationEnumeration relationSide, Artifact artifact, String rationale) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationSide);
-      RelationManager.addRelation(relationSide.getRelationType(), sides.getFirst(), sides.getSecond(), rationale);
+      RelationManager.addRelation(sorterId, relationSide.getRelationType(), sides.getFirst(), sides.getSecond(),
+            rationale);
    }
 
    public void addRelation(IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
-      addRelation(relationSide, artifact, null);
+      addRelation(null, relationSide, artifact, null);
    }
 
-   public void addRelation(Artifact targetArtifact, boolean insertAfterTarget, IRelationEnumeration relationSide, Artifact artifact, String rationale) throws OseeCoreException {
-      boolean sideA = relationSide.isSideA();
-      Artifact artifactA = sideA ? artifact : this;
-      Artifact artifactB = sideA ? this : artifact;
-      Artifact targetArtifactA = sideA ? targetArtifact : null;
-      Artifact targetArtifactB = sideA ? null : targetArtifact;
-      boolean insertAfterATarget = sideA ? insertAfterTarget : true;
-      boolean insertAfterBTarget = sideA ? true : insertAfterTarget;
-
-      RelationManager.addRelation(targetArtifactA, insertAfterATarget, targetArtifactB, insertAfterBTarget,
-            relationSide.getRelationType(), artifactA, artifactB, rationale);
-
-      setRelationOrder(targetArtifact, insertAfterTarget, relationSide, artifact);
+   public void addRelation(IRelationSorterId sorterId, IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
+      addRelation(sorterId, relationSide, artifact, null);
    }
 
-   public void setRelationOrder(IRelationEnumeration relationSide, IRelationSorterId orderId) throws OseeCoreException {
-      List<Artifact> empty = java.util.Collections.emptyList();
-      RelationManager.setRelationOrder(this, relationSide.getRelationType(), relationSide.getSide(), orderId, empty);
+   public void addRelation(IRelationSorterId sorterId, IRelationEnumeration relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd, String rationale) throws OseeCoreException {
+      boolean sideA = relationEnumeration.isSideA();
+      Artifact artifactA = sideA ? itemToAdd : this;
+      Artifact artifactB = sideA ? this : itemToAdd;
+
+      RelationManager.addRelation(sorterId, relationEnumeration.getRelationType(), artifactA, artifactB, rationale);
+      setRelationOrder(relationEnumeration, targetArtifact, insertAfterTarget, itemToAdd);
    }
 
    public void setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) throws OseeCoreException {
@@ -1294,18 +1288,18 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
             RelationOrderBaseTypes.USER_DEFINED, artifactsInNewOrder);
    }
 
-   public void setRelationOrder(RelationTypeSideSorter sorter, IRelationSorterId orderId) throws OseeCoreException {
+   public void setRelationOrder(IRelationEnumeration relationEnumeration, IRelationSorterId orderId) throws OseeCoreException {
+      if (RelationOrderBaseTypes.USER_DEFINED == orderId) {
+         throw new OseeArgumentException(
+               "Wrong method called - use setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) instead");
+      }
       List<Artifact> empty = java.util.Collections.emptyList();
-      RelationManager.setRelationOrder(this, sorter.getRelationType(), sorter.getSide(), orderId, empty);
+      RelationManager.setRelationOrder(this, relationEnumeration.getRelationType(), relationEnumeration.getSide(),
+            orderId, empty);
    }
 
-   public void setRelationOrder(Artifact targetArtifact, boolean insertAfterTarget, RelationTypeSideSorter sorter, Artifact artifact) throws OseeCoreException {
-      setRelationOrder(targetArtifact, insertAfterTarget, new RelationTypeSide(sorter.getRelationType(),
-            sorter.getSide()), artifact);
-   }
-
-   public void setRelationOrder(Artifact targetArtifact, boolean insertAfterTarget, IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
-      List<Artifact> currentOrder = getRelatedArtifacts(relationSide, Artifact.class);
+   public void setRelationOrder(IRelationEnumeration relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd) throws OseeCoreException {
+      List<Artifact> currentOrder = getRelatedArtifacts(relationEnumeration, Artifact.class);
       boolean found = false;
       int index = 0;
       for (int i = 0; i < currentOrder.size(); i++) {
@@ -1315,20 +1309,20 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
             break;
          }
       }
-      currentOrder.remove(artifact);
+      currentOrder.remove(itemToAdd);
       if (found) {
          if (insertAfterTarget) {
             index++;
          }
          if (index > currentOrder.size()) {
-            currentOrder.add(artifact);
+            currentOrder.add(itemToAdd);
          } else {
-            currentOrder.add(index, artifact);
+            currentOrder.add(index, itemToAdd);
          }
       } else {
-         currentOrder.add(artifact);
+         currentOrder.add(itemToAdd);
       }
-      RelationManager.setRelationOrder(this, relationSide.getRelationType(), relationSide.getSide(),
+      RelationManager.setRelationOrder(this, relationEnumeration.getRelationType(), relationEnumeration.getSide(),
             RelationOrderBaseTypes.USER_DEFINED, currentOrder);
    }
 
@@ -1373,12 +1367,14 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @param artifacts
     * @throws OseeCoreException
     */
-   public void setRelationsOfType(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts, Class<?> clazz) throws OseeCoreException {
+   public void setRelationsOfTypeUseCurrentOrder(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts, Class<?> clazz) throws OseeCoreException {
+      RelationTypeSideSorter sorter =
+            RelationManager.createTypeSideSorter(this, relationSide.getRelationType(), relationSide.getSide());
       Collection<Artifact> currentlyRelated = getRelatedArtifacts(relationSide, Artifact.class);
       // Add new relations if don't exist
       for (Artifact artifact : artifacts) {
          if (clazz.isInstance(artifact) && !currentlyRelated.contains(artifact)) {
-            addRelation(relationSide, artifact);
+            addRelation(sorter.getSorterId(), relationSide, artifact);
          }
       }
       // Remove relations that have been removed

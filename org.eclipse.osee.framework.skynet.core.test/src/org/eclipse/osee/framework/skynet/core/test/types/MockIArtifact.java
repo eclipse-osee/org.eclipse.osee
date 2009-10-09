@@ -10,10 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.types;
 
+import java.util.Collections;
+import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -79,6 +82,11 @@ public class MockIArtifact implements IArtifact {
    @Override
    public String toString() {
       return String.format("[%s]", getGuid());
+   }
+
+   @Override
+   public List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
+      return Collections.emptyList();
    }
 
 }

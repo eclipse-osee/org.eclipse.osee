@@ -49,7 +49,7 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
                      ActionableItemArtifact.class));
          diag.setInitialAias(objs);
          if (diag.open() != 0) return;
-         UserManager.getUser().setRelationsOfType(AtsRelation.SubscribedUser_Artifact, diag.getChecked(),
+         UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelation.SubscribedUser_Artifact, diag.getChecked(),
                ActionableItemArtifact.class);
          UserManager.getUser().persist();
          AWorkbench.popup(getName(), "Subscriptions updated.");

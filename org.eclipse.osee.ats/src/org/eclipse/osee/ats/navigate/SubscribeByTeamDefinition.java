@@ -49,7 +49,7 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
                      TeamDefinitionArtifact.class));
          diag.setInitialTeamDefs(objs);
          if (diag.open() != 0) return;
-         UserManager.getUser().setRelationsOfType(AtsRelation.SubscribedUser_Artifact, diag.getChecked(),
+         UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelation.SubscribedUser_Artifact, diag.getChecked(),
                TeamDefinitionArtifact.class);
          UserManager.getUser().persist();
          AWorkbench.popup(getName(), "Subscriptions updated.");

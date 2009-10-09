@@ -44,12 +44,13 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -598,8 +599,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             WrapperForRelationLink wrapper = (WrapperForRelationLink) object;
             try {
                wrapper.getArtifactA().deleteRelation(
-                     new RelationTypeSide(wrapper.getRelationType(), RelationSide.SIDE_B),
-                     wrapper.getArtifactB());
+                     new RelationTypeSide(wrapper.getRelationType(), RelationSide.SIDE_B), wrapper.getArtifactB());
                Object parent = ((ITreeContentProvider) treeViewer.getContentProvider()).getParent(object);
                if (parent != null) {
                   treeViewer.refresh(parent);
@@ -609,7 +609,7 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
-         }else if (object instanceof RelationTypeSideSorter) {
+         } else if (object instanceof RelationTypeSideSorter) {
             RelationTypeSideSorter group = (RelationTypeSideSorter) object;
             try {
                RelationManager.deleteRelations(artifact, group.getRelationType(), group.getSide());
@@ -774,8 +774,9 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
                WrapperForRelationLink targetLink = (WrapperForRelationLink) object;
                Artifact[] artifactsToMove = ((ArtifactData) event.data).getArtifacts();
                for (Artifact artifactToMove : artifactsToMove) {
-                  artifact.setRelationOrder(targetLink.getOther(), isFeedbackAfter, new RelationTypeSide(
-                        targetLink.getRelationType(), targetLink.getRelationSide()), artifactToMove);
+                  IRelationEnumeration typeSide =
+                        new RelationTypeSide(targetLink.getRelationType(), targetLink.getRelationSide());
+                  artifact.setRelationOrder(typeSide, targetLink.getOther(), isFeedbackAfter, artifactToMove);
                }
                treeViewer.refresh();
                editor.onDirtied();

@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
 /**
@@ -117,7 +118,8 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
          try {
             monitor.subTask(aArt.getName() + " <--> " + bArt.getName());
             monitor.worked(1);
-            RelationManager.addRelation(relationType, aArt, bArt, roughRelation.getRationale());
+            RelationManager.addRelation(RelationOrderBaseTypes.USER_DEFINED, relationType, aArt, bArt,
+                  roughRelation.getRationale());
             aArt.persist(transaction);
          } catch (IllegalArgumentException ex) {
             OseeLog.log(Activator.class, Level.WARNING, ex.getLocalizedMessage());

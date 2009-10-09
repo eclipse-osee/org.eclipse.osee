@@ -52,7 +52,7 @@
          <perspectiveExtension targetID="org.eclipse.ui.resourcePerspective">
             <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
          </perspectiveExtension>
-         <perspectiveExtension targetID="osee.ats.ATSPerspective">
+         <perspectiveExtension targetID="org.eclipse.osee.ats.ATSPerspective">
             <perspectiveShortcut id="osee.define.PerspectiveFactory"/>
          </perspectiveExtension>
          <perspectiveExtension targetID="org.eclipse.jdt.ui.JavaPerspective">

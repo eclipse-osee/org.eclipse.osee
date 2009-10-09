@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.types;
 
+import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -21,6 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 
 /**
  * @author Roberto E. Escobar
@@ -112,5 +114,10 @@ public class ShallowArtifact implements IArtifact {
          artifactId = associatedArtifact.getArtId();
       }
       return associatedArtifact;
+   }
+
+   @Override
+   public List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
+      return null;
    }
 }

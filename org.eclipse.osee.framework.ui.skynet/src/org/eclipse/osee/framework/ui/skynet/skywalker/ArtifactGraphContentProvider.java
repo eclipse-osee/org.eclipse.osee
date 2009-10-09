@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.skywalker.RelTypeContentProvider.RelationLinkDescriptorSide;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
@@ -63,9 +64,9 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
             if (obj instanceof RelationType) {
                RelationType relationType = (RelationType) obj;
                if (options.isValidRelationType(relationType)) {
-                  for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
+                  for (IArtifact art : artifact.getRelatedArtifacts(relationType)) {
                      if (options.isValidArtifactType(art.getArtifactType()) && displayArtifacts.contains(art)) {
-                        otherItems.add(art);
+                        otherItems.add(art.getFullArtifact());
                      }
                   }
                }
@@ -122,10 +123,11 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
                if (obj instanceof RelationType) {
                   RelationType relationType = (RelationType) obj;
                   if (options.isValidRelationType(relationType)) {
-                     for (Artifact art : artifact.getRelatedArtifacts(relationType)) {
+                     for (IArtifact art : artifact.getRelatedArtifacts(relationType)) {
                         if (options.isValidArtifactType(art.getArtifactType())) {
-                           displayArtifacts.add(art);
-                           getDescendants(displayArtifacts, art, level - 1);
+                           Artifact relatedArt = art.getFullArtifact();
+                           displayArtifacts.add(relatedArt);
+                           getDescendants(displayArtifacts, relatedArt, level - 1);
                         }
                      }
                   }

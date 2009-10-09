@@ -571,24 +571,6 @@ public class RelationManager {
       return relations;
    }
 
-   public static void addRelation(RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
-      RelationLink relation =
-            getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
-
-      if (relation == null) {
-         ensureRelationCanBeAdded(relationType, artifactA, artifactB);
-         relation = RelationLink.getOrCreate(artifactA, artifactB, relationType, rationale, ModificationType.NEW);
-         relation.setDirty();
-
-         try {
-            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Added, relation,
-                  relation.getABranch(), relationType.getName());
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
-         }
-      }
-   }
-
    public static void ensureRelationCanBeAdded(RelationType relationType, Artifact artifactA, Artifact artifactB) throws OseeCoreException {
       // For now, relations can not be cross branch.  Ensure that both artifacts are on same branch
       // TODO Fix this when fix cross branching (not writing or reading from db correctly)
@@ -716,18 +698,29 @@ public class RelationManager {
       }
    }
 
-   public static void addRelation(Artifact artifactATarget, boolean insertAfterATarget, Artifact artifactBTarget, boolean insertAfterBTarget, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
+   public static void addRelation(RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
+      addRelation(null, relationType, artifactA, artifactB, rationale);
+   }
+
+   public static void addRelation(IRelationSorterId sorterId, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       ensureRelationCanBeAdded(relationType, artifactA, artifactB);
+
       RelationLink relation =
             getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
-
       if (relation == null) {
          relation = RelationLink.getOrCreate(artifactA, artifactB, relationType, rationale, ModificationType.NEW);
          relation.setDirty();
-      }
 
-      OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Added, relation,
-            relation.getBranch(), relation.getRelationType().getName());
+         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationType, RelationSide.SIDE_A);
+         sorter.addItem(sorterId, artifactB);
+
+         try {
+            OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Added, relation,
+                  relation.getABranch(), relationType.getName());
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
    }
 
    public static void setRelationRationale(Artifact artifactA, Artifact artifactB, RelationType relationType, String rationale) throws OseeCoreException {

@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -59,7 +60,9 @@ public class RelationImporter implements RowProcessor {
    }
 
    public void processRow(String[] row) {
-      if (done) return;
+      if (done) {
+         return;
+      }
       try {
          monitor.worked(1);
          Collection<Artifact> artifacts =
@@ -87,8 +90,8 @@ public class RelationImporter implements RowProcessor {
                   if (rationale.equalsIgnoreCase("x")) {
                      rationale = "";
                   }
-                  columnArtifacts[i].addRelation(CoreRelationEnumeration.ALLOCATION__REQUIREMENT, rowArtifact,
-                        rationale);
+                  columnArtifacts[i].addRelation(RelationOrderBaseTypes.USER_DEFINED,
+                        CoreRelationEnumeration.ALLOCATION__REQUIREMENT, rowArtifact, rationale);
                   columnArtifacts[i].persist();
                }
             }
@@ -119,7 +122,8 @@ public class RelationImporter implements RowProcessor {
          monitor.worked(1);
          try {
             Collection<Artifact> artifacts =
-                  ArtifactQuery.getArtifactListFromTypeAndName(Requirements.COMPONENT, row[i + leadingColumnCount], branch);
+                  ArtifactQuery.getArtifactListFromTypeAndName(Requirements.COMPONENT, row[i + leadingColumnCount],
+                        branch);
 
             columnArtifacts[i] = getSoleArtifact(artifacts);
             monitor.subTask(columnArtifacts[i].getName());

@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -59,7 +60,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
    }
    private class keySelectedListener implements KeyListener {
       public void keyPressed(KeyEvent e) {
-         isCtrlPressed = (e.keyCode == SWT.CONTROL);
+         isCtrlPressed = e.keyCode == SWT.CONTROL;
       }
 
       public void keyReleased(KeyEvent e) {
@@ -131,7 +132,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
             GroupExplorerItem droppingGroupItem = (GroupExplorerItem) obj;
 
             // the group to move must belong to the same group as the member to insert before/after
-            if ((dragOverGroupItem.getParentItem()).equals(droppingGroupItem.getParentItem())) {
+            if (dragOverGroupItem.getParentItem().equals(droppingGroupItem.getParentItem())) {
                if (isFeedbackAfter) {
                   event.feedback = DND.FEEDBACK_INSERT_AFTER;
                } else {
@@ -160,7 +161,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
    }
 
    private boolean isCtrlPressed(DropTargetEvent event) {
-      boolean ctrPressed = (event.detail == 1);
+      boolean ctrPressed = event.detail == 1;
 
       if (ctrPressed) {
          isFeedbackAfter = true;
@@ -184,8 +185,8 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                if (event.data instanceof ArtifactData) {
                   // If event originated outside, it's a copy event;
                   // OR if event is inside and ctrl is down, this is a copy; add items to group
-                  if (!((ArtifactData) event.data).getSource().equals(viewId) || (((ArtifactData) event.data).getSource().equals(
-                        viewId) && isCtrlPressed)) {
+                  if (!((ArtifactData) event.data).getSource().equals(viewId) || ((ArtifactData) event.data).getSource().equals(
+                        viewId) && isCtrlPressed) {
                      copyArtifactsToGroup(event, dragOverExplorerItem);
                   }
                   // Else this is a move
@@ -238,8 +239,8 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                      Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                      for (Artifact art : insertArts) {
-                        parentArtifact.setRelationOrder(targetArtifact, isFeedbackAfter,
-                              CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art);
+                        parentArtifact.setRelationOrder(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS,
+                              targetArtifact, isFeedbackAfter, art);
                         targetArtifact = art;
                      }
                      parentArtifact.persist();
@@ -254,8 +255,9 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                      Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                      for (Artifact art : insertArts) {
-                        parentArtifact.addRelation(targetArtifact, isFeedbackAfter,
-                              CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art, "");
+                        parentArtifact.addRelation(RelationOrderBaseTypes.USER_DEFINED,
+                              CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, targetArtifact, isFeedbackAfter,
+                              art, "");
                      }
                      parentArtifact.persist();
                   }
@@ -306,7 +308,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
-   
+
    public void setBranch(Branch branch) {
       this.branch = branch;
    }
