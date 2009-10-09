@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.editor;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.coverage.model.CoverageStatusEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -16,6 +17,8 @@ import org.eclipse.swt.graphics.Image;
  * @author Donald G. Dunne
  */
 public interface ICoverageEditorItem {
+
+   public CoverageStatusEnum getStatus();
 
    public String getAssignees() throws OseeCoreException;
 

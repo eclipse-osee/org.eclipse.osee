@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageStatusEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -71,6 +72,12 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
          return getCoverageItemUsers(coverageItem);
+      }
+      if (xCol.equals(CoverageXViewerFactory.Status_Col)) {
+         CoverageStatusEnum status = coverageItem.getStatus();
+         if (status == null) return "";
+         if (status == CoverageStatusEnum.None) return "";
+         return status.toString();
       }
       if (xCol.equals(CoverageXViewerFactory.Name)) return coverageItem.getName();
       if (xCol.equals(CoverageXViewerFactory.Location)) return coverageItem.getLocation();

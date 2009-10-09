@@ -39,6 +39,7 @@ public class CoverageUnit implements ICoverageEditorItem {
    public static String ARTIFACT_NAME = "Coverage Unit";
    private String name;
    private String namespace;
+   private CoverageStatusEnum status;
    private String assignees;
    private String guid = GUID.create();
    private String text;
@@ -233,6 +234,10 @@ public class CoverageUnit implements ICoverageEditorItem {
          if (Strings.isValid(text)) {
             setText(text);
          }
+         String status = keyValueArtifact.getValue("status");
+         if (Strings.isValid(status)) {
+            setCoverageStatus(CoverageStatusEnum.valueOf(status));
+         }
          String assignees = keyValueArtifact.getValue("assignees");
          if (Strings.isValid(assignees)) {
             setAssignees(assignees);
@@ -257,6 +262,7 @@ public class CoverageUnit implements ICoverageEditorItem {
       CoverageUnit coverageUnit = new CoverageUnit(parentCoverageEditorItem, name, location);
       coverageUnit.setGuid(guid);
       coverageUnit.setNamespace(namespace);
+      coverageUnit.setCoverageStatus(status);
       coverageUnit.setText(text);
       coverageUnit.setAssignees(assignees);
       coverageUnit.setLocation(location);
@@ -280,6 +286,9 @@ public class CoverageUnit implements ICoverageEditorItem {
          coverageItem.save(transaction);
       }
       keyValueArtifact.setValues("cvgItem", items);
+      if (status != null) {
+         keyValueArtifact.setValue("status", status.toString());
+      }
       if (Strings.isValid(text)) {
          keyValueArtifact.setValue("text", text);
       }
@@ -341,6 +350,15 @@ public class CoverageUnit implements ICoverageEditorItem {
    @Override
    public boolean isAssignable() {
       return true;
+   }
+
+   @Override
+   public CoverageStatusEnum getStatus() {
+      return status;
+   }
+
+   public void setCoverageStatus(CoverageStatusEnum status) {
+      this.status = status;
    }
 
 }

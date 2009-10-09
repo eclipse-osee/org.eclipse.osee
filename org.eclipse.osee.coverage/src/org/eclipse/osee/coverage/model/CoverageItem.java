@@ -282,4 +282,9 @@ public class CoverageItem implements ICoverageEditorItem {
       return "";
    }
 
+   @Override
+   public CoverageStatusEnum getStatus() {
+      return null;
+   }
+
 }

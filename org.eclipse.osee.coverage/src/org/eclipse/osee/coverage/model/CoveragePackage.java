@@ -358,4 +358,9 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
       }
    }
 
+   @Override
+   public CoverageStatusEnum getStatus() {
+      return null;
+   }
+
 }

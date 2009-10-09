@@ -292,4 +292,9 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
       return "";
    }
 
+   @Override
+   public CoverageStatusEnum getStatus() {
+      return null;
+   }
+
 }

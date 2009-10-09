@@ -21,6 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.action.EditAssigneesAction;
 import org.eclipse.osee.coverage.action.EditCoverageMethodAction;
+import org.eclipse.osee.coverage.action.EditCoverageStatusAction;
 import org.eclipse.osee.coverage.action.EditRationaleAction;
 import org.eclipse.osee.coverage.action.IRefreshable;
 import org.eclipse.osee.coverage.action.ISelectedCoverageEditorItem;
@@ -30,6 +31,7 @@ import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactory;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -48,7 +50,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorItem, ISaveable, IRefreshable {
 
    protected final XCoverageViewer xCoverageViewer;
-   Action editRationale, editMethodAction, viewSourceAction, editAssigneesAction;
+   Action editRationale, editMethodAction, viewSourceAction, editAssigneesAction, editCoverageStatusAction;
 
    public CoverageXViewer(Composite parent, int style, XCoverageViewer xCoverageViewer) {
       this(parent, style, new CoverageXViewerFactory(), xCoverageViewer);
@@ -75,6 +77,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          viewSourceAction = new ViewSourceAction(this);
          editMethodAction = new EditCoverageMethodAction(this, this, this);
          editAssigneesAction = new EditAssigneesAction(this, this, this);
+         editCoverageStatusAction = new EditCoverageStatusAction(this, this, this);
          editRationale = new EditRationaleAction(this, this, this);
       }
    }
@@ -99,6 +102,16 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       return true;
    }
 
+   private boolean isEditMetricsEnabled() {
+      if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
+      for (ICoverageEditorItem item : xCoverageViewer.getSelectedCoverageItems()) {
+         if (!(item instanceof CoverageUnit)) {
+            return false;
+         }
+      }
+      return true;
+   }
+
    public void updateEditMenuActions() {
       MenuManager mm = getMenuManager();
       // EDIT MENU BLOCK
@@ -110,7 +123,10 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          editMethodAction.setEnabled(isEditMethodEnabled());
 
          mm.insertBefore(MENU_GROUP_PRE, editAssigneesAction);
-         editMethodAction.setEnabled(isEditMethodEnabled());
+         editAssigneesAction.setEnabled(isEditMetricsEnabled());
+
+         mm.insertBefore(MENU_GROUP_PRE, editCoverageStatusAction);
+         editCoverageStatusAction.setEnabled(isEditMetricsEnabled());
       }
       mm.insertBefore(MENU_GROUP_PRE, viewSourceAction);
       editMethodAction.setEnabled(isEditMethodEnabled());
@@ -196,6 +212,8 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
          if (xCol.equals(CoverageMergeXViewerFactory.Assignees_Col)) {
             editAssigneesAction.run();
+         } else if (xCol.equals(CoverageMergeXViewerFactory.Status_Col)) {
+            editCoverageStatusAction.run();
          } else if (xCol.equals(CoverageMergeXViewerFactory.Coverage_Method)) {
             editMethodAction.run();
          } else if (xCol.equals(CoverageMergeXViewerFactory.Coverage_Rationale)) {

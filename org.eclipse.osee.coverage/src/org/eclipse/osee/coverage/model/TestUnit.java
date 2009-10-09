@@ -209,4 +209,9 @@ public class TestUnit implements ICoverageEditorItem {
    public boolean isAssignable() {
       return false;
    }
+
+   @Override
+   public CoverageStatusEnum getStatus() {
+      return null;
+   }
 }
