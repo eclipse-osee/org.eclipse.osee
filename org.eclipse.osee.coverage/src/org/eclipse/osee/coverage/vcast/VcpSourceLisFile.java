@@ -19,6 +19,7 @@ public class VcpSourceLisFile {
 
    File listFile = null;
    String[] lines = null;
+   String text = null;
 
    public VcpSourceLisFile(String vcastDirectory, VcpSourceFile vcpSourceFile) {
       String lisFilename =
@@ -29,7 +30,8 @@ public class VcpSourceLisFile {
          throw new IllegalArgumentException(String.format("VectorCast <filename>.LIS file doesn't exist [%s]",
                lisFilename));
       }
-      lines = AFile.readFile(listFile).split("\n");
+      text = AFile.readFile(listFile);
+      lines = text.split("\n");
    }
 
    public String[] getSection(String startLine, String endLine) {
@@ -38,5 +40,23 @@ public class VcpSourceLisFile {
 
    public String[] get() {
       return lines;
+   }
+
+   public String getText() {
+      return text;
+   }
+
+   public String getPackage() {
+      return "unknown - tbd";
+   }
+
+   public String getExecutionLine(String method, String executionLine) {
+      String startsWith = method + " " + executionLine + " ";
+      for (String line : lines) {
+         if (line.startsWith(startsWith)) {
+            return line;
+         }
+      }
+      return null;
    }
 }

@@ -68,6 +68,14 @@ public class Collections {
       return toString(c, null, separator, null);
    }
 
+   public static String toString(String separator, String[] array) {
+      List<String> list = new ArrayList<String>();
+      for (int x = 0; x < array.length - 1; x++) {
+         list.add(array[x]);
+      }
+      return toString(list, null, separator, null);
+   }
+
    public static String toString(Collection<?> c, String separator) {
       return toString(separator, c);
    }

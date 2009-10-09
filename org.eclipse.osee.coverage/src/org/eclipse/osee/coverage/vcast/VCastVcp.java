@@ -8,6 +8,7 @@ package org.eclipse.osee.coverage.vcast;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 
 /**
@@ -44,4 +45,22 @@ public class VCastVcp {
          }
       }
    }
+
+   public VcpSourceFile getSourceFile(int index) {
+      for (VcpSourceFile vcpSourceFile : sourceFiles) {
+         if (vcpSourceFile.getValue(SourceValue.UNIT_NUMBER).equals(String.valueOf(index))) {
+            return vcpSourceFile;
+         }
+      }
+      return null;
+   }
+
+   public List<VcpSourceFile> getSourceFiles() {
+      return sourceFiles;
+   }
+
+   public List<VcpResultsFile> getResultsFiles() {
+      return resultsFiles;
+   }
+
 }

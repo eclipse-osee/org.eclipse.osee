@@ -32,9 +32,11 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
 
    private final String vcastDirectory;
    private CoverageImport coverageImport;
+   private final String namespace;
 
-   public VectorCastCoverageImporter(String vcastDirectory) {
+   public VectorCastCoverageImporter(String vcastDirectory, String namespace) {
       this.vcastDirectory = vcastDirectory;
+      this.namespace = namespace;
    }
 
    @Override
@@ -63,22 +65,32 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
       // Create file and subprogram Coverage Units and execution line Coverage Items
       Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
       for (CoverageDataUnit coverageDataUnit : coverageDataFile.coverageDataUnits) {
-         CoverageUnit coverageUnit = new CoverageUnit(null, coverageDataUnit.getName(), "");
-         coverageImport.addCoverageUnit(coverageUnit);
+         CoverageUnit fileCoverageUnit = new CoverageUnit(null, coverageDataUnit.getName(), "");
+         coverageImport.addCoverageUnit(fileCoverageUnit);
+         int fileIndex = coverageDataUnit.getIndex();
+         VcpSourceFile vcpSourceFile = vCastVcp.getSourceFile(fileIndex);
+         if (vcpSourceFile == null) {
+            coverageImport.getLog().logError("Exception getting vcpSourceFile for index " + fileIndex);
+         }
+         VcpSourceLisFile vcpSourceLisFile = vcpSourceFile.getVcpSourceLisFile();
+         fileCoverageUnit.setText(vcpSourceLisFile.getText());
+         fileCoverageUnit.setNamespace(namespace);
          int methodNum = 0;
          for (CoverageDataSubProgram coverageDataSubProgram : coverageDataUnit.getSubPrograms()) {
             methodNum++;
-            CoverageUnit childCoverageUnit = new CoverageUnit(coverageUnit, coverageDataSubProgram.getName(), "");
-            coverageUnit.addCoverageUnit(childCoverageUnit);
+            CoverageUnit methodCoverageUnit = new CoverageUnit(fileCoverageUnit, coverageDataSubProgram.getName(), "");
+            fileCoverageUnit.addCoverageUnit(methodCoverageUnit);
             for (LineNumToBranches lineNumToBranches : coverageDataSubProgram.getLineNumToBranches()) {
                CoverageItem coverageItem =
-                     new CoverageItem(childCoverageUnit, CoverageMethodEnum.Unknown,
+                     new CoverageItem(methodCoverageUnit, CoverageMethodEnum.Unknown,
                            String.valueOf(lineNumToBranches.getLineNum()));
                coverageItem.setMethodNum(String.valueOf(methodNum));
-               childCoverageUnit.addCoverageItem(coverageItem);
+               coverageItem.setText(vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),
+                     String.valueOf(lineNumToBranches.getLineNum())));
+               methodCoverageUnit.addCoverageItem(coverageItem);
             }
          }
-         fileNumToCoverageUnit.put(String.valueOf(coverageDataUnit.getIndex()), coverageUnit);
+         fileNumToCoverageUnit.put(String.valueOf(coverageDataUnit.getIndex()), fileCoverageUnit);
       }
 
       for (VcpResultsFile vcpResultsFile : vCastVcp.resultsFiles) {
