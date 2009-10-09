@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -40,19 +41,24 @@ public class SampleJavaFileParser {
          if (inputStream == null) {
             throw new IllegalArgumentException(String.format("File doesn't exist [%s]", url));
          }
-         CoverageUnit fileCoverageUnit = new CoverageUnit(null, url.getFile(), "");
+         // Store file as CoverageUnit
+         File file = new File(url.getFile());
+         String filename = file.getCanonicalFile().getName();
+         CoverageUnit fileCoverageUnit = new CoverageUnit(null, filename, url.getFile());
          String fileStr = Lib.inputStreamToString(inputStream);
          fileCoverageUnit.setText(fileStr);
          CoverageUnit coverageUnit = null;
          int lineNum = 0;
          for (String line : fileStr.split("\r\n")) {
             lineNum++;
+            // Determine if method; store as CoverageUnit
             Matcher m = methodPatter.matcher(line);
             if (m.find()) {
                String name = m.group(3);
                coverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
                fileCoverageUnit.addCoverageUnit(coverageUnit);
             }
+            // Determine if executable coverage line; store as CoverageItem
             m = executeLine.matcher(line);
             if (m.find()) {
                String lineText = m.group(1);

@@ -12,6 +12,7 @@ import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -31,8 +32,9 @@ import org.eclipse.swt.graphics.Image;
 public class TestUnit implements ICoverageEditorItem {
 
    private String name;
+   private String namespace;
    private String guid = GUID.create();
-   private String previewHtml;
+   private String text;
    private final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    private String location;
    private Artifact artifact;
@@ -65,14 +67,6 @@ public class TestUnit implements ICoverageEditorItem {
 
    public void setLocation(String location) {
       this.location = location;
-   }
-
-   public String getPreviewHtml() {
-      return previewHtml;
-   }
-
-   public void setPreviewHtml(String previewHtml) {
-      this.previewHtml = previewHtml;
    }
 
    public String getGuid() {
@@ -153,8 +147,15 @@ public class TestUnit implements ICoverageEditorItem {
          setGuid(artifact.getGuid());
          KeyValueArtifact keyValueArtifact =
                new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-         setLocation(keyValueArtifact.getValue("location"));
-         setPreviewHtml(keyValueArtifact.getValue("previewHtml"));
+         if (Strings.isValid(keyValueArtifact.getValue("location"))) {
+            setLocation(keyValueArtifact.getValue("location"));
+         }
+         if (Strings.isValid(keyValueArtifact.getValue("previewHtml"))) {
+            setText(keyValueArtifact.getValue("previewHtml"));
+         }
+         if (Strings.isValid(keyValueArtifact.getValue("text"))) {
+            setText(keyValueArtifact.getValue("text"));
+         }
       }
    }
 
@@ -163,8 +164,15 @@ public class TestUnit implements ICoverageEditorItem {
       artifact.setName(getName());
       KeyValueArtifact keyValueArtifact =
             new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-      keyValueArtifact.setValue("previewHtml", getPreviewHtml());
-      keyValueArtifact.setValue("location", getLocation());
+      if (Strings.isValid(getText())) {
+         keyValueArtifact.setValue("text", getText());
+      }
+      if (Strings.isValid(getLocation())) {
+         keyValueArtifact.setValue("location", getLocation());
+      }
+      if (Strings.isValid(getNamespace())) {
+         keyValueArtifact.setValue("namespace", getNamespace());
+      }
       keyValueArtifact.save();
       // TODO Need to relate TestUnit to CoverageItem
       System.err.println("Need to relate TestUnit to CoverageItem");
@@ -186,6 +194,19 @@ public class TestUnit implements ICoverageEditorItem {
 
    @Override
    public String getText() {
-      return getName();
+      return text;
+   }
+
+   @Override
+   public String getNamespace() {
+      return namespace;
+   }
+
+   public void setNamespace(String namespace) {
+      this.namespace = namespace;
+   }
+
+   public void setText(String text) {
+      this.text = text;
    }
 }

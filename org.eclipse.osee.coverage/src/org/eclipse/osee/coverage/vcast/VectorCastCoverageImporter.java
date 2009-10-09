@@ -39,7 +39,7 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
 
    @Override
    public CoverageImport run() {
-      coverageImport = new CoverageImport();
+      coverageImport = new CoverageImport("VectorCast Import");
       if (!Strings.isValid(vcastDirectory)) {
          coverageImport.getLog().logError("VectorCast directory must be specified");
          return coverageImport;
@@ -50,7 +50,6 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
          return coverageImport;
       }
       CoverageDataFile coverageDataFile = new CoverageDataFile(vcastDirectory);
-      CoverageImport coverageImport = new CoverageImport();
       coverageImport.setLocation(vcastDirectory);
 
       // Create file and subprogram Coverage Units and execution line Coverage Items
@@ -116,7 +115,7 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
    }
 
    public CoverageImport runOld() {
-      coverageImport = new CoverageImport();
+      coverageImport = new CoverageImport("runOld");
       if (!Strings.isValid(vcastDirectory)) {
          coverageImport.getLog().logError("VectorCast directory must be specified");
          return coverageImport;

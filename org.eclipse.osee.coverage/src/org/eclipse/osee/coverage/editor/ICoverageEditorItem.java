@@ -46,4 +46,8 @@ public interface ICoverageEditorItem {
 
    public String getText();
 
+   public String getLocation();
+
+   public String getNamespace();
+
 }

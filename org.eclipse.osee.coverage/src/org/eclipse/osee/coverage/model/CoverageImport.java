@@ -54,12 +54,13 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
    private String name;
    private Artifact artifact;
 
-   public CoverageImport() {
-      this(new Date());
+   public CoverageImport(String name) {
+      this(name, new Date());
    }
 
-   public CoverageImport(Date runDate) {
+   public CoverageImport(String name, Date runDate) {
       super();
+      this.name = name;
       this.runDate = runDate;
    }
 
@@ -288,6 +289,11 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
 
    @Override
    public String getText() {
+      return "";
+   }
+
+   @Override
+   public String getNamespace() {
       return "";
    }
 

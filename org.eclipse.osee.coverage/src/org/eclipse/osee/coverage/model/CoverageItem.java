@@ -279,4 +279,14 @@ public class CoverageItem implements ICoverageEditorItem {
       this.text = text;
    }
 
+   @Override
+   public String getLocation() {
+      return "";
+   }
+
+   @Override
+   public String getNamespace() {
+      return "";
+   }
+
 }

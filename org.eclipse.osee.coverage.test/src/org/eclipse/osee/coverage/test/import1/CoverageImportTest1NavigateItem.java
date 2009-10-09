@@ -31,7 +31,7 @@ public class CoverageImportTest1NavigateItem extends XNavigateItemAction impleme
    public static String PATH = "../../../../../../../src/org/eclipse/osee/coverage/test/import1/";
 
    public CoverageImportTest1NavigateItem() {
-      super(null, "");
+      this(null);
    }
 
    public CoverageImportTest1NavigateItem(XNavigateItem parent) {
@@ -40,7 +40,7 @@ public class CoverageImportTest1NavigateItem extends XNavigateItemAction impleme
 
    @Override
    public CoverageImport run() {
-      CoverageImport coverageImport = new CoverageImport();
+      CoverageImport coverageImport = new CoverageImport(getName());
       try {
          URL url = CoverageImportTest1NavigateItem.class.getResource(PATH + "NavigationButton1.java");
          coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));

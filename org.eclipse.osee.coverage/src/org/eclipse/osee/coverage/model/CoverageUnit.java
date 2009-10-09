@@ -39,6 +39,7 @@ public class CoverageUnit implements ICoverageEditorItem {
 
    public static String ARTIFACT_NAME = "Coverage Unit";
    private String name;
+   private String namespace;
    private String guid = GUID.create();
    private String text;
    private final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
@@ -241,6 +242,14 @@ public class CoverageUnit implements ICoverageEditorItem {
          if (Strings.isValid(text)) {
             setText(text);
          }
+         String namespace = keyValueArtifact.getValue("namespace");
+         if (Strings.isValid(namespace)) {
+            setNamespace(namespace);
+         }
+         String location = keyValueArtifact.getValue("location");
+         if (Strings.isValid(location)) {
+            setLocation(location);
+         }
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.getArtifactTypeName().equals(CoverageUnit.ARTIFACT_NAME)) {
                coverageUnits.add(new CoverageUnit(childArt));
@@ -252,7 +261,9 @@ public class CoverageUnit implements ICoverageEditorItem {
    public CoverageUnit copy(boolean includeItems) throws OseeCoreException {
       CoverageUnit coverageUnit = new CoverageUnit(parentCoverageEditorItem, name, location);
       coverageUnit.setGuid(guid);
+      coverageUnit.setText(namespace);
       coverageUnit.setText(text);
+      coverageUnit.setLocation(location);
       if (includeItems) {
          for (CoverageItem coverageItem : coverageItems) {
             coverageUnit.addCoverageItem(new CoverageItem(coverageUnit, coverageItem.toXml()));
@@ -264,7 +275,6 @@ public class CoverageUnit implements ICoverageEditorItem {
    public void save(SkynetTransaction transaction) throws OseeCoreException {
       getArtifact(true);
       artifact.setName(getName());
-      System.out.println("coverageUnit " + guid);
 
       KeyValueArtifact keyValueArtifact =
             new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
@@ -277,7 +287,9 @@ public class CoverageUnit implements ICoverageEditorItem {
       if (Strings.isValid(text)) {
          keyValueArtifact.setValue("text", text);
       }
-      keyValueArtifact.setValue("location", location);
+      if (Strings.isValid(location)) {
+         keyValueArtifact.setValue("location", location);
+      }
       keyValueArtifact.save();
       if (parentCoverageEditorItem != null) {
          parentCoverageEditorItem.getArtifact(false).addChild(artifact);
@@ -309,5 +321,13 @@ public class CoverageUnit implements ICoverageEditorItem {
 
    public void setGuid(String guid) {
       this.guid = guid;
+   }
+
+   public String getNamespace() {
+      return namespace;
+   }
+
+   public void setNamespace(String namespace) {
+      this.namespace = namespace;
    }
 }

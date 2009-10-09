@@ -55,7 +55,9 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       if (xCol.equals(CoverageMergeXViewerFactory.User_Col)) return coverageItem.getUser() == null ? "" : coverageItem.getUser().getName();
       if (xCol.equals(CoverageMergeXViewerFactory.Name)) return coverageItem.getName();
       if (xCol.equals(CoverageXViewerFactory.Guid)) return coverageItem.getGuid();
-
+      if (xCol.equals(CoverageXViewerFactory.Location)) return coverageItem.getLocation();
+      if (xCol.equals(CoverageXViewerFactory.Text)) return coverageItem.getText();
+      if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverageItem.getNamespace();
       return coverageItem.getCoverageEditorValue(xCol);
    }
 

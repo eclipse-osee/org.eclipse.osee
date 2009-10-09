@@ -310,7 +310,7 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
 
    public void save(SkynetTransaction transaction) throws OseeCoreException {
       getArtifact(true);
-      System.out.println("coveragePackage " + guid);
+      System.out.println("save coveragePackage " + guid);
 
       artifact.setName(getName());
       KeyValueArtifact keyValueArtifact =
@@ -339,6 +339,16 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
 
    @Override
    public String getText() {
+      return "";
+   }
+
+   @Override
+   public String getLocation() {
+      return "";
+   }
+
+   @Override
+   public String getNamespace() {
       return "";
    }
 
