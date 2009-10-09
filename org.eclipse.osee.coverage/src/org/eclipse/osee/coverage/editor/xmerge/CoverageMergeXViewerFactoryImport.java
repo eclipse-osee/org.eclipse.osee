@@ -28,12 +28,12 @@ public class CoverageMergeXViewerFactoryImport extends CoverageMergeXViewerFacto
    public CoverageMergeXViewerFactoryImport() {
       super();
       clearColumnRegistration();
-      registerColumns(Name, Import, Coverage_Method, Method_Number, Execution_Number, Line_Number, Test_Units,
-            User_Col, Parent_Coverage_Unit, Location, Guid);
+      registerColumns(Name, Namespace, Import, Coverage_Method, Method_Number, Execution_Number, Line_Number,
+            Test_Units, User_Col, Parent_Coverage_Unit, Location, Guid);
       for (XViewerColumn xCol : getColumns()) {
          overrideShowDefault(
                xCol.getId(),
-               xCol.equals(CoverageXViewerFactory.Name) || xCol.equals(Import) || xCol.equals(CoverageXViewerFactory.Coverage_Method));
+               xCol.equals(CoverageXViewerFactory.Name) || xCol.equals(CoverageXViewerFactory.Namespace) || xCol.equals(Import) || xCol.equals(CoverageXViewerFactory.Coverage_Method));
       }
    }
 

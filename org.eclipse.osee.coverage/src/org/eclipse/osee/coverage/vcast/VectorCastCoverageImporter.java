@@ -49,6 +49,14 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
          coverageImport.getLog().logError(String.format("VectorCast directory doesn't exist [%s]", vcastDirectory));
          return coverageImport;
       }
+      VCastVcp vCastVcp = null;
+      try {
+         vCastVcp = new VCastVcp(vcastDirectory);
+      } catch (Exception ex) {
+         coverageImport.getLog().logError("Exception reading vcast.vcp file: " + ex.getLocalizedMessage());
+         return coverageImport;
+      }
+
       CoverageDataFile coverageDataFile = new CoverageDataFile(vcastDirectory);
       coverageImport.setLocation(vcastDirectory);
 
@@ -73,13 +81,6 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
          fileNumToCoverageUnit.put(String.valueOf(coverageDataUnit.getIndex()), coverageUnit);
       }
 
-      VCastVcp vCastVcp = null;
-      try {
-         vCastVcp = new VCastVcp(vcastDirectory);
-      } catch (Exception ex) {
-         coverageImport.getLog().logError("Exception reading vcast.vcp file: " + ex.getLocalizedMessage());
-         return coverageImport;
-      }
       for (VcpResultsFile vcpResultsFile : vCastVcp.resultsFiles) {
          TestUnit testUnit =
                new TestUnit(vcpResultsFile.getValue(ResultsValue.FILENAME),

@@ -28,7 +28,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
  */
 public class SampleJavaFileParser {
 
-   private static final Pattern methodPatter =
+   private static final Pattern packagePattern = Pattern.compile("package\\s+(.*);");
+   private static final Pattern methodPattern =
          Pattern.compile("\\s+(public|private)\\s(\\w+)\\s(\\w+)\\(.*\\)\\s+\\{\\s*");
    private static final Pattern executeLine = Pattern.compile("^(.*)\\s+//\\s+(\\w+),\\s+(\\w+),\\s+(\\w+)");
 
@@ -46,13 +47,19 @@ public class SampleJavaFileParser {
          String filename = file.getCanonicalFile().getName();
          CoverageUnit fileCoverageUnit = new CoverageUnit(null, filename, url.getFile());
          String fileStr = Lib.inputStreamToString(inputStream);
+         Matcher m = packagePattern.matcher(fileStr);
+         if (m.find()) {
+            fileCoverageUnit.setNamespace(m.group(1));
+         } else {
+            throw new IllegalArgumentException(String.format("Can't find package for [%s]", url));
+         }
          fileCoverageUnit.setText(fileStr);
          CoverageUnit coverageUnit = null;
          int lineNum = 0;
          for (String line : fileStr.split("\r\n")) {
             lineNum++;
             // Determine if method; store as CoverageUnit
-            Matcher m = methodPatter.matcher(line);
+            m = methodPattern.matcher(line);
             if (m.find()) {
                String name = m.group(3);
                coverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
