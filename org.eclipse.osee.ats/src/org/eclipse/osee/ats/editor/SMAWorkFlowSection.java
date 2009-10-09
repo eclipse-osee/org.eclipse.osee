@@ -69,6 +69,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinitionL
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinitionViewSorter;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkWidgetDefinition;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -397,7 +398,7 @@ public class SMAWorkFlowSection extends SectionPart {
    public void refresh() {
       super.refresh();
       try {
-         if (transitionAssigneesLabel != null && !transitionAssigneesLabel.isDisposed()) {
+         if (Widgets.isAccessible(transitionAssigneesLabel)) {
             WorkPageDefinition toWorkPage = (WorkPageDefinition) transitionToStateCombo.getSelected();
             if (toWorkPage == null) {
                transitionAssigneesLabel.setText("");

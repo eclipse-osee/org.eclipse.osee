@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.IArtifactWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -71,7 +72,9 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
    @Override
    protected void createControls(Composite parent, int horizontalSpan) {
       setSMAMgr();
-      if (horizontalSpan < 2) horizontalSpan = 2;
+      if (horizontalSpan < 2) {
+         horizontalSpan = 2;
+      }
       if (!getLabel().equals("")) {
          labelWidget = new Label(parent, SWT.NONE);
          labelWidget.setText(getLabel() + ": " + getWorkingBranchShortName() + " " + getStatus());
@@ -83,13 +86,18 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
       Composite bComp = new Composite(parent, SWT.NONE);
       bComp.setLayout(new GridLayout(4, false));
       bComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-      if (toolkit != null) toolkit.adapt(bComp);
+      if (toolkit != null) {
+         toolkit.adapt(bComp);
+      }
 
-      if (toolkit != null)
+      if (toolkit != null) {
          createBranchButton = toolkit.createButton(bComp, null, SWT.PUSH);
-      else
+      } else {
          createBranchButton = new Button(bComp, SWT.PUSH);
-      if (getWorkingBranch() != null) createBranchButton.setEnabled(false);
+      }
+      if (getWorkingBranch() != null) {
+         createBranchButton.setEnabled(false);
+      }
       createBranchButton.setToolTipText("Create Working Branch");
       createBranchButton.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
@@ -97,11 +105,14 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
          }
       });
 
-      if (toolkit != null)
+      if (toolkit != null) {
          showArtifactExplorer = toolkit.createButton(bComp, null, SWT.PUSH);
-      else
+      } else {
          showArtifactExplorer = new Button(bComp, SWT.PUSH);
-      if (getWorkingBranch() == null) showArtifactExplorer.setEnabled(false);
+      }
+      if (getWorkingBranch() == null) {
+         showArtifactExplorer.setEnabled(false);
+      }
       showArtifactExplorer.setToolTipText("Show Artifact Explorer");
       showArtifactExplorer.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
@@ -109,11 +120,14 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
          }
       });
 
-      if (toolkit != null)
+      if (toolkit != null) {
          showChangeReport = toolkit.createButton(bComp, null, SWT.PUSH);
-      else
+      } else {
          showChangeReport = new Button(bComp, SWT.PUSH);
-      if (getWorkingBranch() == null) showChangeReport.setEnabled(false);
+      }
+      if (getWorkingBranch() == null) {
+         showChangeReport.setEnabled(false);
+      }
       showChangeReport.setToolTipText("Show Change Report");
       showChangeReport.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
@@ -121,11 +135,14 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
          }
       });
 
-      if (toolkit != null)
+      if (toolkit != null) {
          purgeBranchButton = toolkit.createButton(bComp, null, SWT.PUSH);
-      else
+      } else {
          purgeBranchButton = new Button(bComp, SWT.PUSH);
-      if (getWorkingBranch() == null) purgeBranchButton.setEnabled(false);
+      }
+      if (getWorkingBranch() == null) {
+         purgeBranchButton.setEnabled(false);
+      }
       purgeBranchButton.setToolTipText("Delete Working Branch");
       purgeBranchButton.addListener(SWT.Selection, new Listener() {
          public void handleEvent(Event e) {
@@ -239,18 +256,20 @@ public class XWorkingBranch extends XWidget implements IArtifactWidget, IFramewo
                      getLabel() + ": " + (workingBranch == null ? "" : workingBranch.getShortName()) + " " + status;
                Displays.ensureInDisplayThread(new Runnable() {
                   public void run() {
-                     labelWidget.setText(labelStr);
-                     if (createBranchButton != null) {
-                        createBranchButton.setEnabled(!workingBranchInWork && !committedBranchExists);
-                     }
-                     if (showArtifactExplorer != null) {
-                        showArtifactExplorer.setEnabled(workingBranch != null && !changesNotPermitted);
-                     }
-                     if (showChangeReport != null) {
-                        showChangeReport.setEnabled(workingBranchInWork || committedBranchExists);
-                     }
-                     if (purgeBranchButton != null) {
-                        purgeBranchButton.setEnabled(workingBranchInWork && !committedBranchExists);
+                     if (Widgets.isAccessible(labelWidget)) {
+                        labelWidget.setText(labelStr);
+                        if (Widgets.isAccessible(createBranchButton)) {
+                           createBranchButton.setEnabled(!workingBranchInWork && !committedBranchExists);
+                        }
+                        if (Widgets.isAccessible(showArtifactExplorer)) {
+                           showArtifactExplorer.setEnabled(workingBranch != null && !changesNotPermitted);
+                        }
+                        if (Widgets.isAccessible(showChangeReport)) {
+                           showChangeReport.setEnabled(workingBranchInWork || committedBranchExists);
+                        }
+                        if (Widgets.isAccessible(purgeBranchButton)) {
+                           purgeBranchButton.setEnabled(workingBranchInWork && !committedBranchExists);
+                        }
                      }
                   }
                }, forcePend);

@@ -46,6 +46,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.IBranchArtifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -102,7 +103,9 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
             Composite mainComp = new Composite(parent, SWT.BORDER);
             mainComp.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
             mainComp.setLayout(ALayout.getZeroMarginLayout());
-            if (toolkit != null) toolkit.paintBordersFor(mainComp);
+            if (toolkit != null) {
+               toolkit.paintBordersFor(mainComp);
+            }
 
             createTaskActionBar(mainComp);
 
@@ -136,8 +139,9 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
             xCommitManager.setContentProvider(new XCommitContentProvider(xCommitManager));
             xCommitManager.setLabelProvider(new XCommitLabelProvider(xCommitManager));
 
-            if (toolkit != null && xCommitManager.getStatusLabel() != null) toolkit.adapt(
-                  xCommitManager.getStatusLabel(), false, false);
+            if (toolkit != null && xCommitManager.getStatusLabel() != null) {
+               toolkit.adapt(xCommitManager.getStatusLabel(), false, false);
+            }
 
             setXviewerTree();
 
@@ -153,7 +157,9 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    public void setXviewerTree() {
       Tree tree = xCommitManager.getTree();
       int defectListSize = xCommitManager.getTree().getItemCount();
-      if (defectListSize == lastDefectListSize) return;
+      if (defectListSize == lastDefectListSize) {
+         return;
+      }
       lastDefectListSize = defectListSize;
       int treeItemHeight = xCommitManager.getTree().getItemHeight();
       GridData gridData = new GridData(GridData.FILL_HORIZONTAL);
@@ -228,8 +234,12 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    @SuppressWarnings("unchecked")
    public ArrayList<Branch> getSelectedBranches() {
       ArrayList<Branch> items = new ArrayList<Branch>();
-      if (xCommitManager == null) return items;
-      if (xCommitManager.getSelection().isEmpty()) return items;
+      if (xCommitManager == null) {
+         return items;
+      }
+      if (xCommitManager.getSelection().isEmpty()) {
+         return items;
+      }
       Iterator i = ((IStructuredSelection) xCommitManager.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
@@ -240,24 +250,32 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
 
    @Override
    public Control getControl() {
-      if (xCommitManager == null) return null;
+      if (xCommitManager == null) {
+         return null;
+      }
       return xCommitManager.getTree();
    }
 
    @Override
    public void dispose() {
-      if (xCommitManager != null) xCommitManager.dispose();
+      if (xCommitManager != null) {
+         xCommitManager.dispose();
+      }
       OseeEventManager.removeListener(this);
    }
 
    @Override
    public void setFocus() {
-      if (xCommitManager != null) xCommitManager.getTree().setFocus();
+      if (xCommitManager != null) {
+         xCommitManager.getTree().setFocus();
+      }
    }
 
    @Override
    public void refresh() {
-      if (xCommitManager == null || xCommitManager.getTree() == null || xCommitManager.getTree().isDisposed()) return;
+      if (xCommitManager == null || xCommitManager.getTree() == null || xCommitManager.getTree().isDisposed()) {
+         return;
+      }
       validate();
       setXviewerTree();
    }
@@ -266,10 +284,13 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
-            if (!infoStr.equals(extraInfoLabel.getText())) {
-               extraInfoLabel.setText("Double-click item to perform Action");
+            if (Widgets.isAccessible(extraInfoLabel)) {
+               String currentString = extraInfoLabel.getText();
+               if (infoStr == null && currentString != null || infoStr != null && currentString == null || !infoStr.equals(currentString)) {
+                  extraInfoLabel.setText("Double-click item to perform Action");
+               }
+               extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(color));
             }
-            extraInfoLabel.setForeground(Display.getCurrent().getSystemColor(color));
          }
       });
    }
