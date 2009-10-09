@@ -29,7 +29,6 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -52,6 +51,7 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
    public static String ARTIFACT_NAME = "Coverage Package";
    private String guid = GUID.create();
    private String name;
+   private boolean editable = true;
    private Date creationDate;
    private final List<CoverageImport> coverageImports = new ArrayList<CoverageImport>();
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
@@ -181,12 +181,12 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
 
    @Override
    public boolean isImportAllowed() {
-      return true;
+      return isEditable().isTrue();
    }
 
    @Override
    public boolean isAssignable() {
-      return true;
+      return isEditable().isTrue();
    }
 
    @Override
@@ -214,26 +214,6 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
          artifact = ArtifactTypeManager.addArtifact(ARTIFACT_NAME, BranchManager.getCommonBranch(), guid, null);
       }
       return artifact;
-   }
-
-   public void load() throws OseeCoreException {
-      coverageUnits.clear();
-      getArtifact(false);
-      if (artifact != null) {
-         setName(artifact.getName());
-         KeyValueArtifact keyValueArtifact =
-               new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-         if (Strings.isValid(keyValueArtifact.getValue("date"))) {
-            Date date = new Date();
-            date.setTime(new Long(keyValueArtifact.getValue("date")).longValue());
-            setCreationDate(date);
-         }
-         for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.getArtifactTypeName().equals(CoverageUnit.ARTIFACT_NAME)) {
-               addCoverageUnit(new CoverageUnit(childArt));
-            }
-         }
-      }
    }
 
    public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
@@ -282,8 +262,8 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
    }
 
    @Override
-   public User getUser() {
-      return null;
+   public String getAssignees() throws OseeCoreException {
+      return "";
    }
 
    @Override
@@ -301,11 +281,28 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
 
    @Override
    public Result isEditable() {
+      if (!editable) return new Result("CoveragePackage locked for edits.");
       return Result.TrueResult;
+
    }
 
    @Override
-   public void setUser(User user) {
+   public String getText() {
+      return "";
+   }
+
+   @Override
+   public String getLocation() {
+      return "";
+   }
+
+   @Override
+   public String getNamespace() {
+      return "";
+   }
+
+   public void setEditable(boolean editable) {
+      this.editable = editable;
    }
 
    public void save(SkynetTransaction transaction) throws OseeCoreException {
@@ -316,6 +313,7 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
       KeyValueArtifact keyValueArtifact =
             new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
       keyValueArtifact.setValue("date", String.valueOf(creationDate.getTime()));
+      keyValueArtifact.setValue("editable", String.valueOf(String.valueOf(editable)));
       keyValueArtifact.save();
       for (CoverageUnit coverageUnit : coverageUnits) {
          coverageUnit.save(transaction);
@@ -337,19 +335,27 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
       return Result.TrueResult;
    }
 
-   @Override
-   public String getText() {
-      return "";
-   }
-
-   @Override
-   public String getLocation() {
-      return "";
-   }
-
-   @Override
-   public String getNamespace() {
-      return "";
+   public void load() throws OseeCoreException {
+      coverageUnits.clear();
+      getArtifact(false);
+      if (artifact != null) {
+         setName(artifact.getName());
+         KeyValueArtifact keyValueArtifact =
+               new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+         if (Strings.isValid(keyValueArtifact.getValue("date"))) {
+            Date date = new Date();
+            date.setTime(new Long(keyValueArtifact.getValue("date")).longValue());
+            setCreationDate(date);
+         }
+         if (Strings.isValid(keyValueArtifact.getValue("editable"))) {
+            setEditable(keyValueArtifact.getValue("editable").equals("true"));
+         }
+         for (Artifact childArt : artifact.getChildren()) {
+            if (childArt.getArtifactTypeName().equals(CoverageUnit.ARTIFACT_NAME)) {
+               addCoverageUnit(new CoverageUnit(childArt));
+            }
+         }
+      }
    }
 
 }

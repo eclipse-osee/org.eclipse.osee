@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.ats.util;
+package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -16,11 +16,11 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Donald G. Dunne
@@ -46,7 +46,7 @@ public class UsersByIds {
             User u = UserManager.getUserByUserId(m.group(1));
             users.add(u);
          } catch (Exception ex) {
-            OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
       return users;

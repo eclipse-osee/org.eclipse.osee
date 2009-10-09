@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -261,11 +260,6 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
    }
 
    @Override
-   public User getUser() {
-      return null;
-   }
-
-   @Override
    public boolean isCompleted() {
       return false;
    }
@@ -273,10 +267,6 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
    @Override
    public Result isEditable() {
       return Result.FalseResult;
-   }
-
-   @Override
-   public void setUser(User user) {
    }
 
    @Override
@@ -294,6 +284,11 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
 
    @Override
    public String getNamespace() {
+      return "";
+   }
+
+   @Override
+   public String getAssignees() throws OseeCoreException {
       return "";
    }
 

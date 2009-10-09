@@ -13,7 +13,6 @@ import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -79,17 +78,13 @@ public class TestUnit implements ICoverageEditorItem {
    }
 
    @Override
-   public User getUser() {
-      return null;
+   public String getAssignees() throws OseeCoreException {
+      return "";
    }
 
    @Override
    public Result isEditable() {
       return Result.FalseResult;
-   }
-
-   @Override
-   public void setUser(User user) {
    }
 
    @Override
@@ -208,5 +203,10 @@ public class TestUnit implements ICoverageEditorItem {
 
    public void setText(String text) {
       this.text = text;
+   }
+
+   @Override
+   public boolean isAssignable() {
+      return false;
    }
 }

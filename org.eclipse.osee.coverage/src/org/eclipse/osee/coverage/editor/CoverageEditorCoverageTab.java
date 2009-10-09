@@ -120,7 +120,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
          if (parameters.isShowAll()) {
             items.add(item);
          } else {
-            if (assignee != null && item.getUser().equals(assignee)) {
+            if (assignee != null && item.getAssignees().equals(assignee)) {
                items.add(item);
             } else if (item instanceof CoverageItem) {
                CoverageItem coverageItem = (CoverageItem) item;

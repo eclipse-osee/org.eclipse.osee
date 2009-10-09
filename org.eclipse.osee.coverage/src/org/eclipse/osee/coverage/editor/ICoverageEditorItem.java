@@ -7,7 +7,6 @@ package org.eclipse.osee.coverage.editor;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
@@ -18,9 +17,9 @@ import org.eclipse.swt.graphics.Image;
  */
 public interface ICoverageEditorItem {
 
-   public User getUser();
+   public String getAssignees() throws OseeCoreException;
 
-   public void setUser(User user);
+   public boolean isAssignable();
 
    public Result isEditable();
 

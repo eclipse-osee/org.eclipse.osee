@@ -19,7 +19,6 @@ import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -40,6 +39,7 @@ public class CoverageUnit implements ICoverageEditorItem {
    public static String ARTIFACT_NAME = "Coverage Unit";
    private String name;
    private String namespace;
+   private String assignees;
    private String guid = GUID.create();
    private String text;
    private final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
@@ -138,17 +138,8 @@ public class CoverageUnit implements ICoverageEditorItem {
    }
 
    @Override
-   public User getUser() {
-      return null;
-   }
-
-   @Override
    public Result isEditable() {
       return Result.TrueResult;
-   }
-
-   @Override
-   public void setUser(User user) {
    }
 
    @Override
@@ -242,6 +233,10 @@ public class CoverageUnit implements ICoverageEditorItem {
          if (Strings.isValid(text)) {
             setText(text);
          }
+         String assignees = keyValueArtifact.getValue("assignees");
+         if (Strings.isValid(assignees)) {
+            setAssignees(assignees);
+         }
          String namespace = keyValueArtifact.getValue("namespace");
          if (Strings.isValid(namespace)) {
             setNamespace(namespace);
@@ -263,6 +258,7 @@ public class CoverageUnit implements ICoverageEditorItem {
       coverageUnit.setGuid(guid);
       coverageUnit.setNamespace(namespace);
       coverageUnit.setText(text);
+      coverageUnit.setAssignees(assignees);
       coverageUnit.setLocation(location);
       if (includeItems) {
          for (CoverageItem coverageItem : coverageItems) {
@@ -286,6 +282,9 @@ public class CoverageUnit implements ICoverageEditorItem {
       keyValueArtifact.setValues("cvgItem", items);
       if (Strings.isValid(text)) {
          keyValueArtifact.setValue("text", text);
+      }
+      if (Strings.isValid(assignees)) {
+         keyValueArtifact.setValue("assignees", assignees);
       }
       if (Strings.isValid(location)) {
          keyValueArtifact.setValue("location", location);
@@ -330,4 +329,18 @@ public class CoverageUnit implements ICoverageEditorItem {
    public void setNamespace(String namespace) {
       this.namespace = namespace;
    }
+
+   public String getAssignees() throws OseeCoreException {
+      return assignees;
+   }
+
+   public void setAssignees(String assignees) {
+      this.assignees = assignees;
+   }
+
+   @Override
+   public boolean isAssignable() {
+      return true;
+   }
+
 }

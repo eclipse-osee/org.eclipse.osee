@@ -25,8 +25,6 @@ import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -70,9 +68,6 @@ public class CoverageItem implements ICoverageEditorItem {
       if (Strings.isValid(rationale)) setCoverageRationale(rationale);
       String methodNum = AXml.getTagData(xml, "methodNum");
       if (Strings.isValid(methodNum)) setMethodNum(methodNum);
-      String userId = AXml.getTagData(xml, "user");
-      String location = AXml.getTagData(xml, "location");
-      if (Strings.isValid(location)) setUser(UserManager.getUserByUserId(userId));
    }
 
    public Set<TestUnit> getTestUnits() {
@@ -121,17 +116,8 @@ public class CoverageItem implements ICoverageEditorItem {
    }
 
    @Override
-   public User getUser() {
-      return null;
-   }
-
-   @Override
    public Result isEditable() {
       return Result.FalseResult;
-   }
-
-   @Override
-   public void setUser(User user) {
    }
 
    @Override
@@ -222,9 +208,6 @@ public class CoverageItem implements ICoverageEditorItem {
          sb.append(AXml.addTagData("rationale", getCoverageRationale()));
       }
       sb.append(AXml.addTagData("execNum", getExecuteNum()));
-      if (getUser() != null) {
-         sb.append(AXml.addTagData("user", getUser().getUserId()));
-      }
       sb.append(AXml.addTagData("methodType", getCoverageMethod().toString()));
       sb.append(AXml.addTagData("testUnits", getTestUnitGuidList(getTestUnits())));
       sb.append(AXml.addTagData("text", getText()));
@@ -286,6 +269,16 @@ public class CoverageItem implements ICoverageEditorItem {
 
    @Override
    public String getNamespace() {
+      return "";
+   }
+
+   @Override
+   public boolean isAssignable() {
+      return false;
+   }
+
+   @Override
+   public String getAssignees() throws OseeCoreException {
       return "";
    }
 

@@ -19,6 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.coverage.action.EditAssigneesAction;
 import org.eclipse.osee.coverage.action.EditCoverageMethodAction;
 import org.eclipse.osee.coverage.action.EditRationaleAction;
 import org.eclipse.osee.coverage.action.IRefreshable;
@@ -33,9 +34,7 @@ import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
@@ -49,7 +48,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorItem, ISaveable, IRefreshable {
 
    protected final XCoverageViewer xCoverageViewer;
-   Action editRationale, editMethodAction, viewSourceAction;
+   Action editRationale, editMethodAction, viewSourceAction, editAssigneesAction;
 
    public CoverageXViewer(Composite parent, int style, XCoverageViewer xCoverageViewer) {
       this(parent, style, new CoverageXViewerFactory(), xCoverageViewer);
@@ -75,6 +74,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       if (viewSourceAction == null) {
          viewSourceAction = new ViewSourceAction(this);
          editMethodAction = new EditCoverageMethodAction(this, this, this);
+         editAssigneesAction = new EditAssigneesAction(this, this, this);
          editRationale = new EditRationaleAction(this, this, this);
       }
    }
@@ -105,9 +105,11 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       if (xCoverageViewer.isType(TableType.Package)) {
          mm.insertBefore(MENU_GROUP_PRE, editRationale);
          editRationale.setEnabled(isEditRationaleEnabled());
-      }
-      if (xCoverageViewer.isType(TableType.Package)) {
+
          mm.insertBefore(MENU_GROUP_PRE, editMethodAction);
+         editMethodAction.setEnabled(isEditMethodEnabled());
+
+         mm.insertBefore(MENU_GROUP_PRE, editAssigneesAction);
          editMethodAction.setEnabled(isEditMethodEnabled());
       }
       mm.insertBefore(MENU_GROUP_PRE, viewSourceAction);
@@ -192,7 +194,9 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       createMenuActions();
       try {
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         if (xCol.equals(CoverageMergeXViewerFactory.Coverage_Method)) {
+         if (xCol.equals(CoverageMergeXViewerFactory.Assignees_Col)) {
+            editAssigneesAction.run();
+         } else if (xCol.equals(CoverageMergeXViewerFactory.Coverage_Method)) {
             editMethodAction.run();
          } else if (xCol.equals(CoverageMergeXViewerFactory.Coverage_Rationale)) {
             editRationale.run();
@@ -213,19 +217,6 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       }
    }
 
-   private boolean setUser(Collection<ICoverageEditorItem> coverageItems, User user) {
-      boolean modified = false;
-      for (ICoverageEditorItem coverageItem : coverageItems) {
-         if (!coverageItem.getUser().equals(user)) {
-            coverageItem.setUser(user);
-            if (!modified) {
-               modified = true;
-            }
-         }
-      }
-      return modified;
-   }
-
    public Result isEditable(Collection<ICoverageEditorItem> coverageItems) {
       for (ICoverageEditorItem item : coverageItems) {
          if (item.isEditable().isFalse()) {
@@ -243,15 +234,6 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          if (isEditable(coverageItems).isFalse()) {
             MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Coverage Item",
                   "Read-Only Field - One or more selected Coverage Items is Read-Only");
-         } else if (isEditable(coverageItems).isTrue() && xCol.equals(CoverageXViewerFactory.User_Col)) {
-            UserListDialog ld = new UserListDialog(Display.getCurrent().getActiveShell(), "Select New User");
-            int result = ld.open();
-            if (result == 0) {
-               User selectedUser = ld.getSelection();
-               if (selectedUser != null) {
-                  modified = setUser(coverageItems, selectedUser);
-               }
-            }
          }
       }
       if (modified) {

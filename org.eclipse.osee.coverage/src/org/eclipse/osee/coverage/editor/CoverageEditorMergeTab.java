@@ -247,7 +247,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       User assignee = parameters.getAssignee();
       boolean includeCompleted = parameters.isIncludeCompletedCancelled();
       for (ICoverageEditorItem item : provider.getCoverageEditorItems()) {
-         if (assignee != null && item.getUser().equals(assignee)) {
+         if (assignee != null && item.getAssignees().equals(assignee)) {
             items.add(item);
          }
          if (item instanceof CoverageItem) {
