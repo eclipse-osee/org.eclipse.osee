@@ -80,20 +80,25 @@ public class ShallowArtifact implements IArtifact {
 
    @Override
    public final int hashCode() {
-      return 37 * getArtId() + (getBranch() != null ? getBranch().hashCode() : 0);
+      int hashCode = 11;
+      hashCode = hashCode * 37 + getArtId();
+      hashCode = hashCode * 37 + (getBranch() != null ? getBranch().hashCode() : 0);
+      return hashCode;
    }
 
    @Override
    public final boolean equals(Object obj) {
       if (obj instanceof IArtifact) {
          IArtifact other = (IArtifact) obj;
-         boolean result = false;
-         if (getBranch() == null && other.getBranch() == null) {
-            result = true;
-         } else if (getBranch() != null && other.getBranch() != null) {
-            result = getBranch().equals(other.getBranch());
+         boolean result = getArtId() == other.getArtId();
+         if (result) {
+            if (getBranch() != null && other.getBranch() != null) {
+               result = getBranch().equals(other.getBranch());
+            } else {
+               result = getBranch() == null && other.getBranch() == null;
+            }
          }
-         return result && getArtId() == other.getArtId();
+         return result;
       }
       return false;
    }
