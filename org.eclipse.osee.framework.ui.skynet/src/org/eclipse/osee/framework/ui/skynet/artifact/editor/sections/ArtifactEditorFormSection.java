@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
-import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.forms.SectionPart;
@@ -21,23 +21,18 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
  */
 public abstract class ArtifactEditorFormSection extends SectionPart {
 
-   private final ArtifactEditor editor;
+   private final AbstractArtifactEditor editor;
 
-   /**
-    * @param parent
-    * @param toolkit
-    * @param style
-    */
-   public ArtifactEditorFormSection(ArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
+   public ArtifactEditorFormSection(AbstractArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(parent, toolkit, style);
       this.editor = editor;
    }
 
-   public ArtifactEditor getEditor() {
+   public AbstractArtifactEditor getEditor() {
       return editor;
    }
 
    public BaseArtifactEditorInput getEditorInput() {
-      return editor.getEditorInput();
+      return (BaseArtifactEditorInput) editor.getEditorInput();
    }
 }

@@ -14,24 +14,16 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
-import org.eclipse.osee.framework.ui.swt.ALayout;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.forms.IManagedForm;
-import org.eclipse.ui.forms.SectionPart;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.Section;
 
@@ -39,82 +31,39 @@ import org.eclipse.ui.forms.widgets.Section;
  * @author Roberto E. Escobar
  * @author Donald G. Dunne
  */
-public class SMARelationsSection extends SectionPart {
-
-   private RelationsComposite relationComposite;
-   private final SMAEditor editor;
+public class SMARelationsSection extends RelationsFormSection {
 
    public SMARelationsSection(SMAEditor editor, Composite parent, FormToolkit toolkit, int style) {
-      super(parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
-      this.editor = editor;
+      super(editor, parent, toolkit, style | Section.TWISTIE | Section.TITLE_BAR);
+   }
+
+   @Override
+   public SMAEditor getEditor() {
+      return (SMAEditor) super.getEditor();
+   }
+
+   @Override
+   public BaseArtifactEditorInput getEditorInput() {
+      return super.getEditorInput();
    }
 
    @Override
    public void initialize(final IManagedForm form) {
       super.initialize(form);
-      final FormToolkit toolkit = form.getToolkit();
-
-      Section section = getSection();
-      section.setText("Relations");
-
-      section.setLayout(new GridLayout());
-      section.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-      final Composite sectionBody = toolkit.createComposite(section, toolkit.getBorderStyle());
-      sectionBody.setLayout(ALayout.getZeroMarginLayout(1, false));
-      sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-      try {
-         Label dragDropLabel = new Label(sectionBody, SWT.BORDER);
-         dragDropLabel.setText("Click here to drag this \"" + editor.getSmaMgr().getSma().getArtifactTypeName() + "\"");
-         GridData gd = new GridData(GridData.FILL_BOTH);
-         gd.heightHint = 25;
-         dragDropLabel.setLayoutData(gd);
-         new SMADragAndDrop(dragDropLabel, editor.getSmaMgr().getSma(), SMAEditor.EDITOR_ID);
-         toolkit.adapt(dragDropLabel, true, true);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-      }
-
-      try {
-         relationComposite = new RelationsComposite(editor, sectionBody, SWT.NONE, editor.getSmaMgr().getSma());
-         relationComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
-      }
-
       // Don't allow users to see all relations
       if (!AtsUtil.isAtsAdmin()) {
-         relationComposite.getTreeViewer().addFilter(userRelationsFilter);
+         getRelationComposite().getTreeViewer().addFilter(userRelationsFilter);
       }
-
-      section.setClient(sectionBody);
-      toolkit.paintBordersFor(section);
-
-   }
-
-   public RelationsComposite getRelationComposite() {
-      return relationComposite;
    }
 
    @Override
-   public void refresh() {
-      super.refresh();
-      Display.getDefault().asyncExec(new Runnable() {
-         public void run() {
-            if (relationComposite != null && !relationComposite.isDisposed()) {
-               relationComposite.refresh();
-            }
-         }
-      });
+   protected void handleExpandAndCollapse() {
+      ((SMAWorkFlowTab) getEditor().getSelectedPage()).getManagedForm().getForm().layout();
    }
 
    @Override
-   public void dispose() {
-      if (relationComposite != null && !relationComposite.isDisposed()) {
-         relationComposite.dispose();
-      }
-      super.dispose();
+   protected void addDragAndDrop(Control dropArea) {
+      new SMADragAndDrop(dropArea, (StateMachineArtifact) getEditorInput().getArtifact(), SMAEditor.EDITOR_ID);
    }
 
    private static ViewerFilter userRelationsFilter = new ViewerFilter() {
@@ -130,10 +79,9 @@ public class SMARelationsSection extends SectionPart {
    private static List<String> filteredRelationTypeNames =
          Arrays.asList(AtsRelation.ActionToWorkflow_Action.getName(), AtsRelation.SmaToTask_Sma.getName(),
                AtsRelation.TeamActionableItem_ActionableItem.getName(),
-               AtsRelation.TeamWorkflowTargetedForVersion_Version.getName(),
-               AtsRelation.TeamLead_Lead.getName(), AtsRelation.TeamMember_Member.getName(),
-               AtsRelation.TeamWorkflowToReview_Review.getName(), AtsRelation.WorkItem__Child.getName(),
-               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getName(),
+               AtsRelation.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelation.TeamLead_Lead.getName(),
+               AtsRelation.TeamMember_Member.getName(), AtsRelation.TeamWorkflowToReview_Review.getName(),
+               AtsRelation.WorkItem__Child.getName(), CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getName(),
                CoreRelationEnumeration.Users_Artifact.getName());
 
 }

@@ -76,7 +76,7 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
 
    private IActionContributor getActionContributor() {
       if (actionContributor == null) {
-         actionContributor = new AttributeActionContribution(getEditor());
+         actionContributor = new AttributeActionContribution((ArtifactEditor) getEditor());
       }
       return actionContributor;
    }
@@ -98,7 +98,7 @@ public class AttributesFormSection extends ArtifactEditorFormSection {
       sectionBody.setLayout(ALayout.getZeroMarginLayout());
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      formPart = new AttributeFormPart(getEditor());
+      formPart = new AttributeFormPart((ArtifactEditor) getEditor());
       form.addPart(formPart);
       formPart.createContents(sectionBody);
       section.setClient(sectionBody);

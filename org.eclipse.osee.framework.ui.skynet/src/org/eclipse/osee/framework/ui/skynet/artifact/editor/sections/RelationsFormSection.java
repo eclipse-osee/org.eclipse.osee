@@ -11,16 +11,19 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor.sections;
 
 import org.eclipse.osee.framework.ui.skynet.RelationsComposite;
+import org.eclipse.osee.framework.ui.skynet.artifact.editor.AbstractArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.pages.ArtifactFormPage;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactDragAndDrop;
 import org.eclipse.osee.framework.ui.swt.ALayout;
+import org.eclipse.osee.framework.ui.swt.Widgets;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TreeEvent;
 import org.eclipse.swt.events.TreeListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.forms.IManagedForm;
@@ -34,7 +37,7 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
 
    private RelationsComposite relationComposite;
 
-   public RelationsFormSection(ArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
+   public RelationsFormSection(AbstractArtifactEditor editor, Composite parent, FormToolkit toolkit, int style) {
       super(editor, parent, toolkit, style);
    }
 
@@ -54,17 +57,15 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       sectionBody.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       Label dragDropLabel = new Label(sectionBody, SWT.BORDER);
-      dragDropLabel.setText("Click here to drag this \"" + getEditor().getEditorInput().getArtifact().getArtifactTypeName() + "\"");
+      dragDropLabel.setText("Click here to drag this \"" + getEditorInput().getArtifact().getArtifactTypeName() + "\"");
       GridData gd = new GridData(GridData.FILL_BOTH);
       gd.heightHint = 25;
       dragDropLabel.setLayoutData(gd);
-      new ArtifactDragAndDrop(dragDropLabel, getEditor().getEditorInput().getArtifact(), ArtifactEditor.EDITOR_ID);
+      addDragAndDrop(dragDropLabel);
       toolkit.adapt(dragDropLabel, true, true);
 
-      relationComposite =
-            new RelationsComposite(getEditor(), sectionBody, SWT.NONE, getEditor().getEditorInput().getArtifact());
-
-      relationComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+      relationComposite = new RelationsComposite(getEditor(), sectionBody, SWT.NONE, getEditorInput().getArtifact());
+      relationComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       section.setClient(sectionBody);
       toolkit.paintBordersFor(section);
@@ -84,11 +85,20 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
          private void redrawPage() {
             Display.getDefault().asyncExec(new Runnable() {
                public void run() {
-                  ((ArtifactFormPage) getEditor().getSelectedPage()).refresh();
+                  getSection().getParent().layout();
+                  getManagedForm().reflow(true);
                }
             });
          }
       });
+   }
+
+   protected void handleExpandAndCollapse() {
+      ((ArtifactFormPage) getEditor().getSelectedPage()).refresh();
+   }
+
+   protected void addDragAndDrop(Control dropArea) {
+      new ArtifactDragAndDrop(dropArea, getEditorInput().getArtifact(), ArtifactEditor.EDITOR_ID);
    }
 
    public RelationsComposite getRelationComposite() {
@@ -100,7 +110,7 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
       super.refresh();
       Display.getDefault().asyncExec(new Runnable() {
          public void run() {
-            if (relationComposite != null && !relationComposite.isDisposed()) {
+            if (Widgets.isAccessible(relationComposite)) {
                relationComposite.refresh();
             }
          }
@@ -109,7 +119,7 @@ public class RelationsFormSection extends ArtifactEditorFormSection {
 
    @Override
    public void dispose() {
-      if (relationComposite != null && !relationComposite.isDisposed()) {
+      if (Widgets.isAccessible(relationComposite)) {
          relationComposite.dispose();
       }
       super.dispose();
