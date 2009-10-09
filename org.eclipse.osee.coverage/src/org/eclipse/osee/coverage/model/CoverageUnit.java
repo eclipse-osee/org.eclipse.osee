@@ -261,7 +261,7 @@ public class CoverageUnit implements ICoverageEditorItem {
    public CoverageUnit copy(boolean includeItems) throws OseeCoreException {
       CoverageUnit coverageUnit = new CoverageUnit(parentCoverageEditorItem, name, location);
       coverageUnit.setGuid(guid);
-      coverageUnit.setText(namespace);
+      coverageUnit.setNamespace(namespace);
       coverageUnit.setText(text);
       coverageUnit.setLocation(location);
       if (includeItems) {

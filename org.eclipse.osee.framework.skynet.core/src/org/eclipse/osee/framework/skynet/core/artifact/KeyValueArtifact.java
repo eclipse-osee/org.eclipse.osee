@@ -77,6 +77,7 @@ public class KeyValueArtifact {
     * Gets first value even if there are more. Returns null if none.
     */
    public String getValue(String key) {
+      if (keyValueMap.getValues(key) == null) return null;
       if (keyValueMap.getValues(key).size() > 0) return keyValueMap.getValues(key).iterator().next();
       return null;
    }
