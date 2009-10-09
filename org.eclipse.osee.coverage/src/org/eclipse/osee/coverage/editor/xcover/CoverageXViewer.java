@@ -12,9 +12,6 @@ package org.eclipse.osee.coverage.editor.xcover;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
@@ -22,20 +19,22 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.coverage.action.EditCoverageMethodAction;
+import org.eclipse.osee.coverage.action.EditRationaleAction;
+import org.eclipse.osee.coverage.action.IRefreshable;
+import org.eclipse.osee.coverage.action.ISelectedCoverageEditorItem;
+import org.eclipse.osee.coverage.action.ViewSourceAction;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
+import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactory;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
-import org.eclipse.osee.coverage.util.CoverageMethodListDialog;
+import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -47,10 +46,10 @@ import org.eclipse.swt.widgets.TreeItem;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageXViewer extends XViewer {
+public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorItem, ISaveable, IRefreshable {
 
    protected final XCoverageViewer xCoverageViewer;
-   Action editRationale, editMethod;
+   Action editRationale, editMethodAction, viewSourceAction;
 
    public CoverageXViewer(Composite parent, int style, XCoverageViewer xCoverageViewer) {
       this(parent, style, new CoverageXViewerFactory(), xCoverageViewer);
@@ -73,57 +72,11 @@ public class CoverageXViewer extends XViewer {
    }
 
    public void createMenuActions() {
-
-      editMethod = new Action("Edit Coverage Method", Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            Result result = xCoverageViewer.getSaveable().isEditable();
-            if (result.isFalse()) {
-               result.popup();
-               return;
-            }
-
-            CoverageMethodListDialog dialog = new CoverageMethodListDialog(CoverageMethodEnum.getCollection());
-            if (dialog.open() == 0) {
-               for (ICoverageEditorItem coverageItem : xCoverageViewer.getSelectedCoverageItems()) {
-                  if (coverageItem instanceof CoverageItem) {
-                     ((CoverageItem) coverageItem).setCoverageMethod((CoverageMethodEnum) dialog.getFirstResult());
-                     xCoverageViewer.getXViewer().update(coverageItem, null);
-                  }
-               }
-            }
-            xCoverageViewer.getSaveable().save();
-         }
-      };
-      editRationale = new Action("Edit Rationale", Action.AS_PUSH_BUTTON) {
-         @Override
-         public void run() {
-            Result result = xCoverageViewer.getSaveable().isEditable();
-            if (result.isFalse()) {
-               result.popup();
-               return;
-            }
-            Set<String> rationale = new HashSet<String>();
-            for (ICoverageEditorItem coverageItem : xCoverageViewer.getSelectedCoverageItems()) {
-               if (coverageItem instanceof CoverageItem) {
-                  rationale.add(((CoverageItem) coverageItem).getCoverageRationale());
-               }
-            }
-            EntryDialog ed = new EntryDialog("Coverage Rationale", "Enter Coverage Rationale");
-            if (rationale.size() == 1 && Strings.isValid(rationale.iterator().next())) {
-               ed.setEntry(rationale.iterator().next());
-            }
-            if (ed.open() == 0) {
-               for (ICoverageEditorItem coverageItem : xCoverageViewer.getSelectedCoverageItems()) {
-                  if (coverageItem instanceof CoverageItem) {
-                     ((CoverageItem) coverageItem).setCoverageRationale(ed.getEntry());
-                     xCoverageViewer.getXViewer().update(coverageItem, null);
-                  }
-               }
-            }
-            xCoverageViewer.getSaveable().save();
-         }
-      };
+      if (viewSourceAction == null) {
+         viewSourceAction = new ViewSourceAction(this);
+         editMethodAction = new EditCoverageMethodAction(this, this, this);
+         editRationale = new EditRationaleAction(this, this, this);
+      }
    }
 
    private boolean isEditRationaleEnabled() {
@@ -154,9 +107,11 @@ public class CoverageXViewer extends XViewer {
          editRationale.setEnabled(isEditRationaleEnabled());
       }
       if (xCoverageViewer.isType(TableType.Package)) {
-         mm.insertBefore(MENU_GROUP_PRE, editMethod);
-         editMethod.setEnabled(isEditMethodEnabled());
+         mm.insertBefore(MENU_GROUP_PRE, editMethodAction);
+         editMethodAction.setEnabled(isEditMethodEnabled());
       }
+      mm.insertBefore(MENU_GROUP_PRE, viewSourceAction);
+      editMethodAction.setEnabled(isEditMethodEnabled());
    }
 
    @Override
@@ -190,9 +145,6 @@ public class CoverageXViewer extends XViewer {
       }
    }
 
-   /**
-    * Release resources
-    */
    @Override
    public void dispose() {
       // Dispose of the table objects is done through separate dispose listener off tree
@@ -229,7 +181,7 @@ public class CoverageXViewer extends XViewer {
 
    @Override
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
-      return handleAltLeftClick(treeColumn, treeItem);
+      return false;
    }
 
    @Override
@@ -237,13 +189,16 @@ public class CoverageXViewer extends XViewer {
       if (!xCoverageViewer.isEditable()) {
          return false;
       }
+      createMenuActions();
       try {
-         // System.out.println("Column " + treeColumn.getText() + " item " +
-         // treeItem);
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
-         ICoverageEditorItem coverageItem = (ICoverageEditorItem) treeItem.getData();
-         List<ICoverageEditorItem> coverageItems = new ArrayList<ICoverageEditorItem>();
-         coverageItems.add(coverageItem);
+         if (xCol.equals(CoverageMergeXViewerFactory.Coverage_Method)) {
+            editMethodAction.run();
+         } else if (xCol.equals(CoverageMergeXViewerFactory.Coverage_Rationale)) {
+            editRationale.run();
+         } else if (xCol.equals(CoverageMergeXViewerFactory.Name) || xCol.equals(CoverageMergeXViewerFactory.Text)) {
+            viewSourceAction.run();
+         }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
@@ -252,20 +207,9 @@ public class CoverageXViewer extends XViewer {
 
    @Override
    public void handleDoubleClick() {
+      createMenuActions();
       if (getSelectedCoverageEditorItems().size() > 0) {
-         ICoverageEditorItem item = getSelectedCoverageEditorItems().iterator().next();
-         EntryDialog ed = new EntryDialog(item.getName(), "");
-         ed.setFillVertically(true);
-         String text = item.getText();
-         if (!Strings.isValid(text)) {
-            text = item.getParent().getText();
-            if (!Strings.isValid(text)) {
-               AWorkbench.popup("No Text Available");
-               return;
-            }
-         }
-         ed.setEntry(text);
-         ed.open();
+         viewSourceAction.run();
       }
    }
 
@@ -314,6 +258,21 @@ public class CoverageXViewer extends XViewer {
          //         return executeTransaction(promoteItems);
       }
       return false;
+   }
+
+   @Override
+   public void update(Object element) {
+      xCoverageViewer.getXViewer().update(element, null);
+   }
+
+   @Override
+   public Result isEditable() {
+      return xCoverageViewer.getSaveable().isEditable();
+   }
+
+   @Override
+   public Result save() {
+      return xCoverageViewer.getSaveable().save();
    }
 
 }

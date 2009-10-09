@@ -141,6 +141,7 @@ public enum FrameworkImage implements OseeImage {
    RELOAD("reload.gif"),
    REMOVE("remove.gif"),
    REMOVE_ALL("removeAll.gif"),
+   REPORT("report.gif"),
    REJECT("reject.gif"),
    ROOT_HIERARCHY("package_obj.gif"),
    RUN_EXC("run_exc.gif"),
