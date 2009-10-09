@@ -43,6 +43,7 @@ public class CoverageItem implements ICoverageEditorItem {
    private final String executeNum;
    private String lineNum;
    private String methodNum;
+   private String text;
    private final CoverageUnit coverageUnit;
    private final Set<TestUnit> testUnits = new HashSet<TestUnit>();
    private String guid = GUID.create();
@@ -63,6 +64,8 @@ public class CoverageItem implements ICoverageEditorItem {
       setGuid(AXml.getTagData(xml, "guid"));
       String lineNum = AXml.getTagData(xml, "line");
       if (Strings.isValid(lineNum)) setLineNum(lineNum);
+      String text = AXml.getTagData(xml, "text");
+      if (Strings.isValid(text)) setText(text);
       String rationale = AXml.getTagData(xml, "rationale");
       if (Strings.isValid(rationale)) setCoverageRationale(rationale);
       String methodNum = AXml.getTagData(xml, "methodNum");
@@ -137,7 +140,7 @@ public class CoverageItem implements ICoverageEditorItem {
    }
 
    public String getName() {
-      return methodNum + ":" + executeNum;
+      return String.format("%s:%s [%s]", methodNum, executeNum, text);
    }
 
    @Override
@@ -149,6 +152,7 @@ public class CoverageItem implements ICoverageEditorItem {
       if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return getCoverageMethod().toString();
       if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return getCoverageUnit().getName();
       if (xCol.equals(CoverageXViewerFactory.Test_Units)) return Collections.toString(", ", getTestUnits());
+      if (xCol.equals(CoverageXViewerFactory.Text)) return Collections.toString(", ", getText());
       return "";
    }
 
@@ -223,6 +227,7 @@ public class CoverageItem implements ICoverageEditorItem {
       }
       sb.append(AXml.addTagData("methodType", getCoverageMethod().toString()));
       sb.append(AXml.addTagData("testUnits", getTestUnitGuidList(getTestUnits())));
+      sb.append(AXml.addTagData("text", getText()));
       sb.append("</CvgItem>");
       return sb.toString();
    }
@@ -264,6 +269,14 @@ public class CoverageItem implements ICoverageEditorItem {
 
    public void setCoverageRationale(String rationale) {
       this.coverageRationale = rationale;
+   }
+
+   public String getText() {
+      return text;
+   }
+
+   public void setText(String text) {
+      this.text = text;
    }
 
 }

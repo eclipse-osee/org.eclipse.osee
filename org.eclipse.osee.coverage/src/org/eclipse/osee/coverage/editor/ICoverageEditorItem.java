@@ -44,4 +44,6 @@ public interface ICoverageEditorItem {
 
    public Artifact getArtifact(boolean create) throws OseeCoreException;
 
+   public String getText();
+
 }

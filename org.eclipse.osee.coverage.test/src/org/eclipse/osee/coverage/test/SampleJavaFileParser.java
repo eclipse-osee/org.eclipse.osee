@@ -29,7 +29,7 @@ public class SampleJavaFileParser {
 
    private static final Pattern methodPatter =
          Pattern.compile("\\s+(public|private)\\s(\\w+)\\s(\\w+)\\(.*\\)\\s+\\{\\s*");
-   private static final Pattern executeLine = Pattern.compile("\\s+//\\s+(\\w+),\\s+(\\w+),\\s+(\\w+)");
+   private static final Pattern executeLine = Pattern.compile("^(.*)\\s+//\\s+(\\w+),\\s+(\\w+),\\s+(\\w+)");
 
    public static CoverageUnit createCodeUnit(URL url) throws OseeCoreException {
       try {
@@ -42,6 +42,7 @@ public class SampleJavaFileParser {
          }
          CoverageUnit fileCoverageUnit = new CoverageUnit(null, url.getFile(), "");
          String fileStr = Lib.inputStreamToString(inputStream);
+         fileCoverageUnit.setText(fileStr);
          CoverageUnit coverageUnit = null;
          int lineNum = 0;
          for (String line : fileStr.split("\r\n")) {
@@ -54,13 +55,15 @@ public class SampleJavaFileParser {
             }
             m = executeLine.matcher(line);
             if (m.find()) {
-               String methodNum = m.group(1);
-               String executeNum = m.group(2);
-               boolean covered = m.group(3).equals("y");
+               String lineText = m.group(1);
+               String methodNum = m.group(2);
+               String executeNum = m.group(3);
+               boolean covered = m.group(4).equals("y");
                CoverageItem coverageItem =
                      new CoverageItem(coverageUnit, covered ? CoverageMethodEnum.Test_Unit : CoverageMethodEnum.None,
                            executeNum);
                coverageItem.setLineNum(String.valueOf(lineNum));
+               coverageItem.setText(lineText);
                coverageItem.setMethodNum(methodNum);
                coverageUnit.addCoverageItem(coverageItem);
             }

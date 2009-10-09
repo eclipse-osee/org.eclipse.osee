@@ -183,4 +183,9 @@ public class TestUnit implements ICoverageEditorItem {
             getArtifact(false).deleteAndPersist(transaction);
       }
    }
+
+   @Override
+   public String getText() {
+      return getName();
+   }
 }

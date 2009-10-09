@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.EntryDialog;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserListDialog;
@@ -252,6 +253,19 @@ public class CoverageXViewer extends XViewer {
    @Override
    public void handleDoubleClick() {
       if (getSelectedCoverageEditorItems().size() > 0) {
+         ICoverageEditorItem item = getSelectedCoverageEditorItems().iterator().next();
+         EntryDialog ed = new EntryDialog(item.getName(), "");
+         ed.setFillVertically(true);
+         String text = item.getText();
+         if (!Strings.isValid(text)) {
+            text = item.getParent().getText();
+            if (!Strings.isValid(text)) {
+               AWorkbench.popup("No Text Available");
+               return;
+            }
+         }
+         ed.setEntry(text);
+         ed.open();
       }
    }
 

@@ -18,6 +18,7 @@ import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -236,6 +237,10 @@ public class CoverageUnit implements ICoverageEditorItem {
          for (String line : keyValueArtifact.getValues("cvgItem")) {
             coverageItems.add(new CoverageItem(this, line));
          }
+         String text = keyValueArtifact.getValue("text");
+         if (Strings.isValid(text)) {
+            setText(text);
+         }
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.getArtifactTypeName().equals(CoverageUnit.ARTIFACT_NAME)) {
                coverageUnits.add(new CoverageUnit(childArt));
@@ -269,7 +274,9 @@ public class CoverageUnit implements ICoverageEditorItem {
          coverageItem.save(transaction);
       }
       keyValueArtifact.setValues("cvgItem", items);
-      keyValueArtifact.setValue("text", text);
+      if (Strings.isValid(text)) {
+         keyValueArtifact.setValue("text", text);
+      }
       keyValueArtifact.setValue("location", location);
       keyValueArtifact.save();
       if (parentCoverageEditorItem != null) {

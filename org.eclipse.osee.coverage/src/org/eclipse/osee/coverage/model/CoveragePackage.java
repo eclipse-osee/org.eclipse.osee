@@ -337,4 +337,9 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
       return Result.TrueResult;
    }
 
+   @Override
+   public String getText() {
+      return "";
+   }
+
 }

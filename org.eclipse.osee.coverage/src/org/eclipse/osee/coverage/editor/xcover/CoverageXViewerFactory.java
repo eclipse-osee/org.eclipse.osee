@@ -50,6 +50,8 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
                SortDataType.String, false, "");
    public static XViewerColumn Guid =
          new XViewerColumn(NAMESPACE + ".guid", "Guid", 80, SWT.LEFT, true, SortDataType.String, false, "");
+   public static XViewerColumn Text =
+         new XViewerColumn(NAMESPACE + ".text", "Text", 300, SWT.LEFT, true, SortDataType.String, false, "");
 
    public CoverageXViewerFactory() {
       super(NAMESPACE);
@@ -58,7 +60,7 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
 
    public void registerColumns() {
       registerColumns(Name, Method_Number, Execution_Number, Line_Number, Coverage_Method, Coverage_Rationale,
-            Test_Units, User_Col, Parent_Coverage_Unit, Location, Guid);
+            Test_Units, User_Col, Parent_Coverage_Unit, Location, Guid, Text);
    }
 
 }

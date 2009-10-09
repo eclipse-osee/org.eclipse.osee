@@ -286,4 +286,9 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
       return true;
    }
 
+   @Override
+   public String getText() {
+      return "";
+   }
+
 }
