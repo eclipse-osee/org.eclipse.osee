@@ -93,7 +93,7 @@ public class OseeTypeFactory implements IOseeTypeFactory {
    }
 
    @Override
-   public RelationType createRelationType(AbstractOseeCache<RelationType> cache, String guid, String name, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {
+   public RelationType createRelationType(AbstractOseeCache<RelationType> cache, String guid, String name, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
       checkName(cache, name);
       checkNameUnique(cache, name);
       if (!Strings.isValid(sideAName)) {
@@ -112,7 +112,7 @@ public class OseeTypeFactory implements IOseeTypeFactory {
          throw new OseeArgumentException("Multiplicity can not be null or empty");
       }
       return new RelationType(cache, createGuidIfNeeded(guid), name, sideAName, sideBName, artifactTypeSideA,
-            artifactTypeSideB, multiplicity, isUserOrdered, defaultOrderTypeGuid);
+            artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
    }
 
    @Override

@@ -32,7 +32,7 @@ public interface IOseeTypeFactory {
 
    public AttributeType createAttributeType(AbstractOseeCache<AttributeType> cache, String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, Class<? extends Attribute<?>> baseAttributeClass, Class<? extends IAttributeDataProvider> providerAttributeClass, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException;
 
-   public RelationType createRelationType(AbstractOseeCache<RelationType> cache, String guid, String name, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException;
+   public RelationType createRelationType(AbstractOseeCache<RelationType> cache, String guid, String name, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException;
 
    public OseeEnumType createEnumType(AbstractOseeCache<OseeEnumType> cache, String guid, String name) throws OseeCoreException;
 

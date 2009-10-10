@@ -90,9 +90,9 @@ public class RelationTypeManager {
       return !OseeTypeManager.getCache().getRelationTypeCache().getByName(name).isEmpty();
    }
 
-   public static RelationType createType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isUserOrdered, String defaultOrderTypeGuid) throws OseeCoreException {
+   public static RelationType createType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
       return OseeTypeManager.getCache().getRelationTypeCache().createType(guid, typeName, sideAName, sideBName,
-            artifactTypeSideA, artifactTypeSideB, multiplicity, isUserOrdered, defaultOrderTypeGuid);
+            artifactTypeSideA, artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
    }
 
    public static void persist() throws OseeCoreException {

@@ -10,34 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.init;
 
-import java.sql.DatabaseMetaData;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
-import org.eclipse.osee.framework.database.sql.SkynetDatabase;
-import org.eclipse.osee.framework.database.sql.View;
 
 public class DbInit {
-
-   /**
-    * @param connection
-    * @param databaseType
-    * @param databaseType2
-    * @throws OseeDataStoreException
-    */
-   public static void addViews() throws OseeDataStoreException {
-      for (View view : SkynetDatabase.getSkynetViews()) {
-         String viewCreateCmd =
-               SupportedDatabase.isDatabaseType(SupportedDatabase.oracle) ? "CREATE OR REPLACE FORCE VIEW " : "CREATE VIEW ";
-
-         ConnectionHandler.runPreparedUpdate(viewCreateCmd + view.toString() + view.getDefinition());
-         ConnectionHandler.runPreparedUpdate("create OR REPLACE public synonym " + view.toString() + " for " + view.toString());
-      }
-   }
 
    /**
     * @param schemas
@@ -133,26 +110,6 @@ public class DbInit {
             DbFactory currentDbFactory = new DbFactory(toDrop);
             currentDbFactory.dropIndeces();
          }
-      }
-   }
-
-   /**
-    * @param connection
-    */
-   public static void dropViews() throws OseeDataStoreException {
-      try {
-         DatabaseMetaData dbData = ConnectionHandler.getMetaData();
-         ResultSet tables = dbData.getTables(null, null, null, new String[] {"VIEW"});
-         while (tables.next()) {
-            String viewName = tables.getString("TABLE_NAME").toUpperCase();
-            for (View viewToDrop : SkynetDatabase.getSkynetViews()) {
-               if (viewToDrop.toString().equalsIgnoreCase(viewName)) {
-                  ConnectionHandler.runPreparedUpdate("DROP VIEW " + viewName);
-               }
-            }
-         }
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
       }
    }
 

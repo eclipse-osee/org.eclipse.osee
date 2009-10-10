@@ -130,8 +130,7 @@ public class OseeTypesUtil {
       ArtifactType type1 = artCache.getByGuid(aGUID);
       ArtifactType type2 = artCache.getByGuid(bGUID);
       RelationType relationType =
-            factory.createRelationType(cache, guid, name, name + "_A", name + "_B", type1, type2, multiplicity, true,
-                  "");
+            factory.createRelationType(cache, guid, name, name + "_A", name + "_B", type1, type2, multiplicity, "");
       Assert.assertNotNull(relationType);
       return relationType;
    }

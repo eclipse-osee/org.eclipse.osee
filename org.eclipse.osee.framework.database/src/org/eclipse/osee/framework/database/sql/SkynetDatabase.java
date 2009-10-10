@@ -17,8 +17,6 @@ package org.eclipse.osee.framework.database.sql;
  * @author Robert A. Fisher
  */
 public class SkynetDatabase {
-   public static final int RELATION_SIDE_NAME_SIZE = 50;
-
    public static final Table ARTIFACT_TABLE = new Table("OSEE_ARTIFACT");
    public static final Table ARTIFACT_VERSION_TABLE = new Table("OSEE_ARTIFACT_VERSION");
    public static final Table ARTIFACT_TABLE_ACL = new Table("OSEE_ARTIFACT_ACL");
@@ -33,7 +31,6 @@ public class SkynetDatabase {
    public static final Table ATTRIBUTE_TYPE_TABLE = new Table("OSEE_ATTRIBUTE_TYPE");
    public static final Table ATTRIBUTE_TYPE_TABLE_ACL = new Table("OSEE_ATTRIBUTE_TYPE_ACL");
    public static final Table RELATION_LINK_VERSION_TABLE = new Table("OSEE_RELATION_LINK");
-   public static final Table RELATION_LINK_TYPE_TABLE = new Table("OSEE_RELATION_LINK_TYPE");
    public static final Table RELATION_LINK_TYPE_TABLE_ACL = new Table("OSEE_RELATION_LINK_TYPE_ACL");
    public static final Table BRANCH_TABLE = new Table("OSEE_BRANCH");
    public static final Table BRANCH_DEFINITIONS = new Table("OSEE_BRANCH_DEFINITIONS");
@@ -49,10 +46,4 @@ public class SkynetDatabase {
    public static final Table OSEE_CONFLICT_TABLE = new Table("OSEE_CONFLICT");
 
    public static final String TXD_COMMENT = "OSEE_COMMENT";
-
-   private static final View[] skynetViews = new View[] {};
-
-   public static View[] getSkynetViews() {
-      return skynetViews;
-   }
 }

@@ -284,7 +284,6 @@
 		<Column id="A_ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="B_ART_TYPE_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="MULTIPLICITY" defaultValue="not null" type="INTEGER" />
-		<Column id="USER_ORDERED" defaultValue="not null" limits="5" type="VARCHAR" />
 		<Column id="DEFAULT_ORDER_TYPE_GUID" defaultValue="not null" limits="28" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_RLT_PK" type="PRIMARY KEY" appliesTo="REL_LINK_TYPE_ID" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_TYPE_G_IDX" type="UNIQUE" appliesTo="REL_LINK_TYPE_GUID" />

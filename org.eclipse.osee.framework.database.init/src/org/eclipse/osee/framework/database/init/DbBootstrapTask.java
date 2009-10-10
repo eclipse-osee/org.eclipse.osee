@@ -69,7 +69,6 @@ public class DbBootstrapTask implements IDbInitializationTask {
       schemaExtractor.extractSchemaData();
       Map<String, SchemaData> currentDatabaseConfig = schemaExtractor.getSchemas();
       Set<String> schemas = userSpecifiedConfig.keySet();
-      DbInit.dropViews();
       DbInit.dropIndeces(schemas, userSpecifiedConfig, currentDatabaseConfig);
       DbInit.dropTables(schemas, userSpecifiedConfig, currentDatabaseConfig);
       if (SupportedDatabase.isDatabaseType(SupportedDatabase.postgresql)) {
@@ -78,7 +77,6 @@ public class DbBootstrapTask implements IDbInitializationTask {
       }
       DbInit.addTables(schemas, userSpecifiedConfig);
       DbInit.addIndeces(schemas, userSpecifiedConfig);
-      DbInit.addViews();
       initializeApplicationServer();
       OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
       OseeInfo.putValue(OseeInfo.USE_GUID_STORAGE, "true");

@@ -36,12 +36,9 @@ import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 public class DatabaseRelationTypeAccessor implements IOseeDataAccessor<RelationType> {
    private static final String SELECT_LINK_TYPES = "SELECT * FROM osee_relation_link_type";
    private static final String INSERT_RELATION_TYPE =
-         "INSERT INTO osee_relation_link_type (rel_link_type_id, rel_link_type_guid, type_name, a_name, b_name, a_art_type_id, b_art_type_id, multiplicity, user_ordered, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?,?)";
+         "INSERT INTO osee_relation_link_type (rel_link_type_id, rel_link_type_guid, type_name, a_name, b_name, a_art_type_id, b_art_type_id, multiplicity, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?)";
    private static final String UPDATE_RELATION_TYPE =
          "update osee_relation_link_type SET type_name=?, a_name=?, b_name=?, a_art_type_id=?, b_art_type_id=?, multiplicity=?, default_order_type_guid=? where rel_link_type_id = ?";
-
-   private static final String USER_ORDERED = "Yes";
-   private static final String NOT_USER_ORDERED = "No";
 
    private final ArtifactTypeCache artifactCache;
 
@@ -68,7 +65,6 @@ public class DatabaseRelationTypeAccessor implements IOseeDataAccessor<RelationT
                ArtifactType artifactTypeSideB = artifactCache.getById(bArtTypeId);
                RelationTypeMultiplicity multiplicity =
                      RelationTypeMultiplicity.getRelationMultiplicity(multiplicityValue);
-               boolean isUserOrdered = USER_ORDERED.equalsIgnoreCase(chStmt.getString("user_ordered"));
                String sideAName = chStmt.getString("a_name");
                String sideBName = chStmt.getString("b_name");
                String defaultOrderTypeGuid = chStmt.getString("default_order_type_guid");
@@ -77,14 +73,13 @@ public class DatabaseRelationTypeAccessor implements IOseeDataAccessor<RelationT
                if (relationType == null) {
                   relationType =
                         factory.createRelationType(cache, chStmt.getString("rel_link_type_guid"), name, sideAName,
-                              sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, isUserOrdered,
-                              defaultOrderTypeGuid);
+                              sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
                   relationType.setId(typeId);
                   relationType.setModificationType(ModificationType.MODIFIED);
                   cache.cache(relationType);
                } else {
                   relationType.setFields(name, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB,
-                        multiplicity, isUserOrdered, defaultOrderTypeGuid);
+                        multiplicity, defaultOrderTypeGuid);
                }
                relationType.clearDirty();
             } catch (OseeCoreException ex) {
@@ -130,8 +125,7 @@ public class DatabaseRelationTypeAccessor implements IOseeDataAccessor<RelationT
    private Object[] toInsertValues(RelationType type) throws OseeDataStoreException {
       return new Object[] {type.getId(), type.getGuid(), type.getName(), type.getSideAName(), type.getSideBName(),
             type.getArtifactTypeSideA().getId(), type.getArtifactTypeSideB().getId(),
-            type.getMultiplicity().getValue(), type.isOrdered() ? USER_ORDERED : NOT_USER_ORDERED,
-            type.getDefaultOrderTypeGuid()};
+            type.getMultiplicity().getValue(), type.getDefaultOrderTypeGuid()};
    }
 
    private Object[] toUpdateValues(RelationType type) throws OseeDataStoreException {

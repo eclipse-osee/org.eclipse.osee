@@ -16,6 +16,11 @@ package org.eclipse.osee.framework.database.sql;
 public class LocalAliasTable extends Table {
    private final String declarationName;
 
+   public LocalAliasTable(String aliasedTableName, String aliasName) {
+      super(aliasName);
+      this.declarationName = String.format("%s %s", aliasedTableName, aliasName);
+   }
+
    public LocalAliasTable(Table aliasedTable, String aliasName) {
       super(aliasName);
       this.declarationName = String.format("%s %s", aliasedTable.name, aliasName);

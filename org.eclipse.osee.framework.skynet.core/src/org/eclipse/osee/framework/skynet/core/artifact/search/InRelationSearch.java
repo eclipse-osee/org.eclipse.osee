@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.RELATION_LINK_TYPE_TABLE;
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
@@ -28,12 +27,13 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 public class InRelationSearch implements ISearchPrimitive {
    private static final LocalAliasTable LINK_ALIAS_1 = new LocalAliasTable(RELATION_LINK_VERSION_TABLE, "rel_1");
    private static final LocalAliasTable LINK_ALIAS_2 = new LocalAliasTable(RELATION_LINK_VERSION_TABLE, "rel_2");
-   private static final LocalAliasTable LINK_TYPE_ALIAS_1 = new LocalAliasTable(RELATION_LINK_TYPE_TABLE, "rel_type_1");
+   private static final LocalAliasTable LINK_TYPE_ALIAS_1 =
+         new LocalAliasTable("OSEE_RELATION_LINK_TYPE", "rel_type_1");
    private static final String relationTables = LINK_TYPE_ALIAS_1 + "," + LINK_ALIAS_1 + ", " + TRANSACTIONS_TABLE;
    private final static String TOKEN = ";";
-   private String[] typeNames;
-   private boolean sideA;
-   private FromArtifactsSearch otherArtifactsCriteria;
+   private final String[] typeNames;
+   private final boolean sideA;
+   private final FromArtifactsSearch otherArtifactsCriteria;
 
    /**
     * @param typeName The type of relation for the artifact to be in.
@@ -74,8 +74,9 @@ public class InRelationSearch implements ISearchPrimitive {
       int count = 0;
       typeNames[count++] = firstSide.getName();
       for (IRelationEnumeration side : sides) {
-         if (side.isSideA() != firstSide.isSideA()) throw new IllegalArgumentException(
-               "All links must be for the same side.");
+         if (side.isSideA() != firstSide.isSideA()) {
+            throw new IllegalArgumentException("All links must be for the same side.");
+         }
 
          typeNames[count++] = side.getName();
       }
@@ -101,7 +102,7 @@ public class InRelationSearch implements ISearchPrimitive {
    }
 
    public String getArtIdColName() {
-      return (sideA) ? "a_art_id" : "b_art_id";
+      return sideA ? "a_art_id" : "b_art_id";
    }
 
    public String getCriteriaSql(List<Object> dataList, Branch branch) {
@@ -113,20 +114,25 @@ public class InRelationSearch implements ISearchPrimitive {
 
       sql.append(" AND ");
 
-      if (typeNames.length > 1) sql.append("(");
+      if (typeNames.length > 1) {
+         sql.append("(");
+      }
       for (String typeName : typeNames) {
-         if (!first)
+         if (!first) {
             sql.append(" OR ");
-         else
+         } else {
             first = false;
+         }
 
          sql.append(LINK_TYPE_ALIAS_1.column("type_name") + "=?");
          dataList.add(typeName);
       }
-      if (typeNames.length > 1) sql.append(")");
+      if (typeNames.length > 1) {
+         sql.append(")");
+      }
 
       if (otherArtifactsCriteria != null) {
-         sql.append(" AND " + LINK_ALIAS_1.column(((!sideA) ? "a_art_id" : "b_art_id")) + " IN (" + ArtifactPersistenceManager.getSelectArtIdSql(
+         sql.append(" AND " + LINK_ALIAS_1.column((!sideA ? "a_art_id" : "b_art_id")) + " IN (" + ArtifactPersistenceManager.getSelectArtIdSql(
                otherArtifactsCriteria, dataList, branch) + ")");
       }
 
@@ -142,6 +148,7 @@ public class InRelationSearch implements ISearchPrimitive {
       return relationTables;
    }
 
+   @Override
    public String toString() {
       return "In Relation: " + typeNames + " from";
       //"side " + ((sideA)?"A":"B");
@@ -161,12 +168,14 @@ public class InRelationSearch implements ISearchPrimitive {
 
    public static InRelationSearch getPrimitive(String storageString) {
       String[] values = storageString.split(TOKEN);
-      if (values.length < 2) throw new IllegalStateException(
-            "Value for " + InRelationSearch.class.getSimpleName() + " not parsable");
+      if (values.length < 2) {
+         throw new IllegalStateException("Value for " + InRelationSearch.class.getSimpleName() + " not parsable");
+      }
 
       String[] names = new String[values.length - 1];
-      for (int x = 0; x < names.length; x++)
+      for (int x = 0; x < names.length; x++) {
          names[x] = values[x + 1];
+      }
 
       return new InRelationSearch(names, Boolean.parseBoolean(values[0]), null);
    }

@@ -263,13 +263,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             getCache().getArtifactTypeCache().getUniqueByName(
                   removeQuotes(relationType.getSideBArtifactType().getName())), //
             multiplicity, //
-            isOrdered(relationType.getDefaultOrderType()),//
             convertOrderTypeNameToGuid(relationType.getDefaultOrderType())//
       ).getGuid());
-   }
-
-   private boolean isOrdered(String orderType) {
-      return "Unordered".equalsIgnoreCase(orderType);
    }
 
    private String convertOrderTypeNameToGuid(String orderTypeName) throws OseeArgumentException {

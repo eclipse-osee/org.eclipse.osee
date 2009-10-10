@@ -250,7 +250,7 @@ public class RelationTypeSideSorterTest {
       ArtifactType type2 = new ArtifactType(null, GUID.create(), "2", false, null);
       RelationType relationType =
             factory.createRelationType(cache, GUID.create(), name, name + "_A", name + "_B", type1, type2,
-                  RelationTypeMultiplicity.MANY_TO_MANY, true, delationRelationOrderGuid);
+                  RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
       Assert.assertNotNull(relationType);
       cache.cache(relationType);
       return relationType;

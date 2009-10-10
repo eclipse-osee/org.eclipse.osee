@@ -13,27 +13,6 @@ package org.eclipse.osee.framework.database.sql;
 public class Table {
    protected String name;
 
-   ////   private static final String aliassyntax;
-   ////   private static final Matcher matcher = Pattern.compile(" *PUT_TABLE_ALIAS_HERE *").matcher("");
-   //
-   //   static {
-   //      aliassyntax = SupportedDatabase.getDatabaseType() == SupportedDatabase.postgresql ? " as " : " ";
-   //   }
-
-   //   /**
-   //    * Remove all PUT_TABLE_ALIAS_HERE tags and replace with table alias specific to this DB
-   //    * 
-   //    * @param sql string with replace tag PUT_TABLE_ALIAS_HERE embedded
-   //    * @return sql with corresponding table alias replaced
-   //    */
-   //   public static String generateTableAliasedSql(String sql) {
-   //      matcher.reset(sql);
-   //      return matcher.replaceAll(aliassyntax);
-   //   }
-
-   /**
-    * @param name
-    */
    public Table(String name) {
       this.name = name;
    }
@@ -60,46 +39,6 @@ public class Table {
       return strB.toString();
    }
 
-   //   public String max(String columnName, String alias) {
-   //      return function("max", columnName, alias);
-   //   }
-
-   //   public String max(String columnName) {
-   //      return function("max", columnName, null);
-   //   }
-   //
-   //   public String min(String columnName, String alias) {
-   //      return function("min", columnName, alias);
-   //   }
-   //
-   //   public String min(String columnName) {
-   //      return function("min", columnName, null);
-   //   }
-
-   //   public static String alias(String sql, String alias) {
-   //      StringBuilder strB = new StringBuilder();
-   //      strB.append(sql);
-   //      alias(strB, alias);
-   //      return strB.toString();
-   //   }
-   //
-   //   private static void alias(StringBuilder strB, String alias) {
-   //      strB.append(aliassyntax);
-   //      strB.append(alias);
-   //   }
-
-   //   private String function(String function, String columnName, String alias) {
-   //      StringBuilder strB = new StringBuilder(60);
-   //      strB.append(function);
-   //      strB.append("(");
-   //      qualifyColumnName(strB, columnName);
-   //      strB.append(")");
-   //      if (alias != null && !alias.equals("")) {
-   //         alias(strB, alias);
-   //      }
-   //      return strB.toString();
-   //   }
-
    private void createValuesList(StringBuilder strB, int parameterCount) {
       strB.append("VALUES (");
       for (int i = 1; i < parameterCount; i++) {
@@ -110,16 +49,18 @@ public class Table {
 
    private void buildColumnsList(StringBuilder strB, boolean qualify, String... columns) {
       for (int i = 0; i < columns.length - 1; i++) {
-         if (qualify)
+         if (qualify) {
             qualifyColumnName(strB, columns[i]);
-         else
+         } else {
             strB.append(columns[i]);
+         }
          strB.append(", ");
       }
-      if (qualify)
+      if (qualify) {
          qualifyColumnName(strB, columns[columns.length - 1]);
-      else
+      } else {
          strB.append(columns[columns.length - 1]);
+      }
    }
 
    private void qualifyColumnName(StringBuilder strB, String columnName) {
@@ -128,6 +69,7 @@ public class Table {
       strB.append(columnName);
    }
 
+   @Override
    public String toString() {
       return name;
    }
@@ -135,8 +77,4 @@ public class Table {
    public String join(Table joinTable, String joinColumn) {
       return column(joinColumn) + "=" + joinTable.column(joinColumn);
    }
-
-   //   public LocalAliasTable aliasAs(String aliasName) {
-   //      return new LocalAliasTable(this, aliasName);
-   //   }
 }

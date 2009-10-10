@@ -14,6 +14,7 @@ import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
@@ -27,14 +28,13 @@ public class RelationType extends AbstractOseeType implements Comparable<Relatio
    private static final String RELATION_SIDE_B_NAME_FIELD_KEY = "osee.relation.type.side.b.name.field";
    private static final String RELATION_SIDE_A_ART_TYPE_FIELD_KEY = "osee.relation.type.side.a.artifact.type.field";
    private static final String RELATION_SIDE_B_ART_TYPE_FIELD_KEY = "osee.relation.type.side.b.artifact.type.field";
-   private static final String RELATION_IS_ORDERED_FIELD_KEY = "osee.relation.type.is.ordered.field";
    private static final String RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY =
          "osee.relation.type.default.order.type.guid.field";
    private static final String RELATION_MULTIPLICITY_FIELD_KEY = "osee.relation.type.multiplicity.field";
 
-   public RelationType(AbstractOseeCache<RelationType> cache, String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
+   public RelationType(AbstractOseeCache<RelationType> cache, String guid, String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
       super(cache, guid, relationTypeName);
-      setFields(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, isOrdered,
+      setFields(relationTypeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,
             defaultOrderTypeGuid);
    }
 
@@ -44,18 +44,16 @@ public class RelationType extends AbstractOseeType implements Comparable<Relatio
       addField(RELATION_SIDE_B_NAME_FIELD_KEY, new OseeField<String>());
       addField(RELATION_SIDE_A_ART_TYPE_FIELD_KEY, new OseeField<ArtifactType>());
       addField(RELATION_SIDE_B_ART_TYPE_FIELD_KEY, new OseeField<ArtifactType>());
-      addField(RELATION_IS_ORDERED_FIELD_KEY, new OseeField<Boolean>());
       addField(RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY, new OseeField<String>());
       addField(RELATION_MULTIPLICITY_FIELD_KEY, new OseeField<RelationTypeMultiplicity>());
    }
 
-   public void setFields(String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, boolean isOrdered, String defaultOrderTypeGuid) {
+   public void setFields(String relationTypeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) {
       setName(relationTypeName);
       setFieldLogException(RELATION_SIDE_A_NAME_FIELD_KEY, sideAName);
       setFieldLogException(RELATION_SIDE_B_NAME_FIELD_KEY, sideBName);
       setFieldLogException(RELATION_SIDE_A_ART_TYPE_FIELD_KEY, artifactTypeSideA);
       setFieldLogException(RELATION_SIDE_B_ART_TYPE_FIELD_KEY, artifactTypeSideB);
-      setFieldLogException(RELATION_IS_ORDERED_FIELD_KEY, isOrdered);
       setFieldLogException(RELATION_DEFAULT_ORDER_TYPE_GUID_FIELD_KEY, defaultOrderTypeGuid);
       setFieldLogException(RELATION_MULTIPLICITY_FIELD_KEY, multiplicity);
    }
@@ -121,7 +119,7 @@ public class RelationType extends AbstractOseeType implements Comparable<Relatio
    }
 
    public boolean isOrdered() {
-      return getFieldValueLogException(false, RELATION_IS_ORDERED_FIELD_KEY);
+      return !RelationOrderBaseTypes.UNORDERED.getGuid().equals(getDefaultOrderTypeGuid());
    }
 
    public String getDefaultOrderTypeGuid() {
