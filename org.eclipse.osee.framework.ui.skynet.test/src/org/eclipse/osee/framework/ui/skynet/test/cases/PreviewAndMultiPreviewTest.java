@@ -10,14 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.test.cases;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,6 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 
 /**
@@ -50,9 +49,9 @@ public class PreviewAndMultiPreviewTest {
 
    @Before
    public void setUp() throws Exception {
-      assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
+      Assert.assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
       isWordRunning = FrameworkTestUtil.areWinWordsRunning();
-      assertTrue(
+      Assert.assertTrue(
             "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
             isWordRunning == false);
       init();
@@ -87,14 +86,14 @@ public class PreviewAndMultiPreviewTest {
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(null);
             renderer.preview(artifacts);
-            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
-            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-            fail("Preview with children test failed.");
+            Assert.fail("Preview with children test failed.");
          }
       } else {
-         fail("Preview with children test failed.  There were no artifacts to preview.");
+         Assert.fail("Preview with children test failed.  There were no artifacts to preview.");
       }
    }
 
@@ -108,19 +107,19 @@ public class PreviewAndMultiPreviewTest {
             childArt.persist();
             newArt.addChild(childArt);
             RendererManager.previewInJob(artifacts);
-            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
-            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-            fail("Preview with children test failed.");
+            Assert.fail("Preview with children test failed.");
          }
       } else {
-         fail("Preview with children test failed.  There were no artifacts to preview.");
+         Assert.fail("Preview with children test failed.  There were no artifacts to preview.");
       }
    }
 
    /*
-    * Preview Requirements Artifact with valid children. 
+    * Preview Requirements Artifact with valid children.
     */
    @org.junit.Test
    public void testPreviewWithChildren() throws Exception {
@@ -135,15 +134,15 @@ public class PreviewAndMultiPreviewTest {
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
             renderer.preview(artifacts);
-            // should get one warning since the child is a general document
-            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
-            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-            fail("Preview with children test failed.");
+            Assert.fail("Preview with children test failed.");
          }
       } else {
-         fail("Preview with children test failed.  There were no artifacts to preview.");
+         Assert.fail("Preview with children test failed.  There were no artifacts to preview.");
       }
    }
 
@@ -159,14 +158,14 @@ public class PreviewAndMultiPreviewTest {
             newArt.addChild(childArt);
             RendererManager.previewInJob(artifacts);
             // should get one warning since the child is a general document
-            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
-            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-            fail("Preview with children test failed.");
+            Assert.fail("Preview with children test failed.");
          }
       } else {
-         fail("Preview with children test failed.  There were no artifacts to preview.");
+         Assert.fail("Preview with children test failed.  There were no artifacts to preview.");
       }
    }
 
@@ -183,22 +182,23 @@ public class PreviewAndMultiPreviewTest {
             renderer.setOptions(new VariableMap(ITemplateRenderer.PREVIEW_WITH_RECURSE_OPTION_PAIR));
             renderer.preview(artifacts);
             // should get one warning since the child is a general document
-            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 1);
-            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).get(0).getMessage().contains(
+            System.out.println(Collections.toString(", ", monitorLog.getLogsAtLevel(Level.WARNING)));
+            Assert.assertEquals(1, monitorLog.getLogsAtLevel(Level.WARNING).size());
+            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).get(0).getMessage().contains(
                   "You chose to preview/edit artifacts that could not be handled"));
-            assertTrue(TestUtil.getNumberOfLogsAtLevel(monitorLog, Level.SEVERE) == 0);
+            Assert.assertEquals(0, TestUtil.getNumberOfLogsAtLevel(monitorLog, Level.SEVERE));
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-            fail("Preview with children test failed.");
+            Assert.fail("Preview with children test failed.");
          }
       } else {
-         fail("Preview with children test failed.  There were no artifacts to preview.");
+         Assert.fail("Preview with children test failed.  There were no artifacts to preview.");
       }
    }
 
    /*
     * No warning expected in this fault case because the Renderer Manager resolves which
-    * render to use to preview.  
+    * render to use to preview.
     */
    @org.junit.Test
    public void testPreviewWithChildrenUsingRendererManagerFault() throws Exception {
@@ -211,14 +211,14 @@ public class PreviewAndMultiPreviewTest {
             newArt.addChild(childArt);
             RendererManager.previewInJob(artifacts);
             // should get one warning since the child is a general document
-            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
-            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-            fail("Preview with children test failed.");
+            Assert.fail("Preview with children test failed.");
          }
       } else {
-         fail("Preview with children test failed.  There were no artifacts to preview.");
+         Assert.fail("Preview with children test failed.  There were no artifacts to preview.");
       }
    }
 
@@ -247,14 +247,14 @@ public class PreviewAndMultiPreviewTest {
             WordTemplateRenderer renderer = new WordTemplateRenderer();
             renderer.setOptions(null);
             renderer.preview(newMultiArts);
-            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
-            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
+            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-            fail("Preview with children test failed.");
+            Assert.fail("Preview with children test failed.");
          }
       } else {
-         fail("Preview with children test failed.  There were no artifacts to preview.");
+         Assert.fail("Preview with children test failed.  There were no artifacts to preview.");
       }
    }
 
@@ -278,19 +278,19 @@ public class PreviewAndMultiPreviewTest {
             multiArt3.persist();
             newMultiArts = Arrays.asList(multiArt1, multiArt2, multiArt3);
             RendererManager.previewInJob(artifacts);
-            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
-            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
+            Assert.assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-            fail("Preview with children test failed.");
+            Assert.fail("Preview with children test failed.");
          }
       } else {
-         fail("Preview with children test failed.  There were no artifacts to preview.");
+         Assert.fail("Preview with children test failed.  There were no artifacts to preview.");
       }
    }
 
-   /* 
-    * Preview a whole word doc 
+   /*
+    * Preview a whole word doc
     */
    @org.junit.Test
    public void testWholeWordPreview() throws Exception {
@@ -305,14 +305,14 @@ public class PreviewAndMultiPreviewTest {
             WholeDocumentRenderer renderer = new WholeDocumentRenderer();
             renderer.setOptions(null);
             renderer.preview(arts);
-            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
-            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-            fail("Whole Word Preview test failed.");
+            Assert.fail("Whole Word Preview test failed.");
          }
       } else {
-         fail("Whoile Word Test failed.");
+         Assert.fail("Whoile Word Test failed.");
       }
    }
 
@@ -327,14 +327,14 @@ public class PreviewAndMultiPreviewTest {
             art.persist();
             arts = Arrays.asList(art);
             RendererManager.previewInJob(artifacts);
-            assertTrue(monitorLog.getLogsAtLevel(Level.WARNING).size() == 0);
-            assertTrue(monitorLog.getLogsAtLevel(Level.SEVERE).size() == 0);
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.WARNING).size());
+            Assert.assertEquals(0, monitorLog.getLogsAtLevel(Level.SEVERE).size());
          } catch (OseeCoreException ex) {
             OseeLog.log(PreviewWithChildWordHandler.class, Level.SEVERE, ex);
-            fail("Whole Word Preview test failed.");
+            Assert.fail("Whole Word Preview test failed.");
          }
       } else {
-         fail("Whoile Word Test failed.");
+         Assert.fail("Whoile Word Test failed.");
       }
    }
 
