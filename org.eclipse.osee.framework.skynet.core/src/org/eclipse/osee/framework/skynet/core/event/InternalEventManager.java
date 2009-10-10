@@ -19,6 +19,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -67,7 +68,11 @@ public class InternalEventManager {
    private static final Set<IEventListner> listeners = new CopyOnWriteArraySet<IEventListner>();
    public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
    private static boolean disableEvents = false;
-   private static ExecutorService executorService = Executors.newFixedThreadPool(4);
+
+   private static final ThreadFactory threadFactory = new OseeEventThreadFactory("Osee Events");
+   private static final ExecutorService executorService =
+         Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(), threadFactory);
+
    // This will disable all Local TransactionEvents and enable loopback routing of Remote TransactionEvents back
    // through the RemoteEventService as if they came from another client.  This is for testing purposes only and
    // should be reset to false before release.

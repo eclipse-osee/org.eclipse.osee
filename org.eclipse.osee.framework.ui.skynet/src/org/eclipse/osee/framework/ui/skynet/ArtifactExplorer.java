@@ -174,7 +174,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private Action showChangeReport;
    private XBranchSelectWidget branchSelect;
    private Branch branch;
-   IGlobalMenuHelper globalMenuHelper;
+   private IGlobalMenuHelper globalMenuHelper;
 
    private Composite stackComposite;
    private Control branchUnreadableWarning;
@@ -322,11 +322,12 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          treeViewer.addSelectionChangedListener(new SelectionCountChangeListener(getViewSite()));
          globalMenuHelper = new ArtifactTreeViewerGlobalMenuHelper(treeViewer);
 
-         createCollapseAllAction();
-         createUpAction();
-         createNewArtifactExplorerAction();
-         createShowChangeReportAction();
-         addOpenQuickSearchAction();
+         IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
+         createCollapseAllAction(toolbarManager);
+         createUpAction(toolbarManager);
+         createNewArtifactExplorerAction(toolbarManager);
+         createShowChangeReportAction(toolbarManager);
+         addOpenQuickSearchAction(toolbarManager);
 
          artifactDecorator.addActions(getViewSite().getActionBars().getMenuManager(), this);
 
@@ -438,7 +439,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       treeViewer.getTree().setMenu(popupMenu);
    }
 
-   private void addOpenQuickSearchAction() {
+   private void addOpenQuickSearchAction(IToolBarManager toolbarManager) {
       Action openQuickSearch =
             new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
                @Override
@@ -459,11 +460,10 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                }
             };
       openQuickSearch.setToolTipText("Open Quick Search View");
-      IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(openQuickSearch);
    }
 
-   protected void createUpAction() {
+   protected void createUpAction(IToolBarManager toolbarManager) {
       upAction = new Action("View Parent") {
          @Override
          public void run() {
@@ -493,12 +493,10 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       upAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARROW_UP_YELLOW));
       upAction.setToolTipText("View Parent");
       updateEnablementsEtAl();
-
-      IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(upAction);
    }
 
-   private void createNewArtifactExplorerAction() {
+   private void createNewArtifactExplorerAction(IToolBarManager toolbarManager) {
 
       newArtifactExplorer = new Action("New Artifact Explorer") {
          @Override
@@ -518,12 +516,10 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       };
 
       newArtifactExplorer.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_EXPLORER));
-
-      IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(newArtifactExplorer);
    }
 
-   private void createShowChangeReportAction() {
+   private void createShowChangeReportAction(IToolBarManager toolbarManager) {
       showChangeReport = new Action("Show Change Report") {
          @Override
          public void run() {
@@ -536,13 +532,10 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       };
 
       showChangeReport.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.BRANCH_CHANGE));
-
-      IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(showChangeReport);
    }
 
-   private void createCollapseAllAction() {
-
+   private void createCollapseAllAction(IToolBarManager toolbarManager) {
       collapseAllAction = new Action("Collapse All") {
          @Override
          public void run() {
@@ -553,8 +546,6 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       };
 
       collapseAllAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.COLLAPSE_ALL));
-
-      IToolBarManager toolbarManager = getViewSite().getActionBars().getToolBarManager();
       toolbarManager.add(collapseAllAction);
    }
 
