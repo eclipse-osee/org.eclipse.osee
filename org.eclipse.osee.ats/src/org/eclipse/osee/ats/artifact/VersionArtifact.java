@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -38,7 +38,9 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    public static String ARTIFACT_NAME = "Version";
 
    public static enum VersionReleaseType {
-      Released, UnReleased, Both
+      Released,
+      UnReleased,
+      Both
    };
 
    public VersionArtifact(ArtifactFactory parentFactory, String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
@@ -68,7 +70,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    public Branch getParentBranch() throws OseeCoreException {
       try {
          String guid = getSoleAttributeValue(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(), "");
-         if (Strings.isValid(guid)) {
+         if (GUID.isValid(guid)) {
             return BranchManager.getBranchByGuid(guid);
          }
       } catch (BranchDoesNotExist ex) {
@@ -131,18 +133,22 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    public String getFullDisplayName() throws OseeCoreException {
       String str = "";
-      if (!getName().equals(Artifact.UNNAMED)) str += getName();
+      if (!getName().equals(Artifact.UNNAMED)) {
+         str += getName();
+      }
       if (!getFullName().equals("")) {
-         if (str.equals(""))
+         if (str.equals("")) {
             str = getFullName();
-         else
+         } else {
             str += " - " + getFullName();
+         }
       }
       if (!getDescription().equals("")) {
-         if (str.equals(""))
+         if (str.equals("")) {
             str = getDescription();
-         else
+         } else {
             str += " - " + getDescription();
+         }
       }
       return str;
    }
