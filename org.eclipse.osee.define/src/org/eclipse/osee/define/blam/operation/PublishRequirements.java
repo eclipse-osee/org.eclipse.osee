@@ -91,7 +91,7 @@ public class PublishRequirements extends AbstractBlam {
       }
       RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
 
-      SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch());
+      SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch(), getName());
       String templateOption;
       if (publishAsDiff) {
          templateOption = includeAttributes ? ITemplateRenderer.DIFF_VALUE : ITemplateRenderer.DIFF_NO_ATTRIBUTES_VALUE;
