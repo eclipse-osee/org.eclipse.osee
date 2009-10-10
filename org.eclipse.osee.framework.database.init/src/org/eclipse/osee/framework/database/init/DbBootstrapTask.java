@@ -79,7 +79,6 @@ public class DbBootstrapTask implements IDbInitializationTask {
       DbInit.addIndeces(schemas, userSpecifiedConfig);
       initializeApplicationServer();
       OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
-      OseeInfo.putValue(OseeInfo.USE_GUID_STORAGE, "true");
       populateSequenceTable();
       addDefaultPermissions();
 

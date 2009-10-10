@@ -1,37 +1,49 @@
-Â«IMPORT org::eclipse::osee::framework::ui::wizardÂ»
+«IMPORT org::eclipse::osee::framework::ui::wizard»
 
-Â«DEFINE main FOR OseeTypesProjectInfoÂ»
-Â«EXPAND model FOR thisÂ»
-Â«EXPAND workflow FOR thisÂ»
-Â«ENDDEFINEÂ»
+«DEFINE main FOR OseeTypesProjectInfo»
+«EXPAND model FOR this»
+«EXPAND workflow FOR this»
+«ENDDEFINE»
 
-Â«DEFINE model FOR OseeTypesProjectInfoÂ»
-Â«FILE "src/Model.osee"-Â»
+«DEFINE model FOR OseeTypesProjectInfo»
+«FILE "src/SampleOseeTypeModel.osee"»
 /*
- * This is an example model
+ * This is an example osee types model
  */
-type String
+import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 
-entity Leaf extends Composable {
-  property name: String
+artifactType "Sample Artifact" extends "Artifact" {
+   guid "D1ljCNUW6jJD0fJmGpgA"
+   attribute "Sample Attribute Type"
 }
 
-entity Composite extends Composable {
-  property content: Composable[]
+attributeType "Sample Attribute Type" extends BooleanAttribute {
+   guid "AAMFEbImQyR38BY8A5AA"
+   dataProvider DefaultAttributeDataProvider
+   min 1
+   max 1
+   defaultValue "yes"
 }
 
-entity Composable {
+relationType "Sample Relation Type" {
+	guid "D1lw_am6AHFGvStfshQA"
+	sideAName "allows any artifact on side a"
+	sideAArtifactType "Artifact"
+	sideBName "allows any artifact on side b"
+	sideBArtifactType "Artifact"
+	defaultOrderType Unordered
+	multiplicity MANY_TO_MANY
 }
-Â«ENDFILEÂ»
-Â«ENDDEFINEÂ»
+«ENDFILE»
+«ENDDEFINE»
 
-Â«DEFINE workflow FOR OseeTypesProjectInfoÂ»
-Â«FILE "src/Generator.mwe"-Â»
+«DEFINE workflow FOR OseeTypesProjectInfo»
+«FILE "src/Generator.mwe"»
 <workflow>
 	<property name="modelFile" value="Model.osee"/>
 	<property name="targetDir" value="../src-gen"/>
 
 	<workflow file="workflow/OseeTypesGenerator.mwe"/>
 </workflow>
-Â«ENDFILEÂ»
-Â«ENDDEFINEÂ»
+«ENDFILE»
+«ENDDEFINE»

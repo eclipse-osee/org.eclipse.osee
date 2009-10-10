@@ -15,7 +15,6 @@ import java.net.URLEncoder;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 
@@ -71,12 +70,6 @@ public class BinaryContentUtils {
    }
 
    public static String getStorageName(Attribute<?> attribute) throws OseeDataStoreException, OseeStateException {
-      String name;
-      if (Boolean.valueOf(OseeInfo.getCachedValue(OseeInfo.USE_GUID_STORAGE))) {
-         name = attribute.getArtifact().getGuid();
-      } else {
-         name = attribute.getArtifact().getHumanReadableId();
-      }
-      return name;
+      return attribute.getArtifact().getGuid();
    }
 }

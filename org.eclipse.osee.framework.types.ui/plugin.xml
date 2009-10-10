@@ -111,7 +111,21 @@
 		</parser>
 	</extension>
 
-
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <category
+            id="org.eclipse.osee.framework.new"
+            name="OSEE">
+      </category>
+      <wizard
+            category="org.eclipse.osee.framework.new"
+            class="org.eclipse.osee.framework.OseeTypesExecutableExtensionFactory:org.eclipse.osee.framework.ui.wizard.OseeTypesNewProjectWizard"
+            icon="icons/editor.gif"
+            id="org.eclipse.osee.framework.ui.wizard.OseeTypesNewProjectWizard"
+            name="OseeTypes Project"
+            project="true">
+      </wizard>
+   </extension>
 
 
 </plugin>
