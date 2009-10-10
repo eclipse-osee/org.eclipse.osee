@@ -376,10 +376,6 @@ public class BranchManager {
       }
    }
 
-   public static boolean isBranchInCommit(Branch branch) {
-      return CommitDbTx.isBranchInCommit(branch);
-   }
-
    /**
     * Permanently removes transactions and any of their backing data that is not referenced by any other transactions.
     * 

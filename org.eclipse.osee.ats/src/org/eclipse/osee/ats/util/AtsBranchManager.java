@@ -84,6 +84,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class AtsBranchManager {
    private final SMAManager smaMgr;
+   private static Set<Branch> branchesInCommit = new HashSet<Branch>();
 
    public AtsBranchManager(SMAManager smaMgr) {
       this.smaMgr = smaMgr;
@@ -777,8 +778,10 @@ public class AtsBranchManager {
 
       @Override
       protected IStatus run(IProgressMonitor monitor) {
+         Branch workflowWorkingBranch = null;
          try {
-            Branch workflowWorkingBranch = getWorkingBranch(true, false);
+            workflowWorkingBranch = getWorkingBranch(true, false);
+            branchesInCommit.add(workflowWorkingBranch);
             if (workflowWorkingBranch == null) {
                return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID,
                      "Commit Branch Failed: Can not locate branch for workflow " + smaMgr.getSma().getHumanReadableId());
@@ -825,6 +828,10 @@ public class AtsBranchManager {
          } catch (OseeCoreException ex) {
             OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
             return new Status(Status.ERROR, AtsPlugin.PLUGIN_ID, ex.getLocalizedMessage(), ex);
+         } finally {
+            if (workflowWorkingBranch != null) {
+               branchesInCommit.remove(workflowWorkingBranch);
+            }
          }
          return Status.OK_STATUS;
       }
@@ -852,11 +859,11 @@ public class AtsBranchManager {
       if (!isWorkingBranchInWork()) {
          return false;
       }
-      return BranchManager.isBranchInCommit(getWorkingBranch());
+      return branchesInCommit.contains(getWorkingBranch());
    }
 
    /**
-    * @param commitPopup if true, popup errors associated with results
+    * @param commitPopup if true, pop-up errors associated with results
     * @param overrideStateValidation if true, don't do checks to see if commit can be performed. This should only be
     *           used for developmental testing or automation
     */
