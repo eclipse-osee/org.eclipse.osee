@@ -449,7 +449,7 @@ public class SMAWorkFlowSection extends SectionPart {
          AWorkbench.popup("ERROR", "No Assignees in Completed and Cancelled states");
          return;
       }
-      UserCheckTreeDialog uld = new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
+      UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setMessage("Select users to transition to.");
       uld.setInitialSelections(smaMgr.getTransitionAssignees());
       if (uld.open() != 0) {

@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -41,8 +40,9 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    @Override
    public String getCurrentValue() {
       StringBuffer sb = new StringBuffer();
-      for (User user : selectedUsers)
+      for (User user : selectedUsers) {
          sb.append(user.getName() + ", ");
+      }
       return sb.toString().replaceFirst(", $", "");
    }
 
@@ -54,10 +54,12 @@ public class XHyperlabelMemberSelection extends XHyperlinkLabelCmdValueSelection
    @Override
    public boolean handleSelection() {
       try {
-         UserCheckTreeDialog uld = new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
+         UserCheckTreeDialog uld = new UserCheckTreeDialog();
          uld.setMessage("Select to assign.\nDeSelect to un-assign.");
          uld.setInitialSelections(selectedUsers);
-         if (uld.open() != 0) return false;
+         if (uld.open() != 0) {
+            return false;
+         }
          selectedUsers.clear();
          for (Artifact art : uld.getSelection()) {
             selectedUsers.add((User) art);

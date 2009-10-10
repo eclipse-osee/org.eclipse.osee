@@ -23,7 +23,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Shell;
 
 /**
  * @author Donald G. Dunne
@@ -36,26 +35,28 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
     * @param parent
     * @param artifacts
     */
-   public UserCheckTreeDialog(Shell parent, Collection<User> artifacts) {
+   public UserCheckTreeDialog(Collection<User> artifacts) {
       super(artifacts);
    }
 
-   public UserCheckTreeDialog(Shell parent) throws OseeCoreException {
-      this(parent, UserManager.getUsers());
+   public UserCheckTreeDialog() throws OseeCoreException {
+      this(UserManager.getUsers());
    }
 
    public void setInitialSelections(Collection<User> initialSel) {
       this.initialSel = initialSel;
       ArrayList<Object> objs = new ArrayList<Object>();
-      for (Artifact sel : initialSel)
+      for (Artifact sel : initialSel) {
          objs.add(sel);
-      super.setInitialSelections((Object[]) objs.toArray(new Object[objs.size()]));
+      }
+      super.setInitialSelections(objs.toArray(new Object[objs.size()]));
    }
 
    public Collection<User> getUsersSelected() {
       Set<User> selected = new HashSet<User>();
-      for (Artifact art : getSelection())
+      for (Artifact art : getSelection()) {
          selected.add((User) art);
+      }
       return selected;
    }
 
@@ -66,8 +67,8 @@ public class UserCheckTreeDialog extends ArtifactCheckTreeDialog {
          @SuppressWarnings("unchecked")
          @Override
          public int compare(Viewer viewer, Object e1, Object e2) {
-            User user1 = ((User) e1);
-            User user2 = ((User) e2);
+            User user1 = (User) e1;
+            User user2 = (User) e2;
             try {
                if (UserManager.getUser().equals(user1)) {
                   return -1;

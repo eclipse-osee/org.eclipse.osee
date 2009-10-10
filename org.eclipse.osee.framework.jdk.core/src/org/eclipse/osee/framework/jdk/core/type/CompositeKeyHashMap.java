@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -51,7 +52,7 @@ public class CompositeKeyHashMap<KeyOne, KeyTwo, Value> implements Map<Pair<KeyO
       } else {
          map = new HashMap<Pair<KeyOne, KeyTwo>, Value>(initialCapacity);
       }
-      singleKeyMap = new HashCollection<KeyOne, KeyTwo>(isThreadSafe);
+      singleKeyMap = new HashCollection<KeyOne, KeyTwo>(isThreadSafe, HashSet.class);
    }
 
    public void clear() {

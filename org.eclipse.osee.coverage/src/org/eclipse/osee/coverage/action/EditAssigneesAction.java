@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.dialog.UserCheckTreeDialog;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * @author Donald G. Dunne
@@ -69,7 +68,7 @@ public class EditAssigneesAction extends Action {
             }
          }
 
-         UserCheckTreeDialog uld = new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
+         UserCheckTreeDialog uld = new UserCheckTreeDialog();
          uld.setInitialSelections(initalUsers);
          uld.setMessage("Select to assign.\nDeSelect to un-assign.");
          if (uld.open() == 0) {

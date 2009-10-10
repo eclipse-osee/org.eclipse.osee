@@ -286,7 +286,7 @@ public class SMAManager {
             return false;
          }
       }
-      UserCheckTreeDialog uld = new UserCheckTreeDialog(Display.getCurrent().getActiveShell());
+      UserCheckTreeDialog uld = new UserCheckTreeDialog();
       uld.setMessage("Select to assign.\nDeSelect to un-assign.");
       if (smas.size() == 1) {
          SMAManager smaMgr = new SMAManager(smas.iterator().next());
