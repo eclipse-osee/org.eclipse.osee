@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -47,8 +48,8 @@ public class ArtifactCache {
    private static final HashCollection<String, Object> staticIdArtifactCache =
          new HashCollection<String, Object>(true, HashSet.class, 100);
 
-   private static final HashCollection<ArtifactType, Object> byArtifactTypeCache =
-         new HashCollection<ArtifactType, Object>(true);
+   private static final CompositeKeyHashMap<ArtifactType, ArtifactKey, Object> byArtifactTypeCache =
+         new CompositeKeyHashMap<ArtifactType, ArtifactKey, Object>(2000, true);
 
    //   private static final Set<Artifact> nomoreWeakReferences = new HashSet<Artifact>();
 
@@ -103,7 +104,7 @@ public class ArtifactCache {
       } else {
          artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), obj);
          artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), obj);
-         byArtifactTypeCache.put(artifact.getArtifactType(), obj);
+         byArtifactTypeCache.put(artifact.getArtifactType(), new ArtifactKey(artifact), obj);
       }
    }
 
