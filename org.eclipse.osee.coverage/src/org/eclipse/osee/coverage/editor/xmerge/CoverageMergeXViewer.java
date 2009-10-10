@@ -108,7 +108,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    @Override
    public void updateEditMenuActions() {
       MenuManager mm = getMenuManager();
-      if (xCoverageViewer.isType(TableType.Merge)) {
+      if (xCoverageViewer.isType(TableType.Merge) && xCoverageViewer.isType(TableType.Import)) {
          mm.insertBefore(MENU_GROUP_PRE, toggleImport);
          toggleImport.setEnabled(isToggleImportEnabled());
       }
