@@ -211,7 +211,7 @@ public class TestUnit implements ICoverageEditorItem {
    }
 
    @Override
-   public CoverageStatusEnum getStatus() {
+   public String getNotes() {
       return null;
    }
 }

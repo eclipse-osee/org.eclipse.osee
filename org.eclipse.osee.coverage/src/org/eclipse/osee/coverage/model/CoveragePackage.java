@@ -123,7 +123,13 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
    }
 
    public List<CoverageItem> getCoverageItemsCovered() {
-      return getCoverageItemsCovered(CoverageMethodEnum.None, CoverageMethodEnum.Unknown);
+      List<CoverageItem> items = new ArrayList<CoverageItem>();
+      for (CoverageItem coverageItem : getCoverageItems()) {
+         if (coverageItem.getCoverageMethod() != CoverageMethodEnum.Not_Covered) {
+            items.add(coverageItem);
+         }
+      }
+      return items;
    }
 
    public List<CoverageItem> getCoverageItemsCovered(CoverageMethodEnum... coverageMethodEnum) {
@@ -359,7 +365,7 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
    }
 
    @Override
-   public CoverageStatusEnum getStatus() {
+   public String getNotes() {
       return null;
    }
 

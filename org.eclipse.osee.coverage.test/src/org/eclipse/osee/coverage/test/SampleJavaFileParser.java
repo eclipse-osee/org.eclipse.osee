@@ -73,7 +73,7 @@ public class SampleJavaFileParser {
                String executeNum = m.group(3);
                boolean covered = m.group(4).equals("y");
                CoverageItem coverageItem =
-                     new CoverageItem(coverageUnit, covered ? CoverageMethodEnum.Test_Unit : CoverageMethodEnum.None,
+                     new CoverageItem(coverageUnit, covered ? CoverageMethodEnum.Test_Unit : CoverageMethodEnum.Not_Covered,
                            executeNum);
                coverageItem.setLineNum(String.valueOf(lineNum));
                coverageItem.setText(lineText);

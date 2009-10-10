@@ -21,7 +21,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.action.EditAssigneesAction;
 import org.eclipse.osee.coverage.action.EditCoverageMethodAction;
-import org.eclipse.osee.coverage.action.EditCoverageStatusAction;
+import org.eclipse.osee.coverage.action.EditCoverageNotesAction;
 import org.eclipse.osee.coverage.action.EditRationaleAction;
 import org.eclipse.osee.coverage.action.IRefreshable;
 import org.eclipse.osee.coverage.action.ISelectedCoverageEditorItem;
@@ -77,7 +77,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          viewSourceAction = new ViewSourceAction(this);
          editMethodAction = new EditCoverageMethodAction(this, this, this);
          editAssigneesAction = new EditAssigneesAction(this, this, this);
-         editCoverageStatusAction = new EditCoverageStatusAction(this, this, this);
+         editCoverageStatusAction = new EditCoverageNotesAction(this, this, this);
          editRationale = new EditRationaleAction(this, this, this);
       }
    }
@@ -212,7 +212,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
          XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
          if (xCol.equals(CoverageMergeXViewerFactory.Assignees_Col)) {
             editAssigneesAction.run();
-         } else if (xCol.equals(CoverageMergeXViewerFactory.Status_Col)) {
+         } else if (xCol.equals(CoverageMergeXViewerFactory.Notes_Col)) {
             editCoverageStatusAction.run();
          } else if (xCol.equals(CoverageMergeXViewerFactory.Coverage_Method)) {
             editMethodAction.run();

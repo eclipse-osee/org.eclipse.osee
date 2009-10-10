@@ -36,7 +36,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public class CoverageItem implements ICoverageEditorItem {
 
-   private CoverageMethodEnum coverageMethod = CoverageMethodEnum.None;
+   private CoverageMethodEnum coverageMethod = CoverageMethodEnum.Not_Covered;
    private String coverageRationale;
    private final String executeNum;
    private String lineNum;
@@ -157,7 +157,7 @@ public class CoverageItem implements ICoverageEditorItem {
 
    @Override
    public boolean isCovered() {
-      return getCoverageMethod() != CoverageMethodEnum.None && getCoverageMethod() != CoverageMethodEnum.Unknown;
+      return getCoverageMethod() != CoverageMethodEnum.Not_Covered;
    }
 
    @Override
@@ -283,7 +283,7 @@ public class CoverageItem implements ICoverageEditorItem {
    }
 
    @Override
-   public CoverageStatusEnum getStatus() {
+   public String getNotes() {
       return null;
    }
 

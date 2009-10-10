@@ -82,7 +82,7 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
             fileCoverageUnit.addCoverageUnit(methodCoverageUnit);
             for (LineNumToBranches lineNumToBranches : coverageDataSubProgram.getLineNumToBranches()) {
                CoverageItem coverageItem =
-                     new CoverageItem(methodCoverageUnit, CoverageMethodEnum.Unknown,
+                     new CoverageItem(methodCoverageUnit, CoverageMethodEnum.Not_Covered,
                            String.valueOf(lineNumToBranches.getLineNum()));
                coverageItem.setMethodNum(String.valueOf(methodNum));
                coverageItem.setText(vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),

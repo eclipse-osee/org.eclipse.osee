@@ -15,7 +15,6 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageLabelProvider;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
-import org.eclipse.osee.coverage.model.CoverageStatusEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -61,12 +60,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       if (xCol.equals(CoverageXViewerFactory.Location)) return coverageItem.getLocation();
       if (xCol.equals(CoverageXViewerFactory.Text)) return coverageItem.getText();
       if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverageItem.getNamespace();
-      if (xCol.equals(CoverageXViewerFactory.Status_Col)) {
-         CoverageStatusEnum status = coverageItem.getStatus();
-         if (status == null) return "";
-         if (status == CoverageStatusEnum.None) return "";
-         return status.toString();
-      }
+      if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverageItem.getNotes();
 
       return coverageItem.getCoverageEditorValue(xCol);
    }
