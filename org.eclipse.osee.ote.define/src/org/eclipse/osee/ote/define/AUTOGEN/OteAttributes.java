@@ -40,8 +40,7 @@ public enum OteAttributes implements IOseeType {
    START_DATE("Start Date", "AAMFEWpeXjfr2W5ZT5QA"),
    TEST_SCRIPT_GUID("Test Script GUID", "AAMFEW5fEhinpcjeZ0wA"),
    TEST_SCRIPT_URL("Test Script URL", "AAMFEVn0+mhxtCuACgAA"),
-   TOTAL_TEST_POINTS("Total Test Points", "AAMFEW05hBfECFGfZkgA"),
-   USER_ID("User ID", "AAMFEXATlG8HeyNn9fQA");
+   TOTAL_TEST_POINTS("Total Test Points", "AAMFEW05hBfECFGfZkgA");
 
    private final String name;
    private final String guid;

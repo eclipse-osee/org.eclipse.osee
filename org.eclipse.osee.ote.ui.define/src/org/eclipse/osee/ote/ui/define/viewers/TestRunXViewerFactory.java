@@ -37,8 +37,8 @@ public class TestRunXViewerFactory extends SkynetXViewerFactory {
             false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Failed", "Failed", 50, SWT.LEFT, true, SortDataType.Integer,
             false, null));
-      registerColumns(new XViewerColumn("ote.test.run.view.Total Test Points", "Total Test Points", 50, SWT.LEFT, false,
-            SortDataType.Integer, false, null));
+      registerColumns(new XViewerColumn("ote.test.run.view.Total Test Points", "Total Test Points", 50, SWT.LEFT,
+            false, SortDataType.Integer, false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Status", "Status", 150, SWT.LEFT, true, SortDataType.String,
             false, null));
       registerColumns(new XViewerColumn("ote.test.run.view.Script Aborted", "Script Aborted", 150, SWT.LEFT, false,
@@ -71,7 +71,7 @@ public class TestRunXViewerFactory extends SkynetXViewerFactory {
 
       registerColumns(new XViewerColumn("ote.test.run.view.OS Name", "OS Name", 150, SWT.LEFT, false,
             SortDataType.String, false, null));
-      registerColumns(new XViewerColumn("ote.test.run.view.User ID", "User ID", 150, SWT.LEFT, false,
+      registerColumns(new XViewerColumn("ote.test.run.view.User Id", "User Id", 150, SWT.LEFT, false,
             SortDataType.String, false, null));
       registerColumns(DISPOSITION);
    }

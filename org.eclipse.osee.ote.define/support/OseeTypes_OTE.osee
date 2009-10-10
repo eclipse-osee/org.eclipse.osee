@@ -18,7 +18,7 @@ artifactType "Test Run" extends "Artifact" {
    attribute "Test Script GUID"
    attribute "Test Script URL"
    attribute "Outfile URL"
-   attribute "User ID"
+   attribute "User Id"
    attribute "Revision"
    attribute "Modified Flag"
    attribute "Last Author"
@@ -215,15 +215,6 @@ attributeType "Is Batch Mode Allowed" extends BooleanAttribute {
    min 1
    max 1 description "Whether Test Script is allowed to run as part of a batch"
    defaultValue "yes"
-}
-
-attributeType "User ID" extends StringAttribute {
-   guid "AAMFEXATlG8HeyNn9fQA"
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-   taggerId DefaultAttributeTaggerProvider description
-   "Id of the user who ran the test"
 }
 
 attributeType "Last Date Uploaded" extends DateAttribute {
