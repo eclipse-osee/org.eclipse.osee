@@ -222,7 +222,7 @@ public class AtsMetricsComposite extends ScrolledComposite {
       lines.add(XBarGraphLine.getTextLine("Hours Spent: ", String.format("%5.2f Hours", sMet.getHrsSpent())));
       lines.add(XBarGraphLine.getTextLine("Hours Per Man Day Preference: ", String.format("%5.2f Hours per Day",
             sMet.getHoursPerManDay())));
-      lines.add(XBarGraphLine.getTextLine("Man Days Needed: ", String.format(
+      lines.add(XBarGraphLine.getTextLine("Work Days Needed: ", String.format(
             "%5.2f Days = Remaining Hours %5.2f / Hours Per Day of %5.2f", sMet.getManDaysNeeded(),
             sMet.getHrsRemainFromEstimates(), sMet.getHoursPerManDay())));
 

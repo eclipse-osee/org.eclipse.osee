@@ -1,5 +1,5 @@
-import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
-
+import
+"platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 abstract artifactType "ats.Release Artifact" extends "Artifact" {
    guid "ABMZAdJpQi01iAbMBjgA"
    attribute "ats.Released"
@@ -55,7 +55,7 @@ artifactType "Action" extends "ats.Ats Artifact" {
 
 artifactType "Team Definition" extends "ats.Ats Artifact" {
    guid "AAMFDhUrlytusKbaQGAA"
-   attribute "ats.Man Days Needed"
+   attribute "ats.Hours Per Work Day"
    attribute "ats.Full Name"
    attribute "ats.Team Uses Versions"
    attribute "ats.Require Targeted Version"
@@ -127,7 +127,7 @@ artifactType "Team Workflow" extends "Goal" {
    attribute "ats.Actionable Item"
    attribute "ats.Branch Id"
    attribute "ats.Branch Metrics"
-   attribute "ats.Baseline Branch Guid" 
+   attribute "ats.Baseline Branch Guid"
    attribute "ats.Transaction Id"
    attribute "ats.Validation Required"
 }
@@ -335,7 +335,7 @@ attributeType "ats.Weekly Benefit" extends FloatingPointAttribute {
    defaultValue "0"
 }
 
-attributeType "ats.Man Days Needed" extends FloatingPointAttribute {
+attributeType "ats.Hours Per Work Day" extends FloatingPointAttribute {
    guid "AAMFEdGlqFsZp22RMdAA"
    dataProvider DefaultAttributeDataProvider
    min 0
@@ -392,7 +392,8 @@ attributeType "ats.Problem" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+   taggerId DefaultAttributeTaggerProvider
+   fileExtension "txt"
 }
 
 attributeType "ats.Proposed Resolution" extends StringAttribute {
@@ -408,7 +409,8 @@ attributeType "ats.Resolution" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+   taggerId DefaultAttributeTaggerProvider
+   fileExtension "txt"
 }
 
 attributeType "ats.Description" extends StringAttribute {
@@ -416,7 +418,8 @@ attributeType "ats.Description" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+   taggerId DefaultAttributeTaggerProvider
+   fileExtension "txt"
 }
 
 attributeType "ats.Full Name" extends StringAttribute {
@@ -446,14 +449,16 @@ attributeType "ats.Log" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider fileExtension "xml"
+   taggerId DefaultAttributeTaggerProvider
+   fileExtension "xml"
 }
 
 attributeType "ats.State Notes" extends StringAttribute {
    guid "AAMFEdiWPm7M_xV1EswA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 fileExtension "xml"
+   max 1
+   fileExtension "xml"
 }
 
 attributeType "ats.Related To State" extends StringAttribute {
@@ -538,7 +543,8 @@ attributeType "ats.Location" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider fileExtension "txt"
+   taggerId DefaultAttributeTaggerProvider
+   fileExtension "txt"
 }
 
 attributeType "ats.Authors" extends StringAttribute {

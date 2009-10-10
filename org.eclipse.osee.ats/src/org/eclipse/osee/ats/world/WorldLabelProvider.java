@@ -175,7 +175,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
             if (result.isFalse()) return result.getText();
             return AtsUtil.doubleToI18nString(wva.getWorldViewAnnualCostAvoidance(), true);
          }
-         if (xCol.equals(WorldXViewerFactory.Man_Days_Needed_Col)) {
+         if (xCol.equals(WorldXViewerFactory.Work_Days_Needed_Col)) {
             Result result = wva.isWorldViewManDaysNeededValid();
             if (result.isFalse()) return result.getText();
             return AtsUtil.doubleToI18nString(wva.getWorldViewManDaysNeeded());

@@ -56,8 +56,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public static String ARTIFACT_NAME = "Team Definition";
    public static Set<TeamDefinitionArtifact> EMPTY_SET = new HashSet<TeamDefinitionArtifact>();
    public static enum TeamDefinitionOptions {
-      TeamUsesVersions,
-      RequireTargetedVersion
+      TeamUsesVersions, RequireTargetedVersion
    };
 
    /**
@@ -277,7 +276,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    public double getManDayHrsFromItemAndChildren() {
-      return getManDayHrsFromItemAndChildren(this);
+      return getHoursPerWorkDayFromItemAndChildren(this);
    }
 
    public WorkFlowDefinition getWorkFlowDefinition() throws OseeCoreException {
@@ -342,22 +341,19 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    /**
-    * If man days hours attribute is set, use it, otherwise, walk up the Team Definition tree. Value used in
+    * If hours per work day attribute is set, use it, otherwise, walk up the Team Definition tree. Value used in
     * calculations.
-    * 
-    * @param teamDef
-    * @return number of hours per single person per single day
     */
-   public double getManDayHrsFromItemAndChildren(TeamDefinitionArtifact teamDef) {
+   public double getHoursPerWorkDayFromItemAndChildren(TeamDefinitionArtifact teamDef) {
       try {
-         Double manDaysHrs = teamDef.getSoleAttributeValue(ATSAttributes.MAN_DAYS_NEEDED_ATTRIBUTE.getStoreName(), 0.0);
+         Double manDaysHrs = teamDef.getSoleAttributeValue(ATSAttributes.HOURS_PER_WORK_DAY_ATTRIBUTE.getStoreName(), 0.0);
          if (manDaysHrs != null && manDaysHrs != 0) {
             return manDaysHrs;
          }
          if (teamDef.getParent() != null && teamDef.getParent() instanceof TeamDefinitionArtifact) {
-            return teamDef.getManDayHrsFromItemAndChildren((TeamDefinitionArtifact) teamDef.getParent());
+            return teamDef.getHoursPerWorkDayFromItemAndChildren((TeamDefinitionArtifact) teamDef.getParent());
          }
-         return StateMachineArtifact.DEFAULT_MAN_HOURS_PER_DAY;
+         return StateMachineArtifact.DEFAULT_HOURS_PER_WORK_DAY;
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

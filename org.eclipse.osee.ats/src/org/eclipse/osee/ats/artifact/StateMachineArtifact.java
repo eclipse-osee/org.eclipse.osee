@@ -72,7 +72,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    private final Set<IRelationEnumeration> atsWorldRelations = new HashSet<IRelationEnumeration>();
    private Collection<User> preSaveStateAssignees;
    private User preSaveOriginator;
-   public static double DEFAULT_MAN_HOURS_PER_DAY = 8;
+   public static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    protected WorkFlowDefinition workFlowDefinition;
 
    /**
@@ -654,7 +654,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public double getManHrsPerDayPreference() throws OseeCoreException {
-      return DEFAULT_MAN_HOURS_PER_DAY;
+      return DEFAULT_HOURS_PER_WORK_DAY;
    }
 
    public double getWorldViewAnnualCostAvoidance() throws OseeCoreException {

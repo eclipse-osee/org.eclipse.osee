@@ -594,6 +594,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
 
    }
 
+   @Override
    public void updateMenuActionsForTable() {
       MenuManager mm = getMenuManager();
 
@@ -930,10 +931,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             AWorkbench.popup("Calculated Field",
                   "Hours Remaining field is calculated.\nHour Estimate - (Hour Estimate * Percent Complete)");
             return false;
-         } else if (xCol.equals(WorldXViewerFactory.Man_Days_Needed_Col)) {
+         } else if (xCol.equals(WorldXViewerFactory.Work_Days_Needed_Col)) {
             AWorkbench.popup(
                   "Calculated Field",
-                  "Man Days Needed field is calculated.\nRemaining Hours / Hours per Week (" + smaMgr.getSma().getManHrsPerDayPreference() + ")");
+                  "Work Days Needed field is calculated.\nRemaining Hours / Hours per Week (" + smaMgr.getSma().getManHrsPerDayPreference() + ")");
             return false;
          } else if (xCol.equals(WorldXViewerFactory.Release_Date_Col)) {
             modified = smaMgr.promptChangeReleaseDate();

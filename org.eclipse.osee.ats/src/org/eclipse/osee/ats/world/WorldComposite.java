@@ -97,7 +97,7 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
          }
          return ((StateMachineArtifact) artifact).getManHrsPerDayPreference();
       }
-      return StateMachineArtifact.DEFAULT_MAN_HOURS_PER_DAY;
+      return StateMachineArtifact.DEFAULT_HOURS_PER_WORK_DAY;
    }
 
    public void setCustomizeData(CustomizeData customizeData) {

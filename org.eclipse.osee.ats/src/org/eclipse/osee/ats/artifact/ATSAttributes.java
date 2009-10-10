@@ -128,7 +128,7 @@ public class ATSAttributes {
          new ATSAttributes("Estimated Completion Date", "Date the changes will be completed.");
    public static final ATSAttributes RELEASE_DATE_ATTRIBUTE =
          new ATSAttributes("Release Date", "Date the changes were made available to the users.");
-   public static final ATSAttributes MAN_DAYS_NEEDED_ATTRIBUTE = new ATSAttributes("Man Days Needed");
+   public static final ATSAttributes HOURS_PER_WORK_DAY_ATTRIBUTE = new ATSAttributes("Hours Per Work Day");
 
    protected ATSAttributes(String displayName, String storeName, String description) {
       this.displayName = displayName;

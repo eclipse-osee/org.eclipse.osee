@@ -344,7 +344,7 @@ public class TaskEditor extends AbstractArtifactEditor implements IDirtiableEdit
 
    @Override
    public double getManHoursPerDayPreference() throws OseeCoreException {
-      if (tasks.size() == 0) return StateMachineArtifact.DEFAULT_MAN_HOURS_PER_DAY;
+      if (tasks.size() == 0) return StateMachineArtifact.DEFAULT_HOURS_PER_WORK_DAY;
       return tasks.iterator().next().getManHrsPerDayPreference();
    }
 
