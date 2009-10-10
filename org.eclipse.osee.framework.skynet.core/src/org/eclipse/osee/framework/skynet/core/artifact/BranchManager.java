@@ -67,8 +67,6 @@ import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
  * @author Ryan D. Brooks
  */
 public class BranchManager {
-   public static final String COMMON_BRANCH_CONFIG_ID = BranchCache.COMMON_BRANCH_ALIAS;
-
    private static final int NULL_PARENT_BRANCH_ID = -1;
 
    private static final BranchManager instance = new BranchManager();
@@ -474,7 +472,8 @@ public class BranchManager {
 
    public static Branch createSystemRootBranch() throws OseeCoreException {
       return HttpBranchCreation.createFullBranch(BranchType.SYSTEM_ROOT, 1, NULL_PARENT_BRANCH_ID,
-            "System Root Branch", null, null, null, "System Root Branch Creation", -1, -1);
+            CoreBranches.SYSTEM_ROOT.getName(), null, CoreBranches.SYSTEM_ROOT.getGuid(), null,
+            CoreBranches.SYSTEM_ROOT.getName() + " Creation", -1, -1);
    }
 
    public static List<Branch> getBaselineBranches() throws OseeCoreException {

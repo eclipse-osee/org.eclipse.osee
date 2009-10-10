@@ -128,12 +128,12 @@ attributeType "User Id" extends StringAttribute {
    taggerId DefaultAttributeTaggerProvider
 }
 
-attributeType "Favorite Branch" extends IntegerAttribute {
+attributeType "Favorite Branch" extends StringAttribute {
    guid "AAMFEbMnzS7P92knZKAA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
-   defaultValue "0"
+   defaultValue "AyH_fDpMERA+zDfML4gA"
 }
 
 attributeType "User Settings" extends StringAttribute {

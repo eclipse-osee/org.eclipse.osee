@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 
 /**
  * @author Donald G. Dunne
@@ -34,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 public class User extends Artifact implements Serializable {
    private static final long serialVersionUID = 834749078806388387L;
    public static final String userIdAttributeName = "User Id";
-   public static final String favoriteBranchAttributeName = "Favorite Branch";
 
    public static enum Attributes {
       Phone,
@@ -117,19 +117,18 @@ public class User extends Artifact implements Serializable {
     * @throws OseeCoreException
     */
    public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
-      Collection<Branch> branches = BranchManager.getNormalBranches();
-      HashSet<Integer> branchIds = new HashSet<Integer>();
-      for (Branch branch : branches) {
-         branchIds.add(branch.getBranchId());
+      HashSet<String> branchGuids = new HashSet<String>();
+      for (Branch branch : BranchManager.getNormalBranches()) {
+         branchGuids.add(branch.getGuid());
       }
 
       boolean found = false;
-      Collection<Attribute<Integer>> attributes = getAttributes(favoriteBranchAttributeName);
-      for (Attribute<Integer> attribute : attributes) {
+      Collection<Attribute<String>> attributes = getAttributes(CoreAttributes.FAVORITE_BRANCH.getName());
+      for (Attribute<String> attribute : attributes) {
          // Remove attributes that are no longer valid
-         if (!branchIds.contains(attribute.getValue())) {
+         if (!branchGuids.contains(attribute.getValue())) {
             attribute.delete();
-         } else if (favoriteBranch.getBranchId() == attribute.getValue()) {
+         } else if (favoriteBranch.getGuid().equals(attribute.getValue())) {
             attribute.delete();
             found = true;
             break;
@@ -137,15 +136,15 @@ public class User extends Artifact implements Serializable {
       }
 
       if (!found) {
-         addAttribute(favoriteBranchAttributeName, favoriteBranch.getBranchId());
+         addAttribute(CoreAttributes.FAVORITE_BRANCH.getName(), favoriteBranch.getBranchId());
       }
-      setSetting(favoriteBranchAttributeName, String.valueOf(favoriteBranch.getBranchId()));
+      setSetting(CoreAttributes.FAVORITE_BRANCH.getName(), String.valueOf(favoriteBranch.getBranchId()));
    }
 
    public boolean isFavoriteBranch(Branch branch) throws OseeCoreException {
-      Collection<Attribute<Integer>> attributes = getAttributes(favoriteBranchAttributeName);
-      for (Attribute<Integer> attribute : attributes) {
-         if (branch.getBranchId() == attribute.getValue()) {
+      Collection<Attribute<String>> attributes = getAttributes(CoreAttributes.FAVORITE_BRANCH.getName());
+      for (Attribute<String> attribute : attributes) {
+         if (branch.getGuid().equals(attribute.getValue())) {
             return true;
          }
       }

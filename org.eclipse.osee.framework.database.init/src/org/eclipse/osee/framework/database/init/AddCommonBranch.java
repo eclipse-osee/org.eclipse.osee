@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.CoreBranches;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -49,8 +50,8 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, systemBranch,
                OseeSystemArtifacts.ROOT_ARTIFACT_TYPE_NAME).persist();
 
-         BranchManager.createTopLevelBranch(BranchManager.COMMON_BRANCH_CONFIG_ID,
-               BranchManager.COMMON_BRANCH_CONFIG_ID, null);
+         BranchManager.createTopLevelBranch(CoreBranches.COMMON.getName(), CoreBranches.COMMON.getName(),
+               CoreBranches.COMMON.getGuid());
 
          SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
 

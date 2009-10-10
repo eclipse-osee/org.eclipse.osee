@@ -36,6 +36,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.CoreBranches;
 import org.eclipse.osee.framework.skynet.core.exportImport.HttpBranchExchange;
 import org.osgi.framework.Bundle;
 
@@ -54,7 +55,7 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       if (OseeClientProperties.isOseeImportAllowed()) {
          // Clean up and delete all branches except Common
          for (Branch branch : BranchManager.getNormalBranches()) {
-            if (!branch.getName().equals(BranchManager.COMMON_BRANCH_CONFIG_ID)) {
+            if (!branch.getName().equals(CoreBranches.COMMON.getName())) {
                BranchManager.purgeBranch(branch);
             }
          }

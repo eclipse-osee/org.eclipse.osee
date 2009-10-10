@@ -8,26 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.attribute;
+package org.eclipse.osee.framework.skynet.core.artifact;
 
 import org.eclipse.osee.framework.skynet.core.IOseeType;
 
 /**
  * @author Roberto E. Escobar
  */
-public enum CoreAttributes implements IOseeType {
-   FAVORITE_BRANCH("Favorite Branch", "AAMFEbMnzS7P92knZKAA"),
-   NAME("Name", "AAMFEcF1AzV7PKuHmxwA"),
-   NATIVE_CONTENT("Native Content", "AAMFEcdBJGBK9nr9TTQA"),
-   NATIVE_EXTENSION("Extension", "AAMFEcUbJEERZTnwJzAA"),
-   WHOLE_WORD_CONTENT("Whole Word Content", "AAMFEchZmAzZo2tHjVAA"),
-   WORD_TEMPLATE_CONTENT("Word Template Content", "AAMFEcfcGS2V3SqQN2wA"),
-   RELATION_ORDER("Relation Order", "ABM5kHa9cFsTbI_ooyQA");
+public enum CoreBranches implements IOseeType {
+   COMMON("Common", "AyH_fDpMERA+zDfML4gA"),
+   SYSTEM_ROOT("System Root Branch", "AyH_fDnM2RFEhyybolQA");
 
    private final String name;
    private final String guid;
 
-   private CoreAttributes(String name, String guid) {
+   private CoreBranches(String name, String guid) {
       this.name = name;
       this.guid = guid;
    }

@@ -24,14 +24,13 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.CoreBranches;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Roberto E. Escobar
  */
 public class BranchCache extends AbstractOseeCache<Branch> {
-   public static final String COMMON_BRANCH_ALIAS = "Common";
-
    private final HashCollection<Branch, Branch> parentToChildrenBranches = new HashCollection<Branch, Branch>();
    private final Map<Branch, Branch> childToParent = new HashMap<Branch, Branch>();
 
@@ -51,6 +50,18 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       super(factory, dataAccessor);
       this.defaultAssociatedArtifact = null;
       this.systemRootBranch = null;
+   }
+
+   @Override
+   public Branch getByGuid(String typeGuid) throws OseeCoreException {
+      ensurePopulated();
+      Branch branch = null;
+      if (CoreBranches.COMMON.getGuid().equals(typeGuid)) {
+         branch = getCommonBranch();
+      } else {
+         branch = super.getByGuid(typeGuid);
+      }
+      return branch;
    }
 
    @Override
@@ -249,6 +260,6 @@ public class BranchCache extends AbstractOseeCache<Branch> {
 
    public Branch getCommonBranch() throws OseeCoreException {
       ensurePopulated();
-      return getUniqueByAlias(COMMON_BRANCH_ALIAS);
+      return getUniqueByAlias(CoreBranches.COMMON.getName());
    }
 }
