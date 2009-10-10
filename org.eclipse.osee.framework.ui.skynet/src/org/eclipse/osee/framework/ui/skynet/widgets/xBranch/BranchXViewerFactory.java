@@ -29,7 +29,7 @@ public class BranchXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn branchState =
          new XViewerColumn("framework.branch.state", "State", 100, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn timeStamp =
-         new XViewerColumn("framework.branch.itemType", "Time Stamp", 150, SWT.LEFT, true, SortDataType.String, false,
+         new XViewerColumn("framework.branch.itemType", "Time Stamp", 150, SWT.LEFT, true, SortDataType.Date, false,
                null);
    public static XViewerColumn author =
          new XViewerColumn("framework.branch.author", "Author", 100, SWT.LEFT, true, SortDataType.String, false, null);
