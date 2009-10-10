@@ -57,19 +57,21 @@ public class MigrateRelationOrder extends AbstractBlam {
       Branch baselineBranch = variableMap.getBranch("Branch");
       SkynetTransaction transaction = new SkynetTransaction(baselineBranch, getName());
 
-      testOneArtifact(transaction, "AAABEUwr_BEBJbJ8cW3woQ");
+      List<Artifact> artifacts = ArtifactQuery.getArtifactListFromBranch(baselineBranch, false);
+      println("artifact count: " + artifacts.size());
 
       for (RelationType relationType : RelationTypeManager.getAllTypes()) {
          if (relationType.isOrdered()) {
             IRelationEnumeration relationEnum = new RelationTypeSide(relationType, RelationSide.SIDE_B);
-            for (Artifact artifact : ArtifactQuery.getArtifactListFromRelation(relationType, RelationSide.SIDE_A,
-                  baselineBranch)) {
+            for (Artifact artifact : artifacts) {
                writeNewOrder(transaction, relationEnum, artifact);
             }
          }
       }
+
+      Integer transactionNumber = transaction.getTransactionNumber();
       transaction.execute();
-      addToChildBaseilnes(transaction);
+      addToChildBaseilnes(baselineBranch.getBranchId(), transactionNumber);
    }
 
    private void testOneArtifact(SkynetTransaction transaction, String guid) throws OseeCoreException {
@@ -99,12 +101,12 @@ public class MigrateRelationOrder extends AbstractBlam {
       artifact.persist(transaction);
    }
 
-   private void addToChildBaseilnes(SkynetTransaction updatedTransaction) throws OseeCoreException {
+   private void addToChildBaseilnes(Integer branchId, Integer transactionNumber) throws OseeCoreException {
       List<Integer> gammaIds = new ArrayList<Integer>(1000);
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(100, SELECT_GAMMA_FROM_TXS, updatedTransaction.getTransactionNumber());
+         chStmt.runPreparedQuery(100, SELECT_GAMMA_FROM_TXS, transactionNumber);
          while (chStmt.next()) {
             gammaIds.add(chStmt.getInt("gamma_id"));
          }
@@ -115,7 +117,7 @@ public class MigrateRelationOrder extends AbstractBlam {
       final List<Object[]> txGammaList = new ArrayList<Object[]>();
       chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(100, SELECT_CHILD_BASELINE_TXS, updatedTransaction.getBranch().getBranchId());
+         chStmt.runPreparedQuery(100, SELECT_CHILD_BASELINE_TXS, branchId);
          while (chStmt.next()) {
             Integer baselineTransactionId = chStmt.getInt("transaction_id");
             for (Integer gammaId : gammaIds) {
