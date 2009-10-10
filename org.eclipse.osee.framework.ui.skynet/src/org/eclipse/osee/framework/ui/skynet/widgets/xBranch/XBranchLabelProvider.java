@@ -35,7 +35,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Phillips
  */
 public class XBranchLabelProvider extends XViewerLabelProvider {
-   private final static DateFormat DATE_FORMAT = new SimpleDateFormat();
+   private final static DateFormat DATE_FORMAT = new SimpleDateFormat("MM/dd/yyyy hh:mm a");
    private final BranchXViewer branchXViewer;
 
    public XBranchLabelProvider(BranchXViewer branchXViewer) {
@@ -146,7 +146,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          columnText = String.valueOf(transaction.getTransactionNumber());
       }
       if (cCol.equals(BranchXViewerFactory.timeStamp)) {
-         columnText = new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(transaction.getDate());
+         columnText = DATE_FORMAT.format(transaction.getDate());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
          columnText = UserManager.getUserNameById(transaction.getAuthorArtId());
       } else if (cCol.equals(BranchXViewerFactory.comment)) {
