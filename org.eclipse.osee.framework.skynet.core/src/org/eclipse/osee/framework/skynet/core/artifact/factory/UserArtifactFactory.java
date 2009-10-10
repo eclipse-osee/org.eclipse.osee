@@ -37,7 +37,7 @@ public class UserArtifactFactory extends ArtifactFactory {
 
    public @Override
    Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
-      if (artifactType.getGuid().equals(CoreArtifacts.User.getName())) {
+      if (artifactType.getGuid().equals(CoreArtifacts.User.getGuid())) {
          return new User(this, guid, humandReadableId, branch, artifactType);
       }
       throw new OseeArgumentException("did not recognize the artifact type: " + artifactType.getName());
