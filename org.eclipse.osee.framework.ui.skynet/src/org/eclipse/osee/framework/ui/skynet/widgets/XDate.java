@@ -15,6 +15,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IStatus;
@@ -45,6 +46,7 @@ public class XDate extends XWidget {
    public static String HHMMSS = "hh:mm:ss";
    public static String HHMMSSSS = "hh:mm:ss:SS";
    public static String HHMM = "hh:mm";
+   public static final HashMap<String, DateFormat> dateFormats = new HashMap<String, DateFormat>();
    private String defaultFormat = MMDDYYHHMM;
    private final ArrayList<ModifyListener> listeners = new ArrayList<ModifyListener>();
    private boolean requireFutureDate = false;
@@ -108,7 +110,12 @@ public class XDate extends XWidget {
       if (date == null) {
          return "";
       }
-      return new SimpleDateFormat(format).format(date);
+      DateFormat dateFormat = dateFormats.get(format);
+      if (dateFormat == null) {
+         dateFormat = new SimpleDateFormat(format);
+         dateFormats.put(format, dateFormat);
+      }
+      return dateFormat.format(date);
    }
 
    public static String getDateNow() {

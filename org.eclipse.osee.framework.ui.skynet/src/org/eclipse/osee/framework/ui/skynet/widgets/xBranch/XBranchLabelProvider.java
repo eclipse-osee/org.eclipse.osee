@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xBranch;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.List;
@@ -34,7 +35,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Jeff C. Phillips
  */
 public class XBranchLabelProvider extends XViewerLabelProvider {
-
+   private final static DateFormat DATE_FORMAT = new SimpleDateFormat();
    private final BranchXViewer branchXViewer;
 
    public XBranchLabelProvider(BranchXViewer branchXViewer) {
@@ -80,7 +81,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
             columnText =
                   String.valueOf(headTransaction.getTransactionNumber() + "..." + tailTransaction.getTransactionNumber());
          } else if (columnIndex == 1) {
-            columnText = String.valueOf(headTransaction.getDate());
+            columnText = DATE_FORMAT.format(headTransaction.getDate());
          }
       } else {
          columnText =
@@ -96,7 +97,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          return branch.getArchiveState().toString();
       } else if (cCol.equals(BranchXViewerFactory.timeStamp)) {
          try {
-            return String.valueOf(branch.getBaseTransaction().getDate());
+            return DATE_FORMAT.format(branch.getBaseTransaction().getDate());
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }
