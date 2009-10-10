@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -28,6 +29,8 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
  * @author Donald G. Dunne
  */
 public class OseeEventManager {
+
+   private static IBranchEventListener testBranchEventListener;
 
    private static Sender getSender(Object sourceObject) throws OseeAuthenticationRequiredException {
       // Sender came from Remote Event Manager if source == sender
@@ -73,6 +76,9 @@ public class OseeEventManager {
     * @throws OseeCoreException
     */
    public static void kickBranchEvent(Object source, BranchEventType branchEventType, int branchId) throws OseeCoreException {
+      if (testBranchEventListener != null) {
+         testBranchEventListener.handleBranchEvent(getSender(source), branchEventType, branchId);
+      }
       if (isDisableEvents()) return;
       InternalEventManager.kickBranchEvent(getSender(source), branchEventType, branchId);
    }
@@ -228,5 +234,15 @@ public class OseeEventManager {
     */
    public static String getListenerReport() {
       return InternalEventManager.getListenerReport();
+   }
+
+   /**
+    * Registration for branch events; for test only
+    */
+   public static void registerBranchEventListenerForTest(IBranchEventListener branchEventListener) {
+      if (!OseeProperties.isInTest()) {
+         throw new IllegalStateException("Invalid registration for production");
+      }
+      testBranchEventListener = branchEventListener;
    }
 }

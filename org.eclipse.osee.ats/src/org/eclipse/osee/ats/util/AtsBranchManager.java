@@ -868,10 +868,24 @@ public class AtsBranchManager {
     *           used for developmental testing or automation
     */
    public void commitWorkingBranch(final boolean commitPopup, final boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch) throws OseeCoreException {
+      commitWorkingBranch(commitPopup, overrideStateValidation, destinationBranch, archiveWorkingBranch, false);
+   }
+
+   public void commitWorkingBranch(final boolean commitPopup, final boolean overrideStateValidation, Branch destinationBranch, boolean archiveWorkingBranch, boolean forcePend) throws OseeCoreException {
       if (isBranchInCommit()) {
          throw new OseeCoreException("Branch is currently being committed.");
       }
-      Jobs.startJob(new AtsCommitJob(commitPopup, overrideStateValidation, destinationBranch, archiveWorkingBranch));
+      Job job = new AtsCommitJob(commitPopup, overrideStateValidation, destinationBranch, archiveWorkingBranch);
+      job.setUser(true);
+      job.setPriority(Job.LONG);
+      job.schedule();
+      if (forcePend) {
+         try {
+            job.join();
+         } catch (InterruptedException ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);
+         }
+      }
    }
 
    /**
