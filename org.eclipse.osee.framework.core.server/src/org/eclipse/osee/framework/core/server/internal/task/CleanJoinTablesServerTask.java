@@ -27,7 +27,7 @@ public class CleanJoinTablesServerTask implements IServerTask {
 
    private final static String DELETE_JOIN_TIME = "DELETE FROM %s WHERE insert_time < ?";
    private final static long TEN_MINUTES = 10;
-   private final static long TWENTY_MINUTES = 1000 * 60 * 20;
+   private final static long THREE_HOURS = 1000 * 60 * 60 * 3;
 
    private static final String NAME = "Clean up join tables";
 
@@ -42,13 +42,7 @@ public class CleanJoinTablesServerTask implements IServerTask {
    @Override
    public void run() {
       try {
-         //         if (DEBUG) {
-         //            Calendar cal = Calendar.getInstance();
-         //            SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yy 'at' hh:mm:ss");
-         //            OseeLog.log(CoreServerActivator.class, Level.INFO, String.format("Join Table cleanup ran on %s",
-         //                  sdf.format(cal.getTime())));
-         //         }
-         Timestamp time = new Timestamp(System.currentTimeMillis() - TWENTY_MINUTES);
+         Timestamp time = new Timestamp(System.currentTimeMillis() - THREE_HOURS);
          for (String table : TABLES) {
             ConnectionHandler.runPreparedUpdate(String.format(DELETE_JOIN_TIME, table), time);
          }
