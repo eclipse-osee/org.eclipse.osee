@@ -26,8 +26,10 @@ import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.CoreArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -81,13 +83,15 @@ public final class UserManager {
    }
 
    private static List<User> getFromCache() throws OseeCoreException {
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(ArtifactTypeManager.getType(User.ARTIFACT_NAME)));
+      ArtifactType userType = ArtifactTypeManager.getTypeByGuid(CoreArtifacts.User.getGuid());
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(userType));
    }
 
    private static List<User> getUsers(Active userStatus) throws OseeCoreException {
       ensurePopulated();
-      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(
-            ArtifactTypeManager.getType(User.ARTIFACT_NAME), userStatus));
+      ArtifactType userType = ArtifactTypeManager.getTypeByGuid(CoreArtifacts.User.getGuid());
+      return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(userType,
+            userStatus));
    }
 
    /**
@@ -194,7 +198,7 @@ public final class UserManager {
    private static synchronized void ensurePopulated() throws OseeCoreException {
       if (!userCacheIsLoaded) {
          List<Artifact> artifactsFound =
-               ArtifactQuery.getArtifactListFromType(User.ARTIFACT_NAME, BranchManager.getCommonBranch());
+               ArtifactQuery.getArtifactListFromType(CoreArtifacts.User, BranchManager.getCommonBranch(), false);
          for (Artifact artifact : artifactsFound) {
             User user = (User) artifact;
             User cachedUser = cacheByUserId(user);
@@ -240,7 +244,7 @@ public final class UserManager {
          user.setActive(userEnum.isActive());
       } else {
          user =
-               (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchManager.getCommonBranch(),
+               (User) ArtifactTypeManager.addArtifact(CoreArtifacts.User.getName(), BranchManager.getCommonBranch(),
                      userEnum.getName());
          user.setActive(userEnum.isActive());
          user.setUserID(userEnum.getUserID());

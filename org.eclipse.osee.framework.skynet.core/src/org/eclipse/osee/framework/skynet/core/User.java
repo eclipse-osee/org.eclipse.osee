@@ -35,9 +35,12 @@ public class User extends Artifact implements Serializable {
    private static final long serialVersionUID = 834749078806388387L;
    public static final String userIdAttributeName = "User Id";
    public static final String favoriteBranchAttributeName = "Favorite Branch";
-   public static final String ARTIFACT_NAME = "User";
+
    public static enum Attributes {
-      Phone, Email, Active, Policy
+      Phone,
+      Email,
+      Active,
+      Policy
    };
 
    private PropertyStore userSettings;

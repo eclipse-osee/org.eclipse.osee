@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.artifact.CoreArtifacts;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -48,10 +49,11 @@ public class CreateNewUser extends AbstractBlam {
       return "Create New User";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Create New User", IProgressMonitor.UNKNOWN);
 
-      User user = (User) ArtifactTypeManager.addArtifact(User.ARTIFACT_NAME, BranchManager.getCommonBranch());
+      User user = (User) ArtifactTypeManager.addArtifact(CoreArtifacts.User.getName(), BranchManager.getCommonBranch());
 
       String name = variableMap.getString("Name (Last, First)");
       if (name.equals("")) {
@@ -149,6 +151,7 @@ public class CreateNewUser extends AbstractBlam {
       return widgetXml;
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }

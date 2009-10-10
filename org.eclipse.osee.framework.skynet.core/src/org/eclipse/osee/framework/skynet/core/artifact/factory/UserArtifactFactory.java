@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.CoreArtifacts;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
@@ -31,12 +32,12 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class UserArtifactFactory extends ArtifactFactory {
 
    public UserArtifactFactory() {
-      super(User.ARTIFACT_NAME);
+      super(CoreArtifacts.User.getName());
    }
 
    public @Override
    Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
-      if (artifactType.getName().equals(User.ARTIFACT_NAME)) {
+      if (artifactType.getGuid().equals(CoreArtifacts.User.getName())) {
          return new User(this, guid, humandReadableId, branch, artifactType);
       }
       throw new OseeArgumentException("did not recognize the artifact type: " + artifactType.getName());
@@ -46,7 +47,7 @@ public class UserArtifactFactory extends ArtifactFactory {
    public Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
       List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
       try {
-         artifactTypes.add(ArtifactTypeManager.getType(User.ARTIFACT_NAME));
+         artifactTypes.add(ArtifactTypeManager.getTypeByGuid(CoreArtifacts.User.getGuid()));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
       }
