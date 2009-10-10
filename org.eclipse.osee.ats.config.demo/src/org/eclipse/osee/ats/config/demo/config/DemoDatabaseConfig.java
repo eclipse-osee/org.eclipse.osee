@@ -91,7 +91,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
    public static void mapTeamVersionToBranch(TeamDefinitionArtifact teamDef, String versionName, String branchName, SkynetTransaction transaction) throws OseeCoreException {
       Branch branch = BranchManager.getBranch(branchName);
       VersionArtifact verArt = teamDef.getVersionArtifact(versionName, false);
-      verArt.setSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), branch.getBranchId());
+      verArt.setSoleAttributeValue(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(), branch.getGuid());
       verArt.persist(transaction);
    }
 

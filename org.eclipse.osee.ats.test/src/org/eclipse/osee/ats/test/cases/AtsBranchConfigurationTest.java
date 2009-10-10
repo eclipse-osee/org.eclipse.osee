@@ -70,8 +70,9 @@ import org.junit.Before;
 public class AtsBranchConfigurationTest {
 
    public enum TestType implements ITestBranch {
-      BranchViaTeamDef("AyH_e6damwQgvDhKfAAA"), BranchViaVersions("AyH_e6damwQgvDhKfBBB"), BranchViaParallelVersions(
-            "AyH_e6damwQgvDhKfCCC");
+      BranchViaTeamDef("AyH_e6damwQgvDhKfAAA"),
+      BranchViaVersions("AyH_e6damwQgvDhKfBBB"),
+      BranchViaParallelVersions("AyH_e6damwQgvDhKfCCC");
 
       private final String guid;
 
@@ -127,8 +128,8 @@ public class AtsBranchConfigurationTest {
             verArtToTarget = vArt;
          }
       }
-      verArtToTarget.setSoleAttributeFromString(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
-            viaTeamDefBranch.getBranchId() + "");
+      verArtToTarget.setSoleAttributeFromString(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(),
+            viaTeamDefBranch.getGuid());
       // setup team def to allow create/commit of branch
       verArtToTarget.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
       verArtToTarget.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
@@ -226,8 +227,8 @@ public class AtsBranchConfigurationTest {
       TeamDefinitionArtifact teamDef =
             (TeamDefinitionArtifact) ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME,
                   TestType.BranchViaTeamDef.name(), AtsUtil.getAtsBranch());
-      teamDef.setSoleAttributeFromString(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
-            viaTeamDefBranch.getBranchId() + "");
+      teamDef.setSoleAttributeFromString(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(),
+            viaTeamDefBranch.getGuid());
       // setup team def to allow create/commit of branch
       teamDef.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
       teamDef.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);

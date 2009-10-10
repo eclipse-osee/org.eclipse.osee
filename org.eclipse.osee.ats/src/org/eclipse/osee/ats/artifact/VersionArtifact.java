@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
@@ -66,9 +67,9 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    public Branch getParentBranch() throws OseeCoreException {
       try {
-         Integer branchId = getSoleAttributeValue(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), 0);
-         if (branchId != null && branchId > 0) {
-            return BranchManager.getBranch(branchId);
+         String guid = getSoleAttributeValue(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(), "");
+         if (Strings.isValid(guid)) {
+            return BranchManager.getBranchByGuid(guid);
          }
       } catch (BranchDoesNotExist ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);

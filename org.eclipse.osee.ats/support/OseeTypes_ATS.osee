@@ -59,7 +59,7 @@ artifactType "Team Definition" extends "ats.Ats Artifact" {
    attribute "ats.Full Name"
    attribute "ats.Team Uses Versions"
    attribute "ats.Require Targeted Version"
-   attribute "ats.Parent Branch Id"
+   attribute "ats.Baseline Branch Guid"
    attribute "ats.Active"
    attribute "ats.Actionable"
    attribute "ats.Allow Create Branch"
@@ -79,7 +79,7 @@ artifactType "Version" extends "ats.Ats Artifact" {
    attribute "ats.Estimated Release Date"
    attribute "ats.Full Name"
    attribute "ats.Next Version"
-   attribute "ats.Parent Branch Id"
+   attribute "ats.Baseline Branch Guid"
    attribute "ats.Release Date"
    attribute "ats.Released"
 }
@@ -127,9 +127,16 @@ artifactType "Team Workflow" extends "Goal" {
    attribute "ats.Actionable Item"
    attribute "ats.Branch Id"
    attribute "ats.Branch Metrics"
-   attribute "ats.Parent Branch Id"
+   attribute "ats.Baseline Branch Guid" 
    attribute "ats.Transaction Id"
    attribute "ats.Validation Required"
+}
+
+attributeType "ats.Baseline Branch Guid" extends StringAttribute {
+   guid "AAMFEdIjJ2za2fblEVgA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
 }
 
 attributeType "ats.Validation Required" extends BooleanAttribute {
@@ -338,13 +345,6 @@ attributeType "ats.Man Days Needed" extends FloatingPointAttribute {
 
 attributeType "ats.Branch Id" extends IntegerAttribute {
    guid "AAMFEQYd4VpF0Fy2+VAA"
-   dataProvider DefaultAttributeDataProvider
-   min 0
-   max 1
-}
-
-attributeType "ats.Parent Branch Id" extends IntegerAttribute {
-   guid "AAMFEdIjJ2za2fblEVgA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1

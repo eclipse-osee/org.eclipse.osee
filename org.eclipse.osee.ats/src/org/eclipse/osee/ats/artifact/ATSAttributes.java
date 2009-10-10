@@ -103,8 +103,8 @@ public class ATSAttributes {
    public static final ATSAttributes LEGACY_PCR_ID_ATTRIBUTE =
          new ATSAttributes("Legacy PCR Id",
                "Field to register problem change report id from legacy items imported into ATS.");
-   public static final ATSAttributes PARENT_BRANCH_ID_ATTRIBUTE =
-         new ATSAttributes("Parent Branch Id", "Parent branch associated with ATS object.");
+   public static final ATSAttributes BASELINE_BRANCH_GUID_ATTRIBUTE =
+         new ATSAttributes("Baseline Branch Guid", "Basline branch associated with ATS object.");
    public static final ATSAttributes DECISION_REVIEW_OPTIONS_ATTRIBUTE =
          new ATSAttributes(
                "Decision Review Options",

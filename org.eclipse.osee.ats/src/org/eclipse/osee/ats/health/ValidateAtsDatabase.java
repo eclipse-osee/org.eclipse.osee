@@ -226,10 +226,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (art instanceof VersionArtifact) {
             VersionArtifact verArt = (VersionArtifact) art;
             try {
-               String parentBranchId =
-                     verArt.getSoleAttributeValueAsString(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(), null);
-               if (parentBranchId != null) {
-                  validateBranchId(verArt, parentBranchId);
+               String parentBranchGuid =
+                     verArt.getSoleAttributeValueAsString(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(),
+                           null);
+               if (parentBranchGuid != null) {
+                  validateBranchGuid(verArt, parentBranchGuid);
                }
             } catch (Exception ex) {
                testNameToResultsMap.put(
@@ -245,11 +246,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
          if (art instanceof TeamDefinitionArtifact) {
             TeamDefinitionArtifact teamDef = (TeamDefinitionArtifact) art;
             try {
-               String parentBranchId =
-                     teamDef.getSoleAttributeValueAsString(ATSAttributes.PARENT_BRANCH_ID_ATTRIBUTE.getStoreName(),
+               String parentBranchGuid =
+                     teamDef.getSoleAttributeValueAsString(ATSAttributes.BASELINE_BRANCH_GUID_ATTRIBUTE.getStoreName(),
                            null);
-               if (parentBranchId != null) {
-                  validateBranchId(teamDef, parentBranchId);
+               if (parentBranchGuid != null) {
+                  validateBranchGuid(teamDef, parentBranchGuid);
                }
             } catch (Exception ex) {
                testNameToResultsMap.put(
@@ -282,25 +283,25 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       }
    }
 
-   private void validateBranchId(Artifact art, String parentBranchId) throws OseeCoreException {
+   private void validateBranchGuid(Artifact art, String parentBranchGuid) throws OseeCoreException {
       try {
-         Branch branch = BranchManager.getBranch(new Integer(parentBranchId));
+         Branch branch = BranchManager.getBranchByGuid(parentBranchGuid);
          if (branch.getArchiveState().isArchived()) {
-            testNameToResultsMap.put("validateBranchId", String.format(
-                  "Error: Parent Branch Id [%s][%s] can't be Archived branch for [%s][%s]", parentBranchId, branch,
+            testNameToResultsMap.put("validateBranchGuid", String.format(
+                  "Error: Parent Branch Id [%s][%s] can't be Archived branch for [%s][%s]", parentBranchGuid, branch,
                   art.getHumanReadableId(), art));
          } else if (branch.getBranchType().isWorkingBranch()) {
-            testNameToResultsMap.put("validateBranchId", String.format(
-                  "Error: Parent Branch Id [%s][%s] can't be Working branch for [%s][%s]", parentBranchId, branch,
+            testNameToResultsMap.put("validateBranchGuid", String.format(
+                  "Error: Parent Branch Id [%s][%s] can't be Working branch for [%s][%s]", parentBranchGuid, branch,
                   art.getHumanReadableId(), art));
          } else if (!branch.getBranchType().isBaselineBranch()) {
-            testNameToResultsMap.put("validateBranchId", String.format(
-                  "Error: Parent Branch Id [%s][%s] must be Baseline branch for [%s][%s]", parentBranchId, branch,
+            testNameToResultsMap.put("validateBranchGuid", String.format(
+                  "Error: Parent Branch Id [%s][%s] must be Baseline branch for [%s][%s]", parentBranchGuid, branch,
                   art.getHumanReadableId(), art));
          }
       } catch (BranchDoesNotExist ex) {
-         testNameToResultsMap.put("validateBranchId", String.format(
-               "Error: Parent Branch Id [%s] references non-existant branch for [%s][%s]", parentBranchId,
+         testNameToResultsMap.put("validateBranchGuid", String.format(
+               "Error: Parent Branch Id [%s] references non-existant branch for [%s][%s]", parentBranchGuid,
                art.getHumanReadableId(), art));
       }
    }
