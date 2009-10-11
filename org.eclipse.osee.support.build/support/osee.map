@@ -60,11 +60,9 @@ plugin@org.eclipse.nebula.widgets.xviewer=SVN,url=https://dev.eclipse.org/svnroo
 plugin@org.eclipse.osee.framework.ui.admin=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.admin
 plugin@org.eclipse.osee.framework.ui.branch.graph=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.branch.graph
 plugin@org.eclipse.osee.framework.ui.data.model.editor=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.data.model.editor
-plugin@org.eclipse.osee.framework.ui.encrypter=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.encrypter
 plugin@org.eclipse.osee.framework.ui.jdk=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.jdk
 plugin@org.eclipse.osee.framework.ui.plugin=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.plugin
 plugin@org.eclipse.osee.framework.ui.product=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.product
-plugin@org.eclipse.osee.framework.ui.security=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.security
 plugin@org.eclipse.osee.framework.ui.service.control=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.service.control
 plugin@org.eclipse.osee.framework.ui.skynet=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.skynet
 plugin@org.eclipse.osee.framework.ui.swt=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.swt
