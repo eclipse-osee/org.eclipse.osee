@@ -21,6 +21,8 @@
 		<copy todir="${buildDirectory}/maps">
 			<fileset file="${basedir}/osee.map" />
 		</copy>
+				
+		<antcall target="copyOrbitMapFile" />
 		<antcall target="copySupplementalMapFile" />
 
 		<ant antfile="${eclipse.pdebuild.scripts}/build.xml" target="${pdeTarget}" />
@@ -52,6 +54,12 @@
 	<target name="copySupplementalMapFile" if="mapFile">
 		<copy todir="${buildDirectory}/maps">
 			<fileset file="${mapFile}" />
+		</copy>
+	</target>
+	
+	<target name="copyOrbitMapFile" if="downloadOrbitPlugins">
+		<copy todir="${buildDirectory}/maps">
+			<fileset file="${basedir}/orbit.map" />
 		</copy>
 	</target>
 </project>
