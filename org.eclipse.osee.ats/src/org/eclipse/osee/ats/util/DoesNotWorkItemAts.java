@@ -54,15 +54,34 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
     * @param parent
     */
    public DoesNotWorkItemAts(XNavigateItem parent) {
-      super(parent, "Does Not Work - ATS - Dup Relations", FrameworkImage.ADMIN);
+      super(parent, "Does Not Work - ATS - Fix Next Version Attribute", FrameworkImage.ADMIN);
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
-      //      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
-      //      transaction.execute();
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      //      Artifact verArt =
+      //            ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, "0.9.0", AtsUtil.getAtsBranch());
+      //      for (Attribute<?> attr : verArt.getAttributes()) {
+      //         if (attr.getAttributeType().getName().equals(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName())) {
+      //            System.out.println("next " + attr.getValue());
+      //            attr.delete();
+      //            break;
+      //         }
+      //      }
+      //      verArt.persist(transaction);
+      //      verArt = ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, "0.8.2", AtsUtil.getAtsBranch());
+      //      for (Attribute<?> attr : verArt.getAttributes()) {
+      //         if (attr.getAttributeType().getName().equals(ATSAttributes.RELEASED_ATTRIBUTE.getStoreName())) {
+      //            System.out.println("released " + attr.getValue());
+      //            attr.delete();
+      //            break;
+      //         }
+      //      }
+      //      verArt.persist(transaction);
+      transaction.execute();
 
       //      deleteDuplicateCommonBranchDuplicateRelations();
       //      convertAtsLogUserIds(transaction);
