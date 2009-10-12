@@ -28,15 +28,13 @@ public class XViewerTestTask implements IXViewerTestTask {
    private final String category;
    private final String emailAddress;
    private final Date lastRunDate;
+   private int percentComplete;
 
-   /**
-    * 
-    */
-   public XViewerTestTask(RunDb runDb, TaskType taskType, String id, String startTime, String description, String category, String emailAddress) {
-      this(runDb, taskType, new Date(), id, startTime, description, category, emailAddress);
+   public XViewerTestTask(RunDb runDb, TaskType taskType, String id, String startTime, String description, String category, String emailAddress, int percentComplete) {
+      this(runDb, taskType, new Date(), id, startTime, description, category, emailAddress, percentComplete);
    }
 
-   public XViewerTestTask(RunDb runDb, TaskType taskType, Date lastRunDate, String id, String startTime, String description, String category, String emailAddress) {
+   public XViewerTestTask(RunDb runDb, TaskType taskType, Date lastRunDate, String id, String startTime, String description, String category, String emailAddress, int percentComplete) {
       this.runDb = runDb;
       this.taskType = taskType;
       this.lastRunDate = lastRunDate;
@@ -45,6 +43,7 @@ public class XViewerTestTask implements IXViewerTestTask {
       this.description = description;
       this.category = category;
       this.emailAddress = emailAddress;
+      this.percentComplete = percentComplete;
    }
 
    /**
@@ -106,6 +105,14 @@ public class XViewerTestTask implements IXViewerTestTask {
    @Override
    public String getLastRunDateStr() {
       return new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(getLastRunDate());
+   }
+
+   public int getPercentComplete() {
+      return percentComplete;
+   }
+
+   public void setPercentComplete(int percentComplete) {
+      this.percentComplete = percentComplete;
    }
 
 }

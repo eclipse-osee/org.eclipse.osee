@@ -17,6 +17,7 @@ import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -359,6 +360,35 @@ public class CoverageUnit implements ICoverageEditorItem {
 
    public void setNotes(String notes) {
       this.notes = notes;
+   }
+
+   public int getCoveragePercent() {
+      if (getCoverageItems(true).size() == 0 || getCoverageItemsCovered(true).size() == 0) return 0;
+      Double percent = new Double(getCoverageItemsCovered(true).size());
+      percent = percent / getCoverageItems(true).size();
+      percent = percent * 100;
+      return percent.intValue();
+   }
+
+   public List<CoverageItem> getCoverageItemsCovered(boolean recurse) {
+      List<CoverageItem> items = new ArrayList<CoverageItem>();
+      for (CoverageItem coverageItem : getCoverageItems(recurse)) {
+         if (coverageItem.getCoverageMethod() != CoverageMethodEnum.Not_Covered) {
+            items.add(coverageItem);
+         }
+      }
+      return items;
+   }
+
+   public List<CoverageItem> getCoverageItemsCovered(boolean recurse, CoverageMethodEnum... coverageMethodEnum) {
+      List<CoverageMethodEnum> coverageMethods = Collections.getAggregate(coverageMethodEnum);
+      List<CoverageItem> items = new ArrayList<CoverageItem>();
+      for (CoverageItem coverageItem : getCoverageItems(recurse)) {
+         if (coverageMethods.contains(coverageItem.getCoverageMethod())) {
+            items.add(coverageItem);
+         }
+      }
+      return items;
    }
 
 }

@@ -30,7 +30,7 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
    // Store index of columnIndex to XViewerColumns to speed up label providing
    private final Map<Integer, XViewerColumn> indexToXViewerColumnMap = new HashMap<Integer, XViewerColumn>();
 
-   private XViewerColumn getTreeColumnOffIndex(int columnIndex) {
+   public XViewerColumn getTreeColumnOffIndex(int columnIndex) {
       if (!indexToXViewerColumnMap.containsKey(columnIndex)) {
          XViewerColumn xViewerColumn = viewer.getXTreeColumn(columnIndex);
          if (xViewerColumn != null) {
@@ -141,4 +141,12 @@ public abstract class XViewerLabelProvider implements ITableLabelProvider, ITabl
    public abstract Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws Exception;
 
    public abstract String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws Exception;
+
+   /**
+    * Return value between 0..100 and cell will show bar graph shading that portion of the cell
+    */
+   public int getColumnGradient(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      return 0;
+   }
+
 }

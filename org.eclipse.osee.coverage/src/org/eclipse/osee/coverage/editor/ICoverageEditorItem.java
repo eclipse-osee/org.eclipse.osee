@@ -51,4 +51,6 @@ public interface ICoverageEditorItem {
 
    public String getNamespace();
 
+   public int getCoveragePercent();
+
 }

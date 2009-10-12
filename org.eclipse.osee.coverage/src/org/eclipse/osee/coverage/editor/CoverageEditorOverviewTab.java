@@ -64,7 +64,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       provider.getOverviewHtmlHeader(rd);
       rd.log(AHTML.getLabelValueStr("Coverage Units", String.valueOf(provider.getCoverageUnits().size())));
       rd.log(AHTML.getLabelValueStr("Coverage Items", String.valueOf(provider.getCoverageItems().size())));
-      rd.log(AHTML.getLabelValueStr("Coverage Percent", String.format("%d", provider.getPercentCoverage())));
+      rd.log(AHTML.getLabelValueStr("Coverage Percent", String.format("%d", provider.getCoveragePercent())));
       rd.log(AHTML.getLabelValueStr("Coverage Method Breakdown", ""));
       for (CoverageMethodEnum coverageMethodEnum : CoverageMethodEnum.values()) {
          rd.log("  - " + coverageMethodEnum + " " + String.valueOf(provider.getCoverageItemsCovered(coverageMethodEnum).size()));

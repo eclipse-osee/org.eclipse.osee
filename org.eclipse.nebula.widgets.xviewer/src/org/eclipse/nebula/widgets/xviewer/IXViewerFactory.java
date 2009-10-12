@@ -85,4 +85,5 @@ public interface IXViewerFactory {
 
    public boolean isHeaderBarAvailable();
 
+   public boolean isCellGradientOn();
 }

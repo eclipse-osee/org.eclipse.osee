@@ -26,6 +26,9 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
          new XViewerColumn(NAMESPACE + ".name", "Name", 180, SWT.LEFT, true, SortDataType.String, false, "");
    public static XViewerColumn Namespace =
          new XViewerColumn(NAMESPACE + ".namespace", "Namespace", 80, SWT.LEFT, true, SortDataType.String, false, "");
+   public static XViewerColumn Coverage_Percent =
+         new XViewerColumn(NAMESPACE + ".percentCoverage", "Percent Coverage", 40, SWT.LEFT, true,
+               SortDataType.Integer, false, "");
    public static XViewerColumn Method_Number =
          new XViewerColumn(NAMESPACE + ".methodNumber", "Method Number", 80, SWT.LEFT, true, SortDataType.String,
                false, "");
@@ -63,8 +66,14 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
    }
 
    public void registerColumns() {
-      registerColumns(Name, Namespace, Coverage_Method, Coverage_Rationale, Test_Units, Assignees_Col, Notes_Col,
-            Parent_Coverage_Unit, Method_Number, Execution_Number, Line_Number, Location, Guid, Text);
+      registerColumns(Name, Namespace, Coverage_Percent, Coverage_Method, Coverage_Rationale, Test_Units,
+            Assignees_Col, Notes_Col, Parent_Coverage_Unit, Method_Number, Execution_Number, Line_Number, Location,
+            Guid, Text);
+   }
+
+   @Override
+   public boolean isCellGradientOn() {
+      return true;
    }
 
 }

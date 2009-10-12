@@ -30,6 +30,8 @@ public interface IXViewerTestTask {
 
    public String getEmailAddress();
 
+   public int getPercentComplete();
+
    public String getId();
 
    public TaskType getTaskType();

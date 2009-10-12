@@ -28,6 +28,9 @@ public class XViewerTestFactory extends XViewerFactory {
          new XViewerColumn(COLUMN_NAMESPACE + ".run", "Run", 50, SWT.LEFT, true, SortDataType.String, false, null);
    public static XViewerColumn Name_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".name", "Name", 150, SWT.LEFT, true, SortDataType.String, false, null);
+   public static XViewerColumn Completed_Col =
+         new XViewerColumn(COLUMN_NAMESPACE + ".complete", "Percent Complete", 80, SWT.LEFT, true, SortDataType.Float,
+               false, null);
    public static XViewerColumn Schedule_Time =
          new XViewerColumn(COLUMN_NAMESPACE + ".startTime", "Start Time", 40, SWT.CENTER, true, SortDataType.String,
                false, "Time this task will run");
@@ -54,8 +57,8 @@ public class XViewerTestFactory extends XViewerFactory {
 
    public XViewerTestFactory() {
       super("xviewer.test");
-      registerColumns(Run_Col, Name_Col, Schedule_Time, Run_Db, Task_Type, Last_Run_Date, Category, Notification,
-            Description, Other_Description);
+      registerColumns(Run_Col, Name_Col, Schedule_Time, Completed_Col, Run_Db, Task_Type, Last_Run_Date, Category,
+            Notification, Description, Other_Description);
    }
 
    @Override
@@ -65,6 +68,11 @@ public class XViewerTestFactory extends XViewerFactory {
 
    @Override
    public boolean isAdmin() {
+      return true;
+   }
+
+   @Override
+   public boolean isCellGradientOn() {
       return true;
    }
 

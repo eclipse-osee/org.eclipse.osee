@@ -51,6 +51,7 @@ public class XViewerTestLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(XViewerTestFactory.Category)) return task.getCategory();
       if (xCol.equals(XViewerTestFactory.Notification)) return task.getEmailAddress();
       if (xCol.equals(XViewerTestFactory.Last_Run_Date)) return task.getLastRunDateStr();
+      if (xCol.equals(XViewerTestFactory.Completed_Col)) return String.valueOf(task.getPercentComplete());
       return "unhandled column";
    }
 
@@ -83,6 +84,16 @@ public class XViewerTestLabelProvider extends XViewerLabelProvider {
    @Override
    public Color getBackground(Object element, int columnIndex) {
       return super.getBackground(element, columnIndex);
+   }
+
+   @Override
+   public int getColumnGradient(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (!(element instanceof IXViewerTestTask)) return 0;
+      IXViewerTestTask task = ((IXViewerTestTask) element);
+      if (xCol.equals(XViewerTestFactory.Completed_Col)) {
+         return task.getPercentComplete();
+      }
+      return 0;
    }
 
 }

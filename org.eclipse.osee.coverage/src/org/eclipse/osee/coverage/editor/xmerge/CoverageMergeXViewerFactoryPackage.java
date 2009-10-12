@@ -30,7 +30,7 @@ public class CoverageMergeXViewerFactoryPackage extends CoverageMergeXViewerFact
    public void registerMergeColumns() {
       super.registerMergeColumns();
       for (XViewerColumn xCol : getColumns()) {
-         if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale) || xCol.equals(CoverageXViewerFactory.Assignees_Col) || xCol.equals(CoverageXViewerFactory.Notes_Col)) overrideShowDefault(
+         if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale) || xCol.equals(CoverageXViewerFactory.Coverage_Percent) || xCol.equals(CoverageXViewerFactory.Assignees_Col) || xCol.equals(CoverageXViewerFactory.Notes_Col)) overrideShowDefault(
                xCol.getId(), true);
       }
    }

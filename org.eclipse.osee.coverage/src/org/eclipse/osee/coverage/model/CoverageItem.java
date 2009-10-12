@@ -287,4 +287,9 @@ public class CoverageItem implements ICoverageEditorItem {
       return null;
    }
 
+   @Override
+   public int getCoveragePercent() {
+      return isCovered() ? 100 : 0;
+   }
+
 }

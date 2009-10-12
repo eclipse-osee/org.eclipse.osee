@@ -32,7 +32,7 @@ public interface ICoverageTabProvider {
 
    public List<CoverageItem> getCoverageItems();
 
-   public int getPercentCoverage();
+   public int getCoveragePercent();
 
    public List<CoverageItem> getCoverageItemsCovered();
 

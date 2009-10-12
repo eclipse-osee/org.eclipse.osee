@@ -64,6 +64,7 @@ public class XViewer extends TreeViewer {
    private final SearchDataUI searchDataUI;
    private final ColumnFilterDataUI columnFilterDataUI;
    private static boolean ctrlKeyListenersSet = false;
+   private XViewerGradient xViewerGradient = null;
 
    /**
     * @return the columnFilterDataUI
@@ -111,6 +112,9 @@ public class XViewer extends TreeViewer {
       tree.setLinesVisible(true);
       setUseHashlookup(true);
       setupCtrlKeyListener();
+      if (xViewerFactory.isCellGradientOn()) {
+         xViewerGradient = new XViewerGradient(this);
+      }
    }
 
    private static List<XViewerComputedColumn> computedColumns;
@@ -580,5 +584,13 @@ public class XViewer extends TreeViewer {
     */
    public XViewerTextFilter getXViewerTextFilter() {
       return new XViewerTextFilter(this);
+   }
+
+   public XViewerGradient getxViewerGradient() {
+      return xViewerGradient;
+   }
+
+   public void setxViewerGradient(XViewerGradient xViewerGradient) {
+      this.xViewerGradient = xViewerGradient;
    }
 }

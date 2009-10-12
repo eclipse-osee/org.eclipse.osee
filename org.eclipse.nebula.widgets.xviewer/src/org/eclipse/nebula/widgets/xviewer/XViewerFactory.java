@@ -133,4 +133,9 @@ public abstract class XViewerFactory implements IXViewerFactory {
       return true;
    }
 
+   @Override
+   public boolean isCellGradientOn() {
+      return false;
+   }
+
 }

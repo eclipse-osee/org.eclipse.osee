@@ -114,7 +114,7 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
       return coverageImports;
    }
 
-   public int getPercentCoverage() {
+   public int getCoveragePercent() {
       if (getCoverageItems().size() == 0 || getCoverageItemsCovered().size() == 0) return 0;
       Double percent = new Double(getCoverageItemsCovered().size());
       percent = percent / getCoverageItems().size();

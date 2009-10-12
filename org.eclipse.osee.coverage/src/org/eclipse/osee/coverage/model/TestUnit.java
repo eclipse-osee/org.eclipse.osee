@@ -214,4 +214,9 @@ public class TestUnit implements ICoverageEditorItem {
    public String getNotes() {
       return null;
    }
+
+   @Override
+   public int getCoveragePercent() {
+      return 0;
+   }
 }
