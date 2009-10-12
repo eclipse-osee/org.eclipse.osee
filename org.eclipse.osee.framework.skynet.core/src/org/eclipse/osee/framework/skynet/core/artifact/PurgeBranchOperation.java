@@ -106,7 +106,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
          try {
             BranchManager.decache(branch);
             try {
-               OseeEventManager.kickBranchEvent(this, BranchEventType.Deleted, branch.getId());
+               OseeEventManager.kickBranchEvent(this, BranchEventType.Purged, branch.getId());
             } catch (Exception ex) {
                // Do Nothing
             }

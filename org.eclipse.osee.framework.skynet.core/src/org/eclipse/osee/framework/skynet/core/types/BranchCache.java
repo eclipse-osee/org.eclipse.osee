@@ -73,8 +73,8 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    }
 
    @Override
-   public void decache(Branch type) throws OseeCoreException {
-      super.decache(type);
+   public void decache(Branch branch) throws OseeCoreException {
+      super.decache(branch);
       // TODO add decache from all maps
    }
 

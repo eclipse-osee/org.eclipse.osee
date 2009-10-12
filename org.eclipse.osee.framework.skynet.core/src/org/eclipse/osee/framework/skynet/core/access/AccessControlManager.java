@@ -605,17 +605,18 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-      if (branchModType == BranchEventType.Deleted) {
-         try {
+      try {
+         if (branchModType == BranchEventType.Deleted || (sender.isLocal() && branchModType == BranchEventType.Purged)) {
             BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchId);
             List<AccessControlData> acl = generateAccessControlList(branchAccessObject);
             for (AccessControlData accessControlData : acl) {
                AccessControlManager.removeAccessControlDataIf(sender.isLocal(), accessControlData);
             }
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
+
    }
 
    @Override

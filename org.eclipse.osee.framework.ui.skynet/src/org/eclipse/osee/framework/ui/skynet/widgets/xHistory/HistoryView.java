@@ -285,7 +285,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
-      if (branchModType == BranchEventType.Deleted) {
+      if (branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purged) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
                closeView();

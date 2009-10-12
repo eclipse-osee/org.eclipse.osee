@@ -563,7 +563,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
          if (smaMgr.isInTransition()) {
             return;
          }
-         if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Committed) {
+         if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purged || branchModType == BranchEventType.Committed) {
             if (smaMgr.getBranchMgr().getBranchId() == null || smaMgr.getBranchMgr().getBranchId() != branchId) {
                return;
             }

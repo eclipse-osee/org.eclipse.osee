@@ -231,7 +231,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
          return;
       }
 
-      if (branchModType == BranchEventType.Deleted) {
+      if (branchModType == BranchEventType.Deleted && branchModType == BranchEventType.Purged) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
                closeView();

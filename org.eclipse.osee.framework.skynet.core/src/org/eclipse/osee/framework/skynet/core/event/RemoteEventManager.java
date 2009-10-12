@@ -52,6 +52,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkCommitBran
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkDeletedBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkPurgeBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkOrderModifiedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkRationalModifiedEvent;
@@ -372,6 +373,17 @@ public class RemoteEventManager {
                            branch.clearDirty();
                         }
                         InternalEventManager.kickBranchEvent(sender, BranchEventType.Deleted, branchId);
+                     } catch (Exception ex) {
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     }
+                  } else if (event instanceof NetworkPurgeBranchEvent) {
+                     int branchId = ((NetworkPurgeBranchEvent) event).getBranchId();
+                     try {
+                        Branch branch = OseeTypeManager.getBranchCache().getById(branchId);
+                        if (branch != null) {
+                           OseeTypeManager.getBranchCache().decache(branch);
+                        }
+                        InternalEventManager.kickBranchEvent(sender, BranchEventType.Purged, branchId);
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }

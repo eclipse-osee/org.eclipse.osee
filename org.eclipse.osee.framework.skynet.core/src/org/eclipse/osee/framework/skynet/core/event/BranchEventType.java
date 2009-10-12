@@ -16,6 +16,7 @@ package org.eclipse.osee.framework.skynet.core.event;
 public enum BranchEventType {
 
    // Local and Remote events
+   Purged(EventType.LocalAndRemote),
    Deleted(EventType.LocalAndRemote),
    Added(EventType.LocalAndRemote),
    Renamed(EventType.LocalAndRemote),

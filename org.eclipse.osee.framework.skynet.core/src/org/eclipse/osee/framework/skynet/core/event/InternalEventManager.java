@@ -39,6 +39,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkDeletedBra
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkMergeBranchConflictResolvedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkPurgeBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkOrderModifiedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkRationalModifiedEvent;
@@ -235,6 +236,8 @@ public class InternalEventManager {
                      RemoteEventManager.kick(new NetworkNewBranchEvent(branchId, sender.getNetworkSender()));
                   } else if (branchEventType == BranchEventType.Deleted) {
                      RemoteEventManager.kick(new NetworkDeletedBranchEvent(branchId, sender.getNetworkSender()));
+                  } else if (branchEventType == BranchEventType.Purged) {
+                     RemoteEventManager.kick(new NetworkPurgeBranchEvent(branchId, sender.getNetworkSender()));
                   } else if (branchEventType == BranchEventType.Committed) {
                      RemoteEventManager.kick(new NetworkCommitBranchEvent(branchId, sender.getNetworkSender()));
                   } else if (branchEventType == BranchEventType.Renamed) {
