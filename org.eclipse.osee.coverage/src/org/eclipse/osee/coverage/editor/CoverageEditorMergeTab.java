@@ -11,10 +11,9 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer;
@@ -23,7 +22,6 @@ import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryPackag
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
-import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.util.CoveragePackageImport;
@@ -33,7 +31,6 @@ import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -41,9 +38,11 @@ import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
+import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
@@ -51,7 +50,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.ToolBar;
-import org.eclipse.swt.widgets.ToolItem;
 import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.editor.FormPage;
@@ -70,12 +68,14 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    private Label titleLabel1, titleLabel2;
    private final CoverageEditor coverageEditor;
    private CoverageEditorCoverageParameters parameters;
+   CoveragePackageImport coveragePackageImport = null;
 
    public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, ICoverageTabProvider provider1, ICoverageTabProvider provider2) {
       super(coverageEditor, name, name);
       this.coverageEditor = coverageEditor;
       this.provider1 = provider1;
       this.provider2 = provider2;
+      coveragePackageImport = new CoveragePackageImport((CoveragePackage) provider1, (CoverageImport) provider2);
    }
 
    @Override
@@ -92,12 +92,13 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
       parameters =
-            new CoverageEditorCoverageParameters(mainComp, managedForm, coverageEditor, true, new SelectionAdapter() {
-               @Override
-               public void widgetSelected(SelectionEvent e) {
-                  handleSearchButtonPressed();
-               }
-            });
+            new CoverageEditorCoverageParameters(mainComp, managedForm, coverageEditor, provider2,
+                  new SelectionAdapter() {
+                     @Override
+                     public void widgetSelected(SelectionEvent e) {
+                        handleSearchButtonPressed();
+                     }
+                  });
 
       Composite tableComp = coverageEditor.getToolkit().createComposite(mainComp, SWT.NONE);
       tableComp.setLayout(ALayout.getZeroMarginLayout(3, false));
@@ -106,39 +107,24 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       tableComp.setLayoutData(tableData);
       coverageEditor.getToolkit().adapt(tableComp);
 
-      Composite leftComp = coverageEditor.getToolkit().createComposite(tableComp, SWT.NONE);
+      SashForm sashForm = new SashForm(tableComp, SWT.NONE);
+      sashForm.setLayout(new GridLayout());
+      sashForm.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+      managedForm.getToolkit().adapt(sashForm);
+
+      Composite leftComp = coverageEditor.getToolkit().createComposite(sashForm, SWT.NONE);
       leftComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       leftComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      Composite centerComp = coverageEditor.getToolkit().createComposite(tableComp, SWT.NONE);
-      centerComp.setLayout(ALayout.getZeroMarginLayout(1, false));
-      centerComp.setLayoutData(new GridData(SWT.NONE, SWT.CENTER, false, true));
-
-      Composite rightComp = coverageEditor.getToolkit().createComposite(tableComp, SWT.NONE);
+      Composite rightComp = coverageEditor.getToolkit().createComposite(sashForm, SWT.NONE);
       rightComp.setLayout(ALayout.getZeroMarginLayout(1, false));
       rightComp.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
       createLeftComposite(managedForm, leftComp);
-      createCenterComposite(managedForm, centerComp);
       createRightComposite(managedForm, rightComp);
 
       createEditorToolbar();
       updateTitles();
-   }
-
-   public void createCenterComposite(IManagedForm managedForm, Composite centerComp) {
-      ToolBar centerToolBar = new ToolBar(centerComp, SWT.FLAT | SWT.RIGHT);
-      centerToolBar.setLayoutData(new GridData(GridData.FILL_VERTICAL));
-      managedForm.getToolkit().adapt(centerToolBar);
-
-      ToolItem toolItem = new ToolItem(centerToolBar, SWT.NONE);
-      toolItem.setImage(ImageManager.getImage(FrameworkImage.ARROW_LEFT_YELLOW));
-      toolItem.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            handleImportSelected();
-         }
-      });
    }
 
    private void handleImportSelected() {
@@ -147,9 +133,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
          AWorkbench.popup("Select Items to Import via Import Column");
          return;
       }
-      CoveragePackageImport importer =
-            new CoveragePackageImport((CoveragePackage) provider1, (CoverageImport) provider2);
-      XResultData rd = importer.importItems(this, importItems);
+      XResultData rd = coveragePackageImport.importItems(this, importItems);
       try {
          rd.report("Import");
       } catch (OseeCoreException ex) {
@@ -177,11 +161,13 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       managedForm.getToolkit().adapt(leftToolBar);
 
       xCoverageViewer1 =
-            new XCoverageMergeViewer(this, new CoverageMergeXViewerFactoryPackage(), TableType.Package, TableType.Merge);
+            new XCoverageMergeViewer(null, this, new CoverageMergeXViewerFactoryPackage(), TableType.Package,
+                  TableType.Merge);
       xCoverageViewer1.setDisplayLabel(false);
       xCoverageViewer1.createWidgets(managedForm, leftComp, 1);
       xCoverageViewer1.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
+      (new ActionContributionItem(new RefreshAction(xCoverageViewer1))).fill(leftToolBar, 0);
       (new ActionContributionItem(xCoverageViewer1.getXViewer().getCustomizeAction())).fill(leftToolBar, 0);
       (new ActionContributionItem(new CollapseAllAction(xCoverageViewer1.getXViewer()))).fill(leftToolBar, 0);
       (new ActionContributionItem(new ExpandAllAction(xCoverageViewer1.getXViewer()))).fill(leftToolBar, 0);
@@ -196,16 +182,35 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       managedForm.getToolkit().adapt(rightToolBar);
 
       xCoverageViewer2 =
-            new XCoverageMergeViewer(new NotSaveable(), new CoverageMergeXViewerFactoryImport(), TableType.Import,
-                  TableType.Merge);
+            new XCoverageMergeViewer(coveragePackageImport, new NotSaveable(), new CoverageMergeXViewerFactoryImport(),
+                  TableType.Import, TableType.Merge);
       xCoverageViewer2.setDisplayLabel(false);
       xCoverageViewer2.createWidgets(managedForm, rightComp, 1);
       xCoverageViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
+      (new ActionContributionItem(new RefreshAction(xCoverageViewer1))).fill(rightToolBar, 0);
       (new ActionContributionItem(xCoverageViewer2.getXViewer().getCustomizeAction())).fill(rightToolBar, 0);
       (new ActionContributionItem(new CollapseAllAction(xCoverageViewer2.getXViewer()))).fill(rightToolBar, 0);
       (new ActionContributionItem(new ExpandAllAction(xCoverageViewer2.getXViewer()))).fill(rightToolBar, 0);
+      (new ActionContributionItem(importAction)).fill(rightToolBar, 0);
    }
+
+   private Action importAction = new Action() {
+
+      @Override
+      public void run() {
+         handleImportSelected();
+      }
+
+      public org.eclipse.jface.resource.ImageDescriptor getImageDescriptor() {
+         return ImageManager.getImageDescriptor(FrameworkImage.ARROW_LEFT_YELLOW);
+      }
+
+      @Override
+      public String getToolTipText() {
+         return "Import Selected Items into Coverage Package";
+      };
+   };
 
    public void simulateSearchAll() {
       XHyperlabelCoverageMethodSelection methodSelectionWidget = parameters.getCoverageMethodHyperlinkSelection();
@@ -234,33 +239,11 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
             result.popup();
             return;
          }
-         xCoverageViewer1.loadTable(performSearchGetResults(provider1));
-         xCoverageViewer2.loadTable(performSearchGetResults(provider2));
+         xCoverageViewer1.loadTable(parameters.performSearchGetResults(provider1));
+         xCoverageViewer2.loadTable(parameters.performSearchGetResults(provider2));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-   }
-
-   private Collection<ICoverageEditorItem> performSearchGetResults(ICoverageTabProvider provider) throws OseeCoreException {
-      Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
-      Collection<CoverageMethodEnum> coverageMethods = parameters.getSelectedCoverageMethods();
-      User assignee = parameters.getAssignee();
-      boolean includeCompleted = parameters.isIncludeCompletedCancelled();
-      for (ICoverageEditorItem item : provider.getCoverageEditorItems()) {
-         if (assignee != null && item.getAssignees().equals(assignee)) {
-            items.add(item);
-         }
-         if (item instanceof CoverageItem) {
-            CoverageItem coverageItem = (CoverageItem) item;
-            if (coverageMethods.contains(coverageItem.getCoverageMethod())) {
-               items.add(item);
-            }
-         }
-         if ((!includeCompleted && !item.isCompleted()) || includeCompleted) {
-            items.add(item);
-         }
-      }
-      return items;
    }
 
    @Override

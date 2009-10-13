@@ -102,7 +102,7 @@ public class CoveragePackageImport {
             CoverageUnit importCoverageUnit = (CoverageUnit) importItem;
             if (imported.equals(importCoverageUnit)) continue;
 
-            ICoverageEditorItem packageItem = getPackageCoverageItem(importItem);
+            ICoverageEditorItem packageItem = getPackageCoverageItem(importItem, true);
             // Determine if item already exists first
             if (packageItem != null) {
                rd.logError("Import Item matches Package Item - Not Implemented Yet");
@@ -121,7 +121,7 @@ public class CoveragePackageImport {
             } else {
                // Else, want to add item to same parent
                CoverageUnit parentCoverageUnit = (CoverageUnit) importItem.getParent();
-               CoverageUnit parentPackageItem = (CoverageUnit) getPackageCoverageItem(parentCoverageUnit);
+               CoverageUnit parentPackageItem = (CoverageUnit) getPackageCoverageItem(parentCoverageUnit, true);
                parentPackageItem.addCoverageUnit(importCoverageUnit.copy(true));
                imported.add(importCoverageUnit);
                rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
@@ -141,8 +141,8 @@ public class CoveragePackageImport {
       return rd;
    }
 
-   public ICoverageEditorItem getPackageCoverageItem(ICoverageEditorItem importItem) {
-      for (ICoverageEditorItem packageItem : coveragePackage.getCoverageEditorItems()) {
+   public ICoverageEditorItem getPackageCoverageItem(ICoverageEditorItem importItem, boolean recurse) {
+      for (ICoverageEditorItem packageItem : coveragePackage.getCoverageEditorItems(recurse)) {
          if (isConceptuallyEqual(packageItem, importItem)) {
             return packageItem;
          }

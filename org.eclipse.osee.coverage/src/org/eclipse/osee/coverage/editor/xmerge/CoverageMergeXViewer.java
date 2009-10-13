@@ -19,6 +19,7 @@ import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.util.CoveragePackageImport;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -30,9 +31,22 @@ public class CoverageMergeXViewer extends CoverageXViewer {
 
    public Map<ICoverageEditorItem, Boolean> importChecked = new HashMap<ICoverageEditorItem, Boolean>();
    Action toggleImport;
+   private final CoveragePackageImport coveragePackageImport;
+   public static enum ImportType {
+      Add, Replace
+   };
 
-   public CoverageMergeXViewer(Composite parent, int style, IXViewerFactory xViewerFactory, XCoverageMergeViewer xCoverageMergeViewer) {
+   public CoverageMergeXViewer(CoveragePackageImport coveragePackageImport, Composite parent, int style, IXViewerFactory xViewerFactory, XCoverageMergeViewer xCoverageMergeViewer) {
       super(parent, style, xViewerFactory, xCoverageMergeViewer);
+      this.coveragePackageImport = coveragePackageImport;
+   }
+
+   public ICoverageEditorItem getPackageItemForImportItem(ICoverageEditorItem importItem, boolean recurse) {
+      return coveragePackageImport.getPackageCoverageItem(importItem, recurse);
+   }
+
+   public ImportType getImportType(ICoverageEditorItem importItem) {
+      return getPackageItemForImportItem(importItem, true) == null ? ImportType.Add : ImportType.Replace;
    }
 
    public void setImportChecked(ICoverageEditorItem coverageItem, boolean checked) {

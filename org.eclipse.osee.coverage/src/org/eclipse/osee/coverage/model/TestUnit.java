@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
@@ -95,6 +96,11 @@ public class TestUnit implements ICoverageEditorItem {
    @Override
    public String getCoverageEditorValue(XViewerColumn xCol) {
       return "";
+   }
+
+   @Override
+   public Collection<? extends ICoverageEditorItem> getChildrenItems() {
+      return coverageItems;
    }
 
    @Override

@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.editor;
 
+import java.util.Collection;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -36,6 +37,8 @@ public interface ICoverageEditorItem {
    public Image getCoverageEditorImage(XViewerColumn xCol);
 
    public Object[] getChildren();
+
+   public Collection<? extends ICoverageEditorItem> getChildrenItems();
 
    public OseeImage getOseeImage();
 

@@ -9,20 +9,13 @@
  */
 package org.eclipse.osee.coverage.editor;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.model.CoverageImport;
-import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.util.ISaveable;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -72,7 +65,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
       parameters =
-            new CoverageEditorCoverageParameters(mainComp, managedForm, coverageEditor, provider.isAssignable(),
+            new CoverageEditorCoverageParameters(mainComp, managedForm, coverageEditor, provider,
                   new SelectionAdapter() {
                      @Override
                      public void widgetSelected(SelectionEvent e) {
@@ -105,34 +98,10 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
             result.popup();
             return;
          }
-         xCoverageViewer.loadTable(performSearchGetResults());
+         xCoverageViewer.loadTable(parameters.performSearchGetResults(provider));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-   }
-
-   private Collection<ICoverageEditorItem> performSearchGetResults() throws OseeCoreException {
-      Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
-      Collection<CoverageMethodEnum> coverageMethods = parameters.getSelectedCoverageMethods();
-      User assignee = parameters.getAssignee();
-      boolean includeCompleted = parameters.isIncludeCompletedCancelled();
-      for (ICoverageEditorItem item : provider.getCoverageEditorItems()) {
-         if (parameters.isShowAll()) {
-            items.add(item);
-         } else {
-            if (assignee != null && item.getAssignees().equals(assignee)) {
-               items.add(item);
-            } else if (item instanceof CoverageItem) {
-               CoverageItem coverageItem = (CoverageItem) item;
-               if (coverageMethods.contains(coverageItem.getCoverageMethod())) {
-                  items.add(item);
-               }
-            } else if ((!includeCompleted && !item.isCompleted()) || includeCompleted) {
-               items.add(item);
-            }
-         }
-      }
-      return items;
    }
 
    public void createToolbar() {

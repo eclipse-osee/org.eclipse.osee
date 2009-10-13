@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
@@ -140,11 +139,6 @@ public class CoverageItem implements ICoverageEditorItem {
       if (xCol.equals(CoverageXViewerFactory.Test_Units)) return Collections.toString(", ", getTestUnits());
       if (xCol.equals(CoverageXViewerFactory.Text)) return Collections.toString(", ", getText());
       return "";
-   }
-
-   @Override
-   public Object[] getChildren() {
-      return ArrayUtils.EMPTY_OBJECT_ARRAY;
    }
 
    @Override
@@ -290,6 +284,19 @@ public class CoverageItem implements ICoverageEditorItem {
    @Override
    public int getCoveragePercent() {
       return isCovered() ? 100 : 0;
+   }
+
+   @Override
+   public Collection<? extends ICoverageEditorItem> getChildrenItems() {
+      List<ICoverageEditorItem> children = new ArrayList<ICoverageEditorItem>();
+      children.addAll(getTestUnits());
+      return children;
+   }
+
+   @Override
+   public Object[] getChildren() {
+      Collection<?> children = getChildrenItems();
+      return children.toArray(new Object[children.size()]);
    }
 
 }

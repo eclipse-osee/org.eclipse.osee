@@ -11,11 +11,17 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -23,6 +29,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPage;
@@ -43,11 +50,11 @@ import org.eclipse.ui.forms.IManagedForm;
 public class CoverageEditorCoverageParameters extends Composite {
 
    private WorkPage page;
-   private final boolean isAssignable;
+   private final ICoverageTabProvider provider;
 
-   public CoverageEditorCoverageParameters(Composite mainComp, IManagedForm managedForm, CoverageEditor coverageEditor, boolean isAssignable, final SelectionListener selectionListener) {
+   public CoverageEditorCoverageParameters(Composite mainComp, IManagedForm managedForm, CoverageEditor coverageEditor, ICoverageTabProvider provider, final SelectionListener selectionListener) {
       super(mainComp, SWT.None);
-      this.isAssignable = isAssignable;
+      this.provider = provider;
       setLayout(new GridLayout(2, false));
       coverageEditor.getToolkit().adapt(this);
       setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
@@ -91,6 +98,70 @@ public class CoverageEditorCoverageParameters extends Composite {
 
    }
 
+   public Collection<ICoverageEditorItem> performSearchGetResults(ICoverageTabProvider provider) throws OseeCoreException {
+      Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
+      for (ICoverageEditorItem coverageItem : provider.getCoverageEditorItems(false)) {
+         performSearchGetResults(items, coverageItem);
+      }
+      Set<ICoverageEditorItem> parents = new HashSet<ICoverageEditorItem>();
+      for (ICoverageEditorItem coverageItem : items) {
+         if (provider.getCoverageEditorItems(false).contains(coverageItem)) {
+            parents.add(coverageItem);
+         }
+      }
+      return parents;
+
+   }
+
+   public void performSearchGetResults(Set<ICoverageEditorItem> items, ICoverageEditorItem item) throws OseeCoreException {
+      Collection<CoverageMethodEnum> coverageMethods = getSelectedCoverageMethods();
+      User assignee = getAssignee();
+      boolean includeCompleted = isIncludeCompletedCancelled();
+      if (isShowAll()) {
+         items.add(item);
+      } else {
+         boolean add = true;
+         if (assignee != null && !CoverageUtil.getCoverageItemUsers(item).contains(assignee)) {
+            add = false;
+         }
+         if (!add && coverageMethods.size() > 0 && (item instanceof CoverageItem)) {
+            CoverageItem coverageItem = (CoverageItem) item;
+            if (!coverageMethods.contains(coverageItem.getCoverageMethod())) {
+               add = false;
+            }
+         }
+         if (!includeCompleted && item.isCompleted()) {
+            add = false;
+         }
+         if (Strings.isValid(getNotesStr())) {
+            if (item instanceof CoverageUnit) {
+               if (!Strings.isValid(((CoverageUnit) item).getNotes())) {
+                  add = false;
+               }
+               if (((CoverageUnit) item).getNotes() == null || !((CoverageUnit) item).getNotes().contains(getNotesStr())) {
+                  add = false;
+               }
+            } else {
+               add = false;
+            }
+         }
+         if (add) {
+            items.add(item);
+            addAllParents(items, item);
+         }
+         for (ICoverageEditorItem child : item.getChildrenItems()) {
+            performSearchGetResults(items, child);
+         }
+      }
+   }
+
+   private void addAllParents(Set<ICoverageEditorItem> items, ICoverageEditorItem item) {
+      if (item.getParent() != null) {
+         items.add(item.getParent());
+         addAllParents(items, item.getParent());
+      }
+   }
+
    public String getSelectedName(/*SearchType searchType*/) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       if (isShowAll()) {
@@ -125,6 +196,17 @@ public class CoverageEditorCoverageParameters extends Composite {
 
    public XMembersCombo getAssigeeCombo() {
       return (XMembersCombo) getXWidget("Assignee");
+   }
+
+   public String getNotesStr() {
+      if (getNotesXText() != null) {
+         return getNotesXText().get();
+      }
+      return "";
+   }
+
+   public XText getNotesXText() {
+      return (XText) getXWidget("Notes");
    }
 
    public XCheckBox getIncludeCompletedCancelledCheckbox() {
@@ -181,6 +263,9 @@ public class CoverageEditorCoverageParameters extends Composite {
             if (getAssignee() != null) {
                return new Result("Can't have Show All and Assignee selected");
             }
+            if (Strings.isValid(getNotesStr())) {
+               return new Result("Can't have Show All and Notes");
+            }
          }
          if (!isShowAll()) {
             if (getSelectedCoverageMethods().size() == 0) {
@@ -201,15 +286,16 @@ public class CoverageEditorCoverageParameters extends Composite {
                   // 
                   "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>" +
                   //
-                  "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show All\" beginComposite=\"6\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      if (isAssignable) {
+                  "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show All\" beginComposite=\"8\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+      if (provider.isAssignable()) {
          sb.append("" +
          //
          "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
          //
          "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>");
-
       }
+      //
+      sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Notes\" horizontalLabel=\"true\"/>");
       sb.append("</xWidgets>");
       return sb.toString();
    }

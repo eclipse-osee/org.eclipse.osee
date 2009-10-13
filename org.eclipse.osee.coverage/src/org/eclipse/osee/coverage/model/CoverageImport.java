@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.ICoverageEditorProvider;
@@ -138,7 +139,7 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
    }
 
    @Override
-   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems() {
+   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse) {
       return getCoverageUnits();
    }
 
@@ -242,7 +243,7 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
 
    @Override
    public Object[] getChildren() {
-      return null;
+      return ArrayUtils.EMPTY_OBJECT_ARRAY;
    }
 
    @Override
@@ -301,6 +302,11 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
    @Override
    public String getNotes() {
       return null;
+   }
+
+   @Override
+   public Collection<? extends ICoverageEditorItem> getChildrenItems() {
+      return coverageUnits;
    }
 
 }

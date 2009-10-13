@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageLabelProvider;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -53,7 +54,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
-         return CoverageLabelProvider.getCoverageItemUsers(coverageItem);
+         return CoverageUtil.getCoverageItemUsersStr(coverageItem);
       }
       if (xCol.equals(CoverageMergeXViewerFactory.Name)) return coverageItem.getName();
       if (xCol.equals(CoverageXViewerFactory.Guid)) return coverageItem.getGuid();
@@ -62,6 +63,9 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverageItem.getNamespace();
       if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverageItem.getNotes();
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) return String.valueOf(coverageItem.getCoveragePercent());
+      if (xCol.equals(CoverageMergeXViewerFactoryImport.Import)) {
+         return mergeXViewer.getImportType(coverageItem).toString();
+      }
 
       return coverageItem.getCoverageEditorValue(xCol);
    }

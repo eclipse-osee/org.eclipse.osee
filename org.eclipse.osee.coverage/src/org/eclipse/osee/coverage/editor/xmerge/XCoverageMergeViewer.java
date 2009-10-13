@@ -6,7 +6,9 @@
 package org.eclipse.osee.coverage.editor.xmerge;
 
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
+import org.eclipse.osee.coverage.util.CoveragePackageImport;
 import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.swt.ALayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -16,13 +18,15 @@ import org.eclipse.swt.widgets.Label;
 /**
  * @author Donald G. Dunne
  */
-public class XCoverageMergeViewer extends XCoverageViewer {
+public class XCoverageMergeViewer extends XCoverageViewer implements IRefreshActionHandler {
 
    CoverageMergeXViewer mergeXViewer;
    private final CoverageMergeXViewerFactory coverageMergeXViewerFactory;
+   private final CoveragePackageImport coveragePackageImport;
 
-   public XCoverageMergeViewer(ISaveable saveable, CoverageMergeXViewerFactory coverageMergeXViewerFactory, TableType tableType, TableType... types) {
+   public XCoverageMergeViewer(CoveragePackageImport coveragePackageImport, ISaveable saveable, CoverageMergeXViewerFactory coverageMergeXViewerFactory, TableType tableType, TableType... types) {
       super(saveable, tableType, types);
+      this.coveragePackageImport = coveragePackageImport;
       this.coverageMergeXViewerFactory = coverageMergeXViewerFactory;
    }
 
@@ -45,7 +49,7 @@ public class XCoverageMergeViewer extends XCoverageViewer {
       createTaskActionBar(mainComp);
 
       xViewer =
-            new CoverageMergeXViewer(mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+            new CoverageMergeXViewer(coveragePackageImport, mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
                   coverageMergeXViewerFactory, this);
       mergeXViewer = (CoverageMergeXViewer) xViewer;
       xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -57,6 +61,11 @@ public class XCoverageMergeViewer extends XCoverageViewer {
 
       // NOTE: Don't adapt the tree using xToolkit cause will loose xViewer's context menu
       updateExtraLabel();
+   }
+
+   @Override
+   public void refreshActionHandler() {
+      refresh();
    }
 
 }

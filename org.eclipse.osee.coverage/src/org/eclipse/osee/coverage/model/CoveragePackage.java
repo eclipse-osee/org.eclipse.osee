@@ -164,7 +164,7 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
    }
 
    @Override
-   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems() {
+   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse) {
       return getCoverageUnits();
    }
 
@@ -243,8 +243,14 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
    }
 
    @Override
+   public Collection<? extends ICoverageEditorItem> getChildrenItems() {
+      return coverageUnits;
+   }
+
+   @Override
    public Object[] getChildren() {
-      return null;
+      Collection<?> children = getChildrenItems();
+      return children.toArray(new Object[children.size()]);
    }
 
    @Override
@@ -331,7 +337,7 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
    @Override
    public Result save() {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Coverage Package");
          save(transaction);
          transaction.execute();
       } catch (OseeCoreException ex) {

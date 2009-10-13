@@ -22,7 +22,7 @@ public interface ICoverageEditorProvider {
 
    public String getName();
 
-   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems();
+   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse);
 
    public OseeImage getTitleImage();
 

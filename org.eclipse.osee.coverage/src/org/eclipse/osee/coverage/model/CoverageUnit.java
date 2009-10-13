@@ -11,6 +11,7 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
@@ -154,9 +155,7 @@ public class CoverageUnit implements ICoverageEditorItem {
 
    @Override
    public Object[] getChildren() {
-      List<ICoverageEditorItem> children = new ArrayList<ICoverageEditorItem>();
-      children.addAll(getCoverageUnits());
-      children.addAll(getCoverageItems(false));
+      Collection<?> children = getChildrenItems();
       return children.toArray(new Object[children.size()]);
    }
 
@@ -253,7 +252,7 @@ public class CoverageUnit implements ICoverageEditorItem {
          }
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.getArtifactTypeName().equals(CoverageUnit.ARTIFACT_NAME)) {
-               coverageUnits.add(new CoverageUnit(childArt));
+               addCoverageUnit(new CoverageUnit(childArt));
             }
          }
       }
@@ -288,7 +287,7 @@ public class CoverageUnit implements ICoverageEditorItem {
       }
       keyValueArtifact.setValues("cvgItem", items);
       if (notes != null) {
-         keyValueArtifact.setValue("status", notes.toString());
+         keyValueArtifact.setValue("notes", notes.toString());
       }
       if (Strings.isValid(text)) {
          keyValueArtifact.setValue("text", text);
@@ -389,6 +388,14 @@ public class CoverageUnit implements ICoverageEditorItem {
          }
       }
       return items;
+   }
+
+   @Override
+   public Collection<? extends ICoverageEditorItem> getChildrenItems() {
+      List<ICoverageEditorItem> children = new ArrayList<ICoverageEditorItem>();
+      children.addAll(getCoverageUnits());
+      children.addAll(getCoverageItems(false));
+      return children;
    }
 
 }
