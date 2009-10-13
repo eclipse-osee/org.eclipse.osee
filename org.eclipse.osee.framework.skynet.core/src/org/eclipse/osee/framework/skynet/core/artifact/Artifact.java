@@ -936,8 +936,19 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws OseeCoreException
     */
    public <T> void addAttribute(String attributeTypeName, T value) throws OseeCoreException {
-      initializeAttribute(AttributeTypeManager.getType(attributeTypeName), ModificationType.NEW, true, false).setValue(
-            value);
+      addAttribute(AttributeTypeManager.getType(attributeTypeName), value);
+   }
+
+   /**
+    * adds a new attribute of the type named attributeTypeName and assigns it the given value
+    * 
+    * @param <T>
+    * @param attributeType
+    * @param value
+    * @throws OseeCoreException
+    */
+   public <T> void addAttribute(AttributeType attributeType, T value) throws OseeCoreException {
+      initializeAttribute(attributeType, ModificationType.NEW, true, false).setValue(value);
    }
 
    /**
@@ -1474,11 +1485,14 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
 
    private void copyAttributes(Artifact artifact) throws OseeCoreException {
       for (Attribute<?> attribute : getAttributes()) {
-         if (CoreAttributes.RELATION_ORDER.getName().equals(attribute.getAttributeType())) {
-            continue;
+         if (isCopyAllowed(attribute)) {
+            artifact.addAttribute(attribute.getAttributeType(), attribute.getValue());
          }
-         artifact.addAttribute(attribute.getAttributeType().getName(), attribute.getValue());
       }
+   }
+
+   private boolean isCopyAllowed(Attribute<?> attribute) {
+      return attribute != null && !attribute.isOfType(CoreAttributes.RELATION_ORDER.getName());
    }
 
    /**
