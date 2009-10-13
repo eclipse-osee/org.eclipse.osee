@@ -37,10 +37,7 @@ public class User extends Artifact implements Serializable {
    public static final String userIdAttributeName = "User Id";
 
    public static enum Attributes {
-      Phone,
-      Email,
-      Active,
-      Policy
+      Phone, Email, Active, Policy
    };
 
    private PropertyStore userSettings;
@@ -136,9 +133,9 @@ public class User extends Artifact implements Serializable {
       }
 
       if (!found) {
-         addAttribute(CoreAttributes.FAVORITE_BRANCH.getName(), favoriteBranch.getBranchId());
+         addAttribute(CoreAttributes.FAVORITE_BRANCH.getName(), favoriteBranch.getGuid());
       }
-      setSetting(CoreAttributes.FAVORITE_BRANCH.getName(), String.valueOf(favoriteBranch.getBranchId()));
+      setSetting(CoreAttributes.FAVORITE_BRANCH.getName(), favoriteBranch.getGuid());
    }
 
    public boolean isFavoriteBranch(Branch branch) throws OseeCoreException {
