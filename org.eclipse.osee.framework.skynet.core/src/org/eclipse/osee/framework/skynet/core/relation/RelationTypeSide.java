@@ -12,7 +12,6 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Andrew M. Finkbeiner
@@ -25,11 +24,6 @@ public class RelationTypeSide implements IRelationEnumeration {
    public RelationTypeSide(RelationType type, RelationSide side) {
       this.type = type;
       this.side = side;
-   }
-
-   public RelationTypeSide(String typeName, String sideName) throws OseeCoreException {
-      this.type = RelationTypeManager.getType(typeName);
-      this.side = type.isSideAName(sideName) ? RelationSide.SIDE_A : RelationSide.SIDE_B;
    }
 
    @Override

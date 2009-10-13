@@ -16,9 +16,11 @@ package org.eclipse.osee.framework.ui.skynet.util;
 public class ArtifactPasteConfiguration {
 
    private boolean includeChildrenOfCopiedElements;
+   private boolean isOrderDuplicationAllowed;
 
    public ArtifactPasteConfiguration() {
       includeChildrenOfCopiedElements = false;
+      isOrderDuplicationAllowed = true;
    }
 
    public void setIncludeChildrenOfCopiedElements(boolean includeChildrenOfCopiedElements) {
@@ -28,4 +30,13 @@ public class ArtifactPasteConfiguration {
    public boolean isIncludeChildrenOfCopiedElements() {
       return includeChildrenOfCopiedElements;
    }
+
+   public boolean isKeepRelationOrderSettings() {
+      return isOrderDuplicationAllowed;
+   }
+
+   public void setKeepRelationOrderSettings(boolean isOrderDuplicationAllowed) {
+      this.isOrderDuplicationAllowed = isOrderDuplicationAllowed;
+   }
+
 }

@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -714,7 +713,7 @@ public class RelationManager {
          relation = RelationLink.getOrCreate(artifactA, artifactB, relationType, rationale, ModificationType.NEW);
          relation.setDirty();
 
-         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationType, RelationSide.SIDE_A);
+         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationType, RelationSide.SIDE_B);
          sorter.addItem(sorterId, artifactB);
 
          try {

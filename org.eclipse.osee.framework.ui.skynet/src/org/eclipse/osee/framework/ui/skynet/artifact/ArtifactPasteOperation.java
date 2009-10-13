@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.artifact;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -23,6 +24,11 @@ import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
 import org.eclipse.swt.widgets.Display;
@@ -88,6 +94,21 @@ public class ArtifactPasteOperation extends AbstractOperation {
       }
    }
 
+   private void pasteRelationOrder(ArtifactPasteConfiguration config, Artifact source, Artifact newArtifact, List<Artifact> copiedChildren) throws OseeCoreException {
+      if (config.isKeepRelationOrderSettings()) {
+         RelationOrderData data = RelationManager.createRelationOrderData(source);
+         String order =
+               data.getCurrentSorterGuid(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType(),
+                     CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getSide());
+         IRelationSorter sorter = RelationManager.getSorterProvider().getRelationOrder(order);
+         if (RelationOrderBaseTypes.USER_DEFINED == sorter.getSorterId()) {
+            newArtifact.setRelationOrder(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, copiedChildren);
+         } else {
+            newArtifact.setRelationOrder(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, sorter.getSorterId());
+         }
+      }
+   }
+
    private Artifact pasteArtifact(IProgressMonitor monitor, double workAmount, ArtifactPasteConfiguration config, Artifact destination, Artifact source) throws OseeCoreException {
       boolean workComplete = true;
       Artifact newArtifact = null;
@@ -95,15 +116,20 @@ public class ArtifactPasteOperation extends AbstractOperation {
       if (!(source instanceof User)) {
          newArtifact = source.duplicate(destination.getBranch());
          destination.addChild(newArtifact);
+         List<Artifact> copiedChildren = new ArrayList<Artifact>();
          if (config.isIncludeChildrenOfCopiedElements()) {
             Collection<Artifact> children = source.getChildren();
             if (!children.isEmpty()) {
                workComplete = false;
                double stepAmount = workAmount / children.size();
                for (Artifact sourceChild : children) {
-                  pasteArtifact(monitor, stepAmount, config, newArtifact, sourceChild);
+                  copiedChildren.add(pasteArtifact(monitor, stepAmount, config, newArtifact, sourceChild));
                }
             }
+         }
+
+         if (config.isKeepRelationOrderSettings()) {
+            pasteRelationOrder(config, source, newArtifact, copiedChildren);
          }
       }
       if (workComplete) {
@@ -111,7 +137,6 @@ public class ArtifactPasteOperation extends AbstractOperation {
       }
       return newArtifact;
    }
-
    private final static class NonBlankAndNotSameAsStartingValidator implements IInputValidator {
       private final String startingName;
 

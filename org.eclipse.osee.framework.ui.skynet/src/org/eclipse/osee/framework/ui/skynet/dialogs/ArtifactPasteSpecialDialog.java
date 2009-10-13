@@ -69,6 +69,7 @@ public class ArtifactPasteSpecialDialog extends TitleAreaDialog {
 
       Button button = new Button(group, SWT.CHECK);
       button.setText("Include children of copied artifacts");
+      button.setSelection(config.isIncludeChildrenOfCopiedElements());
       button.addSelectionListener(new SelectionAdapter() {
 
          @Override
@@ -80,7 +81,20 @@ public class ArtifactPasteSpecialDialog extends TitleAreaDialog {
             }
          }
       });
+      button = new Button(group, SWT.CHECK);
+      button.setText("Keep relation order settings");
+      button.setSelection(config.isKeepRelationOrderSettings());
+      button.addSelectionListener(new SelectionAdapter() {
 
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            Object source = e.getSource();
+            if (source instanceof Button) {
+               Button button = (Button) source;
+               config.setKeepRelationOrderSettings(button.getSelection());
+            }
+         }
+      });
       return composite;
    }
 }
