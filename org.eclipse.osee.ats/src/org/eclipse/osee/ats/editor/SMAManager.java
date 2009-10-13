@@ -332,6 +332,10 @@ public class SMAManager {
    }
 
    public boolean promptChangeVersion(VersionReleaseType versionReleaseType, boolean persist) throws OseeCoreException {
+      if (AtsUtil.isAtsAdmin() && !(getSma() instanceof TeamWorkFlowArtifact)) {
+         AWorkbench.popup("ERROR ", "Cannot set version for: \n\n" + getSma().getName());
+         return false;
+      }
       return promptChangeVersion(Arrays.asList((TeamWorkFlowArtifact) getSma()), versionReleaseType, persist);
    }
 
