@@ -127,7 +127,8 @@ public final class InternalChangeManager {
     * @throws OseeCoreException
     */
    private Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor, Artifact specificArtifact) throws OseeCoreException {
-      @SuppressWarnings("unused")//This is so weak references do not get collected from bulk loading
+      @SuppressWarnings("unused")
+      //This is so weak references do not get collected from bulk loading
       Collection<Artifact> bulkLoadedArtifacts;
       ArrayList<Change> changes = new ArrayList<Change>();
       ArrayList<ChangeBuilder> changeBuilders = new ArrayList<ChangeBuilder>();
@@ -165,7 +166,8 @@ public final class InternalChangeManager {
             insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
                   historical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }
-         bulkLoadedArtifacts = ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
+         bulkLoadedArtifacts =
+               ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
       }
 
       //We build the changes after the artifact loader has been run so we can take advantage of bulk loading. 
@@ -189,14 +191,16 @@ public final class InternalChangeManager {
       boolean isHistorical = sourceBranch == null;
       ArrayList<Change> changes = new ArrayList<Change>();
       List<ChangeItem> changeItems = loadChangeItems(sourceBranch, transactionId, monitor, isHistorical);
-      @SuppressWarnings("unused")//This is to keep the weak reference from being collected before they can be used.
-      Collection<Artifact> bulkLoadedArtifacts = preloadArtifacts(changeItems, sourceBranch, transactionId, isHistorical, monitor);
+      @SuppressWarnings("unused")
+      //This is to keep the weak reference from being collected before they can be used.
+      Collection<Artifact> bulkLoadedArtifacts =
+            preloadArtifacts(changeItems, sourceBranch, transactionId, isHistorical, monitor);
 
       for (ChangeItem item : changeItems) {
          Change change = null;
          Branch branch = null;
          Artifact artifact = null;
-         
+
          try {
             TransactionId toTransactionId =
                   TransactionIdManager.getTransactionId(item.getCurrent().getTransactionNumber().intValue());
@@ -234,6 +238,7 @@ public final class InternalChangeManager {
          changes.add(change);
       }
       monitor.done();
+      bulkLoadedArtifacts.clear();
       return changes;
    }
 
@@ -254,7 +259,13 @@ public final class InternalChangeManager {
                      item.getNet().getModType(), isHistorical, artifact);
       } else if (item instanceof RelationChangeItem) {
          RelationChangeItem relationChangeItem = (RelationChangeItem) item;
-         Artifact bArtifact = ArtifactQuery.getArtifactFromId(relationChangeItem.getBArtId(), branch, true);
+         Artifact bArtifact;
+
+         if (isHistorical) {
+            bArtifact = ArtifactCache.getHistorical(item.getArtId(), toTransactionId.getTransactionNumber());
+         } else {
+            bArtifact = ArtifactQuery.getArtifactFromId(relationChangeItem.getBArtId(), branch, true);
+         }
          change =
                new RelationChange(branch, artifact.getArtifactType(),
                      (int) relationChangeItem.getCurrent().getGammaId().longValue(), item.getArtId(), toTransactionId,
@@ -290,8 +301,9 @@ public final class InternalChangeManager {
                   isHistorical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }
 
-         artifacts =  ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.ALL_CURRENT, null, insertParameters, true, isHistorical,
-               true);
+         artifacts =
+               ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.ALL_CURRENT, null, insertParameters, true,
+                     isHistorical, true);
       }
       return artifacts;
    }
