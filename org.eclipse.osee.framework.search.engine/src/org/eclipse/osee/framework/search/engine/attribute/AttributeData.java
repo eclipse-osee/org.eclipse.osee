@@ -19,12 +19,12 @@ import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
  */
 public class AttributeData implements IAttributeLocator {
    private final static String EMPTY_STRING = "";
-   private int artId;
-   private long gammaId;
-   private int branchId;
-   private String value;
-   private String uri;
-   private String taggerId;
+   private final int artId;
+   private final long gammaId;
+   private final int branchId;
+   private final String value;
+   private final String uri;
+   private final String taggerId;
 
    protected AttributeData(int artId, long gammaId, int branchId, String value, String uri, String taggerId) {
       super();
@@ -80,6 +80,7 @@ public class AttributeData implements IAttributeLocator {
       return toReturn;
    }
 
+   @Override
    public String toString() {
       return String.format("artId:[%s] branchId:[%d] gammaId:[%s] uri:[%s] taggerId:[%s]", getArtId(), getBranchId(),
             getGammaId(), getUri(), getTaggerId());
@@ -87,8 +88,12 @@ public class AttributeData implements IAttributeLocator {
 
    @Override
    public boolean equals(Object object) {
-      if (this == object) return true;
-      if (!(object instanceof AttributeData)) return false;
+      if (this == object) {
+         return true;
+      }
+      if (!(object instanceof AttributeData)) {
+         return false;
+      }
       AttributeData other = (AttributeData) object;
       return other.getGammaId() == this.getGammaId();
    }
