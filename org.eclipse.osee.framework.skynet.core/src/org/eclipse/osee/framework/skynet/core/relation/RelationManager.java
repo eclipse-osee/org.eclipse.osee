@@ -229,6 +229,8 @@ public class RelationManager {
    }
 
    private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
+      @SuppressWarnings("unused") // This is for bulk loading so we do not loose are references
+      Collection<Artifact> bulkLoadedArtifacts;
       List<RelationLink> selectedRelations = null;
       if (relationType == null) {
          selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
@@ -249,12 +251,14 @@ public class RelationManager {
       if (relationSide == null) {
          relationSide = RelationSide.OPPOSITE;
       }
+
       addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, insertMap, selectedRelations,
             relationSide);
 
       if (insertParameters.size() > 0) {
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, false, false);
+         bulkLoadedArtifacts = ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, false, false);
       }
+
       //now that bulk loading is done, put the artifacts in the right order and return them
       relatedArtifacts.clear();
       for (RelationLink relation : selectedRelations) {

@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.revision;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,6 +31,7 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -125,6 +127,8 @@ public final class InternalChangeManager {
     * @throws OseeCoreException
     */
    private Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor, Artifact specificArtifact) throws OseeCoreException {
+      @SuppressWarnings("unused")//This is so weak references do not get collected from bulk loading
+      Collection<Artifact> bulkLoadedArtifacts;
       ArrayList<Change> changes = new ArrayList<Change>();
       ArrayList<ChangeBuilder> changeBuilders = new ArrayList<ChangeBuilder>();
 
@@ -161,8 +165,7 @@ public final class InternalChangeManager {
             insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
                   historical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }
-
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
+         bulkLoadedArtifacts = ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
       }
 
       //We build the changes after the artifact loader has been run so we can take advantage of bulk loading. 
@@ -186,7 +189,8 @@ public final class InternalChangeManager {
       boolean isHistorical = sourceBranch == null;
       ArrayList<Change> changes = new ArrayList<Change>();
       List<ChangeItem> changeItems = loadChangeItems(sourceBranch, transactionId, monitor, isHistorical);
-      preloadArtifacts(changeItems, sourceBranch, transactionId, isHistorical, monitor);
+      @SuppressWarnings("unused")//This is to keep the weak reference from being collected before they can be used.
+      Collection<Artifact> bulkLoadedArtifacts = preloadArtifacts(changeItems, sourceBranch, transactionId, isHistorical, monitor);
 
       for (ChangeItem item : changeItems) {
          Change change = null;
@@ -202,7 +206,7 @@ public final class InternalChangeManager {
 
             if (isHistorical) {
                fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
-               artifact =  ArtifactQuery.getHistoricalArtifactFromId(item.getArtId(), transactionId, true);
+               artifact = ArtifactCache.getHistorical(item.getArtId(), transactionId.getTransactionNumber());
                branch = transactionId.getBranch();
             } else {
                branch = sourceBranch;
@@ -263,7 +267,8 @@ public final class InternalChangeManager {
       return change;
    }
 
-   private void preloadArtifacts(List<ChangeItem> changeItems, Branch sourceBranch, TransactionId transactionId, boolean isHistorical, IProgressMonitor monitor) throws OseeCoreException {
+   private Collection<Artifact> preloadArtifacts(List<ChangeItem> changeItems, Branch sourceBranch, TransactionId transactionId, boolean isHistorical, IProgressMonitor monitor) throws OseeCoreException {
+      Collection<Artifact> artifacts = Collections.emptyList();
       if (!changeItems.isEmpty()) {
          monitor.subTask("Preload artifacts");
          int queryId = ArtifactLoader.getNewQueryId();
@@ -285,9 +290,10 @@ public final class InternalChangeManager {
                   isHistorical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }
 
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.ALL_CURRENT, null, insertParameters, true, isHistorical,
+         artifacts =  ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.ALL_CURRENT, null, insertParameters, true, isHistorical,
                true);
       }
+      return artifacts;
    }
 
    /**

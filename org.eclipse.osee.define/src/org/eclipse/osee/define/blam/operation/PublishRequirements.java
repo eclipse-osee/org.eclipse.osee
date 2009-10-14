@@ -215,7 +215,10 @@ public class PublishRequirements extends AbstractBlam {
       for (Artifact artifact : artifactSet) {
          insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branchId, transactionId});
       }
-      ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, true, true);
+      
+      @SuppressWarnings("unused")
+      Collection<Artifact> bulkLoadedArtifacts = ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, true, true);
+      
       for (Artifact artifact : artifacts) {
          historicArtifacts.add(ArtifactCache.getHistorical(artifact.getArtId(), transactionId));
       }

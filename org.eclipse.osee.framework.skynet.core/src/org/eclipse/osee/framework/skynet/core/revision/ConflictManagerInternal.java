@@ -35,6 +35,7 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
@@ -116,6 +117,8 @@ public class ConflictManagerInternal {
    }
 
    public static List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, IProgressMonitor monitor) throws OseeCoreException {
+      @SuppressWarnings("unused") // This is for bulk loading so we do not loose are references
+      Collection<Artifact> bulkLoadedArtifacts;
       ArrayList<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
       Set<Integer> artIdSet = new HashSet<Integer>();
@@ -179,7 +182,7 @@ public class ConflictManagerInternal {
       }
       monitor.worked(15);
 
-      preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet, monitor);
+      bulkLoadedArtifacts = preloadConflictArtifacts(sourceBranch, destinationBranch, mergeBranch, artIdSet, monitor);
 
       long time = System.currentTimeMillis();
       //Don't create the conflicts for attributes on an artifact that is deleted etc.
@@ -201,8 +204,9 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   private static void preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet, IProgressMonitor monitor) throws OseeCoreException {
+   private static Collection<Artifact> preloadConflictArtifacts(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<Integer> artIdSet, IProgressMonitor monitor) throws OseeCoreException {
       long time = 0;
+      Collection<Artifact> artifacts = null;
 
       monitor.subTask("Preloading Artifacts Associated with the Conflicts");
       if (DEBUG) {
@@ -222,12 +226,13 @@ public class ConflictManagerInternal {
             insertParameters.add(new Object[] {queryId, insertTime, artId, mergeBranch.getBranchId(),
                   SQL3DataType.INTEGER});
          }
-         ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false, true);
+         artifacts = ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false, true);
       }
       if (DEBUG) {
          System.out.println(String.format("    Preloading took %s", Lib.getElapseString(time)));
       }
       monitor.worked(25);
+      return artifacts;
    }
 
    /**
