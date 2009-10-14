@@ -249,23 +249,20 @@ public class RelationManager {
       if (relationSide == null) {
          relationSide = RelationSide.OPPOSITE;
       }
-
       addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, insertMap, selectedRelations,
             relationSide);
 
       if (insertParameters.size() > 0) {
          ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, false, false);
       }
-
       //now that bulk loading is done, put the artifacts in the right order and return them
       relatedArtifacts.clear();
       for (RelationLink relation : selectedRelations) {
          if (!relation.isDeleted()) {
             try {
-               if (relationSide == null) {
+               if (relation.getSide(artifact).isOppositeSide(relationSide)) {
+                  relationSide = relation.getSide(artifact).oppositeSide();
                   relatedArtifacts.add(relation.getArtifactOnOtherSide(artifact));
-               } else if (relation.getSide(artifact).isOppositeSide(relationSide)) {
-                  relatedArtifacts.add(relation.getArtifact(relationSide));
                }
             } catch (ArtifactDoesNotExist ex) {
                OseeLog.log(Activator.class, Level.WARNING, ex);
@@ -360,7 +357,7 @@ public class RelationManager {
    }
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType) throws OseeCoreException {
-      return getRelatedArtifacts(artifact, relationType, null);
+      return getRelatedArtifacts(artifact, relationType, RelationSide.OPPOSITE);
    }
 
    @SuppressWarnings("unchecked")
