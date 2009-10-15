@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.swt.widgets.Display;
 
@@ -127,8 +128,8 @@ public class InterArtifactExplorerDropHandler {
 
             Artifact reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
             if (status == TransferStatus.INTRODUCE) {
-               reflectedArtifact.setRelations(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT,
-                     Collections.singleton(parentArtifact));
+               reflectedArtifact.setRelations(RelationOrderBaseTypes.USER_DEFINED,
+                     CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, Collections.singleton(parentArtifact));
             } else {
                reloadArtifacts.add(reflectedArtifact);
             }

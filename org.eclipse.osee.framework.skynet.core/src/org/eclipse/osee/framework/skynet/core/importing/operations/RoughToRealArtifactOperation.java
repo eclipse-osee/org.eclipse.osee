@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.importing.operations;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -27,6 +28,7 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 
@@ -39,14 +41,15 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
    private final IArtifactImportResolver artifactResolver;
    private final Map<RoughArtifact, Artifact> roughToRealArtifact;
    private final Artifact destinationArtifact;
-
+   private final IRelationSorterId importArtifactOrder;
+   
    public RoughToRealArtifactOperation(SkynetTransaction transaction, Artifact destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver) {
       super("Materialize Artifacts", Activator.PLUGIN_ID);
       this.rawData = rawData;
       this.transaction = transaction;
       this.artifactResolver = artifactResolver;
       this.destinationArtifact = destinationArtifact;
-
+      this.importArtifactOrder = RelationOrderBaseTypes.USER_DEFINED;
       this.roughToRealArtifact = new HashMap<RoughArtifact, Artifact>();
       roughToRealArtifact.put(rawData.getParentRoughArtifact(), this.destinationArtifact);
    }
@@ -60,7 +63,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
          Artifact child = createArtifact(monitor, roughToRealArtifact, roughArtifact);
          if (child != null) {
-            destinationArtifact.addChild(child);
+            destinationArtifact.addChild(importArtifactOrder, child);
          }
          monitor.worked(unitOfWork);
       }
@@ -84,7 +87,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
          Artifact childArtifact = createArtifact(monitor, roughToRealArtifact, childRoughArtifact);
          if (realArtifact != null && childArtifact != null && !realArtifact.isDeleted() && !childArtifact.isDeleted()) {
             if (!childArtifact.hasParent()) {
-               realArtifact.addChild(childArtifact);
+               realArtifact.addChild(importArtifactOrder, childArtifact);
             } else if (!childArtifact.getParent().equals(realArtifact)) {
                throw new OseeStateException(
                      childArtifact.getName() + " already has a parent that differs from the imported parent");
@@ -118,7 +121,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
          try {
             monitor.subTask(aArt.getName() + " <--> " + bArt.getName());
             monitor.worked(1);
-            RelationManager.addRelation(RelationOrderBaseTypes.USER_DEFINED, relationType, aArt, bArt,
+            RelationManager.addRelation(importArtifactOrder, relationType, aArt, bArt,
                   roughRelation.getRationale());
             aArt.persist(transaction);
          } catch (IllegalArgumentException ex) {

@@ -67,6 +67,9 @@ import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.Cha
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -578,7 +581,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                      new ArtifactTypeFilteredTreeEntryDialog("New Child",
                            "Enter name and select Artifact type to create", "Artifact Name");
                dialog.setInput(descriptors);
-               if (dialog.open() == 0) {
+               if (dialog.open() == Window.OK) {
 
                   ArtifactType descriptor = dialog.getSelection();
                   String name = dialog.getEntryValue();
@@ -586,13 +589,21 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   IStructuredSelection selection = (IStructuredSelection) treeViewer.getSelection();
                   Iterator<?> itemsIter = selection.iterator();
                   // If nothing was selected, then the child belongs at the root
+                  IRelationSorterId sorterId = RelationOrderBaseTypes.USER_DEFINED;
+
+                  SkynetTransaction transaction = new SkynetTransaction(branch);
                   if (!itemsIter.hasNext()) {
-                     exploreRoot.addNewChild(descriptor, name).persist();
+                     exploreRoot.addNewChild(sorterId, descriptor, name);
+                     exploreRoot.persist(transaction);
                   } else {
                      while (itemsIter.hasNext()) {
-                        ((Artifact) itemsIter.next()).addNewChild(descriptor, name).persist();
+                        Artifact parent = ((Artifact) itemsIter.next());
+                        parent.addNewChild(sorterId, descriptor, name);
+                        parent.persist(transaction);
                      }
                   }
+                  transaction.execute();
+
                   treeViewer.refresh();
                   treeViewer.refresh(false);
                }

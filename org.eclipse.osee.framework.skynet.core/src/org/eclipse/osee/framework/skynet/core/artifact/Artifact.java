@@ -339,7 +339,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return getName();
    }
 
-   //TODO should not return null but currently application code expects it to
+   // TODO should not return null but currently application code expects it to
    /**
     * The method should be used when the caller expects this artifact to have exactly one parent. Otherwise use
     * hasParent() to safely determine whether
@@ -435,44 +435,19 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       }
    }
 
-   /**
-    * @param artifact
-    * @throws OseeCoreException
-    */
    public void addChild(Artifact artifact) throws OseeCoreException {
-      addRelation(DEFAULT_HIERARCHICAL__CHILD, artifact);
+      addChild(null, artifact);
    }
 
-   /**
-    * creates a new child using artifactType with the given name and relates it to its parent
-    * 
-    * @param artifactType
-    * @param name
-    * @throws OseeCoreException
-    */
-   public Artifact addNewChild(ArtifactType artifactType, String name) throws OseeCoreException {
+   public void addChild(IRelationSorterId sorterId, Artifact artifact) throws OseeCoreException {
+      addRelation(sorterId, DEFAULT_HIERARCHICAL__CHILD, artifact);
+   }
+
+   public Artifact addNewChild(IRelationSorterId sorterId, ArtifactType artifactType, String name) throws OseeCoreException {
       Artifact child = artifactType.makeNewArtifact(branch);
       child.setName(name);
-      addChild(child);
+      addChild(sorterId, child);
       return child;
-   }
-
-   /**
-    * creates a new child using artifactType with the given name and relates it to its parent
-    * 
-    * @param artifactTypeName
-    * @param name
-    * @return the newly created artifact
-    * @throws OseeCoreException
-    */
-   public Artifact addNewChild(String artifactTypeName, String name) throws OseeCoreException {
-      return addNewChild(ArtifactTypeManager.getType(artifactTypeName), name);
-   }
-
-   public void addChildren(List<? extends Artifact> artifacts) throws OseeCoreException {
-      for (Artifact artifact : artifacts) {
-         addChild(artifact);
-      }
    }
 
    /**
@@ -891,7 +866,11 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     */
    public void setAttributeValues(String attributeTypeName, Collection<String> newValues) throws OseeCoreException {
       ensureAttributesLoaded();
-      HashSet<String> uniqueNewValues = new HashSet<String>(newValues); // ensure new values are unique
+      HashSet<String> uniqueNewValues = new HashSet<String>(newValues); // ensure
+      // new
+      // values
+      // are
+      // unique
 
       List<Attribute<Object>> remainingAttributes = getAttributes(attributeTypeName);
       List<String> remainingNewValues = new ArrayList<String>(uniqueNewValues.size());
@@ -1354,7 +1333,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @param artifacts
     * @throws OseeCoreException
     */
-   public void setRelations(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
+   public void setRelations(IRelationSorterId sorterId, IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
       Collection<Artifact> currentlyRelated = getRelatedArtifacts(relationSide, Artifact.class);
       // Remove relations that have been removed
       for (Artifact artifact : currentlyRelated) {
@@ -1365,9 +1344,13 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       // Add new relations if don't exist
       for (Artifact artifact : artifacts) {
          if (!currentlyRelated.contains(artifact)) {
-            addRelation(relationSide, artifact);
+            addRelation(sorterId, relationSide, artifact);
          }
       }
+   }
+
+   public void setRelations(IRelationEnumeration relationSide, Collection<? extends Artifact> artifacts) throws OseeCoreException {
+      setRelations(null, relationSide, artifacts);
    }
 
    /**
@@ -1476,7 +1459,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     */
    public Artifact duplicate(Branch branch) throws OseeCoreException {
       Artifact newArtifact = artifactType.makeNewArtifact(branch);
-      //we do this because attributes were added on creation to meet the minimum attribute requirements      
+      // we do this because attributes were added on creation to meet the
+      // minimum attribute requirements
       newArtifact.attributes.clear();
       copyAttributes(newArtifact);
       return newArtifact;
@@ -1517,7 +1501,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
                   branch, ModificationType.INTRODUCED);
 
       for (Attribute<?> sourceAttribute : attributes.getValues()) {
-         //In order to reflect attributes they must exist in the data store and be valid for the destination branch as well
+         // In order to reflect attributes they must exist in the data store
+         // and be valid for the destination branch as well
          if (sourceAttribute.isInDb() && reflectedArtifact.isAttributeTypeValid(sourceAttribute.getAttributeType().getName())) {
             reflectedArtifact.internalInitializeAttribute(sourceAttribute.getAttributeType(),
                   sourceAttribute.getAttrId(), sourceAttribute.getGammaId(), ModificationType.INTRODUCED, true,
@@ -1592,7 +1577,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
          elementName = "nameless";
       }
 
-      // Fix the first character if it is a number by replacing it with its name
+      // Fix the first character if it is a number by replacing it with its
+      // name
       char firstChar = elementName.charAt(0);
       if (firstChar >= '0' && firstChar <= '9') {
          elementName = NUMBER[firstChar - '0'] + elementName.substring(1);

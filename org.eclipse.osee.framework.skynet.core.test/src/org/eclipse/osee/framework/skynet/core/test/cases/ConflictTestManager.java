@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 
 /**
@@ -217,9 +219,9 @@ public class ConflictTestManager {
          ArtifactType artType = ArtifactTypeManager.getType(conflictDefs[i].artifactType);
          if (conflictDefs[i].rootArtifact > 0 && conflictDefs[i].rootArtifact < i) {
             destArtifacts[i] =
-                  destArtifacts[conflictDefs[i].rootArtifact].addNewChild(artType, "Test Artifact Number " + i);
+                  destArtifacts[conflictDefs[i].rootArtifact].addNewChild(RelationOrderBaseTypes.USER_DEFINED, artType, "Test Artifact Number " + i);
          } else {
-            destArtifacts[i] = rootArtifact.addNewChild(artType, "Test Artifact Number " + i);
+            destArtifacts[i] = rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, artType, "Test Artifact Number " + i);
          }
          for (AttributeValue value : conflictDefs[i].newAttributes) {
             destArtifacts[i].addAttribute(value.attributeName, stringToObject(value.clas, value.sourceValue));
@@ -352,7 +354,7 @@ public class ConflictTestManager {
             rootArtifact = sourceArtifacts[rootArtifactId];
          }
       }
-      Artifact child = rootArtifact.addNewChild(ArtifactTypeManager.getType(type), name);
+      Artifact child = rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, ArtifactTypeManager.getType(type), name);
       child.persist();
       return child;
    }
