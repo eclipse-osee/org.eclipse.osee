@@ -103,3 +103,5 @@ plugin@org.eclipse.osee.ote.ui.host.cmd=SVN,url=https://dev.eclipse.org/svnroot/
 plugin@org.eclipse.osee.ote.ui.markers=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.ote.ui.markers
 plugin@org.eclipse.osee.ote.ui.mux=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.ote.ui.mux
 plugin@org.eclipse.osee.ote.ui.test.manager=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.ote.ui.test.manager
+
+feature@org.eclipse.osee.external.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.external.feature
