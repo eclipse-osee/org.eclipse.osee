@@ -12,7 +12,9 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
@@ -36,7 +38,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageUnit implements ICoverageEditorItem {
+public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider, ICoverageItemProvider {
 
    public static String ARTIFACT_NAME = "Coverage Unit";
    private String name;
@@ -61,6 +63,18 @@ public class CoverageUnit implements ICoverageEditorItem {
    public CoverageUnit(Artifact artifact) throws OseeCoreException {
       this.artifact = artifact;
       load();
+   }
+
+   @Override
+   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse) {
+      Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>(coverageItems);
+      for (CoverageUnit coverageUnit : getCoverageUnits()) {
+         items.add(coverageUnit);
+         if (recurse) {
+            items.addAll(coverageUnit.getCoverageEditorItems(recurse));
+         }
+      }
+      return items;
    }
 
    public void addCoverageUnit(CoverageUnit coverageUnit) {
@@ -396,6 +410,21 @@ public class CoverageUnit implements ICoverageEditorItem {
       children.addAll(getCoverageUnits());
       children.addAll(getCoverageItems(false));
       return children;
+   }
+
+   @Override
+   public void removeCoverageUnit(CoverageUnit coverageUnit) {
+      coverageUnits.remove(coverageUnit);
+   }
+
+   @Override
+   public List<CoverageItem> getCoverageItems() {
+      return coverageItems;
+   }
+
+   @Override
+   public void removeCoverageItem(CoverageItem coverageItem) {
+      coverageItems.remove(coverageItem);
    }
 
 }

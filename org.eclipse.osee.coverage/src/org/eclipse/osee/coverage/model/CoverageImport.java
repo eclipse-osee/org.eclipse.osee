@@ -13,7 +13,9 @@ package org.eclipse.osee.coverage.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
@@ -42,7 +44,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorItem, ICoverageTabProvider {
+public class CoverageImport implements ICoverageUnitProvider, ICoverageEditorProvider, ICoverageEditorItem, ICoverageTabProvider {
 
    private String guid = GUID.create();
    private Date runDate;
@@ -140,7 +142,12 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
 
    @Override
    public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse) {
-      return getCoverageUnits();
+      Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
+      for (CoverageUnit coverageUnit : getCoverageUnits()) {
+         items.add(coverageUnit);
+         items.addAll(coverageUnit.getCoverageItems(recurse));
+      }
+      return items;
    }
 
    @Override
@@ -307,6 +314,11 @@ public class CoverageImport implements ICoverageEditorProvider, ICoverageEditorI
    @Override
    public Collection<? extends ICoverageEditorItem> getChildrenItems() {
       return coverageUnits;
+   }
+
+   @Override
+   public void removeCoverageUnit(CoverageUnit coverageUnit) {
+      coverageUnits.remove(coverageUnit);
    }
 
 }

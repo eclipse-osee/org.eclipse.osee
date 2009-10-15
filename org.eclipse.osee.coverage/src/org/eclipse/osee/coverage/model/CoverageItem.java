@@ -299,4 +299,9 @@ public class CoverageItem implements ICoverageEditorItem {
       return children.toArray(new Object[children.size()]);
    }
 
+   @Override
+   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse) {
+      return java.util.Collections.emptyList();
+   }
+
 }

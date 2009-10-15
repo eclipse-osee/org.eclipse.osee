@@ -13,7 +13,9 @@ package org.eclipse.osee.coverage.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
@@ -46,7 +48,7 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @author Donald G. Dunne
  */
-public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverageEditorProvider, ICoverageTabProvider {
+public class CoveragePackage implements ISaveable, ICoverageUnitProvider, ICoverageEditorItem, ICoverageEditorProvider, ICoverageTabProvider {
 
    public static String ARTIFACT_NAME = "Coverage Package";
    private String guid = GUID.create();
@@ -165,7 +167,14 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
 
    @Override
    public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse) {
-      return getCoverageUnits();
+      Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
+      for (CoverageUnit coverageUnit : getCoverageUnits()) {
+         items.add(coverageUnit);
+         if (recurse) {
+            items.addAll(coverageUnit.getCoverageEditorItems(recurse));
+         }
+      }
+      return items;
    }
 
    @Override
@@ -373,6 +382,11 @@ public class CoveragePackage implements ISaveable, ICoverageEditorItem, ICoverag
    @Override
    public String getNotes() {
       return null;
+   }
+
+   @Override
+   public void removeCoverageUnit(CoverageUnit coverageUnit) {
+      coverageUnits.remove(coverageUnit);
    }
 
 }

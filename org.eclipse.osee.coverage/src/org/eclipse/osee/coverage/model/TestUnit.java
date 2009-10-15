@@ -225,4 +225,10 @@ public class TestUnit implements ICoverageEditorItem {
    public int getCoveragePercent() {
       return 0;
    }
+
+   @Override
+   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse) {
+      return java.util.Collections.emptyList();
+   }
+
 }

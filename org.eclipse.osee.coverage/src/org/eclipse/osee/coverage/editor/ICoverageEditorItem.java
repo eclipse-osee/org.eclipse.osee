@@ -40,6 +40,8 @@ public interface ICoverageEditorItem {
 
    public Collection<? extends ICoverageEditorItem> getChildrenItems();
 
+   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse);
+
    public OseeImage getOseeImage();
 
    public boolean isCovered();

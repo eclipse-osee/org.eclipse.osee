@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
-import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.TestUnit;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -27,8 +26,6 @@ public interface ICoverageTabProvider {
    public OseeImage getTitleImage();
 
    public List<TestUnit> getTestUnits();
-
-   public List<CoverageUnit> getCoverageUnits();
 
    public List<CoverageItem> getCoverageItems();
 

@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.editor;
 
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -62,7 +63,10 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
    public void refreshHtml() {
       XResultData rd = new XResultData();
       provider.getOverviewHtmlHeader(rd);
-      rd.log(AHTML.getLabelValueStr("Coverage Units", String.valueOf(provider.getCoverageUnits().size())));
+      if (provider instanceof ICoverageUnitProvider) {
+         rd.log(AHTML.getLabelValueStr("Coverage Units",
+               String.valueOf(((ICoverageUnitProvider) provider).getCoverageUnits().size())));
+      }
       rd.log(AHTML.getLabelValueStr("Coverage Items", String.valueOf(provider.getCoverageItems().size())));
       rd.log(AHTML.getLabelValueStr("Coverage Percent", String.format("%d", provider.getCoveragePercent())));
       rd.log(AHTML.getLabelValueStr("Coverage Method Breakdown", ""));
