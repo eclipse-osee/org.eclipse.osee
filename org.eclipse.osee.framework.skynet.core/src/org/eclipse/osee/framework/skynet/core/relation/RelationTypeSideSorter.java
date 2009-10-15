@@ -102,7 +102,10 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       List<IArtifact> relatives = Collections.emptyList();
       if (RelationOrderBaseTypes.USER_DEFINED == sorterIdToUse) {
          IArtifact target = getIArtifact();
-         relatives = (List<IArtifact>) target.getRelatedArtifacts(getRelationType());
+         relatives = (List<IArtifact>) target.getRelatedArtifacts(this);
+         if (relatives.contains(itemToAdd)) {
+            relatives.remove(itemToAdd);
+         }
          relatives.add(itemToAdd);
       }
       setOrder(relatives, sorterIdToUse);

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 
 /**
  * @author Roberto E. Escobar
@@ -122,7 +122,7 @@ public class ShallowArtifact implements IArtifact {
    }
 
    @Override
-   public List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
+   public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
       return null;
    }
 }

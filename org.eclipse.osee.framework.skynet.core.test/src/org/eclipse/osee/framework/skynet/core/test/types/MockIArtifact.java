@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -85,7 +85,7 @@ public class MockIArtifact implements IArtifact {
    }
 
    @Override
-   public List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
+   public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
       return Collections.emptyList();
    }
 

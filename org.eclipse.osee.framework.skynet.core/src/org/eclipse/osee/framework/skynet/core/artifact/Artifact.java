@@ -182,9 +182,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return RelationManager.getRelatedArtifacts(this, relationType);
    }
 
-   public List<Artifact> getRelatedArtifacts(RelationTypeSideSorter relationSorter) throws OseeCoreException {
-      return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationSorter.getRelationType(),
-            relationSorter.getSide()));
+   public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(this, relationTypeSide);
    }
 
    public List<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum) throws OseeCoreException {

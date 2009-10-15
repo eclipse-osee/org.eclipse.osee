@@ -20,6 +20,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactClipboard;
 import org.eclipse.osee.framework.ui.skynet.util.ArtifactPasteConfiguration;
@@ -62,7 +63,7 @@ public class PasteHandler extends AbstractHandler {
                if (selectionObject instanceof Artifact) {
                   ArtifactPasteConfiguration config = new ArtifactPasteConfiguration();
                   Operations.executeAsJob(new ArtifactPasteOperation(config, (Artifact) selectionObject,
-                        clipboard.getCopiedContents()), true);
+                        clipboard.getCopiedContents(), new ArtifactNameConflictHandler()), true);
                }
             }
 

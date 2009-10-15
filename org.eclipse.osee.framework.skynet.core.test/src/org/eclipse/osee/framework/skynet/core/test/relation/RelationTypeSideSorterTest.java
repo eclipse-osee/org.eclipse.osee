@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationOrderAccessor;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
@@ -188,7 +189,10 @@ public class RelationTypeSideSorterTest {
             relationSorter.sort(itemsToOrder, null);
          }
 
+         // Call twice to ensure that the same items is not duplicated in the list
          sorter.addItem(sorterId, itemToAdd);
+         sorter.addItem(sorterId, itemToAdd);
+
          List<String> currentOrder = orderData.getOrderList(sorter.getRelationType(), sorter.getSide());
          if (RelationOrderBaseTypes.USER_DEFINED != sorterId) {
             Assert.assertTrue(currentOrder.isEmpty());
@@ -298,8 +302,8 @@ public class RelationTypeSideSorterTest {
       }
 
       @Override
-      public List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
-         List<? extends IArtifact> related = relatedItemsMap.get(relationType);
+      public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
+         List<? extends IArtifact> related = relatedItemsMap.get(relationTypeSide.getRelationType());
          if (related == null) {
             related = Collections.emptyList();
          }

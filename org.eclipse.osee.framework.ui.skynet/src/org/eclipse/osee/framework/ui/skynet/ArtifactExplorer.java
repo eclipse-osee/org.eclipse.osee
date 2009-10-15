@@ -72,6 +72,7 @@ import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.SelectionCountChangeListener;
 import org.eclipse.osee.framework.ui.skynet.access.PolicyDialog;
+import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactNameConflictHandler;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPasteOperation;
 import org.eclipse.osee.framework.ui.skynet.artifact.massEditor.MassArtifactEditor;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -974,7 +975,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
       if (performPaste) {
          Operations.executeAsJob(new ArtifactPasteOperation(config, destinationArtifact,
-               artifactClipboard.getCopiedContents()), true);
+               artifactClipboard.getCopiedContents(), new ArtifactNameConflictHandler()), true);
       }
    }
 

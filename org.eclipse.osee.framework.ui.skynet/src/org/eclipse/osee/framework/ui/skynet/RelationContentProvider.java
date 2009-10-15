@@ -23,9 +23,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * The basis for the comments in this class can be found at
@@ -106,17 +107,18 @@ public class RelationContentProvider implements ITreeContentProvider {
             }
          } else if (parentElement instanceof RelationTypeSideSorter) {
             RelationTypeSideSorter relationSorter = (RelationTypeSideSorter) parentElement;
-            List<Artifact> artifacts = artifact.getArtifact().getRelatedArtifacts(relationSorter);
+            List<? extends IArtifact> artifacts = artifact.getArtifact().getRelatedArtifacts(relationSorter);
             WrapperForRelationLink[] wrapper = new WrapperForRelationLink[artifacts.size()];
             for (int i = 0; i < artifacts.size(); i++) {
+               Artifact sideArtifact = artifacts.get(i).getFullArtifact();
                if (relationSorter.isSideA()) {
                   wrapper[i] =
-                        new WrapperForRelationLink(relationSorter.getRelationType(), artifacts.get(i),
-                              artifacts.get(i), relationSorter.getArtifact());
+                        new WrapperForRelationLink(relationSorter.getRelationType(), sideArtifact, sideArtifact,
+                              relationSorter.getArtifact());
                } else {
                   wrapper[i] =
-                        new WrapperForRelationLink(relationSorter.getRelationType(), artifacts.get(i),
-                              relationSorter.getArtifact(), artifacts.get(i));
+                        new WrapperForRelationLink(relationSorter.getRelationType(), sideArtifact,
+                              relationSorter.getArtifact(), sideArtifact);
                }
                childToParentMap.put(wrapper[i], parentElement);
             }
