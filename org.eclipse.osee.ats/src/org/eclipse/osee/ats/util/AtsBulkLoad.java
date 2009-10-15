@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.util;
 
 import java.util.Collection;
+import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -22,13 +23,13 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
  */
 public class AtsBulkLoad {
 
-   public static void loadFromActions(Collection<? extends Artifact> actions) throws OseeCoreException {
-      RelationManager.getRelatedArtifacts(actions, 4, AtsRelation.SmaToTask_Task,
+   public static Set<Artifact> loadFromActions(Collection<? extends Artifact> actions) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(actions, 4, AtsRelation.SmaToTask_Task,
             AtsRelation.ActionToWorkflow_WorkFlow, AtsRelation.TeamWorkflowToReview_Review);
    }
 
-   public static void loadFromTeamWorkflows(Collection<? extends Artifact> teams) throws OseeCoreException {
-      RelationManager.getRelatedArtifacts(teams, 3, AtsRelation.SmaToTask_Task, AtsRelation.TeamWorkflowToReview_Team,
-            AtsRelation.ActionToWorkflow_Action);
+   public static Set<Artifact> loadFromTeamWorkflows(Collection<? extends Artifact> teams) throws OseeCoreException {
+      return RelationManager.getRelatedArtifacts(teams, 3, AtsRelation.SmaToTask_Task,
+            AtsRelation.TeamWorkflowToReview_Team, AtsRelation.ActionToWorkflow_Action);
    }
 }
