@@ -14,4 +14,6 @@ import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 public interface ISelectedCoverageEditorItem {
 
    public Collection<ICoverageEditorItem> getSelectedCoverageEditorItems();
+
+   public void setSelectedCoverageEditorItem(ICoverageEditorItem item);
 }

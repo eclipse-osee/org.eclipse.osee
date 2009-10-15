@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.osee.coverage.action.LinkWithImportItemAction;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport;
@@ -69,6 +70,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    private final CoverageEditor coverageEditor;
    private CoverageEditorCoverageParameters parameters;
    CoveragePackageImport coveragePackageImport = null;
+   LinkWithImportItemAction linkWithImportItemAction;
 
    public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, ICoverageTabProvider provider1, ICoverageTabProvider provider2) {
       super(coverageEditor, name, name);
@@ -167,6 +169,9 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       xCoverageViewer1.createWidgets(managedForm, leftComp, 1);
       xCoverageViewer1.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
+      linkWithImportItemAction = new LinkWithImportItemAction();
+      linkWithImportItemAction.setPackageXViewer(xCoverageViewer1);
+      (new ActionContributionItem(linkWithImportItemAction)).fill(leftToolBar, 0);
       (new ActionContributionItem(new RefreshAction(xCoverageViewer1))).fill(leftToolBar, 0);
       (new ActionContributionItem(xCoverageViewer1.getXViewer().getCustomizeAction())).fill(leftToolBar, 0);
       (new ActionContributionItem(new CollapseAllAction(xCoverageViewer1.getXViewer()))).fill(leftToolBar, 0);
@@ -188,6 +193,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       xCoverageViewer2.createWidgets(managedForm, rightComp, 1);
       xCoverageViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
+      linkWithImportItemAction.setImportXViewer(xCoverageViewer2);
       (new ActionContributionItem(new RefreshAction(xCoverageViewer1))).fill(rightToolBar, 0);
       (new ActionContributionItem(xCoverageViewer2.getXViewer().getCustomizeAction())).fill(rightToolBar, 0);
       (new ActionContributionItem(new CollapseAllAction(xCoverageViewer2.getXViewer()))).fill(rightToolBar, 0);

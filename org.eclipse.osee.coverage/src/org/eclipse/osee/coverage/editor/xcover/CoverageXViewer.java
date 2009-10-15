@@ -16,6 +16,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
@@ -290,6 +291,12 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    @Override
    public Result save() {
       return xCoverageViewer.getSaveable().save();
+   }
+
+   @Override
+   public void setSelectedCoverageEditorItem(ICoverageEditorItem item) {
+      xCoverageViewer.getXViewer().setSelection(new StructuredSelection(item));
+      xCoverageViewer.getXViewer().reveal(new StructuredSelection(item));
    }
 
 }
