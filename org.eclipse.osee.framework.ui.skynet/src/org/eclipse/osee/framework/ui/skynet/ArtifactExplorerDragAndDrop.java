@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import java.io.File;
-import java.util.Collections;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -21,6 +20,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Wizards;
 import org.eclipse.osee.framework.ui.skynet.Import.ArtifactImportWizard;
@@ -134,9 +134,13 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   SkynetTransaction transaction = new SkynetTransaction(parentArtifact.getBranch());
                   // Replace all of the parent relations
                   for (Artifact artifact : artifactsToBeRelated) {
-                     artifact.setRelations(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT,
-                           Collections.singleton(parentArtifact));
-                     artifact.persist(transaction);
+                     Artifact currentParent = artifact.getParent();
+                     if (currentParent != null) {
+                        currentParent.deleteRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, artifact);
+                        currentParent.persist(transaction);
+                     }
+                     parentArtifact.addChild(RelationOrderBaseTypes.USER_DEFINED, artifact);
+                     parentArtifact.persist(transaction);
                   }
                   transaction.execute();
                } catch (OseeCoreException ex) {
