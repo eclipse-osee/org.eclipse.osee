@@ -11,10 +11,12 @@
 package org.eclipse.osee.coverage.test.import1;
 
 import java.net.URL;
+import java.util.Arrays;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.ICoverageImporter;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -40,14 +42,27 @@ public class CoverageImportTest1NavigateItem extends XNavigateItemAction impleme
 
    @Override
    public CoverageImport run() {
+
       CoverageImport coverageImport = new CoverageImport(getName());
       try {
-         URL url = CoverageImportTest1NavigateItem.class.getResource(PATH + "NavigationButton1.java");
-         coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
-         url = CoverageImportTest1NavigateItem.class.getResource(PATH + "NavigationButton2.java");
-         coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
-         url = CoverageImportTest1NavigateItem.class.getResource(PATH + "NavigationButton3.java");
-         coverageImport.addCoverageUnit(SampleJavaFileParser.createCodeUnit(url));
+         for (String filename : Arrays.asList(
+         //
+               "com/screenA/ComScrnAButton1.java", "com/screenA/ComScrnAButton2.java",
+               //
+               "com/screenB/ScreenBButton1.java", "com/screenB/ScreenBButton2.java", "com/screenB/ScreenBButton3.java",
+               //
+               "epu/PowerUnit1.java", "epu/PowerUnit1.java",
+               //
+               "nav/NavigationButton1.java", "nav/NavigationButton2.java", "nav/NavigationButton3.java"
+         //
+         )) {
+            System.err.println(String.format("Importing [%s]", PATH + filename));
+            URL url = CoverageImportTest1NavigateItem.class.getResource(PATH + filename);
+            CoverageUnit coverageUnit = SampleJavaFileParser.createCodeUnit(url);
+            coverageUnit.setNamespace(coverageUnit.getNamespace().replaceFirst(
+                  "org.eclipse.osee.coverage.test.import1.", ""));
+            coverageImport.addCoverageUnit(coverageUnit);
+         }
          coverageImport.setLocation(PATH);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

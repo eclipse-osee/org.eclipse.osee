@@ -30,37 +30,37 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class VectorCastCoverageImporter implements ICoverageImporter {
 
-   private final String vcastDirectory;
    private CoverageImport coverageImport;
-   private final String namespace;
+   private final IVectorCastCoverageImportProvider vectorCastCoverageImportProvider;
 
-   public VectorCastCoverageImporter(String vcastDirectory, String namespace) {
-      this.vcastDirectory = vcastDirectory;
-      this.namespace = namespace;
+   public VectorCastCoverageImporter(IVectorCastCoverageImportProvider vectorCastCoverageImportProvider) {
+      this.vectorCastCoverageImportProvider = vectorCastCoverageImportProvider;
    }
 
    @Override
    public CoverageImport run() {
       coverageImport = new CoverageImport("VectorCast Import");
-      if (!Strings.isValid(vcastDirectory)) {
+      if (!Strings.isValid(vectorCastCoverageImportProvider.getVCastDirectory())) {
          coverageImport.getLog().logError("VectorCast directory must be specified");
          return coverageImport;
       }
-      File file = new File(vcastDirectory);
+      File file = new File(vectorCastCoverageImportProvider.getVCastDirectory());
       if (!file.exists()) {
-         coverageImport.getLog().logError(String.format("VectorCast directory doesn't exist [%s]", vcastDirectory));
+         coverageImport.getLog().logError(
+               String.format("VectorCast directory doesn't exist [%s]",
+                     vectorCastCoverageImportProvider.getVCastDirectory()));
          return coverageImport;
       }
       VCastVcp vCastVcp = null;
       try {
-         vCastVcp = new VCastVcp(vcastDirectory);
+         vCastVcp = new VCastVcp(vectorCastCoverageImportProvider.getVCastDirectory());
       } catch (Exception ex) {
          coverageImport.getLog().logError("Exception reading vcast.vcp file: " + ex.getLocalizedMessage());
          return coverageImport;
       }
 
-      CoverageDataFile coverageDataFile = new CoverageDataFile(vcastDirectory);
-      coverageImport.setLocation(vcastDirectory);
+      CoverageDataFile coverageDataFile = new CoverageDataFile(vectorCastCoverageImportProvider.getVCastDirectory());
+      coverageImport.setLocation(vectorCastCoverageImportProvider.getVCastDirectory());
 
       // Create file and subprogram Coverage Units and execution line Coverage Items
       Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
@@ -74,7 +74,7 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
          }
          VcpSourceLisFile vcpSourceLisFile = vcpSourceFile.getVcpSourceLisFile();
          fileCoverageUnit.setText(vcpSourceLisFile.getText());
-         fileCoverageUnit.setNamespace(namespace);
+         fileCoverageUnit.setNamespace(vectorCastCoverageImportProvider.getFileNamespace(coverageDataUnit.getName()));
          int methodNum = 0;
          for (CoverageDataSubProgram coverageDataSubProgram : coverageDataUnit.getSubPrograms()) {
             methodNum++;
@@ -129,18 +129,20 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
 
    public CoverageImport runOld() {
       coverageImport = new CoverageImport("runOld");
-      if (!Strings.isValid(vcastDirectory)) {
+      if (!Strings.isValid(vectorCastCoverageImportProvider.getVCastDirectory())) {
          coverageImport.getLog().logError("VectorCast directory must be specified");
          return coverageImport;
       }
-      File file = new File(vcastDirectory);
+      File file = new File(vectorCastCoverageImportProvider.getVCastDirectory());
       if (!file.exists()) {
-         coverageImport.getLog().logError(String.format("VectorCast directory doesn't exist [%s]", vcastDirectory));
+         coverageImport.getLog().logError(
+               String.format("VectorCast directory doesn't exist [%s]",
+                     vectorCastCoverageImportProvider.getVCastDirectory()));
          return coverageImport;
       }
       VCastVcp vCastVcp = null;
       try {
-         vCastVcp = new VCastVcp(vcastDirectory);
+         vCastVcp = new VCastVcp(vectorCastCoverageImportProvider.getVCastDirectory());
       } catch (Exception ex) {
          coverageImport.getLog().logError("Exception reading vcast.vcp file: " + ex.getLocalizedMessage());
          return coverageImport;
