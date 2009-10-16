@@ -12,14 +12,11 @@ package org.eclipse.osee.coverage.test.import1;
 
 import java.net.URL;
 import java.util.Arrays;
-import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.ICoverageImporter;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -64,7 +61,7 @@ public class CoverageImportTest1NavigateItem extends XNavigateItemAction impleme
             CoverageUnit coverageUnit = SampleJavaFileParser.createCodeUnit(url);
             String namespace = coverageUnit.getNamespace().replaceFirst("org.eclipse.osee.coverage.test.import1.", "");
             coverageUnit.setNamespace(namespace);
-            CoverageUnit parentCoverageUnit = getOrCreateParent(coverageImport, namespace);
+            CoverageUnit parentCoverageUnit = coverageImport.getOrCreateParent(namespace);
             if (parentCoverageUnit != null) {
                parentCoverageUnit.addCoverageUnit(coverageUnit);
             } else {
@@ -76,65 +73,6 @@ public class CoverageImportTest1NavigateItem extends XNavigateItemAction impleme
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return coverageImport;
-   }
-
-   private CoverageUnit getOrCreateParent(CoverageImport coverageImport, String namespace) {
-      // Look for already existing CU
-      for (ICoverageEditorItem item : new CopyOnWriteArrayList<ICoverageEditorItem>(
-            coverageImport.getCoverageEditorItems(true))) {
-         if (!(item instanceof CoverageUnit)) continue;
-         CoverageUnit coverageUnit = (CoverageUnit) item;
-         if (coverageUnit.getName().equals(namespace)) {
-            return coverageUnit;
-         }
-      }
-      // Create 
-      String[] names = namespace.split("\\.");
-      String nameStr = "";
-      for (String name : names) {
-         if (nameStr.equals("")) {
-            nameStr = name;
-         } else {
-            nameStr = nameStr + "." + name;
-         }
-         if (coverageImport.getCoverageUnits().size() == 0) {
-            CoverageUnit newCoverageUnit = new CoverageUnit(coverageImport, nameStr, "");
-            newCoverageUnit.setNamespace(nameStr);
-            coverageImport.addCoverageUnit(newCoverageUnit);
-            if (nameStr.equals(namespace)) return newCoverageUnit;
-            continue;
-         }
-
-         // Look for already existing CU
-         boolean found = false;
-         for (ICoverageEditorItem item : new CopyOnWriteArrayList<ICoverageEditorItem>(
-               coverageImport.getCoverageEditorItems(true))) {
-            if (!(item instanceof CoverageUnit)) continue;
-            if (item.getName().equals(name)) {
-               found = true;
-               break;
-            }
-         }
-         if (found) continue;
-
-         // Create one if not exists
-
-         // Find parent
-         ICoverageEditorItem parent = null;
-         if (nameStr.equals(name)) {
-            parent = coverageImport;
-         } else {
-            parent = getOrCreateParent(coverageImport, nameStr.replaceFirst("\\." + name + ".*$", ""));
-         }
-         // Create new coverage unit
-         CoverageUnit newCoverageUnit = new CoverageUnit(parent, nameStr, "");
-         newCoverageUnit.setNamespace(nameStr);
-         // Add to parent
-         ((ICoverageUnitProvider) parent).addCoverageUnit(newCoverageUnit);
-         // Return if this is our coverage unit
-         if (nameStr.equals(namespace)) return newCoverageUnit;
-      }
-      return null;
    }
 
    @Override
