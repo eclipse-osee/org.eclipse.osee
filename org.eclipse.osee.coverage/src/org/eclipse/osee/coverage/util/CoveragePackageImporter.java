@@ -25,33 +25,50 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 /**
  * @author Donald G. Dunne
  */
-public class CoveragePackageImport {
+public class CoveragePackageImporter {
 
    private final CoveragePackage coveragePackage;
    private final CoverageImport coverageImport;
    private Collection<ICoverageEditorItem> allImportItems;
    private Set<ICoverageEditorItem> imported;
 
-   public CoveragePackageImport(CoveragePackage coveragePackage, CoverageImport coverageImport) {
+   public CoveragePackageImporter(CoveragePackage coveragePackage, CoverageImport coverageImport) {
       this.coveragePackage = coveragePackage;
       this.coverageImport = coverageImport;
    }
 
    public XResultData validateItems(Collection<ICoverageEditorItem> allImportItems, XResultData rd) {
       this.allImportItems = allImportItems;
-      if (rd == null) rd = new XResultData();
+      if (rd == null) rd = new XResultData(false);
       for (ICoverageEditorItem importItem : allImportItems) {
          if (!(importItem instanceof CoverageUnit)) {
             rd.logError(String.format("Invalid Item for Import; Don't import [%s]",
                   importItem.getClass().getSimpleName()));
             continue;
          }
+         validateChildrenAreUnique((CoverageUnit) importItem, rd);
       }
       return rd;
    }
 
+   public void validateChildrenAreUnique(CoverageUnit coverageUnit, XResultData rd) {
+      for (ICoverageEditorItem importItem1 : coverageUnit.getChildrenItems()) {
+         for (ICoverageEditorItem importItem2 : coverageUnit.getChildrenItems()) {
+            if (isConceptuallyEqual(importItem1, importItem2) && importItem1 != importItem2) {
+               rd.logError(String.format("CoverageUnit [%s] has two equal children [%s][%s]; Can't import.",
+                     coverageUnit, importItem1, importItem2));
+            }
+         }
+      }
+      for (ICoverageEditorItem childItem : coverageUnit.getChildrenItems()) {
+         if (childItem instanceof CoverageUnit) {
+            validateChildrenAreUnique((CoverageUnit) childItem, rd);
+         }
+      }
+   }
+
    public XResultData importItems(ISaveable saveable, Collection<ICoverageEditorItem> importItems) {
-      XResultData rd = new XResultData();
+      XResultData rd = new XResultData(false);
 
       Result result = saveable.isEditable();
       if (result.isFalse()) {
@@ -105,7 +122,9 @@ public class CoveragePackageImport {
             ICoverageEditorItem packageItem = getPackageCoverageItem(importItem, true);
             // Determine if item already exists first
             if (packageItem != null) {
-               rd.logError("Import Item matches Package Item - Not Implemented Yet");
+               rd.logError(String.format("Import Item [%s][%s] matches Package Item [%s][%s]- Not Implemented Yet",
+                     importItem, importItem.getParent(), packageItem, packageItem.getParent()));
+               rd.log("");
                continue;
             }
             // This is new item
@@ -136,6 +155,7 @@ public class CoveragePackageImport {
             }
          }
       } catch (Exception ex) {
+         rd.logError("Exception: " + ex.getLocalizedMessage());
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return rd;
@@ -150,10 +170,24 @@ public class CoveragePackageImport {
       return null;
    }
 
-   public boolean isConceptuallyEqual(ICoverageEditorItem item1, ICoverageEditorItem item2) {
-      if (item1.equals(item2)) return true;
-      if (item1.getClass() != item2.getClass()) return false;
-      if (item1.getName().equals(item2.getName())) return true;
+   public boolean isConceptuallyEqual(ICoverageEditorItem packageItem, ICoverageEditorItem importItem) {
+      if (packageItem.equals(importItem)) return true;
+      if (packageItem.getClass() != importItem.getClass()) return false;
+      if (packageItem.getNamespace() == null && importItem.getNamespace() == null) return true;
+      if (packageItem.getNamespace() == null) return false;
+      if (importItem.getNamespace() == null) return false;
+      if (!packageItem.getNamespace().equals(importItem.getNamespace())) return false;
+      if (packageItem.getName().equals(importItem.getName())) {
+         if (packageItem.getParent() instanceof CoveragePackage && importItem.getParent() instanceof CoverageImport) {
+            return true;
+         } else {
+            if (isConceptuallyEqual(packageItem.getParent(), importItem.getParent())) {
+               return true;
+            } else {
+               return false;
+            }
+         }
+      }
       return false;
    }
 }

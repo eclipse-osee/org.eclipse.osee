@@ -25,7 +25,7 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
-import org.eclipse.osee.coverage.util.CoveragePackageImport;
+import org.eclipse.osee.coverage.util.CoveragePackageImporter;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.NotSaveable;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
@@ -69,7 +69,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    private Label titleLabel1, titleLabel2;
    private final CoverageEditor coverageEditor;
    private CoverageEditorCoverageParameters parameters;
-   CoveragePackageImport coveragePackageImport = null;
+   CoveragePackageImporter coveragePackageImport = null;
    LinkWithImportItemAction linkWithImportItemAction;
 
    public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, ICoverageTabProvider provider1, ICoverageTabProvider provider2) {
@@ -77,7 +77,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       this.coverageEditor = coverageEditor;
       this.provider1 = provider1;
       this.provider2 = provider2;
-      coveragePackageImport = new CoveragePackageImport((CoveragePackage) provider1, (CoverageImport) provider2);
+      coveragePackageImport = new CoveragePackageImporter((CoveragePackage) provider1, (CoverageImport) provider2);
    }
 
    @Override

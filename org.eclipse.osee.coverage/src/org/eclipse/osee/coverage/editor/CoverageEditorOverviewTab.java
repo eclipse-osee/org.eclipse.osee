@@ -63,15 +63,20 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
    public void refreshHtml() {
       XResultData rd = new XResultData();
       provider.getOverviewHtmlHeader(rd);
-      if (provider instanceof ICoverageUnitProvider) {
-         rd.log(AHTML.getLabelValueStr("Coverage Units",
-               String.valueOf(((ICoverageUnitProvider) provider).getCoverageUnits().size())));
-      }
-      rd.log(AHTML.getLabelValueStr("Coverage Items", String.valueOf(provider.getCoverageItems().size())));
+      rd.log("");
+      rd.log(AHTML.getLabelValueStr("Coverage Items - Covered",
+            String.valueOf(provider.getCoverageItemsCovered().size())));
+      rd.log(AHTML.getLabelValueStr("Coverage Items - Total", String.valueOf(provider.getCoverageItems().size())));
       rd.log(AHTML.getLabelValueStr("Coverage Percent", String.format("%d", provider.getCoveragePercent())));
-      rd.log(AHTML.getLabelValueStr("Coverage Method Breakdown", ""));
+      rd.log("");
+      rd.log(AHTML.getLabelValueStr("Covered Items by Coverage Type", ""));
       for (CoverageMethodEnum coverageMethodEnum : CoverageMethodEnum.values()) {
          rd.log("  - " + coverageMethodEnum + " " + String.valueOf(provider.getCoverageItemsCovered(coverageMethodEnum).size()));
+      }
+      if (provider instanceof ICoverageUnitProvider) {
+         rd.log("");
+         rd.log(AHTML.getLabelValueStr("Coverage Units",
+               String.valueOf(((ICoverageUnitProvider) provider).getCoverageUnits().size())));
       }
       if (provider.getLog() != null) {
          rd.log(AHTML.newline() + AHTML.bold("Log") + AHTML.newline());

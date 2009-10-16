@@ -5,13 +5,21 @@
  */
 package org.eclipse.osee.coverage.action;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
+import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -57,11 +65,24 @@ public class DeleteCoverUnitAction extends Action {
       }
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Coverage Unit",
             "Delete Coverage Units")) {
-         for (ICoverageEditorItem coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
-            if (coverageItem.getParent() instanceof ICoverageUnitProvider) {
-               ((ICoverageUnitProvider) coverageItem.getParent()).removeCoverageUnit((CoverageUnit) coverageItem);
+         try {
+            SkynetTransaction transaction =
+                  new SkynetTransaction(BranchManager.getCommonBranch(), "Coverage - Delete Coverage Unit");
+            List<ICoverageEditorItem> deleteItems = new ArrayList<ICoverageEditorItem>();
+            for (ICoverageEditorItem coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
+               if (coverageItem.getParent() instanceof ICoverageUnitProvider) {
+                  ((ICoverageUnitProvider) coverageItem.getParent()).removeCoverageUnit((CoverageUnit) coverageItem);
+                  deleteItems.add(coverageItem);
+                  ((CoverageUnit) coverageItem).delete(transaction, false);
+               }
+            }
+            transaction.execute();
+            for (ICoverageEditorItem coverageItem : deleteItems) {
                refreshable.remove(coverageItem);
             }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            return;
          }
       }
       saveable.save();

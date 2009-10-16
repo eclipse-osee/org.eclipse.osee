@@ -232,96 +232,6 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
       return artifact;
    }
 
-   public void load() throws OseeCoreException {
-      coverageItems.clear();
-      coverageUnits.clear();
-      getArtifact(false);
-      if (artifact != null) {
-         setName(artifact.getName());
-         setGuid(artifact.getGuid());
-         KeyValueArtifact keyValueArtifact =
-               new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-         for (String line : keyValueArtifact.getValues("cvgItem")) {
-            coverageItems.add(new CoverageItem(this, line));
-         }
-         String text = keyValueArtifact.getValue("text");
-         if (Strings.isValid(text)) {
-            setText(text);
-         }
-         String notes = keyValueArtifact.getValue("notes");
-         if (Strings.isValid(notes)) {
-            setNotes(notes);
-         }
-         String assignees = keyValueArtifact.getValue("assignees");
-         if (Strings.isValid(assignees)) {
-            setAssignees(assignees);
-         }
-         String namespace = keyValueArtifact.getValue("namespace");
-         if (Strings.isValid(namespace)) {
-            setNamespace(namespace);
-         }
-         String location = keyValueArtifact.getValue("location");
-         if (Strings.isValid(location)) {
-            setLocation(location);
-         }
-         for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.getArtifactTypeName().equals(CoverageUnit.ARTIFACT_NAME)) {
-               addCoverageUnit(new CoverageUnit(childArt));
-            }
-         }
-      }
-   }
-
-   public CoverageUnit copy(boolean includeItems) throws OseeCoreException {
-      CoverageUnit coverageUnit = new CoverageUnit(parentCoverageEditorItem, name, location);
-      coverageUnit.setGuid(guid);
-      coverageUnit.setNamespace(namespace);
-      coverageUnit.setNotes(notes);
-      coverageUnit.setText(text);
-      coverageUnit.setAssignees(assignees);
-      coverageUnit.setLocation(location);
-      if (includeItems) {
-         for (CoverageItem coverageItem : coverageItems) {
-            coverageUnit.addCoverageItem(new CoverageItem(coverageUnit, coverageItem.toXml()));
-         }
-      }
-      return coverageUnit;
-   }
-
-   public void save(SkynetTransaction transaction) throws OseeCoreException {
-      getArtifact(true);
-      artifact.setName(getName());
-
-      KeyValueArtifact keyValueArtifact =
-            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-      List<String> items = new ArrayList<String>();
-      for (CoverageItem coverageItem : coverageItems) {
-         items.add(coverageItem.toXml());
-         coverageItem.save(transaction);
-      }
-      keyValueArtifact.setValues("cvgItem", items);
-      if (notes != null) {
-         keyValueArtifact.setValue("notes", notes.toString());
-      }
-      if (Strings.isValid(text)) {
-         keyValueArtifact.setValue("text", text);
-      }
-      if (Strings.isValid(assignees)) {
-         keyValueArtifact.setValue("assignees", assignees);
-      }
-      if (Strings.isValid(location)) {
-         keyValueArtifact.setValue("location", location);
-      }
-      keyValueArtifact.save();
-      if (parentCoverageEditorItem != null) {
-         parentCoverageEditorItem.getArtifact(false).addChild(artifact);
-      }
-      for (CoverageUnit coverageUnit : coverageUnits) {
-         coverageUnit.save(transaction);
-      }
-      artifact.persist(transaction);
-   }
-
    public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
       if (getArtifact(false) != null) {
          if (purge)
@@ -346,6 +256,9 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
    }
 
    public String getNamespace() {
+      if (namespace == null) {
+         return getParent().getNamespace();
+      }
       return namespace;
    }
 
@@ -425,6 +338,99 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
    @Override
    public void removeCoverageItem(CoverageItem coverageItem) {
       coverageItems.remove(coverageItem);
+   }
+
+   public void load() throws OseeCoreException {
+      coverageItems.clear();
+      coverageUnits.clear();
+      getArtifact(false);
+      if (artifact != null) {
+         setName(artifact.getName());
+         setGuid(artifact.getGuid());
+         KeyValueArtifact keyValueArtifact =
+               new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+         for (String line : keyValueArtifact.getValues("cvgItem")) {
+            coverageItems.add(new CoverageItem(this, line));
+         }
+         String text = keyValueArtifact.getValue("text");
+         if (Strings.isValid(text)) {
+            setText(text);
+         }
+         String notes = keyValueArtifact.getValue("notes");
+         if (Strings.isValid(notes)) {
+            setNotes(notes);
+         }
+         String assignees = keyValueArtifact.getValue("assignees");
+         if (Strings.isValid(assignees)) {
+            setAssignees(assignees);
+         }
+         String namespace = keyValueArtifact.getValue("namespace");
+         if (Strings.isValid(namespace)) {
+            setNamespace(namespace);
+         }
+         String location = keyValueArtifact.getValue("location");
+         if (Strings.isValid(location)) {
+            setLocation(location);
+         }
+         for (Artifact childArt : artifact.getChildren()) {
+            if (childArt.getArtifactTypeName().equals(CoverageUnit.ARTIFACT_NAME)) {
+               addCoverageUnit(new CoverageUnit(childArt));
+            }
+         }
+      }
+   }
+
+   public CoverageUnit copy(boolean includeItems) throws OseeCoreException {
+      CoverageUnit coverageUnit = new CoverageUnit(parentCoverageEditorItem, name, location);
+      coverageUnit.setGuid(guid);
+      coverageUnit.setNamespace(namespace);
+      coverageUnit.setNotes(notes);
+      coverageUnit.setText(text);
+      coverageUnit.setAssignees(assignees);
+      coverageUnit.setLocation(location);
+      if (includeItems) {
+         for (CoverageItem coverageItem : coverageItems) {
+            coverageUnit.addCoverageItem(new CoverageItem(coverageUnit, coverageItem.toXml()));
+         }
+      }
+      return coverageUnit;
+   }
+
+   public void save(SkynetTransaction transaction) throws OseeCoreException {
+      getArtifact(true);
+      artifact.setName(getName());
+
+      KeyValueArtifact keyValueArtifact =
+            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
+      List<String> items = new ArrayList<String>();
+      for (CoverageItem coverageItem : coverageItems) {
+         items.add(coverageItem.toXml());
+         coverageItem.save(transaction);
+      }
+      keyValueArtifact.setValues("cvgItem", items);
+      if (notes != null) {
+         keyValueArtifact.setValue("notes", notes.toString());
+      }
+      if (Strings.isValid(namespace)) {
+         keyValueArtifact.setValue("namespace", namespace);
+      }
+      if (Strings.isValid(text)) {
+         keyValueArtifact.setValue("text", text);
+      }
+      if (Strings.isValid(assignees)) {
+         keyValueArtifact.setValue("assignees", assignees);
+      }
+      if (Strings.isValid(location)) {
+         keyValueArtifact.setValue("location", location);
+      }
+      keyValueArtifact.save();
+      if (parentCoverageEditorItem != null) {
+         parentCoverageEditorItem.getArtifact(false).addChild(artifact);
+      }
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         coverageUnit.save(transaction);
+      }
+      artifact.persist(transaction);
    }
 
 }

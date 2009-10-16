@@ -7,6 +7,7 @@ package org.eclipse.osee.coverage.editor.xmerge;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,8 @@ import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.util.CoveragePackageImport;
+import org.eclipse.osee.coverage.util.CoveragePackageImporter;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
@@ -30,13 +32,14 @@ import org.eclipse.swt.widgets.TreeItem;
 public class CoverageMergeXViewer extends CoverageXViewer {
 
    public Map<ICoverageEditorItem, Boolean> importChecked = new HashMap<ICoverageEditorItem, Boolean>();
+   public Map<ICoverageEditorItem, XResultData> importError = new HashMap<ICoverageEditorItem, XResultData>();
    Action toggleImport;
-   private final CoveragePackageImport coveragePackageImport;
+   private final CoveragePackageImporter coveragePackageImport;
    public static enum ImportType {
-      Add, Replace
+      Add, Replace, Error
    };
 
-   public CoverageMergeXViewer(CoveragePackageImport coveragePackageImport, Composite parent, int style, IXViewerFactory xViewerFactory, XCoverageMergeViewer xCoverageMergeViewer) {
+   public CoverageMergeXViewer(CoveragePackageImporter coveragePackageImport, Composite parent, int style, IXViewerFactory xViewerFactory, XCoverageMergeViewer xCoverageMergeViewer) {
       super(parent, style, xViewerFactory, xCoverageMergeViewer);
       this.coveragePackageImport = coveragePackageImport;
    }
@@ -46,6 +49,14 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    }
 
    public ImportType getImportType(ICoverageEditorItem importItem) {
+      if (!importError.containsKey(importItem)) {
+         XResultData rd = new XResultData();
+         coveragePackageImport.validateItems(Collections.singleton(importItem), rd);
+         importError.put(importItem, rd);
+      }
+      if (importError.get(importItem).getNumErrors() > 0) {
+         return ImportType.Error;
+      }
       return getPackageItemForImportItem(importItem, true) == null ? ImportType.Add : ImportType.Replace;
    }
 

@@ -46,44 +46,15 @@ public class XResultData {
       Severe, Warning, Info;
    }
    CountingMap<Type> count = new CountingMap<Type>();
+   private boolean enableOseeLog;
 
-   public static void runExample() {
-      runExample("This is my report title");
+   public XResultData() {
+      this(true);
    }
 
-   public static void runExample(String title) {
-      try {
-         XResultData rd = new XResultData();
-         rd.log("This is just a normal log message");
-         rd.logWarning("This is a warning");
-         rd.logError("This is an error");
-
-         rd.log("\n\nExample of hyperlinked hrid: " + XResultData.getHyperlink(UserManager.getUser()));
-
-         rd.log("Example of hyperlinked artifact different hyperlink string: " + XResultData.getHyperlink(
-               "Different string", UserManager.getUser()));
-
-         rd.log("Example of hyperlinked hrid on another branch: " + getHyperlink(
-               UserManager.getUser().getHumanReadableId(), UserManager.getUser().getHumanReadableId(),
-               BranchManager.getCommonBranch().getBranchId()));
-         rd.addRaw(AHTML.newline());
-         rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
-               "http://www.google.com") + AHTML.newline());
-         rd.addRaw("Example of hyperlink that opens internal browser " + getHyperlinkUrlInternal("Google",
-               "http://www.google.com") + AHTML.newline());
-
-         rd.log("\n\nHere is a nice table");
-         rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
-         rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title", "Status"}));
-         for (int x = 0; x < 3; x++)
-            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
-         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Error / Warning in table ", "Error: this is error",
-               "Warning: this is warning"}));
-         rd.addRaw(AHTML.endMultiColumnTable());
-         rd.report("This is my report title");
-      } catch (OseeCoreException ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-      }
+   public XResultData(boolean enableOseeLog) {
+      super();
+      this.enableOseeLog = enableOseeLog;
    }
 
    public void addRaw(String str) {
@@ -134,7 +105,9 @@ public class XResultData {
       else
          resultStr = str;
       sb.append(resultStr);
-      OseeLog.log(SkynetGuiPlugin.class, Level.parse(type.name().toUpperCase()), resultStr);
+      if (enableOseeLog) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.parse(type.name().toUpperCase()), resultStr);
+      }
       if (monitor != null) {
          Displays.ensureInDisplayThread(new Runnable() {
             public void run() {
@@ -232,4 +205,52 @@ public class XResultData {
    public int getNumWarnings() {
       return getCount(Type.Warning);
    }
+
+   public boolean isEnableOseeLog() {
+      return enableOseeLog;
+   }
+
+   public void setEnableOseeLog(boolean enableOseeLog) {
+      this.enableOseeLog = enableOseeLog;
+   }
+
+   public static void runExample() {
+      runExample("This is my report title");
+   }
+
+   public static void runExample(String title) {
+      try {
+         XResultData rd = new XResultData();
+         rd.log("This is just a normal log message");
+         rd.logWarning("This is a warning");
+         rd.logError("This is an error");
+
+         rd.log("\n\nExample of hyperlinked hrid: " + XResultData.getHyperlink(UserManager.getUser()));
+
+         rd.log("Example of hyperlinked artifact different hyperlink string: " + XResultData.getHyperlink(
+               "Different string", UserManager.getUser()));
+
+         rd.log("Example of hyperlinked hrid on another branch: " + getHyperlink(
+               UserManager.getUser().getHumanReadableId(), UserManager.getUser().getHumanReadableId(),
+               BranchManager.getCommonBranch().getBranchId()));
+         rd.addRaw(AHTML.newline());
+         rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
+               "http://www.google.com") + AHTML.newline());
+         rd.addRaw("Example of hyperlink that opens internal browser " + getHyperlinkUrlInternal("Google",
+               "http://www.google.com") + AHTML.newline());
+
+         rd.log("\n\nHere is a nice table");
+         rd.addRaw(AHTML.beginMultiColumnTable(95, 1));
+         rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Title", "Status"}));
+         for (int x = 0; x < 3; x++)
+            rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Type " + x, "Title " + x, x + ""}));
+         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {"Error / Warning in table ", "Error: this is error",
+               "Warning: this is warning"}));
+         rd.addRaw(AHTML.endMultiColumnTable());
+         rd.report("This is my report title");
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
+   }
+
 }

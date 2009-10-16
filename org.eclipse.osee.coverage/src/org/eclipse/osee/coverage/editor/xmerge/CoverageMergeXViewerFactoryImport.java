@@ -23,7 +23,7 @@ public class CoverageMergeXViewerFactoryImport extends CoverageMergeXViewerFacto
    protected static String NAMESPACE = "osee.ats.CoverageMergeImport";
 
    public static XViewerColumn Import =
-         new XViewerColumn(NAMESPACE + ".name", "Import", 60, SWT.LEFT, true, SortDataType.Check, false, "");
+         new XViewerColumn(NAMESPACE + ".name", "Import", 65, SWT.LEFT, true, SortDataType.Check, false, "");
 
    public CoverageMergeXViewerFactoryImport() {
       super();

@@ -184,10 +184,8 @@ public class CoveragePackage implements ISaveable, ICoverageUnitProvider, ICover
 
    @Override
    public void getOverviewHtmlHeader(XResultData xResultData) {
-      xResultData.log(AHTML.bold("Coverage Package " + getName()) + AHTML.newline());
-      xResultData.log(AHTML.getLabelValueStr("Creation Date", XDate.getDateStr(getRunDate(), XDate.MMDDYYHHMM)));
-
-      xResultData.log(AHTML.getLabelValueStr("Number of Coverage Imports", String.valueOf(coverageImports.size())));
+      xResultData.log(AHTML.bold("Coverage Package " + getName() + " as of " + XDate.getDateStr(new Date(),
+            XDate.MMDDYYHHMM)) + AHTML.newline());
    }
 
    public void setName(String name) {
