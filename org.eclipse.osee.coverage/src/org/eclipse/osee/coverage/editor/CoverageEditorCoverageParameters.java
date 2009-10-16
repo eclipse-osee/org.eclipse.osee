@@ -18,6 +18,7 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -103,9 +104,10 @@ public class CoverageEditorCoverageParameters extends Composite {
       for (ICoverageEditorItem coverageItem : provider.getCoverageEditorItems(false)) {
          performSearchGetResults(items, coverageItem);
       }
+      Collection<CoverageUnit> topLevelCoverageUnits = ((ICoverageUnitProvider) provider).getCoverageUnits();
       Set<ICoverageEditorItem> parents = new HashSet<ICoverageEditorItem>();
       for (ICoverageEditorItem coverageItem : items) {
-         if (provider.getCoverageEditorItems(false).contains(coverageItem)) {
+         if (topLevelCoverageUnits.contains(coverageItem)) {
             parents.add(coverageItem);
          }
       }

@@ -145,7 +145,9 @@ public class CoverageImport implements ICoverageUnitProvider, ICoverageEditorPro
       Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
       for (CoverageUnit coverageUnit : getCoverageUnits()) {
          items.add(coverageUnit);
-         items.addAll(coverageUnit.getCoverageItems(recurse));
+         if (recurse) {
+            items.addAll(coverageUnit.getCoverageEditorItems(recurse));
+         }
       }
       return items;
    }
