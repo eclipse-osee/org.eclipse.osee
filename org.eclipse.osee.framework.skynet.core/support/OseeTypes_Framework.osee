@@ -504,15 +504,15 @@ abstract artifactType "Function" extends "MS Word Template" {
    attribute "Safety Criticality"
 }
 
-artifactType "System Function" extends "Function" {
+artifactType "System Function" extends "Function", "System Design" {
    guid "AAMFDjisx2s6BUTDo3wA"
 }
 
-artifactType "Subsystem Function" extends "Function" {
+artifactType "Subsystem Function" extends "Function", "Subsystem Design" {
    guid "AAMFDjk6pAAd3tpGEqwA"
 }
 
-artifactType "Test Information Sheet" extends "MS Word Template" {
+artifactType "Test Information Sheet" extends "MS Word Template", "Test Unit" {
    guid "AAMFDjnM3wQxCjwatKAA"
    attribute "TIS Test Number"
    attribute "TIS Test Type"

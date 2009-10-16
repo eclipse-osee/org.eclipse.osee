@@ -98,16 +98,16 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeTypeModel model = getModelByNamespace(getNamespace(enumType.getName()));
          model.getEnumTypes().add(modelType);
 
-         modelType.setName(enumType.getName());
+         modelType.setName(asQuoted(enumType.getName()));
          modelType.setTypeGuid(enumType.getGuid());
 
          for (OseeEnumEntry entry : enumType.values()) {
             checkForCancelledStatus(monitor);
             org.eclipse.osee.framework.oseeTypes.OseeEnumEntry entryModelType = getFactory().createOseeEnumEntry();
-
-            entryModelType.setName(entry.getName());
-            entryModelType.setOrdinal(String.valueOf(entry.ordinal()));
             modelType.getEnumEntries().add(entryModelType);
+
+            entryModelType.setName(asQuoted(entry.getName()));
+            entryModelType.setOrdinal(String.valueOf(entry.ordinal()));
          }
       }
       monitor.worked(calculateWork(workPercentage));
@@ -123,7 +123,7 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeTypeModel model = getModelByNamespace(getNamespace(attributeType.getName()));
          model.getAttributeTypes().add(modelType);
 
-         modelType.setName(attributeType.getName());
+         modelType.setName(asQuoted(attributeType.getName()));
          modelType.setTypeGuid(attributeType.getGuid());
          modelType.setBaseAttributeType(asPrimitiveType(attributeType.getBaseAttributeTypeId()));
          modelType.setDataProvider(asPrimitiveType(attributeType.getAttributeProviderId()));
@@ -163,7 +163,7 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeTypeModel model = getModelByNamespace(getNamespace(artifactType.getName()));
          model.getArtifactTypes().add(modelType);
 
-         modelType.setName(artifactType.getName());
+         modelType.setName(asQuoted(artifactType.getName()));
          modelType.setTypeGuid(artifactType.getGuid());
 
       }
@@ -238,7 +238,7 @@ public class OseeToXtextOperation extends AbstractOperation {
          OseeTypeModel model = getModelByNamespace(getNamespace(relationType.getName()));
          model.getRelationTypes().add(modelType);
 
-         modelType.setName(relationType.getName());
+         modelType.setName(asQuoted(relationType.getName()));
          modelType.setTypeGuid(relationType.getGuid());
 
          modelType.setDefaultOrderType(getRelationOrderType(relationType.getDefaultOrderTypeGuid()));
@@ -276,4 +276,7 @@ public class OseeToXtextOperation extends AbstractOperation {
       return type.prettyName().replaceAll(" ", "_");
    }
 
+   private String asQuoted(String name) {
+      return "\"" + name + "\"";
+   }
 }
