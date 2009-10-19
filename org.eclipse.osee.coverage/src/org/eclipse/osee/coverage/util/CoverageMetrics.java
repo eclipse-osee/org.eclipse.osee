@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 public class CoverageMetrics {
 
    public static Pair<Integer, String> getPercent(int complete, int total) {
-      if (total == 0 || complete == 0) return new Pair<Integer, String>(0, "0");
+      if (total == 0 || complete == 0) return new Pair<Integer, String>(0, getPercentString(0, complete, total));
       Double percent = new Double(complete);
       percent = percent / total;
       percent = percent * 100;
