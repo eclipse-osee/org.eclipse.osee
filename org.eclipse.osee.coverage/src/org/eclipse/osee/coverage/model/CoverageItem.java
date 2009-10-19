@@ -306,6 +306,6 @@ public class CoverageItem implements ICoverageEditorItem {
 
    @Override
    public String getCoveragePercentStr() {
-      return "";
+      return isCovered() ? "100" : "0";
    }
 }
