@@ -10,7 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.message.elements;
 
+import java.nio.ByteBuffer;
 import java.util.Collection;
+
 import org.eclipse.osee.ote.message.Message;
 import org.eclipse.osee.ote.message.data.MemoryResource;
 import org.eclipse.osee.ote.message.data.MessageData;
@@ -36,6 +38,10 @@ public class ArrayElement extends Element {
    
    public void setValue(int index, byte value) {
       getMsgData().getMem().getData()[index + getMsgData().getMem().getOffset() + getArrayStartOffset()] = value;
+   }
+   
+   public ByteBuffer asByteBuffer() {
+	   return ByteBuffer.wrap(getMsgData().getMem().getData(), getMsgData().getMem().getOffset() + getArrayStartOffset(), getLength());
    }
    
    public byte getValue(int index) {
