@@ -1,11 +1,3 @@
-!***************  PROJECT CONTRIBUTION  ******************************************************** 
-
-!*** Special entries from eclipse
-
-plugin@org.eclipse.test=v20080313,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,
-fragment@org.eclipse.ant.optional.junit=v20070202,:pserver:anonymous@dev.eclipse.org:/cvsroot/eclipse,
-
-!*** Project's plugins, features and fragments
 feature@org.eclipse.osee.client.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.client.feature
 
 feature@org.eclipse.osee.framework.server.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.server.feature
@@ -60,42 +52,31 @@ plugin@org.eclipse.osee.framework.svn=SVN,url=https://dev.eclipse.org/svnroot/te
 plugin@org.eclipse.osee.framework.templates=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.templates
 plugin@org.eclipse.osee.framework.updater=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.updater
 plugin@org.eclipse.osee.framework.database.init=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.database.init
- 
+plugin@org.eclipse.osee.framework.types=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.types
+plugin@org.eclipse.osee.framework.types.edit=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.types.edit
+
 feature@org.eclipse.osee.framework.ui.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.feature
 plugin@org.eclipse.nebula.widgets.xviewer=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.nebula.widgets.xviewer
 plugin@org.eclipse.osee.framework.ui.admin=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.admin
 plugin@org.eclipse.osee.framework.ui.branch.graph=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.branch.graph
 plugin@org.eclipse.osee.framework.ui.data.model.editor=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.data.model.editor
-plugin@org.eclipse.osee.framework.ui.encrypter=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.encrypter
 plugin@org.eclipse.osee.framework.ui.jdk=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.jdk
 plugin@org.eclipse.osee.framework.ui.plugin=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.plugin
 plugin@org.eclipse.osee.framework.ui.product=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.product
-plugin@org.eclipse.osee.framework.ui.security=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.security
 plugin@org.eclipse.osee.framework.ui.service.control=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.service.control
 plugin@org.eclipse.osee.framework.ui.skynet=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.skynet
 plugin@org.eclipse.osee.framework.ui.swt=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.swt
 plugin@org.eclipse.osee.framework.ui.workspacebundleloader=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.workspacebundleloader
 plugin@org.eclipse.osee.framework.help.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.help.ui
 plugin@org.eclipse.osee.framework.dev.help.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.dev.help.ui
-
-feature@org.eclipse.osee.external.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.external.feature
-!plugin@org.eclipse.team.svn.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=branches/svn1.6
-!plugin@org.eclipse.team.svn=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=branches/svn1.6
-!plugin@org.eclipse.team.svn.core=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.subversive,tag=branches/svn1.6
-!plugin@org.eclipse.nebula.widgets.calendarcombo=CVS,cvsRoot=:ext:anonymous@dev.eclipse.org:/cvsroot/technology,path=org.eclipse.swt.nebula/org.eclipse.nebula.widgets.calendarcombo,tag=MAIN
-
-plugin@org.apache.commons.httpclient,3.0.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.httpclient_3.0.1.v20080605-1930.jar
-plugin@org.apache.commons.codec,1.3.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.codec_1.3.0.v20080530-1600.jar
-plugin@org.apache.commons.lang,2.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20090708203931/bundles/org.apache.commons.lang_2.4.0.v20081016-1030.jar
-plugin@org.apache.commons.net,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.net_1.4.1.v200905122237.jar
-plugin@javax.activation,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.activation_1.1.0.v200905021805.jar
-plugin@javax.mail.glassfish,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.mail.glassfish_1.4.1.v200808130215.jar
-plugin@org.apache.oro,2.0.8=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.oro_2.0.8.v200903061218.jar
-plugin@com.lowagie.text,1.5.4=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/com.lowagie.text_1.5.4.v200908052355.jar
+plugin@org.eclipse.osee.framework.types.bridge=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.types.bridge
+plugin@org.eclipse.osee.framework.types.generator=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.types.generator
+plugin@org.eclipse.osee.framework.types.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.types.ui
 
 feature@org.eclipse.osee.define.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.define.feature
 plugin@org.eclipse.osee.define=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.define
 plugin@org.eclipse.osee.define.help.ui=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.define.help.ui
+plugin@org.eclipse.osee.coverage=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.coverage
 
 feature@org.eclipse.osee.ats.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.ats.feature
 plugin@org.eclipse.osee.ats=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.ats
@@ -122,3 +103,5 @@ plugin@org.eclipse.osee.ote.ui.host.cmd=SVN,url=https://dev.eclipse.org/svnroot/
 plugin@org.eclipse.osee.ote.ui.markers=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.ote.ui.markers
 plugin@org.eclipse.osee.ote.ui.mux=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.ote.ui.mux
 plugin@org.eclipse.osee.ote.ui.test.manager=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.ote.ui.test.manager
+
+feature@org.eclipse.osee.external.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.external.feature
