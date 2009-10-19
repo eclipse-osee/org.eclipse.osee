@@ -46,12 +46,14 @@ public class CoveragePackageImporter {
                   importItem.getClass().getSimpleName()));
             continue;
          }
-         validateChildrenAreUnique((CoverageUnit) importItem, rd);
+         if (allImportItems.contains(importItem)) {
+            validateChildrenAreUnique(allImportItems, (CoverageUnit) importItem, rd);
+         }
       }
       return rd;
    }
 
-   public void validateChildrenAreUnique(CoverageUnit coverageUnit, XResultData rd) {
+   public void validateChildrenAreUnique(Collection<ICoverageEditorItem> allImportItems, CoverageUnit coverageUnit, XResultData rd) {
       for (ICoverageEditorItem importItem1 : coverageUnit.getChildrenItems()) {
          for (ICoverageEditorItem importItem2 : coverageUnit.getChildrenItems()) {
             if (isConceptuallyEqual(importItem1, importItem2) && importItem1 != importItem2) {
@@ -62,7 +64,9 @@ public class CoveragePackageImporter {
       }
       for (ICoverageEditorItem childItem : coverageUnit.getChildrenItems()) {
          if (childItem instanceof CoverageUnit) {
-            validateChildrenAreUnique((CoverageUnit) childItem, rd);
+            if (allImportItems.contains(childItem)) {
+               validateChildrenAreUnique(allImportItems, (CoverageUnit) childItem, rd);
+            }
          }
       }
    }

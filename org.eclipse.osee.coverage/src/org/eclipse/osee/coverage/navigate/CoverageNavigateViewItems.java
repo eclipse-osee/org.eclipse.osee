@@ -18,9 +18,11 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
@@ -52,16 +54,22 @@ public class CoverageNavigateViewItems extends XNavigateViewItems {
       items.add(new OpenCoveragePackageItem(null));
       items.add(new DeleteCoveragePackageItem(null));
 
-      for (ICoverageNavigateItem navigateItem : getExtensionPointNavigateItems()) {
-         try {
-            items.addAll(navigateItem.getNavigateItems());
-         } catch (Throwable th) {
-            OseeLog.log(CoverageNavigateViewItems.class, Level.SEVERE, th);
-         }
-      }
+      try {
+         if (SystemGroup.OseeAdmin.isCurrentUserMember()) {
+            for (ICoverageNavigateItem navigateItem : getExtensionPointNavigateItems()) {
+               try {
+                  items.addAll(navigateItem.getNavigateItems());
+               } catch (Throwable th) {
+                  OseeLog.log(CoverageNavigateViewItems.class, Level.SEVERE, th);
+               }
+            }
 
-      for (AbstractCoverageBlam blam : CoverageManager.getCoverageBlams()) {
-         items.add(new XNavigateItemBlam(null, blam));
+            for (AbstractCoverageBlam blam : CoverageManager.getCoverageBlams()) {
+               items.add(new XNavigateItemBlam(null, blam));
+            }
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(CoverageNavigateViewItems.class, Level.SEVERE, ex);
       }
    }
 

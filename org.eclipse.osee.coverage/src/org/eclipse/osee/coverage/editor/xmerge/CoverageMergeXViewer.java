@@ -19,6 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
+import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.util.CoveragePackageImporter;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -36,7 +37,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    Action toggleImport;
    private final CoveragePackageImporter coveragePackageImport;
    public static enum ImportType {
-      Add, Replace, Error
+      Add, Replace, Error, None
    };
 
    public CoverageMergeXViewer(CoveragePackageImporter coveragePackageImport, Composite parent, int style, IXViewerFactory xViewerFactory, XCoverageMergeViewer xCoverageMergeViewer) {
@@ -49,8 +50,9 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    }
 
    public ImportType getImportType(ICoverageEditorItem importItem) {
+      if (importItem instanceof CoverageItem) return ImportType.None;
       if (!importError.containsKey(importItem)) {
-         XResultData rd = new XResultData();
+         XResultData rd = new XResultData(false);
          coveragePackageImport.validateItems(Collections.singleton(importItem), rd);
          importError.put(importItem, rd);
       }

@@ -157,7 +157,7 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
          boolean found = false;
          for (ICoverageEditorItem item : new CopyOnWriteArrayList<ICoverageEditorItem>(getCoverageEditorItems(true))) {
             if (!(item instanceof CoverageUnit)) continue;
-            if (item.getName().equals(name)) {
+            if (item.getName().equals(nameStr)) {
                found = true;
                break;
             }
@@ -171,7 +171,8 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
          if (nameStr.equals(name)) {
             parent = this;
          } else {
-            parent = getOrCreateParent(nameStr.replaceFirst("\\." + name + ".*$", ""));
+            String parentNamespace = nameStr.replaceFirst("\\." + name + ".*$", "");
+            parent = getOrCreateParent(parentNamespace);
          }
          // Create new coverage unit
          CoverageUnit newCoverageUnit = new CoverageUnit(parent, nameStr, "");

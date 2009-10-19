@@ -66,7 +66,14 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
       Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
       for (CoverageDataUnit coverageDataUnit : coverageDataFile.coverageDataUnits) {
          CoverageUnit fileCoverageUnit = new CoverageUnit(null, coverageDataUnit.getName(), "");
-         coverageImport.addCoverageUnit(fileCoverageUnit);
+         String fileNamespace = vectorCastCoverageImportProvider.getFileNamespace(coverageDataUnit.getName());
+         fileCoverageUnit.setNamespace(fileNamespace);
+         CoverageUnit parent = coverageImport.getOrCreateParent(fileCoverageUnit.getNamespace());
+         if (parent != null) {
+            parent.addCoverageUnit(fileCoverageUnit);
+         } else {
+            coverageImport.addCoverageUnit(fileCoverageUnit);
+         }
          int fileIndex = coverageDataUnit.getIndex();
          VcpSourceFile vcpSourceFile = vCastVcp.getSourceFile(fileIndex);
          if (vcpSourceFile == null) {
@@ -74,7 +81,6 @@ public class VectorCastCoverageImporter implements ICoverageImporter {
          }
          VcpSourceLisFile vcpSourceLisFile = vcpSourceFile.getVcpSourceLisFile();
          fileCoverageUnit.setText(vcpSourceLisFile.getText());
-         fileCoverageUnit.setNamespace(vectorCastCoverageImportProvider.getFileNamespace(coverageDataUnit.getName()));
          int methodNum = 0;
          for (CoverageDataSubProgram coverageDataSubProgram : coverageDataUnit.getSubPrograms()) {
             methodNum++;

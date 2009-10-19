@@ -64,6 +64,9 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverageItem.getNotes();
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) return String.valueOf(coverageItem.getCoveragePercent());
       if (xCol.equals(CoverageMergeXViewerFactoryImport.Import)) {
+         if (!mergeXViewer.isImportAllowed(coverageItem)) {
+            return "";
+         }
          return mergeXViewer.getImportType(coverageItem).toString();
       }
 
