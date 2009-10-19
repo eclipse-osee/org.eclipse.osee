@@ -1,11 +1,11 @@
-<project default="run" name="org.eclipse.gef.releng/build.xml - Run a GEF build using the Athena CBI">
+<project default="run" name="org.eclipse.osee.releng/build.xml - Run a OSEE build using the Athena CBI">
 	<target name="run">
 		<!-- 
 			1. You must check out the following projects to your workspace:
 		
 				org.eclipse.releng.basebuilder
 				org.eclipse.dash.common.releng 
-				org.eclipse.myproject.releng
+				org.eclipse.osee.releng
 				
 			2. You must provide Ant-Contrib in one of four places:
 			
@@ -36,7 +36,8 @@
 					JAVA_HOME=${JAVA14_HOME}
 		-->
 
-		<!-- load properties and set timestamp for the build -->
+		<!-- load properties and set timestamp for the build
+		<property name="properties.file.path" default="build.properties" /> -->
 		<property file="build.properties" />
 		<tstamp>
 			<format property="buildTimestamp" pattern="yyyyMMddHHmm" />
