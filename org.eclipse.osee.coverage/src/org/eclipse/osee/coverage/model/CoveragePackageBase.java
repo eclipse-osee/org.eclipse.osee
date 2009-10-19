@@ -17,6 +17,7 @@ import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.ICoverageEditorProvider;
 import org.eclipse.osee.coverage.editor.ICoverageTabProvider;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.util.CoverageMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -86,12 +87,13 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
       return items;
    }
 
+   @Override
+   public String getCoveragePercentStr() {
+      return CoverageMetrics.getPercent(getCoverageItemsCovered().size(), getCoverageItems().size()).getSecond();
+   }
+
    public int getCoveragePercent() {
-      if (getCoverageItems().size() == 0 || getCoverageItemsCovered().size() == 0) return 0;
-      Double percent = new Double(getCoverageItemsCovered().size());
-      percent = percent / getCoverageItems().size();
-      percent = percent * 100;
-      return percent.intValue();
+      return CoverageMetrics.getPercent(getCoverageItemsCovered().size(), getCoverageItems().size()).getFirst();
    }
 
    public List<CoverageItem> getCoverageItemsCovered() {

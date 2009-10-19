@@ -62,7 +62,9 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       if (xCol.equals(CoverageXViewerFactory.Text)) return coverageItem.getText();
       if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverageItem.getNamespace();
       if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverageItem.getNotes();
-      if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) return String.valueOf(coverageItem.getCoveragePercent());
+      if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
+         return coverageItem.getCoveragePercentStr();
+      }
       if (xCol.equals(CoverageMergeXViewerFactoryImport.Import)) {
          if (!mergeXViewer.isImportAllowed(coverageItem)) {
             return "";

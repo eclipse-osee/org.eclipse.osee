@@ -231,4 +231,9 @@ public class TestUnit implements ICoverageEditorItem {
       return java.util.Collections.emptyList();
    }
 
+   @Override
+   public String getCoveragePercentStr() {
+      return "";
+   }
+
 }

@@ -58,4 +58,6 @@ public interface ICoverageEditorItem {
 
    public int getCoveragePercent();
 
+   public String getCoveragePercentStr();
+
 }

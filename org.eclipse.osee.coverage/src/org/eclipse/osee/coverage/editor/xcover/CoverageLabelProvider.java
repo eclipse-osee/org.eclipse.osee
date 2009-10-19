@@ -63,7 +63,9 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       }
       if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverageItem.getNotes();
       if (xCol.equals(CoverageXViewerFactory.Name)) return coverageItem.getName();
-      if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) return String.valueOf(coverageItem.getCoveragePercent());
+      if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
+         return coverageItem.getCoveragePercentStr();
+      }
       if (xCol.equals(CoverageXViewerFactory.Location)) return coverageItem.getLocation();
       if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverageItem.getNamespace();
       if (xCol.equals(CoverageXViewerFactory.Guid)) return coverageItem.getGuid();

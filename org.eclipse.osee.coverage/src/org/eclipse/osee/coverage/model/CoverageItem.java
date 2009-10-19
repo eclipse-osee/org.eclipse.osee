@@ -304,4 +304,8 @@ public class CoverageItem implements ICoverageEditorItem {
       return java.util.Collections.emptyList();
    }
 
+   @Override
+   public String getCoveragePercentStr() {
+      return "";
+   }
 }

@@ -19,6 +19,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.coverage.util.CoverageMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -288,14 +289,6 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
       this.notes = notes;
    }
 
-   public int getCoveragePercent() {
-      if (getCoverageItems(true).size() == 0 || getCoverageItemsCovered(true).size() == 0) return 0;
-      Double percent = new Double(getCoverageItemsCovered(true).size());
-      percent = percent / getCoverageItems(true).size();
-      percent = percent * 100;
-      return percent.intValue();
-   }
-
    public List<CoverageItem> getCoverageItemsCovered(boolean recurse) {
       List<CoverageItem> items = new ArrayList<CoverageItem>();
       for (CoverageItem coverageItem : getCoverageItems(recurse)) {
@@ -431,6 +424,15 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
          coverageUnit.save(transaction);
       }
       artifact.persist(transaction);
+   }
+
+   @Override
+   public String getCoveragePercentStr() {
+      return CoverageMetrics.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size()).getSecond();
+   }
+
+   public int getCoveragePercent() {
+      return CoverageMetrics.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size()).getFirst();
    }
 
 }
