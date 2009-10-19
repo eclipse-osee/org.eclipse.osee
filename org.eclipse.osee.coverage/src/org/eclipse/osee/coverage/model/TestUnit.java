@@ -8,6 +8,7 @@ package org.eclipse.osee.coverage.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.util.CoverageImage;
@@ -105,7 +106,7 @@ public class TestUnit implements ICoverageEditorItem {
 
    @Override
    public Object[] getChildren() {
-      return coverageItems.toArray(new Object[coverageItems.size()]);
+      return ArrayUtils.EMPTY_OBJECT_ARRAY;
    }
 
    @Override
@@ -118,7 +119,6 @@ public class TestUnit implements ICoverageEditorItem {
 
    @Override
    public boolean isCovered() {
-      if (getCoverageItems().size() > 0) return true;
       return false;
    }
 
