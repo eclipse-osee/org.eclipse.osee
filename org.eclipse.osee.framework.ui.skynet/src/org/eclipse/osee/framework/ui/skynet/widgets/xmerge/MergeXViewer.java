@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.event.MergeBranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.compare.AttributeCompareItem;
@@ -110,9 +111,15 @@ public class MergeXViewer extends XViewer {
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
    }
 
-   public void setConflicts(Conflict[] conflicts) {
+   public void setConflicts(final Conflict[] conflicts) {
       this.conflicts = conflicts;
-      setInput(conflicts);
+
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            setInput(conflicts);
+         }
+      });
    }
 
    /**
