@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Test Plug-in
+Bundle-Name: Test Support Plug-in
 Bundle-SymbolicName: org.eclipse.osee.support.test;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.0.0.qualifier
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.osee.framework.logging;bundle-version="0.4.0",
@@ -22,3 +22,4 @@ Import-Package: org.eclipse.osee.ats.test,
  org.eclipse.osee.framework.skynet.core.test,
  org.eclipse.osee.framework.skynet.core.test.cases
 Export-Package: org.eclipse.osee.support.test
+Bundle-Vendor: Eclipse.org

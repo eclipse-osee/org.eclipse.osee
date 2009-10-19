@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Demo Plug-in
-Bundle-SymbolicName: org.eclipse.osee.support.test.util
-Bundle-Version: 1.0.0
+Bundle-Name: Test Support Util Plug-in
+Bundle-SymbolicName: org.eclipse.osee.support.test.util;singleton:=true
+Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.osee.support.test.util.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
@@ -14,3 +14,4 @@ Import-Package: org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.logging,
  org.osgi.framework
 Require-Bundle: org.junit4;bundle-version="4.3.1"
+Bundle-Vendor: Eclipse.org
