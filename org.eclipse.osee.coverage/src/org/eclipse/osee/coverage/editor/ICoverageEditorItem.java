@@ -60,4 +60,6 @@ public interface ICoverageEditorItem {
 
    public String getCoveragePercentStr();
 
+   public boolean isFolder();
+
 }

@@ -30,8 +30,8 @@ public class ComScrnAButton2 extends Button {
    @Override
    public String getText() {
       try {
-         if (getStyle() == 4) { // 1, 1, y
-            return "Navigate Here"; // 1, 2, y
+         if (getStyle() == 4) { // 1, 1, TestUnit2
+            return "Navigate Here"; // 1, 2, TestUnit4
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex); // 1, 3, n
@@ -42,10 +42,10 @@ public class ComScrnAButton2 extends Button {
    @Override
    public Image getImage() {
       try {
-         if (getStyle() == 4) { // 2, 1, y
+         if (getStyle() == 4) { // 2, 1, TestUnit3
             return this.image; // 2, 2, n
          } else {
-            return super.getImage(); // 2, 3, y
+            return super.getImage(); // 2, 3, TestUnit4|TestUnit1
          }
       } catch (IllegalArgumentException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex); // 2, 4, n

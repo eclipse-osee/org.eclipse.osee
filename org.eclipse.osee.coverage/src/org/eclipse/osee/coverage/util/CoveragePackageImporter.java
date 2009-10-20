@@ -121,34 +121,38 @@ public class CoveragePackageImporter {
                continue;
             }
             CoverageUnit importCoverageUnit = (CoverageUnit) importItem;
-            if (imported.equals(importCoverageUnit)) continue;
+            if (imported.contains(importCoverageUnit)) continue;
 
             ICoverageEditorItem packageItem = getPackageCoverageItem(importItem, true);
             // Determine if item already exists first
-            if (packageItem != null) {
+            if (packageItem != null && !packageItem.isFolder()) {
                rd.logError(String.format("Import Item [%s][%s] matches Package Item [%s][%s]- Not Implemented Yet",
                      importItem, importItem.getParent(), packageItem, packageItem.getParent()));
                rd.log("");
+               // save assignees and notes and RATIONALE before child overwrites
+               // ((CoverageUnit) importItem).updateAssigneesAndNotes((CoverageUnit) packageItem);
                continue;
             }
-            // This is new item
+            if (packageItem == null || (packageItem != null && !packageItem.isFolder())) {
+               // This is new item
 
-            // Check if parent item exists
-            ICoverageEditorItem parentImportItem = importItem.getParent();
-            // If null, this is top level item, just add to package
-            if (parentImportItem instanceof CoverageImport) {
-               coveragePackage.addCoverageUnit(((CoverageUnit) importItem).copy(true));
-               rd.log(String.format("Added [%s] as top level CoverageUnit", importCoverageUnit));
-               imported.add(importItem);
-               rd.log("");
-            } else {
-               // Else, want to add item to same parent
-               CoverageUnit parentCoverageUnit = (CoverageUnit) importItem.getParent();
-               CoverageUnit parentPackageItem = (CoverageUnit) getPackageCoverageItem(parentCoverageUnit, true);
-               parentPackageItem.addCoverageUnit(importCoverageUnit.copy(true));
-               imported.add(importCoverageUnit);
-               rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
-               rd.log("");
+               // Check if parent item exists
+               ICoverageEditorItem parentImportItem = importItem.getParent();
+               // If null, this is top level item, just add to package
+               if (parentImportItem instanceof CoverageImport) {
+                  coveragePackage.addCoverageUnit(((CoverageUnit) importItem).copy(true));
+                  rd.log(String.format("Added [%s] as top level CoverageUnit", importCoverageUnit));
+                  imported.add(importItem);
+                  rd.log("");
+               } else {
+                  // Else, want to add item to same parent
+                  CoverageUnit parentCoverageUnit = (CoverageUnit) importItem.getParent();
+                  CoverageUnit parentPackageItem = (CoverageUnit) getPackageCoverageItem(parentCoverageUnit, true);
+                  parentPackageItem.addCoverageUnit(importCoverageUnit.copy(true));
+                  imported.add(importCoverageUnit);
+                  rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
+                  rd.log("");
+               }
             }
 
             // Import children that are in import list
@@ -174,7 +178,7 @@ public class CoveragePackageImporter {
       return null;
    }
 
-   public boolean isConceptuallyEqual(ICoverageEditorItem packageItem, ICoverageEditorItem importItem) {
+   public static boolean isConceptuallyEqual(ICoverageEditorItem packageItem, ICoverageEditorItem importItem) {
       if (packageItem.equals(importItem)) return true;
       if (packageItem.getClass() != importItem.getClass()) return false;
       if (packageItem.getNamespace() == null && importItem.getNamespace() == null) return true;

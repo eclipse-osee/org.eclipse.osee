@@ -14,11 +14,14 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.TestUnit;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -31,7 +34,8 @@ public class SampleJavaFileParser {
    private static final Pattern packagePattern = Pattern.compile("package\\s+(.*);");
    private static final Pattern methodPattern =
          Pattern.compile("\\s+(public|private)\\s(\\w+)\\s(\\w+)\\(.*\\)\\s+\\{\\s*");
-   private static final Pattern executeLine = Pattern.compile("^(.*)\\s+//\\s+(\\w+),\\s+(\\w+),\\s+(\\w+)");
+   private static final Pattern executeLine = Pattern.compile("^(.*)\\s+//\\s+(\\w+),\\s+(\\w+),\\s+([\\w\\|]+)$");
+   private static Map<String, TestUnit> nametoTestUnitMap = new HashMap<String, TestUnit>();
 
    public static CoverageUnit createCodeUnit(URL url) throws OseeCoreException {
       try {
@@ -71,14 +75,24 @@ public class SampleJavaFileParser {
                String lineText = m.group(1);
                String methodNum = m.group(2);
                String executeNum = m.group(3);
-               boolean covered = m.group(4).equals("y");
+               String testUnits = m.group(4);
+               boolean covered = !testUnits.equals("n");
                CoverageItem coverageItem =
-                     new CoverageItem(coverageUnit, covered ? CoverageMethodEnum.Test_Unit : CoverageMethodEnum.Not_Covered,
-                           executeNum);
+                     new CoverageItem(coverageUnit,
+                           covered ? CoverageMethodEnum.Test_Unit : CoverageMethodEnum.Not_Covered, executeNum);
                coverageItem.setLineNum(String.valueOf(lineNum));
                coverageItem.setText(lineText);
                coverageItem.setMethodNum(methodNum);
                coverageUnit.addCoverageItem(coverageItem);
+               if (covered) {
+                  for (String testUnitName : testUnits.split("\\|")) {
+                     if (nametoTestUnitMap.get(testUnitName) == null) {
+                        TestUnit testUnit = new TestUnit(testUnitName, "");
+                        nametoTestUnitMap.put(testUnitName, testUnit);
+                     }
+                     coverageItem.addTestUnit(nametoTestUnitMap.get(testUnitName));
+                  }
+               }
             }
          }
          return fileCoverageUnit;

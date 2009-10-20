@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.swt.graphics.Image;
 
@@ -44,6 +45,7 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
    public static String ARTIFACT_NAME = "Coverage Unit";
    private String name;
    private String namespace;
+   private boolean folder;
    private String notes;
    private String assignees;
    private String guid = GUID.create();
@@ -176,7 +178,9 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
 
    @Override
    public OseeImage getOseeImage() {
-      if (isCovered()) {
+      if (isFolder()) {
+         return FrameworkImage.FOLDER;
+      } else if (isCovered()) {
          return CoverageImage.UNIT_GREEN;
       }
       return CoverageImage.UNIT_RED;
@@ -353,6 +357,7 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
          if (Strings.isValid(notes)) {
             setNotes(notes);
          }
+         setFolder(keyValueArtifact.getValue("folder") != null && keyValueArtifact.getValue("folder").equals("true"));
          String assignees = keyValueArtifact.getValue("assignees");
          if (Strings.isValid(assignees)) {
             setAssignees(assignees);
@@ -379,6 +384,7 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
       coverageUnit.setNamespace(namespace);
       coverageUnit.setNotes(notes);
       coverageUnit.setText(text);
+      coverageUnit.setFolder(folder);
       coverageUnit.setAssignees(assignees);
       coverageUnit.setLocation(location);
       if (includeItems) {
@@ -410,6 +416,9 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
       if (Strings.isValid(text)) {
          keyValueArtifact.setValue("text", text);
       }
+      if (folder) {
+         keyValueArtifact.setValue("folder", String.valueOf(folder));
+      }
       if (Strings.isValid(assignees)) {
          keyValueArtifact.setValue("assignees", assignees);
       }
@@ -435,4 +444,16 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
       return CoverageMetrics.getPercent(getCoverageItemsCovered(true).size(), getCoverageItems(true).size()).getFirst();
    }
 
+   public boolean isFolder() {
+      return folder;
+   }
+
+   public void setFolder(boolean folder) {
+      this.folder = folder;
+   }
+
+   public void updateAssigneesAndNotes(CoverageUnit coverageUnit) throws OseeCoreException {
+      setNotes(coverageUnit.getNotes());
+      setAssignees(coverageUnit.getAssignees());
+   }
 }

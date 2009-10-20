@@ -29,8 +29,8 @@ public class ScreenBButton3 extends Button {
 
    public String getRationale() {
       try {
-         if (getStyle() == 4) { // 1, 1, y
-            return "Navigate Here"; // 1, 2, y
+         if (getStyle() == 4) { // 1, 1, TestUnit2
+            return "Navigate Here"; // 1, 2, TestUnit2
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex); // 1, 3, n

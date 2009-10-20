@@ -35,10 +35,10 @@ public class ScreenBButton1 extends Button {
    @Override
    public String getText() {
       try {
-         if (getStyle() == 4) { // 1, 1, y
-            return "Navigate Here"; // 1, 2, y
+         if (getStyle() == 4) { // 1, 1, TestUnit2|TestUnit3
+            return "Navigate Here"; // 1, 2, TestUnit2|TestUnit3
          } else {
-            return "Navigate There"; // 1, 3, y
+            return "Navigate There"; // 1, 3, TestUnit2|TestUnit3
          }
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex); // 1, 4, n
@@ -48,7 +48,7 @@ public class ScreenBButton1 extends Button {
 
    @Override
    public void setImage(Image image) {
-      this.image = image; // 2, 1, y
+      this.image = image; // 2, 1, TestUnit2|TestUnit3
    }
 
    @Override
@@ -59,10 +59,10 @@ public class ScreenBButton1 extends Button {
    @Override
    public Image getImage() {
       try {
-         if (getStyle() == 4) { // 4, 1, y
+         if (getStyle() == 4) { // 4, 1, TestUnit2|TestUnit3
             return this.image; // 4, 2, n
          } else {
-            return super.getImage(); // 4, 3, y
+            return super.getImage(); // 4, 3, TestUnit2|TestUnit3
          }
       } catch (IllegalArgumentException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex); // 4, 4, n

@@ -37,7 +37,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    Action toggleImport;
    private final CoveragePackageImporter coveragePackageImport;
    public static enum ImportType {
-      Add, Replace, Error, None
+      Add, Replace, Folder, Error, None
    };
 
    public CoverageMergeXViewer(CoveragePackageImporter coveragePackageImport, Composite parent, int style, IXViewerFactory xViewerFactory, XCoverageMergeViewer xCoverageMergeViewer) {
@@ -51,6 +51,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
 
    public ImportType getImportType(ICoverageEditorItem importItem) {
       if (importItem instanceof CoverageItem) return ImportType.None;
+
       if (!importError.containsKey(importItem)) {
          XResultData rd = new XResultData(false);
          coveragePackageImport.validateItems(Collections.singleton(importItem), rd);
@@ -59,7 +60,14 @@ public class CoverageMergeXViewer extends CoverageXViewer {
       if (importError.get(importItem).getNumErrors() > 0) {
          return ImportType.Error;
       }
-      return getPackageItemForImportItem(importItem, true) == null ? ImportType.Add : ImportType.Replace;
+      ICoverageEditorItem packageItem = getPackageItemForImportItem(importItem, true);
+      if (packageItem == null) {
+         return ImportType.Add;
+      } else if (importItem.isFolder()) {
+         return ImportType.Folder;
+      } else {
+         return ImportType.Replace;
+      }
    }
 
    public void setImportChecked(ICoverageEditorItem coverageItem, boolean checked) {

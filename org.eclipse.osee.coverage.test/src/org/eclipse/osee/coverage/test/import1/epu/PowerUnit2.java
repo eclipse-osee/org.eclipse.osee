@@ -35,10 +35,10 @@ public class PowerUnit2 extends Table {
 
    public Image getImage() {
       try {
-         if (getStyle() == 4) { // 1, 1, y
+         if (getStyle() == 4) { // 1, 1, TestUnit2
             return this.image; // 1, 2, n
          } else {
-            return this.image; // 1, 3, y
+            return this.image; // 1, 3, TestUnit2
          }
       } catch (IllegalArgumentException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex); // 1, 4, n
@@ -51,7 +51,7 @@ public class PowerUnit2 extends Table {
 
    @Override
    public void clear(int[] indices) {
-      if (getStyle() == 4) { // 2, 1, y
+      if (getStyle() == 4) { // 2, 1, TestUnit2
          System.out.println("clear it"); // 2, 2, n
       } else {
          for (int x = 0; x < 34; x++) {
@@ -62,21 +62,21 @@ public class PowerUnit2 extends Table {
 
    @Override
    public void clearAll() {
-      System.out.println("clear All"); // 3, 1, y
+      System.out.println("clear All"); // 3, 1, TestUnit2
    }
 
    @Override
    public Point computeSize(int wHint, int hHint, boolean changed) {
-      if (getStyle() == 4) { // 4, 1, y
+      if (getStyle() == 4) { // 4, 1, TestUnit2
          return new Point(3, 2); // 4, 2, n
       } else {
-         return super.computeSize(wHint, hHint, changed); // 4, 3, y
+         return super.computeSize(wHint, hHint, changed); // 4, 3, TestUnit2
       }
    }
 
    @Override
    public int getColumnCount() {
-      return super.getColumnCount(); // 5, 1, y
+      return super.getColumnCount(); // 5, 1, TestUnit2
    }
 
 }

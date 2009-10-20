@@ -308,4 +308,9 @@ public class CoverageItem implements ICoverageEditorItem {
    public String getCoveragePercentStr() {
       return isCovered() ? "100" : "0";
    }
+
+   @Override
+   public boolean isFolder() {
+      return false;
+   }
 }

@@ -236,4 +236,9 @@ public class TestUnit implements ICoverageEditorItem {
       return "";
    }
 
+   @Override
+   public boolean isFolder() {
+      return false;
+   }
+
 }

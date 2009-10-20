@@ -149,6 +149,7 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
          }
          if (getCoverageUnits().size() == 0) {
             CoverageUnit newCoverageUnit = new CoverageUnit(this, nameStr, "");
+            newCoverageUnit.setFolder(true);
             newCoverageUnit.setNamespace(nameStr);
             addCoverageUnit(newCoverageUnit);
             if (nameStr.equals(namespace)) return newCoverageUnit;
@@ -179,6 +180,7 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
          // Create new coverage unit
          CoverageUnit newCoverageUnit = new CoverageUnit(parent, nameStr, "");
          newCoverageUnit.setNamespace(nameStr);
+         newCoverageUnit.setFolder(true);
          // Add to parent
          ((ICoverageUnitProvider) parent).addCoverageUnit(newCoverageUnit);
          // Return if this is our coverage unit
@@ -394,6 +396,11 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
          if (other.getGuid() != null) return false;
       } else if (!getGuid().equals(other.getGuid())) return false;
       return true;
+   }
+
+   @Override
+   public boolean isFolder() {
+      return false;
    }
 
 }
