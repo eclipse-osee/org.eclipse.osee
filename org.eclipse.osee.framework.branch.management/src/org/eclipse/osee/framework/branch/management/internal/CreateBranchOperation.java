@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.branch.management.Branch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -59,10 +60,11 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
 
    private static final String MERGE_BRANCH_INSERT =
          "INSERT INTO osee_merge (source_branch_id, dest_branch_id, merge_branch_id, commit_transaction_id) VALUES(?,?,?,?)";
-   private final static String INSERT_ADDITIONAL_ATTRIBUTE_GAMMAS =
-         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, atr1.gamma_id, txs1.mod_type, ? FROM osee_attribute atr1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = atr1.gamma_id AND atr1.art_id = ald1.art_id and ald1.query_id = ?";
-   private final static String INSERT_ADDITIONAL_ARTIFACT_GAMMAS =
-         "INSERT INTO OSEE_TXS (transaction_id, gamma_id, mod_type, tx_current) SELECT ?, arv1.gamma_id, txs1.mod_type, ? FROM osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1, osee_join_artifact ald1 WHERE txd1.branch_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.tx_current in (1,2) AND txs1.gamma_id = arv1.gamma_id AND arv1.art_id = ald1.art_id and ald1.query_id = ?";
+
+   private final static String SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN =
+         "SELECT item.gamma_id, txs.mod_type FROM osee_attribute item, osee_txs txs, osee_tx_details txd, osee_join_artifact artjoin WHERE txd.branch_id = ? AND txd.transaction_id = txs.transaction_id AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? order by txd.transaction_id desc";
+   private final static String SELECT_ARTIFACT_ADDRESSING_FROM_JOIN =
+         "SELECT item.gamma_id, txs.mod_type FROM osee_artifact_version item, osee_txs txs, osee_tx_details txd, osee_join_artifact artjoin WHERE txd.branch_id = ? AND txd.transaction_id = txs.transaction_id AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? order by txd.transaction_id desc";
 
    private final Branch branch;
    private final String creationComment;
@@ -150,6 +152,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       monitor.worked(calculateWork(0.10));
    }
 
+   @SuppressWarnings("unchecked")
    private void addBranchAlias(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch) throws OseeDataStoreException {
       if (branch.getStaticBranchName() != null) {
          ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES, branch.getStaticBranchName(),
@@ -168,6 +171,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       monitor.worked(calculateWork(workAmount));
    }
 
+   @SuppressWarnings("unchecked")
    private void storeBranch(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch, boolean isCreate) throws OseeDataStoreException {
       if (isCreate) {
          Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -194,44 +198,50 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       monitor.worked(calculateWork(workAmount));
    }
 
-   private void populateBaseTransaction(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch, int populateBaseTxFromAddressingQueryId) throws OseeDataStoreException {
+   private void populateBaseTransaction(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch, int populateBaseTxFromAddressingQueryId) throws OseeCoreException {
       if (branch.getBranchType() != BranchType.SYSTEM_ROOT) {
+         List<Object[]> data = new ArrayList<Object[]>();
+         HashSet<Integer> gammas = new HashSet<Integer>(100000);
+         int parentBranchId = branch.getParentBranchId();
+
+         String extraMessage = "";
          if (populateBaseTxFromAddressingQueryId > 0) {
-            int txCurrent = TxChange.CURRENT.getValue();
-            int parentBranchId = branch.getParentBranchId();
-            int baseTransaction = branch.getBaseTransaction();
+            populateAddressingToCopy(monitor, connection, data, gammas, SELECT_ATTRIBUTE_ADDRESSING_FROM_JOIN,
+                  parentBranchId, TxChange.NOT_CURRENT.getValue(), populateBaseTxFromAddressingQueryId);
+            populateAddressingToCopy(monitor, connection, data, gammas, SELECT_ARTIFACT_ADDRESSING_FROM_JOIN,
+                  parentBranchId, TxChange.NOT_CURRENT.getValue(), populateBaseTxFromAddressingQueryId);
 
-            ConnectionHandler.runPreparedUpdate(connection, INSERT_ADDITIONAL_ATTRIBUTE_GAMMAS, baseTransaction,
-                  txCurrent, parentBranchId, populateBaseTxFromAddressingQueryId);
-            ConnectionHandler.runPreparedUpdate(connection, INSERT_ADDITIONAL_ARTIFACT_GAMMAS, baseTransaction,
-                  txCurrent, parentBranchId, populateBaseTxFromAddressingQueryId);
-            monitor.setTaskName(String.format("Created base transaction for branch [%s] joining against query id",
-                  branch.getName()));
+            extraMessage = " by joining against query id";
          } else {
-            List<Object[]> data = new ArrayList<Object[]>();
-            HashSet<Integer> gammas = new HashSet<Integer>(100000);
-
-            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
-            try {
-               chStmt.runPreparedQuery(10000, SELECT_ADDRESSING, TxChange.NOT_CURRENT.getValue(),
-                     branch.getParentBranchId());
-               while (chStmt.next()) {
-                  checkForCancelledStatus(monitor);
-                  Integer gamma = chStmt.getInt("gamma_id");
-                  if (!gammas.contains(gamma)) {
-                     data.add(new Object[] {branch.getBaseTransaction(), gamma, chStmt.getInt("mod_type"), 1});
-                     gammas.add(gamma);
-                  }
-               }
-            } finally {
-               chStmt.close();
-            }
-            ConnectionHandler.runBatchUpdate(connection, INSERT_ADDRESSING, data);
-            monitor.setTaskName(String.format("Created branch [%s] with [%d] transactions", branch.getName(),
-                  data.size()));
+            populateAddressingToCopy(monitor, connection, data, gammas, SELECT_ADDRESSING,
+                  TxChange.NOT_CURRENT.getValue(), parentBranchId);
          }
+         if (!data.isEmpty()) {
+            ConnectionHandler.runBatchUpdate(connection, INSERT_ADDRESSING, data);
+         }
+         monitor.setTaskName(String.format("Created branch [%s] with [%d] transactions%s", branch.getName(),
+               data.size(), extraMessage));
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(workAmount));
+   }
+
+   private void populateAddressingToCopy(IProgressMonitor monitor, OseeConnection connection, List<Object[]> data, HashSet<Integer> gammas, String query, Object... parameters) throws OseeCoreException {
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      try {
+         chStmt.runPreparedQuery(10000, query, parameters);
+         while (chStmt.next()) {
+            checkForCancelledStatus(monitor);
+            Integer gamma = chStmt.getInt("gamma_id");
+            if (!gammas.contains(gamma)) {
+               ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
+               TxChange txCurrent = TxChange.getCurrent(modType);
+               data.add(new Object[] {branch.getBaseTransaction(), gamma, modType.getValue(), txCurrent.getValue()});
+               gammas.add(gamma);
+            }
+         }
+      } finally {
+         chStmt.close();
+      }
    }
 }
