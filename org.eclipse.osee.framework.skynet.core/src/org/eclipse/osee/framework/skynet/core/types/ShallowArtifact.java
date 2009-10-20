@@ -123,6 +123,6 @@ public class ShallowArtifact implements IArtifact {
 
    @Override
    public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
-      return null;
+      return getFullArtifact().getRelatedArtifacts(relationTypeSide);
    }
 }
