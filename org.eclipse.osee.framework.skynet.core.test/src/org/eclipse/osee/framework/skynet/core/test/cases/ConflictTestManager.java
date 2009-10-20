@@ -16,7 +16,6 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -104,7 +103,7 @@ public class ConflictTestManager {
    protected static class ArtifactModification {
       Type itemToChange;
       Modification modificationToPerform;
-      protected String Name;
+      protected String name;
       protected String value;
       protected Object object;
       protected Object object2;
@@ -122,7 +121,7 @@ public class ConflictTestManager {
          this.rootArtifact = rootArtifact;
          this.branch = branch;
          this.type = type;
-         this.Name = name;
+         this.name = name;
       }
 
       protected ArtifactModification(Type itemToChange, Modification modificationToPerform, Object object, String name, Class<?> clas, String value) throws OseeCoreException {
@@ -134,7 +133,7 @@ public class ConflictTestManager {
          this.object = object;
          this.clas = clas;
          this.value = value;
-         this.Name = name;
+         this.name = name;
       }
 
       protected ArtifactModification(Type itemToChange, Modification modificationToPerform, Object object, Object object2) throws OseeCoreException {
@@ -157,7 +156,6 @@ public class ConflictTestManager {
       protected int rootArtifact;
       protected int queryNumber;
       protected int numConflicts = 0;
-      protected boolean artifactAdded = false;
       protected boolean sourceModified = false;
       protected boolean destModified = false;
 
@@ -299,10 +297,10 @@ public class ConflictTestManager {
                switch (modification.itemToChange) {
                   case ARTIFACT:
                      createArtifact(modification.rootArtifact, modification.branch, modification.type,
-                           modification.Name);
+                           modification.name);
                      break;
                   case ATTRIBUTE:
-                     createAttribute((Artifact) modification.object, modification.Name, modification.clas,
+                     createAttribute((Artifact) modification.object, modification.name, modification.clas,
                            modification.value);
                      break;
                   case RELATION:
@@ -318,12 +316,12 @@ public class ConflictTestManager {
                switch (modification.itemToChange) {
                   case ARTIFACT:
                      createArtifact(modification.rootArtifact, modification.branch, modification.type,
-                           modification.Name).deleteAndPersist();
+                           modification.name).deleteAndPersist();
                      break;
                   case ATTRIBUTE:
-                     createAttribute((Artifact) modification.object, modification.Name, modification.clas,
+                     createAttribute((Artifact) modification.object, modification.name, modification.clas,
                            modification.value);
-                     ((Artifact) modification.object).deleteSoleAttribute(modification.Name);
+                     ((Artifact) modification.object).deleteSoleAttribute(modification.name);
                      ((Artifact) modification.object).persist();
                      break;
                   case RELATION:
@@ -715,11 +713,11 @@ public class ConflictTestManager {
    public static Object stringToObject(Class clas, String value) {
 
       if (clas.equals(BooleanAttribute.class)) {
-         return new Boolean(value.equals(BooleanAttribute.booleanChoices[0]));
+         return Boolean.valueOf(value.equals(BooleanAttribute.booleanChoices[0]));
       }
       if (clas.equals(IntegerAttribute.class)) {
          if (value.equals("")) {
-            return new Integer(0);
+            return Integer.valueOf(0);
          }
          return new Integer(value);
       }

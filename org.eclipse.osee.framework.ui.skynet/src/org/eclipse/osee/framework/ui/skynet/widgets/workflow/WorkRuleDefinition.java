@@ -24,7 +24,6 @@ public class WorkRuleDefinition extends WorkItemDefinition {
    /**
     * Instantiate rule with no value where name and id are same.
     * 
-    * @param name
     * @param id
     */
    public WorkRuleDefinition(String id) {

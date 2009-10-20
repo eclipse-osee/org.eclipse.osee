@@ -1736,7 +1736,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return relations;
    }
 
-   @Deprecated
    public List<RelationLink> getRelations(IRelationEnumeration relationEnum) throws OseeCoreException {
       return RelationManager.getRelations(this, relationEnum.getRelationType(), relationEnum.getSide());
    }

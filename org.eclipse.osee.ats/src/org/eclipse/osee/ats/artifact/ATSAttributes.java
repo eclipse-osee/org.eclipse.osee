@@ -139,7 +139,6 @@ public class ATSAttributes {
 
    /**
     * Creates attribute with displayName = "<name>" and storeName = "ats.<name>"
-    * 
     * @param name
     */
    private ATSAttributes(String name) {
@@ -149,7 +148,7 @@ public class ATSAttributes {
    /**
     * Creates attribute with displayName = "<displayName>" and storeName = "ats.<displayName>"
     * 
-    * @param name
+    * @param displayName
     */
    private ATSAttributes(String displayName, String description) {
       this(displayName, "ats." + displayName, description);

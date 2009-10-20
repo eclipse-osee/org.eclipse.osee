@@ -15,7 +15,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.Collection;
-import java.util.HashSet;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -101,7 +100,7 @@ public class ConflictTest {
    public void testGetConflictsPerBranch() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
-      Collection<Conflict> conflicts = new HashSet<Conflict>();
+      Collection<Conflict> conflicts = null;
       try {
          conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
@@ -168,7 +167,7 @@ public class ConflictTest {
             monitorLog.getAllLogs().size() == 0);
    }
 
-   public void CheckCommitWithoutResolutionErrors() {
+   public void checkCommitWithoutResolutionErrors() {
       SevereLoggingMonitor monitorLog = new SevereLoggingMonitor();
       OseeLog.registerLoggerListener(monitorLog);
       try {

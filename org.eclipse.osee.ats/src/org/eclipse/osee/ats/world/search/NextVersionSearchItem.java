@@ -20,7 +20,6 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -37,10 +36,6 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    private TeamDefinitionArtifact selectedTeamDef;
    private VersionArtifact selectedVersionArt;
 
-   /**
-    * @param name
-    * @throws OseeArgumentException
-    */
    public NextVersionSearchItem(TeamDefinitionArtifact teamDefHoldingVersions, LoadView loadView) {
       this(null, teamDefHoldingVersions, loadView);
    }
@@ -62,9 +57,9 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       TeamDefinitionArtifact teamDef = getTeamDefinition(searchType);
       try {
          if (teamDef != null) {
-            name += (" - " + teamDef.getName());
+            name += " - " + teamDef.getName();
             selectedVersionArt = teamDef.getNextReleaseVersion();
-            name += (selectedVersionArt != null ? " - " + selectedVersionArt.getName() : "");
+            name += selectedVersionArt != null ? " - " + selectedVersionArt.getName() : "";
          }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
@@ -74,15 +69,17 @@ public class NextVersionSearchItem extends WorldUISearchItem {
    }
 
    private TeamDefinitionArtifact getTeamDefinition(SearchType searchType) {
-      if (teamDefHoldingVersions != null)
+      if (teamDefHoldingVersions != null) {
          return teamDefHoldingVersions;
+      }
       return selectedTeamDef;
    }
 
    @Override
    public Collection<Artifact> performSearch(SearchType searchType) throws OseeCoreException {
-      if (isCancelled())
+      if (isCancelled()) {
          return EMPTY_SET;
+      }
       if (getTeamDefinition(searchType).getNextReleaseVersion() == null) {
          AWorkbench.popup("ERROR", "No version marked as Next Release for \"" + getTeamDefinition(searchType) + "\"");
          return EMPTY_SET;
@@ -90,18 +87,21 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       List<Artifact> arts =
             getTeamDefinition(searchType).getNextReleaseVersion().getRelatedArtifacts(
                   AtsRelation.TeamWorkflowTargetedForVersion_Workflow);
-      if (isCancelled())
+      if (isCancelled()) {
          return EMPTY_SET;
+      }
       return arts;
    }
 
    @Override
    public void performUI(SearchType searchType) throws OseeCoreException {
       super.performUI(searchType);
-      if (teamDefHoldingVersions != null)
+      if (teamDefHoldingVersions != null) {
          return;
-      if (searchType == SearchType.ReSearch && selectedTeamDef != null)
+      }
+      if (searchType == SearchType.ReSearch && selectedTeamDef != null) {
          return;
+      }
       try {
          TeamDefinitionDialog ld = new TeamDefinitionDialog("Select Team", "Select Team");
          ld.setInput(TeamDefinitionArtifact.getTeamReleaseableDefinitions(Active.Both));
@@ -109,8 +109,9 @@ public class NextVersionSearchItem extends WorldUISearchItem {
          if (result == 0) {
             selectedTeamDef = (TeamDefinitionArtifact) ld.getResult()[0];
             return;
-         } else
+         } else {
             cancelled = true;
+         }
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
