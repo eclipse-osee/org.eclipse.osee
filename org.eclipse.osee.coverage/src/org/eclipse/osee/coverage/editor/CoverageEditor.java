@@ -95,16 +95,16 @@ public class CoverageEditor extends FormEditor implements IActionable {
    }
 
    public int addFormPage(FormPage page) {
+      int pageIndex = 0;
       try {
-         int pageIndex = addPage(page);
+         pageIndex = addPage(page);
          if (startPage == null) {
             startPage = pageIndex;
          }
-         return pageIndex;
       } catch (PartInitException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return 0;
+      return pageIndex;
    }
 
    public static void addToToolBar(IToolBarManager manager, CoverageEditor coverageEditor) {

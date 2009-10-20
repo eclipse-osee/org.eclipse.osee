@@ -29,7 +29,7 @@ public class CoverageMergeXViewerFactoryImport extends CoverageMergeXViewerFacto
       super();
       clearColumnRegistration();
       registerColumns(Name, Namespace, Coverage_Percent, Import, Coverage_Method, Method_Number, Execution_Number,
-            Line_Number, Test_Units, Assignees_Col, Parent_Coverage_Unit, Location, Guid);
+            Line_Number, Coverage_Test_Units, Assignees_Col, Parent_Coverage_Unit, Location, Guid);
       for (XViewerColumn xCol : getColumns()) {
          overrideShowDefault(
                xCol.getId(),

@@ -223,22 +223,23 @@ public class CoverageEditorImportTab extends FormPage {
       @Override
       public void run() {
          try {
+            if (coverageEditorMergeTab != null) {
+               if (coverageEditorMergeIndex != 0) {
+                  coverageEditor.removePage(coverageEditorMergeIndex);
+               }
+            }
             if (coverageImportTab != null) {
                if (coverageImportIndex != 0) {
                   coverageEditor.removePage(coverageImportIndex);
                }
-               coverageImport = null;
             }
             if (coverageImportOverviewTab != null) {
                if (coverageImportOverviewIndex != 0) {
                   coverageEditor.removePage(coverageImportOverviewIndex);
                }
             }
-            if (coverageEditorMergeTab != null) {
-               if (coverageEditorMergeIndex != 0) {
-                  coverageEditor.removePage(coverageEditorMergeIndex);
-               }
-            }
+            coverageImport = null;
+
             getBlam().execute(getBlam().getName(), blamOutputSection.getOutput(), blamInputSection.getData(),
                   new BlamEditorExecutionAdapter(getBlam().getName()));
          } catch (Exception ex) {

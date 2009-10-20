@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
@@ -136,7 +137,7 @@ public class CoverageItem implements ICoverageEditorItem {
       if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return getExecuteNum();
       if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return getCoverageMethod().toString();
       if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return getCoverageUnit().getName();
-      if (xCol.equals(CoverageXViewerFactory.Test_Units)) return Collections.toString(", ", getTestUnits());
+      if (xCol.equals(CoverageXViewerFactory.Coverage_Test_Units)) return Collections.toString(", ", getTestUnits());
       if (xCol.equals(CoverageXViewerFactory.Text)) return Collections.toString(", ", getText());
       return "";
    }
@@ -295,8 +296,7 @@ public class CoverageItem implements ICoverageEditorItem {
 
    @Override
    public Object[] getChildren() {
-      Collection<?> children = getChildrenItems();
-      return children.toArray(new Object[children.size()]);
+      return ArrayUtils.EMPTY_OBJECT_ARRAY;
    }
 
    @Override
