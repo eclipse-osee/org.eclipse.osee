@@ -68,6 +68,11 @@ public class SampleJavaFileParser {
                String name = m.group(3);
                coverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
                fileCoverageUnit.addCoverageUnit(coverageUnit);
+               // Duplicate this method as error case for importing
+               if (filename.contains("AuxPowerUnit2") && name.contains("clear")) {
+                  coverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
+                  fileCoverageUnit.addCoverageUnit(coverageUnit);
+               }
             }
             // Determine if executable coverage line; store as CoverageItem
             m = executeLine.matcher(line);

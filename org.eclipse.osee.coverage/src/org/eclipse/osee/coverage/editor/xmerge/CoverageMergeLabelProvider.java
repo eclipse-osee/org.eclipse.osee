@@ -15,6 +15,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageLabelProvider;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
+import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer.ImportType;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -69,10 +70,31 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
          if (!mergeXViewer.isImportAllowed(coverageItem)) {
             return "";
          }
-         return mergeXViewer.getImportType(coverageItem).toString();
+         ImportType importType = mergeXViewer.getImportType(coverageItem);
+         if (coverageItem.isFolder() && importType != ImportType.Error) {
+            boolean errored = isChildErrorImportType(coverageItem);
+            if (errored) {
+               return importType.toString() + " - " + "Child Error";
+            }
+         }
+         if (importType == ImportType.Error) {
+            return importType.toString() + " - " + mergeXViewer.getImportError(coverageItem);
+         }
+         return importType.toString();
       }
 
       return coverageItem.getCoverageEditorValue(xCol);
+   }
+
+   private boolean isChildErrorImportType(ICoverageEditorItem coverageItem) {
+      for (ICoverageEditorItem childEditorItem : coverageItem.getChildrenItems()) {
+         ImportType importType = mergeXViewer.getImportType(childEditorItem);
+         if (importType == ImportType.Error) {
+            return true;
+         }
+         if (isChildErrorImportType(childEditorItem)) return true;
+      }
+      return false;
    }
 
    @Override

@@ -51,7 +51,9 @@ public class CoverageImportTest1NavigateItem extends XNavigateItemAction impleme
                //
                "com/screenB/ScreenBButton1.java", "com/screenB/ScreenBButton2.java", "com/screenB/ScreenBButton3.java",
                //
-               "epu/PowerUnit1.java", "epu/PowerUnit1.java",
+               "epu/PowerUnit1.java", "epu/PowerUnit2.java", "epu/PowerUnit2.java",
+               //
+               "apu/AuxPowerUnit1.java", "apu/AuxPowerUnit2.java",
                //
                "nav/NavigationButton1.java", "nav/NavigationButton2.java", "nav/NavigationButton3.java"
          //

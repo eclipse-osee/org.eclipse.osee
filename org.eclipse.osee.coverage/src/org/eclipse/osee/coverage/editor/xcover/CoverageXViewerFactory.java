@@ -27,7 +27,7 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn Namespace =
          new XViewerColumn(NAMESPACE + ".namespace", "Namespace", 80, SWT.LEFT, true, SortDataType.String, false, "");
    public static XViewerColumn Coverage_Percent =
-         new XViewerColumn(NAMESPACE + ".percentCoverage", "Percent Coverage", 40, SWT.LEFT, true,
+         new XViewerColumn(NAMESPACE + ".percentCoverage", "Percent Coverage", 50, SWT.LEFT, true,
                SortDataType.Integer, false, "");
    public static XViewerColumn Method_Number =
          new XViewerColumn(NAMESPACE + ".methodNumber", "Method Number", 80, SWT.LEFT, true, SortDataType.String,
