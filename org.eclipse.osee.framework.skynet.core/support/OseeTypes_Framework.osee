@@ -815,7 +815,7 @@ relationType "Allocation" {
    sideAArtifactType "Requirement"
    sideBName "component"
    sideBArtifactType "Component"
-   defaultOrderType Unordered
+   defaultOrderType Lexicographical_Ascending
    multiplicity MANY_TO_MANY
 }
 
