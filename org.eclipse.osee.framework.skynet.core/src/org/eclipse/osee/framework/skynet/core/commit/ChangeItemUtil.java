@@ -37,11 +37,11 @@ public class ChangeItemUtil {
    }
 
    public static boolean wasNewOnSource(ChangeItem changeItem) {
-      return isNew(changeItem.getFirst()) || isNew(changeItem.getCurrent());
+      return isNew(changeItem.getFirstNonCurrentChange()) || isNew(changeItem.getCurrentVersion());
    }
 
    public static boolean wasIntroducedOnSource(ChangeItem changeItem) {
-      return isIntroduced(changeItem.getFirst()) || isIntroduced(changeItem.getCurrent());
+      return isIntroduced(changeItem.getFirstNonCurrentChange()) || isIntroduced(changeItem.getCurrentVersion());
    }
 
    public static boolean wasNewOrIntroducedOnSource(ChangeItem changeItem) {
@@ -49,8 +49,8 @@ public class ChangeItemUtil {
    }
 
    public static boolean isAlreadyOnDestination(ChangeItem changeItem) {
-      return areGammasEqual(changeItem.getCurrent(), changeItem.getDestination()) && //
-      isDeleted(changeItem.getCurrent()) == isDeleted(changeItem.getDestination());
+      return areGammasEqual(changeItem.getCurrentVersion(), changeItem.getDestinationVersion()) && //
+      isDeleted(changeItem.getCurrentVersion()) == isDeleted(changeItem.getDestinationVersion());
    }
 
    public static boolean areGammasEqual(ChangeVersion object1, ChangeVersion object2) {
@@ -77,18 +77,18 @@ public class ChangeItemUtil {
    }
 
    public static boolean wasCreatedAndDeleted(ChangeItem changeItem) {
-      return wasNewOrIntroducedOnSource(changeItem) && isDeleted(changeItem.getCurrent());
+      return wasNewOrIntroducedOnSource(changeItem) && isDeleted(changeItem.getCurrentVersion());
    }
 
    public static boolean isDeletedAndDoesNotExistInDestination(ChangeItem changeItem) {
-      return !changeItem.getDestination().isValid() && isDeleted(changeItem.getCurrent());
+      return !changeItem.getDestinationVersion().isValid() && isDeleted(changeItem.getCurrentVersion());
    }
 
    public static boolean hasBeenDeletedInDestination(ChangeItem changeItem) {
-      return changeItem.getDestination().isValid() && isDeleted(changeItem.getDestination());
+      return changeItem.getDestinationVersion().isValid() && isDeleted(changeItem.getDestinationVersion());
    }
 
    public static boolean isDestinationEqualOrNewerThanCurrent(ChangeItem changeItem) {
-      return (isNew(changeItem.getCurrent()) || isIntroduced(changeItem.getCurrent())) && changeItem.getDestination().isValid();
+      return (isNew(changeItem.getCurrentVersion()) || isIntroduced(changeItem.getCurrentVersion())) && changeItem.getDestinationVersion().isValid();
    }
 }

@@ -42,11 +42,11 @@ public class ChangeItemTest {
       ChangeItem item = ChangeItemTestUtil.createItem(200, base, first, current, destination, net);
       assertEquals(0, item.getArtId());
       assertEquals(200, item.getItemId());
-      ChangeItemTestUtil.checkChange(base, item.getBase());
-      ChangeItemTestUtil.checkChange(first, item.getFirst());
-      ChangeItemTestUtil.checkChange(current, item.getCurrent());
-      ChangeItemTestUtil.checkChange(destination, item.getDestination());
-      ChangeItemTestUtil.checkChange(net, item.getNet());
+      ChangeItemTestUtil.checkChange(base, item.getBaselineVersion());
+      ChangeItemTestUtil.checkChange(first, item.getFirstNonCurrentChange());
+      ChangeItemTestUtil.checkChange(current, item.getCurrentVersion());
+      ChangeItemTestUtil.checkChange(destination, item.getDestinationVersion());
+      ChangeItemTestUtil.checkChange(net, item.getNetChange());
 
       item.setArtId(400);
       assertEquals(400, item.getArtId());

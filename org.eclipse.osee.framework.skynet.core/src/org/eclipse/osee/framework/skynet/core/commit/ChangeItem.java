@@ -51,29 +51,30 @@ public abstract class ChangeItem {
       this.itemId = itemId;
    }
 
-   public ChangeVersion getBase() {
+   public ChangeVersion getBaselineVersion() {
       return baseEntry;
    }
 
-   public ChangeVersion getFirst() {
+   public ChangeVersion getFirstNonCurrentChange() {
       return firstChange;
    }
 
-   public ChangeVersion getCurrent() {
+   public ChangeVersion getCurrentVersion() {
       return currentEntry;
    }
 
-   public ChangeVersion getDestination() {
+   public ChangeVersion getDestinationVersion() {
       return destinationEntry;
    }
 
-   public ChangeVersion getNet() {
+   public ChangeVersion getNetChange() {
       return netEntry;
    }
 
    @Override
    public String toString() {
       return String.format("CommitItem - itemId:[%s] base:%s first:%s current:%s destination:%s net:%s", itemId,
-            getBase(), getFirst(), getCurrent(), getDestination(), getNet());
+            getBaselineVersion(), getFirstNonCurrentChange(), getCurrentVersion(), getDestinationVersion(),
+            getNetChange());
    }
 }

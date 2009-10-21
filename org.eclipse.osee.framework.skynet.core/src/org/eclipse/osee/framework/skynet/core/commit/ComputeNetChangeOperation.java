@@ -52,16 +52,16 @@ public class ComputeNetChangeOperation extends AbstractOperation {
             } else {
                checkForInvalidStates(change);
 
-               if (!ChangeItemUtil.isModType(change.getNet(), ModificationType.MERGED)) {
+               if (!ChangeItemUtil.isModType(change.getNetChange(), ModificationType.MERGED)) {
                   ModificationType netModType = getNetModType(change);
                   if (netModType == null) {
                      throw new OseeStateException("Net Mod Type was null");
                   }
-                  change.getNet().copy(change.getCurrent());
-                  change.getNet().setModType(netModType);
+                  change.getNetChange().copy(change.getCurrentVersion());
+                  change.getNetChange().setModType(netModType);
                } else {
-                  if (ChangeItemUtil.isDeleted(change.getCurrent())) {
-                     change.getNet().copy(change.getCurrent());
+                  if (ChangeItemUtil.isDeleted(change.getCurrentVersion())) {
+                     change.getNetChange().copy(change.getCurrentVersion());
                   }
                }
             }
@@ -85,7 +85,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
    }
 
    private ModificationType calculateNetWithoutDestinationBranch(ChangeItem change) {
-      ModificationType netModType = change.getCurrent().getModType();
+      ModificationType netModType = change.getCurrentVersion().getModType();
      
       if(!isTransactionChanges){
          if (ChangeItemUtil.wasNewOnSource(change)) {
@@ -93,7 +93,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
          } else if (ChangeItemUtil.wasIntroducedOnSource(change)) {
             netModType = ModificationType.INTRODUCED;
             //This is to handle bad data ... it should be moved out
-         } else if (!change.getBase().isValid() && !change.getFirst().isValid() && change.getCurrent().getModType() == ModificationType.MODIFIED) {
+         } else if (!change.getBaselineVersion().isValid() && !change.getFirstNonCurrentChange().isValid() && change.getCurrentVersion().getModType() == ModificationType.MODIFIED) {
             netModType = ModificationType.NEW;
          }
       }
@@ -102,14 +102,14 @@ public class ComputeNetChangeOperation extends AbstractOperation {
 
    private ModificationType calculateNetWithDestinationBranch(ChangeItem change) {
       ModificationType netModType = null;
-      if (change.getDestination().isValid() && (change.getBase().isValid() || change.getFirst().isValid())) {
-         netModType = change.getCurrent().getModType();
+      if (change.getDestinationVersion().isValid() && (change.getBaselineVersion().isValid() || change.getFirstNonCurrentChange().isValid())) {
+         netModType = change.getCurrentVersion().getModType();
       } else if (ChangeItemUtil.wasNewOnSource(change)) {
          netModType = ModificationType.NEW;
       } else if (ChangeItemUtil.wasIntroducedOnSource(change)) {
          netModType = ModificationType.INTRODUCED;
-      } else if (!change.getDestination().isValid()) {
-         if (!change.getBase().isValid()) {
+      } else if (!change.getDestinationVersion().isValid()) {
+         if (!change.getBaselineVersion().isValid()) {
             netModType = ModificationType.NEW;
          } else {
             // Case when committing into non-parent
@@ -122,18 +122,18 @@ public class ComputeNetChangeOperation extends AbstractOperation {
    private void checkForInvalidStates(ChangeItem change) throws OseeCoreException {
       // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
       if (isCommitCase) {
-         if (!change.getDestination().isValid() && change.getBase().isValid()) {
+         if (!change.getDestinationVersion().isValid() && change.getBaselineVersion().isValid()) {
             throw new OseeStateException(
                   "This should be supported in the future - destination branch is not the source's parent: " + change);
          }
       }
 
-      if (change.getDestination().isValid() && ChangeItemUtil.isDeleted(change.getDestination())) {
+      if (change.getDestinationVersion().isValid() && ChangeItemUtil.isDeleted(change.getDestinationVersion())) {
          throw new OseeStateException("Destination was deleted - source should not modify: " + change);
       }
 
-      if ((ChangeItemUtil.isIntroduced(change.getCurrent()) || ChangeItemUtil.isNew(change.getCurrent())) //
-            && change.getDestination().isValid()) {
+      if ((ChangeItemUtil.isIntroduced(change.getCurrentVersion()) || ChangeItemUtil.isNew(change.getCurrentVersion())) //
+            && change.getDestinationVersion().isValid()) {
          throw new OseeStateException(
                "Source item marked as new/introduced but destination already has item: " + change);
       }

@@ -110,7 +110,7 @@ public class ComputeNetChangeTest {
             Assert.assertFalse(message, items.contains(testData.getItem()));
          } else {
             Assert.assertTrue(message, items.contains(testData.getItem()));
-            ChangeItemTestUtil.checkChange(message, testData.getExpectedNet(), testData.getItem().getNet());
+            ChangeItemTestUtil.checkChange(message, testData.getExpectedNet(), testData.getItem().getNetChange());
          }
       }
    }

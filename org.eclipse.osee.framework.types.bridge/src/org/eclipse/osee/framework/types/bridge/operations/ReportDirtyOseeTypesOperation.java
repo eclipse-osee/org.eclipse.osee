@@ -149,7 +149,6 @@ public class ReportDirtyOseeTypesOperation extends AbstractOperation {
    private void createOseeEnumTypeReport(List<IResultsEditorTab> tabs, Collection<OseeEnumType> types) throws OseeCoreException {
       ReportTab tab = new ReportTab("OseeEnum Types", tabs);
       addHeader(tab, types);
-      String dirtyEntries;
       for (OseeEnumType type : types) {
          List<String> data = new ArrayList<String>();
          data.add(type.getName());
@@ -174,6 +173,7 @@ public class ReportDirtyOseeTypesOperation extends AbstractOperation {
       }
       tab.endTable();
    }
+
    private static final class OseeTypesReportProvider implements IResultsEditorProvider {
       private final List<IResultsEditorTab> resultsTabs;
       private final String editorName;

@@ -115,7 +115,7 @@ public class LoadCommitItemsFromDbTest {
    private int getCount(Collection<ChangeItem> items, Class<? extends ChangeItem> changeType, ModificationType type) {
       int count = 0;
       for (ChangeItem item : items) {
-         if (item.getClass().isAssignableFrom(changeType) && item.getNet().getModType() == type) {
+         if (item.getClass().isAssignableFrom(changeType) && item.getNetChange().getModType() == type) {
             count++;
          }
       }

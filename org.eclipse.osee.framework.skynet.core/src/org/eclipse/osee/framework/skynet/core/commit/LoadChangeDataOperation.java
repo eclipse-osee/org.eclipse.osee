@@ -258,13 +258,13 @@ public class LoadChangeDataOperation extends AbstractOperation {
             ChangeItem change = changesByItemId.get(itemId);
 
             if (branch.getBranchType().isMergeBranch()) {
-               change.getNet().setTransactionNumber(transactionId);
-               change.getNet().setGammaId(gammaId);
-               change.getNet().setModType(ModificationType.MERGED);
+               change.getNetChange().setTransactionNumber(transactionId);
+               change.getNetChange().setGammaId(gammaId);
+               change.getNetChange().setModType(ModificationType.MERGED);
             } else {
-               change.getDestination().setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
-               change.getDestination().setGammaId(gammaId);
-               change.getDestination().setTransactionNumber(transactionId);
+               change.getDestinationVersion().setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
+               change.getDestinationVersion().setGammaId(gammaId);
+               change.getDestinationVersion().setTransactionNumber(transactionId);
             }
          }
       } finally {
@@ -299,14 +299,14 @@ public class LoadChangeDataOperation extends AbstractOperation {
                isFirstSet = false;
                previousItemId = itemId;
                if (isBaseline) {
-                  loadVersionData(chStmt, change.getBase(), columnValueName);
+                  loadVersionData(chStmt, change.getBaselineVersion(), columnValueName);
                } else {
-                  loadVersionData(chStmt, change.getFirst(), columnValueName);
+                  loadVersionData(chStmt, change.getFirstNonCurrentChange(), columnValueName);
                   isFirstSet = true;
                }
             } else {
                if (!isFirstSet) {
-                  loadVersionData(chStmt, change.getFirst(), columnValueName);
+                  loadVersionData(chStmt, change.getFirstNonCurrentChange(), columnValueName);
                   isFirstSet = true;
                }
             }

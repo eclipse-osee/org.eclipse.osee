@@ -24,7 +24,7 @@ public class RelationChangeItem extends ChangeItem {
       super(currentSourceGammaId, currentSourceModType, currentSourceTansactionNumber);
 
       this.setItemId(relLinkId);
-      this.getCurrent().setValue(rationale);
+      this.getCurrentVersion().setValue(rationale);
       this.setArtId(aArtId);
 
       this.bArtId = bArtId;

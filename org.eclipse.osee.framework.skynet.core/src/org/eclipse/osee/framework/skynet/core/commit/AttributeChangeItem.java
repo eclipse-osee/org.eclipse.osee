@@ -22,7 +22,7 @@ public class AttributeChangeItem extends ChangeItem {
 
       this.setItemId(attrId);
       this.setArtId(artId);
-      this.getCurrent().setValue(value);
+      this.getCurrentVersion().setValue(value);
    }
 
 }

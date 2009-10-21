@@ -44,23 +44,23 @@ public class ChangeItemTestUtil {
             new MockChangeItem(current.getGammaId(), current.getModType(), current.getTransactionNumber());
       change.setItemId(itemId);
       if (base != null) {
-         change.getBase().copy(base);
+         change.getBaselineVersion().copy(base);
       }
       if (first != null) {
-         change.getFirst().copy(first);
+         change.getFirstNonCurrentChange().copy(first);
       }
       if (destination != null) {
-         change.getDestination().copy(destination);
+         change.getDestinationVersion().copy(destination);
       }
       if (net != null) {
-         change.getNet().copy(net);
+         change.getNetChange().copy(net);
       }
       Assert.assertNotNull(change);
-      Assert.assertNotNull(change.getBase());
-      Assert.assertNotNull(change.getFirst());
-      Assert.assertNotNull(change.getCurrent());
-      Assert.assertNotNull(change.getDestination());
-      Assert.assertNotNull(change.getNet());
+      Assert.assertNotNull(change.getBaselineVersion());
+      Assert.assertNotNull(change.getFirstNonCurrentChange());
+      Assert.assertNotNull(change.getCurrentVersion());
+      Assert.assertNotNull(change.getDestinationVersion());
+      Assert.assertNotNull(change.getNetChange());
       return change;
    }
 
