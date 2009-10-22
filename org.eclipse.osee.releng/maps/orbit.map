@@ -3,10 +3,10 @@ feature@org.eclipse.osee.external.feature=SVN,url=https://dev.eclipse.org/svnroo
 !plugin@org.eclipse.team.svn.ui=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn.ui_0.7.8.I20090904-1300.jar
 !plugin@org.eclipse.team.svn.core=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.team.svn.core_0.7.8.I20090904-1300.jar
 
-plugin@org.apache.derby.client,10.5.1=GET,http://download.eclipse.org/tools/orbit/committers/drops/I20091002185108/bundles/org.apache.derby.client_10.5.1.1_200910021926.jar
-plugin@org.apache.derby.engine,10.5.1=GET,http://download.eclipse.org/tools/orbit/committers/drops/I20091002185108/bundles/org.apache.derby.engine_10.5.1.1_200910021926.jar
-plugin@org.apache.derby.net,10.5.1=GET,http://download.eclipse.org/tools/orbit/committers/drops/I20091002185108/bundles/org.apache.derby.net_10.5.1.1_200910021926.jar
-plugin@org.apache.derby.tools,10.5.1=GET,http://download.eclipse.org/tools/orbit/committers/drops/I20091002185108/bundles/org.apache.derby.tools_10.5.1.1_200910021926.jar
+plugin@org.apache.derby.client,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240//bundles/org.apache.derby.client_10.5.1.1_200910201300.jar
+plugin@org.apache.derby.engine,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240//bundles/org.apache.derby.engine_10.5.1.1_200910201300.jar
+plugin@org.apache.derby.net,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240//bundles/org.apache.derby.net_10.5.1.1_200910201300.jar
+plugin@org.apache.derby.tools,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240//bundles/org.apache.derby.tools_10.5.1.1_200910201300.jar
 
 !plugin@org.eclipse.nebula.widgets.calendarcombo=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.nebula.widgets.calendarcombo_1.0.0.jar
 !plugin@org.eclipse.nebula.cwt=GET,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee/trunk/org.eclipse.osee.support.build/support/org.eclipse.nebula.cwt_0.9.0.HEAD.jar
