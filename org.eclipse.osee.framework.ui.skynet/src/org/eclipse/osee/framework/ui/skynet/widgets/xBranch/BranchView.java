@@ -131,11 +131,15 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
    }
 
    @Override
-   public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
+   public void handleBranchEvent(Sender sender, final BranchEventType branchModType, final int branchId) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
-               xBranchWidget.refresh();
+               if (branchModType.equals(BranchEventType.Renamed)) {
+                  xBranchWidget.refresh();
+               } else {
+                  xBranchWidget.loadData();
+               }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }

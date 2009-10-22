@@ -264,6 +264,8 @@ public class XBranchWidget extends XWidget implements IActionable {
    }
 
    public void loadData(final Object input) {
+      final Object[] expandedBranches = getXViewer().getExpandedElements();
+
       if (extraInfoLabel != null && !extraInfoLabel.isDisposed()) {
          extraInfoLabel.setText(LOADING);
       }
@@ -275,6 +277,7 @@ public class XBranchWidget extends XWidget implements IActionable {
 
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
+
                   if (extraInfoLabel != null && !extraInfoLabel.isDisposed()) {
                      extraInfoLabel.setText("");
                   }
@@ -285,6 +288,7 @@ public class XBranchWidget extends XWidget implements IActionable {
                         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                      }
                      branchXViewer.setInput(input);
+                     getXViewer().setExpandedElements(expandedBranches);
                   }
                }
             });
