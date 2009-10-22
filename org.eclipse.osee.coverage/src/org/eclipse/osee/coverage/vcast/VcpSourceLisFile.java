@@ -7,7 +7,10 @@ package org.eclipse.osee.coverage.vcast;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AFile;
 
 /**
@@ -50,13 +53,36 @@ public class VcpSourceLisFile {
       return "unknown - tbd";
    }
 
-   public String getExecutionLine(String method, String executionLine) {
+   private static Pattern exceptionPattern = Pattern.compile("^\\s+EXCEPTION\\s*$");
+   private static Pattern endMethodPattern = Pattern.compile("^\\s*END\\s+(.*);\\s*$");
+
+   public Pair<String, Boolean> getExecutionLine(String method, String executionLine) {
       String startsWith = method + " " + executionLine + " ";
+      boolean exceptionLine = false;
       for (String line : lines) {
          if (line.startsWith(startsWith)) {
-            return line;
+            return new Pair<String, Boolean>(line, exceptionLine);
+         }
+         Matcher m = exceptionPattern.matcher(line);
+         if (m.find()) {
+            exceptionLine = true;
+         } else {
+            m = endMethodPattern.matcher(line);
+            if (m.find()) {
+               exceptionLine = false;
+            }
          }
       }
       return null;
+   }
+
+   @Override
+   public String toString() {
+      try {
+         return listFile.getCanonicalPath();
+      } catch (Exception ex) {
+         // do nothing
+      }
+      return super.toString();
    }
 }

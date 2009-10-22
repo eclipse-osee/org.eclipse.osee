@@ -26,6 +26,6 @@ public class CoverageMetrics {
    }
 
    public static String getPercentString(int percent, int complete, int total) {
-      return String.format("%d  %d/%d", percent, complete, total);
+      return String.format("%d%% %d/%d", percent, complete, total);
    }
 }

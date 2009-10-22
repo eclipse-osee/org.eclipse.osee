@@ -6,7 +6,7 @@
 package org.eclipse.osee.coverage.editor;
 
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
-import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
+import org.eclipse.osee.coverage.util.CoverageMetrics;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -70,13 +70,10 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       rd.log(AHTML.getLabelValueStr("Coverage Percent", String.format("%d", provider.getCoveragePercent())));
       rd.log("");
       rd.log(AHTML.getLabelValueStr("Covered Items by Coverage Type", ""));
+      int totalCoverageItems = provider.getCoverageItems().size();
       for (CoverageMethodEnum coverageMethodEnum : CoverageMethodEnum.values()) {
-         rd.log("  - " + coverageMethodEnum + " " + String.valueOf(provider.getCoverageItemsCovered(coverageMethodEnum).size()));
-      }
-      if (provider instanceof ICoverageUnitProvider) {
-         rd.log("");
-         rd.log(AHTML.getLabelValueStr("Coverage Units",
-               String.valueOf(((ICoverageUnitProvider) provider).getCoverageUnits().size())));
+         rd.log("  - " + coverageMethodEnum + " - " + CoverageMetrics.getPercent(
+               provider.getCoverageItemsCovered(coverageMethodEnum).size(), totalCoverageItems).getSecond());
       }
       if (provider.getLog() != null) {
          rd.log(AHTML.newline() + AHTML.bold("Log") + AHTML.newline());
