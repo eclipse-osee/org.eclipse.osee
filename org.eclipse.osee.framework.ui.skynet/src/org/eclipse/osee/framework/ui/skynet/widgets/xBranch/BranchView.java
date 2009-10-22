@@ -16,6 +16,9 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.nebula.widgets.xviewer.action.TableCustomizationAction;
+import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction;
+import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -92,6 +95,10 @@ public class BranchView extends ViewPart implements IActionable, IBranchEventLis
          public void menuAboutToShow(IMenuManager manager) {
             MenuManager menuManager = (MenuManager) manager;
             menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+            menuManager.add(new Separator());
+            menuManager.add(new TableCustomizationAction(xBranchWidget.getXViewer()));
+            menuManager.add(new ViewTableReportAction(xBranchWidget.getXViewer()));
+            menuManager.add(new ViewSelectedCellDataAction(xBranchWidget.getXViewer()));
          }
       });
 

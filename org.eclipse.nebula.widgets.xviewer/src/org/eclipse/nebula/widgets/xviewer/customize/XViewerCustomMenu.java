@@ -36,7 +36,9 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumnLabelProvider;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumnSorter;
 import org.eclipse.nebula.widgets.xviewer.XViewerComputedColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
+import org.eclipse.nebula.widgets.xviewer.action.TableCustomizationAction;
+import org.eclipse.nebula.widgets.xviewer.action.ViewSelectedCellDataAction;
+import org.eclipse.nebula.widgets.xviewer.action.ViewTableReportAction;
 import org.eclipse.nebula.widgets.xviewer.util.internal.ArrayTreeContentProvider;
 import org.eclipse.nebula.widgets.xviewer.util.internal.CollectionsUtil;
 import org.eclipse.nebula.widgets.xviewer.util.internal.HtmlUtil;
@@ -121,8 +123,6 @@ public class XViewerCustomMenu {
    }
 
    protected void setupMenuForHeader() {
-      TreeColumn selTreeCol = xViewer.getRightClickSelectedColumn();
-      XViewerColumn selXCol = (XViewerColumn) selTreeCol.getData();
 
       MenuManager mm = xViewer.getMenuManager();
       mm.add(showColumn);
@@ -172,12 +172,13 @@ public class XViewerCustomMenu {
    }
 
    public void createViewTableReportMenuItem(Menu popupMenu) {
+      setupActions();
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText("View Table Report");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            performViewTableReport();
+            viewTableReport.run();
          }
       });
    }
@@ -250,12 +251,13 @@ public class XViewerCustomMenu {
    }
 
    public void createViewSelectedCellMenuItem(Menu popupMenu) {
+      setupActions();
       final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
       item.setText("View Selected Cell Data");
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            performViewCell();
+            viewSelectedCell.run();
          }
       });
    }
@@ -443,12 +445,7 @@ public class XViewerCustomMenu {
             performCopy();
          };
       };
-      viewSelectedCell = new Action("View Selected Cell Data") {
-         @Override
-         public void run() {
-            performViewCell();
-         };
-      };
+      viewSelectedCell = new ViewSelectedCellDataAction(xViewer);
       copySelectedCell = new Action("Copy Selected Column - Ctrl-Shift-C") {
          @Override
          public void run() {
@@ -473,18 +470,8 @@ public class XViewerCustomMenu {
             performFilterByColumn();
          };
       };
-      tableProperties = new Action("Table Customization") {
-         @Override
-         public void run() {
-            xViewer.getCustomizeMgr().handleTableCustomization();
-         }
-      };
-      viewTableReport = new Action("View Table Report") {
-         @Override
-         public void run() {
-            performViewTableReport();
-         }
-      };
+      tableProperties = new TableCustomizationAction(xViewer);
+      viewTableReport = new ViewTableReportAction(xViewer);
       columnMultiEdit = new Action("Column Multi Edit") {
          @Override
          public void run() {
@@ -510,14 +497,6 @@ public class XViewerCustomMenu {
             xViewer.handleColumnMultiEdit((TreeColumn) ld.getResult()[0], selectedTreeItems);
          }
       };
-   }
-
-   private void performViewTableReport() {
-      if (xViewer.getXViewerFactory().getXViewerTreeReport(xViewer) != null) {
-         xViewer.getXViewerFactory().getXViewerTreeReport(xViewer).open();
-      } else {
-         new XViewerTreeReport(xViewer).open();
-      }
    }
 
    private class KeySelectedListener implements KeyListener {
@@ -562,25 +541,6 @@ public class XViewerCustomMenu {
             keepObjects.add(item.getData());
          }
          xViewer.load(keepObjects);
-      } catch (Exception ex) {
-         XViewerLog.logAndPopup(Activator.class, Level.SEVERE, ex);
-      }
-   }
-
-   private void performViewCell() {
-      try {
-         TreeColumn treeCol = xViewer.getRightClickSelectedColumn();
-         TreeItem treeItem = xViewer.getRightClickSelectedItem();
-         if (treeCol != null) {
-            XViewerColumn xCol = (XViewerColumn) treeCol.getData();
-            String data =
-                  ((XViewerLabelProvider) xViewer.getLabelProvider()).getColumnText(treeItem.getData(), xCol,
-                        xViewer.getRightClickSelectedColumnNum());
-            if (data != null && !data.equals("")) {
-               String html = HtmlUtil.simplePage(HtmlUtil.pre(HtmlUtil.textToHtml(data)));
-               new HtmlDialog(treeCol.getText() + " Data", treeCol.getText() + " Data", html).open();
-            }
-         }
       } catch (Exception ex) {
          XViewerLog.logAndPopup(Activator.class, Level.SEVERE, ex);
       }
