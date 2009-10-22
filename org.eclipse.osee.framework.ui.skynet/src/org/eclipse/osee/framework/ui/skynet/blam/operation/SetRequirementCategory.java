@@ -41,6 +41,7 @@ public class SetRequirementCategory extends AbstractBlam {
       return "Set Requirement Category";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Generating Reports", 100);
 
@@ -109,7 +110,8 @@ public class SetRequirementCategory extends AbstractBlam {
       return "Sets the Category attribute on software requirements.";
    }
 
+   @Override
    public Collection<String> getCategories() {
-      return Arrays.asList("Admin");
+      return Arrays.asList("Define");
    }
 }
