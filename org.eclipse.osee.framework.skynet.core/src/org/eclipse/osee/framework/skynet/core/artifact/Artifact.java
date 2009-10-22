@@ -1279,12 +1279,12 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
 
    public void setRelationOrder(IRelationEnumeration relationEnumeration, IRelationSorterId orderId) throws OseeCoreException {
       if (RelationOrderBaseTypes.USER_DEFINED == orderId) {
-         throw new OseeArgumentException(
-               "Wrong method called - use setRelationOrder(IRelationEnumeration relationSide, List<Artifact> artifactsInNewOrder) instead");
+         setRelationOrder(relationEnumeration, getRelatedArtifacts(relationEnumeration));
+      } else {
+         List<Artifact> empty = java.util.Collections.emptyList();
+         RelationManager.setRelationOrder(this, relationEnumeration.getRelationType(), relationEnumeration.getSide(),
+               orderId, empty);
       }
-      List<Artifact> empty = java.util.Collections.emptyList();
-      RelationManager.setRelationOrder(this, relationEnumeration.getRelationType(), relationEnumeration.getSide(),
-            orderId, empty);
    }
 
    public void setRelationOrder(IRelationEnumeration relationEnumeration, Artifact targetArtifact, boolean insertAfterTarget, Artifact itemToAdd) throws OseeCoreException {
