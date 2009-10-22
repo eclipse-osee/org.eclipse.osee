@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -45,9 +46,10 @@ public class FrameworkTestUtil {
     * @param artifactTypeName
     * @param name
     * @param branch
+    * @throws OseeCoreException
     * @throws Exception
     */
-   public static Artifact createSimpleArtifact(String artifactTypeName, String name, Branch branch) throws Exception {
+   public static Artifact createSimpleArtifact(String artifactTypeName, String name, Branch branch) throws OseeCoreException {
       Artifact softArt = ArtifactTypeManager.addArtifact(artifactTypeName, branch);
       softArt.setName(name);
       softArt.addAttribute("Subsystem", DemoSubsystems.Electrical.name());
@@ -157,7 +159,7 @@ public class FrameworkTestUtil {
    }
 
    public static boolean areWinWordsRunning() throws IOException, InterruptedException {
-      return (findAllWinWordRunning().size() > 0 ? true : false);
+      return findAllWinWordRunning().size() > 0 ? true : false;
    }
 
    public File getFileFromPlugin(String filename) throws Exception {

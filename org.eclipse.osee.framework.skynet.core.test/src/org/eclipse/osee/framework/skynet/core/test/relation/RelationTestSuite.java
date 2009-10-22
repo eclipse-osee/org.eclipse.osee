@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {RelationOrderTestSuite.class, RelationTypeSideSorterTest.class})
+@Suite.SuiteClasses( {RelationOrderTestSuite.class, RelationTypeSideSorterTest.class, LoadDeletedRelationTest.class})
 /**
  * @author Roberto E. Escobar
  */
