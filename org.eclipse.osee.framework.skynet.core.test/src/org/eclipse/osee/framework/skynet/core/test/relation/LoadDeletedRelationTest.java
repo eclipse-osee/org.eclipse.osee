@@ -62,7 +62,9 @@ public class LoadDeletedRelationTest {
          }
       }
 
-      org.junit.Assert.assertEquals("Deleted relation was not re-used by addRelation", 1, linkCount);
+      org.junit.Assert.assertEquals(
+            "Deleted relation was not re-used by addRelation; see \"Team Workflow\" - L3778 - \"RelationManager needs to properly handle the case when a relation is added more than once\"",
+            1, linkCount);
    }
 
    @After
