@@ -18,15 +18,14 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -77,7 +76,7 @@ public final class InternalChangeManager {
       ArrayList<Change> changes = new ArrayList<Change>();
       Branch branch = artifact.getBranch();
       ArrayList<TransactionId> transactionIds = new ArrayList<TransactionId>();
-      recurseBranches(branch, artifact, transactionIds);
+      recurseBranches(branch, artifact, transactionIds, artifact.getTransactionId());
 
       for (TransactionId transactionId : transactionIds) {
          changes.addAll(getChanges(null, transactionId, monitor, artifact));
@@ -85,29 +84,29 @@ public final class InternalChangeManager {
       return changes;
    }
 
-   private void recurseBranches(Branch branch, Artifact artifact, Collection<TransactionId> transactionIds) throws OseeCoreException {
-      transactionIds.addAll(getTransactionsPerArtifact(branch, artifact));
+   private void recurseBranches(Branch branch, Artifact artifact, Collection<TransactionId> transactionIds, TransactionId transactionId) throws OseeCoreException {
+      transactionIds.addAll(getTransactionsPerArtifact(branch, artifact, transactionId));
 
       if (branch.hasParentBranch() && !branch.getParentBranch().getBranchType().isSystemRootBranch()) {
-         recurseBranches(branch.getParentBranch(), artifact, transactionIds);
+         recurseBranches(branch.getParentBranch(), artifact, transactionIds, branch.getBaseTransaction());
       }
    }
 
-   private Collection<TransactionId> getTransactionsPerArtifact(Branch branch, Artifact artifact) throws OseeCoreException {
+   private Collection<TransactionId> getTransactionsPerArtifact(Branch branch, Artifact artifact, TransactionId transactionId) throws OseeCoreException {
       Set<TransactionId> transactionIds = new HashSet<TransactionId>();
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_GET_TRANSACTIONS_PER_ARTIFACT),
-               branch.getBranchId(), artifact.getArtId());
+         chStmt.runPreparedQuery("SELECT /*+ ordered FIRST_ROWS */ td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_artifact_version av1 where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and td1.transaction_id <=? and tx1.gamma_id = av1.gamma_id and av1.art_id = ?",
+               branch.getBranchId(), transactionId.getTransactionNumber(), artifact.getArtId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionIdManager.getTransactionId(chStmt.getInt("transaction_id")));
          }
 
          chStmt.runPreparedQuery(
-               "SELECT td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_relation_link rel where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and tx1.gamma_id = rel.gamma_id and (rel.a_art_id = ? or rel.b_art_id = ?)",
-               branch.getBranchId(), artifact.getArtId(), artifact.getArtId());
+               "SELECT /*+ ordered FIRST_ROWS */ td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_relation_link rel where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and td1.transaction_id <=? and tx1.gamma_id = rel.gamma_id and (rel.a_art_id = ? or rel.b_art_id = ?)",
+               branch.getBranchId(), transactionId.getTransactionNumber(), artifact.getArtId(), artifact.getArtId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionIdManager.getTransactionId(chStmt.getInt("transaction_id")));
