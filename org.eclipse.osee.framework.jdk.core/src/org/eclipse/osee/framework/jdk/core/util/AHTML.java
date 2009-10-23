@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.jdk.core.util;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
@@ -281,7 +282,9 @@ public class AHTML {
 
    public static String startBorderTable(int width, String bgcolor, String caption) {
       String capStr = "";
-      if (!caption.equals("")) capStr = "<caption ALIGN=top>" + caption + "</caption>";
+      if (!caption.equals("")) {
+         capStr = "<caption ALIGN=top>" + caption + "</caption>";
+      }
       return "<table border=\"1\" align=\"center\" bgcolor=\"" + bgcolor + "\" cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\">" + capStr + "<tr><td>";
    }
 
@@ -341,14 +344,20 @@ public class AHTML {
 
    public static String addRowMultiColumnTable(String[] str, String[] colOptions, String backgroundColor) {
       String s = "<tr>";
-      if (backgroundColor != null) s = "<tr bgcolor=\"" + backgroundColor + "\">";
+      if (backgroundColor != null) {
+         s = "<tr bgcolor=\"" + backgroundColor + "\">";
+      }
       String show = "";
       for (int i = 0; i < str.length; i++) {
          show = str[i];
-         if (show == null || show.equals("")) show = AHTML.addSpace(1);
+         if (show == null || show.equals("")) {
+            show = AHTML.addSpace(1);
+         }
          String colOptionStr = "";
-         if (colOptions != null) colOptionStr = colOptions[i];
-         s += "<td" + ((colOptionStr != null && !colOptionStr.equals("")) ? colOptionStr : "") + ">" + show + "</td>";
+         if (colOptions != null) {
+            colOptionStr = colOptions[i];
+         }
+         s += "<td" + (colOptionStr != null && !colOptionStr.equals("") ? colOptionStr : "") + ">" + show + "</td>";
       }
       s += "</tr>";
       return s;
@@ -377,15 +386,18 @@ public class AHTML {
    public static String addRowMultiColumnTable(Collection<CellItem> items) {
       String s = "<tr>";
       for (CellItem item : items) {
-         if (item.text == null || item.text.equals("")) item.text = ".";
-         if (item.fgColor != null && item.bgColor != null)
+         if (item.text == null || item.text.equals("")) {
+            item.text = ".";
+         }
+         if (item.fgColor != null && item.bgColor != null) {
             s += "<td bgcolor=\"" + item.bgColor + "\">" + AHTML.color(item.fgColor, item.text) + "</td>";
-         else if (item.bgColor != null)
+         } else if (item.bgColor != null) {
             s += "<td bgcolor=\"" + item.bgColor + "\">" + item.text + "</td>";
-         else if (item.fgColor != null)
+         } else if (item.fgColor != null) {
             s += "<td>" + AHTML.color(item.fgColor, item.text) + "</td>";
-         else
+         } else {
             s += "<td>" + item.text + "</td>";
+         }
       }
       s += "</tr>";
       return s;
@@ -399,28 +411,41 @@ public class AHTML {
       String s = "<tr>";
       String widthStr = "";
       for (int i = 0; i < str.length; i++) {
-         if (width != null) widthStr = " width =\"" + width[i] + "\"";
+         if (width != null) {
+            widthStr = " width =\"" + width[i] + "\"";
+         }
          s += "<th" + widthStr + ">" + str[i] + "</th>";
       }
       s += "</tr>";
       return s;
    }
 
-   public static String addSimpleTableRow(String str) {
-      String s = "<tr><td>" + str + "</td></tr>";
-      return s;
+   public static void addSimpleTableRow(Appendable appendable, String contents) throws IOException {
+      appendable.append("<tr><td>");
+      appendable.append(contents);
+      appendable.append("</td></tr>");
    }
 
-   public static String beginSimpleTable() {
-      return new String("<table border=\"0\" cellpadding=\"10\" cellspacing=\"0\" width=\"100%\">");
+   public static void addSimpleHeaderRow(Appendable appendable, String contents) throws IOException {
+      appendable.append("<tr><th>");
+      appendable.append(contents);
+      appendable.append("</th></tr>");
    }
 
-   public static String beginSimpleTable(int border, int width) {
-      return new String("<table border=\"" + border + "\" cellpadding=\"10\" cellspacing=\"0\" width=\"+width+%\">");
+   public static void beginSimpleTable(Appendable appendable) throws IOException {
+      beginSimpleTable(appendable, 1, 100);
    }
 
-   public static String endSimpleTable() {
-      return new String("</table>");
+   public static void beginSimpleTable(Appendable appendable, int border, int width) throws IOException {
+      appendable.append("<table border=\"");
+      appendable.append(String.valueOf(border));
+      appendable.append("\" cellpadding=\"0\" cellspacing=\"0\" width=\"");
+      appendable.append(String.valueOf(width));
+      appendable.append("%\">");
+   }
+
+   public static void endSimpleTable(Appendable appendable) throws IOException {
+      appendable.append("</table>");
    }
 
    public static String createTable(List<String> datas, String[] headers, int numColumns, int cellPadding, int border) {
