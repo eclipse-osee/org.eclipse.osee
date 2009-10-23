@@ -37,7 +37,7 @@ public class ConsolidateRelations extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Consolidate Relations";
+      return "Consolidate Relations to use a single relation version where possible.";
    }
 
    @Override
