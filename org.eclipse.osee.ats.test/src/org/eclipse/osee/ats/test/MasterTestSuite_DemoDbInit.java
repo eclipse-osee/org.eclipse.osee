@@ -33,6 +33,7 @@ public class MasterTestSuite_DemoDbInit {
       TestUtil.setIsInTest(true);
       try {
          SevereLoggingMonitor monitorLog = TestUtil.severeLoggingStart();
+         OseeLog.registerLoggerListener(monitorLog);
          DatabaseInitializationOperation.executeWithoutPrompting("OSEE Demo Database");
          TestUtil.severeLoggingEnd(monitorLog);
          OseeLog.log(DatabaseInitializationOperation.class, Level.INFO, "Completed database initialization");
