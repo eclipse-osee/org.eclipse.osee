@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.relation;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -47,13 +49,12 @@ public class LoadDeletedRelationTest {
       RelationManager.addRelation(type, left, right, "");
       left.persist();
       RelationLink loaded = RelationManager.getLoadedRelation(type, left.getArtId(), right.getArtId(), branch, branch);
+      int oldGammaId = loaded.getGammaId();
       RelationManager.deleteRelation(type, left, right);
       left.persist();
       RelationManager.addRelation(type, left, right, "");
       left.persist();
-      
-      
-      
+
       List<RelationLink> links = RelationManager.getRelationsAll(left.getArtId(), branch.getId(), true);
       int linkCount = 0;
       for (RelationLink link : links) {
@@ -62,9 +63,10 @@ public class LoadDeletedRelationTest {
          }
       }
 
-      org.junit.Assert.assertEquals(
-            "Deleted relation was not re-used by addRelation; see \"Team Workflow\" - L3778 - \"RelationManager needs to properly handle the case when a relation is added more than once\"",
-            1, linkCount);
+      int newGammaId = loaded.getGammaId();
+      assertEquals("Deleted relation was not re-used by addRelation; see L3778", 1, linkCount);
+      assertFalse(loaded.isDeleted());
+      assertEquals("Gamma ID was changed", oldGammaId, newGammaId);
    }
 
    @After
