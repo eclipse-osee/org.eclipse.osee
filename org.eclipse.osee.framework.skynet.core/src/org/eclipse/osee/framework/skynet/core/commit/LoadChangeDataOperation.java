@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.commit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -297,19 +298,17 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
             if (previousItemId != itemId) {
                isFirstSet = false;
-               previousItemId = itemId;
-               if (isBaseline) {
-                  loadVersionData(chStmt, change.getBaselineVersion(), columnValueName);
-               } else {
-                  loadVersionData(chStmt, change.getFirstNonCurrentChange(), columnValueName);
-                  isFirstSet = true;
-               }
-            } else {
-               if (!isFirstSet) {
-                  loadVersionData(chStmt, change.getFirstNonCurrentChange(), columnValueName);
-                  isFirstSet = true;
-               }
             }
+
+            if (isBaseline) {
+               loadVersionData(chStmt, change.getBaselineVersion(), columnValueName);
+            }
+            else if (!isFirstSet) {
+               loadVersionData(chStmt, change.getFirstNonCurrentChange(), columnValueName);
+               isFirstSet = true;
+            }
+            
+            previousItemId = itemId;
          }
       } finally {
          chStmt.close();
@@ -317,12 +316,15 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private void loadVersionData(ConnectionHandlerStatement chStmt, ChangeVersion versionedChange, String columnValueName) throws OseeArgumentException, OseeDataStoreException {
-      if (columnValueName != null) {
-         versionedChange.setValue(chStmt.getString(columnValueName));
-      }
+      //Tolerates the case of having more than one version of an item on a baseline transaction  by picking the most recent one
+      if(versionedChange.getGammaId() == null || versionedChange.getGammaId() < chStmt.getLong("gamma_id")){
+         if (columnValueName != null) {
+            versionedChange.setValue(chStmt.getString(columnValueName));
+         }
 
-      versionedChange.setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
-      versionedChange.setGammaId(chStmt.getLong("gamma_id"));
-      versionedChange.setTransactionNumber(chStmt.getInt("transaction_id"));
+         versionedChange.setModType(ModificationType.getMod(chStmt.getInt("mod_type")));
+         versionedChange.setGammaId(chStmt.getLong("gamma_id"));
+         versionedChange.setTransactionNumber(chStmt.getInt("transaction_id"));
+      }
    }
 }
