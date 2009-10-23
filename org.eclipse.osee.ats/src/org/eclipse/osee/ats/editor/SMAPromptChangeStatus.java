@@ -108,7 +108,7 @@ public class SMAPromptChangeStatus {
       }
       SkynetTransaction transaction = null;
       if (persist) {
-         transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+         transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Status");
       }
       for (StateMachineArtifact sma : smas) {
          if (sma.getSmaMgr().getStateMgr().isUnAssigned()) {

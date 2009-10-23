@@ -64,7 +64,7 @@ public class AtsPurgeTest {
       Set<Artifact> artsToPurge = new HashSet<Artifact>();
 
       // Create Action, Workflow and Tasks
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Purge Test");
       ActionArtifact actionArt =
             ActionManager.createAction(null, getClass().getSimpleName(), "description", ChangeType.Improvement,
                   PriorityType.Priority_2, Arrays.asList("Other"), false, null,

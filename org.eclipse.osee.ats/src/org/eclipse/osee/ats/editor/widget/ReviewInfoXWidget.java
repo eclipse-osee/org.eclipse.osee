@@ -258,8 +258,7 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
 
       String str = "[" + revArt.getName() + "]";
       Hyperlink hyperLabel =
-            toolkit.createHyperlink(workComp, (str.length() > 300 ? Strings.truncate(str, 300) + "..." : str),
-                  SWT.NONE);
+            toolkit.createHyperlink(workComp, (str.length() > 300 ? Strings.truncate(str, 300) + "..." : str), SWT.NONE);
       hyperLabel.setToolTipText("Select to open review");
       hyperLabel.addListener(SWT.MouseUp, new Listener() {
          public void handleEvent(Event event) {
@@ -305,7 +304,8 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
                      return;
                   }
                   try {
-                     SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+                     SkynetTransaction transaction =
+                           new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Reviews");
                      for (ReviewSMArtifact revArt : smaMgr.getReviewManager().getReviewsFromCurrentState()) {
                         if (!revArt.getSmaMgr().isCancelledOrCompleted()) {
                            if (revArt.getSmaMgr().getStateMgr().isUnAssigned()) {

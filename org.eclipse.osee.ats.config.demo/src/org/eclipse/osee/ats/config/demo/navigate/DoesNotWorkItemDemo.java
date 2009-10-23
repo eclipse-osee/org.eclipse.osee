@@ -59,7 +59,7 @@ public class DoesNotWorkItemDemo extends WorldXNavigateItemAction {
    private void createAndPersistPeerReview() throws Exception {
 
       TeamWorkFlowArtifact firstCodeArt = DemoDbUtil.getSampleCodeWorkflows().get(0);
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo - Create and Persist Review");
       // Create a PeerToPeer review and leave in Prepare state
       PeerToPeerReviewArtifact reviewArt =
             firstCodeArt.getSmaMgr().getReviewManager().createNewPeerToPeerReview(

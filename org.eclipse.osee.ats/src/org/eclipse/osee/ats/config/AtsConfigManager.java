@@ -62,7 +62,7 @@ public class AtsConfigManager {
          // do nothing
       }
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Configure ATS for Default Team");
 
       // Create team def
       TeamDefinitionArtifact teamDef =

@@ -59,7 +59,7 @@ public class CancelMultipleWorkflows extends Action {
          }
          EntryDialog ed = new EntryDialog("Cancel Workflows", "Enter Cancellation Reason");
          if (ed.open() == 0) {
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Cancel Multiple Workflows");
             for (StateMachineArtifact sma : smas) {
                Result result =
                      sma.getSmaMgr().transitionToCancelled(ed.getEntry(), transaction, TransitionOption.Persist);

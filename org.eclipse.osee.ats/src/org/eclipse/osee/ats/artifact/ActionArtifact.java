@@ -563,7 +563,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
 
       final StringBuffer sb = new StringBuffer();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Edit Actionable Items");
 
       // Add new aias
       for (ActionableItemArtifact aia : diag.getChecked()) {

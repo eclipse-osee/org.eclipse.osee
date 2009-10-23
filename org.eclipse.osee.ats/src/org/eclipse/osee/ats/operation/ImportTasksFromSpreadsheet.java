@@ -63,7 +63,6 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       }
    }
 
-   
    @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");
@@ -93,7 +92,6 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
       this.taskableStateMachineArtifact = taskableStateMachineArtifact;
    }
 
-   
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Displays.ensureInDisplayThread(new Runnable() {
@@ -122,7 +120,8 @@ public class ImportTasksFromSpreadsheet extends AbstractBlam {
                }
                File file = new File(filename);
                try {
-                  SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+                  SkynetTransaction transaction =
+                        new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Spreadsheet");
                   Job job =
                         Jobs.startJob(new TaskImportJob(file, new ExcelAtsTaskArtifactExtractor(
                               (TeamWorkFlowArtifact) artifact, emailPocs, transaction)));

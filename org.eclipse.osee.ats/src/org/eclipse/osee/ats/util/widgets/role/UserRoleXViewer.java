@@ -247,7 +247,8 @@ public class UserRoleXViewer extends XViewer {
    }
 
    public boolean executeTransaction(Collection<UserRole> userRoles) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(xUserRoleViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Roles");
       for (UserRole userRole : userRoles) {
          xUserRoleViewer.getReviewArt().getUserRoleManager().addOrUpdateUserRole(userRole, false, transaction);
          update(userRole, null);

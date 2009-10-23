@@ -42,7 +42,7 @@ public class NewPeerToPeerReviewJob extends Job {
    @Override
    public IStatus run(final IProgressMonitor monitor) {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
          peerToPeerReviewArtifact =
                teamParent.getSmaMgr().getReviewManager().createNewPeerToPeerReview(reviewTitle, againstState,
                      transaction);

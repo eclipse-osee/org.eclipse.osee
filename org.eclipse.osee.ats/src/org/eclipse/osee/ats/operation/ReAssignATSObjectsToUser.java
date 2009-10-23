@@ -46,7 +46,6 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
       return "Re-Assign ATS Objects To User";
    }
 
-   
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
@@ -86,7 +85,8 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
                final Collection<Artifact> artsToReAssign = dialog.getSelection();
 
                // Make the changes and persist
-               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+               SkynetTransaction transaction =
+                     new SkynetTransaction(AtsUtil.getAtsBranch(), "Re-Assign ATS Objects to User");
                for (Artifact artifact : artsToReAssign) {
                   if (artifact instanceof StateMachineArtifact) {
                      ((StateMachineArtifact) artifact).getSmaMgr().getStateMgr().removeAssignee(fromUser);
@@ -103,7 +103,6 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
       });
    }
 
-   
    @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");

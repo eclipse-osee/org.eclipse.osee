@@ -52,7 +52,7 @@ public class SMAPromptChangeStatusTest {
 
    @org.junit.Test
    public void testInitialize() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       teamArt = DemoTestUtil.createSimpleAction(getClass().getSimpleName(), transaction);
       transaction.execute();
       assertNotNull(teamArt);
@@ -61,7 +61,7 @@ public class SMAPromptChangeStatusTest {
    @org.junit.Test
    public void testChangeTaskStatusNoResolution() throws Exception {
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
             DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_NoRes", 4, transaction);
       transaction.execute();
@@ -96,7 +96,7 @@ public class SMAPromptChangeStatusTest {
    @org.junit.Test
    public void testChangeTaskStatusWithResolutionOptions() throws Exception {
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
             DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Res", 4, transaction);
       transaction.execute();
@@ -134,7 +134,7 @@ public class SMAPromptChangeStatusTest {
 
    @org.junit.Test
    public void testChangeStatusFailsIfTaskCancelled() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
             DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_Cancel", 2, transaction);
       transaction.execute();
@@ -143,7 +143,7 @@ public class SMAPromptChangeStatusTest {
       TaskArtifact cancelTask = tasks.iterator().next();
 
       // test that if one task is cancelled, can't change status
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       cancelTask.getSmaMgr().transition(TaskStates.Cancelled.name(), (User) null, transaction, TransitionOption.Persist);
       transaction.execute();
       SMAPromptChangeStatus promptChangeStatus = new SMAPromptChangeStatus(tasks);
@@ -155,7 +155,7 @@ public class SMAPromptChangeStatusTest {
 
    @org.junit.Test
    public void testChangeStatusFailsIfTaskWrongRelatedToState() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       Collection<TaskArtifact> tasks =
             DemoTestUtil.createSimpleTasks(teamArt, getClass().getSimpleName() + "_RelState", 2, transaction);
       transaction.execute();
@@ -164,7 +164,7 @@ public class SMAPromptChangeStatusTest {
       TaskArtifact taskArt = tasks.iterator().next();
 
       // test that if task not in related-to state of workflows's current status, can't change status
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Prompt Change Status Test");
       taskArt.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(),
             DefaultTeamState.Analyze.name());
       transaction.execute();

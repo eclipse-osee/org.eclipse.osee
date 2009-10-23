@@ -29,7 +29,7 @@ public class NewCoveragePackageItem extends XNavigateItem {
       EntryDialog dialog = new EntryDialog(getName(), "Enter Coverage Package Name");
       if (dialog.open() == 0) {
          CoveragePackage coveragePackage = new CoveragePackage(dialog.getEntry());
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Add Coverage Package");
          coveragePackage.save(transaction);
          transaction.execute();
          CoverageEditor.open(new CoverageEditorInput(coveragePackage));

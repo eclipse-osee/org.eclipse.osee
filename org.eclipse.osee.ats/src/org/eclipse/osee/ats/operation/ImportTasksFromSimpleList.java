@@ -53,7 +53,6 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       return "Import Tasks From Simple List";
    }
 
-   
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
@@ -85,7 +84,8 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
                }
                try {
                   final TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
-                  SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+                  SkynetTransaction transaction =
+                        new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Tasks from Simple List");
                   TaskManager.createTasks(teamArt, titles, assignees, transaction);
                   teamArt.persist(transaction);
                   transaction.execute();
@@ -111,7 +111,6 @@ public class ImportTasksFromSimpleList extends AbstractBlam {
       }
    }
 
-   
    @Override
    public String getXWidgetsXml() {
       StringBuffer buffer = new StringBuffer("<xWidgets>");

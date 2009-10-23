@@ -142,7 +142,7 @@ public class AtsBranchConfigurationTest {
 
       // create action and target for version 
       OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action and target for version " + verArtToTarget);
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       ActionArtifact actionArt =
             ActionManager.createAction(null, TestType.BranchViaVersions.name() + " Req Changes", "description",
                   ChangeType.Problem, PriorityType.Priority_1, Arrays.asList("Other"), false, null,
@@ -159,7 +159,7 @@ public class AtsBranchConfigurationTest {
       // Transition to desired state
       OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
 
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       dtwm.transitionTo(DefaultTeamState.Implement, null, false, transaction);
       teamWf.persist(transaction);
       transaction.execute();
@@ -301,7 +301,7 @@ public class AtsBranchConfigurationTest {
    private void cleanupBranchTest(TestType testType) throws Exception {
       String namespace = "org.branchTest." + testType.name().toLowerCase();
       OseeLog.log(AtsPlugin.class, Level.INFO, "Cleanup from previous run of ATS for team " + namespace);
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       ActionArtifact aArt =
             (ActionArtifact) ArtifactQuery.checkArtifactFromTypeAndName(ActionArtifact.ARTIFACT_NAME,
                   testType.name() + " Req Changes", AtsUtil.getAtsBranch());
@@ -315,7 +315,7 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       // Delete VersionArtifacts
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       for (Artifact verArt : ArtifactQuery.getArtifactListFromType(VersionArtifact.ARTIFACT_NAME,
             AtsUtil.getAtsBranch())) {
          if (verArt.getName().contains(testType.name())) {
@@ -325,7 +325,7 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       // Delete Team Definitions
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       Artifact art =
             ArtifactQuery.checkArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, testType.name(),
                   AtsUtil.getAtsBranch());
@@ -335,7 +335,7 @@ public class AtsBranchConfigurationTest {
       transaction.execute();
 
       // Delete AIs
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       art =
             ArtifactQuery.checkArtifactFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, testType.name(),
                   AtsUtil.getAtsBranch());
@@ -347,7 +347,7 @@ public class AtsBranchConfigurationTest {
       }
       transaction.execute();
 
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       for (Artifact workArt : ArtifactQuery.getArtifactListFromType(WorkPageDefinition.ARTIFACT_NAME,
             AtsUtil.getAtsBranch())) {
          if (workArt.getName().startsWith(namespace)) {

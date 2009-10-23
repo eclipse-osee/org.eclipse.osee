@@ -51,7 +51,7 @@ public class FavoritesManager {
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Remove Favorite", "Are You sure you wish to remove this as Favorite?");
             if (result) {
-               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
                for (StateMachineArtifact sma : smas) {
                   ((IFavoriteableArtifact) sma).removeFavorite(UserManager.getUser(), transaction);
                }
@@ -63,7 +63,7 @@ public class FavoritesManager {
                   MessageDialog.openQuestion(PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell(),
                         "Favorite", "Are you sure you wish add this as a Favorite?");
             if (result) {
-               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Favorites");
                for (StateMachineArtifact sma : smas) {
                   ((IFavoriteableArtifact) sma).addFavorite(UserManager.getUser(), transaction);
                }

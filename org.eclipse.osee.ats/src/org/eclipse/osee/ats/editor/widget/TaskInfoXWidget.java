@@ -133,7 +133,8 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
                         return;
                      }
                      try {
-                        SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+                        SkynetTransaction transaction =
+                              new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Auto Complete Tasks");
                         for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts(forStateName)) {
                            if (!taskArt.getSmaMgr().isCancelledOrCompleted()) {
                               if (taskArt.getSmaMgr().getStateMgr().isUnAssigned()) {

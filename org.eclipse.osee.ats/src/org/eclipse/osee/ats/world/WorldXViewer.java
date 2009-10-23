@@ -421,7 +421,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          public void run() {
             SkynetTransaction transaction;
             try {
-               transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+               transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Reset Action off Children");
                for (ActionArtifact actionArt : getSelectedActionArtifacts()) {
                   actionArt.resetAttributesOffChildren(transaction);
                }

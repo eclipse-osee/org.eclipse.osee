@@ -70,7 +70,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       populateProgramBranch(DemoCISBuilds.CIS_Bld_1);
 
       // Map team definitions versions to their related branches
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo Database Config");
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW), DemoSawBuilds.SAW_Bld_1.name(),
             DemoSawBuilds.SAW_Bld_1.name(), transaction);
       mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.CIS_SW), DemoCISBuilds.CIS_Bld_1.name(),

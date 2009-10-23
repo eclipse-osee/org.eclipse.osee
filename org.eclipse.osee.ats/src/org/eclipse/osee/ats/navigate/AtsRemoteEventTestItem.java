@@ -121,7 +121,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       }
 
       // Make changes and persist
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       teamArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "description 2");
       teamArt.setSoleAttributeFromString(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ChangeType.Problem.name());
       teamArt.setSoleAttributeFromString(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
@@ -144,7 +144,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.persist();
 
       // Make changes and persist
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       teamArt.deleteAttributes(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName());
       teamArt.deleteAttributes(ATSAttributes.RESOLUTION_ATTRIBUTE.getStoreName());
       teamArt.setSoleAttributeFromString(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "description 4");
@@ -160,13 +160,13 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.persist();
 
       // Make changes and transition
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion257()));
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "no");
       teamArt.persist(transaction);
       transaction.execute();
 
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
       teamArt.getSmaMgr().transition(DefaultTeamState.Analyze.name(), Collections.singleton(UserManager.getUser()),
             transaction, TransitionOption.Persist);
       teamArt.persist(transaction);

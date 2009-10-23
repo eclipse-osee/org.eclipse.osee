@@ -194,7 +194,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
                   "You do not have permissions to save " + smaMgr.getSma().getArtifactTypeName() + ":" + smaMgr.getSma());
          } else {
             try {
-               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Workflow Editor - Save");
                // If change was made on Attribute tab, persist sma separately.  This is cause attribute
                // tab changes conflict with XWidget changes
                if (attributesComposite != null && getActivePage() == attributesPageIndex) {
@@ -547,7 +547,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
     */
    public void setPriviledgedEditMode(boolean enabled) throws OseeCoreException {
       this.priviledgedEditModeEnabled = enabled;
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Workflow Editor - Save");
       smaMgr.getSma().saveSMA(transaction);
       transaction.execute();
       workFlowTab.refresh();

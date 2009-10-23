@@ -223,7 +223,8 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
                   "Are You Sure You Wish to Delete the Roles(s):\n\n" + builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(reviewArt.getArtifact().getBranch());
+            SkynetTransaction transaction =
+                  new SkynetTransaction(reviewArt.getArtifact().getBranch(), "Delete Review Roles");
             removeUserRoleHelper(items, persist, transaction);
             transaction.execute();
          } catch (Exception ex) {
@@ -243,7 +244,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
    public void handleNewUserRole() {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(reviewArt.getArtifact().getBranch());
+         SkynetTransaction transaction = new SkynetTransaction(reviewArt.getArtifact().getBranch(), "Add Review Roles");
          reviewArt.getUserRoleManager().addOrUpdateUserRole(new UserRole(), false, transaction);
          transaction.execute();
          notifyXModifiedListeners();

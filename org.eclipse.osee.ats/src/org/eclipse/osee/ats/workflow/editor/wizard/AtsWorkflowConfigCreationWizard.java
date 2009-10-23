@@ -76,7 +76,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          } catch (OseeCoreException ex) {
             // do nothing
          }
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Config Wizard");
          WorkFlowDefinition workflow = null;
          if (startingWorkflow.contains("Simple")) {
             workflow = generateSimpleWorkflow(namespace, transaction, null).getWorkDefinition();

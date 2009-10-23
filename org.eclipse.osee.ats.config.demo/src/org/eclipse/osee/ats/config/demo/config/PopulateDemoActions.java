@@ -118,7 +118,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
          DemoDbUtil.sleep(5000);
 
          // Create traceability between System, Subsystem and Software requirements
-         SkynetTransaction demoDbTraceability = new SkynetTransaction(saw1Branch);
+         SkynetTransaction demoDbTraceability =
+               new SkynetTransaction(saw1Branch, "Populate Demo DB - Create Traceability");
          demoDbTraceabilityTx(demoDbTraceability, saw1Branch);
          demoDbTraceability.execute();
 
@@ -128,7 +129,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
          createMainWorkingBranchTx();
 
          // Create SAW_Bld_2 Actions 
-         SkynetTransaction sawActionsTransaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+         SkynetTransaction sawActionsTransaction =
+               new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Actions");
          Set<ActionArtifact> actionArts =
                createActions(DemoDbActionData.getReqSawActionsData(), DemoSawBuilds.SAW_Bld_2.toString(), null,
                      sawActionsTransaction);
@@ -191,7 +193,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
                branch.getBranchId()});
          BranchManager.refreshBranches();
          // Map team definitions versions to their related branches
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+         SkynetTransaction transaction =
+               new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Branch");
          DemoDatabaseConfig.mapTeamVersionToBranch(DemoTeams.getInstance().getTeamDef(Team.SAW_SW),
                DemoSawBuilds.SAW_Bld_2.name(), DemoSawBuilds.SAW_Bld_2.name(), transaction);
          transaction.execute();
@@ -399,7 +402,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
    }
 
    private void createNonReqChangeDemoActions() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(AtsUtil.getAtsBranch(), "Populate Demo DB - Create Actions");
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_3");
       createActions(DemoDbActionData.getNonReqSawActionData(), DemoSawBuilds.SAW_Bld_3.toString(), null, transaction);
       OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "createNonReqChangeDemoActions - SAW_Bld_2");

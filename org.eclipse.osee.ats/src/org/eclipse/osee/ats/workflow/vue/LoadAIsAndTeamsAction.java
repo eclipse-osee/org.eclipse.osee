@@ -143,7 +143,7 @@ public class LoadAIsAndTeamsAction {
       }
 
       try {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Load AIs and Teams");
          // Get or create ATS root artifact
          Artifact atsHeading = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
 

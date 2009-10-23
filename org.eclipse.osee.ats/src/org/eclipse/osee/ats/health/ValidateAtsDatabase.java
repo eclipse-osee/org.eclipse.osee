@@ -133,7 +133,14 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
 
       int count = 0;
       // Break artifacts into blocks so don't run out of memory
-      List<Collection<Integer>> artIdLists = loadAtsBranchArtifactIds(xResultData, monitor);
+      List<Collection<Integer>> artIdLists = null;
+
+      // Un-comment to process whole Common branch - Normal Mode
+      artIdLists = loadAtsBranchArtifactIds(xResultData, monitor);
+
+      // Un-comment to process specific artifact from common - Test Mode
+      //      artIdLists = Arrays.asList((Collection<Integer>) Arrays.asList(new Integer(520234)));
+
       if (monitor != null) {
          monitor.beginTask(getName(), artIdLists.size());
       }
@@ -321,7 +328,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
    }
 
    private void testAtsAttributeValues(Collection<Artifact> artifacts) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Validate ATS Database");
       for (Artifact artifact : artifacts) {
 
          // Test for null attribute values 

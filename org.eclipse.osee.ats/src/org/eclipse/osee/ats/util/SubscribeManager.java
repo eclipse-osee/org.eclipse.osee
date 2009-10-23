@@ -53,7 +53,7 @@ public class SubscribeManager {
                         "Un-Subscribe",
                         "You are currently subscribed to receive emails when this artifact transitions." + "\n\nAre You sure you wish to Un-Subscribe?");
             if (result) {
-               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Subscribed");
                for (StateMachineArtifact sma : smas) {
                   ((ISubscribableArtifact) sma).removeSubscribed(UserManager.getUser(), transaction);
                }
@@ -66,7 +66,7 @@ public class SubscribeManager {
                         "Subscribe",
                         "Are you sure you wish to subscribe to receive emails when this artifact transitions?");
             if (result) {
-               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Toggle Subscribed");
                for (StateMachineArtifact sma : smas) {
                   ((ISubscribableArtifact) sma).addSubscribed(UserManager.getUser(), transaction);
                }

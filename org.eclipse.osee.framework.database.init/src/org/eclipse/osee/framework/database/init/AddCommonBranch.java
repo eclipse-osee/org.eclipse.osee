@@ -53,7 +53,7 @@ public abstract class AddCommonBranch implements IDbInitializationTask {
          BranchManager.createTopLevelBranch(CoreBranches.COMMON.getName(), CoreBranches.COMMON.getName(),
                CoreBranches.COMMON.getGuid());
 
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Add Common Branch");
 
          // Create Default Users
          for (SystemUser userEnum : SystemUser.values()) {

@@ -76,7 +76,7 @@ public class AtsFolderUtil {
    }
 
    public static void createAtsFolders() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create ATS Folders");
 
       Artifact headingArt =
             OseeSystemArtifacts.getOrCreateArtifact(AtsFolderUtil.FOLDER_ARTIFACT, AtsFolder.Ats_Heading.displayName,

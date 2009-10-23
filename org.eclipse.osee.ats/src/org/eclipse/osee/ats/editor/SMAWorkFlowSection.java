@@ -647,7 +647,8 @@ public class SMAWorkFlowSection extends SectionPart {
             if (cancelDialog.open() != 0) {
                return;
             }
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+            SkynetTransaction transaction =
+                  new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Transition to Cancelled");
             Result result =
                   smaMgr.transitionToCancelled(cancelDialog.getEntry(), transaction, TransitionOption.Persist);
             transaction.execute();
@@ -742,7 +743,7 @@ public class SMAWorkFlowSection extends SectionPart {
          smaMgr.getSma().persist();
 
          // Perform transition separate from persist of previous changes to state machine artifact
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Transition");
          Result result =
                smaMgr.transition(toWorkPageDefinition.getPageName(), toAssignees, transaction, TransitionOption.Persist);
          transaction.execute();

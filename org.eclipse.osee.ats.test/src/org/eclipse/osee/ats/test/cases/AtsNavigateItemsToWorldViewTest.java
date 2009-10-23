@@ -590,7 +590,7 @@ public class AtsNavigateItemsToWorldViewTest {
       Map<Artifact, Object> attributeValues = new HashMap<Artifact, Object>();
       getXViewer().expandAll();
       handleTableCustomization();
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
       // select a workflow artifact; get its attributes; delete an attribute
       for (Artifact art : arts) {
          attributeValues.put(art, art.getSoleAttributeValue(attributeToDelete));
@@ -601,7 +601,7 @@ public class AtsNavigateItemsToWorldViewTest {
       try {
          runGeneralXColTest(20, true, attributeToDelete, false);
       } finally {
-         transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+         transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Navigate Test");
          // restore the attribute to leave the demo db back in its original state      
          for (Artifact art : arts) {
             art.setSoleAttributeValue(attributeToDelete, attributeValues.get(art));

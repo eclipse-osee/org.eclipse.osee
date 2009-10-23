@@ -50,7 +50,7 @@ public class NewPeerToPeerReviewItem extends XNavigateItemAction {
          final EntryDialog ed = new EntryDialog("Peer Review Title", "Enter Peer Review Title");
          if (ed.open() == 0) {
             try {
-               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+               SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "New Peer To Peer Review");
                PeerToPeerReviewArtifact peerArt =
                      ReviewManager.createNewPeerToPeerReview(null, ed.getEntry(), null, UserManager.getUser(),
                            new Date(), transaction);

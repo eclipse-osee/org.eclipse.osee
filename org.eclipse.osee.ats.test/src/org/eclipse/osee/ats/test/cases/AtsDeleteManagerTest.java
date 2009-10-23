@@ -71,7 +71,7 @@ public class AtsDeleteManagerTest {
       if (AtsUtil.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
             createAction(TestNames.TeamArtDeleteOneWorkflow,
@@ -99,7 +99,7 @@ public class AtsDeleteManagerTest {
       if (AtsUtil.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
             createAction(TestNames.TeamArtDeleteWithTwoWorkflows,
@@ -122,7 +122,7 @@ public class AtsDeleteManagerTest {
       if (AtsUtil.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
             createAction(TestNames.TeamArtPurge,
@@ -145,7 +145,7 @@ public class AtsDeleteManagerTest {
       if (AtsUtil.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
             createAction(TestNames.ActionDelete,
@@ -168,7 +168,7 @@ public class AtsDeleteManagerTest {
       if (AtsUtil.isProductionDb()) fail("Test not intended for production Db");
       if (DemoTestUtil.isDbPopulatedWithDemoData().isFalse()) fail("Test should be run on Demo Db");
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Manager Test");
       // Create Action
       TeamWorkFlowArtifact teamArt =
             createAction(TestNames.ActionPurge,

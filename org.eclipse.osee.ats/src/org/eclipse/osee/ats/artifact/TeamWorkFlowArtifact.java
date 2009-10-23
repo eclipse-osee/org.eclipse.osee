@@ -484,7 +484,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       Result workResult = actionableItemsDam.setActionableItems(selectedAlias);
       if (workResult.isTrue()) {
          if (teamDefinition != null) setTeamDefinition(teamDefinition);
-         SkynetTransaction transaction = new SkynetTransaction(branch);
+         SkynetTransaction transaction = new SkynetTransaction(branch, "Converate Actionable Item");
          getParentActionArtifact().resetAttributesOffChildren(transaction);
          persist(transaction);
          transaction.execute();

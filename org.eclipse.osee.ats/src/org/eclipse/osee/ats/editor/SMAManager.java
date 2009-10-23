@@ -389,7 +389,7 @@ public class SMAManager {
                java.util.Collections.singleton(newVersion));
       }
       if (persist) {
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Version");
          for (TeamWorkFlowArtifact teamArt : smas) {
             teamArt.persist(transaction);
          }
@@ -421,7 +421,7 @@ public class SMAManager {
          }
          if (dialog.open() == 0) {
 
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Type");
 
             for (TeamWorkFlowArtifact team : teams) {
                if (team.getChangeType() != dialog.getSelection()) {
@@ -460,7 +460,7 @@ public class SMAManager {
          }
          if (ald.open() == 0) {
 
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "ATS Prompt Change Priority");
             for (TeamWorkFlowArtifact team : teams) {
                if (team.getPriority() != ald.getSelection()) {
                   team.setPriority(ald.getSelection());

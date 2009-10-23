@@ -42,7 +42,8 @@ import org.eclipse.osee.support.test.util.DemoUsers;
 public class DemoDbReviews {
 
    public static void createReviews() throws Exception {
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(AtsUtil.getAtsBranch(), "Demo Database Config - Create Reviews");
       createPeerToPeerReviews(transaction);
       createDecisionReviews(transaction);
       transaction.execute();

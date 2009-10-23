@@ -161,7 +161,7 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
                   builder.toString());
       if (delete) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete Tasks");
             // Done for concurrent modification purposes
             ArrayList<TaskArtifact> delItems = new ArrayList<TaskArtifact>();
             delItems.addAll(items);
@@ -289,7 +289,7 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
             if (iXTaskViewer.getParentSmaMgr() == null) return;
             if (iXTaskViewer.getParentSmaMgr().getSma() == null) return;
             final Artifact[] artsToRelate = ((ArtifactData) e.data).getArtifacts();
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Drop Add Tasks");
             for (Artifact art : artsToRelate) {
                if (art instanceof TaskArtifact) {
                   TaskArtifact taskArt = (TaskArtifact) art;

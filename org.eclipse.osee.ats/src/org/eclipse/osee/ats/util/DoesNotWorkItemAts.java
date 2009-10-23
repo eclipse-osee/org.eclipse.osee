@@ -61,7 +61,7 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
       if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
 
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
       //      Artifact verArt =
       //            ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME, "0.9.0", AtsUtil.getAtsBranch());
       //      for (Attribute<?> attr : verArt.getAttributes()) {

@@ -745,7 +745,8 @@ public class AtsBranchManager {
          public IStatus run(IProgressMonitor monitor) throws OseeCoreException {
             BranchManager.createWorkingBranch(parentBranch, branchName, stateMachineArtifact);
             // Create reviews as necessary
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+            SkynetTransaction transaction =
+                  new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Transition");
             createNecessaryBranchEventReviews(StateEventType.CreateBranch, smaMgr, transaction);
             transaction.execute();
             return Status.OK_STATUS;
@@ -849,7 +850,7 @@ public class AtsBranchManager {
       }
       if (branchCommitted) {
          // Create reviews as necessary
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create Reviews upon Commit");
          createNecessaryBranchEventReviews(StateEventType.CommitBranch, smaMgr, transaction);
          transaction.execute();
       }

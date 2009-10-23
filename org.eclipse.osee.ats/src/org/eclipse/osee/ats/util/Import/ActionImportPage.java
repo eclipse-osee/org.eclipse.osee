@@ -141,7 +141,8 @@ public class ActionImportPage extends WizardDataTransferPage {
       final File file = fileSelector.getFile();
       try {
 
-         SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+         SkynetTransaction transaction =
+               new SkynetTransaction(AtsUtil.getAtsBranch(), "Import Actions from Spreadsheet");
          ExcelAtsActionArtifactExtractor extractor = new ExcelAtsActionArtifactExtractor(emailPocs.getSelection());
          extractor.process(file.toURI());
          if (extractor.dataIsValid()) {

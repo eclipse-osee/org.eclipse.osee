@@ -146,7 +146,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
          databaseTargetId = databaseTargetId.trim();
          setup(databaseTargetId);
 
-         SkynetTransaction transaction = new SkynetTransaction(branch);
+         SkynetTransaction transaction = new SkynetTransaction(branch, "Import Validate Change Reports");
          List<Artifact> artifacts =
                ArtifactQuery.getArtifactListFromTypeAndName(GeneralData.ARTIFACT_TYPE, "VCR_%", branch);
          for (Artifact artifact : artifacts) {

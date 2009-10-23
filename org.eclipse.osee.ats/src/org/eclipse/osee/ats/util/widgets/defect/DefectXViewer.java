@@ -488,7 +488,8 @@ public class DefectXViewer extends XViewer {
    }
 
    public boolean executeTransaction(Collection<DefectItem> defectItems) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(xDefectViewer.getReviewArt().getArtifact().getBranch(), "Modify Review Defects");
       for (DefectItem defectItem : defectItems) {
          xDefectViewer.getReviewArt().getDefectManager().addOrUpdateDefectItem(defectItem, false, transaction);
          update(defectItem, null);

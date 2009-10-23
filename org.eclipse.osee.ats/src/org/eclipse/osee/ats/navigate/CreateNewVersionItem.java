@@ -78,7 +78,7 @@ public class CreateNewVersionItem extends XNavigateItemAction {
          }
 
          try {
-            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+            SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create New Version");
             createNewVersionItemTx(transaction, teamDefHoldingVersions, newVer);
             transaction.execute();
          } catch (Exception ex) {
