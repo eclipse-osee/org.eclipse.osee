@@ -16,6 +16,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -646,11 +647,11 @@ public class ConflictTestManager {
       conflictDefs[21].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
       conflictDefs[21].values.add(new AttributeValue("Name", "Test Artifact Number 21 - Child", null, "Source",
             StringAttribute.class));
-      conflictDefs[22].setValues("Software Requirement", false, false, 20, 0);
-      conflictDefs[22].values.add(new AttributeValue("Subsystem", "Electrical", null, "Source", StringAttribute.class));
+      conflictDefs[22].setValues("Software Requirement", true, false, 20, 0);
+      conflictDefs[22].values.add(new AttributeValue("Subsystem", "Electrical", "dest", "Source", StringAttribute.class));
       conflictDefs[22].values.add(new AttributeValue("Name", "Test Artifact Number 22 - Child/Parent", null, "Source",
             StringAttribute.class));
-      conflictDefs[23].setValues("Software Requirement", false, false, 22, 0);
+      conflictDefs[23].setValues("Software Requirement", true, false, 22, 0);
       conflictDefs[23].values.add(new AttributeValue("Subsystem", "Electrical", "Sights", "Source",
             StringAttribute.class));
       conflictDefs[23].values.add(new AttributeValue("Name", "Test Artifact Number 23 - Child", "The Other Name",

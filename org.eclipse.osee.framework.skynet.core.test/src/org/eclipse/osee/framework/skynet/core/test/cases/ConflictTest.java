@@ -14,13 +14,13 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+
 import java.util.Collection;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
-import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
@@ -48,12 +48,6 @@ import org.junit.BeforeClass;
 public class ConflictTest {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core.test/debug/Junit"));
-   private static final String COMMITTED_NEW_AND_DELETED_ARTIFACTS =
-         "SELECT txs1.gamma_id, txs1.transaction_id, det1.branch_id, art1.art_id, 0 as attr_id, 0 as rel_link_id FROM osee_tx_details det1, osee_txs txs1, osee_artifact_version art1 WHERE txs1.tx_current = " + TxChange.DELETED.getValue() + " AND det1.transaction_id = txs1.transaction_id AND txs1.gamma_id = art1.gamma_id  AND  NOT EXISTS (SELECT ('x') FROM osee_tx_details det2, osee_txs txs2, osee_artifact_version art2 WHERE txs2.mod_type != " + ModificationType.DELETED.getValue() + " AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = art2.gamma_id AND art2.art_id = art1.art_id)";
-   private static final String COMMITTED_NEW_AND_DELETED_ATTRIBUTES =
-         "SELECT txs1.gamma_id, txs1.transaction_id, det1.branch_id, 0 as art_id, att1.attr_id, 0 as rel_link_id FROM osee_tx_details det1, osee_txs txs1, osee_attribute att1 WHERE txs1.tx_current = " + TxChange.DELETED.getValue() + " AND det1.transaction_id = txs1.transaction_id AND txs1.gamma_id = att1.gamma_id  AND  NOT EXISTS (SELECT ('x') FROM osee_tx_details det2, osee_txs txs2, osee_attribute att2 WHERE txs2.mod_type != " + ModificationType.DELETED.getValue() + " AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = att2.gamma_id AND att2.attr_id = att1.attr_id)";
-   private static final String COMMITTED_NEW_AND_DELETED_RELATIONS =
-         "SELECT txs1.gamma_id, txs1.transaction_id, det1.branch_id, 0 as art_id, 0 as attr_id, rel1.rel_link_id FROM osee_tx_details det1, osee_txs txs1, osee_relation_link rel1 WHERE txs1.tx_current = " + TxChange.DELETED.getValue() + " AND det1.transaction_id = txs1.transaction_id AND txs1.gamma_id = rel1.gamma_id  AND  NOT EXISTS (SELECT ('x') FROM osee_tx_details det2, osee_txs txs2, osee_relation_link rel2 WHERE txs2.mod_type != " + ModificationType.DELETED.getValue() + " AND det1.branch_id = det2.branch_id AND det2.transaction_id = txs2.transaction_id AND txs2.gamma_id = rel2.gamma_id AND rel2.rel_link_id = rel1.rel_link_id)";
    private static final String[] NO_TX_CURRENT_SET =
          {
                "SELECT distinct t1.",
@@ -189,37 +183,6 @@ public class ConflictTest {
 
    @org.junit.Test
    public void testCommitFiltering() throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         chStmt.runPreparedQuery(COMMITTED_NEW_AND_DELETED_ARTIFACTS);
-         if (chStmt.next()) {
-            fail(String.format(
-                  "Committed New and Deleted Artifact snuck through gamma_id = %d and transaction_id = %d",
-                  chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
-         }
-      } finally {
-         chStmt.close();
-      }
-      try {
-         chStmt.runPreparedQuery(COMMITTED_NEW_AND_DELETED_ATTRIBUTES);
-         if (chStmt.next()) {
-            fail(String.format(
-                  "Committed New and Deleted Attribute snuck through gamma_id = %d and transaction_id = %d",
-                  chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
-         }
-      } finally {
-         chStmt.close();
-      }
-      try {
-         chStmt.runPreparedQuery(COMMITTED_NEW_AND_DELETED_RELATIONS);
-         if (chStmt.next()) {
-            fail(String.format(
-                  "Committed New and Deleted Relation Links snuck through gamma_id = %d and transaction_id = %d",
-                  chStmt.getInt("gamma_id"), chStmt.getInt("transaction_id")));
-         }
-      } finally {
-         chStmt.close();
-      }
       checkNoTxCurrent("art_id", "osee_artifact_version");
       checkNoTxCurrent("attr_id", "osee_attribute");
       checkNoTxCurrent("rel_link_id", "osee_relation_link");
