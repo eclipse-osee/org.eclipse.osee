@@ -50,7 +50,7 @@
 		-->
 
 		<!-- calculate workspaceDir as parent of this folder, the project's .releng folder (relengBuilderDir) -->
-		<property name="relengBuilderDir" value="${basedir}" />
+		<property name="relengBuilderDir" value="${basedir}/.." />
 		<dirname file="${relengBuilderDir}" property="workspaceDir" />
 
 		<!-- 
