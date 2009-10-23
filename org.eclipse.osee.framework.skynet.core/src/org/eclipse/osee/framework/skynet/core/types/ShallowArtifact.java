@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
+import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
 
 /**
  * @author Roberto E. Escobar
@@ -60,10 +61,12 @@ public class ShallowArtifact implements IArtifact {
    @Override
    public Branch getBranch() {
       Branch branch = null;
-      try {
-         branch = cache.getCommonBranch();
-      } catch (OseeCoreException ex) {
-         //         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      if (!DbUtil.isDbInit()) {
+         try {
+            branch = cache.getCommonBranch();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
       }
       return branch;
    }
