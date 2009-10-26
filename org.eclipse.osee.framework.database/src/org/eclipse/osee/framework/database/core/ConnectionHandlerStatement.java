@@ -362,19 +362,22 @@ public class ConnectionHandlerStatement {
    }
 
    /**
-    * Returns the number of rows in the result set. Once this method returns the result set will be pointing to the last
-    * row
+    * Returns the number of rows in the result set.
     * 
     * @return the number of rows in the result set
     * @throws OseeDataStoreException
     */
    public int getRowCount() throws OseeDataStoreException {
+      int lastRowNumber = 0;
       try {
+         int currentRowNumber = rSet.getRow();
          rSet.last();
-         return rSet.getRow();
+         lastRowNumber = rSet.getRow();
+         rSet.absolute(currentRowNumber);
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
       }
+      return lastRowNumber;
    }
 
    public boolean isNullable(int columnIndex) throws OseeDataStoreException {

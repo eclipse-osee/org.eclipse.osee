@@ -53,17 +53,14 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       this.monitor = monitor;
       init();
-
-      findInvalidTxCurrents("osee_attribute", "attr_id");
-      findInvalidTxCurrents("osee_artifact_version", "art_id");
-      findInvalidTxCurrents("osee_relation_link", "rel_link_id");
+      monitor.worked(calculateWork(0.10));
+      findInvalidTxCurrents(0.30, "osee_attribute", "attr_id");
+      findInvalidTxCurrents(0.30, "osee_artifact_version", "art_id");
+      findInvalidTxCurrents(0.30, "osee_relation_link", "rel_link_id");
    }
 
-   private void findInvalidTxCurrents(String tableName, String columnName) throws OseeDataStoreException, OseeArgumentException {
+   private void findInvalidTxCurrents(double workAmount, String tableName, String columnName) throws OseeDataStoreException, OseeArgumentException {
       checkForCancelledStatus(monitor);
-
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      String sql = String.format(SELECT_ADDRESSES, columnName, tableName, columnName);
 
       resultsTab = new ResultsEditorTableTab(tableName + " currents");
       getResultsProvider().addResultsTab(resultsTab);
@@ -75,38 +72,50 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
       resultsTab.addColumn(new XViewerColumn("6", "Mod Type", 80, SWT.LEFT, true, SortDataType.String, false, ""));
       resultsTab.addColumn(new XViewerColumn("7", "TX Current", 80, SWT.LEFT, true, SortDataType.String, false, ""));
 
-      Address previousAddress = null;
+      double stepAmount = workAmount / 2.0;
 
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      String sql = String.format(SELECT_ADDRESSES, columnName, tableName, columnName);
       try {
          chStmt.runPreparedQuery(10000, sql);
-         while (chStmt.next()) {
-            Address address =
-                  new Address(chStmt.getInt("branch_id"), chStmt.getInt(columnName), chStmt.getInt("transaction_id"),
-                        chStmt.getInt("tx_type"), chStmt.getLong("gamma_id"), chStmt.getInt("mod_type"),
-                        chStmt.getInt("tx_current"));
+         int numberOfRows = chStmt.getRowCount();
+         if (numberOfRows > 0) {
+            double workStep = stepAmount / numberOfRows;
 
-            if (!address.isSimilar(previousAddress)) {
-               consolidateAddressing(resultsTab);
-               addresses.clear();
+            Address previousAddress = null;
+            while (chStmt.next()) {
+               checkForCancelledStatus(monitor);
+               Address address =
+                     new Address(chStmt.getInt("branch_id"), chStmt.getInt(columnName),
+                           chStmt.getInt("transaction_id"), chStmt.getInt("tx_type"), chStmt.getLong("gamma_id"),
+                           chStmt.getInt("mod_type"), chStmt.getInt("tx_current"));
+
+               if (!address.isSimilar(previousAddress)) {
+                  consolidateAddressing(resultsTab);
+                  addresses.clear();
+               }
+
+               addresses.add(address);
+               previousAddress = address;
+               monitor.worked(calculateWork(workStep));
             }
-
-            addresses.add(address);
-            previousAddress = address;
+         } else {
+            monitor.worked(calculateWork(stepAmount));
          }
-
-         fixIssues();
       } finally {
          chStmt.close();
       }
 
-      monitor.worked(calculateWork(0.10));
+      fixIssues(stepAmount);
    }
 
-   private void fixIssues() throws OseeDataStoreException {
+   private void fixIssues(double workAmount) throws OseeDataStoreException {
       if (isFixOperationEnabled()) {
+         checkForCancelledStatus(monitor);
          ConnectionHandler.runBatchUpdate(DELETE_ADDRESS, purgeData);
          ConnectionHandler.runBatchUpdate(UPDATE_ADDRESS, currentData);
       }
+      monitor.worked(calculateWork(workAmount));
    }
 
    private void logIssue(String issue, Address address) {
@@ -191,6 +200,7 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
       final boolean isBaselineTx;
       final ModificationType modType;
       final TxChange txCurrent;
+
       TxChange correctedTxCurrent;
       boolean purge;
 
