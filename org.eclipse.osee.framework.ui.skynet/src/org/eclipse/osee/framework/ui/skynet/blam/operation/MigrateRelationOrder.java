@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameComparator;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
@@ -44,9 +46,10 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  */
 public class MigrateRelationOrder extends AbstractBlam {
    private static final String SELECT_CHILD_BASELINE_TXS =
-         "select transaction_id from osee_branch br, osee_tx_details txd where br.parent_branch_id = ? and archived = 0 and branch_type = " + BranchType.WORKING.ordinal() + " and br.branch_id = txd.branch_id and txd.tx_type = " + TransactionDetailsType.Baselined.ordinal();
+         "select transaction_id from osee_branch br, osee_tx_details txd where br.parent_branch_id = ? and branch_type = " + BranchType.WORKING.ordinal() + " and br.branch_id = txd.branch_id and txd.tx_type = " + TransactionDetailsType.Baselined.ordinal();
 
-   private static final String SELECT_GAMMA_FROM_TXS = "select gamma_id from osee_txs where transaction_id = ?";
+   private static final String SELECT_GAMMA_FROM_TXS =
+         "select gamma_id, mod_type from osee_txs where transaction_id = ?";
    private final ArtifactNameComparator nameComparator = new ArtifactNameComparator();
    private final ComputeLegacyOrder computeLegacyOrder = new ComputeLegacyOrder();
 
@@ -57,6 +60,11 @@ public class MigrateRelationOrder extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      if (true) {
+         fixPreviousBug();
+         return;
+      }
+
       Branch baselineBranch = variableMap.getBranch("Branch");
       SkynetTransaction transaction = new SkynetTransaction(baselineBranch, getName());
 
@@ -79,11 +87,6 @@ public class MigrateRelationOrder extends AbstractBlam {
       Integer transactionNumber = transaction.getTransactionNumber();
       transaction.execute();
       addToChildBaseilnes(baselineBranch.getBranchId(), transactionNumber);
-   }
-
-   private void testOneArtifact(SkynetTransaction transaction, String guid) throws OseeCoreException {
-      writeNewOrder(transaction, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, ArtifactQuery.getArtifactFromId(
-            guid, transaction.getBranch()));
    }
 
    private void writeNewOrder(SkynetTransaction transaction, IRelationEnumeration relationEnum, Artifact artifact) throws OseeCoreException {
@@ -109,33 +112,82 @@ public class MigrateRelationOrder extends AbstractBlam {
    }
 
    private void addToChildBaseilnes(Integer branchId, Integer transactionNumber) throws OseeCoreException {
-      List<Integer> gammaIds = new ArrayList<Integer>(1000);
+      final List<Object[]> txGammaList = new ArrayList<Object[]>(3000);
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(100, SELECT_GAMMA_FROM_TXS, transactionNumber);
+         chStmt.runPreparedQuery(3000, SELECT_GAMMA_FROM_TXS, transactionNumber);
          while (chStmt.next()) {
-            gammaIds.add(chStmt.getInt("gamma_id"));
+            txGammaList.add(new Object[] {-1, chStmt.getLong("gamma_id"), chStmt.getInt("mod_type")});
          }
       } finally {
          chStmt.close();
       }
 
-      final List<Object[]> txGammaList = new ArrayList<Object[]>();
-      chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(100, SELECT_CHILD_BASELINE_TXS, branchId);
          while (chStmt.next()) {
             Integer baselineTransactionId = chStmt.getInt("transaction_id");
-            for (Integer gammaId : gammaIds) {
-               txGammaList.add(new Object[] {baselineTransactionId, gammaId});
+            for (Object[] data : txGammaList) {
+               data[0] = baselineTransactionId;
             }
+            ConnectionHandler.runBatchUpdate(
+                  "insert into osee_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,1)", txGammaList);
          }
       } finally {
          chStmt.close();
       }
-      ConnectionHandler.runBatchUpdate(
-            "insert into osee_txs (mod_type, tx_current, transaction_id, gamma_id) VALUES (1,1,?,?)", txGammaList);
+
+   }
+
+   private void testOneArtifact(SkynetTransaction transaction, String guid) throws OseeCoreException {
+      writeNewOrder(transaction, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, ArtifactQuery.getArtifactFromId(
+            guid, transaction.getBranch()));
+   }
+
+   private void fixPreviousBug() throws OseeCoreException {
+      String[] branchNames =
+            new String[] {"Block III - FTB0", "Common", "MYII V11", "AH-64 MSA PDSP", "MYII V13 - FTB2", "V11_REU",
+                  "Block III - FTB0.1", "Block III - FTB2", "Saudi - SAN1", "Saudi - FTB1", "MYII V13 - SBVT",
+                  "Saudi - V13 - FTB2", "Saudi - V13 - SAN2", "Saudi - SBVT1", "Link16 - Eng Bld 1", "Taiwan - EB0",
+                  "MSA Documents", "UK", "Block III - FTB4", "UAE - EB2", "UAE - SAN 2", "AH-6I", "Block III - FTB3",
+                  "Block III - FTB2.2", "MYII V13.1 - FTB1", "MYII V13 - FTB1A", "MYII V13 - FTB1", "Saudi - V11"};
+      for (String branchName : branchNames) {
+         Integer branchId = BranchManager.getBranch(branchName).getBranchId();
+         Integer transactionNumber =
+               ConnectionHandler.runPreparedQueryFetchInt(-9999,
+                     "select transaction_id from osee_tx_details where branch_id = ? and osee_comment = ?", branchId,
+                     "Migrate Relation Order");
+         fixPreviousBugForBranch(branchId, transactionNumber);
+      }
+   }
+
+   private void fixPreviousBugForBranch(Integer branchId, Integer transactionNumber) throws OseeDataStoreException {
+      final List<Object[]> txGammaList = new ArrayList<Object[]>(3000);
+
+      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      try {
+         chStmt.runPreparedQuery(3000, SELECT_GAMMA_FROM_TXS, transactionNumber);
+         while (chStmt.next()) {
+            txGammaList.add(new Object[] {chStmt.getInt("mod_type"), -1, chStmt.getLong("gamma_id")});
+         }
+      } finally {
+         chStmt.close();
+      }
+
+      try {
+         chStmt.runPreparedQuery(100, SELECT_CHILD_BASELINE_TXS, branchId);
+         while (chStmt.next()) {
+            Integer baselineTransactionId = chStmt.getInt("transaction_id");
+            for (Object[] data : txGammaList) {
+               data[1] = baselineTransactionId;
+            }
+            ConnectionHandler.runBatchUpdate(
+                  "update osee_txs set mod_type = ? where transaction_id = ? and gamma_id = ?", txGammaList);
+         }
+      } finally {
+         chStmt.close();
+      }
    }
 
    @Override
