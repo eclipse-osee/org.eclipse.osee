@@ -14,6 +14,7 @@ import java.io.IOException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
+import org.eclipse.osee.framework.ui.skynet.results.MultiPageResultsProvider;
 
 /**
  * @author Roberto E. Escobar
@@ -26,7 +27,7 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
 
    private Appendable appendableBuffer;
    private final StringBuilder detailedReport;
-   private final DataStoreHealthResultsProvider resultsProvider = new DataStoreHealthResultsProvider(this);
+   private final MultiPageResultsProvider resultsProvider = new MultiPageResultsProvider(this);
 
    public DatabaseHealthOperation(String operationName) {
       super(operationName, SkynetGuiPlugin.PLUGIN_ID);
@@ -73,7 +74,7 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
       return detailedReport;
    }
 
-   public DataStoreHealthResultsProvider getResultsProvider() {
+   public MultiPageResultsProvider getResultsProvider() {
       return resultsProvider;
    }
 

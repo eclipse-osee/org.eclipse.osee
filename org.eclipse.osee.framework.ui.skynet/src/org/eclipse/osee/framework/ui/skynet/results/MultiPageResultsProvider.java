@@ -3,22 +3,21 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.ui.skynet.dbHealth;
+package org.eclipse.osee.framework.ui.skynet.results;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
-import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
+import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 
 /**
  * @author Ryan D. Brooks
  */
-public class DataStoreHealthResultsProvider implements IResultsEditorProvider {
+public class MultiPageResultsProvider implements IResultsEditorProvider {
    private final DatabaseHealthOperation healthOperation;
    private final List<IResultsEditorTab> resultsTabs = new ArrayList<IResultsEditorTab>(4);
 
-   public DataStoreHealthResultsProvider(DatabaseHealthOperation healthOperation) {
+   public MultiPageResultsProvider(DatabaseHealthOperation healthOperation) {
       super();
       this.healthOperation = healthOperation;
    }
