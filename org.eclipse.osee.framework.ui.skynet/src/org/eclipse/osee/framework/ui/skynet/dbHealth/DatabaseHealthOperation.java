@@ -26,6 +26,7 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
 
    private Appendable appendableBuffer;
    private final StringBuilder detailedReport;
+   private final DataStoreHealthResultsProvider resultsProvider = new DataStoreHealthResultsProvider(this);
 
    public DatabaseHealthOperation(String operationName) {
       super(operationName, SkynetGuiPlugin.PLUGIN_ID);
@@ -70,6 +71,10 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
 
    public Appendable getDetailedReport() {
       return detailedReport;
+   }
+
+   public DataStoreHealthResultsProvider getResultsProvider() {
+      return resultsProvider;
    }
 
    protected void setItemsToFix(int value) {
