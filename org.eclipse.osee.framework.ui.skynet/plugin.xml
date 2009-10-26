@@ -1214,14 +1214,6 @@
   </image>
 	</extension>
  <extension
-       id="DeleteArchivedBranches"
-       name="Delete Archived Branches"
-       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-    <Operation
-          className="org.eclipse.osee.framework.ui.skynet.blam.operation.DeleteArchivedBranches">
-    </Operation>
- </extension>
- <extension
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
     <Operation
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.UpdateArtifactTypeImage">
@@ -1651,24 +1643,6 @@
   <extension
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
      <DatabaseHealthOperation
-           className="org.eclipse.osee.framework.ui.skynet.dbHealth.ArtifactTxCurrent">
-     </DatabaseHealthOperation>
-  </extension>
-  <extension
-        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
-     <DatabaseHealthOperation
-           className="org.eclipse.osee.framework.ui.skynet.dbHealth.AttributeTxCurrent">
-     </DatabaseHealthOperation>
-  </extension>
-  <extension
-        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
-     <DatabaseHealthOperation
-           className="org.eclipse.osee.framework.ui.skynet.dbHealth.RelLinkTxCurrent">
-     </DatabaseHealthOperation>
-  </extension>
-  <extension
-        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
-     <DatabaseHealthOperation
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.DuplicateAttributes">
      </DatabaseHealthOperation>
   </extension>
@@ -1694,6 +1668,12 @@
         point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
      <DatabaseHealthOperation
            className="org.eclipse.osee.framework.ui.skynet.dbHealth.CleanUpBackingData">
+     </DatabaseHealthOperation>
+  </extension>
+    <extension
+        point="org.eclipse.osee.framework.ui.skynet.DatabaseHealthOperation">
+     <DatabaseHealthOperation
+           className="org.eclipse.osee.framework.ui.skynet.dbHealth.TxCurrentChecks">
      </DatabaseHealthOperation>
   </extension>
   <extension
