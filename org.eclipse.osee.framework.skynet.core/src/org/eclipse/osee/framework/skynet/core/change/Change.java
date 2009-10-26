@@ -30,25 +30,13 @@ public abstract class Change implements IAdaptable {
    private final int artId;
    private final TransactionId toTransactionId;
    private TransactionId fromTransactionId;
-   private Artifact artifact;
+   private final Artifact artifact;
    private ModificationType modType;
    private final ChangeType changeType;
-   private Branch branch;
+   private final Branch branch;
    private final ArtifactType artifactType;
    private final boolean isHistorical;
 
-   /**
-    * @param sourceGamma
-    * @param destGamma
-    * @param artId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param modType
-    * @param changeType
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
-    * @throws ArtifactDoesNotExist
-    */
    public Change(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super();
       this.branch = branch;
@@ -96,9 +84,6 @@ public abstract class Change implements IAdaptable {
       return isHistorical;
    }
 
-   /**
-    * @param modType the modType to set
-    */
    public void setModType(ModificationType modType) {
       this.modType = modType;
    }
@@ -110,9 +95,6 @@ public abstract class Change implements IAdaptable {
       return modType;
    }
 
-   /**
-    * @return the changeType
-    */
    public ChangeType getChangeType() {
       return changeType;
    }
@@ -125,30 +107,18 @@ public abstract class Change implements IAdaptable {
       return getArtifact().getName();
    }
 
-   /**
-    * @return the sourceGamma
-    */
    public int getGamma() {
       return sourceGamma;
    }
 
-   /**
-    * @return the artId
-    */
    public int getArtId() {
       return artId;
    }
 
-   /**
-    * @return the toTransactionId
-    */
    public TransactionId getToTransactionId() {
       return toTransactionId;
    }
 
-   /**
-    * @return the fromTransactionId
-    */
    public TransactionId getFromTransactionId() {
       return fromTransactionId;
    }
@@ -161,23 +131,14 @@ public abstract class Change implements IAdaptable {
     */
    public abstract int getItemTypeId();
 
-   /**
-    * @return the artifactType
-    */
    public ArtifactType getArtifactType() {
       return artifactType;
    }
 
-   /**
-    * @return the branch
-    */
    public Branch getBranch() {
       return branch;
    }
 
-   /**
-    * @param fromTransactionId the fromTransactionId to set
-    */
    public void setFromTransactionId(TransactionId fromTransactionId) {
       this.fromTransactionId = fromTransactionId;
    }

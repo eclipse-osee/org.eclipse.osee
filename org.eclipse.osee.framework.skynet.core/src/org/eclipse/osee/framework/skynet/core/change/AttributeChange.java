@@ -40,21 +40,6 @@ public final class AttributeChange extends Change {
    private AttributeType dynamicAttributeDescriptor;
    private final ModificationType artModType;
 
-   /**
-    * @param sourceGamma
-    * @param artId
-    * @param toTransactionId
-    * @param fromTransactionId
-    * @param modType
-    * @param changeType
-    * @param isValue
-    * @param sourceContent
-    * @param attrId
-    * @param attrTypeId
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
-    * @throws ArtifactDoesNotExist 
-    */
    public AttributeChange(Branch branch, ArtifactType artType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super(branch, artType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical, artifact);
@@ -85,23 +70,14 @@ public final class AttributeChange extends Change {
       return super.hashCode() + attrTypeId + artModType.hashCode() + attrId;
    }
 
-   /**
-    * @return the attrId
-    */
    public int getAttrId() {
       return attrId;
    }
 
-   /**
-    * @return the attrTypeId
-    */
    public int getTypeId() {
       return attrTypeId;
    }
 
-   /**
-    * @return the dynamicAttributeDescriptor
-    */
    public AttributeType getDynamicAttributeDescriptor() throws Exception {
       if (dynamicAttributeDescriptor == null) {
          dynamicAttributeDescriptor = AttributeTypeManager.getType(attrTypeId);
@@ -129,17 +105,11 @@ public final class AttributeChange extends Change {
       return isValue != null ? isValue : "";
    }
 
-   /**
-    * @return the wasValue
-    */
    @Override
    public String getWasValue() {
       return wasValue;
    }
 
-   /**
-    * @param wasValue the wasValue to set
-    */
    public void setWasValue(String wasValue) {
       this.wasValue = wasValue;
    }
@@ -180,9 +150,6 @@ public final class AttributeChange extends Change {
       return null;
    }
 
-   /**
-    * @return the artModType
-    */
    public ModificationType getArtModType() {
       return artModType;
    }

@@ -36,9 +36,6 @@ public final class AttributeChangeBuilder extends ChangeBuilder{
       this.artModType = artModType;
    }
 
-   /**
-    * @return the artModType
-    */
    public ModificationType getArtModType() {
       return artModType;
    }
