@@ -59,7 +59,7 @@ public enum FrameworkImage implements OseeImage {
    COPYTOCLIPBOARD("copyToClipboard.gif"),
    CUSTOMIZE("customize.gif"),
    DB_ICON_BLUE("DBiconBlue.GIF"),
-   DB_ICON_BLUE_EDIT("DBiconBlueEdit.gif"),
+   DB_ICON_BLUE_EDIT("DBiconBlueEdit.GIF"),
    DELETE("delete.gif"),
    DELETE_EDIT("delete_edit.gif"),
    DIRTY("dirty.gif"),
