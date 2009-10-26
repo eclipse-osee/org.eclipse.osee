@@ -197,17 +197,6 @@ public class BranchManager {
    }
 
    /**
-    * deletes (permanently removes from the datastore) each archived branch one at a time using sequential jobs
-    * 
-    * @throws InterruptedException
-    */
-   public static void purgeArchivedBranches() throws OseeCoreException {
-      for (Branch archivedBranch : getArchivedBranches()) {
-         BranchManager.purgeBranch(archivedBranch);
-      }
-   }
-
-   /**
     * Calls the getMergeBranch method and if it returns null it will create a new merge branch based on the artIds from
     * the source branch.
     */
@@ -350,7 +339,7 @@ public class BranchManager {
     * Commit the net changes from the source branch into the destination branch. If there are conflicts between the two
     * branches, the source branch changes will override those on the destination branch.
     * 
-    * @param monitor TODO
+    * @param monitor
     * @param conflictManager
     * @param archiveSourceBranch
     * @throws OseeCoreException
