@@ -31,6 +31,10 @@ public enum TxChange {
       return this == DELETED || this == ARTIFACT_DELETED;
    }
 
+   public boolean isCurrent() {
+      return this != TxChange.NOT_CURRENT;
+   }
+
    public static TxChange getChangeType(int value) {
       for (TxChange change : values()) {
          if (change.getValue() == value) {
