@@ -28,12 +28,12 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 /**
  * @author Donald G. Dunne
  */
-public class VectorCastCoverageImporter implements ICoverageImporter {
+public class VectorCastAdaCoverageImporter implements ICoverageImporter {
 
    private CoverageImport coverageImport;
    private final IVectorCastCoverageImportProvider vectorCastCoverageImportProvider;
 
-   public VectorCastCoverageImporter(IVectorCastCoverageImportProvider vectorCastCoverageImportProvider) {
+   public VectorCastAdaCoverageImporter(IVectorCastCoverageImportProvider vectorCastCoverageImportProvider) {
       this.vectorCastCoverageImportProvider = vectorCastCoverageImportProvider;
    }
 
