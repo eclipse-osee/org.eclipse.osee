@@ -96,7 +96,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
    private void confirmPurgeArchivedBranch(List<BranchInfo> branches) throws OseeCoreException {
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Purge Confirmation",
             "Do you wish to purge the archived branches: " + "?")) {
-         //only delete archived branches that are not changed managed, not rebaselined and deleted 
+         //only delete archived branches that are not changed managed, rebaselined and deleted 
          for (BranchInfo purgeBranch : branches) {
             BranchManager.purgeBranch(BranchManager.getBranch(purgeBranch.getId()));
          }
