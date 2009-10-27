@@ -293,8 +293,7 @@ public class ArtifactQuery {
    }
 
    public static List<Artifact> getArtifactListFromTypes(Collection<String> artifactTypeNames, Branch branch, boolean allowDeleted) throws OseeCoreException {
-      return new ArtifactQueryBuilder(ArtifactTypeManager.getTypes(artifactTypeNames), branch, FULL, allowDeleted).getArtifacts(
-            1000, null);
+      return getArtifactListFromArtifactTypes(ArtifactTypeManager.getTypes(artifactTypeNames), branch, allowDeleted);
    }
 
    public static List<Artifact> getArtifactListFromArtifactTypes(Collection<ArtifactType> artifactTypes, Branch branch, boolean allowDeleted) throws OseeCoreException {
