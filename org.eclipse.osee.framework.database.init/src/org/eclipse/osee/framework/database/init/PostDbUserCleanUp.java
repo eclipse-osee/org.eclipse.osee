@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.database.init;
 
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
@@ -41,7 +40,7 @@ public class PostDbUserCleanUp implements IDbInitializationTask {
          if (root != null) {
             isUserAuthenticationAllowed = true;
          }
-      } catch (ArtifactDoesNotExist ex) {
+      } catch (OseeCoreException ex) {
          // Do Nothing -- failure expected during base initialization
       }
 
