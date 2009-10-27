@@ -65,6 +65,10 @@ public enum ModificationType implements Serializable {
       return value;
    }
 
+   public boolean isEdited() {
+      return this == MERGED || this == MODIFIED;
+   }
+
    public String getDisplayName() {
       return displayName;
    }
