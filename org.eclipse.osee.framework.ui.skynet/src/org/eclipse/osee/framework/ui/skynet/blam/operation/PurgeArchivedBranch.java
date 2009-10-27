@@ -104,6 +104,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
    }
 
    private List<BranchInfo> checkUnusualArchivedBranches() throws Exception {
+      // check to make sure archived branches are not in states other than Committed, Deleted, Rebaselined
       List<BranchInfo> branches = new ArrayList<BranchInfo>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
@@ -154,7 +155,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
 
    @Override
    public String getDescriptionUsage() {
-      return "Purge archived branches that are deleted, not changed managed and not rebaselined ";
+      return "Purge archived branches that are deleted, rebaselined and not changed managed";
    }
 
    private class BranchInfo {
