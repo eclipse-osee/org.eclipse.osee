@@ -76,7 +76,7 @@ public final class InternalChangeManager {
       ArrayList<Change> changes = new ArrayList<Change>();
       Branch branch = artifact.getBranch();
       ArrayList<TransactionId> transactionIds = new ArrayList<TransactionId>();
-      recurseBranches(branch, artifact, transactionIds, artifact.getTransactionId());
+      recurseBranches(branch, artifact, transactionIds, TransactionIdManager.getlatestTransactionForBranch(branch));
 
       for (TransactionId transactionId : transactionIds) {
          changes.addAll(getChanges(null, transactionId, monitor, artifact));
@@ -167,7 +167,7 @@ public final class InternalChangeManager {
                   historical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
          }
          bulkLoadedArtifacts =
-               ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
+               ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, false);
       }
 
       //We build the changes after the artifact loader has been run so we can take advantage of bulk loading. 
