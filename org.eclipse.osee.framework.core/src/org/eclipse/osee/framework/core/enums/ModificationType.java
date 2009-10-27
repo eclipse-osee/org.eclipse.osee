@@ -25,7 +25,7 @@ public enum ModificationType implements Serializable {
    NEW("New", 1),
 
    // Artifact if any Attribute was changed (not Relation)
-   // Attribute if it's value was modified
+   // Attribute if its value was modified
    // Relation if rationale or ordering change
    MODIFIED("Modified", 2),
 
@@ -44,6 +44,7 @@ public enum ModificationType implements Serializable {
    // Artifact, Attribute or Relation has been reflected from another branch
    INTRODUCED("Introduced", 6),
 
+   // Previously deleted artifact, attribute, or relation has been reinstated
    UNDELETED("Undeleted", 7);
 
    private final static Set<ModificationType> ALL_NONE_HARD_DELETED = new HashSet<ModificationType>();
