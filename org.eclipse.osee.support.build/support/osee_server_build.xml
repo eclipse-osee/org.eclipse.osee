@@ -15,7 +15,7 @@
 	</target>
 
 	<target name="postBuild">
-		<copy todir="${buildDirectory}/repository/configuration/">
+		<copy todir="${buildDirectory}/buildRepo/configuration/">
 			<fileset file="${basedir}/config.ini" />
 		</copy>
 	</target>
