@@ -1,0 +1,6 @@
+feature@org.eclipse.osee.client.feature.test=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.client.feature.test
+plugin@org.eclipse.osee.ats.test=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.ats.test
+plugin@org.eclipse.osee.framework.skynet.core.test=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.skynet.core.test
+plugin@org.eclipse.osee.framework.ui.skynet.test=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.ui.skynet.test
+plugin@org.eclipse.osee.support.test=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.support.test
+plugin@org.eclipse.osee.support.test.util=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.support.test.util
