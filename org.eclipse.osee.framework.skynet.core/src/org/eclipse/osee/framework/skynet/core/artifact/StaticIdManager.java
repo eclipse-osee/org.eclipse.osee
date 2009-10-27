@@ -47,6 +47,14 @@ public class StaticIdManager {
       ArtifactCache.cacheByStaticId(staticId, artifact);
    }
 
+   public static void deletedStaticIdAttribute(Artifact artifact, String staticId) throws OseeCoreException {
+      List<Attribute<String>> attributes = artifact.getAttributes(STATIC_ID_ATTRIBUTE, staticId);
+      for (Attribute<String> attr : attributes) {
+         attr.delete();
+      }
+      ArtifactCache.cacheByStaticId(staticId, artifact);
+   }
+
    public static boolean hasValue(Artifact artifact, String staticId) throws OseeCoreException {
       return artifact.getAttributesToStringList(STATIC_ID_ATTRIBUTE).contains(staticId);
    }
