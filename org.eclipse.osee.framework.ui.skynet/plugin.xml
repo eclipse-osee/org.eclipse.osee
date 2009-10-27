@@ -1792,5 +1792,11 @@
               point="org.eclipse.ui.startup">
            <startup
                  class="org.eclipse.osee.framework.ui.skynet.OseeUiEarlyStartup"></startup>
+        </extension>
+        <extension
+              point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+           <Operation
+                 className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeArchivedBranch">
+           </Operation>
         </extension>      
 </plugin>
