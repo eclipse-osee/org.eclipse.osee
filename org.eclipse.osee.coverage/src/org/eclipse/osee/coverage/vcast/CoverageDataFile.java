@@ -24,12 +24,12 @@ public class CoverageDataFile {
    public List<CoverageDataUnit> coverageDataUnits = new ArrayList<CoverageDataUnit>();
    private static final Pattern lineNumToBranchesPattern = Pattern.compile("\\{([0-9]+);\\s*([0-9]+)\\}");
 
-   public CoverageDataFile(String vcastDirectory) {
+   public CoverageDataFile(String coverageDataFilename) {
 
-      File coverageDataFile = new File(vcastDirectory + "/vcast/coverage_data.xml");
+      File coverageDataFile = new File(coverageDataFilename);
       if (!coverageDataFile.exists()) {
-         throw new IllegalArgumentException(String.format("VectorCast coverage_data.xml file doesn't exist [%s]",
-               vcastDirectory));
+         throw new IllegalArgumentException(String.format("VectorCast coverage data file doesn't exist [%s]",
+               coverageDataFilename));
       }
       String fileStr = AFile.readFile(coverageDataFile);
       try {

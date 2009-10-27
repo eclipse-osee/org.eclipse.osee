@@ -22,6 +22,7 @@ public class VcpSourceFile {
    Pattern valuePattern = Pattern.compile("(.*?):(.*?)$");
    private VcpSourceLineFile vcpSourceLineFile = null;
    private VcpSourceLisFile vcpSourceLisFile = null;
+   private CoverageDataFile coverageDataFile = null;
    private final String vcastDirectory;
 
    public static enum SourceValue {
@@ -54,8 +55,7 @@ public class VcpSourceFile {
       if (m.find()) {
          SourceValue sourceValue = SourceValue.valueOf(m.group(1));
          if (sourceValue == null) {
-            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpSourceFile value [%s]",
-                  m.group(1)));
+            OseeLog.log(Activator.class, Level.SEVERE, String.format("Unhandled VcpSourceFile value [%s]", m.group(1)));
          } else {
             sourceValues.put(sourceValue, m.group(2));
          }
@@ -78,4 +78,16 @@ public class VcpSourceFile {
       return vcpSourceLisFile;
    }
 
+   public CoverageDataFile getCoverageDataFile() {
+      if (coverageDataFile == null) {
+         coverageDataFile =
+               new CoverageDataFile(vcastDirectory + "/vcast/" + getValue(SourceValue.SOURCE_FILENAME).replaceAll(
+                     "(ada|adb)", "xml"));
+      }
+      return coverageDataFile;
+   }
+
+   public String toString() {
+      return getValue(SourceValue.SOURCE_FILENAME);
+   }
 }

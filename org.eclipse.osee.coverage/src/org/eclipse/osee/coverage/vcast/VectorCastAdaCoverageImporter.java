@@ -22,6 +22,7 @@ import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.TestUnit;
 import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
+import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -59,47 +60,53 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
          return coverageImport;
       }
 
-      CoverageDataFile coverageDataFile = new CoverageDataFile(vectorCastCoverageImportProvider.getVCastDirectory());
       coverageImport.setLocation(vectorCastCoverageImportProvider.getVCastDirectory());
 
       // Create file and subprogram Coverage Units and execution line Coverage Items
       Map<String, CoverageUnit> fileNumToCoverageUnit = new HashMap<String, CoverageUnit>();
-      for (CoverageDataUnit coverageDataUnit : coverageDataFile.coverageDataUnits) {
-         CoverageUnit fileCoverageUnit = new CoverageUnit(null, coverageDataUnit.getName(), "");
-         String fileNamespace = vectorCastCoverageImportProvider.getFileNamespace(coverageDataUnit.getName());
-         fileCoverageUnit.setNamespace(fileNamespace);
-         CoverageUnit parent = coverageImport.getOrCreateParent(fileCoverageUnit.getNamespace());
-         if (parent != null) {
-            parent.addCoverageUnit(fileCoverageUnit);
-         } else {
-            coverageImport.addCoverageUnit(fileCoverageUnit);
-         }
-         int fileIndex = coverageDataUnit.getIndex();
-         VcpSourceFile vcpSourceFile = vCastVcp.getSourceFile(fileIndex);
-         if (vcpSourceFile == null) {
-            coverageImport.getLog().logError("Exception getting vcpSourceFile for index " + fileIndex);
-         }
-         VcpSourceLisFile vcpSourceLisFile = vcpSourceFile.getVcpSourceLisFile();
-         fileCoverageUnit.setText(vcpSourceLisFile.getText());
-         int methodNum = 0;
-         for (CoverageDataSubProgram coverageDataSubProgram : coverageDataUnit.getSubPrograms()) {
-            methodNum++;
-            CoverageUnit methodCoverageUnit = new CoverageUnit(fileCoverageUnit, coverageDataSubProgram.getName(), "");
-            fileCoverageUnit.addCoverageUnit(methodCoverageUnit);
-            for (LineNumToBranches lineNumToBranches : coverageDataSubProgram.getLineNumToBranches()) {
-               CoverageItem coverageItem =
-                     new CoverageItem(methodCoverageUnit, CoverageMethodEnum.Not_Covered,
-                           String.valueOf(lineNumToBranches.getLineNum()));
-               coverageItem.setMethodNum(String.valueOf(methodNum));
-               Pair<String, Boolean> lineData =
-                     vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),
-                           String.valueOf(lineNumToBranches.getLineNum()));
-               coverageItem.setText(lineData.getFirst());
-               coverageItem.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
-               methodCoverageUnit.addCoverageItem(coverageItem);
+      for (VcpSourceFile vcpSourceFile : vCastVcp.sourceFiles) {
+         try {
+            CoverageDataFile coverageDataFile = vcpSourceFile.getCoverageDataFile();
+            for (CoverageDataUnit coverageDataUnit : coverageDataFile.getCoverageDataUnits()) {
+               CoverageUnit fileCoverageUnit =
+                     new CoverageUnit(null, vcpSourceFile.getValue(SourceValue.SOURCE_FILENAME), "");
+               String fileNamespace = vectorCastCoverageImportProvider.getFileNamespace(coverageDataUnit.getName());
+               fileCoverageUnit.setNamespace(fileNamespace);
+               CoverageUnit parent = coverageImport.getOrCreateParent(fileCoverageUnit.getNamespace());
+               if (parent != null) {
+                  parent.addCoverageUnit(fileCoverageUnit);
+               } else {
+                  coverageImport.addCoverageUnit(fileCoverageUnit);
+               }
+               VcpSourceLisFile vcpSourceLisFile = vcpSourceFile.getVcpSourceLisFile();
+               fileCoverageUnit.setText(vcpSourceLisFile.getText());
+               int methodNum = 0;
+               for (CoverageDataSubProgram coverageDataSubProgram : coverageDataUnit.getSubPrograms()) {
+                  methodNum++;
+                  CoverageUnit methodCoverageUnit =
+                        new CoverageUnit(fileCoverageUnit, coverageDataSubProgram.getName(), "");
+                  fileCoverageUnit.addCoverageUnit(methodCoverageUnit);
+                  for (LineNumToBranches lineNumToBranches : coverageDataSubProgram.getLineNumToBranches()) {
+                     CoverageItem coverageItem =
+                           new CoverageItem(methodCoverageUnit, CoverageMethodEnum.Not_Covered,
+                                 String.valueOf(lineNumToBranches.getLineNum()));
+                     coverageItem.setMethodNum(String.valueOf(methodNum));
+                     Pair<String, Boolean> lineData =
+                           vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),
+                                 String.valueOf(lineNumToBranches.getLineNum()));
+                     coverageItem.setText(lineData.getFirst());
+                     coverageItem.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
+                     methodCoverageUnit.addCoverageItem(coverageItem);
+                  }
+               }
+               fileNumToCoverageUnit.put(String.valueOf(coverageDataUnit.getIndex()), fileCoverageUnit);
             }
+         } catch (Exception ex) {
+            coverageImport.getLog().logError(
+                  String.format("Error processing coverage for [%s].  " + ex.getLocalizedMessage(), vcpSourceFile));
+            continue;
+
          }
-         fileNumToCoverageUnit.put(String.valueOf(coverageDataUnit.getIndex()), fileCoverageUnit);
       }
 
       for (VcpResultsFile vcpResultsFile : vCastVcp.resultsFiles) {
@@ -135,7 +142,6 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
          }
          coverageImport.addTestUnit(testUnit);
       }
-
       return coverageImport;
    }
 

@@ -41,7 +41,7 @@ import org.eclipse.swt.graphics.Image;
 public abstract class CoveragePackageBase implements ICoverageEditorItem, ICoverageEditorProvider, ICoverageTabProvider {
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    private final List<TestUnit> testUnits = new ArrayList<TestUnit>();
-   private final XResultData logResultData = new XResultData();
+   private final XResultData logResultData = new XResultData(false);
    private Artifact artifact;
    private String guid = GUID.create();
    private String name;
