@@ -132,36 +132,34 @@ public class RelationLink {
       return relationSide == RelationSide.SIDE_A ? aArtifactId : bArtifactId;
    }
 
-   /**
-    * @return the aBranch
-    */
    public Branch getABranch() {
       return aBranch;
    }
 
-   /**
-    * @return the bBranch
-    */
    public Branch getBBranch() {
       return bBranch;
    }
 
-   /**
-    * @return Returns the deleted.
-    */
    public boolean isDeleted() {
       return modificationType.isDeleted();
    }
 
-   /**
-    * @return Returns the dirty.
-    */
    public boolean isDirty() {
       return dirty;
    }
 
    public void delete(boolean reorderRelations) throws ArtifactDoesNotExist {
       internalDelete(reorderRelations, true);
+   }
+
+   public void undelete() {
+      markedAsChanged(ModificationType.UNDELETED, true);
+      try {
+         OseeEventManager.kickRelationModifiedEvent(RelationManager.class, RelationEventType.Undeleted, this,
+               getABranch(), relationType.getName());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
    }
 
    public void internalRemoteEventDelete() throws ArtifactDoesNotExist {

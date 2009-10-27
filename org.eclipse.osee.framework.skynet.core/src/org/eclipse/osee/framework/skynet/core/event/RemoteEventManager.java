@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkBroadcastE
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkCommitBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkDeletedBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewBranchEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkCreatedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkPurgeBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkOrderModifiedEvent;
@@ -622,7 +622,7 @@ public class RemoteEventManager {
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
                   xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.RationaleMod,
                         unloadedRelation));
-               } else if (event instanceof NetworkNewRelationLinkEvent) {
+               } else if (event instanceof NetworkRelationLinkCreatedEvent) {
                   UnloadedRelation unloadedRelation =
                         new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
@@ -691,7 +691,7 @@ public class RemoteEventManager {
                      xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.Deleted, relation,
                            relation.getBranch(), relation.getRelationType().getName()));
                   }
-               } else if (event instanceof NetworkNewRelationLinkEvent) {
+               } else if (event instanceof NetworkRelationLinkCreatedEvent) {
                   RelationLink relation =
                         RelationManager.getLoadedRelationById(event.getRelId(), event.getArtAId(), event.getArtBId(),
                               branch, branch);
@@ -700,9 +700,9 @@ public class RemoteEventManager {
                      relation =
                            RelationLink.getOrCreate(event.getArtAId(), event.getArtBId(), branch, branch, relationType,
                                  event.getRelId(), event.getGammaId(),
-                                 ((NetworkNewRelationLinkEvent) event).getRationale(),
-                                 ((NetworkNewRelationLinkEvent) event).getAOrder(),
-                                 ((NetworkNewRelationLinkEvent) event).getBOrder(), ModificationType.NEW);
+                                 ((NetworkRelationLinkCreatedEvent) event).getRationale(),
+                                 ((NetworkRelationLinkCreatedEvent) event).getAOrder(),
+                                 ((NetworkRelationLinkCreatedEvent) event).getBOrder(), ModificationType.NEW);
                      //                     if (bArtifactLoaded) {
                      //                        RelationManager.sortRelations(bArtifact, relation.getRelationType(),
                      //                              new HashMap<Integer, RelationLink>(), new HashMap<Integer, RelationLink>());

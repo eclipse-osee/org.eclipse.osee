@@ -14,5 +14,5 @@ package org.eclipse.osee.framework.skynet.core.relation;
  * @author Donald G. Dunne
  */
 public enum RelationEventType {
-   Deleted, Added, RationaleMod, ReOrdered
+   Deleted, Added, RationaleMod, ReOrdered, Undeleted
 }

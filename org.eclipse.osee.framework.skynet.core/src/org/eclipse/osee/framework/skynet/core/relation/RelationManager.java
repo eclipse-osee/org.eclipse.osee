@@ -710,7 +710,7 @@ public class RelationManager {
 
    public static void addRelation(IRelationSorterId sorterId, RelationType relationType, Artifact artifactA, Artifact artifactB, String rationale) throws OseeCoreException {
       RelationLink relation =
-            getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, false);
+            getLoadedRelation(artifactA, artifactA.getArtId(), artifactB.getArtId(), relationType, true);
 
       if (relation == null) {
          ensureRelationCanBeAdded(relationType, artifactA, artifactB);
@@ -727,6 +727,10 @@ public class RelationManager {
          } catch (Exception ex) {
             OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
+      } else if (relation.isDeleted()) {
+         relation.undelete();
+         RelationTypeSideSorter sorter = createTypeSideSorter(artifactA, relationType, RelationSide.SIDE_B);
+         sorter.addItem(sorterId, artifactB);
       }
    }
 

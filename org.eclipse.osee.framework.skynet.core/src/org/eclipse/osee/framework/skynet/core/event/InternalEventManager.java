@@ -38,13 +38,15 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkCommitBran
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkDeletedBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkMergeBranchConflictResolvedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewBranchEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewRelationLinkEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkPurgeBranchEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkCreatedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkOrderModifiedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkRationalModifiedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRenameBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkTransactionDeletedEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetArtifactEventBase;
+import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetRelationLinkEventBase;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
@@ -772,11 +774,6 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /**
-    * Add listeners
-    * 
-    * @param listener
-    */
    static void addListener(IEventListner listener) {
       if (listener == null) {
          throw new IllegalArgumentException("listener can not be null");
@@ -819,16 +816,10 @@ public class InternalEventManager {
       }
    }
 
-   /**
-    * @return the disableEvents
-    */
    static boolean isDisableEvents() {
       return disableEvents;
    }
 
-   /**
-    * @param disableEvents the disableEvents to set
-    */
    static void setDisableEvents(boolean disableEvents) {
       InternalEventManager.disableEvents = disableEvents;
    }
@@ -846,87 +837,83 @@ public class InternalEventManager {
    private static List<ISkynetEvent> generateNetworkSkynetEvents(Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       List<ISkynetEvent> events = new ArrayList<ISkynetEvent>();
       for (ArtifactTransactionModifiedEvent xModifiedEvent : xModifiedEvents) {
-         if (xModifiedEvent instanceof ArtifactModifiedEvent) {
-            ArtifactModifiedEvent xArtifactModifiedEvent = (ArtifactModifiedEvent) xModifiedEvent;
-            if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Changed) {
-               Artifact artifact = xArtifactModifiedEvent.artifact;
-               events.add(new NetworkArtifactModifiedEvent(artifact.getBranch().getBranchId(),
-                     xArtifactModifiedEvent.transactionNumber, artifact.getArtId(), artifact.getArtTypeId(),
-                     artifact.getFactory().getClass().getCanonicalName(),
-                     xArtifactModifiedEvent.dirtySkynetAttributeChanges,
-                     xArtifactModifiedEvent.sender.getNetworkSender()));
-            } else if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Added) {
-               Artifact artifact = xArtifactModifiedEvent.artifact;
-               events.add(new NetworkArtifactAddedEvent(artifact.getBranch().getBranchId(),
-                     xArtifactModifiedEvent.transactionNumber, artifact.getArtId(), artifact.getArtTypeId(),
-                     artifact.getFactory().getClass().getCanonicalName(),
-                     xArtifactModifiedEvent.sender.getNetworkSender()));
-            } else if (xArtifactModifiedEvent.artifactModType == ArtifactModType.Deleted) {
-               Artifact artifact = xArtifactModifiedEvent.artifact;
-               events.add(new NetworkArtifactDeletedEvent(artifact.getBranch().getBranchId(),
-                     xArtifactModifiedEvent.transactionNumber, artifact.getArtId(), artifact.getArtTypeId(),
-                     artifact.getFactory().getClass().getCanonicalName(),
-                     xArtifactModifiedEvent.sender.getNetworkSender()));
-            } else {
-               OseeLog.log(InternalEventManager.class, Level.SEVERE,
-                     "Unhandled xArtifactModifiedEvent event: " + xArtifactModifiedEvent);
-            }
-         } else if (xModifiedEvent instanceof RelationModifiedEvent) {
-            RelationModifiedEvent xRelationModifiedEvent = (RelationModifiedEvent) xModifiedEvent;
-            if (xRelationModifiedEvent.relationEventType == RelationEventType.ReOrdered) {
-               RelationLink link = xRelationModifiedEvent.link;
-               Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
-               Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
-               NetworkRelationLinkOrderModifiedEvent networkRelationLinkModifiedEvent =
-                     new NetworkRelationLinkOrderModifiedEvent(link.getGammaId(), link.getBranch().getBranchId(),
-                           link.getRelationId(), link.getAArtifactId(),
-                           (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
-                           (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(), link.getAOrder(),
-                           link.getBOrder(), sender.getNetworkSender(), link.getRelationType().getId());
-               events.add(networkRelationLinkModifiedEvent);
-            }
-            if (xRelationModifiedEvent.relationEventType == RelationEventType.RationaleMod) {
-               RelationLink link = xRelationModifiedEvent.link;
-               Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
-               Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
-               NetworkRelationLinkRationalModifiedEvent networkRelationLinkRationalModifiedEvent =
-                     new NetworkRelationLinkRationalModifiedEvent(link.getGammaId(), link.getBranch().getBranchId(),
-                           link.getRelationId(), link.getAArtifactId(),
-                           (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
-                           (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(), link.getAOrder(),
-                           link.getBOrder(), sender.getNetworkSender(), link.getRelationType().getId());
-               events.add(networkRelationLinkRationalModifiedEvent);
-            } else if (xRelationModifiedEvent.relationEventType == RelationEventType.Deleted) {
-               RelationLink link = xRelationModifiedEvent.link;
-               Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
-               Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
-               NetworkRelationLinkDeletedEvent networkRelationLinkModifiedEvent =
-                     new NetworkRelationLinkDeletedEvent(link.getRelationType().getId(), link.getGammaId(),
-                           link.getBranch().getBranchId(), link.getRelationId(),
-                           link.getArtifactId(RelationSide.SIDE_A),
-                           (aArtifact != null ? aArtifact.getArtTypeId() : -1),
-                           link.getArtifactId(RelationSide.SIDE_B),
-                           (bArtifact != null ? bArtifact.getArtTypeId() : -1), sender.getNetworkSender());
-               events.add(networkRelationLinkModifiedEvent);
-            } else if (xRelationModifiedEvent.relationEventType == RelationEventType.Added) {
-               RelationLink link = xRelationModifiedEvent.link;
-               Artifact aArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_A);
-               Artifact bArtifact = link.getArtifactIfLoaded(RelationSide.SIDE_B);
-               NetworkNewRelationLinkEvent networkRelationLinkModifiedEvent =
-                     new NetworkNewRelationLinkEvent(link.getGammaId(), link.getBranch().getBranchId(),
-                           link.getRelationId(), link.getAArtifactId(),
-                           (aArtifact != null ? aArtifact.getArtTypeId() : -1), link.getBArtifactId(),
-                           (bArtifact != null ? bArtifact.getArtTypeId() : -1), link.getRationale(), link.getAOrder(),
-                           link.getBOrder(), link.getRelationType().getId(), link.getRelationType().getName(),
-                           sender.getNetworkSender());
-               events.add(networkRelationLinkModifiedEvent);
-            } else {
-               OseeLog.log(InternalEventManager.class, Level.SEVERE,
-                     "Unhandled xRelationModifiedEvent event: " + xRelationModifiedEvent);
-            }
-         }
+         events.add(generateNetworkSkynetEvent(xModifiedEvent, sender));
       }
       return events;
+   }
+
+   private static ISkynetEvent generateNetworkSkynetEvent(ArtifactTransactionModifiedEvent xModifiedEvent, Sender sender) {
+      ISkynetEvent ret = null;
+      if (xModifiedEvent instanceof ArtifactModifiedEvent) {
+         ret = generateNetworkSkynetArtifactEvent((ArtifactModifiedEvent) xModifiedEvent, sender);
+      } else if (xModifiedEvent instanceof RelationModifiedEvent) {
+         ret = generateNetworkSkynetRelationEvent((RelationModifiedEvent) xModifiedEvent, sender);
+      }
+      return ret;
+   }
+
+   private static ISkynetEvent generateNetworkSkynetArtifactEvent(ArtifactModifiedEvent artEvent, Sender sender) {
+      SkynetArtifactEventBase eventBase = getArtifactEventBase(artEvent, sender);
+      ISkynetEvent ret;
+      if (artEvent.artifactModType == ArtifactModType.Changed) {
+         ret = new NetworkArtifactModifiedEvent(eventBase, artEvent.dirtySkynetAttributeChanges);
+      } else if (artEvent.artifactModType == ArtifactModType.Added) {
+         ret = new NetworkArtifactAddedEvent(eventBase);
+      } else if (artEvent.artifactModType == ArtifactModType.Deleted) {
+         ret = new NetworkArtifactDeletedEvent(eventBase);
+      } else {
+         OseeLog.log(InternalEventManager.class, Level.SEVERE, "Unhandled xArtifactModifiedEvent event: " + artEvent);
+         ret = null;
+      }
+      return ret;
+   }
+
+   private static SkynetArtifactEventBase getArtifactEventBase(ArtifactModifiedEvent artEvent, Sender sender) {
+      Artifact artifact = artEvent.artifact;
+      SkynetArtifactEventBase eventBase =
+            new SkynetArtifactEventBase(artifact.getBranch().getBranchId(), artEvent.transactionNumber,
+                  artifact.getArtId(), artifact.getArtTypeId(), artifact.getFactory().getClass().getCanonicalName(),
+                  artEvent.sender.getNetworkSender());
+
+      return eventBase;
+   }
+
+   private static ISkynetEvent generateNetworkSkynetRelationEvent(RelationModifiedEvent relEvent, Sender sender) {
+      RelationLink link = relEvent.link;
+      SkynetRelationLinkEventBase eventBase = getRelationLinkEventBase(link, sender);
+      SkynetRelationLinkEventBase networkEvent;
+
+      String rationale = link.getRationale();
+      int aOrder = link.getAOrder();
+      int bOrder = link.getBOrder();
+      String descriptorName = link.getRelationType().getName();
+
+      if (relEvent.relationEventType == RelationEventType.ReOrdered) {
+         networkEvent = new NetworkRelationLinkOrderModifiedEvent(eventBase, rationale, aOrder, bOrder);
+      } else if (relEvent.relationEventType == RelationEventType.RationaleMod) {
+         networkEvent = new NetworkRelationLinkRationalModifiedEvent(eventBase, rationale, aOrder, bOrder);
+      } else if (relEvent.relationEventType == RelationEventType.Deleted) {
+         networkEvent = new NetworkRelationLinkDeletedEvent(eventBase);
+      } else if (relEvent.relationEventType == RelationEventType.Added) {
+         networkEvent = new NetworkRelationLinkCreatedEvent(eventBase, rationale, aOrder, bOrder, descriptorName);
+      } else {
+         OseeLog.log(InternalEventManager.class, Level.SEVERE, "Unhandled xRelationModifiedEvent event: " + relEvent);
+         networkEvent = null;
+      }
+      return networkEvent;
+   }
+
+   private static SkynetRelationLinkEventBase getRelationLinkEventBase(RelationLink link, Sender sender) {
+      Artifact left = link.getArtifactIfLoaded(RelationSide.SIDE_A);
+      Artifact right = link.getArtifactIfLoaded(RelationSide.SIDE_B);
+      SkynetRelationLinkEventBase ret = null;
+      ret =
+            new SkynetRelationLinkEventBase(link.getGammaId(), link.getBranch().getBranchId(), link.getRelationId(),
+                  link.getAArtifactId(), (left != null ? left.getArtTypeId() : -1), link.getBArtifactId(),
+                  (right != null ? right.getArtTypeId() : -1), link.getRelationType().getId(),
+                  sender.getNetworkSender());
+
+      return ret;
    }
 
    private static FrameworkTransactionData createTransactionDataRollup(Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {

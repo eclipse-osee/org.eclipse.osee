@@ -21,40 +21,30 @@ public class NetworkRelationLinkRationalModifiedEvent extends SkynetRelationLink
    int aOrder;
    int bOrder;
 
-   /**
-    * @param branchId
-    * @param transactionId
-    * @param relId
-    * @param artAId
-    * @param artBId
-    * @param author
-    * @param relTypeId
-    */
-   public NetworkRelationLinkRationalModifiedEvent(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, NetworkSender networkSender, int relTypeId) {
-      super(relTypeId, gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, networkSender);
+   public NetworkRelationLinkRationalModifiedEvent(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, int relTypeId, NetworkSender networkSender, String rationale, int aOrder, int bOrder) {
+      super(gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, relTypeId, networkSender);
 
       this.rationale = rationale;
       this.aOrder = aOrder;
       this.bOrder = bOrder;
    }
 
-   /**
-    * @return Returns the aOrder.
-    */
+   public NetworkRelationLinkRationalModifiedEvent(SkynetRelationLinkEventBase base, String rationale, int aOrder, int bOrder) {
+      super(base);
+
+      this.rationale = rationale;
+      this.aOrder = aOrder;
+      this.bOrder = bOrder;
+   }
+
    public int getAOrder() {
       return aOrder;
    }
 
-   /**
-    * @return Returns the bOrder.
-    */
    public int getBOrder() {
       return bOrder;
    }
 
-   /**
-    * @return Returns the rationale.
-    */
    public String getRationale() {
       return rationale;
    }
@@ -62,7 +52,7 @@ public class NetworkRelationLinkRationalModifiedEvent extends SkynetRelationLink
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof NetworkRelationLinkRationalModifiedEvent) {
-         return (getRelId() == (((NetworkRelationLinkRationalModifiedEvent) obj).getRelId()));
+         return getRelId() == ((NetworkRelationLinkRationalModifiedEvent) obj).getRelId();
       }
       return super.equals(obj);
    }

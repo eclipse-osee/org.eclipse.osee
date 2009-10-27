@@ -35,7 +35,7 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
     * @param artBId
     * @param networkSender
     */
-   public SkynetRelationLinkEventBase(int relTypeId, int gammaId, int branchId, Integer relId, int artAId, int artATypeId, int artBId, int artBTypeId, NetworkSender networkSender) {
+   public SkynetRelationLinkEventBase(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, int relTypeId, NetworkSender networkSender) {
       super(networkSender);
       this.branchId = branchId;
       this.relId = relId;
@@ -47,44 +47,38 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
       this.artBTypeId = artBTypeId;
    }
 
-   /**
-    * @return the branchId
-    */
+   public SkynetRelationLinkEventBase(SkynetRelationLinkEventBase base) {
+      super(base.getNetworkSender());
+      this.branchId = base.branchId;
+      this.relId = base.relId;
+      this.artAId = base.artAId;
+      this.artATypeId = base.artATypeId;
+      this.artBId = base.artBId;
+      this.gammaId = base.gammaId;
+      this.relTypeId = base.relTypeId;
+      this.artBTypeId = base.artBTypeId;
+   }
+
    public int getBranchId() {
       return branchId;
    }
 
-   /**
-    * @return the artATypeId
-    */
    public int getArtATypeId() {
       return artATypeId;
    }
 
-   /**
-    * @return the artBTypeId
-    */
    public int getArtBTypeId() {
       return artBTypeId;
    }
 
-   /**
-    * @return Returns the artAId.
-    */
    public int getArtAId() {
       return artAId;
    }
 
-   /**
-    * @return Returns the artBId.
-    */
    public int getArtBId() {
       return artBId;
    }
 
-   /**
-    * @return Returns the relId.
-    */
    public Integer getRelId() {
       return relId;
    }
@@ -93,9 +87,6 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
       return gammaId;
    }
 
-   /**
-    * @return the relTypeId
-    */
    public int getRelTypeId() {
       return relTypeId;
    }

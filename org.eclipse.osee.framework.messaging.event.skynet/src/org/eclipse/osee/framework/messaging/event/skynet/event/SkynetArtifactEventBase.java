@@ -24,13 +24,6 @@ public class SkynetArtifactEventBase extends SkynetEventBase implements ISkynetA
    private final int transactionId;
    private final int branchId;
 
-   /**
-    * @param branchId
-    * @param transactionId
-    * @param artId
-    * @param artTypeId
-    * @param author
-    */
    public SkynetArtifactEventBase(int branchId, int transactionId, int artId, int artTypeId, String factoryName, NetworkSender networkSender) {
       super(networkSender);
       this.branchId = branchId;
@@ -41,30 +34,30 @@ public class SkynetArtifactEventBase extends SkynetEventBase implements ISkynetA
       this.transactionId = transactionId;
    }
 
-   /**
-    * @return the branchId
-    */
+   public SkynetArtifactEventBase(SkynetArtifactEventBase base) {
+      super(base.getNetworkSender());
+
+      this.branchId = base.branchId;
+
+      this.artId = base.artId;
+      this.artTypeId = base.artTypeId;
+      this.factoryName = base.factoryName;
+      this.transactionId = base.transactionId;
+
+   }
+
    public int getBranchId() {
       return branchId;
    }
 
-   /**
-    * @return Returns the transactionId.
-    */
    public int getTransactionId() {
       return transactionId;
    }
 
-   /**
-    * @return Returns the artId.
-    */
    public int getArtId() {
       return artId;
    }
 
-   /**
-    * @return Returns the artTypeId.
-    */
    public int getArtTypeId() {
       return artTypeId;
    }

@@ -17,7 +17,12 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
 public class NetworkRelationLinkDeletedEvent extends SkynetRelationLinkEventBase {
    private static final long serialVersionUID = -1451567913757261791L;
 
-   public NetworkRelationLinkDeletedEvent(int relTypeId, int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, NetworkSender networkSender) {
-      super(relTypeId, gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, networkSender);
+   public NetworkRelationLinkDeletedEvent(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, int relTypeId, NetworkSender networkSender) {
+      super(gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, relTypeId, networkSender);
    }
+
+   public NetworkRelationLinkDeletedEvent(SkynetRelationLinkEventBase base) {
+      super(base);
+   }
+
 }

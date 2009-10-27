@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
  * @author Donald G. Dunne
  * @author Jeff C. Phillips
  */
-public class NetworkNewRelationLinkEvent extends SkynetRelationLinkEventBase {
+public class NetworkRelationLinkCreatedEvent extends SkynetRelationLinkEventBase {
 
    private static final long serialVersionUID = -519877422249674503L;
 
@@ -22,15 +22,22 @@ public class NetworkNewRelationLinkEvent extends SkynetRelationLinkEventBase {
    private final String descriptorName;
    private final int aOrder;
    private final int bOrder;
-   private final int relTypeId;
 
-   public NetworkNewRelationLinkEvent(int gammaId, int branchId, Integer relId, int artAId, int artATypeId, int artBId, int artBTypeId, String rationale, int aOrder, int bOrder, int relTypeId, String descriptorName, NetworkSender networkSender) {
-      super(relTypeId, gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, networkSender);
+   public NetworkRelationLinkCreatedEvent(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, int relTypeId, NetworkSender networkSender, String rationale, int aOrder, int bOrder, String descriptorName) {
+      super(gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, relTypeId, networkSender);
 
       this.rationale = rationale;
       this.aOrder = aOrder;
       this.bOrder = bOrder;
-      this.relTypeId = relTypeId;
+      this.descriptorName = descriptorName;
+   }
+
+   public NetworkRelationLinkCreatedEvent(SkynetRelationLinkEventBase base, String rationale, int aOrder, int bOrder, String descriptorName) {
+      super(base);
+
+      this.rationale = rationale;
+      this.aOrder = aOrder;
+      this.bOrder = bOrder;
       this.descriptorName = descriptorName;
    }
 
@@ -44,11 +51,6 @@ public class NetworkNewRelationLinkEvent extends SkynetRelationLinkEventBase {
 
    public String getRationale() {
       return rationale;
-   }
-
-   @Override
-   public int getRelTypeId() {
-      return relTypeId;
    }
 
    public String getDescriptorName() {

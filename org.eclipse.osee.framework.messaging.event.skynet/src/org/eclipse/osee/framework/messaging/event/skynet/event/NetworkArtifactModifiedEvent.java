@@ -19,15 +19,14 @@ public class NetworkArtifactModifiedEvent extends SkynetArtifactEventBase {
    private static final long serialVersionUID = -4325821466558180270L;
    private final Collection<SkynetAttributeChange> attributeValues;
 
-   /**
-    * @param branchId
-    * @param transactionId
-    * @param artId
-    * @param artTypeId
-    * @param author
-    */
-   public NetworkArtifactModifiedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, Collection<SkynetAttributeChange> attributeValues, NetworkSender networkSender) {
+   public NetworkArtifactModifiedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, NetworkSender networkSender, Collection<SkynetAttributeChange> attributeValues) {
       super(branchId, transactionId, artId, artTypeId, factoryName, networkSender);
+
+      this.attributeValues = attributeValues;
+   }
+
+   public NetworkArtifactModifiedEvent(SkynetArtifactEventBase base, Collection<SkynetAttributeChange> attributeValues) {
+      super(base);
 
       this.attributeValues = attributeValues;
    }
@@ -45,16 +44,10 @@ public class NetworkArtifactModifiedEvent extends SkynetArtifactEventBase {
       return getArtId();
    }
 
-   /**
-    * @return Returns the serialVersionUID.
-    */
    public static long getSerialVersionUID() {
       return serialVersionUID;
    }
 
-   /**
-    * @return Returns the attributeValues.
-    */
    public Collection<SkynetAttributeChange> getAttributeChanges() {
       return attributeValues;
    }

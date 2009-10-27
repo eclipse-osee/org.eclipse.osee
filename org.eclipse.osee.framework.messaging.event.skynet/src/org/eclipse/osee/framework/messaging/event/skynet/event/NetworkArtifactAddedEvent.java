@@ -16,15 +16,12 @@ package org.eclipse.osee.framework.messaging.event.skynet.event;
 public class NetworkArtifactAddedEvent extends SkynetArtifactEventBase {
    private static final long serialVersionUID = -4325821466558180270L;
 
-   /**
-    * @param branchId
-    * @param transactionId
-    * @param artId
-    * @param artTypeId
-    * @param author
-    */
    public NetworkArtifactAddedEvent(int branchId, int transactionId, int artId, int artTypeId, String factoryName, NetworkSender networkSender) {
       super(branchId, transactionId, artId, artTypeId, factoryName, networkSender);
+   }
+
+   public NetworkArtifactAddedEvent(SkynetArtifactEventBase base) {
+      super(base);
    }
 
    @Override
@@ -40,9 +37,6 @@ public class NetworkArtifactAddedEvent extends SkynetArtifactEventBase {
       return getArtId();
    }
 
-   /**
-    * @return Returns the serialVersionUID.
-    */
    public static long getSerialVersionUID() {
       return serialVersionUID;
    }
