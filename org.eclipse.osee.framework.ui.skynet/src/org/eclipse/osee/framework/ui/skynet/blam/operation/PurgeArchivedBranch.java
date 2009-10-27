@@ -38,12 +38,13 @@ import org.eclipse.swt.widgets.Display;
  */
 public class PurgeArchivedBranch extends AbstractBlam {
    private static final String SELECT_ARCHIVED_BRANCHES =
-         "select * from osee_branch where associated_art_id = ? and archived = ? and branch_state=?";
+         "select * from osee_branch where associated_art_id = ? and archived = ? and branch_state IN (?, ?)";
 
    private static final String SELECT_UNUSUAL_ARCHIVED_BRANCHES =
          "select * from osee_branch where associated_art_id = ? and archived = ? and branch_state NOT IN (?,?,?)";
 
    private static int systemUserArtId;
+   private static boolean purgeBranches = false;
 
    @Override
    public String getName() {
@@ -52,6 +53,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      purgeBranches = variableMap.getBoolean("Purge Branches");
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             try {
@@ -59,7 +61,9 @@ public class PurgeArchivedBranch extends AbstractBlam {
                List<BranchInfo> unusualBranches = new ArrayList<BranchInfo>();
                systemUserArtId = UserManager.getUser(SystemUser.OseeSystem).getArtId();
                branches = purgeSelectedBranches();
-               confirmPurgeArchivedBranch(branches);
+               if (purgeBranches) {
+                  confirmPurgeArchivedBranch(branches);
+               }
                unusualBranches = checkUnusualArchivedBranches();
                displayReport(unusualBranches, "Unusual Archived Branches",
                      "List of archived branches with unusual branch states: ");
@@ -76,7 +80,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(SELECT_ARCHIVED_BRANCHES, systemUserArtId, BranchArchivedState.ARCHIVED.getValue(),
-               BranchState.DELETED.getValue());
+               BranchState.REBASELINED.getValue(), BranchState.DELETED.getValue());
          while (chStmt.next()) {
             BranchInfo purgedBranch =
                   new BranchInfo(chStmt.getString("branch_name"), chStmt.getInt("branch_id"),
@@ -145,7 +149,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" displayName=\"Purge Branches\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\" /></xWidgets>";
    }
 
    @Override
