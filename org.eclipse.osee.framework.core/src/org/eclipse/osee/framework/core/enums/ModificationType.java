@@ -42,7 +42,9 @@ public enum ModificationType implements Serializable {
    ARTIFACT_DELETED("Artifact Deleted", 5),
 
    // Artifact, Attribute or Relation has been reflected from another branch
-   INTRODUCED("Introduced", 6);
+   INTRODUCED("Introduced", 6),
+
+   UNDELETED("Undeleted", 7);
 
    private final static Set<ModificationType> ALL_NONE_HARD_DELETED = new HashSet<ModificationType>();
    private final static Set<ModificationType> ALL_MOD_TYPES = new HashSet<ModificationType>();
