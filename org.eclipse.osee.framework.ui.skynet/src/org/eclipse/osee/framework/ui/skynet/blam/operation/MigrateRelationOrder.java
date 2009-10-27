@@ -52,7 +52,8 @@ public class MigrateRelationOrder extends AbstractBlam {
          "select gamma_id, mod_type from osee_txs where transaction_id = ?";
    private final ArtifactNameComparator nameComparator = new ArtifactNameComparator();
    private final ComputeLegacyOrder computeLegacyOrder = new ComputeLegacyOrder();
-   private boolean singleFix;
+   private final boolean fix = false;;
+   private final boolean singleFix = false;
 
    @Override
    public String getName() {
@@ -61,8 +62,7 @@ public class MigrateRelationOrder extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      if (true) {
-         singleFix = true;
+      if (fix) {
          fixPreviousBug();
          return;
       }
