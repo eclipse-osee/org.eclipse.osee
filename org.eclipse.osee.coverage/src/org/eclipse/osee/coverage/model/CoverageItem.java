@@ -51,14 +51,14 @@ public class CoverageItem implements ICoverageEditorItem {
       this.coverageUnit = coverageUnit;
       this.coverageMethod = coverageMethod;
       this.executeNum = executeNum;
+      if (this.coverageUnit instanceof ICoverageItemProvider) {
+         ((ICoverageItemProvider) coverageUnit).addCoverageItem(this);
+      }
    }
 
    public CoverageItem(CoverageUnit parentCoverageUnit, String xml) throws OseeCoreException {
-      CoverageMethodEnum coverageMethod = CoverageMethodEnum.valueOf(AXml.getTagData(xml, "methodType"));
-      String execNum = AXml.getTagData(xml, "execNum");
-      this.coverageUnit = parentCoverageUnit;
-      this.coverageMethod = coverageMethod;
-      this.executeNum = execNum;
+      this(parentCoverageUnit, CoverageMethodEnum.valueOf(AXml.getTagData(xml, "methodType")), AXml.getTagData(xml,
+            "execNum"));
       setGuid(AXml.getTagData(xml, "guid"));
       String lineNum = AXml.getTagData(xml, "line");
       if (Strings.isValid(lineNum)) setLineNum(lineNum);
