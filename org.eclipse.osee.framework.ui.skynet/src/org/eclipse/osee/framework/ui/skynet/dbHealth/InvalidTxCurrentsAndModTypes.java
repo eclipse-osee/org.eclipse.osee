@@ -29,7 +29,6 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
    private final List<Address> addresses = new ArrayList<Address>();
    private ResultsEditorTableTab resultsTab;
-   private IProgressMonitor monitor;
 
    private final List<Object[]> purgeData = new ArrayList<Object[]>();
    private final List<Object[]> currentData = new ArrayList<Object[]>();
@@ -46,7 +45,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       this.isFixOperationEnabled = isFixOperationEnabled;
    }
 
-   private void fixIssues() throws OseeDataStoreException {
+   private void fixIssues(IProgressMonitor monitor) throws OseeDataStoreException {
       if (isFixOperationEnabled) {
          checkForCancelledStatus(monitor);
          ConnectionHandler.runBatchUpdate(DELETE_ADDRESS, purgeData);
@@ -95,7 +94,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       for (Address address : addresses) {
          if (address.isSameTransaction(previousAddress)) {
-            if (address.hasSameModType(previousAddress) || address.isNewThenModified(previousAddress)) {
+            if (address.hasSameModType(previousAddress) || !address.modType.isDeleted() && previousAddress.modType.isEdited()) {
                address.purge = true;
             } else {
                logIssue("multiple versions in one transaction - unknown case", address);
@@ -154,10 +153,6 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
          return modType == other.modType;
       }
 
-      public boolean isNewThenModified(Address moreRecent) {
-         return modType == ModificationType.NEW && moreRecent.modType == ModificationType.MODIFIED;
-      }
-
       public void ensureCorrectCurrent() {
          TxChange correctCurrent = TxChange.getCurrent(modType);
          if (txCurrent != correctCurrent) {
@@ -195,42 +190,33 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       resultsTab.addColumn(new XViewerColumn("6", "Mod Type", 80, SWT.LEFT, true, SortDataType.String, false, ""));
       resultsTab.addColumn(new XViewerColumn("7", "TX Current", 80, SWT.LEFT, true, SortDataType.String, false, ""));
 
-      double stepAmount = 0.5;
-
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       String sql = String.format(SELECT_ADDRESSES, columnName, tableName, columnName);
       try {
          chStmt.runPreparedQuery(10000, sql);
          monitor.worked(calculateWork(0.40));
 
-         int numberOfRows = chStmt.getRowCount();
-         if (numberOfRows > 0) {
-            double workStep = stepAmount / numberOfRows;
+         Address previousAddress = null;
+         while (chStmt.next()) {
+            checkForCancelledStatus(monitor);
+            Address address =
+                  new Address(chStmt.getInt("branch_id"), chStmt.getInt(columnName), chStmt.getInt("transaction_id"),
+                        chStmt.getInt("tx_type"), chStmt.getLong("gamma_id"), chStmt.getInt("mod_type"),
+                        chStmt.getInt("tx_current"));
 
-            Address previousAddress = null;
-            while (chStmt.next()) {
-               checkForCancelledStatus(monitor);
-               Address address =
-                     new Address(chStmt.getInt("branch_id"), chStmt.getInt(columnName),
-                           chStmt.getInt("transaction_id"), chStmt.getInt("tx_type"), chStmt.getLong("gamma_id"),
-                           chStmt.getInt("mod_type"), chStmt.getInt("tx_current"));
-
-               if (!address.isSimilar(previousAddress)) {
-                  consolidateAddressing();
-                  addresses.clear();
-               }
-
-               addresses.add(address);
-               previousAddress = address;
-               monitor.worked(calculateWork(workStep));
+            if (!address.isSimilar(previousAddress)) {
+               consolidateAddressing();
+               addresses.clear();
             }
-         } else {
-            monitor.worked(calculateWork(stepAmount));
+
+            addresses.add(address);
+            previousAddress = address;
          }
+         monitor.worked(calculateWork(0.5));
       } finally {
          chStmt.close();
       }
 
-      fixIssues();
+      fixIssues(monitor);
    }
 }

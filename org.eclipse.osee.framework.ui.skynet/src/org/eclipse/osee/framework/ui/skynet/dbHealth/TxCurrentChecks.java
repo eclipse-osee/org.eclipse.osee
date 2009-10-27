@@ -20,12 +20,12 @@ public class TxCurrentChecks extends DatabaseHealthOperation {
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       getResultsProvider().clearTabs();
 
+      //      doSubWork(new InvalidTxCurrentsAndModTypes("osee_artifact_version", "art_id", getResultsProvider(),
+      //            isFixOperationEnabled()), monitor, 0.3);
       doSubWork(new InvalidTxCurrentsAndModTypes("osee_attribute", "attr_id", getResultsProvider(),
             isFixOperationEnabled()), monitor, 0.3);
-      doSubWork(new InvalidTxCurrentsAndModTypes("osee_artifact_version", "art_id", getResultsProvider(),
-            isFixOperationEnabled()), monitor, 0.3);
-      doSubWork(new InvalidTxCurrentsAndModTypes("osee_relation_link", "rel_link_id", getResultsProvider(),
-            isFixOperationEnabled()), monitor, 0.3);
+      //      doSubWork(new InvalidTxCurrentsAndModTypes("osee_relation_link", "rel_link_id", getResultsProvider(),
+      //            isFixOperationEnabled()), monitor, 0.3);
    }
 
    @Override

@@ -52,6 +52,7 @@ public class MigrateRelationOrder extends AbstractBlam {
          "select gamma_id, mod_type from osee_txs where transaction_id = ?";
    private final ArtifactNameComparator nameComparator = new ArtifactNameComparator();
    private final ComputeLegacyOrder computeLegacyOrder = new ComputeLegacyOrder();
+   private boolean singleFix;
 
    @Override
    public String getName() {
@@ -61,6 +62,7 @@ public class MigrateRelationOrder extends AbstractBlam {
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       if (true) {
+         singleFix = true;
          fixPreviousBug();
          return;
       }
@@ -146,12 +148,20 @@ public class MigrateRelationOrder extends AbstractBlam {
    }
 
    private void fixPreviousBug() throws OseeCoreException {
-      String[] branchNames =
-            new String[] {"Block III - FTB0", "Common", "MYII V11", "AH-64 MSA PDSP", "MYII V13 - FTB2", "V11_REU",
-                  "Block III - FTB0.1", "Block III - FTB2", "Saudi - SAN1", "Saudi - FTB1", "MYII V13 - SBVT",
-                  "Saudi - V13 - FTB2", "Saudi - V13 - SAN2", "Saudi - SBVT1", "Link16 - Eng Bld 1", "Taiwan - EB0",
-                  "MSA Documents", "UK", "Block III - FTB4", "UAE - EB2", "UAE - SAN 2", "AH-6I", "Block III - FTB3",
-                  "Block III - FTB2.2", "MYII V13.1 - FTB1", "MYII V13 - FTB1A", "MYII V13 - FTB1", "Saudi - V11"};
+      String[] branchNames;
+
+      if (singleFix) {
+         branchNames = new String[] {"Block III - FTB4"};
+      } else {
+         branchNames =
+               new String[] {"Block III - FTB0", "Common", "MYII V11", "AH-64 MSA PDSP", "MYII V13 - FTB2", "V11_REU",
+                     "Block III - FTB0.1", "Block III - FTB2", "Saudi - SAN1", "Saudi - FTB1", "MYII V13 - SBVT",
+                     "Saudi - V13 - FTB2", "Saudi - V13 - SAN2", "Saudi - SBVT1", "Link16 - Eng Bld 1", "Taiwan - EB0",
+                     "MSA Documents", "UK", "Block III - FTB4", "UAE - EB2", "UAE - SAN 2", "AH-6I",
+                     "Block III - FTB3", "Block III - FTB2.2", "MYII V13.1 - FTB1", "MYII V13 - FTB1A",
+                     "MYII V13 - FTB1", "Saudi - V11"};
+
+      }
       for (String branchName : branchNames) {
          Integer branchId = BranchManager.getBranch(branchName).getBranchId();
          Integer transactionNumber =
@@ -174,16 +184,22 @@ public class MigrateRelationOrder extends AbstractBlam {
       } finally {
          chStmt.close();
       }
-
       try {
          chStmt.runPreparedQuery(100, SELECT_CHILD_BASELINE_TXS, branchId);
          while (chStmt.next()) {
             Integer baselineTransactionId = chStmt.getInt("transaction_id");
+            if (singleFix) {
+               baselineTransactionId = 850145;
+            }
+
             for (Object[] data : txGammaList) {
                data[1] = baselineTransactionId;
             }
             ConnectionHandler.runBatchUpdate(
                   "update osee_txs set mod_type = ? where transaction_id = ? and gamma_id = ?", txGammaList);
+            if (singleFix) {
+               break;
+            }
          }
       } finally {
          chStmt.close();

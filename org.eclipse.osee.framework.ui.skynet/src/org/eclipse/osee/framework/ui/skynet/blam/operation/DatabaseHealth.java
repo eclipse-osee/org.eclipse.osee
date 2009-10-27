@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOperation;
 import org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseHealthOpsExtensionManager;
+import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
@@ -140,6 +141,8 @@ public class DatabaseHealth extends AbstractBlam {
                XResultData result = new XResultData();
                result.addRaw(detailedReport.toString());
                result.report(operation.getName(), Manipulations.RAW_HTML);
+            } else {
+               ResultsEditor.open(operation.getResultsProvider());
             }
             println(String.format("Completed:  [%s]", operation.getName()));
          }

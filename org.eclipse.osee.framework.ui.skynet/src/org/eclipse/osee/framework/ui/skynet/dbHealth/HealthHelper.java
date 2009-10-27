@@ -22,6 +22,8 @@ import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
+import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 
 /**
  * @author Theron Virgin
@@ -94,29 +96,24 @@ public class HealthHelper {
       return foundItems;
    }
 
-   public static HashSet<Pair<Integer, Integer>> getNoTxCurrentSet(String dataId, String dataTable, Appendable builder, String data) throws Exception {
+   public static HashSet<Pair<Integer, Integer>> getNoTxCurrentSet(String dataColumnName, String tableName, ResultsEditorTableTab resultsTab) throws Exception {
       String sql =
-            NO_TX_CURRENT_SET[0] + dataId + NO_TX_CURRENT_SET[1] + dataTable + String.format(NO_TX_CURRENT_SET[2],
-                  SupportedDatabase.getComplementSql()) + dataId + NO_TX_CURRENT_SET[3] + dataTable + NO_TX_CURRENT_SET[4];
+            NO_TX_CURRENT_SET[0] + dataColumnName + NO_TX_CURRENT_SET[1] + tableName + String.format(
+                  NO_TX_CURRENT_SET[2], SupportedDatabase.getComplementSql()) + dataColumnName + NO_TX_CURRENT_SET[3] + tableName + NO_TX_CURRENT_SET[4];
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       HashSet<Pair<Integer, Integer>> noneSet = new HashSet<Pair<Integer, Integer>>();
 
-      long time = System.currentTimeMillis();
       try {
          chStmt.runPreparedQuery(sql);
+         int counter = 0;
          while (chStmt.next()) {
-            noneSet.add(new Pair<Integer, Integer>(chStmt.getInt(dataId), chStmt.getInt("branch_id")));
+            noneSet.add(new Pair<Integer, Integer>(chStmt.getInt(dataColumnName), chStmt.getInt("branch_id")));
+
+            resultsTab.addRow(new ResultsXViewerRow(new String[] {String.valueOf(counter++),
+                  String.valueOf(chStmt.getInt(dataColumnName)), String.valueOf(chStmt.getInt("branch_id"))}));
          }
       } finally {
          chStmt.close();
-      }
-      builder.append("Found ");
-      builder.append(String.valueOf(noneSet.size()));
-      builder.append(data);
-      builder.append(" that have no tx_current value set\n");
-      if (DEBUG) {
-         System.out.println(String.format("%sTxCurrent: The get No TX Set Query took %s", data,
-               Lib.getElapseString(time)));
       }
       return noneSet;
    }
@@ -178,14 +175,6 @@ public class HealthHelper {
          total = ConnectionHandler.runBatchUpdate(sql, insertParameters);
       }
       builder.append("Fixed " + total + " Tx_Current not set errors\n");
-   }
-
-   public static void dumpDataNone(Appendable sbFull, HashSet<Pair<Integer, Integer>> noneSet) throws IOException {
-      int counter = 0;
-      for (Pair<Integer, Integer> pairs : noneSet) {
-         sbFull.append(AHTML.addRowMultiColumnTable(new String[] {String.valueOf(counter++),
-               String.valueOf(pairs.getFirst()), String.valueOf(pairs.getSecond())}));
-      }
    }
 
    public static void dumpDataMultiple(Appendable sbFull, HashSet<LocalTxData> multipleSet) throws IOException {
