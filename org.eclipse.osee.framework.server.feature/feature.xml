@@ -25,8 +25,8 @@
    <includes
          id="org.eclipse.osee.framework.server.external.feature"
          version="0.0.0"/>
-         
-	<plugin
+
+   <plugin
          id="org.eclipse.osee.framework.jdk.core"
          download-size="0"
          install-size="0"
@@ -152,8 +152,6 @@
          version="0.0.0"
          unpack="false"/>
 
-
-
    <plugin
          id="org.eclipse.osee.framework.logging"
          download-size="0"
@@ -191,6 +189,13 @@
 
    <plugin
          id="org.eclipse.osee.demo.db.connection"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.derby"
          download-size="0"
          install-size="0"
          version="0.0.0"
