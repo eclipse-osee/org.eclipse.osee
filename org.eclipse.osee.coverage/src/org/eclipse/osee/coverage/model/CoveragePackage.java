@@ -13,14 +13,12 @@ package org.eclipse.osee.coverage.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
@@ -56,11 +54,6 @@ public class CoveragePackage extends CoveragePackageBase implements ISaveable, I
    }
 
    @Override
-   public OseeImage getTitleImage() {
-      return CoverageImage.COVERAGE_PACKAGE;
-   }
-
-   @Override
    public void getOverviewHtmlHeader(XResultData xResultData) {
       xResultData.log(AHTML.bold("Coverage Package " + getName() + " as of " + XDate.getDateStr(new Date(),
             XDate.MMDDYYHHMM)) + AHTML.newline());
@@ -82,6 +75,11 @@ public class CoveragePackage extends CoveragePackageBase implements ISaveable, I
          date.setTime(new Long(keyValueArtifact.getValue("date")).longValue());
          setCreationDate(date);
       }
+   }
+
+   @Override
+   public Date getDate() {
+      return getRunDate();
    }
 
 }

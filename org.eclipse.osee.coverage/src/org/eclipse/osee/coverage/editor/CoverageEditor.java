@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -55,15 +56,15 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
       try {
          OseeContributionItem.addTo(this, true);
          addFormPage(new CoverageEditorOverviewTab("Overview", this, getCoveragePackageBase()));
-         coverageEditorCoverageTab =
-               new CoverageEditorCoverageTab("Coverage Items", this, (ICoverageTabProvider) getCoveragePackageBase());
+         coverageEditorCoverageTab = new CoverageEditorCoverageTab("Coverage Items", this, getCoveragePackageBase());
          addFormPage(coverageEditorCoverageTab);
          if (getCoveragePackageBase().isImportAllowed()) {
             coverageEditorImportTab = new CoverageEditorImportTab(this);
             addFormPage(coverageEditorImportTab);
          }
          setPartName(getCoveragePackageBase().getName());
-         setTitleImage(ImageManager.getImage(getCoveragePackageBase().getTitleImage()));
+         setTitleImage(ImageManager.getImage(CoverageUtil.getCoveragePackageBaseImage(getCoveragePackageBase())));
+
          setActivePage(startPage);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);

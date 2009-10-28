@@ -14,6 +14,8 @@ import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoveragePackageBase;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -41,14 +43,14 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
 
    private XCoverageViewer xCoverageViewer;
    private ScrolledForm scrolledForm;
-   private final ICoverageTabProvider provider;
+   private final CoveragePackageBase coveragePackageBase;
    private final CoverageEditor coverageEditor;
    private CoverageEditorCoverageParameters parameters;
 
-   public CoverageEditorCoverageTab(String name, CoverageEditor coverageEditor, ICoverageTabProvider provider) {
+   public CoverageEditorCoverageTab(String name, CoverageEditor coverageEditor, CoveragePackageBase provider) {
       super(coverageEditor, name, name);
       this.coverageEditor = coverageEditor;
-      this.provider = provider;
+      this.coveragePackageBase = provider;
    }
 
    @Override
@@ -56,16 +58,16 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
       super.createFormContent(managedForm);
 
       scrolledForm = managedForm.getForm();
-      scrolledForm.setText(provider.getName() + " - " + XDate.getDateStr(provider.getRunDate(), XDate.MMDDYYHHMM) + " - " + provider.getCoverageItems().size() + " Coverage Items");
-      scrolledForm.setImage(ImageManager.getImage(provider.getTitleImage()));
-
+      scrolledForm.setText(coveragePackageBase.getName() + " - " + XDate.getDateStr(coveragePackageBase.getDate(),
+            XDate.MMDDYYHHMM) + " - " + coveragePackageBase.getCoverageItems().size() + " Coverage Items");
+      scrolledForm.setImage(ImageManager.getImage(CoverageUtil.getCoveragePackageBaseImage(coveragePackageBase)));
       scrolledForm.getBody().setLayout(new GridLayout(2, false));
       Composite mainComp = scrolledForm.getBody();
       coverageEditor.getToolkit().adapt(mainComp);
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
       parameters =
-            new CoverageEditorCoverageParameters(mainComp, managedForm, coverageEditor, provider,
+            new CoverageEditorCoverageParameters(mainComp, managedForm, coverageEditor, coveragePackageBase,
                   new SelectionAdapter() {
                      @Override
                      public void widgetSelected(SelectionEvent e) {
@@ -82,7 +84,8 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
       coverageEditor.getToolkit().adapt(tableComp);
 
       xCoverageViewer =
-            new XCoverageViewer(this, provider instanceof CoverageImport ? TableType.Import : TableType.Package);
+            new XCoverageViewer(this,
+                  coveragePackageBase instanceof CoverageImport ? TableType.Import : TableType.Package);
       xCoverageViewer.setDisplayLabel(false);
       xCoverageViewer.createWidgets(managedForm, tableComp, 1);
       xCoverageViewer.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
@@ -98,7 +101,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
             result.popup();
             return;
          }
-         xCoverageViewer.loadTable(parameters.performSearchGetResults(provider));
+         xCoverageViewer.loadTable(parameters.performSearchGetResults(coveragePackageBase));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
@@ -120,18 +123,18 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
 
    @Override
    public Result isEditable() {
-      if (!(provider instanceof ISaveable)) {
+      if (!(coveragePackageBase instanceof ISaveable)) {
          return new Result("Not Editable");
       }
-      return ((ISaveable) provider).isEditable();
+      return ((ISaveable) coveragePackageBase).isEditable();
    }
 
    @Override
    public Result save() {
-      if (!(provider instanceof ISaveable)) {
+      if (!(coveragePackageBase instanceof ISaveable)) {
          return new Result("Not Saveable");
       }
-      return ((ISaveable) provider).save();
+      return ((ISaveable) coveragePackageBase).save();
    }
 
 }

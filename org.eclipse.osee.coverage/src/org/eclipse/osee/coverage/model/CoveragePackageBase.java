@@ -7,12 +7,12 @@ package org.eclipse.osee.coverage.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.coverage.CoverageManager;
-import org.eclipse.osee.coverage.editor.ICoverageTabProvider;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 /**
  * @author Donald G. Dunne
  */
-public abstract class CoveragePackageBase implements ICoverage, ICoverageTabProvider {
+public abstract class CoveragePackageBase implements ICoverage {
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    private final List<CoverageTestUnit> testUnits = new ArrayList<CoverageTestUnit>();
    private final XResultData logResultData = new XResultData(false);
@@ -58,6 +58,8 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageTabProv
       }
    }
 
+   public abstract Date getDate();
+
    public void addTestUnit(CoverageTestUnit testUnit) {
       testUnits.add(testUnit);
    }
@@ -74,6 +76,8 @@ public abstract class CoveragePackageBase implements ICoverage, ICoverageTabProv
    public List<CoverageUnit> getCoverageUnits() {
       return coverageUnits;
    }
+
+   public abstract void getOverviewHtmlHeader(XResultData xResultData);
 
    public List<CoverageItem> getCoverageItems() {
       List<CoverageItem> items = new ArrayList<CoverageItem>();

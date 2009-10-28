@@ -11,13 +11,10 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.Date;
-import org.eclipse.osee.coverage.editor.ICoverageTabProvider;
-import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
-import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
@@ -26,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport extends CoveragePackageBase implements ICoverageUnitProvider, ICoverage, ICoverageTabProvider {
+public class CoverageImport extends CoveragePackageBase implements ICoverageUnitProvider, ICoverage {
 
    private Date runDate;
    private String location = "";
@@ -47,11 +44,6 @@ public class CoverageImport extends CoveragePackageBase implements ICoverageUnit
 
    public String getName() {
       return super.getName() + " - " + XDate.getDateStr(runDate, XDate.MMDDYYHHMM) + " - " + getCoverageItems().size() + " Coverage Items";
-   }
-
-   @Override
-   public OseeImage getTitleImage() {
-      return CoverageImage.COVERAGE_IMPORT;
    }
 
    @Override
@@ -98,6 +90,11 @@ public class CoverageImport extends CoveragePackageBase implements ICoverageUnit
 
    public void setRunDate(Date runDate) {
       this.runDate = runDate;
+   }
+
+   @Override
+   public Date getDate() {
+      return getRunDate();
    }
 
 }

@@ -16,6 +16,7 @@ import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -54,7 +55,7 @@ import org.eclipse.ui.forms.widgets.Section;
 public class CoverageEditorImportTab extends FormPage {
 
    private final CoverageEditor coverageEditor;
-   private final CoveragePackageBase provider;
+   private final CoveragePackageBase coveragePackageBase;
    private XComboViewer combo;
    private BlamUsageSection blamUsageSection;
    private BlamInputSection blamInputSection;
@@ -69,7 +70,7 @@ public class CoverageEditorImportTab extends FormPage {
    public CoverageEditorImportTab(CoverageEditor coverageEditor) {
       super(coverageEditor, "Import", "Import");
       this.coverageEditor = coverageEditor;
-      this.provider = coverageEditor.getCoveragePackageBase();
+      this.coveragePackageBase = coverageEditor.getCoveragePackageBase();
    }
 
    @Override
@@ -77,8 +78,8 @@ public class CoverageEditorImportTab extends FormPage {
       super.createFormContent(managedForm);
 
       final ScrolledForm scrolledForm = managedForm.getForm();
-      scrolledForm.setText(provider.getName());
-      scrolledForm.setImage(ImageManager.getImage(provider.getTitleImage()));
+      scrolledForm.setText(coveragePackageBase.getName());
+      scrolledForm.setImage(ImageManager.getImage(CoverageUtil.getCoveragePackageBaseImage(coveragePackageBase)));
 
       scrolledForm.getBody().setLayout(ALayout.getZeroMarginLayout());
       CoverageEditor.addToToolBar(scrolledForm.getToolBarManager(), coverageEditor);

@@ -26,6 +26,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoveragePackageImporter;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.NotSaveable;
@@ -63,9 +64,9 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    private XCoverageMergeViewer xCoverageViewer1;
-   private final ICoverageTabProvider provider1;
+   private final CoveragePackage provider1;
    private XCoverageMergeViewer xCoverageViewer2;
-   private final ICoverageTabProvider provider2;
+   private final CoverageImport provider2;
    private ScrolledForm scrolledForm;
    private Label titleLabel1, titleLabel2;
    private final CoverageEditor coverageEditor;
@@ -73,7 +74,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    CoveragePackageImporter coveragePackageImport = null;
    LinkWithImportItemAction linkWithImportItemAction;
 
-   public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, ICoverageTabProvider provider1, ICoverageTabProvider provider2) {
+   public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, CoveragePackage provider1, CoverageImport provider2) {
       super(coverageEditor, name, name);
       this.coverageEditor = coverageEditor;
       this.provider1 = provider1;
@@ -87,7 +88,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
       scrolledForm = managedForm.getForm();
       scrolledForm.setText("Merge of " + provider2.getName());
-      scrolledForm.setImage(ImageManager.getImage(provider1.getTitleImage()));
+      scrolledForm.setImage(ImageManager.getImage(CoverageImage.COVERAGE_PACKAGE));
 
       scrolledForm.getBody().setLayout(new GridLayout(2, false));
       Composite mainComp = scrolledForm.getBody();

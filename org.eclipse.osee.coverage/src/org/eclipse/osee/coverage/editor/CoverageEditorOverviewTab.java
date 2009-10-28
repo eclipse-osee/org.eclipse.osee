@@ -8,6 +8,7 @@ package org.eclipse.osee.coverage.editor;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.util.CoverageMetrics;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -42,13 +43,13 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
    protected void createFormContent(IManagedForm managedForm) {
       super.createFormContent(managedForm);
 
-      final ScrolledForm form = managedForm.getForm();
-      form.setText(coveragePackageBase.getName());
-      form.setImage(ImageManager.getImage(coveragePackageBase.getTitleImage()));
+      final ScrolledForm scrolledForm = managedForm.getForm();
+      scrolledForm.setText(coveragePackageBase.getName());
+      scrolledForm.setImage(ImageManager.getImage(CoverageUtil.getCoveragePackageBaseImage(coveragePackageBase)));
 
-      form.getBody().setLayout(ALayout.getZeroMarginLayout());
+      scrolledForm.getBody().setLayout(ALayout.getZeroMarginLayout());
       createToolBar();
-      Composite composite = form.getBody();
+      Composite composite = scrolledForm.getBody();
       composite.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
       xResultsComp = new XResultsComposite(composite, SWT.NONE);

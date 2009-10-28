@@ -7,6 +7,8 @@ package org.eclipse.osee.coverage.util;
 
 import java.util.Collection;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -17,6 +19,7 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
+import org.eclipse.osee.framework.ui.skynet.OseeImage;
 
 /**
  * @author Donald G. Dunne
@@ -42,4 +45,10 @@ public class CoverageUtil {
       return java.util.Collections.emptyList();
    }
 
+   public static OseeImage getCoveragePackageBaseImage(CoveragePackageBase coveragePackageBase) {
+      if (coveragePackageBase instanceof CoverageImport) {
+         return CoverageImage.COVERAGE_IMPORT;
+      }
+      return CoverageImage.COVERAGE_PACKAGE;
+   }
 }

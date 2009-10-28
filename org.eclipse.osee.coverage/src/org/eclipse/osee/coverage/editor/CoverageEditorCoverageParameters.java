@@ -17,6 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
@@ -52,11 +53,11 @@ import org.eclipse.ui.forms.IManagedForm;
 public class CoverageEditorCoverageParameters extends Composite {
 
    private WorkPage page;
-   private final ICoverageTabProvider provider;
+   private final CoveragePackageBase coveragePackageBase;
 
-   public CoverageEditorCoverageParameters(Composite mainComp, IManagedForm managedForm, CoverageEditor coverageEditor, ICoverageTabProvider provider, final SelectionListener selectionListener) {
+   public CoverageEditorCoverageParameters(Composite mainComp, IManagedForm managedForm, CoverageEditor coverageEditor, CoveragePackageBase coveragePackageBase, final SelectionListener selectionListener) {
       super(mainComp, SWT.None);
-      this.provider = provider;
+      this.coveragePackageBase = coveragePackageBase;
       setLayout(new GridLayout(2, false));
       coverageEditor.getToolkit().adapt(this);
       setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
@@ -100,7 +101,7 @@ public class CoverageEditorCoverageParameters extends Composite {
 
    }
 
-   public Collection<ICoverage> performSearchGetResults(ICoverageTabProvider provider) throws OseeCoreException {
+   public Collection<ICoverage> performSearchGetResults(CoveragePackageBase provider) throws OseeCoreException {
       Set<ICoverage> items = new HashSet<ICoverage>();
       for (ICoverage coverageItem : provider.getCoverageEditorItems(false)) {
          performSearchGetResults(items, coverageItem);
@@ -290,7 +291,7 @@ public class CoverageEditorCoverageParameters extends Composite {
                   "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>" +
                   //
                   "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show All\" beginComposite=\"8\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      if (provider.isAssignable()) {
+      if (coveragePackageBase.isAssignable()) {
          sb.append("" +
          //
          "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
