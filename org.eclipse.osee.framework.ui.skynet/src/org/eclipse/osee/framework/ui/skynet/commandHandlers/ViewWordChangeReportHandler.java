@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -56,7 +57,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                         artifactChange.getArtifact().getArtId(), artifactChange.getFromTransactionId(), true);
 
             Artifact newerArtifact =
-                  artifactChange.getModificationType() == ModificationType.DELETED ? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+                  (artifactChange.getModificationType() == ModificationType.DELETED || artifactChange.getModificationType() == ModificationType.ARTIFACT_DELETED )? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
                         artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact());
 
             baseArtifacts.add(baseArtifact);

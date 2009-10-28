@@ -202,18 +202,15 @@ public final class InternalChangeManager {
          Artifact artifact = null;
 
          try {
-            TransactionId toTransactionId =
-                  TransactionIdManager.getTransactionId(item.getCurrentVersion().getTransactionNumber().intValue());
+            branch = isHistorical ? transactionId.getBranch() : sourceBranch;
+            TransactionId toTransactionId =  TransactionIdManager.getTransactionId(item.getCurrentVersion().getTransactionNumber().intValue());
             TransactionId fromTransactionId;
             String wasValue = "";
-            branch = isHistorical ? transactionId.getBranch() : sourceBranch;
 
             if (isHistorical) {
                fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
                artifact = ArtifactCache.getHistorical(item.getArtId(), transactionId.getTransactionNumber());
-               branch = transactionId.getBranch();
             } else {
-               branch = sourceBranch;
                artifact = ArtifactQuery.getArtifactFromId(item.getArtId(), branch, true);
 
                ChangeVersion netChange = item.getNetChange();
