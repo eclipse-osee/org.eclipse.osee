@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.framework.database.init;
 
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.PERMISSION_TABLE;
 import java.io.File;
 import java.net.Socket;
 import java.net.URL;
@@ -53,7 +52,7 @@ import org.osgi.framework.Bundle;
  */
 public class DbBootstrapTask implements IDbInitializationTask {
    private static final String ADD_PERMISSION =
-         "INSERT INTO " + PERMISSION_TABLE.columnsForInsert("PERMISSION_ID", "PERMISSION_NAME");
+         "INSERT INTO OSEE_PERMISSION (PERMISSION_ID, PERMISSION_NAME) VALUES (?,?)";
 
    private DbInitConfiguration configuration;
 

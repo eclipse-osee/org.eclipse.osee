@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.access;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.sql.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -57,7 +56,7 @@ public class ArtifactAccessObject extends AccessObject {
    @Override
    public void removeFromDatabase(int subjectId) throws OseeDataStoreException {
       final String DELETE_ARTIFACT_ACL =
-            "DELETE FROM " + SkynetDatabase.ARTIFACT_TABLE_ACL + " WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
+            "DELETE FROM OSEE_ARTIFACT_ACL WHERE privilege_entity_id = ? AND art_id =? AND branch_id =?";
       ConnectionHandler.runPreparedUpdate(DELETE_ARTIFACT_ACL, subjectId, artId, branchId);
    }
 

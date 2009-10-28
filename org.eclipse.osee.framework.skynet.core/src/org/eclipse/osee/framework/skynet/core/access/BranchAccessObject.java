@@ -14,14 +14,13 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.sql.SkynetDatabase;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Jeff C. Phillips
  */
 public class BranchAccessObject extends AccessObject {
-   private int branchId;
+   private final int branchId;
    private static final Map<Integer, BranchAccessObject> cache = new HashMap<Integer, BranchAccessObject>();
 
    @Override
@@ -47,8 +46,7 @@ public class BranchAccessObject extends AccessObject {
 
    @Override
    public void removeFromDatabase(int subjectId) throws OseeDataStoreException {
-      final String DELETE_BRANCH_ACL =
-            "DELETE FROM " + SkynetDatabase.BRANCH_TABLE_ACL + " WHERE privilege_entity_id = ? AND branch_id =?";
+      final String DELETE_BRANCH_ACL = "DELETE FROM OSEE_BRANCH_ACL WHERE privilege_entity_id = ? AND branch_id =?";
       ConnectionHandler.runPreparedUpdate(DELETE_BRANCH_ACL, subjectId, branchId);
    }
 
@@ -74,7 +72,9 @@ public class BranchAccessObject extends AccessObject {
 
    @Override
    public boolean equals(Object obj) {
-      if (!(obj instanceof BranchAccessObject)) return false;
+      if (!(obj instanceof BranchAccessObject)) {
+         return false;
+      }
       return branchId == ((BranchAccessObject) obj).branchId;
    }
 }

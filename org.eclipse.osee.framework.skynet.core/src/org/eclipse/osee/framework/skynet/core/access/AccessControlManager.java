@@ -24,7 +24,6 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.sql.SkynetDatabase;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,29 +52,32 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
 public class AccessControlManager implements IBranchEventListener, IArtifactsPurgedEventListener {
    private static final String INSERT_INTO_ARTIFACT_ACL =
-         "INSERT INTO " + SkynetDatabase.ARTIFACT_TABLE_ACL + " (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
+         "INSERT INTO OSEE_ARTIFACT_ACL (art_id, permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?, ?)";
    private static final String INSERT_INTO_BRANCH_ACL =
-         "INSERT INTO " + SkynetDatabase.BRANCH_TABLE_ACL + " (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
+         "INSERT INTO OSEE_BRANCH_ACL (permission_id, privilege_entity_id, branch_id) VALUES (?, ?, ?)";
 
    private static final String UPDATE_ARTIFACT_ACL =
-         "UPDATE " + SkynetDatabase.ARTIFACT_TABLE_ACL + " SET permission_id = ? WHERE privilege_entity_id =? AND art_id = ? AND branch_id = ?";
+         "UPDATE OSEE_ARTIFACT_ACL SET permission_id = ? WHERE privilege_entity_id =? AND art_id = ? AND branch_id = ?";
    private static final String UPDATE_BRANCH_ACL =
-         "UPDATE " + SkynetDatabase.BRANCH_TABLE_ACL + " SET permission_id = ? WHERE privilege_entity_id =? AND branch_id = ?";
+         "UPDATE OSEE_BRANCH_ACL SET permission_id = ? WHERE privilege_entity_id =? AND branch_id = ?";
 
    private static final String GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST =
          "SELECT aac1.*, art1.art_type_id FROM osee_artifact art1, osee_artifact_acl aac1 WHERE art1.art_id = aac1.privilege_entity_id";
    private static final String GET_ALL_BRANCH_ACCESS_CONTROL_LIST =
          "SELECT bac1.*, art1.art_type_id FROM osee_artifact art1, osee_branch_acl bac1 WHERE art1.art_id = bac1.privilege_entity_id";
 
-   private static final String DELETE_ARTIFACT_ACL_FROM_BRANCH =
-         "DELETE FROM " + SkynetDatabase.ARTIFACT_TABLE_ACL + " WHERE  branch_id =?";
-   private static final String DELETE_BRANCH_ACL_FROM_BRANCH =
-         "DELETE FROM " + SkynetDatabase.BRANCH_TABLE_ACL + " WHERE branch_id =?";
+   private static final String DELETE_ARTIFACT_ACL_FROM_BRANCH = "DELETE FROM OSEE_ARTIFACT_ACL WHERE  branch_id =?";
+   private static final String DELETE_BRANCH_ACL_FROM_BRANCH = "DELETE FROM OSEE_BRANCH_ACL WHERE branch_id =?";
    private static final String USER_GROUP_MEMBERS =
          "SELECT b_art_id FROM osee_relation_link WHERE a_art_id =? AND rel_link_type_id =? ORDER BY b_art_id";
 
    public static enum ObjectTypeEnum {
-      ALL, BRANCH, REL_TYPE, ART_TYPE, ATTR_TYPE, ART;
+      ALL,
+      BRANCH,
+      REL_TYPE,
+      ART_TYPE,
+      ATTR_TYPE,
+      ART;
    }
 
    private static DoubleKeyHashMap<Integer, AccessObject, PermissionEnum> accessControlListCache;
@@ -606,7 +608,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
       try {
-         if (branchModType == BranchEventType.Deleted || (sender.isLocal() && branchModType == BranchEventType.Purged)) {
+         if (branchModType == BranchEventType.Deleted || sender.isLocal() && branchModType == BranchEventType.Purged) {
             BranchAccessObject branchAccessObject = BranchAccessObject.getBranchAccessObject(branchId);
             List<AccessControlData> acl = generateAccessControlList(branchAccessObject);
             for (AccessControlData accessControlData : acl) {
