@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 /**
  * @author Donald G. Dunne
  */
-public interface IArtifactsPurgedEventListener extends IEventListner {
+public interface IArtifactsPurgedEventListener extends IEventListener {
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException;
 
 }

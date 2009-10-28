@@ -35,4 +35,8 @@ public enum BroadcastEventType {
    private BroadcastEventType(EventType eventType) {
       this.eventType = eventType;
    }
+
+   public boolean isPingOrPong() {
+      return this == BroadcastEventType.Ping || this == BroadcastEventType.Pong;
+   }
 }

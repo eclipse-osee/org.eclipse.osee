@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -68,7 +69,7 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
  */
 public class InternalEventManager {
 
-   private static final Set<IEventListner> listeners = new CopyOnWriteArraySet<IEventListner>();
+   private static final Set<IEventListener> listeners = new CopyOnWriteArraySet<IEventListener>();
    public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
    private static boolean disableEvents = false;
 
@@ -84,41 +85,19 @@ public class InternalEventManager {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Events"));
 
-   /**
-    * Kick LOCAL "remote event manager" event
-    * 
-    * @param sender
-    * @param remoteEventServiceEventType
-    * @throws OseeCoreException
-    */
+   // Kick LOCAL "remote event manager" event
    static void kickRemoteEventManagerEvent(final Sender sender, final RemoteEventServiceEventType remoteEventServiceEventType) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: kickRemoteEventManagerEvent: type: " + remoteEventServiceEventType + " - " + sender);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickRemoteEventManagerEvent: type: " + remoteEventServiceEventType + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
             try {
                if (sender.isLocal() && remoteEventServiceEventType.isLocalEventType()) {
-                  for (IEventListner listener : listeners) {
-                     if (listener instanceof IRemoteEventManagerEventListener) {
-                        // Don't fail on any one listener's exception
-                        try {
-                           ((IRemoteEventManagerEventListener) listener).handleRemoteEventManagerEvent(sender,
-                                 remoteEventServiceEventType);
-                        } catch (Exception ex) {
-                           OseeLog.log(Activator.class, Level.SEVERE, ex);
-                        }
-                     }
-                  }
+                  safelyInvokeListeners(IRemoteEventManagerEventListener.class, "handleRemoteEventManagerEvent", sender,
+                        remoteEventServiceEventType);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -128,51 +107,27 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /**
+   /*
     * Kick LOCAL and REMOTE broadcast event
-    * 
-    * @param sender
-    * @param broadcastEventType
-    * @param userIds (currently only used for disconnect_skynet)
-    * @param message
-    * @throws OseeCoreException
     */
    static void kickBroadcastEvent(final Sender sender, final BroadcastEventType broadcastEventType, final String[] userIds, final String message) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
-      // Don't display ping/pong events 
-      if (broadcastEventType != BroadcastEventType.Ping && broadcastEventType != BroadcastEventType.Pong) {
-         try {
-            if (DEBUG) {
-               OseeLog.log(
-                     InternalEventManager.class,
-                     Level.INFO,
-                     "OEM: kickBroadcastEvent: type: " + broadcastEventType.name() + " message: " + message + " - " + sender);
-            }
-         } catch (Exception ex) {
-            OseeLog.log(Activator.class, Level.INFO, ex);
-         }
+
+      if (!broadcastEventType.isPingOrPong()) {
+         eventLog("OEM: kickBroadcastEvent: type: " + broadcastEventType.name() + " message: " + message + " - " + sender);
       }
       Runnable runnable = new Runnable() {
          public void run() {
             try {
                // Kick from REMOTE
                if (sender.isRemote() || sender.isLocal() && broadcastEventType.isLocalEventType()) {
-                  for (IEventListner listener : listeners) {
-                     if (listener instanceof IBroadcastEventListneer) {
-                        // Don't fail on any one listener's exception
-                        try {
-                           ((IBroadcastEventListneer) listener).handleBroadcastEvent(sender, broadcastEventType,
-                                 userIds, message);
-                        } catch (Exception ex) {
-                           OseeLog.log(Activator.class, Level.SEVERE, ex);
-                        }
-                     }
-                  }
+                  safelyInvokeListeners(IBroadcastEventListener.class, "handleBroadcastEvent", sender,
+                        broadcastEventType, userIds, message);
                }
-               // Kick REMOTE (If source was Local and this was not a default branch changed event
 
+               // Kick REMOTE (If source was Local and this was not a default branch changed event
                if (sender.isLocal() && broadcastEventType.isRemoteEventType()) {
                   RemoteEventManager.kick(new NetworkBroadcastEvent(broadcastEventType.name(), message,
                         sender.getNetworkSender()));
@@ -185,26 +140,14 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /**
+   /*
     * Kick LOCAL and REMOTE branch events
-    * 
-    * @param sender
-    * @param branchEventType
-    * @param branchId
-    * @throws OseeCoreException
     */
    static void kickBranchEvent(final Sender sender, final BranchEventType branchEventType, final int branchId) {
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: kickBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             try {
@@ -219,16 +162,8 @@ public class InternalEventManager {
                // Kick LOCAL
                if (!enableRemoteEventLoopback || enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote()) {
                   if (sender.isRemote() || sender.isLocal() && branchEventType.isLocalEventType()) {
-                     for (IEventListner listener : listeners) {
-                        if (listener instanceof IBranchEventListener) {
-                           // Don't fail on any one listener's exception
-                           try {
-                              ((IBranchEventListener) listener).handleBranchEvent(sender, branchEventType, branchId);
-                           } catch (Exception ex) {
-                              OseeLog.log(Activator.class, Level.SEVERE, ex);
-                           }
-                        }
-                     }
+                     safelyInvokeListeners(IBranchEventListener.class, "handleBranchEvent", sender, branchEventType,
+                           branchId);
                   }
                }
                // Kick REMOTE (If source was Local and this was not a default branch changed event
@@ -261,26 +196,14 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /**
+   /*
     * Kick LOCAL and REMOTE branch events
-    * 
-    * @param sender
-    * @param mergeBranchEventType
-    * @param branchId
-    * @throws OseeCoreException
     */
    static void kickMergeBranchEvent(final Sender sender, final MergeBranchEventType branchEventType, final int branchId) {
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: kickMergeBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickMergeBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             try {
@@ -295,17 +218,8 @@ public class InternalEventManager {
                // Kick LOCAL
                if (!enableRemoteEventLoopback || enableRemoteEventLoopback && branchEventType.isRemoteEventType() && sender.isRemote()) {
                   if (sender.isRemote() || sender.isLocal() && branchEventType.isLocalEventType()) {
-                     for (IEventListner listener : listeners) {
-                        if (listener instanceof IMergeBranchEventListener) {
-                           // Don't fail on any one listener's exception
-                           try {
-                              ((IMergeBranchEventListener) listener).handleMergeBranchEvent(sender, branchEventType,
-                                    branchId);
-                           } catch (Exception ex) {
-                              OseeLog.log(Activator.class, Level.SEVERE, ex);
-                           }
-                        }
-                     }
+                     safelyInvokeListeners(IMergeBranchEventListener.class, "handleMergeBranchEvent", sender,
+                           branchEventType, branchId);
                   }
                }
                // Kick REMOTE (If source was Local and this was not a default branch changed event
@@ -328,12 +242,8 @@ public class InternalEventManager {
       executorService.submit(runnable);
    }
 
-   /**
+   /*
     * Kick LOCAL and REMOTE access control events
-    * 
-    * @param sender
-    * @param accessControlEventType
-    * @param LoadedArtifacts
     */
    static void kickAccessControlArtifactsEvent(final Sender sender, final AccessControlEventType accessControlEventType, final LoadedArtifacts loadedArtifacts) {
       if (sender == null) {
@@ -348,31 +258,13 @@ public class InternalEventManager {
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(
-                  InternalEventManager.class,
-                  Level.INFO,
-                  "OEM: kickAccessControlEvent - type: " + accessControlEventType + sender + " loadedArtifacts: " + loadedArtifacts);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickAccessControlEvent - type: " + accessControlEventType + sender + " loadedArtifacts: " + loadedArtifacts);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
             if (accessControlEventType.isLocalEventType()) {
-               for (IEventListner listener : listeners) {
-                  if (listener instanceof IAccessControlEventListener) {
-                     // Don't fail on any one listener's exception
-                     try {
-                        ((IAccessControlEventListener) listener).handleAccessControlArtifactsEvent(sender,
-                              accessControlEventType, loadedArtifacts);
-                     } catch (Exception ex) {
-                        OseeLog.log(Activator.class, Level.SEVERE, ex);
-                     }
-                  }
-               }
+               safelyInvokeListeners(IAccessControlEventListener.class, "handleAccessControlArtifactsEvent", sender,
+                     accessControlEventType, loadedArtifacts);
             }
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
@@ -401,155 +293,69 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /**
-    * Kick LOCAL event to notify application that the branch to artifact cache has been updated; This event does NOT go
-    * external
-    * 
-    * @param sender
-    * @param branchModType
-    * @param branchId
-    * @throws OseeCoreException
+   /*
+    * Kick LOCAL event to notify application that the branch to artifact cache has been updated; 
+    * This event does NOT go external
     */
    static void kickLocalBranchToArtifactCacheUpdateEvent(final Sender sender) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: kickLocalBranchToArtifactCacheUpdateEvent - " + sender);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickLocalBranchToArtifactCacheUpdateEvent - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
-            for (IEventListner listener : listeners) {
-               if (listener instanceof IBranchEventListener) {
-                  // Don't fail on any one listener's exception
-                  try {
-                     ((IBranchEventListener) listener).handleLocalBranchToArtifactCacheUpdateEvent(sender);
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
-               }
-            }
+            safelyInvokeListeners(IBranchEventListener.class, "handleLocalBranchToArtifactCacheUpdateEvent", sender);
          }
       };
       execute(runnable);
    }
 
-   /**
+   /*
     * Kick LOCAL artifact modified event; This event does NOT go external
-    * 
-    * @param sender local if kicked from internal; remote if from external
-    * @param loadedArtifacts
-    * @throws OseeCoreException
     */
    static void kickArtifactModifiedEvent(final Sender sender, final ArtifactModType artifactModType, final Artifact artifact) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(
-                  InternalEventManager.class,
-                  Level.INFO,
-                  "OEM: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getGuid() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getGuid() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
-            for (IEventListner listener : listeners) {
-               if (listener instanceof IArtifactModifiedEventListener) {
-                  // Don't fail on any one listener's exception
-                  try {
-                     ((IArtifactModifiedEventListener) listener).handleArtifactModifiedEvent(sender, artifactModType,
-                           artifact);
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
-               }
-            }
+            safelyInvokeListeners(IArtifactModifiedEventListener.class, "handleArtifactModifiedEvent", sender,
+                  artifactModType, artifact);
          }
       };
       execute(runnable);
    }
 
-   /**
-    * Kick LOCAL relation modified event; This event does NOT go external
-    * 
-    * @param sender local if kicked from internal; remote if from external
-    * @param loadedArtifacts
-    * @throws OseeCoreException
-    */
+   // Kick LOCAL relation modified event; This event does NOT go external
    static void kickRelationModifiedEvent(final Sender sender, final RelationEventType relationEventType, final RelationLink link, final Branch branch, final String relationType) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: kickRelationModifiedEvent - " + relationEventType + " - " + link + " - " + sender);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickRelationModifiedEvent - " + relationEventType + " - " + link + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
-            for (IEventListner listener : listeners) {
-               if (listener instanceof IRelationModifiedEventListener) {
-                  // Don't fail on any one listener's exception
-                  try {
-                     ((IRelationModifiedEventListener) listener).handleRelationModifiedEvent(sender, relationEventType,
-                           link, branch, relationType);
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
-               }
-            }
+            safelyInvokeListeners(IRelationModifiedEventListener.class, "handleRelationModifiedEvent", sender,
+                  relationEventType, link, branch, relationType);
          }
       };
       execute(runnable);
    }
 
-   /**
-    * Kick LOCAL and REMOTE purged event depending on sender
-    * 
-    * @param sender local if kicked from internal; remote if from external
-    * @param loadedArtifacts
-    * @throws OseeCoreException
-    */
+   // Kick LOCAL and REMOTE purged event depending on sender
    static void kickArtifactsPurgedEvent(final Sender sender, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: kickArtifactsPurgedEvent " + sender + " - " + loadedArtifacts);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickArtifactsPurgedEvent " + sender + " - " + loadedArtifacts);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
-            for (IEventListner listener : listeners) {
-               if (listener instanceof IArtifactsPurgedEventListener) {
-                  // Don't fail on any one listener's exception
-                  try {
-                     ((IArtifactsPurgedEventListener) listener).handleArtifactsPurgedEvent(sender, loadedArtifacts);
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
-               }
-            }
+            safelyInvokeListeners(IArtifactsPurgedEventListener.class, "handleArtifactsPurgedEvent", sender,
+                  loadedArtifacts);
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
@@ -566,40 +372,17 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /**
-    * Kick LOCAL and REMOTE artifact change type depending on sender
-    * 
-    * @param sender local if kicked from internal; remote if from external
-    * @param toArtifactTypeId
-    * @param loadedArtifacts
-    * @throws OseeCoreException
-    */
+   // Kick LOCAL and REMOTE artifact change type depending on sender
    static void kickArtifactsChangeTypeEvent(final Sender sender, final int toArtifactTypeId, final LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: kickArtifactsChangeTypeEvent " + sender + " - " + loadedArtifacts);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickArtifactsChangeTypeEvent " + sender + " - " + loadedArtifacts);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
-            for (IEventListner listener : listeners) {
-               if (listener instanceof IArtifactsChangeTypeEventListener) {
-                  // Don't fail on any one listener's exception
-                  try {
-                     ((IArtifactsChangeTypeEventListener) listener).handleArtifactsChangeTypeEvent(sender,
-                           toArtifactTypeId, loadedArtifacts);
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
-               }
-            }
+            safelyInvokeListeners(IArtifactsChangeTypeEventListener.class, "handleArtifactsChangeTypeEvent", sender,
+                  toArtifactTypeId, loadedArtifacts);
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
@@ -616,39 +399,18 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /**
-    * Kick LOCAL and remote transaction deleted event
-    * 
-    * @param sender local if kicked from internal; remote if from external
-    * @throws OseeCoreException
-    */
+   // Kick LOCAL and remote transaction deleted event
    static void kickTransactionsDeletedEvent(final Sender sender, final int[] transactionIds) throws OseeCoreException {
       //TODO This needs to be converted into the individual artifacts and relations that were deleted/modified
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: kickTransactionsDeletedEvent " + sender + " - " + transactionIds.length);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickTransactionsDeletedEvent " + sender + " - " + transactionIds.length);
       Runnable runnable = new Runnable() {
          public void run() {
             // Kick LOCAL
-            for (IEventListner listener : listeners) {
-               if (listener instanceof ITransactionsDeletedEventListener) {
-                  // Don't fail on any one listener's exception
-                  try {
-                     ((ITransactionsDeletedEventListener) listener).handleTransactionsDeletedEvent(sender,
-                           transactionIds);
-                  } catch (Exception ex) {
-                     OseeLog.log(Activator.class, Level.SEVERE, ex);
-                  }
-               }
-            }
+            safelyInvokeListeners(ITransactionsDeletedEventListener.class, "handleTransactionsDeletedEvent", sender,
+                  transactionIds);
             // Kick REMOTE (If source was Local and this was not a default branch changed event
             try {
                if (sender.isLocal()) {
@@ -662,24 +424,12 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /**
-    * Kick LOCAL and REMOTE TransactionEvent
-    * 
-    * @param sender
-    * @param xModifiedEvents
-    */
+   // Kick LOCAL and REMOTE TransactionEvent
    static void kickTransactionEvent(final Sender sender, Collection<ArtifactTransactionModifiedEvent> xModifiedEvents) {
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: kickTransactionEvent #ModEvents: " + xModifiedEvents.size() + " - " + sender);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickTransactionEvent #ModEvents: " + xModifiedEvents.size() + " - " + sender);
       final Collection<ArtifactTransactionModifiedEvent> xModifiedEventsCopy =
             new ArrayList<ArtifactTransactionModifiedEvent>();
       xModifiedEventsCopy.addAll(xModifiedEvents);
@@ -698,20 +448,11 @@ public class InternalEventManager {
 
                // Kick LOCAL
                if (!enableRemoteEventLoopback || enableRemoteEventLoopback && sender.isRemote()) {
-                  for (IEventListner listener : listeners) {
-                     if (listener instanceof IFrameworkTransactionEventListener) {
-                        // Don't fail on any one listener's exception
-                        try {
-                           ((IFrameworkTransactionEventListener) listener).handleFrameworkTransactionEvent(sender,
-                                 transData);
-                        } catch (Exception ex) {
-                           OseeLog.log(Activator.class, Level.SEVERE, ex);
-                        }
-                     }
-                  }
+                  safelyInvokeListeners(IFrameworkTransactionEventListener.class, "handleFrameworkTransactionEvent",
+                        sender, transData);
                }
-               // Kick REMOTE (If source was Local and this was not a default branch changed event
 
+               // Kick REMOTE (If source was Local and this was not a default branch changed event
                if (sender.isLocal()) {
                   List<ISkynetEvent> events = generateNetworkSkynetEvents(sender, xModifiedEventsCopy);
                   RemoteEventManager.kick(events);
@@ -724,24 +465,12 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /**
-    * Kick LOCAL ArtifactReloadEvent
-    * 
-    * @param sender
-    * @param xModifiedEvents
-    */
+   // Kick LOCAL ArtifactReloadEvent
    static void kickArtifactReloadEvent(final Sender sender, final Collection<? extends Artifact> artifacts) {
       if (isDisableEvents()) {
          return;
       }
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: kickArtifactReloadEvent #Reloads: " + artifacts.size() + " - " + sender);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: kickArtifactReloadEvent #Reloads: " + artifacts.size() + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
             try {
@@ -755,16 +484,7 @@ public class InternalEventManager {
 
                // Kick LOCAL
                if (!enableRemoteEventLoopback) {
-                  for (IEventListner listener : listeners) {
-                     if (listener instanceof IArtifactReloadEventListener) {
-                        // Don't fail on any one listener's exception
-                        try {
-                           ((IArtifactReloadEventListener) listener).handleReloadEvent(sender, artifacts);
-                        } catch (Exception ex) {
-                           OseeLog.log(Activator.class, Level.SEVERE, ex);
-                        }
-                     }
-                  }
+                  safelyInvokeListeners(IArtifactReloadEventListener.class, "handleReloadEvent", sender, artifacts);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -774,36 +494,20 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   static void addListener(IEventListner listener) {
+   static void addListener(IEventListener listener) {
       if (listener == null) {
          throw new IllegalArgumentException("listener can not be null");
       }
       listeners.add(listener);
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: addListener (" + listeners.size() + ") " + listener);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
+      eventLog("OEM: addListener (" + listeners.size() + ") " + listener);
    }
 
-   static void removeListeners(IEventListner listener) {
+   static void removeListeners(IEventListener listener) {
+      eventLog("OEM: removeListener: (" + listeners.size() + ") " + listener);
       listeners.remove(listener);
-      try {
-         if (DEBUG) {
-            OseeLog.log(InternalEventManager.class, Level.INFO,
-                  "OEM: removeListener: (" + listeners.size() + ") " + listener);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.INFO, ex);
-      }
    }
 
-   /**
-    * This method clears all listeners. Should only be used for testing purposes.
-    */
+   // This method clears all listeners. Should only be used for testing purposes.
    public static void removeAllListeners() {
       listeners.clear();
    }
@@ -826,7 +530,7 @@ public class InternalEventManager {
 
    static String getListenerReport() {
       List<String> listenerStrs = new ArrayList<String>();
-      for (IEventListner listener : listeners) {
+      for (IEventListener listener : listeners) {
          listenerStrs.add(getObjectSafeName(listener));
       }
       String[] listArr = listenerStrs.toArray(new String[listenerStrs.size()]);
@@ -1025,6 +729,7 @@ public class InternalEventManager {
                      transData.cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactA());
                      if (transData.branchId == -1) {
                         transData.branchId = loadedRelation.getArtifactA().getBranch().getBranchId();
+                        loadedRelation.getBranch();
                      }
                   }
                   if (loadedRelation.getArtifactB() != null) {
@@ -1074,4 +779,29 @@ public class InternalEventManager {
       return transData;
    }
 
+   public static void safelyInvokeListeners(Class<? extends IEventListener> c, String methodName, Object... args) {
+      for (IEventListener listener : listeners) {
+         try {
+            if (c.isInstance(listener)) {
+               for (Method m : c.getMethods()) {
+                  if (m.getName().equals(methodName)) {
+                     m.invoke(listener, args);
+                  }
+               }
+            }
+         } catch (Exception ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
+         }
+      }
+   }
+
+   public static void eventLog(String output) {
+      try {
+         if (DEBUG) {
+            OseeLog.log(InternalEventManager.class, Level.INFO, output);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.INFO, ex);
+      }
+   }
 }

@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
  * 
  * @author Donald G. Dunne
  */
-public interface IArtifactReloadEventListener extends IEventListner {
+public interface IArtifactReloadEventListener extends IEventListener {
 
    /**
     * Notification of all artifact that were reloaded.

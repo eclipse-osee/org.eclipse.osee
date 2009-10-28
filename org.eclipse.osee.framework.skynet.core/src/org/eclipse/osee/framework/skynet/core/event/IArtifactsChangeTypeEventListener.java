@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 /**
  * @author Donald G. Dunne
  */
-public interface IArtifactsChangeTypeEventListener extends IEventListner {
+public interface IArtifactsChangeTypeEventListener extends IEventListener {
    public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts);
 
 }

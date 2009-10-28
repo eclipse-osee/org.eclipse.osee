@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 /**
  * @author Donald G. Dunne
  */
-public interface IRelationModifiedEventListener extends IEventListner {
+public interface IRelationModifiedEventListener extends IEventListener {
    public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, RelationLink link, Branch branch, String relationType);
 
 }

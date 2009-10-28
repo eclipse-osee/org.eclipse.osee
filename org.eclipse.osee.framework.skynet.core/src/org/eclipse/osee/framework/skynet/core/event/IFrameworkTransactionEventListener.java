@@ -18,15 +18,9 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * 
  * @author Donald G. Dunne
  */
-public interface IFrameworkTransactionEventListener extends IEventListner {
+public interface IFrameworkTransactionEventListener extends IEventListener {
 
-   /**
-    * Notification of all artifact and relation modifications collected as part of a single skynet transaction.
-    * 
-    * @param source
-    * @param transData collection of all changes within transaction
-    * @throws OseeCoreException
-    */
+   // Notification of all artifact and relation modifications collected as part of a single skynet transaction.
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException;
 
 }

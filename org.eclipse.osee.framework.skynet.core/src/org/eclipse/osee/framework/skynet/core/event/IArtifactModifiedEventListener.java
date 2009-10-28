@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 /**
  * @author Donald G. Dunne
  */
-public interface IArtifactModifiedEventListener extends IEventListner {
+public interface IArtifactModifiedEventListener extends IEventListener {
    public void handleArtifactModifiedEvent(Sender sender, ArtifactModType artifactModType, Artifact artifact);
 
 }

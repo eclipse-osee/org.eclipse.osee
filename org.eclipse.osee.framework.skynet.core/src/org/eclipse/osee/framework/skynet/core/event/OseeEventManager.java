@@ -198,7 +198,7 @@ public class OseeEventManager {
     * 
     * @param listener
     */
-   public static void addListener(IEventListner listener) {
+   public static void addListener(IEventListener listener) {
       InternalEventManager.addListener(listener);
    }
 
@@ -207,7 +207,7 @@ public class OseeEventManager {
     * 
     * @param listener
     */
-   public static void removeListener(IEventListner listener) {
+   public static void removeListener(IEventListener listener) {
       InternalEventManager.removeListeners(listener);
    }
 

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.event.BroadcastEventType;
-import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListneer;
+import org.eclipse.osee.framework.skynet.core.event.IBroadcastEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.OseeFormActivator;
@@ -32,7 +32,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEventListneer {
+public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEventListener {
    private static SkynetGuiPlugin pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.skynet";
    public static final String CHANGE_REPORT_ATTRIBUTES_PREF =

@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Donald G. Dunne
  */
-public interface IMergeBranchEventListener extends IEventListner {
+public interface IMergeBranchEventListener extends IEventListener {
 
    public void handleMergeBranchEvent(Sender sender, MergeBranchEventType branchModType, int branchId) throws OseeCoreException;
 
