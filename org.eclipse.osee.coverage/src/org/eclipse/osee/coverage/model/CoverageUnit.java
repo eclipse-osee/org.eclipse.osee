@@ -15,9 +15,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
-import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -33,14 +30,13 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * Single code unit (file/procedure/function) that can contain other Coverage Unit or Coverage Items
  * 
  * @author Donald G. Dunne
  */
-public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider, ICoverageItemProvider {
+public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverageItemProvider {
 
    public static String ARTIFACT_NAME = "Coverage Unit";
    private String name;
@@ -53,10 +49,10 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
    private final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    private String location;
    private final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
-   private ICoverageEditorItem parentCoverageEditorItem;
+   private ICoverage parentCoverageEditorItem;
    private Artifact artifact;
 
-   public CoverageUnit(ICoverageEditorItem parentCoverageEditorItem, String name, String location) {
+   public CoverageUnit(ICoverage parentCoverageEditorItem, String name, String location) {
       super();
       this.parentCoverageEditorItem = parentCoverageEditorItem;
       this.name = name;
@@ -69,8 +65,8 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
    }
 
    @Override
-   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse) {
-      Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>(coverageItems);
+   public Collection<? extends ICoverage> getCoverageEditorItems(boolean recurse) {
+      Set<ICoverage> items = new HashSet<ICoverage>(coverageItems);
       for (CoverageUnit coverageUnit : getCoverageUnits()) {
          items.add(coverageUnit);
          if (recurse) {
@@ -171,12 +167,6 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
    }
 
    @Override
-   public Object[] getChildren() {
-      Collection<?> children = getChildrenItems();
-      return children.toArray(new Object[children.size()]);
-   }
-
-   @Override
    public OseeImage getOseeImage() {
       if (isFolder()) {
          return FrameworkImage.FOLDER;
@@ -192,17 +182,6 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
          if (!coverageItem.isCovered()) return false;
       }
       return true;
-   }
-
-   @Override
-   public String getCoverageEditorValue(XViewerColumn xCol) {
-      if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return getParentCoverageUnit() == null ? "" : getParentCoverageUnit().getName();
-      return "";
-   }
-
-   @Override
-   public Image getCoverageEditorImage(XViewerColumn xCol) {
-      return null;
    }
 
    @Override
@@ -226,7 +205,7 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
    }
 
    @Override
-   public ICoverageEditorItem getParent() {
+   public ICoverage getParent() {
       return parentCoverageEditorItem;
    }
 
@@ -252,7 +231,7 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
       }
    }
 
-   public void setParentCoverageEditorItem(ICoverageEditorItem parent) {
+   public void setParentCoverageEditorItem(ICoverage parent) {
       this.parentCoverageEditorItem = parent;
    }
 
@@ -315,8 +294,8 @@ public class CoverageUnit implements ICoverageEditorItem, ICoverageUnitProvider,
    }
 
    @Override
-   public Collection<? extends ICoverageEditorItem> getChildrenItems() {
-      List<ICoverageEditorItem> children = new ArrayList<ICoverageEditorItem>();
+   public Collection<? extends ICoverage> getChildrenItems() {
+      List<ICoverage> children = new ArrayList<ICoverage>();
       children.addAll(getCoverageUnits());
       children.addAll(getCoverageItems(false));
       return children;

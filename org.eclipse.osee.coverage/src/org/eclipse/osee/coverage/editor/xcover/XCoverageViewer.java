@@ -17,7 +17,7 @@ import java.util.Iterator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -125,7 +125,7 @@ public class XCoverageViewer extends XWidget {
       return form;
    }
 
-   public void loadTable(Collection<ICoverageEditorItem> items) {
+   public void loadTable(Collection<ICoverage> items) {
       try {
          xViewer.set(items);
       } catch (Exception ex) {
@@ -135,14 +135,14 @@ public class XCoverageViewer extends XWidget {
    }
 
    @SuppressWarnings("unchecked")
-   public ArrayList<ICoverageEditorItem> getSelectedCoverageItems() {
-      ArrayList<ICoverageEditorItem> items = new ArrayList<ICoverageEditorItem>();
+   public ArrayList<ICoverage> getSelectedCoverageItems() {
+      ArrayList<ICoverage> items = new ArrayList<ICoverage>();
       if (xViewer == null) return items;
       if (xViewer.getSelection().isEmpty()) return items;
       Iterator i = ((IStructuredSelection) xViewer.getSelection()).iterator();
       while (i.hasNext()) {
          Object obj = i.next();
-         items.add((ICoverageEditorItem) obj);
+         items.add((ICoverage) obj);
       }
       return items;
    }

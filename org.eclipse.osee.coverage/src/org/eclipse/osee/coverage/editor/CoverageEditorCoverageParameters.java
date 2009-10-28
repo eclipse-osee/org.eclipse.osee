@@ -18,6 +18,7 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
@@ -99,14 +100,14 @@ public class CoverageEditorCoverageParameters extends Composite {
 
    }
 
-   public Collection<ICoverageEditorItem> performSearchGetResults(ICoverageTabProvider provider) throws OseeCoreException {
-      Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
-      for (ICoverageEditorItem coverageItem : provider.getCoverageEditorItems(false)) {
+   public Collection<ICoverage> performSearchGetResults(ICoverageTabProvider provider) throws OseeCoreException {
+      Set<ICoverage> items = new HashSet<ICoverage>();
+      for (ICoverage coverageItem : provider.getCoverageEditorItems(false)) {
          performSearchGetResults(items, coverageItem);
       }
       Collection<CoverageUnit> topLevelCoverageUnits = ((ICoverageUnitProvider) provider).getCoverageUnits();
-      Set<ICoverageEditorItem> parents = new HashSet<ICoverageEditorItem>();
-      for (ICoverageEditorItem coverageItem : items) {
+      Set<ICoverage> parents = new HashSet<ICoverage>();
+      for (ICoverage coverageItem : items) {
          if (topLevelCoverageUnits.contains(coverageItem)) {
             parents.add(coverageItem);
          }
@@ -115,7 +116,7 @@ public class CoverageEditorCoverageParameters extends Composite {
 
    }
 
-   public void performSearchGetResults(Set<ICoverageEditorItem> items, ICoverageEditorItem item) throws OseeCoreException {
+   public void performSearchGetResults(Set<ICoverage> items, ICoverage item) throws OseeCoreException {
       Collection<CoverageMethodEnum> coverageMethods = getSelectedCoverageMethods();
       User assignee = getAssignee();
       boolean includeCompleted = isIncludeCompletedCancelled();
@@ -151,13 +152,13 @@ public class CoverageEditorCoverageParameters extends Composite {
             items.add(item);
             addAllParents(items, item);
          }
-         for (ICoverageEditorItem child : item.getChildrenItems()) {
+         for (ICoverage child : item.getChildrenItems()) {
             performSearchGetResults(items, child);
          }
       }
    }
 
-   private void addAllParents(Set<ICoverageEditorItem> items, ICoverageEditorItem item) {
+   private void addAllParents(Set<ICoverage> items, ICoverage item) {
       if (item.getParent() != null) {
          items.add(item.getParent());
          addAllParents(items, item.getParent());

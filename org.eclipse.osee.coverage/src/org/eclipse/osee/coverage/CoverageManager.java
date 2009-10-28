@@ -18,9 +18,9 @@ import java.util.Set;
 import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
  */
 public class CoverageManager implements IFrameworkTransactionEventListener, IArtifactsPurgedEventListener {
 
-   private static Set<ICoverageEditorItem> cache = new HashSet<ICoverageEditorItem>();
+   private static Set<ICoverage> cache = new HashSet<ICoverage>();
 
    public static void importCoverage(ICoverageImporter coverageImporter) throws OseeCoreException {
       CoverageImport coverageImport = coverageImporter.run();
@@ -59,7 +59,7 @@ public class CoverageManager implements IFrameworkTransactionEventListener, IArt
       List<CoveragePackage> packages = new ArrayList<CoveragePackage>();
       for (Artifact artifact : ArtifactQuery.getArtifactListFromType(CoveragePackage.ARTIFACT_NAME,
             BranchManager.getCommonBranch())) {
-         ICoverageEditorItem item = getByGuid(artifact.getGuid());
+         ICoverage item = getByGuid(artifact.getGuid());
          if (item == null) {
             packages.add(new CoveragePackage(artifact));
          } else {
@@ -69,8 +69,8 @@ public class CoverageManager implements IFrameworkTransactionEventListener, IArt
       return packages;
    }
 
-   public static ICoverageEditorItem getByGuid(String guid) {
-      for (ICoverageEditorItem item : cache) {
+   public static ICoverage getByGuid(String guid) {
+      for (ICoverage item : cache) {
          if (item.getGuid().equals(guid)) {
             return item;
          }
@@ -78,19 +78,19 @@ public class CoverageManager implements IFrameworkTransactionEventListener, IArt
       return null;
    }
 
-   public static void cache(ICoverageEditorItem item) {
+   public static void cache(ICoverage item) {
       cache.add(item);
    }
 
-   public static void deCache(ICoverageEditorItem item) {
+   public static void deCache(ICoverage item) {
       cache.remove(item);
    }
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       for (Artifact artifact : transData.cacheDeletedArtifacts) {
-         if (artifact instanceof ICoverageEditorItem) {
-            deCache((ICoverageEditorItem) artifact);
+         if (artifact instanceof ICoverage) {
+            deCache((ICoverage) artifact);
          }
       }
    }
@@ -98,8 +98,8 @@ public class CoverageManager implements IFrameworkTransactionEventListener, IArt
    @Override
    public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
       for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-         if (artifact instanceof ICoverageEditorItem) {
-            deCache((ICoverageEditorItem) artifact);
+         if (artifact instanceof ICoverage) {
+            deCache((ICoverage) artifact);
          }
       }
    }

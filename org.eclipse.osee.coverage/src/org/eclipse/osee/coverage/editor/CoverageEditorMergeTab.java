@@ -25,6 +25,7 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoveragePackageImporter;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.NotSaveable;
@@ -130,7 +131,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    private void handleImportSelected() {
-      Collection<ICoverageEditorItem> importItems = getSelectedImportItems();
+      Collection<ICoverage> importItems = getSelectedImportItems();
       if (importItems.size() == 0) {
          AWorkbench.popup("Select Items to Import via Import Column");
          return;
@@ -150,7 +151,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       titleLabel2.setText(provider2.getName());
    }
 
-   private Collection<ICoverageEditorItem> getSelectedImportItems() {
+   private Collection<ICoverage> getSelectedImportItems() {
       return ((CoverageMergeXViewer) xCoverageViewer2.getXViewer()).getSelectedImportItems();
    }
 

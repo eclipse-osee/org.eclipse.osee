@@ -9,8 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -52,7 +52,7 @@ public class EditCoverageNotesAction extends Action {
          return;
       }
       Set<String> rationale = new HashSet<String>();
-      for (ICoverageEditorItem coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
+      for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
          if (coverageItem instanceof CoverageUnit) {
             rationale.add(((CoverageUnit) coverageItem).getNotes());
          }
@@ -62,7 +62,7 @@ public class EditCoverageNotesAction extends Action {
          ed.setEntry(rationale.iterator().next());
       }
       if (ed.open() == 0) {
-         for (ICoverageEditorItem coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
+         for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
             if (coverageItem instanceof CoverageUnit) {
                ((CoverageUnit) coverageItem).setNotes(ed.getEntry());
                refreshable.update(coverageItem);

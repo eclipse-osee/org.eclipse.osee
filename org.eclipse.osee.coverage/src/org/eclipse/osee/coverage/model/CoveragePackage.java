@@ -13,7 +13,6 @@ package org.eclipse.osee.coverage.model;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
-public class CoveragePackage extends CoveragePackageBase implements ISaveable, ICoverageUnitProvider, ICoverageEditorItem {
+public class CoveragePackage extends CoveragePackageBase implements ISaveable, ICoverageUnitProvider, ICoverage {
 
    public static String ARTIFACT_NAME = "Coverage Package";
    private Date creationDate;

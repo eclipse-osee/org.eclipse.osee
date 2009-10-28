@@ -6,8 +6,8 @@
 package org.eclipse.osee.coverage.util;
 
 import java.util.Collection;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
  */
 public class CoverageUtil {
 
-   public static String getCoverageItemUsersStr(ICoverageEditorItem coverageItem) {
+   public static String getCoverageItemUsersStr(ICoverage coverageItem) {
       return Collections.toString(getCoverageItemUsers(coverageItem), "; ");
    }
 
@@ -31,7 +31,7 @@ public class CoverageUtil {
       return BranchManager.getCommonBranch();
    }
 
-   public static Collection<User> getCoverageItemUsers(ICoverageEditorItem coverageItem) {
+   public static Collection<User> getCoverageItemUsers(ICoverage coverageItem) {
       try {
          if (coverageItem.isAssignable() && Strings.isValid(coverageItem.getAssignees())) {
             return UsersByIds.getUsers(coverageItem.getAssignees());

@@ -15,11 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.apache.commons.lang.ArrayUtils;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.CoverageManager;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
-import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -32,12 +28,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
  */
-public class CoverageItem implements ICoverageEditorItem {
+public class CoverageItem implements ICoverage {
 
    private CoverageMethodEnum coverageMethod = CoverageMethodEnum.Not_Covered;
    private String coverageRationale;
@@ -155,19 +150,6 @@ public class CoverageItem implements ICoverageEditorItem {
    }
 
    @Override
-   public String getCoverageEditorValue(XViewerColumn xCol) {
-      if (xCol.equals(CoverageXViewerFactory.Line_Number)) return getLineNum();
-      if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) return getCoverageRationale();
-      if (xCol.equals(CoverageXViewerFactory.Method_Number)) return getMethodNum();
-      if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return getExecuteNum();
-      if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return getCoverageMethod().toString();
-      if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return getCoverageUnit().getName();
-      if (xCol.equals(CoverageXViewerFactory.Coverage_Test_Units)) return Collections.toString(", ", getTestUnits());
-      if (xCol.equals(CoverageXViewerFactory.Text)) return Collections.toString(", ", getText());
-      return "";
-   }
-
-   @Override
    public OseeImage getOseeImage() {
       if (isCovered()) {
          return CoverageImage.ITEM_GREEN;
@@ -178,11 +160,6 @@ public class CoverageItem implements ICoverageEditorItem {
    @Override
    public boolean isCovered() {
       return getCoverageMethod() != CoverageMethodEnum.Not_Covered;
-   }
-
-   @Override
-   public Image getCoverageEditorImage(XViewerColumn xCol) {
-      return null;
    }
 
    @Override
@@ -210,7 +187,7 @@ public class CoverageItem implements ICoverageEditorItem {
    }
 
    @Override
-   public ICoverageEditorItem getParent() {
+   public ICoverage getParent() {
       return coverageUnit;
    }
 
@@ -315,19 +292,14 @@ public class CoverageItem implements ICoverageEditorItem {
    }
 
    @Override
-   public Collection<? extends ICoverageEditorItem> getChildrenItems() {
-      List<ICoverageEditorItem> children = new ArrayList<ICoverageEditorItem>();
+   public Collection<? extends ICoverage> getChildrenItems() {
+      List<ICoverage> children = new ArrayList<ICoverage>();
       children.addAll(getTestUnits());
       return children;
    }
 
    @Override
-   public Object[] getChildren() {
-      return ArrayUtils.EMPTY_OBJECT_ARRAY;
-   }
-
-   @Override
-   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse) {
+   public Collection<? extends ICoverage> getCoverageEditorItems(boolean recurse) {
       return java.util.Collections.emptyList();
    }
 

@@ -8,9 +8,6 @@ package org.eclipse.osee.coverage.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.apache.commons.lang.ArrayUtils;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -23,14 +20,13 @@ import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * Single test that can cover multiple Coverage Items
  * 
  * @author Donald G. Dunne
  */
-public class CoverageTestUnit implements ICoverageEditorItem {
+public class CoverageTestUnit implements ICoverage {
 
    public static String ARTIFACT_NAME = "Coverage Test Unit";
    private String name;
@@ -96,18 +92,8 @@ public class CoverageTestUnit implements ICoverageEditorItem {
    }
 
    @Override
-   public String getCoverageEditorValue(XViewerColumn xCol) {
-      return "";
-   }
-
-   @Override
-   public Collection<? extends ICoverageEditorItem> getChildrenItems() {
+   public Collection<? extends ICoverage> getChildrenItems() {
       return coverageItems;
-   }
-
-   @Override
-   public Object[] getChildren() {
-      return ArrayUtils.EMPTY_OBJECT_ARRAY;
    }
 
    @Override
@@ -124,12 +110,7 @@ public class CoverageTestUnit implements ICoverageEditorItem {
    }
 
    @Override
-   public Image getCoverageEditorImage(XViewerColumn xCol) {
-      return null;
-   }
-
-   @Override
-   public ICoverageEditorItem getParent() {
+   public ICoverage getParent() {
       return null;
    }
 
@@ -227,7 +208,7 @@ public class CoverageTestUnit implements ICoverageEditorItem {
    }
 
    @Override
-   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse) {
+   public Collection<? extends ICoverage> getCoverageEditorItems(boolean recurse) {
       return java.util.Collections.emptyList();
    }
 

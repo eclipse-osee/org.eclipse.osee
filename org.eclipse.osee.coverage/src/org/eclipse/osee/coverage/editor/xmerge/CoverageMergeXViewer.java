@@ -16,12 +16,12 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.model.CoverageItem;
-import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.CoverageTestUnit;
+import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoveragePackageImporter;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.swt.widgets.Composite;
@@ -33,8 +33,8 @@ import org.eclipse.swt.widgets.TreeItem;
  */
 public class CoverageMergeXViewer extends CoverageXViewer {
 
-   public Map<ICoverageEditorItem, Boolean> importChecked = new HashMap<ICoverageEditorItem, Boolean>();
-   public Map<ICoverageEditorItem, XResultData> importError = new HashMap<ICoverageEditorItem, XResultData>();
+   public Map<ICoverage, Boolean> importChecked = new HashMap<ICoverage, Boolean>();
+   public Map<ICoverage, XResultData> importError = new HashMap<ICoverage, XResultData>();
    Action toggleImport;
    private final CoveragePackageImporter coveragePackageImport;
    public static enum ImportType {
@@ -46,11 +46,11 @@ public class CoverageMergeXViewer extends CoverageXViewer {
       this.coveragePackageImport = coveragePackageImport;
    }
 
-   public ICoverageEditorItem getPackageItemForImportItem(ICoverageEditorItem importItem, boolean recurse) {
+   public ICoverage getPackageItemForImportItem(ICoverage importItem, boolean recurse) {
       return coveragePackageImport.getPackageCoverageItem(importItem, recurse);
    }
 
-   public String getImportError(ICoverageEditorItem importItem) {
+   public String getImportError(ICoverage importItem) {
       if (!importError.containsKey(importItem)) {
          XResultData rd = new XResultData(false);
          coveragePackageImport.validateItems(Collections.singleton(importItem), rd);
@@ -63,7 +63,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
       return "";
    }
 
-   public ImportType getImportType(ICoverageEditorItem importItem) {
+   public ImportType getImportType(ICoverage importItem) {
       if (importItem instanceof CoverageItem) return ImportType.None;
       if (importItem instanceof CoverageTestUnit) return ImportType.None;
 
@@ -75,7 +75,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
       if (importError.get(importItem).getNumErrors() > 0) {
          return ImportType.Error;
       }
-      ICoverageEditorItem packageItem = getPackageItemForImportItem(importItem, true);
+      ICoverage packageItem = getPackageItemForImportItem(importItem, true);
       if (packageItem == null) {
          return ImportType.Add;
       } else if (importItem.isFolder()) {
@@ -85,18 +85,18 @@ public class CoverageMergeXViewer extends CoverageXViewer {
       }
    }
 
-   public void setImportChecked(ICoverageEditorItem coverageItem, boolean checked) {
-      if (!(coverageItem instanceof ICoverageEditorItem) || !isImportAllowed((ICoverageEditorItem) coverageItem)) {
+   public void setImportChecked(ICoverage coverage, boolean checked) {
+      if (!(coverage instanceof ICoverage) || !isImportAllowed((ICoverage) coverage)) {
          return;
       }
-      importChecked.put(coverageItem, checked);
-      xCoverageViewer.getXViewer().update(coverageItem, null);
+      importChecked.put(coverage, checked);
+      xCoverageViewer.getXViewer().update(coverage, null);
       // Check or un-check any children based on parent
-      for (CoverageUnit childCoverageUnit : ((CoverageUnit) coverageItem).getCoverageUnits()) {
+      for (CoverageUnit childCoverageUnit : ((CoverageUnit) coverage).getCoverageUnits()) {
          setImportChecked(childCoverageUnit, checked);
       }
       // Check any parent based on child
-      ICoverageEditorItem parent = coverageItem.getParent();
+      ICoverage parent = coverage.getParent();
       if (isImportAllowed(parent)) {
          // If child is cheked and parent not, check parent
          if (checked && !isImportChecked(parent)) {
@@ -105,8 +105,8 @@ public class CoverageMergeXViewer extends CoverageXViewer {
          }
          // If all children not checked and parent checked, uncheck parent
          boolean childChecked = false;
-         for (Object child : parent.getChildren()) {
-            if (child instanceof ICoverageEditorItem && isImportAllowed((ICoverageEditorItem) child) && isImportChecked((ICoverageEditorItem) child)) {
+         for (Object child : parent.getChildrenItems()) {
+            if (child instanceof ICoverage && isImportAllowed((ICoverage) child) && isImportChecked((ICoverage) child)) {
                childChecked = true;
                break;
             }
@@ -118,19 +118,19 @@ public class CoverageMergeXViewer extends CoverageXViewer {
       }
    }
 
-   public Collection<ICoverageEditorItem> getSelectedImportItems() {
-      List<ICoverageEditorItem> selected = new ArrayList<ICoverageEditorItem>();
-      for (Entry<ICoverageEditorItem, Boolean> entry : importChecked.entrySet()) {
+   public Collection<ICoverage> getSelectedImportItems() {
+      List<ICoverage> selected = new ArrayList<ICoverage>();
+      for (Entry<ICoverage, Boolean> entry : importChecked.entrySet()) {
          if (entry.getValue()) selected.add(entry.getKey());
       }
       return selected;
    }
 
-   public boolean isImportChecked(ICoverageEditorItem coverageItem) {
+   public boolean isImportChecked(ICoverage coverageItem) {
       return importChecked.get(coverageItem) == null ? false : importChecked.get(coverageItem);
    }
 
-   public boolean isImportAllowed(ICoverageEditorItem coverageItem) {
+   public boolean isImportAllowed(ICoverage coverageItem) {
       if (coverageItem instanceof CoverageUnit) return true;
       return false;
    }
@@ -139,7 +139,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
       if (xCol.equals(CoverageMergeXViewerFactoryImport.Import)) {
-         ICoverageEditorItem coverageItem = (ICoverageEditorItem) treeItem.getData();
+         ICoverage coverageItem = (ICoverage) treeItem.getData();
          Boolean checked = importChecked.get(coverageItem);
          if (checked == null)
             checked = true;
@@ -169,7 +169,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
 
    private boolean isToggleImportEnabled() {
       if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
-      for (ICoverageEditorItem item : xCoverageViewer.getSelectedCoverageItems()) {
+      for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (item.isEditable().isFalse() && isImportAllowed(item)) {
             return false;
          }
@@ -184,7 +184,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
       toggleImport = new Action("Toggle Import", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            for (ICoverageEditorItem coverageItem : xCoverageViewer.getSelectedCoverageItems()) {
+            for (ICoverage coverageItem : xCoverageViewer.getSelectedCoverageItems()) {
                setImportChecked(coverageItem, !isImportChecked(coverageItem));
             }
          }

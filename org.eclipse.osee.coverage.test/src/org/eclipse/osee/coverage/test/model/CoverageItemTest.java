@@ -8,8 +8,8 @@ package org.eclipse.osee.coverage.test.model;
 import junit.framework.Assert;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
-import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.CoverageTestUnit;
+import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -63,7 +63,8 @@ public class CoverageItemTest {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageItem#addTestUnit(org.eclipse.osee.coverage.model.CoverageTestUnit)}.
+    * {@link org.eclipse.osee.coverage.model.CoverageItem#addTestUnit(org.eclipse.osee.coverage.model.CoverageTestUnit)}
+    * .
     */
    @Test
    public void testAddGetTestUnit() {
@@ -277,14 +278,6 @@ public class CoverageItemTest {
    @Test
    public void testGetChildrenItems() {
       Assert.assertEquals(10, ci1.getChildrenItems().size());
-   }
-
-   /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getChildren()}.
-    */
-   @Test
-   public void testGetChildren() {
-      Assert.assertEquals(0, ci1.getChildren().length);
    }
 
    /**

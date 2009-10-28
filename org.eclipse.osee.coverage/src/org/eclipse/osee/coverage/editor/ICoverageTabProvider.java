@@ -11,6 +11,7 @@ import java.util.List;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageTestUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 
@@ -21,7 +22,7 @@ public interface ICoverageTabProvider {
 
    public String getName();
 
-   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse);
+   public Collection<? extends ICoverage> getCoverageEditorItems(boolean recurse);
 
    public OseeImage getTitleImage();
 

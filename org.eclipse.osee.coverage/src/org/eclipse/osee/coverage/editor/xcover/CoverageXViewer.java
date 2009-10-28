@@ -28,12 +28,12 @@ import org.eclipse.osee.coverage.action.EditRationaleAction;
 import org.eclipse.osee.coverage.action.IRefreshable;
 import org.eclipse.osee.coverage.action.ISelectedCoverageEditorItem;
 import org.eclipse.osee.coverage.action.ViewSourceAction;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactory;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -88,7 +88,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
    private boolean isEditRationaleEnabled() {
       if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
-      for (ICoverageEditorItem item : xCoverageViewer.getSelectedCoverageItems()) {
+      for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageItem)) {
             return false;
          }
@@ -98,7 +98,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
    private boolean isEditMethodEnabled() {
       if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
-      for (ICoverageEditorItem item : xCoverageViewer.getSelectedCoverageItems()) {
+      for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageItem)) {
             return false;
          }
@@ -108,7 +108,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
    private boolean isDeleteCoverageUnitEnabled() {
       if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
-      for (ICoverageEditorItem item : xCoverageViewer.getSelectedCoverageItems()) {
+      for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageUnit)) {
             return false;
          }
@@ -118,7 +118,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
 
    private boolean isEditMetricsEnabled() {
       if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
-      for (ICoverageEditorItem item : xCoverageViewer.getSelectedCoverageItems()) {
+      for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
          if (!(item instanceof CoverageUnit)) {
             return false;
          }
@@ -159,17 +159,17 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
             xCoverageViewer.getXViewer(), true));
    }
 
-   public Collection<ICoverageEditorItem> getLoadedItems() {
+   public Collection<ICoverage> getLoadedItems() {
       return ((CoverageContentProvider) getContentProvider()).getRootSet();
    }
 
-   public void add(Collection<ICoverageEditorItem> coverageEditorItems) {
+   public void add(Collection<ICoverage> coverageEditorItems) {
       if ((CoverageContentProvider) getContentProvider() != null) {
          ((CoverageContentProvider) getContentProvider()).add(coverageEditorItems);
       }
    }
 
-   public void set(Collection<? extends ICoverageEditorItem> coverageEditorItems) {
+   public void set(Collection<? extends ICoverage> coverageEditorItems) {
       if ((CoverageContentProvider) getContentProvider() != null) {
          ((CoverageContentProvider) getContentProvider()).set(coverageEditorItems);
       }
@@ -188,12 +188,12 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       getLabelProvider().dispose();
    }
 
-   public ArrayList<ICoverageEditorItem> getSelectedCoverageEditorItems() {
-      ArrayList<ICoverageEditorItem> arts = new ArrayList<ICoverageEditorItem>();
+   public ArrayList<ICoverage> getSelectedCoverageEditorItems() {
+      ArrayList<ICoverage> arts = new ArrayList<ICoverage>();
       TreeItem items[] = getTree().getSelection();
       if (items.length > 0) {
          for (TreeItem item : items) {
-            arts.add((ICoverageEditorItem) item.getData());
+            arts.add((ICoverage) item.getData());
          }
       }
       return arts;
@@ -204,9 +204,9 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       if (!xCoverageViewer.isEditable()) {
          return;
       }
-      ArrayList<ICoverageEditorItem> coverageItems = new ArrayList<ICoverageEditorItem>();
+      ArrayList<ICoverage> coverageItems = new ArrayList<ICoverage>();
       for (TreeItem item : treeItems) {
-         coverageItems.add((ICoverageEditorItem) item.getData());
+         coverageItems.add((ICoverage) item.getData());
       }
       try {
          promptChangeData((XViewerColumn) treeColumn.getData(), coverageItems, isColumnMultiEditEnabled());
@@ -253,8 +253,8 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       }
    }
 
-   public Result isEditable(Collection<ICoverageEditorItem> coverageItems) {
-      for (ICoverageEditorItem item : coverageItems) {
+   public Result isEditable(Collection<ICoverage> coverageItems) {
+      for (ICoverage item : coverageItems) {
          if (item.isEditable().isFalse()) {
             return item.isEditable();
          }
@@ -262,10 +262,10 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       return Result.TrueResult;
    }
 
-   public boolean promptChangeData(XViewerColumn xCol, Collection<ICoverageEditorItem> coverageItems, boolean colMultiEdit) throws OseeCoreException {
+   public boolean promptChangeData(XViewerColumn xCol, Collection<ICoverage> coverageItems, boolean colMultiEdit) throws OseeCoreException {
       boolean modified = false;
       if (coverageItems != null && !coverageItems.isEmpty()) {
-         ICoverageEditorItem coverageItem = (ICoverageEditorItem) coverageItems.toArray()[0];
+         ICoverage coverageItem = (ICoverage) coverageItems.toArray()[0];
 
          if (isEditable(coverageItems).isFalse()) {
             MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Coverage Item",
@@ -294,7 +294,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    }
 
    @Override
-   public void setSelectedCoverageEditorItem(ICoverageEditorItem item) {
+   public void setSelectedCoverageEditorItem(ICoverage item) {
       xCoverageViewer.getXViewer().setSelection(new StructuredSelection(item));
       xCoverageViewer.getXViewer().reveal(new StructuredSelection(item));
    }

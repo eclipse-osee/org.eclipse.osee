@@ -7,9 +7,9 @@ package org.eclipse.osee.coverage.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -28,9 +28,9 @@ public class LinkWithImportItemAction extends Action {
 
    private void updateSelection() {
       if (isChecked() && ((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().size() == 1) {
-         ICoverageEditorItem importCoverageEditorItem =
+         ICoverage importCoverageEditorItem =
                ((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().iterator().next();
-         ICoverageEditorItem packageCoverageEditorItem =
+         ICoverage packageCoverageEditorItem =
                ((CoverageMergeXViewer) importXViewer.getXViewer()).getPackageItemForImportItem(
                      importCoverageEditorItem, true);
          if (packageCoverageEditorItem != null) {

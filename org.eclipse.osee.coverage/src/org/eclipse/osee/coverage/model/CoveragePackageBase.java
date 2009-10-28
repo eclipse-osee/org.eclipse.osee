@@ -11,9 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.CoverageManager;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.ICoverageTabProvider;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageMetrics;
@@ -32,12 +30,11 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.swt.graphics.Image;
 
 /**
  * @author Donald G. Dunne
  */
-public abstract class CoveragePackageBase implements ICoverageEditorItem, ICoverageTabProvider {
+public abstract class CoveragePackageBase implements ICoverage, ICoverageTabProvider {
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    private final List<CoverageTestUnit> testUnits = new ArrayList<CoverageTestUnit>();
    private final XResultData logResultData = new XResultData(false);
@@ -117,8 +114,8 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
    }
 
    @Override
-   public Collection<? extends ICoverageEditorItem> getCoverageEditorItems(boolean recurse) {
-      Set<ICoverageEditorItem> items = new HashSet<ICoverageEditorItem>();
+   public Collection<? extends ICoverage> getCoverageEditorItems(boolean recurse) {
+      Set<ICoverage> items = new HashSet<ICoverage>();
       for (CoverageUnit coverageUnit : getCoverageUnits()) {
          items.add(coverageUnit);
          if (recurse) {
@@ -130,7 +127,7 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
 
    public CoverageUnit getOrCreateParent(String namespace) {
       // Look for already existing CU
-      for (ICoverageEditorItem item : new CopyOnWriteArrayList<ICoverageEditorItem>(getCoverageEditorItems(true))) {
+      for (ICoverage item : new CopyOnWriteArrayList<ICoverage>(getCoverageEditorItems(true))) {
          if (!(item instanceof CoverageUnit)) continue;
          CoverageUnit coverageUnit = (CoverageUnit) item;
          if (coverageUnit.getName().equals(namespace)) {
@@ -157,7 +154,7 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
 
          // Look for already existing CU
          boolean found = false;
-         for (ICoverageEditorItem item : new CopyOnWriteArrayList<ICoverageEditorItem>(getCoverageEditorItems(true))) {
+         for (ICoverage item : new CopyOnWriteArrayList<ICoverage>(getCoverageEditorItems(true))) {
             if (!(item instanceof CoverageUnit)) continue;
             if (item.getName().equals(nameStr)) {
                found = true;
@@ -169,7 +166,7 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
          // Create one if not exists
 
          // Find parent
-         ICoverageEditorItem parent = null;
+         ICoverage parent = null;
          if (nameStr.equals(name)) {
             parent = this;
          } else {
@@ -222,7 +219,7 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
    }
 
    @Override
-   public Collection<? extends ICoverageEditorItem> getChildrenItems() {
+   public Collection<? extends ICoverage> getChildrenItems() {
       return coverageUnits;
    }
 
@@ -254,22 +251,6 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
    }
 
    @Override
-   public Object[] getChildren() {
-      Collection<?> children = getChildrenItems();
-      return children.toArray(new Object[children.size()]);
-   }
-
-   @Override
-   public Image getCoverageEditorImage(XViewerColumn xCol) {
-      return null;
-   }
-
-   @Override
-   public String getCoverageEditorValue(XViewerColumn xCol) {
-      return null;
-   }
-
-   @Override
    public String getLocation() {
       return "";
    }
@@ -295,7 +276,7 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
    }
 
    @Override
-   public ICoverageEditorItem getParent() {
+   public ICoverage getParent() {
       return null;
    }
 

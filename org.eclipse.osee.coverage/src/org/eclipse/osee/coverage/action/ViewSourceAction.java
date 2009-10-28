@@ -7,7 +7,7 @@ package org.eclipse.osee.coverage.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -38,7 +38,7 @@ public class ViewSourceAction extends Action {
          return;
       }
       if (selectedCoverageEditorItem.getSelectedCoverageEditorItems().size() > 0) {
-         ICoverageEditorItem item = selectedCoverageEditorItem.getSelectedCoverageEditorItems().iterator().next();
+         ICoverage item = selectedCoverageEditorItem.getSelectedCoverageEditorItems().iterator().next();
          EntryDialog ed = new EntryDialog(item.getName(), "");
          ed.setFillVertically(true);
          String text = item.getText();

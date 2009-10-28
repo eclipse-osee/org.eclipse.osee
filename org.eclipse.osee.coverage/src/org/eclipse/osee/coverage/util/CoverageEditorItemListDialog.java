@@ -9,7 +9,7 @@ import java.util.Collection;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -36,8 +36,8 @@ public class CoverageEditorItemListDialog extends org.eclipse.ui.dialogs.ListDia
       setLabelProvider(new LabelProvider() {
          @Override
          public String getText(Object element) {
-            if (element instanceof ICoverageEditorItem) {
-               return ((ICoverageEditorItem) element).getName();
+            if (element instanceof ICoverage) {
+               return ((ICoverage) element).getName();
             }
             return "Unknown";
          }

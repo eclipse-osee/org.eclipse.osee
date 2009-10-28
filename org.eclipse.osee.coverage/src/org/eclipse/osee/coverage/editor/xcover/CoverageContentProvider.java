@@ -17,14 +17,16 @@ import java.util.HashSet;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
+import org.eclipse.osee.coverage.model.CoveragePackageBase;
+import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 
 public class CoverageContentProvider implements ITreeContentProvider {
 
-   protected Collection<ICoverageEditorItem> rootSet = new HashSet<ICoverageEditorItem>();
+   protected Collection<ICoverage> rootSet = new HashSet<ICoverage>();
    private final CoverageXViewer xViewer;
    private final SkynetGuiDebug debug = new SkynetGuiDebug(false, "CoverageContentProvider");
 
@@ -33,11 +35,11 @@ public class CoverageContentProvider implements ITreeContentProvider {
       this.xViewer = coverageXViewer;
    }
 
-   public void add(final ICoverageEditorItem item) {
+   public void add(final ICoverage item) {
       add(Arrays.asList(item));
    }
 
-   public void add(final Collection<? extends ICoverageEditorItem> items) {
+   public void add(final Collection<? extends ICoverage> items) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -47,7 +49,7 @@ public class CoverageContentProvider implements ITreeContentProvider {
       });
    }
 
-   public void set(final Collection<? extends ICoverageEditorItem> arts) {
+   public void set(final Collection<? extends ICoverage> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -63,16 +65,16 @@ public class CoverageContentProvider implements ITreeContentProvider {
 
    public void remove(final Collection<? extends Artifact> arts) {
       if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-      ArrayList<ICoverageEditorItem> delItems = new ArrayList<ICoverageEditorItem>();
+      ArrayList<ICoverage> delItems = new ArrayList<ICoverage>();
       delItems.addAll(rootSet);
       for (Artifact art : arts) {
-         for (ICoverageEditorItem wai : rootSet)
+         for (ICoverage wai : rootSet)
             if (wai.equals(art)) delItems.add(wai);
       }
       removeItems(delItems);
    }
 
-   public void removeItems(final Collection<? extends ICoverageEditorItem> arts) {
+   public void removeItems(final Collection<? extends ICoverage> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
@@ -94,8 +96,13 @@ public class CoverageContentProvider implements ITreeContentProvider {
 
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof ICoverageEditorItem) {
-         return ((ICoverageEditorItem) parentElement).getChildren();
+      if (parentElement instanceof CoveragePackageBase) {
+         Collection<?> children = ((CoveragePackageBase) parentElement).getChildrenItems();
+         return children.toArray(new Object[children.size()]);
+      }
+      if (parentElement instanceof CoverageUnit) {
+         Collection<?> children = ((CoverageUnit) parentElement).getChildrenItems();
+         return children.toArray(new Object[children.size()]);
       }
       if (parentElement instanceof Object[]) {
          return (Object[]) parentElement;
@@ -127,7 +134,7 @@ public class CoverageContentProvider implements ITreeContentProvider {
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
    }
 
-   public Collection<ICoverageEditorItem> getRootSet() {
+   public Collection<ICoverage> getRootSet() {
       return rootSet;
    }
 

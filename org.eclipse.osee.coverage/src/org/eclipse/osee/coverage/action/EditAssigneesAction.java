@@ -10,9 +10,9 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -60,7 +60,7 @@ public class EditAssigneesAction extends Action {
 
       try {
          Set<User> initalUsers = new HashSet<User>();
-         for (ICoverageEditorItem coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
+         for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
             if (coverageItem.isAssignable()) {
                if (Strings.isValid(((CoverageUnit) coverageItem).getAssignees())) {
                   initalUsers.addAll(UsersByIds.getUsers(((CoverageUnit) coverageItem).getAssignees()));
@@ -75,7 +75,7 @@ public class EditAssigneesAction extends Action {
             Collection<User> users = uld.getUsersSelected();
             String storageString = "";
             storageString = UsersByIds.getStorageString(users);
-            for (ICoverageEditorItem coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
+            for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
                if (coverageItem.isAssignable()) {
                   ((CoverageUnit) coverageItem).setAssignees(storageString);
                   refreshable.update(coverageItem);

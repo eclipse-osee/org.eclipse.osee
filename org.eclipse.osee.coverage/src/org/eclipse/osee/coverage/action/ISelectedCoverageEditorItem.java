@@ -6,14 +6,14 @@
 package org.eclipse.osee.coverage.action;
 
 import java.util.Collection;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
+import org.eclipse.osee.coverage.model.ICoverage;
 
 /**
  * @author Donald G. Dunne
  */
 public interface ISelectedCoverageEditorItem {
 
-   public Collection<ICoverageEditorItem> getSelectedCoverageEditorItems();
+   public Collection<ICoverage> getSelectedCoverageEditorItems();
 
-   public void setSelectedCoverageEditorItem(ICoverageEditorItem item);
+   public void setSelectedCoverageEditorItem(ICoverage item);
 }

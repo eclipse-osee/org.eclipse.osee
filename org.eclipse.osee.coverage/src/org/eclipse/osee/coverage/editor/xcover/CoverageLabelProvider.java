@@ -13,10 +13,13 @@ package org.eclipse.osee.coverage.editor.xcover;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -34,7 +37,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       this.xViewer = xViewer;
    }
 
-   public static Image getCoverageItemUserImage(ICoverageEditorItem coverageItem) {
+   public static Image getCoverageItemUserImage(ICoverage coverageItem) {
       try {
          if (coverageItem.isAssignable() && Strings.isValid(coverageItem.getAssignees())) {
             return FrameworkArtifactImageProvider.getUserImage(UsersByIds.getUsers(coverageItem.getAssignees()));
@@ -47,7 +50,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
+      ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
          return getCoverageItemUserImage(coverageItem);
       }
@@ -57,19 +60,38 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
+      ICoverage coverage = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
-         return CoverageUtil.getCoverageItemUsersStr(coverageItem);
+         return CoverageUtil.getCoverageItemUsersStr(coverage);
       }
-      if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverageItem.getNotes();
-      if (xCol.equals(CoverageXViewerFactory.Name)) return coverageItem.getName();
+      if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverage.getNotes();
+      if (xCol.equals(CoverageXViewerFactory.Name)) return coverage.getName();
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
-         return coverageItem.getCoveragePercentStr();
+         return coverage.getCoveragePercentStr();
       }
-      if (xCol.equals(CoverageXViewerFactory.Location)) return coverageItem.getLocation();
-      if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverageItem.getNamespace();
-      if (xCol.equals(CoverageXViewerFactory.Guid)) return coverageItem.getGuid();
-      return coverageItem.getCoverageEditorValue(xCol);
+      if (xCol.equals(CoverageXViewerFactory.Location)) return coverage.getLocation();
+      if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverage.getNamespace();
+      if (xCol.equals(CoverageXViewerFactory.Guid)) return coverage.getGuid();
+
+      if (coverage instanceof CoverageItem) {
+         CoverageItem coverageItem = (CoverageItem) coverage;
+         if (xCol.equals(CoverageXViewerFactory.Line_Number)) return coverageItem.getLineNum();
+         if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) return coverageItem.getCoverageRationale();
+         if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageItem.getMethodNum();
+         if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return coverageItem.getExecuteNum();
+         if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return coverageItem.getCoverageMethod().toString();
+         if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageItem.getCoverageUnit().getName();
+         if (xCol.equals(CoverageXViewerFactory.Coverage_Test_Units)) return Collections.toString(", ",
+               coverageItem.getTestUnits());
+         if (xCol.equals(CoverageXViewerFactory.Text)) return Collections.toString(", ", coverageItem.getText());
+         return "";
+      }
+      if (coverage instanceof CoverageUnit) {
+         CoverageUnit coverageUnit = (CoverageUnit) coverage;
+         if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageUnit.getParentCoverageUnit() == null ? "" : coverageUnit.getParentCoverageUnit().getName();
+      }
+      return "";
+
    }
 
    public void dispose() {
@@ -91,7 +113,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
    @Override
    public int getColumnGradient(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
-      ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
+      ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
          return coverageItem.getCoveragePercent();
       }

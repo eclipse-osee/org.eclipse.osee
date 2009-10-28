@@ -10,9 +10,9 @@ import java.util.List;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -52,7 +52,7 @@ public class DeleteCoverUnitAction extends Action {
          AWorkbench.popup("Select Coverage Unit");
          return;
       }
-      for (ICoverageEditorItem item : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
+      for (ICoverage item : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
          if (!(item instanceof CoverageUnit)) {
             AWorkbench.popup("Can only delete Coverage Units");
             return;
@@ -68,8 +68,8 @@ public class DeleteCoverUnitAction extends Action {
          try {
             SkynetTransaction transaction =
                   new SkynetTransaction(BranchManager.getCommonBranch(), "Coverage - Delete Coverage Unit");
-            List<ICoverageEditorItem> deleteItems = new ArrayList<ICoverageEditorItem>();
-            for (ICoverageEditorItem coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
+            List<ICoverage> deleteItems = new ArrayList<ICoverage>();
+            for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
                if (coverageItem.getParent() instanceof ICoverageUnitProvider) {
                   ((ICoverageUnitProvider) coverageItem.getParent()).removeCoverageUnit((CoverageUnit) coverageItem);
                   deleteItems.add(coverageItem);
@@ -77,7 +77,7 @@ public class DeleteCoverUnitAction extends Action {
                }
             }
             transaction.execute();
-            for (ICoverageEditorItem coverageItem : deleteItems) {
+            for (ICoverage coverageItem : deleteItems) {
                refreshable.remove(coverageItem);
             }
          } catch (OseeCoreException ex) {

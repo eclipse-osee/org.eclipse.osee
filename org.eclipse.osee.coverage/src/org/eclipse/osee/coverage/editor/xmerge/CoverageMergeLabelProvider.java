@@ -12,10 +12,10 @@ package org.eclipse.osee.coverage.editor.xmerge;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
-import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageLabelProvider;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer.ImportType;
+import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -33,7 +33,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
+      ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
          return getCoverageItemUserImage(coverageItem);
       }
@@ -47,13 +47,12 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
          }
          return ImageManager.getImage(FrameworkImage.CHECKBOX_DISABLED);
       }
-
-      return coverageItem.getCoverageEditorImage(xCol);
+      return super.getColumnImage(element, xCol, columnIndex);
    }
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
+      ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
          return CoverageUtil.getCoverageItemUsersStr(coverageItem);
       }
@@ -83,11 +82,11 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
          return importType.toString();
       }
 
-      return coverageItem.getCoverageEditorValue(xCol);
+      return super.getColumnText(element, xCol, columnIndex);
    }
 
-   private boolean isChildErrorImportType(ICoverageEditorItem coverageItem) {
-      for (ICoverageEditorItem childEditorItem : coverageItem.getChildrenItems()) {
+   private boolean isChildErrorImportType(ICoverage coverageItem) {
+      for (ICoverage childEditorItem : coverageItem.getChildrenItems()) {
          if (!mergeXViewer.isImportAllowed(childEditorItem)) continue;
          ImportType importType = mergeXViewer.getImportType(childEditorItem);
          if (importType == ImportType.Error) {
@@ -122,7 +121,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
 
    @Override
    public int getColumnGradient(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
-      ICoverageEditorItem coverageItem = (ICoverageEditorItem) element;
+      ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
          return coverageItem.getCoveragePercent();
       }
