@@ -5,12 +5,11 @@
  */
 package org.eclipse.osee.coverage.test.model;
 
-import static org.junit.Assert.fail;
 import junit.framework.Assert;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.model.TestUnit;
+import org.eclipse.osee.coverage.model.CoverageTestUnit;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -64,12 +63,12 @@ public class CoverageItemTest {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageItem#addTestUnit(org.eclipse.osee.coverage.model.TestUnit)}.
+    * {@link org.eclipse.osee.coverage.model.CoverageItem#addTestUnit(org.eclipse.osee.coverage.model.CoverageTestUnit)}.
     */
    @Test
    public void testAddGetTestUnit() {
       for (int x = 0; x < 10; x++) {
-         ci1.addTestUnit(new TestUnit("Test Unit " + x, "C:\\UserData\\"));
+         ci1.addTestUnit(new CoverageTestUnit("Test Unit " + x, "C:\\UserData\\"));
       }
       Assert.assertEquals(10, ci1.getTestUnits().size());
    }
@@ -210,8 +209,10 @@ public class CoverageItemTest {
     */
    @Test
    public void testSetGetText() {
-      ci1.setCoverageRationale("this is text");
-      Assert.assertEquals("this is text", ci1.getCoverageRationale());
+      ci1.setText("this is text2");
+      Assert.assertEquals("this is text2", ci1.getText());
+      ci1.setText("this is text");
+      Assert.assertEquals("this is text", ci1.getText());
    }
 
    /**
@@ -244,34 +245,6 @@ public class CoverageItemTest {
       Assert.assertEquals(ci1.getTestUnits().size(), ci.getTestUnits().size());
       Assert.assertEquals(ci1.getText(), ci.getText());
       Assert.assertEquals(ci1.getCoverageRationale(), ci.getCoverageRationale());
-   }
-
-   /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getArtifact(boolean)}.
-    */
-   @Test
-   public void testGetArtifact() {
-      fail("Not yet implemented");
-   }
-
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageItem#delete(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction, boolean)}
-    * .
-    */
-   @Test
-   public void testDelete() {
-      fail("Not yet implemented");
-   }
-
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageItem#save(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)}
-    * .
-    */
-   @Test
-   public void testSave() {
-      fail("Not yet implemented");
    }
 
    /**

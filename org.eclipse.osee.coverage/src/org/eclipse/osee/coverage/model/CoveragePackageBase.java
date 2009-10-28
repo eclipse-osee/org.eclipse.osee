@@ -40,7 +40,7 @@ import org.eclipse.swt.graphics.Image;
  */
 public abstract class CoveragePackageBase implements ICoverageEditorItem, ICoverageEditorProvider, ICoverageTabProvider {
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
-   private final List<TestUnit> testUnits = new ArrayList<TestUnit>();
+   private final List<CoverageTestUnit> testUnits = new ArrayList<CoverageTestUnit>();
    private final XResultData logResultData = new XResultData(false);
    private Artifact artifact;
    private String guid = GUID.create();
@@ -62,11 +62,11 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
       }
    }
 
-   public void addTestUnit(TestUnit testUnit) {
+   public void addTestUnit(CoverageTestUnit testUnit) {
       testUnits.add(testUnit);
    }
 
-   public List<TestUnit> getTestUnits() {
+   public List<CoverageTestUnit> getTestUnits() {
       return testUnits;
    }
 

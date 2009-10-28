@@ -11,7 +11,6 @@
 
 package org.eclipse.osee.ats.util;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
@@ -41,8 +40,6 @@ import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AFile;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeGroup;
@@ -53,7 +50,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.utility.DbUtil;
-import org.eclipse.osee.framework.skynet.core.utility.OseeData;
+import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -168,9 +165,9 @@ public class AtsUtil implements IAtsLib {
    }
 
    /**
-    * The development of ATS requires quite a few Actions to be created. To facilitate this, getTTNum will retrieve a
-    * persistent number from the filesystem so each action has a different name. By entering "tt" in the title, new
-    * action wizard will be prepopulated with selections and the action name will be created as "tt <number in
+    * The development of ATS requires quite a few Actions to be created. To facilitate this, this method will retrieve a
+    * persistent number from the file-system so each action has a different name. By entering "tt" in the title, new
+    * action wizard will be pre-populated with selections and the action name will be created as "tt <number in
     * atsNumFilename>".
     * 
     * @return number
@@ -178,17 +175,7 @@ public class AtsUtil implements IAtsLib {
     */
    public static int getAtsDeveloperIncrementingNum() {
       try {
-         File numFile = OseeData.getFile("atsDevNum.txt");
-         if (numFile.exists() && atsDevNum == 0) {
-            try {
-               atsDevNum = new Integer(AFile.readFile(numFile).replaceAll("\\s", ""));
-            } catch (NumberFormatException ex) {
-            } catch (NullPointerException ex) {
-            }
-         }
-         atsDevNum++;
-         Lib.writeStringToFile(String.valueOf(atsDevNum), numFile);
-         return atsDevNum;
+         return IncrementingNum.get();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
       }

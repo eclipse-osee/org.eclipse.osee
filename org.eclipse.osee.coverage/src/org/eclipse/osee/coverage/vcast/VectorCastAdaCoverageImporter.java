@@ -20,7 +20,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.model.TestUnit;
+import org.eclipse.osee.coverage.model.CoverageTestUnit;
 import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -110,8 +110,8 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       }
 
       for (VcpResultsFile vcpResultsFile : vCastVcp.resultsFiles) {
-         TestUnit testUnit =
-               new TestUnit(vcpResultsFile.getValue(ResultsValue.FILENAME),
+         CoverageTestUnit testUnit =
+               new CoverageTestUnit(vcpResultsFile.getValue(ResultsValue.FILENAME),
                      vcpResultsFile.getValue(ResultsValue.DIRECTORY));
          for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
             CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);

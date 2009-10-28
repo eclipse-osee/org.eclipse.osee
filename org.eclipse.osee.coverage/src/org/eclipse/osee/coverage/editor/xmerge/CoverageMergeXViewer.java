@@ -21,7 +21,7 @@ import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.model.TestUnit;
+import org.eclipse.osee.coverage.model.CoverageTestUnit;
 import org.eclipse.osee.coverage.util.CoveragePackageImporter;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.swt.widgets.Composite;
@@ -65,7 +65,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
 
    public ImportType getImportType(ICoverageEditorItem importItem) {
       if (importItem instanceof CoverageItem) return ImportType.None;
-      if (importItem instanceof TestUnit) return ImportType.None;
+      if (importItem instanceof CoverageTestUnit) return ImportType.None;
 
       if (!importError.containsKey(importItem)) {
          XResultData rd = new XResultData(false);

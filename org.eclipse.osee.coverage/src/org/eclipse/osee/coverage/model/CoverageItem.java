@@ -21,8 +21,10 @@ import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.AXml;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -44,8 +46,9 @@ public class CoverageItem implements ICoverageEditorItem {
    private String methodNum;
    private String text;
    private final CoverageUnit coverageUnit;
-   private final Set<TestUnit> testUnits = new HashSet<TestUnit>();
+   private final Set<CoverageTestUnit> testUnits = new HashSet<CoverageTestUnit>();
    private String guid = GUID.create();
+   private static String PROPERTY_STORE_ID = "coverage.item";
 
    public CoverageItem(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethod, String executeNum) {
       super();
@@ -62,31 +65,40 @@ public class CoverageItem implements ICoverageEditorItem {
       fromXml(xml);
    }
 
-   public void fromXml(String xml) {
-      setCoverageMethod(CoverageMethodEnum.valueOf(AXml.getTagData(xml, "methodType")));
-      this.executeNum = AXml.getTagData(xml, "execNum");
-      setGuid(AXml.getTagData(xml, "guid"));
-      String lineNum = AXml.getTagData(xml, "line");
+   public void fromXml(String xml) throws OseeCoreException {
+      PropertyStore store = new PropertyStore();
+      try {
+         store.load(xml);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+      if (!store.getId().equals(PROPERTY_STORE_ID)) {
+         throw new OseeArgumentException(String.format("Invalid store id [%s] for CoverageItem", store.getId()));
+      }
+      setCoverageMethod(CoverageMethodEnum.valueOf(store.get("methodType")));
+      this.executeNum = store.get("executeNum");
+      setGuid(store.get("guid"));
+      String lineNum = store.get("line");
       if (Strings.isValid(lineNum)) setLineNum(lineNum);
-      String text = AXml.getTagData(xml, "text");
+      String text = store.get("text");
       if (Strings.isValid(text)) setText(text);
-      String rationale = AXml.getTagData(xml, "rationale");
+      String rationale = store.get("rationale");
       if (Strings.isValid(rationale)) setCoverageRationale(rationale);
-      String methodNum = AXml.getTagData(xml, "methodNum");
+      String methodNum = store.get("methodNum");
       if (Strings.isValid(methodNum)) setMethodNum(methodNum);
-      String testUnitsGuids = AXml.getTagData(xml, "testUnits");
+      String testUnitsGuids = store.get("testUnits");
       if (Strings.isValid(testUnitsGuids)) {
          for (String guid : testUnitsGuids.split(",")) {
-            addTestUnit((TestUnit) CoverageManager.getByGuid(guid));
+            addTestUnit((CoverageTestUnit) CoverageManager.getByGuid(guid));
          }
       }
    }
 
-   public Set<TestUnit> getTestUnits() {
+   public Set<CoverageTestUnit> getTestUnits() {
       return testUnits;
    }
 
-   public void addTestUnit(TestUnit testUnit) {
+   public void addTestUnit(CoverageTestUnit testUnit) {
       testUnits.add(testUnit);
       CoverageManager.cache(testUnit);
    }
@@ -207,25 +219,27 @@ public class CoverageItem implements ICoverageEditorItem {
    }
 
    public String toXml() throws OseeCoreException {
-      StringBuffer sb = new StringBuffer(200);
-      sb.append("<CvgItem>");
-      sb.append(AXml.addTagData("guid", getGuid()));
-      sb.append(AXml.addTagData("methodNum", getMethodNum()));
-      sb.append(AXml.addTagData("line", getLineNum()));
+      PropertyStore store = new PropertyStore(PROPERTY_STORE_ID);
+      store.put("guid", guid);
+      store.put("methodNum", methodNum);
+      store.put("line", lineNum);
       if (Strings.isValid(getCoverageRationale())) {
-         sb.append(AXml.addTagData("rationale", getCoverageRationale()));
+         store.put("rationale", coverageRationale);
       }
-      sb.append(AXml.addTagData("execNum", getExecuteNum()));
-      sb.append(AXml.addTagData("methodType", getCoverageMethod().toString()));
-      sb.append(AXml.addTagData("testUnits", getTestUnitGuidList(getTestUnits())));
-      sb.append(AXml.addTagData("text", getText()));
-      sb.append("</CvgItem>");
-      return sb.toString();
+      store.put("executeNum", executeNum);
+      store.put("methodType", coverageMethod.toString());
+      store.put("testUnits", getTestUnitGuidList(getTestUnits()));
+      store.put("text", text);
+      try {
+         return store.save();
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 
-   public String getTestUnitGuidList(Collection<TestUnit> testUnits) {
+   public String getTestUnitGuidList(Collection<CoverageTestUnit> testUnits) {
       List<String> guids = new ArrayList<String>();
-      for (TestUnit testUnit : testUnits) {
+      for (CoverageTestUnit testUnit : testUnits) {
          guids.add(testUnit.getGuid());
       }
       return Collections.toString(guids, ",");
@@ -238,13 +252,13 @@ public class CoverageItem implements ICoverageEditorItem {
          else
             getArtifact(false).deleteAndPersist(transaction);
       }
-      for (TestUnit testUnit : testUnits) {
+      for (CoverageTestUnit testUnit : testUnits) {
          testUnit.delete(transaction, purge);
       }
    }
 
    public void save(SkynetTransaction transaction) throws OseeCoreException {
-      for (TestUnit testUnit : testUnits) {
+      for (CoverageTestUnit testUnit : testUnits) {
          testUnit.save(transaction);
       }
    }

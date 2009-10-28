@@ -30,8 +30,9 @@ import org.eclipse.swt.graphics.Image;
  * 
  * @author Donald G. Dunne
  */
-public class TestUnit implements ICoverageEditorItem {
+public class CoverageTestUnit implements ICoverageEditorItem {
 
+   public static String ARTIFACT_NAME = "Coverage Test Unit";
    private String name;
    private String namespace;
    private String guid = GUID.create();
@@ -40,7 +41,7 @@ public class TestUnit implements ICoverageEditorItem {
    private String location;
    private Artifact artifact;
 
-   public TestUnit(String name, String location) {
+   public CoverageTestUnit(String name, String location) {
       super();
       this.name = name;
       this.location = location;
@@ -134,8 +135,7 @@ public class TestUnit implements ICoverageEditorItem {
 
    public Artifact getArtifact(boolean create) throws OseeCoreException {
       if (artifact == null && create) {
-         artifact =
-               ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch(), guid, null);
+         artifact = ArtifactTypeManager.addArtifact(ARTIFACT_NAME, BranchManager.getCommonBranch(), guid, null);
       }
       return artifact;
    }

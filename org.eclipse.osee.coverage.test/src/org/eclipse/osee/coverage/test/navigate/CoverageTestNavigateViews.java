@@ -12,7 +12,7 @@ package org.eclipse.osee.coverage.test.navigate;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.navigate.ICoverageNavigateItem;
 import org.eclipse.osee.coverage.test.import1.CoverageImportTest1NavigateItem;
 import org.eclipse.osee.coverage.test.package1.CoveragePackage1;
@@ -34,7 +34,7 @@ public class CoverageTestNavigateViews implements ICoverageNavigateItem {
 
       List<XNavigateItem> items = new ArrayList<XNavigateItem>();
 
-      if (AtsPlugin.areOSEEServicesAvailable().isFalse()) {
+      if (Activator.areOSEEServicesAvailable().isFalse()) {
          return items;
       }
 

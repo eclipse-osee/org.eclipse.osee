@@ -14,6 +14,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Serializable;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.io.Writer;
 import java.util.Arrays;
 import java.util.List;
@@ -177,6 +179,11 @@ public class PropertyStore implements IPropertyStore, Serializable {
       return builder.toString();
    }
 
+   public void load(String input) throws Exception {
+      PropertyStoreWriter storeWriter = new PropertyStoreWriter();
+      storeWriter.load(this, new StringReader(input));
+   }
+
    public void load(InputStream inputStream) throws Exception {
       PropertyStoreWriter storeWriter = new PropertyStoreWriter();
       storeWriter.load(this, inputStream);
@@ -185,6 +192,12 @@ public class PropertyStore implements IPropertyStore, Serializable {
    public void load(Reader reader) throws Exception {
       PropertyStoreWriter storeWriter = new PropertyStoreWriter();
       storeWriter.load(this, reader);
+   }
+
+   public String save() throws Exception {
+      StringWriter writer = new StringWriter();
+      save(writer);
+      return writer.toString();
    }
 
    public void save(Writer writer) throws Exception {
@@ -267,4 +280,5 @@ public class PropertyStore implements IPropertyStore, Serializable {
       }
       return result;
    }
+
 }

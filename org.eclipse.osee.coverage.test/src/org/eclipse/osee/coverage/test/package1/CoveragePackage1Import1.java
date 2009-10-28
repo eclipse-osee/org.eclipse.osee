@@ -10,11 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test.package1;
 
-import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.test.import1.CoverageImportTest1Blam;
+import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -35,8 +35,7 @@ public class CoveragePackage1Import1 extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      CoveragePackage coveragePackage =
-            new CoveragePackage(getName() + " - #" + AtsUtil.getAtsDeveloperIncrementingNum());
+      CoveragePackage coveragePackage = new CoveragePackage(getName() + " - #" + IncrementingNum.get());
       CoverageEditor.open(new CoverageEditorInput(coveragePackage));
       // Process Import 1
       CoverageEditor editor = null;

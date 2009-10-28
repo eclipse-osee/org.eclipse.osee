@@ -14,6 +14,8 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 
 /**
@@ -23,6 +25,10 @@ public class CoverageUtil {
 
    public static String getCoverageItemUsersStr(ICoverageEditorItem coverageItem) {
       return Collections.toString(getCoverageItemUsers(coverageItem), "; ");
+   }
+
+   public static Branch getBranch() throws OseeCoreException {
+      return BranchManager.getCommonBranch();
    }
 
    public static Collection<User> getCoverageItemUsers(ICoverageEditorItem coverageItem) {
