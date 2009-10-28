@@ -13,7 +13,6 @@ package org.eclipse.osee.coverage.model;
 import java.util.Date;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
-import org.eclipse.osee.coverage.editor.ICoverageEditorProvider;
 import org.eclipse.osee.coverage.editor.ICoverageTabProvider;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -29,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport extends CoveragePackageBase implements ICoverageUnitProvider, ICoverageEditorProvider, ICoverageEditorItem, ICoverageTabProvider {
+public class CoverageImport extends CoveragePackageBase implements ICoverageUnitProvider, ICoverageEditorItem, ICoverageTabProvider {
 
    private Date runDate;
    private String location = "";

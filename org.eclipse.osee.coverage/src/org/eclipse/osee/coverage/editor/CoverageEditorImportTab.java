@@ -15,6 +15,7 @@ import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -53,7 +54,7 @@ import org.eclipse.ui.forms.widgets.Section;
 public class CoverageEditorImportTab extends FormPage {
 
    private final CoverageEditor coverageEditor;
-   private final ICoverageEditorProvider provider;
+   private final CoveragePackageBase provider;
    private XComboViewer combo;
    private BlamUsageSection blamUsageSection;
    private BlamInputSection blamInputSection;
@@ -68,7 +69,7 @@ public class CoverageEditorImportTab extends FormPage {
    public CoverageEditorImportTab(CoverageEditor coverageEditor) {
       super(coverageEditor, "Import", "Import");
       this.coverageEditor = coverageEditor;
-      this.provider = coverageEditor.getCoverageEditorProvider();
+      this.provider = coverageEditor.getCoveragePackageBase();
    }
 
    @Override
@@ -259,7 +260,7 @@ public class CoverageEditorImportTab extends FormPage {
 
       coverageEditorMergeTab =
             new CoverageEditorMergeTab("Import Merge", coverageEditor,
-                  (CoveragePackage) coverageEditor.getCoverageEditorProvider(), coverageImport);
+                  (CoveragePackage) coverageEditor.getCoveragePackageBase(), coverageImport);
       coverageEditorMergeIndex = coverageEditor.addFormPage(coverageEditorMergeTab);
    }
 

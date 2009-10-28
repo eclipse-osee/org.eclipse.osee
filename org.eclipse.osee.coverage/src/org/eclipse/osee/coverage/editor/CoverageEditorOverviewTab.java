@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.editor;
 
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
+import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.util.CoverageMetrics;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -28,13 +29,13 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 public class CoverageEditorOverviewTab extends FormPage implements IRefreshActionHandler {
 
    private final CoverageEditor coverageEditor;
-   private final ICoverageEditorProvider provider;
+   private final CoveragePackageBase coveragePackageBase;
    XResultsComposite xResultsComp;
 
-   public CoverageEditorOverviewTab(String name, CoverageEditor coverageEditor, ICoverageEditorProvider provider) {
+   public CoverageEditorOverviewTab(String name, CoverageEditor coverageEditor, CoveragePackageBase provider) {
       super(coverageEditor, name, name);
       this.coverageEditor = coverageEditor;
-      this.provider = provider;
+      this.coveragePackageBase = provider;
    }
 
    @Override
@@ -42,8 +43,8 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
       super.createFormContent(managedForm);
 
       final ScrolledForm form = managedForm.getForm();
-      form.setText(provider.getName());
-      form.setImage(ImageManager.getImage(provider.getTitleImage()));
+      form.setText(coveragePackageBase.getName());
+      form.setImage(ImageManager.getImage(coveragePackageBase.getTitleImage()));
 
       form.getBody().setLayout(ALayout.getZeroMarginLayout());
       createToolBar();
@@ -62,24 +63,26 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
 
    public void refreshHtml() {
       XResultData rd = new XResultData();
-      provider.getOverviewHtmlHeader(rd);
+      coveragePackageBase.getOverviewHtmlHeader(rd);
       rd.log("");
       rd.log(AHTML.getLabelValueStr("Coverage Items - Covered",
-            String.valueOf(provider.getCoverageItemsCovered().size())));
-      rd.log(AHTML.getLabelValueStr("Coverage Items - Total", String.valueOf(provider.getCoverageItems().size())));
-      rd.log(AHTML.getLabelValueStr("Coverage Percent", String.format("%d", provider.getCoveragePercent())));
+            String.valueOf(coveragePackageBase.getCoverageItemsCovered().size())));
+      rd.log(AHTML.getLabelValueStr("Coverage Items - Total",
+            String.valueOf(coveragePackageBase.getCoverageItems().size())));
+      rd.log(AHTML.getLabelValueStr("Coverage Percent", String.format("%d", coveragePackageBase.getCoveragePercent())));
       rd.log("");
       rd.log(AHTML.getLabelValueStr("Covered Items by Coverage Type", ""));
-      int totalCoverageItems = provider.getCoverageItems().size();
+      int totalCoverageItems = coveragePackageBase.getCoverageItems().size();
       for (CoverageMethodEnum coverageMethodEnum : CoverageMethodEnum.values()) {
          rd.log("  - " + coverageMethodEnum + " - " + CoverageMetrics.getPercent(
-               provider.getCoverageItemsCovered(coverageMethodEnum).size(), totalCoverageItems).getSecond());
+               coveragePackageBase.getCoverageItemsCovered(coverageMethodEnum).size(), totalCoverageItems).getSecond());
       }
-      if (provider.getLog() != null) {
+      if (coveragePackageBase.getLog() != null) {
          rd.log(AHTML.newline() + AHTML.bold("Log") + AHTML.newline());
-         rd.addRaw(provider.getLog().getReport("").getManipulatedHtml());
+         rd.addRaw(coveragePackageBase.getLog().getReport("").getManipulatedHtml());
       }
-      xResultsComp.setHtmlText(rd.getReport(provider.getName()).getManipulatedHtml(), provider.getName());
+      xResultsComp.setHtmlText(rd.getReport(coveragePackageBase.getName()).getManipulatedHtml(),
+            coveragePackageBase.getName());
    }
 
    public void createToolBar() {

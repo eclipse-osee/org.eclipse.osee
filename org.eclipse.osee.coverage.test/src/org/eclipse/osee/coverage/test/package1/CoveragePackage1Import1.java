@@ -40,9 +40,9 @@ public class CoveragePackage1Import1 extends XNavigateItemAction {
       // Process Import 1
       CoverageEditor editor = null;
       for (CoverageEditor coverageEditor : CoverageEditor.getEditors()) {
-         if (coverageEditor.getCoverageEditorInput().getCoverageEditorProvider() instanceof CoveragePackage) {
+         if (coverageEditor.getCoverageEditorInput().getCoveragePackageBase() instanceof CoveragePackage) {
             CoveragePackage editorPackage =
-                  (CoveragePackage) coverageEditor.getCoverageEditorInput().getCoverageEditorProvider();
+                  (CoveragePackage) coverageEditor.getCoverageEditorInput().getCoveragePackageBase();
             if (editorPackage.getGuid().equals(coveragePackage.getGuid())) {
                editor = coverageEditor;
             }

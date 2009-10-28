@@ -17,10 +17,14 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
+import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
+import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -40,7 +44,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditor extends FormEditor implements IActionable {
+public class CoverageEditor extends FormEditor implements IActionable, IFrameworkTransactionEventListener {
    public static final String EDITOR_ID = "org.eclipse.osee.coverage.editor.CoverageEditor";
    private Integer startPage = null;
    private CoverageEditorImportTab coverageEditorImportTab = null;
@@ -50,16 +54,16 @@ public class CoverageEditor extends FormEditor implements IActionable {
    protected void addPages() {
       try {
          OseeContributionItem.addTo(this, true);
-         addFormPage(new CoverageEditorOverviewTab("Overview", this, getCoverageEditorProvider()));
+         addFormPage(new CoverageEditorOverviewTab("Overview", this, getCoveragePackageBase()));
          coverageEditorCoverageTab =
-               new CoverageEditorCoverageTab("Coverage Items", this, (ICoverageTabProvider) getCoverageEditorProvider());
+               new CoverageEditorCoverageTab("Coverage Items", this, (ICoverageTabProvider) getCoveragePackageBase());
          addFormPage(coverageEditorCoverageTab);
-         if (getCoverageEditorProvider().isImportAllowed()) {
+         if (getCoveragePackageBase().isImportAllowed()) {
             coverageEditorImportTab = new CoverageEditorImportTab(this);
             addFormPage(coverageEditorImportTab);
          }
-         setPartName(getCoverageEditorProvider().getName());
-         setTitleImage(ImageManager.getImage(getCoverageEditorProvider().getTitleImage()));
+         setPartName(getCoveragePackageBase().getName());
+         setTitleImage(ImageManager.getImage(getCoveragePackageBase().getTitleImage()));
          setActivePage(startPage);
       } catch (Exception ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -122,8 +126,8 @@ public class CoverageEditor extends FormEditor implements IActionable {
       });
    }
 
-   public ICoverageEditorProvider getCoverageEditorProvider() {
-      return getCoverageEditorInput().getCoverageEditorProvider();
+   public CoveragePackageBase getCoveragePackageBase() {
+      return getCoverageEditorInput().getCoveragePackageBase();
    }
 
    public CoverageEditorInput getCoverageEditorInput() {
@@ -236,4 +240,8 @@ public class CoverageEditor extends FormEditor implements IActionable {
       return false;
    }
 
+   @Override
+   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
+      System.out.println("check and close editor");
+   }
 }

@@ -14,7 +14,6 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
-import org.eclipse.osee.coverage.editor.ICoverageEditorProvider;
 import org.eclipse.osee.coverage.editor.ICoverageTabProvider;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageMetrics;
@@ -38,7 +37,7 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Donald G. Dunne
  */
-public abstract class CoveragePackageBase implements ICoverageEditorItem, ICoverageEditorProvider, ICoverageTabProvider {
+public abstract class CoveragePackageBase implements ICoverageEditorItem, ICoverageTabProvider {
    private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    private final List<CoverageTestUnit> testUnits = new ArrayList<CoverageTestUnit>();
    private final XResultData logResultData = new XResultData(false);
@@ -209,7 +208,6 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
       this.name = name;
    }
 
-   @Override
    public boolean isImportAllowed() {
       return isEditable().isTrue();
    }

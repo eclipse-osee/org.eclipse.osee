@@ -10,8 +10,8 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
-import org.eclipse.osee.coverage.editor.ICoverageEditorProvider;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.util.CoverageEditorItemListDialog;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -43,7 +43,7 @@ public class OpenCoveragePackageAction extends Action {
                new CoverageEditorItemListDialog("Open Coverage Package", "Select Coverage Package");
          dialog.setInput(CoverageManager.getCoveragePackages());
          if (dialog.open() == 0) {
-            CoverageEditor.open(new CoverageEditorInput((ICoverageEditorProvider) dialog.getResult()[0]));
+            CoverageEditor.open(new CoverageEditorInput((CoveragePackageBase) dialog.getResult()[0]));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
