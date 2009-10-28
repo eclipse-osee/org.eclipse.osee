@@ -15,4 +15,3 @@ plugin@org.apache.oro,2.0.8=GET,http://download.eclipse.org/tools/orbit/download
 plugin@com.lowagie.text,1.5.4=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/com.lowagie.text_1.5.4.v200908052355.jar
 plugin@org.apache.commons.logging,1.1.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.commons.logging_1.1.1.v200904062255.jar
 plugin@javax.servlet,2.5.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/javax.servlet_2.5.0.v200806031605.jar
-
