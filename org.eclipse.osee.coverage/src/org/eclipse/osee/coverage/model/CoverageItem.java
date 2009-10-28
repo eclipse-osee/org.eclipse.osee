@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
+import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.editor.ICoverageEditorItem;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.util.CoverageImage;
@@ -38,7 +39,7 @@ public class CoverageItem implements ICoverageEditorItem {
 
    private CoverageMethodEnum coverageMethod = CoverageMethodEnum.Not_Covered;
    private String coverageRationale;
-   private final String executeNum;
+   private String executeNum;
    private String lineNum;
    private String methodNum;
    private String text;
@@ -57,8 +58,13 @@ public class CoverageItem implements ICoverageEditorItem {
    }
 
    public CoverageItem(CoverageUnit parentCoverageUnit, String xml) throws OseeCoreException {
-      this(parentCoverageUnit, CoverageMethodEnum.valueOf(AXml.getTagData(xml, "methodType")), AXml.getTagData(xml,
-            "execNum"));
+      this(parentCoverageUnit, CoverageMethodEnum.Not_Covered, "0");
+      fromXml(xml);
+   }
+
+   public void fromXml(String xml) {
+      setCoverageMethod(CoverageMethodEnum.valueOf(AXml.getTagData(xml, "methodType")));
+      this.executeNum = AXml.getTagData(xml, "execNum");
       setGuid(AXml.getTagData(xml, "guid"));
       String lineNum = AXml.getTagData(xml, "line");
       if (Strings.isValid(lineNum)) setLineNum(lineNum);
@@ -68,6 +74,12 @@ public class CoverageItem implements ICoverageEditorItem {
       if (Strings.isValid(rationale)) setCoverageRationale(rationale);
       String methodNum = AXml.getTagData(xml, "methodNum");
       if (Strings.isValid(methodNum)) setMethodNum(methodNum);
+      String testUnitsGuids = AXml.getTagData(xml, "testUnits");
+      if (Strings.isValid(testUnitsGuids)) {
+         for (String guid : testUnitsGuids.split(",")) {
+            addTestUnit((TestUnit) CoverageManager.getByGuid(guid));
+         }
+      }
    }
 
    public Set<TestUnit> getTestUnits() {
@@ -76,6 +88,7 @@ public class CoverageItem implements ICoverageEditorItem {
 
    public void addTestUnit(TestUnit testUnit) {
       testUnits.add(testUnit);
+      CoverageManager.cache(testUnit);
    }
 
    public CoverageMethodEnum getCoverageMethod() {
