@@ -17,6 +17,9 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.coverage.CoverageManager;
+import org.eclipse.osee.coverage.action.DeleteCoveragePackageAction;
+import org.eclipse.osee.coverage.action.NewCoveragePackageAction;
+import org.eclipse.osee.coverage.action.OpenCoveragePackageAction;
 import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -24,6 +27,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemBlam;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateViewItems;
 import org.osgi.framework.Bundle;
@@ -50,9 +54,9 @@ public class CoverageNavigateViewItems extends XNavigateViewItems {
    }
 
    private void addExtensionPointItems(List<XNavigateItem> items) {
-      items.add(new NewCoveragePackageItem(null));
-      items.add(new OpenCoveragePackageItem(null));
-      items.add(new DeleteCoveragePackageItem(null));
+      items.add(new XNavigateItemAction(null, new NewCoveragePackageAction(), NewCoveragePackageAction.OSEE_IMAGE));
+      items.add(new XNavigateItemAction(null, new OpenCoveragePackageAction(), OpenCoveragePackageAction.OSEE_IMAGE));
+      items.add(new XNavigateItemAction(null, new DeleteCoveragePackageAction(), DeleteCoveragePackageAction.OSEE_IMAGE));
 
       try {
          if (SystemGroup.OseeAdmin.isCurrentUserMember()) {

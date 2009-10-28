@@ -313,7 +313,8 @@ public abstract class CoveragePackageBase implements ICoverageEditorItem, ICover
    public Artifact getArtifact(boolean create) throws OseeCoreException {
       if (artifact == null && create) {
          artifact =
-               ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch(), guid, null);
+               ArtifactTypeManager.addArtifact(CoveragePackage.ARTIFACT_NAME, BranchManager.getCommonBranch(), guid,
+                     null);
       }
       return artifact;
    }

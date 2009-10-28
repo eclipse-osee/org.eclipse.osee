@@ -1,4 +1,4 @@
-import "platform:/plugin/org.eclipse.osee.ats/support/OseeTypes_ATS.osee"
+import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 
 artifactType "Coverage Package" extends "General Data" {
    guid "AAMFDit0v3dmftS2OVQZ"
