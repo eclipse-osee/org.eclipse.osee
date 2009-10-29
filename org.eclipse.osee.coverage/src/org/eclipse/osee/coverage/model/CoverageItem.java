@@ -132,7 +132,7 @@ public class CoverageItem implements ICoverage {
 
    @Override
    public String toString() {
-      return getMethodNum() + ", " + getExecuteNum();
+      return "[" + getMethodNum() + ", " + getExecuteNum() + "]";
    }
 
    @Override
@@ -142,7 +142,7 @@ public class CoverageItem implements ICoverage {
 
    @Override
    public boolean isCompleted() {
-      return false;
+      return isCovered();
    }
 
    public String getName() {

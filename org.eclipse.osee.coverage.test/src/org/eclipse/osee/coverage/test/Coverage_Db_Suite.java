@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.test;
 
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.coverage.test.model.CoverageItemPersistTest;
+import org.eclipse.osee.coverage.test.model.CoverageUnitPersistTest;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
@@ -20,7 +21,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {Coverage_Suite.class, CoverageItemPersistTest.class})
+@Suite.SuiteClasses( {Coverage_Suite.class, CoverageItemPersistTest.class, CoverageUnitPersistTest.class})
 /**
  * @author Donald G. Dunne
  */

@@ -11,12 +11,13 @@
 package org.eclipse.osee.coverage.test;
 
 import org.eclipse.osee.coverage.test.model.CoverageItemTest;
+import org.eclipse.osee.coverage.test.model.CoverageUnitTest;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {CoverageItemTest.class})
+@Suite.SuiteClasses( {CoverageItemTest.class, CoverageUnitTest.class})
 /**
  * @author Donald G. Dunne
  */

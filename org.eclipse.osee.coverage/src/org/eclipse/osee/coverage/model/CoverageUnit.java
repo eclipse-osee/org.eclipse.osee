@@ -49,12 +49,12 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    private final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    private String location;
    private final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
-   private ICoverage parentCoverageEditorItem;
+   private ICoverage parent;
    private Artifact artifact;
 
-   public CoverageUnit(ICoverage parentCoverageEditorItem, String name, String location) {
+   public CoverageUnit(ICoverage parent, String name, String location) {
       super();
-      this.parentCoverageEditorItem = parentCoverageEditorItem;
+      this.parent = parent;
       this.name = name;
       this.location = location;
    }
@@ -77,7 +77,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public void addCoverageUnit(CoverageUnit coverageUnit) {
-      coverageUnit.setParentCoverageEditorItem(this);
+      coverageUnit.setParent(this);
       coverageUnits.add(coverageUnit);
    }
 
@@ -86,7 +86,9 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public void addCoverageItem(CoverageItem coverageItem) {
-      coverageItems.add(coverageItem);
+      if (!coverageItems.contains(coverageItem)) {
+         coverageItems.add(coverageItem);
+      }
    }
 
    public List<CoverageItem> getCoverageItems(boolean recurse) {
@@ -107,10 +109,6 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
          }
       }
       return null;
-   }
-
-   public CoverageUnit getCoverageUnit(String index) {
-      return coverageUnits.get(new Integer(index).intValue() - 1);
    }
 
    public String getName() {
@@ -142,8 +140,8 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public CoverageUnit getParentCoverageUnit() {
-      if (parentCoverageEditorItem instanceof CoverageUnit) {
-         return (CoverageUnit) parentCoverageEditorItem;
+      if (parent instanceof CoverageUnit) {
+         return (CoverageUnit) parent;
       }
       return null;
    }
@@ -206,7 +204,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
 
    @Override
    public ICoverage getParent() {
-      return parentCoverageEditorItem;
+      return parent;
    }
 
    public Artifact getArtifact(boolean create) throws OseeCoreException {
@@ -231,17 +229,13 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       }
    }
 
-   public void setParentCoverageEditorItem(ICoverage parent) {
-      this.parentCoverageEditorItem = parent;
-   }
-
    public void setGuid(String guid) {
       this.guid = guid;
    }
 
    public String getNamespace() {
       if (namespace == null) {
-         return getParent().getNamespace();
+         return getParent() == null ? null : getParent().getNamespace();
       }
       return namespace;
    }
@@ -250,7 +244,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.namespace = namespace;
    }
 
-   public String getAssignees() throws OseeCoreException {
+   public String getAssignees() {
       return assignees;
    }
 
@@ -358,7 +352,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public CoverageUnit copy(boolean includeItems) throws OseeCoreException {
-      CoverageUnit coverageUnit = new CoverageUnit(parentCoverageEditorItem, name, location);
+      CoverageUnit coverageUnit = new CoverageUnit(parent, name, location);
       coverageUnit.setGuid(guid);
       coverageUnit.setNamespace(namespace);
       coverageUnit.setNotes(notes);
@@ -405,8 +399,8 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
          keyValueArtifact.setValue("location", location);
       }
       keyValueArtifact.save();
-      if (parentCoverageEditorItem != null) {
-         parentCoverageEditorItem.getArtifact(false).addChild(artifact);
+      if (parent != null) {
+         parent.getArtifact(false).addChild(artifact);
       }
       for (CoverageUnit coverageUnit : coverageUnits) {
          coverageUnit.save(transaction);
@@ -431,8 +425,12 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.folder = folder;
    }
 
-   public void updateAssigneesAndNotes(CoverageUnit coverageUnit) throws OseeCoreException {
+   public void updateAssigneesAndNotes(CoverageUnit coverageUnit) {
       setNotes(coverageUnit.getNotes());
       setAssignees(coverageUnit.getAssignees());
+   }
+
+   public void setParent(ICoverage parent) {
+      this.parent = parent;
    }
 }

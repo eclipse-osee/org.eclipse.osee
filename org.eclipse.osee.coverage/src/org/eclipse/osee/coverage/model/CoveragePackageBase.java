@@ -69,7 +69,7 @@ public abstract class CoveragePackageBase implements ICoverage {
    }
 
    public void addCoverageUnit(CoverageUnit coverageUnit) {
-      coverageUnit.setParentCoverageEditorItem(this);
+      coverageUnit.setParent(this);
       coverageUnits.add(coverageUnit);
    }
 

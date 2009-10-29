@@ -8,6 +8,8 @@ package org.eclipse.osee.coverage.test.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageTestUnit;
 import org.eclipse.osee.coverage.model.CoverageUnit;
@@ -54,5 +56,11 @@ public class CoverageTestUtil {
    public static Collection<Artifact> getCoveragePackageArtifacts() throws OseeCoreException {
       return StaticIdManager.getArtifactsFromArtifactQuery(CoveragePackage.ARTIFACT_NAME, COVERAGE_STATIC_ID,
             CoverageUtil.getBranch());
+   }
+
+   public static void setAllCoverageMethod(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethodEnum, boolean recurse) {
+      for (CoverageItem item : coverageUnit.getCoverageItems(recurse)) {
+         item.setCoverageMethod(coverageMethodEnum);
+      }
    }
 }
