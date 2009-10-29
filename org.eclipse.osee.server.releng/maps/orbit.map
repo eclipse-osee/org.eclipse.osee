@@ -1,9 +1,9 @@
 feature@org.eclipse.osee.external.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.external.feature
 
-plugin@org.apache.derby.client,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240//bundles/org.apache.derby.client_10.5.1.1_200910201300.jar
-plugin@org.apache.derby.engine,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240//bundles/org.apache.derby.engine_10.5.1.1_200910201300.jar
-plugin@org.apache.derby.net,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240//bundles/org.apache.derby.net_10.5.1.1_200910201300.jar
-plugin@org.apache.derby.tools,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240//bundles/org.apache.derby.tools_10.5.1.1_200910201300.jar
+plugin@org.apache.derby.client,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240/bundles/org.apache.derby.client_10.5.1.1_200910201300.jar
+plugin@org.apache.derby.engine,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240/bundles/org.apache.derby.engine_10.5.1.1_200910201300.jar
+plugin@org.apache.derby.net,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240/bundles/org.apache.derby.net_10.5.1.1_200910201300.jar
+plugin@org.apache.derby.tools,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240/bundles/org.apache.derby.tools_10.5.1.1_200910201300.jar
 
 plugin@org.apache.commons.httpclient,3.0.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.httpclient_3.0.1.v20080605-1930.jar
 plugin@org.apache.commons.codec,1.3.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.codec_1.3.0.v20080530-1600.jar

@@ -1,0 +1,2 @@
+feature@org.eclipse.osee.framework.server.feature.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.server.feature.test
+fragment@org.eclipse.osee.framework.jdk.core.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.jdk.core.test

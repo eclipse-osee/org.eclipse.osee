@@ -30,9 +30,31 @@
 	<target name="postAssemble" />
 	<target name="prePackage" />
 	<target name="postPackage" />
-	<target name="preProcess"/>
+	<target name="preProcess" />
 	<target name="postProcess" />
-	<target name="postBuild" >
-		<echo message="create config file here" />
+	<target name="postBuild" />
+	<target name="extraPackaging">
+		<propertyregex property="updateSiteFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-Update-" casesensitive="false" override="true" />
+		<mkdir dir="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp" />
+		<unzip src="${buildDirectory}/${buildLabel}/${updateSiteFile}" dest="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp">
+			<fileset includes="plugins/*" />
+		</unzip>
+		<mkdir dir="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp/configuration" />
+	<!--
+	Create config.ini in configuration
+	Add run commands
+	-->
+		<propertyregex property="serverRuntimeFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-Server-Runtime-" casesensitive="false" override="true" />
+		<zip destfile="serverRuntimeFile">
+			<fileset dir="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp" />
+		</zip>
+		<ant target="clean.extra.zips" inheritall="true" />
+	</target>
+
+	<target name="clean.extra.zips">
+		<propertyregex property="runtimeZip" input="${masterZip}" defaultvalue="${masterZip}" regexp="-runtime-" replace="-Server-Runtime-" casesensitive="false" override="true" />
+		<propertyregex property="sdkZip" input="${masterZip}" defaultvalue="${masterZip}" regexp="-SDK-" replace="-Server-Runtime-" casesensitive="false" override="true" />
+		<delete file="${buildDirectory}/${buildLabel}/${runtimeZip}" quiet="true" />
+		<delete file="${buildDirectory}/${buildLabel}/${sdkZip}" quiet="true" />
 	</target>
 </project>

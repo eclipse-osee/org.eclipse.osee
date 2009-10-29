@@ -1,4 +1,4 @@
-<project default="run" name="org.eclipse.osee.releng/build.xml - Run a OSEE build using the Athena CBI">
+<project default="run" name="org.eclipse.osee.server.releng/build.xml - Run a OSEE build using the Athena CBI">
 	<target name="run">
 		<!-- 
 			1. You must check out the following projects to your workspace:
@@ -43,14 +43,13 @@
 			<format property="buildTimestamp" pattern="yyyyMMddHHmm" />
 		</tstamp>
 
-		<!-- 
-		to build from HEAD, uncomment these lines 
+		<!-- Build from HEAD, uncomment these lines	
 		<property name="forceContextQualifier" value="v${buildTimestamp}" />
 		<property name="fetchTag" value="HEAD" />
 		-->
-
+		
 		<!-- calculate workspaceDir as parent of this folder, the project's .releng folder (relengBuilderDir) -->
-		<property name="relengBuilderDir" value="${basedir}/.." />
+		<property name="relengBuilderDir" value="${basedir}" />
 		<dirname file="${relengBuilderDir}" property="workspaceDir" />
 
 		<!-- 
@@ -66,18 +65,17 @@
 			${writableBuildRoot}/${topprojectName}/${projectName}/${subprojectName}/downloads/drops/${version}/${buildType}${buildTimestamp}
 		-->
 		<property name="buildDir" value="${writableBuildRoot}/${buildType}${buildTimestamp}" />
-	
+
 		<!-- invoke a new Eclipse process and launch the build from the common.releng folder -->
 		<property name="relengCommonBuilderDir" value="${workspaceDir}/org.eclipse.dash.common.releng" />
-		
+
 		<propertyset id="proxy.properties">
-		  <propertyref prefix="java.net.useSystemProxies"/>
-		  <propertyref prefix="http."/>
-		  <propertyref prefix="https."/>
-		  <propertyref prefix="ftp."/>
-		  <propertyref prefix="socksProxy"/>
+			<propertyref prefix="java.net.useSystemProxies" />
+			<propertyref prefix="http." />
+			<propertyref prefix="https." />
+			<propertyref prefix="ftp." />
+			<propertyref prefix="socksProxy" />
 		</propertyset>
-		
-		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}"/>
+		<ant antfile="${relengCommonBuilderDir}/buildAll.xml" target="runEclipse" dir="${relengCommonBuilderDir}" inheritall="true" />
 	</target>
 </project>
