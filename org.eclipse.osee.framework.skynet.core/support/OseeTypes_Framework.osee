@@ -466,6 +466,10 @@ artifactType "Software Requirement" extends "MS Word Template" ,
    guid "AAMFDiAwhRFXwIyapJAA"
 }
 
+artifactType "Indirect Software Requirement" extends "Software Requirement" {
+	guid "AAMFDiC7HRQMqr5S0QwA"
+}
+
 artifactType "Software Requirement Procedure" extends "Software Requirement" {
    guid "ABNBLPY4LnIKtcON0mgA"
 }
