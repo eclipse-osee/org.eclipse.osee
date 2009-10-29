@@ -248,7 +248,6 @@ public class CoverageItemTest {
       Assert.assertEquals(ci1.getExecuteNum(), ci.getExecuteNum());
       Assert.assertEquals(ci1.getLineNum(), ci.getLineNum());
       Assert.assertEquals(ci1.getCoverageMethod(), ci.getCoverageMethod());
-      Assert.assertEquals(ci1.getTestUnits().size(), ci.getTestUnits().size());
       Assert.assertEquals(ci1.getText(), ci.getText());
       Assert.assertEquals(ci1.getCoverageRationale(), ci.getCoverageRationale());
    }
