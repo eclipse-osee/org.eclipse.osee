@@ -31,6 +31,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
@@ -175,11 +176,12 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws OseeTypeDoesNotExist
     */
    public List<Artifact> getRelatedArtifacts(String relationTypeName) throws OseeCoreException {
-      return RelationManager.getRelatedArtifacts(this, RelationTypeManager.getType(relationTypeName));
+      RelationType relationType = RelationTypeManager.getType(relationTypeName);
+      return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationType, RelationSide.SIDE_B));
    }
 
    public List<? extends IArtifact> getRelatedArtifacts(RelationType relationType) throws OseeCoreException {
-      return RelationManager.getRelatedArtifacts(this, relationType);
+      return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relationType, RelationSide.SIDE_B));
    }
 
    public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
@@ -1786,7 +1788,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws ArtifactDoesNotExist
     */
    public List<Artifact> getRelatedArtifactsAll() throws OseeCoreException {
-      return RelationManager.getRelatedArtifactsAll(this);
+      return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(null, RelationSide.SIDE_B));
    }
 
    /**

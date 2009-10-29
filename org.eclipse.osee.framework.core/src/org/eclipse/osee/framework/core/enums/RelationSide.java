@@ -18,24 +18,15 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Ryan D. Brooks
  */
 public enum RelationSide {
-   SIDE_A, SIDE_B, OPPOSITE;
-
-   private static RelationSide[] sides = new RelationSide[] {SIDE_A, SIDE_B};
+   SIDE_A,
+   SIDE_B;
 
    public RelationSide oppositeSide() {
-      if (this == OPPOSITE) {
-         return OPPOSITE;
-      } else {
-         return this == SIDE_A ? SIDE_B : SIDE_A;
-      }
+      return this == SIDE_A ? SIDE_B : SIDE_A;
    }
 
    public boolean isSideA() {
       return this == RelationSide.SIDE_A;
-   }
-
-   public static RelationSide[] getSides() {
-      return sides;
    }
 
    public boolean isOppositeSide(RelationSide side) {
