@@ -1,4 +1,4 @@
-feature@org.eclipse.osee.external.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.external.feature
+feature@org.eclipse.osee.external.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.external.feature
 
 plugin@org.apache.derby.client,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240//bundles/org.apache.derby.client_10.5.1.1_200910201300.jar
 plugin@org.apache.derby.engine,10.5.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20091020124240//bundles/org.apache.derby.engine_10.5.1.1_200910201300.jar
