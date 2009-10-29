@@ -72,6 +72,7 @@ public class CoverageItemPersistTest {
       Assert.assertNull("Artifact should not have been created", artifact);
       artifact = OseeCoverageStore.get(parentCu).getArtifact(true);
       CoverageTestUtil.registerAsTestArtifact(artifact);
+      artifact.persist();
       Assert.assertNotNull("Artifact should have been created", artifact);
    }
 
@@ -90,6 +91,7 @@ public class CoverageItemPersistTest {
          Artifact testArt = OseeCoverageStore.get(testUnit).getArtifact(false);
          Assert.assertNotNull(String.format("TestUnit [%s] should have been created", testUnit.getName()), testArt);
          CoverageTestUtil.registerAsTestArtifact(testArt);
+         testArt.persist();
       }
    }
 
