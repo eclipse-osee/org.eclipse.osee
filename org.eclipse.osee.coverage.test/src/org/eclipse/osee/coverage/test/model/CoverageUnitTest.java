@@ -191,24 +191,13 @@ public class CoverageUnitTest {
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#isCompleted()}.
-    */
-   @Test
-   public void testIsCompleted() {
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Not_Covered, true);
-      Assert.assertFalse(cu.isCompleted());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Test_Unit, true);
-      Assert.assertTrue(cu.isCompleted());
-   }
-
-   /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#isCovered()}.
     */
    @Test
    public void testIsCovered() {
-      Assert.assertFalse(cu.isCompleted());
+      Assert.assertFalse(cu.isCovered());
       CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Test_Unit, true);
-      Assert.assertTrue(cu.isCompleted());
+      Assert.assertTrue(cu.isCovered());
       CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Not_Covered, true);
    }
 

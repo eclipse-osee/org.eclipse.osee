@@ -130,19 +130,6 @@ public class CoverageItemTest {
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#isCompleted()}.
-    */
-   @Test
-   public void testIsCompleted() {
-      CoverageMethodEnum current = ci1.getCoverageMethod();
-      ci1.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
-      Assert.assertTrue(ci1.isCompleted());
-      ci1.setCoverageMethod(CoverageMethodEnum.Not_Covered);
-      Assert.assertFalse(ci1.isCompleted());
-      ci1.setCoverageMethod(current);
-   }
-
-   /**
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getName()}.
     */
    @Test

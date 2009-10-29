@@ -83,22 +83,9 @@ public class CoverageEditorCoverageParameters extends Composite {
       try {
          page = new WorkPage(getWidgetXml(), new DefaultXWidgetOptionResolver());
          page.createBody(managedForm, paramComp, null, null, true);
-         widgetsCreated();
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-
-      getShowAllCheckbox().getCheckButton().addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            if (getIncludeCompletedCancelledCheckbox() != null) {
-               if (isIncludeCompletedCancelled()) {
-                  getIncludeCompletedCancelledCheckbox().set(false);
-               }
-            }
-         }
-      });
-
    }
 
    public Collection<ICoverage> performSearchGetResults(CoveragePackageBase provider) throws OseeCoreException {
@@ -120,7 +107,6 @@ public class CoverageEditorCoverageParameters extends Composite {
    public void performSearchGetResults(Set<ICoverage> items, ICoverage item) throws OseeCoreException {
       Collection<CoverageMethodEnum> coverageMethods = getSelectedCoverageMethods();
       User assignee = getAssignee();
-      boolean includeCompleted = isIncludeCompletedCancelled();
       if (isShowAll()) {
          items.add(item);
       } else {
@@ -133,9 +119,6 @@ public class CoverageEditorCoverageParameters extends Composite {
             if (!coverageMethods.contains(coverageItem.getCoverageMethod())) {
                add = false;
             }
-         }
-         if (!includeCompleted && item.isCompleted()) {
-            add = false;
          }
          if (Strings.isValid(getNotesStr())) {
             if (item instanceof CoverageUnit) {
@@ -174,21 +157,11 @@ public class CoverageEditorCoverageParameters extends Composite {
       if (getAssignee() != null) {
          sb.append(" - Assignee: " + getAssignee());
       }
-      if (isIncludeCompletedCancelled()) {
-         sb.append(" - Include Completed/Cancelled");
-      }
       if (getSelectedCoverageMethods().size() > 1) {
          sb.append(" - Coverage Method: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ",
                getSelectedCoverageMethods()));
       }
       return "Coverage Items " + sb.toString();
-   }
-
-   public boolean isIncludeCompletedCancelled() {
-      if (getIncludeCompletedCancelledCheckbox() == null) {
-         return false;
-      }
-      return getIncludeCompletedCancelledCheckbox().isSelected();
    }
 
    public boolean isShowAll() {
@@ -213,18 +186,8 @@ public class CoverageEditorCoverageParameters extends Composite {
       return (XText) getXWidget("Notes");
    }
 
-   public XCheckBox getIncludeCompletedCancelledCheckbox() {
-      return (XCheckBox) getXWidget("Include Completed/Cancelled");
-   }
-
    public XCheckBox getShowAllCheckbox() {
       return (XCheckBox) getXWidget("Show All");
-   }
-
-   public void widgetsCreated() throws OseeCoreException {
-      if (getIncludeCompletedCancelledCheckbox() != null) {
-         getIncludeCompletedCancelledCheckbox().set(true);
-      }
    }
 
    public User getAssignee() {
@@ -261,9 +224,6 @@ public class CoverageEditorCoverageParameters extends Composite {
             if (getSelectedCoverageMethods().size() > 0) {
                return new Result("Can't have Show All and Coverage Methods");
             }
-            if (isIncludeCompletedCancelled()) {
-               return new Result("Can't have Show All and Include Completed/Cancelled selected");
-            }
             if (getAssignee() != null) {
                return new Result("Can't have Show All and Assignee selected");
             }
@@ -293,8 +253,6 @@ public class CoverageEditorCoverageParameters extends Composite {
                   "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show All\" beginComposite=\"8\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       if (coveragePackageBase.isAssignable()) {
          sb.append("" +
-         //
-         "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Include Completed/Cancelled\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>" +
          //
          "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>");
       }

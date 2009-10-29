@@ -25,8 +25,6 @@ public interface ICoverage {
 
    public String getGuid();
 
-   public boolean isCompleted();
-
    public String getName();
 
    public Collection<? extends ICoverage> getChildrenItems();

@@ -55,11 +55,6 @@ public class CoverageTestUnit implements ICoverage {
    }
 
    @Override
-   public boolean isCompleted() {
-      return true;
-   }
-
-   @Override
    public OseeImage getOseeImage() {
       if (isCovered()) {
          return CoverageImage.TEST_UNIT_GREEN;

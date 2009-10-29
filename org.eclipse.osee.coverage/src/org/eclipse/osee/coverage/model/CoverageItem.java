@@ -137,11 +137,6 @@ public class CoverageItem implements ICoverage {
       return Result.FalseResult;
    }
 
-   @Override
-   public boolean isCompleted() {
-      return isCovered();
-   }
-
    public String getName() {
       return String.format("%s:%s [%s]", methodNum, executeNum, text);
    }

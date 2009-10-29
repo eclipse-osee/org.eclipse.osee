@@ -253,11 +253,6 @@ public abstract class CoveragePackageBase implements ICoverage {
    }
 
    @Override
-   public boolean isCompleted() {
-      return false;
-   }
-
-   @Override
    public ICoverage getParent() {
       return null;
    }

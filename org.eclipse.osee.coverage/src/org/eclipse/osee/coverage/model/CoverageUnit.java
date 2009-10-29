@@ -151,14 +151,6 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    @Override
-   public boolean isCompleted() {
-      for (CoverageItem coverageItem : getCoverageItems(true)) {
-         if (!coverageItem.isCompleted()) return false;
-      }
-      return true;
-   }
-
-   @Override
    public OseeImage getOseeImage() {
       if (isFolder()) {
          return FrameworkImage.FOLDER;
