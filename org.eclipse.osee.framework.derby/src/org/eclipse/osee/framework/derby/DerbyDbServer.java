@@ -66,8 +66,10 @@ public class DerbyDbServer {
    }
 
    private void commitSuicide() {
-      synchronized (keepAlive) {
-         keepAlive.notify();
+      if (keepAlive != null) {
+         synchronized (keepAlive) {
+            keepAlive.notify();
+         }
       }
    }
 
