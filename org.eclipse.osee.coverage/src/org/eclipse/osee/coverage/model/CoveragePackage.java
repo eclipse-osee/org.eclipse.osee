@@ -10,23 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.model;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
-public class CoveragePackage extends CoveragePackageBase implements ISaveable, ICoverageUnitProvider, ICoverage {
+public class CoveragePackage extends CoveragePackageBase implements ICoverageUnitProvider, ICoverage {
 
-   public static String ARTIFACT_NAME = "Coverage Package";
-   private Date creationDate;
-   private final List<CoverageImport> coverageImports = new ArrayList<CoverageImport>();
+   Date creationDate;
 
    public CoveragePackage(String name) {
       this(name, new Date());
@@ -37,16 +31,8 @@ public class CoveragePackage extends CoveragePackageBase implements ISaveable, I
       this.creationDate = runDate;
    }
 
-   public CoveragePackage(Artifact artifact) {
-      super(artifact);
-   }
-
-   public void addCoverageImport(CoverageImport CoverageImport) {
-      coverageImports.add(CoverageImport);
-   }
-
-   public List<CoverageImport> getCoverageImports() {
-      return coverageImports;
+   public void clearCoverageUnits() {
+      coverageUnits.clear();
    }
 
    public Date getRunDate() {

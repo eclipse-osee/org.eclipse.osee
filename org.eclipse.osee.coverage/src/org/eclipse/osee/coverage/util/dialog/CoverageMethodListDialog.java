@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.coverage.util;
+package org.eclipse.osee.coverage.util.dialog;
 
 import java.util.ArrayList;
 import java.util.Collection;

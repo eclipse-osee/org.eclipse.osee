@@ -12,7 +12,7 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.junit.BeforeClass;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -23,39 +23,11 @@ public class CoverageUnitTest {
    public static CoverageUnit cu = null, childCu = null;
    public static CoverageItem ci1 = null;
 
-   @BeforeClass
-   public static void testSetup() {
-   }
-
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageUnit#CoverageUnit(org.eclipse.osee.coverage.model.ICoverage, java.lang.String, java.lang.String)}
-    * .
-    */
-   @Test
-   public void testCoverageUnitICoverageStringString() {
+   @Before
+   public void testSetup() {
       cu = new CoverageUnit(null, "Top CU", "C:/UserData/");
-   }
-
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageUnit#addCoverageItem(org.eclipse.osee.coverage.model.CoverageItem)}
-    * .
-    */
-   @Test
-   public void testAddCoverageItem() {
       ci1 = new CoverageItem(cu, CoverageMethodEnum.Test_Unit, "1");
       ci1.setText("this is text");
-      Assert.assertEquals(1, cu.getCoverageItems().size());
-   }
-
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageUnit#addCoverageUnit(org.eclipse.osee.coverage.model.CoverageUnit)}
-    * .
-    */
-   @Test
-   public void testAddCoverageUnit() {
       childCu = new CoverageUnit(cu, "Child Coverage Unit", "C:\\UserData\\");
       CoverageItem item = new CoverageItem(childCu, CoverageMethodEnum.Exception_Handling, "1");
       item.setMethodNum("1");
@@ -67,6 +39,38 @@ public class CoverageUnitTest {
       item.setMethodNum("1");
       childCu.addCoverageItem(item);
       cu.addCoverageUnit(childCu);
+   }
+
+   /**
+    * Test method for
+    * {@link org.eclipse.osee.coverage.model.CoverageUnit#CoverageUnit(org.eclipse.osee.coverage.model.ICoverage, java.lang.String, java.lang.String)}
+    * .
+    */
+   @Test
+   public void testCoverageUnitICoverageStringString() {
+      Assert.assertNotNull(cu);
+      Assert.assertEquals("Top CU", cu.getName());
+      Assert.assertEquals("C:/UserData/", cu.getLocation());
+   }
+
+   /**
+    * Test method for
+    * {@link org.eclipse.osee.coverage.model.CoverageUnit#addCoverageItem(org.eclipse.osee.coverage.model.CoverageItem)}
+    * .
+    */
+   @Test
+   public void testAddCoverageItem() {
+      Assert.assertEquals(1, cu.getCoverageItems().size());
+   }
+
+   /**
+    * Test method for
+    * {@link org.eclipse.osee.coverage.model.CoverageUnit#addCoverageUnit(org.eclipse.osee.coverage.model.CoverageUnit)}
+    * .
+    */
+   @Test
+   public void testAddCoverageUnit() {
+      Assert.assertEquals(3, childCu.getChildrenItems().size());
    }
 
    /**
@@ -191,10 +195,10 @@ public class CoverageUnitTest {
     */
    @Test
    public void testIsCompleted() {
+      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Not_Covered, true);
       Assert.assertFalse(cu.isCompleted());
       CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Test_Unit, true);
       Assert.assertTrue(cu.isCompleted());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Not_Covered, true);
    }
 
    /**
@@ -365,13 +369,13 @@ public class CoverageUnitTest {
     */
    @Test
    public void testGetCoveragePercentAndStr() {
+      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Not_Covered, true);
       Assert.assertFalse(cu.isCovered());
       Assert.assertEquals(0, cu.getCoveragePercent());
       Assert.assertEquals("0% 0/4", cu.getCoveragePercentStr());
       CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Test_Unit, true);
       Assert.assertEquals(100, cu.getCoveragePercent());
       Assert.assertEquals("100% 4/4", cu.getCoveragePercentStr());
-      CoverageTestUtil.setAllCoverageMethod(cu, CoverageMethodEnum.Not_Covered, true);
    }
 
    /**

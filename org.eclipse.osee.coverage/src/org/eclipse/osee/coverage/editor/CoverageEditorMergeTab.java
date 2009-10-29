@@ -137,8 +137,8 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
          AWorkbench.popup("Select Items to Import via Import Column");
          return;
       }
-      XResultData rd = coveragePackageImport.importItems(this, importItems);
       try {
+         XResultData rd = coveragePackageImport.importItems(this, importItems);
          rd.report("Import");
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -263,7 +263,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    @Override
-   public Result save() {
+   public Result save() throws OseeCoreException {
       if (!(provider1 instanceof ISaveable)) {
          return new Result("Not Saveable");
       }

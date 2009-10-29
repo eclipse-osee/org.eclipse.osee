@@ -7,8 +7,3 @@ artifactType "Coverage Package" extends "General Data" {
 artifactType "Coverage Unit" extends "General Data" {
    guid "AbMFDit0v2dmftS2OVDZ"
 }
-
-artifactType "Coverage Test Unit" extends "General Data" {
-   guid "AbMFDit0v2dmftS2OVDK"
-}
-

@@ -20,13 +20,6 @@ import org.eclipse.osee.coverage.util.CoverageMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
-import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
@@ -38,30 +31,23 @@ import org.eclipse.osee.framework.ui.skynet.OseeImage;
  */
 public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverageItemProvider {
 
-   public static String ARTIFACT_NAME = "Coverage Unit";
-   private String name;
-   private String namespace;
-   private boolean folder;
-   private String notes;
-   private String assignees;
-   private String guid = GUID.create();
-   private String text;
-   private final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
-   private String location;
-   private final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
-   private ICoverage parent;
-   private Artifact artifact;
+   String name;
+   String namespace;
+   boolean folder;
+   String notes;
+   String assignees;
+   String guid = GUID.create();
+   String text;
+   final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
+   String location;
+   final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
+   ICoverage parent;
 
    public CoverageUnit(ICoverage parent, String name, String location) {
       super();
       this.parent = parent;
       this.name = name;
       this.location = location;
-   }
-
-   public CoverageUnit(Artifact artifact) throws OseeCoreException {
-      this.artifact = artifact;
-      load();
    }
 
    @Override
@@ -74,6 +60,14 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
          }
       }
       return items;
+   }
+
+   public void clearCoverageUnits() {
+      coverageUnits.clear();
+   }
+
+   public void clearCoverageItems() {
+      coverageItems.clear();
    }
 
    public void addCoverageUnit(CoverageUnit coverageUnit) {
@@ -207,28 +201,6 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       return parent;
    }
 
-   public Artifact getArtifact(boolean create) throws OseeCoreException {
-      if (artifact == null && create) {
-         artifact = ArtifactTypeManager.addArtifact(ARTIFACT_NAME, BranchManager.getCommonBranch(), guid, null);
-      }
-      return artifact;
-   }
-
-   public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
-      if (getArtifact(false) != null) {
-         if (purge)
-            getArtifact(false).purgeFromBranch();
-         else
-            getArtifact(false).deleteAndPersist(transaction);
-      }
-      for (CoverageUnit coverageUnit : coverageUnits) {
-         coverageUnit.delete(transaction, purge);
-      }
-      for (CoverageItem coverageItem : coverageItems) {
-         coverageItem.delete(transaction, purge);
-      }
-   }
-
    public void setGuid(String guid) {
       this.guid = guid;
    }
@@ -310,47 +282,6 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       coverageItems.remove(coverageItem);
    }
 
-   public void load() throws OseeCoreException {
-      coverageItems.clear();
-      coverageUnits.clear();
-      getArtifact(false);
-      if (artifact != null) {
-         setName(artifact.getName());
-         setGuid(artifact.getGuid());
-         KeyValueArtifact keyValueArtifact =
-               new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-         for (String line : keyValueArtifact.getValues("cvgItem")) {
-            coverageItems.add(new CoverageItem(this, line));
-         }
-         String text = keyValueArtifact.getValue("text");
-         if (Strings.isValid(text)) {
-            setText(text);
-         }
-         String notes = keyValueArtifact.getValue("notes");
-         if (Strings.isValid(notes)) {
-            setNotes(notes);
-         }
-         setFolder(keyValueArtifact.getValue("folder") != null && keyValueArtifact.getValue("folder").equals("true"));
-         String assignees = keyValueArtifact.getValue("assignees");
-         if (Strings.isValid(assignees)) {
-            setAssignees(assignees);
-         }
-         String namespace = keyValueArtifact.getValue("namespace");
-         if (Strings.isValid(namespace)) {
-            setNamespace(namespace);
-         }
-         String location = keyValueArtifact.getValue("location");
-         if (Strings.isValid(location)) {
-            setLocation(location);
-         }
-         for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.getArtifactTypeName().equals(CoverageUnit.ARTIFACT_NAME)) {
-               addCoverageUnit(new CoverageUnit(childArt));
-            }
-         }
-      }
-   }
-
    public CoverageUnit copy(boolean includeItems) throws OseeCoreException {
       CoverageUnit coverageUnit = new CoverageUnit(parent, name, location);
       coverageUnit.setGuid(guid);
@@ -366,46 +297,6 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
          }
       }
       return coverageUnit;
-   }
-
-   public void save(SkynetTransaction transaction) throws OseeCoreException {
-      getArtifact(true);
-      artifact.setName(getName());
-
-      KeyValueArtifact keyValueArtifact =
-            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-      List<String> items = new ArrayList<String>();
-      for (CoverageItem coverageItem : coverageItems) {
-         items.add(coverageItem.toXml());
-         coverageItem.save(transaction);
-      }
-      keyValueArtifact.setValues("cvgItem", items);
-      if (notes != null) {
-         keyValueArtifact.setValue("notes", notes.toString());
-      }
-      if (Strings.isValid(namespace)) {
-         keyValueArtifact.setValue("namespace", namespace);
-      }
-      if (Strings.isValid(text)) {
-         keyValueArtifact.setValue("text", text);
-      }
-      if (folder) {
-         keyValueArtifact.setValue("folder", String.valueOf(folder));
-      }
-      if (Strings.isValid(assignees)) {
-         keyValueArtifact.setValue("assignees", assignees);
-      }
-      if (Strings.isValid(location)) {
-         keyValueArtifact.setValue("location", location);
-      }
-      keyValueArtifact.save();
-      if (parent != null) {
-         parent.getArtifact(false).addChild(artifact);
-      }
-      for (CoverageUnit coverageUnit : coverageUnits) {
-         coverageUnit.save(transaction);
-      }
-      artifact.persist(transaction);
    }
 
    @Override

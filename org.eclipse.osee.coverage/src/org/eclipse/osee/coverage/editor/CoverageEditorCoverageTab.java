@@ -17,6 +17,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -130,7 +131,7 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
    }
 
    @Override
-   public Result save() {
+   public Result save() throws OseeCoreException {
       if (!(coveragePackageBase instanceof ISaveable)) {
          return new Result("Not Saveable");
       }

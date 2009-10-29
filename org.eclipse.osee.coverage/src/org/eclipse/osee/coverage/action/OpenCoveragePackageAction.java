@@ -7,16 +7,17 @@ package org.eclipse.osee.coverage.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.model.CoveragePackageBase;
-import org.eclipse.osee.coverage.util.CoverageEditorItemListDialog;
+import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 
@@ -39,11 +40,13 @@ public class OpenCoveragePackageAction extends Action {
    @Override
    public void run() {
       try {
-         CoverageEditorItemListDialog dialog =
-               new CoverageEditorItemListDialog("Open Coverage Package", "Select Coverage Package");
-         dialog.setInput(CoverageManager.getCoveragePackages());
+         CoveragePackageArtifactListDialog dialog =
+               new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
+         dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());
          if (dialog.open() == 0) {
-            CoverageEditor.open(new CoverageEditorInput((CoveragePackageBase) dialog.getResult()[0]));
+            Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
+            CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
+            CoverageEditor.open(new CoverageEditorInput(coveragePackage));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

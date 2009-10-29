@@ -12,21 +12,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
-import org.eclipse.osee.coverage.CoverageManager;
-import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
-import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -35,27 +25,15 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
  * @author Donald G. Dunne
  */
 public abstract class CoveragePackageBase implements ICoverage {
-   private List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
-   private final List<CoverageTestUnit> testUnits = new ArrayList<CoverageTestUnit>();
-   private final XResultData logResultData = new XResultData(false);
-   private Artifact artifact;
-   private String guid = GUID.create();
-   private String name;
-   private boolean editable = true;
+   List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
+   final List<CoverageTestUnit> testUnits = new ArrayList<CoverageTestUnit>();
+   final XResultData logResultData = new XResultData(false);
+   String guid = GUID.create();
+   String name;
+   boolean editable = true;
 
    public CoveragePackageBase(String name) {
       this.name = name;
-   }
-
-   public CoveragePackageBase(Artifact artifact) {
-      super();
-      this.artifact = artifact;
-      try {
-         load();
-         CoverageManager.cache(this);
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
-      }
    }
 
    public abstract Date getDate();
@@ -292,75 +270,6 @@ public abstract class CoveragePackageBase implements ICoverage {
    public abstract void saveKeyValues(KeyValueArtifact keyValueArtifact) throws OseeCoreException;
 
    public abstract void loadKeyValues(KeyValueArtifact keyValueArtifact) throws OseeCoreException;
-
-   public Artifact getArtifact(boolean create) throws OseeCoreException {
-      if (artifact == null && create) {
-         artifact =
-               ArtifactTypeManager.addArtifact(CoveragePackage.ARTIFACT_NAME, BranchManager.getCommonBranch(), guid,
-                     null);
-      }
-      return artifact;
-   }
-
-   public void load() throws OseeCoreException {
-      coverageUnits.clear();
-      getArtifact(false);
-      if (artifact != null) {
-         setName(artifact.getName());
-         KeyValueArtifact keyValueArtifact =
-               new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-         loadKeyValues(keyValueArtifact);
-         if (Strings.isValid(keyValueArtifact.getValue("editable"))) {
-            setEditable(keyValueArtifact.getValue("editable").equals("true"));
-         }
-         for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.getArtifactTypeName().equals(CoverageUnit.ARTIFACT_NAME)) {
-               addCoverageUnit(new CoverageUnit(childArt));
-            }
-         }
-      }
-   }
-
-   public void save(SkynetTransaction transaction) throws OseeCoreException {
-      getArtifact(true);
-      System.out.println("save coveragePackage " + guid);
-
-      artifact.setName(getName());
-      KeyValueArtifact keyValueArtifact =
-            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-      saveKeyValues(keyValueArtifact);
-      keyValueArtifact.setValue("editable", String.valueOf(String.valueOf(editable)));
-      keyValueArtifact.save();
-      for (CoverageUnit coverageUnit : coverageUnits) {
-         coverageUnit.save(transaction);
-         artifact.addChild(artifact);
-      }
-      artifact.persist(transaction);
-   }
-
-   public Result save() {
-      try {
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Coverage Package");
-         save(transaction);
-         transaction.execute();
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
-         return new Result("Save Failed: " + ex.getLocalizedMessage());
-      }
-      return Result.TrueResult;
-   }
-
-   public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
-      if (getArtifact(false) != null) {
-         if (purge)
-            getArtifact(false).purgeFromBranch();
-         else
-            getArtifact(false).deleteAndPersist(transaction);
-      }
-      for (CoverageUnit coverageUnit : getCoverageUnits()) {
-         coverageUnit.delete(transaction, purge);
-      }
-   }
 
    @Override
    public int hashCode() {

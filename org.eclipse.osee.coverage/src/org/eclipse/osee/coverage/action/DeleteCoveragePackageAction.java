@@ -7,13 +7,15 @@ package org.eclipse.osee.coverage.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackage;
-import org.eclipse.osee.coverage.util.CoverageEditorItemListDialog;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
+import org.eclipse.osee.coverage.store.OseeCoverageStore;
+import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -40,10 +42,12 @@ public class DeleteCoveragePackageAction extends Action {
    @Override
    public void run() {
       try {
-         CoverageEditorItemListDialog dialog = new CoverageEditorItemListDialog("Delete Package", "Select Package");
-         dialog.setInput(CoverageManager.getCoveragePackages());
+         CoveragePackageArtifactListDialog dialog =
+               new CoveragePackageArtifactListDialog("Delete Package", "Select Package");
+         dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());
          if (dialog.open() == 0) {
-            CoveragePackage coveragePackage = (CoveragePackage) dialog.getResult()[0];
+            Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
+            CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
             CheckBoxDialog cDialog =
                   new CheckBoxDialog(
                         "Delete/Purge Package",
@@ -55,7 +59,7 @@ public class DeleteCoveragePackageAction extends Action {
                SkynetTransaction transaction = null;
                if (!purge) transaction =
                      new SkynetTransaction(BranchManager.getCommonBranch(), "Delete Coverage Package");
-               coveragePackage.delete(transaction, purge);
+               OseeCoverageStore.get(coveragePackage).delete(transaction, purge);
                if (!purge) transaction.execute();
             }
          }

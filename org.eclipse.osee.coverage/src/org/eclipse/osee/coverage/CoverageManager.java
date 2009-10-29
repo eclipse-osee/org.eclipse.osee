@@ -12,33 +12,19 @@ package org.eclipse.osee.coverage;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoverageImport;
-import org.eclipse.osee.coverage.model.CoveragePackage;
-import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
-import org.eclipse.osee.framework.skynet.core.event.IArtifactsPurgedEventListener;
-import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
-import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.BlamContributionManager;
 
 /**
  * @author Donald G. Dunne
  */
-public class CoverageManager implements IFrameworkTransactionEventListener, IArtifactsPurgedEventListener {
-
-   private static Set<ICoverage> cache = new HashSet<ICoverage>();
+public class CoverageManager {
 
    public static void importCoverage(ICoverageImporter coverageImporter) throws OseeCoreException {
       CoverageImport coverageImport = coverageImporter.run();
@@ -55,52 +41,4 @@ public class CoverageManager implements IFrameworkTransactionEventListener, IArt
       return blams;
    }
 
-   public static Collection<CoveragePackage> getCoveragePackages() throws OseeCoreException {
-      List<CoveragePackage> packages = new ArrayList<CoveragePackage>();
-      for (Artifact artifact : ArtifactQuery.getArtifactListFromType(CoveragePackage.ARTIFACT_NAME,
-            BranchManager.getCommonBranch())) {
-         ICoverage item = getByGuid(artifact.getGuid());
-         if (item == null) {
-            packages.add(new CoveragePackage(artifact));
-         } else {
-            packages.add((CoveragePackage) item);
-         }
-      }
-      return packages;
-   }
-
-   public static ICoverage getByGuid(String guid) {
-      for (ICoverage item : cache) {
-         if (item.getGuid().equals(guid)) {
-            return item;
-         }
-      }
-      return null;
-   }
-
-   public static void cache(ICoverage item) {
-      cache.add(item);
-   }
-
-   public static void deCache(ICoverage item) {
-      cache.remove(item);
-   }
-
-   @Override
-   public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      for (Artifact artifact : transData.cacheDeletedArtifacts) {
-         if (artifact instanceof ICoverage) {
-            deCache((ICoverage) artifact);
-         }
-      }
-   }
-
-   @Override
-   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) throws OseeCoreException {
-      for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-         if (artifact instanceof ICoverage) {
-            deCache((ICoverage) artifact);
-         }
-      }
-   }
 }

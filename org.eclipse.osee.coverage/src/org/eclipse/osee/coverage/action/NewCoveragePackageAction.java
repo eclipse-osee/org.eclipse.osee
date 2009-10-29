@@ -11,6 +11,7 @@ import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -45,7 +46,7 @@ public class NewCoveragePackageAction extends Action {
             CoveragePackage coveragePackage = new CoveragePackage(dialog.getEntry());
             SkynetTransaction transaction =
                   new SkynetTransaction(BranchManager.getCommonBranch(), "Add Coverage Package");
-            coveragePackage.save(transaction);
+            OseeCoverageStore.get(coveragePackage).save(transaction);
             transaction.execute();
             CoverageEditor.open(new CoverageEditorInput(coveragePackage));
          } catch (OseeCoreException ex) {

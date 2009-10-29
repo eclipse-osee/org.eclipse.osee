@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test.package1;
 
-import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.test.import1.CoverageImportTest1Blam;
-import org.eclipse.osee.coverage.util.CoverageEditorItemListDialog;
+import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -36,12 +37,12 @@ public class CoveragePackage1Import2 extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      CoverageEditorItemListDialog dialog =
-            new CoverageEditorItemListDialog("Open Coverage Package", "Select Coverage Package");
-      dialog.setInput(CoverageManager.getCoveragePackages());
-
+      CoveragePackageArtifactListDialog dialog =
+            new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
+      dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());
       if (dialog.open() != 0) return;
-      CoveragePackage coveragePackage = (CoveragePackage) dialog.getResult()[0];
+      Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
+      CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
       CoverageEditor.open(new CoverageEditorInput(coveragePackage));
       // Process Import 1
       CoverageEditor editor = null;

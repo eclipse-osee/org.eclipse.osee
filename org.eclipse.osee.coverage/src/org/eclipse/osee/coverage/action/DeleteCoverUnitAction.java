@@ -14,6 +14,7 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
+import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -73,7 +74,7 @@ public class DeleteCoverUnitAction extends Action {
                if (coverageItem.getParent() instanceof ICoverageUnitProvider) {
                   ((ICoverageUnitProvider) coverageItem.getParent()).removeCoverageUnit((CoverageUnit) coverageItem);
                   deleteItems.add(coverageItem);
-                  ((CoverageUnit) coverageItem).delete(transaction, false);
+                  OseeCoverageStore.get(((CoverageUnit) coverageItem)).delete(transaction, false);
                }
             }
             transaction.execute();
@@ -85,6 +86,11 @@ public class DeleteCoverUnitAction extends Action {
             return;
          }
       }
-      saveable.save();
+      try {
+         saveable.save();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         return;
+      }
    }
 }

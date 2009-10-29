@@ -9,12 +9,12 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageTestUnit;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.AfterClass;
@@ -27,8 +27,8 @@ import org.junit.Test;
  */
 public class CoverageItemPersistTest {
 
-   public static CoverageUnit parent = null;
-   public static CoverageItem ci1 = null;
+   public static CoverageUnit parentCu = null;
+   public static CoverageItem ci = null;
    public static String parentGuid = null;
    public static String guid = null;
 
@@ -42,18 +42,18 @@ public class CoverageItemPersistTest {
    public static void testSetup() throws OseeCoreException {
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
 
-      parent = new CoverageUnit(null, "Top", "C:/UserData/");
-      parentGuid = parent.getGuid();
-      ci1 = new CoverageItem(parent, CoverageMethodEnum.Deactivated_Code, "1");
+      parentCu = new CoverageUnit(null, "Top", "C:/UserData/");
+      parentGuid = parentCu.getGuid();
+      ci = new CoverageItem(parentCu, CoverageMethodEnum.Deactivated_Code, "1");
       for (int x = 0; x < 10; x++) {
-         ci1.addTestUnit(new CoverageTestUnit("Test Unit " + x, "C:\\UserData\\"));
+         ci.addTestUnit(new CoverageTestUnit("Test Unit " + x));
       }
-      ci1.setLineNum("55");
-      ci1.setMethodNum("33");
-      ci1.setGuid("asdf");
-      ci1.setCoverageRationale("this is rationale");
-      ci1.setText("this is text");
-      guid = ci1.getGuid();
+      ci.setLineNum("55");
+      ci.setMethodNum("33");
+      ci.setGuid("asdf");
+      ci.setCoverageRationale("this is rationale");
+      ci.setText("this is text");
+      guid = ci.getGuid();
    }
 
    /**
@@ -68,10 +68,10 @@ public class CoverageItemPersistTest {
          // do nothing
       }
 
-      Artifact artifact = parent.getArtifact(false);
+      Artifact artifact = OseeCoverageStore.get(parentCu).getArtifact(false);
       Assert.assertNull("Artifact should not have been created", artifact);
-      artifact = parent.getArtifact(true);
-      StaticIdManager.setSingletonAttributeValue(artifact, CoverageTestUtil.COVERAGE_STATIC_ID);
+      artifact = OseeCoverageStore.get(parentCu).getArtifact(true);
+      CoverageTestUtil.registerAsTestArtifact(artifact);
       Assert.assertNotNull("Artifact should have been created", artifact);
    }
 
@@ -81,15 +81,15 @@ public class CoverageItemPersistTest {
     */
    @Test
    public void testSave() throws OseeCoreException {
-      Artifact artifact = parent.getArtifact(true);
+      Artifact artifact = OseeCoverageStore.get(parentCu).getArtifact(true);
       Assert.assertNotNull(artifact);
       SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save CoverageItem");
-      parent.save(transaction);
+      OseeCoverageStore.get(parentCu).save(transaction);
       transaction.execute();
-      for (CoverageTestUnit testUnit : ci1.getTestUnits()) {
-         Artifact testArt = testUnit.getArtifact(false);
+      for (CoverageTestUnit testUnit : ci.getTestUnits()) {
+         Artifact testArt = OseeCoverageStore.get(testUnit).getArtifact(false);
          Assert.assertNotNull(String.format("TestUnit [%s] should have been created", testUnit.getName()), testArt);
-         StaticIdManager.setSingletonAttributeValue(testArt, CoverageTestUtil.COVERAGE_STATIC_ID);
+         CoverageTestUtil.registerAsTestArtifact(testArt);
       }
    }
 
@@ -98,8 +98,8 @@ public class CoverageItemPersistTest {
     */
    @Test
    public void testGetArtifact2() throws OseeCoreException {
-      parent.load();
-      CoverageItem ci = parent.getCoverageItems().iterator().next();
+      OseeCoverageStore.get(parentCu).load();
+      CoverageItem ci = parentCu.getCoverageItems().iterator().next();
       Assert.assertEquals(guid, ci.getGuid());
       Assert.assertEquals("33", ci.getMethodNum());
       Assert.assertEquals("1", ci.getExecuteNum());
@@ -118,12 +118,12 @@ public class CoverageItemPersistTest {
     */
    @Test
    public void testDelete() throws OseeCoreException {
-      Artifact artifact = parent.getArtifact(false);
+      Artifact artifact = OseeCoverageStore.get(parentCu).getArtifact(false);
       Assert.assertNotNull(artifact);
       SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save CoverageItem");
-      parent.delete(transaction, false);
+      OseeCoverageStore.get(parentCu).delete(transaction, false);
       transaction.execute();
-      artifact = parent.getArtifact(false);
+      artifact = OseeCoverageStore.get(parentCu).getArtifact(false);
       Assert.assertTrue(artifact.isDeleted());
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
    }

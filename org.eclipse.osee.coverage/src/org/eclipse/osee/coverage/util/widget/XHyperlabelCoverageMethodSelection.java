@@ -13,7 +13,7 @@ package org.eclipse.osee.coverage.util.widget;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
-import org.eclipse.osee.coverage.util.CoverageMethodListDialog;
+import org.eclipse.osee.coverage.util.dialog.CoverageMethodListDialog;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;

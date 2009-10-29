@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.coverage.CoverageManager;
+import org.eclipse.osee.coverage.store.CoverageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -24,8 +24,6 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 
@@ -34,15 +32,15 @@ import org.eclipse.osee.framework.ui.skynet.OseeImage;
  */
 public class CoverageItem implements ICoverage {
 
-   private CoverageMethodEnum coverageMethod = CoverageMethodEnum.Not_Covered;
-   private String coverageRationale;
-   private String executeNum;
-   private String lineNum;
-   private String methodNum;
-   private String text;
+   CoverageMethodEnum coverageMethod = CoverageMethodEnum.Not_Covered;
+   String coverageRationale;
+   String executeNum;
+   String lineNum;
+   String methodNum;
+   String text;
    private final CoverageUnit coverageUnit;
-   private final Set<CoverageTestUnit> testUnits = new HashSet<CoverageTestUnit>();
-   private String guid = GUID.create();
+   final Set<CoverageTestUnit> testUnits = new HashSet<CoverageTestUnit>();
+   String guid = GUID.create();
    private static String PROPERTY_STORE_ID = "coverage.item";
 
    public CoverageItem(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethod, String executeNum) {
@@ -84,7 +82,7 @@ public class CoverageItem implements ICoverage {
       String testUnitsGuids = store.get("testUnits");
       if (Strings.isValid(testUnitsGuids)) {
          for (String guid : testUnitsGuids.split(",")) {
-            addTestUnit((CoverageTestUnit) CoverageManager.getByGuid(guid));
+            addTestUnit(CoverageStore.getTestUnitByGuid(guid));
          }
       }
    }
@@ -95,7 +93,6 @@ public class CoverageItem implements ICoverage {
 
    public void addTestUnit(CoverageTestUnit testUnit) {
       testUnits.add(testUnit);
-      CoverageManager.cache(testUnit);
    }
 
    public CoverageMethodEnum getCoverageMethod() {
@@ -220,29 +217,6 @@ public class CoverageItem implements ICoverage {
          guids.add(testUnit.getGuid());
       }
       return Collections.toString(guids, ",");
-   }
-
-   public void delete(SkynetTransaction transaction, boolean purge) throws OseeCoreException {
-      if (getArtifact(false) != null) {
-         if (purge)
-            getArtifact(false).purgeFromBranch();
-         else
-            getArtifact(false).deleteAndPersist(transaction);
-      }
-      for (CoverageTestUnit testUnit : testUnits) {
-         testUnit.delete(transaction, purge);
-      }
-   }
-
-   public void save(SkynetTransaction transaction) throws OseeCoreException {
-      for (CoverageTestUnit testUnit : testUnits) {
-         testUnit.save(transaction);
-      }
-   }
-
-   @Override
-   public Artifact getArtifact(boolean create) throws OseeCoreException {
-      return null;
    }
 
    public String getCoverageRationale() {

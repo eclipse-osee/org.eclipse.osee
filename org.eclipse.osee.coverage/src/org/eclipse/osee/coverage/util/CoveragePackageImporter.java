@@ -16,6 +16,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -71,7 +72,7 @@ public class CoveragePackageImporter {
       }
    }
 
-   public XResultData importItems(ISaveable saveable, Collection<ICoverage> importItems) {
+   public XResultData importItems(ISaveable saveable, Collection<ICoverage> importItems) throws OseeCoreException {
       XResultData rd = new XResultData(false);
 
       Result result = saveable.isEditable();

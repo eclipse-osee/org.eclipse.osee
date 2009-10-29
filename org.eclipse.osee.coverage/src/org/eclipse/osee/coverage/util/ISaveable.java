@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.util;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -12,7 +13,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
  */
 public interface ISaveable {
 
-   public Result save();
+   public Result save() throws OseeCoreException;
 
    public Result isEditable();
 }

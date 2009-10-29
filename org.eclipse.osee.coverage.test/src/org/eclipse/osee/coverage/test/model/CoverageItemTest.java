@@ -69,7 +69,7 @@ public class CoverageItemTest {
    @Test
    public void testAddGetTestUnit() {
       for (int x = 0; x < 10; x++) {
-         ci1.addTestUnit(new CoverageTestUnit("Test Unit " + x, "C:\\UserData\\"));
+         ci1.addTestUnit(new CoverageTestUnit("Test Unit " + x));
       }
       Assert.assertEquals(10, ci1.getTestUnits().size());
    }
@@ -134,7 +134,12 @@ public class CoverageItemTest {
     */
    @Test
    public void testIsCompleted() {
+      CoverageMethodEnum current = ci1.getCoverageMethod();
+      ci1.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
+      Assert.assertTrue(ci1.isCompleted());
+      ci1.setCoverageMethod(CoverageMethodEnum.Not_Covered);
       Assert.assertFalse(ci1.isCompleted());
+      ci1.setCoverageMethod(current);
    }
 
    /**

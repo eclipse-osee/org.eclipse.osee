@@ -19,8 +19,8 @@ import org.eclipse.osee.coverage.ICoverageImporter;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
-import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.CoverageTestUnit;
+import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.vcast.VcpResultsFile.ResultsValue;
 import org.eclipse.osee.coverage.vcast.VcpSourceFile.SourceValue;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -111,8 +111,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
 
       for (VcpResultsFile vcpResultsFile : vCastVcp.resultsFiles) {
          CoverageTestUnit testUnit =
-               new CoverageTestUnit(vcpResultsFile.getValue(ResultsValue.FILENAME),
-                     vcpResultsFile.getValue(ResultsValue.DIRECTORY));
+               new CoverageTestUnit(vcpResultsFile.getValue(ResultsValue.FILENAME));
          for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
             CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
             if (coverageUnit == null) {
@@ -133,8 +132,6 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                                  methodNum, coverageUnit, testUnit));
                   } else {
                      coverageItem.setCoverageMethod(CoverageMethodEnum.Test_Unit);
-                     // Relate that coverage item to the test unit that covers it
-                     testUnit.addCoverageItem(coverageItem);
                      coverageItem.addTestUnit(testUnit);
                   }
                }

@@ -92,7 +92,7 @@ public class SampleJavaFileParser {
                if (covered) {
                   for (String testUnitName : testUnits.split("\\|")) {
                      if (nametoTestUnitMap.get(testUnitName) == null) {
-                        CoverageTestUnit testUnit = new CoverageTestUnit(testUnitName, "");
+                        CoverageTestUnit testUnit = new CoverageTestUnit(testUnitName);
                         nametoTestUnitMap.put(testUnitName, testUnit);
                      }
                      coverageItem.addTestUnit(nametoTestUnitMap.get(testUnitName));
