@@ -95,7 +95,9 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                            vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),
                                  String.valueOf(lineNumToBranches.getLineNum()));
                      coverageItem.setText(lineData.getFirst());
-                     coverageItem.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
+                     if (lineData.getSecond()) {
+                        coverageItem.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
+                     }
                      methodCoverageUnit.addCoverageItem(coverageItem);
                   }
                }
@@ -110,8 +112,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       }
 
       for (VcpResultsFile vcpResultsFile : vCastVcp.resultsFiles) {
-         CoverageTestUnit testUnit =
-               new CoverageTestUnit(vcpResultsFile.getValue(ResultsValue.FILENAME));
+         CoverageTestUnit testUnit = new CoverageTestUnit(vcpResultsFile.getValue(ResultsValue.FILENAME));
          for (String fileNum : vcpResultsFile.getVcpResultsDatFile().getFileNumbers()) {
             CoverageUnit coverageUnit = fileNumToCoverageUnit.get(fileNum);
             if (coverageUnit == null) {
