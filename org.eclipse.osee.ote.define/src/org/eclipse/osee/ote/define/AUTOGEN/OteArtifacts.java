@@ -14,7 +14,8 @@ import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
 public enum OteArtifacts implements IOseeType {
-   TEST_RUN(Requirements.TEST_RUN, "AAMFDjqDHWo+orlSpaQA"), TEST_SCRIPT(Requirements.TEST_CASE, "AAMFDikEi0TGK27TKPgA");
+   TEST_RUN(Requirements.TEST_RUN, "AAMFDjqDHWo+orlSpaQA"),
+   TEST_SCRIPT(Requirements.TEST_CASE, "AAMFDikEi0TGK27TKPgA");
 
    private final String name;
    private final String guid;
