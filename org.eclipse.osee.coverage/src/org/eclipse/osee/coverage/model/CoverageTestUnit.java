@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.model;
 
 import java.util.Collection;
+import java.util.Collections;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -108,7 +109,7 @@ public class CoverageTestUnit implements ICoverage {
 
    @Override
    public Collection<? extends ICoverage> getChildrenItems() {
-      return null;
+      return Collections.emptyList();
    }
 
    @Override
