@@ -191,4 +191,10 @@
           className="org.eclipse.osee.define.traceability.blam.RemoveTraceMarksFromTraceUnits">
     </Operation>
  </extension>
+ <extension
+       point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+    <Operation
+          className="org.eclipse.osee.define.blam.operation.SubsystemRequirementVerificationLevel">
+    </Operation>
+ </extension>
 </plugin>

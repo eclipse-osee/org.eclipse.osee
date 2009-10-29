@@ -20,10 +20,13 @@ public enum CoreAttributes implements IOseeType {
    NAME("Name", "AAMFEcF1AzV7PKuHmxwA"),
    NATIVE_CONTENT("Native Content", "AAMFEcdBJGBK9nr9TTQA"),
    NATIVE_EXTENSION("Extension", "AAMFEcUbJEERZTnwJzAA"),
+   PARAGRAPH_NUMBER("Imported Paragraph Number", "AAMFEQ3boD3sp6VfArAA"),
    WHOLE_WORD_CONTENT("Whole Word Content", "AAMFEchZmAzZo2tHjVAA"),
    WORD_TEMPLATE_CONTENT("Word Template Content", "AAMFEcfcGS2V3SqQN2wA"),
    RELATION_ORDER("Relation Order", "ABM5kHa9cFsTbI_ooyQA"),
-   USER_ID("User Id", "AAMFEbKl8RCQr17bDAQA");
+   SUBSYSTEM("Subsystem", "AAMFERJ1GweNukuSd8QA"),
+   USER_ID("User Id", "AAMFEbKl8RCQr17bDAQA"),
+   VERIFICATION_LEVEL("Verification Level", "AAMFEXRTkyKVIFqcMwQA");
 
    private final String name;
    private final String guid;
@@ -34,7 +37,7 @@ public enum CoreAttributes implements IOseeType {
    }
 
    public String getName() {
-      return this.name;
+      return name;
    }
 
    public String getGuid() {

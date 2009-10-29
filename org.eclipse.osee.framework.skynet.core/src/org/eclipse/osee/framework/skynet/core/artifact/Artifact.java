@@ -762,6 +762,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       }
    }
 
+   public <T> T getSoleAttributeValue(IOseeType attributeTypeEnum, T defaultReturnValue) throws OseeCoreException {
+      return getSoleAttributeValue(attributeTypeEnum.getName(), defaultReturnValue);
+   }
+
    /**
     * Return sole attribute value for given attribute type name or defaultReturnValue if no attribute instance exists
     * for this artifact.<br>
@@ -818,6 +822,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     */
    public <T> void setSoleAttributeValue(String attributeTypeName, T value) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeTypeName).setValue(value);
+   }
+
+   public <T> void setSoleAttributeValue(IOseeType attributeTypeEnum, T value) throws OseeCoreException {
+      getOrCreateSoleAttribute(attributeTypeEnum.getName()).setValue(value);
    }
 
    public <T> void setSoleAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {

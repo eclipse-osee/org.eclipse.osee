@@ -427,6 +427,10 @@ public class RelationManager {
       return getRelatedArtifact(artifact, relationEnum.getRelationType(), relationEnum.getSide());
    }
 
+   public static int getRelatedArtifactsCount(Artifact artifact, IRelationEnumeration relationTypeEnum) throws OseeCoreException {
+      return getRelatedArtifactsCount(artifact, relationTypeEnum.getRelationType(), relationTypeEnum.getSide());
+   }
+
    public static int getRelatedArtifactsCount(Artifact artifact, RelationType relationType, RelationSide relationSide) {
       List<RelationLink> selectedRelations = relationsByType.get(threadLocalKey.get().getKey(artifact), relationType);
 

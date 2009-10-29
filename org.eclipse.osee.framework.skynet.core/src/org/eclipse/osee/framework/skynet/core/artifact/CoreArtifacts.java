@@ -18,7 +18,8 @@ import org.eclipse.osee.framework.skynet.core.IOseeType;
 public enum CoreArtifacts implements IOseeType {
    User("User", "AAMFDhmr+Dqqe5pn3kAA"),
    AbstractSoftwareRequirement("Abstract Software Requirement", "ABNAYPwV6H4EkjQ3+QQA"),
-   SoftwareRequirementDrawing("Software Requirement Drawing", "ABNClhgUfwj6A3EAArQA");
+   SoftwareRequirementDrawing("Software Requirement Drawing", "ABNClhgUfwj6A3EAArQA"),
+   SubsystemRequirement("Subsystem Requirement", "AAMFDiN9KiAkhuLqOhQA");
 
    private final String name;
    private final String guid;

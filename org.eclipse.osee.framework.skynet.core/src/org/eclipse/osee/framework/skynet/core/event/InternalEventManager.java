@@ -196,13 +196,8 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /*
-    * Kick LOCAL and REMOTE branch events
-    */
+   // Kick LOCAL and REMOTE branch events
    static void kickMergeBranchEvent(final Sender sender, final MergeBranchEventType branchEventType, final int branchId) {
-      if (isDisableEvents()) {
-         return;
-      }
       eventLog("OEM: kickMergeBranchEvent: type: " + branchEventType + " id: " + branchId + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
@@ -298,9 +293,6 @@ public class InternalEventManager {
     * This event does NOT go external
     */
    static void kickLocalBranchToArtifactCacheUpdateEvent(final Sender sender) throws OseeCoreException {
-      if (isDisableEvents()) {
-         return;
-      }
       eventLog("OEM: kickLocalBranchToArtifactCacheUpdateEvent - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {
@@ -311,13 +303,8 @@ public class InternalEventManager {
       execute(runnable);
    }
 
-   /*
-    * Kick LOCAL artifact modified event; This event does NOT go external
-    */
+   // Kick LOCAL artifact modified event; This event does NOT go external
    static void kickArtifactModifiedEvent(final Sender sender, final ArtifactModType artifactModType, final Artifact artifact) throws OseeCoreException {
-      if (isDisableEvents()) {
-         return;
-      }
       eventLog("OEM: kickArtifactModifiedEvent - " + artifactModType + " - " + artifact.getGuid() + " - " + sender + " - " + artifact.getDirtySkynetAttributeChanges());
       Runnable runnable = new Runnable() {
          public void run() {
@@ -331,9 +318,6 @@ public class InternalEventManager {
 
    // Kick LOCAL relation modified event; This event does NOT go external
    static void kickRelationModifiedEvent(final Sender sender, final RelationEventType relationEventType, final RelationLink link, final Branch branch, final String relationType) throws OseeCoreException {
-      if (isDisableEvents()) {
-         return;
-      }
       eventLog("OEM: kickRelationModifiedEvent - " + relationEventType + " - " + link + " - " + sender);
       Runnable runnable = new Runnable() {
          public void run() {

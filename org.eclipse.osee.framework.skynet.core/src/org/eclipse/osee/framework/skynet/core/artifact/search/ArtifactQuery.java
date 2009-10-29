@@ -268,8 +268,8 @@ public class ArtifactQuery {
             1000, null);
    }
 
-   public static List<Artifact> getArtifactListFromType(ArtifactType artifactType, Branch branch) throws OseeCoreException {
-      return getArtifactListFromType(artifactType, branch, false);
+   public static List<Artifact> getArtifactListFromType(IOseeType artifactTypeEnum, Branch branch) throws OseeCoreException {
+      return getArtifactListFromType(artifactTypeEnum, branch, false);
    }
 
    public static List<Artifact> getArtifactListFromBranch(Branch branch, boolean allowDeleted) throws OseeCoreException {
