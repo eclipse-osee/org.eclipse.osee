@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.change;
 
-import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 
 import java.util.ArrayList;
@@ -87,7 +86,7 @@ public class SingleNativeDiffHandler extends CommandHandler {
                      change.getArtifact().getArtId(), change.getFromTransactionId(), true);
          artifacts.addAll(checkForTrackedChangesOn(baseArtifact));
          Artifact newerArtifact =
-               (change.getModificationType() == DELETED || change.getModificationType() == ModificationType.ARTIFACT_DELETED) ? null : (change.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+               (change.getModificationType().isDeleted()) ? null : (change.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
                      change.getArtifact().getArtId(), change.getToTransactionId(), true) : change.getArtifact());
          artifacts.addAll(checkForTrackedChangesOn(newerArtifact));
          if (artifacts.isEmpty()) {

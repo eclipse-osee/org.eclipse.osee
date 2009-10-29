@@ -57,7 +57,7 @@ public class ViewWordChangeReportHandler extends AbstractHandler {
                         artifactChange.getArtifact().getArtId(), artifactChange.getFromTransactionId(), true);
 
             Artifact newerArtifact =
-                  (artifactChange.getModificationType() == ModificationType.DELETED || artifactChange.getModificationType() == ModificationType.ARTIFACT_DELETED )? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
+                  (artifactChange.getModificationType().isDeleted() )? null : (artifactChange.isHistorical() ? ArtifactQuery.getHistoricalArtifactFromId(
                         artifactChange.getArtifact().getArtId(), artifactChange.getToTransactionId(), true) : artifactChange.getArtifact());
 
             baseArtifacts.add(baseArtifact);
