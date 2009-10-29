@@ -77,7 +77,7 @@ public class RelationOrderRendererTest {
       addData(orderData, expectedData, "Relation 2", "Relation 2_B", RelationSide.SIDE_B, //
             RelationOrderBaseTypes.UNORDERED.getGuid(), "4", "5", "6");
 
-      addData(orderData, expectedData, "Relation 3", "Relation 3_B", RelationSide.OPPOSITE, //
+      addData(orderData, expectedData, "Relation 3", "Relation 3_B", RelationSide.SIDE_B, //
             RelationOrderBaseTypes.USER_DEFINED.getGuid(), "7", "8", "9");
 
       checkRelationOrderRenderer(getExpected(expectedData), orderData);
