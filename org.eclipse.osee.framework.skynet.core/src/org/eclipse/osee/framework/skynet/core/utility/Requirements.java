@@ -11,72 +11,78 @@
 
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import java.util.Collection;
+import java.util.HashSet;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.CoreArtifacts;
 
 /**
  * @author Donald G. Dunne
  */
 public class Requirements {
-   public static String HARDWARE_REQUIREMENT = "Hardware Requirement";
-   public static String HARDWARE_REQUIREMENTS = "Hardware Requirements";
-   public static String SOFTWARE_REQUIREMENT = "Software Requirement";
-   public static String SOFTWARE_REQUIREMENT_DRAWING = "Software Requirement Drawing";
-   public static String SOFTWARE_REQUIREMENT_FUNCTION = "Software Requirement Function";
-   public static String SOFTWARE_REQUIREMENT_PROCEDURE = "Software Requirement Procedure";
-   public static String SOFTWARE_REQUIREMENTS = "Software Requirements";
-   public static String INDIRECT_SOFTWARE_REQUIREMENT = "Indirect Software Requirement";
-   public static String SYSTEM_REQUIREMENT = "System Requirement";
-   public static String SYSTEM_REQUIREMENTS = "System Requirements";
-   public static String SYSTEM_DESIGN = "System Design";
-   public static String SYSTEM_FUNCTION = "System Function";
-   public static String REQUIREMENT = "Requirement";
-   public static String ABSTRACT_SOFTWARE_REQUIREMENT = "Abstract Software Requirement";
+   public final static String HARDWARE_REQUIREMENT = "Hardware Requirement";
+   public final static String HARDWARE_REQUIREMENTS = "Hardware Requirements";
+   public final static String SOFTWARE_REQUIREMENT = "Software Requirement";
+   public final static String SOFTWARE_REQUIREMENT_DRAWING = "Software Requirement Drawing";
+   public final static String SOFTWARE_REQUIREMENT_FUNCTION = "Software Requirement Function";
+   public final static String SOFTWARE_REQUIREMENT_PROCEDURE = "Software Requirement Procedure";
+   public final static String SOFTWARE_REQUIREMENTS = "Software Requirements";
+   public final static String INDIRECT_SOFTWARE_REQUIREMENT = "Indirect Software Requirement";
+   public final static String SYSTEM_REQUIREMENT = "System Requirement";
+   public final static String SYSTEM_REQUIREMENTS = "System Requirements";
+   public final static String SYSTEM_DESIGN = "System Design";
+   public final static String SYSTEM_FUNCTION = "System Function";
+   public final static String REQUIREMENT = "Requirement";
+   public final static String ABSTRACT_SOFTWARE_REQUIREMENT = "Abstract Software Requirement";
 
-   public static String SUBSYSTEM_REQUIREMENT = "Subsystem Requirement";
-   public static String SUBSYSTEM_REQUIREMENTS = "Subsystem Requirements";
-   public static String SUBSYSTEM_DESIGN = "Subsystem Design";
-   public static String SUBSYSTEM_FUNCTION = "Subsystem Function";
+   public final static String SUBSYSTEM_REQUIREMENT = "Subsystem Requirement";
+   public final static String SUBSYSTEM_REQUIREMENTS = "Subsystem Requirements";
+   public final static String SUBSYSTEM_DESIGN = "Subsystem Design";
+   public final static String SUBSYSTEM_FUNCTION = "Subsystem Function";
 
-   public static String SOFTWARE_DESIGN = "Software Design";
-   public static String SOFTWARE_FUNCTION = "Software Function";
+   public final static String SOFTWARE_DESIGN = "Software Design";
+   public final static String SOFTWARE_FUNCTION = "Software Function";
 
-   public static String INTERFACE_REQUIREMENT = "Interface Requirement";
-   public static String COMPONENT = "Component";
+   public final static String INTERFACE_REQUIREMENT = "Interface Requirement";
+   public final static String COMPONENT = "Component";
 
-   public static String ABSTRACT_TEST_UNIT = "Abstract Test Unit";
+   public final static String ABSTRACT_TEST_UNIT = "Abstract Test Unit";
 
-   public static String TEST_INFORMATION_SHEET = "Test Information Sheet";
-   public static String TEST_CASE = "Test Case";
-   public static String TEST_RUN = "Test Run";
-   public static String TEST_SUPPORT = "Test Support";
+   public final static String TEST_INFORMATION_SHEET = "Test Information Sheet";
+   public final static String TEST_CASE = "Test Case";
+   public final static String TEST_RUN = "Test Run";
+   public final static String TEST_SUPPORT = "Test Support";
 
-   public static String TEST_SUPPORT_UNITS = TEST_SUPPORT + " Units";
-   public static String TEST_CASES = "Test Cases";
-   public static String TEST_PROCEDURE = "Test Procedure";
+   public final static String TEST_SUPPORT_UNITS = TEST_SUPPORT + " Units";
+   public final static String TEST_CASES = "Test Cases";
+   public final static String TEST_PROCEDURE = "Test Procedure";
 
-   public static String CODE_UNIT = "Code Unit";
-   public static String SUBSYSTEM = "Subsystem";
-   public static String PARTITION = "Partition";
-   public static String CSCI = "CSCI";
-   public static String FOLDER = "Folder";
+   public final static String SUBSYSTEM = "Subsystem";
+   public final static String PARTITION = "Partition";
+   public final static String CSCI = "CSCI";
+   public final static String FOLDER = "Folder";
 
-   public static boolean isSoftwareRequirement(Artifact artifact) {
-      return Requirements.ALL_SOFTWARES_REQUIREMENT_TYPES.contains(artifact.getArtifactTypeName());
+   private Requirements() {
    }
 
-   public final static List<String> DIRECT_SOFTWARE_REQUIREMENT_TYPES =
-         Arrays.asList(SOFTWARE_REQUIREMENT, SOFTWARE_REQUIREMENT_FUNCTION, SOFTWARE_REQUIREMENT_PROCEDURE,
-               "Button Requirement", "UIG Artifact", "Stand Alone Local Data");
-
-   public final static List<String> ALL_SOFTWARES_REQUIREMENT_TYPES = new ArrayList<String>();
-   static {
-      ALL_SOFTWARES_REQUIREMENT_TYPES.addAll(DIRECT_SOFTWARE_REQUIREMENT_TYPES);
-      ALL_SOFTWARES_REQUIREMENT_TYPES.add(INDIRECT_SOFTWARE_REQUIREMENT);
-      ALL_SOFTWARES_REQUIREMENT_TYPES.add(SOFTWARE_REQUIREMENT_DRAWING);
+   public final static Collection<ArtifactType> getAllSoftwareRequirementTypes() throws OseeCoreException {
+      ArtifactType abstractSoftwareReq = ArtifactTypeManager.getType(CoreArtifacts.AbstractSoftwareRequirement);
+      Collection<ArtifactType> types = abstractSoftwareReq.getAllDescendantTypes();
+      types.add(abstractSoftwareReq);
+      return types;
    }
 
-   public static List<String> ALL_TEST_UNIT_TYPES = Arrays.asList(TEST_CASE, TEST_SUPPORT);
+   public final static Collection<ArtifactType> getAllDirectSoftwareRequirementTypes() throws OseeCoreException {
+      Collection<ArtifactType> types = getAllSoftwareRequirementTypes();
+      Collection<ArtifactType> nonDirectRequirements = new HashSet<ArtifactType>();
+      for (ArtifactType type : types) {
+         if (type.inheritsFrom(CoreArtifacts.IndirectSoftwareRequirement)) {
+            nonDirectRequirements.add(type);
+         }
+      }
+      types.removeAll(nonDirectRequirements);
+      return types;
+   }
 }

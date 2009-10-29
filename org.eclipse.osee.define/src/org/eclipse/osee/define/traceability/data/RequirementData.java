@@ -46,6 +46,7 @@ public class RequirementData extends BaseTraceDataCache {
       this.allSwRequirements = new TreeSet<Artifact>();
    }
 
+   @Override
    public void reset() {
       super.reset();
       this.directMap.clear();
@@ -55,17 +56,17 @@ public class RequirementData extends BaseTraceDataCache {
       this.allSwRequirements.clear();
    }
 
+   @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
-      directSwRequirements.addAll(ArtifactQuery.getArtifactListFromTypes(Requirements.DIRECT_SOFTWARE_REQUIREMENT_TYPES,
-            getBranch(), false));
+      directSwRequirements.addAll(ArtifactQuery.getArtifactListFromArtifactTypes(
+            Requirements.getAllDirectSoftwareRequirementTypes(), getBranch(), false));
       populateTraceMap(monitor, directSwRequirements, directMap);
       monitor.worked(30);
 
       if (!monitor.isCanceled()) {
-         monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]",
-               getBranch().getShortName()));
-         inDirectSwRequirements.addAll(ArtifactQuery.getArtifactListFromType(Requirements.INDIRECT_SOFTWARE_REQUIREMENT,
-               getBranch()));
+         monitor.subTask(String.format("Load Indirect Software Requirements from: [%s]", getBranch().getShortName()));
+         inDirectSwRequirements.addAll(ArtifactQuery.getArtifactListFromType(
+               Requirements.INDIRECT_SOFTWARE_REQUIREMENT, getBranch()));
          populateTraceMap(monitor, inDirectSwRequirements, indirectMap);
          monitor.worked(7);
 

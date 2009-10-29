@@ -17,8 +17,8 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.CoreArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
 /**
  * @author Roberto E. Escobar
@@ -32,12 +32,14 @@ public class CodeUnitData extends BaseTraceDataCache {
       this.codeUnitMap = new HashMap<String, Artifact>();
    }
 
+   @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
-      List<Artifact> codeUnits = ArtifactQuery.getArtifactListFromType(Requirements.CODE_UNIT, getBranch());
+      List<Artifact> codeUnits = ArtifactQuery.getArtifactListFromType(CoreArtifacts.CodeUnit, getBranch());
       populateTraceMap(monitor, codeUnits, codeUnitMap);
       monitor.worked(30);
    }
 
+   @Override
    public void reset() {
       super.reset();
       codeUnitMap.clear();

@@ -28,16 +28,16 @@ import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.skynet.core.artifact.CoreArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
@@ -101,8 +101,9 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
    }
 
-   private Artifact getArtifactFromCache(IProgressMonitor monitor, String artifactType, String name) {
-      if (Requirements.ALL_TEST_UNIT_TYPES.contains(artifactType)) {
+   private Artifact getArtifactFromCache(IProgressMonitor monitor, String artifactTypeName, String name) throws OseeCoreException {
+      ArtifactType typeValue = ArtifactTypeManager.getType(artifactTypeName);
+      if (typeValue.inheritsFrom(CoreArtifacts.TestUnit)) {
          if (testUnitData == null) {
             testUnitData = new TestUnitData(importIntoBranch);
             if (!monitor.isCanceled()) {
@@ -110,7 +111,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             }
          }
          return testUnitData.getTestUnitByName(name);
-      } else if (Requirements.CODE_UNIT.equals(artifactType)) {
+      } else if (typeValue.inheritsFrom(CoreArtifacts.CodeUnit)) {
          if (codeUnitData == null) {
             codeUnitData = new CodeUnitData(importIntoBranch);
             if (!monitor.isCanceled()) {
@@ -125,7 +126,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    @Override
    public void process(IProgressMonitor monitor, TraceUnit traceUnit) throws OseeCoreException {
       if (transaction == null) {
-         transaction = new SkynetTransaction(importIntoBranch);
+         transaction = new SkynetTransaction(importIntoBranch, "Importing Trace Unit(s)");
       }
       boolean hasChange = false;
       boolean artifactWasCreated = false;
@@ -182,13 +183,13 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    }
 
    private IRelationEnumeration getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) throws OseeCoreException {
-      if (traceUnitArtifact.isOfType(Requirements.ABSTRACT_TEST_UNIT)) {
+      if (traceUnitArtifact.isOfType(CoreArtifacts.TestUnit)) {
          if (isUsesTraceType(traceType)) {
             return CoreRelationEnumeration.Uses__TestUnit;
          } else {
             return CoreRelationEnumeration.Verification__Verifier;
          }
-      } else if (traceUnitArtifact.isOfType(Requirements.CODE_UNIT)) {
+      } else if (traceUnitArtifact.isOfType(CoreArtifacts.CodeUnit)) {
          return CoreRelationEnumeration.CodeRequirement_CodeUnit;
       }
       return null;
@@ -260,7 +261,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             folder = getOrCreateTestCaseFolder(transaction);
          } else if (testUnit.isOfType(Requirements.TEST_SUPPORT)) {
             folder = getOrCreateTestSupportFolder(transaction);
-         } else if (testUnit.isOfType(Requirements.CODE_UNIT)) {
+         } else if (testUnit.isOfType(CoreArtifacts.CodeUnit)) {
             folder = getOrCreateCodeUnitFolder(transaction);
          } else {
             folder = getOrCreateUnknownTestUnitFolder(transaction);

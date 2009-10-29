@@ -18,8 +18,11 @@ import org.eclipse.osee.framework.skynet.core.IOseeType;
 public enum CoreArtifacts implements IOseeType {
    User("User", "AAMFDhmr+Dqqe5pn3kAA"),
    AbstractSoftwareRequirement("Abstract Software Requirement", "ABNAYPwV6H4EkjQ3+QQA"),
+   IndirectSoftwareRequirement("Indirect Software Requirement", "AAMFDiC7HRQMqr5S0QwA"),
    SoftwareRequirementDrawing("Software Requirement Drawing", "ABNClhgUfwj6A3EAArQA"),
-   SubsystemRequirement("Subsystem Requirement", "AAMFDiN9KiAkhuLqOhQA");
+   SubsystemRequirement("Subsystem Requirement", "AAMFDiN9KiAkhuLqOhQA"),
+   CodeUnit("Code Unit", "AAMFDkEh216dzK1mTZgA"),
+   TestUnit("Test Unit", "ABM2d6uxUw66aSdo0LwA");
 
    private final String name;
    private final String guid;

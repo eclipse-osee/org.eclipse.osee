@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -233,9 +232,9 @@ public class RelationManager {
    }
 
    private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
-      @SuppressWarnings("unused")
-      // This is for bulk loading so we do not loose are references
-      Collection<Artifact> bulkLoadedArtifacts;
+      if (relationSide == null) {
+         throw new OseeArgumentException("RelationSide cannot be null");
+      }
       List<RelationLink> selectedRelations = null;
       if (relationType == null) {
          selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
@@ -253,15 +252,15 @@ public class RelationManager {
       HashMap<Integer, Branch> insertMap = new HashMap<Integer, Branch>(mapCapacity);
       List<Artifact> relatedArtifacts = new ArrayList<Artifact>(selectedRelations.size());
 
-      if (relationSide == null) {
-         relationSide = RelationSide.OPPOSITE;
-      }
-
       addRelatedArtifactIds(queryId, artifact, relatedArtifacts, insertParameters, insertMap, selectedRelations,
             relationSide);
 
+      // This is for bulk loading so we do not lose are references
+      @SuppressWarnings("unused")
+      Collection<Artifact> bulkLoadedArtifacts;
       if (insertParameters.size() > 0) {
-         bulkLoadedArtifacts = ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, false, false);
+         bulkLoadedArtifacts =
+               ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, false, false);
       }
 
       //now that bulk loading is done, put the artifacts in the right order and return them
@@ -291,12 +290,8 @@ public class RelationManager {
       for (RelationLink relation : relations) {
          if (!relation.isDeleted()) {
             RelationSide resolvedSide = null;
-            if (side == RelationSide.OPPOSITE) {
-               resolvedSide = relation.getSide(artifact).oppositeSide();
-            } else {
-               if (relation.getSide(artifact) != side) {
-                  resolvedSide = side;
-               }
+            if (relation.getSide(artifact) != side) {
+               resolvedSide = side;
             }
             if (resolvedSide != null) {
                int artId = relation.getArtifactId(resolvedSide);
@@ -338,7 +333,7 @@ public class RelationManager {
             if (relationEnums.length == 0) {
                selectedRelations = getFlattenedList(relationsByType.getValues(threadLocalKey.get().getKey(artifact)));
                addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, insertMap, selectedRelations,
-                     RelationSide.OPPOSITE);
+                     RelationSide.SIDE_B);
             } else {
                for (IRelationEnumeration relationEnum : relationEnums) {
                   selectedRelations =
@@ -359,14 +354,6 @@ public class RelationManager {
       }
 
       return relatedArtifacts;
-   }
-
-   public static List<Artifact> getRelatedArtifactsAll(Artifact artifact) throws OseeCoreException {
-      return getRelatedArtifacts(artifact, null, null);
-   }
-
-   public static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType) throws OseeCoreException {
-      return getRelatedArtifacts(artifact, relationType, RelationSide.OPPOSITE);
    }
 
    @SuppressWarnings("unchecked")
@@ -458,7 +445,7 @@ public class RelationManager {
    public static void prepareRelationsForReload(Artifact artifact) {
       // weakness:  references held to links by other applications will continue to exist.
       //We do not want to drop relation links for historical artifacts because the relation manager will clobber the current artifacts relations. 
-      if(artifact.isHistorical()){
+      if (artifact.isHistorical()) {
          relationsByType.removeValues(threadLocalKey.get().getKey(artifact));
       }
    }
