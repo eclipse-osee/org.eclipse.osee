@@ -31,7 +31,8 @@
 	<target name="prePackage" />
 	<target name="postPackage" />
 
-	<target name="preProcess" if="generateOseeHelp">
+	<target name="preProcess">
+		<echo message="Generating OSEE Help" />
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.framework.help.ui" antfile="build-helper.xml" target="all" />
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.framework.dev.help.ui" antfile="build-helper.xml" target="all" />
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.ats.help.ui" antfile="build-helper.xml" target="all" />
@@ -40,4 +41,5 @@
 
 	<target name="postProcess" />
 	<target name="postBuild" />
+	<target name="extraPackaging" />
 </project>
