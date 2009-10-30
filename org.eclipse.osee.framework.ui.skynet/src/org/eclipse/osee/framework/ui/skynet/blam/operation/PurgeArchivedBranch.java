@@ -14,11 +14,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -69,7 +71,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
                      "List of archived branches with unusual branch states: ");
                displayReport(branches, "Archived Branches", "List of archived branches to be purged: ");
             } catch (Exception ex) {
-               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
             }
          }
       });
@@ -98,7 +100,11 @@ public class PurgeArchivedBranch extends AbstractBlam {
             "Do you wish to purge the archived branches: " + "?")) {
          //only delete archived branches that are not changed managed, rebaselined and deleted 
          for (BranchInfo purgeBranch : branches) {
-            BranchManager.purgeBranch(BranchManager.getBranch(purgeBranch.getId()));
+            try {
+               BranchManager.purgeBranch(BranchManager.getBranch(Integer.valueOf(purgeBranch.getId())));
+            } catch (OseeArgumentException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
       }
    }
