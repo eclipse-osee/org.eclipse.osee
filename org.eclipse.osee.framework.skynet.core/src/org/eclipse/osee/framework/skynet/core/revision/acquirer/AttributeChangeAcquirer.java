@@ -36,10 +36,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * @author Jeff C. Phillips
- *
  */
-public class AttributeChangeAcquirer extends ChangeAcquirer{
-
+public class AttributeChangeAcquirer extends ChangeAcquirer {
 
    public AttributeChangeAcquirer(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
       super(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
@@ -53,43 +51,47 @@ public class AttributeChangeAcquirer extends ChangeAcquirer{
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       boolean hasBranch = getSourceBranch() != null;
       long time = System.currentTimeMillis();
+      try {
+         getMonitor().subTask("Gathering Attribute Changes");
+         TransactionId fromTransactionId;
+         TransactionId toTransactionId;
+         boolean hasSpecificArtifact = getSpecificArtifact() != null;
 
-      getMonitor().subTask("Gathering Attribute Changes");
-      TransactionId fromTransactionId;
-      TransactionId toTransactionId;
-      boolean hasSpecificArtifact = getSpecificArtifact() != null;
-
-      for (ChangeBuilder changeBuilder : getChangeBuilders()) {// cache in map for performance look ups
-         artModTypes.put(changeBuilder.getArtId(), changeBuilder.getModType());
-      }
-      //Changes per a branch
-      if (hasBranch) {
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
-               getSourceBranch().getBranchId());
-
-         Pair<TransactionId, TransactionId> branchStartEndTransaction =
-               TransactionIdManager.getStartEndPoint(getSourceBranch());
-
-         fromTransactionId = branchStartEndTransaction.getFirst();
-         toTransactionId = branchStartEndTransaction.getSecond();
-      }//Changes per transaction number
-      else {
-         toTransactionId = getTransactionId();
-         if (hasSpecificArtifact) {
-            chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS_FOR_SPECIFIC_ARTIFACT),
-                  getTransactionId().getTransactionNumber(), getSpecificArtifact().getArtId());
-            fromTransactionId = getTransactionId();
-         } else {
-            chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS),
-                  getTransactionId().getTransactionNumber());
-            fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
+         for (ChangeBuilder changeBuilder : getChangeBuilders()) {// cache in map for performance look ups
+            artModTypes.put(changeBuilder.getArtId(), changeBuilder.getModType());
          }
+         //Changes per a branch
+         if (hasBranch) {
+            chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
+                  getSourceBranch().getBranchId());
+
+            Pair<TransactionId, TransactionId> branchStartEndTransaction =
+                  TransactionIdManager.getStartEndPoint(getSourceBranch());
+
+            fromTransactionId = branchStartEndTransaction.getFirst();
+            toTransactionId = branchStartEndTransaction.getSecond();
+         }//Changes per transaction number
+         else {
+            toTransactionId = getTransactionId();
+            if (hasSpecificArtifact) {
+               chStmt.runPreparedQuery(
+                     ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS_FOR_SPECIFIC_ARTIFACT),
+                     getTransactionId().getTransactionNumber(), getSpecificArtifact().getArtId());
+               fromTransactionId = getTransactionId();
+            } else {
+               chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS),
+                     getTransactionId().getTransactionNumber());
+               fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
+            }
+         }
+         loadIsValues(getSourceBranch(), getArtIds(), getChangeBuilders(), getNewAndDeletedArtifactIds(), getMonitor(),
+               attributesWasValueCache, artModTypes, modifiedArtifacts, chStmt, hasBranch, time, fromTransactionId,
+               toTransactionId, hasSpecificArtifact);
+         loadAttributeWasValues(getSourceBranch(), getTransactionId(), getArtIds(), getMonitor(),
+               attributesWasValueCache, hasBranch);
+      } finally {
+         chStmt.close();
       }
-      loadIsValues(getSourceBranch(), getArtIds(), getChangeBuilders(), getNewAndDeletedArtifactIds(), getMonitor(), attributesWasValueCache,
-            artModTypes, modifiedArtifacts, chStmt, hasBranch, time, fromTransactionId, toTransactionId,
-            hasSpecificArtifact);
-      loadAttributeWasValues(getSourceBranch(), getTransactionId(), getArtIds(), getMonitor(), attributesWasValueCache, hasBranch);
-      
       return getChangeBuilders();
    }
 
@@ -119,7 +121,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer{
             if (!newAndDeletedArtifactIds.contains(artId)) {
                // Want to add an artifact changed item once if any attribute was modified && artifact was not
                // NEW or DELETED and these changes are not for a specific artifact
-               if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId)){
+               if (artModType == ModificationType.MODIFIED && !modifiedArtifacts.contains(artId)) {
                   ArtifactChangeBuilder artifactChangeBuilder =
                         new ArtifactChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), -1, artId,
                               toTransactionId, fromTransactionId, ModificationType.MODIFIED, ChangeType.OUTGOING,
@@ -135,7 +137,9 @@ public class AttributeChangeAcquirer extends ChangeAcquirer{
                }
 
                attributeChangeBuilder =
-                     new AttributeChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), sourceGamma, artId, toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, !hasBranch, isValue, "",  attrId, attrTypeId, artModType);
+                     new AttributeChangeBuilder(sourceBranch, ArtifactTypeManager.getType(artTypeId), sourceGamma,
+                           artId, toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING,
+                           !hasBranch, isValue, "", attrId, attrTypeId, artModType);
 
                changeBuilders.add(attributeChangeBuilder);
                attributesWasValueCache.put(attrId, attributeChangeBuilder);
@@ -198,7 +202,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer{
                if (previousAttrId != attrId) {
                   String wasValue = chStmt.getString("was_value");
                   if (attributesWasValueCache.containsKey(attrId) && attributesWasValueCache.get(attrId) instanceof AttributeChangeBuilder) {
-                     AttributeChangeBuilder changeBuilder = (AttributeChangeBuilder) attributesWasValueCache.get(attrId);
+                     AttributeChangeBuilder changeBuilder =
+                           (AttributeChangeBuilder) attributesWasValueCache.get(attrId);
 
                      if (changeBuilder.getArtModType() != ModificationType.NEW) {
                         if (changeBuilder.getModType() != ModificationType.DELETED && changeBuilder.getModType() != ModificationType.ARTIFACT_DELETED) {
