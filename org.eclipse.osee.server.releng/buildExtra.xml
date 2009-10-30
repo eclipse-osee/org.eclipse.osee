@@ -40,10 +40,14 @@
 			<fileset includes="plugins/*" />
 		</unzip>
 		<mkdir dir="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp/configuration" />
-	<!--
-	Create config.ini in configuration
-	Add run commands
-	-->
+		<ant target="clean.extra.zips" inheritall="true">
+			<property name="configFolder" value="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp/configuration" />
+			<property name="pluginsFolder" value="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp/plugins" />
+		</ant>
+		<!-- Add run commands 
+			-Dorg.osgi.service.http.port=8089
+			-Dosee.check.tag.queue.on.startup=true
+		-->
 		<propertyregex property="serverRuntimeFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-Server-Runtime-" casesensitive="false" override="true" />
 		<zip destfile="serverRuntimeFile">
 			<fileset dir="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp" />
@@ -56,5 +60,31 @@
 		<propertyregex property="sdkZip" input="${masterZip}" defaultvalue="${masterZip}" regexp="-SDK-" replace="-Server-Runtime-" casesensitive="false" override="true" />
 		<delete file="${buildDirectory}/${buildLabel}/${runtimeZip}" quiet="true" />
 		<delete file="${buildDirectory}/${buildLabel}/${sdkZip}" quiet="true" />
+	</target>
+
+	<target name="createServerConfigIni">
+		<echo file="${configFolder}/config.ini" append="false" message="osgi.bundles= \${line.separator}\${line.separator}" />
+
+		<pathconvert property="serverBundles" setonempty="false" pathsep=";">
+			<path>
+				<dirset dir="${pluginsFolder}" excludes="org.eclipse.osgi_*.jar,org.eclipse.equinox.launcher_*.jar" />
+			</path>
+		</pathconvert>
+
+		<for param="bundle" delimiter=";" list="${serverBundles}" trim="true">
+			<sequential>
+				<propertyregex property="projectName" override="true" input="@{bundle}" regexp="[^${file.separator}]+$(.*?)_" select="\1" casesensitive="false" />
+				<echo file="${configFolder}/config.ini" message="${projectName}@start" append="true" />
+				<echo file="${configFolder}/config.ini" message=", \${line.separator}" append="true" />
+			</sequential>
+		</for>
+		<echo file="${configFolder}/config.ini" message="${line.separator}" append="true" />
+
+		<echo file="${configFolder}/config.ini" append="true">
+			osgi.noShutdown=true${line.separator}		
+			eclipse.ignoreApp=true${line.separator}
+			equinox.ds.debug=true${line.separator}
+			osee.log.default=INFO${line.separator}
+		</echo>
 	</target>
 </project>
