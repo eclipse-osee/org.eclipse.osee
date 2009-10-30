@@ -337,7 +337,7 @@ public class ImageManager {
                byteInput, artifactType.getId());
       } else {
          ConnectionHandler.runPreparedUpdate("UPDATE osee_artifact_type SET image = ? where art_type_id = ?",
-               SQL3DataType.NULL, artifactType.getId());
+               SQL3DataType.BLOB, artifactType.getId());
       }
       loadCache();
       // TODO Need remote event kick to tell other clients of artifact type image changes
