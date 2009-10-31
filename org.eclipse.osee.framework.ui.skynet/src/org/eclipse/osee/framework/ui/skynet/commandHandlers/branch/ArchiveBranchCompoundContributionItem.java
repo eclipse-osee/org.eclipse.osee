@@ -67,7 +67,7 @@ public class ArchiveBranchCompoundContributionItem extends CompoundContributionI
                   Command command = commandService.getCommand(commandId);
                   CommandContributionItem contributionItem = null;
                   BranchArchivedState archivedState = selectedBranch.getArchiveState();
-                  String label = archivedState.name().toLowerCase();
+                  String label = (archivedState.isArchived() ? "Unarchive" : "Archive") + " Branch(s)";
                   ImageDescriptor descriptor =
                         archivedState.isArchived() ? ImageManager.getImageDescriptor(FrameworkImage.UN_ARCHIVE) : ImageManager.getImageDescriptor(FrameworkImage.ARCHIVE);
                   contributionItem = createCommand(label, selectedBranch, commandId, descriptor);

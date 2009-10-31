@@ -332,10 +332,10 @@
 	<Table name="OSEE_TXS" schema="OSEE" tablespace="osee_data">
 		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
-		<Column id="MOD_TYPE" type="INTEGER" /> <!-- CHANGE TO NOT ACCEPT NULLS -->
+		<Column id="MOD_TYPE" defaultValue="not null" type="INTEGER" />
 		<Column id="TX_CURRENT" defaultValue="not null" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_TXS_G_TX_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID, TRANSACTION_ID"/>
-		<Constraint schema="OSEE" id="OSEE_TRANSACTION_ID_FK" type="FOREIGN KEY" appliesTo="TRANSACTION_ID" deferrable="true">
+		<Constraint schema="OSEE" id="OSEE_TRANSACTION_ID_FK1" type="FOREIGN KEY" appliesTo="TRANSACTION_ID" deferrable="true">
 			<References schema="OSEE" table="OSEE_TX_DETAILS" column="TRANSACTION_ID" onDelete="CASCADE" />
 		</Constraint>
 		<Index id="OSEE_TXS_G_IDX" tablespace="osee_index">
@@ -344,6 +344,17 @@
 		<Index id="OSEE_TXS_TX_IDX" tablespace="osee_index">
 			<AppliesTo id="TRANSACTION_ID" />
 		</Index>
+	</Table>
+	
+	<Table name="OSEE_TXS_ARCHIVED" schema="OSEE" tablespace="osee_data">
+		<Column id="TRANSACTION_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />
+		<Column id="MOD_TYPE" defaultValue="not null" type="INTEGER" />
+		<Column id="TX_CURRENT" defaultValue="not null" type="INTEGER" />
+		<Constraint schema="OSEE" id="OSEE_TXSA_G_TX_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID, TRANSACTION_ID"/>
+		<Constraint schema="OSEE" id="OSEE_TRANSACTION_ID_FK2" type="FOREIGN KEY" appliesTo="TRANSACTION_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_TX_DETAILS" column="TRANSACTION_ID" onDelete="CASCADE" />
+		</Constraint>
 	</Table>
 
 	<Table name="OSEE_TX_DETAILS" schema="OSEE" tablespace="osee_data">
