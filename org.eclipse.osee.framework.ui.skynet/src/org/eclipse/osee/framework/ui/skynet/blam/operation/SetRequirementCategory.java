@@ -58,7 +58,7 @@ public class SetRequirementCategory extends AbstractBlam {
          }
       }
 
-      SkynetTransaction transaction = new SkynetTransaction(branch);
+      SkynetTransaction transaction = new SkynetTransaction(branch, "set requirement categories");
       for (String requirementName : reqPriorities.keySet()) {
          updateCategory(transaction, bulkLoad, branch, requirementName.trim());
       }
