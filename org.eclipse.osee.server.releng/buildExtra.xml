@@ -33,58 +33,101 @@
 	<target name="preProcess" />
 	<target name="postProcess" />
 	<target name="postBuild" />
+
 	<target name="extraPackaging">
 		<propertyregex property="updateSiteFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-Update-" casesensitive="false" override="true" />
-		<mkdir dir="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp" />
-		<unzip src="${buildDirectory}/${buildLabel}/${updateSiteFile}" dest="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp">
-			<fileset includes="plugins/*" />
+		<property name="tempAppServerFolder" value="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp" />
+		<mkdir dir="${tempAppServerFolder}" />
+		<unzip src="${buildDirectory}/${buildLabel}/${updateSiteFile}" dest="${tempAppServerFolder}">
+			<patternset includes="plugins/*" excludes="features/*,*.jar,*.xml" />
 		</unzip>
-		<mkdir dir="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp/configuration" />
-		<ant target="clean.extra.zips" inheritall="true">
-			<property name="configFolder" value="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp/configuration" />
-			<property name="pluginsFolder" value="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp/plugins" />
-		</ant>
-		<!-- Add run commands 
-			-Dorg.osgi.service.http.port=8089
-			-Dosee.check.tag.queue.on.startup=true
-		-->
-		<propertyregex property="serverRuntimeFile" input="${masterZip}" defaultvalue="${masterZip}" regexp="-Master-" replace="-Server-Runtime-" casesensitive="false" override="true" />
-		<zip destfile="serverRuntimeFile">
-			<fileset dir="${buildDirectory}/${buildLabel}/${updateSiteFile}_tmp" />
+		<mkdir dir="${tempAppServerFolder}/configuration" />
+
+		<property name="configFolder" value="${tempAppServerFolder}/configuration" />
+		<property name="pluginsFolder" value="${tempAppServerFolder}/plugins" />
+		<antcall target="generateConfigIni" inheritall="true" />
+		<antcall target="generateLaunchScripts" inheritall="true" />
+
+		<propertyregex property="serverRuntimeFile" input="${updateSiteFile}" defaultvalue="server-runtime.zip" regexp="-Update-" replace="-Application-Server-" casesensitive="false" override="true" />
+
+		<zip destfile="${buildDirectory}/${buildLabel}/${serverRuntimeFile}">
+			<fileset dir="${tempAppServerFolder}" />
 		</zip>
-		<ant target="clean.extra.zips" inheritall="true" />
+		<delete dir="${tempAppServerFolder}" quiet="true" />
+		<antcall target="deleteZips" inheritall="true" />
 	</target>
 
-	<target name="clean.extra.zips">
-		<propertyregex property="runtimeZip" input="${masterZip}" defaultvalue="${masterZip}" regexp="-runtime-" replace="-Server-Runtime-" casesensitive="false" override="true" />
-		<propertyregex property="sdkZip" input="${masterZip}" defaultvalue="${masterZip}" regexp="-SDK-" replace="-Server-Runtime-" casesensitive="false" override="true" />
-		<delete file="${buildDirectory}/${buildLabel}/${runtimeZip}" quiet="true" />
+	<target name="generateLaunchScripts">
+		<pathconvert property="launcherBundlePath" setonempty="false">
+			<path>
+				<fileset dir="${pluginsFolder}">
+					<include name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
+			</path>
+		</pathconvert>
+		<propertyregex property="launcherJar" override="true" input="${launcherBundlePath}" regexp="[^${file.separator}]+$" select="\0" casesensitive="false" />
+<echo file="${tempAppServerFolder}/runCustomAppServer.sh" append="false">java.exe \
+-Dorg.osgi.service.http.port=8089 \
+-Dosee.check.tag.queue.on.startup=true \
+-Dosee.connection.info.uri=[Path to custom connection file] \
+-Dosee.db.connection.id=[Database Connection Id from connection file] \
+-Dosee.application.server.data=[Binary Data folder path] \
+-jar plugins/${launcherJar} \
+-console
+</echo>
+<echo file="${tempAppServerFolder}/runPostgresqlLocal.sh" append="false">java.exe \
+-Dorg.osgi.service.http.port=8089 \
+-Dosee.check.tag.queue.on.startup=true \
+-Dosee.db.connection.id=postgresqlLocalhost \
+-jar plugins/${launcherJar} \
+-console
+</echo>
+		<chmod file="${tempAppServerFolder}/runPostgresqlLocal.sh" perm="ugo+rx" />
+	</target>
+
+	<target name="deleteZips">
+		<echo message="deleteZips" />
+		<propertyregex property="allZip" input="${updateSiteFile}" defaultvalue="" regexp="-Update-" replace="-AllFeaturesAndPlugins-" casesensitive="false" override="true" />
+		<propertyregex property="sdkZip" input="${updateSiteFile}" defaultvalue="" regexp="-Update-" replace="-SDK-" casesensitive="false" override="true" />
+
+		<delete file="${buildDirectory}/${buildLabel}/${allZip}" quiet="true" />
+		<delete file="${buildDirectory}/${buildLabel}/${allZip}.md5" quiet="true" />
 		<delete file="${buildDirectory}/${buildLabel}/${sdkZip}" quiet="true" />
+		<delete file="${buildDirectory}/${buildLabel}/${sdkZip}.md5" quiet="true" />
 	</target>
 
-	<target name="createServerConfigIni">
+	<target name="generateConfigIni">
 		<echo file="${configFolder}/config.ini" append="false" message="osgi.bundles= \${line.separator}\${line.separator}" />
 
 		<pathconvert property="serverBundles" setonempty="false" pathsep=";">
 			<path>
-				<dirset dir="${pluginsFolder}" excludes="org.eclipse.osgi_*.jar,org.eclipse.equinox.launcher_*.jar" />
+				<fileset dir="${pluginsFolder}">
+					<exclude name="org.eclipse.osgi_*.jar" />
+					<exclude name="org.eclipse.equinox.launcher_*.jar" />
+				</fileset>
 			</path>
 		</pathconvert>
 
+		<var name="isFirst" value="false" />
 		<for param="bundle" delimiter=";" list="${serverBundles}" trim="true">
 			<sequential>
-				<propertyregex property="projectName" override="true" input="@{bundle}" regexp="[^${file.separator}]+$(.*?)_" select="\1" casesensitive="false" />
+				<propertyregex property="projectAndVersion" override="true" input="@{bundle}" regexp="[^${file.separator}]+$" select="\0" casesensitive="false" />
+				<propertyregex property="projectName" override="true" input="${projectAndVersion}" regexp="(.*?)_" select="\1" casesensitive="false" />
+				<if>
+					<equals arg1="${isFirst}" arg2="true" />
+					<then>
+						<echo file="${configFolder}/config.ini" message=", \${line.separator}" append="true" />
+						<var name="isFirst" value="false" />
+					</then>
+				</if>
 				<echo file="${configFolder}/config.ini" message="${projectName}@start" append="true" />
-				<echo file="${configFolder}/config.ini" message=", \${line.separator}" append="true" />
+				<var name="isFirst" value="true" />
 			</sequential>
 		</for>
-		<echo file="${configFolder}/config.ini" message="${line.separator}" append="true" />
-
 		<echo file="${configFolder}/config.ini" append="true">
-			osgi.noShutdown=true${line.separator}		
-			eclipse.ignoreApp=true${line.separator}
-			equinox.ds.debug=true${line.separator}
-			osee.log.default=INFO${line.separator}
-		</echo>
+osgi.noShutdown=true
+eclipse.ignoreApp=true
+equinox.ds.debug=true
+osee.log.default=INFO${line.separator}</echo>
 	</target>
 </project>
