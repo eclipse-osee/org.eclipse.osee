@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.coverage.store.CoverageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -39,7 +38,7 @@ public class CoverageItem implements ICoverage {
    String methodNum;
    String text;
    private final CoverageUnit coverageUnit;
-   final Set<CoverageTestUnit> testUnits = new HashSet<CoverageTestUnit>();
+   final Set<String> testUnitNames = new HashSet<String>();
    String guid = GUID.create();
    private static String PROPERTY_STORE_ID = "coverage.item";
 
@@ -56,6 +55,19 @@ public class CoverageItem implements ICoverage {
    public CoverageItem(CoverageUnit parentCoverageUnit, String xml) throws OseeCoreException {
       this(parentCoverageUnit, CoverageMethodEnum.Not_Covered, "0");
       fromXml(xml);
+   }
+
+   /**
+    * Copies the coverage unit. Does not copy test units.
+    */
+   public CoverageItem copy(CoverageUnit parent) throws OseeCoreException {
+      CoverageItem coverageitem = new CoverageItem(parent, coverageMethod, executeNum);
+      coverageitem.setGuid(guid);
+      coverageitem.setLineNum(lineNum);
+      coverageitem.setText(text);
+      coverageitem.setMethodNum(methodNum);
+      coverageitem.setCoverageRationale(coverageRationale);
+      return coverageitem;
    }
 
    public void fromXml(String xml) throws OseeCoreException {
@@ -79,20 +91,19 @@ public class CoverageItem implements ICoverage {
       if (Strings.isValid(rationale)) setCoverageRationale(rationale);
       String methodNum = store.get("methodNum");
       if (Strings.isValid(methodNum)) setMethodNum(methodNum);
-      String testUnitsGuids = store.get("testUnits");
-      if (Strings.isValid(testUnitsGuids)) {
-         for (String guid : testUnitsGuids.split(",")) {
-            addTestUnit(CoverageStore.getTestUnitByGuid(guid));
-         }
+      String testUnitNames = store.get("testUnits");
+      if (Strings.isValid(testUnitNames)) {
+         for (String name : testUnitNames.split(";"))
+            addTestUnitName(name);
       }
    }
 
-   public Set<CoverageTestUnit> getTestUnits() {
-      return testUnits;
+   public Set<String> getTestUnits() {
+      return testUnitNames;
    }
 
-   public void addTestUnit(CoverageTestUnit testUnit) {
-      testUnits.add(testUnit);
+   public void addTestUnitName(String testUnitName) {
+      testUnitNames.add(testUnitName);
    }
 
    public CoverageMethodEnum getCoverageMethod() {
@@ -197,7 +208,7 @@ public class CoverageItem implements ICoverage {
       }
       store.put("executeNum", executeNum);
       store.put("methodType", coverageMethod.toString());
-      store.put("testUnits", getTestUnitGuidList(getTestUnits()));
+      store.put("testUnits", Collections.toString(";", testUnitNames));
       store.put("text", text);
       try {
          return store.save();
@@ -206,7 +217,7 @@ public class CoverageItem implements ICoverage {
       }
    }
 
-   public String getTestUnitGuidList(Collection<CoverageTestUnit> testUnits) {
+   public String getTestUnitNames(Collection<CoverageTestUnit> testUnits) {
       List<String> guids = new ArrayList<String>();
       for (CoverageTestUnit testUnit : testUnits) {
          guids.add(testUnit.getGuid());
@@ -261,14 +272,12 @@ public class CoverageItem implements ICoverage {
    }
 
    @Override
-   public Collection<? extends ICoverage> getChildrenItems() {
-      List<ICoverage> children = new ArrayList<ICoverage>();
-      children.addAll(getTestUnits());
-      return children;
+   public Collection<? extends ICoverage> getChildren() {
+      return java.util.Collections.emptyList();
    }
 
    @Override
-   public Collection<? extends ICoverage> getCoverageEditorItems(boolean recurse) {
+   public Collection<? extends ICoverage> getChildren(boolean recurse) {
       return java.util.Collections.emptyList();
    }
 

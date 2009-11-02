@@ -14,14 +14,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.model.CoverageTestUnit;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -35,7 +32,6 @@ public class SampleJavaFileParser {
    private static final Pattern methodPattern =
          Pattern.compile("\\s+(public|private)\\s(\\w+)\\s(\\w+)\\(.*\\)\\s+\\{\\s*");
    private static final Pattern executeLine = Pattern.compile("^(.*)\\s+//\\s+(\\w+),\\s+(\\w+),\\s+([\\w\\|]+)$");
-   private static Map<String, CoverageTestUnit> nametoTestUnitMap = new HashMap<String, CoverageTestUnit>();
 
    public static CoverageUnit createCodeUnit(URL url) throws OseeCoreException {
       try {
@@ -91,11 +87,7 @@ public class SampleJavaFileParser {
                coverageUnit.addCoverageItem(coverageItem);
                if (covered) {
                   for (String testUnitName : testUnits.split("\\|")) {
-                     if (nametoTestUnitMap.get(testUnitName) == null) {
-                        CoverageTestUnit testUnit = new CoverageTestUnit(testUnitName);
-                        nametoTestUnitMap.put(testUnitName, testUnit);
-                     }
-                     coverageItem.addTestUnit(nametoTestUnitMap.get(testUnitName));
+                     coverageItem.addTestUnitName(testUnitName);
                   }
                }
             }

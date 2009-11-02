@@ -50,18 +50,6 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.location = location;
    }
 
-   @Override
-   public Collection<? extends ICoverage> getCoverageEditorItems(boolean recurse) {
-      Set<ICoverage> items = new HashSet<ICoverage>(coverageItems);
-      for (CoverageUnit coverageUnit : getCoverageUnits()) {
-         items.add(coverageUnit);
-         if (recurse) {
-            items.addAll(coverageUnit.getCoverageEditorItems(recurse));
-         }
-      }
-      return items;
-   }
-
    public void clearCoverageUnits() {
       coverageUnits.clear();
    }
@@ -252,11 +240,20 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    @Override
-   public Collection<? extends ICoverage> getChildrenItems() {
-      List<ICoverage> children = new ArrayList<ICoverage>();
-      children.addAll(getCoverageUnits());
-      children.addAll(getCoverageItems(false));
-      return children;
+   public Collection<? extends ICoverage> getChildren() {
+      return getChildren(false);
+   }
+
+   @Override
+   public Collection<? extends ICoverage> getChildren(boolean recurse) {
+      Set<ICoverage> items = new HashSet<ICoverage>(coverageItems);
+      for (CoverageUnit coverageUnit : getCoverageUnits()) {
+         items.add(coverageUnit);
+         if (recurse) {
+            items.addAll(coverageUnit.getChildren(recurse));
+         }
+      }
+      return items;
    }
 
    @Override

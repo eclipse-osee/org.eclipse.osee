@@ -8,7 +8,6 @@ package org.eclipse.osee.coverage.test.model;
 import junit.framework.Assert;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
-import org.eclipse.osee.coverage.model.CoverageTestUnit;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.junit.BeforeClass;
@@ -69,7 +68,7 @@ public class CoverageItemTest {
    @Test
    public void testAddGetTestUnit() {
       for (int x = 0; x < 10; x++) {
-         ci1.addTestUnit(new CoverageTestUnit("Test Unit " + x));
+         ci1.addTestUnitName("Test Unit " + x);
       }
       Assert.assertEquals(10, ci1.getTestUnits().size());
    }
@@ -264,20 +263,20 @@ public class CoverageItemTest {
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getChildrenItems()}.
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getChildren()}.
     */
    @Test
    public void testGetChildrenItems() {
-      Assert.assertEquals(10, ci1.getChildrenItems().size());
+      Assert.assertEquals(0, ci1.getChildren().size());
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getCoverageEditorItems(boolean)}.
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getChildren(boolean)}.
     */
    @Test
    public void testGetCoverageEditorItems() {
-      Assert.assertEquals(0, ci1.getCoverageEditorItems(false).size());
-      Assert.assertEquals(0, ci1.getCoverageEditorItems(true).size());
+      Assert.assertEquals(0, ci1.getChildren(false).size());
+      Assert.assertEquals(0, ci1.getChildren(true).size());
    }
 
    /**

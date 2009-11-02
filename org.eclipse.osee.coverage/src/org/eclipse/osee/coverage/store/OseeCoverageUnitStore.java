@@ -55,9 +55,6 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
          OseeCoverageStore.get(childCoverageUnit).delete(transaction, purge);
       }
-      for (CoverageItem coverageItem : coverageUnit.getCoverageItems(false)) {
-         OseeCoverageStore.get(coverageItem).delete(transaction, purge);
-      }
    }
 
    public void load() throws OseeCoreException {
@@ -111,7 +108,6 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       List<String> items = new ArrayList<String>();
       for (CoverageItem coverageItem : coverageUnit.getCoverageItems()) {
          items.add(coverageItem.toXml());
-         new OseeCoverageItemStore(coverageItem).save(transaction);
       }
       keyValueArtifact.setValues("cvgItem", items);
       if (coverageUnit.getNotes() != null) {
@@ -134,7 +130,8 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       }
       keyValueArtifact.save();
       if (coverageUnit.getParent() != null) {
-         Artifact parentArt = ArtifactQuery.getArtifactFromId(coverageUnit.getGuid(), CoverageUtil.getBranch());
+         Artifact parentArt =
+               ArtifactQuery.getArtifactFromId(coverageUnit.getParent().getGuid(), CoverageUtil.getBranch());
          parentArt.addChild(artifact);
       }
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {

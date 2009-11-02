@@ -30,7 +30,7 @@ public class CoveragePackageImporter {
 
    private final CoveragePackage coveragePackage;
    private final CoverageImport coverageImport;
-   private Collection<ICoverage> allImportItems;
+   private Collection<? extends ICoverage> allImportItems;
    private Set<ICoverage> imported;
 
    public CoveragePackageImporter(CoveragePackage coveragePackage, CoverageImport coverageImport) {
@@ -38,7 +38,7 @@ public class CoveragePackageImporter {
       this.coverageImport = coverageImport;
    }
 
-   public XResultData validateItems(Collection<ICoverage> allImportItems, XResultData rd) {
+   public XResultData validateItems(Collection<? extends ICoverage> allImportItems, XResultData rd) {
       this.allImportItems = allImportItems;
       if (rd == null) rd = new XResultData(false);
       for (ICoverage importItem : allImportItems) {
@@ -54,16 +54,16 @@ public class CoveragePackageImporter {
       return rd;
    }
 
-   public void validateChildrenAreUnique(Collection<ICoverage> allImportItems, CoverageUnit coverageUnit, XResultData rd) {
-      for (ICoverage importItem1 : coverageUnit.getChildrenItems()) {
-         for (ICoverage importItem2 : coverageUnit.getChildrenItems()) {
+   public void validateChildrenAreUnique(Collection<? extends ICoverage> allImportItems, CoverageUnit coverageUnit, XResultData rd) {
+      for (ICoverage importItem1 : coverageUnit.getChildren()) {
+         for (ICoverage importItem2 : coverageUnit.getChildren()) {
             if (isConceptuallyEqual(importItem1, importItem2) && importItem1 != importItem2) {
                rd.logError(String.format("CoverageUnit [%s] has two equal children [%s][%s]; Can't import.",
                      coverageUnit, importItem1, importItem2));
             }
          }
       }
-      for (ICoverage childItem : coverageUnit.getChildrenItems()) {
+      for (ICoverage childItem : coverageUnit.getChildren()) {
          if (childItem instanceof CoverageUnit) {
             if (allImportItems.contains(childItem)) {
                validateChildrenAreUnique(allImportItems, (CoverageUnit) childItem, rd);
@@ -72,7 +72,7 @@ public class CoveragePackageImporter {
       }
    }
 
-   public XResultData importItems(ISaveable saveable, Collection<ICoverage> importItems) throws OseeCoreException {
+   public XResultData importItems(ISaveable saveable, Collection<? extends ICoverage> importItems) throws OseeCoreException {
       XResultData rd = new XResultData(false);
 
       Result result = saveable.isEditable();
@@ -171,7 +171,7 @@ public class CoveragePackageImporter {
    }
 
    public ICoverage getPackageCoverageItem(ICoverage importItem, boolean recurse) {
-      for (ICoverage packageItem : coveragePackage.getCoverageEditorItems(recurse)) {
+      for (ICoverage packageItem : coveragePackage.getChildren(recurse)) {
          if (isConceptuallyEqual(packageItem, importItem)) {
             return packageItem;
          }

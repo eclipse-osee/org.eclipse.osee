@@ -97,11 +97,11 @@ public class CoverageContentProvider implements ITreeContentProvider {
    @SuppressWarnings("unchecked")
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof CoveragePackageBase) {
-         Collection<?> children = ((CoveragePackageBase) parentElement).getChildrenItems();
+         Collection<?> children = ((CoveragePackageBase) parentElement).getChildren();
          return children.toArray(new Object[children.size()]);
       }
       if (parentElement instanceof CoverageUnit) {
-         Collection<?> children = ((CoverageUnit) parentElement).getChildrenItems();
+         Collection<?> children = ((CoverageUnit) parentElement).getChildren();
          return children.toArray(new Object[children.size()]);
       }
       if (parentElement instanceof Object[]) {

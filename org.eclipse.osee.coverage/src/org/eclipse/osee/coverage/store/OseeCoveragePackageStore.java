@@ -77,8 +77,9 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       keyValueArtifact.setValue("editable", String.valueOf(String.valueOf(coveragePackage.isEditable())));
       keyValueArtifact.save();
       for (CoverageUnit coverageUnit : coveragePackage.getCoverageUnits()) {
-         OseeCoverageStore.get(coverageUnit).save(transaction);
-         artifact.addChild(artifact);
+         OseeCoverageStore store = OseeCoverageStore.get(coverageUnit);
+         store.save(transaction);
+         artifact.addChild(store.getArtifact(false));
       }
       artifact.persist(transaction);
       return Result.TrueResult;

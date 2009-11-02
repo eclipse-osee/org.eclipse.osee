@@ -5,57 +5,138 @@
  */
 package org.eclipse.osee.coverage.test.model;
 
-import static org.junit.Assert.fail;
+import java.net.URL;
+import java.util.Arrays;
+import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
+import org.eclipse.osee.coverage.test.SampleJavaFileParser;
+import org.eclipse.osee.coverage.test.import1.CoverageImportTest1NavigateItem;
+import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
+import org.eclipse.osee.coverage.util.CoveragePackageImporter;
+import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.coverage.util.ISaveable;
+import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.ui.plugin.util.Result;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
  * @author Donald G. Dunne
  */
 public class CoverageUnitPersistTest {
-   /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#load()}.
-    */
-   @Test
-   public void testLoad() {
-      fail("Not yet implemented");
+   public static CoverageUnit parentCu = null;
+   public static CoverageItem ci = null;
+   public static String parentGuid = null;
+   public static String guid = null;
+   public static String PATH = "../../../../../../../src/org/eclipse/osee/coverage/test/import1/";
+   public static CoverageImport coverageImport;
+   public static CoveragePackage saveCoveragePackage;
+   public static CoveragePackage loadCoveragePackage;
+
+   @BeforeClass
+   @AfterClass
+   public static void testCleanup() throws OseeCoreException {
+      CoverageTestUtil.cleanupCoverageTests();
    }
 
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageUnit#CoverageUnit(org.eclipse.osee.framework.skynet.core.artifact.Artifact)}
-    * .
-    */
-   @Test
-   public void testCoverageUnitArtifact() {
-      fail("Not yet implemented");
+   @BeforeClass
+   public static void testSetup() throws OseeCoreException {
+      Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
+
+      coverageImport = new CoverageImport("CU Test");
+      try {
+         for (String filename : Arrays.asList(
+         //
+               "com/screenA/ComScrnAButton1.java", "com/screenA/ComScrnAButton2.java",
+               //
+               "com/screenB/ScreenBButton1.java", "com/screenB/ScreenBButton2.java", "com/screenB/ScreenBButton3.java"
+         //
+         )) {
+            System.err.println(String.format("Importing [%s]", PATH + filename));
+            URL url = CoverageImportTest1NavigateItem.class.getResource(PATH + filename);
+            CoverageUnit coverageUnit = SampleJavaFileParser.createCodeUnit(url);
+            String namespace = coverageUnit.getNamespace().replaceFirst("org.eclipse.osee.coverage.test.import1.", "");
+            coverageUnit.setNamespace(namespace);
+            CoverageUnit parentCoverageUnit = coverageImport.getOrCreateParent(namespace);
+            if (parentCoverageUnit != null) {
+               parentCoverageUnit.addCoverageUnit(coverageUnit);
+            } else {
+               coverageImport.addCoverageUnit(coverageUnit);
+            }
+         }
+         coverageImport.setLocation(PATH);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
-   /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#getArtifact(boolean)}.
-    */
    @Test
-   public void testGetArtifact() {
-      fail("Not yet implemented");
+   public void testASave() {
+      try {
+         saveCoveragePackage = new CoveragePackage("CU Test");
+         CoveragePackageImporter importer = new CoveragePackageImporter(saveCoveragePackage, coverageImport);
+         importer.importItems(new ISaveable() {
+
+            @Override
+            public Result save() throws OseeCoreException {
+               OseeCoveragePackageStore store = new OseeCoveragePackageStore(saveCoveragePackage);
+               store.save();
+               Artifact artifact = store.getArtifact(false);
+               CoverageTestUtil.registerAsTestArtifact(artifact, true);
+               artifact.persist();
+               return Result.TrueResult;
+            }
+
+            @Override
+            public Result isEditable() {
+               return Result.TrueResult;
+            }
+         }, coverageImport.getCoverageUnits());
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageUnit#delete(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction, boolean)}
-    * .
-    */
    @Test
-   public void testDelete() {
-      fail("Not yet implemented");
+   public void testBLoad() throws OseeCoreException {
+      Artifact artifact =
+            ArtifactQuery.getArtifactFromTypeAndName(OseeCoveragePackageStore.ARTIFACT_NAME, "CU Test",
+                  CoverageUtil.getBranch());
+      loadCoveragePackage = OseeCoveragePackageStore.get(artifact);
+      Assert.assertEquals(saveCoveragePackage.getName(), loadCoveragePackage.getName());
+      Assert.assertEquals(saveCoveragePackage.getNamespace(), loadCoveragePackage.getNamespace());
+      Assert.assertEquals(saveCoveragePackage.getCoverageItems().size(), loadCoveragePackage.getCoverageItems().size());
+      Assert.assertEquals(saveCoveragePackage.getChildren(false).size(), loadCoveragePackage.getChildren(false).size());
+      Assert.assertEquals(saveCoveragePackage.getChildren(true).size(), loadCoveragePackage.getChildren(true).size());
+      Assert.assertEquals(saveCoveragePackage.getCoveragePercentStr(), loadCoveragePackage.getCoveragePercentStr());
    }
 
-   /**
-    * Test method for
-    * {@link org.eclipse.osee.coverage.model.CoverageUnit#save(org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction)}
-    * .
-    */
    @Test
-   public void testSave() {
-      fail("Not yet implemented");
+   public void testCDelete() throws OseeCoreException {
+      Artifact artifact =
+            ArtifactQuery.getArtifactFromTypeAndName(OseeCoveragePackageStore.ARTIFACT_NAME, "CU Test",
+                  CoverageUtil.getBranch());
+      Assert.assertNotNull(artifact);
+      OseeCoveragePackageStore store = new OseeCoveragePackageStore(artifact);
+      store.delete(false);
+      try {
+         artifact =
+               ArtifactQuery.getArtifactFromTypeAndName(OseeCoveragePackageStore.ARTIFACT_NAME, "CU Test",
+                     CoverageUtil.getBranch());
+         Assert.assertNotNull("CU Test should not have been found", artifact);
+      } catch (ArtifactDoesNotExist ex) {
+         //do nothing
+      }
    }
-
 }

@@ -27,9 +27,9 @@ public interface ICoverage {
 
    public String getName();
 
-   public Collection<? extends ICoverage> getChildrenItems();
+   public Collection<? extends ICoverage> getChildren();
 
-   public Collection<? extends ICoverage> getCoverageEditorItems(boolean recurse);
+   public Collection<? extends ICoverage> getChildren(boolean recurse);
 
    public OseeImage getOseeImage();
 

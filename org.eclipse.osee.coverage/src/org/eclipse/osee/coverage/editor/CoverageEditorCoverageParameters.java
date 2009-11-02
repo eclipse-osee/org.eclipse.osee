@@ -90,7 +90,7 @@ public class CoverageEditorCoverageParameters extends Composite {
 
    public Collection<ICoverage> performSearchGetResults(CoveragePackageBase provider) throws OseeCoreException {
       Set<ICoverage> items = new HashSet<ICoverage>();
-      for (ICoverage coverageItem : provider.getCoverageEditorItems(false)) {
+      for (ICoverage coverageItem : provider.getChildren(false)) {
          performSearchGetResults(items, coverageItem);
       }
       Collection<CoverageUnit> topLevelCoverageUnits = ((ICoverageUnitProvider) provider).getCoverageUnits();
@@ -136,7 +136,7 @@ public class CoverageEditorCoverageParameters extends Composite {
             items.add(item);
             addAllParents(items, item);
          }
-         for (ICoverage child : item.getChildrenItems()) {
+         for (ICoverage child : item.getChildren()) {
             performSearchGetResults(items, child);
          }
       }

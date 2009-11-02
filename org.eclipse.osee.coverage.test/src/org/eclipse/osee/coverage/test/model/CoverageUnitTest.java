@@ -70,11 +70,11 @@ public class CoverageUnitTest {
     */
    @Test
    public void testAddCoverageUnit() {
-      Assert.assertEquals(3, childCu.getChildrenItems().size());
+      Assert.assertEquals(3, childCu.getChildren().size());
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#getCoverageEditorItems(boolean)}.
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#getChildren(boolean)}.
     */
    @Test
    public void testGetCoverageEditorItems() {
@@ -292,12 +292,12 @@ public class CoverageUnitTest {
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#getChildrenItems()}.
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#getChildren()}.
     */
    @Test
    public void testGetChildrenItems() {
-      Assert.assertEquals(2, cu.getChildrenItems().size());
-      Assert.assertEquals(3, childCu.getChildrenItems().size());
+      Assert.assertEquals(2, cu.getChildren().size());
+      Assert.assertEquals(3, childCu.getChildren().size());
    }
 
    /**

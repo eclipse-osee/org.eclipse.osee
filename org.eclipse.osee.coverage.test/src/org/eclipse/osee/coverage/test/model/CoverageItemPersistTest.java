@@ -7,7 +7,6 @@ package org.eclipse.osee.coverage.test.model;
 
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
-import org.eclipse.osee.coverage.model.CoverageTestUnit;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
@@ -46,7 +45,7 @@ public class CoverageItemPersistTest {
       parentGuid = parentCu.getGuid();
       ci = new CoverageItem(parentCu, CoverageMethodEnum.Deactivated_Code, "1");
       for (int x = 0; x < 10; x++) {
-         ci.addTestUnit(new CoverageTestUnit("Test Unit " + x));
+         ci.addTestUnitName("Test Unit " + x);
       }
       ci.setLineNum("55");
       ci.setMethodNum("33");
@@ -87,12 +86,7 @@ public class CoverageItemPersistTest {
       SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Save CoverageItem");
       OseeCoverageStore.get(parentCu).save(transaction);
       transaction.execute();
-      for (CoverageTestUnit testUnit : ci.getTestUnits()) {
-         Artifact testArt = OseeCoverageStore.get(testUnit).getArtifact(false);
-         Assert.assertNotNull(String.format("TestUnit [%s] should have been created", testUnit.getName()), testArt);
-         CoverageTestUtil.registerAsTestArtifact(testArt);
-         testArt.persist();
-      }
+      Assert.assertEquals(10, ci.getTestUnits().size());
    }
 
    /**

@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
  */
 public abstract class CoveragePackageBase implements ICoverage {
    List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
-   final List<CoverageTestUnit> testUnits = new ArrayList<CoverageTestUnit>();
    final XResultData logResultData = new XResultData(false);
    String guid = GUID.create();
    String name;
@@ -37,14 +36,6 @@ public abstract class CoveragePackageBase implements ICoverage {
    }
 
    public abstract Date getDate();
-
-   public void addTestUnit(CoverageTestUnit testUnit) {
-      testUnits.add(testUnit);
-   }
-
-   public List<CoverageTestUnit> getTestUnits() {
-      return testUnits;
-   }
 
    public void addCoverageUnit(CoverageUnit coverageUnit) {
       coverageUnit.setParent(this);
@@ -96,12 +87,12 @@ public abstract class CoveragePackageBase implements ICoverage {
    }
 
    @Override
-   public Collection<? extends ICoverage> getCoverageEditorItems(boolean recurse) {
+   public Collection<? extends ICoverage> getChildren(boolean recurse) {
       Set<ICoverage> items = new HashSet<ICoverage>();
       for (CoverageUnit coverageUnit : getCoverageUnits()) {
          items.add(coverageUnit);
          if (recurse) {
-            items.addAll(coverageUnit.getCoverageEditorItems(recurse));
+            items.addAll(coverageUnit.getChildren(recurse));
          }
       }
       return items;
@@ -109,7 +100,7 @@ public abstract class CoveragePackageBase implements ICoverage {
 
    public CoverageUnit getOrCreateParent(String namespace) {
       // Look for already existing CU
-      for (ICoverage item : new CopyOnWriteArrayList<ICoverage>(getCoverageEditorItems(true))) {
+      for (ICoverage item : new CopyOnWriteArrayList<ICoverage>(getChildren(true))) {
          if (!(item instanceof CoverageUnit)) continue;
          CoverageUnit coverageUnit = (CoverageUnit) item;
          if (coverageUnit.getName().equals(namespace)) {
@@ -136,7 +127,7 @@ public abstract class CoveragePackageBase implements ICoverage {
 
          // Look for already existing CU
          boolean found = false;
-         for (ICoverage item : new CopyOnWriteArrayList<ICoverage>(getCoverageEditorItems(true))) {
+         for (ICoverage item : new CopyOnWriteArrayList<ICoverage>(getChildren(true))) {
             if (!(item instanceof CoverageUnit)) continue;
             if (item.getName().equals(nameStr)) {
                found = true;
@@ -201,8 +192,8 @@ public abstract class CoveragePackageBase implements ICoverage {
    }
 
    @Override
-   public Collection<? extends ICoverage> getChildrenItems() {
-      return coverageUnits;
+   public Collection<? extends ICoverage> getChildren() {
+      return getChildren(false);
    }
 
    @Override

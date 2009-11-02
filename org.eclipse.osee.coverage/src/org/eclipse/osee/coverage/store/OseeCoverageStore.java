@@ -6,7 +6,6 @@
 package org.eclipse.osee.coverage.store;
 
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageTestUnit;
 import org.eclipse.osee.coverage.model.CoverageUnit;
@@ -53,9 +52,6 @@ public abstract class OseeCoverageStore extends CoverageStore {
    public static OseeCoverageStore get(ICoverage coverage) {
       if (coverage instanceof CoveragePackage) {
          return (new OseeCoveragePackageStore((CoveragePackage) coverage));
-      }
-      if (coverage instanceof CoverageItem) {
-         return (new OseeCoverageItemStore((CoverageItem) coverage));
       }
       if (coverage instanceof CoverageUnit) {
          return (new OseeCoverageUnitStore((CoverageUnit) coverage));

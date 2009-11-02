@@ -105,7 +105,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
          }
          // If all children not checked and parent checked, uncheck parent
          boolean childChecked = false;
-         for (Object child : parent.getChildrenItems()) {
+         for (Object child : parent.getChildren()) {
             if (child instanceof ICoverage && isImportAllowed((ICoverage) child) && isImportChecked((ICoverage) child)) {
                childChecked = true;
                break;

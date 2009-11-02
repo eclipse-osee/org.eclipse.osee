@@ -39,7 +39,22 @@ public class CoverageTestUtil {
     * Adds the static id to the artifact to ensure that test cleans (purges) this artifact after completion.
     */
    public static void registerAsTestArtifact(Artifact artifact) throws OseeCoreException {
+      registerAsTestArtifact(artifact, false);
+   }
+
+   /**
+    * Adds the static id to the artifact to ensure that test cleans (purges) this artifact after completion.
+    */
+   public static void registerAsTestArtifact(Artifact artifact, boolean recurse) throws OseeCoreException {
       StaticIdManager.setSingletonAttributeValue(artifact, CoverageTestUtil.COVERAGE_STATIC_ID);
+      if (recurse) {
+         for (Artifact childArt : artifact.getChildren()) {
+            if (childArt.getArtifactTypeName().equals(OseeCoveragePackageStore.ARTIFACT_NAME) || childArt.getArtifactTypeName().equals(
+                  OseeCoveragePackageStore.ARTIFACT_NAME)) {
+               registerAsTestArtifact(childArt, recurse);
+            }
+         }
+      }
    }
 
    public static Collection<Artifact> getAllCoverageArtifacts() throws OseeCoreException {

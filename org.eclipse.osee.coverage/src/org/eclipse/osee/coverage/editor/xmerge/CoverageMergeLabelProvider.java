@@ -86,7 +86,7 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
    }
 
    private boolean isChildErrorImportType(ICoverage coverageItem) {
-      for (ICoverage childEditorItem : coverageItem.getChildrenItems()) {
+      for (ICoverage childEditorItem : coverageItem.getChildren()) {
          if (!mergeXViewer.isImportAllowed(childEditorItem)) continue;
          ImportType importType = mergeXViewer.getImportType(childEditorItem);
          if (importType == ImportType.Error) {
