@@ -39,7 +39,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
    private static final String INSERT_ARCHIVED_ADDRESSING =
          "insert into %s (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
 
-   private static final String DELETE_ADDRESSING = "delete from %s where transaction_id = ? and gamma_id = ?";
+   public static final String DELETE_ADDRESSING = "delete from %s where transaction_id = ? and gamma_id = ?";
    private final Collection<Branch> branches;
 
    public BranchStoreOperation(AbstractOseeCache<Branch> cache, Collection<Branch> branches) {
