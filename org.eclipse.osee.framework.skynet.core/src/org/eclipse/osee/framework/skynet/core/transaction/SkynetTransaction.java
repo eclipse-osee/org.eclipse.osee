@@ -79,9 +79,10 @@ public class SkynetTransaction extends DbTransaction {
       this(branch, "");
    }
 
-   public SkynetTransaction(Branch branch, String comment) throws OseeCoreException {
+   public SkynetTransaction(Branch branch, String comment) {
       this.branch = branch;
       this.comment = comment;
+      OseeDbConnection.reportTxCreation(this, branch);
    }
 
    /**
@@ -201,11 +202,13 @@ public class SkynetTransaction extends DbTransaction {
 
    @Override
    public void execute() throws OseeCoreException {
-      if (madeChanges) {
-         super.execute();
-      } else {
-         OseeDbConnection.reportTxStart(this);
-         OseeDbConnection.reportTxEnd(this);
+      try {
+         OseeDbConnection.reportTxStart(this, getBranch());
+         if (madeChanges) {
+            super.execute();
+         }
+      } finally {
+         OseeDbConnection.reportTxEnd(this, getBranch());
       }
    }
 

@@ -23,16 +23,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public abstract class DbTransaction {
-
-   /**
-    * Transaction Constructor
-    * 
-    * @throws OseeCoreException
-    */
-   public DbTransaction() throws OseeCoreException {
-      OseeDbConnection.reportTxCreation(this);
-   }
-
    /**
     * Gets the name of this transaction. This is provided mainly for logging purposes.
     * 
@@ -57,7 +47,6 @@ public abstract class DbTransaction {
       OseeCoreException saveException = null;
       try {
          OseeLog.log(InternalActivator.class, Level.FINEST, String.format("Start Transaction: [%s]", getTxName()));
-         OseeDbConnection.reportTxStart(this);
 
          initialAutoCommit = connection.getAutoCommit();
          connection.setAutoCommit(false);
@@ -81,7 +70,6 @@ public abstract class DbTransaction {
                connection.setAutoCommit(initialAutoCommit);
                connection.close();
             }
-            OseeDbConnection.reportTxEnd(this);
             handleTxFinally();
          } catch (OseeCoreException ex) {
             OseeLog.log(InternalActivator.class, Level.SEVERE, ex);

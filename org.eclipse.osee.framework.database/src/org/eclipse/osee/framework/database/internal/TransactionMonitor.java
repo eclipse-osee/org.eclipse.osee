@@ -27,15 +27,14 @@ public class TransactionMonitor {
       CREATED, RUNNING, ENDED;
    }
 
-   private final Map<Thread, TxOperation> txMap;
+   private final Map<Object, TxOperation> txMap;
 
    public TransactionMonitor() {
-      this.txMap = new WeakHashMap<Thread, TxOperation>();
+      this.txMap = new WeakHashMap<Object, TxOperation>();
    }
 
-   public synchronized void reportTxCreation(final DbTransaction transaction) throws OseeWrappedException {
-      final Thread currentThread = Thread.currentThread();
-      TxOperation currentTx = txMap.get(currentThread);
+   public synchronized void reportTxCreation(final DbTransaction transaction, Object key) {
+      TxOperation currentTx = txMap.get(key);
       if (currentTx != null) {
          // This log is to support debugging the case where osee transactions are nested and should
          // use the same transaction.
@@ -44,15 +43,14 @@ public class TransactionMonitor {
          OseeLog.log(InternalActivator.class, Level.SEVERE, "New transaction created over Last transaction",
                currentTx.getError());
       }
-      txMap.put(currentThread, new TxOperation(transaction));
+      txMap.put(key, new TxOperation(transaction));
    }
 
-   public synchronized void reportTxStart(final DbTransaction transaction) throws OseeWrappedException, OseeStateException {
-      final Thread currentThread = Thread.currentThread();
-      TxOperation currentTx = txMap.get(currentThread);
+   public synchronized void reportTxStart(final DbTransaction transaction, Object key) throws OseeWrappedException, OseeStateException {
+      TxOperation currentTx = txMap.get(key);
       if (currentTx == null) {
          throw new OseeStateException(
-               "reportTxStart called for thread: " + currentThread + " but reportTxCreation had not been called.");
+               "reportTxStart called for key: " + key + " but reportTxCreation had not been called.");
       } else if (currentTx.getState() != TxState.CREATED) {
          throw new OseeWrappedException(currentTx.getError());
       }
@@ -61,23 +59,21 @@ public class TransactionMonitor {
          currentTx.setState(TxState.RUNNING);
       } else {
          throw new OseeStateException(
-               "reportTxStart called for thread: " + currentThread + " but was called for incorrect transaction");
+               "reportTxStart called for key: " + key + " but was called for incorrect transaction");
       }
    }
 
-   public synchronized void reportTxEnd(final DbTransaction transaction) throws OseeWrappedException, OseeStateException {
-      final Thread currentThread = Thread.currentThread();
-
-      TxOperation currentTx = txMap.get(currentThread);
+   public synchronized void reportTxEnd(final DbTransaction transaction, Object key) throws OseeWrappedException, OseeStateException {
+      TxOperation currentTx = txMap.get(key);
       if (currentTx == null) {
          throw new OseeStateException(
-               "reportTxEnd called for thread: " + currentThread + " but reportTxCreation had not been called.");
+               "reportTxEnd called for key: " + key + " but reportTxCreation had not been called.");
       } else if (currentTx.getState() != TxState.RUNNING) {
          // This is a valid case -- can add a log to detect when a reportTxEnd is called before a transaction has a chance to run 
       }
 
       if (currentTx.getTransaction().equals(transaction)) {
-         txMap.put(currentThread, null);
+         txMap.put(key, null);
       } else {
          throw new OseeWrappedException(currentTx.getError());
       }
@@ -85,7 +81,7 @@ public class TransactionMonitor {
 
    private static final class TxOperation {
       private final DbTransaction tx;
-      private Throwable throwable;
+      private final Throwable throwable;
       private TxState txState;
 
       public TxOperation(DbTransaction tx) {
@@ -105,10 +101,6 @@ public class TransactionMonitor {
 
       public void setState(TxState txState) {
          this.txState = txState;
-      }
-
-      public void setError(Throwable throwable) {
-         this.throwable = throwable;
       }
 
       public Throwable getError() {

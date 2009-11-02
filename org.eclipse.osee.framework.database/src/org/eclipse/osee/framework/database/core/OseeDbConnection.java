@@ -64,15 +64,15 @@ public class OseeDbConnection {
       return InternalActivator.getApplicationDatabaseProvider().getDatabaseInfo();
    }
 
-   public static void reportTxStart(final DbTransaction transaction) throws OseeWrappedException, OseeStateException {
-      txMonitor.reportTxStart(transaction);
+   public static void reportTxStart(final DbTransaction transaction, Object key) throws OseeWrappedException, OseeStateException {
+      txMonitor.reportTxStart(transaction, key);
    }
 
-   public static void reportTxEnd(final DbTransaction transaction) throws OseeWrappedException, OseeStateException {
-      txMonitor.reportTxEnd(transaction);
+   public static void reportTxEnd(final DbTransaction transaction, Object key) throws OseeWrappedException, OseeStateException {
+      txMonitor.reportTxEnd(transaction, key);
    }
 
-   public static void reportTxCreation(final DbTransaction transaction) throws OseeWrappedException {
-      txMonitor.reportTxCreation(transaction);
+   public static void reportTxCreation(final DbTransaction transaction, Object key) {
+      txMonitor.reportTxCreation(transaction, key);
    }
 }
