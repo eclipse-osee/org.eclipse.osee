@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.CoreArtifacts;
@@ -24,6 +25,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.results.XResultData;
+import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 public class SubsystemRequirementVerificationLevel extends AbstractBlam {
 
@@ -41,44 +44,48 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
    private Collection<Artifact> subsystemRequirements;
    private StringBuilder report;
    private SkynetTransaction transaction;
+   private final String[] columnHeaders =
+         {"Requirement", "Subsystem", "Imported Paragraph Number", "Current Verification Level", "Changed"};
+
    private Collection<Artifact> bulkRequirements;
 
-   private void loadFields(VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
+   private void loadFields(VariableMap variableMap) throws OseeCoreException {
       branch = variableMap.getBranch("Branch");
       subsystemRequirements = ArtifactQuery.getArtifactListFromType(CoreArtifacts.SubsystemRequirement, branch);
       bulkRequirements =
             RelationManager.getRelatedArtifacts(subsystemRequirements, 1,
                   CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL);
-      report = new StringBuilder(bulkRequirements.size());
+      bulkRequirements.size(); // protect bulk loading of requirements from dead code elimination
+      report = new StringBuilder(AHTML.beginMultiColumnTable(100, 1));
       transaction = new SkynetTransaction(branch, "Set Verification Level for Subsystem Requirements");
-      monitor.beginTask("Set Subsystem Requirement Verification Level", subsystemRequirements.size());
    }
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      loadFields(variableMap, monitor);
+      loadFields(variableMap);
       beginReport();
 
       for (Artifact req : subsystemRequirements) {
          processSubsystemRequirement(req);
-         incrementMonitor(monitor);
       }
 
       report();
-      //      transaction.execute();
+      //    transaction.execute();
    }
 
-   private void incrementMonitor(IProgressMonitor monitor) {
-      monitor.worked(1);
-   }
-
-   private void report() {
-      String finalReport = report.toString();
-      System.out.println(finalReport);
+   private void report() throws OseeCoreException {
+      report.append(AHTML.endMultiColumnTable());
+      XResultData rd = new XResultData();
+      rd.addRaw(report.toString());
+      rd.report("Set Verification Level", Manipulations.RAW_HTML);
    }
 
    private void beginReport() {
-      report.append("\"Requirement\",\"Subsystem\",\"Imported Paragraph Number\",\"Current Verification Level\",\"Changed\"\n");
+      report.append(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
+   }
+
+   private void addReportRow(String... cells) {
+      report.append(AHTML.addRowMultiColumnTable(cells));
    }
 
    private void processSubsystemRequirement(Artifact reqArt) throws OseeCoreException {
@@ -111,23 +118,9 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       private void getData() throws OseeCoreException {
          this.hardwareComponents = getHardwareComponentCount();
          this.softwareRequirements = getSoftwareRequirementCount();
-         paragraphNumber = req.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "NONE");
-         subsystem = req.getSoleAttributeValue(CoreAttributes.SUBSYSTEM, "NONE");
-         verificationLevel = req.getSoleAttributeValue(CoreAttributes.VERIFICATION_LEVEL.getName(), "UNDEFINED");
-      }
-
-      private void adjustVerificationLevel() throws OseeCoreException {
-         req.setSoleAttributeValue(CoreAttributes.VERIFICATION_LEVEL, "Component");
-         req.persist(SubsystemRequirementVerificationLevel.this.transaction);
-      }
-
-      private boolean meetsCriteria() {
-         return hardwareComponents == 1 && softwareRequirements == 0;
-      }
-
-      public void report() {
-         SubsystemRequirementVerificationLevel.this.report.append(String.format("\"%s\",\"%s\",\"%s\",\"%s\",\"%s\"\n",
-               req.getName(), subsystem, paragraphNumber, verificationLevel, isUnspecified()));
+         paragraphNumber = req.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "UNDEFINED");
+         subsystem = req.getSoleAttributeValue(CoreAttributes.SUBSYSTEM, "UNDEFINED");
+         verificationLevel = req.getSoleAttributeValue(CoreAttributes.VERIFICATION_LEVEL, "UNDEFINED");
       }
 
       private int getHardwareComponentCount() throws OseeCoreException {
@@ -144,6 +137,20 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
             }
          }
          return ret;
+      }
+
+      private boolean meetsCriteria() {
+         return hardwareComponents == 1 && softwareRequirements == 0;
+      }
+
+      private void adjustVerificationLevel() throws OseeCoreException {
+         req.setSoleAttributeValue(CoreAttributes.VERIFICATION_LEVEL, "Component");
+         req.persist(SubsystemRequirementVerificationLevel.this.transaction);
+      }
+
+      public void report() {
+         SubsystemRequirementVerificationLevel.this.addReportRow(req.getName(), subsystem, paragraphNumber,
+               verificationLevel, String.valueOf(isUnspecified()));
       }
 
       private boolean isUnspecified() {
