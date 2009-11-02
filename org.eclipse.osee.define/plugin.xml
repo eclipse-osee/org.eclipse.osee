@@ -105,14 +105,6 @@
             className="org.eclipse.osee.define.blam.operation.PublishSubsystemToDesignTraceability">
       </Operation>
    </extension>
-   <extension
-         id="ExperimentalBlam"
-         name="ExperimentalBlam"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation
-            className="org.eclipse.osee.define.blam.operation.ExperimentalBlam">
-      </Operation>
-   </extension>
  <extension
        id="SubsystemToLowLevelReqTraceReport"
        name="SubsystemToLowLevelReqTraceReport"

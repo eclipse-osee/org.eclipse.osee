@@ -1798,5 +1798,13 @@
            <Operation
                  className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeArchivedBranch">
            </Operation>
-        </extension>      
+        </extension>
+   <extension
+         id="ExperimentalBlam"
+         name="ExperimentalBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.ExperimentalBlam">
+      </Operation>
+   </extension>
 </plugin>
