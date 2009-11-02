@@ -12,11 +12,8 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.ChangeArtifactType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -26,14 +23,13 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  * @author Jeff C. Phillips
  */
 public class ChangeArtifactTypeBlam extends AbstractBlam {
-   private List<Attribute<?>> attributesToPurge;
-   private List<RelationLink> relationsToDelete;
 
    @Override
    public String getName() {
       return "Change Artifact Type";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       ChangeArtifactType.changeArtifactType(variableMap.getArtifacts("artifacts"),
             variableMap.getArtifactType("New Artifact Type"));
@@ -46,6 +42,7 @@ public class ChangeArtifactTypeBlam extends AbstractBlam {
       "<XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"New Artifact Type\" /></xWidgets>";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define");
    }
