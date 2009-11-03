@@ -186,6 +186,11 @@ public class CoveragePackageImporter {
       if (packageItem.getNamespace() == null) return false;
       if (importItem.getNamespace() == null) return false;
       if (!packageItem.getNamespace().equals(importItem.getNamespace())) return false;
+      if (packageItem instanceof CoverageUnit) {
+         if (!((CoverageUnit) packageItem).getMethodNumber().equals(((CoverageUnit) importItem).getMethodNumber())) {
+            return false;
+         }
+      }
       if (packageItem.getName().equals(importItem.getName())) {
          if (packageItem.getParent() instanceof CoveragePackage && importItem.getParent() instanceof CoverageImport) {
             return true;

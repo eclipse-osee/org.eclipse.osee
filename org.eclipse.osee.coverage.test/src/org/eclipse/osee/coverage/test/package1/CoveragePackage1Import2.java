@@ -14,7 +14,7 @@ import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
-import org.eclipse.osee.coverage.test.import1.CoverageImportTest1Blam;
+import org.eclipse.osee.coverage.test.import2.CoverageImport2TestBlam;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -59,6 +59,6 @@ public class CoveragePackage1Import2 extends XNavigateItemAction {
          AWorkbench.popup("Can't access opened Editor");
          return;
       }
-      editor.simulateImport(CoverageImportTest1Blam.NAME);
+      editor.simulateImport(CoverageImport2TestBlam.NAME);
    }
 }

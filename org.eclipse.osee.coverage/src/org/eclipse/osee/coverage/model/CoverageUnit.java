@@ -20,6 +20,7 @@ import org.eclipse.osee.coverage.util.CoverageMetrics;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
@@ -312,5 +313,14 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
 
    public void setParent(ICoverage parent) {
       this.parent = parent;
+   }
+
+   public String getMethodNumber() {
+      for (CoverageItem coverageItem : coverageItems) {
+         if (Strings.isValid(coverageItem.getMethodNum())) {
+            return coverageItem.getMethodNum();
+         }
+      }
+      return "";
    }
 }

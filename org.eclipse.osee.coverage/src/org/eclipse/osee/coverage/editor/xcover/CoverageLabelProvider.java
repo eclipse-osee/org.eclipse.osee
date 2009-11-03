@@ -89,6 +89,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       if (coverage instanceof CoverageUnit) {
          CoverageUnit coverageUnit = (CoverageUnit) coverage;
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageUnit.getParentCoverageUnit() == null ? "" : coverageUnit.getParentCoverageUnit().getName();
+         if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageUnit.getMethodNumber();
       }
       return "";
 

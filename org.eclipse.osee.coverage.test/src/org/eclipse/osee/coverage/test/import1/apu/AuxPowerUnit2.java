@@ -32,11 +32,11 @@ public class AuxPowerUnit2 extends Table {
    // NOTE: This method will be duplicated to show error case; duplicated via SampleJavaFileParser
    @Override
    public void clear(int[] indices) {
-      if (getStyle() == 4) { // 2, 1, TestUnit2
-         System.out.println("clear it"); // 2, 2, n
+      if (getStyle() == 4) { // 1, 1, TestUnit2
+         System.out.println("clear it"); // 1, 2, n
       } else {
          for (int x = 0; x < 34; x++) {
-            System.err.println("clear");// 2, 3, n
+            System.err.println("clear");// 1, 3, n
          }
       }
    }

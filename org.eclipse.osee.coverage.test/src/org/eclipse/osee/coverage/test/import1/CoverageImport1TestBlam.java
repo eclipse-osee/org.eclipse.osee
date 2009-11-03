@@ -27,7 +27,7 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageImportTest1Blam extends AbstractCoverageBlam {
+public class CoverageImport1TestBlam extends AbstractCoverageBlam {
 
    public static String COVERAGE_IMPORT_DIR = "Coverage Import Directory";
    public static String NAME = "Test Import 1";
@@ -56,7 +56,7 @@ public class CoverageImportTest1Blam extends AbstractCoverageBlam {
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            setCoverageImport(new CoverageImportTest1NavigateItem().run());
+            setCoverageImport(new CoverageImport1TestNavigateItem().run());
          };
       });
    }

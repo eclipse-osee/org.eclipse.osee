@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.coverage.test.import1;
+package org.eclipse.osee.coverage.test.import2;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -28,16 +28,16 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 /**
  * @author Donald G. Dunne
  */
-public class CoverageImportTest1NavigateItem extends XNavigateItemAction implements ICoverageImporter {
+public class CoverageImport2TestNavigateItem extends XNavigateItemAction implements ICoverageImporter {
 
-   public static String PATH = "../../../../../../../src/org/eclipse/osee/coverage/test/import1/";
+   public static String PATH = "../../../../../../../src/org/eclipse/osee/coverage/test/";
 
-   public CoverageImportTest1NavigateItem() {
+   public CoverageImport2TestNavigateItem() {
       this(null);
    }
 
-   public CoverageImportTest1NavigateItem(XNavigateItem parent) {
-      super(parent, "Open Coverage Import 1");
+   public CoverageImport2TestNavigateItem(XNavigateItem parent) {
+      super(parent, "Open Coverage Import 2");
    }
 
    @Override
@@ -46,22 +46,25 @@ public class CoverageImportTest1NavigateItem extends XNavigateItemAction impleme
       CoverageImport coverageImport = new CoverageImport(getName());
       try {
          for (String filename : Arrays.asList(
-         //
-               "com/screenA/ComScrnAButton1.java", "com/screenA/ComScrnAButton2.java",
                //
-               "com/screenB/ScreenBButton1.java", "com/screenB/ScreenBButton2.java", "com/screenB/ScreenBButton3.java",
+               "import2/com/screenA/ComScrnAButton1.java",
+               "import1/com/screenA/ComScrnAButton2.java",
                //
-               "epu/PowerUnit1.java", "epu/PowerUnit2.java", "epu/PowerUnit2.java",
+               "import1/com/screenB/ScreenBButton1.java", "import1/com/screenB/ScreenBButton2.java",
+               "import1/com/screenB/ScreenBButton3.java",
                //
-               "apu/AuxPowerUnit1.java", "apu/AuxPowerUnit2.java",
+               "import2/epu/PowerUnit1.java", "import1/epu/PowerUnit2.java",
                //
-               "nav/NavigationButton1.java", "nav/NavigationButton2.java", "nav/NavigationButton3.java"
+               "import1/apu/AuxPowerUnit1.java", "import1/apu/AuxPowerUnit2.java",
+               //
+               "import1/nav/NavigationButton1.java", "import1/nav/NavigationButton2.java",
+               "import1/nav/NavigationButton3.java"
          //
          )) {
             System.err.println(String.format("Importing [%s]", PATH + filename));
-            URL url = CoverageImportTest1NavigateItem.class.getResource(PATH + filename);
+            URL url = CoverageImport2TestNavigateItem.class.getResource(PATH + filename);
             CoverageUnit coverageUnit = SampleJavaFileParser.createCodeUnit(url);
-            String namespace = coverageUnit.getNamespace().replaceFirst("org.eclipse.osee.coverage.test.import1.", "");
+            String namespace = coverageUnit.getNamespace().replaceFirst("org.eclipse.osee.coverage.test.import..", "");
             coverageUnit.setNamespace(namespace);
             CoverageUnit parentCoverageUnit = coverageImport.getOrCreateParent(namespace);
             if (parentCoverageUnit != null) {
@@ -79,7 +82,7 @@ public class CoverageImportTest1NavigateItem extends XNavigateItemAction impleme
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      CoverageManager.importCoverage(new CoverageImportTest1NavigateItem());
+      CoverageManager.importCoverage(new CoverageImport2TestNavigateItem());
    }
 
 }

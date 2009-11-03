@@ -153,7 +153,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
 
    @Override
    public boolean handleLeftClick(TreeColumn treeColumn, TreeItem treeItem) {
-      XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
+      //      XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
       return super.handleLeftClick(treeColumn, treeItem);
    }
 

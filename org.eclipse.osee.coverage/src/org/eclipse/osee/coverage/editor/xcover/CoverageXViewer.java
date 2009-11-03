@@ -265,7 +265,7 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    public boolean promptChangeData(XViewerColumn xCol, Collection<ICoverage> coverageItems, boolean colMultiEdit) throws OseeCoreException {
       boolean modified = false;
       if (coverageItems != null && !coverageItems.isEmpty()) {
-         ICoverage coverageItem = (ICoverage) coverageItems.toArray()[0];
+         //         ICoverage coverageItem = (ICoverage) coverageItems.toArray()[0];
 
          if (isEditable(coverageItems).isFalse()) {
             MessageDialog.openInformation(Display.getCurrent().getActiveShell(), "Coverage Item",

@@ -13,11 +13,11 @@ package org.eclipse.osee.coverage.editor.xmerge;
 import org.eclipse.osee.coverage.editor.xcover.CoverageContentProvider;
 
 public class CoverageMergeContentProvider extends CoverageContentProvider {
-   private final CoverageMergeXViewer mergeXViewer;
+   //   private final CoverageMergeXViewer mergeXViewer;
 
    public CoverageMergeContentProvider(CoverageMergeXViewer mergeXViewer) {
       super(mergeXViewer);
-      this.mergeXViewer = mergeXViewer;
+      //      this.mergeXViewer = mergeXViewer;
    }
 
 }

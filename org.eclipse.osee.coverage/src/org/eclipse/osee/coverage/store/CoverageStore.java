@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public abstract class CoverageStore implements ICoverageStore {
 
-   private final ICoverage coverage;
+   protected final ICoverage coverage;
 
    public CoverageStore(ICoverage coverage) {
       this.coverage = coverage;

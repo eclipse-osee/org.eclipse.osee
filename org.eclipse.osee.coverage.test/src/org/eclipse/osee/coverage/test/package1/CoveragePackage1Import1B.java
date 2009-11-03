@@ -13,8 +13,10 @@ package org.eclipse.osee.coverage.test.package1;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
-import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
+import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
@@ -23,19 +25,24 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 /**
  * @author Donald G. Dunne
  */
-public class CoveragePackage1Import1 extends XNavigateItemAction {
+public class CoveragePackage1Import1B extends XNavigateItemAction {
 
-   public CoveragePackage1Import1() {
+   public CoveragePackage1Import1B() {
       super(null, "");
    }
 
-   public CoveragePackage1Import1(XNavigateItem parent) {
-      super(parent, "Open Coverage Package 1 - Import 1");
+   public CoveragePackage1Import1B(XNavigateItem parent) {
+      super(parent, "Open Coverage Package 1 - Import 1-B");
    }
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      CoveragePackage coveragePackage = new CoveragePackage(getName() + " - #" + IncrementingNum.get());
+      CoveragePackageArtifactListDialog dialog =
+            new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
+      dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());
+      if (dialog.open() != 0) return;
+      Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
+      CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
       CoverageEditor.open(new CoverageEditorInput(coveragePackage));
       // Process Import 1
       CoverageEditor editor = null;

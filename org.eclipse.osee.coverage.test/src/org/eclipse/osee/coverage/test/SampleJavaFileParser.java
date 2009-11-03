@@ -65,9 +65,11 @@ public class SampleJavaFileParser {
                coverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
                fileCoverageUnit.addCoverageUnit(coverageUnit);
                // Duplicate this method as error case for importing
-               if (filename.contains("AuxPowerUnit2") && name.contains("clear")) {
-                  coverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
-                  fileCoverageUnit.addCoverageUnit(coverageUnit);
+               if (filename.contains("AuxPowerUnit2") && name.equals("clear")) {
+                  CoverageUnit duplicateCoverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
+                  fileCoverageUnit.addCoverageUnit(duplicateCoverageUnit);
+                  duplicateCoverageUnit.addCoverageItem(new CoverageItem(duplicateCoverageUnit,
+                        CoverageMethodEnum.Not_Covered, "2"));
                }
             }
             // Determine if executable coverage line; store as CoverageItem
@@ -91,6 +93,7 @@ public class SampleJavaFileParser {
                   }
                }
             }
+
          }
          return fileCoverageUnit;
       } catch (IOException ex) {
