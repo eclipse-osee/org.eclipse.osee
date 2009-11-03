@@ -346,7 +346,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     */
    public double getHoursPerWorkDayFromItemAndChildren(TeamDefinitionArtifact teamDef) {
       try {
-         Double manDaysHrs = teamDef.getSoleAttributeValue(ATSAttributes.HOURS_PER_WORK_DAY_ATTRIBUTE.getStoreName(), 0.0);
+         Double manDaysHrs =
+               teamDef.getSoleAttributeValue(ATSAttributes.HOURS_PER_WORK_DAY_ATTRIBUTE.getStoreName(), 0.0);
          if (manDaysHrs != null && manDaysHrs != 0) {
             return manDaysHrs;
          }
@@ -437,6 +438,10 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       for (VersionArtifact version : getVersionsArtifacts()) {
          if (version.isReleased()) {
             if (releaseType == VersionReleaseType.Released || releaseType == VersionReleaseType.Both) {
+               versions.add(version);
+            }
+         } else if (version.isVersionLocked()) {
+            if (releaseType == VersionReleaseType.VersionLocked || releaseType == VersionReleaseType.Both) {
                versions.add(version);
             }
          } else {

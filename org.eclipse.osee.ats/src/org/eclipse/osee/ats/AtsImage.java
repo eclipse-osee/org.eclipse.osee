@@ -57,6 +57,7 @@ public enum AtsImage implements OseeImage {
    TASK_SELECTED("taskSelected.gif"),
    TEAM_DEFINITION("team.gif"),
    TEAM_WORKFLOW("workflow.gif"),
+   VERSION_LOCKED("yellowV_8_8.gif"),
    WORKFLOW_CONFIG("workflow.gif"),
    TOOL("T.gif"),
    T("T.gif"),

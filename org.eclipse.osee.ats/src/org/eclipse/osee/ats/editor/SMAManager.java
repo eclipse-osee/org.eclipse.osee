@@ -265,6 +265,18 @@ public class SMAManager {
       return false;
    }
 
+   public boolean isVersionLocked() {
+      try {
+         VersionArtifact verArt = getTargetedForVersion();
+         if (verArt != null) {
+            return verArt.isVersionLocked();
+         }
+      } catch (Exception ex) {
+         // Do Nothing
+      }
+      return false;
+   }
+
    public VersionArtifact getTargetedForVersion() throws OseeCoreException {
       return getSma().getWorldViewTargetedVersion();
    }
@@ -347,8 +359,9 @@ public class SMAManager {
             AWorkbench.popup("ERROR", "Team \"" + teamArt.getTeamDefinition().getName() + "\" doesn't use versions.");
             return false;
          }
-         if (smaMgr.isReleased()) {
-            String error = "Team Workflow\n \"" + teamArt.getName() + "\"\n is already released.";
+         if (smaMgr.isReleased() || smaMgr.isVersionLocked()) {
+            String error =
+                  "Team Workflow\n \"" + teamArt.getName() + "\"\n targeted version is locked or already released.";
             if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
                   "Change Version", error + "\n\nOverride?")) {
                return false;
@@ -384,6 +397,17 @@ public class SMAManager {
       }
       Object obj = vld.getResult()[0];
       VersionArtifact newVersion = (VersionArtifact) obj;
+      //now check selected version
+      if (newVersion.isVersionLocked()) {
+         String error = "Version \"" + newVersion.getFullDisplayName() + "\" is locked or already released.";
+         if (AtsUtil.isAtsAdmin() && !MessageDialog.openConfirm(Display.getCurrent().getActiveShell(),
+               "Change Version", error + "\n\nOverride?")) {
+            return false;
+         } else if (!AtsUtil.isAtsAdmin()) {
+            AWorkbench.popup("ERROR", error);
+         }
+      }
+
       for (TeamWorkFlowArtifact teamArt : smas) {
          teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version,
                java.util.Collections.singleton(newVersion));
@@ -409,8 +433,9 @@ public class SMAManager {
 
       for (TeamWorkFlowArtifact team : teams) {
          SMAManager smaMgr = new SMAManager(team);
-         if (smaMgr.isReleased()) {
-            AWorkbench.popup("ERROR", "Team Workflow\n \"" + team.getName() + "\"\n is already released.");
+         if (smaMgr.isReleased() || smaMgr.isVersionLocked()) {
+            AWorkbench.popup("ERROR",
+                  "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
             return false;
          }
       }
@@ -448,8 +473,9 @@ public class SMAManager {
    public static boolean promptChangePriority(final Collection<? extends TeamWorkFlowArtifact> teams, boolean persist) {
 
       for (TeamWorkFlowArtifact team : teams) {
-         if (team.getSmaMgr().isReleased()) {
-            AWorkbench.popup("ERROR", "Team Workflow\n \"" + team.getName() + "\"\n is already released.");
+         if (team.getSmaMgr().isReleased() || team.getSmaMgr().isVersionLocked()) {
+            AWorkbench.popup("ERROR",
+                  "Team Workflow\n \"" + team.getName() + "\"\n version is locked or already released.");
             return false;
          }
       }
@@ -553,8 +579,9 @@ public class SMAManager {
    }
 
    public boolean promptChangeReleaseDate() throws OseeStateException {
-      if (isReleased()) {
-         AWorkbench.popup("ERROR", "Team Workflow\n \"" + getSma().getName() + "\"\n is already released.");
+      if (isReleased() || isVersionLocked()) {
+         AWorkbench.popup("ERROR",
+               "Team Workflow\n \"" + getSma().getName() + "\"\n version is locked or already released.");
          return false;
       }
       try {

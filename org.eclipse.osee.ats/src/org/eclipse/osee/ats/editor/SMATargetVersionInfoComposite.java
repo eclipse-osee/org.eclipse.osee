@@ -53,7 +53,7 @@ public class SMATargetVersionInfoComposite extends Composite {
       label = toolkit.createLabel(this, "Target Version: ", SWT.NONE);
       SMAEditor.setLabelFonts(label, FontManager.getDefaultLabelFont());
 
-      if (!smaMgr.isReleased()) {
+      if (!smaMgr.isReleased() && !smaMgr.isVersionLocked()) {
          link = toolkit.createHyperlink(this, "", SWT.NONE);
          if (smaMgr.getSma().isReadOnly())
             link.addHyperlinkListener(new ReadOnlyHyperlinkListener(smaMgr));

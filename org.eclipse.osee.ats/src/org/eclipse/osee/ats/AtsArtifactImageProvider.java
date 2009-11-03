@@ -59,6 +59,10 @@ public class AtsArtifactImageProvider extends ArtifactImageProvider {
          if (artifact.getSoleAttributeValue("ats.Released", false)) {
             return ImageManager.setupImage(artifact, AtsImage.RELEASED, Location.TOP_RIGHT);
          }
+         if (artifact.getSoleAttributeValue("ats.Version Locked", false) && !artifact.getSoleAttributeValue(
+               "ats.Released", false)) {
+            return ImageManager.setupImage(artifact, AtsImage.VERSION_LOCKED, Location.BOT_RIGHT);
+         }
       }
 
       if (artifact instanceof StateMachineArtifact) {
