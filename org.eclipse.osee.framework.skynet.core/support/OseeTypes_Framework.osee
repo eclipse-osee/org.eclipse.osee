@@ -542,7 +542,7 @@ artifactType "Software Design" extends "Design" {
    guid "AAMFDh+nBRDS2smKPLAA"
 }
 
-artifactType "Test Procedure" extends "Artifact" {
+artifactType "Test Procedure" extends "Test Unit" {
    guid "AAMFDjsjiGhoWpqM4PQA"
    attribute "Subsystem"
 }
