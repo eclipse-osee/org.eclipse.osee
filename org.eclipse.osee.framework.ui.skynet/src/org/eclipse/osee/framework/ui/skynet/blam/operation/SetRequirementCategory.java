@@ -85,15 +85,20 @@ public class SetRequirementCategory extends AbstractBlam {
             requirement.persist(transaction);
          }
       } catch (MultipleArtifactsExist ex) {
-         List<Artifact> artiafcts =
-               ArtifactQuery.getArtifactListFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, requirementName, branch);
-         for (Artifact requirement : artiafcts) {
-            if (requirement.isOrphan()) {
-               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, requirement + " is an orphan");
-            } else {
-               requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
-               requirement.persist(transaction);
+         try {
+            List<Artifact> artiafcts =
+                  ArtifactQuery.getArtifactListFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, requirementName,
+                        branch);
+            for (Artifact requirement : artiafcts) {
+               if (requirement.isOrphan()) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.INFO, requirement + " is an orphan");
+               } else {
+                  requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
+                  requirement.persist(transaction);
+               }
             }
+         } catch (OseeCoreException ex2) {
+            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex2);
          }
       } catch (ArtifactDoesNotExist ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex);
@@ -102,7 +107,7 @@ public class SetRequirementCategory extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Bulk Load\" /><XWidget xwidgetType=\"XText\" displayName=\"ExcelML Priority File\" defaultValue=\"C:/UserData/RequirementCategories.xml\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" defaultValue=\"Block III - FTB2\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Bulk Load\" /><XWidget xwidgetType=\"XText\" displayName=\"ExcelML Priority File\" defaultValue=\"C:/UserData/RequirementCategories.xml\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" defaultValue=\"Block III - FTB4\" /></xWidgets>";
    }
 
    @Override
