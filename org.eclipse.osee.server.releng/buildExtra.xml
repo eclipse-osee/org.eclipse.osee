@@ -66,24 +66,40 @@
 			</path>
 		</pathconvert>
 		<propertyregex property="launcherJar" override="true" input="${launcherBundlePath}" regexp="[^${file.separator}]+$" select="\0" casesensitive="false" />
-<echo file="${tempAppServerFolder}/runCustomAppServer.sh" append="false">java.exe \
--Dorg.osgi.service.http.port=8089 \
--Dosee.check.tag.queue.on.startup=true \
--Dosee.connection.info.uri=[Path to custom connection file] \
--Dosee.db.connection.id=[Database Connection Id from connection file] \
--Dosee.application.server.data=[Binary Data folder path] \
--jar plugins/${launcherJar} \
--console
-</echo>
-<echo file="${tempAppServerFolder}/runPostgresqlLocal.sh" append="false">java.exe \
--Dorg.osgi.service.http.port=8089 \
--Dosee.check.tag.queue.on.startup=true \
--Dosee.db.connection.id=postgresqlLocalhost \
--jar plugins/${launcherJar} \
--console
-</echo>
-		<chmod file="${tempAppServerFolder}/runPostgresqlLocal.sh" perm="ugo+rx" />
+		
+		<generate.launch name="runDerby.sh" executable="true" port="8089" connection.id="derby">
+			<var name="args" value="-Dosee.derby.server=127.0.0.1:1621" />
+		</generate.launch>
+		
+		<generate.launch name="runPostgresqlLocal.sh" executable="true" port="8089" connection.id="postgresqlLocalhost" />
+		
+		<generate.launch name="runExample.sh" executable="false" port="8089" connection.id="[Database Connection Id from connection file]">
+			<var name="args" value="-Dosee.connection.info.uri=[Path to custom connection file]" />
+			<var name="args" value="${args} -Dosee.application.server.data=[Binary Data folder path]" />
+		</generate.launch>
 	</target>
+
+	<macrodef name="generate.launch">
+		<attribute name="name" />
+		<attribute name="port" />
+		<attribute name="executable" />
+		<attribute name="connection.id" />
+		<sequential>
+			<echo file="${tempAppServerFolder}/@{name}" append="false">java \
+-Dorg.osgi.service.http.port=@{port} \
+-Dosee.check.tag.queue.on.startup=true \
+-Dosee.db.connection.id=@{connection.id} \				
+${args} \
+-jar plugins/${launcherJar} -console
+</echo>
+			<if>
+				<equals arg1="executable" arg2="true" />
+				<then>
+					<chmod file="${tempAppServerFolder}/@{name}" perm="ugo+rx" />
+				</then>
+			</if>
+		</sequential>
+	</macrodef>
 
 	<target name="deleteZips">
 		<echo message="deleteZips" />
