@@ -38,7 +38,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    private static final String COUNT_CHILD_BRANCHES = "select count(1) from osee_branch WHERE parent_branch_id = ?";
 
    private static final String SELECT_DELETABLE_GAMMAS =
-         "select %s from osee_tx_details txd1, %s txs1 where txd1.branch_id = ? AND txd1.tx_type = %d AND txd1.transaction_id = txs1.transaction_id AND NOT EXISTS (SELECT 1 FROM osee_txs txs2, osee_tx_details txd2 WHERE txs1.%s = txs2.gamma_id AND txd2.transaction_id = txs2.transaction_id AND txd1.branch_id <> txd2.branch_id)";
+         "select %s from osee_tx_details txd1, %s txs1 where txd1.branch_id = ? AND txd1.tx_type = %d AND txd1.transaction_id = txs1.transaction_id AND NOT EXISTS (SELECT 1 FROM osee_txs txs2, osee_tx_details txd2 WHERE txs1.%s = txs2.gamma_id AND txd2.transaction_id = txs2.transaction_id AND txd1.branch_id <> txd2.branch_id)AND NOT EXISTS (SELECT 1 FROM osee_txs_archived txs3, osee_tx_details txd3 WHERE txs1.%s = txs3.gamma_id AND txd3.transaction_id = txs3.transaction_id AND txd1.branch_id <> txd3.branch_id)";
 
    private static final String TEST_TXS =
          "select count(1) from osee_tx_details txd where txd.branch_id = ? AND txd.tx_type = 1 AND exists (select 1 from osee_txs txs where txd.transaction_id = txs.transaction_id)";
@@ -94,11 +94,11 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       purgeGammas("osee_attribute", 0.10);
       purgeGammas("osee_relation_link", 0.10);
 
-      purgeFromTable("Artifact", DELETE_FROM_ARTIFACT, 0.15);
+      purgeFromTable("Artifact", DELETE_FROM_ARTIFACT, 0.10);
 
       purgeAddressing(0.20);
 
-      purgeFromTable("Tx Details", DELETE_FROM_TX_DETAILS, 0.04, branch.getBranchId());
+      purgeFromTable("Tx Details", DELETE_FROM_TX_DETAILS, 0.09, branch.getBranchId());
       purgeFromTable("Branch", DELETE_FROM_BRANCH_TABLE, 0.01, branch.getBranchId());
    }
 
@@ -141,7 +141,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       String sql =
             String.format(SELECT_DELETABLE_GAMMAS, columnName, sourceTableName,
-                  TransactionDetailsType.NonBaselined.getId(), columnName);
+                  TransactionDetailsType.NonBaselined.getId(), columnName, columnName);
 
       try {
          chStmt.runPreparedQuery(10000, sql, branch.getBranchId());

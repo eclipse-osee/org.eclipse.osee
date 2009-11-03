@@ -522,14 +522,6 @@
 			<References schema="OSEE" table="OSEE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
 		</Constraint>
 	</Table>
-	
-	<Table name="OSEE_BRANCH_DELETE_HELPER" schema="OSEE" tablespace="osee_data">
-		<Column id="BRANCH_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="GAMMA_ID" defaultValue="not null" type="INTEGER" />
-		<Constraint schema="OSEE" id="OSEE_BRANCH_DEF__OBDH_FK" type="FOREIGN KEY" appliesTo="BRANCH_ID">
-			<References schema="OSEE" table="OSEE_BRANCH" column="BRANCH_ID" onDelete="CASCADE" />
-		</Constraint>
-	</Table>
 
   <Table name="OSEE_INFO" schema="OSEE" tablespace="osee_data">
     <Column defaultValue="not null" id="OSEE_VALUE" type="VARCHAR" limits="1000" />
