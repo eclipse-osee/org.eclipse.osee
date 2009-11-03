@@ -78,7 +78,8 @@
 			name="runPostgresqlLocal.sh" 
 			executable="true" 
 			port="8089" 
-			connection.id="postgresqlLocalhost" />
+			connection.id="postgresqlLocalhost" 
+			args=" " />
 
 		<generate.launch 
 			name="runExample.sh" 
