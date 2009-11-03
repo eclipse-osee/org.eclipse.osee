@@ -66,17 +66,27 @@
 			</path>
 		</pathconvert>
 		<propertyregex property="launcherJar" override="true" input="${launcherBundlePath}" regexp="[^${file.separator}]+$" select="\0" casesensitive="false" />
-		
-		<generate.launch name="runDerby.sh" executable="true" port="8089" connection.id="derby">
-			<var name="args" value="-Dosee.derby.server=127.0.0.1:1621" />
-		</generate.launch>
-		
-		<generate.launch name="runPostgresqlLocal.sh" executable="true" port="8089" connection.id="postgresqlLocalhost" />
-		
-		<generate.launch name="runExample.sh" executable="false" port="8089" connection.id="[Database Connection Id from connection file]">
-			<var name="args" value="-Dosee.connection.info.uri=[Path to custom connection file]" />
-			<var name="args" value="${args} -Dosee.application.server.data=[Binary Data folder path]" />
-		</generate.launch>
+
+		<generate.launch 
+			name="runDerby.sh" 
+			executable="true" 
+			port="8089" 
+			connection.id="derby" 
+			args="-Dosee.derby.server=127.0.0.1:1621" />
+
+		<generate.launch 
+			name="runPostgresqlLocal.sh" 
+			executable="true" 
+			port="8089" 
+			connection.id="postgresqlLocalhost" />
+
+		<generate.launch 
+			name="runExample.sh" 
+			executable="false" 
+			port="8089" 
+			connection.id="[id from connection file]" 
+			args="-Dosee.connection.info.uri=[custom connection file path] -Dosee.application.server.data=[binary data path]" />
+
 	</target>
 
 	<macrodef name="generate.launch">
@@ -84,12 +94,13 @@
 		<attribute name="port" />
 		<attribute name="executable" />
 		<attribute name="connection.id" />
+		<attribute name="args" />
 		<sequential>
 			<echo file="${tempAppServerFolder}/@{name}" append="false">java \
 -Dorg.osgi.service.http.port=@{port} \
 -Dosee.check.tag.queue.on.startup=true \
 -Dosee.db.connection.id=@{connection.id} \				
-${args} \
+@{args} \
 -jar plugins/${launcherJar} -console
 </echo>
 			<if>
