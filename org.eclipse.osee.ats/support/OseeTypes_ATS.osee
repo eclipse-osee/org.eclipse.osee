@@ -82,6 +82,7 @@ artifactType "Version" extends "ats.Ats Artifact" {
    attribute "ats.Baseline Branch Guid"
    attribute "ats.Release Date"
    attribute "ats.Released"
+   attribute "ats.Version Locked"
 }
 
 abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
@@ -165,6 +166,14 @@ attributeType "ats.Uses Resolution Options" extends BooleanAttribute {
 
 attributeType "ats.Released" extends BooleanAttribute {
    guid "AAMFEcnMoUZMLA2zB1AA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max 1
+   defaultValue "no"
+}
+
+attributeType "ats.Version Locked" extends BooleanAttribute {
+   guid "AAMFEcnMoUZMLA4zB1AB"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1

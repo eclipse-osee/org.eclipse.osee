@@ -94,6 +94,8 @@ public class ATSAttributes {
          new ATSAttributes("Cancelled From State", "State prior to cancellation of workflow.");
    public static final ATSAttributes RELEASED_ATTRIBUTE =
          new ATSAttributes("Released", "True if object is in a released state.");
+   public static final ATSAttributes VERSION_LOCKED_ATTRIBUTE =
+         new ATSAttributes("Version Locked", "True if version artifact is locked.");
    public static final ATSAttributes NEXT_VERSION_ATTRIBUTE =
          new ATSAttributes("Next Version", "True if version artifact is \"Next\" version to be released.");
    public static final ATSAttributes ACTIONABLE_ATTRIBUTE =
@@ -139,6 +141,7 @@ public class ATSAttributes {
 
    /**
     * Creates attribute with displayName = "<name>" and storeName = "ats.<name>"
+    * 
     * @param name
     */
    private ATSAttributes(String name) {

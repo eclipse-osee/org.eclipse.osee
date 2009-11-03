@@ -38,9 +38,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    public static String ARTIFACT_NAME = "Version";
 
    public static enum VersionReleaseType {
-      Released,
-      UnReleased,
-      Both
+      Released, UnReleased, Both, VersionLocked
    };
 
    public VersionArtifact(ArtifactFactory parentFactory, String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
@@ -98,6 +96,10 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
       }
    }
 
+   public Boolean isVersionLocked() throws OseeCoreException {
+      return getSoleAttributeValue(ATSAttributes.VERSION_LOCKED_ATTRIBUTE.getStoreName(), false);
+   }
+
    @Override
    public String toString() {
       return getName();
@@ -109,6 +111,10 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    public void setNextVersion(boolean nextVersion) throws OseeCoreException {
       setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), nextVersion);
+   }
+
+   public void setVersionLocked(boolean locked) throws OseeCoreException {
+      setSoleAttributeValue(ATSAttributes.VERSION_LOCKED_ATTRIBUTE.getStoreName(), locked);
    }
 
    public String getFullName() throws OseeCoreException {
