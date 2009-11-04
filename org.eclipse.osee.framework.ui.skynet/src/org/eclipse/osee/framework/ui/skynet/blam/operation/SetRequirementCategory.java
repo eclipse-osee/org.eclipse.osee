@@ -21,8 +21,10 @@ import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -53,8 +55,10 @@ public class SetRequirementCategory extends AbstractBlam {
       reqPriorities = extractor.getReqPriorities();
 
       if (bulkLoad) {
-         for (Artifact req : ArtifactQuery.getArtifactListFromType(Requirements.SOFTWARE_REQUIREMENT, branch)) {
-            reqs.put(req.getName().trim(), req);
+         for (ArtifactType artifactType : Requirements.getAllSoftwareRequirementTypes()) {
+            for (Artifact req : ArtifactQuery.getArtifactListFromType(artifactType, branch)) {
+               reqs.put(req.getName().trim(), req);
+            }
          }
       }
 
@@ -75,7 +79,7 @@ public class SetRequirementCategory extends AbstractBlam {
             }
          } else {
             requirement =
-                  ArtifactQuery.getArtifactFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, requirementName, branch);
+                  ArtifactQuery.getArtifactFromAttribute(CoreAttributes.NAME.getName(), requirementName, branch);
          }
 
          if (requirement.isOrphan()) {
