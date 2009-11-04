@@ -34,6 +34,7 @@ public class Requirements {
    public final static String SYSTEM_REQUIREMENTS = "System Requirements";
    public final static String SYSTEM_DESIGN = "System Design";
    public final static String SYSTEM_FUNCTION = "System Function";
+   public final static String BUTTON_REQUIREMENT = "Button Requirement";
    public final static String REQUIREMENT = "Requirement";
    public final static String ABSTRACT_SOFTWARE_REQUIREMENT = "Abstract Software Requirement";
 
