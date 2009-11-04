@@ -327,7 +327,7 @@ public class AHTML {
    }
 
    public static String beginMultiColumnTable(int width, int border, Integer color) {
-      return "<table border=\"" + border + "\" " + (color != null ? "color=\"" + color + "\"" : "") + " cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\">";
+      return "<table border=\"" + border + "\" " + (color != null ? "color=\"" + color + "\"" : "") + "cellpadding=\"3\" cellspacing=\"0\" width=\"" + width + "%\">";
    }
 
    public static String endMultiColumnTable() {

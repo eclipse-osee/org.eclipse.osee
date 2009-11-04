@@ -16,4 +16,6 @@ package org.eclipse.osee.framework.ui.skynet.results.table;
 public interface IResultsXViewerRow {
 
    public String getValue(int col);
+
+   public String[] values();
 }

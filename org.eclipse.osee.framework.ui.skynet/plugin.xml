@@ -1798,7 +1798,19 @@
            <Operation
                  className="org.eclipse.osee.framework.ui.skynet.blam.operation.PurgeArchivedBranch">
            </Operation>
-        </extension>
+        </extension> 
+        <extension
+              id="DatabaseIntegrityCheck"
+              point="org.eclipse.core.runtime.applications">
+           <application
+                 cardinality="singleton-global"
+                 thread="main"
+                 visible="true">
+              <run
+                    class="org.eclipse.osee.framework.ui.skynet.dbHealth.DatabaseIntegrityCheckApplication">
+              </run>
+           </application>
+        </extension>      
    <extension
          id="ExperimentalBlam"
          name="ExperimentalBlam"

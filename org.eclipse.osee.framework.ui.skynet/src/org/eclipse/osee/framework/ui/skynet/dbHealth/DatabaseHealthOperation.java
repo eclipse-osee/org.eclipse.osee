@@ -29,7 +29,7 @@ public abstract class DatabaseHealthOperation extends AbstractOperation {
    private final StringBuilder detailedReport;
    private final MultiPageResultsProvider resultsProvider = new MultiPageResultsProvider(this);
 
-   public DatabaseHealthOperation(String operationName) {
+   protected DatabaseHealthOperation(String operationName) {
       super(operationName, SkynetGuiPlugin.PLUGIN_ID);
       this.isFixOperationEnabled = false;
       this.appendableBuffer = new StringBuilder();

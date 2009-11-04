@@ -44,6 +44,11 @@ public class ResultsXViewerRow implements IResultsXViewerRow {
       return values.get(col);
    }
 
+   @Override
+   public String[] values() {
+      return values.toArray(new String[values.size()]);
+   }
+
    /**
     * @return the doubleClickOpenArtifact
     */
