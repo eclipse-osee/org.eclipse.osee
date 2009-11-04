@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.commit;
 
 import java.util.Collection;
 import java.util.Iterator;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -24,18 +25,10 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class ComputeNetChangeOperation extends AbstractOperation {
    private final Collection<ChangeItem> changes;
-   private final boolean isCommitCase;
-   private final boolean isTransactionChanges;
 
    public ComputeNetChangeOperation(Collection<ChangeItem> changes) {
-      this(changes, true, false);
-   }
-
-   public ComputeNetChangeOperation(Collection<ChangeItem> changes, boolean isCommitCase, boolean isTransactionChanges) {
       super("Compute Net Change", Activator.PLUGIN_ID);
       this.changes = changes;
-      this.isCommitCase = isCommitCase;
-      this.isTransactionChanges = isTransactionChanges;
    }
 
    @Override
@@ -47,7 +40,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
          while (iterator.hasNext()) {
             checkForCancelledStatus(monitor);
             ChangeItem change = iterator.next();
-            if (ChangeItemUtil.isIgnoreCase(isCommitCase, change)) {
+            if (ChangeItemUtil.isIgnoreCase(change)) {
                iterator.remove();
             } else {
                checkForInvalidStates(change);
@@ -75,33 +68,12 @@ public class ComputeNetChangeOperation extends AbstractOperation {
 
    private ModificationType getNetModType(ChangeItem change) {
       ModificationType modificationType;
-
-      if (isCommitCase) {
-         modificationType = calculateNetWithDestinationBranch(change);
-      } else {
-         modificationType = calculateNetWithoutDestinationBranch(change);
-      }
+      modificationType = calculateNetWithDestinationBranch(change);
       return modificationType;
    }
 
-   private ModificationType calculateNetWithoutDestinationBranch(ChangeItem change) {
-      ModificationType netModType = change.getCurrentVersion().getModType();
-     
-      if(!isTransactionChanges){
-         if (ChangeItemUtil.wasNewOnSource(change)) {
-            netModType = ModificationType.NEW;
-         } else if (ChangeItemUtil.wasIntroducedOnSource(change)) {
-            netModType = ModificationType.INTRODUCED;
-            //This is to handle bad data ... it should be moved out
-         } else if (!change.getBaselineVersion().isValid() && !change.getFirstNonCurrentChange().isValid() && change.getCurrentVersion().getModType() == ModificationType.MODIFIED) {
-            netModType = ModificationType.NEW;
-         }
-      }
-      return netModType;
-   }
-
    private ModificationType calculateNetWithDestinationBranch(ChangeItem change) {
-      ModificationType netModType = null;
+      ModificationType netModType = change.getCurrentVersion().getModType();
       if (change.getDestinationVersion().isValid() && (change.getBaselineVersion().isValid() || change.getFirstNonCurrentChange().isValid())) {
          netModType = change.getCurrentVersion().getModType();
       } else if (ChangeItemUtil.wasNewOnSource(change)) {
@@ -121,11 +93,9 @@ public class ComputeNetChangeOperation extends AbstractOperation {
 
    private void checkForInvalidStates(ChangeItem change) throws OseeCoreException {
       // check for case where destination branch is missing an artifact that was modified (not new) on the source branch
-      if (isCommitCase) {
-         if (!change.getDestinationVersion().isValid() && change.getBaselineVersion().isValid()) {
-            throw new OseeStateException(
-                  "This should be supported in the future - destination branch is not the source's parent: " + change);
-         }
+      if (!change.getDestinationVersion().isValid() && change.getBaselineVersion().isValid()) {
+         throw new OseeStateException(
+               "This should be supported in the future - destination branch is not the source's parent: " + change);
       }
 
       if (change.getDestinationVersion().isValid() && ChangeItemUtil.isDeleted(change.getDestinationVersion())) {

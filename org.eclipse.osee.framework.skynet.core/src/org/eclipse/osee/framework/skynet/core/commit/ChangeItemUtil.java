@@ -67,11 +67,11 @@ public class ChangeItemUtil {
       return result;
    }
 
-   public static boolean isIgnoreCase(boolean hasDestinationBranch, ChangeItem changeItem) {
+   public static boolean isIgnoreCase(ChangeItem changeItem) {
       return //
       wasCreatedAndDeleted(changeItem) || //
       isAlreadyOnDestination(changeItem) || //
-      hasDestinationBranch && isDeletedAndDoesNotExistInDestination(changeItem) || //
+      isDeletedAndDoesNotExistInDestination(changeItem) || //
       hasBeenDeletedInDestination(changeItem) || //
       isDestinationEqualOrNewerThanCurrent(changeItem);
    }

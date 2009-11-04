@@ -263,7 +263,7 @@ public final class InternalChangeManager {
          Artifact bArtifact;
 
          if (isHistorical) {
-            bArtifact = ArtifactCache.getHistorical(item.getArtId(), toTransactionId.getTransactionNumber());
+            bArtifact = ArtifactCache.getHistorical(relationChangeItem.getBArtId(), toTransactionId.getTransactionNumber());
          } else {
             bArtifact = ArtifactQuery.getArtifactFromId(relationChangeItem.getBArtId(), branch, true);
          }
@@ -320,13 +320,20 @@ public final class InternalChangeManager {
    private List<ChangeItem> loadChangeItems(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException, OseeWrappedException {
       List<ChangeItem> changeItems = new ArrayList<ChangeItem>();
       List<IOperation> ops = new ArrayList<IOperation>();
-
-      if (isHistorical) {
-         ops.add(new LoadChangeDataOperation(Integer.valueOf(transactionId.getTransactionNumber()), changeItems));
-      } else {
-         ops.add(new LoadChangeDataOperation(sourceBranch, changeItems));
+      TransactionId destinationTransactionId;
+      TransactionId sourceTransactionId;
+      
+      if(isHistorical){
+         destinationTransactionId = TransactionIdManager.getPriorTransaction(transactionId);
+         sourceTransactionId = transactionId;
+         ops.add(new LoadChangeDataOperation(sourceTransactionId.getTransactionNumber(), destinationTransactionId, changeItems));
+      }else{
+         destinationTransactionId = TransactionIdManager.getlatestTransactionForBranch(sourceBranch.getParentBranch());
+         sourceTransactionId = TransactionIdManager.getlatestTransactionForBranch(sourceBranch);
+         ops.add(new LoadChangeDataOperation(sourceTransactionId, destinationTransactionId, null, changeItems));
       }
-      ops.add(new ComputeNetChangeOperation(changeItems, false, isHistorical));
+
+      ops.add(new ComputeNetChangeOperation(changeItems));
 
       String opName =
             String.format("Gathering changes for %s",

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.skynet.core.serverCommit;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -20,12 +21,14 @@ import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.commit.CommitDbOperation;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
+import org.eclipse.osee.framework.skynet.core.commit.CommitDbOperation;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
 
 /**
  * @author Jeff C. Phillips
@@ -41,9 +44,12 @@ public class CommitService implements ICommitService {
       Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
 
       List<ChangeItem> changes = new ArrayList<ChangeItem>();
-
+      TransactionId sourceHeadTransaction = sourceBranch != null ? TransactionIdManager.getlatestTransactionForBranch(sourceBranch) : null;
+      TransactionId deatinationHeadTransaction = destinationBranch != null ? TransactionIdManager.getlatestTransactionForBranch(destinationBranch) : null;
+      TransactionId mergeHeadTransaction = mergeBranch != null ? TransactionIdManager.getlatestTransactionForBranch(mergeBranch) : null;
+      
       List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new LoadChangeDataOperation(sourceBranch, destinationBranch, mergeBranch, changes));
+      ops.add(new LoadChangeDataOperation(sourceHeadTransaction, deatinationHeadTransaction, mergeHeadTransaction, changes));
       ops.add(new ComputeNetChangeOperation(changes));
       ops.add(new CommitDbOperation(sourceBranch, destinationBranch, mergeBranch, changes));
 

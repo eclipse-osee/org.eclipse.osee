@@ -27,9 +27,8 @@ import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 
 /**
  * @author Ryan D. Brooks
@@ -51,9 +50,9 @@ public class LoadChangeDataOperation extends AbstractOperation {
          new HashMap<Long, Pair<Integer, ModificationType>>();
 
    private final Collection<ChangeItem> changeData;
-   private final Branch sourceBranch;
-   private final Branch destinationBranch;
-   private final Branch mergeBranch;
+   private final TransactionId sourceTransactionId;
+   private final TransactionId destinationTransactionId;
+   private final TransactionId mergeTransactionId;
    private final Integer transactionNumber;
 
    private static enum LoadingMode {
@@ -62,30 +61,26 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
    private final LoadingMode loadChangesEnum;
 
-   public LoadChangeDataOperation(Integer transactionNumber, Collection<ChangeItem> changeData) {
-      this(null, null, null, changeData, transactionNumber, LoadingMode.FROM_SINGLE_TRANSACTION);
+   public LoadChangeDataOperation(int transactionNumber, TransactionId destinationTransactionId, Collection<ChangeItem> changeData) {
+      this(null, destinationTransactionId, null, changeData, transactionNumber, LoadingMode.FROM_SINGLE_TRANSACTION);
    }
 
-   public LoadChangeDataOperation(Branch sourceBranch, Collection<ChangeItem> changeData) {
-      this(sourceBranch, null, null, changeData);
-   }
-
-   public LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<ChangeItem> changeData) {
+   public LoadChangeDataOperation(TransactionId sourceBranch, TransactionId destinationBranch, TransactionId mergeBranch, Collection<ChangeItem> changeData) {
       this(sourceBranch, destinationBranch, mergeBranch, changeData, null, LoadingMode.FROM_ALL_BRANCH_TRANSACTIONS);
    }
 
-   private LoadChangeDataOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, Collection<ChangeItem> changeData, Integer transactionNumber, LoadingMode loadMode) {
+   private LoadChangeDataOperation(TransactionId sourceTransactionId, TransactionId destinationTransactionId, TransactionId mergeTransactionId, Collection<ChangeItem> changeData, Integer transactionNumber, LoadingMode loadMode) {
       super("Load Change Data", Activator.PLUGIN_ID);
-      this.mergeBranch = mergeBranch;
-      this.sourceBranch = sourceBranch;
-      this.destinationBranch = destinationBranch;
+      this.mergeTransactionId = mergeTransactionId;
+      this.sourceTransactionId = sourceTransactionId;
+      this.destinationTransactionId = destinationTransactionId;
       this.changeData = changeData;
       this.loadChangesEnum = loadMode;
       this.transactionNumber = transactionNumber;
    }
 
    private int getSourceBranchId() {
-      return sourceBranch.getBranchId();
+      return sourceTransactionId.getBranch().getBranchId();
    }
 
    @Override
@@ -115,8 +110,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             case FROM_ALL_BRANCH_TRANSACTIONS:
                chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
                      TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
-               currentTransactionNumber =
-                     Integer.valueOf(TransactionIdManager.getlatestTransactionForBranch(getSourceBranchId()).getTransactionNumber());
+               currentTransactionNumber = sourceTransactionId.getTransactionNumber();
                break;
             case FROM_SINGLE_TRANSACTION:
                chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionNumber,
@@ -214,11 +208,11 @@ public class LoadChangeDataOperation extends AbstractOperation {
       idJoin.store();
 
       if (hasMergeBranch()) {
-         loadCurrentData(monitor, tableName, columnName, idJoin, mergeBranch, changesByItemId);
+         loadCurrentData(monitor, tableName, columnName, idJoin, mergeTransactionId, changesByItemId);
       }
 
       if (hasDestinationBranch()) {
-         loadCurrentData(monitor, tableName, columnName, idJoin, destinationBranch, changesByItemId);
+         loadCurrentData(monitor, tableName, columnName, idJoin, destinationTransactionId, changesByItemId);
       }
 
       if (hasSourceBranch()) {
@@ -229,36 +223,55 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private boolean hasMergeBranch() {
-      return mergeBranch != null;
+      return mergeTransactionId != null;
    }
 
    private boolean hasDestinationBranch() {
-      return destinationBranch != null;
+      return destinationTransactionId != null;
    }
 
    private boolean hasSourceBranch() {
-      return sourceBranch != null;
+      return sourceTransactionId != null;
    }
 
-   private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, Branch branch, HashMap<Integer, ChangeItem> changesByItemId) throws OseeCoreException {
+   private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, TransactionId destinationTransaction, HashMap<Integer, ChangeItem> changesByItemId) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      String query;
 
-      String query =
-            "select txs.transaction_id, txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
-                  + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
-                  " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
+      try{
+      switch (loadChangesEnum) {
+         case FROM_ALL_BRANCH_TRANSACTIONS:
+            query =
+               "select txs.transaction_id, txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
+                     + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
+                     " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.transaction_id <= ?";
+         
+            chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
+                                    destinationTransaction.getBranch().getBranchId(), destinationTransaction.getTransactionNumber());
+            break;
+         case FROM_SINGLE_TRANSACTION:
+            query =
+               "select txs.transaction_id, txs.gamma_id, txs.mod_type, item." + columnName + " from osee_join_id idj, " //
+                     + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
+                     " and item.gamma_id = txs.gamma_id and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.transaction_id <= ?";
+         
+            chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), destinationTransaction.getBranch().getBranchId(), destinationTransaction.getTransactionNumber());
+            break;
+         default:
+            throw new UnsupportedOperationException(String.format("Invalid load changes [%s] mode not supported",
+                  loadChangesEnum));
+      }
+      
 
-      try {
-         chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
-               branch.getBranchId());
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
             int itemId = chStmt.getInt(columnName);
+            
             Long gammaId = chStmt.getLong("gamma_id");
             Integer transactionId = chStmt.getInt("transaction_id");
             ChangeItem change = changesByItemId.get(itemId);
 
-            if (branch.getBranchType().isMergeBranch()) {
+            if (destinationTransaction.getBranch().getBranchType().isMergeBranch()) {
                change.getNetChange().setTransactionNumber(transactionId);
                change.getNetChange().setGammaId(gammaId);
                change.getNetChange().setModType(ModificationType.MERGED);
