@@ -13,9 +13,12 @@ package org.eclipse.osee.framework.skynet.core.test.commit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import junit.framework.Assert;
+
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
@@ -126,30 +129,30 @@ public class ChangeItemTest {
 
       ChangeVersion deletedCurrent = ChangeItemTestUtil.createChange(3333L, ModificationType.DELETED);
       ChangeItem item = ChangeItemTestUtil.createItem(200, null, isNew, deletedCurrent, null, null);
-      assertTrue(ChangeItemUtil.isIgnoreCase(false, item));
+      assertTrue(ChangeItemUtil.isIgnoreCase(item));
 
       ChangeVersion current = ChangeItemTestUtil.createChange(3333L, ModificationType.INTRODUCED);
       ChangeVersion destination = ChangeItemTestUtil.createChange(3333L, ModificationType.INTRODUCED);
       item = ChangeItemTestUtil.createItem(200, null, null, current, destination, null);
-      assertTrue(ChangeItemUtil.isIgnoreCase(false, item));
+      assertTrue(ChangeItemUtil.isIgnoreCase(item));
 
       ChangeVersion dest;
 
       current = ChangeItemTestUtil.createChange(2222L, ModificationType.DELETED);
       dest = null;
       item = ChangeItemTestUtil.createItem(200, null, null, current, dest, null);
-      assertTrue(ChangeItemUtil.isIgnoreCase(true, item));
+      assertTrue(ChangeItemUtil.isIgnoreCase(item));
 
       current = ChangeItemTestUtil.createChange(3333L, ModificationType.INTRODUCED);
       destination = ChangeItemTestUtil.createChange(4444L, ModificationType.DELETED);
 
       item = ChangeItemTestUtil.createItem(200, null, null, current, destination, null);
-      assertTrue(ChangeItemUtil.isIgnoreCase(false, item));
+      assertTrue(ChangeItemUtil.isIgnoreCase( item));
 
       isNew = ChangeItemTestUtil.createChange(2222L, ModificationType.NEW);
       destination = ChangeItemTestUtil.createChange(3333L, ModificationType.NEW);
       item = ChangeItemTestUtil.createItem(200, null, null, isNew, destination, null);
-      assertTrue(ChangeItemUtil.isIgnoreCase(false, item));
+      assertTrue(ChangeItemUtil.isIgnoreCase(item));
    }
 
    @Test
