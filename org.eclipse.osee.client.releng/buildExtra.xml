@@ -26,12 +26,8 @@
 	<target name="postFetch" />
 	<target name="preGenerate" />
 	<target name="postGenerate" />
-	<target name="preAssemble" />
-	<target name="postAssemble" />
-	<target name="prePackage" />
-	<target name="postPackage" />
 
-	<target name="preProcess">
+	<target name="preAssemble">
 		<echo message="Generating OSEE Help" />
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.framework.help.ui" antfile="build-helper.xml" target="all" />
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.framework.dev.help.ui" antfile="build-helper.xml" target="all" />
@@ -39,7 +35,14 @@
 		<ant dir="${buildDirectory}/plugins/org.eclipse.osee.define.help.ui" antfile="build-helper.xml" target="all" />
 	</target>
 
+	<target name="postAssemble" />
+	<target name="prePackage" />
+	<target name="postPackage" />
+	<target name="preProcess" />
 	<target name="postProcess" />
 	<target name="postBuild" />
-	<target name="extraPackaging" />
+	<target name="extraPackaging">
+		<!-- Create All-In-Ones = OSEE Client + Base-->
+
+	</target>
 </project>
