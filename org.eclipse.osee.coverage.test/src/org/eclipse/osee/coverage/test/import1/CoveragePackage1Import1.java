@@ -8,12 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.coverage.test.package1;
+package org.eclipse.osee.coverage.test.import1;
 
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoveragePackage;
-import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
 import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -30,7 +29,7 @@ public class CoveragePackage1Import1 extends XNavigateItemAction {
    }
 
    public CoveragePackage1Import1(XNavigateItem parent) {
-      super(parent, "Open Coverage Package 1 - Import 1");
+      super(parent, "Open CP 1 - Import 1 - New CP");
    }
 
    @Override

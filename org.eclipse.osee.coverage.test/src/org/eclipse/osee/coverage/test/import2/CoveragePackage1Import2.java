@@ -8,13 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.coverage.test.package1;
+package org.eclipse.osee.coverage.test.import2;
 
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
-import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -25,14 +24,14 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 /**
  * @author Donald G. Dunne
  */
-public class CoveragePackage1Import1B extends XNavigateItemAction {
+public class CoveragePackage1Import2 extends XNavigateItemAction {
 
-   public CoveragePackage1Import1B() {
+   public CoveragePackage1Import2() {
       super(null, "");
    }
 
-   public CoveragePackage1Import1B(XNavigateItem parent) {
-      super(parent, "Open Coverage Package 1 - Import 1-B");
+   public CoveragePackage1Import2(XNavigateItem parent) {
+      super(parent, "Open CP 1 - Import 2 - Add epu.PowerUnit3");
    }
 
    @Override
@@ -59,6 +58,6 @@ public class CoveragePackage1Import1B extends XNavigateItemAction {
          AWorkbench.popup("Can't access opened Editor");
          return;
       }
-      editor.simulateImport(CoverageImport1TestBlam.NAME);
+      editor.simulateImport(CoverageImport2TestBlam.NAME);
    }
 }

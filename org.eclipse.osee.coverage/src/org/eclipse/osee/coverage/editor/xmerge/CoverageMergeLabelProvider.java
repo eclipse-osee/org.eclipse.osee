@@ -52,18 +52,18 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
 
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
-      ICoverage coverageItem = (ICoverage) element;
+      ICoverage coverage = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
-         return CoverageUtil.getCoverageItemUsersStr(coverageItem);
+         return CoverageUtil.getCoverageItemUsersStr(coverage);
       }
-      if (xCol.equals(CoverageMergeXViewerFactory.Name)) return coverageItem.getName();
-      if (xCol.equals(CoverageXViewerFactory.Guid)) return coverageItem.getGuid();
-      if (xCol.equals(CoverageXViewerFactory.Location)) return coverageItem.getLocation();
-      if (xCol.equals(CoverageXViewerFactory.Text)) return coverageItem.getText();
-      if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverageItem.getNamespace();
-      if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverageItem.getNotes();
+      if (xCol.equals(CoverageMergeXViewerFactory.Name)) return coverage.getName();
+      if (xCol.equals(CoverageXViewerFactory.Guid)) return coverage.getGuid();
+      if (xCol.equals(CoverageXViewerFactory.Location)) return coverage.getLocation();
+      if (xCol.equals(CoverageXViewerFactory.Text)) return coverage.getText();
+      if (xCol.equals(CoverageXViewerFactory.Namespace)) return coverage.getNamespace();
+      if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverage.getNotes();
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
-         return coverageItem.getCoveragePercentStr();
+         return coverage.getCoveragePercentStr();
       }
       if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof MergeItem) {
          if (!((MergeItem) element).isImportAllowed()) {

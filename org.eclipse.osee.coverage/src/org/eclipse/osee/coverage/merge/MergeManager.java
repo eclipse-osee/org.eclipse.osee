@@ -36,10 +36,20 @@ public class MergeManager {
    }
 
    private void processImportCoverage(ICoverage importCoverage) {
-      ICoverage coverage = CoveragePackageImportManager.getPackageCoverageItem(coveragePackage, importCoverage, true);
-      if (coverage == null) {
+      System.err.println("Merging check " + importCoverage);
+      ICoverage packageCoverage =
+            CoveragePackageImportManager.getPackageCoverageItem(coveragePackage, importCoverage, true);
+      // if no corresponding package coverage, add this and all children
+      if (packageCoverage == null) {
          mergeItems.add(new MergeItem(MergeType.Add, null, importCoverage));
+      } else {
+         // process all children
+         for (ICoverage childCoverage : importCoverage.getChildren()) {
+            processImportCoverage(childCoverage);
+         }
       }
+      return;
+
    }
 
 }

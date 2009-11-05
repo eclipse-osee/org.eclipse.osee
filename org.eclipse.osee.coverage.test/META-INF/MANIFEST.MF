@@ -10,4 +10,6 @@ Require-Bundle: org.junit4,
  org.eclipse.osee.support.test.util;bundle-version="1.0.0"
 Export-Package: org.eclipse.osee.coverage.test,
  org.eclipse.osee.coverage.test.import1,
+ org.eclipse.osee.coverage.test.import2,
+ org.eclipse.osee.coverage.test.import3,
  org.eclipse.osee.coverage.test.navigate

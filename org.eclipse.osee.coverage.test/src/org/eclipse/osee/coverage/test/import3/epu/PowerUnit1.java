@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.coverage.test.import2.epu;
+package org.eclipse.osee.coverage.test.import3.epu;
 
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
