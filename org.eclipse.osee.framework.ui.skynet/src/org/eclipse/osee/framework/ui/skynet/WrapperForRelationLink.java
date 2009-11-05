@@ -57,9 +57,6 @@ class WrapperForRelationLink implements IAdaptable{
       }
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-    */
    @Override
    public Object getAdapter(Class arg0) {
       if(arg0.equals(Artifact.class)){

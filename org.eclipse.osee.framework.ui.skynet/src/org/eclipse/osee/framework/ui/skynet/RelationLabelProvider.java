@@ -14,13 +14,14 @@ import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.swt.graphics.Image;
 
 /**
@@ -43,6 +44,28 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
+      } else if (element instanceof RelationTypeSideSorter && columnIndex == 0) {
+         try {
+            RelationTypeSideSorter sorter = (RelationTypeSideSorter) element;
+            String multiplicity = sorter.getRelationType().getMultiplicity().asLimitLabel(sorter.getSide());
+            RelationSide side = sorter.getSide();
+            if (side == RelationSide.SIDE_A) {
+               if (multiplicity.equals("1")) {
+                  return ImageManager.getImage(FrameworkImage.LEFT_ARROW_1);
+               } else {
+                  return ImageManager.getImage(FrameworkImage.LEFT_ARROW_N);
+               }
+            } else {
+               if (multiplicity.equals("1")) {
+                  return ImageManager.getImage(FrameworkImage.RIGHT_ARROW_1);
+               } else {
+                  return ImageManager.getImage(FrameworkImage.RIGHT_ARROW_N);
+               }
+            }
+         } catch (OseeCoreException ex) {
+            return null;
+         }
+
       }
       return null;
    }
@@ -50,13 +73,7 @@ public class RelationLabelProvider implements ITableLabelProvider, ILabelProvide
    public String getColumnText(Object element, int columnIndex) {
       if (element instanceof RelationTypeSideSorter && columnIndex == 0) {
          RelationTypeSideSorter side = (RelationTypeSideSorter) element;
-         String sideDescription;
-         try {
-            sideDescription = " has [" + side.getRelationType().getMultiplicity().asLimitLabel(side.getSide()) + "] ";
-         } catch (OseeCoreException ex) {
-            sideDescription = ex.getLocalizedMessage();
-         }
-         return side.getSideName() + sideDescription + (side.isSideA() ? side.getRelationType().getSideBName() : side.getRelationType().getSideAName()) + " \"" + artifact.getName() + "\"";
+         return side.getSideName();
       } else if (element instanceof RelationType) {
          if (columnIndex == 0) {
             return ((RelationType) element).getName();

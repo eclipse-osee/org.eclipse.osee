@@ -29,7 +29,6 @@ import org.eclipse.jface.viewers.ITreeViewerListener;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -162,15 +161,6 @@ public class RelationsComposite extends Composite implements IRelationModifiedEv
       treeViewer.setColumnProperties(columnNames);
       treeViewer.setContentProvider(new RelationContentProvider());
       treeViewer.setLabelProvider(relationLabelProvider);
-      treeViewer.setSorter(new LabelSorter() {
-         @Override
-         public int compare(Viewer viewer, Object e1, Object e2) {
-            if (e1 instanceof WrapperForRelationLink && e2 instanceof WrapperForRelationLink) {
-               return 0;
-            }
-            return super.compare(viewer, e1, e2);
-         }
-      });
       treeViewer.setUseHashlookup(true);
       treeViewer.setInput(new ArtifactRoot(artifact));
 

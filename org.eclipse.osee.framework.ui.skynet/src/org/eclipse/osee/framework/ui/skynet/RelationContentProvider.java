@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,7 +79,9 @@ public class RelationContentProvider implements ITreeContentProvider {
             for (RelationType type : relationTypes) {
                childToParentMap.put(type, parentElement);
             }
-            return relationTypes.toArray();
+            Object[] ret = relationTypes.toArray();
+            Arrays.sort(ret);
+            return ret;
          } else if (parentElement instanceof RelationType) {
             RelationType relationType = (RelationType) parentElement;
             int sideAMax =
@@ -150,7 +153,10 @@ public class RelationContentProvider implements ITreeContentProvider {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             return false;
          }
+      } else if (element instanceof RelationType) {
+         return true;
       }
+
       return getChildren(element).length > 0;
    }
 
