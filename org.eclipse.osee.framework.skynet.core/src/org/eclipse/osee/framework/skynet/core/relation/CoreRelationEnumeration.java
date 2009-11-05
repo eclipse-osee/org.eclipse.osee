@@ -78,9 +78,6 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
       this.typeName = typeName;
    }
 
-   /**
-    * @return Returns the sideName.
-    */
    @Deprecated
    public boolean isSideA() {
       return relationSide.isSideA();
@@ -90,9 +87,6 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
       return getRelationType().getSideName(relationSide);
    }
 
-   /**
-    * @return Returns the typeName.
-    */
    public String getName() {
       return typeName;
    }
