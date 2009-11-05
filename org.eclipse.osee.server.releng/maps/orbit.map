@@ -2,8 +2,8 @@ feature@org.eclipse.osee.external.feature=SVN,trunk,https://dev.eclipse.org/svnr
 
 plugin@org.apache.derby,10.5.1=GET,http://download.eclipse.org/tools/orbit/committers/drops/I20091029235846/bundles/org.apache.derby_10.5.1.1_200910300034.jar
 
-plugin@org.apache.commons.httpclient,3.0.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.httpclient_3.0.1.v20080605-1930.jar
-plugin@org.apache.commons.codec,1.3.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.codec_1.3.0.v20080530-1600.jar
+plugin@org.apache.commons.httpclient,3.0.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.commons.httpclient_3.1.0.v20080605-1935.jar
+plugin@org.apache.commons.codec,1.3.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.commons.codec_1.3.0.v20080530-1600.jar
 plugin@org.apache.commons.lang,2.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.commons.lang_2.4.0.v20081016-1030.jar
 plugin@org.apache.commons.net,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.net_1.4.1.v200905122237.jar
 plugin@javax.activation,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.activation_1.1.0.v200905021805.jar
@@ -12,3 +12,4 @@ plugin@org.apache.oro,2.0.8=GET,http://download.eclipse.org/tools/orbit/download
 plugin@com.lowagie.text,1.5.4=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/com.lowagie.text_1.5.4.v200908052355.jar
 plugin@org.apache.commons.logging,1.1.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.commons.logging_1.1.1.v200904062255.jar
 plugin@javax.servlet,2.5.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/javax.servlet_2.5.0.v200806031605.jar
+
