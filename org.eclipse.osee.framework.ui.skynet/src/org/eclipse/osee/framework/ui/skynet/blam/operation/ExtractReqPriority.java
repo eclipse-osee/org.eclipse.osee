@@ -28,7 +28,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * @author Ryan D. Brooks
  */
 public class ExtractReqPriority implements RowProcessor {
-   private HashMap<String, String> reqPriorities;
+   private final HashMap<String, String> reqPriorities;
 
    public ExtractReqPriority(String excelMlPath) throws UnsupportedEncodingException, FileNotFoundException, IOException, SAXException {
       this.reqPriorities = new HashMap<String, String>();

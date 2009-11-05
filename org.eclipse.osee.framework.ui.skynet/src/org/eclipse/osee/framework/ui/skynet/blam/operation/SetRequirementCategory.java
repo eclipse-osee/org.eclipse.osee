@@ -35,8 +35,10 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  * @author Ryan D. Brooks
  */
 public class SetRequirementCategory extends AbstractBlam {
-   private HashMap<String, String> reqPriorities;
    private final HashMap<String, Artifact> reqs = new HashMap<String, Artifact>();
+   private HashMap<String, String> reqPriorities;
+   private boolean bulkLoad;
+   private Branch branch;
 
    @Override
    public String getName() {
@@ -45,11 +47,11 @@ public class SetRequirementCategory extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      monitor.beginTask("Generating Reports", 100);
+      monitor.beginTask("Set Categories", 100);
 
-      Branch branch = variableMap.getBranch("Branch");
+      branch = variableMap.getBranch("Branch");
       String excelMlPath = variableMap.getString("ExcelML Priority File");
-      boolean bulkLoad = variableMap.getBoolean("Bulk Load");
+      bulkLoad = variableMap.getBoolean("Bulk Load");
 
       ExtractReqPriority extractor = new ExtractReqPriority(excelMlPath);
       reqPriorities = extractor.getReqPriorities();
@@ -64,48 +66,62 @@ public class SetRequirementCategory extends AbstractBlam {
 
       SkynetTransaction transaction = new SkynetTransaction(branch, "set requirement categories");
       for (String requirementName : reqPriorities.keySet()) {
-         updateCategory(transaction, bulkLoad, branch, requirementName.trim());
+         updateCategory(transaction, requirementName);
       }
       transaction.execute();
+
+      reqs.clear();
    }
 
-   private void updateCategory(SkynetTransaction transaction, boolean bulkLoad, Branch branch, String requirementName) throws OseeCoreException {
+   private void updateCategory(SkynetTransaction transaction, String requirementName) {
       try {
-         Artifact requirement;
-         if (bulkLoad) {
-            requirement = reqs.get(requirementName);
-            if (requirement == null) {
-               throw new ArtifactDoesNotExist("cant' find " + requirementName);
-            }
-         } else {
+         String canonicalRequirementName = requirementName.trim();
+         Artifact requirement = getRequirement(requirementName, canonicalRequirementName);
+         requirement.setSoleAttributeValue("Category", reqPriorities.get(canonicalRequirementName));
+         requirement.persist(transaction);
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+   }
+
+   private Artifact getSoleRequirement(String requirementName, String canonicalRequirementName) throws OseeCoreException {
+      Artifact requirement;
+      if (bulkLoad) {
+         requirement = reqs.get(canonicalRequirementName);
+         if (requirement == null) {
+            throw new ArtifactDoesNotExist("cant' find " + canonicalRequirementName);
+         }
+      } else {
+         try {
             requirement =
                   ArtifactQuery.getArtifactFromAttribute(CoreAttributes.NAME.getName(), requirementName, branch);
+         } catch (ArtifactDoesNotExist ex) {
+            requirement =
+                  ArtifactQuery.getArtifactFromAttribute(CoreAttributes.NAME.getName(), canonicalRequirementName,
+                        branch);
          }
+      }
+      return requirement;
+   }
+
+   private Artifact getRequirement(String requirementName, String canonicalRequirementName) throws OseeCoreException {
+      try {
+         Artifact requirement = getSoleRequirement(requirementName, canonicalRequirementName);
 
          if (requirement.isOrphan()) {
             throw new MultipleArtifactsExist(requirement.getName());
-         } else {
-            requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
-            requirement.persist(transaction);
          }
+         return requirement;
       } catch (MultipleArtifactsExist ex) {
-         try {
-            List<Artifact> artiafcts =
-                  ArtifactQuery.getArtifactListFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT, requirementName,
-                        branch);
-            for (Artifact requirement : artiafcts) {
-               if (requirement.isOrphan()) {
-                  OseeLog.log(SkynetGuiPlugin.class, Level.INFO, requirement + " is an orphan");
-               } else {
-                  requirement.setSoleAttributeValue("Category", reqPriorities.get(requirementName));
-                  requirement.persist(transaction);
-               }
+         List<Artifact> artiafcts =
+               ArtifactQuery.getArtifactListFromTypeAndName(Requirements.SOFTWARE_REQUIREMENT,
+                     canonicalRequirementName, branch);
+         for (Artifact requirement : artiafcts) {
+            if (requirement.isOrphan()) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.INFO, requirement + " is an orphan");
             }
-         } catch (OseeCoreException ex2) {
-            OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex2);
          }
-      } catch (ArtifactDoesNotExist ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.INFO, ex);
+         throw ex;
       }
    }
 
