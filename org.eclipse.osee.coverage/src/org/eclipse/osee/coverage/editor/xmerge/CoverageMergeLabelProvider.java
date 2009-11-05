@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.xcover.CoverageLabelProvider;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
-import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer.ImportType;
+import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -38,11 +38,11 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
          return getCoverageItemUserImage(coverageItem);
       }
       if (xCol.equals(CoverageMergeXViewerFactory.Name)) return ImageManager.getImage(coverageItem.getOseeImage());
-      if (xCol.equals(CoverageMergeXViewerFactoryImport.Import)) {
-         if (!mergeXViewer.isImportAllowed(coverageItem)) {
+      if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof MergeItem) {
+         if (!((MergeItem) element).isImportAllowed()) {
             return null;
          }
-         if (mergeXViewer.isImportChecked(coverageItem)) {
+         if (((MergeItem) element).isChecked()) {
             return ImageManager.getImage(FrameworkImage.CHECKBOX_ENABLED);
          }
          return ImageManager.getImage(FrameworkImage.CHECKBOX_DISABLED);
@@ -65,36 +65,14 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
          return coverageItem.getCoveragePercentStr();
       }
-      if (xCol.equals(CoverageMergeXViewerFactoryImport.Import)) {
-         if (!mergeXViewer.isImportAllowed(coverageItem)) {
+      if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof MergeItem) {
+         if (!((MergeItem) element).isImportAllowed()) {
             return "";
          }
-         ImportType importType = mergeXViewer.getImportType(coverageItem);
-         if (coverageItem.isFolder() && importType != ImportType.Error) {
-            boolean errored = isChildErrorImportType(coverageItem);
-            if (errored) {
-               return importType.toString() + " - " + "Child Error";
-            }
-         }
-         if (importType == ImportType.Error) {
-            return importType.toString() + " - " + mergeXViewer.getImportError(coverageItem);
-         }
-         return importType.toString();
+         return ((MergeItem) element).getMergeType().toString();
       }
 
       return super.getColumnText(element, xCol, columnIndex);
-   }
-
-   private boolean isChildErrorImportType(ICoverage coverageItem) {
-      for (ICoverage childEditorItem : coverageItem.getChildren()) {
-         if (!mergeXViewer.isImportAllowed(childEditorItem)) continue;
-         ImportType importType = mergeXViewer.getImportType(childEditorItem);
-         if (importType == ImportType.Error) {
-            return true;
-         }
-         if (isChildErrorImportType(childEditorItem)) return true;
-      }
-      return false;
    }
 
    @Override

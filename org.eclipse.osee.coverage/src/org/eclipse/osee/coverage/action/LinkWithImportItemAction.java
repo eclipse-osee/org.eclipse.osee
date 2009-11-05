@@ -31,7 +31,7 @@ public class LinkWithImportItemAction extends Action {
          ICoverage importCoverageEditorItem =
                ((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().iterator().next();
          ICoverage packageCoverageEditorItem =
-               ((CoverageMergeXViewer) importXViewer.getXViewer()).getPackageItemForImportItem(
+               ((CoverageMergeXViewer) importXViewer.getXViewer()).getCoveragePackageImportManager().getPackageCoverageItem(
                      importCoverageEditorItem, true);
          if (packageCoverageEditorItem != null) {
             ((ISelectedCoverageEditorItem) packageXViewer.getXViewer()).setSelectedCoverageEditorItem(packageCoverageEditorItem);

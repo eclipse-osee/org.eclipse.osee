@@ -12,6 +12,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.merge.MergeItem;
+import org.eclipse.osee.coverage.merge.MergeType;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
@@ -26,78 +28,39 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 /**
  * @author Donald G. Dunne
  */
-public class CoveragePackageImporter {
+public class CoveragePackageImportManager {
 
    private final CoveragePackage coveragePackage;
    private final CoverageImport coverageImport;
-   private Collection<? extends ICoverage> allImportItems;
-   private Set<ICoverage> imported;
 
-   public CoveragePackageImporter(CoveragePackage coveragePackage, CoverageImport coverageImport) {
+   public CoveragePackageImportManager(CoveragePackage coveragePackage, CoverageImport coverageImport) {
       this.coveragePackage = coveragePackage;
       this.coverageImport = coverageImport;
    }
 
-   public XResultData validateItems(Collection<? extends ICoverage> allImportItems, XResultData rd) {
-      this.allImportItems = allImportItems;
-      if (rd == null) rd = new XResultData(false);
-      for (ICoverage importItem : allImportItems) {
-         if (!(importItem instanceof CoverageUnit)) {
-            rd.logError(String.format("Invalid Item for Import; Don't import [%s]",
-                  importItem.getClass().getSimpleName()));
-            continue;
-         }
-         if (allImportItems.contains(importItem)) {
-            validateChildrenAreUnique(allImportItems, (CoverageUnit) importItem, rd);
-         }
-      }
-      return rd;
-   }
-
-   public void validateChildrenAreUnique(Collection<? extends ICoverage> allImportItems, CoverageUnit coverageUnit, XResultData rd) {
-      for (ICoverage importItem1 : coverageUnit.getChildren()) {
-         for (ICoverage importItem2 : coverageUnit.getChildren()) {
-            if (isConceptuallyEqual(importItem1, importItem2) && importItem1 != importItem2) {
-               rd.logError(String.format("CoverageUnit [%s] has two equal children [%s][%s]; Can't import.",
-                     coverageUnit, importItem1, importItem2));
-            }
-         }
-      }
-      for (ICoverage childItem : coverageUnit.getChildren()) {
-         if (childItem instanceof CoverageUnit) {
-            if (allImportItems.contains(childItem)) {
-               validateChildrenAreUnique(allImportItems, (CoverageUnit) childItem, rd);
-            }
-         }
-      }
-   }
-
-   public XResultData importItems(ISaveable saveable, Collection<? extends ICoverage> importItems) throws OseeCoreException {
+   public XResultData importItems(ISaveable saveable, Collection<MergeItem> mergeItems) throws OseeCoreException {
       XResultData rd = new XResultData(false);
+      if (!validateEditable(rd, saveable)) return rd;
+      if (!validateMergeTypes(rd, mergeItems)) return rd;
+      if (!validateChildrenAreUnique(rd, mergeItems)) return rd;
 
-      Result result = saveable.isEditable();
-      if (result.isFalse()) {
-         rd.logError(result.getText());
-         return rd;
-      }
-
-      validateItems(importItems, rd);
-      if (rd.getNumErrors() > 0) return rd;
-      imported = new HashSet<ICoverage>();
-
-      List<ICoverage> parentItems = new ArrayList<ICoverage>();
-      for (ICoverage importItem : importItems) {
-         if (importItem.getParent() instanceof CoverageImport) {
-            parentItems.add(importItem);
+      for (MergeItem mergeItem : mergeItems) {
+         if (mergeItem.getMergeType() == MergeType.Add) {
+            Set<CoverageUnit> coverageUnits = new HashSet<CoverageUnit>();
+            coverageUnits.add((CoverageUnit) mergeItem.getImportItem());
+            coverageUnits.addAll(((CoverageUnit) mergeItem.getImportItem()).getCoverageUnits(true));
+            importCoverageUnitItems(rd, coverageUnits);
+         } else {
+            rd.logError(String.format("Unsupported merge type [%s] for merge item [%s]", mergeItem.getMergeType(),
+                  mergeItem));
          }
       }
-      importItemsRecurse(parentItems, rd);
 
       if (rd.getNumErrors() > 0) {
          AWorkbench.popup(rd.getNumErrors() + " Errors Found; Not Persisting");
          rd.logError(rd.getNumErrors() + " Errors Found; Not Persisting");
       } else {
-         result = saveable.save();
+         Result result = saveable.save();
          if (result.isTrue()) {
             rd.log("\nChanges Persisted");
          } else {
@@ -108,10 +71,21 @@ public class CoveragePackageImporter {
       return rd;
    }
 
+   private void importCoverageUnitItems(XResultData rd, Collection<CoverageUnit> importCoverageUnits) throws OseeCoreException {
+      Set<ICoverage> imported = new HashSet<ICoverage>();
+      List<ICoverage> parentCoverageUnits = new ArrayList<ICoverage>();
+      for (ICoverage importCoverageUnit : importCoverageUnits) {
+         if (importCoverageUnit.getParent() instanceof CoverageImport) {
+            parentCoverageUnits.add(importCoverageUnit);
+         }
+      }
+      importItemsRecurse(rd, parentCoverageUnits, importCoverageUnits, imported);
+   }
+
    /**
     * Takes import items from coverageImport and applies them to coveragePackage
     */
-   public XResultData importItemsRecurse(Collection<ICoverage> localImportItems, XResultData rd) {
+   private void importItemsRecurse(XResultData rd, Collection<ICoverage> localImportItems, Collection<? extends ICoverage> allImportItems, Collection<ICoverage> imported) {
       System.out.println("importItemsRecurse => " + localImportItems);
       try {
          for (ICoverage importItem : localImportItems) {
@@ -124,7 +98,7 @@ public class CoveragePackageImporter {
             CoverageUnit importCoverageUnit = (CoverageUnit) importItem;
             if (imported.contains(importCoverageUnit)) continue;
 
-            ICoverage packageItem = getPackageCoverageItem(importItem, true);
+            ICoverage packageItem = getPackageCoverageItem(coveragePackage, importItem, true);
             // Determine if item already exists first
             if (packageItem != null && !packageItem.isFolder()) {
                rd.logError(String.format("Import Item [%s][%s] matches Package Item [%s][%s]- Not Implemented Yet",
@@ -148,7 +122,8 @@ public class CoveragePackageImporter {
                } else {
                   // Else, want to add item to same parent
                   CoverageUnit parentCoverageUnit = (CoverageUnit) importItem.getParent();
-                  CoverageUnit parentPackageItem = (CoverageUnit) getPackageCoverageItem(parentCoverageUnit, true);
+                  CoverageUnit parentPackageItem =
+                        (CoverageUnit) getPackageCoverageItem(coveragePackage, parentCoverageUnit, true);
                   parentPackageItem.addCoverageUnit(importCoverageUnit.copy(true));
                   imported.add(importCoverageUnit);
                   rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
@@ -159,7 +134,7 @@ public class CoveragePackageImporter {
             // Import children that are in import list
             for (ICoverage child : importCoverageUnit.getCoverageUnits()) {
                if (allImportItems.contains(child) && !imported.contains(child)) {
-                  importItemsRecurse(Collections.singleton(child), rd);
+                  importItemsRecurse(rd, Collections.singleton(child), allImportItems, imported);
                }
             }
          }
@@ -167,10 +142,13 @@ public class CoveragePackageImporter {
          rd.logError("Exception: " + ex.getLocalizedMessage());
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      return rd;
    }
 
    public ICoverage getPackageCoverageItem(ICoverage importItem, boolean recurse) {
+      return getPackageCoverageItem(coveragePackage, importItem, recurse);
+   }
+
+   public static ICoverage getPackageCoverageItem(CoveragePackage coveragePackage, ICoverage importItem, boolean recurse) {
       for (ICoverage packageItem : coveragePackage.getChildren(recurse)) {
          if (isConceptuallyEqual(packageItem, importItem)) {
             return packageItem;
@@ -204,4 +182,60 @@ public class CoveragePackageImporter {
       }
       return false;
    }
+
+   private boolean validateEditable(XResultData rd, ISaveable saveable) throws OseeCoreException {
+      Result result = saveable.isEditable();
+      if (result.isFalse()) {
+         rd.logError(result.getText());
+         return false;
+      }
+      return true;
+   }
+
+   private boolean validateMergeTypes(XResultData rd, Collection<MergeItem> mergeItems) throws OseeCoreException {
+      boolean valid = true;
+      for (MergeItem mergeItem : mergeItems) {
+         if (mergeItem.getMergeType() == MergeType.Error) {
+            rd.log(String.format("Can't merge item [%s] with error", mergeItem));
+            valid = false;
+         }
+      }
+      return valid;
+   }
+
+   public boolean validateChildrenAreUnique(XResultData rd, Collection<MergeItem> mergeItems) {
+      boolean valid = true;
+      for (MergeItem mergeItem : mergeItems) {
+         if (!(mergeItem.getImportItem() instanceof CoverageUnit)) {
+            rd.logError(String.format("Invalid Item for Import; Don't import [%s]",
+                  mergeItem.getImportItem().getClass().getSimpleName()));
+            valid = false;
+            continue;
+         }
+         boolean isValid = validateChildrenAreUniqueRecurse(rd, (CoverageUnit) mergeItem.getImportItem());
+         if (!isValid) valid = false;
+      }
+      return valid;
+   }
+
+   private boolean validateChildrenAreUniqueRecurse(XResultData rd, CoverageUnit coverageUnit) {
+      boolean valid = true;
+      for (ICoverage importItem1 : coverageUnit.getChildren()) {
+         for (ICoverage importItem2 : coverageUnit.getChildren()) {
+            if (isConceptuallyEqual(importItem1, importItem2) && importItem1 != importItem2) {
+               rd.logError(String.format("CoverageUnit [%s] has two equal children [%s][%s]; Can't import.",
+                     coverageUnit, importItem1, importItem2));
+               valid = false;
+            }
+         }
+      }
+      for (ICoverage childItem : coverageUnit.getChildren()) {
+         if (childItem instanceof CoverageUnit) {
+            boolean isValid = validateChildrenAreUniqueRecurse(rd, (CoverageUnit) childItem);
+            if (!isValid) valid = false;
+         }
+      }
+      return valid;
+   }
+
 }

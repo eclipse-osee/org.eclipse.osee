@@ -6,8 +6,12 @@
 package org.eclipse.osee.coverage.test.model;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.merge.MergeItem;
+import org.eclipse.osee.coverage.merge.MergeType;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -16,7 +20,7 @@ import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestNavigateItem;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
-import org.eclipse.osee.coverage.util.CoveragePackageImporter;
+import org.eclipse.osee.coverage.util.CoveragePackageImportManager;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -85,7 +89,11 @@ public class CoverageUnitPersistTest {
    public void testASave() {
       try {
          saveCoveragePackage = new CoveragePackage("CU Test");
-         CoveragePackageImporter importer = new CoveragePackageImporter(saveCoveragePackage, coverageImport);
+         List<MergeItem> mergeItems = new ArrayList<MergeItem>();
+         for (CoverageUnit coverageUnit : coverageImport.getCoverageUnits()) {
+            mergeItems.add(new MergeItem(MergeType.Add, null, coverageUnit));
+         }
+         CoveragePackageImportManager importer = new CoveragePackageImportManager(saveCoveragePackage, coverageImport);
          importer.importItems(new ISaveable() {
 
             @Override
@@ -102,7 +110,7 @@ public class CoverageUnitPersistTest {
             public Result isEditable() {
                return Result.TrueResult;
             }
-         }, coverageImport.getCoverageUnits());
+         }, mergeItems);
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }

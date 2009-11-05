@@ -15,20 +15,21 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.action.LinkWithImportItemAction;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
-import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryPackage;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.merge.MergeItem;
+import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
-import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
-import org.eclipse.osee.coverage.util.CoveragePackageImporter;
+import org.eclipse.osee.coverage.util.CoveragePackageImportManager;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.NotSaveable;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
@@ -72,15 +73,16 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    private Label titleLabel1, titleLabel2;
    private final CoverageEditor coverageEditor;
    private CoverageEditorCoverageParameters parameters;
-   CoveragePackageImporter coveragePackageImport = null;
+   CoveragePackageImportManager coveragePackageImport = null;
    LinkWithImportItemAction linkWithImportItemAction;
+   private MergeManager mergeManager;
 
    public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, CoveragePackage provider1, CoverageImport provider2) {
       super(coverageEditor, name, name);
       this.coverageEditor = coverageEditor;
       this.coveragePackage = provider1;
       this.coverageImport = provider2;
-      coveragePackageImport = new CoveragePackageImporter((CoveragePackage) provider1, (CoverageImport) provider2);
+      coveragePackageImport = new CoveragePackageImportManager((CoveragePackage) provider1, (CoverageImport) provider2);
    }
 
    @Override
@@ -133,13 +135,13 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    private void handleImportSelected() {
-      Collection<ICoverage> importItems = getSelectedImportItems();
-      if (importItems.size() == 0) {
+      Collection<MergeItem> mergeItems = getSelectedMergeItems();
+      if (mergeItems.size() == 0) {
          AWorkbench.popup("Select Items to Import via Import Column");
          return;
       }
       try {
-         XResultData rd = coveragePackageImport.importItems(this, importItems);
+         XResultData rd = coveragePackageImport.importItems(this, mergeItems);
          rd.report("Import");
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -153,8 +155,14 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       titleLabel2.setText(coverageImport.getName());
    }
 
-   private Collection<ICoverage> getSelectedImportItems() {
-      return ((CoverageMergeXViewer) xImportViewer2.getXViewer()).getSelectedImportItems();
+   private Collection<MergeItem> getSelectedMergeItems() {
+      Collection<MergeItem> selected = new ArrayList<MergeItem>();
+      for (Object obj : ((Collection<MergeItem>) xImportViewer2.getXViewer().getInput())) {
+         if (((MergeItem) obj).isChecked()) {
+            selected.add((MergeItem) obj);
+         }
+      }
+      return selected;
    }
 
    public void createLeftComposite(IManagedForm managedForm, Composite leftComp) {
@@ -197,13 +205,38 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       xImportViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       linkWithImportItemAction.setImportXViewer(xImportViewer2);
+      (new ActionContributionItem(new Action() {
+         @Override
+         public void run() {
+            loadImportViewer();
+         }
+
+         @Override
+         public ImageDescriptor getImageDescriptor() {
+            return ImageManager.getImageDescriptor(FrameworkImage.LOAD);
+         }
+
+         @Override
+         public String getToolTipText() {
+            return "Re-Load";
+         }
+
+      })).fill(rightToolBar, 0);
       (new ActionContributionItem(new RefreshAction(xPackageViewer1))).fill(rightToolBar, 0);
       (new ActionContributionItem(xImportViewer2.getXViewer().getCustomizeAction())).fill(rightToolBar, 0);
       (new ActionContributionItem(new CollapseAllAction(xImportViewer2.getXViewer()))).fill(rightToolBar, 0);
       (new ActionContributionItem(new ExpandAllAction(xImportViewer2.getXViewer()))).fill(rightToolBar, 0);
       (new ActionContributionItem(importAction)).fill(rightToolBar, 0);
+
+      loadImportViewer();
    }
 
+   private void loadImportViewer() {
+      if (mergeManager == null) {
+         mergeManager = new MergeManager(coveragePackage, coverageImport);
+      }
+      xImportViewer2.getXViewer().setInput(mergeManager.getMergeItems());
+   }
    private Action importAction = new Action() {
 
       @Override
@@ -249,7 +282,6 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
             return;
          }
          xPackageViewer1.loadTable(parameters.performSearchGetResults(coveragePackage));
-         xImportViewer2.loadTable(parameters.performSearchGetResults(coverageImport));
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }

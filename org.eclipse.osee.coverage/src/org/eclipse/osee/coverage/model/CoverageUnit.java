@@ -65,7 +65,16 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    }
 
    public List<CoverageUnit> getCoverageUnits() {
-      return coverageUnits;
+      return getCoverageUnits(false);
+   }
+
+   public List<CoverageUnit> getCoverageUnits(boolean recurse) {
+      if (!recurse) return coverageUnits;
+      List<CoverageUnit> units = new ArrayList<CoverageUnit>(coverageUnits);
+      for (CoverageUnit coverageUnit : coverageUnits) {
+         units.addAll(coverageUnit.getCoverageUnits(recurse));
+      }
+      return units;
    }
 
    public void addCoverageItem(CoverageItem coverageItem) {
