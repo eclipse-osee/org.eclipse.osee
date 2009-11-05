@@ -4,7 +4,7 @@ plugin@org.apache.derby,10.5.1=GET,http://download.eclipse.org/tools/orbit/commi
 
 plugin@org.apache.commons.httpclient,3.0.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.httpclient_3.0.1.v20080605-1930.jar
 plugin@org.apache.commons.codec,1.3.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.codec_1.3.0.v20080530-1600.jar
-plugin@org.apache.commons.lang,2.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/I20090708203931/bundles/org.apache.commons.lang_2.4.0.v20081016-1030.jar
+plugin@org.apache.commons.lang,2.4.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090825191606/bundles/org.apache.commons.lang.source_2.4.0.v20081016-1030.jar
 plugin@org.apache.commons.net,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.apache.commons.net_1.4.1.v200905122237.jar
 plugin@javax.activation,1.1.0=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.activation_1.1.0.v200905021805.jar
 plugin@javax.mail.glassfish,1.4.1=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/javax.mail.glassfish_1.4.1.v200808130215.jar
