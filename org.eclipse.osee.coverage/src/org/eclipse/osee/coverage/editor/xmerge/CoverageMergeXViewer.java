@@ -87,7 +87,8 @@ public class CoverageMergeXViewer extends CoverageXViewer {
          public void run() {
             for (ICoverage coverageItem : xCoverageViewer.getSelectedCoverageItems()) {
                if (coverageItem instanceof MergeItem) {
-                  ((MergeItem) coverageItem).setChecked(!((MergeItem) coverageItem).isAssignable());
+                  ((MergeItem) coverageItem).setChecked(!((MergeItem) coverageItem).isChecked());
+                  xCoverageViewer.getXViewer().update(coverageItem);
                }
             }
          }

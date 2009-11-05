@@ -79,7 +79,10 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       for (CoverageUnit coverageUnit : coveragePackage.getCoverageUnits()) {
          OseeCoverageStore store = OseeCoverageStore.get(coverageUnit);
          store.save(transaction);
-         artifact.addChild(store.getArtifact(false));
+         Artifact childArt = store.getArtifact(false);
+         if (childArt.getParent() == null && !(artifact.getChildren().contains(childArt))) {
+            artifact.addChild(store.getArtifact(false));
+         }
       }
       artifact.persist(transaction);
       return Result.TrueResult;

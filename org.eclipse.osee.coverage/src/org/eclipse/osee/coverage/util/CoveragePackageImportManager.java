@@ -67,7 +67,6 @@ public class CoveragePackageImportManager {
             rd.logError("\n" + result.getText());
          }
       }
-
       return rd;
    }
 
@@ -75,9 +74,7 @@ public class CoveragePackageImportManager {
       Set<ICoverage> imported = new HashSet<ICoverage>();
       List<ICoverage> parentCoverageUnits = new ArrayList<ICoverage>();
       for (ICoverage importCoverageUnit : importCoverageUnits) {
-         if (importCoverageUnit.getParent() instanceof CoverageImport) {
-            parentCoverageUnits.add(importCoverageUnit);
-         }
+         parentCoverageUnits.add(CoverageUtil.getTopLevelCoverageUnit(importCoverageUnit));
       }
       importItemsRecurse(rd, parentCoverageUnits, importCoverageUnits, imported);
    }

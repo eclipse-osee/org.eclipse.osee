@@ -132,7 +132,9 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (coverageUnit.getParent() != null) {
          Artifact parentArt =
                ArtifactQuery.getArtifactFromId(coverageUnit.getParent().getGuid(), CoverageUtil.getBranch());
-         parentArt.addChild(artifact);
+         if (artifact.getParent() == null && !parentArt.getChildren().contains(artifact)) {
+            parentArt.addChild(artifact);
+         }
       }
       for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits()) {
          OseeCoverageStore.get(childCoverageUnit).save(transaction);

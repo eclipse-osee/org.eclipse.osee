@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -86,8 +87,13 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(CoverageXViewerFactory.Text)) return Collections.toString(", ", coverageItem.getText());
          return "";
       }
-      if (coverage instanceof CoverageUnit) {
-         CoverageUnit coverageUnit = (CoverageUnit) coverage;
+      if ((coverage instanceof CoverageUnit) || (coverage instanceof MergeItem)) {
+         CoverageUnit coverageUnit = null;
+         if (coverage instanceof CoverageUnit) {
+            coverageUnit = (CoverageUnit) coverage;
+         } else {
+            coverageUnit = (CoverageUnit) ((MergeItem) coverage).getImportItem();
+         }
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageUnit.getParentCoverageUnit() == null ? "" : coverageUnit.getParentCoverageUnit().getName();
          if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageUnit.getMethodNumber();
       }

@@ -290,4 +290,5 @@ public class CoverageItem implements ICoverage {
    public boolean isFolder() {
       return false;
    }
+
 }

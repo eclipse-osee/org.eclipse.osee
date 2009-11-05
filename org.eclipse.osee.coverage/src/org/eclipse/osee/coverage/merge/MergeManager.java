@@ -32,6 +32,9 @@ public class MergeManager {
             processImportCoverage(importCoverage);
          }
       }
+      if (mergeItems.size() == 0) {
+         mergeItems.add(new MessageMergeItem("Nothing to Import"));
+      }
       return mergeItems;
    }
 

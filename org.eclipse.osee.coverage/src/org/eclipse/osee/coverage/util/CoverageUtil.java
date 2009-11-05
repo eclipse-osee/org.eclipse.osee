@@ -9,6 +9,7 @@ import java.util.Collection;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
+import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -51,4 +52,19 @@ public class CoverageUtil {
       }
       return CoverageImage.COVERAGE_PACKAGE;
    }
+
+   public static CoveragePackageBase getParentCoveragePackageBase(ICoverage coverage) {
+      if (coverage.getParent() instanceof CoveragePackageBase) {
+         return (CoveragePackageBase) coverage.getParent();
+      }
+      return getParentCoveragePackageBase(coverage.getParent());
+   }
+
+   public static CoverageUnit getTopLevelCoverageUnit(ICoverage coverage) {
+      if (coverage instanceof CoverageUnit && coverage.getParent() instanceof CoveragePackageBase) {
+         return (CoverageUnit) coverage;
+      }
+      return getTopLevelCoverageUnit(coverage.getParent());
+   }
+
 }
