@@ -66,6 +66,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
    protected Label extraInfoLabel;
    private Artifact artifact;
    private ToolBar toolBar;
+   private Composite rightComp;
 
    /**
     * @param label
@@ -104,6 +105,12 @@ public class XHistoryWidget extends XWidget implements IActionable {
       xHistoryViewer.setContentProvider(new XHistoryContentProvider(xHistoryViewer));
       xHistoryViewer.setLabelProvider(new XHistoryLabelProvider(xHistoryViewer));
 
+      try {
+         createToolBar();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      }
+
       if (toolkit != null) {
          toolkit.adapt(xHistoryViewer.getStatusLabel(), false, false);
       }
@@ -115,7 +122,6 @@ public class XHistoryWidget extends XWidget implements IActionable {
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
-      new ActionContributionItem(xHistoryViewer.getCustomizeAction()).fill(toolBar, -1);
 
       new HistoryDragAndDrop(tree, HistoryXViewerFactory.NAMESPACE);
    }
@@ -136,9 +142,12 @@ public class XHistoryWidget extends XWidget implements IActionable {
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("\n");
 
-      Composite rightComp = new Composite(bComp, SWT.NONE);
+      rightComp = new Composite(bComp, SWT.NONE);
       rightComp.setLayout(new GridLayout());
       rightComp.setLayoutData(new GridData(GridData.END));
+   }
+
+   public void createToolBar() throws OseeCoreException {
 
       toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
@@ -156,6 +165,11 @@ public class XHistoryWidget extends XWidget implements IActionable {
       });
 
       OseeAts.addButtonToEditorToolBar(this, SkynetGuiPlugin.getInstance(), toolBar, HistoryView.VIEW_ID, "Hisotry");
+
+      new ActionContributionItem(xHistoryViewer.getCustomizeAction()).fill(toolBar, -1);
+
+      rightComp.layout();
+      rightComp.getParent().layout();
    }
 
    public void loadTable() {
