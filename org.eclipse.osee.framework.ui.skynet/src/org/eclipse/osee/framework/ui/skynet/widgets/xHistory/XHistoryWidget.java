@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -64,6 +65,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
    private static final String NO_HISTORY = "No History changes were found";
    protected Label extraInfoLabel;
    private Artifact artifact;
+   private ToolBar toolBar;
 
    /**
     * @param label
@@ -113,6 +115,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       tree.setLayoutData(gridData);
       tree.setHeaderVisible(true);
       tree.setLinesVisible(true);
+      new ActionContributionItem(xHistoryViewer.getCustomizeAction()).fill(toolBar, -1);
 
       new HistoryDragAndDrop(tree, HistoryXViewerFactory.NAMESPACE);
    }
@@ -137,7 +140,7 @@ public class XHistoryWidget extends XWidget implements IActionable {
       rightComp.setLayout(new GridLayout());
       rightComp.setLayoutData(new GridData(GridData.END));
 
-      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
@@ -149,16 +152,6 @@ public class XHistoryWidget extends XWidget implements IActionable {
          @Override
          public void widgetSelected(SelectionEvent e) {
             setInputData(artifact, true);
-         }
-      });
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.CUSTOMIZE));
-      item.setToolTipText("Customize Table");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            xHistoryViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 

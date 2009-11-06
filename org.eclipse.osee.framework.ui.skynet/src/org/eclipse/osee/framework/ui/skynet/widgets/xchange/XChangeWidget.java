@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -78,6 +79,7 @@ public class XChangeWidget extends XWidget implements IActionable {
    protected Label extraInfoLabel;
    private Branch branch;
    private TransactionRecord transactionId;
+   private ToolBar toolBar;
 
    /**
     * @param label
@@ -115,6 +117,7 @@ public class XChangeWidget extends XWidget implements IActionable {
       contentProvider = new XChangeContentProvider(xChangeViewer);
       xChangeViewer.setContentProvider(contentProvider);
       xChangeViewer.setLabelProvider(new XChangeLabelProvider(xChangeViewer));
+      new ActionContributionItem(xChangeViewer.getCustomizeAction()).fill(toolBar, -1);
 
       if (toolkit != null) {
          toolkit.adapt(xChangeViewer.getStatusLabel(), false, false);
@@ -151,7 +154,7 @@ public class XChangeWidget extends XWidget implements IActionable {
       rightComp.setLayout(new GridLayout());
       rightComp.setLayoutData(new GridData(GridData.END));
 
-      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
@@ -164,16 +167,6 @@ public class XChangeWidget extends XWidget implements IActionable {
          public void widgetSelected(SelectionEvent e) {
             contentProvider.refeshDocOrder();
             setInputData(branch, transactionId, true);
-         }
-      });
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.CUSTOMIZE));
-      item.setToolTipText("Customize Table");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            xChangeViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 

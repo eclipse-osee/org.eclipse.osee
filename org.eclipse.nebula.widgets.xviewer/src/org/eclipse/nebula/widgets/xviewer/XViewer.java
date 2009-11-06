@@ -25,6 +25,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerSorter;
+import org.eclipse.nebula.widgets.xviewer.action.TableCustomizationDropDownAction;
 import org.eclipse.nebula.widgets.xviewer.column.XViewerDaysTillTodayColumn;
 import org.eclipse.nebula.widgets.xviewer.customize.ColumnFilterDataUI;
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeManager;
@@ -155,32 +156,18 @@ public class XViewer extends TreeViewer {
       addCustomizeToViewToolbar(viewPart.getViewSite().getActionBars().getToolBarManager());
    }
 
-   public Action getCustomizeAction() {
-      return getCustomizeAction(this);
-   }
-
-   public static Action getCustomizeAction(final XViewer xViewer) {
-      Action customizeAction = new Action("Customize Table") {
-
-         @Override
-         public void run() {
-            xViewer.getCustomizeMgr().handleTableCustomization();
-         }
-      };
-      customizeAction.setImageDescriptor(XViewerLib.getImageDescriptor("customize.gif"));
-      customizeAction.setToolTipText("Customize Table");
-      return customizeAction;
-
-   }
-
    public void updateMenuActionsForTable() {
    }
 
    public void updateMenuActionsForHeader() {
    }
 
+   public Action getCustomizeAction() {
+      return new TableCustomizationDropDownAction(this);
+   }
+
    public void addCustomizeToViewToolbar(IToolBarManager toolbarManager) {
-      toolbarManager.add(getCustomizeAction());
+      toolbarManager.add(new TableCustomizationDropDownAction(this));
    }
 
    protected void createSupportWidgets(Composite parent) {

@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -161,14 +162,7 @@ public class XViewerCustomMenu {
    }
 
    public void createTableCustomizationMenuItem(Menu popupMenu) {
-      final MenuItem item = new MenuItem(popupMenu, SWT.CASCADE);
-      item.setText("Table Customization");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            xViewer.getCustomizeMgr().handleTableCustomization();
-         }
-      });
+      new ActionContributionItem(xViewer.getCustomizeAction()).fill(popupMenu, -1);
    }
 
    public void createViewTableReportMenuItem(Menu popupMenu) {

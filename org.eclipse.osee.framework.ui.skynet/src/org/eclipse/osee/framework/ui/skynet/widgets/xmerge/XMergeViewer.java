@@ -179,7 +179,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       manager.add(new ShowSourceBranchChangeReportAction());
       manager.add(new ShowDestinationBranchChangeReportAction());
       manager.add(new Separator());
-      manager.add(new CustomizeTableAction());
+      manager.add(mergeXViewer.getCustomizeAction());
       manager.add(OseeAts.createBugAction(SkynetGuiPlugin.getInstance(), this, MergeView.VIEW_ID, "Merge Manager"));
       manager.update(true);
    }
@@ -647,19 +647,6 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       @Override
       public void run() {
          setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, true);
-      }
-   }
-
-   private final class CustomizeTableAction extends Action {
-      public CustomizeTableAction() {
-         super();
-         setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.CUSTOMIZE));
-         setToolTipText("Customize Table");
-      }
-
-      @Override
-      public void run() {
-         mergeXViewer.getCustomizeMgr().handleTableCustomization();
       }
    }
 

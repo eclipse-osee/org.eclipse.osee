@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -61,6 +62,7 @@ public class XBranchWidget extends XWidget implements IActionable {
    private static final String VIEW_ID = "BrachView";
    private boolean filterRealTime;
    private boolean searchRealTime;
+   private ToolBar toolBar;
 
    public XBranchWidget(boolean filterRealTime, boolean searchRealTime) {
       this();
@@ -141,6 +143,7 @@ public class XBranchWidget extends XWidget implements IActionable {
       if (toolkit != null) {
          toolkit.adapt(branchXViewer.getStatusLabel(), false, false);
       }
+      new ActionContributionItem(branchXViewer.getCustomizeAction()).fill(toolBar, -1);
 
       Tree tree = branchXViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH);
@@ -165,7 +168,7 @@ public class XBranchWidget extends XWidget implements IActionable {
       extraInfoLabel.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
       extraInfoLabel.setText("\n");
 
-      ToolBar toolBar = new ToolBar(composite, SWT.FLAT);
+      toolBar = new ToolBar(composite, SWT.FLAT);
       ToolItem item = null;
 
       item = new ToolItem(toolBar, SWT.PUSH);
@@ -175,16 +178,6 @@ public class XBranchWidget extends XWidget implements IActionable {
          @Override
          public void widgetSelected(SelectionEvent e) {
             loadData();
-         }
-      });
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.CUSTOMIZE));
-      item.setToolTipText("Customize Table");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            branchXViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 

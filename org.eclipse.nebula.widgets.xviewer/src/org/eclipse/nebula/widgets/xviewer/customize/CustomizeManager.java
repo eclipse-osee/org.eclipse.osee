@@ -462,7 +462,9 @@ public class CustomizeManager {
       } else {
          xViewer.setSorter(null);
       }
-      xViewer.getFilterDataUI().update();
+      if (xViewer.getFilterDataUI() != null) {
+         xViewer.getFilterDataUI().update();
+      }
       xViewerTextFilter.update();
       // Dispose all existing columns
       for (TreeColumn treeCol : xViewer.getTree().getColumns())

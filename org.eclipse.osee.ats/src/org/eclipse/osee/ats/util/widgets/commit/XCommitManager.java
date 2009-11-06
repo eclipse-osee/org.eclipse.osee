@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
@@ -74,6 +73,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
    private static final int paddedTableHeightHint = 2;
    private Label extraInfoLabel;
    public final static String WIDGET_ID = ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName();
+   private ToolBar toolBar;
 
    /**
     * @param label
@@ -144,6 +144,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
             }
 
             setXviewerTree();
+            //            new ActionContributionItem(xCommitManager.getCustomizeAction()).fill(toolBar, -1);
 
             loadTable();
          }
@@ -191,7 +192,7 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
       rightComp.setLayout(new GridLayout());
       rightComp.setLayoutData(new GridData(GridData.END));
 
-      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
@@ -206,15 +207,6 @@ public class XCommitManager extends XWidget implements IArtifactWidget, IMergeBr
          }
       });
 
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(AtsImage.CUSTOMIZE));
-      item.setToolTipText("Customize Table");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            xCommitManager.getCustomizeMgr().handleTableCustomization();
-         }
-      });
    }
 
    public void loadTable() {

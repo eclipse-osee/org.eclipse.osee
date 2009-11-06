@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.IReviewArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
@@ -70,6 +70,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
    public final static String normalColor = "#EEEEEE";
    private static ToolItem newUserRoleItem, deleteUserRoleItem;
    private Label extraInfoLabel;
+   private ToolBar toolBar;
 
    /**
     * @param label
@@ -108,6 +109,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
             refreshActionEnablement();
          }
       });
+      new ActionContributionItem(xViewer.getCustomizeAction()).fill(toolBar, -1);
 
       if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
 
@@ -144,7 +146,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
       rightComp.setLayout(new GridLayout());
       rightComp.setLayoutData(new GridData(GridData.END));
 
-      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
@@ -176,16 +178,6 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
          @Override
          public void widgetSelected(SelectionEvent e) {
             loadTable();
-         }
-      });
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(AtsImage.CUSTOMIZE));
-      item.setToolTipText("Customize Table");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            xViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 

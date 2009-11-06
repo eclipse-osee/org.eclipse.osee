@@ -8,18 +8,23 @@ package org.eclipse.nebula.widgets.xviewer.action;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
+import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.nebula.widgets.xviewer.util.internal.images.XViewerImageCache;
 
 /**
+ * Action to load a specified customize data object
+ * 
  * @author Donald G. Dunne
  */
-public class TableCustomizationAction extends Action {
+public class TableCustomizationCustomizeDataAction extends Action {
 
    private final XViewer xViewer;
+   private final CustomizeData custData;
 
-   public TableCustomizationAction(XViewer xViewer) {
-      super("Table Customization");
+   public TableCustomizationCustomizeDataAction(XViewer xViewer, CustomizeData custData) {
+      super(custData.getName());
       this.xViewer = xViewer;
+      this.custData = custData;
    }
 
    @Override
@@ -29,7 +34,8 @@ public class TableCustomizationAction extends Action {
 
    @Override
    public void run() {
-      xViewer.getCustomizeMgr().handleTableCustomization();
+      xViewer.getCustomizeMgr().loadCustomization(custData);
+      xViewer.refresh();
    }
 
    @Override

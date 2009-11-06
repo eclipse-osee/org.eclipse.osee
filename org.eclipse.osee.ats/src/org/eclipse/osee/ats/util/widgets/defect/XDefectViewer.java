@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -87,6 +88,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
    private Composite parentComposite;
    private static ToolItem expandDefectItem, collapseDefectItem;
    private static Map<IReviewArtifact, Boolean> mapOfReviewArtifacts = new LinkedHashMap<IReviewArtifact, Boolean>();
+   private ToolBar toolBar;
 
    /**
     * @param label
@@ -124,7 +126,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
             refreshActionEnablement();
          }
       });
-
+      new ActionContributionItem(xViewer.getCustomizeAction()).fill(toolBar, -1);
       if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);
 
       handleExpandCollapseDefectTableList();
@@ -182,7 +184,7 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
       rightComp.setLayout(new GridLayout());
       rightComp.setLayoutData(new GridData(GridData.END));
 
-      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
@@ -236,16 +238,6 @@ public class XDefectViewer extends XWidget implements IArtifactWidget, IFramewor
          @Override
          public void widgetSelected(SelectionEvent e) {
             loadTable();
-         }
-      });
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.CUSTOMIZE));
-      item.setToolTipText("Customize Table");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            xViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 

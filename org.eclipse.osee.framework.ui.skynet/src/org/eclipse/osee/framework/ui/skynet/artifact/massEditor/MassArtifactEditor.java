@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -58,6 +59,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    private int artifactsPageIndex;
    private MassXViewer xViewer;
    private Label branchLabel;
+   private ToolBar toolBar;
 
    /**
     * @return the xViewer
@@ -131,7 +133,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       rightComp.setLayout(new GridLayout());
       rightComp.setLayoutData(new GridData(GridData.END));
 
-      ToolBar toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
+      toolBar = new ToolBar(rightComp, SWT.FLAT | SWT.RIGHT);
       GridData gd = new GridData(GridData.FILL_HORIZONTAL);
       toolBar.setLayoutData(gd);
       ToolItem item = null;
@@ -143,16 +145,6 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
          @Override
          public void widgetSelected(SelectionEvent e) {
             xViewer.refresh();
-         }
-      });
-
-      item = new ToolItem(toolBar, SWT.PUSH);
-      item.setImage(ImageManager.getImage(FrameworkImage.CUSTOMIZE));
-      item.setToolTipText("Customize Table");
-      item.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            xViewer.getCustomizeMgr().handleTableCustomization();
          }
       });
 
@@ -197,7 +189,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
 
    @Override
    public boolean isDirty() {
-      for (Artifact taskArt : xViewer.getArtifacts()){
+      for (Artifact taskArt : xViewer.getArtifacts()) {
          if (!taskArt.isDeleted() && taskArt.hasDirtyAttributes()) {
             return true;
          }
@@ -213,7 +205,7 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
    @Override
    protected void addPages() {
       IEditorInput editorInput = getEditorInput();
-      if (!(editorInput instanceof MassArtifactEditorInput) ){
+      if (!(editorInput instanceof MassArtifactEditorInput)) {
          throw new IllegalArgumentException("Editor Input not TaskEditorInput");
       }
 
@@ -239,6 +231,8 @@ public class MassArtifactEditor extends AbstractArtifactEditor implements IDirti
       branchLabel.setText("Branch: " + (getBranch() == null ? "No Artifacts Returned" : getBranch().getShortName()));
       artifactsPageIndex = addPage(comp);
       setPageText(artifactsPageIndex, "Artifacts");
+
+      new ActionContributionItem(xViewer.getCustomizeAction()).fill(toolBar, -1);
 
       Tree tree = xViewer.getTree();
       GridData gridData = new GridData(GridData.FILL_BOTH | GridData.GRAB_VERTICAL | GridData.GRAB_HORIZONTAL);
