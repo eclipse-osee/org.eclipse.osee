@@ -21,8 +21,6 @@ plugin@org.eclipse.osee.framework.jdk.core=SVN,url=https://dev.eclipse.org/svnro
 plugin@org.eclipse.osee.framework.logging=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.logging
 plugin@org.eclipse.osee.framework.osgi=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.osgi
 plugin@org.eclipse.osee.framework.manager.servlet=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.manager.servlet
-plugin@org.eclipse.osee.framework.oracle=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.oracle
-plugin@org.eclipse.osee.framework.postgresql=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.postgresql
 
 feature@org.eclipse.osee.framework.server.external.feature=SVN,url=https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,tag=trunk,path=org.eclipse.osee.framework.server.external.feature
 plugin@org.mortbay.jetty.server,6.1.15=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.mortbay.jetty.server_6.1.15.v200905151201.jar
