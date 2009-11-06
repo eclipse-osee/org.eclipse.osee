@@ -18,7 +18,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.search.ui.text.Match;
 
 /**
@@ -44,8 +44,8 @@ public class Handlers {
     * 
     * @param selection
     */
-   public static List<TransactionId> getTransactionsFromStructuredSelection(IStructuredSelection structuredSelection) {
-      return processSelectionObjects(TransactionId.class, structuredSelection);
+   public static List<TransactionRecord> getTransactionsFromStructuredSelection(IStructuredSelection structuredSelection) {
+      return processSelectionObjects(TransactionRecord.class, structuredSelection);
    }
 
    /**

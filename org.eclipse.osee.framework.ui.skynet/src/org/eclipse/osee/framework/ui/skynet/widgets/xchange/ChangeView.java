@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
@@ -60,7 +60,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
    private static String HELP_CONTEXT_ID = "ChangeView";
    private XChangeWidget xChangeWidget;
    private Branch branch;
-   private TransactionId transactionId;
+   private TransactionRecord transactionId;
    private ChangeViewPresentationPreferences changeViewPresentationPreferences;
 
    public ChangeView() {
@@ -72,12 +72,12 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       ChangeView.openViewUpon(branch, null, true);
    }
 
-   public static void open(TransactionId transactionId) throws OseeArgumentException {
+   public static void open(TransactionRecord transactionId) throws OseeArgumentException {
       if (transactionId == null) throw new OseeArgumentException("TransactionId can't be null");
       ChangeView.openViewUpon(null, transactionId, true);
    }
 
-   private static void openViewUpon(final Branch branch, final TransactionId transactionId, final Boolean loadChangeReport) {
+   private static void openViewUpon(final Branch branch, final TransactionRecord transactionId, final Boolean loadChangeReport) {
       Job job = new Job("Open Change View") {
 
          @Override
@@ -89,7 +89,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
                      ChangeView changeView =
                            (ChangeView) page.showView(
                                  VIEW_ID,
-                                 String.valueOf(branch != null ? branch.getBranchId() : transactionId.getTransactionNumber()),
+                                 String.valueOf(branch != null ? branch.getBranchId() : transactionId.getId()),
                                  IWorkbenchPage.VIEW_ACTIVATE);
 
                      changeView.explore(branch, transactionId, loadChangeReport);
@@ -157,7 +157,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       OseeContributionItem.addTo(this, true);
    }
 
-   private void explore(final Branch branch, final TransactionId transactionId, boolean loadChangeReport) {
+   private void explore(final Branch branch, final TransactionRecord transactionId, boolean loadChangeReport) {
       if (xChangeWidget != null) {
          this.branch = branch;
          this.transactionId = transactionId;
@@ -189,7 +189,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
          memento.putInteger(BRANCH_ID, branch.getBranchId());
       }
       if (transactionId != null) {
-         memento.putInteger(TRANSACTION_NUMBER, transactionId.getTransactionNumber());
+         memento.putInteger(TRANSACTION_NUMBER, transactionId.getId());
       }
       if (branch != null || transactionId != null) {
          SkynetViews.addDatabaseSourceId(memento);
@@ -212,7 +212,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
                   } else {
                      Integer transactionNumber = memento.getInteger(TRANSACTION_NUMBER);
                      if (transactionNumber != null && transactionNumber > -1) {
-                        openViewUpon(null, TransactionIdManager.getTransactionId(transactionNumber), false);
+                        openViewUpon(null, TransactionManager.getTransactionId(transactionNumber), false);
                      }
                   }
                } else {
@@ -268,7 +268,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       }
 
       for (int transactionNumber : transactionIds) {
-         if (transactionNumber == transactionId.getTransactionNumber()) {
+         if (transactionNumber == transactionId.getId()) {
             Displays.ensureInDisplayThread(new Runnable() {
                public void run() {
                   closeView();

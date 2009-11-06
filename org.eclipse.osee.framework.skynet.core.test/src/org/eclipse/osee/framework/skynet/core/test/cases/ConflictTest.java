@@ -36,7 +36,7 @@ import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.conflict.RelationConflict;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.TestUtil;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -98,7 +98,7 @@ public class ConflictTest {
       try {
          conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), TransactionIdManager.getStartEndPoint(
+                     ConflictTestManager.getDestBranch(), TransactionManager.getStartEndPoint(
                            ConflictTestManager.getSourceBranch()).getFirst(), new NullProgressMonitor());
       } catch (Exception ex) {
          fail(ex.getMessage());
@@ -127,7 +127,7 @@ public class ConflictTest {
       try {
          Collection<Conflict> conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), TransactionIdManager.getStartEndPoint(
+                     ConflictTestManager.getDestBranch(), TransactionManager.getStartEndPoint(
                            ConflictTestManager.getSourceBranch()).getFirst(), new NullProgressMonitor());
          int whichChange = 1;
 
@@ -145,7 +145,7 @@ public class ConflictTest {
 
          conflicts =
                ConflictManagerInternal.getConflictsPerBranch(ConflictTestManager.getSourceBranch(),
-                     ConflictTestManager.getDestBranch(), TransactionIdManager.getStartEndPoint(
+                     ConflictTestManager.getDestBranch(), TransactionManager.getStartEndPoint(
                            ConflictTestManager.getSourceBranch()).getFirst(), new NullProgressMonitor());
 
          for (Conflict conflict : conflicts) {

@@ -43,7 +43,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          Change data = (Change) element;
 
          if (cCol.equals(HistoryXViewerFactory.transaction)) {
-            return String.valueOf(data.getToTransactionId().getTransactionNumber());
+            return String.valueOf(data.getToTransactionId().getId());
          } else if (cCol.equals(HistoryXViewerFactory.gamma)) {
             return String.valueOf(data.getGamma());
          } else if (cCol.equals(HistoryXViewerFactory.itemType)) {
@@ -61,7 +61,7 @@ public class XHistoryLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(HistoryXViewerFactory.timeStamp)) {
             return new SimpleDateFormat("MM/dd/yyyy hh:mm a").format(data.getToTransactionId().getDate());
          } else if (cCol.equals(HistoryXViewerFactory.author)) {
-            return UserManager.getUserNameById(data.getToTransactionId().getAuthorArtId());
+            return UserManager.getUserNameById(data.getToTransactionId().getAuthor());
          } else if (cCol.equals(HistoryXViewerFactory.comment)) {
             return data.getToTransactionId().getComment();
          }

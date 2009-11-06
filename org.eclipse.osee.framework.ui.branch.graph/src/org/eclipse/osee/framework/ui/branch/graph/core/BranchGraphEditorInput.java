@@ -14,7 +14,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.PlatformUI;
@@ -25,7 +25,7 @@ import org.eclipse.ui.PlatformUI;
 public class BranchGraphEditorInput implements IEditorInput {
 
    private Branch branch;
-   private TransactionId transactionId;
+   private TransactionRecord transactionId;
 
    public BranchGraphEditorInput(Branch branch) {
       this.branch = branch;
@@ -55,11 +55,11 @@ public class BranchGraphEditorInput implements IEditorInput {
       return getName();
    }
 
-   public void setTransactionId(TransactionId transactionId) {
+   public void setTransactionId(TransactionRecord transactionId) {
       this.transactionId = transactionId;
    }
 
-   public TransactionId getTransactionId() {
+   public TransactionRecord getTransactionId() {
       return transactionId;
    }
 

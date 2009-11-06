@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Image;
@@ -49,8 +49,8 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       try {
          if (element instanceof Branch) {
             columnText = getBranchText((Branch) element, cCol, columnIndex);
-         } else if (element instanceof TransactionId) {
-            columnText = getTransactionText((TransactionId) element, cCol, columnIndex);
+         } else if (element instanceof TransactionRecord) {
+            columnText = getTransactionText((TransactionRecord) element, cCol, columnIndex);
          } else if (element instanceof Collection<?>) {
             columnText = getAggrTransactionList((Collection<?>) element, columnIndex);
          }
@@ -73,13 +73,13 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          tailCursor = list.get(list.size() - 1);
       }
 
-      if (headCursor instanceof TransactionId && tailCursor instanceof TransactionId) {
-         TransactionId headTransaction = (TransactionId) headCursor;
-         TransactionId tailTransaction = (TransactionId) tailCursor;
+      if (headCursor instanceof TransactionRecord && tailCursor instanceof TransactionRecord) {
+         TransactionRecord headTransaction = (TransactionRecord) headCursor;
+         TransactionRecord tailTransaction = (TransactionRecord) tailCursor;
 
          if (columnIndex == 0) {
             columnText =
-                  String.valueOf(headTransaction.getTransactionNumber() + "..." + tailTransaction.getTransactionNumber());
+                  String.valueOf(headTransaction.getId() + "..." + tailTransaction.getId());
          } else if (columnIndex == 1) {
             columnText = DATE_FORMAT.format(headTransaction.getDate());
          }
@@ -103,7 +103,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          }
       } else if (cCol.equals(BranchXViewerFactory.author)) {
          try {
-            return UserManager.getUserNameById(branch.getBaseTransaction().getAuthorArtId());
+            return UserManager.getUserNameById(branch.getBaseTransaction().getAuthor());
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }
@@ -139,25 +139,25 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       return "";
    }
 
-   private String getTransactionText(TransactionId transaction, XViewerColumn cCol, int columnIndex) {
+   private String getTransactionText(TransactionRecord transaction, XViewerColumn cCol, int columnIndex) {
       String columnText = "";
 
       if (cCol.equals(BranchXViewerFactory.branchName)) {
-         columnText = String.valueOf(transaction.getTransactionNumber());
+         columnText = String.valueOf(transaction.getId());
       }
       if (cCol.equals(BranchXViewerFactory.timeStamp)) {
          columnText = DATE_FORMAT.format(transaction.getDate());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
-         columnText = UserManager.getUserNameById(transaction.getAuthorArtId());
+         columnText = UserManager.getUserNameById(transaction.getAuthor());
       } else if (cCol.equals(BranchXViewerFactory.comment)) {
          columnText = transaction.getComment();
       } else if (cCol.equals(BranchXViewerFactory.associatedArtifact)) {
          try {
-            if (transaction.getCommitArtId() == 0) {
+            if (transaction.getCommit() == 0) {
                return "";
             }
             Artifact art =
-                  ArtifactQuery.getArtifactFromId(transaction.getCommitArtId(), BranchManager.getCommonBranch());
+                  ArtifactQuery.getArtifactFromId(transaction.getCommit(), BranchManager.getCommonBranch());
             if (art != null) {
                columnText = art.getName();
             }
@@ -193,13 +193,13 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
-         } else if (element instanceof TransactionId) {
+         } else if (element instanceof TransactionRecord) {
             try {
-               if (((TransactionId) element).getCommitArtId() == 0) {
+               if (((TransactionRecord) element).getCommit() == 0) {
                   return null;
                }
                Artifact artifact =
-                     ArtifactQuery.getArtifactFromId(((TransactionId) element).getCommitArtId(),
+                     ArtifactQuery.getArtifactFromId(((TransactionRecord) element).getCommit(),
                            BranchManager.getCommonBranch());
                if (artifact != null) {
                   return ImageManager.getImage(artifact);

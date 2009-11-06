@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xchange.ChangeView;
@@ -36,8 +36,8 @@ public class ChangeReportHandler extends AbstractHandler {
       if (!selection.isEmpty()) {
          Object selectedObject = selection.getFirstElement();
          try {
-            if (selectedObject instanceof TransactionId) {
-               ChangeView.open((TransactionId) selectedObject);
+            if (selectedObject instanceof TransactionRecord) {
+               ChangeView.open((TransactionRecord) selectedObject);
             } else if (selectedObject instanceof Branch) {
                ChangeView.open((Branch) selectedObject);
             }
@@ -59,8 +59,8 @@ public class ChangeReportHandler extends AbstractHandler {
       if (!selection.isEmpty()) {
          Object selectedObject = selection.getFirstElement();
 
-         if (selectedObject instanceof TransactionId) {
-            enabled = ((TransactionId) selectedObject).getTxType() != TransactionDetailsType.Baselined;
+         if (selectedObject instanceof TransactionRecord) {
+            enabled = ((TransactionRecord) selectedObject).getTxType() != TransactionDetailsType.Baselined;
          } else if(selectedObject instanceof Branch){
             enabled = true;
          }

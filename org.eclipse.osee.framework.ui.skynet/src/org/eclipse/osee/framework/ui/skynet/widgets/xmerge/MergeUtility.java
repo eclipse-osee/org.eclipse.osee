@@ -40,8 +40,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.utility.AIFile;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -165,7 +165,7 @@ public class MergeUtility {
          if (conflict.getSourceBranch() == null) {
             return null;
          }
-         TransactionId id = TransactionIdManager.getStartEndPoint(conflict.getSourceBranch()).getFirst();
+         TransactionRecord id = TransactionManager.getStartEndPoint(conflict.getSourceBranch()).getFirst();
          return ArtifactQuery.getHistoricalArtifactFromId(conflict.getArtifact().getGuid(), id, true);
       } catch (OseeCoreException ex) {
          OseeLog.log(MergeUtility.class, Level.SEVERE, ex);

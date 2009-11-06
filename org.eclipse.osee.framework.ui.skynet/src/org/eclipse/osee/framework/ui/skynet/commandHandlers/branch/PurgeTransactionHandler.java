@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -40,11 +40,11 @@ public class PurgeTransactionHandler extends CommandHandler {
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
-      List<TransactionId> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
-      TransactionId selectedTransaction = transactions.iterator().next();
+      List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
+      TransactionRecord selectedTransaction = transactions.iterator().next();
 
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Purge Transaction",
-            "Are you sure you want to purge the transaction: " + selectedTransaction.getTransactionNumber())) {
+            "Are you sure you want to purge the transaction: " + selectedTransaction.getId())) {
          BranchManager.purgeTransactions(new JobChangeAdapter() {
 
             @Override
@@ -62,7 +62,7 @@ public class PurgeTransactionHandler extends CommandHandler {
                }
             }
 
-         }, selectedTransaction.getTransactionNumber());
+         }, selectedTransaction.getId());
       }
 
       return null;
@@ -74,7 +74,7 @@ public class PurgeTransactionHandler extends CommandHandler {
       IStructuredSelection selection =
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
-      List<TransactionId> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
+      List<TransactionRecord> transactions = Handlers.getTransactionsFromStructuredSelection(selection);
       return transactions.size() == 1 && AccessControlManager.isOseeAdmin();
    }
 }

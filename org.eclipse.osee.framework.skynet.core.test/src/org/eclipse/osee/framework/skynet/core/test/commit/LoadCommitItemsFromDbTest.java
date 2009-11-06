@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
 import org.eclipse.osee.framework.skynet.core.commit.RelationChangeItem;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.Test;
 
@@ -55,7 +55,7 @@ public class LoadCommitItemsFromDbTest {
 
       List<ChangeItem> items = new ArrayList<ChangeItem>();
 
-      processItems(items, TransactionIdManager.getlatestTransactionForBranch(source), TransactionIdManager.getlatestTransactionForBranch(destination), null, 41, 41);
+      processItems(items, TransactionManager.getLastTransaction(source), TransactionManager.getLastTransaction(destination), null, 41, 41);
 
       checkNetItems(items, ModificationType.NEW, 2, 18, 4);
       checkNetItems(items, ModificationType.INTRODUCED, 0, 0, 0);
@@ -77,7 +77,7 @@ public class LoadCommitItemsFromDbTest {
 
       List<ChangeItem> items = new ArrayList<ChangeItem>();
 
-      processItems(items, TransactionIdManager.getlatestTransactionForBranch(source), TransactionIdManager.getlatestTransactionForBranch(destination), null, 5, 5);
+      processItems(items, TransactionManager.getLastTransaction(source), TransactionManager.getLastTransaction(destination), null, 5, 5);
 
       checkNetItems(items, ModificationType.NEW, 0, 1, 1);
       checkNetItems(items, ModificationType.INTRODUCED, 0, 0, 0);
@@ -97,7 +97,7 @@ public class LoadCommitItemsFromDbTest {
       return source;
    }
 
-   private void processItems(Collection<ChangeItem> items, TransactionId source, TransactionId destination, TransactionId mergeBranch, int loadedItems, int netItems) throws OseeCoreException {
+   private void processItems(Collection<ChangeItem> items, TransactionRecord source, TransactionRecord destination, TransactionRecord mergeBranch, int loadedItems, int netItems) throws OseeCoreException {
       IOperation operation = new LoadChangeDataOperation(source, destination, mergeBranch, items);
       Operations.executeWork(operation, new NullProgressMonitor(), -1);
       Assert.assertEquals(IStatus.OK, operation.getStatus().getSeverity());

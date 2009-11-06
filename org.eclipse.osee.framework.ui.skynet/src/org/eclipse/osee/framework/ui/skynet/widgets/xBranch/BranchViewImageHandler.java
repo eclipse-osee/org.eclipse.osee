@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.ui.plugin.util.OverlayImage;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -71,7 +71,7 @@ public class BranchViewImageHandler {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
          }
 
-      } else if (element instanceof TransactionId && columnIndex == 0) {
+      } else if (element instanceof TransactionRecord && columnIndex == 0) {
          returnImage = ImageManager.getImage(FrameworkImage.DB_ICON_BLUE);
       }
       return returnImage;

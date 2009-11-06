@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.swt.SWT;
@@ -104,10 +104,10 @@ public class ArtifactDiffMenu {
 
             Change firstChange = (Change) firstSelection;
             Change secondChange = (Change)secondSelection;
-            TransactionId firstTransactionId = firstChange.getFromTransactionId();
-            TransactionId secondTransactionId = secondChange.getFromTransactionId();
+            TransactionRecord firstTransactionId = firstChange.getFromTransactionId();
+            TransactionRecord secondTransactionId = secondChange.getFromTransactionId();
 
-            if (firstTransactionId.getTransactionNumber() < secondTransactionId.getTransactionNumber()) {
+            if (firstTransactionId.getId() < secondTransactionId.getId()) {
                firstTransactionId = secondChange.getFromTransactionId();
                secondTransactionId = firstChange.getFromTransactionId();
             }

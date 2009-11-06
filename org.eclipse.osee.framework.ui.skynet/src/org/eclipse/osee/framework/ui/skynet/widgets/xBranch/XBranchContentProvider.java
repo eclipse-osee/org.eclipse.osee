@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Jeff C. Phillips
@@ -149,10 +149,10 @@ public class XBranchContentProvider implements ITreeContentProvider {
       if (!showTransactions) {
          return Collections.emptyList();
       }
-      List<TransactionId> transactions = TransactionIdManager.getTransactionsForBranch(branch);
-      Collections.sort(transactions, new Comparator<TransactionId>() {
-         public int compare(TransactionId o1, TransactionId o2) {
-            return o1.getTransactionNumber() - o2.getTransactionNumber();
+      List<TransactionRecord> transactions = TransactionManager.getTransactionsForBranch(branch);
+      Collections.sort(transactions, new Comparator<TransactionRecord>() {
+         public int compare(TransactionRecord o1, TransactionRecord o2) {
+            return o1.getId() - o2.getId();
          }
       });
       if (transactions != null) {

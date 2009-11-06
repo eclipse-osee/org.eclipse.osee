@@ -44,7 +44,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -88,8 +88,8 @@ public class XMergeViewer extends XWidget implements IAdaptable {
    private Action completeCommitAction;
    private Branch sourceBranch;
    private Branch destBranch;
-   private TransactionId commitTrans;
-   private TransactionId tranId;
+   private TransactionRecord commitTrans;
+   private TransactionRecord tranId;
    private MergeView mergeView;
    private IToolBarManager toolBarManager;
    private final static String CONFLICTS_RESOLVED = "\nAll Conflicts Are Resolved";
@@ -375,11 +375,11 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       this.editor = editor;
    }
 
-   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans, boolean showConflicts) {
+   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionRecord tranId, final MergeView mergeView, final TransactionRecord commitTrans, boolean showConflicts) {
       setInputData(sourceBranch, destBranch, tranId, mergeView, commitTrans, "", showConflicts);
    }
 
-   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionId tranId, final MergeView mergeView, final TransactionId commitTrans, String loadingText, final boolean showConflicts) {
+   public void setInputData(final Branch sourceBranch, final Branch destBranch, final TransactionRecord tranId, final MergeView mergeView, final TransactionRecord commitTrans, String loadingText, final boolean showConflicts) {
       this.sourceBranch = sourceBranch;
       this.destBranch = destBranch;
       this.tranId = tranId;

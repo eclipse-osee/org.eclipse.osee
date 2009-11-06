@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -52,7 +52,7 @@ public abstract class CommitHandler extends CommandHandler {
    public static boolean commitBranch(final ConflictManagerExternal conflictManager, boolean archiveSourceBranch) throws OseeCoreException {
       final Branch sourceBranch = conflictManager.getSourceBranch();
       final Branch destinationBranch = conflictManager.getDestinationBranch();
-      final TransactionId transactionId = TransactionIdManager.getStartEndPoint(sourceBranch).getFirst();
+      final TransactionRecord transactionId = TransactionManager.getStartEndPoint(sourceBranch).getFirst();
       boolean branchCommitted = false;
 
       if (conflictManager.getRemainingConflicts().size() > 0) {

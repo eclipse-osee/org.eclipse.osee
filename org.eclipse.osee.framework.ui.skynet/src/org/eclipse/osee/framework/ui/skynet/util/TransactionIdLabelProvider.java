@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Donald G. Dunne
@@ -23,7 +23,7 @@ public class TransactionIdLabelProvider extends LabelProvider {
 
    @Override
    public String getText(Object element) {
-      return ((TransactionId) element).toString() + " - " + ((TransactionId) element).getComment();
+      return ((TransactionRecord) element).toString() + " - " + ((TransactionRecord) element).getComment();
    }
 
 }

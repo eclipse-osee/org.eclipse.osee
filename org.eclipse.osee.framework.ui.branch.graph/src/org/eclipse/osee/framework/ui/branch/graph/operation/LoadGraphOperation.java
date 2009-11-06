@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditor;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditorInput;
 import org.eclipse.osee.framework.ui.branch.graph.model.GraphCache;
@@ -66,7 +66,7 @@ public class LoadGraphOperation implements IExceptionableRunnable {
       monitor.beginTask(getName(), TOTAL_STEPS);
       monitor.worked(SHORT_TASK_STEPS);
       try {
-         TransactionId transaction = TransactionIdManager.getlatestTransactionForBranch(resource);
+         TransactionRecord transaction = TransactionManager.getLastTransaction(resource);
          if (editor != null) {
             ((BranchGraphEditorInput) editor.getEditorInput()).setTransactionId(transaction);
          }
@@ -98,9 +98,9 @@ public class LoadGraphOperation implements IExceptionableRunnable {
       return Status.OK_STATUS;
    }
 
-   private void updateView(IProgressMonitor monitor, Branch branch, TransactionId revision) throws OseeCoreException {
+   private void updateView(IProgressMonitor monitor, Branch branch, TransactionRecord revision) throws OseeCoreException {
       monitor.setTaskName("Finding root node");
-      int unitWork = TASK_STEPS / (int) (revision.getTransactionNumber());
+      int unitWork = TASK_STEPS / (int) (revision.getId());
       if (unitWork < 1) {
          unitWork = 1;
       }

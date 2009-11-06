@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -52,7 +52,7 @@ public class MergeManagerHandler extends CommandHandler {
                Branch toBranch = BranchManager.getBranch(Integer.parseInt(arg0.getParameter(BranchView.BRANCH_ID)));
                if (selectedBranch != null && toBranch != null) {
                   MergeView.openView(selectedBranch, toBranch,
-                        TransactionIdManager.getStartEndPoint(selectedBranch).getFirst());
+                        TransactionManager.getStartEndPoint(selectedBranch).getFirst());
                }
             } catch (Exception ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

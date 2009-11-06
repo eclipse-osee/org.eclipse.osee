@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -118,7 +118,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          int x = 1;
          rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getShortName() + "\"");
 
-         HashCollection<Artifact, TransactionId> transactionMap = ChangeManager.getModifingTransactions(processArts);
+         HashCollection<Artifact, TransactionRecord> transactionMap = ChangeManager.getModifingTransactions(processArts);
          HashCollection<Artifact, Branch> branchMap = ChangeManager.getModifingBranches(processArts);
          for (Artifact srchArt : processArts) {
             String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getName());
@@ -150,15 +150,15 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             }
             // Add committed changes
             boolean committedChanges = false;
-            Collection<TransactionId> transactions = transactionMap.getValues(srchArt);
+            Collection<TransactionRecord> transactions = transactionMap.getValues(srchArt);
             if (transactions != null) {
-               for (TransactionId transactionId : transactions) {
+               for (TransactionRecord transactionId : transactions) {
                   String transStr = String.format("Tranaction %d/%d", y++, transactions.size());
                   System.out.println(transStr);
                   monitor.subTask(transStr);
-                  if (transactionId.getCommitArtId() > 0) {
+                  if (transactionId.getCommit() > 0) {
                      Artifact assocArt =
-                           ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(),
+                           ArtifactQuery.getArtifactFromId(transactionId.getCommit(),
                                  BranchManager.getCommonBranch());
                      if (assocArt instanceof TeamWorkFlowArtifact) {
                         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(),

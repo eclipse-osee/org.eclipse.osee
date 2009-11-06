@@ -18,8 +18,8 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Roberto E. Escobar
@@ -107,7 +107,7 @@ public class GraphCache {
       if (toReturn == null) {
          toReturn = new BranchModel(branch);
 
-         Pair<TransactionId, TransactionId> startAndEnd = TransactionIdManager.getStartEndPoint(branch);
+         Pair<TransactionRecord, TransactionRecord> startAndEnd = TransactionManager.getStartEndPoint(branch);
          addTxsToBranchModel(toReturn, startAndEnd.getFirst());
          if (startAndEnd.getFirst().equals(startAndEnd.getSecond())) {
             addTxsToBranchModel(toReturn, startAndEnd.getSecond());
@@ -117,7 +117,7 @@ public class GraphCache {
       return toReturn;
    }
 
-   private void addTxsToBranchModel(BranchModel branchModel, TransactionId toAdd) throws OseeCoreException {
+   private void addTxsToBranchModel(BranchModel branchModel, TransactionRecord toAdd) throws OseeCoreException {
       TxModel txModel = getOrCreateTxModel(TxData.createTxData(toAdd));
       branchModel.addTx(txModel);
    }

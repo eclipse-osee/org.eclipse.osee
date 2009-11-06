@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Roberto E. Escobar
@@ -119,8 +119,8 @@ public class TxData {
             getBranch().getName(), getComment());
    }
 
-   protected static TxData createTxData(TransactionId txId) {
-      return new TxData(txId.getBranch(), txId.getAuthorArtId(), txId.getDate(), txId.getComment(),
-            txId.getTxType().getId(), txId.getCommitArtId(), txId.getTransactionNumber());
+   protected static TxData createTxData(TransactionRecord txId) {
+      return new TxData(txId.getBranch(), txId.getAuthor(), txId.getDate(), txId.getComment(),
+            txId.getTxType().getId(), txId.getCommit(), txId.getId());
    }
 }

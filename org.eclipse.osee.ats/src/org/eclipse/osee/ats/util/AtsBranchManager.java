@@ -62,8 +62,8 @@ import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -103,10 +103,10 @@ public class AtsBranchManager {
                return;
             }
             MergeView.openView(getWorkingBranch(), branch,
-                  TransactionIdManager.getStartEndPoint(getWorkingBranch()).getFirst());
+                  TransactionManager.getStartEndPoint(getWorkingBranch()).getFirst());
 
          } else if (isCommittedBranchExists()) {
-            TransactionId transactionId = getTransactionIdOrPopupChoose("Show Merge Manager", true);
+            TransactionRecord transactionId = getTransactionIdOrPopupChoose("Show Merge Manager", true);
             if (transactionId == null) {
                return;
             }
@@ -155,8 +155,8 @@ public class AtsBranchManager {
       if (branches.contains(branch)) {
          return CommitStatus.Committed;
       }
-      Collection<TransactionId> transactions = TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
-      for (TransactionId transId : transactions) {
+      Collection<TransactionRecord> transactions = TransactionManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
+      for (TransactionRecord transId : transactions) {
          if (transId.getBranch().equals(branch)) {
             if (smaMgr.getBranchMgr().isMergeBranchExists(branch)) {
                return CommitStatus.Committed_With_Merge;
@@ -181,10 +181,10 @@ public class AtsBranchManager {
 
    public void showMergeManager(Branch destinationBranch) throws OseeCoreException {
       if (isWorkingBranchInWork()) {
-         MergeView.openView(getWorkingBranch(), destinationBranch, TransactionIdManager.getStartEndPoint(
+         MergeView.openView(getWorkingBranch(), destinationBranch, TransactionManager.getStartEndPoint(
                getWorkingBranch()).getFirst());
       } else if (isCommittedBranchExists()) {
-         for (TransactionId transactionId : getTransactionIds(true)) {
+         for (TransactionRecord transactionId : getTransactionIds(true)) {
             if (transactionId.getBranch() == destinationBranch) {
                MergeView.openView(transactionId);
 
@@ -253,9 +253,9 @@ public class AtsBranchManager {
       }
    }
 
-   public Collection<TransactionId> getTransactionIdsForBaslineBranches() throws OseeCoreException {
-      Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
-      for (TransactionId transactionId : TransactionIdManager.getCommittedArtifactTransactionIds(smaMgr.getSma())) {
+   public Collection<TransactionRecord> getTransactionIdsForBaslineBranches() throws OseeCoreException {
+      Collection<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
+      for (TransactionRecord transactionId : TransactionManager.getCommittedArtifactTransactionIds(smaMgr.getSma())) {
          // exclude working branches including branch states that are re-baselined 
          if (transactionId.getBranch().getBranchType().isBaselineBranch()) {
             transactionIds.add(transactionId);
@@ -267,12 +267,12 @@ public class AtsBranchManager {
    /**
     * @return TransactionId associated with this state machine artifact
     */
-   public Collection<TransactionId> getTransactionIds(boolean showMergeManager) throws OseeCoreException {
+   public Collection<TransactionRecord> getTransactionIds(boolean showMergeManager) throws OseeCoreException {
       if (showMergeManager) {
          Branch workingBranch = getWorkingBranch();
          // grab only the transaction that had merge conflicts
-         Collection<TransactionId> transactionIds = new ArrayList<TransactionId>();
-         for (TransactionId transactionId : getTransactionIdsForBaslineBranches()) {
+         Collection<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
+         for (TransactionRecord transactionId : getTransactionIdsForBaslineBranches()) {
             if (isMergeBranchExists(workingBranch, transactionId.getBranch())) {
                transactionIds.add(transactionId);
             }
@@ -283,14 +283,14 @@ public class AtsBranchManager {
       }
    }
 
-   public TransactionId getEarliestTransactionId() throws OseeCoreException {
-      Collection<TransactionId> transactionIds = getTransactionIds(false);
+   public TransactionRecord getEarliestTransactionId() throws OseeCoreException {
+      Collection<TransactionRecord> transactionIds = getTransactionIds(false);
       if (transactionIds.size() == 1) {
          return transactionIds.iterator().next();
       }
-      TransactionId earliestTransactionId = transactionIds.iterator().next();
-      for (TransactionId transactionId : transactionIds) {
-         if (transactionId.getTransactionNumber() < earliestTransactionId.getTransactionNumber()) {
+      TransactionRecord earliestTransactionId = transactionIds.iterator().next();
+      for (TransactionRecord transactionId : transactionIds) {
+         if (transactionId.getId() < earliestTransactionId.getId()) {
             earliestTransactionId = transactionId;
          }
       }
@@ -305,9 +305,9 @@ public class AtsBranchManager {
     * @return
     * @throws OseeCoreException
     */
-   private TransactionId getTransactionIdOrPopupChoose(String title, boolean showMergeManager) throws OseeCoreException {
-      Collection<TransactionId> transactionIds = new HashSet<TransactionId>();
-      for (TransactionId id : getTransactionIds(showMergeManager)) {
+   private TransactionRecord getTransactionIdOrPopupChoose(String title, boolean showMergeManager) throws OseeCoreException {
+      Collection<TransactionRecord> transactionIds = new HashSet<TransactionRecord>();
+      for (TransactionRecord id : getTransactionIds(showMergeManager)) {
          // ignore working branches that have been committed
          if (id.getBranch().getBranchType().isWorkingBranch() && id.getBranch().getBranchState().isCommitted()) {
             continue;
@@ -331,9 +331,9 @@ public class AtsBranchManager {
             if (e1 == null || e2 == null) {
                return 0;
             }
-            if (((TransactionId) e1).getTransactionNumber() < ((TransactionId) e2).getTransactionNumber()) {
+            if (((TransactionRecord) e1).getId() < ((TransactionRecord) e2).getId()) {
                return -1;
-            } else if (((TransactionId) e1).getTransactionNumber() > ((TransactionId) e2).getTransactionNumber()) {
+            } else if (((TransactionRecord) e1).getId() > ((TransactionRecord) e2).getId()) {
                return 1;
             }
             return 0;
@@ -343,7 +343,7 @@ public class AtsBranchManager {
       ld.setMessage("Select Commit Branch");
       ld.setInput(transactionIds);
       if (ld.open() == 0) {
-         return (TransactionId) ld.getResult()[0];
+         return (TransactionRecord) ld.getResult()[0];
       }
       return null;
    }
@@ -432,7 +432,7 @@ public class AtsBranchManager {
          if (isWorkingBranchInWork()) {
             ChangeView.open(getWorkingBranch());
          } else if (isCommittedBranchExists()) {
-            TransactionId transactionId = getTransactionIdOrPopupChoose("Show Change Report", false);
+            TransactionRecord transactionId = getTransactionIdOrPopupChoose("Show Change Report", false);
             if (transactionId == null) {
                return;
             }
@@ -450,7 +450,7 @@ public class AtsBranchManager {
     */
    public void showChangeReportForBranch(Branch destinationBranch) {
       try {
-         for (TransactionId transactionId : getTransactionIds(false)) {
+         for (TransactionRecord transactionId : getTransactionIds(false)) {
             if (transactionId.getBranch() == destinationBranch) {
                ChangeView.open(transactionId);
             }
@@ -597,7 +597,7 @@ public class AtsBranchManager {
 
    public Collection<Branch> getBranchesCommittedTo() throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
-      for (TransactionId transId : getTransactionIds(false)) {
+      for (TransactionRecord transId : getTransactionIds(false)) {
          branches.add(transId.getBranch());
       }
       return branches;
@@ -892,8 +892,8 @@ public class AtsBranchManager {
    /**
     * Since change data for a committed branch is not going to change, cache it per run instance of OSEE
     */
-   private static final Map<TransactionId, ChangeData> changeDataCacheForCommittedBranch =
-         new HashMap<TransactionId, ChangeData>();
+   private static final Map<TransactionRecord, ChangeData> changeDataCacheForCommittedBranch =
+         new HashMap<TransactionRecord, ChangeData>();
 
    public ChangeData getChangeDataFromEarliestTransactionId() throws OseeCoreException {
       return getChangeData(null);
@@ -914,11 +914,11 @@ public class AtsBranchManager {
       if (smaMgr.getBranchMgr().isWorkingBranchInWork()) {
          changeData = new ChangeData(ChangeManager.getChangesPerBranch(getWorkingBranch(), new NullProgressMonitor()));
       } else if (smaMgr.getBranchMgr().isCommittedBranchExists()) {
-         TransactionId transactionId = null;
+         TransactionRecord transactionId = null;
          if (commitConfigArt == null) {
             transactionId = getEarliestTransactionId();
          } else {
-            for (TransactionId transId : getTransactionIds(false)) {
+            for (TransactionRecord transId : getTransactionIds(false)) {
                if (transId.getBranch() == commitConfigArt.getParentBranch()) {
                   transactionId = transId;
                }

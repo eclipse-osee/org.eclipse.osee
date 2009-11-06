@@ -277,8 +277,8 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
       sb.append(AXml.addTagData("gamma", String.valueOf(change.getGamma())));
       sb.append(AXml.addTagData("artId", String.valueOf(change.getArtId())));
-      sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getTransactionNumber())));
-      sb.append(AXml.addTagData("fTranId", String.valueOf(change.getFromTransactionId().getTransactionNumber())));
+      sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getId())));
+      sb.append(AXml.addTagData("fTranId", String.valueOf(change.getFromTransactionId().getId())));
       sb.append(AXml.addTagData("mType", String.valueOf(change.getModificationType().name())));
       sb.append(AXml.addTagData("cType", String.valueOf(change.getChangeType().name())));
       sb.append(AXml.addTagData("bArtId", String.valueOf(change.getBArtId())));
@@ -297,8 +297,8 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
       sb.append(AXml.addTagData("gamma", String.valueOf(change.getGamma())));
       sb.append(AXml.addTagData("artId", String.valueOf(change.getArtId())));
-      sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getTransactionNumber())));
-      sb.append(AXml.addTagData("fTranId", String.valueOf(change.getFromTransactionId().getTransactionNumber())));
+      sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getId())));
+      sb.append(AXml.addTagData("fTranId", String.valueOf(change.getFromTransactionId().getId())));
       sb.append(AXml.addTagData("mType", String.valueOf(change.getModificationType().name())));
       sb.append(AXml.addTagData("cType", String.valueOf(change.getChangeType().name())));
       sb.append(AXml.addTagData("hist", String.valueOf(change.isHistorical())));
@@ -311,8 +311,8 @@ public class ValidateChangeReports extends XNavigateItemAction {
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
       sb.append(AXml.addTagData("gamma", String.valueOf(change.getGamma())));
       sb.append(AXml.addTagData("artId", String.valueOf(change.getArtId())));
-      sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getTransactionNumber())));
-      sb.append(AXml.addTagData("fTranId", String.valueOf(change.getFromTransactionId().getTransactionNumber())));
+      sb.append(AXml.addTagData("tTranId", String.valueOf(change.getToTransactionId().getId())));
+      sb.append(AXml.addTagData("fTranId", String.valueOf(change.getFromTransactionId().getId())));
       sb.append(AXml.addTagData("mType", String.valueOf(change.getModificationType().name())));
       sb.append(AXml.addTagData("cType", String.valueOf(change.getChangeType().name())));
       sb.append(AXml.addTagData("aModType", String.valueOf(change.getArtModType().name())));

@@ -15,8 +15,8 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -36,8 +36,8 @@ public class CopyTransactionDataToBaseline extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       Branch branch = variableMap.getBranch("Branch");
       int txNumber = Integer.parseInt(variableMap.getString("From Transaction Number"));
-      TransactionId fromTransactionId = TransactionIdManager.getTransactionId(txNumber);
-      TransactionId baseLineTransaction = TransactionIdManager.getStartEndPoint(branch).getSecond();
+      TransactionRecord fromTransactionId = TransactionManager.getTransactionId(txNumber);
+      TransactionRecord baseLineTransaction = TransactionManager.getStartEndPoint(branch).getSecond();
 
       ConnectionHandler.runPreparedUpdate(COPY_TX_DATA, baseLineTransaction, fromTransactionId);
 

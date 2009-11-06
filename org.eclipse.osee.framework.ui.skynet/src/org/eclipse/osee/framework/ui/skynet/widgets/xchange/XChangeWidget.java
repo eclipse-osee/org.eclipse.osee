@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -77,7 +77,7 @@ public class XChangeWidget extends XWidget implements IActionable {
    private static final String NOT_CHANGES = "No changes were found";
    protected Label extraInfoLabel;
    private Branch branch;
-   private TransactionId transactionId;
+   private TransactionRecord transactionId;
 
    /**
     * @param label
@@ -190,7 +190,7 @@ public class XChangeWidget extends XWidget implements IActionable {
                   associatedArtifact = branch.getAssociatedArtifact().getFullArtifact();
                } else if (transactionId != null) {
                   associatedArtifact =
-                        ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), BranchManager.getCommonBranch());
+                        ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
                }
                if (associatedArtifact == null) {
                   AWorkbench.popup("ERROR", "Can not access associated artifact.");
@@ -238,9 +238,9 @@ public class XChangeWidget extends XWidget implements IActionable {
          Artifact associatedArtifact = null;
          if (branch != null) {
             associatedArtifact = branch.getAssociatedArtifact().getFullArtifact();
-         } else if (transactionId != null && transactionId.getCommitArtId() != 0) {
+         } else if (transactionId != null && transactionId.getCommit() != 0) {
             associatedArtifact =
-                  ArtifactQuery.getArtifactFromId(transactionId.getCommitArtId(), BranchManager.getCommonBranch());
+                  ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
          }
          if (associatedArtifact != null && !(associatedArtifact instanceof User)) {
             associatedArtifactToolItem.setImage(ImageManager.getImage(associatedArtifact));
@@ -316,7 +316,7 @@ public class XChangeWidget extends XWidget implements IActionable {
       return xChangeViewer.getInput();
    }
 
-   public void setInputData(final Branch branch, final TransactionId transactionId, final boolean loadChangeReport) {
+   public void setInputData(final Branch branch, final TransactionRecord transactionId, final boolean loadChangeReport) {
       this.branch = branch;
       this.transactionId = transactionId;
 
@@ -347,7 +347,7 @@ public class XChangeWidget extends XWidget implements IActionable {
                                  String.format(
                                        "Changes %s to branch: %s\n%s",
                                        hasBranch || transactionId.getComment() == null ? "made" : "committed",
-                                       hasBranch ? branch : "(" + transactionId.getTransactionNumber() + ") " + transactionId.getBranch(),
+                                       hasBranch ? branch : "(" + transactionId.getId() + ") " + transactionId.getBranch(),
                                        hasBranch || transactionId.getComment() == null ? "" : "Comment: " + transactionId.getComment());
                            extraInfoLabel.setText(infoLabel);
                            xChangeViewer.setInput(changes);
@@ -428,12 +428,12 @@ public class XChangeWidget extends XWidget implements IActionable {
          sb.append("\nBranch: " + branch);
       }
       if (transactionId != null) {
-         sb.append("\nTransaction Id: " + transactionId.getTransactionNumber());
+         sb.append("\nTransaction Id: " + transactionId.getId());
       }
       return sb.toString();
    }
 
-   public TransactionId getTransactionId() throws OseeCoreException {
+   public TransactionRecord getTransactionId() throws OseeCoreException {
       return transactionId;
    }
 

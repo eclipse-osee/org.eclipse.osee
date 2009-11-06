@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -48,14 +48,14 @@ public class BranchCreationHandler extends CommandHandler {
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Object backingData = selection.getFirstElement();
 
-      final TransactionId parentTransactionId;
+      final TransactionRecord parentTransactionId;
       try {
          if (backingData instanceof Branch) {
             Branch branch = (Branch) backingData;
-            parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(branch);
-         } else if (backingData instanceof TransactionId) {
+            parentTransactionId = TransactionManager.getLastTransaction(branch);
+         } else if (backingData instanceof TransactionRecord) {
 
-            parentTransactionId = (TransactionId) backingData;
+            parentTransactionId = (TransactionRecord) backingData;
 
          } else {
             throw new OseeStateException(
@@ -107,8 +107,8 @@ public class BranchCreationHandler extends CommandHandler {
 
       if (object instanceof Branch) {
          branch = (Branch) object;
-      } else if (object instanceof TransactionId) {
-         branch = ((TransactionId) object).getBranch();
+      } else if (object instanceof TransactionRecord) {
+         branch = ((TransactionRecord) object).getBranch();
       }
 
       if (branch == null) {

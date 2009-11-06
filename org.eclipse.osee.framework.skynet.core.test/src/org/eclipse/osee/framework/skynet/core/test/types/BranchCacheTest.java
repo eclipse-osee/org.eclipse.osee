@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
@@ -138,11 +138,11 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
 
       Assert.assertNull(branch.getBaseTransaction());
 
-      TransactionId expectedTx =
-            new TransactionId(1, branch, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.Baselined);
+      TransactionRecord expectedTx =
+            new TransactionRecord(1, branch, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.Baselined);
       cache.cacheBaseTransaction(branch, expectedTx);
 
-      TransactionId actualTx = branch.getBaseTransaction();
+      TransactionRecord actualTx = branch.getBaseTransaction();
       Assert.assertEquals(expectedTx, actualTx);
    }
 
@@ -150,8 +150,8 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
    public void testInvalidBaseTransactionCaching() throws OseeCoreException {
       Branch branch = cache.getByGuid("BBB");
       Assert.assertNotNull(branch);
-      TransactionId expectedTx =
-            new TransactionId(1, branch, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.NonBaselined);
+      TransactionRecord expectedTx =
+            new TransactionRecord(1, branch, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.NonBaselined);
 
       try {
          cache.cacheBaseTransaction(null, expectedTx);
@@ -182,11 +182,11 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
 
       Assert.assertNull(branch.getSourceTransaction());
 
-      TransactionId expectedTx =
-            new TransactionId(1, null, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.NonBaselined);
+      TransactionRecord expectedTx =
+            new TransactionRecord(1, null, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.NonBaselined);
       cache.cacheSourceTransaction(branch, expectedTx);
 
-      TransactionId actualTx = branch.getSourceTransaction();
+      TransactionRecord actualTx = branch.getSourceTransaction();
       Assert.assertEquals(expectedTx, actualTx);
    }
 
@@ -194,8 +194,8 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
    public void testInvalidSourceTransaction() throws OseeCoreException {
       Branch branch = cache.getByGuid("BBB");
       Assert.assertNotNull(branch);
-      TransactionId expectedTx =
-            new TransactionId(1, branch, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.NonBaselined);
+      TransactionRecord expectedTx =
+            new TransactionRecord(1, branch, "Transaction 1", new Date(), 1, 2, TransactionDetailsType.NonBaselined);
       cache.cacheSourceTransaction(branch, expectedTx);
 
       try {

@@ -25,7 +25,6 @@ public enum OseeSql {
 
    TX_GET_ALL_TRANSACTIONS("SELECT * FROM osee_tx_details WHERE transaction_id = ?"),
    TX_GET_MAX_AS_LARGEST_TX("SELECT max(transaction_id) as largest_transaction_id FROM osee_tx_details WHERE branch_id = ?"),
-   TX_GET_MAX_AND_MIN_TX("SELECT max(transaction_id) AS max_id, min(transaction_id) AS min_id FROM osee_tx_details WHERE branch_id = ?"),
    TX_GET_TX_GAMMAS("SELECT txs.transaction_id, txs.gamma_id FROM osee_tx_details txd, osee_txs txs WHERE txd.transaction_id = txs.transaction_id AND txd.branch_id = ? AND txd.transaction_id = ? ORDER BY txs.transaction_id, txs.gamma_id"),
    TX_GET_TX_GAMMAS_RANGE("SELECT txs.transaction_id, txs.gamma_id FROM osee_tx_details txd, osee_txs txs WHERE txd.transaction_id = txs.transaction_id AND txd.branch_id = ? AND txd.transaction_id > ? AND txd.transaction_id <= ? ORDER BY txs.transaction_id, txs.gamma_id"),
    TX_GET_PREVIOUS_TX_NOT_CURRENT_ARTIFACTS("SELECT txs1.transaction_id, txs1.gamma_id FROM osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE arv1.art_id = ? AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = ? AND txs1.tx_current = " + TxChange.CURRENT.getValue()),
