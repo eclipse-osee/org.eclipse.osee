@@ -245,4 +245,8 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       System.out.println("check and close editor");
    }
+
+   public CoverageEditorImportTab getCoverageEditorImportTab() {
+      return coverageEditorImportTab;
+   }
 }

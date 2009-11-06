@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite
 public class CpCreateAndImportItem extends XNavigateItemAction {
 
    private final String blamImportName;
+   private CoveragePackage coveragePackage;
 
    public CpCreateAndImportItem(XNavigateItem parent, String name, String blamImportName) {
       super(parent, name);
@@ -33,7 +34,7 @@ public class CpCreateAndImportItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      CoveragePackage coveragePackage = new CoveragePackage(getName() + " - #" + IncrementingNum.get());
+      coveragePackage = new CoveragePackage(getName() + " - #" + IncrementingNum.get());
       CoverageEditor.open(new CoverageEditorInput(coveragePackage));
       // Process Import 1
       CoverageEditor editor = null;
@@ -51,5 +52,9 @@ public class CpCreateAndImportItem extends XNavigateItemAction {
          return;
       }
       editor.simulateImport(blamImportName);
+   }
+
+   public CoveragePackage getCoveragePackage() {
+      return coveragePackage;
    }
 }

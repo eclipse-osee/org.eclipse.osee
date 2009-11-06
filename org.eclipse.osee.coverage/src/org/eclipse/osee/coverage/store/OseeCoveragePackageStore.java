@@ -38,13 +38,13 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       this.coveragePackage = coveragePackage;
    }
 
+   public CoveragePackage getCoveragePackage() {
+      return coveragePackage;
+   }
+
    public static CoveragePackage get(Artifact artifact) throws OseeCoreException {
       OseeCoveragePackageStore packageStore = new OseeCoveragePackageStore(artifact);
       return packageStore.getCoveragePackage();
-   }
-
-   public CoveragePackage getCoveragePackage() {
-      return coveragePackage;
    }
 
    public void load() throws OseeCoreException {

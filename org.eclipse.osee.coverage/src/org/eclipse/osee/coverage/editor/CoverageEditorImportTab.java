@@ -306,4 +306,8 @@ public class CoverageEditorImportTab extends FormPage {
 
    };
 
+   public CoverageImport getCoverageImport() {
+      return coverageImport;
+   }
+
 }
