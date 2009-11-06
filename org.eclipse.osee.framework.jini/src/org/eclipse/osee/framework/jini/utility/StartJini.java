@@ -135,7 +135,7 @@ public class StartJini extends JiniService {
       try {
          while ((line = reader.readLine()) != null) {
             wr.append(line);
-            OseeLog.log(StartJini.class, Level.SEVERE, "err: " + line + "\n");
+            OseeLog.log(StartJini.class, Level.INFO, "err: " + line + "\n");
             Matcher reggieStartMatcher = reggieStartPattern.matcher(wr);
             if (!wr.toString().contains(reggieFail)) {
                if (reggieStartMatcher.matches()) {

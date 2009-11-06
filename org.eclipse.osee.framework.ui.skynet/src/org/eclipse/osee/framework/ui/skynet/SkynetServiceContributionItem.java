@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet;
 
+import java.util.ArrayList;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.osee.framework.skynet.core.event.IRemoteEventManagerEventListener;
@@ -34,11 +35,44 @@ public class SkynetServiceContributionItem extends OseeContributionItem implemen
          new OverlayImage(ENABLED_IMAGE, ImageManager.getImageDescriptor(FrameworkImage.SLASH_RED_OVERLAY)).createImage();
    private static final String ENABLED_TOOLTIP = "Remote event service is connected.";
    private static final String DISABLED_TOOLTIP = "Remote event service is disconnected.";
+   private static Thread updateThread = null;
+   private static ArrayList<SkynetServiceContributionItem> icons = new ArrayList<SkynetServiceContributionItem>();
+   private static final int FOUR_MINUTES = 1000 * 60 * 4;
+   private static Runnable threadRunnable = new Runnable() {
+      @Override
+      public void run() {
+         int i = 0;
+         do {
+            int j = 0;
+            i++;
+            boolean status = RemoteEventManager.isConnected();
+            for (SkynetServiceContributionItem icon : icons) {
+               icon.updateStatus(status);
+               System.out.println(String.format("Refresh[%s][%s]", i, ++j));
+            }
+            try {
+               Thread.sleep(FOUR_MINUTES);
+            } catch (InterruptedException ex) {
+               return;
+            }
+         } while (true);
+      }
+   };
 
    public SkynetServiceContributionItem() {
       super(ID);
       updateStatus(RemoteEventManager.isConnected());
       OseeEventManager.addListener(this);
+      icons.add(this);
+      createUpdateThread();
+   }
+
+   private static void createUpdateThread() {
+      if (updateThread == null) {
+         System.out.println("Thread added");
+         updateThread = new Thread(threadRunnable, "Event Service Icon Updater");
+         updateThread.start();
+      }
    }
 
    public static void addTo(IStatusLineManager manager) {
