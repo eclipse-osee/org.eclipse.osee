@@ -193,4 +193,8 @@ public class XBranchSelectWidget extends XWidget implements Listener {
       selectComposite.setSelected(branch);
    }
 
+   public BranchSelectComposite getSelectComposite() {
+      return selectComposite;
+   }
+
 }

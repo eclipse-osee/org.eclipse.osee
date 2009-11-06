@@ -67,6 +67,14 @@ public class BranchSelectComposite extends Composite implements Listener {
       branchSelectTextWidget.setLayoutData(data);
       branchSelectTextWidget.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
       branchSelectTextWidget.setText(" -- Select A Branch -- ");
+      branchSelectTextWidget.setDoubleClickEnabled(false);
+      branchSelectTextWidget.addListener(SWT.MouseDoubleClick, new Listener() {
+         @Override
+         public void handleEvent(Event event) {
+            handleSelectedBranch(event);
+            notifyListener(event);
+         }
+      });
 
       branchSelectButton = new Button(parent, SWT.PUSH);
       branchSelectButton.setText("Select Branch...");
@@ -96,7 +104,12 @@ public class BranchSelectComposite extends Composite implements Listener {
    }
 
    public void handleEvent(Event event) {
-      if (event.widget == branchSelectButton) {
+      handleSelectedBranch(event);
+      notifyListener(event);
+   }
+
+   private void handleSelectedBranch(Event event) {
+      if (event.widget == branchSelectButton || (event.widget == branchSelectTextWidget && branchSelectTextWidget.getDoubleClickEnabled())) {
          if (areOnlyWorkingBranchesAllowed()) {
             Branch newBranch = BranchSelectionDialog.getWorkingBranchFromUser();
             if (newBranch != null) {
@@ -109,7 +122,6 @@ public class BranchSelectComposite extends Composite implements Listener {
             }
          }
       }
-      notifyListener(event);
    }
 
    public void setSelected(Branch branch) {

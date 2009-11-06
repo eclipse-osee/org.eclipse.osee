@@ -128,7 +128,12 @@ public class QuickSearchView extends ViewPart implements IActionable, Listener {
       branchSelect.setDisplayLabel(false);
       branchSelect.createWidgets(parent, 2);
       branchSelect.addListener(this);
-
+      // allow user to double click the branch text area to select the branch
+      if (Widgets.isAccessible(branchSelect.getSelectComposite())) {
+         if (Widgets.isAccessible(branchSelect.getSelectComposite().getBranchSelectText())) {
+            branchSelect.getSelectComposite().getBranchSelectText().setDoubleClickEnabled(true);
+         }
+      }
       OseeContributionItem.addTo(this, true);
 
       createActions();
