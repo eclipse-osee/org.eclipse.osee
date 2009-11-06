@@ -115,29 +115,7 @@ public class SearchComposite extends Composite implements Listener {
    }
 
    private void createButtonBar(Composite parent) {
-      this.clear = new Button(parent, SWT.NONE);
-      this.clear.setText("Clear History");
-      this.clear.addSelectionListener(new SelectionAdapter() {
-         @Override
-         public void widgetSelected(SelectionEvent e) {
-            if (searchArea.getItemCount() > 0) {
-               searchArea.removeAll();
-            }
-         }
-      });
-      this.clear.addListener(SWT.Selection, this);
-      this.clear.setEnabled(false);
-      this.clear.setFont(getFont());
-      this.clear.setToolTipText(CLEAR_HISTORY_TOOLTIP);
-
-      Composite composite = new Composite(parent, SWT.NONE);
-      GridLayout gL = new GridLayout();
-      gL.marginWidth = 0;
-      gL.marginHeight = 0;
-      composite.setLayout(gL);
-      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-
-      this.executeSearch = new Button(composite, SWT.NONE);
+      this.executeSearch = new Button(parent, SWT.NONE);
       this.executeSearch.setText("Search");
       this.executeSearch.addSelectionListener(new SelectionAdapter() {
 
@@ -153,6 +131,29 @@ public class SearchComposite extends Composite implements Listener {
       this.executeSearch.setEnabled(false);
       this.executeSearch.setFont(getFont());
       this.executeSearch.setToolTipText(SEARCH_BUTTON_TOOLTIP);
+
+      Composite composite = new Composite(parent, SWT.NONE);
+      GridLayout gL = new GridLayout();
+      gL.marginWidth = 0;
+      gL.marginHeight = 0;
+      composite.setLayout(gL);
+      composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+
+      this.clear = new Button(composite, SWT.NONE);
+      this.clear.setText("Clear History");
+      this.clear.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            if (searchArea.getItemCount() > 0) {
+               searchArea.removeAll();
+            }
+         }
+      });
+      this.clear.addListener(SWT.Selection, this);
+      this.clear.setEnabled(false);
+      this.clear.setFont(getFont());
+      this.clear.setToolTipText(CLEAR_HISTORY_TOOLTIP);
+
    }
 
    private void updateFromSourceField() {
