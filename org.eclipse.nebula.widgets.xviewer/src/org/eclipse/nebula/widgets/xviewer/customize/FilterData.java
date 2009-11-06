@@ -29,6 +29,10 @@ public class FilterData {
       return filterText;
    }
 
+   public boolean isFiltering() {
+      return filterText != null && !filterText.equals("");
+   }
+
    /**
     * @param filterText the filterText to set
     */

@@ -75,6 +75,12 @@ public class FilterDataUI {
       });
    }
 
+   public void update() {
+      if (!xViewer.getCustomizeMgr().getFilterText().equals(filterText.getText())) {
+         filterText.setText(xViewer.getCustomizeMgr().getFilterText());
+      }
+   }
+
    public void setFocus() {
       if (filterText != null && !filterText.isDisposed()) {
          filterText.setFocus();

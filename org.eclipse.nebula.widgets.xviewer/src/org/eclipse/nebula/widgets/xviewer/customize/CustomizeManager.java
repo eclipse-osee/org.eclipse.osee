@@ -459,9 +459,11 @@ public class CustomizeManager {
       currentCustData.setNameSpace(xViewer.getViewerNamespace());
       if (currentCustData.getSortingData().isSorting()) {
          xViewer.resetDefaultSorter();
-         xViewerTextFilter.update();
-      } else
+      } else {
          xViewer.setSorter(null);
+      }
+      xViewer.getFilterDataUI().update();
+      xViewerTextFilter.update();
       // Dispose all existing columns
       for (TreeColumn treeCol : xViewer.getTree().getColumns())
          treeCol.dispose();
