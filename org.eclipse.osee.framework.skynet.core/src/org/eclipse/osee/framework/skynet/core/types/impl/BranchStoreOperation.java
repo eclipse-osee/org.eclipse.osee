@@ -168,7 +168,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
    private Object[] toUpdateValues(Branch type) throws OseeCoreException {
       Branch parentBranch = type.getParentBranch();
       int parentBranchId = parentBranch != null ? parentBranch.getId() : DatabaseBranchAccessor.NULL_PARENT_BRANCH_ID;
-      return new Object[] {type.getName(), parentBranchId, type.getBaseTransaction().getTransactionNumber(),
+      return new Object[] {type.getName(), parentBranchId, type.getBaseTransaction().getId(),
             type.getArchiveState().getValue(), type.getAssociatedArtifact().getArtId(),
             type.getBranchType().getValue(), type.getBranchState().getValue(), type.getId()};
    }
