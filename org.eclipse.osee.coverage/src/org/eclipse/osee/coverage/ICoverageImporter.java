@@ -17,5 +17,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
  */
 public interface ICoverageImporter {
 
+   public String getName();
+
    public CoverageImport run();
 }

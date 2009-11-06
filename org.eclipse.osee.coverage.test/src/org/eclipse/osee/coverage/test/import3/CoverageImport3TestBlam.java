@@ -11,59 +11,32 @@
 package org.eclipse.osee.coverage.test.import3;
 
 import java.util.Arrays;
-import java.util.Collection;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
-import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
-import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
-import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
-import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayout;
-import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.osee.coverage.test.util.CoverageImportTestBlam;
 
 /**
  * @author Donald G. Dunne
  */
-public class CoverageImport3TestBlam extends AbstractCoverageBlam {
+public class CoverageImport3TestBlam extends CoverageImportTestBlam {
 
-   public static String COVERAGE_IMPORT_DIR = "Coverage Import Directory";
    public static String NAME = "Test Import 3";
 
-   @Override
-   public String getName() {
-      return NAME;
-   }
-
-   @Override
-   public void widgetCreated(XWidget xWidget, FormToolkit toolkit, Artifact art, DynamicXWidgetLayout dynamicXWidgetLayout, XModifiedListener modListener, boolean isEditable) throws OseeCoreException {
-      super.widgetCreated(xWidget, toolkit, art, dynamicXWidgetLayout, modListener, isEditable);
-   }
-
-   @Override
-   public String getXWidgetsXml() {
-      return XWidgetParser.EMPTY_WIDGETS;
-   }
-
-   @Override
-   public String getDescriptionUsage() {
-      return "Import from test area.";
-   }
-
-   @Override
-   public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            setCoverageImport(new CoverageImport3TestNavigateItem().run());
-         };
-      });
-   }
-
-   @Override
-   public Collection<String> getCategories() {
-      return Arrays.asList("ATS");
+   public CoverageImport3TestBlam() {
+      super(NAME, Arrays.asList(
+            //
+            "import3/com/screenA/ComScrnAButton1.java",
+            "import1/com/screenA/ComScrnAButton2.java",
+            //
+            "import1/com/screenB/ScreenBButton1.java", "import1/com/screenB/ScreenBButton2.java",
+            "import1/com/screenB/ScreenBButton3.java",
+            //
+            "import3/epu/PowerUnit1.java", "import1/epu/PowerUnit2.java",
+            //
+            "import1/apu/AuxPowerUnit1.java", "import1/apu/AuxPowerUnit2.java",
+            //
+            "import1/nav/NavigationButton1.java", "import1/nav/NavigationButton2.java",
+            "import1/nav/NavigationButton3.java"
+      //
+      ));
    }
 
 }

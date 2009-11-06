@@ -18,7 +18,7 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.test.SampleJavaFileParser;
-import org.eclipse.osee.coverage.test.import1.CoverageImport1TestNavigateItem;
+import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
 import org.eclipse.osee.coverage.test.util.CoverageTestUtil;
 import org.eclipse.osee.coverage.util.CoveragePackageImportManager;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -68,7 +68,7 @@ public class CoverageUnitPersistTest {
          //
          )) {
             System.err.println(String.format("Importing [%s]", PATH + filename));
-            URL url = CoverageImport1TestNavigateItem.class.getResource(PATH + filename);
+            URL url = CoverageImport1TestBlam.class.getResource(PATH + filename);
             CoverageUnit coverageUnit = SampleJavaFileParser.createCodeUnit(url);
             String namespace = coverageUnit.getNamespace().replaceFirst("org.eclipse.osee.coverage.test.import1.", "");
             coverageUnit.setNamespace(namespace);

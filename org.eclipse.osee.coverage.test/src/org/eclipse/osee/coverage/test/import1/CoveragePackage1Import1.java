@@ -10,47 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test.import1;
 
-import org.eclipse.osee.coverage.editor.CoverageEditor;
-import org.eclipse.osee.coverage.editor.CoverageEditorInput;
-import org.eclipse.osee.coverage.model.CoveragePackage;
-import org.eclipse.osee.framework.skynet.core.utility.IncrementingNum;
-import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.coverage.test.util.CpCreateAndImportItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
-import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
 
 /**
  * @author Donald G. Dunne
  */
-public class CoveragePackage1Import1 extends XNavigateItemAction {
-
-   public CoveragePackage1Import1() {
-      super(null, "");
-   }
+public class CoveragePackage1Import1 extends CpCreateAndImportItem {
 
    public CoveragePackage1Import1(XNavigateItem parent) {
-      super(parent, "Open CP 1 - Import 1 - New CP");
-   }
-
-   @Override
-   public void run(TableLoadOption... tableLoadOptions) throws Exception {
-      CoveragePackage coveragePackage = new CoveragePackage(getName() + " - #" + IncrementingNum.get());
-      CoverageEditor.open(new CoverageEditorInput(coveragePackage));
-      // Process Import 1
-      CoverageEditor editor = null;
-      for (CoverageEditor coverageEditor : CoverageEditor.getEditors()) {
-         if (coverageEditor.getCoverageEditorInput().getCoveragePackageBase() instanceof CoveragePackage) {
-            CoveragePackage editorPackage =
-                  (CoveragePackage) coverageEditor.getCoverageEditorInput().getCoveragePackageBase();
-            if (editorPackage.getGuid().equals(coveragePackage.getGuid())) {
-               editor = coverageEditor;
-            }
-         }
-      }
-      if (editor == null) {
-         AWorkbench.popup("Can't access opened Editor");
-         return;
-      }
-      editor.simulateImport(CoverageImport1TestBlam.NAME);
+      super(parent, "Open CP 1 - Import 1 - New CP", CoverageImport1TestBlam.NAME);
    }
 }

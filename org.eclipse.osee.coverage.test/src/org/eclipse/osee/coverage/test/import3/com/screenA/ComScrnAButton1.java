@@ -38,17 +38,8 @@ public class ComScrnAButton1 extends Button {
    }
 
    @Override
-   public String getText() {
-      try {
-         if (getStyle() == 4) { // 1, 1, TestUnit1|TestUnit2
-            return "Navigate Here"; // 1, 2, TestUnit2
-         } else {
-            return "Navigate There"; // 1, 3, TestUnit3|TestUnit4
-         }
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex); // 1, 4, n
-      }
-      return "Navigate";
+   public void setText(String string) {
+      super.setText(string); // 3, 1, n
    }
 
    @Override
@@ -69,8 +60,17 @@ public class ComScrnAButton1 extends Button {
    }
 
    @Override
-   public void setText(String string) {
-      super.setText(string); // 3, 1, n
+   public String getText() {
+      try {
+         if (getStyle() == 4) { // 1, 1, TestUnit1|TestUnit2
+            return "Navigate Here"; // 1, 2, TestUnit2
+         } else {
+            return "Navigate There"; // 1, 3, TestUnit3|TestUnit4
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex); // 1, 4, n
+      }
+      return "Navigate";
    }
 
 }

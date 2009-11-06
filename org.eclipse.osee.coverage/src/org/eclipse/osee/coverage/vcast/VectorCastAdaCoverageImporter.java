@@ -141,4 +141,9 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
       return coverageImport;
    }
 
+   @Override
+   public String getName() {
+      return "VectorCast Import";
+   }
+
 }
