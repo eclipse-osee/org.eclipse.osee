@@ -157,9 +157,4 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
          return verificationLevel.equals("Unspecified");
       }
    }
-
-   @Override
-   public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" defaultValue=\"NGFCZ - Update verification level for PIDS requirements traced to TPS/TIS - Update verification level for PIDS requ...\"/></xWidgets>";
-   }
 }
