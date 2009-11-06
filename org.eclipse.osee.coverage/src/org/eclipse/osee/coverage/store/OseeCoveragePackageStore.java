@@ -51,6 +51,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       coveragePackage.clearCoverageUnits();
       getArtifact(false);
       if (artifact != null) {
+         coveragePackage.setGuid(artifact.getGuid());
          coveragePackage.setName(artifact.getName());
          KeyValueArtifact keyValueArtifact =
                new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);

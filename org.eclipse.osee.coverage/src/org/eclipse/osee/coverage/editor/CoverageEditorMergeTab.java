@@ -205,43 +205,46 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       xImportViewer2.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       linkWithImportItemAction.setImportXViewer(xImportViewer2);
-      (new ActionContributionItem(new Action() {
-         @Override
-         public void run() {
-            loadImportViewer();
-         }
-
-         @Override
-         public ImageDescriptor getImageDescriptor() {
-            return ImageManager.getImageDescriptor(FrameworkImage.LOAD);
-         }
-
-         @Override
-         public String getToolTipText() {
-            return "Re-Load";
-         }
-
-      })).fill(rightToolBar, 0);
+      (new ActionContributionItem(reloadAction)).fill(rightToolBar, 0);
       (new ActionContributionItem(new RefreshAction(xPackageViewer1))).fill(rightToolBar, 0);
       (new ActionContributionItem(xImportViewer2.getXViewer().getCustomizeAction())).fill(rightToolBar, 0);
       (new ActionContributionItem(new CollapseAllAction(xImportViewer2.getXViewer()))).fill(rightToolBar, 0);
       (new ActionContributionItem(new ExpandAllAction(xImportViewer2.getXViewer()))).fill(rightToolBar, 0);
       (new ActionContributionItem(importAction)).fill(rightToolBar, 0);
 
-      loadImportViewer();
+      loadImportViewer(false);
    }
 
-   private void loadImportViewer() {
-      if (mergeManager == null) {
+   private void loadImportViewer(boolean force) {
+      if (force || mergeManager == null) {
          mergeManager = new MergeManager(coveragePackage, coverageImport);
       }
       xImportViewer2.getXViewer().setInput(mergeManager.getMergeItems());
    }
+   private Action reloadAction = new Action() {
+      @Override
+      public void run() {
+         loadImportViewer(true);
+      }
+
+      @Override
+      public ImageDescriptor getImageDescriptor() {
+         return ImageManager.getImageDescriptor(FrameworkImage.LOAD);
+      }
+
+      @Override
+      public String getToolTipText() {
+         return "Re-Load";
+      }
+
+   };
+
    private Action importAction = new Action() {
 
       @Override
       public void run() {
          handleImportSelected();
+         loadImportViewer(true);
       }
 
       public org.eclipse.jface.resource.ImageDescriptor getImageDescriptor() {
