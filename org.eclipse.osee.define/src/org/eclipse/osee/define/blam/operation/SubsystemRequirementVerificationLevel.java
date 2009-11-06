@@ -32,7 +32,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
 
    @Override
    public Collection<String> getCategories() {
-      return Arrays.asList("Admin");
+      return Arrays.asList("Define");
    }
 
    @Override
@@ -70,7 +70,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       }
 
       report();
-      //    transaction.execute();
+      transaction.execute();
    }
 
    private void report() throws OseeCoreException {
