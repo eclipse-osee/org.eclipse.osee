@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.util.DateUtil;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
@@ -119,7 +120,7 @@ public class SMAMetrics {
          estimatedReleaseDate = versionArtifact.getEstimatedReleaseDate();
       }
       if (estimatedReleaseDate != null && estimatedReleaseDate.after(today)) {
-         daysTillRel = (estimatedReleaseDate.getTime() - today.getTime()) / AtsUtil.MILLISECS_PER_DAY;
+         daysTillRel = DateUtil.getWorkingDaysBetween(today, estimatedReleaseDate);
       }
       str =
             String.format("TeamWFs: %s Tasks: %s EstHrs: %5.2f  %sCmp: %5.2f  RmnHrs: %5.2f  HrsSpnt: %5.2f  %s  %s",
