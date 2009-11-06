@@ -238,6 +238,8 @@ public class AtsMetricsComposite extends ScrolledComposite {
                      ATSAttributes.ESTIMATED_RELEASE_DATE_ATTRIBUTE.getStoreName(), "Not Set")));
          lines.add(new XBarGraphLine("Metrics Estimated Release Date", 0,
                getEstimatedReleaseDate() == null ? "Not Set" : getEstimatedReleaseDate().toString()));
+         lines.add(new XBarGraphLine("Work-Days Till Release", 0,
+               getEstimatedReleaseDate() == null ? "Estimated Release Date Not Set" : sMet.getDaysTillRelStr()));
          double hoursTillRelease = sMet.getHoursTillRel();
          lines.add(new XBarGraphLine("Hours Till Release", 0,
                getEstimatedReleaseDate() == null ? "Estimated Release Date Not Set" : sMet.getHoursTillRelStr()));

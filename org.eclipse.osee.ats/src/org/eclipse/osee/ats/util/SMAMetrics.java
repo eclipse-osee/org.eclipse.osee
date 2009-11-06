@@ -285,6 +285,10 @@ public class SMAMetrics {
             daysTillRel, manHoursPerDay);
    }
 
+   public String getDaysTillRelStr() {
+      return String.format("%d workdays (M-F) till release", daysTillRel);
+   }
+
    /**
     * @param daysTillRel the daysTillRel to set
     */
