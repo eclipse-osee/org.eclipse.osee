@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Jeff C. Phillips
@@ -39,7 +39,7 @@ public class RebaselineDbTransaction extends DbTransaction{
       
       this.branchToUpdate = branchToUpdate;
       this.artifactVersions = artifactVersions;
-      int transactionNumber = TransactionIdManager.getStartEndPoint(branchToUpdate).getFirst().getTransactionNumber();
+      int transactionNumber = TransactionManager.getStartEndPoint(branchToUpdate).getFirst().getId();
       this.updateArtifactHandler = new UpdateArtifactHandler(branchToUpdate, updatingSourceBranch, artifactVersions, transactionNumber, true);
    }
 

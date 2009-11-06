@@ -16,8 +16,8 @@ import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Robert A. Fisher
@@ -29,18 +29,18 @@ public class ArtifactInTransactionSearch implements ISearchPrimitive {
    private static final String tables =
          TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + "," + ARTIFACT_VERSION_TABLE;
 
-   public ArtifactInTransactionSearch(TransactionId transactionNumber) {
+   public ArtifactInTransactionSearch(TransactionRecord transactionNumber) {
       this(transactionNumber, transactionNumber);
    }
 
-   public ArtifactInTransactionSearch(TransactionId fromTransactionId, TransactionId toTransactionId) {
+   public ArtifactInTransactionSearch(TransactionRecord fromTransactionId, TransactionRecord toTransactionId) {
       if (!fromTransactionId.getBranch().equals(toTransactionId.getBranch())) throw new IllegalArgumentException(
             "The fromTransactionId and toTransactionId must be on the same branch");
-      if (fromTransactionId.getTransactionNumber() > toTransactionId.getTransactionNumber()) throw new IllegalArgumentException(
+      if (fromTransactionId.getId() > toTransactionId.getId()) throw new IllegalArgumentException(
             "The fromTransactionId can not be greater than the toTransactionId.");
 
-      this.fromTransactionNumber = fromTransactionId.getTransactionNumber();
-      this.toTransactionNumber = toTransactionId.getTransactionNumber();
+      this.fromTransactionNumber = fromTransactionId.getId();
+      this.toTransactionNumber = toTransactionId.getId();
    }
 
    public String getArtIdColName() {
@@ -82,7 +82,7 @@ public class ArtifactInTransactionSearch implements ISearchPrimitive {
          throw new IllegalArgumentException("Unable to parse the storage string:" + storageString);
       }
 
-      return new ArtifactInTransactionSearch(TransactionIdManager.getTransactionId(Integer.parseInt(values[0])),
-            TransactionIdManager.getTransactionId(Integer.parseInt(values[1])));
+      return new ArtifactInTransactionSearch(TransactionManager.getTransactionId(Integer.parseInt(values[0])),
+            TransactionManager.getTransactionId(Integer.parseInt(values[1])));
    }
 }

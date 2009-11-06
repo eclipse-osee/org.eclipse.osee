@@ -11,7 +11,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Jeff C. Phillips
@@ -26,7 +26,7 @@ public final class AttributeChangeBuilder extends ChangeBuilder{
    
 
 
-   public AttributeChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType) {
+   public AttributeChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical, String isValue, String wasValue, int attrId, int attrTypeId, ModificationType artModType) {
       super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical);
       this.isValue = isValue;

@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Ryan D. Brooks
@@ -175,10 +175,10 @@ public class PurgeTransactionJob extends Job {
          for (int index = 0; index < txsToDelete.length; index++) {
             monitor.subTask(String.format("Fetching Previous Tx Info: [%d of %d]", index + 1, txsToDelete.length));
             int fromTx = txsToDelete[index];
-            TransactionId fromTransaction = TransactionIdManager.getTransactionId(fromTx);
-            TransactionId previousTransaction;
+            TransactionRecord fromTransaction = TransactionManager.getTransactionId(fromTx);
+            TransactionRecord previousTransaction;
             try {
-               previousTransaction = TransactionIdManager.getPriorTransaction(fromTransaction);
+               previousTransaction = TransactionManager.getPriorTransaction(fromTransaction);
             } catch (TransactionDoesNotExist ex) {
                throw new OseeCoreException(
                      "You are trying to delete Transaction: " + fromTx + " which is a baseline transaction.  If your intent is to delete the Branch use the delete Branch Operation.  \n\nNO TRANSACTIONS WERE DELETED.");
@@ -235,9 +235,9 @@ public class PurgeTransactionJob extends Job {
       private int getMinTransaction(Collection<TxDeleteInfo> infos) {
          int toReturn = Integer.MAX_VALUE;
          for (TxDeleteInfo info : infos) {
-            TransactionId previous = info.getPreviousTx();
+            TransactionRecord previous = info.getPreviousTx();
             if (previous != null) {
-               int toCheck = previous.getTransactionNumber();
+               int toCheck = previous.getId();
                toReturn = Math.min(toReturn, toCheck);
             }
          }
@@ -254,12 +254,12 @@ public class PurgeTransactionJob extends Job {
          List<Object[]> data = new ArrayList<Object[]>();
          monitor.subTask("Update Baseline Txs for Child Branches");
          for (TxDeleteInfo entry : transactions.getValues()) {
-            TransactionId previousTransaction = entry.getPreviousTx();
+            TransactionRecord previousTransaction = entry.getPreviousTx();
             if (previousTransaction != null) {
-               int toDeleteTransaction = entry.getTxToDelete().getTransactionNumber();
+               int toDeleteTransaction = entry.getTxToDelete().getId();
 
                data.add(new Object[] {String.valueOf(toDeleteTransaction),
-                     String.valueOf(previousTransaction.getTransactionNumber()), "%" + toDeleteTransaction});
+                     String.valueOf(previousTransaction.getId()), "%" + toDeleteTransaction});
             }
          }
          if (data.size() > 0) {
@@ -279,20 +279,20 @@ public class PurgeTransactionJob extends Job {
    }
 
    private final static class TxDeleteInfo {
-      private final TransactionId txToDelete;
-      private final TransactionId previousTxFromTxToDelete;
+      private final TransactionRecord txToDelete;
+      private final TransactionRecord previousTxFromTxToDelete;
 
-      public TxDeleteInfo(TransactionId txToDelete, TransactionId previousTxFromTxToDelete) {
+      public TxDeleteInfo(TransactionRecord txToDelete, TransactionRecord previousTxFromTxToDelete) {
          super();
          this.txToDelete = txToDelete;
          this.previousTxFromTxToDelete = previousTxFromTxToDelete;
       }
 
-      public TransactionId getTxToDelete() {
+      public TransactionRecord getTxToDelete() {
          return txToDelete;
       }
 
-      public TransactionId getPreviousTx() {
+      public TransactionRecord getPreviousTx() {
          return previousTxFromTxToDelete;
       }
    }

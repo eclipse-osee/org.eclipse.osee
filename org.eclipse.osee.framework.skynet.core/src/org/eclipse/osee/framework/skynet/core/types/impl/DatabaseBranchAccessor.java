@@ -35,8 +35,8 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
@@ -118,7 +118,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       for (Entry<Branch, Integer> entry : branchToBaseTx.entrySet()) {
          Branch branch = entry.getKey();
          if (branch.getBaseTransaction() == null) {
-            TransactionId baseTransaction = TransactionIdManager.getTransactionFromCache(entry.getValue());
+            TransactionRecord baseTransaction = TransactionManager.getTransactionFromCache(entry.getValue());
             cache.cacheBaseTransaction(branch, baseTransaction);
          }
       }
@@ -126,7 +126,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       for (Entry<Branch, Integer> entry : branchToBaseTx.entrySet()) {
          Branch branch = entry.getKey();
          if (branch.getSourceTransaction() == null) {
-            TransactionId sourceTransaction = TransactionIdManager.getTransactionFromCache(entry.getValue());
+            TransactionRecord sourceTransaction = TransactionManager.getTransactionFromCache(entry.getValue());
             cache.cacheSourceTransaction(branch, sourceTransaction);
          }
       }
@@ -182,11 +182,11 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
          Branch childBranch = entry.getKey();
          Branch parentBranch = branchCache.getById(entry.getValue());
          if (parentBranch == null) {
-                        throw new BranchDoesNotExist(String.format("Parent Branch id:[%s] does not exist for child branch [%s]",
-                              entry.getValue(), entry.getKey()));
+            throw new BranchDoesNotExist(String.format("Parent Branch id:[%s] does not exist for child branch [%s]",
+                  entry.getValue(), entry.getKey()));
          }
-            branchCache.setBranchParent(parentBranch, childBranch);
-         
+         branchCache.setBranchParent(parentBranch, childBranch);
+
       }
    }
 
@@ -256,19 +256,19 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
                   int authorId = chStmt.getInt("author");
                   int commitArtId = chStmt.getInt("commit_art_id");
 
-                  TransactionId transaction = TransactionIdManager.getTransactionFromCache(transactionNumber);
+                  TransactionRecord transaction = TransactionManager.getTransactionFromCache(transactionNumber);
                   if (transaction == null) {
                      Branch branch = branchCache.getById(chStmt.getInt("branch_id"));
                      TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
                      transaction =
-                           new TransactionId(transactionNumber, branch, comment, timeStamp, authorId, commitArtId,
+                           new TransactionRecord(transactionNumber, branch, comment, timeStamp, authorId, commitArtId,
                                  txType);
-                     TransactionIdManager.cacheTransaction(transaction);
+                     TransactionManager.cacheTransaction(transaction);
                   } else {
                      transaction.setComment(comment);
-                     transaction.setAuthorArtId(authorId);
-                     transaction.setCommitArtId(commitArtId);
+                     transaction.setAuthor(authorId);
+                     transaction.setCommit(commitArtId);
                      transaction.setTime(timeStamp);
                   }
                }

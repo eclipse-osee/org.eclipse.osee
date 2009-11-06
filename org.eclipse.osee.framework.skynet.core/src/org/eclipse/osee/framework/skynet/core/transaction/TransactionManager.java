@@ -38,7 +38,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  * 
  * @author Jeff C. Phillips
  */
-public final class TransactionIdManager {
+public final class TransactionManager {
 
    private static final String INSERT_INTO_TRANSACTION_DETAIL =
          "INSERT INTO osee_tx_details (transaction_id, osee_comment, time, author, branch_id, tx_type) VALUES (?, ?, ?, ?, ?, ?)";
@@ -52,16 +52,16 @@ public final class TransactionIdManager {
    private static final String SELECT_COMMIT_TRANSACTIONS =
          "SELECT transaction_id from osee_tx_details where commit_art_id = ?";
 
-   private final Map<Integer, TransactionId> transactionIdCache = new HashMap<Integer, TransactionId>();
-   private static final TransactionIdManager instance = new TransactionIdManager();
-   private static final HashMap<IArtifact, List<TransactionId>> commitArtifactMap =
-         new HashMap<IArtifact, List<TransactionId>>();
+   private final Map<Integer, TransactionRecord> transactionIdCache = new HashMap<Integer, TransactionRecord>();
+   private static final TransactionManager instance = new TransactionManager();
+   private static final HashMap<IArtifact, List<TransactionRecord>> commitArtifactMap =
+         new HashMap<IArtifact, List<TransactionRecord>>();
 
-   private TransactionIdManager() {
+   private TransactionManager() {
    }
 
-   public static List<TransactionId> getTransactionsForBranch(Branch branch) throws OseeCoreException {
-      ArrayList<TransactionId> transactions = new ArrayList<TransactionId>();
+   public static List<TransactionRecord> getTransactionsForBranch(Branch branch) throws OseeCoreException {
+      ArrayList<TransactionRecord> transactions = new ArrayList<TransactionRecord>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
@@ -76,12 +76,12 @@ public final class TransactionIdManager {
       return transactions;
    }
 
-   public synchronized static Collection<TransactionId> getCommittedArtifactTransactionIds(IArtifact artifact) throws OseeCoreException {
-      List<TransactionId> transactionIds = commitArtifactMap.get(artifact);
+   public synchronized static Collection<TransactionRecord> getCommittedArtifactTransactionIds(IArtifact artifact) throws OseeCoreException {
+      List<TransactionRecord> transactionIds = commitArtifactMap.get(artifact);
       // Cache the transactionIds first time through.  Other commits will be added to cache as they
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
-         transactionIds = new ArrayList<TransactionId>(5);
+         transactionIds = new ArrayList<TransactionRecord>(5);
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
          try {
             chStmt.runPreparedQuery(SELECT_COMMIT_TRANSACTIONS, artifact.getArtId());
@@ -108,18 +108,18 @@ public final class TransactionIdManager {
       }
    }
 
-   public synchronized static void cacheCommittedArtifactTransaction(IArtifact artifact, TransactionId transactionId) throws OseeCoreException {
-      Collection<TransactionId> transactionIds = getCommittedArtifactTransactionIds(artifact);
+   public synchronized static void cacheCommittedArtifactTransaction(IArtifact artifact, TransactionRecord transactionId) throws OseeCoreException {
+      Collection<TransactionRecord> transactionIds = getCommittedArtifactTransactionIds(artifact);
       if (!transactionIds.contains(transactionId)) {
          transactionIds.add(transactionId);
       }
    }
 
-   public synchronized static void cacheTransaction(TransactionId transaction) throws OseeCoreException {
-      instance.transactionIdCache.put(transaction.getTransactionNumber(), transaction);
+   public synchronized static void cacheTransaction(TransactionRecord transaction) throws OseeCoreException {
+      instance.transactionIdCache.put(transaction.getId(), transaction);
    }
 
-   public synchronized static TransactionId getTransactionFromCache(int txNumber) throws OseeCoreException {
+   public synchronized static TransactionRecord getTransactionFromCache(int txNumber) throws OseeCoreException {
       return instance.transactionIdCache.get(txNumber);
    }
 
@@ -128,7 +128,8 @@ public final class TransactionIdManager {
     * @return the largest (most recent) transaction on the given branch
     * @throws OseeCoreException
     */
-   public static TransactionId getlatestTransactionForBranch(int branchId) throws OseeCoreException {
+   public static TransactionRecord getLastTransaction(Branch branch) throws OseeCoreException {
+      int branchId = branch.getBranchId();
       int transactionNumber =
             ConnectionHandler.runPreparedQueryFetchInt(-1,
                   ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branchId);
@@ -138,16 +139,7 @@ public final class TransactionIdManager {
       return getTransactionId(transactionNumber);
    }
 
-   /**
-    * @param branch
-    * @return the largest (most recent) transaction on the given branch
-    * @throws OseeCoreException
-    */
-   public static TransactionId getlatestTransactionForBranch(Branch branch) throws OseeCoreException {
-      return getlatestTransactionForBranch(branch.getBranchId());
-   }
-
-   public static synchronized TransactionId createNextTransactionId(Branch branch, User userToBlame, String comment) throws OseeDataStoreException {
+   public static synchronized TransactionRecord createNextTransactionId(Branch branch, User userToBlame, String comment) throws OseeDataStoreException {
       Integer transactionNumber = SequenceManager.getNextTransactionId();
       if (comment == null) {
          comment = "";
@@ -158,33 +150,17 @@ public final class TransactionIdManager {
       ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_DETAIL, transactionNumber, comment, transactionTime,
             authorArtId, branch.getBranchId(), TransactionDetailsType.NonBaselined.getId());
 
-      TransactionId transactionId =
-            new TransactionId(transactionNumber, branch, comment, transactionTime, authorArtId, -1,
+      TransactionRecord transactionId =
+            new TransactionRecord(transactionNumber, branch, comment, transactionTime, authorArtId, -1,
                   TransactionDetailsType.NonBaselined);
 
       instance.transactionIdCache.put(transactionNumber, transactionId);
       return transactionId;
    }
 
-   public static Pair<TransactionId, TransactionId> getStartEndPoint(Branch branch) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AND_MIN_TX), branch.getBranchId());
-
-         // the max, min query will return exactly 1 row by definition (even if there is no max or min)
-         chStmt.next();
-
-         int minId = chStmt.getInt("min_id");
-         int maxId = chStmt.getInt("max_id");
-
-         if (chStmt.wasNull()) {
-            throw new TransactionDoesNotExist("Branch " + branch + " has no transactions");
-         }
-
-         return new Pair<TransactionId, TransactionId>(getTransactionId(minId), getTransactionId(maxId));
-      } finally {
-         chStmt.close();
-      }
+   public static Pair<TransactionRecord, TransactionRecord> getStartEndPoint(Branch branch) throws OseeCoreException {
+      return new Pair<TransactionRecord, TransactionRecord>(branch.getBaseTransaction(),
+            getLastTransaction(branch));
    }
 
    /**
@@ -194,13 +170,12 @@ public final class TransactionIdManager {
     * @throws TransactionDoesNotExist
     * @throws OseeDataStoreException
     */
-   public static TransactionId getPriorTransaction(TransactionId transactionId) throws OseeCoreException {
-      TransactionId priorTransactionId = null;
+   public static TransactionRecord getPriorTransaction(TransactionRecord transactionId) throws OseeCoreException {
+      TransactionRecord priorTransactionId = null;
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt.runPreparedQuery(GET_PRIOR_TRANSACTION, transactionId.getBranch().getBranchId(),
-               transactionId.getTransactionNumber());
+         chStmt.runPreparedQuery(GET_PRIOR_TRANSACTION, transactionId.getBranch().getBranchId(), transactionId.getId());
 
          if (chStmt.next()) {
             int priorId = chStmt.getInt("prior_id");
@@ -215,16 +190,16 @@ public final class TransactionIdManager {
       return priorTransactionId;
    }
 
-   public static TransactionId getTransactionId(int transactionNumber) throws OseeCoreException {
+   public static TransactionRecord getTransactionId(int transactionNumber) throws OseeCoreException {
       return getTransactionId(transactionNumber, null);
    }
 
-   public static TransactionId getTransactionId(ConnectionHandlerStatement chStmt) throws OseeCoreException {
+   public static TransactionRecord getTransactionId(ConnectionHandlerStatement chStmt) throws OseeCoreException {
       return getTransactionId(chStmt.getInt("transaction_id"), chStmt);
    }
 
-   private synchronized static TransactionId getTransactionId(int transactionNumber, ConnectionHandlerStatement chStmt) throws OseeCoreException {
-      TransactionId transactionId = instance.transactionIdCache.get(transactionNumber);
+   private synchronized static TransactionRecord getTransactionId(int transactionNumber, ConnectionHandlerStatement chStmt) throws OseeCoreException {
+      TransactionRecord transactionId = instance.transactionIdCache.get(transactionNumber);
       boolean useLocalConnection = chStmt == null;
       if (transactionId == null) {
          try {
@@ -240,7 +215,7 @@ public final class TransactionIdManager {
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
             transactionId =
-                  new TransactionId(transactionNumber, branch, chStmt.getString("osee_comment"),
+                  new TransactionRecord(transactionNumber, branch, chStmt.getString("osee_comment"),
                         chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
             instance.transactionIdCache.put(transactionNumber, transactionId);
          } finally {

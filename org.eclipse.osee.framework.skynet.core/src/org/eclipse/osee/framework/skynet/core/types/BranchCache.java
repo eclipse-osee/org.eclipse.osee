@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.CoreBranches;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Roberto E. Escobar
@@ -40,8 +40,8 @@ public class BranchCache extends AbstractOseeCache<Branch> {
          new CompositeKeyHashMap<Branch, Branch, Branch>();
    private final Map<Branch, IArtifact> branchToAssociatedArtifact = new HashMap<Branch, IArtifact>();
 
-   private final Map<Branch, TransactionId> branchToBaseTx = new HashMap<Branch, TransactionId>();
-   private final Map<Branch, TransactionId> branchToSourceTx = new HashMap<Branch, TransactionId>();
+   private final Map<Branch, TransactionRecord> branchToBaseTx = new HashMap<Branch, TransactionRecord>();
+   private final Map<Branch, TransactionRecord> branchToSourceTx = new HashMap<Branch, TransactionRecord>();
 
    private Branch systemRootBranch;
    private IArtifact defaultAssociatedArtifact;
@@ -181,7 +181,7 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       return branches.iterator().next();
    }
 
-   public void cacheBaseTransaction(Branch branch, TransactionId baseTransaction) throws OseeCoreException {
+   public void cacheBaseTransaction(Branch branch, TransactionRecord baseTransaction) throws OseeCoreException {
       if (branch == null) {
          throw new OseeArgumentException("branch cannot be null");
       }
@@ -195,7 +195,7 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       branchToBaseTx.put(branch, baseTransaction);
    }
 
-   public void cacheSourceTransaction(Branch branch, TransactionId sourceTransaction) throws OseeCoreException {
+   public void cacheSourceTransaction(Branch branch, TransactionRecord sourceTransaction) throws OseeCoreException {
       if (branch == null) {
          throw new OseeArgumentException("branch cannot be null");
       }
@@ -206,12 +206,12 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       branchToSourceTx.put(branch, sourceTransaction);
    }
 
-   public TransactionId getBaseTransaction(Branch branch) throws OseeCoreException {
+   public TransactionRecord getBaseTransaction(Branch branch) throws OseeCoreException {
       ensurePopulated();
       return branchToBaseTx.get(branch);
    }
 
-   public TransactionId getSourceTransaction(Branch branch) throws OseeCoreException {
+   public TransactionRecord getSourceTransaction(Branch branch) throws OseeCoreException {
       ensurePopulated();
       return branchToSourceTx.get(branch);
    }

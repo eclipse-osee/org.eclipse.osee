@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Ryan D. Brooks
@@ -56,7 +56,7 @@ public class ArtifactQueryBuilder {
    private boolean emptyCriteria = false;
    private boolean firstTable = true;
    private final boolean tableOrderForward;
-   private final TransactionId transactionId;
+   private final TransactionRecord transactionId;
 
    /**
     * @param artId
@@ -89,12 +89,12 @@ public class ArtifactQueryBuilder {
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
-   public ArtifactQueryBuilder(List<String> guidOrHrids, TransactionId transactionId, boolean allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(List<String> guidOrHrids, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(null, 0, guidOrHrids, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
-   public ArtifactQueryBuilder(int artifactId, TransactionId transactionId, boolean allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(int artifactId, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel) {
       this(null, artifactId, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
    }
 
@@ -135,7 +135,7 @@ public class ArtifactQueryBuilder {
       emptyCriteria = criteria.size() == 0;
    }
 
-   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<ArtifactType> artifactTypes, Branch branch, TransactionId transactionId, boolean allowDeleted, ArtifactLoad loadLevel, boolean tableOrderForward, AbstractArtifactSearchCriteria... criteria) {
+   private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<ArtifactType> artifactTypes, Branch branch, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel, boolean tableOrderForward, AbstractArtifactSearchCriteria... criteria) {
       this.artifactTypes = artifactTypes;
       this.branch = branch;
       this.criteria = criteria;
@@ -296,7 +296,7 @@ public class ArtifactQueryBuilder {
       if (transactionId != null) {
          sql.append(txsAlias);
          sql.append(".transaction_id <= ?");
-         addParameter(transactionId.getTransactionNumber());
+         addParameter(transactionId.getId());
       } else {
          sql.append(txsAlias);
          sql.append(".tx_current");
@@ -430,7 +430,7 @@ public class ArtifactQueryBuilder {
       }
    }
 
-   public void selectArtifacts(int queryId, int artifactCountEstimate, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, TransactionId transactionId) throws OseeCoreException {
+   public void selectArtifacts(int queryId, int artifactCountEstimate, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, TransactionRecord transactionId) throws OseeCoreException {
       ArtifactLoader.selectArtifacts(queryId, insertParameters, getArtifactSelectSql(), queryParameters.toArray(),
             artifactCountEstimate, transactionId);
       clearCriteria();

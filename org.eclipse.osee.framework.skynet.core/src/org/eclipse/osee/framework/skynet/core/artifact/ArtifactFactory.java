@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.SequenceManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Ryan D. Brooks
@@ -69,7 +69,7 @@ public abstract class ArtifactFactory {
             false, null);
    }
 
-   private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, ModificationType modType, boolean historical, TransactionId transactionId) throws OseeCoreException {
+   private Artifact internalExistingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, Branch branch, ModificationType modType, boolean historical, TransactionRecord transactionId) throws OseeCoreException {
       Artifact artifact = getArtifactInstance(guid, humandReadableId, branch, artifactType);
 
       artifact.setArtId(artId);
@@ -79,7 +79,7 @@ public abstract class ArtifactFactory {
       return artifact;
    }
 
-   public synchronized Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, TransactionId transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
+   public synchronized Artifact loadExisitingArtifact(int artId, String guid, String humandReadableId, ArtifactType artifactType, int gammaId, TransactionRecord transactionId, ModificationType modType, boolean historical) throws OseeCoreException {
       return internalExistingArtifact(artId, guid, humandReadableId, artifactType, gammaId, transactionId.getBranch(),
             modType, historical, transactionId);
    }

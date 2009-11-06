@@ -18,8 +18,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Roberto E. Escobar
@@ -41,7 +41,7 @@ public abstract class BaseArtifactLoopbackCmd implements IClientLoopbackCmd {
             final Branch branch;
             if (Strings.isValid(transactionIdStr)) {
                int transactionNumber = Integer.parseInt(transactionIdStr);
-               TransactionId transactionId = TransactionIdManager.getTransactionId(transactionNumber);
+               TransactionRecord transactionId = TransactionManager.getTransactionId(transactionNumber);
                branch = transactionId.getBranch();
                artifact = ArtifactQuery.getHistoricalArtifactFromId(guid, transactionId, isDeleted);
             } else {

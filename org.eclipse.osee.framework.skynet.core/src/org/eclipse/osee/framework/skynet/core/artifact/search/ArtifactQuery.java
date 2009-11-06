@@ -34,7 +34,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Ryan D. Brooks
@@ -206,15 +206,15 @@ public class ArtifactQuery {
       return new ArtifactQueryBuilder(guidOrHrids, branch, allowDeleted, FULL).getArtifacts(30, null);
    }
 
-   public static List<Artifact> getHistoricalArtifactListFromIds(List<String> guidOrHrids, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getHistoricalArtifactListFromIds(List<String> guidOrHrids, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(guidOrHrids, transactionId, allowDeleted, FULL).getArtifacts(30, null);
    }
 
-   public static Artifact getHistoricalArtifactFromId(int artifactId, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
+   public static Artifact getHistoricalArtifactFromId(int artifactId, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(artifactId, transactionId, allowDeleted, FULL).getOrCheckArtifact(QueryType.GET);
    }
 
-   public static Artifact getHistoricalArtifactFromId(String guidOrHrid, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
+   public static Artifact getHistoricalArtifactFromId(String guidOrHrid, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {
       return new ArtifactQueryBuilder(Arrays.asList(guidOrHrid), transactionId, allowDeleted, FULL).getOrCheckArtifact(QueryType.GET);
    }
 

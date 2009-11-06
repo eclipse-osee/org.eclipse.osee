@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Jeff C. Phillips
@@ -44,9 +44,9 @@ public class CommitService implements ICommitService {
       Branch mergeBranch = BranchManager.getMergeBranch(sourceBranch, destinationBranch);
 
       List<ChangeItem> changes = new ArrayList<ChangeItem>();
-      TransactionId sourceHeadTransaction = sourceBranch != null ? TransactionIdManager.getlatestTransactionForBranch(sourceBranch) : null;
-      TransactionId deatinationHeadTransaction = destinationBranch != null ? TransactionIdManager.getlatestTransactionForBranch(destinationBranch) : null;
-      TransactionId mergeHeadTransaction = mergeBranch != null ? TransactionIdManager.getlatestTransactionForBranch(mergeBranch) : null;
+      TransactionRecord sourceHeadTransaction = sourceBranch != null ? TransactionManager.getLastTransaction(sourceBranch) : null;
+      TransactionRecord deatinationHeadTransaction = destinationBranch != null ? TransactionManager.getLastTransaction(destinationBranch) : null;
+      TransactionRecord mergeHeadTransaction = mergeBranch != null ? TransactionManager.getLastTransaction(mergeBranch) : null;
       
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new LoadChangeDataOperation(sourceHeadTransaction, deatinationHeadTransaction, mergeHeadTransaction, changes));

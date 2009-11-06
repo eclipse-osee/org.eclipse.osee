@@ -80,8 +80,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.osgi.framework.Bundle;
 
@@ -97,7 +97,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    private ArtifactType artifactType;
    private final ArtifactFactory parentFactory;
    private AttributeAnnotationManager annotationMgr;
-   private TransactionId transactionId;
+   private TransactionRecord transactionId;
    private int artId;
    private int gammaId;
    private boolean linksLoaded;
@@ -1418,7 +1418,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       String name = getName();
 
       if (isHistorical()) {
-         name += " [Rev:" + transactionId.getTransactionNumber() + "]";
+         name += " [Rev:" + transactionId.getId() + "]";
       }
 
       return name;
@@ -1501,7 +1501,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
          return this;
       }
       Artifact reflectedArtifact = reflectHelper(destinationBranch);
-      reflectedArtifact.transactionId = TransactionIdManager.getlatestTransactionForBranch(destinationBranch);
+      reflectedArtifact.transactionId = TransactionManager.getLastTransaction(destinationBranch);
       return reflectedArtifact;
    }
 
@@ -1526,10 +1526,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @return the transaction number for this artifact if it is historical, otherwise 0
     */
    public int getTransactionNumber() {
-      return transactionId != null ? transactionId.getTransactionNumber() : -1;
+      return transactionId != null ? transactionId.getId() : -1;
    }
 
-   public TransactionId getTransactionId() {
+   public TransactionRecord getTransactionId() {
       return transactionId;
    }
 
@@ -1794,7 +1794,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    /**
     * This method should never be called from outside the OSEE Application Framework
     */
-   void internalSetPersistenceData(int gammaId, TransactionId transactionId, ModificationType modType, boolean historical) {
+   void internalSetPersistenceData(int gammaId, TransactionRecord transactionId, ModificationType modType, boolean historical) {
       this.gammaId = gammaId;
       this.transactionId = transactionId;
       this.historical = historical;
@@ -1813,7 +1813,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       if (transactionId == null) {
          return UserManager.getUser(SystemUser.OseeSystem);
       }
-      return UserManager.getUserByArtId(transactionId.getAuthorArtId());
+      return UserManager.getUserByArtId(transactionId.getAuthor());
    }
 
    void meetMinimumAttributeCounts(boolean isNewArtifact) throws OseeCoreException {

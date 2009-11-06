@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Theron Virgin
@@ -28,7 +28,7 @@ public class ArtifactConflict extends Conflict {
    private static final String ARTIFACT_MODIFIED = "MODIFIED";
    private final boolean sourceDeleted;
 
-   public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch, int sourceModType, int destModType, int artTypeId) {
+   public ArtifactConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch, int sourceModType, int destModType, int artTypeId) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
       sourceDeleted = sourceModType == ModificationType.DELETED.getValue();
    }

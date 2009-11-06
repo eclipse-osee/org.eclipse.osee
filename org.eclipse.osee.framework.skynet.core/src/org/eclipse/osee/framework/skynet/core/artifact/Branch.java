@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.access.IAccessControllable;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
@@ -102,11 +102,11 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       setField(BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, artifact);
    }
 
-   public TransactionId getBaseTransaction() throws OseeCoreException {
+   public TransactionRecord getBaseTransaction() throws OseeCoreException {
       return getCache().getBaseTransaction(this);
    }
 
-   public TransactionId getSourceTransaction() throws OseeCoreException {
+   public TransactionRecord getSourceTransaction() throws OseeCoreException {
       return getCache().getSourceTransaction(this);
    }
 

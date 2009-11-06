@@ -60,7 +60,7 @@ public class SkynetTransaction extends DbTransaction {
    private static final String GET_EXISTING_ATTRIBUTE_IDS =
          "SELECT att1.attr_id FROM osee_attribute att1, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE att1.attr_type_id = ? AND att1.art_id = ? AND att1.art_id = arv1.art_id AND arv1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id <> ?";
 
-   private TransactionId transactionId;
+   private TransactionRecord transactionId;
 
    private final CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData> transactionDataItems =
          new CompositeKeyHashMap<Class<? extends BaseTransactionData>, Integer, BaseTransactionData>();
@@ -217,16 +217,16 @@ public class SkynetTransaction extends DbTransaction {
     * @throws OseeDataStoreException
     */
    public int getTransactionNumber() throws OseeCoreException {
-      return internalGetTransactionId().getTransactionNumber();
+      return internalGetTransactionId().getId();
    }
 
    /**
     * @return Returns the transactionId.
     * @throws OseeDataStoreException
     */
-   TransactionId internalGetTransactionId() throws OseeCoreException {
+   TransactionRecord internalGetTransactionId() throws OseeCoreException {
       if (transactionId == null) {
-         transactionId = TransactionIdManager.createNextTransactionId(branch, UserManager.getUser(), comment);
+         transactionId = TransactionManager.createNextTransactionId(branch, UserManager.getUser(), comment);
       }
       return transactionId;
    }

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Theron Virgin
@@ -56,10 +56,10 @@ public class RevertAction {
 
    private OseeConnection connection;
    private ConnectionHandlerStatement chStmt;
-   private TransactionId transId;
+   private TransactionRecord transId;
    private String objectReverted;
 
-   public RevertAction(OseeConnection connection, ConnectionHandlerStatement chStmt, TransactionId transId) {
+   public RevertAction(OseeConnection connection, ConnectionHandlerStatement chStmt, TransactionRecord transId) {
       this.connection = connection;
       this.chStmt = chStmt;
       this.transId = transId;
@@ -109,7 +109,7 @@ public class RevertAction {
             if (chStmt.getInt("tx_type") == TransactionDetailsType.NonBaselined.getId()) {
                Integer gammaId = chStmt.getInt("gamma_id");
                gammaIdsModifications.add(new Object[] {gammaId, chStmt.getInt("transaction_id")});
-               gammaIdsToInsert.add(new Object[] {transId.getTransactionNumber(), gammaId,
+               gammaIdsToInsert.add(new Object[] {transId.getId(), gammaId,
                      chStmt.getInt("transaction_id")});
                transactionIds.add(chStmt.getInt("transaction_id"));
                if (DEBUG) {
@@ -131,7 +131,7 @@ public class RevertAction {
 
    private void updateTransactionTables() throws OseeDataStoreException, OseeCoreException {
       long time = System.currentTimeMillis();
-      ConnectionHandler.runPreparedUpdate(connection, UPDATE_DETAILS_TABLE, transId.getTransactionNumber());
+      ConnectionHandler.runPreparedUpdate(connection, UPDATE_DETAILS_TABLE, transId.getId());
       int count1 = ConnectionHandler.runBatchUpdate(connection, UPDATE_REVERT_TABLE, gammaIdsToInsert);
       int count2 = ConnectionHandler.runBatchUpdate(connection, DELETE_TXS_GAMMAS_REVERT, gammaIdsModifications);
 

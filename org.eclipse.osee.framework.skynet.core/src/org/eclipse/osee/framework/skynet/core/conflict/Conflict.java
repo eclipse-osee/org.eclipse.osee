@@ -19,8 +19,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Jeff C. Phillips
@@ -31,8 +31,8 @@ public abstract class Conflict implements IAdaptable {
    protected int sourceGamma;
    protected int destGamma;
    private int artId;
-   private final TransactionId toTransactionId;
-   private final TransactionId commitTransactionId;
+   private final TransactionRecord toTransactionId;
+   private final TransactionRecord commitTransactionId;
    private Artifact artifact;
    private Artifact sourceArtifact;
    private Artifact destArtifact;
@@ -43,7 +43,7 @@ public abstract class Conflict implements IAdaptable {
    private String sourceDiffFile = null;
    private String destDiffFile = null;
 
-   protected Conflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, TransactionId commitTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
+   protected Conflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, TransactionRecord commitTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
       super();
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;
@@ -55,7 +55,7 @@ public abstract class Conflict implements IAdaptable {
       this.commitTransactionId = commitTransactionId;
    }
 
-   public Conflict(int sourceGamma, int destGamma, int artId, TransactionId commitTransactionId, Branch mergeBranch, Branch destBranch) {
+   public Conflict(int sourceGamma, int destGamma, int artId, TransactionRecord commitTransactionId, Branch mergeBranch, Branch destBranch) {
       this(sourceGamma, destGamma, artId, null, commitTransactionId, mergeBranch, null, destBranch);
    }
 
@@ -73,7 +73,7 @@ public abstract class Conflict implements IAdaptable {
          } else {
             sourceArtifact =
                   ArtifactQuery.getHistoricalArtifactFromId(artId,
-                        TransactionIdManager.getStartEndPoint(mergeBranch).getFirst(), true);
+                        TransactionManager.getStartEndPoint(mergeBranch).getFirst(), true);
          }
       }
       return sourceArtifact;
@@ -86,7 +86,7 @@ public abstract class Conflict implements IAdaptable {
          } else {
             destArtifact =
                   ArtifactQuery.getHistoricalArtifactFromId(artId,
-                        TransactionIdManager.getPriorTransaction(commitTransactionId), true);
+                        TransactionManager.getPriorTransaction(commitTransactionId), true);
 
          }
       }
@@ -129,11 +129,11 @@ public abstract class Conflict implements IAdaptable {
       this.artId = artId;
    }
 
-   public TransactionId getToTransactionId() {
+   public TransactionRecord getToTransactionId() {
       return toTransactionId;
    }
 
-   public TransactionId getCommitTransactionId() {
+   public TransactionRecord getCommitTransactionId() {
       return commitTransactionId;
    }
 
@@ -157,7 +157,7 @@ public abstract class Conflict implements IAdaptable {
       status =
             ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID,
                   getConflictType().getValue(), passedStatus,
-                  TransactionIdManager.getStartEndPoint(mergeBranch).getFirst().getTransactionNumber());
+                  TransactionManager.getStartEndPoint(mergeBranch).getFirst().getId());
       return status;
    }
 

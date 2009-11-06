@@ -31,8 +31,8 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Theron Virgin
@@ -115,7 +115,7 @@ public class UpdateMergeBranch extends DbTransaction {
       }
       int numberAttrUpdated = 0;
       //Copy over any missing attributes
-      int baselineTransaction = TransactionIdManager.getStartEndPoint(mergeBranch).getFirst().getTransactionNumber();
+      int baselineTransaction = TransactionManager.getStartEndPoint(mergeBranch).getFirst().getId();
       for (Artifact artifact : goodMergeBranchArtifacts) {
          numberAttrUpdated +=
                ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACTS, baselineTransaction, sourceBranch.getBranchId(),
@@ -152,7 +152,7 @@ public class UpdateMergeBranch extends DbTransaction {
          throw new IllegalArgumentException("Artifact IDs can not be null or empty");
       }
 
-      TransactionId startTransactionId = TransactionIdManager.getStartEndPoint(mergeBranch).getFirst();
+      TransactionRecord startTransactionId = TransactionManager.getStartEndPoint(mergeBranch).getFirst();
 
       List<Object[]> datas = new LinkedList<Object[]>();
       int queryId = ArtifactLoader.getNewQueryId();
@@ -163,7 +163,7 @@ public class UpdateMergeBranch extends DbTransaction {
       }
       try {
          ArtifactLoader.insertIntoArtifactJoin(datas);
-         Integer startTransactionNumber = startTransactionId.getTransactionNumber();
+         Integer startTransactionNumber = startTransactionId.getId();
          insertGammas(connection, INSERT_ATTRIBUTE_GAMMAS, startTransactionNumber, queryId, sourceBranch);
          insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTransactionNumber, queryId, sourceBranch);
       } catch (OseeCoreException ex) {

@@ -16,14 +16,14 @@ import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Theron Virgin
  */
 public class RelationConflict extends Conflict {
 
-   public RelationConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
+   public RelationConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
    }
 

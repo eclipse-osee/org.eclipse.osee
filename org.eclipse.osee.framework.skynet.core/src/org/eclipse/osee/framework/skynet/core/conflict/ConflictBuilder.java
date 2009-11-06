@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.skynet.core.conflict;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Theron Virgin
@@ -24,11 +24,11 @@ public abstract class ConflictBuilder {
    protected int sourceGamma;
    protected int destGamma;
    protected int artId;
-   protected TransactionId toTransactionId;
+   protected TransactionRecord toTransactionId;
    protected Branch sourceBranch;
    protected Branch destBranch;
 
-   public ConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, Branch sourceBranch, Branch destBranch) {
+   public ConflictBuilder(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, Branch sourceBranch, Branch destBranch) {
       super();
       this.sourceGamma = sourceGamma;
       this.destGamma = destGamma;

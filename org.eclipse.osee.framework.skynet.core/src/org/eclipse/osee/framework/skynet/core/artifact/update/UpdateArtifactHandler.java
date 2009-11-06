@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Theron Virgin
@@ -113,7 +113,7 @@ public class UpdateArtifactHandler {
 
    private static void runSqlCalls(Branch branchToUpdate, Branch updatingSourceBranch, boolean loadRelations, int transactionNumber, int queryIdForBranchInfo, int queryIdForTransGammaIds, OseeConnection connection) throws OseeCoreException {
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-      TransactionId transId = TransactionIdManager.createNextTransactionId(branchToUpdate, UserManager.getUser(), "");
+      TransactionRecord transId = TransactionManager.createNextTransactionId(branchToUpdate, UserManager.getUser(), "");
 
       int count =
             ConnectionHandler.runPreparedUpdate(connection, POPULATE_ARTIFACT_VERSION_GAMMAS_FOR_UPDATES, timestamp,
@@ -138,7 +138,7 @@ public class UpdateArtifactHandler {
       }
 
       count =
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_REVERT_TABLE, transId.getTransactionNumber(),
+            ConnectionHandler.runPreparedUpdate(connection, UPDATE_REVERT_TABLE, transId.getId(),
                   queryIdForTransGammaIds);
       OseeLog.log(UpdateArtifactHandler.class, Level.INFO, "inserted " + count + " old gammas into the Revert Table");
 

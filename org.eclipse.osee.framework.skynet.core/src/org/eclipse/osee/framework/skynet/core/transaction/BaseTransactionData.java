@@ -96,7 +96,7 @@ public abstract class BaseTransactionData {
    /**
     * Should not be called by application. This should only be called once after the transaction has been committed.
     */
-   protected abstract void internalUpdate(TransactionId transactionId) throws OseeCoreException;
+   protected abstract void internalUpdate(TransactionRecord transactionId) throws OseeCoreException;
 
    /**
     * Should not be called by application. This should only be called once after the transaction has been committed.

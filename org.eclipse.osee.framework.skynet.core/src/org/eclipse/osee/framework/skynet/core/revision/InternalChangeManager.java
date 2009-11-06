@@ -18,7 +18,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -54,8 +53,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.ArtifactChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.AttributeChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.RelationChangeAcquirer;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Acquires changes for either branches or transactions.
@@ -75,16 +74,16 @@ public final class InternalChangeManager {
    public Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
       ArrayList<Change> changes = new ArrayList<Change>();
       Branch branch = artifact.getBranch();
-      ArrayList<TransactionId> transactionIds = new ArrayList<TransactionId>();
-      recurseBranches(branch, artifact, transactionIds, TransactionIdManager.getlatestTransactionForBranch(branch));
+      ArrayList<TransactionRecord> transactionIds = new ArrayList<TransactionRecord>();
+      recurseBranches(branch, artifact, transactionIds, TransactionManager.getLastTransaction(branch));
 
-      for (TransactionId transactionId : transactionIds) {
+      for (TransactionRecord transactionId : transactionIds) {
          changes.addAll(getChanges(null, transactionId, monitor, artifact));
       }
       return changes;
    }
 
-   private void recurseBranches(Branch branch, Artifact artifact, Collection<TransactionId> transactionIds, TransactionId transactionId) throws OseeCoreException {
+   private void recurseBranches(Branch branch, Artifact artifact, Collection<TransactionRecord> transactionIds, TransactionRecord transactionId) throws OseeCoreException {
       transactionIds.addAll(getTransactionsPerArtifact(branch, artifact, transactionId));
 
       if (branch.hasParentBranch() && !branch.getParentBranch().getBranchType().isSystemRootBranch()) {
@@ -92,24 +91,25 @@ public final class InternalChangeManager {
       }
    }
 
-   private Collection<TransactionId> getTransactionsPerArtifact(Branch branch, Artifact artifact, TransactionId transactionId) throws OseeCoreException {
-      Set<TransactionId> transactionIds = new HashSet<TransactionId>();
+   private Collection<TransactionRecord> getTransactionsPerArtifact(Branch branch, Artifact artifact, TransactionRecord transactionId) throws OseeCoreException {
+      Set<TransactionRecord> transactionIds = new HashSet<TransactionRecord>();
 
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery("SELECT /*+ ordered FIRST_ROWS */ td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_artifact_version av1 where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and td1.transaction_id <=? and tx1.gamma_id = av1.gamma_id and av1.art_id = ?",
-               branch.getBranchId(), transactionId.getTransactionNumber(), artifact.getArtId());
+         chStmt.runPreparedQuery(
+               "SELECT /*+ ordered FIRST_ROWS */ td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_artifact_version av1 where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and td1.transaction_id <=? and tx1.gamma_id = av1.gamma_id and av1.art_id = ?",
+               branch.getBranchId(), transactionId.getId(), artifact.getArtId());
 
          while (chStmt.next()) {
-            transactionIds.add(TransactionIdManager.getTransactionId(chStmt.getInt("transaction_id")));
+            transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
          }
 
          chStmt.runPreparedQuery(
                "SELECT /*+ ordered FIRST_ROWS */ td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_relation_link rel where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and td1.transaction_id <=? and tx1.gamma_id = rel.gamma_id and (rel.a_art_id = ? or rel.b_art_id = ?)",
-               branch.getBranchId(), transactionId.getTransactionNumber(), artifact.getArtId(), artifact.getArtId());
+               branch.getBranchId(), transactionId.getId(), artifact.getArtId(), artifact.getArtId());
 
          while (chStmt.next()) {
-            transactionIds.add(TransactionIdManager.getTransactionId(chStmt.getInt("transaction_id")));
+            transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
          }
       } finally {
          chStmt.close();
@@ -119,6 +119,7 @@ public final class InternalChangeManager {
    }
 
    /**
+    * Not Part of Change Report
     * Acquires artifact, relation and attribute changes from a source branch since its creation.
     * 
     * @param sourceBranch
@@ -126,7 +127,7 @@ public final class InternalChangeManager {
     * @return
     * @throws OseeCoreException
     */
-   private Collection<Change> getChanges(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor, Artifact specificArtifact) throws OseeCoreException {
+   private Collection<Change> getChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact) throws OseeCoreException {
       @SuppressWarnings("unused")
       //This is so weak references do not get collected from bulk loading
       Collection<Artifact> bulkLoadedArtifacts;
@@ -164,7 +165,7 @@ public final class InternalChangeManager {
          List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (int artId : artIds) {
             insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
-                  historical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
+                  historical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
          bulkLoadedArtifacts =
                ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, false);
@@ -183,11 +184,11 @@ public final class InternalChangeManager {
       return getChangeReportChanges(sourceBranch, null, monitor);
    }
 
-   public Collection<Change> getChangesPerTransaction(TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
+   public Collection<Change> getChangesPerTransaction(TransactionRecord transactionId, IProgressMonitor monitor) throws OseeCoreException {
       return getChangeReportChanges(null, transactionId, monitor);
    }
 
-   private Collection<Change> getChangeReportChanges(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
+   private Collection<Change> getChangeReportChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor) throws OseeCoreException {
       boolean isHistorical = sourceBranch == null;
       ArrayList<Change> changes = new ArrayList<Change>();
       List<ChangeItem> changeItems = loadChangeItems(sourceBranch, transactionId, monitor, isHistorical);
@@ -203,13 +204,14 @@ public final class InternalChangeManager {
 
          try {
             branch = isHistorical ? transactionId.getBranch() : sourceBranch;
-            TransactionId toTransactionId =  TransactionIdManager.getTransactionId(item.getCurrentVersion().getTransactionNumber().intValue());
-            TransactionId fromTransactionId;
+            TransactionRecord toTransactionId =
+                  TransactionManager.getTransactionId(item.getCurrentVersion().getTransactionNumber().intValue());
+            TransactionRecord fromTransactionId;
             String wasValue = "";
 
             if (isHistorical) {
-               fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
-               artifact = ArtifactCache.getHistorical(item.getArtId(), transactionId.getTransactionNumber());
+               fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
+               artifact = ArtifactCache.getHistorical(item.getArtId(), transactionId.getId());
             } else {
                artifact = ArtifactQuery.getArtifactFromId(item.getArtId(), branch, true);
 
@@ -225,7 +227,7 @@ public final class InternalChangeManager {
                   } else {
                      fromVersion = item.getCurrentVersion();
                   }
-                  fromTransactionId = TransactionIdManager.getTransactionId(fromVersion.getTransactionNumber());
+                  fromTransactionId = TransactionManager.getTransactionId(fromVersion.getTransactionNumber());
                   wasValue = fromVersion.getValue();
                }
             }
@@ -243,7 +245,7 @@ public final class InternalChangeManager {
       return changes;
    }
 
-   private Change asChange(ChangeItem item, Artifact artifact, Branch branch, TransactionId fromTransactionId, TransactionId toTransactionId, String wasValue, boolean isHistorical) throws OseeCoreException {
+   private Change asChange(ChangeItem item, Artifact artifact, Branch branch, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, String wasValue, boolean isHistorical) throws OseeCoreException {
       Change change = null;
       if (item instanceof ArtifactChangeItem) {
          change =
@@ -263,7 +265,8 @@ public final class InternalChangeManager {
          Artifact bArtifact;
 
          if (isHistorical) {
-            bArtifact = ArtifactCache.getHistorical(relationChangeItem.getBArtId(), toTransactionId.getTransactionNumber());
+            bArtifact =
+                  ArtifactCache.getHistorical(relationChangeItem.getBArtId(), toTransactionId.getId());
          } else {
             bArtifact = ArtifactQuery.getArtifactFromId(relationChangeItem.getBArtId(), branch, true);
          }
@@ -280,7 +283,7 @@ public final class InternalChangeManager {
       return change;
    }
 
-   private Collection<Artifact> preloadArtifacts(List<ChangeItem> changeItems, Branch sourceBranch, TransactionId transactionId, boolean isHistorical, IProgressMonitor monitor) throws OseeCoreException {
+   private Collection<Artifact> preloadArtifacts(List<ChangeItem> changeItems, Branch sourceBranch, TransactionRecord transactionId, boolean isHistorical, IProgressMonitor monitor) throws OseeCoreException {
       Collection<Artifact> artifacts = Collections.emptyList();
       if (!changeItems.isEmpty()) {
          monitor.subTask("Preload artifacts");
@@ -300,7 +303,7 @@ public final class InternalChangeManager {
          List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (Integer artId : artIds) {
             insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
-                  isHistorical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
+                  isHistorical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
 
          artifacts =
@@ -317,19 +320,20 @@ public final class InternalChangeManager {
     * @throws OseeCoreException
     * @throws OseeWrappedException
     */
-   private List<ChangeItem> loadChangeItems(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException, OseeWrappedException {
+   private List<ChangeItem> loadChangeItems(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException, OseeWrappedException {
       List<ChangeItem> changeItems = new ArrayList<ChangeItem>();
       List<IOperation> ops = new ArrayList<IOperation>();
-      TransactionId destinationTransactionId;
-      TransactionId sourceTransactionId;
-      
-      if(isHistorical){
-         destinationTransactionId = TransactionIdManager.getPriorTransaction(transactionId);
+      TransactionRecord destinationTransactionId;
+      TransactionRecord sourceTransactionId;
+
+      if (isHistorical) {
+         destinationTransactionId = TransactionManager.getPriorTransaction(transactionId);
          sourceTransactionId = transactionId;
-         ops.add(new LoadChangeDataOperation(sourceTransactionId.getTransactionNumber(), destinationTransactionId, changeItems));
-      }else{
-         destinationTransactionId = TransactionIdManager.getlatestTransactionForBranch(sourceBranch.getParentBranch());
-         sourceTransactionId = TransactionIdManager.getlatestTransactionForBranch(sourceBranch);
+         ops.add(new LoadChangeDataOperation(sourceTransactionId.getId(), destinationTransactionId,
+               changeItems));
+      } else {
+         destinationTransactionId = TransactionManager.getLastTransaction(sourceBranch.getParentBranch());
+         sourceTransactionId = TransactionManager.getLastTransaction(sourceBranch);
          ops.add(new LoadChangeDataOperation(sourceTransactionId, destinationTransactionId, null, changeItems));
       }
 

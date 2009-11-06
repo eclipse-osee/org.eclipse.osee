@@ -45,8 +45,8 @@ import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflictBuilder;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictBuilder;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Theron Virgin
@@ -71,16 +71,16 @@ public class ConflictManagerInternal {
    private ConflictManagerInternal() {
    }
 
-   public static List<Conflict> getConflictsPerBranch(TransactionId commitTransaction, IProgressMonitor monitor) throws OseeCoreException {
+   public static List<Conflict> getConflictsPerBranch(TransactionRecord commitTransaction, IProgressMonitor monitor) throws OseeCoreException {
       long time = System.currentTimeMillis();
       long totalTime = time;
 
       monitor.beginTask(String.format("Loading Merge Manager for Transaction %d",
-            commitTransaction.getTransactionNumber()), 100);
+            commitTransaction.getId()), 100);
       monitor.subTask("Finding Database stored conflicts");
       if (DEBUG) {
          System.out.println(String.format("\nDiscovering Conflicts based on Transaction ID: %d",
-               commitTransaction.getTransactionNumber()));
+               commitTransaction.getId()));
          totalTime = System.currentTimeMillis();
       }
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
@@ -91,7 +91,7 @@ public class ConflictManagerInternal {
       }
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_HISTORICAL_ATTRIBUTES),
-               commitTransaction.getTransactionNumber());
+               commitTransaction.getId());
          if (DEBUG) {
             System.out.println(String.format("          Query finished in %s", Lib.getElapseString(time)));
          }
@@ -116,7 +116,7 @@ public class ConflictManagerInternal {
       return conflicts;
    }
 
-   public static List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, IProgressMonitor monitor) throws OseeCoreException {
+   public static List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, IProgressMonitor monitor) throws OseeCoreException {
       @SuppressWarnings("unused") // This is for bulk loading so we do not loose are references
       Collection<Artifact> bulkLoadedArtifacts;
       ArrayList<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
@@ -129,7 +129,7 @@ public class ConflictManagerInternal {
       int commitTransactionId = getCommitTransaction(sourceBranch, destinationBranch);
       if (commitTransactionId != 0) {
          try {
-            return getConflictsPerBranch(TransactionIdManager.getTransactionId(commitTransactionId), monitor);
+            return getConflictsPerBranch(TransactionManager.getTransactionId(commitTransactionId), monitor);
          } catch (TransactionDoesNotExist ex) {
          }
       }
@@ -244,7 +244,7 @@ public class ConflictManagerInternal {
     * @throws OseeCoreException
     */
 
-   private static void loadArtifactVersionConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, int transactionId) throws OseeCoreException {
+   private static void loadArtifactVersionConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, Set<Integer> artIdSetDontShow, Set<Integer> artIdSetDontAdd, IProgressMonitor monitor, int transactionId) throws OseeCoreException {
       long time = 0;
       if (DEBUG) {
          System.out.println("Finding Artifact Version Conflicts");
@@ -308,7 +308,7 @@ public class ConflictManagerInternal {
     * @param conflicts
     * @throws OseeCoreException
     */
-   private static void loadAttributeConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionId baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IProgressMonitor monitor, int transactionId) throws OseeCoreException {
+   private static void loadAttributeConflictsNew(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, ArrayList<ConflictBuilder> conflictBuilders, Set<Integer> artIdSet, IProgressMonitor monitor, int transactionId) throws OseeCoreException {
       long time = 0;
       if (DEBUG) {
          System.out.println("Finding Attribute Version Conflicts");
@@ -369,7 +369,7 @@ public class ConflictManagerInternal {
 
       for (Branch branch : sourceBranch.getAncestors()) {
          isValidConflict &= isAttributeConflictValidOnBranch(destinationGammaId, branch, parentTransactionNumber);
-         parentTransactionNumber = branch.getSourceTransaction().getTransactionNumber();
+         parentTransactionNumber = branch.getSourceTransaction().getId();
 
          if (!isValidConflict) {
             break;
@@ -514,7 +514,7 @@ public class ConflictManagerInternal {
       } else {
          for (Branch branch : destBranches) {
             if (branch.getParentBranch().equals(commonBranch)) {
-               destTransaction = TransactionIdManager.getStartEndPoint(branch).getFirst().getTransactionNumber();
+               destTransaction = TransactionManager.getStartEndPoint(branch).getFirst().getId();
                break;
             }
 
@@ -522,7 +522,7 @@ public class ConflictManagerInternal {
       }
       for (Branch branch : sourceBranches) {
          if (branch.getParentBranch().equals(commonBranch)) {
-            sourceTransaction = TransactionIdManager.getStartEndPoint(branch).getFirst().getTransactionNumber();
+            sourceTransaction = TransactionManager.getStartEndPoint(branch).getFirst().getId();
             break;
          }
       }

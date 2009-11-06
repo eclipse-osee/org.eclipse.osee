@@ -42,7 +42,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Ryan D. Brooks
@@ -181,8 +181,8 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       if (success) {
          // Update commit artifact cache with new information
          if (sourceBranch.getAssociatedArtifact().getArtId() > 0) {
-            TransactionIdManager.cacheCommittedArtifactTransaction(sourceBranch.getAssociatedArtifact(),
-                  TransactionIdManager.getTransactionId(newTransactionNumber));
+            TransactionManager.cacheCommittedArtifactTransaction(sourceBranch.getAssociatedArtifact(),
+                  TransactionManager.getTransactionId(newTransactionNumber));
          }
 
          Object[] queryData = new Object[] {newTransactionNumber, newTransactionNumber};

@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Ryan D. Brooks
@@ -50,9 +50,9 @@ public class LoadChangeDataOperation extends AbstractOperation {
          new HashMap<Long, Pair<Integer, ModificationType>>();
 
    private final Collection<ChangeItem> changeData;
-   private final TransactionId sourceTransactionId;
-   private final TransactionId destinationTransactionId;
-   private final TransactionId mergeTransactionId;
+   private final TransactionRecord sourceTransactionId;
+   private final TransactionRecord destinationTransactionId;
+   private final TransactionRecord mergeTransactionId;
    private final Integer transactionNumber;
 
    private static enum LoadingMode {
@@ -61,15 +61,15 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
    private final LoadingMode loadChangesEnum;
 
-   public LoadChangeDataOperation(int transactionNumber, TransactionId destinationTransactionId, Collection<ChangeItem> changeData) {
+   public LoadChangeDataOperation(int transactionNumber, TransactionRecord destinationTransactionId, Collection<ChangeItem> changeData) {
       this(null, destinationTransactionId, null, changeData, transactionNumber, LoadingMode.FROM_SINGLE_TRANSACTION);
    }
 
-   public LoadChangeDataOperation(TransactionId sourceBranch, TransactionId destinationBranch, TransactionId mergeBranch, Collection<ChangeItem> changeData) {
+   public LoadChangeDataOperation(TransactionRecord sourceBranch, TransactionRecord destinationBranch, TransactionRecord mergeBranch, Collection<ChangeItem> changeData) {
       this(sourceBranch, destinationBranch, mergeBranch, changeData, null, LoadingMode.FROM_ALL_BRANCH_TRANSACTIONS);
    }
 
-   private LoadChangeDataOperation(TransactionId sourceTransactionId, TransactionId destinationTransactionId, TransactionId mergeTransactionId, Collection<ChangeItem> changeData, Integer transactionNumber, LoadingMode loadMode) {
+   private LoadChangeDataOperation(TransactionRecord sourceTransactionId, TransactionRecord destinationTransactionId, TransactionRecord mergeTransactionId, Collection<ChangeItem> changeData, Integer transactionNumber, LoadingMode loadMode) {
       super("Load Change Data", Activator.PLUGIN_ID);
       this.mergeTransactionId = mergeTransactionId;
       this.sourceTransactionId = sourceTransactionId;
@@ -110,7 +110,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             case FROM_ALL_BRANCH_TRANSACTIONS:
                chStmt.runPreparedQuery(10000, SELECT_SOURCE_BRANCH_CHANGES, getSourceBranchId(),
                      TransactionDetailsType.NonBaselined.getId(), TxChange.NOT_CURRENT.getValue());
-               currentTransactionNumber = sourceTransactionId.getTransactionNumber();
+               currentTransactionNumber = sourceTransactionId.getId();
                break;
             case FROM_SINGLE_TRANSACTION:
                chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionNumber,
@@ -234,7 +234,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       return sourceTransactionId != null;
    }
 
-   private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, TransactionId destinationTransaction, HashMap<Integer, ChangeItem> changesByItemId) throws OseeCoreException {
+   private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, TransactionRecord destinationTransaction, HashMap<Integer, ChangeItem> changesByItemId) throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       String query;
 
@@ -247,7 +247,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
                      " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.transaction_id <= ?";
          
             chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
-                                    destinationTransaction.getBranch().getBranchId(), destinationTransaction.getTransactionNumber());
+                                    destinationTransaction.getBranch().getBranchId(), destinationTransaction.getId());
             break;
          case FROM_SINGLE_TRANSACTION:
             query =
@@ -255,7 +255,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
                      + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
                      " and item.gamma_id = txs.gamma_id and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.transaction_id <= ?";
          
-            chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), destinationTransaction.getBranch().getBranchId(), destinationTransaction.getTransactionNumber());
+            chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), destinationTransaction.getBranch().getBranchId(), destinationTransaction.getId());
             break;
          default:
             throw new UnsupportedOperationException(String.format("Invalid load changes [%s] mode not supported",

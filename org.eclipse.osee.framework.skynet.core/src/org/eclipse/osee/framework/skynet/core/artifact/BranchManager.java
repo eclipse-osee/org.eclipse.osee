@@ -56,8 +56,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOp
 import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 
@@ -240,7 +240,7 @@ public class BranchManager {
       try {
          ArtifactLoader.insertIntoArtifactJoin(datas);
 
-         int parentTxId = sourceBranch.getBaseTransaction().getTransactionNumber();
+         int parentTxId = sourceBranch.getBaseTransaction().getId();
          String creationComment =
                String.format("New Merge Branch from %s(%s) and %s", sourceBranch.getName(), parentTxId,
                      destBranch.getName());
@@ -391,9 +391,9 @@ public class BranchManager {
     * @param childBranchName
     * @throws OseeCoreException
     */
-   public static Branch createWorkingBranch(TransactionId parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
+   public static Branch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
       int parentBranchId = parentTransactionId.getBranch().getBranchId();
-      int parentTransactionNumber = parentTransactionId.getTransactionNumber();
+      int parentTransactionNumber = parentTransactionId.getId();
 
       Branch parentBranch = BranchManager.getBranch(parentBranchId);
       String creationComment = "New Branch from " + parentBranch.getName() + "(" + parentTransactionNumber + ")";
@@ -410,7 +410,7 @@ public class BranchManager {
     * @throws OseeCoreException
     */
    public static Branch createWorkingBranch(Branch parentBranch, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
-      TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(parentBranch);
+      TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(parentBranch);
       return createWorkingBranch(parentTransactionId, childBranchName, associatedArtifact);
    }
 
@@ -422,9 +422,9 @@ public class BranchManager {
     * @throws OseeCoreException
     */
    public static Branch createBaselineBranch(Branch parentBranch, String branchName, Artifact associatedArtifact) throws OseeCoreException {
-      TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(parentBranch);
+      TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(parentBranch);
       String creationComment = String.format("Root Branch [%s] Creation", branchName);
-      return HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getTransactionNumber(),
+      return HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getId(),
             parentTransactionId.getBranch().getBranchId(), branchName, null, null, associatedArtifact, creationComment,
             -1, -1);
    }
@@ -443,10 +443,10 @@ public class BranchManager {
     */
    public static Branch createTopLevelBranch(String branchName, String staticBranchName, String branchGuid) throws OseeCoreException {
       Branch systemRootBranch = BranchManager.getSystemRootBranch();
-      TransactionId parentTransactionId = TransactionIdManager.getlatestTransactionForBranch(systemRootBranch);
+      TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(systemRootBranch);
       String creationComment = String.format("Root Branch [%s] Creation", branchName);
       Branch branch =
-            HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getTransactionNumber(),
+            HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getId(),
                   systemRootBranch.getBranchId(), branchName, staticBranchName, branchGuid, null, creationComment, -1,
                   -1);
       if (staticBranchName != null) {
@@ -579,7 +579,7 @@ public class BranchManager {
    }
 
    public static boolean hasChanges(Branch branch) throws OseeCoreException {
-      Pair<TransactionId, TransactionId> transactions = TransactionIdManager.getStartEndPoint(branch);
+      Pair<TransactionRecord, TransactionRecord> transactions = TransactionManager.getStartEndPoint(branch);
       return transactions.getFirst() != transactions.getSecond();
    }
 

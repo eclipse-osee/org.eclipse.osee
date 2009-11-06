@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * Public API class for access to change data from branches and transactionIds
@@ -61,7 +61,7 @@ public class ChangeManager {
     * @return changes
     * @throws OseeCoreException
     */
-   public static Collection<Change> getChangesPerTransaction(TransactionId transactionId, IProgressMonitor monitor) throws OseeCoreException {
+   public static Collection<Change> getChangesPerTransaction(TransactionRecord transactionId, IProgressMonitor monitor) throws OseeCoreException {
       return changeManager.getChangesPerTransaction(transactionId, monitor);
    }
 
@@ -85,7 +85,7 @@ public class ChangeManager {
     * @return a map of artifact to collection of TransactionIds which affected the given artifact
     * @throws OseeCoreException
     */
-   public static HashCollection<Artifact, TransactionId> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
+   public static HashCollection<Artifact, TransactionRecord> getModifingTransactions(Collection<Artifact> artifacts) throws OseeCoreException {
       List<Object[]> insertParameters = new ArrayList<Object[]>(artifacts.size() * 5);
 
       int queryId = ArtifactLoader.getNewQueryId();
@@ -95,20 +95,20 @@ public class ChangeManager {
       for (Artifact artifact : artifacts) {
          Branch branch = artifact.getBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
-         int transactionNumber = TransactionIdManager.getlatestTransactionForBranch(branch).getTransactionNumber();
+         int transactionNumber = TransactionManager.getLastTransaction(branch).getId();
          insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getBranchId(),
                transactionNumber});
 
          // for each combination of artifact and its branch hierarchy
          while (branch.hasParentBranch()) {
-            transactionNumber = branch.getSourceTransaction().getTransactionNumber();
+            transactionNumber = branch.getSourceTransaction().getId();
             branch = branch.getParentBranch();
             insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getBranchId(),
                   transactionNumber});
          }
       }
 
-      HashCollection<Artifact, TransactionId> transactionMap = new HashCollection<Artifact, TransactionId>();
+      HashCollection<Artifact, TransactionRecord> transactionMap = new HashCollection<Artifact, TransactionRecord>();
       try {
          ArtifactLoader.insertIntoArtifactJoin(insertParameters);
          ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
@@ -118,7 +118,7 @@ public class ChangeManager {
             while (chStmt.next()) {
                Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
                Artifact artifact = artifactMap.get(chStmt.getInt("art_id"), branch);
-               transactionMap.put(artifact, TransactionIdManager.getTransactionId(chStmt.getInt("transaction_id")));
+               transactionMap.put(artifact, TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
             }
          } finally {
             chStmt.close();

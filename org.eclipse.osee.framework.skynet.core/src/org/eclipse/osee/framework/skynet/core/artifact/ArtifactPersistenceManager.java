@@ -38,8 +38,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Ryan D. Brooks
@@ -215,8 +215,8 @@ public class ArtifactPersistenceManager {
    }
 
    public static void revertAttribute(OseeConnection connection, int branchId, int artId, int attributeId) throws OseeCoreException {
-      TransactionId transId =
-            TransactionIdManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
+      TransactionRecord transId =
+            TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
       long totalTime = System.currentTimeMillis();
       //Get attribute Gammas
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
@@ -249,8 +249,8 @@ public class ArtifactPersistenceManager {
       long totalTime = time;
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
 
-      TransactionId transId =
-            TransactionIdManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
+      TransactionRecord transId =
+            TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
 
       try {
          chStmt.runPreparedQuery(GET_GAMMAS_RELATION_REVERT, branchId, relLinkId);
@@ -266,8 +266,8 @@ public class ArtifactPersistenceManager {
    }
 
    public static void revertArtifact(OseeConnection connection, int branchId, int artId) throws OseeCoreException {
-      TransactionId transId =
-            TransactionIdManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
+      TransactionRecord transId =
+            TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
       long totalTime = System.currentTimeMillis();
       //Get attribute Gammas
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);

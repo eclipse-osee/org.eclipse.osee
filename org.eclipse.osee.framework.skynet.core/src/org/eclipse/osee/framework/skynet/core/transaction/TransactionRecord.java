@@ -18,16 +18,17 @@ import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 /**
  * @author Jeff C. Phillips
  */
-public class TransactionId implements IAdaptable {
+public class TransactionRecord implements IAdaptable {
    private final int transactionNumber;
    private final Branch branch;
    private final TransactionDetailsType txType;
+
    private String comment;
    private Date time;
    private int authorArtId;
    private int commitArtId;
 
-   public TransactionId(int transactionNumber, Branch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+   public TransactionRecord(int transactionNumber, Branch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       this.transactionNumber = transactionNumber;
       this.branch = branch;
       this.comment = comment;
@@ -41,7 +42,7 @@ public class TransactionId implements IAdaptable {
       return branch;
    }
 
-   public int getTransactionNumber() {
+   public int getId() {
       return transactionNumber;
    }
 
@@ -53,11 +54,11 @@ public class TransactionId implements IAdaptable {
       return time;
    }
 
-   public int getAuthorArtId() {
+   public int getAuthor() {
       return authorArtId;
    }
 
-   public int getCommitArtId() {
+   public int getCommit() {
       return commitArtId;
    }
 
@@ -73,18 +74,18 @@ public class TransactionId implements IAdaptable {
       this.time = time;
    }
 
-   public void setAuthorArtId(int authorArtId) {
+   public void setAuthor(int authorArtId) {
       this.authorArtId = authorArtId;
    }
 
-   public void setCommitArtId(int commitArtId) {
+   public void setCommit(int commitArtId) {
       this.commitArtId = commitArtId;
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof TransactionId) {
-         TransactionId other = (TransactionId) obj;
+      if (obj instanceof TransactionRecord) {
+         TransactionRecord other = (TransactionRecord) obj;
          return other.transactionNumber == transactionNumber;
       }
       return false;
@@ -93,11 +94,7 @@ public class TransactionId implements IAdaptable {
    @SuppressWarnings("unchecked")
    @Override
    public Object getAdapter(Class adapter) {
-      if (adapter == null) {
-         throw new IllegalArgumentException("adapter can not be null");
-      }
-
-      if (adapter.isInstance(this)) {
+      if (getClass().isAssignableFrom(adapter)) {
          return this;
       }
       return null;

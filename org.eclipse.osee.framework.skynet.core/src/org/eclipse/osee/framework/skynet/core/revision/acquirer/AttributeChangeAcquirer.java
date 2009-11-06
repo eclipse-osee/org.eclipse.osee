@@ -31,15 +31,15 @@ import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Jeff C. Phillips
  */
 public class AttributeChangeAcquirer extends ChangeAcquirer {
 
-   public AttributeChangeAcquirer(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
+   public AttributeChangeAcquirer(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
       super(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
    }
 
@@ -53,8 +53,8 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       long time = System.currentTimeMillis();
       try {
          getMonitor().subTask("Gathering Attribute Changes");
-         TransactionId fromTransactionId;
-         TransactionId toTransactionId;
+         TransactionRecord fromTransactionId;
+         TransactionRecord toTransactionId;
          boolean hasSpecificArtifact = getSpecificArtifact() != null;
 
          for (ChangeBuilder changeBuilder : getChangeBuilders()) {// cache in map for performance look ups
@@ -65,29 +65,29 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ATTRIBUTE_IS),
                   getSourceBranch().getBranchId());
 
-            Pair<TransactionId, TransactionId> branchStartEndTransaction =
-                  TransactionIdManager.getStartEndPoint(getSourceBranch());
+            Pair<TransactionRecord, TransactionRecord> branchStartEndTransaction =
+                  TransactionManager.getStartEndPoint(getSourceBranch());
 
             fromTransactionId = branchStartEndTransaction.getFirst();
             toTransactionId = branchStartEndTransaction.getSecond();
          }//Changes per transaction number
          else {
-            toTransactionId = getTransactionId();
+            toTransactionId = getTransaction();
             if (hasSpecificArtifact) {
                chStmt.runPreparedQuery(
                      ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS_FOR_SPECIFIC_ARTIFACT),
-                     getTransactionId().getTransactionNumber(), getSpecificArtifact().getArtId());
-               fromTransactionId = getTransactionId();
+                     getTransaction().getId(), getSpecificArtifact().getArtId());
+               fromTransactionId = getTransaction();
             } else {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_IS),
-                     getTransactionId().getTransactionNumber());
-               fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
+                     getTransaction().getId());
+               fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
             }
          }
          loadIsValues(getSourceBranch(), getArtIds(), getChangeBuilders(), getNewAndDeletedArtifactIds(), getMonitor(),
                attributesWasValueCache, artModTypes, modifiedArtifacts, chStmt, hasBranch, time, fromTransactionId,
                toTransactionId, hasSpecificArtifact);
-         loadAttributeWasValues(getSourceBranch(), getTransactionId(), getArtIds(), getMonitor(),
+         loadAttributeWasValues(getSourceBranch(), getTransaction(), getArtIds(), getMonitor(),
                attributesWasValueCache, hasBranch);
       } finally {
          chStmt.close();
@@ -95,7 +95,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       return getChangeBuilders();
    }
 
-   private void loadIsValues(Branch sourceBranch, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, Map<Integer, ModificationType> artModTypes, Set<Integer> modifiedArtifacts, ConnectionHandlerStatement chStmt, boolean hasBranch, long time, TransactionId fromTransactionId, TransactionId toTransactionId, boolean hasSpecificArtifact) throws OseeCoreException {
+   private void loadIsValues(Branch sourceBranch, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, Map<Integer, ModificationType> artModTypes, Set<Integer> modifiedArtifacts, ConnectionHandlerStatement chStmt, boolean hasBranch, long time, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, boolean hasSpecificArtifact) throws OseeCoreException {
       ModificationType artModType;
       AttributeChangeBuilder attributeChangeBuilder;
 
@@ -164,7 +164,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
     * @throws OseeCoreException
     * @throws OseeDataStoreException
     */
-   private void loadAttributeWasValues(Branch sourceBranch, TransactionId transactionId, Set<Integer> artIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, boolean hasBranch) throws OseeCoreException, OseeDataStoreException {
+   private void loadAttributeWasValues(Branch sourceBranch, TransactionRecord transactionId, Set<Integer> artIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, boolean hasBranch) throws OseeCoreException, OseeDataStoreException {
       if (!artIds.isEmpty()) {
          int count = 0;
          int sqlParamter; // Will either be a branch id or transaction id
@@ -178,7 +178,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          } else {
             wasValueBranch = transactionId.getBranch();
             sql = ClientSessionManager.getSql(OseeSql.CHANGE_TX_ATTRIBUTE_WAS);
-            sqlParamter = transactionId.getTransactionNumber();
+            sqlParamter = transactionId.getId();
          }
 
          int queryId = ArtifactLoader.getNewQueryId();

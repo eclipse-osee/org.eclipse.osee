@@ -35,7 +35,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /*
  * @author Jeff C. Phillips
@@ -64,7 +64,7 @@ public class AttributeConflict extends Conflict {
    private static final boolean DEBUG =
          "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.ui.skynet/debug/Merge"));
 
-   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId toTransactionId, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) throws OseeCoreException {
+   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionRecord toTransactionId, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, toTransactionId, null, mergeBranch, sourceBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;
@@ -73,7 +73,7 @@ public class AttributeConflict extends Conflict {
       computeEqualsValues();
    }
 
-   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionId commitTransaction, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch destBranch) throws OseeCoreException {
+   public AttributeConflict(int sourceGamma, int destGamma, int artId, TransactionRecord commitTransaction, String sourceValue, int attrId, int attrTypeId, Branch mergeBranch, Branch destBranch) throws OseeCoreException {
       super(sourceGamma, destGamma, artId, commitTransaction, mergeBranch, destBranch);
       this.attrId = attrId;
       this.attrTypeId = attrTypeId;

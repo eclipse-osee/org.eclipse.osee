@@ -21,23 +21,23 @@ import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.RelationChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Jeff C. Phillips
  */
 public class RelationChangeAcquirer extends ChangeAcquirer {
 
-   public RelationChangeAcquirer(Branch sourceBranch, TransactionId transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
+   public RelationChangeAcquirer(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, Artifact specificArtifact, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds) {
       super(sourceBranch, transactionId, monitor, specificArtifact, artIds, changeBuilders, newAndDeletedArtifactIds);
    }
 
    @Override
    public ArrayList<ChangeBuilder> acquireChanges() throws OseeCoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      TransactionId fromTransactionId;
-      TransactionId toTransactionId;
+      TransactionRecord fromTransactionId;
+      TransactionRecord toTransactionId;
 
       getMonitor().subTask("Gathering Relation Changes");
       try {
@@ -48,24 +48,24 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_RELATION),
                   getSourceBranch().getBranchId());
 
-            Pair<TransactionId, TransactionId> branchStartEndTransaction =
-                  TransactionIdManager.getStartEndPoint(getSourceBranch());
+            Pair<TransactionRecord, TransactionRecord> branchStartEndTransaction =
+                  TransactionManager.getStartEndPoint(getSourceBranch());
 
             fromTransactionId = branchStartEndTransaction.getFirst();
             toTransactionId = branchStartEndTransaction.getSecond();
          }//Changes per a transaction
          else {
-            toTransactionId = getTransactionId();
+            toTransactionId = getTransaction();
 
             if (getSpecificArtifact() != null) {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_RELATION_FOR_SPECIFIC_ARTIFACT),
-                     getTransactionId().getTransactionNumber(), getSpecificArtifact().getArtId(),
+                     getTransaction().getId(), getSpecificArtifact().getArtId(),
                      getSpecificArtifact().getArtId());
-               fromTransactionId = getTransactionId();
+               fromTransactionId = getTransaction();
             } else {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_RELATION),
-                     getTransactionId().getTransactionNumber());
-               fromTransactionId = TransactionIdManager.getPriorTransaction(toTransactionId);
+                     getTransaction().getId());
+               fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
             }
          }
 

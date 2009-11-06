@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Jeff C. Phillips
@@ -25,7 +25,7 @@ public class RelationChangeBuilder extends ChangeBuilder {
    private String rationale;
    private RelationType relationType;
 
-   public RelationChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
+   public RelationChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical) {
       super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
             isHistorical);
       this.bArtId = bArtId;
@@ -39,7 +39,7 @@ public class RelationChangeBuilder extends ChangeBuilder {
       Artifact bArtifact;
 
       if (isHistorical()) {
-         bArtifact = ArtifactCache.getHistorical(bArtId, getToTransactionId().getTransactionNumber());
+         bArtifact = ArtifactCache.getHistorical(bArtId, getToTransactionId().getId());
       } else {
          bArtifact = ArtifactCache.getActive(bArtId, branch);
       }

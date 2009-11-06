@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.skynet.core.event.RelationModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.transaction.BaseTransactionData;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Jeff C. Phillips
@@ -54,7 +54,7 @@ public class RelationTransactionData extends BaseTransactionData {
    }
 
    @Override
-   protected void internalUpdate(TransactionId transactionId) throws OseeCoreException {
+   protected void internalUpdate(TransactionRecord transactionId) throws OseeCoreException {
       relation.internalSetGammaId(getGammaId());
    }
 

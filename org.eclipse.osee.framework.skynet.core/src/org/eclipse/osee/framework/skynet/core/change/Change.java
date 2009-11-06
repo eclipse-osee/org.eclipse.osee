@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Jeff C. Phillips
@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
 public abstract class Change implements IAdaptable {
    private final int sourceGamma;
    private final int artId;
-   private final TransactionId toTransactionId;
-   private TransactionId fromTransactionId;
+   private final TransactionRecord toTransactionId;
+   private TransactionRecord fromTransactionId;
    private final Artifact artifact;
    private ModificationType modType;
    private final ChangeType changeType;
@@ -37,7 +37,7 @@ public abstract class Change implements IAdaptable {
    private final ArtifactType artifactType;
    private final boolean isHistorical;
 
-   public Change(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
+   public Change(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical, Artifact artifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super();
       this.branch = branch;
       this.sourceGamma = sourceGamma;
@@ -115,11 +115,11 @@ public abstract class Change implements IAdaptable {
       return artId;
    }
 
-   public TransactionId getToTransactionId() {
+   public TransactionRecord getToTransactionId() {
       return toTransactionId;
    }
 
-   public TransactionId getFromTransactionId() {
+   public TransactionRecord getFromTransactionId() {
       return fromTransactionId;
    }
 
@@ -139,7 +139,7 @@ public abstract class Change implements IAdaptable {
       return branch;
    }
 
-   public void setFromTransactionId(TransactionId fromTransactionId) {
+   public void setFromTransactionId(TransactionRecord fromTransactionId) {
       this.fromTransactionId = fromTransactionId;
    }
 

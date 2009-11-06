@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Jeff C. Phillips
@@ -56,7 +56,7 @@ public final class RelationChange extends Change {
     * @throws OseeDataStoreException
     * @throws ArtifactDoesNotExist
     */
-   public RelationChange(Branch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionId toTransactionId, TransactionId fromTransactionId, ModificationType modType,
+   public RelationChange(Branch branch, ArtifactType aArtType, int sourceGamma, int aArtId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType,
          ChangeType changeType, int bArtId, int relLinkId, String rationale, RelationType relationType, boolean isHistorical, Artifact artifact, 
          Artifact bArtifact) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
       super(branch, aArtType, sourceGamma, aArtId, toTransactionId, fromTransactionId, modType, changeType,

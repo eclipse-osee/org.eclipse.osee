@@ -16,8 +16,8 @@ import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Robert A. Fisher
@@ -29,20 +29,20 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
    private static final String sql = "";
    private static final String TOKEN = ";";
 
-   public RelationInTransactionSearch(TransactionId transactionId) {
+   public RelationInTransactionSearch(TransactionRecord transactionId) {
       this(transactionId, transactionId);
    }
 
-   public RelationInTransactionSearch(TransactionId fromTransactionId, TransactionId toTransactionId) {
+   public RelationInTransactionSearch(TransactionRecord fromTransactionId, TransactionRecord toTransactionId) {
       if (!fromTransactionId.getBranch().equals(toTransactionId.getBranch())) {
          throw new IllegalArgumentException("The fromTransactionId and toTransactionId must be on the same branch");
       }
-      if (fromTransactionId.getTransactionNumber() > toTransactionId.getTransactionNumber()) {
+      if (fromTransactionId.getId() > toTransactionId.getId()) {
          throw new IllegalArgumentException("The fromTransactionId can not be greater than the toTransactionId.");
       }
 
-      this.fromTransactionNumber = fromTransactionId.getTransactionNumber();
-      this.toTransactionNumber = toTransactionId.getTransactionNumber();
+      this.fromTransactionNumber = fromTransactionId.getId();
+      this.toTransactionNumber = toTransactionId.getId();
       this.branchId = fromTransactionId.getBranch().getBranchId();
    }
 
@@ -88,8 +88,8 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
          throw new IllegalArgumentException("Unable to parse the storage string:" + storageString);
       }
 
-      return new RelationInTransactionSearch(TransactionIdManager.getTransactionId(Integer.parseInt(values[0])),
-            TransactionIdManager.getTransactionId(Integer.parseInt(values[1])));
+      return new RelationInTransactionSearch(TransactionManager.getTransactionId(Integer.parseInt(values[0])),
+            TransactionManager.getTransactionId(Integer.parseInt(values[1])));
    }
 
    public String getStorageString() {

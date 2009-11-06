@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * This class converts between OSEE hyperlink markers into wordML style links. <br/>
@@ -163,7 +163,7 @@ public class WordMlLinkHandler {
       return matchMap;
    }
 
-   private static List<Artifact> findArtifacts(TransactionId transactionId, Branch branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
+   private static List<Artifact> findArtifacts(TransactionRecord transactionId, Branch branch, boolean isHistorical, List<String> guidsFromLinks) throws OseeCoreException {
       List<Artifact> artifactsFromSearch;
       if (isHistorical) {
          artifactsFromSearch = ArtifactQuery.getHistoricalArtifactListFromIds(guidsFromLinks, transactionId, true);

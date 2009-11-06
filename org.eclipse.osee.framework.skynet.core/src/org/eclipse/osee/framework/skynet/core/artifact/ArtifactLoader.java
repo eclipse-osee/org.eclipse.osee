@@ -39,8 +39,8 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionId;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionIdManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
  * @author Ryan D. Brooks
@@ -69,7 +69,7 @@ public final class ArtifactLoader {
     * @return list of artifacts resulting for the sql query
     * @throws OseeCoreException
     */
-   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, ISearchConfirmer confirmer, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {
       int queryId = getNewQueryId();
       CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters =
             new CompositeKeyHashMap<Integer, Integer, Object[]>(artifactCountEstimate, false);
@@ -93,7 +93,7 @@ public final class ArtifactLoader {
     * @return list of artifacts resulting for the sql query
     * @throws OseeCoreException
     */
-   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, TransactionId transactionId, boolean allowDeleted) throws OseeCoreException {
+   public static List<Artifact> getArtifacts(String sql, Object[] queryParameters, int artifactCountEstimate, ArtifactLoad loadLevel, boolean reload, TransactionRecord transactionId, boolean allowDeleted) throws OseeCoreException {
       return getArtifacts(sql, queryParameters, artifactCountEstimate, loadLevel, reload, null, transactionId,
             allowDeleted);
    }
@@ -177,7 +177,7 @@ public final class ArtifactLoader {
     * @return list of the loaded artifacts
     * @throws OseeCoreException
     */
-   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, Branch branch, ArtifactLoad loadLevel, TransactionId transactionId, boolean reload) throws OseeCoreException {
+   public static List<Artifact> loadArtifacts(Collection<Integer> artIds, Branch branch, ArtifactLoad loadLevel, TransactionRecord transactionId, boolean reload) throws OseeCoreException {
       ArrayList<Artifact> artifacts = new ArrayList<Artifact>();
 
       if (!artIds.isEmpty()) {
@@ -189,7 +189,7 @@ public final class ArtifactLoader {
 
          for (int artId : org.eclipse.osee.framework.jdk.core.util.Collections.unique(artIds)) {
             insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
-                  historical ? transactionId.getTransactionNumber() : SQL3DataType.INTEGER});
+                  historical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
 
          for (Artifact artifact : loadArtifacts(queryId, loadLevel, null, insertParameters, reload, historical, true)) {
@@ -272,7 +272,7 @@ public final class ArtifactLoader {
     * @param queryParameters
     * @param artifactCountEstimate
     */
-   public static void selectArtifacts(int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate, TransactionId transactionId) throws OseeDataStoreException {
+   public static void selectArtifacts(int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate, TransactionRecord transactionId) throws OseeDataStoreException {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       long time = System.currentTimeMillis();
 
@@ -290,7 +290,7 @@ public final class ArtifactLoader {
                System.out.println(String.format("  ArtifactID = %d , BranchID = %d", artId, branchId));
             }
             Object transactionParameter =
-                  transactionId == null ? SQL3DataType.INTEGER : transactionId.getTransactionNumber();
+                  transactionId == null ? SQL3DataType.INTEGER : transactionId.getId();
             insertParameters.put(artId, branchId, new Object[] {queryId, insertTime, artId, branchId,
                   transactionParameter});
          }
@@ -304,15 +304,15 @@ public final class ArtifactLoader {
    private static Artifact retrieveShallowArtifact(ConnectionHandlerStatement chStmt, boolean reload, boolean historical) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
       Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
-      TransactionId transactionId = TransactionIdManager.getTransactionId(chStmt);
+      TransactionRecord transactionId = TransactionManager.getTransactionId(chStmt);
       Artifact artifact;
 
       if (historical) {
          int stripeTransactionNumber = chStmt.getInt("stripe_transaction_id");
-         if (stripeTransactionNumber != transactionId.getTransactionNumber()) {
-            transactionId = TransactionIdManager.getTransactionId(stripeTransactionNumber);
+         if (stripeTransactionNumber != transactionId.getId()) {
+            transactionId = TransactionManager.getTransactionId(stripeTransactionNumber);
          }
-         artifact = ArtifactCache.getHistorical(artifactId, transactionId.getTransactionNumber());
+         artifact = ArtifactCache.getHistorical(artifactId, transactionId.getId());
       } else {
          artifact = ArtifactCache.getActive(artifactId, branch);
       }
