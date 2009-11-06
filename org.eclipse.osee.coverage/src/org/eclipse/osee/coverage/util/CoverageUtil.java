@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.util;
 
 import java.util.Collection;
+import java.util.Set;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
@@ -65,6 +66,14 @@ public class CoverageUtil {
          return (CoverageUnit) coverage;
       }
       return getTopLevelCoverageUnit(coverage.getParent());
+   }
+
+   public static void getParentCoverageUnits(ICoverage coverage, Set<CoverageUnit> parents) {
+      if (coverage.getParent() == null) return;
+      if (coverage.getParent() instanceof CoverageUnit) {
+         parents.add((CoverageUnit) coverage.getParent());
+         getParentCoverageUnits(coverage.getParent(), parents);
+      }
    }
 
 }

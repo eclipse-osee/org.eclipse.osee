@@ -5,11 +5,9 @@
  */
 package org.eclipse.osee.coverage.util;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.MergeItem;
@@ -47,8 +45,12 @@ public class CoveragePackageImportManager {
       for (MergeItem mergeItem : mergeItems) {
          if (mergeItem.getMergeType() == MergeType.Add) {
             Set<CoverageUnit> coverageUnits = new HashSet<CoverageUnit>();
+            // add this item
             coverageUnits.add((CoverageUnit) mergeItem.getImportItem());
+            // add all children items
             coverageUnits.addAll(((CoverageUnit) mergeItem.getImportItem()).getCoverageUnits(true));
+            // add all parent items up the tree
+            CoverageUtil.getParentCoverageUnits((CoverageUnit) mergeItem.getImportItem(), coverageUnits);
             importCoverageUnitItems(rd, coverageUnits);
          } else {
             rd.logError(String.format("Unsupported merge type [%s] for merge item [%s]", mergeItem.getMergeType(),
@@ -72,7 +74,7 @@ public class CoveragePackageImportManager {
 
    private void importCoverageUnitItems(XResultData rd, Collection<CoverageUnit> importCoverageUnits) throws OseeCoreException {
       Set<ICoverage> imported = new HashSet<ICoverage>();
-      List<ICoverage> parentCoverageUnits = new ArrayList<ICoverage>();
+      Set<ICoverage> parentCoverageUnits = new HashSet<ICoverage>();
       for (ICoverage importCoverageUnit : importCoverageUnits) {
          parentCoverageUnits.add(CoverageUtil.getTopLevelCoverageUnit(importCoverageUnit));
       }

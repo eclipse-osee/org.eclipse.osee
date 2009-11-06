@@ -140,4 +140,9 @@ public class MergeItem implements ICoverage {
    public void setImportAllowed(boolean importAllowed) {
       this.importAllowed = importAllowed;
    }
+
+   @Override
+   public String toString() {
+      return mergeType.toString() + " - " + importItem.toString();
+   }
 }
