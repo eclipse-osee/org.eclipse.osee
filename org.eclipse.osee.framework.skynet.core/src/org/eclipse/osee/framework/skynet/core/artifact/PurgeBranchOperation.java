@@ -40,7 +40,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    private static final String SELECT_DELETABLE_GAMMAS =
          "select %s from osee_tx_details txd1, %s txs1 where txd1.branch_id = ? AND txd1.tx_type = %d AND txd1.transaction_id = txs1.transaction_id AND NOT EXISTS (SELECT 1 FROM osee_txs txs2, osee_tx_details txd2 WHERE txs1.%s = txs2.gamma_id AND txd2.transaction_id = txs2.transaction_id AND txd1.branch_id <> txd2.branch_id)AND NOT EXISTS (SELECT 1 FROM osee_txs_archived txs3, osee_tx_details txd3 WHERE txs1.%s = txs3.gamma_id AND txd3.transaction_id = txs3.transaction_id AND txd1.branch_id <> txd3.branch_id)";
 
-   private static final String TEST_TXS =
+   public static final String TEST_TXS =
          "select count(1) from osee_tx_details txd where txd.branch_id = ? AND txd.tx_type = 1 AND exists (select 1 from osee_txs txs where txd.transaction_id = txs.transaction_id)";
 
    private static final String PURGE_GAMMAS = "delete from %s where gamma_id = ?";
