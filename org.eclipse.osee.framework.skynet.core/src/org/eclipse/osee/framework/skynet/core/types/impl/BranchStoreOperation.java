@@ -36,7 +36,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
 
    private static final String SELECT_ADDRESSING_BY_BRANCH =
          "select * from %s txs, osee_tx_details txd where txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
-   private static final String INSERT_ARCHIVED_ADDRESSING =
+   private static final String INSERT_ADDRESSING =
          "insert into %s (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
 
    public static final String DELETE_ADDRESSING = "delete from %s where transaction_id = ? and gamma_id = ?";
@@ -95,7 +95,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       }
    }
 
-   private void moveBranchAddressing(OseeConnection connection, Branch branch, boolean archive) throws OseeDataStoreException {
+   public static void moveBranchAddressing(OseeConnection connection, Branch branch, boolean archive) throws OseeDataStoreException {
       String sourceTableName = archive ? "osee_txs" : "osee_txs_archived";
       String destinationTableName = archive ? "osee_txs_archived" : "osee_txs";
 
@@ -114,12 +114,11 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       } finally {
          chStmt.close();
       }
-      sql = String.format(INSERT_ARCHIVED_ADDRESSING, destinationTableName);
+      sql = String.format(INSERT_ADDRESSING, destinationTableName);
       ConnectionHandler.runBatchUpdate(connection, sql, addressing);
 
       sql = String.format(DELETE_ADDRESSING, sourceTableName);
       ConnectionHandler.runBatchUpdate(connection, sql, deleteAddressing);
-
    }
 
    private boolean isDataDirty(Branch type) throws OseeCoreException {
