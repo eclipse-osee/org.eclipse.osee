@@ -134,7 +134,6 @@ attributeType "Favorite Branch" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
-   defaultValue "AyH_fDpMERA+zDfML4gA"
 }
 
 attributeType "User Settings" extends StringAttribute {
@@ -226,7 +225,6 @@ artifactType "Universal Group" extends "Group Artifact" {
 
 artifactType "Renderer Template" extends "Native Artifact" {
    guid "AAMFDhvZnHKgSeFKMXgA"
-   attribute "Whole Word Content"
    attribute "Template Match Criteria"
 }
 
@@ -1240,7 +1238,7 @@ relationType "Functional decomposition " {
 }
 
 relationType "Test Unit Result" {
-   guid "AAMFE+jMyBDK7CV479wA"
+   guid "AQm9ouX6JwBD29WrFoAA"
    sideAName "test unit"
    sideAArtifactType "Test Unit"
    sideBName "test result"

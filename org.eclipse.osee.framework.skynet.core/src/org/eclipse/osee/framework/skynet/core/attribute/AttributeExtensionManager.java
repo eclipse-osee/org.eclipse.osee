@@ -53,33 +53,40 @@ public class AttributeExtensionManager {
       this.attributeDataProviderClasses = null;
    }
 
-   public static Class<? extends Attribute<?>> getAttributeClassFor(String name) throws OseeCoreException {
-      if (!name.contains(".")) {
-         name = Activator.PLUGIN_ID + "." + name;
+   public static String resolveAttributeBaseTypeId(String id) {
+      return resolveAttributeProviderTypeId(id);
+   }
+
+   public static String resolveAttributeProviderTypeId(String id) {
+      String newType = id;
+      if (!newType.contains(".")) {
+         newType = Activator.PLUGIN_ID + "." + newType;
       }
+      return newType;
+   }
+
+   public static Class<? extends Attribute<?>> getAttributeClassFor(String name) throws OseeCoreException {
       if (instance.attributeTypeClasses == null) {
          instance.attributeTypeClasses = instance.loadExtensions(ATTRIBUTE_TYPE, attributeBaseTypes, CLASS_ID);
       }
-
-      Pair<String, String> entry = instance.attributeTypeClasses.get(name);
+      String resolved = resolveAttributeBaseTypeId(name);
+      Pair<String, String> entry = instance.attributeTypeClasses.get(resolved);
       if (entry == null) {
-         throw new OseeArgumentException(String.format("Unable to find class for: [%s]", name));
+         throw new OseeArgumentException(String.format("Unable to find class for: [%s]", resolved));
       }
 
       return instance.loadClass(entry.getFirst(), entry.getSecond());
    }
 
    public static Class<? extends AbstractAttributeDataProvider> getAttributeProviderClassFor(String name) throws OseeCoreException {
-      if (!name.contains(".")) {
-         name = Activator.PLUGIN_ID + "." + name;
-      }
       if (instance.attributeDataProviderClasses == null) {
          instance.attributeDataProviderClasses =
                instance.loadExtensions(ATTRIBUTE_DATA_PROVIDER_TYPE, attributeProviderBaseTypes, CLASS_ID);
       }
-      Pair<String, String> entry = instance.attributeDataProviderClasses.get(name);
+      String resolved = resolveAttributeProviderTypeId(name);
+      Pair<String, String> entry = instance.attributeDataProviderClasses.get(resolved);
       if (entry == null) {
-         throw new OseeArgumentException(String.format("Unable to find class for: [%s]", name));
+         throw new OseeArgumentException(String.format("Unable to find class for: [%s]", resolved));
       }
       return instance.loadClass(entry.getFirst(), entry.getSecond());
    }

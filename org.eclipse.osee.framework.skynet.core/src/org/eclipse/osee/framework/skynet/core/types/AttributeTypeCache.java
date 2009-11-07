@@ -28,19 +28,23 @@ public final class AttributeTypeCache extends AbstractOseeCache<AttributeType> {
 
    public AttributeType createType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
       AttributeType attributeType = getByGuid(guid);
+
+      String resolvedBaseAttributeType = AttributeExtensionManager.resolveAttributeBaseTypeId(baseAttributeTypeId);
+      String resolvedProviderType = AttributeExtensionManager.resolveAttributeProviderTypeId(attributeProviderNameId);
+
       Class<? extends Attribute<?>> baseAttributeClass =
-            AttributeExtensionManager.getAttributeClassFor(baseAttributeTypeId);
+            AttributeExtensionManager.getAttributeClassFor(resolvedBaseAttributeType);
       Class<? extends IAttributeDataProvider> providerAttributeClass =
-            AttributeExtensionManager.getAttributeProviderClassFor(attributeProviderNameId);
+            AttributeExtensionManager.getAttributeProviderClassFor(resolvedProviderType);
 
       if (attributeType == null) {
          attributeType =
-               getDataFactory().createAttributeType(this, guid, typeName, baseAttributeTypeId, attributeProviderNameId,
-                     baseAttributeClass, providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType,
-                     minOccurrences, maxOccurrences, description, taggerId);
+               getDataFactory().createAttributeType(this, guid, typeName, resolvedBaseAttributeType,
+                     resolvedProviderType, baseAttributeClass, providerAttributeClass, fileTypeExtension, defaultValue,
+                     oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
       } else {
          decache(attributeType);
-         attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, baseAttributeClass,
+         attributeType.setFields(typeName, resolvedBaseAttributeType, resolvedProviderType, baseAttributeClass,
                providerAttributeClass, fileTypeExtension, defaultValue, oseeEnumType, minOccurrences, maxOccurrences,
                description, taggerId);
       }
