@@ -38,8 +38,10 @@ public class ExperimentalBlam extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.ARCHIVED, BranchControlled.ALL,
             BranchType.WORKING)) {
-         if (ConnectionHandler.runPreparedQueryFetchInt(0, PurgeBranchOperation.TEST_TXS, branch.getBranchId()) == 1) {
-            BranchStoreOperation.moveBranchAddressing(null, branch, true);
+         if ((branch.getBranchId() + 1) % 2 == 0) {
+            if (ConnectionHandler.runPreparedQueryFetchInt(0, PurgeBranchOperation.TEST_TXS, branch.getBranchId()) == 1) {
+               BranchStoreOperation.moveBranchAddressing(null, branch, true);
+            }
          }
       }
    }
