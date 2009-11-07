@@ -17,7 +17,8 @@ attributeType "osee.config.Default Mail Server" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description
+   taggerId DefaultAttributeTaggerProvider
+   description
    "fully qualified name of the machice running the SMTP server which will be used by default for sending email"
 }
 
@@ -140,14 +141,16 @@ attributeType "User Settings" extends StringAttribute {
    guid "AAMFEbOnewRpnYFgnHQA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 fileExtension "xml"
+   max 1
+   fileExtension "xml"
 }
 
 attributeType "XViewer Customization" extends StringAttribute {
    guid "AAMFEbQk+hTB9fE3uNAA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max unlimited fileExtension "xml"
+   max unlimited
+   fileExtension "xml"
 }
 
 attributeType "XViewer Defaults" extends StringAttribute {
@@ -223,6 +226,7 @@ artifactType "Universal Group" extends "Group Artifact" {
 
 artifactType "Renderer Template" extends "Native Artifact" {
    guid "AAMFDhvZnHKgSeFKMXgA"
+   attribute "Whole Word Content"
    attribute "Template Match Criteria"
 }
 
@@ -230,7 +234,8 @@ attributeType "Template Match Criteria" extends StringAttribute {
    guid "AAMFEbeRRENHX5KTmxwA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max unlimited description
+   max unlimited
+   description
    "Criteria that determines what template is selected ie: \'Render Artifact PresentationType Option\'"
 }
 
@@ -276,7 +281,8 @@ attributeType "Name" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   taggerId DefaultAttributeTaggerProvider description "Descriptive Name"
+   taggerId DefaultAttributeTaggerProvider
+   description "Descriptive Name"
    defaultValue "unnamed"
 }
 
@@ -285,8 +291,8 @@ attributeType "Relation Order" extends StringAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
-   taggerId DefaultAttributeTaggerProvider description
-   "Defines relation ordering information"
+   taggerId DefaultAttributeTaggerProvider
+   description "Defines relation ordering information"
 }
 
 attributeType "Description" extends StringAttribute {
@@ -318,14 +324,18 @@ attributeType "Word Ole Data" extends StringAttribute {
    guid "AAMFEcP2rmoCzqmzJxQA"
    dataProvider UriAttributeDataProvider
    min 0
-   max 1 description "Word Ole Data" fileExtension "xml"
+   max 1
+   description "Word Ole Data"
+   fileExtension "xml"
 }
 
 attributeType "Workflow Definition" extends StringAttribute {
    guid "AAMFEcSPdVbU8mGugOQA"
    dataProvider UriAttributeDataProvider
    min 0
-   max 1 description "xml definition of a Blam Workflow" fileExtension "vue"
+   max 1
+   description "xml definition of a Blam Workflow"
+   fileExtension "vue"
 }
 
 attributeType "Annotation" extends StringAttribute {
@@ -354,8 +364,9 @@ attributeType "Native Content" extends CompressedContentAttribute {
    guid "AAMFEcdBJGBK9nr9TTQA"
    dataProvider UriAttributeDataProvider
    min 0
-   max 1 description "content that will be edited by a native program" fileExtension
-   "bin"
+   max 1
+   description "content that will be edited by a native program"
+   fileExtension "bin"
 }
 
 attributeType "Word Template Content" extends WordAttribute {
@@ -363,8 +374,8 @@ attributeType "Word Template Content" extends WordAttribute {
    dataProvider UriAttributeDataProvider
    min 0
    max 1
-   taggerId XmlAttributeTaggerProvider description
-   "value must comply with WordML xml schema"
+   taggerId XmlAttributeTaggerProvider
+   description "value must comply with WordML xml schema"
    defaultValue
    "<w:p xmlns:w=\"http://schemas.microsoft.com/office/word/2003/wordml\"><w:r><w:t></w:t></w:r></w:p>"
    fileExtension "xml"
@@ -375,8 +386,8 @@ attributeType "Whole Word Content" extends WordAttribute {
    dataProvider UriAttributeDataProvider
    min 0
    max 1
-   taggerId XmlAttributeTaggerProvider description
-   "value must comply with WordML xml schema"
+   taggerId XmlAttributeTaggerProvider
+   description "value must comply with WordML xml schema"
    defaultValue
    "<?xml version=\'1.0\' encoding=\'UTF-8\' standalone=\'yes\'?><?mso-application progid=\'Word.Document\'?><w:wordDocument xmlns:w=\'http://schemas.microsoft.com/office/word/2003/wordml\' xmlns:v=\'urn:schemas-microsoft-com:vml\' xmlns:w10=\'urn:schemas-microsoft-com:office:word\' xmlns:sl=\'http://schemas.microsoft.com/schemaLibrary/2003/core\' xmlns:aml=\'http://schemas.microsoft.com/aml/2001/core\' xmlns:wx=\'http://schemas.microsoft.com/office/word/2003/auxHint\' xmlns:o=\'urn:schemas-microsoft-com:office:office\' xmlns:dt=\'uuid:C2F41010-65B3-11d1-A29F-00AA00C14882\' xmlns:wsp=\'http://schemas.microsoft.com/office/word/2003/wordml/sp2\' xmlns:ns0=\'http://www.w3.org/2001/XMLSchema\' xmlns:ns1=\'http://eclipse.org/artifact.xsd\' xmlns:st1=\'urn:schemas-microsoft-com:office:smarttags\' w:macrosPresent=\'no\' w:embeddedObjPresent=\'no\' w:ocxPresent=\'no\' xml:space=\'preserve\'><w:body></w:body></w:wordDocument>"
    fileExtension "xml"
@@ -437,7 +448,8 @@ attributeType "Imported Paragraph Number" extends StringAttribute {
    guid "AAMFEQ3boD3sp6VfArAA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description
+   max 1
+   description
    "This is the corresponding section number from the outline of document from which this artifact was imported"
 }
 
@@ -467,7 +479,7 @@ artifactType "Software Requirement" extends "MS Word Template" ,
 }
 
 artifactType "Indirect Software Requirement" extends "Software Requirement" {
-	guid "AAMFDiC7HRQMqr5S0QwA"
+   guid "AAMFDiC7HRQMqr5S0QwA"
 }
 
 artifactType "Software Requirement Procedure" extends "Software Requirement" {
@@ -508,15 +520,33 @@ abstract artifactType "Function" extends "MS Word Template" {
    attribute "Safety Criticality"
 }
 
-artifactType "System Function" extends "Function", "System Design" {
+artifactType "System Function" extends "Function" , "System Design" {
    guid "AAMFDjisx2s6BUTDo3wA"
 }
 
-artifactType "Subsystem Function" extends "Function", "Subsystem Design" {
+artifactType "Subsystem Function" extends "Function" , "Subsystem Design" {
    guid "AAMFDjk6pAAd3tpGEqwA"
 }
 
-artifactType "Test Information Sheet" extends "MS Word Template", "Test Unit" {
+artifactType "Test Plan Element" extends "MS Word Template" {
+   guid "ATi_kUpvPBiW2upYC_wA"
+}
+
+abstract artifactType "Abstract Test Result" extends "Artifact" {
+   guid "ATkaanWmHH3PkhGNVjwA"
+}
+
+artifactType "Test Result Native" extends "Abstract Test Result" ,
+"Native Artifact" {
+   guid "ATk4k88aVV6WqOfBidgA"
+}
+
+artifactType "Test Result WML" extends "Abstract Test Result" ,
+"MS Word Whole Document" {
+   guid "ATk6NKFFmD_zg1b_eaQA"
+}
+
+artifactType "Test Information Sheet" extends "MS Word Template" , "Test Unit" {
    guid "AAMFDjnM3wQxCjwatKAA"
    attribute "TIS Test Number"
    attribute "TIS Test Type"
@@ -552,7 +582,7 @@ artifactType "Test Procedure WML" extends "Test Procedure" , "MS Word Whole Docu
    guid "AAMFDiUeCG3KWx5XqeQA"
 }
 
-artifactType "Test Procedure XL" extends "Test Procedure" , "Native Artifact" {
+artifactType "Test Procedure Native" extends "Test Procedure" , "Native Artifact" {
    guid "AAMFDiWs_HdDJTbPPQgA"
 }
 
@@ -564,7 +594,8 @@ attributeType "Common NAL Requirement" extends BooleanAttribute {
    guid "AAMFEQpKOwh5p+AgC8wA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description
+   max 1
+   description
    "Requirement that is common to all NCORE (Networked Common Operating Real-time Environment) Application Layers"
    defaultValue "no"
 }
@@ -581,8 +612,8 @@ attributeType "Legacy Id" extends StringAttribute {
    guid "AAMFEQ5rrGxHTSvY73gA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description
-   "SLATE unique identifier (caution: not guaranteed to be immutable)"
+   max 1
+   description "SLATE unique identifier (caution: not guaranteed to be immutable)"
 }
 
 attributeType "System Security Requirement" extends BooleanAttribute {
@@ -665,7 +696,8 @@ attributeType "Qualification Method" extends EnumeratedAttribute {
    min 1
    max unlimited
    enumType "enum.req.qualification.method"
-   description "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification Methods:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software).\n\nUnspecified:  The qualification method has yet to be set."
+   description
+   "Demonstration:  The operation of the CSCI, or a part of the CSCI, that relies on observable functional operation not requiring the use of instrumentation, special test equipment, or subsequent analysis.\n\nTest:  The operation of the CSCI, or a part of the CSCI, using instrumentation or other special test equipment to collect data for later analysis.\n\nAnalysis:  The processing of accumulated data obtained from other qualification methods.  Examples are reduction, interpretation, or extrapolation of test results.\n\nInspection:  The visual examination of CSCI code, documentation, etc.\n\nSpecial Qualification Methods:  Any special qualification methods for the CSCI, such as special tools, techniques, procedures, facilities, and acceptance limits.\n\nLegacy:  Requirement, design, or implementation has not changed since last qualification (use sparingly - Not to be used with functions implemented in internal software).\n\nUnspecified:  The qualification method has yet to be set."
    defaultValue "Unspecified"
 }
 
@@ -683,7 +715,8 @@ attributeType "Safety Criticality" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   enumType "enum.req.safety.criticality" description "Criticality Classification"
+   enumType "enum.req.safety.criticality"
+   description "Criticality Classification"
    defaultValue "V"
 }
 
@@ -709,7 +742,8 @@ attributeType "TIS Test Number" extends StringAttribute {
    guid "AAMFERjRSDDgyyBh+OAA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max 1 description "Test Number"
+   max 1
+   description "Test Number"
 }
 
 oseeEnumType "enum.test.tis.type" {
@@ -723,7 +757,8 @@ attributeType "TIS Test Type" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max unlimited
-   enumType "enum.test.tis.type" description "TIS Test Type"
+   enumType "enum.test.tis.type"
+   description "TIS Test Type"
    defaultValue "Stationary Vehicle"
 }
 
@@ -739,7 +774,8 @@ attributeType "TIS Test Category" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   enumType "enum.test.tis.category" description "TIS Test Category"
+   enumType "enum.test.tis.category"
+   description "TIS Test Category"
    defaultValue "DEV"
 }
 
@@ -757,8 +793,8 @@ attributeType "Development Assurance Level" extends EnumeratedAttribute {
    dataProvider DefaultAttributeDataProvider
    min 1
    max 1
-   enumType "enum.req.development.assurance.level" description
-   "Development Assurance Level"
+   enumType "enum.req.development.assurance.level"
+   description "Development Assurance Level"
    defaultValue "E"
 }
 
@@ -863,6 +899,16 @@ relationType "Verification" {
    multiplicity MANY_TO_MANY
 }
 
+relationType "Verification Plan" {
+   guid "ATmJsVc28wU57zFAi7AA"
+   sideAName "requirement"
+   sideAArtifactType "Requirement"
+   sideBName "test plan element"
+   sideBArtifactType "Test Plan Element"
+   defaultOrderType Lexicographical_Ascending
+   multiplicity MANY_TO_MANY
+}
+
 relationType "Verification Procedure" {
    guid "AAMFE+bY+ibHHBJu0dAA"
    sideAName "test plan sheet"
@@ -870,6 +916,16 @@ relationType "Verification Procedure" {
    sideBName "test procedure"
    sideBArtifactType "Test Procedure"
    defaultOrderType Unordered
+   multiplicity MANY_TO_MANY
+}
+
+relationType "Executes" {
+   guid "AWo0+Hkh+2qNMeAlUwQA"
+   sideAName "test plan element"
+   sideAArtifactType "Test Plan Element"
+   sideBName "test procedure"
+   sideBArtifactType "Test Procedure"
+   defaultOrderType Lexicographical_Ascending
    multiplicity MANY_TO_MANY
 }
 
@@ -940,7 +996,8 @@ attributeType "osee.wi.Work Data" extends StringAttribute {
    guid "AAMFEbyhslOoQf3+hyAA"
    dataProvider DefaultAttributeDataProvider
    min 0
-   max unlimited fileExtension "xml"
+   max unlimited
+   fileExtension "xml"
 }
 
 attributeType "osee.wi.Work Id" extends StringAttribute {
@@ -1049,16 +1106,6 @@ attributeType "CSCI" extends EnumeratedAttribute {
    max unlimited
    enumType "enum.req.csci"
    defaultValue "Unspecified"
-}
-
-relationType "Qualification" {
-   guid "AAMFE+lNjSyN52Q9wGwA"
-   sideAName "requirement"
-   sideAArtifactType "Requirement"
-   sideBName "test"
-   sideBArtifactType "Test Unit"
-   defaultOrderType Unordered
-   multiplicity MANY_TO_MANY
 }
 
 relationType "Supporting Info" {
@@ -1189,5 +1236,15 @@ relationType "Functional decomposition " {
    sideBName "lower-level component"
    sideBArtifactType "Component"
    defaultOrderType Unordered
+   multiplicity ONE_TO_MANY
+}
+
+relationType "Test Unit Result" {
+   guid "AAMFE+jMyBDK7CV479wA"
+   sideAName "test unit"
+   sideAArtifactType "Test Unit"
+   sideBName "test result"
+   sideBArtifactType "Abstract Test Result"
+   defaultOrderType Lexicographical_Ascending
    multiplicity ONE_TO_MANY
 }
