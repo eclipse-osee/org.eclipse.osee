@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Servlet Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.branch.management.servlet;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.branch.management.servlet.InternalBranchServletActivator
+Bundle-Activator: org.eclipse.osee.framework.manager.servlet.InternalBranchServletActivator
 Import-Package: javax.servlet,
  javax.servlet.http,
  org.eclipse.osee.framework.branch.management,

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Session Management Servlet Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.session.management.servlet;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.session.management.servlet.SessionManagementServletActivator
+Bundle-Activator: org.eclipse.osee.framework.manager.servlet.SessionManagementServletActivator
 Bundle-Vendor: Boeing
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: javax.servlet,

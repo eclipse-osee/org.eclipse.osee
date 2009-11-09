@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Artifact Servlet Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.artifact.servlet;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.artifact.servlet.Activator
+Bundle-Activator: org.eclipse.osee.framework.manager.servlet.Activator
 Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.servlet,

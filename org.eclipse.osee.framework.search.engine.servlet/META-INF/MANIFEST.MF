@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Search Engine Servlet Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.search.engine.servlet;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.search.engine.servlet.Activator
+Bundle-Activator: org.eclipse.osee.framework.manager.servlet.SearchActivator
 Import-Package: javax.servlet,
  javax.servlet.http,
  org.eclipse.osee.framework.core.data,

@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Servlet Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.management.servlet;singleton:=true
 Bundle-Version: 0.4.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.servlet.Activator
+Bundle-Activator: org.eclipse.osee.framework.manager.servlet.ResourceActivator
 Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
 Import-Package: javax.servlet,
