@@ -34,28 +34,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.artifact.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.framework.branch.management"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.branch.management.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.client.info.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -83,13 +62,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.resource.management.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.framework.resource.provider.attribute"
          download-size="0"
          install-size="0"
@@ -111,28 +83,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.search.engine.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.framework.server.admin"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.server.lookup.servlet"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.eclipse.osee.framework.session.management.servlet"
          download-size="0"
          install-size="0"
          version="0.0.0"
