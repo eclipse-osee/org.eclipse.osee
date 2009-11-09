@@ -1,10 +1,7 @@
 feature@org.eclipse.osee.framework.server.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.server.feature
 
 plugin@org.eclipse.osee.demo.db.connection=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.demo.db.connection
-plugin@org.eclipse.osee.framework.artifact.servlet=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.artifact.servlet
 plugin@org.eclipse.osee.framework.branch.management=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.branch.management
-plugin@org.eclipse.osee.framework.branch.management.servlet=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.branch.management.servlet
-plugin@org.eclipse.osee.framework.client.info.servlet=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.client.info.servlet
 plugin@org.eclipse.osee.framework.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.core
 plugin@org.eclipse.osee.framework.core.server=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.core.server
 plugin@org.eclipse.osee.framework.database=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.database
@@ -12,17 +9,12 @@ plugin@org.eclipse.osee.framework.derby=SVN,trunk,https://dev.eclipse.org/svnroo
 plugin@org.eclipse.osee.framework.jdk.core=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.jdk.core
 plugin@org.eclipse.osee.framework.logging=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.logging
 plugin@org.eclipse.osee.framework.manager.servlet=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.manager.servlet
-plugin@org.eclipse.osee.framework.osgi=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.osgi
 plugin@org.eclipse.osee.framework.resource.locator.attribute=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.resource.locator.attribute
 plugin@org.eclipse.osee.framework.resource.management=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.resource.management
-plugin@org.eclipse.osee.framework.resource.management.servlet=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.resource.management.servlet
 plugin@org.eclipse.osee.framework.resource.provider.attribute=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.resource.provider.attribute
 plugin@org.eclipse.osee.framework.resource.provider.common=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.resource.provider.common
 plugin@org.eclipse.osee.framework.search.engine=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.search.engine
-plugin@org.eclipse.osee.framework.search.engine.servlet=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.search.engine.servlet
 plugin@org.eclipse.osee.framework.server.admin=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.server.admin
-plugin@org.eclipse.osee.framework.server.lookup.servlet=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.server.lookup.servlet
-plugin@org.eclipse.osee.framework.session.management.servlet=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.session.management.servlet
 
 feature@org.eclipse.osee.framework.server.external.feature=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.server.external.feature
 plugin@org.mortbay.jetty.server,6.1.15=GET,http://download.eclipse.org/tools/orbit/downloads/drops/R20090529135407/bundles/org.mortbay.jetty.server_6.1.15.v200905151201.jar
