@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,8 +29,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * Public API class for access to change data from branches and transactionIds
@@ -39,7 +40,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class ChangeManager {
 
-   private final static InternalChangeManager changeManager = new InternalChangeManager();
+   private final static RevisionChangeHandler revsionChangeHandler = new RevisionChangeHandler();
 
    /**
     * Acquires changes for a particular artifact
@@ -50,7 +51,7 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      return changeManager.getChangesPerArtifact(artifact, monitor);
+      return revsionChangeHandler.getChangesPerArtifact(artifact, monitor);
    }
 
    /**
@@ -62,7 +63,7 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerTransaction(TransactionRecord transactionId, IProgressMonitor monitor) throws OseeCoreException {
-      return changeManager.getChangesPerTransaction(transactionId, monitor);
+      return new ChangeHandler().getChanges(null, transactionId, monitor);
    }
 
    /**
@@ -74,7 +75,7 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerBranch(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
-      return changeManager.getChangesPerBranch(sourceBranch, monitor);
+      return new ChangeHandler().getChanges(sourceBranch, null, monitor);
    }
 
    /**

@@ -70,6 +70,18 @@ public abstract class ChangeItem {
    public ChangeVersion getNetChange() {
       return netEntry;
    }
+   
+   public ChangeVersion getStartChangeVersion(){
+      ChangeVersion startChangeVersion;
+      if (getBaselineVersion().isValid()) {
+         startChangeVersion = getBaselineVersion();
+      } else if (getFirstNonCurrentChange().isValid()) {
+         startChangeVersion = getFirstNonCurrentChange();
+      } else {
+         startChangeVersion = getCurrentVersion();
+      }
+      return startChangeVersion;
+   }
 
    @Override
    public String toString() {
