@@ -21,13 +21,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.core.runtime.IConfigurationElement;
-import org.eclipse.core.runtime.IExtension;
-import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.data.SystemUser;
@@ -44,7 +40,6 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -56,8 +51,8 @@ import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOp
 import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 
@@ -74,10 +69,6 @@ public class BranchManager {
    private static final String LAST_DEFAULT_BRANCH = "LastDefaultBranch";
    public static final String COMMIT_COMMENT = "Commit Branch ";
 
-   private static final boolean MERGE_DEBUG =
-         "TRUE".equalsIgnoreCase(Platform.getDebugOption("org.eclipse.osee.framework.skynet.core/debug/Merge"));
-
-   private List<CommitAction> commitActions;
    private Branch lastBranch;
 
    private BranchManager() {
@@ -201,29 +192,13 @@ public class BranchManager {
     * the source branch.
     */
    public static Branch getOrCreateMergeBranch(Branch sourceBranch, Branch destBranch, ArrayList<Integer> expectedArtIds) throws OseeCoreException {
-      long time = 0;
       Branch mergeBranch = getMergeBranch(sourceBranch, destBranch);
-
       if (mergeBranch == null) {
-         if (MERGE_DEBUG) {
-            System.out.println("Creating a new Merge Branch");
-            time = System.currentTimeMillis();
-         }
          mergeBranch = createMergeBranch(sourceBranch, destBranch, expectedArtIds);
          OseeTypeManager.getBranchCache().cacheMergeBranch(mergeBranch, sourceBranch, destBranch);
-
-         if (MERGE_DEBUG) {
-            System.out.println(String.format("     Branch created in %s", Lib.getElapseString(time)));
-         }
       } else {
-         if (MERGE_DEBUG) {
-            System.out.println("Updating Existing Merge Branch");
-            time = System.currentTimeMillis();
-         }
-         MergeBranchManager.updateMergeBranch(mergeBranch, expectedArtIds, destBranch, sourceBranch);
-         if (MERGE_DEBUG) {
-            System.out.println(String.format("     Branch updated in %s", Lib.getElapseString(time)));
-         }
+         UpdateMergeBranch dbTransaction = new UpdateMergeBranch(mergeBranch, expectedArtIds, destBranch, sourceBranch);
+         dbTransaction.execute();
       }
       return mergeBranch;
    }
@@ -359,8 +334,10 @@ public class BranchManager {
    }
 
    private static void runCommitExtPointActions(Branch branch) throws OseeCoreException {
-      instance.initCommitActions();
-      for (CommitAction commitAction : instance.commitActions) {
+      ExtensionDefinedObjects<CommitAction> extensions =
+            new ExtensionDefinedObjects<CommitAction>("org.eclipse.osee.framework.skynet.core.CommitActions",
+                  "CommitActions", "className");
+      for (CommitAction commitAction : extensions.getObjects()) {
          commitAction.runCommitAction(branch);
       }
    }
@@ -489,26 +466,11 @@ public class BranchManager {
    }
 
    private Branch getDefaultInitialBranch() throws OseeCoreException {
-      List<IDefaultInitialBranchesProvider> defaultBranchProviders = new LinkedList<IDefaultInitialBranchesProvider>();
-
-      IExtensionPoint point =
-            Platform.getExtensionRegistry().getExtensionPoint(
-                  "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider");
-      IExtension[] extensions = point.getExtensions();
-      for (IExtension extension : extensions) {
-         IConfigurationElement[] elements = extension.getConfigurationElements();
-         for (IConfigurationElement element : elements) {
-            if (element.getName().equals("Provider")) {
-               try {
-                  defaultBranchProviders.add((IDefaultInitialBranchesProvider) element.createExecutableExtension("class"));
-               } catch (Exception ex) {
-                  OseeLog.log(Activator.class, Level.SEVERE, ex);
-               }
-            }
-         }
-      }
-
-      for (IDefaultInitialBranchesProvider provider : defaultBranchProviders) {
+      ExtensionDefinedObjects<IDefaultInitialBranchesProvider> extensions =
+            new ExtensionDefinedObjects<IDefaultInitialBranchesProvider>(
+                  "org.eclipse.osee.framework.skynet.core.DefaultInitialBranchProvider",
+                  "DefaultInitialBranchProvider", "class");
+      for (IDefaultInitialBranchesProvider provider : extensions.getObjects()) {
          try {
             // Guard against problematic extensions
             for (Branch branch : provider.getDefaultInitialBranches()) {
@@ -521,7 +483,6 @@ public class BranchManager {
                   "Exception occurred while trying to determine initial default branch", ex);
          }
       }
-
       return getCommonBranch();
    }
 
@@ -538,20 +499,8 @@ public class BranchManager {
       }
    }
 
-   /**
-    * @return the rootBranch
-    * @throws OseeCoreException
-    */
    public static Branch getSystemRootBranch() throws OseeCoreException {
       return OseeTypeManager.getBranchCache().getSystemRootBranch();
-   }
-
-   private void initCommitActions() {
-      if (commitActions == null) {
-         commitActions =
-               new ExtensionDefinedObjects<CommitAction>("org.eclipse.osee.framework.skynet.core.CommitActions",
-                     "CommitActions", "className").getObjects();
-      }
    }
 
    public static void persist(Branch... branches) throws OseeCoreException {

@@ -11,18 +11,12 @@
 package org.eclipse.osee.framework.skynet.core.artifact;
 
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ARTIFACT_TABLE;
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ARTIFACT_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -38,20 +32,14 @@ import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Ryan D. Brooks
  * @author Robert A. Fisher
  */
 public class ArtifactPersistenceManager {
-   public static final String PURGE_BASELINE_ATTRIBUTE_TRANS =
-         "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from " + TRANSACTION_DETAIL_TABLE + " T1, " + ATTRIBUTE_VERSION_TABLE + " T3 WHERE T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.Baselined.getId() + " and T1.branch_id = ? and T3.art_id = ?)";
-   public static final String PURGE_BASELINE_RELATION_TRANS =
-         "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from " + TRANSACTION_DETAIL_TABLE + " T1, " + RELATION_LINK_VERSION_TABLE + " T3 WHERE T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.Baselined.getId() + " and T1.branch_id = ? and (T3.a_art_id = ? or T3.b_art_id = ?))";
-   public static final String PURGE_BASELINE_ARTIFACT_TRANS =
-         "DELETE from " + TRANSACTIONS_TABLE + " T2 WHERE EXISTS (SELECT 'x' from " + TRANSACTION_DETAIL_TABLE + " T1, " + ARTIFACT_VERSION_TABLE + " T3 WHERE T1.transaction_id = T2.transaction_id and T3.gamma_id = T2.gamma_id and T1.tx_type = " + TransactionDetailsType.Baselined.getId() + " and T1.branch_id = ? and T3.art_id = ?)";
 
    private static final String GET_GAMMAS_ARTIFACT_REVERT =
          "SELECT txs1.gamma_id, txd1.tx_type, txs1.transaction_id  FROM osee_tx_details txd1, osee_txs  txs1, osee_attribute atr1 where txd1.transaction_id = txs1.transaction_id and txs1.gamma_id = atr1.gamma_id and txd1.branch_id = ? and atr1.art_id = ? UNION ALL SELECT txs2.gamma_id, txd2.tx_type, txs2.transaction_id FROM osee_tx_details txd2, osee_txs txs2, osee_relation_link rel2 where txd2.transaction_id = txs2.transaction_id and txs2.gamma_id = rel2.gamma_id and txd2.branch_id = ? and (rel2.a_art_id = ? or rel2.b_art_id = ?) UNION ALL SELECT txs3.gamma_id, txd3.tx_type, txs3.transaction_id FROM osee_tx_details txd3, osee_txs txs3, osee_artifact_version art3 where txd3.transaction_id = txs3.transaction_id and txs3.gamma_id = art3.gamma_id and txd3.branch_id = ? and art3.art_id = ?";
@@ -130,7 +118,9 @@ public class ArtifactPersistenceManager {
          while (iter.hasNext()) {
             primitive = iter.next();
             sql.append(getSelectArtIdSql(primitive, dataList, "desired_art_id", branch));
-            if (iter.hasNext()) sql.append(" UNION ALL ");
+            if (iter.hasNext()) {
+               sql.append(" UNION ALL ");
+            }
          }
          sql.append(") ORD_ARTS");
          sql.append(" WHERE art_id = ORD_ARTS.desired_art_id");
@@ -155,7 +145,9 @@ public class ArtifactPersistenceManager {
     * @param artifacts The artifacts to delete.
     */
    public static void deleteArtifact(SkynetTransaction transaction, boolean overrideDeleteCheck, final Artifact... artifacts) throws OseeCoreException {
-      if (artifacts.length == 0) return;
+      if (artifacts.length == 0) {
+         return;
+      }
 
       if (!overrideDeleteCheck) {
          // Confirm artifacts are fit to delete
@@ -209,7 +201,9 @@ public class ArtifactPersistenceManager {
    }
 
    public static void revertAttribute(OseeConnection connection, Attribute<?> attribute) throws OseeCoreException {
-      if (attribute == null) return;
+      if (attribute == null) {
+         return;
+      }
       revertAttribute(connection, attribute.getArtifact().getBranch().getBranchId(),
             attribute.getArtifact().getArtId(), attribute.getAttrId());
    }
@@ -261,7 +255,9 @@ public class ArtifactPersistenceManager {
    }
 
    public static void revertArtifact(OseeConnection connection, Artifact artifact) throws OseeCoreException {
-      if (artifact == null) return;
+      if (artifact == null) {
+         return;
+      }
       revertArtifact(connection, artifact.getBranch().getBranchId(), artifact.getArtId());
    }
 
@@ -280,12 +276,12 @@ public class ArtifactPersistenceManager {
    }
 
    public static boolean isArtifactNewOnBranch(Artifact artifact) throws OseeDataStoreException {
-      return (ConnectionHandler.runPreparedQueryFetchInt(-1, ARTIFACT_NEW_ON_BRANCH,
-            artifact.getBranch().getBranchId(), artifact.getArtId()) == -1);
+      return ConnectionHandler.runPreparedQueryFetchInt(-1, ARTIFACT_NEW_ON_BRANCH, artifact.getBranch().getBranchId(),
+            artifact.getArtId()) == -1;
    }
 
    public static boolean isRelationNewOnBranch(RelationLink relation, Branch branch) throws OseeDataStoreException {
-      return (ConnectionHandler.runPreparedQueryFetchInt(-1, RELATION_NEW_ON_BRANCH, branch.getBranchId(),
-            relation.getRelationId()) == -1);
+      return ConnectionHandler.runPreparedQueryFetchInt(-1, RELATION_NEW_ON_BRANCH, branch.getBranchId(),
+            relation.getRelationId()) == -1;
    }
 }

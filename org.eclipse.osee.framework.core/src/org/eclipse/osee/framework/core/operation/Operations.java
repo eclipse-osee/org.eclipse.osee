@@ -19,6 +19,8 @@ import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.SubProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -123,6 +125,28 @@ public class Operations {
          monitor.subTask("");
          monitor.setTaskName("");
          monitor.done();
+      }
+   }
+
+   /**
+    * Executes an operation by calling {@link #executeWork(IOperation, IProgressMonitor, double)} and checks for error
+    * status {@link #checkForErrorStatus(IStatus)}.
+    * An OseeCoreException is thrown is an error is detected
+    * 
+    * @param operation
+    * @param monitor
+    * @param workPercentage
+    */
+   public static void executeWorkAndCheckStatus(IOperation operation, IProgressMonitor monitor, double workPercentage) throws OseeCoreException {
+      executeWork(operation, monitor, workPercentage);
+      try {
+         Operations.checkForErrorStatus(operation.getStatus());
+      } catch (Exception ex) {
+         if (ex instanceof OseeCoreException) {
+            throw (OseeCoreException) ex;
+         } else {
+            throw new OseeWrappedException(ex);
+         }
       }
    }
 
