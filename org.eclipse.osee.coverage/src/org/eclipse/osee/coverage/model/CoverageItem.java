@@ -47,9 +47,7 @@ public class CoverageItem implements ICoverage {
       this.coverageUnit = coverageUnit;
       this.coverageMethod = coverageMethod;
       this.executeNum = executeNum;
-      if (this.coverageUnit instanceof ICoverageItemProvider) {
-         ((ICoverageItemProvider) coverageUnit).addCoverageItem(this);
-      }
+      ((ICoverageItemProvider) coverageUnit).addCoverageItem(this);
    }
 
    public CoverageItem(CoverageUnit parentCoverageUnit, String xml) throws OseeCoreException {

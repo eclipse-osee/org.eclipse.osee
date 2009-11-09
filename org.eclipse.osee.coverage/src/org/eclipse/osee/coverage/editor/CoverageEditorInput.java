@@ -26,11 +26,6 @@ public class CoverageEditorInput implements IEditorInput {
       this.coveragePackageBase = coveragePackageBase;
    }
 
-   @Override
-   public boolean equals(Object obj) {
-      return false;
-   }
-
    public boolean exists() {
       return false;
    }

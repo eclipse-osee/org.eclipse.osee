@@ -21,7 +21,6 @@ import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 
@@ -50,36 +49,36 @@ public class CoverageContentProvider implements ITreeContentProvider {
       });
    }
 
-   public void set(final Collection<? extends ICoverage> arts) {
+   public void set(final Collection<? extends ICoverage> coverages) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
             clear();
-            add(arts);
+            add(coverages);
          };
       });
    }
 
-   public void remove(final Artifact art) {
-      remove(Arrays.asList(art));
+   public void remove(final ICoverage coverage) {
+      remove(Arrays.asList(coverage));
    }
 
-   public void remove(final Collection<? extends Artifact> arts) {
+   public void remove(final Collection<? extends ICoverage> coverages) {
       if (xViewer.getInput() == null) xViewer.setInput(rootSet);
       ArrayList<ICoverage> delItems = new ArrayList<ICoverage>();
       delItems.addAll(rootSet);
-      for (Artifact art : arts) {
-         for (ICoverage wai : rootSet)
-            if (wai.equals(art)) delItems.add(wai);
+      for (ICoverage coverage : coverages) {
+         for (ICoverage currCoverage : rootSet)
+            if (coverage.equals(currCoverage)) delItems.add(currCoverage);
       }
       removeItems(delItems);
    }
 
-   public void removeItems(final Collection<? extends ICoverage> arts) {
+   public void removeItems(final Collection<? extends ICoverage> coverages) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
             if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            rootSet.remove(arts);
+            rootSet.removeAll(coverages);
             xViewer.refresh();
          };
       });

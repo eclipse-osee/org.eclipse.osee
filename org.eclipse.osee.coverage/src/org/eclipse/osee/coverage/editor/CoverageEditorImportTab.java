@@ -147,10 +147,14 @@ public class CoverageEditorImportTab extends FormPage {
       if (blamUsageSection != null) {
          if (blamUsageSection != null) getManagedForm().removePart(blamUsageSection);
          blamUsageSection.dispose();
-         if (blamInputSection != null) getManagedForm().removePart(blamInputSection);
-         blamInputSection.dispose();
-         if (blamOutputSection != null) getManagedForm().removePart(blamOutputSection);
-         blamOutputSection.dispose();
+         if (blamInputSection != null) {
+            getManagedForm().removePart(blamInputSection);
+            blamInputSection.dispose();
+         }
+         if (blamOutputSection != null) {
+            getManagedForm().removePart(blamOutputSection);
+            blamOutputSection.dispose();
+         }
          createDestroyableComposite();
       }
       int sectionStyle = Section.TITLE_BAR | Section.EXPANDED | Section.TWISTIE;

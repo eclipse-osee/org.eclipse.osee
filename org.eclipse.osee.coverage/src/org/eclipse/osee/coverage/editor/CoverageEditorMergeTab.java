@@ -157,8 +157,8 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
    private Collection<MergeItem> getSelectedMergeItems() {
       Collection<MergeItem> selected = new ArrayList<MergeItem>();
-      for (Object obj : ((Collection<MergeItem>) xImportViewer2.getXViewer().getInput())) {
-         if (((MergeItem) obj).isChecked()) {
+      for (Object obj : ((Collection<?>) xImportViewer2.getXViewer().getInput())) {
+         if (obj instanceof MergeItem && ((MergeItem) obj).isChecked()) {
             selected.add((MergeItem) obj);
          }
       }

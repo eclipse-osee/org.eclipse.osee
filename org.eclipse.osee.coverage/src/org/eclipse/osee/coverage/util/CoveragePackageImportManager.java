@@ -29,11 +29,9 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 public class CoveragePackageImportManager {
 
    private final CoveragePackage coveragePackage;
-   private final CoverageImport coverageImport;
 
    public CoveragePackageImportManager(CoveragePackage coveragePackage, CoverageImport coverageImport) {
       this.coveragePackage = coveragePackage;
-      this.coverageImport = coverageImport;
    }
 
    public XResultData importItems(ISaveable saveable, Collection<MergeItem> mergeItems) throws OseeCoreException {

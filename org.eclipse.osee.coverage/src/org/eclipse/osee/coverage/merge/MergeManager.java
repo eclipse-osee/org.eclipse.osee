@@ -55,4 +55,8 @@ public class MergeManager {
 
    }
 
+   public CoveragePackage getCoveragePackage() {
+      return coveragePackage;
+   }
+
 }
