@@ -17,7 +17,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
-
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -61,6 +60,23 @@ public class ArtifactCache {
          }
       }
       return arts;
+   }
+
+   public static String report() throws OseeCoreException {
+      StringBuffer sb = new StringBuffer();
+      sb.append("ArtifactIdCache " + getArtifactIdCacheSize() + "; ");
+      return sb.toString();
+   }
+
+   private static int getArtifactIdCacheSize() throws OseeCoreException {
+      int num = 0;
+      for (Entry<Pair<Integer, Integer>, Object> entry : artifactIdCache.entrySet()) {
+         Artifact art = getArtifact(entry.getValue());
+         if (art != null) {
+            num++;
+         }
+      }
+      return num;
    }
 
    public static Collection<Artifact> getDirtyArtifacts() throws OseeCoreException {

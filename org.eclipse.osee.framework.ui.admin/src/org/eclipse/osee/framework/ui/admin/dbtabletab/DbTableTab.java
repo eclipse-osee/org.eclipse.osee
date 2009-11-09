@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.ui.admin.dbtabletab;
 
 import java.util.ArrayList;
 import java.util.logging.Level;
-
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -51,7 +50,6 @@ public class DbTableTab {
       super();
 
       dbItems = new ArrayList<DbItem>();
-      dbItems.add(new SkynetUsageDbItem());
       dbItems.add(new SiteGssflRpcr());
       dbItems.add(new OseeInfoDbItem());
       handCursor = new Cursor(null, SWT.CURSOR_HAND);

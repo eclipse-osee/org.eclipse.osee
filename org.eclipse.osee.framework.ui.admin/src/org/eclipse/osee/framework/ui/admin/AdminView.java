@@ -197,7 +197,7 @@ public class AdminView extends ViewPart implements IActionable {
          // ModeChecker.check(parent);
 
          new OseeClientsTab(tabFolder);
-
+         new ClientsStatsTab(tabFolder);
          new DbTableTab(tabFolder);
 
          parent.layout();
