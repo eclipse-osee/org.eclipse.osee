@@ -298,9 +298,11 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                   "Error: Parent Branch Id [%s][%s] can't be Archived branch for [%s][%s]", parentBranchGuid, branch,
                   art.getHumanReadableId(), art));
          } else if (branch.getBranchType().isWorkingBranch()) {
-            testNameToResultsMap.put("validateBranchGuid", String.format(
-                  "Error: Parent Branch Id [%s][%s] can't be Working branch for [%s][%s]", parentBranchGuid, branch,
-                  art.getHumanReadableId(), art));
+            testNameToResultsMap.put(
+                  "validateBranchGuid",
+                  String.format(
+                        "Error: Parent Branch [%s][%s] is WORKING branch and can't be parent branch for [%s][%s]; Switch to BASELINE?",
+                        parentBranchGuid, branch, art.getHumanReadableId(), art));
          } else if (!branch.getBranchType().isBaselineBranch()) {
             testNameToResultsMap.put("validateBranchGuid", String.format(
                   "Error: Parent Branch Id [%s][%s] must be Baseline branch for [%s][%s]", parentBranchGuid, branch,
