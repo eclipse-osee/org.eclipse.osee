@@ -148,6 +148,6 @@ public class MasterServletActivator implements BundleActivator {
    }
 
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
-      return clazz.cast(mappedTrackers.get(trackerId));
+      return clazz.cast(mappedTrackers.get(trackerId).getService());
    }
 }
