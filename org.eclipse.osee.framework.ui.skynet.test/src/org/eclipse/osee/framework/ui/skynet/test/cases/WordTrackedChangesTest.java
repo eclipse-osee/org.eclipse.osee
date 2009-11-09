@@ -53,7 +53,6 @@ public class WordTrackedChangesTest {
          "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
    private static final String TEST_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "WordTrackedChangesTest.xml";
    private static final String TEST_GEN_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "GeneralWordTrackedChangesTest.doc";
-   private static boolean isWordRunning = false;
 
    /**
     * This test Word Edit's are being saved.
@@ -61,14 +60,9 @@ public class WordTrackedChangesTest {
    @Before
    public void setUp() throws Exception {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-      isWordRunning = false;
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
             WordTrackedChangesTest.class.getSimpleName());
       WordAttribute.setDisplayTrackedChangesErrorMessage("");
-      isWordRunning = FrameworkTestUtil.areWinWordsRunning();
-      assertTrue(
-            "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
-            isWordRunning == false);
    }
 
    /*
@@ -88,7 +82,6 @@ public class WordTrackedChangesTest {
       newArt.persist();
       artifacts = Arrays.asList(newArt);
       WordTemplateRenderer renderer = new WordTemplateRenderer();
-      renderer = WordEditTest.openArtifacts(artifacts);
       makeChangesToArtifact(renderer, TEST_WORD_EDIT_FILE_NAME, artifacts);
       Thread.sleep(5000);
       assertTrue("Did not detect Tracked Changes Succcessfully",
@@ -110,7 +103,6 @@ public class WordTrackedChangesTest {
       Artifact newArt = ArtifactTypeManager.addArtifact("General Document", branch, getClass().getSimpleName());
       newArt.persist();
       artifacts = Arrays.asList(newArt);
-      RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
       FileRenderer renderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, newArt);
       makeChangesToArtifact(renderer, TEST_GEN_WORD_EDIT_FILE_NAME, artifacts);
       Thread.sleep(10000);
@@ -152,14 +144,9 @@ public class WordTrackedChangesTest {
 
    @After
    public void tearDown() throws Exception {
-      if (!isWordRunning) {
-         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid()),
-               WordTrackedChangesTest.class.getSimpleName());
-         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(),
-               WordTrackedChangesTest.class.getSimpleName());
-         Thread.sleep(7000);
-         FrameworkTestUtil.killAllOpenWinword();
-      }
+      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid()),
+            WordTrackedChangesTest.class.getSimpleName());
+      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getCommonBranch(), WordTrackedChangesTest.class.getSimpleName());
    }
 
    public static IFile makeChangesToArtifact(FileRenderer renderer, String file, List<Artifact> artifacts) throws IOException, InterruptedException {
