@@ -30,8 +30,8 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * <p>
  * Client Install information are entries in the OSEE Info Table:
  * <ul>
- * <li><b>osee_key:</b> uniquely identifies this install record <br/><b>NOTE:</b> must with prefixed with
- * "<b><i>osee.install.</i></b>"</li>
+ * <li><b>osee_key:</b> uniquely identifies this install record <br/>
+ * <b>NOTE:</b> must with prefixed with "<b><i>osee.install.</i></b>"</li>
  * <li><b>osee_value:</b> contains client install information
  * 
  * <pre>
@@ -107,8 +107,8 @@ public class ClientInstallInfoServlet extends OseeHttpServlet {
                         Arrays.deepToString(CommandType.values())));
          }
       } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, String.format("Failed to process client install info request [%s]",
-               request.toString()), ex);
+         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format(
+               "Failed to process client install info request [%s]", request.toString()), ex);
          response.setContentType("text/plain");
          response.getWriter().write(Lib.exceptionToString(ex));
       }
