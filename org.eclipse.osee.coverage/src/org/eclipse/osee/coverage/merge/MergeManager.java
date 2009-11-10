@@ -6,11 +6,12 @@
 package org.eclipse.osee.coverage.merge;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.coverage.util.CoveragePackageImportManager;
 
 /**
  * @author Donald G. Dunne
@@ -18,6 +19,7 @@ import org.eclipse.osee.coverage.util.CoveragePackageImportManager;
 public class MergeManager {
    private final CoveragePackage coveragePackage;
    private final CoverageImport coverageImport;
+   private Collection<? extends ICoverage> packageCoverage = null;
    private List<MergeItem> mergeItems = null;
 
    public MergeManager(CoveragePackage coveragePackage, CoverageImport coverageImport) {
@@ -26,6 +28,7 @@ public class MergeManager {
    }
 
    public List<MergeItem> getMergeItems() {
+      packageCoverage = coveragePackage.getChildren(true);
       if (mergeItems == null) {
          mergeItems = new ArrayList<MergeItem>();
          for (ICoverage importCoverage : coverageImport.getChildren()) {
@@ -40,8 +43,7 @@ public class MergeManager {
 
    private void processImportCoverage(ICoverage importCoverage) {
       System.err.println("Merging check " + importCoverage);
-      ICoverage packageCoverage =
-            CoveragePackageImportManager.getPackageCoverageItem(coveragePackage, importCoverage, true);
+      ICoverage packageCoverage = getPackageCoverageItem(importCoverage);
       // if no corresponding package coverage, add this and all children
       if (packageCoverage == null) {
          mergeItems.add(new MergeItem(MergeType.Add, null, importCoverage));
@@ -52,7 +54,58 @@ public class MergeManager {
          }
       }
       return;
+   }
 
+   /**
+    * Recurse through coverage package to find importItem equivalent
+    */
+   public ICoverage getPackageCoverageItem(ICoverage importItem) {
+      for (ICoverage childCoverage : coveragePackage.getChildren(false)) {
+         ICoverage result = getPackageCoverageItem(childCoverage, importItem);
+         if (result != null) return result;
+      }
+      return null;
+   }
+
+   /**
+    * Recurse through package item and children to find importItem equivalent
+    */
+   public ICoverage getPackageCoverageItem(ICoverage packageItem, ICoverage importItem) {
+      boolean equal = isConceptuallyEqual(packageItem, importItem);
+      if (equal) return packageItem;
+      // Only check children if importItem should be child of packageItem by namespace
+      if (importItem.getNamespace().startsWith(packageItem.getNamespace())) {
+         for (ICoverage childPackageItem : packageItem.getChildren(false)) {
+            ICoverage result = getPackageCoverageItem(childPackageItem, importItem);
+            if (result != null) return result;
+         }
+      }
+      return null;
+   }
+
+   public static boolean isConceptuallyEqual(ICoverage packageItem, ICoverage importItem) {
+      if (packageItem.equals(importItem)) return true;
+      if (packageItem.getNamespace() == null && importItem.getNamespace() == null) return true;
+      if (packageItem.getNamespace() == null) return false;
+      if (importItem.getNamespace() == null) return false;
+      if (!packageItem.getNamespace().equals(importItem.getNamespace())) return false;
+      if (packageItem instanceof CoverageUnit && importItem instanceof CoverageUnit) {
+         if (!((CoverageUnit) packageItem).getMethodNumber().equals(((CoverageUnit) importItem).getMethodNumber())) {
+            return false;
+         }
+      }
+      if (packageItem.getName().equals(importItem.getName())) {
+         if (packageItem.getParent() instanceof CoveragePackage && importItem.getParent() instanceof CoverageImport) {
+            return true;
+         } else {
+            if (isConceptuallyEqual(packageItem.getParent(), importItem.getParent())) {
+               return true;
+            } else {
+               return false;
+            }
+         }
+      }
+      return false;
    }
 
    public CoveragePackage getCoveragePackage() {

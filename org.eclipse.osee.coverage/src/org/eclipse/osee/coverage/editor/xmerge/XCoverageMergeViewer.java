@@ -6,7 +6,7 @@
 package org.eclipse.osee.coverage.editor.xmerge;
 
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
-import org.eclipse.osee.coverage.util.CoveragePackageImportManager;
+import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
 import org.eclipse.osee.framework.ui.swt.ALayout;
@@ -22,11 +22,11 @@ public class XCoverageMergeViewer extends XCoverageViewer implements IRefreshAct
 
    CoverageMergeXViewer mergeXViewer;
    private final CoverageMergeXViewerFactory coverageMergeXViewerFactory;
-   private final CoveragePackageImportManager coveragePackageImport;
+   private final MergeManager mergeManager;
 
-   public XCoverageMergeViewer(CoveragePackageImportManager coveragePackageImport, ISaveable saveable, CoverageMergeXViewerFactory coverageMergeXViewerFactory, TableType tableType, TableType... types) {
+   public XCoverageMergeViewer(MergeManager mergeManager, ISaveable saveable, CoverageMergeXViewerFactory coverageMergeXViewerFactory, TableType tableType, TableType... types) {
       super(saveable, tableType, types);
-      this.coveragePackageImport = coveragePackageImport;
+      this.mergeManager = mergeManager;
       this.coverageMergeXViewerFactory = coverageMergeXViewerFactory;
    }
 
@@ -49,7 +49,7 @@ public class XCoverageMergeViewer extends XCoverageViewer implements IRefreshAct
       createTaskActionBar(mainComp);
 
       xViewer =
-            new CoverageMergeXViewer(coveragePackageImport, mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
+            new CoverageMergeXViewer(mergeManager, mainComp, SWT.MULTI | SWT.BORDER | SWT.FULL_SELECTION,
                   coverageMergeXViewerFactory, this);
       mergeXViewer = (CoverageMergeXViewer) xViewer;
       xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));

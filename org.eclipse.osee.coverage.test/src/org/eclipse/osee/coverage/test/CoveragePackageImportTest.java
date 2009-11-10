@@ -60,14 +60,14 @@ public class CoveragePackageImportTest {
 
       // Test MergeManager
       coveragePackage = new CoveragePackage("Test Import");
-      MergeManager merge = new MergeManager(coveragePackage, coverageImport);
-      Assert.assertEquals(4, merge.getMergeItems().size());
-      for (MergeItem mergeItem : merge.getMergeItems()) {
+      MergeManager mergeManager = new MergeManager(coveragePackage, coverageImport);
+      Assert.assertEquals(4, mergeManager.getMergeItems().size());
+      for (MergeItem mergeItem : mergeManager.getMergeItems()) {
          Assert.assertEquals(MergeType.Add, mergeItem.getMergeType());
       }
 
       // Test import where not-editable
-      CoveragePackageImportManager importManager = new CoveragePackageImportManager(coveragePackage, coverageImport);
+      CoveragePackageImportManager importManager = new CoveragePackageImportManager(mergeManager);
       XResultData resultData = importManager.importItems(new ISaveable() {
 
          @Override
@@ -80,7 +80,7 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
-      }, merge.getMergeItems());
+      }, mergeManager.getMergeItems());
       Assert.assertEquals(1, resultData.getNumErrors());
 
       resultData = importManager.importItems(new ISaveable() {
@@ -95,7 +95,7 @@ public class CoveragePackageImportTest {
             return Result.TrueResult;
          }
 
-      }, merge.getMergeItems());
+      }, mergeManager.getMergeItems());
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // CoveragePackage should now have imported results

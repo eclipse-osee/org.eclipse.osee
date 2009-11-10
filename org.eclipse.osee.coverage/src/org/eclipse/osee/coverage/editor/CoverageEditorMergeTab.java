@@ -75,7 +75,6 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    private Label titleLabel1, titleLabel2;
    private final CoverageEditor coverageEditor;
    private CoverageEditorCoverageParameters parameters;
-   CoveragePackageImportManager coveragePackageImport = null;
    LinkWithImportItemAction linkWithImportItemAction;
    private MergeManager mergeManager;
 
@@ -84,7 +83,6 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       this.coverageEditor = coverageEditor;
       this.coveragePackage = provider1;
       this.coverageImport = provider2;
-      coveragePackageImport = new CoveragePackageImportManager((CoveragePackage) provider1, (CoverageImport) provider2);
    }
 
    @Override
@@ -143,7 +141,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
          return;
       }
       try {
-         XResultData rd = coveragePackageImport.importItems(this, mergeItems);
+         XResultData rd = new CoveragePackageImportManager(mergeManager).importItems(this, mergeItems);
          rd.report("Import");
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -200,7 +198,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       managedForm.getToolkit().adapt(rightToolBar);
 
       xImportViewer2 =
-            new XCoverageMergeViewer(coveragePackageImport, new NotSaveable(), new CoverageMergeXViewerFactoryImport(),
+            new XCoverageMergeViewer(mergeManager, new NotSaveable(), new CoverageMergeXViewerFactoryImport(),
                   TableType.Import, TableType.Merge);
       xImportViewer2.setDisplayLabel(false);
       xImportViewer2.createWidgets(managedForm, rightComp, 1);

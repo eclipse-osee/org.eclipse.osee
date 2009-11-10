@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.MergeItem;
-import org.eclipse.osee.coverage.merge.MergeType;
+import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -91,11 +91,12 @@ public class CoverageUnitPersistTest {
    public void testASave() {
       try {
          saveCoveragePackage = new CoveragePackage("CU Test");
+         MergeManager mergeManager = new MergeManager(saveCoveragePackage, coverageImport);
          List<MergeItem> mergeItems = new ArrayList<MergeItem>();
-         for (CoverageUnit coverageUnit : coverageImport.getCoverageUnits()) {
-            mergeItems.add(new MergeItem(MergeType.Add, null, coverageUnit));
+         for (MergeItem mergeItem : mergeManager.getMergeItems()) {
+            mergeItem.setChecked(true);
          }
-         CoveragePackageImportManager importer = new CoveragePackageImportManager(saveCoveragePackage, coverageImport);
+         CoveragePackageImportManager importer = new CoveragePackageImportManager(mergeManager);
          importer.importItems(new ISaveable() {
 
             @Override

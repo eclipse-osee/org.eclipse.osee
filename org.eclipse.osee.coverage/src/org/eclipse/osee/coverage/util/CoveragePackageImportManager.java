@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.MergeItem;
+import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.merge.MergeType;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -29,9 +30,11 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 public class CoveragePackageImportManager {
 
    private final CoveragePackage coveragePackage;
+   private final MergeManager mergeManager;
 
-   public CoveragePackageImportManager(CoveragePackage coveragePackage, CoverageImport coverageImport) {
-      this.coveragePackage = coveragePackage;
+   public CoveragePackageImportManager(MergeManager mergeManager) {
+      this.mergeManager = mergeManager;
+      this.coveragePackage = mergeManager.getCoveragePackage();
    }
 
    public XResultData importItems(ISaveable saveable, Collection<MergeItem> mergeItems) throws OseeCoreException {
@@ -95,7 +98,7 @@ public class CoveragePackageImportManager {
             CoverageUnit importCoverageUnit = (CoverageUnit) importItem;
             if (imported.contains(importCoverageUnit)) continue;
 
-            ICoverage packageItem = getPackageCoverageItem(coveragePackage, importItem, true);
+            ICoverage packageItem = mergeManager.getPackageCoverageItem(importItem);
             // Determine if item already exists first
             if (packageItem != null && !packageItem.isFolder()) {
                rd.logError(String.format("Import Item [%s][%s] matches Package Item [%s][%s]- Not Implemented Yet",
@@ -120,7 +123,7 @@ public class CoveragePackageImportManager {
                   // Else, want to add item to same parent
                   CoverageUnit parentCoverageUnit = (CoverageUnit) importItem.getParent();
                   CoverageUnit parentPackageItem =
-                        (CoverageUnit) getPackageCoverageItem(coveragePackage, parentCoverageUnit, true);
+                        (CoverageUnit) mergeManager.getPackageCoverageItem(parentCoverageUnit);
                   parentPackageItem.addCoverageUnit(importCoverageUnit.copy(true));
                   imported.add(importCoverageUnit);
                   rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
@@ -139,45 +142,6 @@ public class CoveragePackageImportManager {
          rd.logError("Exception: " + ex.getLocalizedMessage());
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
-   }
-
-   public ICoverage getPackageCoverageItem(ICoverage importItem, boolean recurse) {
-      return getPackageCoverageItem(coveragePackage, importItem, recurse);
-   }
-
-   public static ICoverage getPackageCoverageItem(CoveragePackage coveragePackage, ICoverage importItem, boolean recurse) {
-      for (ICoverage packageItem : coveragePackage.getChildren(recurse)) {
-         if (isConceptuallyEqual(packageItem, importItem)) {
-            return packageItem;
-         }
-      }
-      return null;
-   }
-
-   public static boolean isConceptuallyEqual(ICoverage packageItem, ICoverage importItem) {
-      if (packageItem.equals(importItem)) return true;
-      if (packageItem.getClass() != importItem.getClass()) return false;
-      if (packageItem.getNamespace() == null && importItem.getNamespace() == null) return true;
-      if (packageItem.getNamespace() == null) return false;
-      if (importItem.getNamespace() == null) return false;
-      if (!packageItem.getNamespace().equals(importItem.getNamespace())) return false;
-      if (packageItem instanceof CoverageUnit) {
-         if (!((CoverageUnit) packageItem).getMethodNumber().equals(((CoverageUnit) importItem).getMethodNumber())) {
-            return false;
-         }
-      }
-      if (packageItem.getName().equals(importItem.getName())) {
-         if (packageItem.getParent() instanceof CoveragePackage && importItem.getParent() instanceof CoverageImport) {
-            return true;
-         } else {
-            if (isConceptuallyEqual(packageItem.getParent(), importItem.getParent())) {
-               return true;
-            } else {
-               return false;
-            }
-         }
-      }
-      return false;
    }
 
    private boolean validateEditable(XResultData rd, ISaveable saveable) throws OseeCoreException {
@@ -219,7 +183,7 @@ public class CoveragePackageImportManager {
       boolean valid = true;
       for (ICoverage importItem1 : coverageUnit.getChildren()) {
          for (ICoverage importItem2 : coverageUnit.getChildren()) {
-            if (isConceptuallyEqual(importItem1, importItem2) && importItem1 != importItem2) {
+            if (MergeManager.isConceptuallyEqual(importItem1, importItem2) && importItem1 != importItem2) {
                rd.logError(String.format("CoverageUnit [%s] has two equal children [%s][%s]; Can't import.",
                      coverageUnit, importItem1, importItem2));
                valid = false;

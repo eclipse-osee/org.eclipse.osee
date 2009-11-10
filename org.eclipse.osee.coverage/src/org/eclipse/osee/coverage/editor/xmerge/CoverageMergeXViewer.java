@@ -14,8 +14,8 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.merge.MergeItem;
+import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.coverage.util.CoveragePackageImportManager;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -29,14 +29,14 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    //   public Map<ICoverage, Boolean> importChecked = new HashMap<ICoverage, Boolean>();
    public Map<ICoverage, XResultData> importError = new HashMap<ICoverage, XResultData>();
    Action toggleImport;
-   private final CoveragePackageImportManager coveragePackageImportManager;
+   private final MergeManager mergeManager;
    public static enum ImportType {
       Add, Replace, Folder, Error, None
    };
 
-   public CoverageMergeXViewer(CoveragePackageImportManager coveragePackageImport, Composite parent, int style, IXViewerFactory xViewerFactory, XCoverageMergeViewer xCoverageMergeViewer) {
+   public CoverageMergeXViewer(MergeManager mergeManager, Composite parent, int style, IXViewerFactory xViewerFactory, XCoverageMergeViewer xCoverageMergeViewer) {
       super(parent, style, xViewerFactory, xCoverageMergeViewer);
-      this.coveragePackageImportManager = coveragePackageImport;
+      this.mergeManager = mergeManager;
    }
 
    @Override
@@ -95,7 +95,8 @@ public class CoverageMergeXViewer extends CoverageXViewer {
       };
    }
 
-   public CoveragePackageImportManager getCoveragePackageImportManager() {
-      return coveragePackageImportManager;
+   public MergeManager getMergeManager() {
+      return mergeManager;
    }
+
 }
