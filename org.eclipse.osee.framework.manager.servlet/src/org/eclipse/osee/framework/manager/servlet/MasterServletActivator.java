@@ -67,6 +67,7 @@ public class MasterServletActivator implements BundleActivator {
       createServiceTracker(context, IAuthenticationManager.class, TrackerId.AUTHENTICATION_SERVICE);
 
       createHttpServiceTracker(context, SystemManagerServlet.class, OseeServerContext.MANAGER_CONTEXT);
+      createHttpServiceTracker(context, ResourceManagerServlet.class, OseeServerContext.RESOURCE_CONTEXT);
 
       createHttpServiceTracker(context, ArtifactFileServlet.class, OseeServerContext.PROCESS_CONTEXT);
       createHttpServiceTracker(context, ArtifactFileServlet.class, OseeServerContext.ARTIFACT_CONTEXT);

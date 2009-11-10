@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -48,7 +49,7 @@ public class OptionsProcessor {
 
       StringBuilder sb = new StringBuilder(uri.toString());
       StringBuilder sb2 = new StringBuilder(locator.toString());
-      if (extension.length() > 0) {
+      if (Strings.isValid(extension)) {
          sb.append(".");
          sb.append(extension);
          sb2.append(".");
