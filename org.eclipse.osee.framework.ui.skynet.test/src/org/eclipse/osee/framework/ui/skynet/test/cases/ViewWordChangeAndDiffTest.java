@@ -33,11 +33,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.ITestBranch;
@@ -66,11 +67,9 @@ public class ViewWordChangeAndDiffTest {
    @Before
    public void setUp() throws Exception {
       assertFalse("Not to be run on production database.", TestUtil.isProductionDb());
-      isWordRunning = false;
-      isWordRunning = FrameworkTestUtil.areWinWordsRunning();
-      assertTrue(
-            "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
-            isWordRunning == false);
+      WholeDocumentRenderer.setNoPopups(true);
+      WordTemplateRenderer.setNoPopups(true);
+      FileSystemRenderer.setNoPopups(true);
    }
 
    @org.junit.Test
@@ -150,10 +149,6 @@ public class ViewWordChangeAndDiffTest {
     */
    @After
    public void tearDown() throws Exception {
-      if (!isWordRunning) {
-         Thread.sleep(7000);
-         FrameworkTestUtil.killAllOpenWinword();
-      }
    }
 
    private ArrayList<Artifact> getArtifacts() throws ArtifactDoesNotExist {

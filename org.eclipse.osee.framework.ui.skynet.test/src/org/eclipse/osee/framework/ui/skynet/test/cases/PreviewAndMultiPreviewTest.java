@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.renderer.handlers.PreviewWithChildWordHandler;
 import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.ITemplateRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
 import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
@@ -50,10 +51,6 @@ public class PreviewAndMultiPreviewTest {
    @Before
    public void setUp() throws Exception {
       Assert.assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-      isWordRunning = FrameworkTestUtil.areWinWordsRunning();
-      Assert.assertTrue(
-            "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
-            isWordRunning == false);
       init();
    }
 
@@ -61,6 +58,9 @@ public class PreviewAndMultiPreviewTest {
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
             PreviewAndMultiPreviewTest.class.getSimpleName());
       FileRenderer.setWorkbenchSavePopUpDisabled(true);
+      FileSystemRenderer.setNoPopups(true);
+      WholeDocumentRenderer.setNoPopups(true);
+      WordTemplateRenderer.setNoPopups(true);
       branch = BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name());
       // create a new requirement artifact
       newArt =
@@ -340,13 +340,9 @@ public class PreviewAndMultiPreviewTest {
 
    @After
    public void tearDown() throws Exception {
-      if (!isWordRunning) {
-         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
-               PreviewAndMultiPreviewTest.class.getSimpleName());
-         TestUtil.severeLoggingEnd(monitorLog);
-         Thread.sleep(7000);
-         FrameworkTestUtil.killAllOpenWinword();
-      }
+      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
+            PreviewAndMultiPreviewTest.class.getSimpleName());
+      TestUtil.severeLoggingEnd(monitorLog);
    }
 
 }

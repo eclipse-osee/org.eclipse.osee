@@ -37,8 +37,10 @@ import org.eclipse.osee.framework.skynet.core.linking.WordMlLinkHandler;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -63,6 +65,9 @@ public class WordTrackedChangesTest {
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
             WordTrackedChangesTest.class.getSimpleName());
       WordAttribute.setDisplayTrackedChangesErrorMessage("");
+      WholeDocumentRenderer.setNoPopups(true);
+      WordTemplateRenderer.setNoPopups(true);
+      FileSystemRenderer.setNoPopups(true);
    }
 
    /*

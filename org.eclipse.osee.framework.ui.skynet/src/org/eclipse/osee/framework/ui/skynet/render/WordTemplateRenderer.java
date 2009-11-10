@@ -320,8 +320,10 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
          diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs", show);
       } else {
-         diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
-         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs", show);
+         if (!noPopups) {
+            diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
+            diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs", show);
+         }
       }
 
       return diffPath;

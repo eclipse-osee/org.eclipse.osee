@@ -37,8 +37,10 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.test.util.FrameworkTestUtil;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.skynet.render.FileRenderer;
+import org.eclipse.osee.framework.ui.skynet.render.FileSystemRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.PresentationType;
 import org.eclipse.osee.framework.ui.skynet.render.RendererManager;
+import org.eclipse.osee.framework.ui.skynet.render.WholeDocumentRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.WordTemplateRenderer;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -55,7 +57,6 @@ public class WordEditTest {
          "../org.eclipse.osee.framework.ui.skynet.test/src/org/eclipse/osee/framework/ui/skynet/test/cases/support/";
    private static final String TEST_WORD_EDIT_FILE_NAME = TEST_PATH_NAME + "WordEditTest.xml";
    private static InputStream inputStream;
-   private boolean isWordRunning = false;
 
    /**
     * This test Word Edit's are being saved.
@@ -63,13 +64,11 @@ public class WordEditTest {
    @Before
    public void setUp() throws Exception {
       assertFalse("Not to be run on production datbase.", TestUtil.isProductionDb());
-      isWordRunning = false;
       FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
             getClass().getSimpleName());
-      isWordRunning = FrameworkTestUtil.areWinWordsRunning();
-      assertTrue(
-            "This test kills all Word Documents. Cannot continue due to existing open Word Documents." + " Please save and close existing Word Documents before running this test.",
-            isWordRunning == false);
+      FileSystemRenderer.setNoPopups(true);
+      WholeDocumentRenderer.setNoPopups(true);
+      WordTemplateRenderer.setNoPopups(true);
    }
 
    @org.junit.Test
@@ -82,12 +81,9 @@ public class WordEditTest {
 
    @After
    public void tearDown() throws Exception {
-      if (!isWordRunning) {
-         WordAttribute.setDisplayTrackedChangesErrorMessage("");
-         FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
-               getClass().getSimpleName());
-         FrameworkTestUtil.killAllOpenWinword();
-      }
+      WordAttribute.setDisplayTrackedChangesErrorMessage("");
+      FrameworkTestUtil.cleanupSimpleTest(BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()),
+            getClass().getSimpleName());
    }
 
    public static String convertStreamToString(InputStream is) {
@@ -158,11 +154,9 @@ public class WordEditTest {
          // open the artifacts; testing one artifact for now
          artifacts = Arrays.asList(newArt);
          if (useRendererManager) {
-            RendererManager.openInJob(artifacts, PresentationType.SPECIALIZED_EDIT);
             preRenderer = RendererManager.getBestFileRenderer(PresentationType.SPECIALIZED_EDIT, newArt);
          } else {
             preRenderer = new WordTemplateRenderer();
-            preRenderer = openArtifacts(artifacts);
          }
          renderedFile = makeChangesToArtifact(preRenderer, artifacts);
          preStream = renderedFile.getContents();
@@ -180,8 +174,6 @@ public class WordEditTest {
          TestUtil.severeLoggingEnd(monitorLog);
       } catch (Exception ex) {
          System.out.println(ex.toString());
-      } finally {
-         FrameworkTestUtil.killAllOpenWinword();
       }
    }
 

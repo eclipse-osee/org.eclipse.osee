@@ -39,6 +39,8 @@ import org.eclipse.osee.framework.ui.skynet.preferences.MsWordPreferencePage;
  */
 public class WholeDocumentRenderer extends WordRenderer {
 
+   private static boolean noPopups = false;
+
    /**
     * @param rendererId
     */
@@ -207,10 +209,20 @@ public class WholeDocumentRenderer extends WordRenderer {
          diffGenerator.addComparison(baseFile, newerFile, diffPath, true);
          diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "mergeDocs.vbs", show);
       } else {
-         diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
-         diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs", show);
+         if (!noPopups) {
+            diffGenerator.addComparison(baseFile, newerFile, diffPath, false);
+            diffGenerator.finish(diffPath.substring(0, diffPath.lastIndexOf('\\')) + "/compareDocs.vbs", show);
+         }
       }
 
       return diffPath;
+   }
+
+   public static boolean isNoPopups() {
+      return noPopups;
+   }
+
+   public static void setNoPopups(boolean noPopups) {
+      WholeDocumentRenderer.noPopups = noPopups;
    }
 }

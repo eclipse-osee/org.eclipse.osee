@@ -44,6 +44,7 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    private static IFolder workingFolder;
    private static IFolder diffFolder;
    private static IFolder previewFolder;
+   private static boolean noPopups = false;
 
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
@@ -78,7 +79,9 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
                try {
                   FileUiUtil.ensureFilenameLimit(file);
                   Program program = getAssociatedProgram(firstArtifact);
-                  program.execute(file.getLocation().toFile().getAbsolutePath());
+                  if (!noPopups) {
+                     program.execute(file.getLocation().toFile().getAbsolutePath());
+                  }
                } catch (Exception ex) {
                   IWorkbench workbench = PlatformUI.getWorkbench();
                   IEditorDescriptor editorDescriptor = workbench.getEditorRegistry().getDefaultEditor(dummyName);
@@ -163,6 +166,14 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
       return renderToFileSystem(baseFolder, artifact, artifact.getBranch(), presentationType);
    }
 
+   public static boolean isNoPopups() {
+      return noPopups;
+   }
+
+   public static void setNoPopups(boolean noPopups) {
+      FileSystemRenderer.noPopups = noPopups;
+   }
+
    public abstract IFile renderToFileSystem(IFolder baseFolder, Artifact artifact, Branch branch, PresentationType presentationType) throws OseeCoreException;
 
    public abstract IFile renderToFileSystem(IFolder baseFolder, List<Artifact> artifacts, PresentationType presentationType) throws OseeCoreException;
@@ -170,4 +181,5 @@ public abstract class FileSystemRenderer extends DefaultArtifactRenderer {
    public abstract Program getAssociatedProgram(Artifact artifact) throws OseeCoreException;
 
    public abstract String getAssociatedExtension(Artifact artifact) throws OseeCoreException;
+
 }
