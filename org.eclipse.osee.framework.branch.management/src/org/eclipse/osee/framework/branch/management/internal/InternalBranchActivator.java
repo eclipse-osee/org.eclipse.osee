@@ -12,8 +12,10 @@ package org.eclipse.osee.framework.branch.management.internal;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
+import org.eclipse.osee.framework.branch.management.ICommitService;
 import org.eclipse.osee.framework.branch.management.creation.BranchCreation;
 import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
@@ -31,6 +33,7 @@ public class InternalBranchActivator implements BundleActivator {
       RESOURCE_LOCATOR,
       RESOURCE_MANAGER,
       BRANCH_EXCHANGE,
+      BRANCH_COMMIT,
       MASTER_SERVICE;
    }
 
@@ -54,6 +57,7 @@ public class InternalBranchActivator implements BundleActivator {
       createServiceTracker(context, IResourceLocatorManager.class, TrackerId.RESOURCE_LOCATOR);
       createServiceTracker(context, IResourceManager.class, TrackerId.RESOURCE_MANAGER);
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
+      createServiceTracker(context, ICommitService.class, TrackerId.BRANCH_COMMIT);
       createServiceTracker(context, IApplicationServerManager.class, TrackerId.MASTER_SERVICE);
    }
 
@@ -92,6 +96,10 @@ public class InternalBranchActivator implements BundleActivator {
 
    public IApplicationServerManager getApplicationServerManger() {
       return getTracker(TrackerId.MASTER_SERVICE, IApplicationServerManager.class);
+   }
+   
+   public ICommitService getCommitService() {
+	   return getTracker(TrackerId.BRANCH_COMMIT, ICommitService.class);
    }
 
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
