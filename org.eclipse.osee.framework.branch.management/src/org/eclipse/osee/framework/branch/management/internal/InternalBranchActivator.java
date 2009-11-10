@@ -59,18 +59,13 @@ public class InternalBranchActivator implements BundleActivator {
 
    public void stop(BundleContext context) throws Exception {
       exchangeServiceRegistration.unregister();
-      exchangeServiceRegistration = null;
-
       serviceRegistration.unregister();
-      serviceRegistration = null;
 
       for (ServiceTracker tracker : mappedTrackers.values()) {
          tracker.close();
       }
       mappedTrackers.clear();
       instance = null;
-
-      InternalBranchActivator.instance = null;
    }
 
    private void createServiceTracker(BundleContext context, Class<?> clazz, TrackerId trackerId) {
