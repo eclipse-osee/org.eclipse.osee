@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.util;
 
+import java.io.UnsupportedEncodingException;
 import java.util.regex.Pattern;
-import sun.misc.CharacterEncoder;
+import org.apache.commons.codec.binary.Base64;
 
 /**
  * @author Ryan D. Brooks
@@ -27,13 +28,6 @@ public class GUID {
       }
    };
 
-   private static final ThreadLocal<CharacterEncoder> threadLocalEncoder = new ThreadLocal<CharacterEncoder>() {
-      @Override
-      protected synchronized CharacterEncoder initialValue() {
-         return new sun.misc.BASE64Encoder();
-      }
-   };
-
    private GUID() {
    }
 
@@ -43,8 +37,9 @@ public class GUID {
 
       // 120-bit value
       byte[] rawValue = chopMostSignificantByte(time, rand);
-      CharacterEncoder base64Encoder = threadLocalEncoder.get();
-      return base64Encoder.encode(rawValue).replaceAll("/", "_");
+      byte[] encodedValue = Base64.encodeBase64(rawValue);
+      String encodedString = new String(encodedValue);
+      return encodedString.replaceAll("/", "_");
    }
 
    public static boolean isValid(String guid) {
@@ -73,7 +68,7 @@ public class GUID {
       return writeBuffer;
    }
 
-   public static void main(String[] args) {
+   public static void main(String[] args) throws UnsupportedEncodingException {
       System.out.println(GUID.create());
    }
 }

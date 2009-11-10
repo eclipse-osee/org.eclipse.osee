@@ -23,7 +23,10 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map.Entry;
+import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -49,7 +52,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public PropertyStore() {
-      this("");
+      this(StringUtils.EMPTY);
    }
 
    public PropertyStore(Properties properties) {
@@ -57,20 +60,24 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public String get(String key) {
-      return storageData.getProperty(key);
+      return storageData.getProperty(key, StringUtils.EMPTY);
    }
 
    public String[] getArray(String key) {
-      return (String[]) storageArrays.get(key);
+      String[] value = (String[]) storageArrays.get(key);
+      if (value == null) {
+         value = ArrayUtils.EMPTY_STRING_ARRAY;
+      }
+      return value;
    }
 
    public boolean getBoolean(String key) {
-      return Boolean.valueOf(storageData.getProperty(key));
+      return Boolean.valueOf(get(key));
    }
 
    public double getDouble(String key) throws NumberFormatException {
-      String setting = storageData.getProperty(key);
-      if (setting == null) {
+      String setting = get(key);
+      if (!Strings.isValid(setting)) {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
@@ -78,8 +85,8 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public float getFloat(String key) throws NumberFormatException {
-      String setting = storageData.getProperty(key);
-      if (setting == null) {
+      String setting = get(key);
+      if (!Strings.isValid(setting)) {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
@@ -87,8 +94,8 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public int getInt(String key) throws NumberFormatException {
-      String setting = storageData.getProperty(key);
-      if (setting == null) {
+      String setting = get(key);
+      if (!Strings.isValid(setting)) {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
@@ -96,8 +103,8 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public long getLong(String key) throws NumberFormatException {
-      String setting = storageData.getProperty(key);
-      if (setting == null) {
+      String setting = get(key);
+      if (!Strings.isValid(setting)) {
          throw new NumberFormatException(String.format(EXCEPTION_MESSAGE, key));
       }
 
@@ -106,7 +113,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
 
    public void put(String key, String[] value) {
       if (value == null) {
-         value = new String[0];
+         value = ArrayUtils.EMPTY_STRING_ARRAY;
       }
       storageArrays.put(key, value);
    }
@@ -129,7 +136,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
 
    public void put(String key, String value) {
       if (value == null) {
-         value = "";
+         value = StringUtils.EMPTY;
       }
       storageData.setProperty(key, value);
    }
@@ -144,7 +151,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
 
    protected void setId(String name) {
       if (name == null) {
-         name = "";
+         name = StringUtils.EMPTY;
       }
       this.storeId = name;
    }

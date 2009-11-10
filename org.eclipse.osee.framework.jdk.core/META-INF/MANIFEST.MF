@@ -30,4 +30,10 @@ Export-Package: org.eclipse.osee.framework.jdk.core.collection.tree,
  org.eclipse.osee.framework.jdk.core.validate
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Require-Bundle: org.apache.commons.httpclient
+Import-Package: org.apache.commons.codec;version="1.3.0",
+ org.apache.commons.codec.binary;version="1.3.0",
+ org.apache.commons.httpclient;version="3.1.0",
+ org.apache.commons.httpclient.methods;version="3.1.0",
+ org.apache.commons.httpclient.params;version="3.1.0",
+ org.apache.commons.lang,
+ org.apache.xml.serialize;version="2.9.0"

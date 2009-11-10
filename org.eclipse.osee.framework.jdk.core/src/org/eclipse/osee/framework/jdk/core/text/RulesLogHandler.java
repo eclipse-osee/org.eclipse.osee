@@ -16,10 +16,10 @@ import java.util.logging.Handler;
 import java.util.logging.LogRecord;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import org.apache.xml.serialize.OutputFormat;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 
 /**
  * @author Ryan D. Brooks
@@ -27,9 +27,9 @@ import com.sun.org.apache.xml.internal.serialize.OutputFormat;
  */
 public class RulesLogHandler extends Handler {
 
-   private Document document;
-   private File outFile;
-   private Element rootElement;
+   private final Document document;
+   private final File outFile;
+   private final Element rootElement;
 
    /**
     * RulesLogHandler Constructor. Sets the file to log to and the test script that will be logged. It also establishes
@@ -66,6 +66,7 @@ public class RulesLogHandler extends Handler {
       }
    }
 
+   @Override
    public void publish(LogRecord logRecord) {
       if (!isLoggable(logRecord)) {
          return;
@@ -79,10 +80,12 @@ public class RulesLogHandler extends Handler {
       }
    }
 
+   @Override
    public void close() throws SecurityException {
       writeOutFile();
    }
 
+   @Override
    public void flush() {
       throw new UnsupportedOperationException();
    }

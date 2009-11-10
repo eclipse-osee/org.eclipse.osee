@@ -27,7 +27,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
-import com.sun.org.apache.xml.internal.dtm.ref.DTMNodeList;
 
 /**
  * @author David Diepenbrock
@@ -194,8 +193,7 @@ public class Xml {
          }
       } catch (Exception e) {
          e.printStackTrace();
-      }
-      ;
+      };
       return newElement;
    }
 
@@ -212,8 +210,7 @@ public class Xml {
          }
       } catch (Exception e) {
          e.printStackTrace();
-      }
-      ;
+      };
       return newElement;
    }
 
@@ -267,8 +264,7 @@ public class Xml {
          newElement.setAttribute(attributeName, attributeValue);
       } catch (Exception e) {
          e.printStackTrace();
-      }
-      ;
+      };
       return newElement;
    }
 
@@ -366,7 +362,8 @@ public class Xml {
       } else {
          Object publisherNodeSet = null;
          publisherNodeSet = myXPath.evaluate(xPathExpression, startingNode, XPathConstants.NODESET);
-         DTMNodeList myNodeList = (DTMNodeList) publisherNodeSet;
+
+         NodeList myNodeList = (NodeList) publisherNodeSet;
          resultNodes = new Node[myNodeList.getLength()];
          for (int i = 0; i < resultNodes.length; i++) {
             resultNodes[i] = myNodeList.item(i);
@@ -385,7 +382,7 @@ public class Xml {
       } else {
          Node[] selectedNodes = selectNodeList(startingNode, xPathExpression);
          if (selectedNodes.length > 0) {
-            resultString = selectNodesText((Element) selectedNodes[0]).trim();
+            resultString = selectNodesText(selectedNodes[0]).trim();
          }
       }
       return resultString;
