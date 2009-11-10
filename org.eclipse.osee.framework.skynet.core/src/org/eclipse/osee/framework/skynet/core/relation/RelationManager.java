@@ -57,7 +57,7 @@ import org.eclipse.osee.framework.skynet.core.types.IArtifact;
  */
 public class RelationManager {
    // Indexed by ArtifactKey so that map does not hold strong reference to artifact which allows it to be garbage collected
-   // the branch is accounted for because Artifact.equals includes the branch in the comparison
+   // the branch is accounted for because artifactkey includes the branch id
    private static final CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>> relationsByType =
          new CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>>(1024, true);
 
@@ -290,9 +290,9 @@ public class RelationManager {
       for (RelationLink relation : relations) {
          if (!relation.isDeleted()) {
             RelationSide resolvedSide = null;
-               if (relation.getSide(artifact) != side) {
-                  resolvedSide = side;
-               }
+            if (relation.getSide(artifact) != side) {
+               resolvedSide = side;
+            }
             if (resolvedSide != null) {
                int artId = relation.getArtifactId(resolvedSide);
                Branch branch = relation.getBranch(resolvedSide);
@@ -446,8 +446,8 @@ public class RelationManager {
       // weakness:  references held to links by other applications will continue to exist.
       //We do not want to drop relation links for historical artifacts because the relation manager will clobber the current artifacts relations. 
       if (artifact.isHistorical()) {
-      relationsByType.removeValues(threadLocalKey.get().getKey(artifact));
-   }
+         relationsByType.removeValues(threadLocalKey.get().getKey(artifact));
+      }
    }
 
    public static boolean hasDirtyLinks(Artifact artifact) {
