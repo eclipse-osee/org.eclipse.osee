@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core Server Test
+Bundle-SymbolicName: org.eclipse.osee.framework.core.server.test
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: Eclipse.org
+Fragment-Host: org.eclipse.osee.framework.core.server;bundle-version="0.4.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.junit.runner;version="4.5.0",
+ org.junit.runners;version="4.5.0"
