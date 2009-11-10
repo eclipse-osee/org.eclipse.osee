@@ -55,4 +55,27 @@
          fragment="true"
          unpack="false"/>
 
+   <plugin
+         id="org.eclipse.osee.framework.branch.management.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.resource.provider.attribute.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.search.engine.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>
