@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -24,28 +26,28 @@ public interface IResourceManager {
     * 
     * @param listener
     */
-   public void addResourceListener(IResourceListener listener);
+   public boolean addResourceListener(IResourceListener listener);
 
    /**
     * Remove listener from list
     * 
     * @param listener
     */
-   public void removeResourceListener(IResourceListener listener);
+   public boolean removeResourceListener(IResourceListener listener);
 
    /**
     * Add a resource provider
     * 
     * @param resourceProvider to add
     */
-   public void addResourceProvider(IResourceProvider resourceProvider);
+   public boolean addResourceProvider(IResourceProvider resourceProvider);
 
    /**
     * Remove a resource provider
     * 
     * @param resourceProvider to remove
     */
-   public void removeResourceProvider(IResourceProvider resourceProvider);
+   public boolean removeResourceProvider(IResourceProvider resourceProvider);
 
    /**
     * Acquire resource specified by resource locator
@@ -54,14 +56,14 @@ public interface IResourceManager {
     * @param options operation options
     * @return the resource
     */
-   public IResource acquire(IResourceLocator locator, Options options) throws Exception;
+   public IResource acquire(IResourceLocator locator, Options options) throws OseeCoreException;
 
    /**
     * Determines if a resource exists for the given locator.
     * 
     * @param locator location of the data to check
     */
-   public boolean exists(IResourceLocator locator) throws Exception;
+   public boolean exists(IResourceLocator locator) throws OseeCoreException;
 
    /**
     * Save input to location specified by resource locator
@@ -71,7 +73,7 @@ public interface IResourceManager {
     * @param options operation options
     * @return status
     */
-   public IResourceLocator save(final IResourceLocator locatorHint, final IResource resource, final Options options) throws Exception;
+   public IResourceLocator save(final IResourceLocator locatorHint, final IResource resource, final Options options) throws OseeCoreException;
 
    /**
     * Delete resource specified by resource locator
@@ -79,5 +81,5 @@ public interface IResourceManager {
     * @param locator location of the resource to delete
     * @return status
     */
-   public int delete(IResourceLocator locator) throws Exception;
+   public int delete(IResourceLocator locator) throws OseeCoreException;
 }

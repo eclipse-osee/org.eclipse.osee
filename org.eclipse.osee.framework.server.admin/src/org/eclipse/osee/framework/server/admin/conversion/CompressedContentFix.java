@@ -18,7 +18,9 @@ import java.io.OutputStream;
 import java.net.URLEncoder;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -28,8 +30,7 @@ import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
-import org.eclipse.osee.framework.resource.provider.common.resources.CompressedResourceBridge;
-import org.eclipse.osee.framework.resource.provider.common.resources.Streams;
+import org.eclipse.osee.framework.resource.management.util.Resources;
 import org.eclipse.osee.framework.server.admin.Activator;
 import org.eclipse.osgi.framework.console.CommandInterpreter;
 
@@ -73,9 +74,9 @@ public class CompressedContentFix {
 
    private class Worker implements Runnable {
 
-      private CommandInterpreter ci;
-      private IResourceManager resourceManager;
-      private IResourceLocatorManager locatorManager;
+      private final CommandInterpreter ci;
+      private final IResourceManager resourceManager;
+      private final IResourceLocatorManager locatorManager;
       private Map<Long, String> nativeExtension;
       private Map<Long, String> nameMap;
 
@@ -137,7 +138,8 @@ public class CompressedContentFix {
             String newEntryName = generateFileName(nameMap.get(artId), hrid, extension);
 
             byte[] compressed = Lib.compressStream(new ByteArrayInputStream(outputStream.toByteArray()), newEntryName);
-            IResource modifiedResource = new CompressedResourceBridge(compressed, locator.getLocation(), true);
+            IResource modifiedResource =
+                  Resources.createResourceFromBytes(compressed, locator.getLocation().toASCIIString(), true);
             options.put(StandardOptions.Overwrite.name(), true);
             resourceManager.save(locator, modifiedResource, options);
 
@@ -168,16 +170,16 @@ public class CompressedContentFix {
          return builder.toString();
       }
 
-      private String getContent(IResource resource, OutputStream outputStream) throws IOException {
+      private String getContent(IResource resource, OutputStream outputStream) throws OseeCoreException {
          String name = null;
          InputStream inputStream = null;
          try {
             inputStream = resource.getContent();
-            name = Streams.decompressStream(inputStream, outputStream);
+            name = Lib.decompressStream(inputStream, outputStream);
+         } catch (IOException ex) {
+            throw new OseeWrappedException(ex);
          } finally {
-            if (inputStream != null) {
-               inputStream.close();
-            }
+            Lib.close(inputStream);
          }
          return name;
       }

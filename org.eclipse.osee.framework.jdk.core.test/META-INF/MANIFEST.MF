@@ -7,4 +7,5 @@ Bundle-Vendor: Eclipse.org
 Fragment-Host: org.eclipse.osee.framework.jdk.core;bundle-version="0.4.0"
 Require-Bundle: org.junit4
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Export-Package: org.eclipse.osee.framework.jdk.core.test
+Export-Package: org.eclipse.osee.framework.jdk.core.test,
+ org.eclipse.osee.framework.jdk.core.test.type

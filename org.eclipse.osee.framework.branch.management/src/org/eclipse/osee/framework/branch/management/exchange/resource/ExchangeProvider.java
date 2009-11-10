@@ -12,10 +12,16 @@ package org.eclipse.osee.framework.branch.management.exchange.resource;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -23,14 +29,16 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.eclipse.osee.framework.resource.provider.common.OptionsProcessor;
+import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
+import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ExchangeProvider implements IResourceProvider {
-   private static String BASE_PATH = OseeServerProperties.getOseeApplicationServerData();
-   private static String RESOLVED_PATH = BASE_PATH + File.separator + ExchangeLocatorProvider.PROTOCOL + File.separator;
+   private static final String BASE_PATH = OseeServerProperties.getOseeApplicationServerData();
+   private static final String RESOLVED_PATH =
+         BASE_PATH + File.separator + ExchangeLocatorProvider.PROTOCOL + File.separator;
 
    public ExchangeProvider() {
    }
@@ -39,7 +47,7 @@ public class ExchangeProvider implements IResourceProvider {
       return RESOLVED_PATH;
    }
 
-   private URI resolve(IResourceLocator locator) throws URISyntaxException {
+   private URI resolve(IResourceLocator locator) throws OseeCoreException {
       URI toReturn = null;
       StringBuilder builder = new StringBuilder();
       String rawPath = locator.getRawPath();
@@ -49,13 +57,17 @@ public class ExchangeProvider implements IResourceProvider {
          toReturn = new File(builder.toString()).toURI();
       } else {
          rawPath = rawPath.replaceAll(" ", "%20");
-         toReturn = new URI(rawPath);
+         try {
+            toReturn = new URI(rawPath);
+         } catch (URISyntaxException ex) {
+            throw new MalformedLocatorException(rawPath, ex);
+         }
       }
       return toReturn;
    }
 
    @Override
-   public IResource acquire(IResourceLocator locator, Options options) throws Exception {
+   public IResource acquire(IResourceLocator locator, Options options) throws OseeCoreException {
       IResource toReturn = null;
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, null, options);
       toReturn = optionsProcessor.getResourceToServer();
@@ -63,7 +75,7 @@ public class ExchangeProvider implements IResourceProvider {
    }
 
    @Override
-   public int delete(IResourceLocator locator) throws Exception {
+   public int delete(IResourceLocator locator) throws OseeCoreException {
       int toReturn = IResourceManager.FAIL;
       File file = new File(resolve(locator));
       if (file == null || file.exists() != true) {
@@ -78,19 +90,12 @@ public class ExchangeProvider implements IResourceProvider {
    }
 
    @Override
-   public boolean exists(IResourceLocator locator) throws Exception {
-      URI uri = resolve(locator);
-      File testFile = new File(uri);
-      return testFile.exists();
-   }
-
-   @Override
    public boolean isValid(IResourceLocator locator) {
-      return locator != null && locator.getProtocol().equals(ExchangeLocatorProvider.PROTOCOL);
+      return locator != null && getSupportedProtocols().contains(locator.getProtocol());
    }
 
    @Override
-   public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws Exception {
+   public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws OseeCoreException {
       IResourceLocator toReturn = null;
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, resource, options);
       OutputStream outputStream = null;
@@ -108,18 +113,27 @@ public class ExchangeProvider implements IResourceProvider {
          inputStream = resourceToStore.getContent();
          Lib.inputStreamToOutputStream(inputStream, outputStream);
          toReturn = optionsProcessor.getActualResouceLocator();
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
       } finally {
-         if (outputStream != null) {
-            outputStream.close();
-         }
-         if (inputStream != null) {
-            inputStream.close();
-         }
+         Lib.close(outputStream);
+         Lib.close(inputStream);
       }
       if (toReturn == null) {
-         throw new IllegalStateException(String.format("We failed to save resource %s.", locator.getLocation()));
+         throw new OseeStateException(String.format("We failed to save resource %s.", locator.getLocation()));
       }
       return toReturn;
    }
 
+   @Override
+   public boolean exists(IResourceLocator locator) throws OseeCoreException {
+      URI uri = resolve(locator);
+      File testFile = new File(uri);
+      return testFile.exists();
+   }
+
+   @Override
+   public Collection<String> getSupportedProtocols() {
+      return Arrays.asList(ExchangeLocatorProvider.PROTOCOL);
+   }
 }

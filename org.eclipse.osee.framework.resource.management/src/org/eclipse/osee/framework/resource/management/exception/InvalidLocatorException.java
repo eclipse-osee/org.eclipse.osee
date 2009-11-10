@@ -10,16 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management.exception;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
-public class InvalidLocatorException extends Exception {
+public class InvalidLocatorException extends OseeCoreException {
 
    private static final long serialVersionUID = -1291325728313575694L;
-
-   public InvalidLocatorException() {
-      super();
-   }
 
    public InvalidLocatorException(String message, Throwable cause) {
       super(message, cause);

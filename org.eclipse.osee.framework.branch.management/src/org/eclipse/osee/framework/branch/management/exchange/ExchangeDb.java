@@ -239,7 +239,7 @@ public class ExchangeDb {
    }
 
    private static Long getTransactionNumber(Options options, String exportOption) {
-      String transactionNumber = options.getString(exportOption);
+      String transactionNumber = options.get(exportOption);
       long toReturn = Long.MIN_VALUE;
       if (Strings.isValid(transactionNumber)) {
          toReturn = Long.valueOf(transactionNumber);

@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management.internal;
 
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
@@ -22,38 +26,50 @@ import org.eclipse.osee.framework.resource.management.exception.MalformedLocator
  */
 public class ResourceLocatorManager implements IResourceLocatorManager {
 
-   private List<IResourceLocatorProvider> resourceLocatorProviders;
+   private final Collection<IResourceLocatorProvider> resourceLocatorProviders;
 
    public ResourceLocatorManager() {
-      this.resourceLocatorProviders = new CopyOnWriteArrayList<IResourceLocatorProvider>();
+      this.resourceLocatorProviders = new CopyOnWriteArraySet<IResourceLocatorProvider>();
    }
 
    @Override
-   public void addResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
-      this.resourceLocatorProviders.add(resourceLocatorProvider);
+   public Collection<String> getProtocols() {
+      Set<String> protocols = new HashSet<String>();
+      for (IResourceLocatorProvider provider : resourceLocatorProviders) {
+         protocols.add(provider.getSupportedProtocol());
+      }
+      return protocols;
    }
 
    @Override
-   public void removeResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
-      this.resourceLocatorProviders.remove(resourceLocatorProvider);
+   public boolean addResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
+      return this.resourceLocatorProviders.add(resourceLocatorProvider);
    }
 
    @Override
-   public IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws MalformedLocatorException {
+   public boolean removeResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider) {
+      return this.resourceLocatorProviders.remove(resourceLocatorProvider);
+   }
+
+   @Override
+   public IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws OseeCoreException {
       IResourceLocatorProvider resourceLocatorProvider = getProvider(protocol);
       return resourceLocatorProvider.generateResourceLocator(seed, name);
    }
 
    @Override
-   public IResourceLocator getResourceLocator(String path) throws MalformedLocatorException {
+   public IResourceLocator getResourceLocator(String path) throws OseeCoreException {
       IResourceLocatorProvider resourceLocatorProvider = getProvider(path);
       return resourceLocatorProvider.getResourceLocator(path);
    }
 
-   private IResourceLocatorProvider getProvider(String protocol) throws MalformedLocatorException {
+   private IResourceLocatorProvider getProvider(String protocol) throws OseeCoreException {
+      if (resourceLocatorProviders.isEmpty()) {
+         throw new OseeStateException("Resource locator providers are not available");
+      }
       IResourceLocatorProvider toReturn = null;
       for (IResourceLocatorProvider provider : resourceLocatorProviders) {
-         if (provider.isValid(protocol) != false) {
+         if (provider.isValid(protocol)) {
             toReturn = provider;
             break;
          }
@@ -64,5 +80,4 @@ public class ResourceLocatorManager implements IResourceLocatorManager {
       }
       return toReturn;
    }
-
 }

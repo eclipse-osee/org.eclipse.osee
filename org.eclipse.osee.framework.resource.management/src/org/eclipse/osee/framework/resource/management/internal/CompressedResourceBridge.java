@@ -8,28 +8,34 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.resource.management;
+package org.eclipse.osee.framework.resource.management.internal;
 
-import java.io.IOException;
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URI;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.resource.management.IResource;
 
 /**
  * @author Roberto E. Escobar
  */
-public class Resource implements IResource {
-   private URI uri;
-   private boolean isCompressed;
+public class CompressedResourceBridge implements IResource {
+   private final byte[] backing;
+   private final boolean isCompressed;
+   private final URI uri;
 
-   public Resource(URI uri, boolean isCompressed) {
-      this.uri = uri;
+   public CompressedResourceBridge(byte[] backing, URI uri, boolean isCompressed) {
+      this.backing = backing;
       this.isCompressed = isCompressed;
+      this.uri = uri;
    }
 
-   public InputStream getContent() throws IOException {
-      return uri.toURL().openStream();
+   @Override
+   public InputStream getContent() throws OseeCoreException {
+      return new ByteArrayInputStream(backing);
    }
 
+   @Override
    public URI getLocation() {
       return uri;
    }
@@ -44,4 +50,5 @@ public class Resource implements IResource {
    public boolean isCompressed() {
       return isCompressed;
    }
+
 }

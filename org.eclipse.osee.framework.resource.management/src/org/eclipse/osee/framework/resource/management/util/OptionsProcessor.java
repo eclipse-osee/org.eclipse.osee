@@ -8,51 +8,43 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.resource.provider.common;
+package org.eclipse.osee.framework.resource.management.util;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.eclipse.osee.framework.resource.management.Resource;
-import org.eclipse.osee.framework.resource.management.ResourceLocator;
 import org.eclipse.osee.framework.resource.management.StandardOptions;
-import org.eclipse.osee.framework.resource.provider.common.resources.Resources;
+import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class OptionsProcessor {
 
-   private URI fileuri;
-   private URI locatoruri;
-   private IResource resource;
-   private String extension;
-   private boolean deCompressOnSave;
-   private boolean shouldCompress;
-   private boolean decompressOnAcquire;
-   private boolean compressOnAcquire;
-   private boolean overwrite;
+   private final URI fileuri;
+   private final URI locatoruri;
+   private final IResource resource;
+   private final String extension;
+   private final boolean deCompressOnSave;
+   private final boolean shouldCompress;
+   private final boolean decompressOnAcquire;
+   private final boolean compressOnAcquire;
+   private final boolean overwrite;
 
-   /**
-    * @param resource
-    * @param uri
-    * @param locator
-    * @param options
-    * @throws URISyntaxException
-    */
-   public OptionsProcessor(URI uri, IResourceLocator locator, IResource resource, Options options) throws URISyntaxException {
+   public OptionsProcessor(URI uri, IResourceLocator locator, IResource resource, Options options) throws MalformedLocatorException {
       this.resource = resource;
       decompressOnAcquire = options.getBoolean(StandardOptions.DecompressOnAquire.name());
       compressOnAcquire = options.getBoolean(StandardOptions.CompressOnAcquire.name());
       overwrite = options.getBoolean(StandardOptions.Overwrite.name());
       shouldCompress = options.getBoolean(StandardOptions.CompressOnSave.name());
       deCompressOnSave = options.getBoolean(StandardOptions.DecompressOnSave.name());
-      extension = options.getString(StandardOptions.Extension.name());
+      extension = options.get(StandardOptions.Extension.name());
 
       StringBuilder sb = new StringBuilder(uri.toString());
       StringBuilder sb2 = new StringBuilder(locator.toString());
@@ -68,19 +60,23 @@ public class OptionsProcessor {
          sb2.append(".");
          sb2.append("zip");
       }
-      this.fileuri = new URI(sb.toString());
-      this.locatoruri = new URI(sb2.toString());
+      try {
+         this.fileuri = new URI(sb.toString());
+      } catch (URISyntaxException ex) {
+         throw new MalformedLocatorException(sb.toString(), ex);
+      }
+      try {
+         this.locatoruri = new URI(sb2.toString());
+      } catch (URISyntaxException ex) {
+         throw new MalformedLocatorException(sb2.toString(), ex);
+      }
    }
 
-   /**
-    * @return storage file
-    * @throws IOException
-    */
-   public File getStorageFile() throws IOException {
+   public File getStorageFile() throws OseeCoreException {
       File storageFile = new File(fileuri);
       if (!overwrite) {
          if (storageFile.exists()) {
-            throw new IOException(String.format("The file [%s] already exists.", storageFile.getAbsolutePath()));
+            throw new OseeStateException(String.format("The file [%s] already exists.", storageFile.getAbsolutePath()));
          }
       }
       File parent = storageFile.getParentFile();
@@ -90,11 +86,7 @@ public class OptionsProcessor {
       return storageFile;
    }
 
-   /**
-    * @return resource to store
-    * @throws Exception
-    */
-   public IResource getResourceToStore() throws Exception {
+   public IResource getResourceToStore() throws OseeCoreException {
       IResource resourceToReturn;
       if (shouldCompress && !resource.isCompressed()) {
          resourceToReturn = Resources.compressResource(resource);
@@ -106,7 +98,7 @@ public class OptionsProcessor {
       return resourceToReturn;
    }
 
-   public IResource getResourceToServer() throws Exception {
+   public IResource getResourceToServer() throws OseeCoreException {
       IResource toReturn = null;
       File testFile = new File(this.fileuri);
       if (testFile != null && testFile.exists() != false) {
@@ -122,10 +114,7 @@ public class OptionsProcessor {
       return toReturn;
    }
 
-   /**
-    * @return actual resorce locator
-    */
-   public IResourceLocator getActualResouceLocator() {
+   public IResourceLocator getActualResouceLocator() throws OseeCoreException {
       return new ResourceLocator(this.locatoruri);
    }
 

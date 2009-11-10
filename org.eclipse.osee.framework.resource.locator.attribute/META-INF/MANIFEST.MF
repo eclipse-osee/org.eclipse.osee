@@ -4,7 +4,7 @@ Bundle-Name: Locator Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.locator.attribute;singleton:=true
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.resource.locator.attribute.Activator
-Bundle-Vendor: Boeing
+Bundle-Vendor: Eclipse.org
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/locator.provider.attribute.xml
 Import-Package: org.eclipse.osee.framework.core.data,
@@ -12,6 +12,7 @@ Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.jdk.core.util,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
+ org.eclipse.osee.framework.resource.management.util,
  org.osgi.framework
 Export-Package: org.eclipse.osee.framework.resource.locator.attribute
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

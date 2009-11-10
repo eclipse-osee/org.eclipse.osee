@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -23,9 +23,9 @@ public interface IResource {
     * Returns an open input stream of the contents of this resource.
     * 
     * @return an input stream containing the contents of this resource
-    * @throws IOException if this method fails.
+    * @throws OseeCoreException if this method fails.
     */
-   public InputStream getContent() throws IOException;
+   public InputStream getContent() throws OseeCoreException;
 
    /**
     * Returns the absolute URI of this resource, or <code>null</code> if no URI can be determined.

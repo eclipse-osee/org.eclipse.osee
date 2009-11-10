@@ -10,16 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management.exception;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
-public class MalformedLocatorException extends Exception {
+public class MalformedLocatorException extends OseeCoreException {
 
    private static final long serialVersionUID = -7595802736847790150L;
-
-   public MalformedLocatorException() {
-      super();
-   }
 
    /**
     * @param message

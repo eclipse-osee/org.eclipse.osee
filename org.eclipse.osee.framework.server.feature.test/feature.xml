@@ -21,8 +21,7 @@
          id="org.eclipse.test"
          download-size="0"
          install-size="0"
-         version="0.0.0"
-         unpack="true"/>
+         version="0.0.0"/>
 
    <plugin
          id="org.eclipse.ant.optional.junit"
@@ -41,10 +40,19 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.jdk.core"
+         id="org.eclipse.osee.framework.resource.management.test"
          download-size="0"
          install-size="0"
          version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.resource.locator.attribute.test"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
 </feature>

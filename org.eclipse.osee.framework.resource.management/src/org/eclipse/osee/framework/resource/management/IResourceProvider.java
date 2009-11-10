@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management;
 
+import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
@@ -30,14 +33,14 @@ public interface IResourceProvider {
     * @param options operation options
     * @return the resource
     */
-   public IResource acquire(IResourceLocator locator, Options options) throws Exception;
+   public IResource acquire(IResourceLocator locator, Options options) throws OseeCoreException;
 
    /**
     * Determines if a resource exists for the given locator.
     * 
     * @param locator location of the data to check
     */
-   public boolean exists(IResourceLocator locator) throws Exception;
+   public boolean exists(IResourceLocator locator) throws OseeCoreException;
 
    /**
     * Save input to location specified by resource locator
@@ -47,7 +50,7 @@ public interface IResourceProvider {
     * @param resource the resource to save
     * @return status
     */
-   public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws Exception;
+   public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws OseeCoreException;
 
    /**
     * Delete resource specified by resource locator
@@ -55,5 +58,12 @@ public interface IResourceProvider {
     * @param locator location of the resource to delete
     * @return status
     */
-   public int delete(IResourceLocator locator) throws Exception;
+   public int delete(IResourceLocator locator) throws OseeCoreException;
+
+   /**
+    * Get provider supported protocols
+    * 
+    * @return supported protocols
+    */
+   public Collection<String> getSupportedProtocols();
 }

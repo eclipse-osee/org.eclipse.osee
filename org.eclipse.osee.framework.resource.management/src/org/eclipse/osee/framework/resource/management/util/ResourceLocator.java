@@ -8,20 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.resource.management;
+package org.eclipse.osee.framework.resource.management.util;
 
 import java.net.URI;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.resource.management.IResourceLocator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ResourceLocator implements IResourceLocator {
 
-   private URI uri;
+   private final URI uri;
 
-   public ResourceLocator(URI uri) {
+   public ResourceLocator(URI uri) throws OseeCoreException {
       if (uri == null) {
-         throw new IllegalArgumentException("URI was null.");
+         throw new OseeArgumentException("URI was null.");
       }
       this.uri = uri;
    }
@@ -34,6 +37,7 @@ public class ResourceLocator implements IResourceLocator {
       return uri.getScheme();
    }
 
+   @Override
    public String toString() {
       return uri.toString();
    }

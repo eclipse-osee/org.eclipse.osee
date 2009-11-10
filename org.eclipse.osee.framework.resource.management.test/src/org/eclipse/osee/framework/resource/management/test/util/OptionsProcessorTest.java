@@ -8,17 +8,22 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.resource.management.test;
+package org.eclipse.osee.framework.resource.management.test.util;
 
-import junit.framework.TestSuite;
+import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * @author Andrew M. Finkbeiner
+ * Test Cases for {@link OptionsProcessor}
+ * 
+ * @author Roberto E. Escobar
  */
-public class AllResourceManagementTests extends TestSuite {
+public class OptionsProcessorTest {
 
-   public AllResourceManagementTests() {
-      addTestSuite(TestResourceManager.class);
+   @Test
+   public void testOptionsProcessor() {
+      Assert.fail("Error - implement this");
    }
 
 }

@@ -14,7 +14,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import javax.servlet.http.HttpServletRequest;
-
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 
@@ -23,8 +24,8 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
  */
 public class ServletResourceBridge implements IResource {
 
-   private HttpServletRequest request;
-   private IResourceLocator locator;
+   private final HttpServletRequest request;
+   private final IResourceLocator locator;
 
    public ServletResourceBridge(HttpServletRequest request, IResourceLocator locator) {
       this.request = request;
@@ -32,8 +33,12 @@ public class ServletResourceBridge implements IResource {
    }
 
    @Override
-   public InputStream getContent() throws IOException {
-      return request.getInputStream();
+   public InputStream getContent() throws OseeCoreException {
+      try {
+         return request.getInputStream();
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 
    @Override

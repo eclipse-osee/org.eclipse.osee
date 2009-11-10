@@ -12,10 +12,14 @@ package org.eclipse.osee.framework.resource.provider.attribute;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.server.OseeServerProperties;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -23,7 +27,7 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.Options;
-import org.eclipse.osee.framework.resource.provider.common.OptionsProcessor;
+import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
 
 /**
  * @author Roberto E. Escobar
@@ -36,11 +40,17 @@ public class AttributeProvider implements IResourceProvider {
       BASE_PATH = OseeServerProperties.getOseeApplicationServerData();
    }
 
-   public boolean isValid(IResourceLocator locator) {
-      return locator != null && locator.getProtocol().equals(SUPPORTED_PROTOCOL);
+   private URI resolve(IResourceLocator locator) throws OseeCoreException {
+      StringBuilder builder = new StringBuilder(BASE_PATH + File.separator + SUPPORTED_PROTOCOL + File.separator);
+      builder.append(locator.getRawPath());
+      return new File(builder.toString()).toURI();
    }
 
-   public int delete(IResourceLocator locator) throws Exception {
+   public boolean isValid(IResourceLocator locator) {
+      return locator != null && getSupportedProtocols().contains(locator.getProtocol());
+   }
+
+   public int delete(IResourceLocator locator) throws OseeCoreException {
       int toReturn = IResourceManager.FAIL;
       File file = new File(resolve(locator));
       if (file == null || file.exists() != true) {
@@ -54,14 +64,8 @@ public class AttributeProvider implements IResourceProvider {
       return toReturn;
    }
 
-   private URI resolve(IResourceLocator locator) throws URISyntaxException {
-      StringBuilder builder = new StringBuilder(BASE_PATH + File.separator + SUPPORTED_PROTOCOL + File.separator);
-      builder.append(locator.getRawPath());
-      return new File(builder.toString()).toURI();
-   }
-
    @Override
-   public IResource acquire(IResourceLocator locator, Options options) throws Exception {
+   public IResource acquire(IResourceLocator locator, Options options) throws OseeCoreException {
       IResource toReturn = null;
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, null, options);
       toReturn = optionsProcessor.getResourceToServer();
@@ -69,7 +73,7 @@ public class AttributeProvider implements IResourceProvider {
    }
 
    @Override
-   public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws Exception {
+   public IResourceLocator save(IResourceLocator locator, IResource resource, Options options) throws OseeCoreException {
       IResourceLocator toReturn = null;
       OptionsProcessor optionsProcessor = new OptionsProcessor(resolve(locator), locator, resource, options);
       OutputStream outputStream = null;
@@ -82,13 +86,11 @@ public class AttributeProvider implements IResourceProvider {
          inputStream = resourceToStore.getContent();
          Lib.inputStreamToOutputStream(inputStream, outputStream);
          toReturn = optionsProcessor.getActualResouceLocator();
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
       } finally {
-         if (outputStream != null) {
-            outputStream.close();
-         }
-         if (inputStream != null) {
-            inputStream.close();
-         }
+         Lib.close(outputStream);
+         Lib.close(inputStream);
       }
       if (toReturn == null) {
          throw new IllegalStateException(String.format("We failed to save resource %s.", locator.getLocation()));
@@ -97,9 +99,14 @@ public class AttributeProvider implements IResourceProvider {
    }
 
    @Override
-   public boolean exists(IResourceLocator locator) throws Exception {
+   public boolean exists(IResourceLocator locator) throws OseeCoreException {
       URI uri = resolve(locator);
       File testFile = new File(uri);
       return testFile.exists();
+   }
+
+   @Override
+   public Collection<String> getSupportedProtocols() {
+      return Arrays.asList(SUPPORTED_PROTOCOL);
    }
 }

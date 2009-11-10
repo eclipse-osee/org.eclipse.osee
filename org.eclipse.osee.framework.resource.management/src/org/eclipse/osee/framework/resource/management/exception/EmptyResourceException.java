@@ -10,16 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management.exception;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
 /**
  * @author Roberto E. Escobar
  */
-public class EmptyResourceException extends Exception {
+public class EmptyResourceException extends OseeCoreException {
 
    private static final long serialVersionUID = 262834138993880676L;
-
-   public EmptyResourceException() {
-      super();
-   }
 
    public EmptyResourceException(String message, Throwable cause) {
       super(message, cause);

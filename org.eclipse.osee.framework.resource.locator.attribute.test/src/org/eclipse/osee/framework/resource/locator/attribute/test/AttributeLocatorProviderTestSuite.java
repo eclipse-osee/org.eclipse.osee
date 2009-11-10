@@ -10,14 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.locator.attribute.test;
 
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {AttributeLocatorProviderTest.class})
 /**
  * @author Roberto E. Escobar
  */
-public class AllResourceLocatorAttributeTests extends TestSuite {
+public class AttributeLocatorProviderTestSuite {
 
-   public AllResourceLocatorAttributeTests() {
-      addTestSuite(TestResourceLocatorAttribute.class);
-   }
 }

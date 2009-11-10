@@ -8,23 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.resource.management;
+package org.eclipse.osee.framework.resource.management.test.util;
 
-import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {ResourceTest.class, ResourceLocatorTest.class, ResourcesTest.class, OptionsProcessorTest.class})
 /**
  * @author Roberto E. Escobar
  */
-public class Options extends PropertyStore {
+public class ResourceUtilTestSuite {
 
-   private static final long serialVersionUID = -8556523292740896103L;
-
-   public Options() {
-      super();
-   }
-
-   public void clear() {
-      getItems().clear();
-      getArrays().clear();
-   }
 }

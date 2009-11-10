@@ -17,6 +17,7 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.IResource;
 
 /**
@@ -25,12 +26,12 @@ import org.eclipse.osee.framework.resource.management.IResource;
 public class DbResource implements IResource {
 
    //   private String name = "unknown";
-   private InputStream inputStream;
+   private final InputStream inputStream;
    private boolean isCompressed = false;
    private URI uri;
-   private String hrid;
-   private String artName;
-   private String fileTypeExtension;
+   private final String hrid;
+   private final String artName;
+   private final String fileTypeExtension;
 
    /**
     * @param binaryStream
@@ -67,7 +68,7 @@ public class DbResource implements IResource {
    }
 
    @Override
-   public InputStream getContent() throws IOException {
+   public InputStream getContent() throws OseeCoreException {
       return inputStream;
    }
 

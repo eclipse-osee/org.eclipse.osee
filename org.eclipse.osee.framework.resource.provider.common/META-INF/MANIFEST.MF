@@ -5,10 +5,12 @@ Bundle-SymbolicName: org.eclipse.osee.framework.resource.provider.common;singlet
 Bundle-Version: 0.4.0.qualifier
 Bundle-Vendor: Boeing
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.framework.jdk.core.util,
+Import-Package: org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.jdk.core.type,
+ org.eclipse.osee.framework.jdk.core.util,
+ org.eclipse.osee.framework.resource.management,
+ org.eclipse.osee.framework.resource.management.exception,
  org.osgi.framework
-Require-Bundle: org.eclipse.osee.framework.resource.management
 Bundle-Activator: org.eclipse.osee.framework.resource.provider.common.Activator
-Export-Package: org.eclipse.osee.framework.resource.provider.common,
- org.eclipse.osee.framework.resource.provider.common.resources
+Export-Package: org.eclipse.osee.framework.resource.provider.common
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

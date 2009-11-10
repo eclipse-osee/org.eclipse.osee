@@ -11,11 +11,12 @@
 package org.eclipse.osee.framework.branch.management.exchange.resource;
 
 import java.net.URI;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
-import org.eclipse.osee.framework.resource.management.ResourceLocator;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
+import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
 
 /**
  * @author Roberto E. Escobar
@@ -24,7 +25,7 @@ public class ExchangeLocatorProvider implements IResourceLocatorProvider {
    public static final String PROTOCOL = "exchange";
 
    @Override
-   public IResourceLocator generateResourceLocator(String seed, String name) throws MalformedLocatorException {
+   public IResourceLocator generateResourceLocator(String seed, String name) throws OseeCoreException {
       URI uri = null;
       try {
          uri = new URI(generatePath(name));
@@ -35,7 +36,7 @@ public class ExchangeLocatorProvider implements IResourceLocatorProvider {
    }
 
    @Override
-   public IResourceLocator getResourceLocator(String path) throws MalformedLocatorException {
+   public IResourceLocator getResourceLocator(String path) throws OseeCoreException {
       URI uri = null;
       if (isPathValid(path) != false) {
          try {
@@ -50,16 +51,21 @@ public class ExchangeLocatorProvider implements IResourceLocatorProvider {
    }
 
    @Override
+   public String getSupportedProtocol() {
+      return PROTOCOL;
+   }
+
+   @Override
    public boolean isValid(String protocol) {
-      return Strings.isValid(protocol) != false && protocol.startsWith(PROTOCOL) != false;
+      return Strings.isValid(protocol) != false && protocol.startsWith(getSupportedProtocol()) != false;
    }
 
    private boolean isPathValid(String value) {
-      return Strings.isValid(value) && value.startsWith(PROTOCOL + "://");
+      return Strings.isValid(value) && value.startsWith(getSupportedProtocol() + "://");
    }
 
    private String generatePath(String name) throws MalformedLocatorException {
-      StringBuilder builder = new StringBuilder(PROTOCOL + "://");
+      StringBuilder builder = new StringBuilder(getSupportedProtocol() + "://");
       if (Strings.isValid(name)) {
          builder.append(name);
       } else {

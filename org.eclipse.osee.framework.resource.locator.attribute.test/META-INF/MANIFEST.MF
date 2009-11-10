@@ -1,17 +1,17 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Test Plug-in
+Bundle-Name: Attribute Locator Tests
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.locator.attribute.test;singleton:=true
 Bundle-Version: 0.2.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.resource.locator.attribute.test.Activator
-Bundle-Vendor: Boeing
-Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/tests.xml
-Import-Package: junit.framework,
- org.eclipse.osee.framework.core.exception,
+Bundle-Vendor: Eclipse.org
+Fragment-Host: org.eclipse.osee.framework.resource.locator.attribute;bundle-version="0.4.0"
+Import-Package: org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.resource.locator.attribute,
  org.eclipse.osee.framework.resource.management,
  org.eclipse.osee.framework.resource.management.exception,
+ org.junit;version="4.5.0",
+ org.junit.runner;version="4.5.0",
+ org.junit.runners;version="4.5.0",
  org.osgi.framework,
  org.osgi.util.tracker
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.resource.management;
 
+import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
 
 /**
@@ -26,7 +28,7 @@ public interface IResourceLocatorManager {
     * @return a resource locator
     * @throws MalformedLocatorException
     */
-   IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws MalformedLocatorException;
+   IResourceLocator generateResourceLocator(String protocol, String seed, String name) throws OseeCoreException;
 
    /**
     * Get resource locator based on protocol and path
@@ -35,19 +37,28 @@ public interface IResourceLocatorManager {
     * @return a resource locator
     * @throws MalformedLocatorException
     */
-   IResourceLocator getResourceLocator(String path) throws MalformedLocatorException;
+   IResourceLocator getResourceLocator(String path) throws OseeCoreException;
 
    /**
     * Add resource locator provider
     * 
     * @param resourceLocatorProvider
+    * @return <b>true<b> if the locator was added
     */
-   public void addResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider);
+   boolean addResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider);
 
    /**
     * Remove resource locator provider
     * 
     * @param resourceLocatorProvider
+    * @return <b>true<b> if the locator was removed
     */
-   public void removeResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider);
+   boolean removeResourceLocatorProvider(IResourceLocatorProvider resourceLocatorProvider);
+
+   /**
+    * Supported Protocols
+    * 
+    * @return supported protocols
+    */
+   Collection<String> getProtocols();
 }

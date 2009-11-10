@@ -12,22 +12,25 @@ package org.eclipse.osee.framework.resource.locator.attribute.test;
 
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.TestCase;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.resource.locator.attribute.AttributeLocatorProvider;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
+import org.junit.Assert;
 
 /**
- * Application Server Test
+ * Test Cases for {@link AttributeLocatorProvider}
  * 
  * @author Roberto E. Escobar
  */
-public class TestResourceLocatorAttribute extends TestCase {
+public class AttributeLocatorProviderTest {
 
+   @org.junit.Test
    public void testCreateAttributeLocatorProvider() {
-      assertNotNull(new AttributeLocatorProvider());
+      Assert.assertNotNull(new AttributeLocatorProvider());
    }
 
+   @org.junit.Test
    public void testIsValid() {
       AttributeLocatorProvider provider = new AttributeLocatorProvider();
       String[] data = new String[] {"a", "", null, "attr://", "attr"};
@@ -35,7 +38,7 @@ public class TestResourceLocatorAttribute extends TestCase {
 
       for (int index = 0; index < 0; index++) {
          boolean result = provider.isValid(data[index]);
-         assertEquals(expected[index], result);
+         Assert.assertEquals(expected[index], result);
       }
    }
 
@@ -52,6 +55,7 @@ public class TestResourceLocatorAttribute extends TestCase {
       return cases;
    }
 
+   @org.junit.Test
    public void testGenerateLocator() {
       AttributeLocatorProvider provider = new AttributeLocatorProvider();
       List<TestData> cases = getTestGenerateLocatorData();
@@ -59,10 +63,12 @@ public class TestResourceLocatorAttribute extends TestCase {
          IResourceLocator locator = null;
          try {
             locator = provider.generateResourceLocator(data.getSeed(), data.getName());
-         } catch (MalformedLocatorException ex) {
-            assertEquals(data.getId(), data.getShouldException(), true);
+         } catch (OseeCoreException ex) {
+            Assert.assertTrue(ex instanceof MalformedLocatorException);
+            Assert.assertEquals(data.getId(), data.getShouldException(), true);
          }
-         assertEquals(data.getId(), data.getExpected(), locator != null ? locator.getLocation().toASCIIString() : null);
+         Assert.assertEquals(data.getId(), data.getExpected(),
+               locator != null ? locator.getLocation().toASCIIString() : null);
       }
    }
 
@@ -79,6 +85,7 @@ public class TestResourceLocatorAttribute extends TestCase {
       return cases;
    }
 
+   @org.junit.Test
    public void testAcquireResourceAttributeLocator() {
       AttributeLocatorProvider provider = new AttributeLocatorProvider();
       List<TestData> cases = getTestGetResourceLocatorData();
@@ -86,10 +93,12 @@ public class TestResourceLocatorAttribute extends TestCase {
          IResourceLocator locator = null;
          try {
             locator = provider.getResourceLocator(data.getPath());
-         } catch (MalformedLocatorException ex) {
-            assertEquals(data.getId(), data.getShouldException(), true);
+         } catch (OseeCoreException ex) {
+            Assert.assertTrue(ex instanceof MalformedLocatorException);
+            Assert.assertEquals(data.getId(), data.getShouldException(), true);
          }
-         assertEquals(data.getId(), data.getExpected(), locator != null ? locator.getLocation().toASCIIString() : null);
+         Assert.assertEquals(data.getId(), data.getExpected(),
+               locator != null ? locator.getLocation().toASCIIString() : null);
       }
    }
 

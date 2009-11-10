@@ -14,22 +14,26 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
 import java.net.URI;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorProvider;
-import org.eclipse.osee.framework.resource.management.ResourceLocator;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
+import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class AttributeLocatorProvider implements IResourceLocatorProvider {
 
+   private static final String PROTOCOL = "attr";
+
    public AttributeLocatorProvider() {
    }
 
    @Override
-   public IResourceLocator generateResourceLocator(String seed, String name) throws MalformedLocatorException {
+   public IResourceLocator generateResourceLocator(String seed, String name) throws OseeCoreException {
       URI uri = null;
       try {
          uri = new URI(generatePath(seed, name));
@@ -40,7 +44,7 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
    }
 
    @Override
-   public IResourceLocator getResourceLocator(String path) throws MalformedLocatorException {
+   public IResourceLocator getResourceLocator(String path) throws OseeCoreException {
       URI uri = null;
       if (isPathValid(path) != false) {
          try {
@@ -56,20 +60,18 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
 
    @Override
    public boolean isValid(String protocol) {
-      return isArgValid(protocol) != false && protocol.startsWith("attr") != false;
-   }
-
-   private boolean isArgValid(String value) {
-      return value != null && value.length() > 0;
+      return Strings.isValid(protocol) && protocol.startsWith(getSupportedProtocol());
    }
 
    private boolean isPathValid(String value) {
-      return isArgValid(value) && value.startsWith("attr://");
+      return Strings.isValid(value) && value.startsWith(getSupportedProtocol() + "://");
    }
 
    private String generatePath(String seed, String name) throws MalformedLocatorException, OseeDataStoreException {
-      StringBuilder builder = new StringBuilder("attr://");
-      if (isArgValid(seed) != false && isArgValid(name) != false) {
+      StringBuilder builder = new StringBuilder();
+      builder.append(getSupportedProtocol());
+      builder.append("://");
+      if (Strings.isValid(seed) && Strings.isValid(name)) {
          try {
             char[] buffer = new char[3];
             int cnt = -1;
@@ -87,6 +89,11 @@ public class AttributeLocatorProvider implements IResourceLocatorProvider {
          throw new MalformedLocatorException("Invalid arguments during locator generation.");
       }
       return builder.toString();
+   }
+
+   @Override
+   public String getSupportedProtocol() {
+      return PROTOCOL;
    }
 
 }
