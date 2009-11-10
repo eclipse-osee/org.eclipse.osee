@@ -41,14 +41,10 @@ public class SkynetServiceContributionItem extends OseeContributionItem implemen
    private static Runnable threadRunnable = new Runnable() {
       @Override
       public void run() {
-         int i = 0;
          do {
-            int j = 0;
-            i++;
             boolean status = RemoteEventManager.isConnected();
             for (SkynetServiceContributionItem icon : icons) {
                icon.updateStatus(status);
-               System.out.println(String.format("Refresh[%s][%s]", i, ++j));
             }
             try {
                Thread.sleep(FOUR_MINUTES);
