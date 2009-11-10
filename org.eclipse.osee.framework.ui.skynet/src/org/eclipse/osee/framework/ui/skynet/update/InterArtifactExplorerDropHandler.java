@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -91,7 +92,7 @@ public class InterArtifactExplorerDropHandler {
          }
          if (prompt) {
             boolean userConfirmed =
-                  confirmUsersRequestAndProcess(destinationParentArtifact, sourceBranch, transferObjects);
+                  confirmUsersRequestAndProcess(transferObjects);
             if (!userConfirmed) {
                return;
             }
@@ -103,13 +104,13 @@ public class InterArtifactExplorerDropHandler {
 
    }
 
-   private boolean confirmUsersRequestAndProcess(Artifact destinationArtifact, Branch sourceBranch, List<TransferObject> transferObjects) throws OseeCoreException {
+   private boolean confirmUsersRequestAndProcess(List<TransferObject> transferObjects) throws OseeCoreException {
       ReflectArtifactStatusDialog updateArtifactStatusDialog = new ReflectArtifactStatusDialog(transferObjects);
       return updateArtifactStatusDialog.open() == Window.OK;
    }
 
    private void addArtifactsToNewTransaction(Artifact destinationArtifact, List<TransferObject> transferObjects, Branch sourceBranch) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(destinationArtifact.getBranch());
+      SkynetTransaction transaction = new SkynetTransaction(destinationArtifact.getBranch(), "Introduced " + transferObjects.size() + " artifact(s)");
       ArrayList<Artifact> reloadArtifacts = new ArrayList<Artifact>();
 
       ArrayList<Integer> sourceArtIds = new ArrayList<Integer>(transferObjects.size());
