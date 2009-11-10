@@ -114,9 +114,9 @@ public class ArtifactSearchPage extends DialogPage implements ISearchPage, IRepl
 
          branchSelect = new XBranchSelectWidget("Branch To Search");
          branchSelect.setDisplayLabel(false);
-         branchSelect.setBranch(BranchManager.getLastBranch());
+         branchSelect.setSelection(BranchManager.getLastBranch());
          branchSelect.createWidgets(mainComposite, 2);
-         
+
          addFilterControls(mainComposite);
          addTableControls(mainComposite);
          addSearchScope(mainComposite);

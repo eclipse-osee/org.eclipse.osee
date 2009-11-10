@@ -14,6 +14,7 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.junit.AfterClass;
@@ -34,6 +35,7 @@ public class CoverageItemPersistTest {
    @BeforeClass
    @AfterClass
    public static void testCleanup() throws OseeCoreException {
+      CoverageUtil.setBranch(BranchManager.getCommonBranch());
       CoverageTestUtil.cleanupCoverageTests();
    }
 

@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.editor;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
@@ -21,8 +22,10 @@ import org.eclipse.ui.IPersistableElement;
 public class CoverageEditorInput implements IEditorInput {
 
    private final CoveragePackageBase coveragePackageBase;
+   private final Artifact coveragePackageArtifact;
 
-   public CoverageEditorInput(CoveragePackageBase coveragePackageBase) {
+   public CoverageEditorInput(Artifact coveragePackageArtifact, CoveragePackageBase coveragePackageBase) {
+      this.coveragePackageArtifact = coveragePackageArtifact;
       this.coveragePackageBase = coveragePackageBase;
    }
 
@@ -55,6 +58,10 @@ public class CoverageEditorInput implements IEditorInput {
 
    public CoveragePackageBase getCoveragePackageBase() {
       return coveragePackageBase;
+   }
+
+   public Artifact getCoveragePackageArtifact() {
+      return coveragePackageArtifact;
    }
 
 }

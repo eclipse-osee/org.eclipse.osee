@@ -280,7 +280,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
          branchSelect = new XBranchSelectWidget("");
          branchSelect.setDisplayLabel(false);
-         branchSelect.setBranch(branch);
+         branchSelect.setSelection(branch);
          branchSelect.createWidgets(parent, 1);
 
          branchSelect.addListener(new Listener() {

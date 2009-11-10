@@ -30,12 +30,14 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoveragePackageImportManager;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.NotSaveable;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -243,8 +245,20 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
       @Override
       public void run() {
-         handleImportSelected();
-         loadImportViewer(true);
+         try {
+            Artifact artifact = ((CoverageEditorInput) coverageEditor.getEditorInput()).getCoveragePackageArtifact();
+            if (artifact != null) {
+               CoverageUtil.setBranch(artifact.getBranch());
+            } else {
+               if (!CoverageUtil.getBranchFromUser(true)) {
+                  return;
+               }
+            }
+            handleImportSelected();
+            loadImportViewer(true);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
 
       public org.eclipse.jface.resource.ImageDescriptor getImageDescriptor() {

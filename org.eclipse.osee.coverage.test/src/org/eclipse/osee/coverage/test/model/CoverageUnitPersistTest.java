@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.junit.AfterClass;
@@ -51,6 +52,7 @@ public class CoverageUnitPersistTest {
    @BeforeClass
    @AfterClass
    public static void testCleanup() throws OseeCoreException {
+      CoverageUtil.setBranch(BranchManager.getCommonBranch());
       CoverageTestUtil.cleanupCoverageTests();
    }
 

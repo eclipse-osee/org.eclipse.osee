@@ -74,7 +74,7 @@ public class ArtifactSelectionDialog extends SelectionStatusDialog {
    }
 
    public void setBranch(Branch branch) {
-      branchSelect.setBranch(branch);
+      branchSelect.setSelection(branch);
    }
 
    public Branch getBranch() {

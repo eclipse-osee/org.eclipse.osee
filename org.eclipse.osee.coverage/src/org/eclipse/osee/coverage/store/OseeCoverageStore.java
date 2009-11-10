@@ -18,7 +18,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -71,8 +70,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
          }
          if (artifact == null && create) {
             artifact =
-                  ArtifactTypeManager.addArtifact(artifactTypeName, BranchManager.getCommonBranch(),
-                        coverage.getGuid(), null);
+                  ArtifactTypeManager.addArtifact(artifactTypeName, CoverageUtil.getBranch(), coverage.getGuid(), null);
          }
       }
       return artifact;
@@ -87,7 +85,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
    @Override
    public Result save() throws OseeCoreException {
       try {
-         SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Coverage Save");
+         SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Save");
          save(transaction);
          transaction.execute();
       } catch (OseeCoreException ex) {
@@ -99,7 +97,7 @@ public abstract class OseeCoverageStore extends CoverageStore {
 
    @Override
    public void delete(boolean purge) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "Coverage Save");
+      SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Coverage Save");
       delete(transaction, purge);
       transaction.execute();
    }

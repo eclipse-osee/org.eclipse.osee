@@ -94,6 +94,10 @@ public class XBranchSelectWidget extends XWidget implements Listener {
 
    @Override
    public Branch getData() {
+      return getSelection();
+   }
+
+   public Branch getSelection() {
       return selectComposite.getSelectedBranch();
    }
 
@@ -170,10 +174,6 @@ public class XBranchSelectWidget extends XWidget implements Listener {
       notifyListeners(event);
    }
 
-   public void setBranch(Branch branch) {
-      defaultBranch = branch;
-   }
-
    public void addListener(Listener listener) {
       listeners.add(listener);
    }
@@ -190,7 +190,9 @@ public class XBranchSelectWidget extends XWidget implements Listener {
 
    public void setSelection(Branch branch) {
       defaultBranch = branch;
-      selectComposite.setSelected(branch);
+      if (selectComposite != null) {
+         selectComposite.setSelected(branch);
+      }
    }
 
    public BranchSelectComposite getSelectComposite() {

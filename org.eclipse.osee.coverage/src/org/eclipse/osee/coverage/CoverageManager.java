@@ -28,7 +28,7 @@ public class CoverageManager {
 
    public static void importCoverage(ICoverageImporter coverageImporter) throws OseeCoreException {
       CoverageImport coverageImport = coverageImporter.run();
-      CoverageEditor.open(new CoverageEditorInput(coverageImport));
+      CoverageEditor.open(new CoverageEditorInput(null, coverageImport));
    }
 
    public static Collection<AbstractCoverageBlam> getCoverageBlams() {

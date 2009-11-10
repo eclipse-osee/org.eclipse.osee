@@ -8,11 +8,11 @@ package org.eclipse.osee.coverage.store;
 import java.util.Collection;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
 import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -107,8 +107,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
    }
 
    public static Collection<Artifact> getCoveragePackageArtifacts() throws OseeCoreException {
-      return ArtifactQuery.getArtifactListFromType(OseeCoveragePackageStore.ARTIFACT_NAME,
-            BranchManager.getCommonBranch());
+      return ArtifactQuery.getArtifactListFromType(OseeCoveragePackageStore.ARTIFACT_NAME, CoverageUtil.getBranch());
    }
 
 }

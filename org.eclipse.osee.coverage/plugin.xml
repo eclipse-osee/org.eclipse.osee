@@ -55,13 +55,13 @@
             id="org.eclipse.osee.coverage.navigate.CoverageNavigateView"
             name="Coverage Navigator"/>
    </extension>
-      <extension
+   <extension
             point="org.eclipse.osee.framework.ui.skynet.XWidgetProvider">
          <XWidgetProvider
                classname="org.eclipse.osee.coverage.util.widget.CoverageXWidgetFactory">
          </XWidgetProvider>
-      </extension>
-      <extension
+   </extension>
+   <extension
             id="OseeTypes_Coverage"
             name="OseeTypes_Coverage"
             point="org.eclipse.osee.framework.skynet.core.OseeTypes">
@@ -69,4 +69,46 @@
                resource="support/OseeTypes_Coverage.osee">
          </OseeTypes>
       </extension>
+      <extension
+            point="org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider">
+         <ArtifactImageProvider
+               class="org.eclipse.osee.coverage.store.CoverageArtifactImageProvider">
+         </ArtifactImageProvider>
+      </extension>
+         <extension
+         point="org.eclipse.ui.commandImages">
+      <image
+            commandId="org.eclipse.osee.coverage.editor.command"
+            icon="images/coveragePackage.gif">
+      </image>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            id="org.eclipse.osee.coverage.editor.command"
+            name="Coverage Editor">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.ui.handlers">
+      <handler
+            class="org.eclipse.osee.coverage.editor.CoverageEditorHandler"
+            commandId="org.eclipse.osee.coverage.editor.command">
+         <enabledWhen>
+            <with
+                  variable="selection">
+               <count
+                     value="+">
+               </count>
+            </with>
+         </enabledWhen>
+      </handler>
+   </extension>
+   <extension
+         point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
+      <Renderer
+            classname="org.eclipse.osee.coverage.editor.CoverageRenderer">
+      </Renderer>
+   </extension>
+      
 </plugin>

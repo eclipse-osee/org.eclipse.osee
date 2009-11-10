@@ -13,10 +13,10 @@ import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
@@ -40,19 +40,19 @@ public class NewCoveragePackageAction extends Action {
 
    @Override
    public void run() {
-      EntryDialog dialog = new EntryDialog(getText(), "Enter Coverage Package Name");
-      if (dialog.open() == 0) {
-         try {
+      try {
+         if (!CoverageUtil.getBranchFromUser(false)) return;
+         EntryDialog dialog = new EntryDialog(getText(), "Enter Coverage Package Name");
+         if (dialog.open() == 0) {
             CoveragePackage coveragePackage = new CoveragePackage(dialog.getEntry());
-            SkynetTransaction transaction =
-                  new SkynetTransaction(BranchManager.getCommonBranch(), "Add Coverage Package");
+            SkynetTransaction transaction = new SkynetTransaction(CoverageUtil.getBranch(), "Add Coverage Package");
             OseeCoverageStore.get(coveragePackage).save(transaction);
             transaction.execute();
-            CoverageEditor.open(new CoverageEditorInput(coveragePackage));
-         } catch (OseeCoreException ex) {
-            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
+            CoverageEditor.open(new CoverageEditorInput(OseeCoverageStore.get(coveragePackage).getArtifact(false),
+                  coveragePackage));
          }
-
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 }
