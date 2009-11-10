@@ -66,7 +66,7 @@ public class LoadDeletedRelationTest {
       int newGammaId = loaded.getGammaId();
       assertEquals("Deleted relation was not re-used by addRelation; see L3778", 1, linkCount);
       assertFalse(loaded.isDeleted());
-      assertEquals("Gamma ID was changed", oldGammaId, newGammaId);
+      assertEquals("Gamma ID was changed;", oldGammaId, newGammaId);
    }
 
    @After
