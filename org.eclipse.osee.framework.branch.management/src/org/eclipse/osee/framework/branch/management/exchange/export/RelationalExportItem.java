@@ -59,8 +59,9 @@ public class RelationalExportItem extends AbstractDbExportItem {
          tempFolder.mkdirs();
       }
 
-      IResourceLocator locator = InternalBranchActivator.getResourceLocatorManager().getResourceLocator(uriTarget);
-      IResource resource = InternalBranchActivator.getResourceManager().acquire(locator, new Options());
+      IResourceLocator locator =
+            InternalBranchActivator.getInstance().getResourceLocatorManager().getResourceLocator(uriTarget);
+      IResource resource = InternalBranchActivator.getInstance().getResourceManager().acquire(locator, new Options());
 
       File target = new File(tempFolder, locator.getRawPath());
       if (target.getParentFile() != null) {

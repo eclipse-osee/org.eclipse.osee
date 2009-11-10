@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.branch.management.internal;
+package org.eclipse.osee.framework.branch.management.creation;
 
 import org.eclipse.osee.framework.branch.management.Branch;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
@@ -25,8 +25,7 @@ public class BranchCreation implements IBranchCreation {
       IOperation operation =
             new CreateBranchOperation(branch, authorId, creationComment, populateBaseTxFromAddressingQueryId,
                   destinationBranchId);
-      Operations.executeWork(operation, new LogProgressMonitor(), -1);
-      Operations.checkForErrorStatus(operation.getStatus());
+      Operations.executeWorkAndCheckStatus(operation, new LogProgressMonitor(), -1);
       return branch.getBranchId();
    }
 }

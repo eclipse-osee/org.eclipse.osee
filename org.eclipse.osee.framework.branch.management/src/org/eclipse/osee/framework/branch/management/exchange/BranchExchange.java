@@ -26,7 +26,7 @@ public class BranchExchange implements IBranchExchange {
    public IResourceLocator exportBranch(String exportName, Options options, int... branchIds) throws Exception {
       ExportController controller = new ExportController(exportName, options, branchIds);
       controller.execute();
-      return InternalBranchActivator.getResourceLocatorManager().generateResourceLocator(
+      return InternalBranchActivator.getInstance().getResourceLocatorManager().generateResourceLocator(
             ExchangeLocatorProvider.PROTOCOL, "", controller.getExchangeFileName());
    }
 
@@ -58,7 +58,7 @@ public class BranchExchange implements IBranchExchange {
    public IResourceLocator checkIntegrity(IResourceLocator fileToCheck) throws Exception {
       ExchangeIntegrity exchangeIntegrityCheck = new ExchangeIntegrity(fileToCheck);
       exchangeIntegrityCheck.execute();
-      return InternalBranchActivator.getResourceLocatorManager().generateResourceLocator(
+      return InternalBranchActivator.getInstance().getResourceLocatorManager().generateResourceLocator(
             ExchangeLocatorProvider.PROTOCOL, "", exchangeIntegrityCheck.getExchangeCheckFileName());
    }
 }

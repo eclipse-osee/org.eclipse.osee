@@ -330,6 +330,7 @@ final class ImportController {
          super();
       }
 
+      @SuppressWarnings("unchecked")
       @Override
       protected void handleTxWork(OseeConnection connection) throws OseeCoreException {
          if (manifestHandler != null && translator != null) {

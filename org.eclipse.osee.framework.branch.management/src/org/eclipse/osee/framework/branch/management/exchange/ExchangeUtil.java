@@ -56,7 +56,7 @@ public class ExchangeUtil {
    public static Pair<Boolean, File> getTempExchangeFile(IResourceLocator locator) throws Exception {
       File importSource = null;
       boolean wasZipExtractionRequired = false;
-      IResource resource = InternalBranchActivator.getResourceManager().acquire(locator, new Options());
+      IResource resource = InternalBranchActivator.getInstance().getResourceManager().acquire(locator, new Options());
       File source = new File(resource.getLocation());
       if (source.isFile()) {
          wasZipExtractionRequired = true;
