@@ -22,7 +22,12 @@ public enum CoreArtifacts implements IOseeType {
    SoftwareRequirementDrawing("Software Requirement Drawing", "ABNClhgUfwj6A3EAArQA"),
    SubsystemRequirement("Subsystem Requirement", "AAMFDiN9KiAkhuLqOhQA"),
    CodeUnit("Code Unit", "AAMFDkEh216dzK1mTZgA"),
-   TestUnit("Test Unit", "ABM2d6uxUw66aSdo0LwA");
+   TestUnit("Test Unit", "ABM2d6uxUw66aSdo0LwA"),
+   TestPlanElement("Test Plan Element", "ATi_kUpvPBiW2upYC_wA"),
+   TestProcedure("Test Procedure", "AAMFDjsjiGhoWpqM4PQA"),
+   AbstractTestResult("Abstract Test Result", "ATkaanWmHH3PkhGNVjwA"),
+   TestResultWML("Test Result WML", "ATk6NKFFmD_zg1b_eaQA"),
+   TestResultNative("Test Result Native", "ATkaanWmHH3PkhGNVjwA");
 
    private final String name;
    private final String guid;
