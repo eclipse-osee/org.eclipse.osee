@@ -62,6 +62,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
    private void consolidateAddressing() {
       checkForMultipleVersionsInOneTransaction();
+      checkForIdenticalAddressingInDifferentTransactions();
       checkForMultipleCurrents();
 
       if (issueDetected()) {
@@ -77,6 +78,17 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
                logIssue("sibling of troubled address", address);
             }
          }
+      }
+   }
+
+   private void checkForIdenticalAddressingInDifferentTransactions() {
+      Address previousAddress = null;
+
+      for (Address address : addresses) {
+         if (address.hasSameGamma(previousAddress) && address.hasSameModType(previousAddress)) {
+            previousAddress.purge = true;
+         }
+         previousAddress = address;
       }
    }
 
@@ -147,6 +159,10 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
 
       public boolean isSameTransaction(Address other) {
          return other != null && transactionId == other.transactionId;
+      }
+
+      public boolean hasSameGamma(Address other) {
+         return other != null && gammaId == other.gammaId;
       }
 
       public boolean hasSameModType(Address other) {
