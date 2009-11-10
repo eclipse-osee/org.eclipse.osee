@@ -12,7 +12,6 @@ plugin@org.eclipse.osee.framework.manager.servlet=SVN,trunk,https://dev.eclipse.
 plugin@org.eclipse.osee.framework.resource.locator.attribute=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.resource.locator.attribute
 plugin@org.eclipse.osee.framework.resource.management=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.resource.management
 plugin@org.eclipse.osee.framework.resource.provider.attribute=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.resource.provider.attribute
-plugin@org.eclipse.osee.framework.resource.provider.common=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.resource.provider.common
 plugin@org.eclipse.osee.framework.search.engine=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.search.engine
 plugin@org.eclipse.osee.framework.server.admin=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.server.admin
 
