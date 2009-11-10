@@ -47,6 +47,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
    private final String[] columnHeaders =
          {"Requirement", "Subsystem", "Imported Paragraph Number", "Current Verification Level", "Changed"};
 
+   @SuppressWarnings("unused")
    private Collection<Artifact> bulkRequirements;
 
    private void loadFields(VariableMap variableMap) throws OseeCoreException {
@@ -55,7 +56,6 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       bulkRequirements =
             RelationManager.getRelatedArtifacts(subsystemRequirements, 1,
                   CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL);
-      bulkRequirements.size(); // protect bulk loading of requirements from dead code elimination
       report = new StringBuilder(AHTML.beginMultiColumnTable(100, 1));
       transaction = new SkynetTransaction(branch, "Set Verification Level for Subsystem Requirements");
    }
