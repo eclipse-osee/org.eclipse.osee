@@ -15,9 +15,11 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.eclipse.osee.framework.core.data.Function;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.manager.servlet.data.HttpBranchCommitInfo;
 import org.eclipse.osee.framework.manager.servlet.data.HttpBranchCreationInfo;
 
 /**
@@ -30,19 +32,34 @@ public class BranchManagerServlet extends OseeHttpServlet {
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
       try {
+         Function function;
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/plain");
-         HttpBranchCreationInfo info = new HttpBranchCreationInfo(req);
-         int branchId = -1;
-         branchId =
-               MasterServletActivator.getInstance().getBranchCreation().createBranch(info.getBranch(),
-                     info.getAuthorId(), info.getCreationComment(), info.getPopulateBaseTxFromAddressingQueryId(),
-                     info.getDestinationBranchId());
-         if (branchId == -1) {
-            resp.getWriter().write("Unknown Error during branch creation.");
-         } else {
-            resp.getWriter().write(Integer.toString(branchId));
+
+         function = Function.fromString(req.getParameter("function"));
+         switch (function) {
+            case BRANCHCOMMIT:
+               HttpBranchCommitInfo commitInfo = new HttpBranchCommitInfo(req);
+               MasterServletActivator.getInstance().getBranchCommit().commitBranch(null, commitInfo.getUser(),
+                     commitInfo.getSourceBranch(), commitInfo.getDestinationBranch(),
+                     commitInfo.isArchiveSourceBranch());
+               break;
+            case CHANGEREPORT:
+               break;
+            case CREATEFULLBRANCH:
+               HttpBranchCreationInfo info = new HttpBranchCreationInfo(req);
+               int branchId = -1;
+               branchId =
+                     MasterServletActivator.getInstance().getBranchCreation().createBranch(info.getBranch(),
+                           info.getAuthorId(), info.getCreationComment(),
+                           info.getPopulateBaseTxFromAddressingQueryId(), info.getDestinationBranchId());
+               if (branchId == -1) {
+                  resp.getWriter().write("Unknown Error during branch creation.");
+               } else {
+                  resp.getWriter().write(Integer.toString(branchId));
+               }
          }
+
       } catch (Exception ex) {
          OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format(
                "Failed to respond to a branch servlet request [%s]", req.toString()), ex);

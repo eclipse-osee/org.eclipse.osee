@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
@@ -41,6 +42,7 @@ public class MasterServletActivator implements BundleActivator {
       RESOURCE_MANAGER,
       BRANCH_EXCHANGE,
       BRANCH_CREATION,
+      BRANCH_COMMIT,
       SEARCH_ENGINE,
       SEARCH_ENGINE_TAGGER,
       AUTHENTICATION_SERVICE;
@@ -74,6 +76,7 @@ public class MasterServletActivator implements BundleActivator {
       createHttpServiceTracker(context, ArtifactFileServlet.class, "index");
 
       createServiceTracker(context, IBranchCreation.class, TrackerId.BRANCH_CREATION);
+      createServiceTracker(context, IBranchCommitService.class, TrackerId.BRANCH_COMMIT);
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
 
       createHttpServiceTracker(context, BranchManagerServlet.class, OseeServerContext.BRANCH_CREATION_CONTEXT);
@@ -122,6 +125,10 @@ public class MasterServletActivator implements BundleActivator {
 
    public IBranchCreation getBranchCreation() {
       return getTracker(TrackerId.BRANCH_CREATION, IBranchCreation.class);
+   }
+
+   public IBranchCommitService getBranchCommit() {
+      return getTracker(TrackerId.BRANCH_COMMIT, IBranchCommitService.class);
    }
 
    public IBranchExchange getBranchExchange() {
