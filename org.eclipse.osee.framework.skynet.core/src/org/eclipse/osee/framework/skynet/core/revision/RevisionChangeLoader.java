@@ -39,9 +39,9 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  * 
  * @author Jeff C. Phillips
  */
-public final class RevisionChangeHandler {
+public final class RevisionChangeLoader {
 
-   protected RevisionChangeHandler() {
+   protected RevisionChangeLoader() {
       super();
    }
 

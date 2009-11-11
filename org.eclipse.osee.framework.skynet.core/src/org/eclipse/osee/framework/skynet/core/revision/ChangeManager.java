@@ -39,7 +39,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  */
 public class ChangeManager {
 
-   private final static RevisionChangeHandler revsionChangeHandler = new RevisionChangeHandler();
+   private final static RevisionChangeLoader revsionChangeLoader = new RevisionChangeLoader();
 
    /**
     * Acquires changes for a particular artifact
@@ -50,7 +50,7 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerArtifact(Artifact artifact, IProgressMonitor monitor) throws OseeCoreException {
-      return revsionChangeHandler.getChangesPerArtifact(artifact, monitor);
+      return revsionChangeLoader.getChangesPerArtifact(artifact, monitor);
    }
 
    /**
@@ -62,7 +62,7 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerTransaction(TransactionRecord transactionId, IProgressMonitor monitor) throws OseeCoreException {
-      return new ChangeHandler().getChanges(null, transactionId, monitor);
+      return new ChangeReportDataLoader().getChanges(null, transactionId, monitor);
    }
 
    /**
@@ -74,7 +74,7 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerBranch(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
-      return new ChangeHandler().getChanges(sourceBranch, null, monitor);
+      return new ChangeReportDataLoader().getChanges(sourceBranch, null, monitor);
    }
 
    /**

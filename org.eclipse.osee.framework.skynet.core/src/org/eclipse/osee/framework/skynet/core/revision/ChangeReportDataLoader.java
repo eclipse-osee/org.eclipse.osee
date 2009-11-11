@@ -49,7 +49,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 /**
  * @author Jeff C. Phillips
  */
-public class ChangeHandler {
+public class ChangeReportDataLoader {
 
    public Collection<Change> getChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor) throws OseeCoreException {
       boolean isHistorical = sourceBranch == null;
