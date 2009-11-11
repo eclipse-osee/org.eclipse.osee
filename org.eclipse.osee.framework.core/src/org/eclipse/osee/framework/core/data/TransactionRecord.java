@@ -8,12 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.transaction;
+package org.eclipse.osee.framework.core.data;
 
 import java.util.Date;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Jeff C. Phillips

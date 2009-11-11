@@ -21,18 +21,18 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.ITransactionsDeletedEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -89,7 +89,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
                      ChangeView changeView =
                            (ChangeView) page.showView(
                                  VIEW_ID,
-                                 String.valueOf(branch != null ? branch.getBranchId() : transactionId.getId()),
+                                 String.valueOf(branch != null ? branch.getId() : transactionId.getId()),
                                  IWorkbenchPage.VIEW_ACTIVATE);
 
                      changeView.explore(branch, transactionId, loadChangeReport);
@@ -186,7 +186,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       super.saveState(memento);
       memento = memento.createChild(INPUT);
       if (branch != null) {
-         memento.putInteger(BRANCH_ID, branch.getBranchId());
+         memento.putInteger(BRANCH_ID, branch.getId());
       }
       if (transactionId != null) {
          memento.putInteger(TRANSACTION_NUMBER, transactionId.getId());
@@ -227,7 +227,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
-      if (branch == null || branchId != branch.getBranchId()) {
+      if (branch == null || branchId != branch.getId()) {
          return;
       }
 

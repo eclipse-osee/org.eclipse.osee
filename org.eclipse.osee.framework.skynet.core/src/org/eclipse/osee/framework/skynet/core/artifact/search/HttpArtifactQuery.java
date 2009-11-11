@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -38,7 +39,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.CharBackedInputStream;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.ISearchConfirmer;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.MatchLocation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactXmlQueryResultParser.XmlArtifactSearchResult;
@@ -77,7 +77,7 @@ final class HttpArtifactQuery {
       CharBackedInputStream backedInputStream = new CharBackedInputStream();
 
       PropertyStore propertyStore = new PropertyStore(sessionId);
-      propertyStore.put("branchId", branch.getBranchId());
+      propertyStore.put("branchId", branch.getId());
       propertyStore.put("query", queryString);
       propertyStore.put("include deleted", includeDeleted);
       propertyStore.put("match word order", matchWordOrder);

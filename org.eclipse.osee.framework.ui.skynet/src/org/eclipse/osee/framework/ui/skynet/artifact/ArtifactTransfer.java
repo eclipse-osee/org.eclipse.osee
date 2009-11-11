@@ -191,6 +191,6 @@ public class ArtifactTransfer extends ByteArrayTransfer {
     */
    private void writeArtifact(DataOutputStream dataOut, Artifact artifact) throws IOException {
       dataOut.writeInt(artifact.getArtId());
-      dataOut.writeInt(artifact.getBranch().getBranchId());
+      dataOut.writeInt(artifact.getBranch().getId());
    }
 }

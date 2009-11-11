@@ -27,6 +27,8 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -34,7 +36,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
@@ -46,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventLi
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.AbstractSelectionEnabledHandler;
@@ -129,7 +129,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
                      IViewPart viewPart =
                            page.showView(
                                  MergeView.VIEW_ID,
-                                 String.valueOf(sourceBranch != null ? sourceBranch.getBranchId() * 100000 + destBranch.getBranchId() : commitTrans.getId()),
+                                 String.valueOf(sourceBranch != null ? sourceBranch.getId() * 100000 + destBranch.getId() : commitTrans.getId()),
                                  IWorkbenchPage.VIEW_ACTIVATE);
                      if (viewPart instanceof MergeView) {
                         MergeView mergeView = (MergeView) viewPart;
@@ -644,8 +644,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
       super.saveState(memento);
       memento = memento.createChild(INPUT);
       if (sourceBranch != null) {
-         memento.putInteger(SOURCE_BRANCH_ID, sourceBranch.getBranchId());
-         memento.putInteger(DEST_BRANCH_ID, destBranch.getBranchId());
+         memento.putInteger(SOURCE_BRANCH_ID, sourceBranch.getId());
+         memento.putInteger(DEST_BRANCH_ID, destBranch.getId());
          memento.putInteger(TRANSACTION_NUMBER, transactionId.getId());
       } else if (commitTrans != null) {
          memento.putInteger(COMMIT_NUMBER, commitTrans.getId());
@@ -888,7 +888,7 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, int branchId) {
-      if (sourceBranch != null && destBranch != null && (sourceBranch.getBranchId() == branchId || destBranch.getBranchId() == branchId)) {
+      if (sourceBranch != null && destBranch != null && (sourceBranch.getId() == branchId || destBranch.getId() == branchId)) {
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {
@@ -907,8 +907,8 @@ public class MergeView extends ViewPart implements IActionable, IBranchEventList
    @Override
    public void handleFrameworkTransactionEvent(final Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
       try {
-         if (sourceBranch == null || destBranch == null || sourceBranch.getBranchId() != transData.getBranchId() && destBranch.getBranchId() != transData.getBranchId() && ConflictManagerInternal.getMergeBranchId(
-               sourceBranch.getBranchId(), destBranch.getBranchId()) != transData.getBranchId()) {
+         if (sourceBranch == null || destBranch == null || sourceBranch.getId() != transData.getId() && destBranch.getId() != transData.getId() && ConflictManagerInternal.getMergeBranchId(
+               sourceBranch.getId(), destBranch.getId()) != transData.getId()) {
             return;
          }
       } catch (OseeCoreException ex) {

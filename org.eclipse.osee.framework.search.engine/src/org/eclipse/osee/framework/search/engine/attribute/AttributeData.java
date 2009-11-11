@@ -44,7 +44,7 @@ public class AttributeData implements IAttributeLocator {
       return artId;
    }
 
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 
@@ -82,7 +82,7 @@ public class AttributeData implements IAttributeLocator {
 
    @Override
    public String toString() {
-      return String.format("artId:[%s] branchId:[%d] gammaId:[%s] uri:[%s] taggerId:[%s]", getArtId(), getBranchId(),
+      return String.format("artId:[%s] branchId:[%d] gammaId:[%s] uri:[%s] taggerId:[%s]", getArtId(), getId(),
             getGammaId(), getUri(), getTaggerId());
    }
 

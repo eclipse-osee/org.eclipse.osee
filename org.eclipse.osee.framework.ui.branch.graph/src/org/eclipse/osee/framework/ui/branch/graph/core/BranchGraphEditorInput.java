@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.ui.branch.graph.core;
 
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 import org.eclipse.ui.PlatformUI;
@@ -24,7 +24,7 @@ import org.eclipse.ui.PlatformUI;
  */
 public class BranchGraphEditorInput implements IEditorInput {
 
-   private Branch branch;
+   private final Branch branch;
    private TransactionRecord transactionId;
 
    public BranchGraphEditorInput(Branch branch) {
@@ -67,6 +67,7 @@ public class BranchGraphEditorInput implements IEditorInput {
       return branch;
    }
 
+   @Override
    public boolean equals(Object obj) {
       if (obj instanceof BranchGraphEditorInput) {
          BranchGraphEditorInput compareTo = (BranchGraphEditorInput) obj;

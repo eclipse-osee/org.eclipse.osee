@@ -34,7 +34,6 @@ import org.apache.commons.net.telnet.TerminalTypeOptionHandler;
 import org.eclipse.osee.framework.jdk.core.util.io.InputBufferThread;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
-import sun.nio.cs.US_ASCII;
 
 /**
  * Created on Aug 15, 2005
@@ -42,13 +41,12 @@ import sun.nio.cs.US_ASCII;
 public class TelnetShell implements TelnetNotificationHandler {
 
    private static final int MAX_RESPONSE_TIME = 10000;
-   private static final byte[] NEWLINE = "\n".getBytes(new US_ASCII());
    public final static class Piper extends Thread {
       private final InputStream inStream;
       private final OutputStream outStream;
 
       public final ByteBuffer buffer = ByteBuffer.allocateDirect(1024);
-      private boolean done = false;
+      private final boolean done = false;
 
       public Piper(InputStream in, OutputStream out) {
          super("Stream Piper");
@@ -74,9 +72,9 @@ public class TelnetShell implements TelnetNotificationHandler {
       }
    }
 
-   private TelnetClient telnet;
-   private InputStream in;
-   private OutputStream out;
+   private final TelnetClient telnet;
+   private final InputStream in;
+   private final OutputStream out;
    private InputBufferThread inputBuffer;
    private String prompt = "$ ";
    private int currentOutput = 0;
@@ -114,16 +112,16 @@ public class TelnetShell implements TelnetNotificationHandler {
       }
 
       /*
-      try {
-         if (!telnet.sendAYT(5000)) {
-            throw new SocketException("server appears to be in use");
-         }
-      } catch (IllegalArgumentException ex) {
-         ex.printStackTrace();
-      } catch (InterruptedException ex) {
-         ex.printStackTrace();
-      }
-      */
+       * try {
+       * if (!telnet.sendAYT(5000)) {
+       * throw new SocketException("server appears to be in use");
+       * }
+       * } catch (IllegalArgumentException ex) {
+       * ex.printStackTrace();
+       * } catch (InterruptedException ex) {
+       * ex.printStackTrace();
+       * }
+       */
       //printOptionStates();
       in = telnet.getInputStream();
       out = telnet.getOutputStream();
@@ -153,7 +151,7 @@ public class TelnetShell implements TelnetNotificationHandler {
             }
 
          }
-         out.write(NEWLINE);
+         out.write(getNewline());
          out.flush();
       } catch (UnsupportedEncodingException e) {
          e.printStackTrace();
@@ -177,7 +175,7 @@ public class TelnetShell implements TelnetNotificationHandler {
          }
 
       }
-      out.write(NEWLINE);
+      out.write(getNewline());
       out.flush();
       Thread.sleep(timeout);
       return inputBuffer.getBuffer();
@@ -342,5 +340,9 @@ public class TelnetShell implements TelnetNotificationHandler {
             }
          }
       }
+   }
+
+   private byte[] getNewline() throws UnsupportedEncodingException {
+      return "\n".getBytes("US-ASCII");
    }
 }

@@ -67,11 +67,11 @@ public class CompareOseeTypeCacheOperation extends AbstractOperation {
 
    private OseeTypeCache createEmptyCache() {
       IOseeTypeFactory factory = new OseeTypeFactory();
-      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(factory, new DatabaseOseeEnumTypeAccessor());
-      AttributeTypeCache attrCache = new AttributeTypeCache(factory, new DatabaseAttributeTypeAccessor(enumCache));
+      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new DatabaseOseeEnumTypeAccessor(factory));
+      AttributeTypeCache attrCache = new AttributeTypeCache(new DatabaseAttributeTypeAccessor(factory, enumCache));
 
-      ArtifactTypeCache artCache = new ArtifactTypeCache(factory, new DatabaseArtifactTypeAccessor(attrCache));
-      RelationTypeCache relCache = new RelationTypeCache(factory, new DatabaseRelationTypeAccessor(artCache));
+      ArtifactTypeCache artCache = new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(factory, attrCache));
+      RelationTypeCache relCache = new RelationTypeCache(new DatabaseRelationTypeAccessor(factory, artCache));
 
       OseeTypeCache storeCache = new OseeTypeCache(factory, artCache, attrCache, relCache, enumCache);
       return storeCache;

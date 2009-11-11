@@ -19,13 +19,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AXml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -139,7 +139,7 @@ public class SkyWalkerOptions {
    public String toXml() {
       StringBuffer sb = new StringBuffer();
       sb.append(AXml.addTagData("guid", artifact.getGuid()));
-      sb.append(AXml.addTagData("branchId", artifact.getBranch().getBranchId() + ""));
+      sb.append(AXml.addTagData("branchId", artifact.getBranch().getId() + ""));
       sb.append(AXml.addTagData("artTypes", org.eclipse.osee.framework.jdk.core.util.Collections.toString(",",
             getSelectedArtTypes())));
       sb.append(AXml.addTagData("relTypes", org.eclipse.osee.framework.jdk.core.util.Collections.toString(",",

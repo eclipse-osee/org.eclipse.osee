@@ -10,18 +10,18 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.AbstractOseeType;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 
 /**
  * @author Ryan D. Brooks
@@ -75,10 +75,10 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
                   break;
             }
          }
-         if (branch.isFieldDirty(Branch.BRANCH_ALIASES_FIELD_KEY)) {
+         if (branch.isFieldDirty(BranchField.BRANCH_ALIASES_FIELD_KEY)) {
             dirtyAliases.add(branch);
          }
-         if (branch.isFieldDirty(Branch.BRANCH_ARCHIVED_STATE_FIELD_KEY)) {
+         if (branch.isFieldDirty(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY)) {
             moveBranchAddressing(connection, branch, branch.getArchiveState().isArchived());
          }
 
@@ -105,7 +105,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       String sql = String.format(SELECT_ADDRESSING_BY_BRANCH, sourceTableName);
 
       try {
-         chStmt.runPreparedQuery(10000, sql, branch.getBranchId());
+         chStmt.runPreparedQuery(10000, sql, branch.getId());
          while (chStmt.next()) {
             addressing.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"),
                   chStmt.getInt("mod_type"), chStmt.getInt("tx_current")});
@@ -125,10 +125,10 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       return type.areFieldsDirty(//
             AbstractOseeType.NAME_FIELD_KEY, //
             AbstractOseeType.UNIQUE_ID_FIELD_KEY, //
-            Branch.BRANCH_ARCHIVED_STATE_FIELD_KEY, //
-            Branch.BRANCH_STATE_FIELD_KEY, //
-            Branch.BRANCH_TYPE_FIELD_KEY, //
-            Branch.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY);
+            BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, //
+            BranchField.BRANCH_STATE_FIELD_KEY, //
+            BranchField.BRANCH_TYPE_FIELD_KEY, //
+            BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY);
    }
 
    private void storeAliases(Collection<Branch> branches) throws OseeCoreException {

@@ -11,28 +11,21 @@
 package org.eclipse.osee.framework.skynet.core.types;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IArtifact {
-
-   int getArtId();
-
-   String getGuid();
-
-   String getName();
+public interface IArtifact extends IBasicArtifact<Artifact> {
 
    Branch getBranch();
 
    ArtifactType getArtifactType();
-
-   Artifact getFullArtifact() throws OseeCoreException;
 
    List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException;
 }

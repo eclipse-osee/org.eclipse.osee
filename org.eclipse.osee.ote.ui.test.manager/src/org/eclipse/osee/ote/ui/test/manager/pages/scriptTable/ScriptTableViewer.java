@@ -27,7 +27,6 @@ import org.eclipse.jface.viewers.TreeSelection;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
-import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.ote.ui.markers.MarkerPlugin;
@@ -55,9 +54,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 
 public class ScriptTableViewer {
-   private static final OseeUiActivator plugin = TestManagerPlugin.getInstance();
 
-   private ScriptTaskList taskList = new ScriptTaskList();
+   private final ScriptTaskList taskList = new ScriptTaskList();
    private TestManagerEditor testManagerEditor = null;
    final int POPUP_NAVIGATOR = 2;
    final int POPUP_OUTPUT = 0;
@@ -235,7 +233,9 @@ public class ScriptTableViewer {
       Iterator<?> iter = sel.iterator();
       while (iter.hasNext()) {
          ScriptTask task = (ScriptTask) iter.next();
-         if (task != null) taskList.removeTask(task);
+         if (task != null) {
+            taskList.removeTask(task);
+         }
       }
       refresh();
    }
@@ -248,7 +248,7 @@ public class ScriptTableViewer {
    public void setAllTasksRun(boolean runState) {
       Iterator<ScriptTask> iter = taskList.getTasks().iterator();
       while (iter.hasNext()) {
-         ScriptTask task = ((ScriptTask) iter.next());
+         ScriptTask task = iter.next();
          task.setRun(runState);
          taskList.taskChanged(task);
       }
@@ -278,6 +278,7 @@ public class ScriptTableViewer {
       final Transfer types[] = new Transfer[] {fileTransfer};
       // Add Drag/Drop to Table
       DropTargetListener scriptDropTargetListener = new DropTargetAdapter() {
+         @Override
          public void drop(DropTargetEvent event) {
             if (fileTransfer.isSupportedType(event.currentDataType)) {
                processDroppedFiles((String[]) event.data);
@@ -420,7 +421,7 @@ public class ScriptTableViewer {
          } else if (type == POPUP_NAVIGATOR) {
             task.getScriptModel().openPackageExplorer();
          } else if (type == POPUP_RESULTS) {
-            Iterator it = selection.iterator();
+            Iterator<?> it = selection.iterator();
             while (it.hasNext()) {
                ScriptTask currentTask = (ScriptTask) it.next();
                OutputModelJob.getSingleton().addTask(currentTask);
@@ -436,7 +437,7 @@ public class ScriptTableViewer {
          if (toProcess.endsWith(".xml")) {
             batchDropHandler(new File(toProcess));
          } else {
-            if (toProcess.endsWith(".java") || toProcess.endsWith(".vxe") || !(new File(toProcess)).getName().matches(
+            if (toProcess.endsWith(".java") || toProcess.endsWith(".vxe") || !new File(toProcess).getName().matches(
                   ".*\\..*")) {
                ScriptTask newTask = new ScriptTask(files[i], testManagerEditor.getAlternateOutputDir());
                if (!taskList.contains(newTask)) {

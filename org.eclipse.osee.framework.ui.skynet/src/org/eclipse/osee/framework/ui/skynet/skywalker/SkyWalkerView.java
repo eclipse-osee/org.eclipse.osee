@@ -347,7 +347,7 @@ public class SkyWalkerView extends ViewPart {
       Artifact artifact = (Artifact) viewer.getInput();
       memento = memento.createChild(INPUT_KEY);
       memento.putString(GUID_KEY, artifact.getGuid());
-      memento.putString(BRANCHID_KEY, String.valueOf(artifact.getBranch().getBranchId()));
+      memento.putString(BRANCHID_KEY, String.valueOf(artifact.getBranch().getId()));
    }
 
    @Override

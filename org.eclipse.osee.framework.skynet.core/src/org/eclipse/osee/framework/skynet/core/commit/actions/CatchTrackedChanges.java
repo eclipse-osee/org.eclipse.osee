@@ -14,12 +14,12 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
 import org.eclipse.osee.framework.skynet.core.change.Change;
@@ -77,6 +77,6 @@ public class CatchTrackedChanges implements CommitAction {
 
    private String getArtifactErrorMessage(Artifact artifact) {
       return String.format("Error validating: [(%s)(%s) - %s] on branchId:[%s]", artifact.getArtId(),
-            artifact.getGuid(), artifact.getName(), artifact.getBranch().getBranchId());
+            artifact.getGuid(), artifact.getName(), artifact.getBranch().getId());
    }
 }

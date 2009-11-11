@@ -39,7 +39,7 @@ public abstract class SkynetArtifactsEventBase extends SkynetEventBase implement
    /**
     * @return the branchId
     */
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 

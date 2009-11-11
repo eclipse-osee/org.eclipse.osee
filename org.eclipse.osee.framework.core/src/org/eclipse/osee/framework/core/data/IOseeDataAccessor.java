@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Boeing.
+ * Copyright (c) 2004, 2007 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,32 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.types.field;
+package org.eclipse.osee.framework.core.data;
+
+import java.util.Collection;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class OseeField<T> extends AbstractOseeField<T> {
+public interface IOseeDataAccessor<T extends IOseeStorableType> {
 
-   private T object;
+   public void load(AbstractOseeCache<T> cache) throws OseeCoreException;
 
-   public OseeField(T initValue) {
-      super();
-      set(initValue);
-   }
-
-   public OseeField() {
-      super();
-   }
-
-   @Override
-   public void set(T value) {
-      isDirty |= ChangeUtil.isDifferent(get(), value);
-      this.object = value;
-   }
-
-   @Override
-   public T get() {
-      return object;
-   }
+   public void store(AbstractOseeCache<T> cache, Collection<T> types) throws OseeCoreException;
 }

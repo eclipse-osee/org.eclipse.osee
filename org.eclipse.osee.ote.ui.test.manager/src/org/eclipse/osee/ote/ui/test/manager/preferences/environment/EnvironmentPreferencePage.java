@@ -81,9 +81,9 @@ public class EnvironmentPreferencePage {
          String selectedString = prefStore.getString(PAGE_KEY + "." + CHECKED + "_" + index);
          boolean selected = Boolean.parseBoolean(selectedString);
 
-         if ((name != null) && (name != "")) {
+         if (name != null && name != "") {
             EnvironmentPreferenceNode node = new EnvironmentPreferenceNode(name);
-            node.setValue(((value != null) ? value : ""));
+            node.setValue((value != null ? value : ""));
             node.setChecked(selected);
             list.add(node);
          }
@@ -97,7 +97,7 @@ public class EnvironmentPreferencePage {
    private EnvironmentPageEventHandler environmentPageEventHandler;
    private Button removeButton;
 
-   private ArrayList<EnvironmentPreferenceNode> treeInputList;
+   private final ArrayList<EnvironmentPreferenceNode> treeInputList;
 
    private CheckboxTreeViewer treeViewer;
 
@@ -121,7 +121,7 @@ public class EnvironmentPreferencePage {
       for (EnvironmentPreferenceNode node : treeInputList) {
          index = treeInputList.indexOf(node);
          String name = node.getEnvName();
-         if ((name != null) && (name != "")) {
+         if (name != null && name != "") {
             prefStore.putValue(PAGE_KEY + "." + NAME + "_" + index, name);
             String value = node.getValue();
             prefStore.putValue(PAGE_KEY + "." + VALUE + "_" + index, (value != null ? value : ""));
@@ -136,7 +136,9 @@ public class EnvironmentPreferencePage {
          }
 
          public void keyReleased(KeyEvent e) {
-            if (e.character == SWT.DEL) environmentPageEventHandler.handleRemoveSelectedViewEvent();
+            if (e.character == SWT.DEL) {
+               environmentPageEventHandler.handleRemoveSelectedViewEvent();
+            }
          }
       });
 
@@ -254,7 +256,7 @@ public class EnvironmentPreferencePage {
          }
 
          public Object[] getElements(Object inputElement) {
-            if (inputElement != null && inputElement instanceof ArrayList) {
+            if (inputElement != null && inputElement instanceof ArrayList<?>) {
                ArrayList<?> elementArray = (ArrayList<?>) inputElement;
                return elementArray.toArray();
             }
@@ -283,10 +285,12 @@ public class EnvironmentPreferencePage {
       });
       treeViewer.setLabelProvider(new LabelProvider() {
 
+         @Override
          public Image getImage(Object obj) {
             return ImageManager.getImage(OteTestManagerImage.ENVIRONMENT);
          }
 
+         @Override
          public String getText(Object obj) {
             return obj.toString();
          }

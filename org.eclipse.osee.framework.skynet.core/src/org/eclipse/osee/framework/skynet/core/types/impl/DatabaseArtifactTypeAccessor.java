@@ -18,6 +18,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.AbstractOseeType;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -28,21 +31,17 @@ import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.AttributeTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactType> {
+public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<ArtifactType> {
    protected static final int ABSTRACT_TYPE_INDICATOR = 1;
    protected static final int CONCRETE_TYPE_INDICATOR = 0;
 
@@ -68,7 +67,8 @@ public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactT
 
    private final AttributeTypeCache attributeCache;
 
-   public DatabaseArtifactTypeAccessor(AttributeTypeCache attributeCache) {
+   public DatabaseArtifactTypeAccessor(IOseeTypeFactory factory, AttributeTypeCache attributeCache) {
+      super(factory);
       this.attributeCache = attributeCache;
    }
 
@@ -77,11 +77,11 @@ public class DatabaseArtifactTypeAccessor implements IOseeDataAccessor<ArtifactT
    }
 
    @Override
-   public void load(AbstractOseeCache<ArtifactType> cache, IOseeTypeFactory factory) throws OseeCoreException {
+   public void load(AbstractOseeCache<ArtifactType> cache) throws OseeCoreException {
       attributeCache.ensurePopulated();
-      loadArtifactTypes(cache, factory);
+      loadArtifactTypes(cache, getFactory());
       loadTypeInheritance(getCastedObject(cache));
-      loadAllTypeValidity(getCastedObject(cache), factory);
+      loadAllTypeValidity(getCastedObject(cache), getFactory());
       for (ArtifactType type : cache.getAll()) {
          type.clearDirty();
       }

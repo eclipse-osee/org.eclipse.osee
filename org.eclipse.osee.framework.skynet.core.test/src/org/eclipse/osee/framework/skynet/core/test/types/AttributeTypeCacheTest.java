@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.skynet.core.test.types;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.AttributeTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
@@ -40,7 +40,7 @@ public class AttributeTypeCacheTest extends AbstractOseeCacheTest<AttributeType>
 
       AttributeDataAccessor attrData = new AttributeDataAccessor(attributeTypes);
 
-      attrCache = new AttributeTypeCache(factory, attrData);
+      attrCache = new AttributeTypeCache(attrData);
       attrCache.ensurePopulated();
       Assert.assertTrue(attrData.wasLoaded());
    }
@@ -84,8 +84,8 @@ public class AttributeTypeCacheTest extends AbstractOseeCacheTest<AttributeType>
       }
 
       @Override
-      public void load(AbstractOseeCache<AttributeType> cache, IOseeTypeFactory factory) throws OseeCoreException {
-         super.load(cache, factory);
+      public void load(AbstractOseeCache<AttributeType> cache) throws OseeCoreException {
+         super.load(cache);
          attributeTypes.add(OseeTypesUtil.createAttributeType(cache, factory, "AAA", "Attribute1"));
          attributeTypes.add(OseeTypesUtil.createAttributeType(cache, factory, "BBB", "Attribute2"));
          attributeTypes.add(OseeTypesUtil.createAttributeType(cache, factory, "CCC", "Attribute3"));

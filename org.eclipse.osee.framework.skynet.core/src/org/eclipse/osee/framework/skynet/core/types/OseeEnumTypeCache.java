@@ -17,6 +17,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -32,8 +34,8 @@ public final class OseeEnumTypeCache extends AbstractOseeCache<OseeEnumType> {
          new HashCollection<OseeEnumType, OseeEnumEntry>();
    private final Map<OseeEnumEntry, OseeEnumType> enumEntryToEnumType = new HashMap<OseeEnumEntry, OseeEnumType>();
 
-   public OseeEnumTypeCache(IOseeTypeFactory factory, IOseeDataAccessor<OseeEnumType> dataAccessor) {
-      super(factory, dataAccessor);
+   public OseeEnumTypeCache(IOseeDataAccessor<OseeEnumType> dataAccessor) {
+      super(dataAccessor);
    }
 
    @Override
@@ -138,7 +140,7 @@ public final class OseeEnumTypeCache extends AbstractOseeCache<OseeEnumType> {
    public OseeEnumType createType(String guid, String enumTypeName) throws OseeCoreException {
       OseeEnumType oseeEnumType = getByGuid(guid);
       if (oseeEnumType == null) {
-         oseeEnumType = getDataFactory().createEnumType(this, guid, enumTypeName);
+         oseeEnumType = new OseeTypeFactory().createEnumType(this, guid, enumTypeName);
       } else {
          decache(oseeEnumType);
          oseeEnumType.setName(enumTypeName);
@@ -148,6 +150,6 @@ public final class OseeEnumTypeCache extends AbstractOseeCache<OseeEnumType> {
    }
 
    public OseeEnumEntry createEntry(String guid, String name, int ordinal) throws OseeCoreException {
-      return getDataFactory().createEnumEntry(this, guid, name, ordinal);
+      return new OseeTypeFactory().createEnumEntry(this, guid, name, ordinal);
    }
 }

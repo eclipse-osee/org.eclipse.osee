@@ -14,11 +14,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -43,15 +43,15 @@ public class RelationOrderingTest {
    @Before
    public void setupArtifacts() throws Exception {
       branch = BranchManager.getCommonBranch();
-      parent = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(branch);
+      parent = createArtifact(ARTIFACT_TYPE, branch);
 
-      child1 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(branch);
+      child1 = createArtifact(ARTIFACT_TYPE, branch);
       child1.setSoleAttributeFromString("Name", "a_child");
 
-      child2 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(branch);
+      child2 = createArtifact(ARTIFACT_TYPE, branch);
       child2.setSoleAttributeFromString("Name", "b_child");
 
-      child3 = ArtifactTypeManager.getType(ARTIFACT_TYPE).makeNewArtifact(branch);
+      child3 = createArtifact(ARTIFACT_TYPE, branch);
       child3.setSoleAttributeFromString("Name", "c_child");
 
       parent.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, child1);
@@ -84,11 +84,11 @@ public class RelationOrderingTest {
 
       checkDesc();
 
-      Artifact child4 = ArtifactTypeManager.getType("User").makeNewArtifact(branch);
+      Artifact child4 = createArtifact("User", branch);
       child1.setSoleAttributeFromString("Name", "a_child");
-      Artifact child5 = ArtifactTypeManager.getType("User").makeNewArtifact(branch);
+      Artifact child5 = createArtifact("User", branch);
       child2.setSoleAttributeFromString("Name", "b_child");
-      Artifact child6 = ArtifactTypeManager.getType("User").makeNewArtifact(branch);
+      Artifact child6 = createArtifact("User", branch);
 
       parent.addRelation(CoreRelationEnumeration.Users_User, child4);
       parent.addRelation(CoreRelationEnumeration.Users_User, child5);
@@ -159,4 +159,7 @@ public class RelationOrderingTest {
       Assert.assertEquals(children.get(1).getName(), "a_child");
    }
 
+   private Artifact createArtifact(String type, Branch branch) throws OseeCoreException {
+      return ArtifactTypeManager.makeNewArtifact(ArtifactTypeManager.getType(ARTIFACT_TYPE), branch);
+   }
 }

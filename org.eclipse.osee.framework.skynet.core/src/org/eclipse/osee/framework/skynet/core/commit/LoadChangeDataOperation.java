@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.skynet.core.commit;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Ryan D. Brooks
@@ -80,7 +79,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private int getSourceBranchId() {
-      return sourceTransactionId.getBranch().getBranchId();
+      return sourceTransactionId.getBranch().getId();
    }
 
    @Override
@@ -247,7 +246,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
                      " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.transaction_id <= ?";
          
             chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
-                                    destinationTransaction.getBranch().getBranchId(), destinationTransaction.getId());
+                                    destinationTransaction.getBranch().getId(), destinationTransaction.getId());
             break;
          case FROM_SINGLE_TRANSACTION:
             query =
@@ -255,7 +254,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
                      + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
                      " and item.gamma_id = txs.gamma_id and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.transaction_id <= ?";
          
-            chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), destinationTransaction.getBranch().getBranchId(), destinationTransaction.getId());
+            chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), destinationTransaction.getBranch().getId(), destinationTransaction.getId());
             break;
          default:
             throw new UnsupportedOperationException(String.format("Invalid load changes [%s] mode not supported",

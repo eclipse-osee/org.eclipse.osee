@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -19,22 +21,19 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
+import org.eclipse.osee.framework.skynet.core.types.branch.BranchImpl;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeTypeFactory implements IOseeTypeFactory {
-   private final ArtifactFactoryManager factoryManager;
 
    public OseeTypeFactory() {
-      this.factoryManager = new ArtifactFactoryManager();
    }
 
    private String createGuidIfNeeded(String guid) {
@@ -58,7 +57,7 @@ public class OseeTypeFactory implements IOseeTypeFactory {
    public ArtifactType createArtifactType(AbstractOseeCache<ArtifactType> cache, String guid, boolean isAbstract, String name) throws OseeCoreException {
       checkName(cache, name);
       checkNameUnique(cache, name);
-      return new ArtifactType(cache, createGuidIfNeeded(guid), name, isAbstract, factoryManager);
+      return new ArtifactType(cache, createGuidIfNeeded(guid), name, isAbstract);
    }
 
    @Override
@@ -140,6 +139,6 @@ public class OseeTypeFactory implements IOseeTypeFactory {
       if (branchState == null) {
          throw new OseeArgumentException("branchState cannot be null.");
       }
-      return new Branch(cache, createGuidIfNeeded(guid), name, branchType, branchState, isArchived);
+      return new BranchImpl(cache, createGuidIfNeeded(guid), name, branchType, branchState, isArchived);
    }
 }

@@ -14,6 +14,10 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.IOseeDataAccessor;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
@@ -23,9 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.CoreBranches;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Roberto E. Escobar
@@ -46,8 +48,8 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    private Branch systemRootBranch;
    private IArtifact defaultAssociatedArtifact;
 
-   public BranchCache(IOseeTypeFactory factory, IOseeDataAccessor<Branch> dataAccessor) {
-      super(factory, dataAccessor);
+   public BranchCache(IOseeDataAccessor<Branch> dataAccessor) {
+      super(dataAccessor);
       this.defaultAssociatedArtifact = null;
       this.systemRootBranch = null;
    }

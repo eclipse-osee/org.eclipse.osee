@@ -14,9 +14,10 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
@@ -26,11 +27,9 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * Public API class for access to change data from branches and transactionIds
@@ -97,14 +96,14 @@ public class ChangeManager {
          Branch branch = artifact.getBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
          int transactionNumber = TransactionManager.getLastTransaction(branch).getId();
-         insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getBranchId(),
+         insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getId(),
                transactionNumber});
 
          // for each combination of artifact and its branch hierarchy
          while (branch.hasParentBranch()) {
             transactionNumber = branch.getSourceTransaction().getId();
             branch = branch.getParentBranch();
-            insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getBranchId(),
+            insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getId(),
                   transactionNumber});
          }
       }
@@ -149,7 +148,7 @@ public class ChangeManager {
          artifactMap.put(artifact.getArtId(), artifact.getBranch(), artifact);
          // for each combination of artifact and all working branches in its hierarchy
          for (Branch workingBranch : artifact.getBranch().getWorkingBranches()) {
-            insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), workingBranch.getBranchId(),
+            insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), workingBranch.getId(),
                   SQL3DataType.INTEGER});
          }
       }

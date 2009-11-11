@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -28,14 +29,12 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseAttributeTypeAccessor implements IOseeDataAccessor<AttributeType> {
+public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<AttributeType> {
 
    private static final String SELECT_ATTRIBUTE_TYPES =
          "SELECT * FROM osee_attribute_type aty1, osee_attribute_base_type aby1, osee_attribute_provider_type apy1 WHERE aty1.attr_base_type_id = aby1.attr_base_type_id AND aty1.attr_provider_type_id = apy1.attr_provider_type_id";
@@ -55,12 +54,13 @@ public class DatabaseAttributeTypeAccessor implements IOseeDataAccessor<Attribut
 
    private final AbstractOseeCache<OseeEnumType> enumCache;
 
-   public DatabaseAttributeTypeAccessor(AbstractOseeCache<OseeEnumType> enumCache) {
+   public DatabaseAttributeTypeAccessor(IOseeTypeFactory factory, AbstractOseeCache<OseeEnumType> enumCache) {
+      super(factory);
       this.enumCache = enumCache;
    }
 
    @Override
-   public void load(AbstractOseeCache<AttributeType> cache, IOseeTypeFactory factory) throws OseeCoreException {
+   public void load(AbstractOseeCache<AttributeType> cache) throws OseeCoreException {
       enumCache.ensurePopulated();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
@@ -82,7 +82,7 @@ public class DatabaseAttributeTypeAccessor implements IOseeDataAccessor<Attribut
                AttributeType attributeType = cache.getById(attributeTypeId);
                if (attributeType == null) {
                   attributeType =
-                        factory.createAttributeType(cache, chStmt.getString("attr_type_guid"),
+                        getFactory().createAttributeType(cache, chStmt.getString("attr_type_guid"),
                               chStmt.getString("name"), baseClassString, baseProviderClassString, baseAttributeClass,
                               providerAttributeClass, chStmt.getString("file_type_extension"),
                               chStmt.getString("default_value"), oseeEnumType, chStmt.getInt("min_occurence"),

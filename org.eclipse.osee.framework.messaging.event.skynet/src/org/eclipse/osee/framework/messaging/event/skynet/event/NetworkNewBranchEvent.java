@@ -24,7 +24,7 @@ public class NetworkNewBranchEvent extends SkynetEventBase {
       this.branchId = branchId;
    }
 
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 

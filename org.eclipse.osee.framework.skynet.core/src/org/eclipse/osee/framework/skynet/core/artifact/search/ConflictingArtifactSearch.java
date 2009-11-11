@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.database.sql.SkynetDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 

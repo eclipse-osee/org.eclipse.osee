@@ -14,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ChangeUtilTest.class, OseeFieldMainTest.class})
+@Suite.SuiteClasses( {OseeFieldMainTest.class})
 /**
  * @author Roberto E. Escobar
  */

@@ -47,7 +47,7 @@ public class HttpArtifactFileInfo {
       return branchName;
    }
 
-   public int getBranchId() throws NumberFormatException {
+   public int getId() throws NumberFormatException {
       int toReturn = INVALID_BRANCH_ID;
       if (branchId != null && branchId.length() > 0) {
          toReturn = Integer.parseInt(branchId);

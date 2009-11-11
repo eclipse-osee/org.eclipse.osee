@@ -38,9 +38,9 @@ import org.xml.sax.SAXException;
 
 public class LoadScriptPage implements ILoadConfig, ScriptPageConstants {
 
-   private ScriptPage scriptPage;
-   private ScriptTableViewer scriptTableViewer;
-   private Vector<ScriptTask> scriptTasks;
+   private final ScriptPage scriptPage;
+   private final ScriptTableViewer scriptTableViewer;
+   private final Vector<ScriptTask> scriptTasks;
 
    public LoadScriptPage(ScriptPage tmPage) {
       this.scriptPage = tmPage;
@@ -106,7 +106,7 @@ public class LoadScriptPage implements ILoadConfig, ScriptPageConstants {
 
    private class LoadScriptHelper implements Runnable {
       private boolean stopLoading = false;
-      private String path;
+      private final String path;
 
       public LoadScriptHelper(String path) {
          this.path = path;
@@ -124,20 +124,6 @@ public class LoadScriptPage implements ILoadConfig, ScriptPageConstants {
       public boolean stop() {
          return stopLoading;
       }
-   }
-
-   private class GetWidgetInfo implements Runnable {
-
-      private String path;
-
-      public void run() {
-         path = scriptPage.getTestManager().getAlternateOutputDir();
-      }
-
-      public String getPath() {
-         return path;
-      }
-
    }
 
    private void parseScriptEntries(Element element) {

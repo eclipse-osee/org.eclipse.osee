@@ -29,5 +29,5 @@ public interface ISkynetRelationLinkEvent extends ISkynetEvent {
 
    public int getRelTypeId();
 
-   public int getBranchId();
+   public int getId();
 }

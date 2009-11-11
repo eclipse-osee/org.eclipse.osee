@@ -15,10 +15,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 
@@ -135,7 +135,7 @@ public class LoadedArtifacts {
             for (UnloadedArtifact unloadedArtifact : new CopyOnWriteArrayList<UnloadedArtifact>(unloadedArtifacts)) {
                Artifact art =
                      ArtifactCache.getActive(unloadedArtifact.getArtifactId(),
-                           BranchManager.getBranch(unloadedArtifact.getBranchId()));
+                           BranchManager.getBranch(unloadedArtifact.getId()));
                if (art != null) {
                   unloadedArtifacts.remove(unloadedArtifact);
                   artifacts.add(art);

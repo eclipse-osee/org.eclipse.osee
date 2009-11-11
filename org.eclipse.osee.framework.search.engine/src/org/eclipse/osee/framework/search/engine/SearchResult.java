@@ -121,7 +121,7 @@ public class SearchResult {
          return artId;
       }
 
-      public int getBranchId() {
+      public int getId() {
          return branchId;
       }
    }

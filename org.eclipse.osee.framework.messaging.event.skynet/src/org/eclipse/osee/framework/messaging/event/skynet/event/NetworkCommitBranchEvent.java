@@ -28,7 +28,7 @@ public class NetworkCommitBranchEvent extends SkynetEventBase {
       this.branchId = branchId;
    }
 
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 

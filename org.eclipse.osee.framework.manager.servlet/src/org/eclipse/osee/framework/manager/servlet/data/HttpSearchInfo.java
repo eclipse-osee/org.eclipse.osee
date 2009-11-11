@@ -45,7 +45,7 @@ public class HttpSearchInfo {
       return queryString;
    }
 
-   public int getBranchId() {
+   public int getId() {
       return Integer.parseInt(this.branchId);
    }
 

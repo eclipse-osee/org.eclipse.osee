@@ -60,7 +60,7 @@ public class SearchEngineServlet extends OseeHttpServlet {
       try {
          ISearchEngine searchEngine = MasterServletActivator.getInstance().getSearchEngine();
          SearchResult results =
-               searchEngine.search(searchInfo.getQuery(), searchInfo.getBranchId(), searchInfo.getOptions(),
+               searchEngine.search(searchInfo.getQuery(), searchInfo.getId(), searchInfo.getOptions(),
                      searchInfo.getAttributeTypes());
          response.setStatus(wasFromGet ? HttpServletResponse.SC_OK : HttpServletResponse.SC_ACCEPTED);
          if (!results.isEmpty()) {

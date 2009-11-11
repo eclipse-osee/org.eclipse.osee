@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.ui.test.manager.panels;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.swt.SWT;
@@ -30,7 +29,9 @@ import org.eclipse.swt.widgets.Composite;
 public class LoggingPanel extends Composite {
 
    private enum LoggingLevel {
-      Minimal(Level.WARNING), Detailed(Level.INFO), All(Level.ALL);
+      Minimal(Level.WARNING),
+      Detailed(Level.INFO),
+      All(Level.ALL);
 
       private Level level;
 
@@ -55,18 +56,6 @@ public class LoggingPanel extends Composite {
          return toReturn;
       }
 
-      public static LoggingLevel fromString(String value) {
-         LoggingLevel toReturn = LoggingLevel.Detailed;
-         if (Strings.isValid(value) != false) {
-            for (LoggingLevel formatType : LoggingLevel.values()) {
-               if (formatType.name().equalsIgnoreCase(value)) {
-                  toReturn = formatType;
-                  break;
-               }
-            }
-         }
-         return toReturn;
-      }
    }
 
    private Map<LoggingLevel, Button> buttonMap;
@@ -133,7 +122,8 @@ public class LoggingPanel extends Composite {
       try {
          level = Level.parse(value);
       } catch (Exception ex) {
-         OseeLog.log(TestManagerPlugin.class, Level.WARNING, String.format("Error parsing log level [%s] using default [%s]", value, level));
+         OseeLog.log(TestManagerPlugin.class, Level.WARNING, String.format(
+               "Error parsing log level [%s] using default [%s]", value, level));
       }
 
       LoggingLevel loggingLevel = LoggingLevel.fromLevel(level);

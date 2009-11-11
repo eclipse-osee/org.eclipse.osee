@@ -18,7 +18,7 @@ import org.eclipse.draw2d.GridLayout;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Panel;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.ui.branch.graph.figure.BranchFigure;
 import org.eclipse.osee.framework.ui.branch.graph.figure.PlusMinus;
 import org.eclipse.osee.framework.ui.branch.graph.model.GraphCache;

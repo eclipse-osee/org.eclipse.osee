@@ -2,11 +2,10 @@ package org.eclipse.osee.framework.skynet.core.test.types;
 
 import java.util.Collection;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.IOseeDataAccessor;
+import org.eclipse.osee.framework.core.data.IOseeStorableType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeStorableType;
-import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
-import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 
 public class OseeTestDataAccessor<T extends IOseeStorableType> implements IOseeDataAccessor<T> {
 
@@ -30,9 +29,8 @@ public class OseeTestDataAccessor<T extends IOseeStorableType> implements IOseeD
    }
 
    @Override
-   public void load(AbstractOseeCache<T> cache, IOseeTypeFactory factory) throws OseeCoreException {
+   public void load(AbstractOseeCache<T> cache) throws OseeCoreException {
       Assert.assertNotNull(cache);
-      Assert.assertNotNull(factory);
       setLoadCalled(true);
    }
 

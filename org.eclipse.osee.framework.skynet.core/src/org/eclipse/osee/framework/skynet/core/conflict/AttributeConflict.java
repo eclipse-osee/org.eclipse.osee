@@ -18,6 +18,8 @@ import java.util.Collection;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -28,14 +30,12 @@ import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /*
  * @author Jeff C. Phillips
@@ -112,7 +112,7 @@ public class AttributeConflict extends Conflict {
       }
       if (sourceAttribute == null) {
          throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + sourceBranch.getBranchId());
+               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + sourceBranch.getId());
       }
       return sourceAttribute;
    }
@@ -129,7 +129,7 @@ public class AttributeConflict extends Conflict {
       }
       if (destAttribute == null) {
          throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + destBranch.getBranchId());
+               "Attribute " + attrId + " could not be found on Artifact " + getArtId() + " on Branch " + destBranch.getId());
       }
       return destAttribute;
    }
@@ -144,7 +144,7 @@ public class AttributeConflict extends Conflict {
       }
       if (attribute == null) {
          throw new AttributeDoesNotExist(
-               "Attribute " + attrId + " could not be found on Artifact " + artifact.getArtId() + " on Branch " + artifact.getBranch().getBranchId());
+               "Attribute " + attrId + " could not be found on Artifact " + artifact.getArtId() + " on Branch " + artifact.getBranch().getId());
       }
       return attribute;
    }

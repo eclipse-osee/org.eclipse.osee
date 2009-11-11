@@ -12,7 +12,7 @@ package org.eclipse.osee.ote.ui.define.viewers.data;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.ote.ui.define.OteDefineImage;
 import org.eclipse.swt.graphics.Image;

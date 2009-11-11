@@ -14,18 +14,17 @@ package org.eclipse.osee.framework.skynet.core.test.branch;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchUtility;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeTestDataAccessor;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
 import org.junit.Test;
 
@@ -34,15 +33,9 @@ import org.junit.Test;
  */
 public class BranchUtilityTest {
 
-   private final IOseeTypeFactory factory;
-
-   public BranchUtilityTest() {
-      factory = new OseeTypeFactory();
-   }
-
    @Test
    public void testBranchToFileName() throws Exception {
-      AbstractOseeCache<Branch> cache = new TestCache(factory);
+      AbstractOseeCache<Branch> cache = new TestCache();
       for (int index = 0; index < 100; index++) {
          String guid = GUID.create();
          Branch branch = createBranch(cache, guid, String.format("Test %s", index + 1), index);
@@ -54,7 +47,7 @@ public class BranchUtilityTest {
 
    @Test
    public void testBranchToFileNameInvalidGuid() throws OseeCoreException {
-      AbstractOseeCache<Branch> cache = new TestCache(factory);
+      AbstractOseeCache<Branch> cache = new TestCache();
       Branch branch = createBranch(cache, "!#A", "Invalid Guid", 2);
       try {
          BranchUtility.toFileName(branch);
@@ -76,7 +69,7 @@ public class BranchUtilityTest {
 
    @Test
    public void testfromFileNameGuidNotFound() throws OseeCoreException {
-      AbstractOseeCache<Branch> cache = new TestCache(factory);
+      AbstractOseeCache<Branch> cache = new TestCache();
       cache.ensurePopulated();
       Assert.assertEquals(0, cache.size());
       try {
@@ -89,7 +82,7 @@ public class BranchUtilityTest {
 
    @Test
    public void testfromFileNameIdNotFound() throws OseeCoreException {
-      AbstractOseeCache<Branch> cache = new TestCache(factory);
+      AbstractOseeCache<Branch> cache = new TestCache();
       cache.ensurePopulated();
       Assert.assertEquals(0, cache.size());
       try {
@@ -106,7 +99,7 @@ public class BranchUtilityTest {
       } catch (Exception ex) {
          Assert.assertTrue(ex instanceof OseeArgumentException);
       }
-      AbstractOseeCache<Branch> cache = new TestCache(factory);
+      AbstractOseeCache<Branch> cache = new TestCache();
       try {
          BranchUtility.fromFileName(cache, null);
       } catch (Exception ex) {
@@ -116,7 +109,7 @@ public class BranchUtilityTest {
 
    @Test
    public void testfromFileName() throws OseeCoreException, UnsupportedEncodingException {
-      AbstractOseeCache<Branch> cache = new TestCache(factory);
+      AbstractOseeCache<Branch> cache = new TestCache();
       cache.ensurePopulated();
       Assert.assertEquals(0, cache.size());
 
@@ -146,15 +139,16 @@ public class BranchUtilityTest {
    }
 
    private Branch createBranch(AbstractOseeCache<Branch> cache, String guid, String name, int id) throws OseeCoreException {
-      Branch branch = factory.createBranch(cache, guid, name, BranchType.WORKING, BranchState.MODIFIED, false);
+      Branch branch =
+            new OseeTypeFactory().createBranch(cache, guid, name, BranchType.WORKING, BranchState.MODIFIED, false);
       Assert.assertNotNull(branch);
       branch.setId(id);
       return branch;
    }
 
    private final class TestCache extends BranchCache {
-      public TestCache(IOseeTypeFactory factory) {
-         super(factory, new OseeTestDataAccessor<Branch>());
+      public TestCache() {
+         super(new OseeTestDataAccessor<Branch>());
       }
    }
 }

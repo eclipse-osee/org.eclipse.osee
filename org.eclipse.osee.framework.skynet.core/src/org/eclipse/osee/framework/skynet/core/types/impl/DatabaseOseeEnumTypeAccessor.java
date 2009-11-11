@@ -16,6 +16,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.AbstractOseeType;
+import org.eclipse.osee.framework.core.data.UniqueIdField;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -27,16 +30,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
-import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.field.UniqueIdField;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseOseeEnumTypeAccessor implements IOseeDataAccessor<OseeEnumType> {
+public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeEnumType> {
 
    private static final String SELECT_OSEE_ENUM_TYPES =
          "select oet.enum_type_name, oet.enum_type_guid, oetd.* from osee_enum_type oet, osee_enum_type_def oetd where oet.enum_type_id = oetd.enum_type_id order by oetd.enum_type_id, oetd.ordinal";
@@ -49,8 +48,12 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeDataAccessor<OseeEnumT
          "insert into osee_enum_type_def (enum_type_id, enum_entry_guid, name, ordinal) values (?,?,?,?)";
    private static final String DELETE_ENUM_TYPE_DEF = "delete from osee_enum_type_def where enum_type_id = ?";
 
+   public DatabaseOseeEnumTypeAccessor(IOseeTypeFactory factory) {
+      super(factory);
+   }
+
    @Override
-   public void load(AbstractOseeCache<OseeEnumType> cache, IOseeTypeFactory factory) throws OseeCoreException {
+   public void load(AbstractOseeCache<OseeEnumType> cache) throws OseeCoreException {
       HashCollection<OseeEnumType, OseeEnumEntry> types = new HashCollection<OseeEnumType, OseeEnumEntry>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
@@ -65,7 +68,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeDataAccessor<OseeEnumT
                   String enumTypeName = chStmt.getString("enum_type_name");
                   oseeEnumType = cache.getById(currentEnumTypeId);
                   if (oseeEnumType == null) {
-                     oseeEnumType = factory.createEnumType(cache, currentEnumTypeGuid, enumTypeName);
+                     oseeEnumType = getFactory().createEnumType(cache, currentEnumTypeGuid, enumTypeName);
                      oseeEnumType.setId(currentEnumTypeId);
                      oseeEnumType.setModificationType(ModificationType.MODIFIED);
                      cache.cache(oseeEnumType);
@@ -75,7 +78,7 @@ public class DatabaseOseeEnumTypeAccessor implements IOseeDataAccessor<OseeEnumT
                   lastEnumTypeId = currentEnumTypeId;
                }
                OseeEnumEntry entry =
-                     factory.createEnumEntry(cache, chStmt.getString("enum_entry_guid"), chStmt.getString("name"),
+                     getFactory().createEnumEntry(cache, chStmt.getString("enum_entry_guid"), chStmt.getString("name"),
                            chStmt.getInt("ordinal"));
                entry.setModificationType(ModificationType.MODIFIED);
                entry.clearDirty();

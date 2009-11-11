@@ -18,6 +18,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -39,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
@@ -160,7 +161,7 @@ public class SkynetTransaction extends DbTransaction {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
       try {
          String query = ClientSessionManager.getSql(transactionData.getSelectTxNotCurrentSql());
-         chStmt.runPreparedQuery(query, transactionData.getItemId(), this.branch.getBranchId());
+         chStmt.runPreparedQuery(query, transactionData.getItemId(), this.branch.getId());
          while (chStmt.next()) {
             results.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
          }
@@ -279,7 +280,7 @@ public class SkynetTransaction extends DbTransaction {
       if (attributeType.getMaxOccurrences() == 1) {
          try {
             chStmt.runPreparedQuery(GET_EXISTING_ATTRIBUTE_IDS, attributeType.getId(), artifact.getArtId(),
-                  artifact.getBranch().getBranchId());
+                  artifact.getBranch().getId());
 
             if (chStmt.next()) {
                attrId = chStmt.getInt("attr_id");

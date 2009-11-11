@@ -7,7 +7,7 @@ public final class ArtifactKey {
 
       public ArtifactKey(Artifact artifact) {
          this.artId = artifact.getArtId();
-         this.branchId = artifact.getBranch().getBranchId();
+         this.branchId = artifact.getBranch().getId();
       }
 
       public ArtifactKey(int artId, int branchId) {
@@ -17,7 +17,7 @@ public final class ArtifactKey {
 
       public ArtifactKey getKey(Artifact artifact) {
          this.artId = artifact.getArtId();
-         this.branchId = artifact.getBranch().getBranchId();
+         this.branchId = artifact.getBranch().getId();
          return this;
       }
 

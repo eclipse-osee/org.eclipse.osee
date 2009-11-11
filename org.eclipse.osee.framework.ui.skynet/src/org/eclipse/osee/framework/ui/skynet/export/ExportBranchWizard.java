@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.export;
 
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.ui.IExportWizard;
 import org.eclipse.ui.IWorkbench;
 

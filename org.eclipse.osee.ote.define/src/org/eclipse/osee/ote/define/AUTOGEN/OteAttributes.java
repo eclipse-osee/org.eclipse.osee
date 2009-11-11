@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.AUTOGEN;
 
-import org.eclipse.osee.framework.skynet.core.IOseeType;
+import org.eclipse.osee.framework.core.data.IOseeType;
 
 public enum OteAttributes implements IOseeType {
    BUILD_ID("Build Id", "AAMFEXG6_W9diA9nUXAA"),

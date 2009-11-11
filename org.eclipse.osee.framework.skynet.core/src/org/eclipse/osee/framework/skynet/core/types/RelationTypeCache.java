@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
@@ -20,15 +22,15 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationType;
  */
 public final class RelationTypeCache extends AbstractOseeCache<RelationType> {
 
-   public RelationTypeCache(IOseeTypeFactory factory, IOseeDataAccessor<RelationType> dataAccessor) {
-      super(factory, dataAccessor);
+   public RelationTypeCache(IOseeDataAccessor<RelationType> dataAccessor) {
+      super(dataAccessor);
    }
 
    public RelationType createType(String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
       RelationType relationType = getByGuid(guid);
       if (relationType == null) {
          relationType =
-               getDataFactory().createRelationType(this, guid, typeName, sideAName, sideBName, artifactTypeSideA,
+               new OseeTypeFactory().createRelationType(this, guid, typeName, sideAName, sideBName, artifactTypeSideA,
                      artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
       } else {
          decache(relationType);

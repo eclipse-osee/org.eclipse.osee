@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -51,7 +52,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.SkynetRelationLin
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
@@ -266,7 +266,7 @@ public class InternalEventManager {
                if (sender.isLocal() && accessControlEventType.isRemoteEventType()) {
                   Integer branchId = null;
                   if (loadedArtifacts != null && !loadedArtifacts.getLoadedArtifacts().isEmpty()) {
-                     branchId = loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getBranchId();
+                     branchId = loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getId();
                   }
                   Collection<Integer> artifactIds;
                   Collection<Integer> artifactTypeIds;
@@ -344,7 +344,7 @@ public class InternalEventManager {
             try {
                if (sender.isLocal()) {
                   RemoteEventManager.kick(new NetworkArtifactPurgeEvent(
-                        loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getBranchId(),
+                        loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getId(),
                         loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(),
                         sender.getNetworkSender()));
                }
@@ -371,7 +371,7 @@ public class InternalEventManager {
             try {
                if (sender.isLocal()) {
                   RemoteEventManager.kick(new NetworkArtifactChangeTypeEvent(
-                        loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getBranchId(),
+                        loadedArtifacts.getLoadedArtifacts().iterator().next().getBranch().getId(),
                         loadedArtifacts.getAllArtifactIds(), loadedArtifacts.getAllArtifactTypeIds(), toArtifactTypeId,
                         sender.getNetworkSender()));
                }
@@ -559,7 +559,7 @@ public class InternalEventManager {
    private static SkynetArtifactEventBase getArtifactEventBase(ArtifactModifiedEvent artEvent, Sender sender) {
       Artifact artifact = artEvent.artifact;
       SkynetArtifactEventBase eventBase =
-            new SkynetArtifactEventBase(artifact.getBranch().getBranchId(), artEvent.transactionNumber,
+            new SkynetArtifactEventBase(artifact.getBranch().getId(), artEvent.transactionNumber,
                   artifact.getArtId(), artifact.getArtTypeId(), artifact.getFactory().getClass().getCanonicalName(),
                   artEvent.sender.getNetworkSender());
 
@@ -596,7 +596,7 @@ public class InternalEventManager {
       Artifact right = link.getArtifactIfLoaded(RelationSide.SIDE_B);
       SkynetRelationLinkEventBase ret = null;
       ret =
-            new SkynetRelationLinkEventBase(link.getGammaId(), link.getBranch().getBranchId(), link.getRelationId(),
+            new SkynetRelationLinkEventBase(link.getGammaId(), link.getBranch().getId(), link.getRelationId(),
                   link.getAArtifactId(), (left != null ? left.getArtTypeId() : -1), link.getBArtifactId(),
                   (right != null ? right.getArtTypeId() : -1), link.getRelationType().getId(),
                   sender.getNetworkSender());
@@ -616,12 +616,12 @@ public class InternalEventManager {
                if (xArtifactModifiedEvent.artifact != null) {
                   transData.cacheAddedArtifacts.add(xArtifactModifiedEvent.artifact);
                   if (transData.branchId == -1) {
-                     transData.branchId = xArtifactModifiedEvent.artifact.getBranch().getBranchId();
+                     transData.branchId = xArtifactModifiedEvent.artifact.getBranch().getId();
                   }
                } else {
                   transData.unloadedAddedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (transData.branchId == -1) {
-                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getBranchId();
+                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
                   }
                }
             }
@@ -629,12 +629,12 @@ public class InternalEventManager {
                if (xArtifactModifiedEvent.artifact != null) {
                   transData.cacheDeletedArtifacts.add(xArtifactModifiedEvent.artifact);
                   if (transData.branchId == -1) {
-                     transData.branchId = xArtifactModifiedEvent.artifact.getBranch().getBranchId();
+                     transData.branchId = xArtifactModifiedEvent.artifact.getBranch().getId();
                   }
                } else {
                   transData.unloadedDeletedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (transData.branchId == -1) {
-                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getBranchId();
+                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
                   }
                }
             }
@@ -642,12 +642,12 @@ public class InternalEventManager {
                if (xArtifactModifiedEvent.artifact != null) {
                   transData.cacheChangedArtifacts.add(xArtifactModifiedEvent.artifact);
                   if (transData.branchId == -1) {
-                     transData.branchId = xArtifactModifiedEvent.artifact.getBranch().getBranchId();
+                     transData.branchId = xArtifactModifiedEvent.artifact.getBranch().getId();
                   }
                } else {
                   transData.unloadedChangedArtifacts.add(xArtifactModifiedEvent.unloadedArtifact);
                   if (transData.branchId == -1) {
-                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getBranchId();
+                     transData.branchId = xArtifactModifiedEvent.unloadedArtifact.getId();
                   }
                }
             }
@@ -673,9 +673,9 @@ public class InternalEventManager {
             // Else, get information from unloadedRelation (if != null)
             else if (unloadedRelation != null) {
                Artifact artA =
-                     ArtifactCache.getActive(unloadedRelation.getArtifactAId(), unloadedRelation.getBranchId());
+                     ArtifactCache.getActive(unloadedRelation.getArtifactAId(), unloadedRelation.getId());
                Artifact artB =
-                     ArtifactCache.getActive(unloadedRelation.getArtifactBId(), unloadedRelation.getBranchId());
+                     ArtifactCache.getActive(unloadedRelation.getArtifactBId(), unloadedRelation.getId());
                if (artA != null || artB != null) {
                   try {
                      loadedRelation =
@@ -692,13 +692,13 @@ public class InternalEventManager {
                   if (loadedRelation.getArtifactA() != null) {
                      transData.cacheRelationAddedArtifacts.add(loadedRelation.getArtifactA());
                      if (transData.branchId == -1) {
-                        transData.branchId = loadedRelation.getArtifactA().getBranch().getBranchId();
+                        transData.branchId = loadedRelation.getArtifactA().getBranch().getId();
                      }
                   }
                   if (loadedRelation.getArtifactB() != null) {
                      transData.cacheRelationAddedArtifacts.add(loadedRelation.getArtifactB());
                      if (transData.branchId == -1) {
-                        transData.branchId = loadedRelation.getArtifactB().getBranch().getBranchId();
+                        transData.branchId = loadedRelation.getArtifactB().getBranch().getId();
                      }
                   }
                }
@@ -712,21 +712,21 @@ public class InternalEventManager {
                   if (loadedRelation.getArtifactA() != null) {
                      transData.cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactA());
                      if (transData.branchId == -1) {
-                        transData.branchId = loadedRelation.getArtifactA().getBranch().getBranchId();
+                        transData.branchId = loadedRelation.getArtifactA().getBranch().getId();
                         loadedRelation.getBranch();
                      }
                   }
                   if (loadedRelation.getArtifactB() != null) {
                      transData.cacheRelationDeletedArtifacts.add(loadedRelation.getArtifactB());
                      if (transData.branchId == -1) {
-                        transData.branchId = loadedRelation.getArtifactB().getBranch().getBranchId();
+                        transData.branchId = loadedRelation.getArtifactB().getBranch().getId();
                      }
                   }
                }
                if (unloadedRelation != null) {
                   transData.unloadedDeletedRelations.add(unloadedRelation);
                   if (transData.branchId == -1) {
-                     transData.branchId = unloadedRelation.getBranchId();
+                     transData.branchId = unloadedRelation.getId();
                   }
                }
             }
@@ -736,20 +736,20 @@ public class InternalEventManager {
                   if (loadedRelation.getArtifactA() != null) {
                      transData.cacheRelationChangedArtifacts.add(loadedRelation.getArtifactA());
                      if (transData.branchId == -1) {
-                        transData.branchId = loadedRelation.getArtifactA().getBranch().getBranchId();
+                        transData.branchId = loadedRelation.getArtifactA().getBranch().getId();
                      }
                   }
                   if (loadedRelation.getArtifactB() != null) {
                      transData.cacheRelationChangedArtifacts.add(loadedRelation.getArtifactB());
                      if (transData.branchId == -1) {
-                        transData.branchId = loadedRelation.getArtifactB().getBranch().getBranchId();
+                        transData.branchId = loadedRelation.getArtifactB().getBranch().getId();
                      }
                   }
                }
                if (unloadedRelation != null) {
                   transData.unloadedChangedRelations.add(unloadedRelation);
                   if (transData.branchId == -1) {
-                     transData.branchId = unloadedRelation.getBranchId();
+                     transData.branchId = unloadedRelation.getId();
                   }
                }
             }

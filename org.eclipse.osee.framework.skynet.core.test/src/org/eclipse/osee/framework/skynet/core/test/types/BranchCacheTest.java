@@ -15,6 +15,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -23,9 +26,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
@@ -52,7 +52,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       branchData = new ArrayList<Branch>();
 
       BranchDataAccessor branchAccessor = new BranchDataAccessor(branchData);
-      cache = new BranchCache(factory, branchAccessor);
+      cache = new BranchCache(branchAccessor);
       cache.ensurePopulated();
 
       Assert.assertTrue(branchAccessor.wasLoaded());
@@ -303,8 +303,8 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       }
 
       @Override
-      public void load(AbstractOseeCache<Branch> cache, IOseeTypeFactory factory) throws OseeCoreException {
-         super.load(cache, factory);
+      public void load(AbstractOseeCache<Branch> cache) throws OseeCoreException {
+         super.load(cache);
          data.add(OseeTypesUtil.createBranch(cache, factory, "AAA", "Root", BranchType.SYSTEM_ROOT,
                BranchState.CREATED, false));
 

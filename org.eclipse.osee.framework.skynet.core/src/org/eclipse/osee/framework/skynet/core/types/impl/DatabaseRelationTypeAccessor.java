@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,15 +26,13 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseRelationTypeAccessor implements IOseeDataAccessor<RelationType> {
+public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<RelationType> {
    private static final String SELECT_LINK_TYPES = "SELECT * FROM osee_relation_link_type";
    private static final String INSERT_RELATION_TYPE =
          "INSERT INTO osee_relation_link_type (rel_link_type_id, rel_link_type_guid, type_name, a_name, b_name, a_art_type_id, b_art_type_id, multiplicity, default_order_type_guid) VALUES (?,?,?,?,?,?,?,?,?)";
@@ -42,12 +41,13 @@ public class DatabaseRelationTypeAccessor implements IOseeDataAccessor<RelationT
 
    private final ArtifactTypeCache artifactCache;
 
-   public DatabaseRelationTypeAccessor(ArtifactTypeCache artifactCache) {
+   public DatabaseRelationTypeAccessor(IOseeTypeFactory factory, ArtifactTypeCache artifactCache) {
+      super(factory);
       this.artifactCache = artifactCache;
    }
 
    @Override
-   public void load(AbstractOseeCache<RelationType> cache, IOseeTypeFactory factory) throws OseeCoreException {
+   public void load(AbstractOseeCache<RelationType> cache) throws OseeCoreException {
       artifactCache.ensurePopulated();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
@@ -72,7 +72,7 @@ public class DatabaseRelationTypeAccessor implements IOseeDataAccessor<RelationT
                RelationType relationType = cache.getById(typeId);
                if (relationType == null) {
                   relationType =
-                        factory.createRelationType(cache, chStmt.getString("rel_link_type_guid"), name, sideAName,
+                        getFactory().createRelationType(cache, chStmt.getString("rel_link_type_guid"), name, sideAName,
                               sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
                   relationType.setId(typeId);
                   relationType.setModificationType(ModificationType.MODIFIED);

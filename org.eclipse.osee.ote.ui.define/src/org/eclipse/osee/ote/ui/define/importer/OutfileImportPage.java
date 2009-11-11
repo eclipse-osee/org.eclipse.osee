@@ -32,9 +32,9 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.widgets.XBranchSelectWidget;
 import org.eclipse.osee.ote.define.TestRunStorageKey;
@@ -310,7 +310,7 @@ public class OutfileImportPage extends WizardDataTransferPage {
          Branch branch = branchSelect.getData();
          try {
             if (branch != null && branch.hasParentBranch()) {
-               String lastBranchSelected = Integer.toString(branch.getBranchId());
+               String lastBranchSelected = Integer.toString(branch.getId());
                branchIds = addToHistory(branchIds, lastBranchSelected);
 
                settings.put(TestRunStorageKey.BRANCH_IDS, branchIds);

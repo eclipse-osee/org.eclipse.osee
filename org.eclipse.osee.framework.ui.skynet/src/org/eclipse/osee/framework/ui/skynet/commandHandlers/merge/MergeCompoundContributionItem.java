@@ -22,9 +22,9 @@ import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -71,9 +71,9 @@ public class MergeCompoundContributionItem extends CompoundContributionItem {
             if (selectedBranch != null) {
                try {
                   Collection<Integer> destBranches =
-                        ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getBranchId());
-                  if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getBranchId())) {
-                     destBranches.add(selectedBranch.getParentBranch().getBranchId());
+                        ConflictManagerInternal.getDestinationBranchesMerged(selectedBranch.getId());
+                  if (selectedBranch.getParentBranch() != null && !destBranches.contains(selectedBranch.getParentBranch().getId())) {
+                     destBranches.add(selectedBranch.getParentBranch().getId());
                   }
 
                   String commandId = "org.eclipse.osee.framework.ui.skynet.branch.BranchView.mergeManager";

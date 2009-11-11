@@ -16,8 +16,8 @@ import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.IS;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.database.sql.LocalAliasTable;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Robert A. Fisher
@@ -72,7 +72,7 @@ public class AttributeValueSearch implements ISearchPrimitive {
       sql +=
             " AND " + ATTRIBUTE_TYPE_ALIAS_1.column("attr_type_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_type_id") + " AND " + ATTRIBUTE_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT max(osee_txs.transaction_id) FROM " + ATTRIBUTE_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + ATTRIBUTE_ALIAS_2.column("attr_id") + "=" + ATTRIBUTE_ALIAS_1.column("attr_id") + " AND " + ATTRIBUTE_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)";
 
-      dataList.add(branch.getBranchId());
+      dataList.add(branch.getId());
 
       if (attributeValue != null) {
          sql += " AND " + ATTRIBUTE_ALIAS_1.column("value") + operator + " ?";

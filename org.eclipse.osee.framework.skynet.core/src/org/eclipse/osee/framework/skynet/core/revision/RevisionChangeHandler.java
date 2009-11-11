@@ -17,8 +17,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -26,14 +27,12 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.ArtifactChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.AttributeChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.revision.acquirer.RelationChangeAcquirer;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * Acquires changes for either branches or transactions.
@@ -77,7 +76,7 @@ public final class RevisionChangeHandler {
       try {
          chStmt.runPreparedQuery(
                "SELECT /*+ ordered FIRST_ROWS */ td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_artifact_version av1 where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and td1.transaction_id <=? and tx1.gamma_id = av1.gamma_id and av1.art_id = ?",
-               branch.getBranchId(), transactionId.getId(), artifact.getArtId());
+               branch.getId(), transactionId.getId(), artifact.getArtId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
@@ -85,7 +84,7 @@ public final class RevisionChangeHandler {
 
          chStmt.runPreparedQuery(
                "SELECT /*+ ordered FIRST_ROWS */ td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_relation_link rel where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and td1.transaction_id <=? and tx1.gamma_id = rel.gamma_id and (rel.a_art_id = ? or rel.b_art_id = ?)",
-               branch.getBranchId(), transactionId.getId(), artifact.getArtId(), artifact.getArtId());
+               branch.getId(), transactionId.getId(), artifact.getArtId(), artifact.getArtId());
 
          while (chStmt.next()) {
             transactionIds.add(TransactionManager.getTransactionId(chStmt.getInt("transaction_id")));
@@ -143,7 +142,7 @@ public final class RevisionChangeHandler {
 
          List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (int artId : artIds) {
-            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
+            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getId(),
                   historical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
          bulkLoadedArtifacts =

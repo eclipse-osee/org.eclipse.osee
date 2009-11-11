@@ -1,4 +1,4 @@
-package org.eclipse.osee.framework.skynet.core.types;
+package org.eclipse.osee.framework.core.data;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -7,12 +7,8 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.internal.Activator;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.IOseeType;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.types.field.AbstractOseeField;
-import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
-import org.eclipse.osee.framework.skynet.core.types.field.UniqueIdField;
 
 public abstract class AbstractOseeType implements IOseeStorableType {
 

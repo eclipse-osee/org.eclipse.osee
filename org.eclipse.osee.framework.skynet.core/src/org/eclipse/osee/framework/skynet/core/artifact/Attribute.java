@@ -212,7 +212,7 @@ public abstract class Attribute<T> {
       this.dirty = dirty;
       try {
          Artifact artifact = getArtifact();
-         ArtifactCache.updateCachedArtifact(artifact.getArtId(), artifact.getBranch().getBranchId());
+         ArtifactCache.updateCachedArtifact(artifact.getArtId(), artifact.getBranch().getId());
       } catch (OseeStateException ex) {
          OseeLog.log(Attribute.class, Level.SEVERE, ex.toString(), ex);
       } catch (OseeCoreException ex) {

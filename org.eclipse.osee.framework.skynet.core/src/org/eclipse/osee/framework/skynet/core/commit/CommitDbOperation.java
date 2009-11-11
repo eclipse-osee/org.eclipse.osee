@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -37,12 +38,12 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Ryan D. Brooks
@@ -104,7 +105,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
    private void updateMergeBranchCommitTx() throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, newTransactionNumber,
-            sourceBranch.getBranchId(), destinationBranch.getBranchId());
+            sourceBranch.getId(), destinationBranch.getId());
    }
 
    private void updatePreviousCurrentsOnDestinationBranch() throws OseeStateException, OseeDataStoreException {
@@ -131,7 +132,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       String comment = BranchManager.COMMIT_COMMENT + sourceBranch.getName();
       int authorId = userToBlame == null ? -1 : userToBlame.getArtId();
       ConnectionHandler.runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
-            TransactionDetailsType.NonBaselined.getId(), destinationBranch.getBranchId(), newTransactionNumber,
+            TransactionDetailsType.NonBaselined.getId(), destinationBranch.getId(), newTransactionNumber,
             comment, timestamp, authorId, sourceBranch.getAssociatedArtifact().getArtId());
 
       return newTransactionNumber;
@@ -181,7 +182,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       if (success) {
          // Update commit artifact cache with new information
          if (sourceBranch.getAssociatedArtifact().getArtId() > 0) {
-            TransactionManager.cacheCommittedArtifactTransaction(sourceBranch.getAssociatedArtifact(),
+            TransactionManager.cacheCommittedArtifactTransaction((IArtifact) sourceBranch.getAssociatedArtifact(),
                   TransactionManager.getTransactionId(newTransactionNumber));
          }
 
@@ -192,10 +193,10 @@ public class CommitDbOperation extends AbstractDbTxOperation {
          // update conflict status, if necessary
          if (mergeBranch != null) {
             ConnectionHandler.runPreparedUpdate(connection, UPDATE_CONFLICT_STATUS,
-                  ConflictStatus.COMMITTED.getValue(), ConflictStatus.RESOLVED.getValue(), mergeBranch.getBranchId());
+                  ConflictStatus.COMMITTED.getValue(), ConflictStatus.RESOLVED.getValue(), mergeBranch.getId());
          }
 
-         OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, sourceBranch.getBranchId());
+         OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, sourceBranch.getId());
       }
    }
 }

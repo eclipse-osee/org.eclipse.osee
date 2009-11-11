@@ -11,6 +11,9 @@
 package org.eclipse.osee.framework.skynet.core.commit;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 
 /**
  * @author Roberto E. Escobar
@@ -18,6 +21,24 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 public class ChangeItemUtil {
 
    private ChangeItemUtil() {
+   }
+
+   public static ChangeVersion getStartingVersion(ChangeItem item) throws OseeCoreException {
+      if (item == null) {
+         throw new OseeArgumentException("ChangeItem cannot be null");
+      }
+      ChangeVersion toReturn = item.getBaselineVersion();
+      if (!toReturn.isValid()) {
+         toReturn = item.getFirstNonCurrentChange();
+         if (!toReturn.isValid()) {
+            toReturn = item.getCurrentVersion();
+            if (!toReturn.isValid()) {
+               throw new OseeStateException(String.format("Cannot find a valid starting point for change item: %s",
+                     item));
+            }
+         }
+      }
+      return toReturn;
    }
 
    public static boolean isModType(ChangeVersion changeVersion, ModificationType matchModType) {

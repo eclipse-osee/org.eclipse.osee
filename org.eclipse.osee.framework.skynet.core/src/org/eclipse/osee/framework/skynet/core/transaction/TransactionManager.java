@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -29,7 +31,6 @@ import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
@@ -65,7 +66,7 @@ public final class TransactionManager {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt.runPreparedQuery(SELECT_TRANSACTIONS, branch.getBranchId());
+         chStmt.runPreparedQuery(SELECT_TRANSACTIONS, branch.getId());
 
          while (chStmt.next()) {
             transactions.add(getTransactionId(chStmt.getInt("transaction_id"), chStmt));
@@ -129,7 +130,7 @@ public final class TransactionManager {
     * @throws OseeCoreException
     */
    public static TransactionRecord getLastTransaction(Branch branch) throws OseeCoreException {
-      int branchId = branch.getBranchId();
+      int branchId = branch.getId();
       int transactionNumber =
             ConnectionHandler.runPreparedQueryFetchInt(-1,
                   ClientSessionManager.getSql(OseeSql.TX_GET_MAX_AS_LARGEST_TX), branchId);
@@ -148,7 +149,7 @@ public final class TransactionManager {
 
       Date transactionTime = GlobalTime.GreenwichMeanTimestamp();
       ConnectionHandler.runPreparedUpdate(INSERT_INTO_TRANSACTION_DETAIL, transactionNumber, comment, transactionTime,
-            authorArtId, branch.getBranchId(), TransactionDetailsType.NonBaselined.getId());
+            authorArtId, branch.getId(), TransactionDetailsType.NonBaselined.getId());
 
       TransactionRecord transactionId =
             new TransactionRecord(transactionNumber, branch, comment, transactionTime, authorArtId, -1,
@@ -159,8 +160,9 @@ public final class TransactionManager {
    }
 
    public static Pair<TransactionRecord, TransactionRecord> getStartEndPoint(Branch branch) throws OseeCoreException {
-      return new Pair<TransactionRecord, TransactionRecord>(branch.getBaseTransaction(),
-            getLastTransaction(branch));
+      TransactionRecord startRecord = branch.getBaseTransaction();
+      TransactionRecord endRecord = getLastTransaction(branch);
+      return new Pair<TransactionRecord, TransactionRecord>(startRecord, endRecord);
    }
 
    /**
@@ -175,7 +177,7 @@ public final class TransactionManager {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
 
       try {
-         chStmt.runPreparedQuery(GET_PRIOR_TRANSACTION, transactionId.getBranch().getBranchId(), transactionId.getId());
+         chStmt.runPreparedQuery(GET_PRIOR_TRANSACTION, transactionId.getBranch().getId(), transactionId.getId());
 
          if (chStmt.next()) {
             int priorId = chStmt.getInt("prior_id");

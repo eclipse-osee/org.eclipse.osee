@@ -25,6 +25,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
@@ -51,8 +52,8 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkBroadcastE
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkCommitBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkDeletedBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewBranchEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkCreatedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkPurgeBranchEvent;
+import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkCreatedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkOrderModifiedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkRationalModifiedEvent;
@@ -64,7 +65,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -74,6 +74,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
@@ -335,7 +336,7 @@ public class RemoteEventManager {
                         AccessControlEventType accessControlModType =
                               AccessControlEventType.valueOf(((NetworkAccessControlArtifactsEvent) event).getAccessControlModTypeName());
                         LoadedArtifacts loadedArtifacts =
-                              new LoadedArtifacts(((NetworkAccessControlArtifactsEvent) event).getBranchId(),
+                              new LoadedArtifacts(((NetworkAccessControlArtifactsEvent) event).getId(),
                                     ((NetworkAccessControlArtifactsEvent) event).getArtifactIds(),
                                     ((NetworkAccessControlArtifactsEvent) event).getArtifactTypeIds());
                         InternalEventManager.kickAccessControlArtifactsEvent(sender, accessControlModType,
@@ -344,7 +345,7 @@ public class RemoteEventManager {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkRenameBranchEvent) {
-                     int branchId = ((NetworkRenameBranchEvent) event).getBranchId();
+                     int branchId = ((NetworkRenameBranchEvent) event).getId();
                      try {
                         Branch branch = BranchManager.getBranch(branchId);
                         branch.setName(((NetworkRenameBranchEvent) event).getBranchName());
@@ -358,14 +359,14 @@ public class RemoteEventManager {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkNewBranchEvent) {
-                     int branchId = ((NetworkNewBranchEvent) event).getBranchId();
+                     int branchId = ((NetworkNewBranchEvent) event).getId();
                      try {
                         InternalEventManager.kickBranchEvent(sender, BranchEventType.Added, branchId);
                      } catch (Exception ex) {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkDeletedBranchEvent) {
-                     int branchId = ((NetworkDeletedBranchEvent) event).getBranchId();
+                     int branchId = ((NetworkDeletedBranchEvent) event).getId();
                      try {
                         Branch branch = OseeTypeManager.getBranchCache().getById(branchId);
                         if (branch != null) {
@@ -377,7 +378,7 @@ public class RemoteEventManager {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkPurgeBranchEvent) {
-                     int branchId = ((NetworkPurgeBranchEvent) event).getBranchId();
+                     int branchId = ((NetworkPurgeBranchEvent) event).getId();
                      try {
                         Branch branch = OseeTypeManager.getBranchCache().getById(branchId);
                         if (branch != null) {
@@ -388,10 +389,10 @@ public class RemoteEventManager {
                         OseeLog.log(Activator.class, Level.SEVERE, ex);
                      }
                   } else if (event instanceof NetworkCommitBranchEvent) {
-                     int branchId = ((NetworkCommitBranchEvent) event).getBranchId();
+                     int branchId = ((NetworkCommitBranchEvent) event).getId();
                      try {
                         try {
-                           TransactionManager.clearCommitArtifactCacheForAssociatedArtifact(BranchManager.getBranch(
+                           TransactionManager.clearCommitArtifactCacheForAssociatedArtifact((IArtifact) BranchManager.getBranch(
                                  branchId).getAssociatedArtifact());
                         } catch (OseeCoreException ex) {
                            OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -435,7 +436,7 @@ public class RemoteEventManager {
                   } else if (event instanceof NetworkArtifactChangeTypeEvent) {
                      try {
                         LoadedArtifacts loadedArtifacts =
-                              new LoadedArtifacts(((NetworkArtifactChangeTypeEvent) event).getBranchId(),
+                              new LoadedArtifacts(((NetworkArtifactChangeTypeEvent) event).getId(),
                                     ((NetworkArtifactChangeTypeEvent) event).getArtifactIds(),
                                     ((NetworkArtifactChangeTypeEvent) event).getArtifactTypeIds());
                         InternalEventManager.kickArtifactsChangeTypeEvent(sender,
@@ -446,7 +447,7 @@ public class RemoteEventManager {
                   } else if (event instanceof NetworkArtifactPurgeEvent) {
                      try {
                         LoadedArtifacts loadedArtifacts =
-                              new LoadedArtifacts(((NetworkArtifactPurgeEvent) event).getBranchId(),
+                              new LoadedArtifacts(((NetworkArtifactPurgeEvent) event).getId(),
                                     ((NetworkArtifactPurgeEvent) event).getArtifactIds(),
                                     ((NetworkArtifactPurgeEvent) event).getArtifactTypeIds());
                         InternalEventManager.kickArtifactsPurgedEvent(sender, loadedArtifacts);
@@ -498,7 +499,7 @@ public class RemoteEventManager {
             List<String> dirtyAttributeName = new LinkedList<String>();
 
             if (event instanceof NetworkArtifactModifiedEvent) {
-               int branchId = ((NetworkArtifactModifiedEvent) event).getBranchId();
+               int branchId = ((NetworkArtifactModifiedEvent) event).getId();
                Artifact artifact = ArtifactCache.getActive(artId, branchId);
                if (artifact == null) {
                   UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
@@ -568,7 +569,7 @@ public class RemoteEventManager {
 
                }
             } else if (event instanceof NetworkArtifactDeletedEvent) {
-               int branchId = ((NetworkArtifactDeletedEvent) event).getBranchId();
+               int branchId = ((NetworkArtifactDeletedEvent) event).getId();
                Artifact artifact = ArtifactCache.getActive(artId, branchId);
                if (artifact == null) {
                   UnloadedArtifact unloadedArtifact = new UnloadedArtifact(branchId, artId, artTypeId);
@@ -599,32 +600,32 @@ public class RemoteEventManager {
 
          try {
             RelationType relationType = RelationTypeManager.getType(event.getRelTypeId());
-            Branch branch = BranchManager.getBranch(event.getBranchId());
-            Artifact aArtifact = ArtifactCache.getActive(event.getArtAId(), branch.getBranchId());
-            Artifact bArtifact = ArtifactCache.getActive(event.getArtBId(), branch.getBranchId());
+            Branch branch = BranchManager.getBranch(event.getId());
+            Artifact aArtifact = ArtifactCache.getActive(event.getArtAId(), branch.getId());
+            Artifact bArtifact = ArtifactCache.getActive(event.getArtBId(), branch.getId());
             boolean aArtifactLoaded = aArtifact != null;
             boolean bArtifactLoaded = bArtifact != null;
 
             if (!aArtifactLoaded && !bArtifactLoaded) {
                if (event instanceof NetworkRelationLinkDeletedEvent) {
                   UnloadedRelation unloadedRelation =
-                        new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
+                        new UnloadedRelation(branch.getId(), event.getArtAId(), event.getArtATypeId(),
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
                   xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.Deleted, unloadedRelation));
                } else if (event instanceof NetworkRelationLinkOrderModifiedEvent) {
                   UnloadedRelation unloadedRelation =
-                        new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
+                        new UnloadedRelation(branch.getId(), event.getArtAId(), event.getArtATypeId(),
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
                   xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.ReOrdered, unloadedRelation));
                } else if (event instanceof NetworkRelationLinkRationalModifiedEvent) {
                   UnloadedRelation unloadedRelation =
-                        new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
+                        new UnloadedRelation(branch.getId(), event.getArtAId(), event.getArtATypeId(),
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
                   xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.RationaleMod,
                         unloadedRelation));
                } else if (event instanceof NetworkRelationLinkCreatedEvent) {
                   UnloadedRelation unloadedRelation =
-                        new UnloadedRelation(branch.getBranchId(), event.getArtAId(), event.getArtATypeId(),
+                        new UnloadedRelation(branch.getId(), event.getArtAId(), event.getArtATypeId(),
                               event.getArtBId(), event.getArtBTypeId(), event.getRelTypeId());
                   xModifiedEvents.add(new RelationModifiedEvent(sender, RelationEventType.Added, unloadedRelation));
                }

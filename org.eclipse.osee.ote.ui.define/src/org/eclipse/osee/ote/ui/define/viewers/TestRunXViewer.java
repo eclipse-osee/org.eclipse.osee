@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -264,8 +265,8 @@ public class TestRunXViewer extends XViewer {
                         ArtifactQuery.getArtifactFromTypeAndAttribute("Test Run Disposition", "Name", name,
                               artifact.getBranch());
                } catch (ArtifactDoesNotExist ex) {
-                  dispoArtifact =
-                        ArtifactTypeManager.getType("Test Run Disposition").makeNewArtifact(artifact.getBranch());
+                  ArtifactType artifactType = ArtifactTypeManager.getType("Test Run Disposition");
+                  dispoArtifact = ArtifactTypeManager.makeNewArtifact(artifactType, artifact.getBranch());
                   dispoArtifact.setName(name);
                }
                if (dispoArtifact != null) {

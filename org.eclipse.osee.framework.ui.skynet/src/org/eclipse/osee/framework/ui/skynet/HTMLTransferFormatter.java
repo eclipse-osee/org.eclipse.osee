@@ -49,7 +49,7 @@ public class HTMLTransferFormatter {
             } catch (OseeCoreException ex) {
                link =
                      String.format("guid:[%s] branch:[%s] gammaId:[%s]", artifact.getGuid(),
-                           artifact.getBranch().getBranchId(), artifact.getGammaId());
+                           artifact.getBranch().getId(), artifact.getGammaId());
                OseeLog.log(SkynetGuiPlugin.class, Level.WARNING, String.format("Error creating link for: [%s]",
                      artifact), ex);
             }

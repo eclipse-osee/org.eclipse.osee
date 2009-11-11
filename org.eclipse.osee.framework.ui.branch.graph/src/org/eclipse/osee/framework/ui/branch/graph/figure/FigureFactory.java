@@ -20,7 +20,7 @@ import org.eclipse.draw2d.PolygonDecoration;
 import org.eclipse.draw2d.PolylineConnection;
 import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.ui.branch.graph.model.BranchModel;
 import org.eclipse.osee.framework.ui.branch.graph.model.TxData;
 import org.eclipse.osee.framework.ui.branch.graph.model.TxModel;

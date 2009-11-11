@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -118,8 +119,8 @@ public class ArtifactCache {
          historicalArtifactIdCache.put(artifact.getArtId(), artifact.getTransactionNumber(), obj);
          historicalArtifactGuidCache.put(artifact.getGuid(), artifact.getTransactionNumber(), obj);
       } else {
-         artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getBranchId(), obj);
-         artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getBranchId(), obj);
+         artifactIdCache.put(artifact.getArtId(), artifact.getBranch().getId(), obj);
+         artifactGuidCache.put(artifact.getGuid(), artifact.getBranch().getId(), obj);
          byArtifactTypeCache.put(artifact.getArtifactType(), new ArtifactKey(artifact), obj);
       }
    }
@@ -247,7 +248,7 @@ public class ArtifactCache {
     * otherwise
     */
    public static Artifact getActive(Integer artId, Branch branch) {
-      return getActive(artId, branch.getBranchId());
+      return getActive(artId, branch.getId());
    }
 
    /**

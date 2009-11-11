@@ -14,9 +14,9 @@ import static org.eclipse.osee.framework.database.sql.SkynetDatabase.RELATION_LI
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -43,7 +43,7 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
 
       this.fromTransactionNumber = fromTransactionId.getId();
       this.toTransactionNumber = toTransactionId.getId();
-      this.branchId = fromTransactionId.getBranch().getBranchId();
+      this.branchId = fromTransactionId.getBranch().getId();
    }
 
    public String getArtIdColName() {

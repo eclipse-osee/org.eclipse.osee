@@ -14,6 +14,8 @@ import java.sql.Timestamp;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -27,9 +29,7 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -91,7 +91,7 @@ public class UpdateArtifactHandler {
          // insert into the artifact_join_table
          for (Artifact artifact : artifactVersions) {
             insertParameters.add(new Object[] {queryIdForBranchInfo, insertTime, artifact.getArtId(),
-                  updatingSourceBranch.getBranchId(), SQL3DataType.INTEGER});
+                  updatingSourceBranch.getId(), SQL3DataType.INTEGER});
             try {
                Artifact sourceArtifact = ArtifactQuery.getArtifactFromId(artifact.getArtId(), branchToUpdate);
                ArtifactPersistenceManager.revertArtifact(connection, sourceArtifact);
@@ -117,13 +117,13 @@ public class UpdateArtifactHandler {
 
       int count =
             ConnectionHandler.runPreparedUpdate(connection, POPULATE_ARTIFACT_VERSION_GAMMAS_FOR_UPDATES, timestamp,
-                  queryIdForTransGammaIds, branchToUpdate.getBranchId(), updatingSourceBranch.getBranchId(),
+                  queryIdForTransGammaIds, branchToUpdate.getId(), updatingSourceBranch.getId(),
                   queryIdForBranchInfo);
       OseeLog.log(UpdateArtifactHandler.class, Level.INFO,
             "populated " + count + " Artifact Version gammas into the join table");
       count =
             ConnectionHandler.runPreparedUpdate(connection, POPULATE_ATTRIBUTE_GAMMAS_FOR_UPDATES, timestamp,
-                  queryIdForTransGammaIds, branchToUpdate.getBranchId(), updatingSourceBranch.getBranchId(),
+                  queryIdForTransGammaIds, branchToUpdate.getId(), updatingSourceBranch.getId(),
                   queryIdForBranchInfo);
       OseeLog.log(UpdateArtifactHandler.class, Level.INFO,
             "populated " + count + " Attribute gammas into the join table");
@@ -131,7 +131,7 @@ public class UpdateArtifactHandler {
       if (loadRelations) {
          count =
                ConnectionHandler.runPreparedUpdate(connection, POPULATE_RELATION_GAMMAS_FOR_UPDATES, timestamp,
-                     queryIdForTransGammaIds, branchToUpdate.getBranchId(), updatingSourceBranch.getBranchId(),
+                     queryIdForTransGammaIds, branchToUpdate.getId(), updatingSourceBranch.getId(),
                      queryIdForBranchInfo);
          OseeLog.log(UpdateArtifactHandler.class, Level.INFO,
                "populated " + count + " Relation gammas into the join table");
@@ -147,18 +147,18 @@ public class UpdateArtifactHandler {
 
       count =
             ConnectionHandler.runPreparedUpdate(connection, INSERT_UPDATED_ARTIFACTS, transactionNumber,
-                  updatingSourceBranch.getBranchId(), queryIdForBranchInfo);
+                  updatingSourceBranch.getId(), queryIdForBranchInfo);
       OseeLog.log(UpdateArtifactHandler.class, Level.INFO, "inserted " + count + " artifacts");
 
       count =
             ConnectionHandler.runPreparedUpdate(connection, INSERT_UPDATED_ATTRIBUTES_GAMMAS, transactionNumber,
-                  updatingSourceBranch.getBranchId(), queryIdForBranchInfo);
+                  updatingSourceBranch.getId(), queryIdForBranchInfo);
       OseeLog.log(UpdateArtifactHandler.class, Level.INFO, "inserted " + count + " attributes");
 
       if (loadRelations) {
          count =
                ConnectionHandler.runPreparedUpdate(connection, INSERT_UPDATED_LINKS_GAMMAS, transactionNumber,
-                     updatingSourceBranch.getBranchId(), queryIdForBranchInfo);
+                     updatingSourceBranch.getId(), queryIdForBranchInfo);
          OseeLog.log(UpdateArtifactHandler.class, Level.INFO, "inserted " + count + " relations");
       }
    }

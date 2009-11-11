@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ARTIFACT_VE
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.List;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.core.data.Branch;
 
 /**
  * Searches for artifacts used as the Control Management artifact of any commit involving a supplied artifact.

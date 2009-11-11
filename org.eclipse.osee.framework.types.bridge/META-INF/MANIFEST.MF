@@ -20,7 +20,8 @@ Require-Bundle: org.eclipse.ui.ide,
  org.eclipse.ui.forms
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.osee.framework.core.enums,
+Import-Package: org.eclipse.osee.framework.core.data,
+ org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.database.init,

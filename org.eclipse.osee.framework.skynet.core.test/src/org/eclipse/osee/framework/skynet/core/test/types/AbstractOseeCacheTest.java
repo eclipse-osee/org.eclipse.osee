@@ -15,10 +15,10 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.AbstractOseeType;
+import org.eclipse.osee.framework.core.data.IOseeStorableType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
-import org.eclipse.osee.framework.skynet.core.types.IOseeStorableType;
 
 /**
  * @author Roberto E. Escobar

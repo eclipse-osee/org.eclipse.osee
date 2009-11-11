@@ -12,7 +12,9 @@ package org.eclipse.osee.framework.skynet.core.types.field;
 
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.AbstractOseeField;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.ChangeUtil;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;

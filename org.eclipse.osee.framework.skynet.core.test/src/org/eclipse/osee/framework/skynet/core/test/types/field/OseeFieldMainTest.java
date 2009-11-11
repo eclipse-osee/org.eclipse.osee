@@ -19,13 +19,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.IOseeField;
+import org.eclipse.osee.framework.core.data.OseeField;
+import org.eclipse.osee.framework.core.data.UniqueIdField;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.util.ChangeUtil;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
@@ -36,7 +40,6 @@ import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.AttributeTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.skynet.core.types.IOseeField;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
@@ -44,10 +47,7 @@ import org.eclipse.osee.framework.skynet.core.types.field.AliasesField;
 import org.eclipse.osee.framework.skynet.core.types.field.ArtifactSuperTypeField;
 import org.eclipse.osee.framework.skynet.core.types.field.ArtifactTypeAttributesField;
 import org.eclipse.osee.framework.skynet.core.types.field.AssociatedArtifactField;
-import org.eclipse.osee.framework.skynet.core.types.field.ChangeUtil;
 import org.eclipse.osee.framework.skynet.core.types.field.EnumEntryField;
-import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
-import org.eclipse.osee.framework.skynet.core.types.field.UniqueIdField;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -167,7 +167,7 @@ public class OseeFieldMainTest {
 
    @SuppressWarnings("unchecked")
    private static Object[] createBranchFieldTest(IOseeTypeFactory factory) throws OseeCoreException {
-      BranchCache branchCache = new BranchCache(factory, new OseeTestDataAccessor<Branch>());
+      BranchCache branchCache = new BranchCache(new OseeTestDataAccessor<Branch>());
       Branch branch =
             OseeTypesUtil.createBranch(branchCache, factory, null, "Test Branch", BranchType.WORKING,
                   BranchState.MODIFIED, false);
@@ -189,7 +189,7 @@ public class OseeFieldMainTest {
 
    @SuppressWarnings("unchecked")
    private static Object[] createAssociatedArtifactTest(IOseeTypeFactory factory) throws OseeCoreException {
-      BranchCache branchCache = new BranchCache(factory, new OseeTestDataAccessor<Branch>());
+      BranchCache branchCache = new BranchCache(new OseeTestDataAccessor<Branch>());
       Branch branch =
             OseeTypesUtil.createBranch(branchCache, factory, null, "Test Branch", BranchType.WORKING,
                   BranchState.MODIFIED, false);
@@ -212,7 +212,7 @@ public class OseeFieldMainTest {
 
    @SuppressWarnings("unchecked")
    private static Object[] createEnumEntryFieldTest(IOseeTypeFactory factory) throws OseeCoreException {
-      OseeEnumTypeCache enumTypeCache = new OseeEnumTypeCache(factory, new OseeTestDataAccessor<OseeEnumType>());
+      OseeEnumTypeCache enumTypeCache = new OseeEnumTypeCache(new OseeTestDataAccessor<OseeEnumType>());
       OseeEnumType oseeEnumType = OseeTypesUtil.createEnumType(enumTypeCache, factory, null, "Enum Data 1");
       OseeEnumEntry entry1 = factory.createEnumEntry(enumTypeCache, null, "Entry 1", 1);
       OseeEnumEntry entry2 = factory.createEnumEntry(enumTypeCache, null, "Entry 2", 2);
@@ -242,7 +242,7 @@ public class OseeFieldMainTest {
 
    @SuppressWarnings("unchecked")
    private static Object[] createSuperArtifactTypeFieldTest(IOseeTypeFactory factory) throws OseeCoreException {
-      ArtifactTypeCache artTypeCache = new ArtifactTypeCache(factory, new OseeTestDataAccessor<ArtifactType>());
+      ArtifactTypeCache artTypeCache = new ArtifactTypeCache(new OseeTestDataAccessor<ArtifactType>());
       ArtifactType artifactType = factory.createArtifactType(artTypeCache, null, false, "Test Artifact Type");
 
       ArtifactType art1 = factory.createArtifactType(artTypeCache, null, false, "Art 1");
@@ -267,15 +267,15 @@ public class OseeFieldMainTest {
 
    @SuppressWarnings("unchecked")
    private static Object[] createArtifactTypeAttributesFieldTest(IOseeTypeFactory factory) throws OseeCoreException {
-      ArtifactTypeCache artTypeCache = new ArtifactTypeCache(factory, new OseeTestDataAccessor<ArtifactType>());
+      ArtifactTypeCache artTypeCache = new ArtifactTypeCache(new OseeTestDataAccessor<ArtifactType>());
       ArtifactType artifactType = factory.createArtifactType(artTypeCache, null, false, "Test Super Artifact Type");
 
-      AttributeTypeCache attrCache = new AttributeTypeCache(factory, new OseeTestDataAccessor<AttributeType>());
+      AttributeTypeCache attrCache = new AttributeTypeCache(new OseeTestDataAccessor<AttributeType>());
       AttributeType attr1 = OseeTypesUtil.createAttributeType(attrCache, factory, null, "Attribute Type 1");
       AttributeType attr2 = OseeTypesUtil.createAttributeType(attrCache, factory, null, "Attribute Type 2");
       AttributeType attr3 = OseeTypesUtil.createAttributeType(attrCache, factory, null, "Attribute Type 3");
 
-      BranchCache branchCache = new BranchCache(factory, new OseeTestDataAccessor<Branch>());
+      BranchCache branchCache = new BranchCache(new OseeTestDataAccessor<Branch>());
       Branch br1 =
             OseeTypesUtil.createBranch(branchCache, factory, null, "Dummy Branch", BranchType.SYSTEM_ROOT,
                   BranchState.CREATED, false);

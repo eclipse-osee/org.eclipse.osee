@@ -14,12 +14,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeTestDataAccessor;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeTypesUtil;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
@@ -53,9 +53,8 @@ public class RelationOrderRendererTest {
    public static void prepareTest() throws OseeCoreException {
       MockArtifactGuidResolver resolver = new MockArtifactGuidResolver(null);
 
-      IOseeTypeFactory factory = new OseeTypeFactory();
-      RelationTypeCache typeCache = new RelationTypeCache(factory, new OseeTestDataAccessor<RelationType>());
-      addRelationTypeData(typeCache, factory);
+      RelationTypeCache typeCache = new RelationTypeCache(new OseeTestDataAccessor<RelationType>());
+      addRelationTypeData(typeCache, new OseeTypeFactory());
       sorterProvider = new RelationSorterProvider();
       renderer = new RelationOrderRenderer(typeCache, resolver, sorterProvider);
    }
@@ -191,7 +190,7 @@ public class RelationOrderRendererTest {
    }
 
    private final static void addRelationTypeData(AbstractOseeCache<RelationType> cache, IOseeTypeFactory factory) throws OseeCoreException {
-      ArtifactTypeCache artCache = new ArtifactTypeCache(factory, new OseeTestDataAccessor<ArtifactType>());
+      ArtifactTypeCache artCache = new ArtifactTypeCache(new OseeTestDataAccessor<ArtifactType>());
       ArtifactType artifactType1 = createArtifactType(artCache, factory, "Artifact 2");
       ArtifactType artifactType2 = createArtifactType(artCache, factory, "Artifact 1");
 

@@ -8,21 +8,20 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.types;
+package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.IOseeType;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeStorableType extends IOseeType {
+public interface IBasicArtifact<T> {
 
-   int getId();
+   int getArtId();
 
-   void setId(int uniqueId) throws OseeCoreException;
+   String getGuid();
 
-   boolean isDirty();
+   String getName();
 
-   void clearDirty();
+   T getFullArtifact() throws OseeCoreException;
 }

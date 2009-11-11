@@ -169,7 +169,7 @@ public class ArtifactXmlQueryResultParser extends AbstractSaxHandler {
          return artifactJoinQuery;
       }
 
-      public int getBranchId() {
+      public int getId() {
          return branchId;
       }
 

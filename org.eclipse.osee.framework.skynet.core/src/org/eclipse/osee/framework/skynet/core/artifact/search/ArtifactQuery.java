@@ -17,24 +17,24 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.skynet.core.IOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Ryan D. Brooks
@@ -67,7 +67,7 @@ public class ArtifactQuery {
    }
 
    private static Artifact getOrCheckArtifactFromId(int artId, Branch branch, boolean allowDeleted, QueryType queryType) throws OseeCoreException {
-      Artifact artifact = ArtifactCache.getActive(artId, branch.getBranchId());
+      Artifact artifact = ArtifactCache.getActive(artId, branch.getId());
       if (artifact != null) {
          return artifact;
       }
@@ -137,7 +137,7 @@ public class ArtifactQuery {
    }
 
    private static Artifact getOrCheckArtifactFromId(String guidOrHrid, Branch branch, boolean allowDeleted, QueryType queryType) throws OseeCoreException {
-      Artifact artifact = ArtifactCache.getActive(guidOrHrid, branch.getBranchId());
+      Artifact artifact = ArtifactCache.getActive(guidOrHrid, branch.getId());
       if (artifact != null) {
          return artifact;
       }

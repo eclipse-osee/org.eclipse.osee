@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.linking;
 
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Roberto E. Escobar
@@ -41,9 +41,9 @@ public class OseeLinkBuilder {
    }
 
    public String getUnknownArtifactLink(String guid, Branch branch) {
-      String internalLink = String.format("http://none/unknown?guid=%s&amp;branchId=%s", guid, branch.getBranchId());
+      String internalLink = String.format("http://none/unknown?guid=%s&amp;branchId=%s", guid, branch.getId());
       return String.format(WORDML_LINK_FORMAT, internalLink, String.format(
-            "Invalid Link: artifact with guid:[%s] on branchId:[%s] does not exist", guid, branch.getBranchId()));
+            "Invalid Link: artifact with guid:[%s] on branchId:[%s] does not exist", guid, branch.getId()));
    }
 
    public String getWordMlBookmark(Artifact source) {

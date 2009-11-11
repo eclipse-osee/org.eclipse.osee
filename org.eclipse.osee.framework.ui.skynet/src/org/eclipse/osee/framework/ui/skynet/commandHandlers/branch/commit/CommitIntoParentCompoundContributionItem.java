@@ -21,9 +21,9 @@ import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.jface.action.IContributionItem;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
@@ -88,7 +88,7 @@ public class CommitIntoParentCompoundContributionItem extends CompoundContributi
    private CommandContributionItem createCommand(Branch branch, String commandId) throws OseeCoreException {
 
       Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put(BranchView.BRANCH_ID, Integer.toString(branch.getBranchId()));
+      parameters.put(BranchView.BRANCH_ID, Integer.toString(branch.getId()));
       parameters.put(CommitBranchParameter.ARCHIVE_PARENT_BRANCH, "true");
       CommandContributionItem contributionItem;
       String label = "Commit into Parent Branch: " + branch.getParentBranch().getName();

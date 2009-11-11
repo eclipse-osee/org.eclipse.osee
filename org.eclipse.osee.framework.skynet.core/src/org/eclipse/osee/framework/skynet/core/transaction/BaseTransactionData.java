@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

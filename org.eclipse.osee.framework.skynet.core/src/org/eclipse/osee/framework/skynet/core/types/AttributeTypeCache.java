@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types;
 
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeExtensionManager;
@@ -22,8 +24,8 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeData
  */
 public final class AttributeTypeCache extends AbstractOseeCache<AttributeType> {
 
-   public AttributeTypeCache(IOseeTypeFactory factory, IOseeDataAccessor<AttributeType> dataAccessor) {
-      super(factory, dataAccessor);
+   public AttributeTypeCache(IOseeDataAccessor<AttributeType> dataAccessor) {
+      super(dataAccessor);
    }
 
    public AttributeType createType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
@@ -39,7 +41,7 @@ public final class AttributeTypeCache extends AbstractOseeCache<AttributeType> {
 
       if (attributeType == null) {
          attributeType =
-               getDataFactory().createAttributeType(this, guid, typeName, resolvedBaseAttributeType,
+               new OseeTypeFactory().createAttributeType(this, guid, typeName, resolvedBaseAttributeType,
                      resolvedProviderType, baseAttributeClass, providerAttributeClass, fileTypeExtension, defaultValue,
                      oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
       } else {

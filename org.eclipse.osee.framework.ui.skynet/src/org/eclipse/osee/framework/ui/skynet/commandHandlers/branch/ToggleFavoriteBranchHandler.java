@@ -14,11 +14,11 @@ import java.util.List;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -41,7 +41,7 @@ public class ToggleFavoriteBranchHandler extends CommandHandler {
 
       try {
          UserManager.getUser().toggleFavoriteBranch(selectedBranch);
-         OseeEventManager.kickBranchEvent(this, BranchEventType.Added, selectedBranch.getBranchId());
+         OseeEventManager.kickBranchEvent(this, BranchEventType.Added, selectedBranch.getId());
 
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

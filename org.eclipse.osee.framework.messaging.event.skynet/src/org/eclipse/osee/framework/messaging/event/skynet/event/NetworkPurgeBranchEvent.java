@@ -28,7 +28,7 @@ public class NetworkPurgeBranchEvent extends SkynetEventBase {
       return 0;
    }
 
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 

@@ -74,7 +74,7 @@ public class UnloadedRelation {
    /**
     * @return the branchId
     */
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 

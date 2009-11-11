@@ -13,17 +13,17 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.AbstractOseeType;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.OseeField;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.skynet.core.IOseeType;
-import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.field.ArtifactSuperTypeField;
 import org.eclipse.osee.framework.skynet.core.types.field.ArtifactTypeAttributesField;
-import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
 
 /**
  * @author Robert A. Fisher
@@ -33,12 +33,9 @@ public class ArtifactType extends AbstractOseeType implements Comparable<Artifac
    public static final String ARTIFACT_INHERITANCE_FIELD_KEY = "osee.artifact.type.inheritance.field";
    public static final String ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY = "osee.artifact.type.attributes.field";
 
-   private final ArtifactFactoryManager factoryManager;
-
-   public ArtifactType(AbstractOseeCache<ArtifactType> cache, String guid, String name, boolean isAbstract, ArtifactFactoryManager factoryManager) {
+   public ArtifactType(AbstractOseeCache<ArtifactType> cache, String guid, String name, boolean isAbstract) {
       super(cache, guid, name);
       setAbstract(isAbstract);
-      this.factoryManager = factoryManager;
    }
 
    @Override
@@ -94,42 +91,6 @@ public class ArtifactType extends AbstractOseeType implements Comparable<Artifac
 
    public void setAbstract(boolean isAbstract) {
       setFieldLogException(ARTIFACT_IS_ABSTRACT_FIELD_KEY, isAbstract);
-   }
-
-   /**
-    * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
-    * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
-    * branch.
-    * 
-    * @return Return artifact reference
-    * @throws OseeCoreException
-    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType)
-    * @use {@link ArtifactTypeManager}.addArtifact
-    */
-   public Artifact makeNewArtifact(Branch branch) throws OseeCoreException {
-      return getFactory().makeNewArtifact(branch, this, null, null, null);
-   }
-
-   /**
-    * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
-    * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
-    * branch.
-    * 
-    * @param branch branch on which artifact will be created
-    * @return Return artifact reference
-    * @throws OseeCoreException
-    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
-    * @use {@link ArtifactTypeManager}.addArtifact
-    */
-   public Artifact makeNewArtifact(Branch branch, String guid, String humandReadableId) throws OseeCoreException {
-      return getFactory().makeNewArtifact(branch, this, guid, humandReadableId, null);
-   }
-
-   /**
-    * @return Returns the factory.
-    */
-   public ArtifactFactory getFactory() throws OseeCoreException {
-      return factoryManager.getFactory(getName());
    }
 
    /**

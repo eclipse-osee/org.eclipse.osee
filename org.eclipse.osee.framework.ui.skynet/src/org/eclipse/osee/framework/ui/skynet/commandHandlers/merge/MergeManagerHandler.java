@@ -16,10 +16,10 @@ import java.util.logging.Level;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
@@ -79,7 +79,7 @@ public class MergeManagerHandler extends CommandHandler {
             Branch selectedBranch = branches.iterator().next();
             try {
                if (selectedBranch != null && !ConflictManagerInternal.getDestinationBranchesMerged(
-                     selectedBranch.getBranchId()).isEmpty()) {
+                     selectedBranch.getId()).isEmpty()) {
                   enabled = true;
                }else{
                enabled =

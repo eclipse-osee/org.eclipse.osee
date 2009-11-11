@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.ui.skynet.artifact.editor;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -174,7 +174,7 @@ public abstract class AbstractEventArtifactEditor extends AbstractArtifactEditor
             @Override
             public void run() {
                if (branchModType == BranchEventType.Committed) {
-                  if (getArtifactFromEditorInput().getBranch().getBranchId() == branchId) {
+                  if (getArtifactFromEditorInput().getBranch().getId() == branchId) {
                      closeEditor();
                   }
                }

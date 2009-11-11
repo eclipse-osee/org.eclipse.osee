@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.types.field;
 
+import org.eclipse.osee.framework.core.data.AbstractOseeField;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.core.util.ChangeUtil;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 

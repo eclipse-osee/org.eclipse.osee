@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactKey;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
@@ -82,7 +82,7 @@ public class RelationManager {
 
    private static RelationLink getLoadedRelation(Artifact artifact, int aArtifactId, int bArtifactId, RelationType relationType, boolean includeDeleted) {
       List<RelationLink> selectedRelations =
-            getLoadedRelations(artifact.getArtId(), artifact.getBranch().getBranchId(), relationType, includeDeleted);
+            getLoadedRelations(artifact.getArtId(), artifact.getBranch().getId(), relationType, includeDeleted);
       Set<RelationLink> relations = new HashSet<RelationLink>();
       if (selectedRelations != null) {
          for (RelationLink relation : selectedRelations) {
@@ -133,13 +133,13 @@ public class RelationManager {
 
    public static RelationLink getLoadedRelationById(int relLinkId, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
       RelationLink relation = null;
-      for (RelationLink link : getRelationsAll(aArtifactId, aBranch.getBranchId(), true)) {
+      for (RelationLink link : getRelationsAll(aArtifactId, aBranch.getId(), true)) {
          if (link.getRelationId() == relLinkId) {
             relation = link;
             break;
          }
       }
-      for (RelationLink link : getRelationsAll(bArtifactId, bBranch.getBranchId(), true)) {
+      for (RelationLink link : getRelationsAll(bArtifactId, bBranch.getId(), true)) {
          if (link.getRelationId() == relLinkId) {
             relation = link;
             break;
@@ -150,7 +150,7 @@ public class RelationManager {
 
    public static RelationLink getLoadedRelation(RelationType relationType, int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch) {
       RelationLink relation = null;
-      List<RelationLink> relations = getLoadedRelations(aArtifactId, aBranch.getBranchId(), relationType, true);
+      List<RelationLink> relations = getLoadedRelations(aArtifactId, aBranch.getId(), relationType, true);
       for (RelationLink rel : relations) {
          if (rel.getBArtifactId() == bArtifactId) {
             relation = rel;
@@ -159,7 +159,7 @@ public class RelationManager {
       }
 
       if (relation == null) {
-         relations = getLoadedRelations(bArtifactId, bBranch.getBranchId(), relationType, true);
+         relations = getLoadedRelations(bArtifactId, bBranch.getId(), relationType, true);
          for (RelationLink rel : relations) {
             if (rel.getAArtifactId() == aArtifactId) {
                relation = rel;
@@ -296,11 +296,11 @@ public class RelationManager {
             if (resolvedSide != null) {
                int artId = relation.getArtifactId(resolvedSide);
                Branch branch = relation.getBranch(resolvedSide);
-               Artifact relatedArtifact = ArtifactCache.getActive(artId, branch.getBranchId());
+               Artifact relatedArtifact = ArtifactCache.getActive(artId, branch.getId());
                if (relatedArtifact == null) {
                   if (!branch.equals(insertMap.get(artId))) {
                      insertMap.put(artId, branch);
-                     insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
+                     insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getId(),
                            SQL3DataType.INTEGER});
                   }
                } else {
@@ -365,10 +365,10 @@ public class RelationManager {
          //(SELECT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current = 3)"
          if (relationEnum.getSide().equals(RelationSide.SIDE_B)) {
             ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_B, queryId, SQL3DataType.INTEGER,
-                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getId(), artifact.getArtId());
+                  artifact.getBranch().getId(), relationEnum.getRelationType().getId(), artifact.getArtId());
          } else {
             ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_A, queryId, SQL3DataType.INTEGER,
-                  artifact.getBranch().getBranchId(), relationEnum.getRelationType().getId(), artifact.getArtId());
+                  artifact.getBranch().getId(), relationEnum.getRelationType().getId(), artifact.getArtId());
          }
 
          List<Artifact> deletedArtifacts =

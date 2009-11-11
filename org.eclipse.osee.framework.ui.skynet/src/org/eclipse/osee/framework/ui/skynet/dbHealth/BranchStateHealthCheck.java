@@ -80,7 +80,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
                String.valueOf(data.getOriginalBranchState()), String.valueOf(data.getBranchState()),
                String.valueOf(data.getBranchType()), String.valueOf(data.isArchived()),
                String.valueOf(data.getNumberOfTxs()), String.valueOf(data.hasCommitTransactionId()),
-               String.valueOf(data.getBranchId()), data.getBranchName()}));
+               String.valueOf(data.getId()), data.getBranchName()}));
       }
       appendToDetails(AHTML.endMultiColumnTable());
       monitor.worked(calculateWork(0.25));
@@ -91,7 +91,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
          monitor.setTaskName("Fixing Branch State data");
          List<Object[]> data = new ArrayList<Object[]>();
          for (BranchData branchData : itemsToFix) {
-            data.add(new Object[] {branchData.getBranchState().getValue(), branchData.getBranchId()});
+            data.add(new Object[] {branchData.getBranchState().getValue(), branchData.getId()});
          }
          ConnectionHandler.runBatchUpdate("update osee_branch set branch_state = ? where branch_id = ?", data);
       }
@@ -211,7 +211,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
          this.hasCommitTransactionId = false;
       }
 
-      public int getBranchId() {
+      public int getId() {
          return branchId;
       }
 

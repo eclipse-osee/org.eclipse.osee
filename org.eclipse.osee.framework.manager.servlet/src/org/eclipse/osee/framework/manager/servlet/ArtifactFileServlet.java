@@ -69,7 +69,7 @@ public class ArtifactFileServlet extends OseeHttpServlet {
             if (artifactFileInfo.isBranchNameValid()) {
                uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getBranchName());
             } else {
-               uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getBranchId());
+               uri = ArtifactUtil.getUri(artifactFileInfo.getGuid(), artifactFileInfo.getId());
             }
          }
          if (Strings.isValid(uri)) {

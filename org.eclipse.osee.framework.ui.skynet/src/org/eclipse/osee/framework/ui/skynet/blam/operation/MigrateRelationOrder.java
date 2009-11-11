@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -28,7 +29,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameComparator;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -88,7 +88,7 @@ public class MigrateRelationOrder extends AbstractBlam {
 
       Integer transactionNumber = transaction.getTransactionNumber();
       transaction.execute();
-      addToChildBaseilnes(baselineBranch.getBranchId(), transactionNumber);
+      addToChildBaseilnes(baselineBranch.getId(), transactionNumber);
    }
 
    private void writeNewOrder(SkynetTransaction transaction, IRelationEnumeration relationEnum, Artifact artifact) throws OseeCoreException {
@@ -163,7 +163,7 @@ public class MigrateRelationOrder extends AbstractBlam {
 
       }
       for (String branchName : branchNames) {
-         Integer branchId = BranchManager.getBranch(branchName).getBranchId();
+         Integer branchId = BranchManager.getBranch(branchName).getId();
          Integer transactionNumber =
                ConnectionHandler.runPreparedQueryFetchInt(-9999,
                      "select transaction_id from osee_tx_details where branch_id = ? and osee_comment = ?", branchId,

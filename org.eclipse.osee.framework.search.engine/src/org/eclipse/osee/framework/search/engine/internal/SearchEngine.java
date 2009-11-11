@@ -49,14 +49,14 @@ public class SearchEngine implements ISearchEngine {
       boolean bypassSecondPass = !options.getBoolean(SearchOptionsEnum.match_word_order.asStringOption());
       if (bypassSecondPass) {
          for (AttributeData attributeData : tagMatches) {
-            results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId());
+            results.add(attributeData.getId(), attributeData.getArtId(), attributeData.getGammaId());
          }
       } else {
          for (AttributeData attributeData : tagMatches) {
             try {
                List<MatchLocation> locations = manager.find(attributeData, searchString, options);
                if (!locations.isEmpty()) {
-                  results.add(attributeData.getBranchId(), attributeData.getArtId(), attributeData.getGammaId(),
+                  results.add(attributeData.getId(), attributeData.getArtId(), attributeData.getGammaId(),
                         locations);
                }
             } catch (Exception ex) {

@@ -28,13 +28,13 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.OseeClientProperties;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionPoints;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.CoreBranches;
 import org.eclipse.osee.framework.skynet.core.exportImport.HttpBranchExchange;
@@ -149,14 +149,6 @@ public class SkynetDbBranchDataImport implements IDbInitializationTask {
       @Override
       public String toString() {
          return String.format("%s - %s", exchangeFile, selectedBranches);
-      }
-
-      public boolean areAllSelected() {
-         return this.selectedBranches.size() == 0;
-      }
-
-      public Set<String> getSelectedBranches() {
-         return selectedBranches;
       }
 
       public File getExchangeFile() {

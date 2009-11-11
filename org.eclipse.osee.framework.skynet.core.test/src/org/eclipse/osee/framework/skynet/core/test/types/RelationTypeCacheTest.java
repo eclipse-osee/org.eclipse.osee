@@ -16,12 +16,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
@@ -47,10 +47,10 @@ public class RelationTypeCacheTest extends AbstractOseeCacheTest<RelationType> {
       List<ArtifactType> artData = new ArrayList<ArtifactType>();
 
       ArtifactDataAccessor artAccessor = new ArtifactDataAccessor(artData);
-      artCache = new ArtifactTypeCache(factory, artAccessor);
+      artCache = new ArtifactTypeCache(artAccessor);
 
       RelationDataAccessor relationAccessor = new RelationDataAccessor(artCache, data);
-      cache = new RelationTypeCache(factory, relationAccessor);
+      cache = new RelationTypeCache(relationAccessor);
 
       cache.ensurePopulated();
       Assert.assertTrue(artAccessor.wasLoaded());
@@ -92,8 +92,8 @@ public class RelationTypeCacheTest extends AbstractOseeCacheTest<RelationType> {
       }
 
       @Override
-      public void load(AbstractOseeCache<ArtifactType> cache, IOseeTypeFactory factory) throws OseeCoreException {
-         super.load(cache, factory);
+      public void load(AbstractOseeCache<ArtifactType> cache) throws OseeCoreException {
+         super.load(cache);
          artifactTypes.add(factory.createArtifactType(cache, "000", true, "BaseArtifactType"));
          artifactTypes.add(factory.createArtifactType(cache, "111", true, "ArtifactType1"));
          artifactTypes.add(factory.createArtifactType(cache, "222", false, "ArtifactType2"));
@@ -142,9 +142,9 @@ public class RelationTypeCacheTest extends AbstractOseeCacheTest<RelationType> {
       }
 
       @Override
-      public void load(AbstractOseeCache<RelationType> cache, IOseeTypeFactory factory) throws OseeCoreException {
+      public void load(AbstractOseeCache<RelationType> cache) throws OseeCoreException {
          artCache.ensurePopulated();
-         super.load(cache, factory);
+         super.load(cache);
          relationTypes.add(OseeTypesUtil.createRelationType(cache, artCache, factory, "1A", "REL_1", "111", "444",
                RelationTypeMultiplicity.ONE_TO_ONE));
          relationTypes.add(OseeTypesUtil.createRelationType(cache, artCache, factory, "2B", "REL_2", "555", "000",

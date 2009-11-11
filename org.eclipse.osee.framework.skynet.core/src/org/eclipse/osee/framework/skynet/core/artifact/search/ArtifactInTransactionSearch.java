@@ -14,9 +14,9 @@ import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ARTIFACT_VE
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -56,7 +56,7 @@ public class ArtifactInTransactionSearch implements ISearchPrimitive {
          dataList.add(fromTransactionNumber);
       }
       dataList.add(toTransactionNumber);
-      dataList.add(branch.getBranchId());
+      dataList.add(branch.getId());
       return whereConditions;
    }
 

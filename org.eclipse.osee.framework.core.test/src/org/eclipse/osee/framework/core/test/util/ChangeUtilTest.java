@@ -8,15 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.test.types.field;
+package org.eclipse.osee.framework.core.test.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import junit.framework.Assert;
-import org.eclipse.osee.framework.skynet.core.types.field.ChangeUtil;
+import org.eclipse.osee.framework.core.util.ChangeUtil;
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

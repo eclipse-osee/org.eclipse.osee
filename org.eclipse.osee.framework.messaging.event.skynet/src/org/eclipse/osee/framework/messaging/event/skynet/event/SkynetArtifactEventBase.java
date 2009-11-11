@@ -46,7 +46,7 @@ public class SkynetArtifactEventBase extends SkynetEventBase implements ISkynetA
 
    }
 
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 

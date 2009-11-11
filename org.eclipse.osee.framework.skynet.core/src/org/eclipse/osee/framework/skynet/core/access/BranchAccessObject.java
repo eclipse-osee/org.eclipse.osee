@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.skynet.core.access;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Jeff C. Phillips
@@ -35,7 +35,7 @@ public class BranchAccessObject extends AccessObject {
    }
 
    @Override
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 
@@ -51,7 +51,7 @@ public class BranchAccessObject extends AccessObject {
    }
 
    public static BranchAccessObject getBranchAccessObject(Branch branch) {
-      return getBranchAccessObject(branch.getBranchId());
+      return getBranchAccessObject(branch.getId());
    }
 
    public static BranchAccessObject getBranchAccessObject(Integer branchId) {
@@ -66,7 +66,7 @@ public class BranchAccessObject extends AccessObject {
    }
 
    public static BranchAccessObject getBranchAccessObjectFromCache(Branch branch) {
-      Integer branchId = branch.getBranchId();
+      Integer branchId = branch.getId();
       return cache.get(branchId);
    }
 

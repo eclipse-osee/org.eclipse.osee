@@ -17,6 +17,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.IAccessControllable;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -31,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
@@ -283,7 +284,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
 
       Integer artId = artifact.getArtId();
-      Integer branchId = artifact.getBranch().getBranchId();
+      Integer branchId = artifact.getBranch().getId();
       Integer lockedBranchId;
 
       //      accessObject = accessObjectCache.get(artId, branchId);
@@ -357,17 +358,17 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                if (data.isBirth()) {
                   ConnectionHandler.runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
                         data.getPermission().getPermId(), data.getSubject().getArtId(),
-                        artifactAccessObject.getBranchId());
+                        artifactAccessObject.getId());
                } else {
                   ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
                         data.getSubject().getArtId(), artifactAccessObject.getArtId(),
-                        artifactAccessObject.getBranchId());
+                        artifactAccessObject.getId());
                }
 
                if (recurse) {
                   Artifact artifact =
                         ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                              BranchManager.getBranch(artifactAccessObject.getBranchId()));
+                              BranchManager.getBranch(artifactAccessObject.getId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {
@@ -394,10 +395,10 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
                if (data.isBirth()) {
                   ConnectionHandler.runPreparedUpdate(INSERT_INTO_BRANCH_ACL, data.getPermission().getPermId(),
-                        data.getSubject().getArtId(), branchAccessObject.getBranchId());
+                        data.getSubject().getArtId(), branchAccessObject.getId());
                } else {
                   ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_ACL, data.getPermission().getPermId(),
-                        data.getSubject().getArtId(), branchAccessObject.getBranchId());
+                        data.getSubject().getArtId(), branchAccessObject.getId());
                }
             }
             cacheAccessControlData(data);
@@ -465,7 +466,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    }
 
    private static PermissionEnum getBranchPermission(Artifact subject, Object object) throws OseeCoreException {
-      int branchId = ((AccessObject) object).getBranchId();
+      int branchId = ((AccessObject) object).getId();
       Branch branch = BranchManager.getBranch(branchId);
 
       return AccessControlManager.getBranchPermission(subject, branch, PermissionEnum.FULLACCESS);
@@ -482,7 +483,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
          accessControlledObject.removeFromCache();
          // accessControlledObject.removeFromCache(accessControlListCache);
       }
-      // branchAccessObjectCache.remove(object.getBranchId()); (commented out due to 3KJSW)
+      // branchAccessObjectCache.remove(object.getId()); (commented out due to 3KJSW)
       deCacheAccessControlData(data);
    }
 
@@ -520,7 +521,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    public static void lockObject(Artifact object, Artifact subject) {
       Integer objectArtId = object.getArtId();
       Integer subjectArtId = subject.getArtId();
-      Integer objectBranchId = object.getBranch().getBranchId();
+      Integer objectBranchId = object.getBranch().getId();
 
       if (!objectToBranchLockCache.containsKey(objectArtId)) {
          AccessObject accessObject = getAccessObject(object);
@@ -539,7 +540,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
    public static void unLockObject(Artifact object, Artifact subject) throws OseeDataStoreException, OseeAuthenticationRequiredException {
       Integer objectArtId = object.getArtId();
-      Integer branchId = object.getBranch().getBranchId();
+      Integer branchId = object.getBranch().getId();
       Integer lockedBranchId;
 
       if (objectToBranchLockCache.containsKey(objectArtId) && canUnlockObject(object, subject)) {
@@ -558,8 +559,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    }
 
    public static void removeAllPermissionsFromBranch(OseeConnection connection, Branch branch) throws OseeCoreException {
-      ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_ACL_FROM_BRANCH, branch.getBranchId());
-      ConnectionHandler.runPreparedUpdate(connection, DELETE_BRANCH_ACL_FROM_BRANCH, branch.getBranchId());
+      ConnectionHandler.runPreparedUpdate(connection, DELETE_ARTIFACT_ACL_FROM_BRANCH, branch.getId());
+      ConnectionHandler.runPreparedUpdate(connection, DELETE_BRANCH_ACL_FROM_BRANCH, branch.getId());
    }
 
    public static boolean hasLock(Artifact object) {
@@ -596,7 +597,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       }
 
       if (hasLock(object)) {
-         hasAccess = objectToBranchLockCache.get(object.getArtId()) == object.getBranch().getBranchId();
+         hasAccess = objectToBranchLockCache.get(object.getArtId()) == object.getBranch().getId();
       }
       return hasAccess;
    }

@@ -59,5 +59,6 @@ Import-Package: org.eclipse.debug.core,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.operation,
+ org.eclipse.osee.framework.core.util,
  org.eclipse.osee.framework.logging
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

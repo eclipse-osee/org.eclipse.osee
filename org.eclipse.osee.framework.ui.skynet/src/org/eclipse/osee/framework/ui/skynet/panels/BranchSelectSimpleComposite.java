@@ -17,9 +17,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
@@ -160,7 +160,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
             this.branchSelectCombo.setItems(newItems);
             selectionIndex = oldLength;
             branchSelectCombo.setData(branch.getName(), branch);
-            branchSelectCombo.setData(String.valueOf(branch.getBranchId()), branch);
+            branchSelectCombo.setData(String.valueOf(branch.getId()), branch);
          }
          this.branchSelectCombo.select(selectionIndex);
       }
@@ -171,7 +171,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
 
       // Add stored directories into selector
       if (Strings.isValid(lastSelected) == false && currentBranch != null) {
-         lastSelected = Integer.toString(currentBranch.getBranchId());
+         lastSelected = Integer.toString(currentBranch.getId());
       }
 
       if (branchIds == null) {
@@ -208,7 +208,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
                if (isBranchAllowed(branch) != false) {
                   String branchName = branch.getName();
                   branchSelectCombo.add(branchName);
-                  branchSelectCombo.setData(String.valueOf(branch.getBranchId()), branch);
+                  branchSelectCombo.setData(String.valueOf(branch.getId()), branch);
                   branchSelectCombo.setData(branchName, branch);
                   if (toStore.equals(lastSelected)) {
                      toSelect = i;
@@ -236,7 +236,7 @@ public class BranchSelectSimpleComposite extends Composite implements Listener {
       for (String item : items) {
          Branch branch = (Branch) branchSelectCombo.getData(item);
          if (branch != null) {
-            toReturn.add(String.valueOf(branch.getBranchId()));
+            toReturn.add(String.valueOf(branch.getId()));
          }
       }
       return toReturn.toArray(new String[toReturn.size()]);

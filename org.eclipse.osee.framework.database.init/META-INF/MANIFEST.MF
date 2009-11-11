@@ -8,6 +8,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.apache.commons.lang;version="2.4.0",
  org.apache.commons.lang.builder,
+ org.apache.xml.serialize;version="2.9.0",
  org.eclipse.core.runtime,
  org.eclipse.equinox.app,
  org.eclipse.osee.framework.core.client,

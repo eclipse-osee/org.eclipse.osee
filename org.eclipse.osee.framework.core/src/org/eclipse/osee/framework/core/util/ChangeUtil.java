@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.types.field;
+package org.eclipse.osee.framework.core.util;
 
 import java.util.Arrays;
 import java.util.Collection;

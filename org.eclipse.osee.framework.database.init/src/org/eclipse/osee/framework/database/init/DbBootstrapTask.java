@@ -180,6 +180,7 @@ public class DbBootstrapTask implements IDbInitializationTask {
    /**
     * @throws OseeDataStoreException
     */
+   @SuppressWarnings("unchecked")
    private void addDefaultPermissions() throws OseeDataStoreException {
       for (PermissionEnum permission : PermissionEnum.values()) {
          ConnectionHandler.runPreparedUpdate(ADD_PERMISSION, permission.getPermId(), permission.getName());

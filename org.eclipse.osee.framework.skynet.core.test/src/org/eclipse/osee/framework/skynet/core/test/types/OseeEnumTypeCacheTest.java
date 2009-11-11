@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.skynet.core.test.types;
 import java.util.ArrayList;
 import java.util.List;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
 import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
@@ -40,7 +40,7 @@ public class OseeEnumTypeCacheTest extends AbstractOseeCacheTest<OseeEnumType> {
 
       EnumDataAccessor enumAccessor = new EnumDataAccessor(data);
 
-      cache = new OseeEnumTypeCache(factory, enumAccessor);
+      cache = new OseeEnumTypeCache(enumAccessor);
 
       cache.ensurePopulated();
       Assert.assertTrue(enumAccessor.wasLoaded());
@@ -86,8 +86,8 @@ public class OseeEnumTypeCacheTest extends AbstractOseeCacheTest<OseeEnumType> {
       }
 
       @Override
-      public void load(AbstractOseeCache<OseeEnumType> cache, IOseeTypeFactory factory) throws OseeCoreException {
-         super.load(cache, factory);
+      public void load(AbstractOseeCache<OseeEnumType> cache) throws OseeCoreException {
+         super.load(cache);
          oseeEnumTypes.add(OseeTypesUtil.createEnumType(cache, factory, "E1", "Enum1", "AAA", 1, "BBB", 2, "CCC", 3));
          oseeEnumTypes.add(OseeTypesUtil.createEnumType(cache, factory, "E2", "Enum2", "DDD", 4, "EEE", 5, "FFF", 6));
          oseeEnumTypes.add(OseeTypesUtil.createEnumType(cache, factory, "E3", "Enum3", "GGG", 7, "HHH", 8, "III", 9));

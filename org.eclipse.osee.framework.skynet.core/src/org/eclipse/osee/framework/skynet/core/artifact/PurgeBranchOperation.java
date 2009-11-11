@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -65,7 +66,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
     * @param branch
     */
    public PurgeBranchOperation(Branch branch) {
-      super(String.format("Purge Branch: [(%s)-%s]", branch.getBranchId(), branch.getShortName()), Activator.PLUGIN_ID);
+      super(String.format("Purge Branch: [(%s)-%s]", branch.getId(), branch.getShortName()), Activator.PLUGIN_ID);
       this.branch = branch;
       this.sourceTableName = branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
    }
@@ -75,12 +76,12 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       this.connection = connection;
       this.monitor = monitor;
       int numberOfChildren =
-            ConnectionHandler.runPreparedQueryFetchInt(connection, 0, COUNT_CHILD_BRANCHES, branch.getBranchId());
+            ConnectionHandler.runPreparedQueryFetchInt(connection, 0, COUNT_CHILD_BRANCHES, branch.getId());
       if (numberOfChildren > 0) {
          throw new OseeArgumentException("Unable to purge a branch containing children");
       }
 
-      if (ConnectionHandler.runPreparedQueryFetchInt(connection, 0, TEST_TXS, branch.getBranchId()) == 1) {
+      if (ConnectionHandler.runPreparedQueryFetchInt(connection, 0, TEST_TXS, branch.getId()) == 1) {
          sourceTableName = "osee_txs";
       } else {
          sourceTableName = "osee_txs_archived";
@@ -98,8 +99,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
 
       purgeAddressing(0.20);
 
-      purgeFromTable("Tx Details", DELETE_FROM_TX_DETAILS, 0.09, branch.getBranchId());
-      purgeFromTable("Branch", DELETE_FROM_BRANCH_TABLE, 0.01, branch.getBranchId());
+      purgeFromTable("Tx Details", DELETE_FROM_TX_DETAILS, 0.09, branch.getId());
+      purgeFromTable("Branch", DELETE_FROM_BRANCH_TABLE, 0.01, branch.getId());
    }
 
    @Override
@@ -144,7 +145,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
                   TransactionDetailsType.NonBaselined.getId(), columnName, columnName);
 
       try {
-         chStmt.runPreparedQuery(10000, sql, branch.getBranchId());
+         chStmt.runPreparedQuery(10000, sql, branch.getId());
          while (chStmt.next()) {
             deleteableGammas.add(new Object[] {chStmt.getLong(columnName)});
          }
@@ -161,7 +162,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       String sql = String.format(SELECT_ADDRESSING_BY_BRANCH, sourceTableName);
 
       try {
-         chStmt.runPreparedQuery(10000, sql, branch.getBranchId());
+         chStmt.runPreparedQuery(10000, sql, branch.getId());
          while (chStmt.next()) {
             addressing.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
          }

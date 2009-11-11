@@ -14,7 +14,7 @@ import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ARTIFACT_TA
 import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ARTIFACT_TYPE_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.EQUAL;
 import java.util.List;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.core.data.Branch;
 
 /**
  * @author Robert A. Fisher

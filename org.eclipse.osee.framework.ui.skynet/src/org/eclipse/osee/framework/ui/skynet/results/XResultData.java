@@ -148,14 +148,14 @@ public class XResultData {
     * Creates hyperlink using hrid as name.  Default editor will open.
     */
    public static String getHyperlink(Artifact art) {
-      return getHyperlink(art.getHumanReadableId(), art.getHumanReadableId(), art.getBranch().getBranchId());
+      return getHyperlink(art.getHumanReadableId(), art.getHumanReadableId(), art.getBranch().getId());
    }
 
    /* 
     * Creates hyperlink using name.  Default editor will open.
     */
    public static String getHyperlink(String name, Artifact art) {
-      return getHyperlink(name, art.getHumanReadableId(), art.getBranch().getBranchId());
+      return getHyperlink(name, art.getHumanReadableId(), art.getBranch().getId());
    }
 
    /* 
@@ -232,7 +232,7 @@ public class XResultData {
 
          rd.log("Example of hyperlinked hrid on another branch: " + getHyperlink(
                UserManager.getUser().getHumanReadableId(), UserManager.getUser().getHumanReadableId(),
-               BranchManager.getCommonBranch().getBranchId()));
+               BranchManager.getCommonBranch().getId()));
          rd.addRaw(AHTML.newline());
          rd.addRaw("Example of hyperlink that opens external browser " + getHyperlinkUrlExternal("Google",
                "http://www.google.com") + AHTML.newline());

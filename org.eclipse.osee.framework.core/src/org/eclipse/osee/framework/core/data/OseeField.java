@@ -8,32 +8,34 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.types.field;
+package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.types.IOseeField;
+import org.eclipse.osee.framework.core.util.ChangeUtil;
 
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeField<T> implements IOseeField<T> {
+public final class OseeField<T> extends AbstractOseeField<T> {
 
-   protected boolean isDirty;
+   private T object;
 
-   public AbstractOseeField() {
-      isDirty = false;
+   public OseeField(T initValue) {
+      super();
+      set(initValue);
    }
 
-   public abstract void set(T value) throws OseeCoreException;
-
-   public abstract T get() throws OseeCoreException;
-
-   public void clearDirty() {
-      this.isDirty = false;
+   public OseeField() {
+      super();
    }
 
-   public boolean isDirty() {
-      return isDirty;
+   @Override
+   public void set(T value) {
+      isDirty |= ChangeUtil.isDifferent(get(), value);
+      this.object = value;
    }
 
+   @Override
+   public T get() {
+      return object;
+   }
 }

@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.AbstractOseeType;
+import org.eclipse.osee.framework.core.data.OseeField;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
 import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
 
 /**
  * @author Roberto E. Escobar
@@ -83,7 +83,7 @@ public class OseeEnumEntry extends AbstractOseeType implements Comparable<OseeEn
 
    @Override
    public void persist() throws OseeCoreException {
-      getCache().storeItem(getDeclaringClass());
+      getCache().storeItems(getDeclaringClass());
    }
 
 }

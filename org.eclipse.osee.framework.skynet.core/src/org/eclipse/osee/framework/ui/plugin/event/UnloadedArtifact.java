@@ -41,7 +41,7 @@ public class UnloadedArtifact {
    /**
     * @return the branchId
     */
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 

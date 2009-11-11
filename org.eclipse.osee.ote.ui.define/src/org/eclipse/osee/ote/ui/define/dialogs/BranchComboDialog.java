@@ -19,9 +19,9 @@ import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.panels.BranchSelectSimpleComposite;
 import org.eclipse.osee.ote.define.TestRunStorageKey;
@@ -125,7 +125,7 @@ public class BranchComboDialog extends TitleAreaDialog implements Listener {
          try {
             Branch branch = getSelection();
             if (branch != null && branch.hasParentBranch()) {
-               String lastBranchSelected = Integer.toString(branch.getBranchId());
+               String lastBranchSelected = Integer.toString(branch.getId());
 
                List<String> history = new ArrayList<String>(Arrays.asList(branchIds));
                history.remove(lastBranchSelected);

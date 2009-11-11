@@ -12,14 +12,14 @@ package org.eclipse.osee.framework.skynet.core.artifact.operation;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
-import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
  * @author Roberto E. Escobar
@@ -55,7 +55,7 @@ public class FinishUpdateBranchOperation extends AbstractOperation {
       Branch destinationBranch = conflictManager.getDestinationBranch();
 
       String originalBranchName = sourceBranch.getName();
-      IArtifact originalAssociatedArtifact = sourceBranch.getAssociatedArtifact();
+      IBasicArtifact<?> originalAssociatedArtifact = sourceBranch.getAssociatedArtifact();
 
       sourceBranch.setName(getUpdatedName(originalBranchName));
       monitor.worked(calculateWork(0.20));

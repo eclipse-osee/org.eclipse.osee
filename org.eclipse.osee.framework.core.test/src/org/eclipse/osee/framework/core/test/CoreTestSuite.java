@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test;
 
+import org.eclipse.osee.framework.core.test.util.ChangeUtilTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {})
+@Suite.SuiteClasses( {ChangeUtilTest.class})
 /**
  * @author Roberto E. Escobar
  */

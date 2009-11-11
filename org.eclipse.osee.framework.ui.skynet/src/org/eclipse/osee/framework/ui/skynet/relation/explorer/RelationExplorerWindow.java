@@ -12,15 +12,15 @@ package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
 import java.util.ArrayList;
 import org.eclipse.jface.viewers.StructuredViewer;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.SWT;
@@ -287,7 +287,7 @@ public class RelationExplorerWindow {
             if (artifact == null) {
                if (descriptor != null) {
                   try {
-                     artifact = descriptor.makeNewArtifact(branch);
+                     artifact = ArtifactTypeManager.makeNewArtifact(descriptor, branch);
                      artifact.setSoleAttributeValue("Name", model.getName());
                      artifact.setSoleAttributeValue("Content URL", urls.get(names.indexOf(model.getName())));
                      artifact.persist();

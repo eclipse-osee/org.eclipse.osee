@@ -2,6 +2,7 @@ package org.eclipse.osee.framework.skynet.core.commit;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -9,7 +10,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * @author Ryan D. Brooks
@@ -59,7 +59,7 @@ public class UpdatePreviousTxCurrent {
             "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id idj, " + tableName + " item, osee_txs txs, osee_tx_details txd WHERE idj.query_id = ? and idj.id = item." + columnName + " AND item.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ?";
 
       try {
-         chStmt.runPreparedQuery(10000, query, queryId, branch.getBranchId());
+         chStmt.runPreparedQuery(10000, query, queryId, branch.getId());
          while (chStmt.next()) {
             gammaTxPairs.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
          }

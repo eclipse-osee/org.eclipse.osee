@@ -16,16 +16,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import junit.framework.Assert;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.DefaultAttributeDataProvider;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.AttributeTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
@@ -57,13 +57,13 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
       attributeTypes = new ArrayList<AttributeType>();
 
       BranchDataAccessor branchData = new BranchDataAccessor();
-      branchCache = new BranchCache(factory, branchData);
+      branchCache = new BranchCache(branchData);
 
       AttributeDataAccessor attrData = new AttributeDataAccessor(attributeTypes);
-      attrCache = new AttributeTypeCache(factory, attrData);
+      attrCache = new AttributeTypeCache(attrData);
 
       ArtifactDataAccessor artData = new ArtifactDataAccessor(attrCache, artifactTypes, branchCache);
-      artCache = new ArtifactTypeCache(factory, artData);
+      artCache = new ArtifactTypeCache(artData);
 
       artCache.ensurePopulated();
       Assert.assertTrue(attrData.wasLoaded());
@@ -183,8 +183,8 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
    private final static class BranchDataAccessor extends OseeTestDataAccessor<Branch> {
 
       @Override
-      public void load(AbstractOseeCache<Branch> cache, IOseeTypeFactory factory) throws OseeCoreException {
-         super.load(cache, factory);
+      public void load(AbstractOseeCache<Branch> cache) throws OseeCoreException {
+         super.load(cache);
          Branch branch1 =
                OseeTypesUtil.createBranch(cache, factory, "ROOT", "Root Branch", BranchType.SYSTEM_ROOT,
                      BranchState.CREATED, false);
@@ -217,8 +217,8 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
       }
 
       @Override
-      public void load(AbstractOseeCache<AttributeType> cache, IOseeTypeFactory factory) throws OseeCoreException {
-         super.load(cache, factory);
+      public void load(AbstractOseeCache<AttributeType> cache) throws OseeCoreException {
+         super.load(cache);
          attributeTypes.add(createAttributeTypeHelper(cache, factory, "AAA", "Attribute1"));
          attributeTypes.add(createAttributeTypeHelper(cache, factory, "BBB", "Attribute2"));
          attributeTypes.add(createAttributeTypeHelper(cache, factory, "CCC", "Attribute3"));
@@ -248,10 +248,10 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
       }
 
       @Override
-      public void load(AbstractOseeCache<ArtifactType> cache, IOseeTypeFactory factory) throws OseeCoreException {
+      public void load(AbstractOseeCache<ArtifactType> cache) throws OseeCoreException {
          branchCache.ensurePopulated();
          attributeCache.ensurePopulated();
-         super.load(cache, factory);
+         super.load(cache);
          artifactTypes.add(factory.createArtifactType(cache, "000", true, "BaseArtifactType"));
          artifactTypes.add(factory.createArtifactType(cache, "111", true, "ArtifactType1"));
          artifactTypes.add(factory.createArtifactType(cache, "222", false, "ArtifactType2"));

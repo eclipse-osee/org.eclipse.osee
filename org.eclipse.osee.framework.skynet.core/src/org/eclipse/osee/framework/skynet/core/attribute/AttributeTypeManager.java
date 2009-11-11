@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,7 +28,6 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 
@@ -53,7 +53,7 @@ public class AttributeTypeManager {
     */
    @Deprecated
    public static ModificationType internalGetModificationTypeFromDb(Attribute<?> attribute) throws OseeCoreException {
-      int branchId = attribute.getArtifact().getBranch().getBranchId();
+      int branchId = attribute.getArtifact().getBranch().getId();
       int gammaId = attribute.getGammaId();
       return internalGetModificationTypeFromDb(branchId, gammaId);
    }

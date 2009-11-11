@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.branch;
 
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
+import org.eclipse.osee.framework.core.data.Branch;
 
 /**
  * Default sorter for branch. Sorts on descriptive name

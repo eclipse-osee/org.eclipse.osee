@@ -19,9 +19,9 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
@@ -117,7 +117,7 @@ public class UpdateBranchHandler extends CommandHandler {
                   IWorkbenchPage page = AWorkbench.getActivePage();
                   IViewPart viewPart =
                         page.showView(MergeView.VIEW_ID,
-                              String.valueOf(sourceBranch.getBranchId() * 100000 + destinationBranch.getBranchId()),
+                              String.valueOf(sourceBranch.getId() * 100000 + destinationBranch.getId()),
                               IWorkbenchPage.VIEW_ACTIVATE);
                   if (viewPart instanceof MergeView) {
                      MergeView mergeView = (MergeView) viewPart;

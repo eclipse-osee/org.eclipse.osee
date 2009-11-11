@@ -43,7 +43,7 @@ public final class OseeLinkParser {
       }
    }
 
-   public int getBranchId() throws OseeWrappedException {
+   public int getId() throws OseeWrappedException {
       int branchId = -1;
       if (parameterMap != null) {
          String branchIdStr = parameterMap.get("branchId");

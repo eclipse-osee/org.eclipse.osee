@@ -8,13 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.types;
+package org.eclipse.osee.framework.core.data;
 
-import java.util.HashMap;
-
-/**
- * @author Roberto E. Escobar
- */
-public class UniqueIdCache<T extends IOseeStorableType> {
-   private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
+public interface IAccessControllable {
+   public Branch getAccessControlBranch();
 }

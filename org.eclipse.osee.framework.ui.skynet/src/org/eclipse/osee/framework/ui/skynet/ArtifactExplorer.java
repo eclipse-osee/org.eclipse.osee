@@ -30,6 +30,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -46,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IBranchProvider;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
@@ -1213,7 +1213,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
       super.saveState(memento);
       if (exploreRoot != null) {
          memento.putString(ROOT_GUID, exploreRoot.getGuid());
-         memento.putString(ROOT_BRANCH, String.valueOf(exploreRoot.getBranch().getBranchId()));
+         memento.putString(ROOT_BRANCH, String.valueOf(exploreRoot.getBranch().getId()));
       }
    }
 
@@ -1325,7 +1325,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (branch == null || transData.branchId != branch.getBranchId()) {
+      if (branch == null || transData.branchId != branch.getId()) {
          return;
       }
 
@@ -1425,7 +1425,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
 
    @Override
    public void handleBranchEvent(Sender sender, BranchEventType branchModType, final int branchId) {
-      if (branchModType == BranchEventType.Committed && branch != null && branch.getBranchId() == branchId) {
+      if (branchModType == BranchEventType.Committed && branch != null && branch.getId() == branchId) {
          SkynetViews.closeView(VIEW_ID, getViewSite().getSecondaryId());
       }
    }

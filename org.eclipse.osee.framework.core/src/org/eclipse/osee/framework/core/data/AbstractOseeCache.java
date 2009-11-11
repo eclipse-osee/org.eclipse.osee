@@ -8,11 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.types;
+package org.eclipse.osee.framework.core.data;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
-import org.eclipse.osee.framework.skynet.core.types.field.UniqueIdField;
 
 /**
  * @author Roberto E. Escobar
@@ -31,13 +30,11 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
    private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
    private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
 
-   private final IOseeTypeFactory factory;
    private final IOseeDataAccessor<T> dataAccessor;
    private boolean duringPopulate;
 
-   public AbstractOseeCache(IOseeTypeFactory factory, IOseeDataAccessor<T> dataAccessor) {
+   public AbstractOseeCache(IOseeDataAccessor<T> dataAccessor) {
       this.duringPopulate = false;
-      this.factory = factory;
       this.dataAccessor = dataAccessor;
    }
 
@@ -47,10 +44,6 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
 
    protected IOseeDataAccessor<T> getDataAccessor() {
       return dataAccessor;
-   }
-
-   protected IOseeTypeFactory getDataFactory() {
-      return factory;
    }
 
    public boolean existsByGuid(String guid) throws OseeCoreException {
@@ -195,12 +188,19 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
    }
 
    public void reloadCache() throws OseeCoreException {
-      getDataAccessor().load(this, getDataFactory());
+      getDataAccessor().load(this);
    }
 
    @SuppressWarnings("unchecked")
    public void storeItem(AbstractOseeType item) throws OseeCoreException {
-      storeItems(Collections.singletonList((T) item));
+      storeItems((T) item);
+   }
+
+   public void storeItems(T... items) throws OseeCoreException {
+      if (items == null) {
+         throw new OseeArgumentException("Items to store cannot be null");
+      }
+      storeItems(Arrays.asList(items));
    }
 
    public void storeItems(Collection<T> toStore) throws OseeCoreException {

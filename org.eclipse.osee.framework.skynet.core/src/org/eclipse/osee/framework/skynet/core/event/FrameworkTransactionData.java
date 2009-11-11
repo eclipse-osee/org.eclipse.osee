@@ -86,7 +86,7 @@ public class FrameworkTransactionData {
     * 
     * @return branchId
     */
-   public Integer getBranchId() {
+   public Integer getId() {
       return branchId;
    }
 

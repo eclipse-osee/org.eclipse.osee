@@ -23,6 +23,8 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -38,7 +40,6 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Theron Virgin
@@ -99,7 +100,7 @@ public class UpdateMergeBranch extends DbTransaction {
       }
       if (!allMergeBranchArtifactsCopy.isEmpty()) {
          for (Integer artifact : allMergeBranchArtifactsCopy) {
-            purgeArtifactFromBranch(connection, mergeBranch.getBranchId(), artifact.intValue());
+            purgeArtifactFromBranch(connection, mergeBranch.getId(), artifact.intValue());
             count++;
          }
       }
@@ -117,7 +118,7 @@ public class UpdateMergeBranch extends DbTransaction {
       if (!allMergeBranchArtifacts.isEmpty()) {
          for (Integer artifact : allMergeBranchArtifacts) {
             count++;
-            purgeArtifactFromBranch(connection, mergeBranch.getBranchId(), artifact.intValue());
+            purgeArtifactFromBranch(connection, mergeBranch.getId(), artifact.intValue());
          }
       }
       if (DEBUG) {
@@ -131,7 +132,7 @@ public class UpdateMergeBranch extends DbTransaction {
       int baselineTransaction = TransactionManager.getStartEndPoint(mergeBranch).getFirst().getId();
       for (Artifact artifact : goodMergeBranchArtifacts) {
          numberAttrUpdated +=
-               ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACTS, baselineTransaction, sourceBranch.getBranchId(),
+               ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACTS, baselineTransaction, sourceBranch.getId(),
                      artifact.getArtId(), baselineTransaction);
       }
       if (DEBUG) {
@@ -172,7 +173,7 @@ public class UpdateMergeBranch extends DbTransaction {
       Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
 
       for (int artId : artIds) {
-         datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(), SQL3DataType.INTEGER});
+         datas.add(new Object[] {queryId, insertTime, artId, sourceBranch.getId(), SQL3DataType.INTEGER});
       }
       try {
          ArtifactLoader.insertIntoArtifactJoin(datas);
@@ -181,7 +182,7 @@ public class UpdateMergeBranch extends DbTransaction {
          insertGammas(connection, INSERT_ARTIFACT_GAMMAS, startTransactionNumber, queryId, sourceBranch);
       } catch (OseeCoreException ex) {
          throw new OseeCoreException(
-               "Source Branch Id: " + sourceBranch.getBranchId() + " Artifact Ids: " + Collections.toString(",", artIds));
+               "Source Branch Id: " + sourceBranch.getId() + " Artifact Ids: " + Collections.toString(",", artIds));
       } finally {
          ArtifactLoader.clearQuery(connection, queryId);
       }
@@ -189,7 +190,7 @@ public class UpdateMergeBranch extends DbTransaction {
 
    private static void insertGammas(OseeConnection connection, String sql, int baselineTransactionNumber, int queryId, Branch sourceBranch) throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(connection, sql, baselineTransactionNumber, TxChange.CURRENT.getValue(),
-            sourceBranch.getBranchId(), queryId);
+            sourceBranch.getId(), queryId);
    }
 
    private static Collection<Integer> getAllMergeArtifacts(Branch branch) throws OseeCoreException {
@@ -199,7 +200,7 @@ public class UpdateMergeBranch extends DbTransaction {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ARTIFACTS_FOR_BRANCH),
-               branch.getBranchId());
+               branch.getId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("art_id"));
          }
@@ -210,7 +211,7 @@ public class UpdateMergeBranch extends DbTransaction {
          }
 
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_ATTRIBUTES_FOR_BRANCH),
-               branch.getBranchId());
+               branch.getId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("art_id"));
          }
@@ -222,7 +223,7 @@ public class UpdateMergeBranch extends DbTransaction {
          }
 
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.MERGE_GET_RELATIONS_FOR_BRANCH),
-               branch.getBranchId());
+               branch.getId());
          while (chStmt.next()) {
             artSet.add(chStmt.getInt("a_art_id"));
             artSet.add(chStmt.getInt("b_art_id"));

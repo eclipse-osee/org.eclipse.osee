@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core;
+package org.eclipse.osee.framework.core.data;
 
 public interface IOseeType {
 

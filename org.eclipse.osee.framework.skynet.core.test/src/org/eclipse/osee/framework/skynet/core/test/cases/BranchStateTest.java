@@ -15,6 +15,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -23,7 +24,6 @@ import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -188,7 +188,7 @@ public class BranchStateTest {
          assertEquals("Check only 1 original branch", 1, branches.size());
 
          Branch newWorkingBranch = branches.iterator().next();
-         assertTrue(workingBranch.getBranchId() != newWorkingBranch.getBranchId());
+         assertTrue(workingBranch.getId() != newWorkingBranch.getId());
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", newWorkingBranch.isEditable());
       } finally {
@@ -278,12 +278,12 @@ public class BranchStateTest {
          assertEquals("Check only 1 original branch", 1, branches.size());
 
          Branch newWorkingBranch = branches.iterator().next();
-         assertTrue(workingBranch.getBranchId() != newWorkingBranch.getBranchId());
+         assertTrue(workingBranch.getId() != newWorkingBranch.getId());
          assertEquals(originalBranchName, newWorkingBranch.getName());
          assertTrue("New Working branch is editable", newWorkingBranch.isEditable());
 
          // Swapped successfully
-         assertEquals(destinationBranch.getBranchId(), newWorkingBranch.getBranchId());
+         assertEquals(destinationBranch.getId(), newWorkingBranch.getId());
       } catch (Exception ex) {
          throw ex;
       } finally {

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
 import org.eclipse.ui.IEditorReference;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPart;
@@ -31,34 +30,14 @@ public class PluginUtil {
          for (IWorkbenchPage page : pages) {
             IViewReference viewRefs[] = page.getViewReferences();
             for (IViewReference viewRef : viewRefs) {
-               if (viewRef.getId().equals(viewID)) list.add(viewRef);
+               if (viewRef.getId().equals(viewID)) {
+                  list.add(viewRef);
+               }
             }
 
          }
       }
       return list;
-   }
-
-   public static IViewPart findView(String viewID) {
-      IWorkbenchWindow windows[] = PlatformUI.getWorkbench().getWorkbenchWindows();
-      IWorkbenchPage pages[];
-      for (int i = 0; i < windows.length; i++) {
-         pages = windows[i].getPages();
-         for (int j = 0; j < pages.length; j++)
-            return pages[j].findView(viewID);
-      }
-      return null;
-   }
-
-   public static IViewPart findViews(String viewID) {
-      IWorkbenchWindow windows[] = PlatformUI.getWorkbench().getWorkbenchWindows();
-      IWorkbenchPage pages[];
-      for (int i = 0; i < windows.length; i++) {
-         pages = windows[i].getPages();
-         for (int j = 0; j < pages.length; j++)
-            return pages[j].findView(viewID);
-      }
-      return null;
    }
 
    public static boolean areTestManagersAvailable() {

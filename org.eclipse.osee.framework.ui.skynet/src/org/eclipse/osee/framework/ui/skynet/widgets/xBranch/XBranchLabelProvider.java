@@ -19,14 +19,14 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.swt.graphics.Image;
@@ -78,8 +78,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          TransactionRecord tailTransaction = (TransactionRecord) tailCursor;
 
          if (columnIndex == 0) {
-            columnText =
-                  String.valueOf(headTransaction.getId() + "..." + tailTransaction.getId());
+            columnText = String.valueOf(headTransaction.getId() + "..." + tailTransaction.getId());
          } else if (columnIndex == 1) {
             columnText = DATE_FORMAT.format(headTransaction.getDate());
          }
@@ -126,7 +125,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
       } else if (cCol.equals(BranchXViewerFactory.branchType)) {
          return branch.getBranchType().name();
       } else if (cCol.equals(BranchXViewerFactory.branchId)) {
-         return String.valueOf(branch.getBranchId());
+         return String.valueOf(branch.getId());
       } else if (cCol.equals(BranchXViewerFactory.branchGuid)) {
          return String.valueOf(branch.getGuid());
       } else if (cCol.equals(BranchXViewerFactory.parentBranch)) {
@@ -156,8 +155,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
             if (transaction.getCommit() == 0) {
                return "";
             }
-            Artifact art =
-                  ArtifactQuery.getArtifactFromId(transaction.getCommit(), BranchManager.getCommonBranch());
+            Artifact art = ArtifactQuery.getArtifactFromId(transaction.getCommit(), BranchManager.getCommonBranch());
             if (art != null) {
                columnText = art.getName();
             }
@@ -188,7 +186,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          if (element instanceof Branch) {
             try {
                if (((Branch) element).getAssociatedArtifact() != null) {
-                  return ImageManager.getImage(((Branch) element).getAssociatedArtifact());
+                  return ImageManager.getImage((Artifact) ((Branch) element).getAssociatedArtifact());
                }
             } catch (OseeCoreException ex) {
                OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);

@@ -60,6 +60,7 @@ public class SequenceManager {
       return range;
    }
 
+   @SuppressWarnings("unchecked")
    public static synchronized long getNextSequence(String sequenceName) throws OseeDataStoreException {
       SequenceRange range = getRange(sequenceName);
       if (range.lastAvailable == 0) {
@@ -88,6 +89,7 @@ public class SequenceManager {
       return range.currentValue;
    }
 
+   @SuppressWarnings("unchecked")
    public static void internalInitializeSequence(String sequenceName) throws OseeDataStoreException {
       SequenceRange range = getRange(sequenceName);
       range.lastAvailable = 0;

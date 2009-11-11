@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -24,7 +25,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
@@ -122,7 +122,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
       Set<AttrData> attrData = new HashSet<AttrData>();
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
-         chStmt.runPreparedQuery(FIND_REPEAT_ENUMS, branch.getBranchId(), branch.getBranchId());
+         chStmt.runPreparedQuery(FIND_REPEAT_ENUMS, branch.getId(), branch.getId());
          while (chStmt.next()) {
             checkForCancelledStatus(monitor);
             attrData.add(new AttrData(chStmt.getString("guid"), chStmt.getInt("attr_type_id"),

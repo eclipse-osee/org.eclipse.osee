@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -33,7 +35,6 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Ryan D. Brooks
@@ -134,7 +135,7 @@ public class ArtifactPersistenceManager {
    @Deprecated
    public static Collection<Artifact> getArtifacts(List<ISearchPrimitive> searchCriteria, boolean all, Branch branch, ISearchConfirmer confirmer) throws OseeCoreException {
       LinkedList<Object> queryParameters = new LinkedList<Object>();
-      queryParameters.add(branch.getBranchId());
+      queryParameters.add(branch.getId());
       return ArtifactLoader.getArtifacts(getSql(searchCriteria, all, ARTIFACT_SELECT, queryParameters, branch),
             queryParameters.toArray(), 100, ArtifactLoad.FULL, false, confirmer, null, false);
    }
@@ -204,7 +205,7 @@ public class ArtifactPersistenceManager {
       if (attribute == null) {
          return;
       }
-      revertAttribute(connection, attribute.getArtifact().getBranch().getBranchId(),
+      revertAttribute(connection, attribute.getArtifact().getBranch().getId(),
             attribute.getArtifact().getArtId(), attribute.getAttrId());
    }
 
@@ -234,7 +235,7 @@ public class ArtifactPersistenceManager {
          throw new OseeArgumentException(String.format("Can not revert Relation %d. Relation spans multiple branches",
                link.getRelationId()));
       }
-      revertRelationLink(connection, link.getArtifactA().getBranch().getBranchId(), link.getRelationId(),
+      revertRelationLink(connection, link.getArtifactA().getBranch().getId(), link.getRelationId(),
             link.getArtifactA().getArtId(), link.getArtifactB().getArtId());
    }
 
@@ -258,7 +259,7 @@ public class ArtifactPersistenceManager {
       if (artifact == null) {
          return;
       }
-      revertArtifact(connection, artifact.getBranch().getBranchId(), artifact.getArtId());
+      revertArtifact(connection, artifact.getBranch().getId(), artifact.getArtId());
    }
 
    public static void revertArtifact(OseeConnection connection, int branchId, int artId) throws OseeCoreException {
@@ -276,12 +277,12 @@ public class ArtifactPersistenceManager {
    }
 
    public static boolean isArtifactNewOnBranch(Artifact artifact) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(-1, ARTIFACT_NEW_ON_BRANCH, artifact.getBranch().getBranchId(),
+      return ConnectionHandler.runPreparedQueryFetchInt(-1, ARTIFACT_NEW_ON_BRANCH, artifact.getBranch().getId(),
             artifact.getArtId()) == -1;
    }
 
    public static boolean isRelationNewOnBranch(RelationLink relation, Branch branch) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(-1, RELATION_NEW_ON_BRANCH, branch.getBranchId(),
+      return ConnectionHandler.runPreparedQueryFetchInt(-1, RELATION_NEW_ON_BRANCH, branch.getId(),
             relation.getRelationId()) == -1;
    }
 }

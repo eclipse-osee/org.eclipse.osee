@@ -13,13 +13,13 @@ package org.eclipse.osee.framework.skynet.core.test.commit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import junit.framework.Assert;
-
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ChangeItemUtil;
@@ -147,7 +147,7 @@ public class ChangeItemTest {
       destination = ChangeItemTestUtil.createChange(4444L, ModificationType.DELETED);
 
       item = ChangeItemTestUtil.createItem(200, null, null, current, destination, null);
-      assertTrue(ChangeItemUtil.isIgnoreCase( item));
+      assertTrue(ChangeItemUtil.isIgnoreCase(item));
 
       isNew = ChangeItemTestUtil.createChange(2222L, ModificationType.NEW);
       destination = ChangeItemTestUtil.createChange(3333L, ModificationType.NEW);
@@ -288,6 +288,38 @@ public class ChangeItemTest {
          Assert.assertTrue("Test " + ++index + ":", test.getThird() == actual);
       }
       assertTrue(ChangeItemUtil.areGammasEqual(null, null));
+   }
+
+   @Test
+   public void testGetStartingVersion() throws OseeCoreException {
+      ChangeVersion ver1 = ChangeItemTestUtil.createChange(111L, ModificationType.NEW);
+      ChangeVersion ver2 = ChangeItemTestUtil.createChange(222L, ModificationType.MODIFIED);
+      ChangeVersion ver3 = ChangeItemTestUtil.createChange(333L, ModificationType.DELETED);
+      ChangeVersion invalid = ChangeItemTestUtil.createChange(999L, null);
+
+      try {
+         ChangeItemUtil.getStartingVersion(null);
+         Assert.fail("This line should not be executed");
+      } catch (OseeCoreException ex) {
+         Assert.assertTrue(ex instanceof OseeArgumentException);
+      }
+
+      ChangeItem item = ChangeItemTestUtil.createItem(1, ver1, ver2, ver3, null, null);
+      Assert.assertEquals(ver1, ChangeItemUtil.getStartingVersion(item));
+
+      item = ChangeItemTestUtil.createItem(2, invalid, ver2, ver3, null, null);
+      Assert.assertEquals(ver2, ChangeItemUtil.getStartingVersion(item));
+
+      item = ChangeItemTestUtil.createItem(3, invalid, invalid, ver3, null, null);
+      Assert.assertEquals(ver3, ChangeItemUtil.getStartingVersion(item));
+
+      try {
+         item = ChangeItemTestUtil.createItem(3, invalid, invalid, invalid, null, null);
+         ChangeItemUtil.getStartingVersion(item);
+         Assert.fail("This line should not be executed");
+      } catch (OseeCoreException ex) {
+         Assert.assertTrue(ex instanceof OseeStateException);
+      }
    }
 
    private Triplet<ChangeVersion, ChangeVersion, Boolean> createTriplet(Long long1, ModificationType mod1, Long long2, ModificationType mod2, boolean expected) {

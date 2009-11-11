@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
@@ -76,7 +77,7 @@ public class PurgeDbTransaction extends DbTransaction {
       try {
          for (Artifact art : artifactsToPurge) {
             for (Branch branch : art.getBranch().getChildBranches(true)) {
-               batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), branch.getBranchId(),
+               batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), branch.getId(),
                      SQL3DataType.INTEGER});
             }
          }
@@ -112,7 +113,7 @@ public class PurgeDbTransaction extends DbTransaction {
 
          // insert into the artifact_join_table
          for (Artifact art : artifactsToPurge) {
-            batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), art.getBranch().getBranchId(),
+            batchParameters.add(new Object[] {queryId, insertTime, art.getArtId(), art.getBranch().getId(),
                   SQL3DataType.INTEGER});
          }
          ArtifactLoader.insertIntoArtifactJoin(connection, batchParameters);

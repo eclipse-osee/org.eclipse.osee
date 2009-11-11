@@ -96,7 +96,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
                      IWorkbenchPage page = AWorkbench.getActivePage();
                      HistoryView historyView =
                            (HistoryView) page.showView(VIEW_ID,
-                                 artifact.getGuid() + artifact.getBranch().getBranchId(), IWorkbenchPage.VIEW_ACTIVATE);
+                                 artifact.getGuid() + artifact.getBranch().getId(), IWorkbenchPage.VIEW_ACTIVATE);
 
                      historyView.explore(artifact, loadHistory);
                   } catch (Exception ex) {
@@ -256,7 +256,7 @@ public class HistoryView extends ViewPart implements IActionable, IBranchEventLi
       memento = memento.createChild(INPUT);
       if (artifact != null) {
          memento.putString(ART_GUID, artifact.getGuid());
-         memento.putInteger(BRANCH_ID, artifact.getBranch().getBranchId());
+         memento.putInteger(BRANCH_ID, artifact.getBranch().getId());
          SkynetViews.addDatabaseSourceId(memento);
       }
    }

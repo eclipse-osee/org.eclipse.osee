@@ -18,6 +18,9 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -33,20 +36,16 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
 import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
+public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    public static final int NULL_PARENT_BRANCH_ID = -1;
    private static final String SELECT_BRANCHES =
          "SELECT ob.*, txd.transaction_id FROM osee_branch ob, osee_tx_details txd WHERE ob.branch_id = txd.branch_id and txd.tx_type = " + TransactionDetailsType.Baselined.getId();
@@ -61,7 +60,8 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
 
    private final DatabaseTransactionAccessor transactionData;
 
-   public DatabaseBranchAccessor() {
+   public DatabaseBranchAccessor(IOseeTypeFactory factory) {
+      super(factory);
       transactionData = new DatabaseTransactionAccessor();
    }
 
@@ -78,7 +78,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
    //   }
 
    @Override
-   public void load(AbstractOseeCache<Branch> cache, IOseeTypeFactory factory) throws OseeCoreException {
+   public void load(AbstractOseeCache<Branch> cache) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
       Map<Branch, Integer> childToParent = new HashMap<Branch, Integer>();
       Map<Branch, Integer> branchToSourceTx = new HashMap<Branch, Integer>();
@@ -86,7 +86,7 @@ public class DatabaseBranchAccessor implements IOseeDataAccessor<Branch> {
       Map<Branch, Integer> associatedArtifact = new HashMap<Branch, Integer>();
 
       BranchCache branchCache = getCastedObject(cache);
-      loadBranches(branchCache, factory, childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact);
+      loadBranches(branchCache, getFactory(), childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact);
       loadBranchHierarchy(branchCache, childToParent);
       loadMergeBranches(branchCache);
       loadBranchAliases(branchCache);

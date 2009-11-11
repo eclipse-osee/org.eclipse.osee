@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
 import org.eclipse.swt.SWT;
@@ -191,8 +191,8 @@ public class XBranchSelectWidget extends XWidget implements Listener {
    public void setSelection(Branch branch) {
       defaultBranch = branch;
       if (selectComposite != null) {
-         selectComposite.setSelected(branch);
-      }
+      selectComposite.setSelected(branch);
+   }
    }
 
    public BranchSelectComposite getSelectComposite() {

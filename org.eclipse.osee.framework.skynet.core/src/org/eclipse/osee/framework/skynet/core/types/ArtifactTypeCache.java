@@ -15,13 +15,15 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 
 /**
@@ -35,14 +37,14 @@ public final class ArtifactTypeCache extends AbstractOseeCache<ArtifactType> {
    private final CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> artifactToAttributeMap =
          new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
 
-   public ArtifactTypeCache(IOseeTypeFactory factory, IOseeDataAccessor<ArtifactType> dataAccessor) {
-      super(factory, dataAccessor);
+   public ArtifactTypeCache(IOseeDataAccessor<ArtifactType> dataAccessor) {
+      super(dataAccessor);
    }
 
    public ArtifactType createType(String guid, boolean isAbstract, String artifactTypeName) throws OseeCoreException {
       ArtifactType artifactType = getByGuid(guid);
       if (artifactType == null) {
-         artifactType = getDataFactory().createArtifactType(this, guid, isAbstract, artifactTypeName);
+         artifactType = new OseeTypeFactory().createArtifactType(this, guid, isAbstract, artifactTypeName);
       } else {
          decache(artifactType);
          artifactType.setName(artifactTypeName);

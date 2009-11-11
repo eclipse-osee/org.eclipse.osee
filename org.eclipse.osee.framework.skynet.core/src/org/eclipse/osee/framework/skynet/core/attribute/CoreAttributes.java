@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.attribute;
 
-import org.eclipse.osee.framework.skynet.core.IOseeType;
+import org.eclipse.osee.framework.core.data.IOseeType;
 
 /**
  * @author Roberto E. Escobar

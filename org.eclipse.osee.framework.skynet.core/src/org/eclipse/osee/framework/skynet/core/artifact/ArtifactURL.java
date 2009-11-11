@@ -30,7 +30,7 @@ public class ArtifactURL {
    public static URL getExternalArtifactLink(final Artifact artifact) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("guid", artifact.getGuid());
-      parameters.put("branchId", String.valueOf(artifact.getBranch().getBranchId()));
+      parameters.put("branchId", String.valueOf(artifact.getBranch().getId()));
       String urlString =
             HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(OseeServerContext.ARTIFACT_CONTEXT, parameters);
       URL url = null;
@@ -47,7 +47,7 @@ public class ArtifactURL {
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("context", "osee/loopback");
       parameters.put("guid", artifact.getGuid());
-      parameters.put("branchId", String.valueOf(artifact.getBranch().getBranchId()));
+      parameters.put("branchId", String.valueOf(artifact.getBranch().getId()));
       parameters.put("isDeleted", String.valueOf(artifact.isDeleted()));
       if (artifact.isHistorical()) {
          parameters.put("transactionId", String.valueOf(artifact.getTransactionNumber()));

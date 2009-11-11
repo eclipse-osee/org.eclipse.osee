@@ -13,17 +13,16 @@ package org.eclipse.osee.framework.skynet.core.test.commit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import junit.framework.Assert;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.commit.ArtifactChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.AttributeChangeItem;
@@ -31,7 +30,6 @@ import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
 import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
 import org.eclipse.osee.framework.skynet.core.commit.RelationChangeItem;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.junit.Test;
@@ -55,7 +53,8 @@ public class LoadCommitItemsFromDbTest {
 
       List<ChangeItem> items = new ArrayList<ChangeItem>();
 
-      processItems(items, TransactionManager.getLastTransaction(source), TransactionManager.getLastTransaction(destination), null, 41, 41);
+      processItems(items, TransactionManager.getLastTransaction(source),
+            TransactionManager.getLastTransaction(destination), null, 41, 41);
 
       checkNetItems(items, ModificationType.NEW, 2, 18, 4);
       checkNetItems(items, ModificationType.INTRODUCED, 0, 0, 0);
@@ -77,7 +76,8 @@ public class LoadCommitItemsFromDbTest {
 
       List<ChangeItem> items = new ArrayList<ChangeItem>();
 
-      processItems(items, TransactionManager.getLastTransaction(source), TransactionManager.getLastTransaction(destination), null, 5, 5);
+      processItems(items, TransactionManager.getLastTransaction(source),
+            TransactionManager.getLastTransaction(destination), null, 5, 5);
 
       checkNetItems(items, ModificationType.NEW, 0, 1, 1);
       checkNetItems(items, ModificationType.INTRODUCED, 0, 0, 0);

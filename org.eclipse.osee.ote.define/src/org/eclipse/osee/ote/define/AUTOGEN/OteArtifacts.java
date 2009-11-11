@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.AUTOGEN;
 
-import org.eclipse.osee.framework.skynet.core.IOseeType;
+import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
 public enum OteArtifacts implements IOseeType {

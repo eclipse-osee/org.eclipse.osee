@@ -13,8 +13,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
@@ -26,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
@@ -45,13 +45,12 @@ import org.eclipse.osee.framework.skynet.core.commit.RelationChangeItem;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Jeff C. Phillips
  */
 public class ChangeHandler {
-   
+
    public Collection<Change> getChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor) throws OseeCoreException {
       boolean isHistorical = sourceBranch == null;
       ArrayList<Change> changes = new ArrayList<Change>();
@@ -83,7 +82,7 @@ public class ChangeHandler {
                if (ChangeItemUtil.isNew(netChange) || ChangeItemUtil.isIntroduced(netChange)) {
                   fromTransactionId = toTransactionId;
                } else {
-                  ChangeVersion fromVersion = item.getStartChangeVersion();
+                  ChangeVersion fromVersion = ChangeItemUtil.getStartingVersion(item);
                   fromTransactionId = TransactionManager.getTransactionId(fromVersion.getTransactionNumber());
                   wasValue = fromVersion.getValue();
                }
@@ -122,8 +121,7 @@ public class ChangeHandler {
          Artifact bArtifact;
 
          if (isHistorical) {
-            bArtifact =
-                  ArtifactCache.getHistorical(relationChangeItem.getBArtId(), toTransactionId.getId());
+            bArtifact = ArtifactCache.getHistorical(relationChangeItem.getBArtId(), toTransactionId.getId());
          } else {
             bArtifact = ArtifactQuery.getArtifactFromId(relationChangeItem.getBArtId(), branch, true);
          }
@@ -159,7 +157,7 @@ public class ChangeHandler {
 
          List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (Integer artId : artIds) {
-            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
+            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getId(),
                   isHistorical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
 
@@ -186,8 +184,7 @@ public class ChangeHandler {
       if (isHistorical) {
          destinationTransactionId = TransactionManager.getPriorTransaction(transactionId);
          sourceTransactionId = transactionId;
-         ops.add(new LoadChangeDataOperation(sourceTransactionId.getId(), destinationTransactionId,
-               changeItems));
+         ops.add(new LoadChangeDataOperation(sourceTransactionId.getId(), destinationTransactionId, changeItems));
       } else {
          destinationTransactionId = TransactionManager.getLastTransaction(sourceBranch.getParentBranch());
          sourceTransactionId = TransactionManager.getLastTransaction(sourceBranch);

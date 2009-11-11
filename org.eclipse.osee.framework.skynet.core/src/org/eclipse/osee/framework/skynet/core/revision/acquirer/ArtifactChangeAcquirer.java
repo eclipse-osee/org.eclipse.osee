@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
@@ -18,11 +20,9 @@ import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeBuilder;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -53,7 +53,7 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
             toTransactionId = branchStartEndTransaction.getSecond();
 
             chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_ARTIFACT),
-                  getSourceBranch().getBranchId());
+                  getSourceBranch().getId());
          } else { //Changes per a transaction
             toTransactionId = getTransaction();
 
@@ -62,8 +62,7 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
                      toTransactionId.getId(), getSpecificArtifact().getArtId());
                fromTransactionId = toTransactionId;
             } else {
-               chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ARTIFACT),
-                     toTransactionId.getId());
+               chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_ARTIFACT), toTransactionId.getId());
                fromTransactionId = TransactionManager.getPriorTransaction(toTransactionId);
             }
          }
@@ -78,9 +77,9 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
                         ArtifactTypeManager.getType(chStmt.getInt("art_type_id")), chStmt.getInt("gamma_id"), artId,
                         toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, !hasBranch);
 
-               getArtIds().add(artId);
-               getChangeBuilders().add(artifactChangeBuilder);
-               artifactChangeBuilders.put(artId, artifactChangeBuilder);
+            getArtIds().add(artId);
+            getChangeBuilders().add(artifactChangeBuilder);
+            artifactChangeBuilders.put(artId, artifactChangeBuilder);
          }
 
          getMonitor().worked(25);

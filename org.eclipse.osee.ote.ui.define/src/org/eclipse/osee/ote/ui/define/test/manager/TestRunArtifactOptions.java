@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.define.test.manager;
 
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.ote.define.TestRunStorageKey;
 import org.eclipse.osee.ote.ui.define.panels.GrayableBranchSelectionComposite;
 import org.eclipse.osee.ote.ui.test.manager.pages.contributions.IAdvancedPageContribution;
@@ -48,7 +48,7 @@ public class TestRunArtifactOptions implements IAdvancedPageContribution {
       Branch branch = this.panel.getSelectedBranch();
       int branchId = -1;
       if (branch != null) {
-         branchId = branch.getBranchId();
+         branchId = branch.getId();
       }
       propertyStore.put(TestRunStorageKey.SELECTED_BRANCH_ID, branchId);
    }

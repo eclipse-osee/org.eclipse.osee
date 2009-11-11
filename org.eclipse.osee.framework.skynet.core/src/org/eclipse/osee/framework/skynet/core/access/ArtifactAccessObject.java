@@ -44,7 +44,7 @@ public class ArtifactAccessObject extends AccessObject {
    }
 
    @Override
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 
@@ -62,7 +62,7 @@ public class ArtifactAccessObject extends AccessObject {
 
    public static ArtifactAccessObject getArtifactAccessObject(Artifact artifact) {
       Integer artId = artifact.getArtId();
-      Integer branchId = artifact.getBranch().getBranchId();
+      Integer branchId = artifact.getBranch().getId();
       return getArtifactAccessObject(artId, branchId);
    }
 
@@ -77,7 +77,7 @@ public class ArtifactAccessObject extends AccessObject {
    }
 
    public static AccessObject getArtifactAccessObjectFromCache(Artifact art) {
-      return getArtifactAccessObjectFromCache(art.getArtId(), art.getBranch().getBranchId());
+      return getArtifactAccessObjectFromCache(art.getArtId(), art.getBranch().getId());
    }
 
    public static AccessObject getArtifactAccessObjectFromCache(Integer artId2, Integer branchId2) {

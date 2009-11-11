@@ -12,14 +12,14 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -155,7 +155,7 @@ public abstract class Conflict implements IAdaptable {
       } catch (AttributeDoesNotExist ex) {
       }
       status =
-            ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getBranchId(), objectID,
+            ConflictStatusManager.computeStatus(sourceGamma, destGamma, mergeBranch.getId(), objectID,
                   getConflictType().getValue(), passedStatus,
                   TransactionManager.getStartEndPoint(mergeBranch).getFirst().getId());
       return status;
@@ -165,7 +165,7 @@ public abstract class Conflict implements IAdaptable {
       if (this.status.equals(status)) {
          return;
       }
-      ConflictStatusManager.setStatus(status, sourceGamma, destGamma, mergeBranch.getBranchId());
+      ConflictStatusManager.setStatus(status, sourceGamma, destGamma, mergeBranch.getId());
       this.status = status;
    }
 
@@ -214,7 +214,7 @@ public abstract class Conflict implements IAdaptable {
    }
 
    public int getMergeBranchID() {
-      return mergeBranch.getBranchId();
+      return mergeBranch.getId();
    }
 
    public String getArtifactName() throws OseeCoreException {

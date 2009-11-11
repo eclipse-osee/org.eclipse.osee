@@ -25,12 +25,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -494,7 +494,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
-      if (rootArt != null && transData.branchId != rootArt.getBranch().getBranchId()) {
+      if (rootArt != null && transData.branchId != rootArt.getBranch().getId()) {
          return;
       }
       try {
@@ -550,7 +550,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       super.saveState(memento);
       memento = memento.createChild(INPUT);
       if (branch != null) {
-         memento.putInteger(BRANCH_ID, branch.getBranchId());
+         memento.putInteger(BRANCH_ID, branch.getId());
       }
    }
 

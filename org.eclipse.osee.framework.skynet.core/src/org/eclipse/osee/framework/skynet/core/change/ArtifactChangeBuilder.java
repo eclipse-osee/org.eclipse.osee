@@ -5,17 +5,16 @@
  */
 package org.eclipse.osee.framework.skynet.core.change;
 
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 
 /**
  * @author Jeff C. Phillips
- *
  */
 public class ArtifactChangeBuilder extends ChangeBuilder {
 
@@ -32,11 +31,13 @@ public class ArtifactChangeBuilder extends ChangeBuilder {
     * @param isHistorical
     */
    public ArtifactChangeBuilder(Branch branch, ArtifactType artifactType, int sourceGamma, int artId, TransactionRecord toTransactionId, TransactionRecord fromTransactionId, ModificationType modType, ChangeType changeType, boolean isHistorical) {
-      super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType, isHistorical);
+      super(branch, artifactType, sourceGamma, artId, toTransactionId, fromTransactionId, modType, changeType,
+            isHistorical);
    }
 
    @Override
    public Change build(Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist, ArtifactDoesNotExist {
-      return new ArtifactChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getToTransactionId(), getFromTransactionId(), getModType(), getChangeType(), isHistorical(), loadArtifact());
+      return new ArtifactChange(branch, getArtifactType(), getSourceGamma(), getArtId(), getToTransactionId(),
+            getFromTransactionId(), getModType(), getChangeType(), isHistorical(), loadArtifact());
    }
 }

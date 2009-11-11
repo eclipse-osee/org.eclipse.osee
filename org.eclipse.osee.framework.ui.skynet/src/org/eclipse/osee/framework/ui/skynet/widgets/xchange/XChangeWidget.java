@@ -22,6 +22,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -30,12 +32,10 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -180,7 +180,7 @@ public class XChangeWidget extends XWidget implements IActionable {
             try {
                Artifact associatedArtifact = null;
                if (branch != null) {
-                  associatedArtifact = branch.getAssociatedArtifact().getFullArtifact();
+                  associatedArtifact = (Artifact) branch.getAssociatedArtifact().getFullArtifact();
                } else if (transactionId != null) {
                   associatedArtifact =
                         ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
@@ -208,7 +208,7 @@ public class XChangeWidget extends XWidget implements IActionable {
                            QuickSearchView.VIEW_ID);
                if (viewPart != null) {
                   Branch branch =
-                        getBranch() != null ? getBranch() : (getTransactionId() != null ? getTransactionId().getBranch() : null);
+                        getBranch() != null ? getBranch() : getTransactionId() != null ? getTransactionId().getBranch() : null;
                   if (branch != null) {
                      ((QuickSearchView) viewPart).setBranch(branch);
                   }
@@ -230,7 +230,7 @@ public class XChangeWidget extends XWidget implements IActionable {
       try {
          Artifact associatedArtifact = null;
          if (branch != null) {
-            associatedArtifact = branch.getAssociatedArtifact().getFullArtifact();
+            associatedArtifact = (Artifact) branch.getAssociatedArtifact().getFullArtifact();
          } else if (transactionId != null && transactionId.getCommit() != 0) {
             associatedArtifact =
                   ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());

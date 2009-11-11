@@ -21,6 +21,8 @@ import java.util.Random;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -39,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -188,7 +189,7 @@ public final class ArtifactLoader {
          List<Object[]> insertParameters = new LinkedList<Object[]>();
 
          for (int artId : org.eclipse.osee.framework.jdk.core.util.Collections.unique(artIds)) {
-            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getBranchId(),
+            insertParameters.add(new Object[] {queryId, insertTime, artId, branch.getId(),
                   historical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
 
@@ -289,8 +290,7 @@ public final class ArtifactLoader {
             if (DEBUG) {
                System.out.println(String.format("  ArtifactID = %d , BranchID = %d", artId, branchId));
             }
-            Object transactionParameter =
-                  transactionId == null ? SQL3DataType.INTEGER : transactionId.getId();
+            Object transactionParameter = transactionId == null ? SQL3DataType.INTEGER : transactionId.getId();
             insertParameters.put(artId, branchId, new Object[] {queryId, insertTime, artId, branchId,
                   transactionParameter});
          }
@@ -319,7 +319,7 @@ public final class ArtifactLoader {
 
       if (artifact == null) {
          ArtifactType artifactType = ArtifactTypeManager.getType(chStmt.getInt("art_type_id"));
-         ArtifactFactory factory = artifactType.getFactory();
+         ArtifactFactory factory = ArtifactTypeManager.getFactory(artifactType);
 
          artifact =
                factory.loadExisitingArtifact(artifactId, chStmt.getString("guid"),
@@ -339,7 +339,7 @@ public final class ArtifactLoader {
 
       try {
          ConnectionHandler.runPreparedUpdate(INSERT_JOIN_ARTIFACT, queryId, insertTime, artifact.getArtId(),
-               artifact.getBranch().getBranchId(), SQL3DataType.INTEGER);
+               artifact.getBranch().getId(), SQL3DataType.INTEGER);
 
          List<Artifact> artifacts = new ArrayList<Artifact>(1);
          artifacts.add(artifact);

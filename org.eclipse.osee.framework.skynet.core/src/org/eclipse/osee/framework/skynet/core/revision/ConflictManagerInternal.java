@@ -21,6 +21,8 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -38,14 +40,12 @@ import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.conflict.ArtifactConflictBuilder;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflictBuilder;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictBuilder;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
 /**
@@ -136,20 +136,20 @@ public class ConflictManagerInternal {
       long totalTime = 0;
       if (sourceBranch != null && destinationBranch != null) {
          monitor.beginTask(String.format("Loading Merge Manager for Branch %d into Branch %d",
-               sourceBranch.getBranchId(), destinationBranch.getBranchId()), 100);
+               sourceBranch.getId(), destinationBranch.getId()), 100);
          monitor.subTask("Finding Database stored conflicts");
 
          if (DEBUG) {
             System.out.println(String.format(
                   "\nDiscovering Conflicts based on Source Branch: %d Destination Branch: %d",
-                  sourceBranch.getBranchId(), destinationBranch.getBranchId()));
+                  sourceBranch.getId(), destinationBranch.getId()));
             totalTime = System.currentTimeMillis();
          }
       }
       if (sourceBranch == null || destinationBranch == null) {
          throw new OseeArgumentException(String.format("Source Branch = %s Destination Branch = %s",
-               sourceBranch == null ? "NULL" : sourceBranch.getBranchId(),
-               destinationBranch == null ? "NULL" : destinationBranch.getBranchId()));
+               sourceBranch == null ? "NULL" : sourceBranch.getId(),
+               destinationBranch == null ? "NULL" : destinationBranch.getId()));
       }
 
       BranchState sourceBranchState = sourceBranch.getBranchState();
@@ -197,7 +197,7 @@ public class ConflictManagerInternal {
          System.out.println(String.format("    Creating conflict objects and setting theri status completed in %s",
                Lib.getElapseString(time)));
       }
-      cleanUpConflictDB(conflicts, mergeBranch.getBranchId(), monitor);
+      cleanUpConflictDB(conflicts, mergeBranch.getId(), monitor);
       if (DEBUG) {
          debugDump(conflicts, totalTime);
       }
@@ -219,11 +219,11 @@ public class ConflictManagerInternal {
 
          List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (int artId : artIdSet) {
-            insertParameters.add(new Object[] {queryId, insertTime, artId, sourceBranch.getBranchId(),
+            insertParameters.add(new Object[] {queryId, insertTime, artId, sourceBranch.getId(),
                   SQL3DataType.INTEGER});
-            insertParameters.add(new Object[] {queryId, insertTime, artId, destinationBranch.getBranchId(),
+            insertParameters.add(new Object[] {queryId, insertTime, artId, destinationBranch.getId(),
                   SQL3DataType.INTEGER});
-            insertParameters.add(new Object[] {queryId, insertTime, artId, mergeBranch.getBranchId(),
+            insertParameters.add(new Object[] {queryId, insertTime, artId, mergeBranch.getId(),
                   SQL3DataType.INTEGER});
          }
          artifacts = ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false, true);
@@ -256,7 +256,7 @@ public class ConflictManagerInternal {
 
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS),
-               sourceBranch.getBranchId(), destinationBranch.getBranchId(), transactionId);
+               sourceBranch.getId(), destinationBranch.getId(), transactionId);
 
          if (!chStmt.next()) {
             return;
@@ -320,7 +320,7 @@ public class ConflictManagerInternal {
       AttributeConflictBuilder attributeConflictBuilder;
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES),
-               sourceBranch.getBranchId(), destinationBranch.getBranchId(), transactionId);
+               sourceBranch.getId(), destinationBranch.getId(), transactionId);
 
          int attrId = 0;
 
@@ -388,7 +388,7 @@ public class ConflictManagerInternal {
       try {
          chStmt.runPreparedQuery(
                "select 'x' from osee_tx_details t1, osee_txs t2 where t2.transaction_id = t1.transaction_id and t2.gamma_id = ? and t1.branch_id =? and t1.transaction_id <=?",
-               destinationGammaId, branch.getBranchId(), endTransactionNumber);
+               destinationGammaId, branch.getId(), endTransactionNumber);
          isValidConflict = !chStmt.next();
       } finally {
          chStmt.close();
@@ -456,13 +456,13 @@ public class ConflictManagerInternal {
       ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
       try {
          if (sourceBranch != null && destBranch != null) {
-            chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getBranchId(), destBranch.getBranchId());
+            chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getId(), destBranch.getId());
             if (chStmt.next()) {
                transactionId = chStmt.getInt("commit_transaction_id");
             }
             if (transactionId == 0) {
                chStmt.runPreparedQuery(GET_COMMIT_TRANSACTION_COMMENT,
-                     BranchManager.COMMIT_COMMENT + sourceBranch.getName(), destBranch.getBranchId());
+                     BranchManager.COMMIT_COMMENT + sourceBranch.getName(), destBranch.getId());
                if (chStmt.next()) {
                   transactionId = chStmt.getInt("transaction_id");
                }

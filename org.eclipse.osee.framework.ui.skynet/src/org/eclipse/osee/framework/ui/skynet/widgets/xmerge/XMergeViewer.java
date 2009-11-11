@@ -30,7 +30,9 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -38,13 +40,11 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
 import org.eclipse.osee.framework.skynet.core.conflict.Conflict;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -200,7 +200,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
             for (Conflict conflict : conflicts) {
                try {
                   conflict.applyPreviousMerge(ConflictManagerInternal.getMergeBranchId(
-                        conflict.getSourceBranch().getBranchId(), destBranchId), destBranchId);
+                        conflict.getSourceBranch().getId(), destBranchId), destBranchId);
                } catch (OseeCoreException ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                } finally {
@@ -431,7 +431,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
 
    private void refreshAssociatedArtifactItem(Branch sourceBranch) {
       try {
-         IArtifact branchAssociatedArtifact = sourceBranch.getAssociatedArtifact();
+         IArtifact branchAssociatedArtifact = (IArtifact) sourceBranch.getAssociatedArtifact();
          if (branchAssociatedArtifact != null) {
             openAssociatedArtifactAction.setImageDescriptor(ImageManager.getImageDescriptor(branchAssociatedArtifact));
             openAssociatedArtifactAction.setEnabled(true);
@@ -570,7 +570,7 @@ public class XMergeViewer extends XWidget implements IAdaptable {
       public void run() {
          try {
             Branch sourceBranch = conflicts[0].getSourceBranch();
-            Artifact branchAssociatedArtifact = sourceBranch.getAssociatedArtifact().getFullArtifact();
+            Artifact branchAssociatedArtifact = (Artifact) sourceBranch.getAssociatedArtifact().getFullArtifact();
             if (branchAssociatedArtifact instanceof IATSArtifact) {
                OseeAts.openATSArtifact(branchAssociatedArtifact);
                return;
@@ -665,9 +665,9 @@ public class XMergeViewer extends XWidget implements IAdaptable {
                ArrayList<Integer> branchIds = new ArrayList<Integer>();
                try {
                   Collection<Integer> destBranches =
-                        ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getBranchId());
+                        ConflictManagerInternal.getDestinationBranchesMerged(sourceBranch.getId());
                   for (Integer integer : destBranches) {
-                     if (integer.intValue() != destBranch.getBranchId()) {
+                     if (integer.intValue() != destBranch.getId()) {
                         selections.add(BranchManager.getBranch(integer).getName());
                         branchIds.add(integer);
                      }

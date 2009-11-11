@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.skynet.core.types.branch;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,48 +17,43 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.data.OseeField;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.access.IAccessControllable;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeCache;
-import org.eclipse.osee.framework.skynet.core.types.AbstractOseeType;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.types.field.AliasesField;
 import org.eclipse.osee.framework.skynet.core.types.field.AssociatedArtifactField;
-import org.eclipse.osee.framework.skynet.core.types.field.OseeField;
+import org.eclipse.osee.framework.skynet.core.types.impl.BranchField;
 
 /**
  * @author Roberto E. Escobar
  */
-public class Branch extends AbstractOseeType implements Comparable<Branch>, IAccessControllable, IAdaptable {
+public final class BranchImpl extends Branch {
    private static final int SHORT_NAME_LIMIT = 25;
 
-   public static final String BRANCH_TYPE_FIELD_KEY = "osee.branch.type.field";
-   public static final String BRANCH_STATE_FIELD_KEY = "osee.branch.state.field";
-   public static final String BRANCH_ARCHIVED_STATE_FIELD_KEY = "osee.branch.archived.state.field";
-   public static final String BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY = "osee.branch.associated.artifact.field";
-   public static final String BRANCH_ALIASES_FIELD_KEY = "osee.branch.aliases.field";
-
-   public Branch(AbstractOseeCache<Branch> cache, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
+   public BranchImpl(AbstractOseeCache<Branch> cache, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
       super(cache, guid, name);
-      setFieldLogException(BRANCH_TYPE_FIELD_KEY, branchType);
-      setFieldLogException(BRANCH_STATE_FIELD_KEY, branchState);
-      setFieldLogException(BRANCH_ARCHIVED_STATE_FIELD_KEY, BranchArchivedState.fromBoolean(isArchived));
+      setFieldLogException(BranchField.BRANCH_TYPE_FIELD_KEY, branchType);
+      setFieldLogException(BranchField.BRANCH_STATE_FIELD_KEY, branchState);
+      setFieldLogException(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, BranchArchivedState.fromBoolean(isArchived));
    }
 
    @Override
    protected void initializeFields() {
-      addField(BRANCH_TYPE_FIELD_KEY, new OseeField<BranchType>());
-      addField(BRANCH_STATE_FIELD_KEY, new OseeField<BranchState>());
-      addField(BRANCH_ARCHIVED_STATE_FIELD_KEY, new OseeField<BranchArchivedState>());
-      addField(BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, new AssociatedArtifactField(getCache(), this));
-      addField(BRANCH_ALIASES_FIELD_KEY, new AliasesField(getCache(), this));
+      addField(BranchField.BRANCH_TYPE_FIELD_KEY, new OseeField<BranchType>());
+      addField(BranchField.BRANCH_STATE_FIELD_KEY, new OseeField<BranchState>());
+      addField(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, new OseeField<BranchArchivedState>());
+      addField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, new AssociatedArtifactField(getCache(), this));
+      addField(BranchField.BRANCH_ALIASES_FIELD_KEY, new AliasesField(getCache(), this));
    }
 
    @Override
@@ -66,14 +61,17 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       return (BranchCache) super.getCache();
    }
 
+   @Override
    public Branch getParentBranch() throws OseeCoreException {
       return getCache().getParentBranch(this);
    }
 
+   @Override
    public boolean hasParentBranch() throws OseeCoreException {
       return getParentBranch() != null;
    }
 
+   @Override
    public String getShortName() {
       String shortName = "";
       if (Strings.isValid(getName())) {
@@ -82,55 +80,68 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       return shortName;
    }
 
+   @Override
    public BranchType getBranchType() {
-      return getFieldValueLogException(null, BRANCH_TYPE_FIELD_KEY);
+      return getFieldValueLogException(null, BranchField.BRANCH_TYPE_FIELD_KEY);
    }
 
+   @Override
    public BranchState getBranchState() {
-      return getFieldValueLogException(null, BRANCH_STATE_FIELD_KEY);
+      return getFieldValueLogException(null, BranchField.BRANCH_STATE_FIELD_KEY);
    }
 
+   @Override
    public BranchArchivedState getArchiveState() {
-      return getFieldValueLogException(null, BRANCH_ARCHIVED_STATE_FIELD_KEY);
+      return getFieldValueLogException(null, BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY);
    }
 
+   @Override
    public IArtifact getAssociatedArtifact() throws OseeCoreException {
-      return getFieldValue(BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY);
+      return getFieldValue(BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY);
    }
 
-   public void setAssociatedArtifact(IArtifact artifact) throws OseeCoreException {
-      setField(BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, artifact);
+   @Override
+   public void setAssociatedArtifact(IBasicArtifact<?> artifact) throws OseeCoreException {
+      setField(BranchField.BRANCH_ASSOCIATED_ARTIFACT_FIELD_KEY, artifact);
    }
 
+   @Override
    public TransactionRecord getBaseTransaction() throws OseeCoreException {
       return getCache().getBaseTransaction(this);
    }
 
+   @Override
    public TransactionRecord getSourceTransaction() throws OseeCoreException {
       return getCache().getSourceTransaction(this);
    }
 
+   @Override
    public Collection<String> getAliases() throws OseeCoreException {
-      return getFieldValue(BRANCH_ALIASES_FIELD_KEY);
+      return getFieldValue(BranchField.BRANCH_ALIASES_FIELD_KEY);
    }
 
+   @Override
    public void setAliases(String... alias) throws OseeCoreException {
-      setField(BRANCH_ALIASES_FIELD_KEY, Arrays.asList(alias));
+      setField(BranchField.BRANCH_ALIASES_FIELD_KEY, Arrays.asList(alias));
    }
 
+   @Override
    public void setArchived(boolean isArchived) {
       BranchArchivedState newValue = BranchArchivedState.fromBoolean(isArchived);
-      setFieldLogException(BRANCH_ARCHIVED_STATE_FIELD_KEY, newValue);
+      setFieldLogException(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, newValue);
    }
 
+   @Override
    public void setBranchState(BranchState branchState) {
-      setFieldLogException(BRANCH_STATE_FIELD_KEY, branchState);
+      setFieldLogException(BranchField.BRANCH_STATE_FIELD_KEY, branchState);
    }
 
+   @Override
    public void setBranchType(BranchType branchType) {
-      setFieldLogException(BRANCH_TYPE_FIELD_KEY, branchType);
+      setFieldLogException(BranchField.BRANCH_TYPE_FIELD_KEY, branchType);
    }
 
+   @Override
    public boolean isEditable() {
       BranchState state = getBranchState();
       return !state.isCommitted() && !state.isRebaselined() && // 
@@ -152,6 +163,7 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       return result;
    }
 
+   @Override
    public Collection<Branch> getChildren() throws OseeCoreException {
       return getCache().getChildren(this);
    }
@@ -166,10 +178,12 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       return this;
    }
 
+   @Override
    public Collection<Branch> getChildBranches() throws OseeCoreException {
       return getChildBranches(false);
    }
 
+   @Override
    public Collection<Branch> getChildBranches(boolean recurse) throws OseeCoreException {
       Set<Branch> children = new HashSet<Branch>();
       getChildBranches(this, children, recurse);
@@ -177,10 +191,10 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
    }
 
    private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeCoreException {
-      int parentBranchId = parentBranch.getBranchId();
+      int parentBranchId = parentBranch.getId();
       for (Branch branch : BranchManager.getNormalBranches()) {
          if (branch.hasParentBranch()) {
-            if (parentBranchId == branch.getParentBranch().getBranchId()) {
+            if (parentBranchId == branch.getParentBranch().getId()) {
                children.add(branch);
                if (recurse) {
                   getChildBranches(branch, children, recurse);
@@ -190,6 +204,7 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       }
    }
 
+   @Override
    public Collection<Branch> getAncestors() throws OseeCoreException {
       List<Branch> ancestors = new ArrayList<Branch>();
       Branch branchCursor = this;
@@ -201,6 +216,7 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       return ancestors;
    }
 
+   @Override
    public Collection<Branch> getWorkingBranches() throws OseeCoreException {
       // TODO change this to recurse all Children and then filter by states.
 
@@ -215,6 +231,7 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       return branches;
    }
 
+   @Override
    @SuppressWarnings("unchecked")
    public Object getAdapter(Class adapter) {
       if (adapter == null) {
@@ -226,5 +243,4 @@ public class Branch extends AbstractOseeType implements Comparable<Branch>, IAcc
       }
       return null;
    }
-
 }

@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -26,7 +28,7 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.skynet.core.IOseeType;
+import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
@@ -38,6 +40,8 @@ import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
  * @author Donald G. Dunne
  */
 public class ArtifactTypeManager {
+
+   private final static ArtifactFactoryManager factoryManager = new ArtifactFactoryManager();
 
    private ArtifactTypeManager() {
    }
@@ -153,7 +157,7 @@ public class ArtifactTypeManager {
     * @throws OseeCoreException
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch) throws OseeCoreException {
-      return getType(artifactTypeName).makeNewArtifact(branch);
+      return makeNewArtifact(getType(artifactTypeName), branch);
    }
 
    /**
@@ -179,7 +183,7 @@ public class ArtifactTypeManager {
     * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
     */
    public static Artifact addArtifact(String artifactTypeName, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
-      return getType(artifactTypeName).makeNewArtifact(branch, guid, humandReadableId);
+      return makeNewArtifact(getType(artifactTypeName), branch, guid, humandReadableId);
    }
 
    private static final String DELETE_VALID_ATTRIBUTE =
@@ -271,5 +275,44 @@ public class ArtifactTypeManager {
 
    public static void persist() throws OseeCoreException {
       OseeTypeManager.getCache().getArtifactTypeCache().storeAllModified();
+   }
+
+   /**
+    * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
+    * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
+    * branch.
+    * 
+    * @return Return artifact reference
+    * @throws OseeCoreException
+    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType)
+    * @use {@link ArtifactTypeManager}.addArtifact
+    */
+   public static Artifact makeNewArtifact(ArtifactType artifactType, Branch branch) throws OseeCoreException {
+      return getFactory(artifactType).makeNewArtifact(branch, artifactType, null, null, null);
+   }
+
+   /**
+    * Get a new instance of the type of artifact described by this descriptor. This is just a convenience method that
+    * calls makeNewArtifact on the known factory with this descriptor for the descriptor parameter, and the supplied
+    * branch.
+    * 
+    * @param branch branch on which artifact will be created
+    * @return Return artifact reference
+    * @throws OseeCoreException
+    * @see ArtifactFactory#makeNewArtifact(Branch, ArtifactType, String, String, ArtifactProcessor)
+    * @use {@link ArtifactTypeManager}.addArtifact
+    */
+   public static Artifact makeNewArtifact(ArtifactType artifactType, Branch branch, String guid, String humandReadableId) throws OseeCoreException {
+      return getFactory(artifactType).makeNewArtifact(branch, artifactType, guid, humandReadableId, null);
+   }
+
+   /**
+    * @return Returns the ArtifactType factory.
+    */
+   public static ArtifactFactory getFactory(ArtifactType artifactType) throws OseeCoreException {
+      if (artifactType == null) {
+         throw new OseeArgumentException("Artifact Type cannot be null");
+      }
+      return factoryManager.getFactory(artifactType.getName());
    }
 }

@@ -22,12 +22,15 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
  */
 public class DbInformation implements IDatabaseInfo {
 
+   private static final long serialVersionUID = -4704655033702137367L;
    private final DbDetailData dbDetailData;
    private final DbSetupData dbSetupData;
    private final DbConnectionData dbConnectionData;
 
    public enum DbObjectType {
-      ConnectionDescription, AvailableDbServices, DatabaseInfo
+      ConnectionDescription,
+      AvailableDbServices,
+      DatabaseInfo
    }
 
    public DbInformation(DbDetailData dbDetailData, DbSetupData dbSetupData, DbConnectionData dbConnectionData) {

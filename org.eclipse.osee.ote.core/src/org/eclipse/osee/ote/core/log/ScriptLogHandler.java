@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.LogRecord;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
+import org.apache.xml.serialize.OutputFormat;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.environment.TestEnvironment;
@@ -31,7 +32,6 @@ import org.eclipse.osee.ote.core.log.record.TestRecord;
 import org.eclipse.osee.ote.core.log.record.TraceRecord;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import com.sun.org.apache.xml.internal.serialize.OutputFormat;
 
 /**
  * @author Ryan D. Brooks
