@@ -6,7 +6,6 @@
 package org.eclipse.osee.coverage.merge;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -19,7 +18,6 @@ import org.eclipse.osee.coverage.model.ICoverage;
 public class MergeManager {
    private final CoveragePackage coveragePackage;
    private final CoverageImport coverageImport;
-   private Collection<? extends ICoverage> packageCoverage = null;
    private List<MergeItem> mergeItems = null;
 
    public MergeManager(CoveragePackage coveragePackage, CoverageImport coverageImport) {
@@ -28,7 +26,6 @@ public class MergeManager {
    }
 
    public List<MergeItem> getMergeItems() {
-      packageCoverage = coveragePackage.getChildren(true);
       if (mergeItems == null) {
          mergeItems = new ArrayList<MergeItem>();
          for (ICoverage importCoverage : coverageImport.getChildren()) {

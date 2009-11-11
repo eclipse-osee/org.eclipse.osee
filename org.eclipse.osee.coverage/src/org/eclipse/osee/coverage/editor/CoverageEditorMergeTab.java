@@ -13,6 +13,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.IJobChangeListener;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -24,6 +28,7 @@ import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
+import org.eclipse.osee.coverage.merge.MessageMergeItem;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackage;
@@ -35,10 +40,13 @@ import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.coverage.util.NotSaveable;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -77,6 +85,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    private CoverageEditorCoverageParameters parameters;
    LinkWithImportItemAction linkWithImportItemAction;
    private MergeManager mergeManager;
+   private boolean loading = false;
 
    public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, CoveragePackage provider1, CoverageImport provider2) {
       super(coverageEditor, name, name);
@@ -215,12 +224,69 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       loadImportViewer(false);
    }
 
+   private class ImportJobChangeListener implements IJobChangeListener {
+
+      @Override
+      public void aboutToRun(IJobChangeEvent event) {
+      }
+
+      @Override
+      public void awake(IJobChangeEvent event) {
+      }
+
+      @Override
+      public void done(IJobChangeEvent event) {
+         showBusy(false);
+         loading = false;
+      }
+
+      @Override
+      public void running(IJobChangeEvent event) {
+      }
+
+      @Override
+      public void scheduled(IJobChangeEvent event) {
+         showBusy(true);
+      }
+
+      @Override
+      public void sleeping(IJobChangeEvent event) {
+      }
+
+   }
+
    private void loadImportViewer(boolean force) {
+      if (loading) {
+         AWorkbench.popup("Already Loading");
+         return;
+      }
       if (force || mergeManager == null) {
          mergeManager = new MergeManager(coveragePackage, coverageImport);
       }
-      xImportViewer2.getXViewer().setInput(mergeManager.getMergeItems());
+      xImportViewer2.getXViewer().setInput(new MessageMergeItem("Loading..."));
+      xImportViewer2.getXViewer().refresh();
+      loading = true;
+      Operations.executeAsJob(new LoadImportViewerJob(), true, Job.LONG, new ImportJobChangeListener());
    }
+
+   public class LoadImportViewerJob extends AbstractOperation {
+
+      public LoadImportViewerJob() {
+         super("Loading Coverage Import Viewer", Activator.PLUGIN_ID);
+      }
+
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         final List<MergeItem> mergeItems = mergeManager.getMergeItems();
+         Displays.ensureInDisplayThread(new Runnable() {
+            @Override
+            public void run() {
+               xImportViewer2.getXViewer().setInput(mergeItems);
+            }
+         });
+      }
+   }
+
    private Action reloadAction = new Action() {
       @Override
       public void run() {

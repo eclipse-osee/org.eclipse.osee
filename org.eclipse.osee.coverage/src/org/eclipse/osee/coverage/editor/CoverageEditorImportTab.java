@@ -6,6 +6,7 @@
 package org.eclipse.osee.coverage.editor;
 
 import java.util.logging.Level;
+import org.eclipse.core.runtime.AssertionFailedException;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
@@ -199,6 +200,7 @@ public class CoverageEditorImportTab extends FormPage {
       public void scheduled(IJobChangeEvent event) {
          super.scheduled(event);
          showBusy(true);
+         blamOutputSection.setText("Importing...\n");
       }
 
       @Override
@@ -227,17 +229,32 @@ public class CoverageEditorImportTab extends FormPage {
          try {
             if (coverageEditorMergeTab != null) {
                if (coverageEditorMergeIndex != 0) {
-                  coverageEditor.removePage(coverageEditorMergeIndex);
+                  try {
+                     coverageEditor.removePage(coverageEditorMergeIndex);
+                  } catch (AssertionFailedException ex) {
+                     // page already removed; do nothing
+                  }
+                  coverageEditorMergeIndex = 0;
                }
             }
             if (coverageImportTab != null) {
                if (coverageImportIndex != 0) {
-                  coverageEditor.removePage(coverageImportIndex);
+                  try {
+                     coverageEditor.removePage(coverageImportIndex);
+                  } catch (AssertionFailedException ex) {
+                     // page already removed; do nothing
+                  }
+                  coverageImportIndex = 0;
                }
             }
             if (coverageImportOverviewTab != null) {
                if (coverageImportOverviewIndex != 0) {
-                  coverageEditor.removePage(coverageImportOverviewIndex);
+                  try {
+                     coverageEditor.removePage(coverageImportOverviewIndex);
+                  } catch (AssertionFailedException ex) {
+                     // page already removed; do nothing
+                  }
+                  coverageImportOverviewIndex = 0;
                }
             }
             coverageImport = null;
