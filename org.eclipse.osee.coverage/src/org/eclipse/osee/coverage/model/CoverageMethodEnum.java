@@ -18,7 +18,7 @@ import java.util.List;
  * @author Donald G. Dunne
  */
 public enum CoverageMethodEnum {
-   Deactivated_Code, Exception_Handling, Test_Unit, Not_Covered;
+   Deactivated_Code, Dead_Code, Exception_Handling, Test_Unit, Not_Covered;
 
    public static Collection<CoverageMethodEnum> getCollection() {
       List<CoverageMethodEnum> enums = new ArrayList<CoverageMethodEnum>();

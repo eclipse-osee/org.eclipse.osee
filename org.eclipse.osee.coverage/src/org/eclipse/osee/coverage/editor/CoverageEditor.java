@@ -75,26 +75,9 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
       if (coverageEditorImportTab == null) throw new OseeStateException("Import page == null");
       setActivePage(2);
       coverageEditorImportTab.simulateImport(importName);
-      Thread thread = new Thread() {
-         @Override
-         public void run() {
-            try {
-               Thread.sleep(1000);
-               Displays.ensureInDisplayThread(new Runnable() {
-                  @Override
-                  public void run() {
-                     simulateImportPostRun();
-                  }
-               });
-            } catch (InterruptedException ex) {
-               OseeLog.log(Activator.class, Level.SEVERE, ex);
-            }
-         }
-      };
-      thread.start();
    }
 
-   private void simulateImportPostRun() {
+   public void simulateImportPostRun() {
       setActivePage(5);
       coverageEditorImportTab.simulateImportSearch();
    }

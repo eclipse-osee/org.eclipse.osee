@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.editor;
 
+import java.util.logging.Level;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
@@ -13,6 +14,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.osee.coverage.CoverageManager;
 import org.eclipse.osee.coverage.blam.AbstractCoverageBlam;
+import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
@@ -66,6 +68,7 @@ public class CoverageEditorImportTab extends FormPage {
    private CoverageEditorMergeTab coverageEditorMergeTab;
    private int coverageImportIndex, coverageImportOverviewIndex, coverageEditorMergeIndex;
    private Composite destroyableComposite;
+   private boolean isSimulateImput = false;
 
    public CoverageEditorImportTab(CoverageEditor coverageEditor) {
       super(coverageEditor, "Import", "Import");
@@ -118,9 +121,11 @@ public class CoverageEditorImportTab extends FormPage {
       if (blam == null) {
          throw new OseeArgumentException(String.format("Can't find blam matching name [%s]", importName));
       }
+      blam.setCoverageEditor(coverageEditor);
       combo.getComboViewer().setSelection(new StructuredSelection(blam), true);
       createBlamSections();
       blamOutputSection.simluateRun();
+      isSimulateImput = true;
    }
 
    public void simulateImportSearch() {
@@ -129,7 +134,9 @@ public class CoverageEditorImportTab extends FormPage {
 
    private AbstractCoverageBlam getBlam() {
       if (combo.getSelected() != null) {
-         return (AbstractCoverageBlam) combo.getSelected();
+         AbstractCoverageBlam blam = (AbstractCoverageBlam) combo.getSelected();
+         blam.setCoverageEditor(coverageEditor);
+         return blam;
       }
       return null;
    }
@@ -204,17 +211,6 @@ public class CoverageEditorImportTab extends FormPage {
       @Override
       public void done(IJobChangeEvent event) {
          super.done(event);
-         blamOutputSection.appendText(String.format("[%s] BLAM completed in [%s]\n", name,
-               Lib.getElapseString(startTime)));
-         showBusy(false);
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               coverageImport = getBlam().getCoverageImport();
-               coverageImport.setBlamName(name);
-               createImportParts();
-            }
-         });
       }
    }
 
@@ -314,4 +310,40 @@ public class CoverageEditorImportTab extends FormPage {
       return coverageImport;
    }
 
+   /**
+    * This method is called at the end of the import blam being run
+    */
+   public void setCoverageImportResults(final CoverageImport coverageImport) {
+      this.coverageImport = coverageImport;
+      showBusy(false);
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            blamOutputSection.appendText("BLAM completed\n");
+            coverageImport.setBlamName("Blam Name Here");
+            createImportParts();
+
+            if (isSimulateImput) {
+               Thread thread = new Thread() {
+                  @Override
+                  public void run() {
+                     try {
+                        Thread.sleep(1000);
+                        Displays.ensureInDisplayThread(new Runnable() {
+                           @Override
+                           public void run() {
+                              coverageEditor.simulateImportPostRun();
+                              isSimulateImput = false;
+                           }
+                        });
+                     } catch (InterruptedException ex) {
+                        OseeLog.log(Activator.class, Level.SEVERE, ex);
+                     }
+                  }
+               };
+               thread.start();
+            }
+         }
+      });
+   }
 }

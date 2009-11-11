@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.blam;
 
+import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 
@@ -14,6 +15,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 public abstract class AbstractCoverageBlam extends AbstractBlam {
 
    CoverageImport coverageImport;
+   CoverageEditor coverageEditor;
 
    public CoverageImport getCoverageImport() {
       return coverageImport;
@@ -21,6 +23,9 @@ public abstract class AbstractCoverageBlam extends AbstractBlam {
 
    public void setCoverageImport(CoverageImport coverageImport) {
       this.coverageImport = coverageImport;
+      if (coverageEditor != null) {
+         coverageEditor.getCoverageEditorImportTab().setCoverageImportResults(coverageImport);
+      }
    }
 
    @Override
@@ -41,6 +46,14 @@ public abstract class AbstractCoverageBlam extends AbstractBlam {
          if (other.coverageImport != null) return false;
       } else if (!coverageImport.getName().equals(other.coverageImport.getName())) return false;
       return true;
+   }
+
+   public CoverageEditor getCoverageEditor() {
+      return coverageEditor;
+   }
+
+   public void setCoverageEditor(CoverageEditor coverageEditor) {
+      this.coverageEditor = coverageEditor;
    }
 
 }

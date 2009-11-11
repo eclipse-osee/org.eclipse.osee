@@ -63,7 +63,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
    }
 
    public void refreshHtml() {
-      XResultData rd = new XResultData();
+      XResultData rd = new XResultData(false);
       coveragePackageBase.getOverviewHtmlHeader(rd);
       rd.log("");
       rd.log(AHTML.getLabelValueStr("Coverage Items - Covered",

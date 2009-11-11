@@ -246,7 +246,10 @@ public class CoverageItem implements ICoverage {
 
    @Override
    public String getNamespace() {
-      return getParent().getNamespace();
+      if (getParent() != null && Strings.isValid(getParent().getNamespace())) {
+         return getParent().getNamespace();
+      }
+      return "";
    }
 
    @Override

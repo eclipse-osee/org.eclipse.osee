@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.XWidgetParser;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
@@ -71,12 +70,7 @@ public class CoverageImportTestBlam extends AbstractCoverageBlam implements ICov
 
    @Override
    public void runOperation(final VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      final ICoverageImporter importer = this;
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            setCoverageImport(importer.run());
-         };
-      });
+      setCoverageImport(run());
    }
 
    @Override
