@@ -16,10 +16,10 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.jobs.ImportTraceUnitsJob;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 

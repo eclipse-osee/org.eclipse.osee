@@ -44,6 +44,8 @@ import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
+import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -55,14 +57,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.IExceptionableRunnable;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeData;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -155,7 +155,8 @@ public class AtsBranchManager {
       if (branches.contains(branch)) {
          return CommitStatus.Committed;
       }
-      Collection<TransactionRecord> transactions = TransactionManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
+      Collection<TransactionRecord> transactions =
+            TransactionManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
       for (TransactionRecord transId : transactions) {
          if (transId.getBranch().equals(branch)) {
             if (smaMgr.getBranchMgr().isMergeBranchExists(branch)) {
@@ -208,11 +209,11 @@ public class AtsBranchManager {
       }
    }
 
-   public Integer getBranchId() throws OseeCoreException {
+   public Integer getId() throws OseeCoreException {
       if (getWorkingBranch() == null) {
          return null;
       }
-      return getWorkingBranch().getBranchId();
+      return getWorkingBranch().getId();
    }
 
    /**

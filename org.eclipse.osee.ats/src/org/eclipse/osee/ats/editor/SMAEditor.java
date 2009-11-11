@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.task.TaskTabXWidgetActionPage;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.AtsMetricsComposite;
 import org.eclipse.osee.ats.world.IAtsMetricsProvider;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -44,7 +45,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IArtifactReloadEventListener;
@@ -564,7 +564,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
             return;
          }
          if (branchModType == BranchEventType.Added || branchModType == BranchEventType.Deleted || branchModType == BranchEventType.Purged || branchModType == BranchEventType.Committed) {
-            if (smaMgr.getBranchMgr().getBranchId() == null || smaMgr.getBranchMgr().getBranchId() != branchId) {
+            if (smaMgr.getBranchMgr().getId() == null || smaMgr.getBranchMgr().getId() != branchId) {
                return;
             }
             Displays.ensureInDisplayThread(new Runnable() {
@@ -592,7 +592,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
       if (smaMgr.isInTransition()) {
          return;
       }
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) {
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
          return;
       }
       if (transData.isDeleted(smaMgr.getSma())) {
@@ -664,7 +664,7 @@ public class SMAEditor extends AbstractArtifactEditor implements ISelectedAtsArt
    @Override
    public void handleRelationModifiedEvent(Sender sender, RelationEventType relationEventType, RelationLink link, Branch branch, String relationType) {
       try {
-         if (branch.getBranchId() != AtsUtil.getAtsBranch().getBranchId()) {
+         if (branch.getId() != AtsUtil.getAtsBranch().getId()) {
             return;
          }
          if (link.getArtifactA().equals(smaMgr.getSma()) || link.getArtifactB().equals(smaMgr.getSma())) {

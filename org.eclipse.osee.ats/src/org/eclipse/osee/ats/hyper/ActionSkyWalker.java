@@ -191,7 +191,7 @@ public class ActionSkyWalker extends SkyWalkerView implements IPartListener, IAc
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (sender.isRemote()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
       if (getOptions().getArtifact() == null) return;
       if (transData.isDeleted(getOptions().getArtifact())) {
          Displays.ensureInDisplayThread(new Runnable() {

@@ -10,14 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.internal;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
+import org.eclipse.osee.framework.branch.management.IBranchArchivingService;
+import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
-import org.eclipse.osee.framework.branch.management.ICommitService;
+import org.eclipse.osee.framework.branch.management.IChangeReportService;
+import org.eclipse.osee.framework.branch.management.change.ChangeReportService;
+import org.eclipse.osee.framework.branch.management.commit.BranchCommitService;
 import org.eclipse.osee.framework.branch.management.creation.BranchCreation;
 import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
+import org.eclipse.osee.framework.branch.management.remote.BranchArchivingService;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -33,43 +39,51 @@ public class InternalBranchActivator implements BundleActivator {
       RESOURCE_LOCATOR,
       RESOURCE_MANAGER,
       BRANCH_EXCHANGE,
-      BRANCH_COMMIT,
       MASTER_SERVICE;
    }
 
    private static InternalBranchActivator instance;
-   private ServiceRegistration serviceRegistration;
-   private ServiceRegistration exchangeServiceRegistration;
 
    private final Map<TrackerId, ServiceTracker> mappedTrackers;
+   private final List<ServiceRegistration> services;
 
    public InternalBranchActivator() {
       this.mappedTrackers = new HashMap<TrackerId, ServiceTracker>();
+      this.services = new ArrayList<ServiceRegistration>();
    }
 
    public void start(BundleContext context) throws Exception {
       InternalBranchActivator.instance = this;
-      serviceRegistration = context.registerService(IBranchCreation.class.getName(), new BranchCreation(), null);
 
-      exchangeServiceRegistration =
-            context.registerService(IBranchExchange.class.getName(), new BranchExchange(), null);
+      createService(context, IBranchCreation.class, new BranchCreation());
+      createService(context, IBranchArchivingService.class, new BranchArchivingService());
+      createService(context, IBranchCommitService.class, new BranchCommitService());
+      createService(context, IChangeReportService.class, new ChangeReportService());
+      createService(context, IBranchCreation.class, new BranchCreation());
+      createService(context, IBranchExchange.class, new BranchExchange());
 
       createServiceTracker(context, IResourceLocatorManager.class, TrackerId.RESOURCE_LOCATOR);
       createServiceTracker(context, IResourceManager.class, TrackerId.RESOURCE_MANAGER);
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
-      createServiceTracker(context, ICommitService.class, TrackerId.BRANCH_COMMIT);
       createServiceTracker(context, IApplicationServerManager.class, TrackerId.MASTER_SERVICE);
    }
 
    public void stop(BundleContext context) throws Exception {
-      exchangeServiceRegistration.unregister();
-      serviceRegistration.unregister();
+      for (ServiceRegistration service : services) {
+         service.unregister();
+      }
 
       for (ServiceTracker tracker : mappedTrackers.values()) {
          tracker.close();
       }
+      services.clear();
       mappedTrackers.clear();
+
       instance = null;
+   }
+
+   private void createService(BundleContext context, Class<?> serviceInterface, Object serviceImplementation) {
+      services.add(context.registerService(serviceInterface.getName(), serviceImplementation, null));
    }
 
    private void createServiceTracker(BundleContext context, Class<?> clazz, TrackerId trackerId) {
@@ -96,10 +110,6 @@ public class InternalBranchActivator implements BundleActivator {
 
    public IApplicationServerManager getApplicationServerManger() {
       return getTracker(TrackerId.MASTER_SERVICE, IApplicationServerManager.class);
-   }
-   
-   public ICommitService getCommitService() {
-	   return getTracker(TrackerId.BRANCH_COMMIT, ICommitService.class);
    }
 
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {

@@ -69,12 +69,12 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
 
    public static ActionableItemArtifact getActionableItemByGuid(String guid) throws OseeCoreException {
       AtsBulkLoadCache.run(true);
-      return (ActionableItemArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getBranchId());
+      return (ActionableItemArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getId());
    }
 
    public static TeamDefinitionArtifact getTeamDefinitionArtifact(String guid) throws OseeCoreException {
       AtsBulkLoadCache.run(true);
-      return (TeamDefinitionArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getBranchId());
+      return (TeamDefinitionArtifact) ArtifactCache.getActive(guid, AtsUtil.getAtsBranch().getId());
    }
 
    public static List<Artifact> getArtifactsByActive(ArtifactType artifactType, Active active) throws OseeCoreException {
@@ -117,7 +117,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          OseeEventManager.removeListener(this);
          return;
       }
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
       for (Artifact artifact : transData.cacheDeletedArtifacts) {
          if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
                WorkPageDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(

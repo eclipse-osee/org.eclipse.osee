@@ -68,7 +68,7 @@ public class Branch {
       return associatedArtifactId;
    }
 
-   public int getBranchId() {
+   public int getId() {
       return branchId;
    }
 

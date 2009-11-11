@@ -20,18 +20,18 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.SystemUser;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.revision.ChangeManager;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionRecord;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -118,7 +118,8 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
          int x = 1;
          rd.log("Artifact Impact to Action for artifact(s) on branch \"" + branch.getShortName() + "\"");
 
-         HashCollection<Artifact, TransactionRecord> transactionMap = ChangeManager.getModifingTransactions(processArts);
+         HashCollection<Artifact, TransactionRecord> transactionMap =
+               ChangeManager.getModifingTransactions(processArts);
          HashCollection<Artifact, Branch> branchMap = ChangeManager.getModifingBranches(processArts);
          for (Artifact srchArt : processArts) {
             String str = String.format("Processing %d/%d - %s ", x++, processArts.size(), srchArt.getName());
@@ -135,7 +136,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
             Collection<Branch> branches = branchMap.getValues(srchArt);
             if (branches != null) {
                for (Branch branch : branches) {
-                  Artifact assocArt = branch.getAssociatedArtifact().getFullArtifact();
+                  Artifact assocArt = (Artifact) branch.getAssociatedArtifact().getFullArtifact();
                   if (assocArt != null && !assocArt.equals(UserManager.getUser(SystemUser.OseeSystem))) {
                      rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(), "Working",
                            XResultData.getHyperlink(assocArt), assocArt.getName()}));
@@ -158,8 +159,7 @@ public class ArtifactImpactToActionSearchItem extends XNavigateItemAction {
                   monitor.subTask(transStr);
                   if (transactionId.getCommit() > 0) {
                      Artifact assocArt =
-                           ArtifactQuery.getArtifactFromId(transactionId.getCommit(),
-                                 BranchManager.getCommonBranch());
+                           ArtifactQuery.getArtifactFromId(transactionId.getCommit(), BranchManager.getCommonBranch());
                      if (assocArt instanceof TeamWorkFlowArtifact) {
                         rd.addRaw(AHTML.addRowMultiColumnTable(new String[] {assocArt.getArtifactTypeName(),
                               "Committed", assocArt.getHumanReadableId(), assocArt.getName()}));

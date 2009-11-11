@@ -100,7 +100,7 @@ public class TaskInfoXWidget extends XLabelValue implements IFrameworkTransactio
       if (smaMgr.isInTransition()) {
          return;
       }
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) {
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
          return;
       }
       for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts(forStateName)) {

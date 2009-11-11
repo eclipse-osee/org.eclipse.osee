@@ -161,7 +161,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          OseeEventManager.removeListener(this);
          return;
       }
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) {
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
          return;
       }
       Displays.ensureInDisplayThread(new Runnable() {

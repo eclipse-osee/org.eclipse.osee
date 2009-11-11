@@ -445,7 +445,7 @@ public class TaskXViewer extends WorldXViewer {
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
@@ -463,7 +463,7 @@ public class TaskXViewer extends WorldXViewer {
                   Collection<Artifact> artifacts =
                         transData.getRelatedArtifacts(parentSma.getArtId(),
                               AtsRelation.SmaToTask_Task.getRelationType().getId(),
-                              AtsUtil.getAtsBranch().getBranchId(), transData.cacheAddedRelations);
+                              AtsUtil.getAtsBranch().getId(), transData.cacheAddedRelations);
                   if (artifacts.size() > 0) {
                      ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).add(artifacts);
                   }
@@ -472,7 +472,7 @@ public class TaskXViewer extends WorldXViewer {
                   artifacts =
                         transData.getRelatedArtifacts(parentSma.getArtId(),
                               AtsRelation.SmaToTask_Task.getRelationType().getId(),
-                              AtsUtil.getAtsBranch().getBranchId(), transData.cacheDeletedRelations);
+                              AtsUtil.getAtsBranch().getId(), transData.cacheDeletedRelations);
                   if (artifacts.size() > 0) {
                      ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).removeAll(artifacts);
                   }

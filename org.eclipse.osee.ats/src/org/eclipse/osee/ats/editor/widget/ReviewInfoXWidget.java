@@ -272,7 +272,7 @@ public class ReviewInfoXWidget extends XLabelValue implements IFrameworkTransact
       if (smaMgr.isInTransition()) {
          return;
       }
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) {
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
          return;
       }
       for (ReviewSMArtifact reviewArt : smaMgr.getReviewManager().getReviews(forStateName)) {

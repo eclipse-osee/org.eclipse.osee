@@ -26,6 +26,6 @@ public class BranchCreation implements IBranchCreation {
             new CreateBranchOperation(branch, authorId, creationComment, populateBaseTxFromAddressingQueryId,
                   destinationBranchId);
       Operations.executeWorkAndCheckStatus(operation, new LogProgressMonitor(), -1);
-      return branch.getBranchId();
+      return branch.getId();
    }
 }

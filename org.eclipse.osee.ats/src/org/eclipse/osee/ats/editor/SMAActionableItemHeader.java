@@ -125,7 +125,7 @@ public class SMAActionableItemHeader extends Composite implements IFrameworkTran
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (smaMgr.isInTransition()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
       if (smaMgr.getSma().isDeleted()) {
          OseeEventManager.removeListener(this);
          return;

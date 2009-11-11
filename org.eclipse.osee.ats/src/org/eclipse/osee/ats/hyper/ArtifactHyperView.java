@@ -334,7 +334,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
       if (sender.isRemote()) {
          return;
       }
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) {
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
          return;
       }
       if (currentArtifact == null) {

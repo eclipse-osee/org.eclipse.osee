@@ -52,7 +52,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          String value = dataMap.get(columnName);
          branchData.setData(columnName, toObject(columnName, value));
       }
-      this.idToImportFileBranchData.put(branchData.getBranchId(), branchData);
+      this.idToImportFileBranchData.put(branchData.getId(), branchData);
    }
 
    private Object toObject(String key, String value) {
@@ -114,14 +114,14 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       int[] toReturn = new int[branchesToStore.size()];
       int index = 0;
       for (BranchData branchData : branchesToStore) {
-         toReturn[index] = branchData.getBranchId();
+         toReturn[index] = branchData.getId();
          if (getOptions().getBoolean(ImportOptions.ALL_AS_ROOT_BRANCHES.name())) {
             branchData.setParentBranchId(1);
             branchData.setBranchType(BranchType.BASELINE);
          } else {
             branchData.setParentBranchId(translateId(BranchData.PARENT_BRANCH_ID, branchData.getParentBranchId()));
          }
-         branchData.setBranchId(translateId(BranchData.BRANCH_ID, branchData.getBranchId()));
+         branchData.setBranchId(translateId(BranchData.BRANCH_ID, branchData.getId()));
          branchData.setAssociatedBranchId(translateId(BranchData.COMMIT_ART_ID, branchData.getAssociatedArtId()));
 
          Object[] data = branchData.toArray(getMetaData());
@@ -140,7 +140,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
       List<BranchData> branches = getSelectedBranchesToImport(branchesStored);
       List<Object[]> data = new ArrayList<Object[]>();
       for (BranchData branchData : branches) {
-         int branchId = branchData.getBranchId();
+         int branchId = branchData.getId();
          int parentTransactionId = translateId(ExchangeDb.TRANSACTION_ID, branchData.getParentTransactionId());
          if (parentTransactionId == 0) {
             parentTransactionId = 1;
@@ -171,7 +171,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
             Long branchId = chStmt.getLong(BranchData.BRANCH_ID);
             BranchData branchData = guidToImportFileBranchData.get(branchGuid);
             if (branchData != null) {
-               getTranslator().checkIdMapping("branch_id", (long) branchData.getBranchId(), branchId);
+               getTranslator().checkIdMapping("branch_id", (long) branchData.getId(), branchId);
                // Remove from to store list so we don't store duplicate information
                guidToImportFileBranchData.remove(branchGuid);
             }

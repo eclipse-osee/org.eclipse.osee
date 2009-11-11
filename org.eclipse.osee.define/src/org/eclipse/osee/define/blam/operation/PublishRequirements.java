@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -32,7 +33,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.linking.LinkType;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -157,8 +157,8 @@ public class PublishRequirements extends AbstractBlam {
                   "Must Select a " + branch == null ? "Branch" : "Date" + " to diff against when publishing as Diff");
          }
          nonFolderChildren = buildRecursiveList(nonFolderChildren);
-         int transactionId = getBranchTransaction(date, branch.getBranchId());
-         ArrayList<Artifact> olderArtifacts = getOlderArtifacts(nonFolderChildren, transactionId, branch.getBranchId());
+         int transactionId = getBranchTransaction(date, branch.getId());
+         ArrayList<Artifact> olderArtifacts = getOlderArtifacts(nonFolderChildren, transactionId, branch.getId());
          int index = 0;
          for (Artifact art : olderArtifacts) {
             if (art != null && art.isDeleted()) {

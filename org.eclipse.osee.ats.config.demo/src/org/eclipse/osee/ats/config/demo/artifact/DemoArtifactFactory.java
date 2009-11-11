@@ -11,11 +11,11 @@
 package org.eclipse.osee.ats.config.demo.artifact;
 
 import java.util.Arrays;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 
 /**
  * Provides the factory for the loading of the XYZ demo artifact types.

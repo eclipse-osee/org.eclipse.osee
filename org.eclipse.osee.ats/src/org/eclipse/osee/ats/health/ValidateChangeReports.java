@@ -273,7 +273,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
    private static String toXml(RelationChange change) throws OseeCoreException, ParserConfigurationException {
       StringBuffer sb = new StringBuffer();
-      sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getBranchId())));
+      sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getId())));
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
       sb.append(AXml.addTagData("gamma", String.valueOf(change.getGamma())));
       sb.append(AXml.addTagData("artId", String.valueOf(change.getArtId())));
@@ -293,7 +293,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
    private static String toXml(ArtifactChange change) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getBranchId())));
+      sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getId())));
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
       sb.append(AXml.addTagData("gamma", String.valueOf(change.getGamma())));
       sb.append(AXml.addTagData("artId", String.valueOf(change.getArtId())));
@@ -307,7 +307,7 @@ public class ValidateChangeReports extends XNavigateItemAction {
 
    private static String toXml(AttributeChange change) throws OseeCoreException, ParserConfigurationException {
       StringBuffer sb = new StringBuffer();
-      sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getBranchId())));
+      sb.append(AXml.addTagData("brId", String.valueOf(change.getBranch().getId())));
       sb.append(AXml.addTagData("artTId", String.valueOf(change.getItemTypeId())));
       sb.append(AXml.addTagData("gamma", String.valueOf(change.getGamma())));
       sb.append(AXml.addTagData("artId", String.valueOf(change.getArtId())));

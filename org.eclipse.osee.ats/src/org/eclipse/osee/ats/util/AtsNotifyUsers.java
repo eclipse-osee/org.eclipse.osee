@@ -196,7 +196,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
       if (DbUtil.isDbInit()) return;
       // Only process notifications if this client is sender
       if (sender.isRemote()) return;
-      if (transData.branchId != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
       boolean notificationAdded = false;
       try {
          // Handle notifications for subscription by TeamDefinition and ActionableItem

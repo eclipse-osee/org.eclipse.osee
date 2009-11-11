@@ -20,8 +20,8 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
@@ -136,8 +136,9 @@ public class CoverageNavigateView extends ViewPart implements IActionable {
 
    public String getActionDescription() {
       IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
-      if (sel.iterator().hasNext()) return String.format("Currently Selected - %s",
-            ((XNavigateItem) sel.iterator().next()).getName());
+      if (sel.iterator().hasNext()) {
+         return String.format("Currently Selected - %s", ((XNavigateItem) sel.iterator().next()).getName());
+      }
       return "";
    }
 

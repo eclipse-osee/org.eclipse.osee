@@ -28,11 +28,11 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.define.DefinePlugin;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager;
 import org.eclipse.osee.define.traceability.TraceUnitExtensionManager.TraceHandler;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.MutableBoolean;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectComposite;
@@ -405,7 +405,7 @@ public class ImportTraceUnitPage extends WizardDataTransferPage {
       if (settings != null) {
          Branch branch = getSelectedBranch();
          if (branch != null) {
-            settings.put(BRANCH_KEY, branch.getBranchId());
+            settings.put(BRANCH_KEY, branch.getId());
          }
 
          settings.put(SELECTED_TRACE_HANDLERS_KEY, getTraceUnitHandlerIds());

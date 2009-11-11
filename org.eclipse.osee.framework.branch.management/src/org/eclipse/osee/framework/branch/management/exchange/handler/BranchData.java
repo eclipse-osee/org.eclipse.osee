@@ -54,7 +54,7 @@ public final class BranchData implements Cloneable {
       return (Integer) backingData.get(IS_ARCHIVED_BRANCH);
    }
 
-   public int getBranchId() {
+   public int getId() {
       return (Integer) backingData.get(BRANCH_ID);
    }
 
@@ -85,7 +85,7 @@ public final class BranchData implements Cloneable {
 
    @Override
    public String toString() {
-      return String.format("(name[%s] id[%s])", getBranchName(), getBranchId());
+      return String.format("(name[%s] id[%s])", getBranchName(), getId());
    }
 
    @Override

@@ -141,7 +141,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    protected void handleTxException(IProgressMonitor monitor, Exception ex) {
       if (passedPreConditions) {
          try {
-            ConnectionHandler.runPreparedUpdate(DELETE_BRANCH, branch.getBranchId());
+            ConnectionHandler.runPreparedUpdate(DELETE_BRANCH, branch.getId());
          } catch (OseeDataStoreException ex1) {
             OseeLog.log(InternalBranchActivator.class, Level.SEVERE, ex1);
          }
@@ -157,7 +157,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    private void addBranchAlias(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch) throws OseeDataStoreException {
       if (branch.getStaticBranchName() != null) {
          ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES, branch.getStaticBranchName(),
-               branch.getBranchId());
+               branch.getId());
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(workAmount));
@@ -166,7 +166,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    private void addMergeBranchEntry(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch, int destinationBranchId) throws OseeDataStoreException {
       if (branch.getBranchType().isMergeBranch()) {
          ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, branch.getParentBranchId(),
-               destinationBranchId, branch.getBranchId(), -1);
+               destinationBranchId, branch.getId(), -1);
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(workAmount));
@@ -188,12 +188,12 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
          branch.setBranchId(branchId);
 
          branch.setBaseTransaction(SequenceManager.getNextTransactionId());
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, branch.getBranchId(),
+         ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, branch.getId(),
                branch.getBaseTransaction(), creationComment, timestamp, authorId, 1);
       } else {
          ConnectionHandler.runPreparedUpdate(connection, UPDATE_BRANCH, branch.getName(), branch.getParentBranchId(),
                branch.getParentTransactionId(), 0, branch.getAssociatedArtifactId(), branch.getBranchType().getValue(),
-               branch.getBranchState().getValue(), branch.getBranchId());
+               branch.getBranchState().getValue(), branch.getId());
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(workAmount));

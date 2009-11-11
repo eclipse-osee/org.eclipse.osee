@@ -396,7 +396,7 @@ public class XUserRoleViewer extends XWidget implements IArtifactWidget, IFramew
 
    @Override
    public void handleFrameworkTransactionEvent(Sender sender, final FrameworkTransactionData transData) throws OseeCoreException {
-      if (transData.getBranchId() != AtsUtil.getAtsBranch().getBranchId()) return;
+      if (transData.getId() != AtsUtil.getAtsBranch().getId()) return;
       Displays.ensureInDisplayThread(new Runnable() {
          @Override
          public void run() {
