@@ -160,6 +160,6 @@ public class RelationOrderingTest {
    }
 
    private Artifact createArtifact(String type, Branch branch) throws OseeCoreException {
-      return ArtifactTypeManager.makeNewArtifact(ArtifactTypeManager.getType(ARTIFACT_TYPE), branch);
+      return ArtifactTypeManager.makeNewArtifact(ArtifactTypeManager.getType(type), branch);
    }
 }
