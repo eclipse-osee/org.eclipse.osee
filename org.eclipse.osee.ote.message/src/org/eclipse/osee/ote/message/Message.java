@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.jdk.core.persistence.Xmlizable;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -65,7 +66,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    private final int phase;
    protected double rate;
    protected final double defaultRate;
-   private boolean isScheduled = false;
    private boolean isScheduledFromStart;
    private boolean regularUnscheduleCalled = false;
    private boolean isTurnedOff = false;
@@ -381,7 +381,6 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       }
       list.add(data);
       data.addMessage(this);
-      data.setScheduled(isScheduledFromStart);
    }
 
    public Collection<T> getMemSource(MemType type) {
@@ -586,8 +585,10 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
    }
 
    private void setSchedule(boolean newValue) {
-      isScheduled = newValue;
-      getActiveDataSource().setScheduled(newValue);
+	  ArrayList<T> dataList = memToDataMap.get(currentMemType);
+	  for(T d:dataList){
+		  d.setScheduled(newValue);
+	  }
    }
 
    /**
@@ -600,7 +601,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
          setSchedule(true);
          regularUnscheduleCalled = false;
          for (IMessageScheduleChangeListener listener : schedulingChangeListeners)
-            listener.isScheduledChanged(isScheduled);
+            listener.isScheduledChanged(true);
       }
    }
 
@@ -613,18 +614,7 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
       setSchedule(false);
       regularUnscheduleCalled = true;
       for (IMessageScheduleChangeListener listener : schedulingChangeListeners)
-         listener.isScheduledChanged(isScheduled);
-   }
-
-   /**
-    * This is a "soft" unschedule that is called during the registering of messages that will allow the messages to be
-    * scheduled after the control message goes out.
-    */
-   public void whenBeingRegisteredUnschedule() {
-      checkState();
-      setSchedule(false);
-      for (IMessageScheduleChangeListener listener : schedulingChangeListeners)
-         listener.isScheduledChanged(isScheduled);
+         listener.isScheduledChanged(false);
    }
 
    /**
@@ -632,8 +622,15 @@ public abstract class Message<S extends ITestEnvironmentMessageSystemAccessor, T
     * 
     * @return boolean
     */
+   @Deprecated
    public boolean isScheduled() {
-      return isScheduled && this.getActiveDataSource().isScheduled();
+	  ArrayList<T> dataList = memToDataMap.get(currentMemType);
+	  for(T d:dataList){
+		  if(!d.isScheduled()){
+			  return false;
+		  }
+	  }
+	  return true;
    }
 
    /**
