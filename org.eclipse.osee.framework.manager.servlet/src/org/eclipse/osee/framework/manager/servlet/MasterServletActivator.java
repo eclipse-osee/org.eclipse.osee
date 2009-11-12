@@ -48,6 +48,7 @@ public class MasterServletActivator implements BundleActivator {
       CHANGE_REPORT,
       BRANCH_COMMIT,
       SEARCH_ENGINE,
+      DATA_TRANSLATOR_SERVICE,
       SEARCH_ENGINE_TAGGER,
       AUTHENTICATION_SERVICE;
    }
@@ -84,7 +85,6 @@ public class MasterServletActivator implements BundleActivator {
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
       createServiceTracker(context, IChangeReportService.class, TrackerId.CHANGE_REPORT);
 
-      createHttpServiceTracker(context, BranchManagerServlet.class, OseeServerContext.BRANCH_CREATION_CONTEXT);
       createHttpServiceTracker(context, BranchExchangeServlet.class, OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
 
       createHttpServiceTracker(context, SearchEngineServlet.class, OseeServerContext.SEARCH_CONTEXT);
@@ -164,6 +164,10 @@ public class MasterServletActivator implements BundleActivator {
       return getTracker(TrackerId.CHANGE_REPORT, IChangeReportService.class);
    }
 
+   public IDataTranslationService getTranslationService() {
+      return getTracker(TrackerId.DATA_TRANSLATOR_SERVICE, IDataTranslationService.class);
+   }
+   
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
       ServiceTracker tracker = mappedTrackers.get(trackerId);
       Object service = tracker.getService();
