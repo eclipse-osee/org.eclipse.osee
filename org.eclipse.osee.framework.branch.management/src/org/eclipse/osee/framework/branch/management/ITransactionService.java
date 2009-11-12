@@ -10,20 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management;
 
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.BranchCommitData;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * @author Jeff C. Phillips
- * @author Megumi Telles
+ * @author Roberto E. Escobar
  */
-public interface IBranchCommitService {
+public interface ITransactionService {
 
-   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService service, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, boolean archiveSourceBranch) throws OseeCoreException;
+   public static final int HEAD = -1;
+   public static final int BASE = -2;
+   public static final int CURRENT = -3;
 
-   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService service, BranchCommitData branchCommitData) throws OseeCoreException;
+   TransactionRecord getTransaction(Branch branch, int revision) throws OseeCoreException;
 }

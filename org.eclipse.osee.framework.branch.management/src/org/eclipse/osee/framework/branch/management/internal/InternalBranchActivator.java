@@ -19,11 +19,13 @@ import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.IChangeReportService;
+import org.eclipse.osee.framework.branch.management.ITransactionService;
 import org.eclipse.osee.framework.branch.management.change.ChangeReportService;
 import org.eclipse.osee.framework.branch.management.commit.BranchCommitService;
 import org.eclipse.osee.framework.branch.management.creation.BranchCreation;
 import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
 import org.eclipse.osee.framework.branch.management.remote.BranchArchivingService;
+import org.eclipse.osee.framework.branch.management.transaction.TransactionService;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
@@ -39,6 +41,7 @@ public class InternalBranchActivator implements BundleActivator {
       RESOURCE_LOCATOR,
       RESOURCE_MANAGER,
       BRANCH_EXCHANGE,
+      TRANSACTION_SERVICE,
       MASTER_SERVICE;
    }
 
@@ -61,11 +64,13 @@ public class InternalBranchActivator implements BundleActivator {
       createService(context, IChangeReportService.class, new ChangeReportService());
       createService(context, IBranchCreation.class, new BranchCreation());
       createService(context, IBranchExchange.class, new BranchExchange());
+      createService(context, ITransactionService.class, new TransactionService());
 
       createServiceTracker(context, IResourceLocatorManager.class, TrackerId.RESOURCE_LOCATOR);
       createServiceTracker(context, IResourceManager.class, TrackerId.RESOURCE_MANAGER);
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
       createServiceTracker(context, IApplicationServerManager.class, TrackerId.MASTER_SERVICE);
+      createServiceTracker(context, ITransactionService.class, TrackerId.TRANSACTION_SERVICE);
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -110,6 +115,10 @@ public class InternalBranchActivator implements BundleActivator {
 
    public IApplicationServerManager getApplicationServerManger() {
       return getTracker(TrackerId.MASTER_SERVICE, IApplicationServerManager.class);
+   }
+
+   public ITransactionService getTransactionService() {
+      return getTracker(TrackerId.TRANSACTION_SERVICE, ITransactionService.class);
    }
 
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {

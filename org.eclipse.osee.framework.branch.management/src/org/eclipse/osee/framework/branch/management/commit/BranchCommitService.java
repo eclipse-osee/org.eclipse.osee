@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.branch.management.commit;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.branch.management.IBranchCommitService;
+import org.eclipse.osee.framework.branch.management.ITransactionService;
 import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.branch.management.change.LoadChangeDataOperation;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
@@ -38,22 +38,21 @@ import org.eclipse.osee.framework.core.operation.Operations;
 public class BranchCommitService implements IBranchCommitService {
 
    @Override
-   public IStatus commitBranch(IProgressMonitor monitor, BranchCommitData branchCommitData) throws OseeCoreException {
-      return commitBranch(monitor, branchCommitData.getUser(), branchCommitData.getSourceBranch(),
+   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService txService, BranchCommitData branchCommitData) throws OseeCoreException {
+      return commitBranch(monitor, txService, branchCommitData.getUser(), branchCommitData.getSourceBranch(),
             branchCommitData.getDestinationBranch(), branchCommitData.isArchiveAllowed());
    }
 
    @Override
-   public IStatus commitBranch(IProgressMonitor monitor, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, boolean archiveSourceBranch) throws OseeCoreException {
+   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService txService, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, boolean archiveSourceBranch) throws OseeCoreException {
       AbstractOseeCache<Branch> branchCache = null;
       Branch mergeBranch = null;
 
       // TODO this can be obtained through the cache
       //      BranchManager.getMergeBranch(sourceBranch, destinationBranch);
-
-      TransactionRecord sourceTx = getHeadTransactionRecord(sourceBranch);
-      TransactionRecord destinationTx = getHeadTransactionRecord(destinationBranch);
-      TransactionRecord mergeTx = getHeadTransactionRecord(mergeBranch);
+      TransactionRecord sourceTx = txService.getTransaction(sourceBranch, ITransactionService.HEAD);
+      TransactionRecord destinationTx = txService.getTransaction(destinationBranch, ITransactionService.HEAD);
+      TransactionRecord mergeTx = txService.getTransaction(mergeBranch, ITransactionService.HEAD);
 
       List<ChangeItem> changes = new ArrayList<ChangeItem>();
 
@@ -73,11 +72,5 @@ public class BranchCommitService implements IBranchCommitService {
          sourceBranch.persist();
       }
       return op.getStatus();
-   }
-
-   private TransactionRecord getHeadTransactionRecord(Branch branch) {
-      return branch != null ?
-      //            TransactionManager.getLastTransaction(branch) 
-      null : null;
    }
 }
