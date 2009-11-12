@@ -27,8 +27,8 @@ import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.manager.servlet.data.HttpBranchCreationInfo;
 import org.eclipse.osee.framework.manager.servlet.function.ChangeReportFunction;
+import org.eclipse.osee.framework.manager.servlet.function.CreateBranchFunction;
 
 /**
  * @author Andrew M Finkbeiner
@@ -46,7 +46,7 @@ public class BranchManagerServlet extends OseeHttpServlet {
                commitBranch(req, resp);
                break;
             case CREATEFULLBRANCH:
-               createBranch(req, resp);
+               new CreateBranchFunction().processRequest(req, resp);
                break;
             case CHANGE_REPORT:
                new ChangeReportFunction().processRequest(req, resp);
@@ -83,24 +83,6 @@ public class BranchManagerServlet extends OseeHttpServlet {
          resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
          resp.setContentType("text/plain");
          resp.getWriter().write("Unknown Error during branch creation.");
-      }
-   }
-
-   private void createBranch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-      HttpBranchCreationInfo info = new HttpBranchCreationInfo(req);
-      int branchId = -1;
-      branchId =
-            MasterServletActivator.getInstance().getBranchCreation().createBranch(info.getBranch(), info.getAuthorId(),
-                  info.getCreationComment(), info.getPopulateBaseTxFromAddressingQueryId(),
-                  info.getDestinationBranchId());
-      if (branchId == -1) {
-         resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-         resp.setContentType("text/plain");
-         resp.getWriter().write("Unknown Error during branch creation.");
-      } else {
-         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-         resp.setContentType("text/plain");
-         resp.getWriter().write(Integer.toString(branchId));
       }
    }
 }
