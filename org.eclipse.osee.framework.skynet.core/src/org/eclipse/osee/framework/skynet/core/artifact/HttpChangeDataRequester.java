@@ -24,6 +24,7 @@ public class HttpChangeDataRequester {
 
    public static Object getChanges(TransactionRecord toTransactionRecord, TransactionRecord fromTransactionRecord, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
+      parameters.put("command", ClientSessionManager.getSessionId());
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       parameters.put("toTransactionId", Integer.toString(toTransactionRecord.getId()));
       parameters.put("fromTransactionId", Integer.toString(fromTransactionRecord.getId()));
@@ -44,8 +45,6 @@ public class HttpChangeDataRequester {
          //Not sure what will be returned
 //         int branchId = Integer.parseInt(response);
 //         branch = BranchManager.getBranch(branchId);
-      } catch (NumberFormatException ex) {
-         throw new OseeCoreException(response);
       } catch (Exception ex) {
          throw new OseeCoreException(ex);
       }
@@ -53,6 +52,6 @@ public class HttpChangeDataRequester {
       // Kick events
 //      OseeEventManager.kickBranchEvent(HttpBranchCreation.class, BranchEventType.Added, branch.getId());
 
-      return returnObject;
+      return response;
    }
 }

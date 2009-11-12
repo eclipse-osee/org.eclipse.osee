@@ -14,9 +14,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
+import org.eclipse.osee.framework.branch.management.IChangeReportService;
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -43,10 +45,10 @@ public class MasterServletActivator implements BundleActivator {
       RESOURCE_MANAGER,
       BRANCH_EXCHANGE,
       BRANCH_CREATION,
+      CHANGE_REPORT,
       BRANCH_COMMIT,
       SEARCH_ENGINE,
       SEARCH_ENGINE_TAGGER,
-      DATA_TRANSLATOR_SERVICE,
       AUTHENTICATION_SERVICE;
    }
 
@@ -69,7 +71,6 @@ public class MasterServletActivator implements BundleActivator {
       createServiceTracker(context, ISearchEngineTagger.class, TrackerId.SEARCH_ENGINE_TAGGER);
 
       createServiceTracker(context, IAuthenticationManager.class, TrackerId.AUTHENTICATION_SERVICE);
-      createServiceTracker(context, IDataTranslationService.class, TrackerId.DATA_TRANSLATOR_SERVICE);
 
       createHttpServiceTracker(context, SystemManagerServlet.class, OseeServerContext.MANAGER_CONTEXT);
       createHttpServiceTracker(context, ResourceManagerServlet.class, OseeServerContext.RESOURCE_CONTEXT);
@@ -81,8 +82,9 @@ public class MasterServletActivator implements BundleActivator {
       createServiceTracker(context, IBranchCreation.class, TrackerId.BRANCH_CREATION);
       createServiceTracker(context, IBranchCommitService.class, TrackerId.BRANCH_COMMIT);
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
+      createServiceTracker(context, IChangeReportService.class, TrackerId.CHANGE_REPORT);
 
-      createHttpServiceTracker(context, BranchManagerServlet.class, OseeServerContext.BRANCH_CONTEXT);
+      createHttpServiceTracker(context, BranchManagerServlet.class, OseeServerContext.BRANCH_CREATION_CONTEXT);
       createHttpServiceTracker(context, BranchExchangeServlet.class, OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
 
       createHttpServiceTracker(context, SearchEngineServlet.class, OseeServerContext.SEARCH_CONTEXT);
@@ -157,9 +159,9 @@ public class MasterServletActivator implements BundleActivator {
    public IAuthenticationManager getAuthenticationManager() {
       return getTracker(TrackerId.AUTHENTICATION_SERVICE, IAuthenticationManager.class);
    }
-
-   public IDataTranslationService getTranslationService() {
-      return getTracker(TrackerId.DATA_TRANSLATOR_SERVICE, IDataTranslationService.class);
+   
+   public IChangeReportService getChangeReportService(){
+      return getTracker(TrackerId.CHANGE_REPORT, IChangeReportService.class);
    }
 
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
@@ -167,5 +169,4 @@ public class MasterServletActivator implements BundleActivator {
       Object service = tracker.getService();
       return clazz.cast(service);
    }
-
 }
