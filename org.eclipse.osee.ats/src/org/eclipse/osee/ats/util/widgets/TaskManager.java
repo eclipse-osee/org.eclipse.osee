@@ -144,6 +144,20 @@ public class TaskManager {
       return Result.TrueResult;
    }
 
+   public int getNumTasksInWork() {
+      int num = 0;
+      try {
+         for (TaskArtifact taskArt : getTaskArtifacts()) {
+            if (taskArt.isInWork()) {
+               num++;
+            }
+         }
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
+      }
+      return num;
+   }
+
    /**
     * Return Estimated Task Hours of "Related to State" stateName
     * 

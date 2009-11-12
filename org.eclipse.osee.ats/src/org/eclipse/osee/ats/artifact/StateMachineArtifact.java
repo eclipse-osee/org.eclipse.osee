@@ -1301,4 +1301,8 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getParentActionArtifact().getWorldViewOriginatingWorkflows();
    }
 
+   public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException {
+      return "";
+   }
+
 }

@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.util.AtsRelation;
@@ -45,16 +44,6 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
    }
 
    @Override
-   public Set<User> getPrivilegedUsers() throws OseeCoreException {
-      return null;
-   }
-
-   @Override
-   public Date getWorldViewReleaseDate() throws OseeCoreException {
-      return null;
-   }
-
-   @Override
    public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
       TeamWorkFlowArtifact teamArt = getParentTeamWorkflow();
       if (teamArt == null) return null;
@@ -79,4 +68,10 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
       for (TaskArtifact taskArt : smaMgr.getTaskMgr().getTaskArtifacts())
          taskArt.parentWorkFlowTransitioned(fromPage, toPage, toAssignees, persist, transaction);
    }
+
+   public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException {
+      if (smaMgr.getTaskMgr().getTaskArtifacts().size() == 0) return "";
+      return String.valueOf(smaMgr.getTaskMgr().getNumTasksInWork());
+   }
+
 }

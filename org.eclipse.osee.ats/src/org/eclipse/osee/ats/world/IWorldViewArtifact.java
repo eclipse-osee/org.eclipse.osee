@@ -107,6 +107,8 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewNumberOfTasks() throws OseeCoreException;
 
+   public String getWorldViewNumberOfTasksRemaining() throws OseeCoreException;
+
    public String getWorldViewLastUpdated() throws OseeCoreException;
 
    public String getWorldViewLastStatused() throws OseeCoreException;

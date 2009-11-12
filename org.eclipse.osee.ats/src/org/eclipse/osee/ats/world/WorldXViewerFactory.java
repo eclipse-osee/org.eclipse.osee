@@ -221,6 +221,9 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Number_of_Tasks_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".numberOfTasks", "Number of Tasks", 40, SWT.CENTER, false,
                SortDataType.Integer, false, null);
+   public static final XViewerColumn Number_of_Tasks_Remining_Col =
+         new XViewerColumn(COLUMN_NAMESPACE + ".numberOfTasksRemain", "Number of Tasks Remaining", 40, SWT.CENTER,
+               false, SortDataType.Integer, false, null);
    public static final XViewerColumn Last_Modified_Col =
          new XViewerColumn(COLUMN_NAMESPACE + ".lastModified", "Last Modified", 40, SWT.CENTER, false,
                SortDataType.Date, false, "Retrieves timestamp of last database update of this artifact.");
@@ -261,10 +264,10 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                Hours_Spent_State_Col, Hours_Spent_State_Task_Col, Hours_Spent_State_Review_Col, Hours_Spent_Total_Col,
                Total_Hours_Spent_Col, Originator_Col, Implementor_Col, Review_Author_Col, Review_Moderator_Col,
                Review_Reviewer_Col, Review_Decider_Col, Completed_Date_Col, Cancelled_Date_Col, Work_Days_Needed_Col,
-               Percent_Rework_Col, Branch_Status_Col, Number_of_Tasks_Col, Last_Modified_Col, Last_Statused_Col,
-               Validation_Required_Col, Review_Major_Defects, Review_Minor_Defects, Review_Issues,
-               Actions_Initiating_Workflow_Col, Artifact_Type_Col, Originating_Workflow, Parent_ID_Col,
-               Days_In_Current_State, Parent_State_Col};
+               Percent_Rework_Col, Branch_Status_Col, Number_of_Tasks_Col, Number_of_Tasks_Remining_Col,
+               Last_Modified_Col, Last_Statused_Col, Validation_Required_Col, Review_Major_Defects,
+               Review_Minor_Defects, Review_Issues, Actions_Initiating_Workflow_Col, Artifact_Type_Col,
+               Originating_Workflow, Parent_ID_Col, Days_In_Current_State, Parent_State_Col};
    private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {

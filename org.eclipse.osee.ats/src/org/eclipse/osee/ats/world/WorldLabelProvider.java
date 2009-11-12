@@ -152,6 +152,7 @@ public class WorldLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(WorldXViewerFactory.Category2_Col)) return wva.getWorldViewCategory2();
          if (xCol.equals(WorldXViewerFactory.Category3_Col)) return wva.getWorldViewCategory3();
          if (xCol.equals(WorldXViewerFactory.Number_of_Tasks_Col)) return wva.getWorldViewNumberOfTasks();
+         if (xCol.equals(WorldXViewerFactory.Number_of_Tasks_Remining_Col)) return wva.getWorldViewNumberOfTasksRemaining();
          if (xCol.equals(WorldXViewerFactory.Review_Issues)) return wva.getWorldViewNumberOfReviewIssueDefects();
          if (xCol.equals(WorldXViewerFactory.Review_Major_Defects)) return wva.getWorldViewNumberOfReviewMajorDefects();
          if (xCol.equals(WorldXViewerFactory.Review_Minor_Defects)) return wva.getWorldViewNumberOfReviewMinorDefects();
