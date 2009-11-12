@@ -13,7 +13,8 @@ package org.eclipse.osee.framework.branch.management;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.IOseeUser;
+import org.eclipse.osee.framework.core.data.BranchCommitData;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -22,5 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IBranchCommitService {
 
-   public IStatus commitBranch(IProgressMonitor monitor, IOseeUser user, Branch sourceBranch, Branch destinationBranch, boolean archiveSourceBranch) throws OseeCoreException;
+   public IStatus commitBranch(IProgressMonitor monitor, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, boolean archiveSourceBranch) throws OseeCoreException;
+
+   public IStatus commitBranch(IProgressMonitor monitor, BranchCommitData branchCommitData) throws OseeCoreException;
 }

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.test.commit;
+package org.eclipse.osee.framework.branch.management.test.commit;
 
 import static org.eclipse.osee.framework.core.enums.ModificationType.ARTIFACT_DELETED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.DELETED;
@@ -18,19 +18,19 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
 import java.util.ArrayList;
 import java.util.List;
-import junit.framework.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.branch.management.change.ChangeItem;
+import org.eclipse.osee.framework.branch.management.change.ChangeVersion;
+import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeVersion;
-import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
- * Low-level Change Data Test
+ * Test Case for {@link ComputeNetChangeOperation}
  * 
  * @author Roberto E. Escobar
  */
@@ -110,7 +110,7 @@ public class ComputeNetChangeTest {
             Assert.assertFalse(message, items.contains(testData.getItem()));
          } else {
             Assert.assertTrue(message, items.contains(testData.getItem()));
-            ChangeItemTestUtil.checkChange(message, testData.getExpectedNet(), testData.getItem().getNetChange());
+            ChangeTestUtility.checkChange(message, testData.getExpectedNet(), testData.getItem().getNetChange());
          }
       }
    }
@@ -120,7 +120,7 @@ public class ComputeNetChangeTest {
       List<ChangeItem> items = new ArrayList<ChangeItem>();
 
       // Source to Non-Parent commit
-      items.add(ChangeItemTestUtil.createItem(3, entry(10L, MODIFIED), null, entry(11L, MODIFIED), null, null));
+      items.add(ChangeTestUtility.createItem(3, entry(10L, MODIFIED), null, entry(11L, MODIFIED), null, null));
 
       computeNetChange(items, IStatus.ERROR);
    }
@@ -133,15 +133,17 @@ public class ComputeNetChangeTest {
    }
 
    private static TestData createTest(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion expected, boolean isRemoved) {
-      return new TestData(ChangeItemTestUtil.createItem(itemId, base, first, current, destination, null), expected, isRemoved);
+      return new TestData(ChangeTestUtility.createItem(itemId, base, first, current, destination, null), expected,
+            isRemoved);
    }
 
    private static TestData createTest(int itemId, ChangeVersion base, ChangeVersion first, ChangeVersion current, ChangeVersion destination, ChangeVersion net, ChangeVersion expected, boolean isRemoved) {
-      return new TestData(ChangeItemTestUtil.createItem(itemId, base, first, current, destination, net), expected, isRemoved);
+      return new TestData(ChangeTestUtility.createItem(itemId, base, first, current, destination, net), expected,
+            isRemoved);
    }
 
    private static ChangeVersion entry(Long gammaId, ModificationType modType) {
-      return ChangeItemTestUtil.createChange(gammaId, modType);
+      return ChangeTestUtility.createChange(gammaId, modType);
    }
 
    private static final class TestData {

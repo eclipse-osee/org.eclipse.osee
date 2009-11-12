@@ -21,7 +21,8 @@ import org.eclipse.osee.framework.branch.management.change.LoadChangeDataOperati
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.IOseeUser;
+import org.eclipse.osee.framework.core.data.BranchCommitData;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
@@ -36,7 +37,13 @@ import org.eclipse.osee.framework.core.operation.Operations;
 public class BranchCommitService implements IBranchCommitService {
 
    @Override
-   public IStatus commitBranch(IProgressMonitor monitor, IOseeUser user, Branch sourceBranch, Branch destinationBranch, boolean archiveSourceBranch) throws OseeCoreException {
+   public IStatus commitBranch(IProgressMonitor monitor, BranchCommitData branchCommitData) throws OseeCoreException {
+      return commitBranch(monitor, branchCommitData.getUser(), branchCommitData.getSourceBranch(),
+            branchCommitData.getDestinationBranch(), branchCommitData.isArchiveAllowed());
+   }
+
+   @Override
+   public IStatus commitBranch(IProgressMonitor monitor, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, boolean archiveSourceBranch) throws OseeCoreException {
       AbstractOseeCache<Branch> branchCache = null;
       Branch mergeBranch = null;
 

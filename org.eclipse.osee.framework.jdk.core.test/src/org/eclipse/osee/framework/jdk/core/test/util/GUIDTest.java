@@ -20,8 +20,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.test.util;
 
-import junit.framework.Assert;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar

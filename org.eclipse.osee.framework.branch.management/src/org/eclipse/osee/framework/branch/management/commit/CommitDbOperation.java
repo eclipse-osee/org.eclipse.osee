@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.branch.management.change.RelationChangeItem;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.IOseeUser;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -62,7 +62,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private static final String UPDATE_MERGE_COMMIT_TX =
          "update osee_merge set commit_transaction_id = ? Where source_branch_id = ? and dest_branch_id = ?";
 
-   private final IOseeUser user;
+   private final IBasicArtifact<?> user;
    private final AbstractOseeCache<Branch> branchCache;
    private final Map<Branch, BranchState> savedBranchStates;
    private final Branch sourceBranch;
@@ -74,7 +74,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private OseeConnection connection;
    private boolean success;
 
-   public CommitDbOperation(AbstractOseeCache<Branch> branchCache, IOseeUser user, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes) {
+   public CommitDbOperation(AbstractOseeCache<Branch> branchCache, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes) {
       super("Commit Database Operation", InternalBranchActivator.PLUGIN_ID);
       this.savedBranchStates = new HashMap<Branch, BranchState>();
       this.branchCache = branchCache;
@@ -130,16 +130,15 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    }
 
    @SuppressWarnings("unchecked")
-   private int addCommitTransactionToDatabase(IOseeUser userToBlame) throws OseeCoreException {
+   private int addCommitTransactionToDatabase(IBasicArtifact userToBlame) throws OseeCoreException {
       int newTransactionNumber = SequenceManager.getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       String comment = COMMIT_COMMENT + sourceBranch.getName();
-      int authorId = userToBlame == null ? -1 : Integer.valueOf(userToBlame.getUserID());
+
       ConnectionHandler.runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
             TransactionDetailsType.NonBaselined.getId(), destinationBranch.getId(), newTransactionNumber, comment,
-            timestamp, authorId, sourceBranch.getAssociatedArtifact().getArtId());
-
+            timestamp, userToBlame.getArtId(), sourceBranch.getAssociatedArtifact().getArtId());
       return newTransactionNumber;
    }
 

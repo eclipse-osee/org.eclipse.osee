@@ -18,8 +18,8 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.Map.Entry;
-import junit.framework.Assert;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
@@ -161,9 +161,9 @@ public class PropertyStoreTest {
       Assert.assertEquals("myId", store1.getId());
       Assert.assertEquals(true, store1.getBoolean("key1"));
       Assert.assertEquals("aKey", store1.get("key2"));
-      Assert.assertEquals(0.1112, store1.getDouble("key3"));
+      Assert.assertEquals(0.1112, store1.getDouble("key3"), 0);
       Assert.assertEquals(12, store1.getInt("key4"));
-      Assert.assertEquals(12.3f, store1.getFloat("key5"));
+      Assert.assertEquals(12.3f, store1.getFloat("key5"), 0);
       Assert.assertEquals(543L, store1.getLong("key6"));
       Assert.assertEquals("", store1.get("key6.5"));
 

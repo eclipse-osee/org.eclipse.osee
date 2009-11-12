@@ -40,7 +40,7 @@ public class HttpChangeDataRequester {
       try {
          response =
                HttpProcessor.post(new URL(HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(
-                     OseeServerContext.BRANCH_CREATION_CONTEXT, parameters)));
+                     OseeServerContext.BRANCH_CONTEXT, parameters)));
          //Not sure what will be returned
 //         int branchId = Integer.parseInt(response);
 //         branch = BranchManager.getBranch(branchId);

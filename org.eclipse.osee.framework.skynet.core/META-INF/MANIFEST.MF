@@ -53,6 +53,7 @@ Export-Package: org.eclipse.osee.framework.skynet.core,
 Bundle-Vendor: Eclipse.org
 DynamicImport-Package: *
 Import-Package: org.eclipse.debug.core,
+ org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.client,
  org.eclipse.osee.framework.core.client.server,
  org.eclipse.osee.framework.core.data,

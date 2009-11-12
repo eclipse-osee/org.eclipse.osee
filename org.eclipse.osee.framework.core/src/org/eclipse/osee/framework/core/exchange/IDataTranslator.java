@@ -8,16 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.test.commit;
+package org.eclipse.osee.framework.core.exchange;
 
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
-@RunWith(Suite.class)
-@Suite.SuiteClasses( {ChangeItemTest.class, ComputeNetChangeTest.class})
 /**
  * @author Roberto E. Escobar
  */
-public class ChangesTestSuite {
+public interface IDataTranslator<T> {
 
+   T convert(PropertyStore propertyStore) throws OseeCoreException;
+
+   PropertyStore convert(T object) throws OseeCoreException;
 }

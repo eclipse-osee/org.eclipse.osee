@@ -3,14 +3,16 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.skynet.core.test.commit;
+package org.eclipse.osee.framework.branch.management.test.commit;
 
+import org.eclipse.osee.framework.branch.management.change.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeVersion;
 import org.junit.Assert;
 import org.junit.Test;
 
 /**
+ * Test Case for {@link ChangeVersion}
+ * 
  * @author Roberto E. Escobar
  */
 public class ChangeVersionTest {
@@ -19,21 +21,21 @@ public class ChangeVersionTest {
    public void testConstruction() {
       ChangeVersion actual = new ChangeVersion();
       ChangeVersion expected = new ChangeVersion();
-      ChangeItemTestUtil.checkChange(expected, actual);
+      ChangeTestUtility.checkChange(expected, actual);
 
       actual = new ChangeVersion(45L, ModificationType.NEW, 54);
       expected.setValue(null);
       expected.setGammaId(45L);
       expected.setModType(ModificationType.NEW);
       expected.setTransactionNumber(54);
-      ChangeItemTestUtil.checkChange(expected, actual);
+      ChangeTestUtility.checkChange(expected, actual);
 
       actual = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46);
       expected.setValue("hello");
       expected.setGammaId(47L);
       expected.setModType(ModificationType.MERGED);
       expected.setTransactionNumber(46);
-      ChangeItemTestUtil.checkChange(expected, actual);
+      ChangeTestUtility.checkChange(expected, actual);
    }
 
    @Test
@@ -41,11 +43,11 @@ public class ChangeVersionTest {
       ChangeVersion expected = new ChangeVersion("hello", 47L, ModificationType.MERGED, 46);
       ChangeVersion actual = new ChangeVersion();
       actual.copy(expected);
-      ChangeItemTestUtil.checkChange(expected, actual);
+      ChangeTestUtility.checkChange(expected, actual);
 
       expected = new ChangeVersion(null, 47L, ModificationType.MERGED, null);
       actual.copy(expected);
-      ChangeItemTestUtil.checkChange(expected, actual);
+      ChangeTestUtility.checkChange(expected, actual);
    }
 
    @Test

@@ -5,7 +5,9 @@ Bundle-SymbolicName: org.eclipse.osee.framework.jdk.core.test;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse.org
 Fragment-Host: org.eclipse.osee.framework.jdk.core;bundle-version="0.4.0"
-Require-Bundle: org.junit4
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.eclipse.osee.framework.jdk.core.test,
  org.eclipse.osee.framework.jdk.core.test.type
+Import-Package: org.junit;version="4.5.0",
+ org.junit.runner;version="4.5.0",
+ org.junit.runners;version="4.5.0"

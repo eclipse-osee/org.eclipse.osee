@@ -10,20 +10,28 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.internal;
 
+import org.eclipse.osee.framework.core.IDataTranslationService;
+import org.eclipse.osee.framework.core.exchange.DataTranslationService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.core";
    private static Activator instance = null;
    private BundleContext bundleContext;
+   private ServiceRegistration service;
 
    public void start(BundleContext context) throws Exception {
       instance = this;
       instance.bundleContext = context;
+
+      service = context.registerService(IDataTranslationService.class.getName(), new DataTranslationService(), null);
    }
 
    public void stop(BundleContext context) throws Exception {
+      service.unregister();
+      service = null;
       instance.bundleContext = null;
       instance = null;
    }

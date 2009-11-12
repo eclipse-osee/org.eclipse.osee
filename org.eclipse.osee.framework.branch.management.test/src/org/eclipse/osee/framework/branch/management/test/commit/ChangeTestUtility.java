@@ -8,19 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.test.commit;
+package org.eclipse.osee.framework.branch.management.test.commit;
 
-import junit.framework.Assert;
+import org.eclipse.osee.framework.branch.management.change.ChangeItem;
+import org.eclipse.osee.framework.branch.management.change.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeItem;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeVersion;
+import org.junit.Assert;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ChangeItemTestUtil {
+public class ChangeTestUtility {
 
-   private ChangeItemTestUtil() {
+   private ChangeTestUtility() {
    }
 
    public static ChangeVersion createChange(Long long1, ModificationType mod1) {

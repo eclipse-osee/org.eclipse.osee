@@ -39,16 +39,18 @@ public class PropertyStore implements IPropertyStore, Serializable {
    private String storeId;
    private final Properties storageData;
    private final Properties storageArrays;
+   private final Properties storageProperties;
 
-   private PropertyStore(String storeId, Properties storageData, Properties storageArrays) {
+   private PropertyStore(String storeId, Properties storageData, Properties storageArrays, Properties storageProperties) {
       super();
       this.storeId = storeId;
       this.storageData = storageData;
       this.storageArrays = storageArrays;
+      this.storageProperties = storageProperties;
    }
 
    public PropertyStore(String storeId) {
-      this(storeId, new Properties(), new Properties());
+      this(storeId, new Properties(), new Properties(), new Properties());
    }
 
    public PropertyStore() {
@@ -56,7 +58,7 @@ public class PropertyStore implements IPropertyStore, Serializable {
    }
 
    public PropertyStore(Properties properties) {
-      this(Integer.toString(properties.hashCode()), properties, new Properties());
+      this(Integer.toString(properties.hashCode()), properties, new Properties(), new Properties());
    }
 
    public String get(String key) {
@@ -109,6 +111,18 @@ public class PropertyStore implements IPropertyStore, Serializable {
       }
 
       return new Long(setting).longValue();
+   }
+
+   public PropertyStore getPropertyStore(String key) throws IllegalArgumentException {
+      PropertyStore toReturn = (PropertyStore) storageProperties.get(key);
+      if (toReturn == null) {
+         throw new IllegalArgumentException(String.format(EXCEPTION_MESSAGE, key));
+      }
+      return toReturn;
+   }
+
+   public void put(String key, PropertyStore store) {
+      storageProperties.put(key, store);
    }
 
    public void put(String key, String[] value) {

@@ -1,0 +1,32 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.core.enums;
+
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+
+/**
+ * @author Megumi Telles
+ */
+public enum Function {
+
+   BRANCH_COMMIT,
+   CHANGE_REPORT,
+   CREATEFULLBRANCH;
+
+   public static Function fromString(String toMatch) throws OseeCoreException {
+      for (Function function : Function.values()) {
+         if (function.name().equalsIgnoreCase(toMatch)) {
+            return function;
+         }
+      }
+      throw new OseeCoreException(String.format("Invalid name - Function [%s] was not found ", toMatch));
+   }
+}

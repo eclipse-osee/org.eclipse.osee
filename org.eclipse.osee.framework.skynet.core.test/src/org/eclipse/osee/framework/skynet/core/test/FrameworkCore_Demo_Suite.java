@@ -27,7 +27,6 @@ import org.eclipse.osee.framework.skynet.core.test.cases.RelationDeletionTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.RelationOrderingTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.SevereLogMonitorTest;
 import org.eclipse.osee.framework.skynet.core.test.cases.StaticIdManagerTest;
-import org.eclipse.osee.framework.skynet.core.test.commit.ChangesTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.commit.LoadCommitItemsFromDbTest;
 import org.eclipse.osee.framework.skynet.core.test.relation.RelationTestSuite;
 import org.eclipse.osee.framework.skynet.core.test.types.OseeCacheTestSuite;
@@ -36,7 +35,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {BranchTestSuite.class, RelationTestSuite.class, OseeCacheTestSuite.class, ChangesTestSuite.class,
+@Suite.SuiteClasses( {BranchTestSuite.class, RelationTestSuite.class, OseeCacheTestSuite.class,
       LoadCommitItemsFromDbTest.class, ArtifactTypeInheritanceTest.class, ArtifactPurgeTest.class,
       BranchPurgeTest.class, Artifact_setAttributeValues.class, CsvArtifactTest.class, NativeArtifactTest.class,
       ConflictTest.class, ChangeManagerTest.class, SevereLogMonitorTest.class, RelationDeletionTest.class,

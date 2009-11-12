@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.jdk.core.test.util;
 
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.jdk.core.util.HumanReadableId;
+import org.junit.Assert;
 
 /**
  * @author Ryan Schmitt
  */
-public class HumanReadableIdTest extends TestCase {
+public class HumanReadableIdTest {
 
    @org.junit.Test
    public void testInvalidHrids() {
@@ -37,7 +37,7 @@ public class HumanReadableIdTest extends TestCase {
       };
 
       for (String invalid : invalidHrids) {
-         assertFalse("Invalid HRID " + invalid + " passes validity test", HumanReadableId.isValid(invalid));
+         Assert.assertFalse("Invalid HRID " + invalid + " passes validity test", HumanReadableId.isValid(invalid));
       }
    }
 
@@ -45,7 +45,7 @@ public class HumanReadableIdTest extends TestCase {
    public void testValidGeneration() {
       for (int i = 0; i < 500000; i++) {
          String hrid = HumanReadableId.generate();
-         assertTrue("Generated HRID " + hrid + " fails validity test", HumanReadableId.isValid(hrid));
+         Assert.assertTrue("Generated HRID " + hrid + " fails validity test", HumanReadableId.isValid(hrid));
       }
    }
 
@@ -77,21 +77,21 @@ public class HumanReadableIdTest extends TestCase {
 
             };
       for (String hrid : validHrids) {
-         assertTrue(HumanReadableId.isValid(hrid));
+         Assert.assertTrue(HumanReadableId.isValid(hrid));
       }
    }
 }
 
 /*
-Mutating org.eclipse.osee.framework.jdk.core.util.HumanReadableId
-Tests: org.eclipse.osee.framework.jdk.core.util.HumanReadableIdTest
-Mutation points = 160, unit test time limit 12.0s
-M FAIL: org.eclipse.osee.framework.jdk.core.util.HumanReadableId:40: CP[12] 34438396 -> 34438397
-..M FAIL: org.eclipse.osee.framework.jdk.core.util.HumanReadableId:27: 2 -> 3
-.M FAIL: org.eclipse.osee.framework.jdk.core.util.HumanReadableId:28: 34 (") -> 35 (#)
-..................................................
-...................M FAIL: org.eclipse.osee.framework.jdk.core.util.HumanReadableId:30: 31 -> 32 ( )
-..................................................
-..................................
-Score: 97%
-*/
+ * Mutating org.eclipse.osee.framework.jdk.core.util.HumanReadableId
+ * Tests: org.eclipse.osee.framework.jdk.core.util.HumanReadableIdTest
+ * Mutation points = 160, unit test time limit 12.0s
+ * M FAIL: org.eclipse.osee.framework.jdk.core.util.HumanReadableId:40: CP[12] 34438396 -> 34438397
+ * ..M FAIL: org.eclipse.osee.framework.jdk.core.util.HumanReadableId:27: 2 -> 3
+ * .M FAIL: org.eclipse.osee.framework.jdk.core.util.HumanReadableId:28: 34 (") -> 35 (#)
+ * ..................................................
+ * ...................M FAIL: org.eclipse.osee.framework.jdk.core.util.HumanReadableId:30: 31 -> 32 ( )
+ * ..................................................
+ * ..................................
+ * Score: 97%
+ */
