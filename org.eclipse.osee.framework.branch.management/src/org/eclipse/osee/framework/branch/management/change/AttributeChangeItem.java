@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.change;
 
+import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 
 /**

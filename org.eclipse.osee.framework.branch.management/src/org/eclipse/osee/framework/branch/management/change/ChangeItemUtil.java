@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.change;
 
+import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

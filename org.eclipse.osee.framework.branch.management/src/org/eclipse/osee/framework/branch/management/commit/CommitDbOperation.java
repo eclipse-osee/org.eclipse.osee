@@ -17,14 +17,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.change.ArtifactChangeItem;
 import org.eclipse.osee.framework.branch.management.change.AttributeChangeItem;
-import org.eclipse.osee.framework.branch.management.change.ChangeItem;
 import org.eclipse.osee.framework.branch.management.change.RelationChangeItem;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;

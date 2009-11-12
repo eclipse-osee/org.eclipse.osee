@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.branch.management.change;
+package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.enums.ModificationType;
 

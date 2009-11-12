@@ -13,15 +13,18 @@ package org.eclipse.osee.framework.branch.management.test.commit;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.branch.management.change.ChangeItem;
+
 import org.eclipse.osee.framework.branch.management.change.ChangeItemUtil;
-import org.eclipse.osee.framework.branch.management.change.ChangeVersion;
+import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.test.data.ChangeTestUtility;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.junit.Assert;
 import org.junit.Test;

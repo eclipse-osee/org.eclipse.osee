@@ -14,8 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ChangeVersionTest.class, ChangeItemTest.class, ChangeItemUtilTest.class,
-      ComputeNetChangeTest.class})
+@Suite.SuiteClasses( {ComputeNetChangeTest.class})
 /**
  * @author Roberto E. Escobar
  */

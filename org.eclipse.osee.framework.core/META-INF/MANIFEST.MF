@@ -18,6 +18,7 @@ Import-Package: com.lowagie.text,
  org.eclipse.osee.framework.jdk.core.util.time,
  org.eclipse.osee.framework.logging,
  org.osgi.framework
+Eclipse-ExtensibleAPI: true
 Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,

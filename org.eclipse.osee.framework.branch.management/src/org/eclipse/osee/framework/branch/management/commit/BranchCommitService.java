@@ -12,16 +12,17 @@ package org.eclipse.osee.framework.branch.management.commit;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.branch.management.IBranchCommitService;
-import org.eclipse.osee.framework.branch.management.change.ChangeItem;
 import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.branch.management.change.LoadChangeDataOperation;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCommitData;
+import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;

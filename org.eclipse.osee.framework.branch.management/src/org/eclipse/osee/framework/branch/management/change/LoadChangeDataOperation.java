@@ -12,8 +12,11 @@ package org.eclipse.osee.framework.branch.management.change;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;

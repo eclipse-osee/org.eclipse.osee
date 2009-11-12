@@ -3,9 +3,9 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.framework.branch.management.test.commit;
+package org.eclipse.osee.framework.core.test.data;
 
-import org.eclipse.osee.framework.branch.management.change.ChangeVersion;
+import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.junit.Assert;
 import org.junit.Test;
