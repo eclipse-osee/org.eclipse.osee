@@ -158,14 +158,6 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
       return "";
    }
 
-   @Override
-   public StateMachineArtifact getParentSMA() throws OseeCoreException {
-      Collection<StateMachineArtifact> smas =
-            getRelatedArtifacts(AtsRelation.SmaToTask_Sma, StateMachineArtifact.class);
-      if (smas.size() > 0) return smas.iterator().next();
-      return null;
-   }
-
    public Boolean isCancelled() throws OseeCoreException {
       return smaMgr.isCancelled();
    }
@@ -304,21 +296,27 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    }
 
    @Override
+   public StateMachineArtifact getParentSMA() throws OseeCoreException {
+      if (parentSma != null) return parentSma;
+      Collection<StateMachineArtifact> smas =
+            getRelatedArtifacts(AtsRelation.SmaToTask_Sma, StateMachineArtifact.class);
+      parentSma = smas.iterator().next();
+      return parentSma;
+   }
+
+   @Override
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
-      StateMachineArtifact sma = getParentSMA();
-      if (sma instanceof TeamWorkFlowArtifact)
-         return ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
-      else
-         return null;
+      if (parentAction != null) return parentAction;
+      parentAction = getParentTeamWorkflow().getParentActionArtifact();
+      return parentAction;
    }
 
    @Override
    public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
+      if (parentTeamArt != null) return parentTeamArt;
       StateMachineArtifact sma = getParentSMA();
-      if (sma instanceof TeamWorkFlowArtifact)
-         return ((TeamWorkFlowArtifact) sma);
-      else
-         return null;
+      if (sma instanceof TeamWorkFlowArtifact) parentTeamArt = ((TeamWorkFlowArtifact) sma);
+      return parentTeamArt;
    }
 
    @Override

@@ -36,27 +36,12 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
     * @param humanReadableId
     * @param branch
     * @param artifactType
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    public TaskableStateMachineArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       registerSMAEditorRelation(AtsRelation.SmaToTask_Task);
       registerAtsWorldRelation(AtsRelation.SmaToTask_Task);
-   }
-
-   @Override
-   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
-      return null;
-   }
-
-   @Override
-   public StateMachineArtifact getParentSMA() throws OseeCoreException {
-      return null;
-   }
-
-   @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
-      return null;
    }
 
    @Override

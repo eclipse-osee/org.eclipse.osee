@@ -12,12 +12,14 @@ package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
+import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
@@ -40,6 +42,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    protected UserRoleManager userRoleManager;
    private XActionableItemsDam actionableItemsDam;
    private Collection<UserRole> preSaveReviewRoleComplete;
+   Boolean standAlone = null;
    public static enum ReviewBlockType {
       None, Transition, Commit
    };
@@ -180,11 +183,48 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    }
 
    @Override
+   public StateMachineArtifact getParentSMA() throws OseeCoreException {
+      if (isStandAloneReview()) return null;
+      if (parentSma != null) return parentSma;
+      parentSma = getParentTeamWorkflow();
+      return parentSma;
+   }
+
+   @Override
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
-      if (getParentSMA() != null) {
-         return ((TeamWorkFlowArtifact) getParentSMA()).getParentActionArtifact();
+      if (isStandAloneReview()) return null;
+      if (parentAction != null) return parentAction;
+      parentTeamArt = getParentTeamWorkflow();
+      if (parentTeamArt != null) {
+         parentAction = parentTeamArt.getParentActionArtifact();
       }
-      return null;
+      return parentAction;
+   }
+
+   @Override
+   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
+      if (isStandAloneReview()) return null;
+      if (parentTeamArt != null) return parentTeamArt;
+      List<TeamWorkFlowArtifact> teams =
+            getRelatedArtifacts(AtsRelation.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
+      if (teams.size() > 1) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,
+               getArtifactTypeName() + " " + getHumanReadableId() + " has multiple parent workflows");
+      } else if (!isStandAloneReview() && teams.size() == 0) {
+         OseeLog.log(AtsPlugin.class, Level.SEVERE,
+               getArtifactTypeName() + " " + getHumanReadableId() + " has no parent workflow");
+      }
+      if (teams.size() > 0) {
+         parentTeamArt = teams.iterator().next();
+      }
+      return parentTeamArt;
+   }
+
+   public boolean isStandAloneReview() throws OseeCoreException {
+      if (standAlone == null) {
+         standAlone = getActionableItemsDam().getActionableItemGuids().size() > 0;
+      }
+      return standAlone;
    }
 
    @Override

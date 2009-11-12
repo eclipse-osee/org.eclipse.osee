@@ -13,13 +13,11 @@ package org.eclipse.osee.ats.artifact;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
@@ -70,16 +68,6 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    }
 
    @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
-      List<TeamWorkFlowArtifact> teams =
-            getRelatedArtifacts(AtsRelation.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
-      if (teams.size() > 0) {
-         return teams.iterator().next();
-      }
-      return null;
-   }
-
-   @Override
    public IStatus isUserRoleValid(String namespace) throws OseeCoreException {
       if (getUserRoleManager().getUserRoles(Role.Author).size() <= 0) return new Status(IStatus.ERROR, namespace,
             "Must have at least one Author");
@@ -125,11 +113,6 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    }
 
    @Override
-   public StateMachineArtifact getParentSMA() throws OseeCoreException {
-      return getParentTeamWorkflow();
-   }
-
-   @Override
    public String getWorldViewDescription() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
@@ -158,15 +141,6 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
       if (getParentSMA() == null) return null;
       return getParentSMA().getWorldViewTargetedVersion();
-   }
-
-   @Override
-   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
-      StateMachineArtifact sma = getParentSMA();
-      if (sma instanceof TeamWorkFlowArtifact)
-         return ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
-      else
-         return null;
    }
 
    @Override

@@ -254,14 +254,32 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
+   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
+      parentTeamArt = this;
+      return parentTeamArt;
+   }
+
+   @Override
+   public Artifact getParentAtsArtifact() throws OseeCoreException {
+      return getParentActionArtifact();
+   }
+
+   @Override
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
+      if (parentAction != null) return parentAction;
       Collection<ActionArtifact> arts = getRelatedArtifacts(AtsRelation.ActionToWorkflow_Action, ActionArtifact.class);
       if (arts.size() == 0) {
          throw new OseeStateException("Team " + getHumanReadableId() + " has no parent Action");
       } else if (arts.size() > 1) {
          throw new OseeStateException("Team " + getHumanReadableId() + " has multiple parent Actions");
-      } else
-         return arts.iterator().next();
+      }
+      parentAction = arts.iterator().next();
+      return parentAction;
+   }
+
+   @Override
+   public StateMachineArtifact getParentSMA() throws OseeCoreException {
+      return null;
    }
 
    @Override
@@ -389,16 +407,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    }
 
    @Override
-   public StateMachineArtifact getParentSMA() throws OseeCoreException {
-      return null;
-   }
-
-   @Override
-   public Artifact getParentAtsArtifact() throws OseeCoreException {
-      return getParentActionArtifact();
-   }
-
-   @Override
    public String getWorldViewDescription() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
    }
@@ -473,11 +481,6 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
       double benefit = getWorldViewWeeklyBenefit();
       double remainHrs = getRemainHoursTotal();
       return (benefit * 52) - remainHrs;
-   }
-
-   @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
-      return this;
    }
 
    private Result actionableItemsTx(Branch branch, Set<ActionableItemArtifact> selectedAlias, TeamDefinitionArtifact teamDefinition) throws OseeCoreException {

@@ -14,14 +14,12 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.XDecisionOptions;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,22 +44,11 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
     * @param guid
     * @param humanReadableId
     * @param branch
- * @throws OseeDataStoreException 
+    * @throws OseeDataStoreException
     */
    public DecisionReviewArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       decisionOptions = new XDecisionOptions(this);
-   }
-
-   @Override
-   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
-      Collection<TeamWorkFlowArtifact> teamArts =
-            getRelatedArtifacts(AtsRelation.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
-      if (teamArts.size() == 0) throw new OseeStateException(
-            "Decision Review " + getHumanReadableId() + " has no parent workflow");
-      if (teamArts.size() > 1) throw new OseeStateException(
-            "Decision Review " + getHumanReadableId() + " has multiple parent workflows");
-      return teamArts.iterator().next();
    }
 
    @Override
@@ -90,11 +77,6 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    @Override
    public String getWorldViewTeam() throws OseeCoreException {
       return "";
-   }
-
-   @Override
-   public StateMachineArtifact getParentSMA() throws OseeCoreException {
-      return getParentTeamWorkflow();
    }
 
    @Override
@@ -131,15 +113,6 @@ public class DecisionReviewArtifact extends ReviewSMArtifact implements IReviewA
    public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
       if (getParentSMA() == null) return null;
       return getParentSMA().getWorldViewTargetedVersion();
-   }
-
-   @Override
-   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
-      StateMachineArtifact sma = getParentSMA();
-      if (sma instanceof TeamWorkFlowArtifact)
-         return ((TeamWorkFlowArtifact) sma).getParentActionArtifact();
-      else
-         return null;
    }
 
    @Override

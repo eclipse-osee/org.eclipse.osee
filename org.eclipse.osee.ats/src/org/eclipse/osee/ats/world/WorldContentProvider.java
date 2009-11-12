@@ -14,7 +14,9 @@ package org.eclipse.osee.ats.world;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.ats.AtsPlugin;
@@ -34,6 +36,8 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 public class WorldContentProvider implements ITreeContentProvider {
 
    protected List<Artifact> rootSet = new ArrayList<Artifact>();
+   // Store off relatedArts as they are discovered so they're not garbage collected
+   protected Set<Artifact> relatedArts = new HashSet<Artifact>();
    private final WorldXViewer xViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
 
@@ -125,11 +129,13 @@ public class WorldContentProvider implements ITreeContentProvider {
             Artifact artifact = (Artifact) parentElement;
             if (artifact.isDeleted()) return new Object[] {};
             if (artifact instanceof ActionArtifact) {
+               relatedArts.addAll(((ActionArtifact) artifact).getTeamWorkFlowArtifacts());
                return ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().toArray();
             }
             if (artifact instanceof GoalArtifact) {
-               return artifact.getRelatedArtifacts(AtsRelation.Goal_Member, false).toArray(
-                     new Artifact[artifact.getRelatedArtifactsCount(AtsRelation.Goal_Member)]);
+               List<Artifact> arts = artifact.getRelatedArtifacts(AtsRelation.Goal_Member, false);
+               relatedArts.addAll(arts);
+               return arts.toArray(new Artifact[artifact.getRelatedArtifactsCount(AtsRelation.Goal_Member)]);
             }
             if (artifact instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;
@@ -137,6 +143,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                // Convert artifacts to WorldArtifactItems
                arts.addAll(teamArt.getSmaMgr().getReviewManager().getReviews());
                arts.addAll(teamArt.getSmaMgr().getTaskMgr().getTaskArtifacts());
+               relatedArts.addAll(arts);
                return arts.toArray();
             }
             if (artifact instanceof ReviewSMArtifact) {
@@ -145,6 +152,7 @@ public class WorldContentProvider implements ITreeContentProvider {
                // Convert artifacts to WorldArtifactItems
                arts.addAll(reviewArt.getSmaMgr().getReviewManager().getReviews());
                arts.addAll(reviewArt.getSmaMgr().getTaskMgr().getTaskArtifacts());
+               relatedArts.addAll(arts);
                return arts.toArray();
             }
          } catch (OseeCoreException ex) {
@@ -160,16 +168,16 @@ public class WorldContentProvider implements ITreeContentProvider {
             Artifact artifact = (Artifact) element;
             if (artifact.isDeleted()) return null;
             if (artifact instanceof TeamWorkFlowArtifact) {
-               ((TeamWorkFlowArtifact) artifact).getParentActionArtifact();
+               return ((TeamWorkFlowArtifact) artifact).getParentActionArtifact();
             }
             if (artifact instanceof TaskArtifact) {
-               ((TaskArtifact) artifact).getParentSMA();
+               return ((TaskArtifact) artifact).getParentSMA();
             }
             if (artifact instanceof ReviewSMArtifact) {
-               ((ReviewSMArtifact) artifact).getParentSMA();
+               return ((ReviewSMArtifact) artifact).getParentSMA();
             }
             if (artifact instanceof GoalArtifact) {
-               ((GoalArtifact) artifact).getParentSMA();
+               return ((GoalArtifact) artifact).getParentSMA();
             }
          } catch (Exception ex) {
             // do nothing

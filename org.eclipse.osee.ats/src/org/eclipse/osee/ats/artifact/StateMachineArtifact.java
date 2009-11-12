@@ -74,6 +74,10 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    private User preSaveOriginator;
    public static double DEFAULT_HOURS_PER_WORK_DAY = 8;
    protected WorkFlowDefinition workFlowDefinition;
+   protected Artifact parent;
+   protected StateMachineArtifact parentSma;
+   protected TeamWorkFlowArtifact parentTeamArt;
+   protected ActionArtifact parentAction;
 
    /**
     * @param parentFactory
@@ -271,11 +275,17 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return groupNames;
    }
 
-   public abstract StateMachineArtifact getParentSMA() throws OseeCoreException;
+   public StateMachineArtifact getParentSMA() throws OseeCoreException {
+      return parentSma;
+   }
 
-   public abstract ActionArtifact getParentActionArtifact() throws OseeCoreException;
+   public ActionArtifact getParentActionArtifact() throws OseeCoreException {
+      return parentAction;
+   }
 
-   public abstract TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException;
+   public TeamWorkFlowArtifact getParentTeamWorkflow() throws OseeCoreException {
+      return parentTeamArt;
+   }
 
    public String getPreviewHtml() throws OseeCoreException {
       return getPreviewHtml(PreviewStyle.NONE);
