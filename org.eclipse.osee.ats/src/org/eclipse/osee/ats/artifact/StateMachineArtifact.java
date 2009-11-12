@@ -150,12 +150,12 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewDeadlineDateStr() throws OseeCoreException {
-      return null;
+      return "";
    }
 
    @Override
    public String getWorldViewDescription() throws OseeCoreException {
-      return null;
+      return "";
    }
 
    @Override
@@ -457,12 +457,16 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return smaMgr.getStateMgr().getCurrentStateName();
    }
 
+   public String implementersStr = null;
+
    public String getWorldViewActivePoc() throws OseeCoreException {
       if (smaMgr.isCancelledOrCompleted()) {
-         if (smaMgr.getSma().getImplementers().size() > 0) {
-            return "(" + Artifacts.toString("; ", smaMgr.getSma().getImplementers()) + ")";
+         if (implementersStr == null) {
+            if (smaMgr.getSma().getImplementers().size() > 0) {
+               implementersStr = "(" + Artifacts.toString("; ", smaMgr.getSma().getImplementers()) + ")";
+            }
          }
-         return "";
+         return implementersStr;
       }
       return Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees());
    }

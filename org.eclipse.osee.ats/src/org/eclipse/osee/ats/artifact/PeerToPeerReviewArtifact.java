@@ -11,7 +11,6 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.core.runtime.IStatus;
@@ -30,7 +29,6 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSStateMachineArtifact;
@@ -108,33 +106,8 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    }
 
    @Override
-   public String getWorldViewTeam() throws OseeCoreException {
-      return "";
-   }
-
-   @Override
    public String getWorldViewDescription() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
-   }
-
-   @Override
-   public String getWorldViewCategory() throws OseeCoreException {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewCategory2() throws OseeCoreException {
-      return "";
-   }
-
-   @Override
-   public String getWorldViewCategory3() throws OseeCoreException {
-      return "";
-   }
-
-   @Override
-   public Date getWorldViewReleaseDate() throws OseeCoreException {
-      return null;
    }
 
    @Override
@@ -153,37 +126,8 @@ public class PeerToPeerReviewArtifact extends ReviewSMArtifact implements IRevie
    }
 
    @Override
-   public Date getWorldViewDeadlineDate() throws OseeCoreException {
-      return null;
-   }
-
-   @Override
-   public String getWorldViewDeadlineDateStr() throws OseeCoreException {
-      return "";
-   }
-
-   @Override
-   public double getWorldViewWeeklyBenefit() {
-      return 0;
-   }
-
-   @Override
-   public String getWorldViewWorkPackage() throws OseeCoreException {
-      return "";
-   }
-
-   public Artifact getArtifact() {
-      return this;
-   }
-
-   @Override
    public String getWorldViewReviewAuthor() throws OseeCoreException {
       return Artifacts.toString("; ", getUserRoleManager().getRoleUsers(Role.Author));
-   }
-
-   @Override
-   public String getWorldViewReviewDecider() throws OseeCoreException {
-      return "";
    }
 
    @Override

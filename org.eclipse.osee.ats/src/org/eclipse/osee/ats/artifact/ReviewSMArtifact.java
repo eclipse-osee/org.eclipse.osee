@@ -11,6 +11,7 @@
 package org.eclipse.osee.ats.artifact;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -231,4 +233,78 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
    public String getWorldViewParentID() throws OseeCoreException {
       return getParentTeamWorkflow().getHumanReadableId();
    }
+
+   @Override
+   public Date getWorldViewDeadlineDate() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public String getWorldViewCategory() throws OseeCoreException {
+      return "";
+   }
+
+   @Override
+   public Date getWorldViewReleaseDate() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public String getWorldViewTeam() throws OseeCoreException {
+      TeamWorkFlowArtifact teamDef = getParentTeamWorkflow();
+      if (teamDef != null) {
+         return teamDef.getWorldViewTeam();
+      }
+      return "";
+   }
+
+   @Override
+   public String getWorldViewReviewDecider() throws OseeCoreException {
+      return "";
+   }
+
+   @Override
+   public String getWorldViewReviewModerator() throws OseeCoreException {
+      return "";
+   }
+
+   @Override
+   public String getWorldViewReviewReviewer() throws OseeCoreException {
+      return "";
+   }
+
+   @Override
+   public String getWorldViewReviewAuthor() throws OseeCoreException {
+      return "";
+   }
+
+   @Override
+   public double getWorldViewWeeklyBenefit() {
+      return 0;
+   }
+
+   @Override
+   public String getWorldViewWorkPackage() throws OseeCoreException {
+      return "";
+   }
+
+   public Artifact getArtifact() {
+      return this;
+   }
+
+   @Override
+   public String getWorldViewCategory2() throws OseeCoreException {
+      return "";
+   }
+
+   @Override
+   public String getWorldViewCategory3() throws OseeCoreException {
+      return "";
+   }
+
+   @Override
+   public String getWorldViewDeadlineDateStr() throws OseeCoreException {
+      return "";
+   }
+
 }
