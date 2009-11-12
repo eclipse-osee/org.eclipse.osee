@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.branch.management.remote;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.branch.management.IBranchArchivingService;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
@@ -21,7 +22,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchArchivingService {
+public class BranchArchivingService implements IBranchArchivingService {
 
    private static final String SELECT_ADDRESSING_BY_BRANCH =
          "select * from %s txs, osee_tx_details txd where txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
