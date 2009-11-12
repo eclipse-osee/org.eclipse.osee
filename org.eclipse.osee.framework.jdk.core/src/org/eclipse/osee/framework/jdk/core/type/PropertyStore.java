@@ -113,16 +113,16 @@ public class PropertyStore implements IPropertyStore, Serializable {
       return new Long(setting).longValue();
    }
 
-   public PropertyStore getPropertyStore(String key) throws IllegalArgumentException {
-      PropertyStore toReturn = (PropertyStore) storageProperties.get(key);
-      if (toReturn == null) {
-         throw new IllegalArgumentException(String.format(EXCEPTION_MESSAGE, key));
-      }
-      return toReturn;
+   public PropertyStore getPropertyStore(String key) {
+      return (PropertyStore) storageProperties.get(key);
    }
 
    public void put(String key, PropertyStore store) {
-      storageProperties.put(key, store);
+      if (store == null) {
+         storageProperties.remove(key);
+      } else {
+         storageProperties.put(key, store);
+      }
    }
 
    public void put(String key, String[] value) {
@@ -176,6 +176,10 @@ public class PropertyStore implements IPropertyStore, Serializable {
 
    protected Properties getArrays() {
       return storageArrays;
+   }
+
+   protected Properties getPropertyStores() {
+      return storageProperties;
    }
 
    @Override

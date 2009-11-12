@@ -40,6 +40,7 @@ public class PropertyStoreWriter {
    private static final String TAG_VALUE = "value";
    private static final String TAG_LIST = "list";
    private static final String TAG_ITEM = "item";
+   private static final String TAG_INNER = "inner.store";
 
    public void load(PropertyStore store, Reader reader) throws Exception {
       XMLReader xmlReader = new XMLReader();
@@ -53,6 +54,7 @@ public class PropertyStoreWriter {
    public void save(PropertyStore store, OutputStream stream) throws IOException {
       XMLWriter writer = new XMLWriter(stream);
       internalSave(store, writer);
+      writer.close();
    }
 
    public void save(PropertyStore store, Writer writer) throws IOException {
@@ -95,18 +97,41 @@ public class PropertyStoreWriter {
          out.endTag(TAG_LIST);
          attributes.clear();
       }
+      attributes.clear();
+
+      processInnerStores(store, out);
+
       out.endTag(TAG_SECTION);
-      out.close();
    }
+
+   private void processInnerStores(PropertyStore store, XMLWriter out) {
+      Map<String, String> attributes = new HashMap<String, String>(2);
+      Properties properties = store.getPropertyStores();
+      for (Entry<Object, Object> entry : properties.entrySet()) {
+         String key = (String) entry.getKey();
+         attributes.put(TAG_KEY, key == null ? "" : key);
+         out.startTag(TAG_INNER, attributes);
+         PropertyStore innerStore = (PropertyStore) entry.getValue();
+         internalSave(innerStore, out);
+         out.endTag(TAG_INNER);
+      }
+   }
+
    private static class XMLReader {
       private List<String> valueList;
       private String tagListKey;
+      private String innerStoreKey;
       private boolean isInTagList;
+      private boolean isInInnerStore;
+      private PropertyStore innerStore;
 
       public XMLReader() {
          isInTagList = false;
+         isInInnerStore = false;
          valueList = null;
          tagListKey = null;
+         innerStore = null;
+         innerStoreKey = null;
       }
 
       public void load(PropertyStore store, Reader input) throws Exception {
@@ -132,12 +157,24 @@ public class PropertyStoreWriter {
          switch (eventType) {
             case XMLStreamConstants.START_ELEMENT:
                if (TAG_SECTION.equals(name)) {
-                  store.setId(reader.getAttributeValue(uri, TAG_NAME));
+                  if (isInInnerStore) {
+                     innerStore = new PropertyStore();
+                     innerStore.setId(reader.getAttributeValue(uri, TAG_NAME));
+                  } else {
+                     store.setId(reader.getAttributeValue(uri, TAG_NAME));
+                  }
                } else if (TAG_ITEM.equals(name)) {
-                  processTagItemSection(uri, store, reader);
+                  if (isInInnerStore) {
+                     processTagItemSection(uri, innerStore, reader);
+                  } else {
+                     processTagItemSection(uri, store, reader);
+                  }
                } else if (TAG_LIST.equals(name)) {
                   isInTagList = true;
                   tagListKey = reader.getAttributeValue(uri, TAG_KEY);
+               } else if (TAG_INNER.equals(name)) {
+                  isInInnerStore = true;
+                  innerStoreKey = reader.getAttributeValue(uri, TAG_KEY);
                }
                break;
             case XMLStreamConstants.END_ELEMENT:
@@ -145,11 +182,23 @@ public class PropertyStoreWriter {
                   isInTagList = false;
                   if (Strings.isValid(tagListKey) && valueList != null && !valueList.isEmpty()) {
                      String[] value = valueList.toArray(new String[valueList.size()]);
-                     store.put(tagListKey, value);
+                     if (isInInnerStore) {
+                        innerStore.put(tagListKey, value);
+                     } else {
+                        store.put(tagListKey, value);
+                     }
                   }
                   valueList = null;
                   tagListKey = null;
+               } else if (TAG_INNER.equals(name)) {
+                  isInInnerStore = false;
+                  if (Strings.isValid(innerStoreKey) && innerStore != null) {
+                     store.put(innerStoreKey, innerStore);
+                  }
+                  innerStoreKey = null;
+                  innerStore = null;
                }
+
                break;
             default:
                break;

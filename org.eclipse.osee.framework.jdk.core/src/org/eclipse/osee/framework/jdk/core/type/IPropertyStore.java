@@ -85,6 +85,14 @@ public interface IPropertyStore {
    public long getLong(String key) throws NumberFormatException;
 
    /**
+    * Convert the value of the given key to a IPropertyStore and return it.
+    * 
+    * @param key the key
+    * @return the value converted to a PropertyStore, or null if key was is not found
+    */
+   public IPropertyStore getPropertyStore(String key);
+
+   /**
     * Adds the pair <code>key/value</code>.
     * 
     * @param key the key.
