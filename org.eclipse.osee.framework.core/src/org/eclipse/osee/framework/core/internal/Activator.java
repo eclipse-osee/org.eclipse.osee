@@ -11,8 +11,12 @@
 package org.eclipse.osee.framework.core.internal;
 
 import org.eclipse.osee.framework.core.IDataTranslationService;
+import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCommitData;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.exchange.BasicArtifactDataTranslator;
 import org.eclipse.osee.framework.core.exchange.BranchCommitDataTranslator;
+import org.eclipse.osee.framework.core.exchange.BranchDataTranslator;
 import org.eclipse.osee.framework.core.exchange.DataTranslationService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -30,8 +34,10 @@ public class Activator implements BundleActivator {
 
       DataTranslationService service = new DataTranslationService();
 
-      // TODO perform this using DS
+      // TODO perform this using DS - register Data Translators
       service.addTranslator(BranchCommitData.class, new BranchCommitDataTranslator(service));
+      service.addTranslator(IBasicArtifact.class, new BasicArtifactDataTranslator());
+      service.addTranslator(Branch.class, new BranchDataTranslator(service));
 
       registration = context.registerService(IDataTranslationService.class.getName(), service, null);
    }
