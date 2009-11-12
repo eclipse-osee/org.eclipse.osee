@@ -11,10 +11,8 @@
 package org.eclipse.osee.framework.jdk.core.test.type;
 
 import java.util.Properties;
-import java.util.Set;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.junit.Assert;
 
 /**
@@ -73,17 +71,6 @@ public class PropertyStoreTestUtil {
          } else {
             Assert.assertEquals(expectedValue, actualValue);
          }
-      }
-   }
-
-   private static void checkProperties(Properties expected, Properties actual) {
-      Assert.assertEquals(expected.size(), actual.size());
-      Set<Object> keys = expected.keySet();
-      Set<Object> actualKeys = actual.keySet();
-      Assert.assertTrue(Collections.setComplement(keys, actualKeys).isEmpty());
-      Assert.assertTrue(Collections.setComplement(actualKeys, keys).isEmpty());
-      for (Object object : keys) {
-         Assert.assertEquals(expected.getProperty((String) object), actual.getProperty((String) object));
       }
    }
 
