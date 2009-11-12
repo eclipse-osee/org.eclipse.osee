@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.core.internal;
 
 import org.eclipse.osee.framework.core.IDataTranslationService;
+import org.eclipse.osee.framework.core.data.BranchCommitData;
+import org.eclipse.osee.framework.core.exchange.BranchCommitDataTranslator;
 import org.eclipse.osee.framework.core.exchange.DataTranslationService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -20,18 +22,23 @@ public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.core";
    private static Activator instance = null;
    private BundleContext bundleContext;
-   private ServiceRegistration service;
+   private ServiceRegistration registration;
 
    public void start(BundleContext context) throws Exception {
       instance = this;
       instance.bundleContext = context;
 
-      service = context.registerService(IDataTranslationService.class.getName(), new DataTranslationService(), null);
+      DataTranslationService service = new DataTranslationService();
+
+      // TODO perform this using DS
+      service.addTranslator(BranchCommitData.class, new BranchCommitDataTranslator(service));
+
+      registration = context.registerService(IDataTranslationService.class.getName(), service, null);
    }
 
    public void stop(BundleContext context) throws Exception {
-      service.unregister();
-      service = null;
+      registration.unregister();
+      registration = null;
       instance.bundleContext = null;
       instance = null;
    }

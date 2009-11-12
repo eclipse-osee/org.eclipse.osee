@@ -29,17 +29,17 @@ public final class BranchCommitDataTranslator implements IDataTranslator<BranchC
       isArchiveAllowed;
    }
 
-   private IDataTranslationService service;
+   private final IDataTranslationService service;
 
-   public BranchCommitDataTranslator() {
-      service = null;
-   }
-
-   public void setService(IDataTranslationService service) {
+   public BranchCommitDataTranslator(IDataTranslationService service) {
       this.service = service;
    }
 
-   public IDataTranslationService getService() {
+   //   public void setService(IDataTranslationService service) {
+   //      this.service = service;
+   //   }
+
+   private IDataTranslationService getService() {
       return service;
    }
 
