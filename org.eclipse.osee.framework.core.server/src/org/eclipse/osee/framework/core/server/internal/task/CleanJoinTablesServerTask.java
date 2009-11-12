@@ -33,7 +33,7 @@ public class CleanJoinTablesServerTask implements IServerTask {
 
    private static final String[] TABLES =
          new String[] {"osee_join_artifact", "osee_join_attribute", "osee_join_transaction", "osee_join_export_import",
-               "osee_join_search_tags"};
+         "osee_join_search_tags", "osee_tag_gamma_queue", "osee_join_id"};
 
    public String getName() {
       return NAME;
