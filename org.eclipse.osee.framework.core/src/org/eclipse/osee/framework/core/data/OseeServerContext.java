@@ -21,7 +21,7 @@ public class OseeServerContext {
    public static final String SEARCH_CONTEXT = asAbsoluteContext("search");
    public static final String MANAGER_CONTEXT = asAbsoluteContext("manager");
    public static final String BRANCH_CONTEXT = asAbsoluteContext("branch");
-   public static final String BRANCH_EXCHANGE_CONTEXT = asAbsoluteContext(BRANCH_CONTEXT + "/exchange");
+   public static final String BRANCH_EXCHANGE_CONTEXT = asAbsoluteContext("branch/exchange");
    public static final String SEARCH_TAGGING_CONTEXT = asAbsoluteContext("search/tagger");
    public static final String RESOURCE_CONTEXT = asAbsoluteContext("resource");
    public static final String SESSION_CONTEXT = asAbsoluteContext("session");

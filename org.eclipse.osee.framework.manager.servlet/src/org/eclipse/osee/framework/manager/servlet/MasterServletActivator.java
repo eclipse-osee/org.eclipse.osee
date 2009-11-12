@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
@@ -86,6 +85,7 @@ public class MasterServletActivator implements BundleActivator {
       createServiceTracker(context, IChangeReportService.class, TrackerId.CHANGE_REPORT);
 
       createHttpServiceTracker(context, BranchExchangeServlet.class, OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
+      createHttpServiceTracker(context, BranchManagerServlet.class, OseeServerContext.BRANCH_CONTEXT);
 
       createHttpServiceTracker(context, SearchEngineServlet.class, OseeServerContext.SEARCH_CONTEXT);
       createHttpServiceTracker(context, SearchEngineTaggerServlet.class, OseeServerContext.SEARCH_TAGGING_CONTEXT);
