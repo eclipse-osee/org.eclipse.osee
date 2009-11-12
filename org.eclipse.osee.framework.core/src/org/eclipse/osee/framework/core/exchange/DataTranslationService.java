@@ -69,7 +69,12 @@ public class DataTranslationService implements IDataTranslationService {
     * org.eclipse.osee.framework.core.exchange.IDataTranslator)
     */
    public boolean addTranslator(Class<?> clazz, IDataTranslator<?> translator) {
-      return translators.put(clazz, translator) != null;
+      boolean wasAdded = false;
+      if (!translators.containsKey(clazz)) {
+         translators.put(clazz, translator);
+         wasAdded = true;
+      }
+      return wasAdded;
    }
 
    /*

@@ -71,11 +71,6 @@ public class DataTranslationServiceTest {
       Assert.assertEquals(value.three, actual.three);
    }
 
-   @Test
-   public void testConvertNested() {
-
-   }
-
    private class TestObject {
       String one;
       Integer two;
