@@ -775,7 +775,7 @@ public class RelationManager {
    }
 
    private static void sort(IArtifact artifact, RelationType type, RelationSide side, List<Artifact> listToOrder) throws OseeCoreException {
-      if (type == null || side == null) {
+      if (type == null || side == null || listToOrder.size() <= 1) {
          return;
       }
       RelationTypeSideSorter sorter = createTypeSideSorter(artifact, type, side);
