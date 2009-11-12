@@ -13,9 +13,11 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.IDataTranslationService;
@@ -26,6 +28,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.data.HttpBranchCreationInfo;
+import org.eclipse.osee.framework.manager.servlet.function.ChangeReportFunction;
 
 /**
  * @author Andrew M Finkbeiner
@@ -46,6 +49,7 @@ public class BranchManagerServlet extends OseeHttpServlet {
                createBranch(req, resp);
                break;
             case CHANGE_REPORT:
+               new ChangeReportFunction().processRequest(req, resp);
                break;
             default:
                throw new UnsupportedOperationException();
