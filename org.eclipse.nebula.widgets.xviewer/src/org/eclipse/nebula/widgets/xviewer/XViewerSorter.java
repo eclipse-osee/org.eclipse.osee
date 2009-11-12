@@ -155,9 +155,9 @@ public class XViewerSorter extends ViewerSorter {
    public static int getCompareForFloat(double float1, double float2) {
       if (float1 == float2) {
          return 0;
-      } else if (float1 == 0 || float1 < float2) {
+      } else if (float1 < float2) {
          return -1;
-      } else if (float2 == 0 || float2 < float1) {
+      } else if (float2 < float1) {
          return 1;
       } else {
          return 0;
@@ -167,9 +167,9 @@ public class XViewerSorter extends ViewerSorter {
    public static int getCompareForInteger(int int1, int int2) {
       if (int1 == int2) {
          return 0;
-      } else if (int1 == 0 || int1 < int2) {
+      } else if (int1 < int2) {
          return -1;
-      } else if (int2 == 0 || int2 < int1) {
+      } else if (int2 < int1) {
          return 1;
       } else {
          return 0;
