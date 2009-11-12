@@ -33,15 +33,14 @@ import org.eclipse.osee.framework.core.operation.Operations;
 public class ChangeReportService implements IChangeReportService {
    
    public IStatus getChanges(TransactionRecord sourceTransaction, TransactionRecord destinationTransaction, IProgressMonitor monitor, boolean isHistorical, Collection<ChangeItem> changes) throws OseeCoreException{
-      List<ChangeItem> changeItems = new ArrayList<ChangeItem>();
       List<IOperation> ops = new ArrayList<IOperation>();
 
       if (isHistorical) {
-         ops.add(new LoadChangeDataOperation(sourceTransaction.getId(), destinationTransaction, changeItems));
+         ops.add(new LoadChangeDataOperation(sourceTransaction.getId(), destinationTransaction, changes));
       } else {
-         ops.add(new LoadChangeDataOperation(sourceTransaction, destinationTransaction, null, changeItems));
+         ops.add(new LoadChangeDataOperation(sourceTransaction, destinationTransaction, null, changes));
       }
-      ops.add(new ComputeNetChangeOperation(changeItems));
+      ops.add(new ComputeNetChangeOperation(changes));
 
       String opName =
             String.format("Gathering changes");
