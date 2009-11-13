@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exchange;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import org.eclipse.osee.framework.core.data.CommitTransactionRecordResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -35,8 +38,14 @@ public class BranchCommitDataResponder implements IDataTranslator<CommitTransact
       return store;
    }
 
-   public byte[] convertToReponse(CommitTransactionRecordResponse data) {
-      //TODO return the byte data
-      return new byte[0];
+   public byte[] convertToReponse(CommitTransactionRecordResponse data) throws IOException {
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      ObjectOutputStream oos = new ObjectOutputStream(bos);
+      oos.writeObject(data);
+      oos.flush();
+      oos.close();
+      bos.close();
+      byte[] responseData = bos.toByteArray();
+      return responseData;
    }
 }
