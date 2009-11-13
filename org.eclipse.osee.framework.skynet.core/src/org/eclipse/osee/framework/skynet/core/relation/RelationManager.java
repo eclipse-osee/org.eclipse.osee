@@ -61,13 +61,8 @@ public class RelationManager {
    private static final CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>> relationsByType =
          new CompositeKeyHashMap<ArtifactKey, RelationType, List<RelationLink>>(1024, true);
 
-   private static final String[] DELETED =
-         new String[] {
-               "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, sysdate, ",
-               ", branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND ",
-               " = ? AND tx_current in (2, 3))"};
-   private static final String GET_DELETED_ARTIFACT_B = DELETED[0] + "b_art_id" + DELETED[1] + "a_art_id" + DELETED[2];
-   private static final String GET_DELETED_ARTIFACT_A = DELETED[0] + "a_art_id" + DELETED[1] + "b_art_id" + DELETED[2];
+   private static final String GET_DELETED_ARTIFACT =
+         "INSERT INTO osee_join_artifact (query_id, insert_time, art_id, branch_id, transaction_id) (SELECT DISTINCT ?, sysdate, %sart_id, det.branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE det.branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND %sart_id = ? AND tx_current in (2, 3))";
 
    private static RelationSorterProvider relationSorterProvider = new RelationSorterProvider();
    private static RelationOrderFactory relationOrderFactory = new RelationOrderFactory();
@@ -362,14 +357,12 @@ public class RelationManager {
          List<Artifact> artifacts =
                getRelatedArtifacts(artifact, relationEnum.getRelationType(), relationEnum.getSide());
          int queryId = ArtifactLoader.getNewQueryId();
-         //(SELECT ?, ?, b_art_id, branch_id, ? FROM osee_tx_details det, osee_txs txs, osee_relation_link rel WHERE branch_id = ? AND det.transaction_id = txs.transaction_id AND txs.gamma_id = rel.gamma_id AND rel.rel_link_type_id = ? AND a_art_id = ? AND tx_current = 3)"
-         if (relationEnum.getSide().equals(RelationSide.SIDE_B)) {
-            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_B, queryId, SQL3DataType.INTEGER,
-                  artifact.getBranch().getId(), relationEnum.getRelationType().getId(), artifact.getArtId());
-         } else {
-            ConnectionHandler.runPreparedUpdate(GET_DELETED_ARTIFACT_A, queryId, SQL3DataType.INTEGER,
-                  artifact.getBranch().getId(), relationEnum.getRelationType().getId(), artifact.getArtId());
-         }
+
+         Object[] formatArgs = relationEnum.getSide().isSideA() ? new Object[] {"a", "b"} : new Object[] {"b", "a"};
+         String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
+
+         ConnectionHandler.runPreparedUpdate(sql, queryId, SQL3DataType.INTEGER,
+               artifact.getBranch().getId(), relationEnum.getRelationType().getId(), artifact.getArtId());
 
          List<Artifact> deletedArtifacts =
                ArtifactLoader.loadArtifactsFromQueryId(queryId, ArtifactLoad.FULL, null, 4, false, false, true);
@@ -507,7 +500,7 @@ public class RelationManager {
                   Artifact artifactOnOtherSide = relation.getArtifactOnOtherSide(artifact);
                   List<RelationLink> otherSideRelations =
                         relationsByType.get(threadLocalKey.get().getKey(artifactOnOtherSide),
-                              relation.getRelationType());
+                        relation.getRelationType());
                   for (int i = 0; i < otherSideRelations.size(); i++) {
                      if (relation.equals(otherSideRelations.get(i))) {
                         if (i + 1 < otherSideRelations.size()) {
