@@ -29,7 +29,7 @@ public class PairTest {
    private static Pair<Integer, Integer> nonNull = new Pair<Integer, Integer>(15, 144);
 
    @org.junit.Test
-   public static void testConstructor() {
+   public void testConstructor() {
       Assert.assertTrue(a.equals(mapToPi.getFirst()));
       Assert.assertTrue(b.equals(mapToPi.getSecond()));
       Assert.assertFalse(b.equals(mapToPi.getFirst()));
@@ -37,14 +37,14 @@ public class PairTest {
    }
 
    @org.junit.Test
-   public static void testEquals() {
+   public void testEquals() {
       Assert.assertTrue(mapToPi.equals(mapToPi));
       Assert.assertTrue(mapToPi.equals(alsoMapToPi));
       Assert.assertFalse(mapToPi.equals(mapToE));
    }
 
    @org.junit.Test
-   public static void testNulls() {
+   public void testNulls() {
       Assert.assertTrue(firstEntryNull.equals(firstEntryNull));
       Assert.assertFalse(firstEntryNull.equals(nonNull));
 
@@ -57,7 +57,7 @@ public class PairTest {
    }
 
    @org.junit.Test
-   public static void testSetters() {
+   public void testSetters() {
       Pair<Integer, Integer> newPair = new Pair<Integer, Integer>(0, 0);
       newPair.setFirst(a);
       newPair.setSecond(b);
@@ -69,7 +69,7 @@ public class PairTest {
    }
 
    @org.junit.Test
-   public static void testHashCorrectness() {
+   public void testHashCorrectness() {
       HashMap<Pair<Integer, Integer>, Double> hash = new HashMap<Pair<Integer, Integer>, Double>();
       hash.put(mapToPi, Math.PI);
       hash.put(mapToE, Math.E);
