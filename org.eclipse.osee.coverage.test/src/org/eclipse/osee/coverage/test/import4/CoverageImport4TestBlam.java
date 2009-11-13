@@ -8,24 +8,24 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.coverage.test.import3;
+package org.eclipse.osee.coverage.test.import4;
 
 import java.util.Arrays;
 import org.eclipse.osee.coverage.test.util.CoverageImportTestBlam;
 
 /**
- * Imports two completely new file CoverageUnits PowerUnit1 and ComScrnAButton1
+ * Imports change to PowerUnit1, adding a new method CoverageUnit
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport3TestBlam extends CoverageImportTestBlam {
+public class CoverageImport4TestBlam extends CoverageImportTestBlam {
 
-   public static String NAME = "Test Import 3";
+   public static String NAME = "Test Import 4";
 
-   public CoverageImport3TestBlam() {
+   public CoverageImport4TestBlam() {
       super(NAME, Arrays.asList(
       //
-      "import3/epu/PowerUnit1.java"
+      "import4/epu/PowerUnit1.java"
       //
       ));
    }

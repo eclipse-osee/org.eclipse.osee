@@ -190,7 +190,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       xPackageViewer1.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       linkWithImportItemAction = new LinkWithImportItemAction();
-      linkWithImportItemAction.setPackageXViewer(xPackageViewer1);
+      linkWithImportItemAction.setPackageXViewer(xPackageViewer1, coveragePackage);
       (new ActionContributionItem(linkWithImportItemAction)).fill(leftToolBar, 0);
       (new ActionContributionItem(new RefreshAction(xPackageViewer1))).fill(leftToolBar, 0);
       (new ActionContributionItem(xPackageViewer1.getXViewer().getCustomizeAction())).fill(leftToolBar, 0);

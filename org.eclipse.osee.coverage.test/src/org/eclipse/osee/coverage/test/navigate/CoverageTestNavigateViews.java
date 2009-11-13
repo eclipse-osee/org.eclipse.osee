@@ -14,14 +14,11 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.navigate.ICoverageNavigateItem;
-import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
 import org.eclipse.osee.coverage.test.import1.CoveragePackage1Import1;
 import org.eclipse.osee.coverage.test.import1.CoveragePackage1Import1B;
-import org.eclipse.osee.coverage.test.import2.CoverageImport2TestBlam;
 import org.eclipse.osee.coverage.test.import2.CoveragePackage1Import2;
-import org.eclipse.osee.coverage.test.import3.CoverageImport3TestBlam;
+import org.eclipse.osee.coverage.test.import3.CoveragePackage1Import3;
 import org.eclipse.osee.coverage.test.package1.CoveragePackage1;
-import org.eclipse.osee.coverage.test.util.CoverageImportTestNavigateItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 
@@ -42,13 +39,14 @@ public class CoverageTestNavigateViews implements ICoverageNavigateItem {
          return items;
       }
 
-      items.add(new CoverageImportTestNavigateItem(null, new CoverageImport1TestBlam()));
-      items.add(new CoverageImportTestNavigateItem(null, new CoverageImport2TestBlam()));
-      items.add(new CoverageImportTestNavigateItem(null, new CoverageImport3TestBlam()));
+      //      items.add(new CoverageImportTestNavigateItem(null, new CoverageImport1TestBlam()));
+      //      items.add(new CoverageImportTestNavigateItem(null, new CoverageImport2TestBlam()));
+      //      items.add(new CoverageImportTestNavigateItem(null, new CoverageImport3TestBlam()));
       items.add(new CoveragePackage1(null));
       items.add(new CoveragePackage1Import1(null));
       items.add(new CoveragePackage1Import1B(null));
       items.add(new CoveragePackage1Import2(null));
+      items.add(new CoveragePackage1Import3(null));
 
       return items;
    }

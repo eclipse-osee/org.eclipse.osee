@@ -10,24 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test.import3;
 
-import java.util.Arrays;
-import org.eclipse.osee.coverage.test.util.CoverageImportTestBlam;
+import org.eclipse.osee.coverage.test.util.CpSelectAndImportItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 
 /**
  * Imports two completely new file CoverageUnits PowerUnit1 and ComScrnAButton1
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport3TestBlam extends CoverageImportTestBlam {
+public class CoveragePackage1Import3 extends CpSelectAndImportItem {
 
-   public static String NAME = "Test Import 3";
-
-   public CoverageImport3TestBlam() {
-      super(NAME, Arrays.asList(
-      //
-      "import3/epu/PowerUnit1.java"
-      //
-      ));
+   public CoveragePackage1Import3(XNavigateItem parent) {
+      super(parent, "Open CP 1 - Import 3 - Add PowerUnit1.initAdded to end", CoverageImport3TestBlam.NAME);
    }
 
 }

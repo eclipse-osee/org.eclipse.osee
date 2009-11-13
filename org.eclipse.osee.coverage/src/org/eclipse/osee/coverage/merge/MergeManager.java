@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
+import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 
@@ -53,11 +54,15 @@ public class MergeManager {
       return;
    }
 
+   public ICoverage getPackageCoverageItem(ICoverage importItem) {
+      return getPackageCoverageItem(coveragePackage, importItem);
+   }
+
    /**
     * Recurse through coverage package to find importItem equivalent
     */
-   public ICoverage getPackageCoverageItem(ICoverage importItem) {
-      for (ICoverage childCoverage : coveragePackage.getChildren(false)) {
+   public static ICoverage getPackageCoverageItem(CoveragePackageBase coveragePackageBase, ICoverage importItem) {
+      for (ICoverage childCoverage : coveragePackageBase.getChildren(false)) {
          ICoverage result = getPackageCoverageItem(childCoverage, importItem);
          if (result != null) return result;
       }
@@ -67,7 +72,7 @@ public class MergeManager {
    /**
     * Recurse through package item and children to find importItem equivalent
     */
-   public ICoverage getPackageCoverageItem(ICoverage packageItem, ICoverage importItem) {
+   public static ICoverage getPackageCoverageItem(ICoverage packageItem, ICoverage importItem) {
       boolean equal = isConceptuallyEqual(packageItem, importItem);
       if (equal) return packageItem;
       // Only check children if importItem should be child of packageItem by namespace

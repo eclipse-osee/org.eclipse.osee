@@ -7,8 +7,9 @@ package org.eclipse.osee.coverage.action;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewer;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
+import org.eclipse.osee.coverage.merge.MergeManager;
+import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -21,6 +22,7 @@ import org.eclipse.swt.events.SelectionEvent;
 public class LinkWithImportItemAction extends Action {
    private XCoverageMergeViewer packageXViewer;
    private XCoverageMergeViewer importXViewer;
+   private CoveragePackage coveragePackage;
 
    public LinkWithImportItemAction() {
       super("Link with Import Item", Action.AS_CHECK_BOX);
@@ -31,8 +33,7 @@ public class LinkWithImportItemAction extends Action {
          ICoverage importCoverageEditorItem =
                ((ISelectedCoverageEditorItem) importXViewer.getXViewer()).getSelectedCoverageEditorItems().iterator().next();
          ICoverage packageCoverageEditorItem =
-               ((CoverageMergeXViewer) importXViewer.getXViewer()).getMergeManager().getPackageCoverageItem(
-                     importCoverageEditorItem);
+               MergeManager.getPackageCoverageItem(coveragePackage, importCoverageEditorItem);
          if (packageCoverageEditorItem != null) {
             ((ISelectedCoverageEditorItem) packageXViewer.getXViewer()).setSelectedCoverageEditorItem(packageCoverageEditorItem);
          }
@@ -49,8 +50,9 @@ public class LinkWithImportItemAction extends Action {
       updateSelection();
    }
 
-   public void setPackageXViewer(XCoverageMergeViewer packageXViewer) {
+   public void setPackageXViewer(XCoverageMergeViewer packageXViewer, CoveragePackage coveragePackage) {
       this.packageXViewer = packageXViewer;
+      this.coveragePackage = coveragePackage;
    }
 
    public XCoverageMergeViewer getImportXViewer() {

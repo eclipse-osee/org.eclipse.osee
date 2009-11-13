@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.coverage.test.import3.epu;
+package org.eclipse.osee.coverage.test.import4.epu;
 
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
@@ -73,10 +73,14 @@ public class PowerUnit1 extends Table {
       System.out.println("clear All"); // 3, 1, TestUnit2
    }
 
+   public void clearAllAdded() {
+      System.out.println("clear All"); // 4, 1, TestUnit2
+   }
+
    @Override
    public Point computeSize(int wHint, int hHint, boolean changed) {
-      if (getStyle() == 4) { // 4, 1, TestUnit2
-         return new Point(3, 2); // 4, 2, n
+      if (getStyle() == 4) { // 5, 1, TestUnit2
+         return new Point(3, 2); // 5, 2, n
       } else {
          return super.computeSize(wHint, hHint, changed); // 4, 3, TestUnit2
       }
@@ -84,21 +88,17 @@ public class PowerUnit1 extends Table {
 
    @Override
    public void deselect(int start, int end) {
-      super.deselect(start, end); // 5, 1, TestUnit2
+      super.deselect(start, end); // 6, 1, TestUnit2
    }
 
    @Override
    public TableColumn getColumn(int index) {
-      return super.getColumn(index); // 6, 1, TestUnit2
+      return super.getColumn(index); // 7, 1, TestUnit2
    }
 
    @Override
    public int getColumnCount() {
-      return super.getColumnCount(); // 7, 1, TestUnit2
-   }
-
-   public int initAdded() {
-      return super.getColumnCount(); // 8, 1, TestUnit4
+      return super.getColumnCount(); // 8, 1, TestUnit2
    }
 
 }
