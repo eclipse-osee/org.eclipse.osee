@@ -1,5 +1,5 @@
-import "platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
-
+import
+"platform:/plugin/org.eclipse.osee.framework.skynet.core/support/OseeTypes_Framework.osee"
 artifactType "Coverage Package" extends "General Data" {
    guid "AARFcyA9zyD3uEK8akgA"
    attribute "Active"
@@ -16,11 +16,12 @@ attributeType "coverage.Notes" extends StringAttribute {
 
 attributeType "coverage.File Contents" extends StringAttribute {
    guid "AARDJK8YAT3SDnghjQgA"
-   dataProvider DefaultAttributeDataProvider
+   dataProvider UriAttributeDataProvider
    min 0
    max 1
    fileExtension "txt"
 }
+
 attributeType "coverage.Assignees" extends StringAttribute {
    guid "AARCA+XjSyKjnh3sweQA"
    dataProvider DefaultAttributeDataProvider
@@ -39,7 +40,7 @@ attributeType "coverage.Location" extends StringAttribute {
 
 attributeType "coverage.Coverage Item" extends StringAttribute {
    guid "AARr8BmsQHKLOHNzOcQA"
-   dataProvider DefaultAttributeDataProvider
+   dataProvider UriAttributeDataProvider
    min 0
    max unlimited
    fileExtension "xml"
@@ -53,23 +54,20 @@ attributeType "coverage.Namespace" extends StringAttribute {
    fileExtension "txt"
 }
 
-attributeType "coverage.Folder" extends BooleanAttribute {
-   guid "AAQ+EvYt9UImHgiqo8AA"
-   dataProvider DefaultAttributeDataProvider
-   min 1
-   max 1
-   defaultValue "no"
-   fileExtension "txt"
-}
-
-artifactType "Coverage Unit" extends "General Data" {
+abstract artifactType "Abstract Coverage Unit" extends "General Data" {
    guid "AARGznFY4jjU6VPLPLAA"
-   attribute "coverage.Notes"
+   attribute "coverage.Notes" 
    attribute "coverage.File Contents"
    attribute "coverage.Assignees"
-   attribute "coverage.Folder"
    attribute "coverage.Location"
    attribute "coverage.Namespace"
    attribute "coverage.Coverage Item"
 }
 
+artifactType "Coverage Folder" extends "Abstract Coverage Unit" {
+   guid "ALZR_AbpJTTf6QQn2iAA"
+}
+
+artifactType "Coverage Unit" extends "Abstract Coverage Unit" {
+   guid "ALZS3MQdCCIUvEYlZeAA"
+}
