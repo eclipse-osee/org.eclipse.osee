@@ -45,7 +45,6 @@ public class BranchCommitDataResponder implements IDataTranslator<CommitTransact
       oos.flush();
       oos.close();
       bos.close();
-      byte[] responseData = bos.toByteArray();
-      return responseData;
+      return bos.toByteArray();
    }
 }
