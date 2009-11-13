@@ -23,6 +23,7 @@ Export-Package: org.eclipse.osee.framework.core,
  org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.enums,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.exchange,
  org.eclipse.osee.framework.core.operation,
  org.eclipse.osee.framework.core.util
 Bundle-ActivationPolicy: lazy

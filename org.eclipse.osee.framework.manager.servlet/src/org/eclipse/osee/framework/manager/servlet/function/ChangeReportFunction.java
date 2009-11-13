@@ -19,8 +19,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.IDataTranslationService;
-import org.eclipse.osee.framework.core.data.BranchCommitData;
 import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.ChangeReportData;
+import org.eclipse.osee.framework.core.exchange.ChangeReportDataResponder;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
 
@@ -34,16 +35,14 @@ public class ChangeReportFunction {
       propertyStore.load(req.getInputStream());
 
       IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
-      BranchCommitData data = service.convert(propertyStore, BranchCommitData.class);
+      ChangeReportData data = service.convert(propertyStore, ChangeReportData.class);
       ArrayList<ChangeItem> changes = new ArrayList<ChangeItem>();
       IStatus status =
-            MasterServletActivator.getInstance().getChangeReportService().getChanges(null, null, new NullProgressMonitor(), false, changes);
+            MasterServletActivator.getInstance().getChangeReportService().getChanges(data.getToTransactionRecord(), data.getFromTransactionRecord(), new NullProgressMonitor(), data.isHistorical(), changes);
       if (status.isOK()) {
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/plain");
-         resp.getWriter().write(
-               String.format("Commit of [%s] into [%s] was successful.", data.getSourceBranch(),
-                     data.getDestinationBranch()));
+         resp.getOutputStream().write(new ChangeReportDataResponder().convertToResponse(changes));
       } else {
          resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
          resp.setContentType("text/plain");
