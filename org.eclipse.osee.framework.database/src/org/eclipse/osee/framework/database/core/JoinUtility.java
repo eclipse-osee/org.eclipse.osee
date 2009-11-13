@@ -350,8 +350,8 @@ public class JoinUtility {
          super(JoinItem.ARTIFACT);
       }
 
-      public void add(Integer art_id, Integer branch_id) {
-         entries.add(new Entry(art_id, branch_id));
+      public void add(Integer art_id, Integer branchId) {
+         entries.add(new Entry(art_id, branchId));
       }
    }
 
