@@ -68,7 +68,12 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
    RunByRelation_User(SIDE_A, "Run By Relation"),
    RunByRelation_TestRun(SIDE_B, "Run By Relation"),
    TestRunConfigRelation_TestConfiguration(SIDE_A, "Test Run Config Relation"),
-   TestRunConfigRelation_TestRun(SIDE_B, "Test Run Config Relation");
+   TestRunConfigRelation_TestRun(SIDE_B, "Test Run Config Relation"),
+   VERIFICATION_PLAN(SIDE_A, "Verification Plan"),
+   EXECUTES__TEST_PLAN_ELEMENT(SIDE_A, "Executes"),
+   EXECUTES__TEST_PROCEDURE(SIDE_B, "Executes"),
+   TEST_UNIT_RESULT__TEST_UNIT(SIDE_A, "Test Unit Result"),
+   TEST_UNIT_RESULT__TEST_RESULT(SIDE_B, "Test Unit Result");
 
    private RelationSide relationSide;
    private String typeName;
