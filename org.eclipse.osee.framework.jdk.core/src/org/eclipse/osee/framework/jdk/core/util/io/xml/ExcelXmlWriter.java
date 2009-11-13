@@ -21,12 +21,12 @@ import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
  * @author Ryan D. Brooks
  */
 public class ExcelXmlWriter extends AbstractSheetWriter {
-   private BufferedWriter out;
+   private final BufferedWriter out;
    private boolean inSheet;
    private boolean startTable;
    private int columnCount;
-   private String emptyStringRepresentation;
-   private int previuosCellIndex;
+   private final String emptyStringRepresentation;
+   private int previousCellIndex;
 
    public static final String defaultEmptyStringXmlRep = "&#248;";
    public static final String defaultEmptyString = "\u00F8";
@@ -78,11 +78,12 @@ public class ExcelXmlWriter extends AbstractSheetWriter {
       out.close();
    }
 
+   @Override
    protected void startRow() throws IOException {
       startTableIfNecessary();
 
       out.write("   <Row>\n");
-      previuosCellIndex = -1;
+      previousCellIndex = -1;
    }
 
    @Override
@@ -100,13 +101,13 @@ public class ExcelXmlWriter extends AbstractSheetWriter {
    @Override
    public void writeCellText(String cellData, int cellIndex) throws IOException {
       if (cellData == null) {
-         previuosCellIndex = -1; // the next cell will need to use an explicit index
+         previousCellIndex = -1; // the next cell will need to use an explicit index
       } else {
          out.write("    <Cell");
-         if (previuosCellIndex + 1 != cellIndex) { // use explicit index if at least one cell was skipped 
+         if (previousCellIndex + 1 != cellIndex) { // use explicit index if at least one cell was skipped 
             out.write(" ss:Index=\"" + (cellIndex + 1) + "\"");
          }
-         previuosCellIndex = cellIndex;
+         previousCellIndex = cellIndex;
          if (!cellData.equals("") && cellData.charAt(0) == '=') {
             out.write(" ss:Formula=\"" + cellData + "\">");
          } else {
