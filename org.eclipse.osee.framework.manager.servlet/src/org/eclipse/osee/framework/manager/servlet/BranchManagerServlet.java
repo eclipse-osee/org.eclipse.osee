@@ -13,22 +13,16 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.util.logging.Level;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.IDataTranslationService;
-import org.eclipse.osee.framework.core.data.BranchCommitData;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
-import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.function.ChangeReportFunction;
 import org.eclipse.osee.framework.manager.servlet.function.CreateBranchFunction;
+import org.eclipse.osee.framework.manager.servlet.function.CreateCommitFunction;
 
 /**
  * @author Andrew M Finkbeiner
@@ -43,7 +37,7 @@ public class BranchManagerServlet extends OseeHttpServlet {
          Function function = Function.fromString(req.getParameter("function"));
          switch (function) {
             case BRANCH_COMMIT:
-               commitBranch(req, resp);
+               new CreateCommitFunction().commitBranch(req, resp);
                break;
             case CREATEFULLBRANCH:
                new CreateBranchFunction().processRequest(req, resp);
@@ -65,24 +59,4 @@ public class BranchManagerServlet extends OseeHttpServlet {
       resp.getWriter().close();
    }
 
-   private void commitBranch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-      PropertyStore propertyStore = new PropertyStore();
-      propertyStore.load(req.getInputStream());
-
-      IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
-      BranchCommitData data = service.convert(propertyStore, BranchCommitData.class);
-      IStatus status =
-            MasterServletActivator.getInstance().getBranchCommit().commitBranch(new NullProgressMonitor(), data);
-      if (status.isOK()) {
-         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-         resp.setContentType("text/plain");
-         resp.getWriter().write(
-               String.format("Commit of [%s] into [%s] was successful.", data.getSourceBranch(),
-                     data.getDestinationBranch()));
-      } else {
-         resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-         resp.setContentType("text/plain");
-         resp.getWriter().write("Unknown Error during branch creation.");
-      }
-   }
 }

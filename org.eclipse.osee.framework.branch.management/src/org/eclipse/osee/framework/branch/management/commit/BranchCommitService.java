@@ -38,9 +38,10 @@ import org.eclipse.osee.framework.core.operation.Operations;
 public class BranchCommitService implements IBranchCommitService {
 
    @Override
-   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService txService, BranchCommitData branchCommitData) throws OseeCoreException {
-      return commitBranch(monitor, txService, branchCommitData.getUser(), branchCommitData.getSourceBranch(),
-            branchCommitData.getDestinationBranch(), branchCommitData.isArchiveAllowed());
+   public IStatus commitBranch(IProgressMonitor monitor, BranchCommitData branchCommitData) throws OseeCoreException {
+      return commitBranch(monitor, InternalBranchActivator.getInstance().getTransactionService(),
+            branchCommitData.getUser(), branchCommitData.getSourceBranch(), branchCommitData.getDestinationBranch(),
+            branchCommitData.isArchiveAllowed());
    }
 
    @Override

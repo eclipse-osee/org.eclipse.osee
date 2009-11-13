@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.change.ArtifactChangeItem;
 import org.eclipse.osee.framework.branch.management.change.AttributeChangeItem;
@@ -185,22 +184,11 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    @Override
    protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
       if (success) {
-         // Update commit artifact cache with new information
-         if (sourceBranch.getAssociatedArtifact().getArtId() > 0) {
-            // TODO           TransactionManager.cacheCommittedArtifactTransaction((IArtifact) sourceBranch.getAssociatedArtifact(),
-            //                  TransactionManager.getTransactionId(newTransactionNumber));
-         }
-
-         // reload the committed artifacts since the commit changed them on the destination branch
-         Object[] queryData = new Object[] {newTransactionNumber, newTransactionNumber};
-         //TODO ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, queryData, 400, ArtifactLoad.FULL, true, null, true);
-
          // update conflict status, if necessary
          if (mergeBranch != null) {
             ConnectionHandler.runPreparedUpdate(connection, UPDATE_CONFLICT_STATUS,
                   ConflictStatus.COMMITTED.getValue(), ConflictStatus.RESOLVED.getValue(), mergeBranch.getId());
          }
-         //  TODO       OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, sourceBranch.getId());
       }
    }
 }
