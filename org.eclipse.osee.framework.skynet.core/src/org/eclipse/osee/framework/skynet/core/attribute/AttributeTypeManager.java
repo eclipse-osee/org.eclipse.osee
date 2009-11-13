@@ -16,18 +16,17 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 
@@ -36,56 +35,16 @@ import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
  */
 public class AttributeTypeManager {
 
-   private static final String SELECT_ATTRIBUTE_MOD_TYPE =
-         "SELECT mod_type FROM osee_txs txs, osee_tx_details txd WHERE txs.gamma_id = ? and txs.transaction_id = txd.transaction_id AND branch_id = ? AND tx_current IN (1,2)";
-
    private AttributeTypeManager() {
    }
 
-   /**
-    * Temporary method to access modification type from database to support remote event service for pre 0.8.2
-    * development where modification type was allowed to be null before and not now. This allows production code to
-    * propagate null mod types and clients and RCs to self-heal.
-    * 
-    * @param attribute
-    * @throws OseeCoreException
-    * @deprecated After 0.8.2 release, modType should never be null and this method should be removed
-    */
-   @Deprecated
-   public static ModificationType internalGetModificationTypeFromDb(Attribute<?> attribute) throws OseeCoreException {
-      int branchId = attribute.getArtifact().getBranch().getId();
-      int gammaId = attribute.getGammaId();
-      return internalGetModificationTypeFromDb(branchId, gammaId);
-   }
-
-   /**
-    * Temporary method to access modification type from database to support remote event service for pre 0.8.2
-    * development where modification type was allowed to be null before and not now. This allows production code to
-    * propagate null mod types and clients and RCs to self-heal.
-    * 
-    * @param attribute
-    * @throws OseeCoreException
-    * @deprecated After 0.8.2 release, modType should never be null and this method should be removed
-    */
-   @Deprecated
-   public static ModificationType internalGetModificationTypeFromDb(int branchId, int gammaId) throws OseeCoreException {
-      OseeLog.log(Activator.class, Level.INFO, "Internal db loading of attribute mod type");
-      ModificationType modType = null;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      try {
-         chStmt.runPreparedQuery(SELECT_ATTRIBUTE_MOD_TYPE, gammaId, branchId);
-         if (chStmt.next()) {
-            modType = ModificationType.getMod(chStmt.getInt("mod_type"));
-         }
-      } finally {
-         chStmt.close();
-      }
-      return modType;
-   }
-
    public static Collection<AttributeType> getValidAttributeTypes(Branch branch) throws OseeCoreException {
-      // TODO Filter by Branch
-      return getAllTypes();
+      Collection<AttributeType> attributeTypes = new ArrayList<AttributeType>(100);
+
+      for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
+         artifactType.getAttributeTypes(branch);
+      }
+      return attributeTypes;
    }
 
    public static Collection<AttributeType> getAllTypes() throws OseeCoreException {
