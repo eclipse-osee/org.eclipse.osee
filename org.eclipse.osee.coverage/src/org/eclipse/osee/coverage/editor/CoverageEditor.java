@@ -50,12 +50,14 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
    private Integer startPage = null;
    private CoverageEditorImportTab coverageEditorImportTab = null;
    private CoverageEditorCoverageTab coverageEditorCoverageTab = null;
+   private CoverageEditorOverviewTab coverageEditorOverviewTab = null;
 
    @Override
    protected void addPages() {
       try {
          OseeContributionItem.addTo(this, true);
-         addFormPage(new CoverageEditorOverviewTab("Overview", this, getCoveragePackageBase()));
+         coverageEditorOverviewTab = new CoverageEditorOverviewTab("Overview", this, getCoveragePackageBase());
+         addFormPage(coverageEditorOverviewTab);
          coverageEditorCoverageTab = new CoverageEditorCoverageTab("Coverage Items", this, getCoveragePackageBase());
          addFormPage(coverageEditorCoverageTab);
          if (getCoveragePackageBase().isImportAllowed()) {
@@ -231,5 +233,9 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
 
    public CoverageEditorImportTab getCoverageEditorImportTab() {
       return coverageEditorImportTab;
+   }
+
+   public CoverageEditorOverviewTab getCoverageEditorOverviewTab() {
+      return coverageEditorOverviewTab;
    }
 }

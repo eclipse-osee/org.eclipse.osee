@@ -238,6 +238,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       public void done(IJobChangeEvent event) {
          showBusy(false);
          loading = false;
+         coverageEditor.getCoverageEditorOverviewTab().refreshHtml();
       }
 
       @Override

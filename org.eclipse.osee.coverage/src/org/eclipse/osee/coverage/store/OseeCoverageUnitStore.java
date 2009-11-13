@@ -68,7 +68,7 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setFileContents(artifact.getSoleAttributeValueAsString(
                CoverageAttributes.FILE_CONTENTS.getStoreName(), ""));
          coverageUnit.setNotes(artifact.getSoleAttributeValueAsString(CoverageAttributes.NOTES.getStoreName(), ""));
-         coverageUnit.setFolder(artifact.getSoleAttributeValue(CoverageAttributes.ACTIVE.getStoreName(), false));
+         coverageUnit.setFolder(artifact.getSoleAttributeValue(CoverageAttributes.FOLDER.getStoreName(), false));
          coverageUnit.setAssignees(artifact.getSoleAttributeValueAsString(CoverageAttributes.ASSIGNEES.getStoreName(),
                ""));
          coverageUnit.setNamespace(artifact.getSoleAttributeValueAsString(CoverageAttributes.NAMESPACE.getStoreName(),
