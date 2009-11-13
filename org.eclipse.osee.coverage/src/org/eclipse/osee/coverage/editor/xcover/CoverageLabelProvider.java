@@ -84,7 +84,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageItem.getCoverageUnit().getName();
          if (xCol.equals(CoverageXViewerFactory.Coverage_Test_Units)) return Collections.toString(", ",
                coverageItem.getTestUnits());
-         if (xCol.equals(CoverageXViewerFactory.Text)) return Collections.toString(", ", coverageItem.getText());
+         if (xCol.equals(CoverageXViewerFactory.File_Contents)) return Collections.toString(", ", coverageItem.getFileContents());
          return "";
       }
       if ((coverage instanceof CoverageUnit) || (coverage instanceof MergeItem)) {

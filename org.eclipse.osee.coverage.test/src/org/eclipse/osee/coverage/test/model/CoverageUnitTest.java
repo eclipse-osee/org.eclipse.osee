@@ -142,15 +142,15 @@ public class CoverageUnitTest {
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#getText()}.
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageUnit#getFileContents()}.
     */
    @Test
    public void testSetGetText() {
-      String current = cu.getText();
-      cu.setText("New Text");
-      Assert.assertEquals("New Text", cu.getText());
-      cu.setText(current);
-      Assert.assertEquals(current, cu.getText());
+      String current = cu.getFileContents();
+      cu.setFileContents("New Text");
+      Assert.assertEquals("New Text", cu.getFileContents());
+      cu.setFileContents(current);
+      Assert.assertEquals(current, cu.getFileContents());
    }
 
    /**
@@ -343,7 +343,7 @@ public class CoverageUnitTest {
       Assert.assertEquals(oldCu.getAssignees(), newCu.getAssignees());
       Assert.assertEquals(oldCu.getNotes(), newCu.getNotes());
       Assert.assertEquals(oldCu.getNamespace(), newCu.getNamespace());
-      Assert.assertEquals(oldCu.getText(), newCu.getText());
+      Assert.assertEquals(oldCu.getFileContents(), newCu.getFileContents());
       Assert.assertEquals(0, newCu.getCoverageItems().size());
 
       newCu = childCu.copy(false);

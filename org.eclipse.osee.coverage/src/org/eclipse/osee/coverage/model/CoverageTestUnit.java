@@ -122,7 +122,7 @@ public class CoverageTestUnit implements ICoverage {
    }
 
    @Override
-   public String getText() {
+   public String getFileContents() {
       return "";
    }
 

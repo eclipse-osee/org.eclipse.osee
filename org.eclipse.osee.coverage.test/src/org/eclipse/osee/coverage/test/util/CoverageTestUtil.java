@@ -12,7 +12,6 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
-import org.eclipse.osee.coverage.store.OseeCoverageTestUnitStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -59,15 +58,9 @@ public class CoverageTestUtil {
 
    public static Collection<Artifact> getAllCoverageArtifacts() throws OseeCoreException {
       List<Artifact> artifacts = new ArrayList<Artifact>();
-      artifacts.addAll(getTestUnitArtifacts());
       artifacts.addAll(getCoveragePackageArtifacts());
       artifacts.addAll(getCoverageUnitArtifacts());
       return artifacts;
-   }
-
-   public static Collection<Artifact> getTestUnitArtifacts() throws OseeCoreException {
-      return StaticIdManager.getArtifactsFromArtifactQuery(OseeCoverageTestUnitStore.ARTIFACT_NAME, COVERAGE_STATIC_ID,
-            CoverageUtil.getBranch());
    }
 
    public static Collection<Artifact> getCoverageUnitArtifacts() throws OseeCoreException {

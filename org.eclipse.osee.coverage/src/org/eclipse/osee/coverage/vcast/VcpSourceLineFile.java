@@ -42,7 +42,7 @@ public class VcpSourceLineFile {
          CoverageUnit coverageUnit =
                new CoverageUnit(parentCoverageUnit, m.group(1), m.group(2) + ":" + m.group(3) + "-" + m.group(4));
          String source = Arrays.toString(vcpSourceLisFile.getSection(m.group(3), m.group(4)));
-         coverageUnit.setText(source);
+         coverageUnit.setFileContents(source);
          parentCoverageUnit.addCoverageUnit(coverageUnit);
       }
    }

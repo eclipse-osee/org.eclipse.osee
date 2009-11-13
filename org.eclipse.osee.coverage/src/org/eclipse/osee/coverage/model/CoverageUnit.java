@@ -38,7 +38,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    String notes;
    String assignees;
    String guid = GUID.create();
-   String text;
+   String fileContents;
    final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    String location;
    final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
@@ -119,12 +119,12 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.location = location;
    }
 
-   public String getText() {
-      return text;
+   public String getFileContents() {
+      return fileContents;
    }
 
-   public void setText(String text) {
-      this.text = text;
+   public void setFileContents(String fileContents) {
+      this.fileContents = fileContents;
    }
 
    public String getGuid() {
@@ -286,7 +286,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       coverageUnit.setGuid(guid);
       coverageUnit.setNamespace(namespace);
       coverageUnit.setNotes(notes);
-      coverageUnit.setText(text);
+      coverageUnit.setFileContents(fileContents);
       coverageUnit.setFolder(folder);
       coverageUnit.setAssignees(assignees);
       coverageUnit.setLocation(location);

@@ -104,7 +104,7 @@ public class CoverageItemPersistTest {
       Assert.assertEquals("55", ci.getLineNum());
       Assert.assertEquals(CoverageMethodEnum.Deactivated_Code, ci.getCoverageMethod());
       Assert.assertEquals(10, ci.getTestUnits().size());
-      Assert.assertEquals("this is text", ci.getText());
+      Assert.assertEquals("this is text", ci.getFileContents());
       Assert.assertEquals("this is rationale", ci.getCoverageRationale());
       Assert.assertFalse(ci.isFolder());
    }

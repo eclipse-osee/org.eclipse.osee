@@ -231,7 +231,7 @@ public class CoverageItem implements ICoverage {
       this.coverageRationale = rationale;
    }
 
-   public String getText() {
+   public String getFileContents() {
       return text;
    }
 

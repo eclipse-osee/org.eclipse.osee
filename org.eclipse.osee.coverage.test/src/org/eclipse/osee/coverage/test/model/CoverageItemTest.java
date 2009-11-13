@@ -202,9 +202,9 @@ public class CoverageItemTest {
    @Test
    public void testSetGetText() {
       ci1.setText("this is text2");
-      Assert.assertEquals("this is text2", ci1.getText());
+      Assert.assertEquals("this is text2", ci1.getFileContents());
       ci1.setText("this is text");
-      Assert.assertEquals("this is text", ci1.getText());
+      Assert.assertEquals("this is text", ci1.getFileContents());
    }
 
    /**
@@ -234,7 +234,7 @@ public class CoverageItemTest {
       Assert.assertEquals(ci1.getExecuteNum(), ci.getExecuteNum());
       Assert.assertEquals(ci1.getLineNum(), ci.getLineNum());
       Assert.assertEquals(ci1.getCoverageMethod(), ci.getCoverageMethod());
-      Assert.assertEquals(ci1.getText(), ci.getText());
+      Assert.assertEquals(ci1.getFileContents(), ci.getFileContents());
       Assert.assertEquals(ci1.getCoverageRationale(), ci.getCoverageRationale());
    }
 

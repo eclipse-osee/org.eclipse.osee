@@ -101,8 +101,8 @@ public class MergeItem implements ICoverage {
    }
 
    @Override
-   public String getText() {
-      return importItem.getText();
+   public String getFileContents() {
+      return importItem.getFileContents();
    }
 
    @Override

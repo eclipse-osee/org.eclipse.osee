@@ -37,7 +37,7 @@ public interface ICoverage {
 
    public ICoverage getParent();
 
-   public String getText();
+   public String getFileContents();
 
    public String getLocation();
 

@@ -11,10 +11,7 @@ import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
-import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -53,12 +50,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       if (artifact != null) {
          coveragePackage.setGuid(artifact.getGuid());
          coveragePackage.setName(artifact.getName());
-         KeyValueArtifact keyValueArtifact =
-               new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-         coveragePackage.loadKeyValues(keyValueArtifact);
-         if (Strings.isValid(keyValueArtifact.getValue("editable"))) {
-            coveragePackage.setEditable((keyValueArtifact.getValue("editable").equals("true")));
-         }
+         coveragePackage.setEditable(artifact.getSoleAttributeValue(CoverageAttributes.ACTIVE.getStoreName(), true));
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.getArtifactTypeName().equals(OseeCoverageUnitStore.ARTIFACT_NAME)) {
                coveragePackage.addCoverageUnit(OseeCoverageUnitStore.get(coveragePackage, childArt));
@@ -72,11 +64,7 @@ public class OseeCoveragePackageStore extends OseeCoverageStore implements ISave
       System.out.println("save coveragePackage " + coveragePackage.getGuid());
 
       artifact.setName(coveragePackage.getName());
-      KeyValueArtifact keyValueArtifact =
-            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-      coveragePackage.saveKeyValues(keyValueArtifact);
-      keyValueArtifact.setValue("editable", String.valueOf(String.valueOf(coveragePackage.isEditable())));
-      keyValueArtifact.save();
+      artifact.setSoleAttributeValue(CoverageAttributes.ACTIVE.getStoreName(), coveragePackage.isEditable().isTrue());
       for (CoverageUnit coverageUnit : coveragePackage.getCoverageUnits()) {
          OseeCoverageStore store = OseeCoverageStore.get(coverageUnit);
          store.save(transaction);

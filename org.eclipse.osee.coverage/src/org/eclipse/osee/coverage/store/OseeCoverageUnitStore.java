@@ -14,8 +14,6 @@ import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.GeneralData;
-import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -64,33 +62,18 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (artifact != null) {
          coverageUnit.setName(artifact.getName());
          coverageUnit.setGuid(artifact.getGuid());
-         KeyValueArtifact keyValueArtifact =
-               new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
-         for (String line : keyValueArtifact.getValues("cvgItem")) {
-            coverageUnit.addCoverageItem(new CoverageItem(coverageUnit, line));
+         for (String value : artifact.getAttributesToStringList(CoverageAttributes.COVERAGE_ITEM.getStoreName())) {
+            coverageUnit.addCoverageItem(new CoverageItem(coverageUnit, value));
          }
-         String text = keyValueArtifact.getValue("text");
-         if (Strings.isValid(text)) {
-            coverageUnit.setText(text);
-         }
-         String notes = keyValueArtifact.getValue("notes");
-         if (Strings.isValid(notes)) {
-            coverageUnit.setNotes(notes);
-         }
-         coverageUnit.setFolder((keyValueArtifact.getValue("folder") != null && keyValueArtifact.getValue("folder").equals(
-               "true")));
-         String assignees = keyValueArtifact.getValue("assignees");
-         if (Strings.isValid(assignees)) {
-            coverageUnit.setAssignees(assignees);
-         }
-         String namespace = keyValueArtifact.getValue("namespace");
-         if (Strings.isValid(namespace)) {
-            coverageUnit.setNamespace(namespace);
-         }
-         String location = keyValueArtifact.getValue("location");
-         if (Strings.isValid(location)) {
-            coverageUnit.setLocation(location);
-         }
+         coverageUnit.setFileContents(artifact.getSoleAttributeValueAsString(
+               CoverageAttributes.FILE_CONTENTS.getStoreName(), ""));
+         coverageUnit.setNotes(artifact.getSoleAttributeValueAsString(CoverageAttributes.NOTES.getStoreName(), ""));
+         coverageUnit.setFolder(artifact.getSoleAttributeValue(CoverageAttributes.ACTIVE.getStoreName(), false));
+         coverageUnit.setAssignees(artifact.getSoleAttributeValueAsString(CoverageAttributes.ASSIGNEES.getStoreName(),
+               ""));
+         coverageUnit.setNamespace(artifact.getSoleAttributeValueAsString(CoverageAttributes.NAMESPACE.getStoreName(),
+               ""));
+         coverageUnit.setLocation(artifact.getSoleAttributeValueAsString(CoverageAttributes.LOCATION.getStoreName(), ""));
          for (Artifact childArt : artifact.getChildren()) {
             if (childArt.getArtifactTypeName().equals(ARTIFACT_NAME)) {
                coverageUnit.addCoverageUnit(OseeCoverageUnitStore.get(coverageUnit, childArt));
@@ -103,32 +86,30 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       Artifact artifact = getArtifact(true);
       artifact.setName(coverageUnit.getName());
 
-      KeyValueArtifact keyValueArtifact =
-            new KeyValueArtifact(artifact, GeneralData.GENERAL_STRING_ATTRIBUTE_TYPE_NAME);
       List<String> items = new ArrayList<String>();
       for (CoverageItem coverageItem : coverageUnit.getCoverageItems()) {
          items.add(coverageItem.toXml());
       }
-      keyValueArtifact.setValues("cvgItem", items);
+      artifact.setAttributeValues(CoverageAttributes.COVERAGE_ITEM.getStoreName(), items);
       if (coverageUnit.getNotes() != null) {
-         keyValueArtifact.setValue("notes", coverageUnit.getNotes());
+         artifact.setSoleAttributeFromString(CoverageAttributes.NOTES.getStoreName(), coverageUnit.getNotes());
       }
       if (Strings.isValid(coverageUnit.getNamespace())) {
-         keyValueArtifact.setValue("namespace", coverageUnit.getNamespace());
+         artifact.setSoleAttributeFromString(CoverageAttributes.NAMESPACE.getStoreName(), coverageUnit.getNamespace());
       }
-      if (Strings.isValid(coverageUnit.getText())) {
-         keyValueArtifact.setValue("text", coverageUnit.getText());
+      if (Strings.isValid(coverageUnit.getFileContents())) {
+         artifact.setSoleAttributeFromString(CoverageAttributes.FILE_CONTENTS.getStoreName(),
+               coverageUnit.getFileContents());
       }
       if (coverageUnit.isFolder()) {
-         keyValueArtifact.setValue("folder", String.valueOf(coverageUnit.isFolder()));
+         artifact.setSoleAttributeValue(CoverageAttributes.FOLDER.getStoreName(), coverageUnit.isFolder());
       }
       if (Strings.isValid(coverageUnit.getAssignees())) {
-         keyValueArtifact.setValue("assignees", coverageUnit.getAssignees());
+         artifact.setSoleAttributeFromString(CoverageAttributes.ASSIGNEES.getStoreName(), coverageUnit.getAssignees());
       }
       if (Strings.isValid(coverageUnit.getLocation())) {
-         keyValueArtifact.setValue("location", coverageUnit.getLocation());
+         artifact.setSoleAttributeFromString(CoverageAttributes.LOCATION.getStoreName(), coverageUnit.getLocation());
       }
-      keyValueArtifact.save();
       if (coverageUnit.getParent() != null) {
          Artifact parentArt =
                ArtifactQuery.getArtifactFromId(coverageUnit.getParent().getGuid(), CoverageUtil.getBranch());

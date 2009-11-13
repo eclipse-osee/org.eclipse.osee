@@ -78,7 +78,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                   coverageImport.addCoverageUnit(fileCoverageUnit);
                }
                VcpSourceLisFile vcpSourceLisFile = vcpSourceFile.getVcpSourceLisFile();
-               fileCoverageUnit.setText(vcpSourceLisFile.getText());
+               fileCoverageUnit.setFileContents(vcpSourceLisFile.getText());
                int methodNum = 0;
                for (CoverageDataSubProgram coverageDataSubProgram : coverageDataUnit.getSubPrograms()) {
                   methodNum++;

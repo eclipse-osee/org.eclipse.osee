@@ -41,9 +41,9 @@ public class ViewSourceAction extends Action {
          ICoverage item = selectedCoverageEditorItem.getSelectedCoverageEditorItems().iterator().next();
          EntryDialog ed = new EntryDialog(item.getName(), "");
          ed.setFillVertically(true);
-         String text = item.getText();
+         String text = item.getFileContents();
          if (!Strings.isValid(text)) {
-            text = item.getParent().getText();
+            text = item.getParent().getFileContents();
             if (!Strings.isValid(text)) {
                AWorkbench.popup("No Text Available");
                return;

@@ -53,7 +53,7 @@ public class SampleJavaFileParser {
          } else {
             throw new IllegalArgumentException(String.format("Can't find package for [%s]", url));
          }
-         fileCoverageUnit.setText(fileStr);
+         fileCoverageUnit.setFileContents(fileStr);
          CoverageUnit coverageUnit = null;
          int lineNum = 0;
          for (String line : fileStr.split("\r\n")) {

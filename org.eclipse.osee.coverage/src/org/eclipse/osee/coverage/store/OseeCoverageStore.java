@@ -7,11 +7,9 @@ package org.eclipse.osee.coverage.store;
 
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoveragePackage;
-import org.eclipse.osee.coverage.model.CoverageTestUnit;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -36,27 +34,12 @@ public abstract class OseeCoverageStore extends CoverageStore {
       this.artifactTypeName = artifactTypeName;
    }
 
-   public static CoverageTestUnit getTestUnitByGuid(Branch branch, String guid) {
-      try {
-         Artifact artifact = ArtifactQuery.getArtifactFromId(guid, branch);
-         return new OseeCoverageTestUnitStore(artifact).getCoverageTestUnit();
-      } catch (ArtifactDoesNotExist ex) {
-         // do nothing
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
-      }
-      return null;
-   }
-
    public static OseeCoverageStore get(ICoverage coverage) {
       if (coverage instanceof CoveragePackage) {
          return (new OseeCoveragePackageStore((CoveragePackage) coverage));
       }
       if (coverage instanceof CoverageUnit) {
          return (new OseeCoverageUnitStore((CoverageUnit) coverage));
-      }
-      if (coverage instanceof CoverageTestUnit) {
-         return (new OseeCoverageTestUnitStore((CoverageTestUnit) coverage));
       }
       return null;
    }
