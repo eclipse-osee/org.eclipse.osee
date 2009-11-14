@@ -36,9 +36,14 @@ public class ExperimentalBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      int increment = 0;
+      if (!variableMap.getBoolean("Even Branches")) {
+         increment = 1;
+      }
+
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.ARCHIVED, BranchControlled.ALL,
             BranchType.WORKING)) {
-         if ((branch.getId() + 1) % 2 == 0) {
+         if ((branch.getId() + increment) % 2 == 0) {
             if (ConnectionHandler.runPreparedQueryFetchInt(0, PurgeBranchOperation.TEST_TXS, branch.getId()) == 1) {
                BranchStoreOperation.moveBranchAddressing(null, branch, true);
             }
@@ -49,5 +54,14 @@ public class ExperimentalBlam extends AbstractBlam {
    @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
+   }
+
+   /*
+    * (non-Javadoc)
+    * @see org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam#getXWidgetsXml()
+    */
+   @Override
+   public String getXWidgetsXml() {
+      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Even Branches\" /></xWidgets>";
    }
 }
