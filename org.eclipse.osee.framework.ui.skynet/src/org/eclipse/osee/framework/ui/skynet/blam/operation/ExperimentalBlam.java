@@ -45,6 +45,7 @@ public class ExperimentalBlam extends AbstractBlam {
             BranchType.WORKING)) {
          if ((branch.getId() + increment) % 2 == 0) {
             if (ConnectionHandler.runPreparedQueryFetchInt(0, PurgeBranchOperation.TEST_TXS, branch.getId()) == 1) {
+               System.out.println("Moving: " + branch);
                BranchStoreOperation.moveBranchAddressing(null, branch, true);
             }
          }
