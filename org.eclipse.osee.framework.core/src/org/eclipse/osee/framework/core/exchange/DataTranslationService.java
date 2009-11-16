@@ -10,12 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exchange;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
@@ -29,45 +34,32 @@ public class DataTranslationService implements IDataTranslationService {
       this.translators = new HashMap<Class<?>, IDataTranslator<?>>();
    }
 
-   /*
-    * (non-Javadoc)
-    * @see
-    * org.eclipse.osee.framework.core.exchange.IDataTranslationService#convert(org.eclipse.osee.framework.jdk.core.type
-    * .PropertyStore, java.lang.Class)
-    */
+   @Override
    @SuppressWarnings("unchecked")
    public <T> T convert(PropertyStore propertyStore, Class<T> toMatch) throws OseeCoreException {
       IDataTranslator<?> translator = getTranslator(toMatch);
       return (T) translator.convert(propertyStore);
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.exchange.IDataTranslationService#convert(T, java.lang.Class)
-    */
+   @Override
    @SuppressWarnings("unchecked")
-   public <T> PropertyStore convert(T object, Class<T> toMatch) throws OseeCoreException {
-      IDataTranslator<T> translator = (IDataTranslator<T>) getTranslator(toMatch);
+   public <T> PropertyStore convert(T object) throws OseeCoreException {
+      IDataTranslator<T> translator = (IDataTranslator<T>) getTranslator(object.getClass());
       return translator.convert(object);
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.exchange.IDataTranslationService#getTranslator(java.lang.Class)
-    */
+   @Override
    public IDataTranslator<?> getTranslator(Class<?> toMatch) throws OseeCoreException {
-      IDataTranslator<?> translator = translators.get(toMatch);
-      if (translator == null) {
-         throw new OseeStateException(String.format("Unable to translate [%s]", toMatch.getName()));
+      for (Entry<Class<?>, IDataTranslator<?>> entry : translators.entrySet()) {
+         Class<?> acceptedClass = entry.getKey();
+         if (acceptedClass.isAssignableFrom(toMatch)) {
+            return entry.getValue();
+         }
       }
-      return translator;
+      throw new OseeStateException(String.format("Unable to translate [%s]", toMatch.getName()));
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.exchange.IDataTranslationService#addTranslator(java.lang.Class,
-    * org.eclipse.osee.framework.core.exchange.IDataTranslator)
-    */
+   @Override
    public boolean addTranslator(Class<?> clazz, IDataTranslator<?> translator) {
       boolean wasAdded = false;
       if (!translators.containsKey(clazz)) {
@@ -77,19 +69,36 @@ public class DataTranslationService implements IDataTranslationService {
       return wasAdded;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.exchange.IDataTranslationService#removeTranslator(java.lang.Class)
-    */
+   @Override
    public boolean removeTranslator(Class<?> clazz) {
       return translators.remove(clazz) != null;
    }
 
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.exchange.IDataTranslationService#getSupportedClasses()
-    */
+   @Override
    public Collection<Class<?>> getSupportedClasses() {
       return translators.keySet();
+   }
+
+   @Override
+   public <T> T convert(InputStream inputStream, Class<T> toMatch) throws OseeCoreException {
+      PropertyStore propertyStore = new PropertyStore();
+      try {
+         propertyStore.load(inputStream);
+         return convert(propertyStore, toMatch);
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
+
+   @Override
+   public <T> InputStream convertToStream(T object) throws OseeCoreException {
+      PropertyStore propertyStore = convert(object);
+      ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+      try {
+         propertyStore.save(buffer);
+         return new ByteArrayInputStream(buffer.toByteArray());
+      } catch (Exception ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 }

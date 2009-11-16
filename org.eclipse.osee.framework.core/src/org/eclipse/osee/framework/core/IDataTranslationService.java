@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core;
 
+import java.io.InputStream;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exchange.IDataTranslator;
@@ -20,9 +21,13 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public interface IDataTranslationService {
 
+   public abstract <T> T convert(InputStream inputStream, Class<T> toMatch) throws OseeCoreException;
+
    public abstract <T> T convert(PropertyStore propertyStore, Class<T> toMatch) throws OseeCoreException;
 
-   public abstract <T> PropertyStore convert(T object, Class<T> toMatch) throws OseeCoreException;
+   public abstract <T> PropertyStore convert(T object) throws OseeCoreException;
+
+   public abstract <T> InputStream convertToStream(T object) throws OseeCoreException;
 
    public abstract IDataTranslator<?> getTranslator(Class<?> toMatch) throws OseeCoreException;
 

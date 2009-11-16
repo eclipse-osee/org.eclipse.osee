@@ -63,9 +63,9 @@ public final class BranchCommitDataTranslator implements IDataTranslator<BranchC
 
       PropertyStore store = new PropertyStore();
       store.put(Entry.isArchiveAllowed.name(), data.isArchiveAllowed());
-      store.put(Entry.userArtifact.name(), service.convert(data.getUser(), IBasicArtifact.class));
-      store.put(Entry.sourceBranch.name(), service.convert(data.getSourceBranch(), Branch.class));
-      store.put(Entry.destinationBranch.name(), service.convert(data.getDestinationBranch(), Branch.class));
+      store.put(Entry.userArtifact.name(), service.convert(data.getUser()));
+      store.put(Entry.sourceBranch.name(), service.convert(data.getSourceBranch()));
+      store.put(Entry.destinationBranch.name(), service.convert(data.getDestinationBranch()));
 
       return store;
    }
