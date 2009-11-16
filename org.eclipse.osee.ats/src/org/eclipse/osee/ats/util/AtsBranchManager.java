@@ -833,7 +833,7 @@ public class AtsBranchManager {
          } finally {
             if (workflowWorkingBranch != null) {
                branchesInCommit.remove(workflowWorkingBranch);
-            }
+         }
          }
          return Status.OK_STATUS;
       }
@@ -925,7 +925,7 @@ public class AtsBranchManager {
                }
             }
          }
-         changeData = changeDataCacheForCommittedBranch.get(transactionId);
+         changeData = null;//shangeDataCacheForCommittedBranch.get(transactionId);
          if (changeData == null) {
             changeData =
                   new ChangeData(ChangeManager.getChangesPerTransaction(transactionId, new NullProgressMonitor()));

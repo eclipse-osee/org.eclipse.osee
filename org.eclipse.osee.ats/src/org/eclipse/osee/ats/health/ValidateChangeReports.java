@@ -50,9 +50,8 @@ import org.eclipse.osee.framework.skynet.core.revision.ChangeData.KindType;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
-import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
+import org.eclipse.osee.framework.ui.skynet.compare.CompareHandler;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
-import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItemAction;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -220,14 +219,9 @@ public class ValidateChangeReports extends XNavigateItemAction {
                      @Override
                      public void run() {
                         try {
-                           String prePage = AHTML.simplePageNoPageEncoding(AHTML.textToHtml(fStoredChangeReport));
-                           ResultsEditor.open(new XResultPage("Was Change Report for " + teamArt.getHumanReadableId(),
-                                 prePage));
-
-                           String postPage = AHTML.simplePageNoPageEncoding(AHTML.textToHtml(currentChangeReport));
-                           ResultsEditor.open(new XResultPage("Is Change Report for " + teamArt.getHumanReadableId(),
-                                 postPage));
-
+                           CompareHandler compareHandler = new CompareHandler(fStoredChangeReport.replaceAll("><", ">\n<"), currentChangeReport.replaceAll(">", ">\n"));
+                           compareHandler.compare();
+                           
                         } catch (Exception ex) {
                            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                         }
