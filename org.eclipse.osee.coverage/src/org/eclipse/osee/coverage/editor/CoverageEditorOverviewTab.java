@@ -10,6 +10,7 @@ import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.util.CoverageMetrics;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction.IRefreshActionHandler;
@@ -63,7 +64,7 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
    }
 
    public void refreshHtml() {
-      XResultData rd = new XResultData(false);
+      final XResultData rd = new XResultData(false);
       coveragePackageBase.getOverviewHtmlHeader(rd);
       rd.log("");
       rd.log(AHTML.getLabelValueStr("Coverage Items - Covered",
@@ -82,8 +83,14 @@ public class CoverageEditorOverviewTab extends FormPage implements IRefreshActio
          rd.log(AHTML.newline() + AHTML.bold("Log") + AHTML.newline());
          rd.addRaw(coveragePackageBase.getLog().getReport("").getManipulatedHtml());
       }
-      xResultsComp.setHtmlText(rd.getReport(coveragePackageBase.getName()).getManipulatedHtml(),
-            coveragePackageBase.getName());
+
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            xResultsComp.setHtmlText(rd.getReport(coveragePackageBase.getName()).getManipulatedHtml(),
+                  coveragePackageBase.getName());
+         }
+      });
    }
 
    public void createToolBar() {

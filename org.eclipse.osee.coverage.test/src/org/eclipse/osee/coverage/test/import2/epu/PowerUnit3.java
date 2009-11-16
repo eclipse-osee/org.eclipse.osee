@@ -32,21 +32,21 @@ public class PowerUnit3 extends Table {
 
    @Override
    public void clearAll() {
-      System.out.println("clear All"); // 3, 1, TestUnit2
+      System.out.println("clear All"); // 1, 1, TestUnit2
    }
 
    @Override
    public Point computeSize(int wHint, int hHint, boolean changed) {
-      if (getStyle() == 4) { // 5, 1, TestUnit2
-         return new Point(3, 2); // 5, 2, n
+      if (getStyle() == 4) { // 2, 1, TestUnit2
+         return new Point(3, 2); // 2, 2, n
       } else {
-         return super.computeSize(wHint, hHint, changed); // 4, 3, TestUnit2
+         return super.computeSize(wHint, hHint, changed); // 2, 3, TestUnit2
       }
    }
 
    @Override
    public int getColumnCount() {
-      return super.getColumnCount(); // 8, 1, TestUnit2
+      return super.getColumnCount(); // 3, 1, TestUnit2
    }
 
 }

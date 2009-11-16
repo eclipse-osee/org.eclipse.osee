@@ -6,9 +6,6 @@
 package org.eclipse.osee.coverage.util;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
@@ -45,14 +42,12 @@ public class CoveragePackageImportManager {
 
       for (MergeItem mergeItem : mergeItems) {
          if (mergeItem.getMergeType() == MergeType.Add) {
-            Set<CoverageUnit> coverageUnits = new HashSet<CoverageUnit>();
-            // add this item
-            coverageUnits.add((CoverageUnit) mergeItem.getImportItem());
+            CoverageUnit coverageUnit = (CoverageUnit) mergeItem.getImportItem();
+            importCoverageUnitItem(rd, coverageUnit);
             // add all children items
-            coverageUnits.addAll(((CoverageUnit) mergeItem.getImportItem()).getCoverageUnits(true));
-            // add all parent items up the tree
-            CoverageUtil.getParentCoverageUnits((CoverageUnit) mergeItem.getImportItem(), coverageUnits);
-            importCoverageUnitItems(rd, coverageUnits);
+            for (CoverageUnit childCoverageUnit : coverageUnit.getCoverageUnits(true)) {
+               importCoverageUnitItem(rd, childCoverageUnit);
+            }
          } else {
             rd.logError(String.format("Unsupported merge type [%s] for merge item [%s]", mergeItem.getMergeType(),
                   mergeItem));
@@ -73,69 +68,41 @@ public class CoveragePackageImportManager {
       return rd;
    }
 
-   private void importCoverageUnitItems(XResultData rd, Collection<CoverageUnit> importCoverageUnits) throws OseeCoreException {
-      Set<ICoverage> imported = new HashSet<ICoverage>();
-      Set<ICoverage> parentCoverageUnits = new HashSet<ICoverage>();
-      for (ICoverage importCoverageUnit : importCoverageUnits) {
-         parentCoverageUnits.add(CoverageUtil.getTopLevelCoverageUnit(importCoverageUnit));
-      }
-      importItemsRecurse(rd, parentCoverageUnits, importCoverageUnits, imported);
-   }
-
    /**
     * Takes import items from coverageImport and applies them to coveragePackage
     */
-   private void importItemsRecurse(XResultData rd, Collection<ICoverage> localImportItems, Collection<? extends ICoverage> allImportItems, Collection<ICoverage> imported) {
-      System.out.println("importItemsRecurse => " + localImportItems);
+   private void importCoverageUnitItem(XResultData rd, CoverageUnit importItem) {
+      System.out.println("importItemsRecurse => " + importItem);
       try {
-         for (ICoverage importItem : localImportItems) {
-            rd.log("Processing " + importItem.getName());
-            if (!(importItem instanceof CoverageUnit)) {
-               rd.logError(String.format("[%s] invalid for Import; Only import CoverageUnits",
-                     importItem.getClass().getSimpleName()));
-               continue;
-            }
-            CoverageUnit importCoverageUnit = (CoverageUnit) importItem;
-            if (imported.contains(importCoverageUnit)) continue;
+         rd.log("Processing " + importItem.getName());
+         if (!(importItem instanceof CoverageUnit)) {
+            rd.logError(String.format("[%s] invalid for Import; Only import CoverageUnits",
+                  importItem.getClass().getSimpleName()));
+         }
+         CoverageUnit importCoverageUnit = (CoverageUnit) importItem;
 
-            ICoverage packageItem = mergeManager.getPackageCoverageItem(importItem);
-            // Determine if item already exists first
-            if (packageItem != null && !packageItem.isFolder()) {
-               rd.logError(String.format("Import Item [%s][%s] matches Package Item [%s][%s]- Not Implemented Yet",
-                     importItem, importItem.getParent(), packageItem, packageItem.getParent()));
+         ICoverage packageItem = mergeManager.getPackageCoverageItem(importItem);
+         // Determine if item already exists first
+         if (packageItem != null) {
+            // save assignees and notes and RATIONALE before child overwrites
+            // ((CoverageUnit) importItem).updateAssigneesAndNotes((CoverageUnit) packageItem);
+         }
+         // This is new item
+         if (packageItem == null) {
+            // Check if parent item exists
+            ICoverage parentImportItem = importItem.getParent();
+            // If null, this is top level item, just add to package
+            if (parentImportItem instanceof CoverageImport) {
+               coveragePackage.addCoverageUnit(((CoverageUnit) importItem).copy(true));
+               rd.log(String.format("Added [%s] as top level CoverageUnit", importCoverageUnit));
                rd.log("");
-               // save assignees and notes and RATIONALE before child overwrites
-               // ((CoverageUnit) importItem).updateAssigneesAndNotes((CoverageUnit) packageItem);
-               continue;
-            }
-            if (packageItem == null || (packageItem != null && !packageItem.isFolder())) {
-               // This is new item
-
-               // Check if parent item exists
-               ICoverage parentImportItem = importItem.getParent();
-               // If null, this is top level item, just add to package
-               if (parentImportItem instanceof CoverageImport) {
-                  coveragePackage.addCoverageUnit(((CoverageUnit) importItem).copy(true));
-                  rd.log(String.format("Added [%s] as top level CoverageUnit", importCoverageUnit));
-                  imported.add(importItem);
-                  rd.log("");
-               } else {
-                  // Else, want to add item to same parent
-                  CoverageUnit parentCoverageUnit = (CoverageUnit) importItem.getParent();
-                  CoverageUnit parentPackageItem =
-                        (CoverageUnit) mergeManager.getPackageCoverageItem(parentCoverageUnit);
-                  parentPackageItem.addCoverageUnit(importCoverageUnit.copy(true));
-                  imported.add(importCoverageUnit);
-                  rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
-                  rd.log("");
-               }
-            }
-
-            // Import children that are in import list
-            for (ICoverage child : importCoverageUnit.getCoverageUnits()) {
-               if (allImportItems.contains(child) && !imported.contains(child)) {
-                  importItemsRecurse(rd, Collections.singleton(child), allImportItems, imported);
-               }
+            } else {
+               // Else, want to add item to same parent
+               CoverageUnit parentCoverageUnit = (CoverageUnit) importItem.getParent();
+               CoverageUnit parentPackageItem = (CoverageUnit) mergeManager.getPackageCoverageItem(parentCoverageUnit);
+               parentPackageItem.addCoverageUnit(importCoverageUnit.copy(true));
+               rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
+               rd.log("");
             }
          }
       } catch (Exception ex) {

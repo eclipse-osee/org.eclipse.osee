@@ -28,12 +28,24 @@ public class CoverageMergeXViewerFactoryImport extends CoverageMergeXViewerFacto
    public CoverageMergeXViewerFactoryImport() {
       super();
       clearColumnRegistration();
-      registerColumns(Name, Import, Parent_Coverage_Unit, Namespace, Coverage_Percent, Coverage_Method, Method_Number,
-            Execution_Number, Line_Number, Coverage_Test_Units, Assignees_Col, Location, Guid);
+      registerColumns(Name, Method_Number, Execution_Number, Import, Parent_Coverage_Unit, Namespace, Coverage_Percent,
+            Coverage_Method, Line_Number, Coverage_Test_Units, Assignees_Col, Location, Guid);
       for (XViewerColumn xCol : getColumns()) {
-         overrideShowDefault(
-               xCol.getId(),
-               xCol.equals(CoverageXViewerFactory.Name) || xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit) || xCol.equals(CoverageXViewerFactory.Coverage_Percent) || xCol.equals(CoverageXViewerFactory.Namespace) || xCol.equals(Import) || xCol.equals(CoverageXViewerFactory.Coverage_Method));
+         overrideShowDefault(xCol.getId(), xCol.equals(CoverageXViewerFactory.Name) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Method_Number) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Execution_Number) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Coverage_Percent) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Namespace) ||
+         //
+         xCol.equals(Import) ||
+         //
+         xCol.equals(CoverageXViewerFactory.Coverage_Method));
       }
    }
 
