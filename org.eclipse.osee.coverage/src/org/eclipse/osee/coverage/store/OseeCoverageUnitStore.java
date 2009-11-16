@@ -24,17 +24,18 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 public class OseeCoverageUnitStore extends OseeCoverageStore {
 
    public static String ARTIFACT_NAME = "Coverage Unit";
+   public static String ARTIFACT_FOLDER_NAME = "Coverage Folder";
    private final CoverageUnit coverageUnit;
 
    public OseeCoverageUnitStore(ICoverage parent, Artifact artifact) throws OseeCoreException {
-      super(null, ARTIFACT_NAME);
+      super(null, artifact.getArtifactTypeName());
       this.artifact = artifact;
       this.coverageUnit = new CoverageUnit(parent, artifact.getName(), "");
       load();
    }
 
    public OseeCoverageUnitStore(CoverageUnit coverageUnit) {
-      super(coverageUnit, ARTIFACT_NAME);
+      super(coverageUnit, coverageUnit.isFolder() ? ARTIFACT_FOLDER_NAME : ARTIFACT_NAME);
       this.coverageUnit = coverageUnit;
    }
 
@@ -68,14 +69,15 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setFileContents(artifact.getSoleAttributeValueAsString(
                CoverageAttributes.FILE_CONTENTS.getStoreName(), ""));
          coverageUnit.setNotes(artifact.getSoleAttributeValueAsString(CoverageAttributes.NOTES.getStoreName(), ""));
-         coverageUnit.setFolder(artifact.getSoleAttributeValue(CoverageAttributes.FOLDER.getStoreName(), false));
+         coverageUnit.setFolder(artifact.getArtifactTypeName().equals(ARTIFACT_FOLDER_NAME));
          coverageUnit.setAssignees(artifact.getSoleAttributeValueAsString(CoverageAttributes.ASSIGNEES.getStoreName(),
                ""));
          coverageUnit.setNamespace(artifact.getSoleAttributeValueAsString(CoverageAttributes.NAMESPACE.getStoreName(),
                ""));
          coverageUnit.setLocation(artifact.getSoleAttributeValueAsString(CoverageAttributes.LOCATION.getStoreName(), ""));
          for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.getArtifactTypeName().equals(ARTIFACT_NAME)) {
+            if (childArt.getArtifactTypeName().equals(ARTIFACT_NAME) || childArt.getArtifactTypeName().equals(
+                  ARTIFACT_FOLDER_NAME)) {
                coverageUnit.addCoverageUnit(OseeCoverageUnitStore.get(coverageUnit, childArt));
             }
          }
@@ -100,9 +102,6 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (Strings.isValid(coverageUnit.getFileContents())) {
          artifact.setSoleAttributeFromString(CoverageAttributes.FILE_CONTENTS.getStoreName(),
                coverageUnit.getFileContents());
-      }
-      if (coverageUnit.isFolder()) {
-         artifact.setSoleAttributeValue(CoverageAttributes.FOLDER.getStoreName(), coverageUnit.isFolder());
       }
       if (Strings.isValid(coverageUnit.getAssignees())) {
          artifact.setSoleAttributeFromString(CoverageAttributes.ASSIGNEES.getStoreName(), coverageUnit.getAssignees());

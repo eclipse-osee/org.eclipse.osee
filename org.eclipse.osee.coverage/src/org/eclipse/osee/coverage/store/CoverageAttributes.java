@@ -28,7 +28,6 @@ public class CoverageAttributes {
    public static final CoverageAttributes ACTIVE = new CoverageAttributes(Namespace.None, "Active");
 
    public static final CoverageAttributes NOTES = new CoverageAttributes(Namespace.Coverage, "Notes");
-   public static final CoverageAttributes FOLDER = new CoverageAttributes(Namespace.Coverage, "Folder");
    public static final CoverageAttributes FILE_CONTENTS = new CoverageAttributes(Namespace.Coverage, "File Contents");
    public static final CoverageAttributes ASSIGNEES = new CoverageAttributes(Namespace.Coverage, "Assignees");
    public static final CoverageAttributes NAMESPACE = new CoverageAttributes(Namespace.Coverage, "Namespace");

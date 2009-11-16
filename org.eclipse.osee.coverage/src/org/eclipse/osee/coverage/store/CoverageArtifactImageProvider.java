@@ -13,6 +13,7 @@ package org.eclipse.osee.coverage.store;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ArtifactImageProvider;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 
 /**
@@ -24,6 +25,7 @@ public class CoverageArtifactImageProvider extends ArtifactImageProvider {
    public void init() throws OseeCoreException {
       ImageManager.registerBaseImage(OseeCoveragePackageStore.ARTIFACT_NAME, CoverageImage.COVERAGE_PACKAGE, this);
       ImageManager.registerBaseImage(OseeCoverageUnitStore.ARTIFACT_NAME, CoverageImage.COVERAGE, this);
+      ImageManager.registerBaseImage(OseeCoverageUnitStore.ARTIFACT_FOLDER_NAME, FrameworkImage.FOLDER, this);
    }
 
 }
