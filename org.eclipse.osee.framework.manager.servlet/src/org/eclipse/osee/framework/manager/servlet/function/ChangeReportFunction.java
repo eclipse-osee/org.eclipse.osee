@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet.function;
 
+import java.io.ObjectOutputStream;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
@@ -20,8 +21,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.ChangeReportData;
-import org.eclipse.osee.framework.core.exchange.ChangeReportDataResponder;
+import org.eclipse.osee.framework.core.data.ChangeReportRequestData;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
 
@@ -30,19 +30,20 @@ import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
  */
 public class ChangeReportFunction {
    
-   public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception{
+   public void getChanges(HttpServletRequest req, HttpServletResponse resp) throws Exception{
       PropertyStore propertyStore = new PropertyStore();
       propertyStore.load(req.getInputStream());
 
       IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
-      ChangeReportData data = service.convert(propertyStore, ChangeReportData.class);
+      ChangeReportRequestData data = service.convert(propertyStore, ChangeReportRequestData.class);
       ArrayList<ChangeItem> changes = new ArrayList<ChangeItem>();
       IStatus status =
             MasterServletActivator.getInstance().getChangeReportService().getChanges(data.getToTransactionRecord(), data.getFromTransactionRecord(), new NullProgressMonitor(), data.isHistorical(), changes);
       if (status.isOK()) {
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/plain");
-         resp.getOutputStream().write(new ChangeReportDataResponder().convertToResponse(changes));
+         ObjectOutputStream output = new ObjectOutputStream(resp.getOutputStream());//.write(new ChangeReportDataResponder().convertToResponse(changes));
+         output.writeObject(changes);
       } else {
          resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
          resp.setContentType("text/plain");

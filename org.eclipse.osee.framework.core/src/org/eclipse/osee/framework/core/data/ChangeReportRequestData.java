@@ -15,12 +15,12 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Jeff C. Phillips
  */
-public class ChangeReportData {
+public class ChangeReportRequestData {
    private final TransactionRecord toTransactionRecord;
    private final TransactionRecord fromTransactionRecord;
    private final boolean isHistorical;
 
-   public ChangeReportData(TransactionRecord toTransactionRecord,
+   public ChangeReportRequestData(TransactionRecord toTransactionRecord,
          TransactionRecord fromTransactionRecord, boolean isHistorical) {
       super();
       this.toTransactionRecord = toTransactionRecord;

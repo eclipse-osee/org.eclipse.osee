@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.manager.servlet.data.HttpBranchCreationInfo;
  */
 public class CreateBranchFunction {
    
-   public void processRequest(HttpServletRequest req, HttpServletResponse resp)throws Exception {
+   public void createBranch(HttpServletRequest req, HttpServletResponse resp)throws Exception {
       HttpBranchCreationInfo info = new HttpBranchCreationInfo(req);
       int branchId = -1;
       branchId =

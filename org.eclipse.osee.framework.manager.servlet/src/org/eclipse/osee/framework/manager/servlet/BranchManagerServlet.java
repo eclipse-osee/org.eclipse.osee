@@ -40,10 +40,10 @@ public class BranchManagerServlet extends OseeHttpServlet {
                new CreateCommitFunction().commitBranch(req, resp);
                break;
             case CREATEFULLBRANCH:
-               new CreateBranchFunction().processRequest(req, resp);
+               new CreateBranchFunction().createBranch(req, resp);
                break;
             case CHANGE_REPORT:
-               new ChangeReportFunction().processRequest(req, resp);
+               new ChangeReportFunction().getChanges(req, resp);
                break;
             default:
                throw new UnsupportedOperationException();

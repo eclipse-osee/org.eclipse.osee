@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.exchange;
 
 import org.eclipse.osee.framework.core.IDataTranslationService;
-import org.eclipse.osee.framework.core.data.ChangeReportData;
+import org.eclipse.osee.framework.core.data.ChangeReportRequestData;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 /**
  * @author Jeff C. Phillips
  */
-public class ChangeReportDataTranslator implements IDataTranslator<ChangeReportData> {
+public class ChangeReportDataTranslator implements IDataTranslator<ChangeReportRequestData> {
    private enum Entry {
       TO_TRANSACTION,
       FROM_TRANSACTION,
@@ -34,7 +34,7 @@ public class ChangeReportDataTranslator implements IDataTranslator<ChangeReportD
    }
 
    @Override
-   public ChangeReportData convert(PropertyStore propertyStore) throws OseeCoreException {
+   public ChangeReportRequestData convert(PropertyStore propertyStore) throws OseeCoreException {
       PropertyStore toTransactionStore = propertyStore.getPropertyStore(Entry.TO_TRANSACTION.name());
       PropertyStore fromTransactionStore = propertyStore.getPropertyStore(Entry.FROM_TRANSACTION.name());
 
@@ -42,12 +42,12 @@ public class ChangeReportDataTranslator implements IDataTranslator<ChangeReportD
       TransactionRecord fromTransaction = service.convert(fromTransactionStore, TransactionRecord.class);
 
       boolean isHistory = propertyStore.getBoolean(Entry.IS_HISTORY.name());
-      ChangeReportData data = new ChangeReportData(toTransaction, fromTransaction, isHistory);
+      ChangeReportRequestData data = new ChangeReportRequestData(toTransaction, fromTransaction, isHistory);
       return data;
    }
 
    @Override
-   public PropertyStore convert(ChangeReportData data) throws OseeCoreException {
+   public PropertyStore convert(ChangeReportRequestData data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       store.put(Entry.IS_HISTORY.name(), data.isHistorical());
       store.put(Entry.TO_TRANSACTION.name(), service.convert(data.getToTransactionRecord(), TransactionRecord.class));
