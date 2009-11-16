@@ -10,17 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet.function;
 
-import java.net.HttpURLConnection;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeReportRequestData;
+import org.eclipse.osee.framework.core.data.ChangeReportResponseData;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
 
 /**
@@ -31,25 +32,18 @@ public class ChangeReportFunction {
    public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception {
       IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
       ChangeReportRequestData data = service.convert(req.getInputStream(), ChangeReportRequestData.class);
-
       ArrayList<ChangeItem> changes = new ArrayList<ChangeItem>();
-      // TODO ChangeReportStatus/Response  changeReportStatus =;
-      IStatus status =
+      
             MasterServletActivator.getInstance().getChangeReportService().getChanges(data.getToTransactionRecord(),
                   data.getFromTransactionRecord(), new NullProgressMonitor(), data.isHistorical(), changes);
-      if (status.isOK()) {
-         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-         resp.setContentType("text/plain");
-         //         InputStream inputStream = service.convertToStream(changeReportStatus);
-         //         try {
-         //            Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
-         //         } finally {
-         //            Lib.close(inputStream);
-         //         }
-      } else {
-         resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-         resp.setContentType("text/plain");
-         resp.getWriter().write("Unknown Error during branch creation.");
+      ChangeReportResponseData changeReportResponseData = new ChangeReportResponseData(changes);
+      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+      resp.setContentType("text/xml");
+      InputStream inputStream = service.convertToStream(changeReportResponseData);
+      try {
+         Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
+      } finally {
+         Lib.close(inputStream);
       }
    }
 }
