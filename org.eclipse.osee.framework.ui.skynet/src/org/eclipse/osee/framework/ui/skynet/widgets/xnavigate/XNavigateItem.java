@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateComposite.TableLoadOption;
@@ -46,6 +48,10 @@ public class XNavigateItem {
       return children;
    }
 
+   public List<XNavigateItem> getDynamicChildren() {
+      return Collections.emptyList();
+   }
+
    public String getName() {
       return name;
    }
@@ -76,6 +82,10 @@ public class XNavigateItem {
    }
 
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
+   }
+
+   public boolean hasChildren() throws OseeCoreException {
+      return getChildren().size() > 0;
    }
 
    /**

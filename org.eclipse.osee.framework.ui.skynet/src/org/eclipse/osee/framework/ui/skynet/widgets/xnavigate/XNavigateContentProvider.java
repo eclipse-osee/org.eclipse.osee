@@ -10,18 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.xnavigate;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**
  * @author Donald G. Dunne
  */
 public class XNavigateContentProvider implements ITreeContentProvider {
 
-   /**
-    * 
-    */
    public XNavigateContentProvider() {
       super();
    }
@@ -30,8 +33,12 @@ public class XNavigateContentProvider implements ITreeContentProvider {
    public Object[] getChildren(Object parentElement) {
       if (parentElement instanceof Object[]) return (Object[]) parentElement;
       if (parentElement instanceof Collection) return ((Collection) parentElement).toArray();
-      if (parentElement instanceof XNavigateItem) return ((XNavigateItem) parentElement).getChildren().toArray(
-            new Object[((XNavigateItem) parentElement).getChildren().size()]);
+      if (parentElement instanceof XNavigateItem) {
+         List<XNavigateItem> items = new ArrayList<XNavigateItem>();
+         items.addAll(((XNavigateItem) parentElement).getDynamicChildren());
+         items.addAll(((XNavigateItem) parentElement).getChildren());
+         return items.toArray(new Object[items.size()]);
+      }
       return new Object[0];
    }
 
@@ -41,6 +48,13 @@ public class XNavigateContentProvider implements ITreeContentProvider {
    }
 
    public boolean hasChildren(Object element) {
+      if (element instanceof XNavigateItem) {
+         try {
+            return ((XNavigateItem) element).hasChildren();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
+         }
+      }
       return getChildren(element).length > 0;
    }
 
