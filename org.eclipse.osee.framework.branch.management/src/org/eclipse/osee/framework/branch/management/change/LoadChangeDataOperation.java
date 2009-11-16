@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.branch.management.change;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.data.ChangeItem;
@@ -25,6 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
@@ -104,7 +104,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
    private TransactionJoinQuery loadSourceBranchChanges(IProgressMonitor monitor) throws OseeCoreException {
       TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       Integer currentTransactionNumber;
 
       try {
@@ -138,7 +138,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private void loadArtifactItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       String query =
             "select art_id, txj.gamma_id from osee_artifact_version id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
@@ -158,7 +158,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private void loadAttributeItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       String query =
             "select art_id, attr_id, value, txj.gamma_id from osee_attribute id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
@@ -180,7 +180,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private void loadRelationItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       String query =
             "select a_art_id, b_art_id, rel_link_id, rel_link_type_id, rationale, txj.gamma_id from osee_relation_link id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
@@ -236,7 +236,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, TransactionRecord destinationTransaction, HashMap<Integer, ChangeItem> changesByItemId) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       String query;
 
       try {
@@ -288,7 +288,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private void loadNonCurrentSourceData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       String query;
 
       try {

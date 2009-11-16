@@ -10,19 +10,24 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.transaction;
 
-import org.eclipse.osee.framework.branch.management.ITransactionService;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
  */
-public class TransactionService implements ITransactionService {
+public class TransactionCache {
 
-   @Override
-   public TransactionRecord getTransaction(Branch branch, TransactionVersion revision) throws OseeCoreException {
-      TransactionRecord record = null;
-      return record;
+   private final ITransactionDataAccessor accessor;
+
+   public TransactionCache(ITransactionDataAccessor accessor) {
+      this.accessor = accessor;
+   }
+
+   public void cache(TransactionRecord record) {
+
+   }
+
+   public TransactionRecord getById(int txId) {
+      return null;
    }
 }

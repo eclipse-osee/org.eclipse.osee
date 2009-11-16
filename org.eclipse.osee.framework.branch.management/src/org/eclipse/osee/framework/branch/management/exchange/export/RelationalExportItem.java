@@ -21,6 +21,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -95,7 +96,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
 
    @Override
    protected void doWork(Appendable appendable) throws Exception {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(getConnection());
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(getConnection());
       try {
          Pair<String, Object[]> sqlData = ExchangeDb.getQueryWithOptions(this.query, getJoinQueryId(), getOptions());
          chStmt.runPreparedQuery(sqlData.getFirst(), sqlData.getSecond());

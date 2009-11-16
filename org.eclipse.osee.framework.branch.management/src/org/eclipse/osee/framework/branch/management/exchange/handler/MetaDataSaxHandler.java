@@ -137,6 +137,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
 
    private void processColumnMetaData(MetaData currentMetadata, DatabaseMetaData dbMetaData, String schema, String tableName) throws SQLException, OseeDataStoreException {
       ResultSet resultSet = null;
+
       try {
          try {
             resultSet = dbMetaData.getColumns(null, schema, tableName, null);
@@ -147,7 +148,7 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
             while (resultSet.next()) {
                String columnId = resultSet.getString("COLUMN_NAME").toLowerCase();
                int dataType = resultSet.getInt("DATA_TYPE");
-               if (SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro)) {
+               if (SupportedDatabase.isDatabaseType(dbMetaData, SupportedDatabase.foxpro)) {
                   if (dataType == Types.CHAR) {
                      dataType = Types.VARCHAR;
                   }

@@ -35,7 +35,7 @@ public class BranchArchivingService implements IBranchArchivingService {
       String sourceTableName = archive ? "osee_txs" : "osee_txs_archived";
       String destinationTableName = archive ? "osee_txs_archived" : "osee_txs";
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
       List<Object[]> addressing = new ArrayList<Object[]>();
       List<Object[]> deleteAddressing = new ArrayList<Object[]>();
       String sql = String.format(SELECT_ADDRESSING_BY_BRANCH, sourceTableName);

@@ -116,7 +116,7 @@ public class IdTranslator {
    }
 
    public void load(String sourceDatabaseId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          originalToMapped.clear();
          chStmt.runPreparedQuery(SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequence());

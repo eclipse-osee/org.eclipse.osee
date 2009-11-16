@@ -25,5 +25,5 @@ public interface IBranchCommitService {
 
    public IStatus commitBranch(IProgressMonitor monitor, ITransactionService service, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, boolean archiveSourceBranch) throws OseeCoreException;
 
-   public IStatus commitBranch(IProgressMonitor monitor, BranchCommitData branchCommitData) throws OseeCoreException;
+   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService service, BranchCommitData branchCommitData) throws OseeCoreException;
 }

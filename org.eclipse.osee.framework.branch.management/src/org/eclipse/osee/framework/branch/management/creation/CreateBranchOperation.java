@@ -228,7 +228,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    }
 
    private void populateAddressingToCopy(IProgressMonitor monitor, OseeConnection connection, List<Object[]> data, HashSet<Integer> gammas, String query, Object... parameters) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(10000, query, parameters);
          while (chStmt.next()) {

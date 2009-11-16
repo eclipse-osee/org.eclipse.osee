@@ -163,7 +163,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          guidToImportFileBranchData.put(data.getBranchGuid(), data);
       }
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(getConnection());
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(getConnection());
       try {
          chStmt.runPreparedQuery("select * from osee_branch");
          while (chStmt.next()) {

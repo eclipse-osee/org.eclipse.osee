@@ -19,9 +19,25 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface ITransactionService {
 
-   public static final int HEAD = -1;
-   public static final int BASE = -2;
-   public static final int CURRENT = -3;
+   public static enum TransactionVersion {
+      /**
+       * The last revision in the branch
+       */
+      HEAD,
 
-   TransactionRecord getTransaction(Branch branch, int revision) throws OseeCoreException;
+      /**
+       * The last first revision in the branch
+       */
+      BASE;
+   }
+
+   /**
+    * Returns the Transaction Record object for the specified revision;
+    * 
+    * @param branch
+    * @param revision
+    * @return transaction record for that revision number
+    * @throws OseeCoreException
+    */
+   TransactionRecord getTransaction(Branch branch, TransactionVersion type) throws OseeCoreException;
 }

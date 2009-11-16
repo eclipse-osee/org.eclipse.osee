@@ -85,7 +85,7 @@ final class ImportController {
    }
 
    private void checkPreconditions() throws OseeCoreException {
-      if (SupportedDatabase.isDatabaseType(SupportedDatabase.oracle)) {
+      if (SupportedDatabase.isDatabaseType(ConnectionHandler.getMetaData(), SupportedDatabase.oracle)) {
          throw new OseeStateException("DO NOT IMPORT ON PRODUCTION");
       }
    }
@@ -221,7 +221,7 @@ final class ImportController {
    }
 
    private void loadImportTrace(String sourceDatabaseId, Date sourceExportDate) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          currentSavePoint = "load.save.points";
          chStmt.runPreparedQuery(QUERY_SAVE_POINTS_FROM_IMPORT_MAP, sourceDatabaseId, new Timestamp(

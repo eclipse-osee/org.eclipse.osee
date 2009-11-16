@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -116,7 +117,7 @@ public class PublishRequirements extends AbstractBlam {
 
    private static int getBranchTransaction(Date date, int branchId) throws OseeCoreException {
       int transactionId = -1;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
 
       if (date == null) {
          throw new OseeCoreException("Must select a valid Date");
@@ -215,10 +216,11 @@ public class PublishRequirements extends AbstractBlam {
       for (Artifact artifact : artifactSet) {
          insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branchId, transactionId});
       }
-      
+
       @SuppressWarnings("unused")
-      Collection<Artifact> bulkLoadedArtifacts = ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, true, true);
-      
+      Collection<Artifact> bulkLoadedArtifacts =
+            ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, false, true, true);
+
       for (Artifact artifact : artifacts) {
          historicArtifacts.add(ArtifactCache.getHistorical(artifact.getArtId(), transactionId));
       }

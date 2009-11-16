@@ -152,7 +152,7 @@ public class MetadataExportItem extends AbstractDbExportItem {
                   ExportImportXml.addXmlAttribute(appendable, ExportImportXml.ID, columnId);
 
                   int dataType = resultSet.getInt("DATA_TYPE");
-                  if (SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro)) {
+                  if (SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.foxpro)) {
                      if (dataType == Types.CHAR) {
                         dataType = Types.VARCHAR;
                      }
