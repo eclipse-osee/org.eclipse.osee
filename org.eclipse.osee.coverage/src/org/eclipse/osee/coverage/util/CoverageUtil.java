@@ -9,17 +9,22 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
+import org.eclipse.osee.framework.core.enums.BranchControlled;
+import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
@@ -41,7 +46,12 @@ public class CoverageUtil {
 
    public static boolean getBranchFromUser(boolean force) throws OseeCoreException {
       if (force || CoverageUtil.getBranch() == null) {
-         BranchSelectionDialog dialog = new BranchSelectionDialog("Select Branch", BranchManager.getBaselineBranches());
+         Collection<Branch> branches =
+               BranchManager.getBranches(BranchArchivedState.UNARCHIVED, BranchControlled.ALL, BranchType.WORKING);
+         if (isAdmin()) {
+            branches.add(BranchManager.getCommonBranch());
+         }
+         BranchSelectionDialog dialog = new BranchSelectionDialog("Select Branch", branches);
          if (dialog.open() != 0) {
             return false;
          }
@@ -103,6 +113,15 @@ public class CoverageUtil {
 
    public static void addBranchChangeListener(Listener listener) {
       branchChangeListeners.add(listener);
+   }
+
+   public static boolean isAdmin() {
+      try {
+         return SystemGroup.OseeAdmin.isCurrentUserMember();
+      } catch (OseeCoreException ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+         return false;
+      }
    }
 
 }
