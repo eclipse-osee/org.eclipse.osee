@@ -66,4 +66,20 @@ public class PropertyStoreWriterTest {
       PropertyStoreTestUtil.checkEquals(store, actual);
    }
 
+   @Test
+   public void testLoadingXml() throws Exception {
+      String value =
+            "<?xml version=\"1.0\" encoding=\"UTF-8\" ?> <store id=\"coverage.item\"> <item value=\"68\" key=\"line\" /> <item value=\"\" key=\"testUnits\" /> <item value=\"4\" key=\"executeNum\" /> <item value=\"APc07YhpXgobKwrbROgA\" key=\"guid\" /> <item value=\"Not_Covered\" key=\"methodType\" /> <item value=\"4\" key=\"methodNum\" /> <item value=\"OseeLog.log(Activator.class, Level.SEVERE, ex);\" key=\"text\" /> </store>";
+      MockPropertyStore actual = PropertyStoreTestUtil.createPropertyStore();
+      writer.load(actual, new StringReader(value));
+      MockPropertyStore expected = PropertyStoreTestUtil.createPropertyStore("coverage.item");
+      expected.put("line", "68");
+      expected.put("testUnits", "");
+      expected.put("executeNum", "4");
+      expected.put("guid", "APc07YhpXgobKwrbROgA");
+      expected.put("methodType", "Not_Covered");
+      expected.put("methodNum", "4");
+      expected.put("text", "OseeLog.log(Activator.class, Level.SEVERE, ex);");
+      PropertyStoreTestUtil.checkEquals(expected, actual);
+   }
 }
