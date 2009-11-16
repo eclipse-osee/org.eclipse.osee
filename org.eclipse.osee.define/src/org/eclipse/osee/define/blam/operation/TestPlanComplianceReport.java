@@ -28,9 +28,12 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 public class TestPlanComplianceReport extends AbstractBlam {
-   private final String EMPTY_SET = "------";
-   private String[] previousCells = {EMPTY_SET, EMPTY_SET, EMPTY_SET, EMPTY_SET};
-   private final String[] columnHeaders = {"Type", "Name", "System Requirement", "Test Procedure", "Test Result"};
+   //   private final String EMPTY_SET = "------";
+   private final String MISSING = "?";
+   private final String EMPTY = "&nbsp;";
+   private String[] previousCells = {MISSING, MISSING, MISSING, MISSING};
+   private final String[] columnHeaders =
+         {"Test Plan & Paragraph", "Perf Spec Requirement(s)", "Test Procedure", "Test Result"};
    private Collection<Artifact> inputArtifacts;
    private Collection<Artifact> testPlans;
    private StringBuilder report;
@@ -40,21 +43,21 @@ public class TestPlanComplianceReport extends AbstractBlam {
       init(variableMap);
 
       for (Artifact input : inputArtifacts) {
-         processTestPlanTree(input, 0);
+         processArtifacts(input, 0);
       }
 
       report();
    }
 
-   private void processTestPlanTree(Artifact node, int depth) throws OseeCoreException, IOException {
+   private void processArtifacts(Artifact node, int depth) throws OseeCoreException, IOException {
       Collection<Artifact> children = node.getChildren();
 
       if (isTestPlan(node)) {
          processTestPlan(node);
       } else {
-         reportLine(node, EMPTY_SET, EMPTY_SET);
+         reportLine(node, "N/A (" + node.getArtifactTypeName() + ")", EMPTY);
          for (Artifact child : children) {
-            processTestPlanTree(child, depth + 1);
+            processArtifacts(child, depth + 1);
          }
       }
    }
@@ -62,16 +65,16 @@ public class TestPlanComplianceReport extends AbstractBlam {
    private boolean isTestPlan(Artifact src) {
       if (src.getArtifactType().inheritsFrom(CoreArtifacts.TestPlanElement)) {
          return true;
-      } else {
-         return false;
       }
+
+      return false;
    }
 
    private void processTestPlan(Artifact testPlan) throws OseeCoreException, IOException {
       Collection<Artifact> testProcedures = getTestProcedures(testPlan);
 
       if (testProcedures.isEmpty()) {
-         reportLine(testPlan, EMPTY_SET, EMPTY_SET);
+         reportLine(testPlan, MISSING, MISSING);
       } else {
          for (Artifact testProc : testProcedures) {
             processTestProcedure(testPlan, testProc);
@@ -82,22 +85,18 @@ public class TestPlanComplianceReport extends AbstractBlam {
    private void processTestProcedure(Artifact testPlan, Artifact testProc) throws IOException, OseeCoreException {
       Collection<Artifact> testResults = getTestResults(testProc);
       if (testResults.isEmpty()) {
-         reportLine(testPlan, testProc.getName(), EMPTY_SET);
+         reportLine(testPlan, testProc.getName(), MISSING);
       } else {
          for (Artifact testResult : testResults) {
             reportLine(testPlan, testProc.getName(), testResult.getName());
          }
-      }
+      }//mcp7091
    }
 
    private String getName(Artifact art) throws OseeCoreException {
-      if (isTestPlan(art)) {
-         String testPlanNumber = art.getSoleAttributeValue("Paragraph Number", "##");
-         String testPlanOutput = testPlanNumber + " " + art.getName();
-         return testPlanOutput;
-      } else {
-         return art.getName();
-      }
+      String testPlanNumber = art.getSoleAttributeValue("Imported Paragraph Number", "");
+      String testPlanOutput = testPlanNumber + " " + art.getName();
+      return testPlanOutput;
    }
 
    private Collection<Artifact> getTestProcedures(Artifact testPlan) throws OseeCoreException {
@@ -113,37 +112,38 @@ public class TestPlanComplianceReport extends AbstractBlam {
    }
 
    private String getRequirementsFor(Artifact testPlan) throws OseeCoreException {
+      if (!testPlan.getArtifactType().inheritsFrom(CoreArtifacts.TestPlanElement)) {
+         return EMPTY;
+      }
       Collection<Artifact> requirementArtifacts =
             testPlan.getRelatedArtifacts(CoreRelationEnumeration.VERIFICATION_PLAN);
       Collection<String> requirementNames = new ArrayList<String>();
       for (Artifact req : requirementArtifacts) {
-         String paragraphNumber = req.getSoleAttributeValueAsString("Paragraph Number", "##");
+         String paragraphNumber = req.getSoleAttributeValueAsString("Imported Paragraph Number", "");
          requirementNames.add(paragraphNumber + " " + req.getName());
       }
       String ret = StringUtils.join(requirementNames, "\n");
       if (ret.equals("")) {
-         ret = EMPTY_SET;
+         ret = MISSING;
       }
 
       return ret;
    }
 
    private void reportLine(Artifact art, String testProc, String testResult) throws IOException, OseeCoreException {
-      String[] outputCells = new String[5];
+      String[] outputCells = new String[4];
       String testPlanOutput = getName(art);
       String requirements = getRequirementsFor(art);
       String[] cells = new String[] {testPlanOutput, requirements, testProc, testResult};
-      outputCells[0] = art.getArtifactTypeName();
       for (int i = 0; i < cells.length; i++) {
          if (previousCells[i].equals(cells[i])) {
-            if (i == 0 || outputCells[i].equals(" ")) {
-               outputCells[i + 1] = " ";
-               outputCells[0] = " ";
+            if (i == 0 || outputCells[i - 1].equals(" ")) {
+               outputCells[i] = " ";
             } else {
-               outputCells[i + 1] = cells[i];
+               outputCells[i] = cells[i];
             }
          } else {
-            outputCells[i + 1] = cells[i];
+            outputCells[i] = cells[i];
          }
       }
       previousCells = cells.clone();
