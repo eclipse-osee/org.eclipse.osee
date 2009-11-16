@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 public class TestPlanComplianceReport extends AbstractBlam {
-   //   private final String EMPTY_SET = "------";
    private final String MISSING = "?";
    private final String EMPTY = "&nbsp;";
    private String[] previousCells = {MISSING, MISSING, MISSING, MISSING};
@@ -90,7 +89,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
          for (Artifact testResult : testResults) {
             reportLine(testPlan, testProc.getName(), testResult.getName());
          }
-      }//mcp7091
+      }
    }
 
    private String getName(Artifact art) throws OseeCoreException {
@@ -111,10 +110,24 @@ public class TestPlanComplianceReport extends AbstractBlam {
       return ret;
    }
 
-   private String getRequirementsFor(Artifact testPlan) throws OseeCoreException {
-      if (!testPlan.getArtifactType().inheritsFrom(CoreArtifacts.TestPlanElement)) {
-         return EMPTY;
+   private String getRequirementsCellOutput(Artifact art) throws OseeCoreException {
+      if (art.getArtifactType().inheritsFrom(CoreArtifacts.TestPlanElement)) {
+         return getRequirementsCellOutputForTestPlan(art);
       }
+
+      return EMPTY;
+   }
+
+   private String getRequirementsCellOutputForTestPlan(Artifact testPlan) throws OseeCoreException {
+      String ret = getRequirementsAsString(testPlan);
+      if (ret.isEmpty()) {
+         ret = MISSING;
+      }
+
+      return ret;
+   }
+
+   private String getRequirementsAsString(Artifact testPlan) throws OseeCoreException {
       Collection<Artifact> requirementArtifacts =
             testPlan.getRelatedArtifacts(CoreRelationEnumeration.VERIFICATION_PLAN);
       Collection<String> requirementNames = new ArrayList<String>();
@@ -122,18 +135,14 @@ public class TestPlanComplianceReport extends AbstractBlam {
          String paragraphNumber = req.getSoleAttributeValueAsString("Imported Paragraph Number", "");
          requirementNames.add(paragraphNumber + " " + req.getName());
       }
-      String ret = StringUtils.join(requirementNames, "\n");
-      if (ret.equals("")) {
-         ret = MISSING;
-      }
 
-      return ret;
+      return StringUtils.join(requirementNames, "\n");
    }
 
    private void reportLine(Artifact art, String testProc, String testResult) throws IOException, OseeCoreException {
       String[] outputCells = new String[4];
       String testPlanOutput = getName(art);
-      String requirements = getRequirementsFor(art);
+      String requirements = getRequirementsCellOutput(art);
       String[] cells = new String[] {testPlanOutput, requirements, testProc, testResult};
       for (int i = 0; i < cells.length; i++) {
          if (previousCells[i].equals(cells[i])) {
