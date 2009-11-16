@@ -28,8 +28,8 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
 
 public class TestPlanComplianceReport extends AbstractBlam {
-   private final String MISSING = "?";
-   private final String EMPTY = "&nbsp;";
+   private static final String MISSING = "?";
+   private static final String EMPTY = "&nbsp;";
    private String[] previousCells = {MISSING, MISSING, MISSING, MISSING};
    private final String[] columnHeaders =
          {"Test Plan & Paragraph", "Perf Spec Requirement(s)", "Test Procedure", "Test Result"};
@@ -42,13 +42,13 @@ public class TestPlanComplianceReport extends AbstractBlam {
       init(variableMap);
 
       for (Artifact input : inputArtifacts) {
-         processArtifacts(input, 0);
+         processArtifacts(input);
       }
 
       report();
    }
 
-   private void processArtifacts(Artifact node, int depth) throws OseeCoreException, IOException {
+   private void processArtifacts(Artifact node) throws OseeCoreException, IOException {
       Collection<Artifact> children = node.getChildren();
 
       if (isTestPlan(node)) {
@@ -56,7 +56,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
       } else {
          reportLine(node, "N/A (" + node.getArtifactTypeName() + ")", EMPTY);
          for (Artifact child : children) {
-            processArtifacts(child, depth + 1);
+            processArtifacts(child);
          }
       }
    }
@@ -129,7 +129,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
 
    private String getRequirementsAsString(Artifact testPlan) throws OseeCoreException {
       Collection<Artifact> requirementArtifacts =
-            testPlan.getRelatedArtifacts(CoreRelationEnumeration.VERIFICATION_PLAN);
+            testPlan.getRelatedArtifacts(CoreRelationEnumeration.VERIFICATION_PLAN__REQUIREMENT);
       Collection<String> requirementNames = new ArrayList<String>();
       for (Artifact req : requirementArtifacts) {
          String paragraphNumber = req.getSoleAttributeValueAsString("Imported Paragraph Number", "");
@@ -182,7 +182,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
       for (Artifact input : inputArtifacts) {
          testPlans.addAll(input.getDescendants());
       }
-      RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationEnumeration.VERIFICATION_PLAN);
+      RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationEnumeration.VERIFICATION_PLAN__REQUIREMENT);
       Collection<Artifact> temp =
             RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationEnumeration.EXECUTES__TEST_PROCEDURE);
       RelationManager.getRelatedArtifacts(temp, 1, CoreRelationEnumeration.TEST_UNIT_RESULT__TEST_RESULT);
