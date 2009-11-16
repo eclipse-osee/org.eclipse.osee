@@ -42,6 +42,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
@@ -222,9 +223,9 @@ public class BranchManager {
                      destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
          mergeBranch =
-               HttpBranchCreation.createFullBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(),
-                     branchName, null, null, UserManager.getUser(), creationComment,
-                     populateBaseTxFromAddressingQueryId, destBranch.getId());
+               HttpBranchCreation.createFullBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(), branchName,
+                     null, null, UserManager.getUser(), creationComment, populateBaseTxFromAddressingQueryId,
+                     destBranch.getId());
       } finally {
          ArtifactLoader.clearQuery(populateBaseTxFromAddressingQueryId);
       }
@@ -403,8 +404,8 @@ public class BranchManager {
       TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(parentBranch);
       String creationComment = String.format("Root Branch [%s] Creation", branchName);
       return HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getId(),
-            parentTransactionId.getBranch().getId(), branchName, null, null, associatedArtifact, creationComment,
-            -1, -1);
+            parentTransactionId.getBranch().getId(), branchName, null, null, associatedArtifact, creationComment, -1,
+            -1);
    }
 
    /**
@@ -425,8 +426,7 @@ public class BranchManager {
       String creationComment = String.format("Root Branch [%s] Creation", branchName);
       Branch branch =
             HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getId(),
-                  systemRootBranch.getId(), branchName, staticBranchName, branchGuid, null, creationComment, -1,
-                  -1);
+                  systemRootBranch.getId(), branchName, staticBranchName, branchGuid, null, creationComment, -1, -1);
       if (staticBranchName != null) {
          branch.setAliases(staticBranchName);
       }
@@ -451,19 +451,27 @@ public class BranchManager {
    private void initializeLastBranchValue() {
       try {
          String branchIdStr = UserManager.getUser().getSetting(LAST_DEFAULT_BRANCH);
-         if (branchIdStr == null) {
-            lastBranch = getDefaultInitialBranch();
-            UserManager.getUser().setSetting(LAST_DEFAULT_BRANCH, String.valueOf(lastBranch.getId()));
+         if (branchIdStr == null || !Strings.isValid(branchIdStr)) {
+            initializeLastBranchValueToDefault();
          } else {
-            lastBranch = getBranchNoExistenceExcpetion(Integer.parseInt(branchIdStr));
-            if (lastBranch == null) {
-               lastBranch = getDefaultInitialBranch();
+            try {
+               lastBranch = getBranchNoExistenceExcpetion(Integer.parseInt(branchIdStr));
+               if (lastBranch == null) {
+                  lastBranch = getDefaultInitialBranch();
+               }
+            } catch (NumberFormatException ex) {
+               initializeLastBranchValueToDefault();
             }
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
 
       }
+   }
+
+   private void initializeLastBranchValueToDefault() throws OseeCoreException {
+      lastBranch = getDefaultInitialBranch();
+      UserManager.getUser().setSetting(LAST_DEFAULT_BRANCH, String.valueOf(lastBranch.getId()));
    }
 
    private Branch getDefaultInitialBranch() throws OseeCoreException {

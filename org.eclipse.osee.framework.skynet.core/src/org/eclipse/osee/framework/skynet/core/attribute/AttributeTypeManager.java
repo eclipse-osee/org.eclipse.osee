@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.Branch;
@@ -39,10 +40,9 @@ public class AttributeTypeManager {
    }
 
    public static Collection<AttributeType> getValidAttributeTypes(Branch branch) throws OseeCoreException {
-      Collection<AttributeType> attributeTypes = new ArrayList<AttributeType>(100);
-
+      Set<AttributeType> attributeTypes = new HashSet<AttributeType>(100);
       for (ArtifactType artifactType : ArtifactTypeManager.getAllTypes()) {
-         artifactType.getAttributeTypes(branch);
+         attributeTypes.addAll(artifactType.getAttributeTypes(branch));
       }
       return attributeTypes;
    }
@@ -84,8 +84,7 @@ public class AttributeTypeManager {
 
    /**
     * @param name
-    * @return the attribute type with the given name or throws an OseeTypeDoesNotExist if it does not
-    *         exist.
+    * @return the attribute type with the given name or throws an OseeTypeDoesNotExist if it does not exist.
     * @throws OseeCoreException
     */
    public static AttributeType getType(String name) throws OseeCoreException {
