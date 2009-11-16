@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCommitData;
+import org.eclipse.osee.framework.core.data.CommitTransactionRecordResponse;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
@@ -23,7 +24,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IBranchCommitService {
 
-   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService service, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, boolean archiveSourceBranch) throws OseeCoreException;
+   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService service, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, CommitTransactionRecordResponse txHolder, boolean archiveSourceBranch) throws OseeCoreException;
 
-   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService service, BranchCommitData branchCommitData) throws OseeCoreException;
+   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService service, BranchCommitData branchCommitData, CommitTransactionRecordResponse txHolder) throws OseeCoreException;
 }

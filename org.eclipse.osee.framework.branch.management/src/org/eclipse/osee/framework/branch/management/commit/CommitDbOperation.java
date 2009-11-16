@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.branch.management.internal.InternalBranchActiv
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.CommitTransactionRecordResponse;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -69,12 +70,12 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private final Branch destinationBranch;
    private final Branch mergeBranch;
    private final List<ChangeItem> changes;
+   private CommitTransactionRecordResponse txHolder;
 
-   private Integer newTransactionNumber;
    private OseeConnection connection;
    private boolean success;
 
-   public CommitDbOperation(AbstractOseeCache<Branch> branchCache, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes) {
+   public CommitDbOperation(AbstractOseeCache<Branch> branchCache, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, CommitTransactionRecordResponse txHolder) {
       super("Commit Database Operation", InternalBranchActivator.PLUGIN_ID);
       this.savedBranchStates = new HashMap<Branch, BranchState>();
       this.branchCache = branchCache;
@@ -83,6 +84,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       this.destinationBranch = destinationBranch;
       this.mergeBranch = mergeBranch;
       this.changes = changes;
+      this.txHolder = txHolder;
 
       this.success = true;
       savedBranchStates.put(sourceBranch, sourceBranch.getBranchState());
@@ -95,7 +97,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       if (changes.isEmpty()) {
          throw new OseeStateException(" A branch can not be commited without any changes made.");
       }
-      newTransactionNumber = addCommitTransactionToDatabase(user);
+      txHolder.setTransactionNumber(addCommitTransactionToDatabase(user));
 
       //      TODO AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
 
@@ -109,7 +111,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    }
 
    private void updateMergeBranchCommitTx() throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, newTransactionNumber,
+      ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, txHolder.getTransactionNumber(),
             sourceBranch.getId(), destinationBranch.getId());
    }
 
@@ -146,8 +148,8 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       List<Object[]> insertData = new ArrayList<Object[]>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
-         insertData.add(new Object[] {newTransactionNumber, change.getNetChange().getGammaId(), modType.getValue(),
-               TxChange.getCurrent(modType).getValue()});
+         insertData.add(new Object[] {txHolder.getTransactionNumber(), change.getNetChange().getGammaId(),
+               modType.getValue(), TxChange.getCurrent(modType).getValue()});
       }
       ConnectionHandler.runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }

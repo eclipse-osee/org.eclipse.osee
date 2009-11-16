@@ -29,4 +29,8 @@ public class CommitTransactionRecordResponse {
       return transactionNumber;
    }
 
+   public void setTransactionNumber(int transactionNumber) {
+      this.transactionNumber = transactionNumber;
+   }
+
 }

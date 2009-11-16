@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet.function;
 
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,6 +20,7 @@ import org.eclipse.osee.framework.branch.management.ITransactionService;
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.BranchCommitData;
 import org.eclipse.osee.framework.core.data.CommitTransactionRecordResponse;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
 
 /**
@@ -35,11 +37,16 @@ public class CreateCommitFunction {
       CommitTransactionRecordResponse responseData = new CommitTransactionRecordResponse();
       IStatus status =
             MasterServletActivator.getInstance().getBranchCommit().commitBranch(new NullProgressMonitor(),
-                  transactionService, data);
+                  transactionService, data, responseData);
       if (status.isOK()) {
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/plain");
-         //         resp.getOutputStream().write(new BranchCommitDataResponder().convertToReponse(responseData));
+         InputStream inputStream = service.convertToStream(responseData);
+         try {
+            Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
+         } finally {
+            Lib.close(inputStream);
+         }
       } else {
          resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
          resp.setContentType("text/plain");
