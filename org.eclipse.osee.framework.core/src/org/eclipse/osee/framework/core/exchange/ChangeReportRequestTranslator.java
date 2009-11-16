@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 /**
  * @author Jeff C. Phillips
  */
-public class ChangeReportDataTranslator implements IDataTranslator<ChangeReportRequestData> {
+public class ChangeReportRequestTranslator implements IDataTranslator<ChangeReportRequestData> {
    private enum Entry {
       TO_TRANSACTION,
       FROM_TRANSACTION,
@@ -28,7 +28,7 @@ public class ChangeReportDataTranslator implements IDataTranslator<ChangeReportR
 
    private final IDataTranslationService service;
    
-   public ChangeReportDataTranslator(IDataTranslationService service) {
+   public ChangeReportRequestTranslator(IDataTranslationService service) {
       super();
       this.service = service;
    }

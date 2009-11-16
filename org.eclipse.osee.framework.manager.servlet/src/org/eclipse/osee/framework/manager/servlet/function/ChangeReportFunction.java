@@ -12,13 +12,15 @@ package org.eclipse.osee.framework.manager.servlet.function;
 
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.ChangeReportData;
+import org.eclipse.osee.framework.core.data.ChangeReportRequestData;
 import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
 
 /**
@@ -28,7 +30,7 @@ public class ChangeReportFunction {
 
    public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception {
       IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
-      ChangeReportData data = service.convert(req.getInputStream(), ChangeReportData.class);
+      ChangeReportRequestData data = service.convert(req.getInputStream(), ChangeReportRequestData.class);
 
       ArrayList<ChangeItem> changes = new ArrayList<ChangeItem>();
       // TODO ChangeReportStatus/Response  changeReportStatus =;

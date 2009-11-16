@@ -7,13 +7,14 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.ChangeReportData;
+import org.eclipse.osee.framework.core.data.ChangeReportRequestData;
+import org.eclipse.osee.framework.core.data.ChangeReportResponseData;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
 
 /**
  * @author Jeff C. Phillips
@@ -24,12 +25,13 @@ public class HttpChangeDataRequester {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.CHANGE_REPORT.name());
 
-      ChangeReportData requestData = new ChangeReportData(toTransactionRecord, fromTransactionRecord, isHistorical);
-      AcquireResult response =
-            HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, requestData, AcquireResult.class);
+      ChangeReportRequestData requestData = new ChangeReportRequestData(toTransactionRecord, fromTransactionRecord, isHistorical);
+      ChangeReportResponseData response =
+            HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, requestData, ChangeReportResponseData.class);
+     
       if (response.wasSuccessful()) {
          //OseeEventManager.kickBranchEvent(HttpBranchCreation.class, , branch.getId());
       }
-      return response;
+      return requestData;
    }
 }

@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.exchange;
 
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
@@ -35,12 +36,22 @@ public class ChangeVersionTranslator implements IDataTranslator<ChangeVersion> {
 
    @Override
    public ChangeVersion convert(PropertyStore propertyStore) throws OseeCoreException {
-      return null;
+      String value = propertyStore.get(Entry.VALUE.name());
+      ModificationType modificationType = ModificationType.getMod(Integer.getInteger(propertyStore.get(Entry.MOD_TYPE.name())));
+      Long gammaId = Long.parseLong(propertyStore.get(Entry.GAMMA_ID.name()));
+      Integer transactionNumber = Integer.parseInt(propertyStore.get(Entry.TRANSACTION_NUMBER.name()));
+      
+      return new ChangeVersion(value, gammaId, modificationType, transactionNumber);
    }
 
    @Override
    public PropertyStore convert(ChangeVersion changeVersion) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
+      
+      store.put(Entry.GAMMA_ID.name(), changeVersion.getGammaId());
+      store.put(Entry.MOD_TYPE.name(), changeVersion.getModType().getValue());
+      store.put(Entry.VALUE.name(), changeVersion.getValue());
+      store.put(Entry.TRANSACTION_NUMBER.name(), changeVersion.getTransactionNumber());
       return store;
    }
 

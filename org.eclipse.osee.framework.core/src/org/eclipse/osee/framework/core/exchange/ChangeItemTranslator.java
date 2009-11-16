@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.exchange;
 
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
@@ -19,7 +20,20 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  * @author Jeff C. Phillips
  */
 public class ChangeItemTranslator implements IDataTranslator<ChangeItem> {
+   private enum Type{
+      ARTIFACT,
+      ATTRIBUTE,
+      RELATION;
+   }
+   
    private enum Entry {
+      BASE_ENTRY,
+      FIRST_CHANGE,
+      CURRENT_ENTRY,
+      DESTINATION_ENTRY,
+      NET_ENTRY,
+      ART_ID,
+      ITEM_ID;
    }
 
    private final IDataTranslationService service;
@@ -31,6 +45,18 @@ public class ChangeItemTranslator implements IDataTranslator<ChangeItem> {
 
    @Override
    public ChangeItem convert(PropertyStore propertyStore) throws OseeCoreException {
+      PropertyStore baseEntryStore = propertyStore.getPropertyStore(Entry.BASE_ENTRY.name());
+      PropertyStore firstChangeStore = propertyStore.getPropertyStore(Entry.FIRST_CHANGE.name());
+      PropertyStore currentEntryStore = propertyStore.getPropertyStore(Entry.CURRENT_ENTRY.name());
+      PropertyStore destinationEntryStore = propertyStore.getPropertyStore(Entry.DESTINATION_ENTRY.name());
+      PropertyStore netEntryStore = propertyStore.getPropertyStore(Entry.NET_ENTRY.name());
+
+      ChangeVersion baseEntry = service.convert(baseEntryStore, ChangeVersion.class);
+      ChangeVersion firstChange = service.convert(firstChangeStore, ChangeVersion.class);
+      ChangeVersion currentEntry = service.convert(currentEntryStore, ChangeVersion.class);
+      ChangeVersion destinationEntry = service.convert(destinationEntryStore, ChangeVersion.class);
+      ChangeVersion netEntry = service.convert(netEntryStore, ChangeVersion.class);
+
       return null;
    }
 
