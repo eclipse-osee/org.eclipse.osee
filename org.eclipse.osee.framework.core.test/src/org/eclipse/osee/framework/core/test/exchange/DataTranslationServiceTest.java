@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.exchange;
 
+import java.io.InputStream;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exchange.DataTranslationService;
 import org.eclipse.osee.framework.core.exchange.IDataTranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -63,12 +65,34 @@ public class DataTranslationServiceTest {
       service.addTranslator(TestObject.class, new TestObjectTranslator());
 
       TestObject value = new TestObject("hello", 1, 1.0);
-      PropertyStore propertyStore = service.convert(value, TestObject.class);
+      PropertyStore propertyStore = service.convert(value);
       TestObject actual = service.convert(propertyStore, TestObject.class);
 
       Assert.assertEquals(value.one, actual.one);
       Assert.assertEquals(value.two, actual.two);
       Assert.assertEquals(value.three, actual.three);
+   }
+
+   @Test
+   public void testConvertStreams() throws OseeCoreException {
+      DataTranslationService service = new DataTranslationService();
+      service.addTranslator(TestObject.class, new TestObjectTranslator());
+
+      TestObject expected = new TestObject("streamTest", 45, 1.0);
+      TestObject actual = null;
+      InputStream stream = null;
+      try {
+         stream = service.convertToStream(expected);
+         actual = service.convert(stream, TestObject.class);
+
+      } finally {
+         Lib.close(stream);
+      }
+      Assert.assertNotNull(actual);
+      Assert.assertNotSame(expected, actual);
+      Assert.assertEquals(expected.one, actual.one);
+      Assert.assertEquals(expected.two, actual.two);
+      Assert.assertEquals(expected.three, actual.three);
    }
 
    private class TestObject {

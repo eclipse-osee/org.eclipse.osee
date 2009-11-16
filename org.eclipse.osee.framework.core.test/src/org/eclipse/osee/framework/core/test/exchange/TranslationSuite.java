@@ -8,18 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test;
+package org.eclipse.osee.framework.core.test.exchange;
 
-import org.eclipse.osee.framework.core.test.data.DataTestSuite;
-import org.eclipse.osee.framework.core.test.util.ChangeUtilTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ChangeUtilTest.class, DataTestSuite.class})
+@Suite.SuiteClasses( {DataTranslationServiceTest.class, BasicArtifactDataTranslatorTest.class,
+      BranchTranslatorTest.class, TransactionRecordTranslatorTest.class})
 /**
  * @author Roberto E. Escobar
  */
-public class CoreTestSuite {
+public class TranslationSuite {
 
 }
