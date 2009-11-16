@@ -41,7 +41,7 @@ public class ConnectWorkflowToTransaction extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws OseeCoreException {
       monitor.subTask("Aquiring Team Workflows");
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(200, SELECT_COMMIT_TRANSACTIONS, "Commit Branch%");
          while (chStmt.next()) {

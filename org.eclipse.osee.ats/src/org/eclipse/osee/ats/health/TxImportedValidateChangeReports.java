@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.core.SequenceManager;
@@ -282,7 +283,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       }
 
       public void load(String sourceDatabaseId) throws OseeDataStoreException {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
          try {
             originalToMapped.clear();
             chStmt.runPreparedQuery(10000, SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequence());
