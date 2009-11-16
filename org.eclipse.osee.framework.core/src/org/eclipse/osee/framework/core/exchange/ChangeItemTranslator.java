@@ -10,31 +10,34 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exchange;
 
-import org.eclipse.osee.framework.core.data.TransactionRecord;
+import org.eclipse.osee.framework.core.IDataTranslationService;
+import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Jeff C. Phillips
  */
-public class TransactionRecordDataTranslator implements IDataTranslator<TransactionRecord> {
+public class ChangeItemTranslator implements IDataTranslator<ChangeItem> {
    private enum Entry {
-      TRANSACTION_NUMBER
    }
 
-   public TransactionRecordDataTranslator() {
+   private final IDataTranslationService service;
+   
+   public ChangeItemTranslator(IDataTranslationService service) {
+      super();
+      this.service = service;
    }
 
-   public TransactionRecord convert(PropertyStore propertyStore) throws OseeCoreException {
-      String transactionNumber = propertyStore.get(Entry.TRANSACTION_NUMBER.name());
-      //need to get a transaction record from a transaction number?
+   @Override
+   public ChangeItem convert(PropertyStore propertyStore) throws OseeCoreException {
       return null;
    }
 
-   public PropertyStore convert(TransactionRecord transactionRecord) throws OseeCoreException {
+   @Override
+   public PropertyStore convert(ChangeItem changeItem) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
-      store.put(Entry.TRANSACTION_NUMBER.name() , transactionRecord.getId());
-
       return store;
    }
+
 }

@@ -10,34 +10,36 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exchange;
 
-import java.util.Collection;
-
 import org.eclipse.osee.framework.core.IDataTranslationService;
-import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Jeff C. Phillips
  */
-public class ChangeItemDataTranslator implements IDataTranslator<Collection<ChangeItem>> {
+public class ChangeVersionTranslator implements IDataTranslator<ChangeVersion> {
    private enum Entry {
+      GAMMA_ID,
+      MOD_TYPE,
+      VALUE,
+      TRANSACTION_NUMBER;
    }
 
    private final IDataTranslationService service;
    
-   public ChangeItemDataTranslator(IDataTranslationService service) {
+   public ChangeVersionTranslator(IDataTranslationService service) {
       super();
       this.service = service;
    }
 
    @Override
-   public Collection<ChangeItem> convert(PropertyStore propertyStore) throws OseeCoreException {
+   public ChangeVersion convert(PropertyStore propertyStore) throws OseeCoreException {
       return null;
    }
 
    @Override
-   public PropertyStore convert(Collection<ChangeItem> changeItems) throws OseeCoreException {
+   public PropertyStore convert(ChangeVersion changeVersion) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       return store;
    }
