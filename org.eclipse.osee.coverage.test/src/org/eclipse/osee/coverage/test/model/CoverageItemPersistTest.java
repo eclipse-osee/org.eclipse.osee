@@ -41,6 +41,7 @@ public class CoverageItemPersistTest {
 
    @BeforeClass
    public static void testSetup() throws OseeCoreException {
+      // If this fails, cleanup didn't happen.  Must DbInit
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
 
       parentCu = new CoverageUnit(null, "Top", "C:/UserData/");

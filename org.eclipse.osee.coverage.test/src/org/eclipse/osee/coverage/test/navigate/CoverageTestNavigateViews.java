@@ -18,6 +18,7 @@ import org.eclipse.osee.coverage.test.import1.CoveragePackage1Import1;
 import org.eclipse.osee.coverage.test.import1.CoveragePackage1Import1B;
 import org.eclipse.osee.coverage.test.import2.CoveragePackage1Import2;
 import org.eclipse.osee.coverage.test.import3.CoveragePackage1Import3;
+import org.eclipse.osee.coverage.test.import4.CoveragePackage1Import4;
 import org.eclipse.osee.coverage.test.package1.CoveragePackage1;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
@@ -47,6 +48,7 @@ public class CoverageTestNavigateViews implements ICoverageNavigateItem {
       items.add(new CoveragePackage1Import1B(null));
       items.add(new CoveragePackage1Import2(null));
       items.add(new CoveragePackage1Import3(null));
+      items.add(new CoveragePackage1Import4(null));
 
       return items;
    }

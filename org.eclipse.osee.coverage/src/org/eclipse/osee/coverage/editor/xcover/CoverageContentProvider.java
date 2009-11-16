@@ -19,6 +19,7 @@ import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MessageMergeItem;
+import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -119,7 +120,12 @@ public class CoverageContentProvider implements ITreeContentProvider {
    }
 
    public Object getParent(Object element) {
-      debug.report("getParent");
+      if (element instanceof CoverageUnit) {
+         return ((CoverageUnit) element).getParent();
+      }
+      if (element instanceof CoverageItem) {
+         return ((CoverageItem) element).getParent();
+      }
       return null;
    }
 

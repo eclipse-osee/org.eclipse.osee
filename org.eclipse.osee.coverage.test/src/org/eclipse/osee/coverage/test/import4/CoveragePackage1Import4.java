@@ -10,24 +10,18 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.test.import4;
 
-import java.util.Arrays;
-import org.eclipse.osee.coverage.test.util.CoverageImportTestBlam;
+import org.eclipse.osee.coverage.test.util.CpSelectAndImportItem;
+import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 
 /**
- * Imports change to PowerUnit1, adding a new method
+ * Imports two completely new file CoverageUnits PowerUnit1 and ComScrnAButton1
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport4TestBlam extends CoverageImportTestBlam {
+public class CoveragePackage1Import4 extends CpSelectAndImportItem {
 
-   public static String NAME = "Test Import 4";
-
-   public CoverageImport4TestBlam() {
-      super(NAME, Arrays.asList(
-      //
-      "import4/epu/PowerUnit1.java"
-      //
-      ));
+   public CoveragePackage1Import4(XNavigateItem parent) {
+      super(parent, "Open CP 1 - Import 4 - Add PowerUnit1.deselectAdded to middle", CoverageImport4TestBlam.NAME);
    }
 
 }
