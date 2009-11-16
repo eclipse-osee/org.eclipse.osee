@@ -61,7 +61,7 @@ public class CommitService implements ICommitService {
       Operations.executeWorkAndCheckStatus(op, monitor, -1);
       if (archiveSourceBranch) {
          sourceBranch.setArchived(true);
-         sourceBranch.persist();
+         BranchManager.persist(sourceBranch);
       }
    }
 }

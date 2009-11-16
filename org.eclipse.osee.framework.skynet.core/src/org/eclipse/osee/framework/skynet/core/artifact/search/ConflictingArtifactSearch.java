@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.database.sql.SkynetDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -24,19 +23,19 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class ConflictingArtifactSearch implements ISearchPrimitive {
    private static final String TOKEN = ";";
    private static final String CONFLICT_TABLE =
-         "((SELECT art_id " + "FROM " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id union all " +
+         "((SELECT art_id FROM osee_artifact_version t1, osee_txs t2, osee_tx_details t3 WHERE t3.branch_id = ? AND t3.transaction_id > ? AND t3.transaction_id <= ? AND t3.transaction_id = t2.transaction_id AND t2.gamma_id = t1.gamma_id union all " +
 
-         "SELECT a_art_id as art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id union all " +
+         "SELECT a_art_id as art_id FROM osee_relation_link t1, osee_txs t2, osee_tx_details t3 WHERE t3.branch_id = ? AND t3.transaction_id > ?  AND t3.transaction_id <= ?  AND t3.transaction_id = t2.transaction_id  AND t2.gamma_id = t1.gamma_id union all " +
 
-         "SELECT b_art_id as art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id) " +
+         "SELECT b_art_id as art_id FROM osee_relation_link t1, osee_txs t2, osee_tx_details t3 WHERE t3.branch_id = ? AND t3.transaction_id > ?  AND t3.transaction_id <= ?  AND t3.transaction_id = t2.transaction_id  AND t2.gamma_id = t1.gamma_id) " +
 
          " intersect " +
 
-         "(SELECT art_id " + "FROM " + SkynetDatabase.ARTIFACT_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id union all " +
+         "(SELECT art_id FROM osee_artifact_version t1, osee_txs t2, osee_tx_details t3 WHERE t3.branch_id = ?  AND t3.transaction_id > ?  AND t3.transaction_id <= ?  AND t3.transaction_id = t2.transaction_id  AND t2.gamma_id = t1.gamma_id union all " +
 
-         "SELECT a_art_id as art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id union all " +
+         "SELECT a_art_id as art_id FROM osee_relation_link t1, osee_txs t2, osee_tx_details t3 WHERE t3.branch_id = ?  AND t3.transaction_id > ?  AND t3.transaction_id <= ?  AND t3.transaction_id = t2.transaction_id  AND t2.gamma_id = t1.gamma_id union all " +
 
-         "SELECT b_art_id as art_id " + "FROM " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + " t1, " + "  " + SkynetDatabase.TRANSACTIONS_TABLE + " t2, " + "  " + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " t3 " + "WHERE t3.branch_id = ? " + " AND t3.transaction_id > ? " + " AND t3.transaction_id <= ? " + " AND t3.transaction_id = t2.transaction_id " + " AND t2.gamma_id = t1.gamma_id)) tcd1";
+         "SELECT b_art_id as art_id FROM osee_relation_link t1, osee_txs t2, osee_tx_details t3 WHERE t3.branch_id = ?  AND t3.transaction_id > ?  AND t3.transaction_id <= ?  AND t3.transaction_id = t2.transaction_id  AND t2.gamma_id = t1.gamma_id)) tcd1";
 
    private final int parentBranchId;
    private final int parentBaseTransactionNumber;
@@ -108,7 +107,7 @@ public class ConflictingArtifactSearch implements ISearchPrimitive {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
 
-      return "Parent Branch:" + parentBranch + " transactions " + parentBaseTransactionNumber + " to " + parentHeadTransactionNumber + "\n" + "Child Branch:" + childBranch + " transactions " + childBaseTransactionNumber + " to " + childHeadTransactionNumber;
+      return "Parent Branch:" + parentBranch + " transactions " + parentBaseTransactionNumber + " to " + parentHeadTransactionNumber + "\nChild Branch:" + childBranch + " transactions " + childBaseTransactionNumber + " to " + childHeadTransactionNumber;
 
    }
 
@@ -118,8 +117,10 @@ public class ConflictingArtifactSearch implements ISearchPrimitive {
 
    public static ConflictingArtifactSearch getPrimitive(String storageString) {
       String[] values = storageString.split(TOKEN);
-      if (values.length != 6) throw new IllegalStateException(
-            "Value for " + ConflictingArtifactSearch.class.getSimpleName() + " not parsable");
+      if (values.length != 6) {
+         throw new IllegalStateException(
+               "Value for " + ConflictingArtifactSearch.class.getSimpleName() + " not parsable");
+      }
 
       return new ConflictingArtifactSearch(Integer.parseInt(values[0]), Integer.parseInt(values[1]),
             Integer.parseInt(values[2]), Integer.parseInt(values[3]), Integer.parseInt(values[4]),

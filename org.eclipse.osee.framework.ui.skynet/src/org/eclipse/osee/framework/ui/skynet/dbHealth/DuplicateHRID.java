@@ -137,7 +137,7 @@ public class DuplicateHRID extends DatabaseHealthOperation {
 
    private List<ArtifactData> getDuplicateHRIDArtifacts(IProgressMonitor monitor) throws OseeDataStoreException {
       List<ArtifactData> duplicateItems = new LinkedList<ArtifactData>();
-      ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt1 = ConnectionHandler.getStatement();
       try {
          chStmt1.runPreparedQuery(GET_DUPLICATE_HRIDS);
          while (chStmt1.next()) {

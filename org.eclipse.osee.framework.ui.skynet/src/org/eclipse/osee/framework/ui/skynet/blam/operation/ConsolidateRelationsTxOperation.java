@@ -49,7 +49,6 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
 
    private static final String DELETE_RELATIONS = "delete from osee_relation_link where gamma_id = ?";
 
-   private final ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
    private final List<Long[]> relationDeleteData = new ArrayList<Long[]>(14000);
    private final List<Long> obsoleteGammas = new ArrayList<Long>();
    private final StringBuilder addressingBackup = new StringBuilder(100000);
@@ -68,6 +67,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    boolean materiallyDifferent;
    boolean updateAddressing;
    private int counter;
+   private ConnectionHandlerStatement chStmt;
 
    long previousNetGammaId;
    long previousObsoleteGammaId;
@@ -79,7 +79,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       super("Consolidate Relations", SkynetGuiPlugin.PLUGIN_ID);
    }
 
-   private void init() throws OseeWrappedException, IOException {
+   private void init() throws OseeCoreException, IOException {
       previousRelationTypeId = -1;
       previousArtifactAId = -1;
       previousArtiafctBId = -1;
@@ -93,6 +93,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
 
       previousNetGammaId = -1;
       previousTransactionId = -1;
+      chStmt = ConnectionHandler.getStatement();
       gammaJoin = JoinUtility.createExportImportJoinQuery();
 
       File iFile = OseeData.getFile("consolidateRelations_" + Lib.getDateTimeString() + ".csv");
@@ -136,7 +137,9 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
             }
          }
       } finally {
-         chStmt.close();
+         if (chStmt != null) {
+            chStmt.close();
+         }
       }
    }
 
@@ -188,7 +191,9 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
             writeAddressingBackup(obsoleteGammaId, transactionId, netGammaId, modType, txCurrent);
          }
       } finally {
-         chStmt.close();
+         if (chStmt != null) {
+            chStmt.close();
+         }
       }
       gammaJoin.delete();
    }

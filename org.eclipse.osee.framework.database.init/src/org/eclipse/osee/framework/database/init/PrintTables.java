@@ -14,11 +14,12 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 
 public class PrintTables implements IDbInitializationTask {
 
-   private Map<String, SchemaData> userConfig;
+   private final Map<String, SchemaData> userConfig;
 
    public PrintTables(Map<String, SchemaData> userConfig) {
       super();
@@ -37,7 +38,7 @@ public class PrintTables implements IDbInitializationTask {
    }
 
    private void printTable(String tableName) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery("select * from " + tableName);
          int numberOfColumns = chStmt.getColumnCount();

@@ -75,8 +75,7 @@ public class ConflictManagerInternal {
       long time = System.currentTimeMillis();
       long totalTime = time;
 
-      monitor.beginTask(String.format("Loading Merge Manager for Transaction %d",
-            commitTransaction.getId()), 100);
+      monitor.beginTask(String.format("Loading Merge Manager for Transaction %d", commitTransaction.getId()), 100);
       monitor.subTask("Finding Database stored conflicts");
       if (DEBUG) {
          System.out.println(String.format("\nDiscovering Conflicts based on Transaction ID: %d",
@@ -84,7 +83,7 @@ public class ConflictManagerInternal {
          totalTime = System.currentTimeMillis();
       }
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       if (DEBUG) {
          System.out.println("Running Query to find conflicts stored in the DataBase");
          time = System.currentTimeMillis();
@@ -117,7 +116,8 @@ public class ConflictManagerInternal {
    }
 
    public static List<Conflict> getConflictsPerBranch(Branch sourceBranch, Branch destinationBranch, TransactionRecord baselineTransaction, IProgressMonitor monitor) throws OseeCoreException {
-      @SuppressWarnings("unused") // This is for bulk loading so we do not loose are references
+      @SuppressWarnings("unused")
+      // This is for bulk loading so we do not loose are references
       Collection<Artifact> bulkLoadedArtifacts;
       ArrayList<ConflictBuilder> conflictBuilders = new ArrayList<ConflictBuilder>();
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
@@ -135,14 +135,14 @@ public class ConflictManagerInternal {
       }
       long totalTime = 0;
       if (sourceBranch != null && destinationBranch != null) {
-         monitor.beginTask(String.format("Loading Merge Manager for Branch %d into Branch %d",
-               sourceBranch.getId(), destinationBranch.getId()), 100);
+         monitor.beginTask(String.format("Loading Merge Manager for Branch %d into Branch %d", sourceBranch.getId(),
+               destinationBranch.getId()), 100);
          monitor.subTask("Finding Database stored conflicts");
 
          if (DEBUG) {
             System.out.println(String.format(
-                  "\nDiscovering Conflicts based on Source Branch: %d Destination Branch: %d",
-                  sourceBranch.getId(), destinationBranch.getId()));
+                  "\nDiscovering Conflicts based on Source Branch: %d Destination Branch: %d", sourceBranch.getId(),
+                  destinationBranch.getId()));
             totalTime = System.currentTimeMillis();
          }
       }
@@ -155,7 +155,7 @@ public class ConflictManagerInternal {
       BranchState sourceBranchState = sourceBranch.getBranchState();
       if (!sourceBranchState.isCreationInProgress() && !sourceBranchState.isCommitted() && !sourceBranchState.isRebaselined() && !sourceBranchState.isRebaselineInProgress()) {
          sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
-         sourceBranch.persist();
+         BranchManager.persist(sourceBranch);
       }
 
       int transactionId = findCommonTransaction(sourceBranch, destinationBranch);
@@ -219,14 +219,13 @@ public class ConflictManagerInternal {
 
          List<Object[]> insertParameters = new LinkedList<Object[]>();
          for (int artId : artIdSet) {
-            insertParameters.add(new Object[] {queryId, insertTime, artId, sourceBranch.getId(),
-                  SQL3DataType.INTEGER});
+            insertParameters.add(new Object[] {queryId, insertTime, artId, sourceBranch.getId(), SQL3DataType.INTEGER});
             insertParameters.add(new Object[] {queryId, insertTime, artId, destinationBranch.getId(),
                   SQL3DataType.INTEGER});
-            insertParameters.add(new Object[] {queryId, insertTime, artId, mergeBranch.getId(),
-                  SQL3DataType.INTEGER});
+            insertParameters.add(new Object[] {queryId, insertTime, artId, mergeBranch.getId(), SQL3DataType.INTEGER});
          }
-         artifacts = ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false, true);
+         artifacts =
+               ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, false, true);
       }
       if (DEBUG) {
          System.out.println(String.format("    Preloading took %s", Lib.getElapseString(time)));
@@ -252,11 +251,11 @@ public class ConflictManagerInternal {
          time = System.currentTimeMillis();
       }
       monitor.subTask("Finding Artifact Version Conflicts");
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
 
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS),
-               sourceBranch.getId(), destinationBranch.getId(), transactionId);
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS), sourceBranch.getId(),
+               destinationBranch.getId(), transactionId);
 
          if (!chStmt.next()) {
             return;
@@ -316,11 +315,11 @@ public class ConflictManagerInternal {
          time = System.currentTimeMillis();
       }
       monitor.subTask("Finding the Attribute Conflicts");
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       AttributeConflictBuilder attributeConflictBuilder;
       try {
-         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES),
-               sourceBranch.getId(), destinationBranch.getId(), transactionId);
+         chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES), sourceBranch.getId(),
+               destinationBranch.getId(), transactionId);
 
          int attrId = 0;
 
@@ -383,7 +382,7 @@ public class ConflictManagerInternal {
     * @throws OseeDataStoreException
     */
    private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, Branch branch, int endTransactionNumber) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       boolean isValidConflict;
       try {
          chStmt.runPreparedQuery(
@@ -438,7 +437,7 @@ public class ConflictManagerInternal {
 
    public static Collection<Integer> getDestinationBranchesMerged(int sourceBranchId) throws OseeCoreException {
       List<Integer> destinationBranches = new LinkedList<Integer>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_DESTINATION_BRANCHES, sourceBranchId);
          while (chStmt.next()) {
@@ -453,7 +452,7 @@ public class ConflictManagerInternal {
 
    private static int getCommitTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       int transactionId = 0;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          if (sourceBranch != null && destBranch != null) {
             chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getId(), destBranch.getId());
@@ -476,7 +475,7 @@ public class ConflictManagerInternal {
 
    public static int getMergeBranchId(int sourceBranchId, int destBranchId) throws OseeCoreException {
       int mergeBranchId = 0;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranchId, destBranchId);
          if (chStmt.next()) {

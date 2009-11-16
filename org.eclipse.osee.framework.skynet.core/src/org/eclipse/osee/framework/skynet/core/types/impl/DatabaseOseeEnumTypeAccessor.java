@@ -55,7 +55,7 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
    @Override
    public void load(AbstractOseeCache<OseeEnumType> cache) throws OseeCoreException {
       HashCollection<OseeEnumType, OseeEnumEntry> types = new HashCollection<OseeEnumType, OseeEnumEntry>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_OSEE_ENUM_TYPES);
          OseeEnumType oseeEnumType = null;

@@ -88,7 +88,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
    }
 
    private void loadArtifactTypes(AbstractOseeCache<ArtifactType> cache, IOseeTypeFactory factory) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_ARTIFACT_TYPES);
 
@@ -120,7 +120,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
    }
 
    private void loadTypeInheritance(ArtifactTypeCache cache) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt2 = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt2 = ConnectionHandler.getStatement();
       try {
          chStmt2.runPreparedQuery(SELECT_ARTIFACT_TYPE_INHERITANCE);
          HashCollection<ArtifactType, ArtifactType> baseToSuperTypes =
@@ -154,7 +154,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
    }
 
    private void loadAllTypeValidity(ArtifactTypeCache cache, IOseeTypeFactory factory) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_ARTIFACT_TYPE_ATTRIBUTES);
          while (chStmt.next()) {

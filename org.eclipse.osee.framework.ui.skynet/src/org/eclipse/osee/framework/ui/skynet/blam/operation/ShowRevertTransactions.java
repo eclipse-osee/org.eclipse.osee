@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -38,7 +39,7 @@ public class ShowRevertTransactions extends AbstractBlam {
 
       sbFull.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Branch ID", "User", "Transaction_ID", "Date"}));
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_REVERT_TRANSACTIONS);
          while (chStmt.next()) {

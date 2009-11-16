@@ -214,7 +214,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
    }
 
    private void loadData(String sql, boolean forDelete) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map = forDelete ? deleteMap : updateMap;
       try {
          chStmt.runPreparedQuery(sql);

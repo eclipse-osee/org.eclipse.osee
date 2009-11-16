@@ -8,34 +8,31 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.core;
+package org.eclipse.osee.framework.database.internal.core;
 
 import java.sql.Connection;
 import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.IConnection;
+import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.database.internal.IDbConnectionFactory;
 import org.eclipse.osee.framework.database.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
-class OseeConnectionPool {
+public class OseeConnectionPoolImpl {
    private static final int MAX_CONNECTIONS_PER_CLIENT = 8;
-   private final List<OseeConnection> connections = new CopyOnWriteArrayList<OseeConnection>();
-   private final String dbDriver;
+   private final List<OseeConnectionImpl> connections = new CopyOnWriteArrayList<OseeConnectionImpl>();
    private final String dbUrl;
    private final Properties properties;
+   private final IDbConnectionFactory connectionFactory;
+   private final String driver;
 
-   /**
-    * @param dbInformation
-    */
-   public OseeConnectionPool(IDatabaseInfo databaseInfo) {
-      this(databaseInfo.getDriver(), databaseInfo.getConnectionUrl(), databaseInfo.getConnectionProperties());
-   }
-
-   public OseeConnectionPool(String dbDriver, String dbUrl, Properties properties) {
-      this.dbDriver = dbDriver;
+   public OseeConnectionPoolImpl(IDbConnectionFactory connectionFactory, String driver, String dbUrl, Properties properties) {
+      this.connectionFactory = connectionFactory;
+      this.driver = driver;
       this.dbUrl = dbUrl;
       this.properties = properties;
    }
@@ -58,8 +55,8 @@ class OseeConnectionPool {
       connections.remove(conn);
    }
 
-   public synchronized OseeConnection getConnection() throws OseeDataStoreException {
-      for (OseeConnection connection : connections) {
+   public synchronized OseeConnectionImpl getConnection() throws OseeDataStoreException {
+      for (OseeConnectionImpl connection : connections) {
          if (connection.lease()) {
             return connection;
          }
@@ -70,7 +67,7 @@ class OseeConnectionPool {
                "This client has reached the maximum number of allowed simultaneous database connections of : " + MAX_CONNECTIONS_PER_CLIENT);
       }
       try {
-         OseeConnection connection = getOseeConnection();
+         OseeConnectionImpl connection = getOseeConnection();
          connections.add(connection);
          return connection;
       } catch (Throwable th) {
@@ -78,14 +75,14 @@ class OseeConnectionPool {
       }
    }
 
-   private OseeConnection getOseeConnection() throws Exception {
-      IConnection connectionFactory = InternalActivator.getConnectionFactory().get(dbDriver);
-      Connection connection = connectionFactory.getConnection(properties, dbUrl);
+   private OseeConnectionImpl getOseeConnection() throws Exception {
+      IConnection connectionDriver = connectionFactory.get(driver);
+      Connection connection = connectionDriver.getConnection(properties, dbUrl);
       connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
-      return new OseeConnection(connection, this);
+      return new OseeConnectionImpl(connection, this);
    }
 
-   synchronized void returnConnection(OseeConnection connection) {
+   synchronized void returnConnection(OseeConnectionImpl connection) {
       try {
          if (connection.isClosed()) {
             removeConnection(connection);
@@ -99,7 +96,7 @@ class OseeConnectionPool {
    }
 
    synchronized void releaseUneededConnections() throws OseeDataStoreException {
-      for (OseeConnection connection : connections) {
+      for (OseeConnectionImpl connection : connections) {
          if (connection.isStale()) {
             connection.destroy();
          }

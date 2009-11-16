@@ -30,7 +30,7 @@ public class Util {
    public static Map<Long, String> getArtIdMap(String attrTypeName) throws OseeDataStoreException {
       Map<Long, String> toReturn = new HashMap<Long, String>(250);
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          int typeId = ConnectionHandler.runPreparedQueryFetchInt(-1, sqlExtensionTypeId, attrTypeName);
          chStmt.runPreparedQuery(sqlExtensionTypes, typeId);

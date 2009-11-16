@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -48,7 +49,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       Map<Integer, ChangeBuilder> attributesWasValueCache = new HashMap<Integer, ChangeBuilder>();
       Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
       Set<Integer> modifiedArtifacts = new HashSet<Integer>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       boolean hasBranch = getSourceBranch() != null;
       long time = System.currentTimeMillis();
       try {
@@ -184,7 +185,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          int queryId = ArtifactLoader.getNewQueryId();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
          List<Object[]> datas = new LinkedList<Object[]>();
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
 
          try {
             // insert into the artifact_join_table

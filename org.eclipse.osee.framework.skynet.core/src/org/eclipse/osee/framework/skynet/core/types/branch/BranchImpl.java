@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchField;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.OseeField;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
@@ -32,22 +33,23 @@ import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.skynet.core.types.field.AliasesField;
 import org.eclipse.osee.framework.skynet.core.types.field.AssociatedArtifactField;
-import org.eclipse.osee.framework.skynet.core.types.impl.BranchField;
 
 /**
  * @author Roberto E. Escobar
  */
 public final class BranchImpl extends Branch {
    private static final int SHORT_NAME_LIMIT = 25;
+   private final AbstractOseeCache<Branch> cache;
 
    public BranchImpl(AbstractOseeCache<Branch> cache, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) {
-      super(cache, guid, name);
+      super(guid, name);
+      this.cache = cache;
+      initializeFields();
       setFieldLogException(BranchField.BRANCH_TYPE_FIELD_KEY, branchType);
       setFieldLogException(BranchField.BRANCH_STATE_FIELD_KEY, branchState);
       setFieldLogException(BranchField.BRANCH_ARCHIVED_STATE_FIELD_KEY, BranchArchivedState.fromBoolean(isArchived));
    }
 
-   @Override
    protected void initializeFields() {
       addField(BranchField.BRANCH_TYPE_FIELD_KEY, new OseeField<BranchType>());
       addField(BranchField.BRANCH_STATE_FIELD_KEY, new OseeField<BranchState>());
@@ -56,9 +58,8 @@ public final class BranchImpl extends Branch {
       addField(BranchField.BRANCH_ALIASES_FIELD_KEY, new AliasesField(getCache(), this));
    }
 
-   @Override
    protected BranchCache getCache() {
-      return (BranchCache) super.getCache();
+      return (BranchCache) cache;
    }
 
    @Override

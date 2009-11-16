@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ATTRIBUTE_TYPE_TABLE;
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.IS;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ATTRIBUTE_TYPE_TABLE;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTIONS_TABLE;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.database.sql.LocalAliasTable;
 
 /**
  * @author Robert A. Fisher

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.internal;
+package org.eclipse.osee.framework.skynet.core.transaction;
 
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * @author Roberto E. Escobar
@@ -24,7 +25,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class TransactionMonitor {
 
    private enum TxState {
-      CREATED, RUNNING, ENDED;
+      CREATED,
+      RUNNING,
+      ENDED;
    }
 
    private final Map<Object, TxOperation> txMap;
@@ -40,7 +43,7 @@ public class TransactionMonitor {
          // use the same transaction.
          // This case may happens legitimately if an exception occurs outside this API before transaction.execute() is called,
          // so it is only notification that this is occurring.
-         OseeLog.log(InternalActivator.class, Level.SEVERE, "New transaction created over Last transaction",
+         OseeLog.log(Activator.class, Level.SEVERE, "New transaction created over Last transaction",
                currentTx.getError());
       }
       txMap.put(key, new TxOperation(transaction));

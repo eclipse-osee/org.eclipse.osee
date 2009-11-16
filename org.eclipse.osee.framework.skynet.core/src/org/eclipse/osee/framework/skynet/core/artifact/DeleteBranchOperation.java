@@ -37,7 +37,7 @@ public class DeleteBranchOperation extends AbstractOperation {
       try {
          branch.setBranchState(BranchState.DELETED);
          branch.setArchived(true);
-         branch.persist();
+         BranchManager.persist(branch);
       } catch (Exception ex) {
          branch.setBranchState(originalState);
          branch.setArchived(originalArchivedState.isArchived());

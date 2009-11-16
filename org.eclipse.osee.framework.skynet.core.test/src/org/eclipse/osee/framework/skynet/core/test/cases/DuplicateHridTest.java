@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.test.cases;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -46,7 +47,7 @@ public class DuplicateHridTest {
    /* Queries the database and grabs the first HRID it sees */
    private static String get_used_HRID() throws OseeDataStoreException {
       String ret;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ARTIFACTS);
          chStmt.next();
@@ -68,8 +69,9 @@ public class DuplicateHridTest {
                      'N', 'P', 'Q', 'R', 'S', 'T', 'V', 'W', 'X', 'Y', 'Z'}};
    private static final int[] charsIndexLookup = new int[] {0, 1, 1, 1, 0};
 
-   /* Copied from Artifact.java
-    * The hope here is that we won't randomly generate an HRID that's already taken; 
+   /*
+    * Copied from Artifact.java
+    * The hope here is that we won't randomly generate an HRID that's already taken;
     * given the size of the demo database, this is unlikely
     */
    private static String generate_random_HRID() {

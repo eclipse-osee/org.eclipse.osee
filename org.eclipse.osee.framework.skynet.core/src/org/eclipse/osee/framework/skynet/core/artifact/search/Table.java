@@ -8,8 +8,9 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.sql;
+package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+@Deprecated
 public class Table {
    protected String name;
 

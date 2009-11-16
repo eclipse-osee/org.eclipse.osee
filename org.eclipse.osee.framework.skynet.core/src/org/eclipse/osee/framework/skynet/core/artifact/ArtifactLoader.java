@@ -112,7 +112,7 @@ public final class ArtifactLoader {
    public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       List<Artifact> artifacts = new ArrayList<Artifact>(fetchSize);
       try {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
          try {
             String sql;
             if (historical) {
@@ -274,7 +274,7 @@ public final class ArtifactLoader {
     * @param artifactCountEstimate
     */
    public static void selectArtifacts(int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate, TransactionRecord transactionId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       long time = System.currentTimeMillis();
 
       try {
@@ -375,7 +375,7 @@ public final class ArtifactLoader {
       if (historical) {
          return; // TODO: someday we might have a use for historical relations, but not now
       }
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(artifacts.size() * 8, ClientSessionManager.getSql(OseeSql.LOAD_RELATIONS), queryId);
          while (chStmt.next()) {
@@ -410,7 +410,7 @@ public final class ArtifactLoader {
          return;
       }
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          if (historical) {
             chStmt.runPreparedQuery(artifacts.size() * 8,

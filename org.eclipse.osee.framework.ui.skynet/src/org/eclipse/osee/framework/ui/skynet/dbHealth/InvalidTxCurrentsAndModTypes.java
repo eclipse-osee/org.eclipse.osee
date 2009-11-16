@@ -206,7 +206,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       resultsTab.addColumn(new XViewerColumn("6", "Mod Type", 80, SWT.LEFT, true, SortDataType.String, false, ""));
       resultsTab.addColumn(new XViewerColumn("7", "TX Current", 80, SWT.LEFT, true, SortDataType.String, false, ""));
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       String sql = String.format(SELECT_ADDRESSES, columnName, tableName, columnName);
       try {
          chStmt.runPreparedQuery(10000, sql);
@@ -217,8 +217,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
             checkForCancelledStatus(monitor);
             Address address =
                   new Address(chStmt.getInt("branch_id"), chStmt.getInt(columnName), chStmt.getInt("transaction_id"),
-                  chStmt.getInt("tx_type"), chStmt.getLong("gamma_id"), chStmt.getInt("mod_type"),
-                  chStmt.getInt("tx_current"));
+                        chStmt.getInt("tx_type"), chStmt.getLong("gamma_id"), chStmt.getInt("mod_type"),
+                        chStmt.getInt("tx_current"));
 
             if (!address.isSimilar(previousAddress)) {
                consolidateAddressing();

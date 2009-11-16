@@ -55,7 +55,7 @@ public class AttributeDataStore {
    public static Collection<AttributeData> getAttribute(final OseeConnection connection, final int tagQueueQueryId) throws OseeDataStoreException {
       final Collection<AttributeData> attributeData = new ArrayList<AttributeData>();
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(LOAD_ATTRIBUTE, tagQueueQueryId);
          while (chStmt.next()) {
@@ -134,7 +134,7 @@ public class AttributeDataStore {
    public static Set<AttributeData> getAttributesByTags(final int branchId, final SearchOptions options, final Collection<Long> tagData, final Collection<String> attributeTypes) throws OseeDataStoreException {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
       AttributeJoinQuery attributeJoin = null;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          boolean isNameOnly = attributeTypes.size() == 1 && attributeTypes.contains("Name");
          boolean isAttributeFilterValid = !isNameOnly && !attributeTypes.isEmpty();
@@ -184,7 +184,7 @@ public class AttributeDataStore {
    private static String getBranchTaggingQueries(final int branchId, final boolean isCountQuery) throws OseeDataStoreException {
       StringBuilder builder = new StringBuilder();
       builder.append(isCountQuery ? COUNT_TAGGABLE_ATTRIBUTES : FIND_ALL_TAGGABLE_ATTRIBUTES);
-      if (SupportedDatabase.isDatabaseType(SupportedDatabase.postgresql)) {
+      if (SupportedDatabase.isDatabaseType(ConnectionHandler.getMetaData(), SupportedDatabase.postgresql)) {
          builder.append(POSTGRESQL_CHECK);
       }
 

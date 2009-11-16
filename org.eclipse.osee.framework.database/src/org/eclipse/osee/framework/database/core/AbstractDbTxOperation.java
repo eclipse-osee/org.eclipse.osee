@@ -19,10 +19,6 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
  */
 public abstract class AbstractDbTxOperation extends AbstractOperation {
 
-   /**
-    * @param operationName
-    * @param pluginId
-    */
    public AbstractDbTxOperation(String operationName, String pluginId) {
       super(operationName, pluginId);
    }

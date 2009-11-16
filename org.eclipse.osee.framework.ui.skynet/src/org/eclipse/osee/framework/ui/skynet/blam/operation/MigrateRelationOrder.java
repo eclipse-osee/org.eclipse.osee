@@ -116,7 +116,7 @@ public class MigrateRelationOrder extends AbstractBlam {
    private void addToChildBaseilnes(Integer branchId, Integer transactionNumber) throws OseeCoreException {
       final List<Object[]> txGammaList = new ArrayList<Object[]>(3000);
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(3000, SELECT_GAMMA_FROM_TXS, transactionNumber);
          while (chStmt.next()) {
@@ -175,7 +175,7 @@ public class MigrateRelationOrder extends AbstractBlam {
    private void fixPreviousBugForBranch(Integer branchId, Integer transactionNumber) throws OseeDataStoreException {
       final List<Object[]> txGammaList = new ArrayList<Object[]>(3000);
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(3000, SELECT_GAMMA_FROM_TXS, transactionNumber);
          while (chStmt.next()) {

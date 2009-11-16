@@ -66,7 +66,7 @@ public class SequenceManager {
       if (range.lastAvailable == 0) {
          long lastValue = -1;
          boolean gotSequence = false;
-         OseeConnection connection = OseeDbConnection.getConnection();
+         OseeConnection connection = ConnectionHandler.getConnection();
          try {
             while (!gotSequence) {
                lastValue = ConnectionHandler.runPreparedQueryFetchLong(connection, -1, QUERY_SEQUENCE, sequenceName);

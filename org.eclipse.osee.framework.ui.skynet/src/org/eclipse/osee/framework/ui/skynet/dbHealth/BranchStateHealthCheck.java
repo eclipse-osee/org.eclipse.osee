@@ -156,7 +156,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
 
    private Collection<BranchData> getAllBranchData() throws OseeDataStoreException {
       Map<Integer, BranchData> data = new HashMap<Integer, BranchData>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery("select * from osee_branch");
          while (chStmt.next()) {
@@ -174,7 +174,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       } finally {
          chStmt.close();
       }
-      chStmt = new ConnectionHandlerStatement();
+      chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery("select * from osee_merge");
          while (chStmt.next()) {

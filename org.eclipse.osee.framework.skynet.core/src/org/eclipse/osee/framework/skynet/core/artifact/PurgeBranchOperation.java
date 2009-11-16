@@ -139,7 +139,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    }
 
    private void findDeleteableGammas(String sourceTableName, String columnName, double percentage) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
       String sql =
             String.format(SELECT_DELETABLE_GAMMAS, columnName, sourceTableName,
                   TransactionDetailsType.NonBaselined.getId(), columnName, columnName);
@@ -157,7 +157,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
 
    private void purgeAddressing(double percentage) throws OseeDataStoreException {
       monitor.setTaskName("Purge txs addressing");
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
       List<Object[]> addressing = new ArrayList<Object[]>();
       String sql = String.format(SELECT_ADDRESSING_BY_BRANCH, sourceTableName);
 

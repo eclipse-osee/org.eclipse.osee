@@ -62,7 +62,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
    @Override
    public void load(AbstractOseeCache<AttributeType> cache) throws OseeCoreException {
       enumCache.ensurePopulated();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
 
       try {
          chStmt.runPreparedQuery(SELECT_ATTRIBUTE_TYPES);
@@ -159,7 +159,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
 
    private int getOrCreateAttributeProviderType(String attrProviderExtension) throws OseeDataStoreException {
       int attrBaseTypeId = -1;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_ATTRIBUTE_PROVIDER_TYPE, attrProviderExtension);
          if (chStmt.next()) {
@@ -176,7 +176,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
 
    private int getOrCreateAttributeBaseType(String attrBaseExtension) throws OseeDataStoreException {
       int attrBaseTypeId = -1;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_ATTRIBUTE_BASE_TYPE, attrBaseExtension);
          if (chStmt.next()) {

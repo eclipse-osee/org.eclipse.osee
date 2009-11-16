@@ -50,7 +50,7 @@ public class SearchTagDataStore {
 
    public static int deleteTags(OseeConnection connection, int queryId) throws OseeDataStoreException {
       int numberDeleted = 0;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery("select gamma_id from osee_join_transaction where query_id = ?", queryId);
          List<Object[]> datas = new ArrayList<Object[]>();
@@ -108,7 +108,7 @@ public class SearchTagDataStore {
       final Set<IAttributeLocator> toReturn = new HashSet<IAttributeLocator>();
 
       for (Long codedTag : codedTags) {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
          try {
             chStmt.runPreparedQuery(SELECT_SEARCH_TAGS, codedTag);
             while (chStmt.next()) {

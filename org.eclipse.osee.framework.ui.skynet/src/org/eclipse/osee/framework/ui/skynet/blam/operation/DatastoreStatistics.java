@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -29,8 +30,9 @@ public class DatastoreStatistics extends AbstractBlam {
       return "Datastore Statistics";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
 
       try {
          chStmt.runPreparedQuery(1000, SELECT_ARTIFACT_COUNTS);
@@ -55,6 +57,7 @@ public class DatastoreStatistics extends AbstractBlam {
       return "Reports statistics about the datastore including artifact counts by type.";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin.Health");
    }

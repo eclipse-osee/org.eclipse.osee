@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
@@ -133,7 +134,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    }
 
    private void loadBranches(BranchCache cache, IOseeTypeFactory factory, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_BRANCHES);
          while (chStmt.next()) {
@@ -191,7 +192,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    }
 
    private void loadMergeBranches(BranchCache branchCache) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(1000, SELECT_MERGE_BRANCHES);
          while (chStmt.next()) {
@@ -208,7 +209,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
 
    private void loadBranchAliases(BranchCache branchCache) throws OseeCoreException {
       HashCollection<Integer, String> aliasMap = new HashCollection<Integer, String>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_BRANCH_ALIASES);
          while (chStmt.next()) {
@@ -246,7 +247,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
             }
             joinQuery.store();
 
-            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+            ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
             try {
                chStmt.runPreparedQuery(5000, SELECT_TRANSACTIONS_BY_QUERY_ID, joinQuery.getQueryId());
                while (chStmt.next()) {

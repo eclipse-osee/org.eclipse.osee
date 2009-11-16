@@ -11,18 +11,18 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.AbstractOseeType;
 import org.eclipse.osee.framework.core.data.OseeField;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.skynet.core.types.AbstractCachingType;
 
 /**
  * @author Robert A. Fisher
  */
-public class RelationType extends AbstractOseeType implements Comparable<RelationType> {
+public class RelationType extends AbstractCachingType implements Comparable<RelationType> {
 
    private static final String RELATION_SIDE_A_NAME_FIELD_KEY = "osee.relation.type.side.a.name.field";
    private static final String RELATION_SIDE_B_NAME_FIELD_KEY = "osee.relation.type.side.b.name.field";

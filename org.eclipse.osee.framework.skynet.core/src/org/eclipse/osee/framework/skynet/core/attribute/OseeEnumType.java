@@ -17,16 +17,16 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.AbstractOseeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.types.AbstractCachingType;
 import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.field.EnumEntryField;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnumType> {
+public class OseeEnumType extends AbstractCachingType implements Comparable<OseeEnumType> {
 
    public static final String OSEE_ENUM_TYPE_ENTRIES_FIELD = "osee.enum.type.entries.field";
 

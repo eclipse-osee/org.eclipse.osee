@@ -83,7 +83,7 @@ public class PurgeDbTransaction extends DbTransaction {
          }
          if (batchParameters.size() > 0) {
             ArtifactLoader.insertIntoArtifactJoin(connection, batchParameters);
-            ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+            ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
             try {
                chStmt.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, queryId);
                boolean failed = false;

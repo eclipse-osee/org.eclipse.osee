@@ -12,47 +12,22 @@ package org.eclipse.osee.framework.database.core;
 
 import java.io.InputStream;
 import java.math.BigDecimal;
-import java.sql.CallableStatement;
 import java.sql.Date;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.internal.InternalActivator;
-import org.eclipse.osee.framework.database.sql.QueryRecord;
-import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Jeff C. Phillips
  * @author Ryan D. Brooks
  */
-public class ConnectionHandlerStatement {
-   private ResultSet rSet;
-   private PreparedStatement preparedStatement;
-   private CallableStatement callableStatement;
-   private OseeConnection connection;
-   private final boolean autoClose;
+public abstract class ConnectionHandlerStatement {
 
-   public ConnectionHandlerStatement(OseeConnection connection) {
-      this(connection, connection == null);
+   protected ConnectionHandlerStatement() {
+      super();
    }
 
-   public ConnectionHandlerStatement(OseeConnection connection, boolean autoClose) {
-      this.autoClose = autoClose;
-      this.connection = connection;
-   }
-
-   public ConnectionHandlerStatement() {
-      this(null);
-   }
-
-   public void runPreparedQuery(String query, Object... data) throws OseeDataStoreException {
-      runPreparedQuery(0, query, data);
-   }
+   public abstract void runPreparedQuery(String query, Object... data) throws OseeDataStoreException;
 
    /**
     * @param fetchSize hint as to the number of rows that should be fetched from the database at a time. will be limited
@@ -61,23 +36,7 @@ public class ConnectionHandlerStatement {
     * @param data
     * @throws OseeDataStoreException
     */
-   public void runPreparedQuery(int fetchSize, String query, Object... data) throws OseeDataStoreException {
-      QueryRecord record = new QueryRecord(query, data);
-
-      try {
-         allowReuse();
-         preparedStatement = connection.prepareStatement(query);
-         preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
-         ConnectionHandler.populateValuesForPreparedStatement(preparedStatement, data);
-
-         record.markStart();
-         rSet = preparedStatement.executeQuery();
-         record.markEnd();
-      } catch (SQLException ex) {
-         record.setSqlException(ex);
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract void runPreparedQuery(int fetchSize, String query, Object... data) throws OseeDataStoreException;
 
    /**
     * Invokes a stored procedure parameters of type SQL3DataType are registered as Out parameters and all others are set
@@ -87,279 +46,49 @@ public class ConnectionHandlerStatement {
     * @param data
     * @throws OseeDataStoreException
     */
-   public void runCallableStatement(String query, Object... data) throws OseeDataStoreException {
-      QueryRecord record = new QueryRecord(query, data);
+   public abstract void runCallableStatement(String query, Object... data) throws OseeDataStoreException;
 
-      try {
-         allowReuse();
-         callableStatement = connection.prepareCall(query);
-
-         for (int index = 0; index < data.length; index++) {
-            if (data[index] instanceof SQL3DataType) {
-               callableStatement.registerOutParameter(index + 1, ((SQL3DataType) data[index]).getSQLTypeNumber());
-            }
-         }
-         ConnectionHandler.populateValuesForPreparedStatement(callableStatement, data);
-
-         record.markStart();
-         if (callableStatement.execute()) {
-            rSet = callableStatement.getResultSet();
-         }
-         record.markEnd();
-      } catch (SQLException ex) {
-         record.setSqlException(ex);
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   public boolean next() throws OseeDataStoreException {
-      if (rSet != null) {
-         try {
-            return rSet.next();
-         } catch (SQLException ex) {
-            throw new OseeDataStoreException(ex);
-         }
-      }
-      return false;
-   }
+   public abstract boolean next() throws OseeDataStoreException;
 
    /**
     * The application must call close when it is done using this object; however, it is safe to use this same object
     * multiple times, for example calling runPreparedQuery() repeatedly, without any intermediate calls to close
     */
-   public void close() {
-      try {
-         closePreviousResources();
-         if (autoClose && connection != null) {
-            connection.close();
-            connection = null;// this allows for multiple calls to runPreparedQuery to have an open connection
-         }
-      } catch (SQLException ex) {
-         OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
-      }
-   }
+   public abstract void close();
 
-   /**
-    * allows for multiple uses of this object to have an open connection
-    * 
-    * @throws SQLException
-    * @throws OseeDataStoreException
-    */
-   private void allowReuse() throws SQLException, OseeDataStoreException {
-      if (connection == null) {
-         connection = OseeDbConnection.getConnection();
-      }
-      closePreviousResources();
-   }
+   public abstract InputStream getBinaryStream(String columnName) throws OseeDataStoreException;
 
-   private void closePreviousResources() throws SQLException {
-      if (rSet != null) {
-         rSet.close();
-      }
-      if (preparedStatement != null) {
-         preparedStatement.close();
-      }
-      if (callableStatement != null) {
-         callableStatement.close();
-      }
-   }
+   public abstract InputStream getAsciiStream(String columnName) throws OseeDataStoreException;
 
-   public InputStream getBinaryStream(String columnName) throws OseeDataStoreException {
-      try {
-         return rSet.getBinaryStream(columnName);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract String getString(String columnName) throws OseeDataStoreException;
 
-   public InputStream getAsciiStream(String columnName) throws OseeDataStoreException {
-      try {
-         return rSet.getAsciiStream(columnName);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract float getFloat(String columnName) throws OseeDataStoreException;
 
-   public String getString(String columnName) throws OseeDataStoreException {
-      try {
-         return rSet.getString(columnName);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract long getLong(String columnName) throws OseeDataStoreException;
 
-   public float getFloat(String columnName) throws OseeDataStoreException {
-      try {
-         return rSet.getFloat(columnName);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract int getInt(String columnName) throws OseeDataStoreException;
 
-   public long getLong(String columnName) throws OseeDataStoreException {
-      try {
-         return rSet.getLong(columnName);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract Timestamp getTimestamp(String columnName) throws OseeDataStoreException;
 
-   public int getInt(String columnName) throws OseeDataStoreException {
-      try {
-         return rSet.getInt(columnName);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract BigDecimal getBigDecimal(String name) throws OseeDataStoreException;
 
-   /**
-    * should not be used by application code because it is less readable than using the column name
-    * 
-    * @param columnIndex
-    * @return
-    * @throws OseeDataStoreException
-    */
-   int getInt(int columnIndex) throws OseeDataStoreException {
-      try {
-         return rSet.getInt(columnIndex);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract Time getTime(String name) throws OseeDataStoreException;
 
-   int getCallableInt(int columnIndex) throws OseeDataStoreException {
-      try {
-         return callableStatement.getInt(columnIndex);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract double getDouble(String columnName) throws OseeDataStoreException;
 
-   public double getCallableDouble(int columnIndex) throws OseeDataStoreException {
-      try {
-         return callableStatement.getDouble(columnIndex);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract Date getDate(String columnName) throws OseeDataStoreException;
 
-   /**
-    * should not be used by application code because it is less readable than using the column name
-    * 
-    * @param columnIndex
-    * @return
-    * @throws OseeDataStoreException
-    */
-   long getLong(int columnIndex) throws OseeDataStoreException {
-      try {
-         return rSet.getLong(columnIndex);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract boolean wasNull() throws OseeDataStoreException;
 
-   /**
-    * should not be used by application code because it is less readable than using the column name
-    * 
-    * @param columnIndex
-    * @return
-    * @throws OseeDataStoreException
-    */
-   String getString(int columnIndex) throws OseeDataStoreException {
-      try {
-         return rSet.getString(columnIndex);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract int getColumnCount() throws OseeDataStoreException;
 
-   public Timestamp getTimestamp(String columnName) throws OseeDataStoreException {
-      try {
-         return rSet.getTimestamp(columnName);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract String getColumnName(int columnIndex) throws OseeDataStoreException;
 
-   public BigDecimal getBigDecimal(String name) throws OseeDataStoreException {
-      try {
-         return rSet.getBigDecimal(name);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract int getColumnType(int columnIndex) throws OseeDataStoreException;
 
-   public Time getTime(String name) throws OseeDataStoreException {
-      try {
-         return rSet.getTime(name);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract String getColumnTypeName(int columnIndex) throws OseeDataStoreException;
 
-   public double getDouble(String columnName) throws OseeDataStoreException {
-      try {
-         return rSet.getDouble(columnName);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   public Date getDate(String columnName) throws OseeDataStoreException {
-      try {
-         return rSet.getDate(columnName);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   public boolean wasNull() throws OseeDataStoreException {
-      try {
-         return rSet.wasNull();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   public int getColumnCount() throws OseeDataStoreException {
-      try {
-         return rSet.getMetaData().getColumnCount();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   public String getColumnName(int columnIndex) throws OseeDataStoreException {
-      try {
-         return rSet.getMetaData().getColumnName(columnIndex);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   public int getColumnType(int columnIndex) throws OseeDataStoreException {
-      try {
-         return rSet.getMetaData().getColumnType(columnIndex);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   public String getColumnTypeName(int columnIndex) throws OseeDataStoreException {
-      try {
-         return rSet.getMetaData().getColumnTypeName(columnIndex);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   public Object getObject(int columnIndex) throws OseeDataStoreException {
-      try {
-         return rSet.getObject(columnIndex);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract Object getObject(int columnIndex) throws OseeDataStoreException;
 
    /**
     * Returns the number of rows in the result set. Once this method returns the result set will be pointing to the last
@@ -368,20 +97,42 @@ public class ConnectionHandlerStatement {
     * @return the number of rows in the result set
     * @throws OseeDataStoreException
     */
-   public int getRowCount() throws OseeDataStoreException {
-      try {
-         rSet.last();
-         return rSet.getRow();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract int getRowCount() throws OseeDataStoreException;
 
-   public boolean isNullable(int columnIndex) throws OseeDataStoreException {
-      try {
-         return rSet.getMetaData().isNullable(columnIndex) == ResultSetMetaData.columnNullable;
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract boolean isNullable(int columnIndex) throws OseeDataStoreException;
+
+   public abstract double getCallableDouble(int columnIndex) throws OseeDataStoreException;
+
+   /**
+    * should not be used by application code because it is less readable than using the column name
+    * 
+    * @param columnIndex
+    * @return value
+    * @throws OseeDataStoreException
+    */
+   public abstract int getInt(int columnIndex) throws OseeDataStoreException;
+
+   public abstract int getCallableInt(int columnIndex) throws OseeDataStoreException;
+
+   /**
+    * should not be used by application code because it is less readable than using the column name
+    * 
+    * @param columnIndex
+    * @return value
+    * @throws OseeDataStoreException
+    */
+   public abstract long getLong(int columnIndex) throws OseeDataStoreException;
+
+   /**
+    * should not be used by application code because it is less readable than using the column name
+    * 
+    * @param columnIndex
+    * @return value
+    * @throws OseeDataStoreException
+    */
+   public abstract String getString(int columnIndex) throws OseeDataStoreException;
+
+   public abstract String getComplementSql() throws OseeDataStoreException;
+
+   public abstract boolean isDatabaseType(SupportedDatabase type) throws OseeDataStoreException;
 }

@@ -222,7 +222,7 @@ public class PurgeTransactionJob extends Job {
       }
 
       private void populateJoinQueryFromSql(OseeConnection connection, TransactionJoinQuery joinQuery, String sql, String txFieldName, Object... data) throws OseeDataStoreException {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
          try {
             chStmt.runPreparedQuery(sql, data);
             while (chStmt.next()) {

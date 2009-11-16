@@ -16,10 +16,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 
 public class RestoreTableData implements IDbInitializationTask {
-   private Set<String> schemas;
-   private Map<String, SchemaData> userSpecifiedConfig;
+   private final Set<String> schemas;
+   private final Map<String, SchemaData> userSpecifiedConfig;
    private static final File backupDirectory = new File("backupDirectory");
 
    public RestoreTableData(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) {
@@ -30,7 +31,7 @@ public class RestoreTableData implements IDbInitializationTask {
    public void run() throws OseeCoreException {
       System.out.println("RestoreTables");
       System.out.flush();
-      SqlManager sqlManager = SqlFactory.getSqlManager();
+      SqlManager sqlManager = SqlFactory.getSqlManager(ConnectionHandler.getMetaData());
 
       for (String schemaKey : schemas) {
          if (userSpecifiedConfig.containsKey(schemaKey)) {

@@ -28,19 +28,11 @@ public class DatabaseInfoManager {
    }
 
    public static IDatabaseInfo getDefault() throws OseeDataStoreException {
-      try {
-         return InternalActivator.getConnectionInfos().getSelectedDatabaseInfo();
-      } catch (InterruptedException ex) {
-         throw new OseeDataStoreException(ex);
-      }
+      return InternalActivator.getInstance().getConnectionInfos().getSelectedDatabaseInfo();
    }
 
    public static IDatabaseInfo getDataStoreById(String id) throws OseeDataStoreException {
-      try {
-         return InternalActivator.getConnectionInfos().getDatabaseInfo(id);
-      } catch (InterruptedException ex) {
-         throw new OseeDataStoreException(ex);
-      }
+      return InternalActivator.getInstance().getConnectionInfos().getDatabaseInfo(id);
    }
 
    public static IDatabaseInfo[] readFromXml(InputStream inputStream) throws OseeCoreException {

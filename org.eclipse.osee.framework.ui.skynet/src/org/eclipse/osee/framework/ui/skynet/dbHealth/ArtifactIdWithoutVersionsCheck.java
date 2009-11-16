@@ -103,7 +103,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
 
    private Set<Integer> getInvalidEntries(IProgressMonitor monitor, Set<Integer> allInvalidArtIds, String query, boolean hasItemId) throws OseeDataStoreException {
       Set<Integer> toReturn = new HashSet<Integer>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(query);
          while (chStmt.next()) {

@@ -28,7 +28,7 @@ public class PostDatabaseInitialization implements IDbInitializationTask {
    @Override
    public void run() throws OseeCoreException {
       OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Running Post-Initialization Process...");
-      SupportedDatabase supportedDb = SupportedDatabase.getDatabaseType();
+      SupportedDatabase supportedDb = SupportedDatabase.getDatabaseType(ConnectionHandler.getMetaData());
       switch (supportedDb) {
          case postgresql:
             OseeLog.log(PostDatabaseInitialization.class, Level.INFO, "Vacuuming PostgreSQL");

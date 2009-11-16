@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.search.engine.internal;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -49,7 +50,7 @@ public class BranchTaggerRunnable implements Runnable {
 
       @Override
       protected void convertInput(OseeConnection connection) throws OseeDataStoreException, Exception {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
          try {
             String sql = AttributeDataStore.getAllTaggableGammasByBranchQuery(branchId);
             chStmt.runPreparedQuery(sql, AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));

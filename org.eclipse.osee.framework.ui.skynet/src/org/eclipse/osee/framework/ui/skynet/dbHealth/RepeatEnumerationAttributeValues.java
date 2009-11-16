@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -120,7 +121,7 @@ public class RepeatEnumerationAttributeValues extends DatabaseHealthOperation {
 
    private Set<AttrData> getRepeatEnumeratedAttrs(IProgressMonitor monitor, Branch branch) throws OseeDataStoreException, OseeTypeDoesNotExist {
       Set<AttrData> attrData = new HashSet<AttrData>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(FIND_REPEAT_ENUMS, branch.getId(), branch.getId());
          while (chStmt.next()) {

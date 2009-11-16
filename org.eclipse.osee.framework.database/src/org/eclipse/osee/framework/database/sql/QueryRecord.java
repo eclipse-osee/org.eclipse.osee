@@ -24,7 +24,7 @@ public class QueryRecord {
    private static final QueryLog log = QueryLog.getInstance();
    private final Date date;
    private final String sql;
-   private Object[] bindVariables;
+   private final Object[] bindVariables;
    private SQLException sqlException;
    private Long runDurationMs;
    private long startTime;
@@ -57,7 +57,9 @@ public class QueryRecord {
     * @param bindVariables The bind variables, if any
     */
    public QueryRecord(String sql, Object... bindVariablesLocal) {
-      if (sql == null) throw new IllegalArgumentException("sql can not be null");
+      if (sql == null) {
+         throw new IllegalArgumentException("sql can not be null");
+      }
       this.date = new Date();
       this.sql = replaceBindValues(sql);
       this.bindVariables = new Object[bindVariablesLocal.length];
@@ -67,7 +69,7 @@ public class QueryRecord {
          Object obj = bindVariables[i];
          if (obj != null) {
             if (obj instanceof String) {
-               String str = ((String) obj);
+               String str = (String) obj;
                if (str.length() > 80) {
                   bindVariables[i] = str.substring(0, 80);
                }

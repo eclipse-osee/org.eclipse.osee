@@ -15,52 +15,33 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
 public class DbInit {
+   private final SqlManager manager;
 
-   /**
-    * @param schemas
-    * @param schemas
-    * @param userSpecifiedConfig
-    * @param connection
-    * @param databaseType
-    * @param userSpecifiedConfig2
-    * @param databaseType2
-    * @throws Exception
-    */
-   public static void addIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeDataStoreException {
+   public DbInit(SqlManager manager) {
+      this.manager = manager;
+   }
+
+   public void addIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          if (userSpecifiedConfig.containsKey(schemaId)) {
             SchemaData userSpecifiedSchemaData = userSpecifiedConfig.get(schemaId);
-            DbFactory userDbFactory = new DbFactory(userSpecifiedSchemaData);
+            DbFactory userDbFactory = new DbFactory(manager, userSpecifiedSchemaData);
             userDbFactory.createIndeces();
          }
       }
    }
 
-   /**
-    * @param schemas
-    * @param userSpecifiedConfig2
-    * @param databaseType2
-    * @throws Exception
-    */
-   public static void addTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeDataStoreException {
+   public void addTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          if (userSpecifiedConfig.containsKey(schemaId)) {
             SchemaData userSpecifiedSchemaData = userSpecifiedConfig.get(schemaId);
-            DbFactory userDbFactory = new DbFactory(userSpecifiedSchemaData);
+            DbFactory userDbFactory = new DbFactory(manager, userSpecifiedSchemaData);
             userDbFactory.createTables();
          }
       }
    }
 
-   /**
-    * @param schemas
-    * @param currentDatabaseConfig
-    * @param userSpecifiedConfig2
-    * @param currentDatabaseConfig2
-    * @param databaseType2
-    * @throws Exception
-    */
-   public static void dropTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
+   public void dropTables(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          if (currentDatabaseConfig.containsKey(schemaId)) {
             SchemaData currentDbSchemaData = currentDatabaseConfig.get(schemaId);
@@ -76,21 +57,13 @@ public class DbInit {
                   toDrop.addTableDefinition(currentDBmap.get(userKey));
                }
             }
-            DbFactory currentDbFactory = new DbFactory(toDrop);
+            DbFactory currentDbFactory = new DbFactory(manager, toDrop);
             currentDbFactory.dropTables();
          }
       }
    }
 
-   /**
-    * @param schemas
-    * @param currentDatabaseConfig
-    * @param userSpecifiedConfig2
-    * @param currentDatabaseConfig2
-    * @param databaseType2
-    * @throws Exception
-    */
-   public static void dropIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
+   public void dropIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
       System.out.println("Drop Indeces");
       for (String schemaId : schemas) {
          if (currentDatabaseConfig.containsKey(schemaId)) {
@@ -107,21 +80,19 @@ public class DbInit {
                   toDrop.addTableDefinition(currentDBmap.get(userKey));
                }
             }
-            DbFactory currentDbFactory = new DbFactory(toDrop);
+            DbFactory currentDbFactory = new DbFactory(manager, toDrop);
             currentDbFactory.dropIndeces();
          }
       }
    }
 
-   public static void createSchema(Set<String> schemas) throws OseeDataStoreException {
-      SqlManager manager = SqlFactory.getSqlManager();
+   public void createSchema(Set<String> schemas) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          manager.createSchema(schemaId.toLowerCase());
       }
    }
 
-   public static void dropSchema(Set<String> schemas) throws OseeDataStoreException {
-      SqlManager manager = SqlFactory.getSqlManager();
+   public void dropSchema(Set<String> schemas) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          manager.dropSchema(schemaId.toLowerCase());
       }

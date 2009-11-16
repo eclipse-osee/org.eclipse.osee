@@ -11,16 +11,16 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.AbstractOseeType;
 import org.eclipse.osee.framework.core.data.OseeField;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.skynet.core.types.AbstractCachingType;
 import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
 
 /**
  * @author Roberto E. Escobar
  */
-public class OseeEnumEntry extends AbstractOseeType implements Comparable<OseeEnumEntry> {
+public class OseeEnumEntry extends AbstractCachingType implements Comparable<OseeEnumEntry> {
    private final static String ENUM_ENTRY_ORDINAL_FIELD = "osee.enum.entry.ordinal.field";
 
    public OseeEnumEntry(AbstractOseeCache<OseeEnumType> cache, String guid, String name, int ordinal) {
@@ -80,10 +80,4 @@ public class OseeEnumEntry extends AbstractOseeType implements Comparable<OseeEn
    public int compareTo(OseeEnumEntry other) {
       return this.ordinal() - other.ordinal();
    }
-
-   @Override
-   public void persist() throws OseeCoreException {
-      getCache().storeItems(getDeclaringClass());
-   }
-
 }

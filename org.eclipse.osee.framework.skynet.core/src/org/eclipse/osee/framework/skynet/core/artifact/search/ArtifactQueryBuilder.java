@@ -437,7 +437,7 @@ public class ArtifactQueryBuilder {
    }
 
    public List<Integer> selectArtifacts(int artifactCountEstimate) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       List<Integer> artifactIds = new ArrayList<Integer>(artifactCountEstimate);
 
       try {

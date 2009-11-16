@@ -183,7 +183,8 @@ public class DatabaseSchemaExtractor {
                   getColumnInformation(tableEntry);
                   getColumnPrimaryKey(tableEntry);
 
-                  if (!(SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro) || SupportedDatabase.isDatabaseType(SupportedDatabase.postgresql))) {
+                  if (!(SupportedDatabase.isDatabaseType(dbData, SupportedDatabase.foxpro) || SupportedDatabase.isDatabaseType(
+                        dbData, SupportedDatabase.postgresql))) {
                      getColumnForeignKey(tableEntry);
                   }
                   getIndexInfo(tableEntry);
@@ -211,7 +212,7 @@ public class DatabaseSchemaExtractor {
          ColumnMetadata column = new ColumnMetadata(id);
 
          int dataType = columns.getInt("DATA_TYPE");
-         if (SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro)) {
+         if (SupportedDatabase.isDatabaseType(dbData, SupportedDatabase.foxpro)) {
             if (dataType == Types.CHAR) {
                dataType = Types.VARCHAR;
             }
@@ -239,7 +240,7 @@ public class DatabaseSchemaExtractor {
             column.addColumnField(ColumnFields.defaultValue, defaultValue);
          }
 
-         if (!SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro)) {
+         if (!SupportedDatabase.isDatabaseType(dbData, SupportedDatabase.foxpro)) {
             // int dataType = columns.getInt("DATA_TYPE");
             switch (dataType) {
                case java.sql.Types.CHAR:

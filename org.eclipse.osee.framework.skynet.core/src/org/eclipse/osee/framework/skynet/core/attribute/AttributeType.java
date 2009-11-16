@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.skynet.core.attribute;
 
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.AbstractOseeType;
 import org.eclipse.osee.framework.core.data.OseeField;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
+import org.eclipse.osee.framework.skynet.core.types.AbstractCachingType;
 
 /**
  * Type information for dynamic attributes.
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeData
  * @author Robert A. Fisher
  * @author Ryan D. Brooks
  */
-public class AttributeType extends AbstractOseeType implements Comparable<AttributeType> {
+public class AttributeType extends AbstractCachingType implements Comparable<AttributeType> {
 
    private static final String ATTRIBUTE_BASE_TYPE_ID_FIELD_KEY = "osee.base.attribute.type.id.field";
    private static final String ATTRIBUTE_PROVIDER_ID_FIELD_KEY = "osee.attribute.provider.id.field";

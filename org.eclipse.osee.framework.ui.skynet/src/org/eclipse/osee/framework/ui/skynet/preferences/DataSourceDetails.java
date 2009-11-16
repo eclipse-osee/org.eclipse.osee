@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -113,8 +114,9 @@ public class DataSourceDetails extends PreferencePage implements IWorkbenchPrefe
       StringBuilder builder = new StringBuilder();
       builder.append("<table class=\"oseeTable\" width=\"100%\">");
       builder.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Source Id", "Exported On", "Imported On"}));
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = null;
       try {
+         chStmt = ConnectionHandler.getStatement();
          chStmt.runPreparedQuery("select * from osee_import_source");
          while (chStmt.next()) {
             builder.append(AHTML.addRowMultiColumnTable(chStmt.getString("db_source_guid"),
@@ -125,7 +127,9 @@ public class DataSourceDetails extends PreferencePage implements IWorkbenchPrefe
          builder.append(AHTML.addRowSpanMultiColumnTable(Lib.exceptionToString(ex), 3));
       } finally {
          builder.append(AHTML.endMultiColumnTable());
-         chStmt.close();
+         if (chStmt != null) {
+            chStmt.close();
+         }
       }
       return builder.toString().replaceAll("\n", "<br/>");
    }

@@ -55,12 +55,13 @@ public class JoinUtility {
    private static final String SELECT_TAG_GAMMA_QUEUE_QUERIES = "select DISTINCT query_id from osee_tag_gamma_queue";
 
    public enum JoinItem {
-      TRANSACTION(INSERT_INTO_JOIN_TRANSACTION, DELETE_FROM_JOIN_TRANSACTION), ARTIFACT(INSERT_INTO_JOIN_ARTIFACT,
-            DELETE_FROM_JOIN_ARTIFACT), ATTRIBUTE(INSERT_INTO_JOIN_ATTRIBUTE, DELETE_FROM_JOIN_ATTRIBUTE), SEARCH_TAGS(
-            INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS), TAG_GAMMA_QUEUE(INSERT_INTO_TAG_GAMMA_QUEUE,
-            DELETE_FROM_TAG_GAMMA_QUEUE),
-      EXPORT_IMPORT(INSERT_INTO_JOIN_EXPORT_IMPORT, DELETE_FROM_JOIN_EXPORT_IMPORT), ID(INSERT_INTO_JOIN_ID,
-            DELETE_FROM_JOIN_ID);
+      TRANSACTION(INSERT_INTO_JOIN_TRANSACTION, DELETE_FROM_JOIN_TRANSACTION),
+      ARTIFACT(INSERT_INTO_JOIN_ARTIFACT, DELETE_FROM_JOIN_ARTIFACT),
+      ATTRIBUTE(INSERT_INTO_JOIN_ATTRIBUTE, DELETE_FROM_JOIN_ATTRIBUTE),
+      SEARCH_TAGS(INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS),
+      TAG_GAMMA_QUEUE(INSERT_INTO_TAG_GAMMA_QUEUE, DELETE_FROM_TAG_GAMMA_QUEUE),
+      EXPORT_IMPORT(INSERT_INTO_JOIN_EXPORT_IMPORT, DELETE_FROM_JOIN_EXPORT_IMPORT),
+      ID(INSERT_INTO_JOIN_ID, DELETE_FROM_JOIN_ID);
 
       private final String deleteSql;
       private final String insertSql;
@@ -116,7 +117,7 @@ public class JoinUtility {
 
    public static List<Integer> getAllTagQueueQueryIds() throws OseeDataStoreException {
       List<Integer> queryIds = new ArrayList<Integer>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_TAG_GAMMA_QUEUE_QUERIES);
          while (chStmt.next()) {
@@ -127,7 +128,6 @@ public class JoinUtility {
       }
       return queryIds;
    }
-
    public static abstract class JoinQueryEntry {
       public final JoinItem joinItem;
       private final int queryId;

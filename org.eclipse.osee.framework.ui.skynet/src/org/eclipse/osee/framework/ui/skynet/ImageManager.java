@@ -96,7 +96,7 @@ public class ImageManager {
          artifactTypeImagesLoaded = true;
          // Load base images from database (which can override the ImageManager.registerImage() calls provided
          // through the ArtifactImageProviders
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(SELECT_ARTIFACT_TYPES_IMAGE_QUERY);
 

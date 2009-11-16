@@ -14,17 +14,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-
 import java.util.Collection;
-
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -193,13 +191,13 @@ public class ConflictTest {
    }
 
    private void checkNoTxCurrent(String dataId, String dataTable) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       StringBuilder builder = new StringBuilder();
       builder.append(NO_TX_CURRENT_SET[0]);
       builder.append(dataId);
       builder.append(NO_TX_CURRENT_SET[1]);
       builder.append(dataTable);
-      builder.append(String.format(NO_TX_CURRENT_SET[2], SupportedDatabase.getComplementSql()));
+      builder.append(String.format(NO_TX_CURRENT_SET[2], chStmt.getComplementSql()));
       builder.append(dataId);
       builder.append(NO_TX_CURRENT_SET[3]);
       builder.append(dataTable);
@@ -216,7 +214,7 @@ public class ConflictTest {
    }
 
    private void checkMultipleTxCurrent(String dataId, String dataTable) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       StringBuilder builder = new StringBuilder();
       builder.append(MULTIPLE_TX_CURRENT_SET[0]);
       builder.append(dataId);

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -78,7 +79,7 @@ public class OseeDataTypeDatastore {
 
    public static HashCollection<String, String> getArtifactToAttributeEntries() throws OseeCoreException {
       HashCollection<String, String> toReturn = new HashCollection<String, String>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_ATTRIBUTE_VALIDITY);
          while (chStmt.next()) {
@@ -97,7 +98,7 @@ public class OseeDataTypeDatastore {
    public static CompositeKeyHashMap<String, String, Pair<Integer, Integer>> getArtifactToRelationEntries() throws OseeCoreException {
       CompositeKeyHashMap<String, String, Pair<Integer, Integer>> toReturn =
             new CompositeKeyHashMap<String, String, Pair<Integer, Integer>>();
-      //      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      //      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       //      try {
       //         chStmt.runPreparedQuery(2000, SELECT_RELATION_VALIDITY);
       //         while (chStmt.next()) {

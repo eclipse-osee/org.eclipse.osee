@@ -141,4 +141,5 @@ public class OseeTypeFactory implements IOseeTypeFactory {
       }
       return new BranchImpl(cache, createGuidIfNeeded(guid), name, branchType, branchState, isArchived);
    }
+
 }

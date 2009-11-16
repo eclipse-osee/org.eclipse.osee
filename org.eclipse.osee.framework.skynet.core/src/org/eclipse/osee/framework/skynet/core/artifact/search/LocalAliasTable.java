@@ -8,12 +8,13 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.sql;
+package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 /**
  * @author Robert A. Fisher
  */
-public class LocalAliasTable extends Table {
+@Deprecated
+class LocalAliasTable extends Table {
    private final String declarationName;
 
    public LocalAliasTable(String aliasedTableName, String aliasName) {

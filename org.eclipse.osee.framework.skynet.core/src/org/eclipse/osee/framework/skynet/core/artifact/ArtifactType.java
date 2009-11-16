@@ -14,13 +14,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.AbstractOseeType;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.data.OseeField;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.types.AbstractCachingType;
 import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
 import org.eclipse.osee.framework.skynet.core.types.field.ArtifactSuperTypeField;
 import org.eclipse.osee.framework.skynet.core.types.field.ArtifactTypeAttributesField;
@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.skynet.core.types.field.ArtifactTypeAttributes
 /**
  * @author Robert A. Fisher
  */
-public class ArtifactType extends AbstractOseeType implements Comparable<ArtifactType> {
+public class ArtifactType extends AbstractCachingType implements Comparable<ArtifactType> {
    public static final String ARTIFACT_IS_ABSTRACT_FIELD_KEY = "osee.artifact.type.is.abstract.field";
    public static final String ARTIFACT_INHERITANCE_FIELD_KEY = "osee.artifact.type.inheritance.field";
    public static final String ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY = "osee.artifact.type.attributes.field";

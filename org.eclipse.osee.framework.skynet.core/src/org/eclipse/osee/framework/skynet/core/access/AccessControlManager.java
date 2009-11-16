@@ -115,7 +115,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    }
 
    private static void populateBranchAccessControlList() throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
          while (chStmt.next()) {
@@ -138,7 +138,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    }
 
    private static void populateArtifactAccessControlList() throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
 
@@ -170,7 +170,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       if (!groupToSubjectsCache.containsKey(groupId)) {
          Integer groupMember;
 
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, RelationTypeManager.getType("Users").getId());
 

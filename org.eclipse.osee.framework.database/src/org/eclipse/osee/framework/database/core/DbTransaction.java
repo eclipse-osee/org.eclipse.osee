@@ -39,7 +39,7 @@ public abstract class DbTransaction {
     * @throws Exception
     */
    public void execute() throws OseeCoreException {
-      execute(OseeDbConnection.getConnection());
+      execute(ConnectionHandler.getConnection());
    }
 
    private void execute(OseeConnection connection) throws OseeCoreException {

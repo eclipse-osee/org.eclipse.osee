@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
+import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 /**
@@ -41,18 +41,23 @@ public class CleanUpAddressingData extends DatabaseHealthOperation {
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       boolean fix = isFixOperationEnabled();
       boolean verify = !fix;
-      if (verify || gammas == null) {
-         gammas =
-               HealthHelper.runSingleResultQuery(
-                     String.format(NOT_BACKED_GAMMAS, SupportedDatabase.getComplementSql()), "gamma_id");
-      }
-      checkForCancelledStatus(monitor);
-      monitor.worked(calculateWork(0.25));
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      try {
+         if (verify || gammas == null) {
+            gammas =
+                  HealthHelper.runSingleResultQuery(String.format(NOT_BACKED_GAMMAS, chStmt.getComplementSql()),
+                        "gamma_id");
+         }
+         checkForCancelledStatus(monitor);
+         monitor.worked(calculateWork(0.25));
 
-      if (verify || transactions == null) {
-         transactions =
-               HealthHelper.runSingleResultQuery(String.format(NOT_BACKED_TRANSACTIONS,
-                     SupportedDatabase.getComplementSql()), "transaction_id");
+         if (verify || transactions == null) {
+            transactions =
+                  HealthHelper.runSingleResultQuery(String.format(NOT_BACKED_TRANSACTIONS, chStmt.getComplementSql()),
+                        "transaction_id");
+         }
+      } finally {
+         chStmt.close();
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(0.25));

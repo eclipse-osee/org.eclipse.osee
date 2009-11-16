@@ -49,7 +49,7 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
    @Override
    public void load(AbstractOseeCache<RelationType> cache) throws OseeCoreException {
       artifactCache.ensurePopulated();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
 
       try {
          chStmt.runPreparedQuery(SELECT_LINK_TYPES);

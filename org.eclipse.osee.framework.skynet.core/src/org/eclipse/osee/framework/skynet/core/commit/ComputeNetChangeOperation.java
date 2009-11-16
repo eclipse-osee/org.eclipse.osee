@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.skynet.core.commit;
 
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.enums.ModificationType;

@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.core;
+package org.eclipse.osee.framework.database.internal.core;
 
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -20,12 +20,12 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Ryan D. Brooks
  */
 public class StaleConnectionCloser extends TimerTask {
-   private final OseeConnectionPool connectionPool;
+   private final OseeConnectionPoolImpl connectionPool;
 
    /**
     * @param connectionPool
     */
-   public StaleConnectionCloser(OseeConnectionPool connectionPool) {
+   public StaleConnectionCloser(OseeConnectionPoolImpl connectionPool) {
       super();
       this.connectionPool = connectionPool;
    }

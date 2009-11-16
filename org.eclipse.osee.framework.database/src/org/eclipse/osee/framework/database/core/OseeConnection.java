@@ -10,111 +10,31 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.core;
 
-import java.sql.CallableStatement;
-import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
-public class OseeConnection {
-   final static private long timeout = 60000;
-   private final OseeConnectionPool pool;
-   private final Connection conn;
-   private volatile boolean inuse;
-   private long lastUsedTime;
+public abstract class OseeConnection {
 
-   OseeConnection(Connection conn, OseeConnectionPool pool) {
-      this.conn = conn;
-      this.pool = pool;
-      this.inuse = true;
-      this.lastUsedTime = 0;
+   protected OseeConnection() {
+
    }
 
-   public void close() {
-      pool.returnConnection(this);
-   }
+   public abstract void close();
 
-   public boolean isClosed() throws OseeDataStoreException {
-      try {
-         return conn.isClosed();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract boolean isClosed() throws OseeDataStoreException;
 
-   public boolean isStale() {
-      return !inUse() && getLastUse() + timeout < System.currentTimeMillis();
-   }
+   public abstract boolean isStale();
 
-   public DatabaseMetaData getMetaData() throws OseeDataStoreException {
-      try {
-         return conn.getMetaData();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   public abstract DatabaseMetaData getMetaData() throws OseeDataStoreException;
 
-   PreparedStatement prepareStatement(String sql) throws SQLException {
-      return conn.prepareStatement(sql);
-   }
+   protected abstract void setAutoCommit(boolean autoCommit) throws OseeDataStoreException;
 
-   CallableStatement prepareCall(String sql) throws SQLException {
-      return conn.prepareCall(sql);
-   }
+   protected abstract boolean getAutoCommit() throws SQLException;
 
-   synchronized boolean lease() {
-      if (inuse) {
-         return false;
-      } else {
-         inuse = true;
-         return true;
-      }
-   }
+   protected abstract void commit() throws SQLException;
 
-   void destroy() throws OseeDataStoreException {
-      try {
-         conn.close();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-      pool.removeConnection(this);
-   }
+   protected abstract void rollback() throws OseeDataStoreException;
 
-   boolean inUse() {
-      return inuse;
-   }
-
-   long getLastUse() {
-      return lastUsedTime;
-   }
-
-   void expireLease() {
-      inuse = false;
-      lastUsedTime = System.currentTimeMillis();
-   }
-
-   void setAutoCommit(boolean autoCommit) throws OseeDataStoreException {
-      try {
-         conn.setAutoCommit(autoCommit);
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
-
-   boolean getAutoCommit() throws SQLException {
-      return conn.getAutoCommit();
-   }
-
-   void commit() throws SQLException {
-      conn.commit();
-   }
-
-   void rollback() throws OseeDataStoreException {
-      try {
-         conn.rollback();
-      } catch (SQLException ex) {
-         throw new OseeDataStoreException(ex);
-      }
-   }
+   protected abstract void destroy() throws OseeDataStoreException;
 }

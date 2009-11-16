@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ARTIFACT_TABLE;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ARTIFACT_TABLE;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ISearchPrimitive;
+import org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -55,7 +56,7 @@ public class ArtifactPersistenceManager {
          "SELECT osee_artifact.art_id, txd1.branch_id FROM osee_artifact, osee_artifact_version arv1, osee_txs txs1, osee_tx_details txd1 WHERE " + ARTIFACT_TABLE.column("art_id") + "=arv1.art_id AND arv1.gamma_id=txs1.gamma_id AND txs1.tx_current=" + TxChange.CURRENT.getValue() + " AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id=? AND ";
 
    private static final String ARTIFACT_ID_SELECT =
-         "SELECT " + ARTIFACT_TABLE.columns("art_id") + " FROM " + ARTIFACT_TABLE + " WHERE ";
+         "SELECT " + SkynetDatabase.ARTIFACT_TABLE.columns("art_id") + " FROM " + SkynetDatabase.ARTIFACT_TABLE + " WHERE ";
 
    private static final String ARTIFACT_NEW_ON_BRANCH =
          "Select det.tx_type from osee_tx_details det, osee_txs txs, osee_artifact_version art WHERE det.branch_id = ? AND det.tx_type = 1 AND det.transaction_id = txs.transaction_id AND txs.gamma_id = art.gamma_id AND art.art_id = ?";
@@ -102,7 +103,7 @@ public class ArtifactPersistenceManager {
 
          while (iter.hasNext()) {
             primitive = iter.next();
-            sql.append(ARTIFACT_TABLE.column("art_id") + " in (");
+            sql.append(SkynetDatabase.ARTIFACT_TABLE.column("art_id") + " in (");
             sql.append(getSelectArtIdSql(primitive, dataList, branch));
 
             if (iter.hasNext()) {
@@ -114,7 +115,7 @@ public class ArtifactPersistenceManager {
          ISearchPrimitive primitive = null;
          Iterator<ISearchPrimitive> iter = searchCriteria.iterator();
 
-         sql.append(ARTIFACT_TABLE.column("art_id") + " IN(SELECT art_id FROM " + ARTIFACT_TABLE + ", (");
+         sql.append(SkynetDatabase.ARTIFACT_TABLE.column("art_id") + " IN(SELECT art_id FROM " + ARTIFACT_TABLE + ", (");
 
          while (iter.hasNext()) {
             primitive = iter.next();
@@ -205,8 +206,8 @@ public class ArtifactPersistenceManager {
       if (attribute == null) {
          return;
       }
-      revertAttribute(connection, attribute.getArtifact().getBranch().getId(),
-            attribute.getArtifact().getArtId(), attribute.getAttrId());
+      revertAttribute(connection, attribute.getArtifact().getBranch().getId(), attribute.getArtifact().getArtId(),
+            attribute.getAttrId());
    }
 
    public static void revertAttribute(OseeConnection connection, int branchId, int artId, int attributeId) throws OseeCoreException {
@@ -214,7 +215,7 @@ public class ArtifactPersistenceManager {
             TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
       long totalTime = System.currentTimeMillis();
       //Get attribute Gammas
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
       RevertAction revertAction = null;
       try {
          chStmt.runPreparedQuery(GET_GAMMAS_ATTRIBUTE_REVERT, branchId, attributeId);
@@ -242,7 +243,7 @@ public class ArtifactPersistenceManager {
    private static void revertRelationLink(OseeConnection connection, int branchId, int relLinkId, int aArtId, int bArtId) throws BranchDoesNotExist, OseeCoreException {
       long time = System.currentTimeMillis();
       long totalTime = time;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
 
       TransactionRecord transId =
             TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
@@ -267,7 +268,7 @@ public class ArtifactPersistenceManager {
             TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
       long totalTime = System.currentTimeMillis();
       //Get attribute Gammas
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(GET_GAMMAS_ARTIFACT_REVERT, branchId, artId, branchId, artId, artId, branchId, artId);
          new RevertAction(connection, chStmt, transId).revertObject(totalTime, artId, "Artifact");

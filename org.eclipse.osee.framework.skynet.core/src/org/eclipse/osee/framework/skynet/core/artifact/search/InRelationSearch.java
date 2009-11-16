@@ -10,14 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.RELATION_LINK_VERSION_TABLE;
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTIONS_TABLE;
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.DeprecatedOperator.EQUAL;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.database.sql.LocalAliasTable;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 
@@ -25,11 +21,11 @@ import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
  * @author Robert A. Fisher
  */
 public class InRelationSearch implements ISearchPrimitive {
-   private static final LocalAliasTable LINK_ALIAS_1 = new LocalAliasTable(RELATION_LINK_VERSION_TABLE, "rel_1");
-   private static final LocalAliasTable LINK_ALIAS_2 = new LocalAliasTable(RELATION_LINK_VERSION_TABLE, "rel_2");
+   private static final LocalAliasTable LINK_ALIAS_1 = new LocalAliasTable("osee_relation_link", "rel_1");
+   private static final LocalAliasTable LINK_ALIAS_2 = new LocalAliasTable("osee_relation_link", "rel_2");
    private static final LocalAliasTable LINK_TYPE_ALIAS_1 =
          new LocalAliasTable("OSEE_RELATION_LINK_TYPE", "rel_type_1");
-   private static final String relationTables = LINK_TYPE_ALIAS_1 + "," + LINK_ALIAS_1 + ", " + TRANSACTIONS_TABLE;
+   private static final String relationTables = LINK_TYPE_ALIAS_1 + "," + LINK_ALIAS_1 + ", osee_txs ";
    private final static String TOKEN = ";";
    private final String[] typeNames;
    private final boolean sideA;
@@ -136,7 +132,7 @@ public class InRelationSearch implements ISearchPrimitive {
                otherArtifactsCriteria, dataList, branch) + ")");
       }
 
-      sql.append(" AND " + LINK_ALIAS_1.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT max(osee_tx_details.transaction_id) FROM " + LINK_ALIAS_2 + "," + TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + TRANSACTIONS_TABLE.column("gamma_id") + " AND " + TRANSACTIONS_TABLE.column("transaction_id") + "=" + TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)" + " AND " + TRANSACTIONS_TABLE.column("mod_type") + "<>?");
+      sql.append(" AND " + LINK_ALIAS_1.column("gamma_id") + "=" + SkynetDatabase.TRANSACTIONS_TABLE.column("gamma_id") + " AND " + SkynetDatabase.TRANSACTIONS_TABLE.column("transaction_id") + "=" + "(SELECT max(osee_tx_details.transaction_id) FROM " + LINK_ALIAS_2 + "," + SkynetDatabase.TRANSACTIONS_TABLE + "," + SkynetDatabase.TRANSACTION_DETAIL_TABLE + " WHERE " + LINK_ALIAS_2.column("rel_link_id") + "=" + LINK_ALIAS_1.column("rel_link_id") + " AND " + LINK_ALIAS_2.column("gamma_id") + "=" + SkynetDatabase.TRANSACTIONS_TABLE.column("gamma_id") + " AND " + SkynetDatabase.TRANSACTIONS_TABLE.column("transaction_id") + "=" + SkynetDatabase.TRANSACTION_DETAIL_TABLE.column("transaction_id") + " AND " + SkynetDatabase.TRANSACTION_DETAIL_TABLE.column("branch_id") + "=?)" + " AND " + SkynetDatabase.TRANSACTIONS_TABLE.column("mod_type") + "<>?");
 
       dataList.add(branch.getId());
       dataList.add(ModificationType.DELETED.getValue());

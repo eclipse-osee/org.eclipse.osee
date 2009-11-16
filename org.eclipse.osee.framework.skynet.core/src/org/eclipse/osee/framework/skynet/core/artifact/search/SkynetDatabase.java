@@ -8,7 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database.sql;
+package org.eclipse.osee.framework.skynet.core.artifact.search;
+
 
 /**
  * Provides the ability to build the tables and sequences necessary for the Define tools to be able to work. This class
@@ -16,6 +17,7 @@ package org.eclipse.osee.framework.database.sql;
  * 
  * @author Robert A. Fisher
  */
+@Deprecated
 public class SkynetDatabase {
    public static final Table ARTIFACT_TABLE = new Table("OSEE_ARTIFACT");
    public static final Table ARTIFACT_VERSION_TABLE = new Table("OSEE_ARTIFACT_VERSION");

@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -32,6 +33,7 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
       return "Unique Number Of Current Osee Users";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
       /**
@@ -40,7 +42,7 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
       // removeColonFromActionNames
       monitor.beginTask("Counting Users", IProgressMonitor.UNKNOWN);
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_USER_COUNT);
          if (chStmt.next()) {
@@ -57,6 +59,7 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
       return AbstractBlam.emptyXWidgetsXml;
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Util");
    }

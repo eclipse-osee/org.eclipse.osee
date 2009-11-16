@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
@@ -155,7 +156,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
       private List<AttrData> loadAttributeData(IProgressMonitor monitor, AttributeType attributeType) throws OseeDataStoreException, OseeTypeDoesNotExist {
          List<AttrData> attrData = new ArrayList<AttrData>();
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(GET_ATTRS, attributeType.getId());
             while (chStmt.next()) {

@@ -10,16 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.core;
 
+import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 
 public enum SupportedDatabase {
-   oracle, derby, foxpro, mysql, postgresql;
+   oracle,
+   derby,
+   foxpro,
+   mysql,
+   postgresql;
 
-   public static SupportedDatabase getDatabaseType(OseeConnection connection) throws OseeDataStoreException {
+   public static SupportedDatabase getDatabaseType(DatabaseMetaData metaData) throws OseeDataStoreException {
       try {
          SupportedDatabase toReturn = null;
-         String dbName = connection.getMetaData().getDatabaseProductName();
+         String dbName = metaData.getDatabaseProductName();
          String lowerCaseName = dbName.toLowerCase();
          if (lowerCaseName.contains(SupportedDatabase.derby.toString())) {
             toReturn = SupportedDatabase.derby;
@@ -40,23 +45,14 @@ public enum SupportedDatabase {
       }
    }
 
-   public static SupportedDatabase getDatabaseType() throws OseeDataStoreException {
-      OseeConnection connection = OseeDbConnection.getConnection();
-      try {
-         return SupportedDatabase.getDatabaseType(connection);
-      } finally {
-         connection.close();
-      }
+   public static boolean isDatabaseType(DatabaseMetaData metaData, SupportedDatabase dbType) throws OseeDataStoreException {
+      return getDatabaseType(metaData) == dbType;
    }
 
-   public static boolean isDatabaseType(SupportedDatabase dbType) throws OseeDataStoreException {
-      return getDatabaseType() == dbType;
-   }
-
-   public static boolean areHintsSupported() throws OseeDataStoreException {
+   public static boolean areHintsSupported(DatabaseMetaData metaData) throws OseeDataStoreException {
       try {
-         if (SupportedDatabase.isDatabaseType(oracle)) {
-            return ConnectionHandler.getMetaData().getDatabaseMajorVersion() > 10;
+         if (SupportedDatabase.isDatabaseType(metaData, oracle)) {
+            return metaData.getDatabaseMajorVersion() > 10;
          }
       } catch (SQLException ex) {
          throw new OseeDataStoreException(ex);
@@ -64,7 +60,7 @@ public enum SupportedDatabase {
       return false;
    }
 
-   public static String getComplementSql() throws OseeDataStoreException {
-      return isDatabaseType(oracle) ? "MINUS" : "EXCEPT";
+   public static String getComplementSql(DatabaseMetaData metaData) throws OseeDataStoreException {
+      return isDatabaseType(metaData, oracle) ? "MINUS" : "EXCEPT";
    }
 }

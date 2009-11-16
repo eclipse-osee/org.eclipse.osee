@@ -54,7 +54,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
 
          Set<Integer> authors = new HashSet<Integer>();
-         ConnectionHandlerStatement chStmt1 = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt1 = ConnectionHandler.getStatement();
          try {
             chStmt1.runPreparedQuery(GET_AUTHOR_IDS);
             while (chStmt1.next()) {

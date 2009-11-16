@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -96,8 +97,7 @@ public class ChangeManager {
          Branch branch = artifact.getBranch();
          artifactMap.put(artifact.getArtId(), branch, artifact);
          int transactionNumber = TransactionManager.getLastTransaction(branch).getId();
-         insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getId(),
-               transactionNumber});
+         insertParameters.add(new Object[] {queryId, insertTime, artifact.getArtId(), branch.getId(), transactionNumber});
 
          // for each combination of artifact and its branch hierarchy
          while (branch.hasParentBranch()) {
@@ -111,7 +111,7 @@ public class ChangeManager {
       HashCollection<Artifact, TransactionRecord> transactionMap = new HashCollection<Artifact, TransactionRecord>();
       try {
          ArtifactLoader.insertIntoArtifactJoin(insertParameters);
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(insertParameters.size() * 2,
                   ClientSessionManager.getSql(OseeSql.CHANGE_TX_MODIFYING), queryId);
@@ -156,7 +156,7 @@ public class ChangeManager {
       HashCollection<Artifact, Branch> branchMap = new HashCollection<Artifact, Branch>();
       try {
          ArtifactLoader.insertIntoArtifactJoin(insertParameters);
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(insertParameters.size() * 2,
                   ClientSessionManager.getSql(OseeSql.CHANGE_BRANCH_MODIFYING), queryId);

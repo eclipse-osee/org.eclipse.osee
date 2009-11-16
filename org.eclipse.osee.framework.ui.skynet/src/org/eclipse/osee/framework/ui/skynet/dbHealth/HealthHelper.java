@@ -18,7 +18,6 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
-import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -84,7 +83,7 @@ public class HealthHelper {
 
    public static List<Object[]> runSingleResultQuery(String sql, String dbColumn) throws OseeCoreException {
       List<Object[]> foundItems = new LinkedList<Object[]>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(sql);
          while (chStmt.next()) {
@@ -97,11 +96,11 @@ public class HealthHelper {
    }
 
    public static HashSet<Pair<Integer, Integer>> getNoTxCurrentSet(String dataColumnName, String tableName, ResultsEditorTableTab resultsTab) throws Exception {
+      HashSet<Pair<Integer, Integer>> noneSet = new HashSet<Pair<Integer, Integer>>();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       String sql =
             NO_TX_CURRENT_SET[0] + dataColumnName + NO_TX_CURRENT_SET[1] + tableName + String.format(
-                  NO_TX_CURRENT_SET[2], SupportedDatabase.getComplementSql()) + dataColumnName + NO_TX_CURRENT_SET[3] + tableName + NO_TX_CURRENT_SET[4];
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
-      HashSet<Pair<Integer, Integer>> noneSet = new HashSet<Pair<Integer, Integer>>();
+                  NO_TX_CURRENT_SET[2], chStmt.getComplementSql()) + dataColumnName + NO_TX_CURRENT_SET[3] + tableName + NO_TX_CURRENT_SET[4];
 
       try {
          chStmt.runPreparedQuery(sql);
@@ -121,7 +120,7 @@ public class HealthHelper {
    public static HashSet<LocalTxData> getMultipleTxCurrentSet(String dataId, String dataTable, Appendable builder, String data) throws Exception {
       String sql =
             MULTIPLE_TX_CURRENT_SET[0] + dataId + MULTIPLE_TX_CURRENT_SET[1] + dataId + MULTIPLE_TX_CURRENT_SET[2] + dataTable + MULTIPLE_TX_CURRENT_SET[3] + dataId + MULTIPLE_TX_CURRENT_SET[4];
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       HashSet<LocalTxData> multipleSet = new HashSet<LocalTxData>();
 
       long time = System.currentTimeMillis();

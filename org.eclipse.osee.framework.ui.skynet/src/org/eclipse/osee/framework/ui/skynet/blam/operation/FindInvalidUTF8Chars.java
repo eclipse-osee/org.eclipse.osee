@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
-import static org.eclipse.osee.framework.database.sql.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
+import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.ATTRIBUTE_VERSION_TABLE;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -29,10 +30,11 @@ public class FindInvalidUTF8Chars extends AbstractBlam {
       return "Find Invalid UTF8 Chars";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
       int count = 0;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(1000, READ_ATTRIBUTE_VALUES);
          while (chStmt.next()) {
@@ -43,7 +45,7 @@ public class FindInvalidUTF8Chars extends AbstractBlam {
                for (int i = 0; i < length; i++) {
                   char c = value.charAt(i);
                   // based on http://www.w3.org/TR/2006/REC-xml-20060816/#charsets
-                  if ((c < 0x20 && c != 0x9 && c != 0xA && c != 0xD) || (c > 0xD7FF && c < 0xE000) || (c > 0xFFFD && c < 0x10000) || c > 0x10FFFF) {
+                  if (c < 0x20 && c != 0x9 && c != 0xA && c != 0xD || c > 0xD7FF && c < 0xE000 || c > 0xFFFD && c < 0x10000 || c > 0x10FFFF) {
                      System.out.println("artifact id: " + chStmt.getInt("art_id") + "   char: " + (int) c);
                   }
                }
@@ -60,6 +62,7 @@ public class FindInvalidUTF8Chars extends AbstractBlam {
       return AbstractBlam.emptyXWidgetsXml;
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin.Health");
    }

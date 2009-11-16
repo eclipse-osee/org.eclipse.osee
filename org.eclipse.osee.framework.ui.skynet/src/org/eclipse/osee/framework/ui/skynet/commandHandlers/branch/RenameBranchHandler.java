@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -125,7 +126,7 @@ public class RenameBranchHandler extends CommandHandler {
       String oldName = selectedBranch.getName();
       selectedBranch.setName(newLabel);
       try {
-         selectedBranch.persist();
+         BranchManager.persist(selectedBranch);
       } catch (Exception ex) {
          selectedBranch.setName(oldName);
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

@@ -84,7 +84,7 @@ public class RevertAction {
 
    public void fixArtifactVersionForAttributeRevert(int branchId, int artId) throws OseeCoreException {
       if (!transactionIds.isEmpty()) {
-         chStmt = new ConnectionHandlerStatement(connection);
+         chStmt = ConnectionHandler.getStatement(connection);
          try {
             chStmt.runPreparedQuery(String.format(REVERT_ARTIFACT_VERSION_SELECT, Collections.toString(",",
                   transactionIds)));
@@ -168,7 +168,7 @@ public class RevertAction {
    }
 
    private void updateArtifactVersionTxCurrents(int branchId, int artId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
       if (DEBUG) {
          try {
             chStmt.runPreparedQuery(REVERT_ARTIFACT_VERSION_CURRENT_SELECT, artId, branchId, artId);

@@ -14,6 +14,7 @@ package org.eclipse.osee.framework.database.init;
 import java.io.File;
 import java.net.Socket;
 import java.net.URL;
+import java.sql.DatabaseMetaData;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -33,6 +34,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
@@ -60,22 +62,34 @@ public class DbBootstrapTask implements IDbInitializationTask {
       this.configuration = configuration;
    }
 
+   public void createOseeSchema() throws OseeCoreException {
+      OseeConnection connection = ConnectionHandler.getConnection();
+      try {
+         DatabaseMetaData metaData = connection.getMetaData();
+         SqlManager sqlManager = SqlFactory.getSqlManager(metaData);
+         DbInit dbInit = new DbInit(sqlManager);
+         DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(getSchemaFiles());
+         Map<String, SchemaData> userSpecifiedConfig = databaseConfigurationData.getUserSpecifiedSchemas();
+         DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(userSpecifiedConfig.keySet());
+         schemaExtractor.extractSchemaData();
+         Map<String, SchemaData> currentDatabaseConfig = schemaExtractor.getSchemas();
+         Set<String> schemas = userSpecifiedConfig.keySet();
+         dbInit.dropIndeces(schemas, userSpecifiedConfig, currentDatabaseConfig);
+         dbInit.dropTables(schemas, userSpecifiedConfig, currentDatabaseConfig);
+         if (SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.postgresql)) {
+            dbInit.dropSchema(schemas);
+            dbInit.createSchema(schemas);
+         }
+         dbInit.addTables(schemas, userSpecifiedConfig);
+         dbInit.addIndeces(schemas, userSpecifiedConfig);
+      } finally {
+         connection.close();
+      }
+   }
+
    public void run() throws OseeCoreException {
       DbUtil.setDbInit(true);
-      DatabaseConfigurationData databaseConfigurationData = new DatabaseConfigurationData(getSchemaFiles());
-      Map<String, SchemaData> userSpecifiedConfig = databaseConfigurationData.getUserSpecifiedSchemas();
-      DatabaseSchemaExtractor schemaExtractor = new DatabaseSchemaExtractor(userSpecifiedConfig.keySet());
-      schemaExtractor.extractSchemaData();
-      Map<String, SchemaData> currentDatabaseConfig = schemaExtractor.getSchemas();
-      Set<String> schemas = userSpecifiedConfig.keySet();
-      DbInit.dropIndeces(schemas, userSpecifiedConfig, currentDatabaseConfig);
-      DbInit.dropTables(schemas, userSpecifiedConfig, currentDatabaseConfig);
-      if (SupportedDatabase.isDatabaseType(SupportedDatabase.postgresql)) {
-         DbInit.dropSchema(schemas);
-         DbInit.createSchema(schemas);
-      }
-      DbInit.addTables(schemas, userSpecifiedConfig);
-      DbInit.addIndeces(schemas, userSpecifiedConfig);
+      createOseeSchema();
       initializeApplicationServer();
       OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
       populateSequenceTable();

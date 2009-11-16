@@ -58,7 +58,7 @@ public class SetAssociatedBranchArtifactHandler extends CommandHandler {
                   "Set Associated Artifact",
                   "Set Associated Artifact for Branch\n\n\"" + selectedBranch.getName() + "\"\nto\nArtifact: " + associatedArtifact)) {
                selectedBranch.setAssociatedArtifact(associatedArtifact);
-               selectedBranch.persist();
+               BranchManager.persist(selectedBranch);
             }
          }
       } catch (OseeCoreException ex) {

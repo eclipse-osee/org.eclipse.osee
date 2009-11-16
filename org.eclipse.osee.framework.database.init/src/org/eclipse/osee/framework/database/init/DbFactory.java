@@ -17,10 +17,11 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
  * @author Roberto E. Escobar
  */
 public class DbFactory {
-   private SchemaData schemaData;
-   protected SqlManager sqlManager = SqlFactory.getSqlManager();
+   private final SchemaData schemaData;
+   protected final SqlManager sqlManager;
 
-   public DbFactory(SchemaData schemaData) throws OseeDataStoreException {
+   public DbFactory(SqlManager sqlManager, SchemaData schemaData) throws OseeDataStoreException {
+      this.sqlManager = sqlManager;
       this.schemaData = schemaData;
    }
 
@@ -33,7 +34,7 @@ public class DbFactory {
 
    public void dropTables() throws OseeDataStoreException {
       List<TableElement> tableDefs = schemaData.getTablesOrderedByDependency();
-      for (int index = (tableDefs.size() - 1); index >= 0; index--) {
+      for (int index = tableDefs.size() - 1; index >= 0; index--) {
          TableElement tableDef = tableDefs.get(index);
          sqlManager.dropTable(tableDef);
       }

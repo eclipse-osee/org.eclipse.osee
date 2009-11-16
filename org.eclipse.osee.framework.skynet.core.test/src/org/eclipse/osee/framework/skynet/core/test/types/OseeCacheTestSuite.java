@@ -10,13 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.test.types;
 
-import org.eclipse.osee.framework.skynet.core.test.types.field.OseeFieldTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {OseeFieldTestSuite.class, ShallowArtifactTest.class, ArtifactTypeCacheTest.class,
-      AttributeTypeCacheTest.class, RelationTypeCacheTest.class, OseeEnumTypeCacheTest.class, BranchCacheTest.class})
+@Suite.SuiteClasses( {ShallowArtifactTest.class, ArtifactTypeCacheTest.class, AttributeTypeCacheTest.class,
+      RelationTypeCacheTest.class, OseeEnumTypeCacheTest.class, BranchCacheTest.class})
 /**
  * @author Roberto E. Escobar
  */

@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.OseeDbConnection;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -41,6 +40,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
@@ -56,6 +56,8 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTransactionData;
  * @author Jeff C. Phillips
  */
 public class SkynetTransaction extends DbTransaction {
+   private static final TransactionMonitor txMonitor = new TransactionMonitor();
+
    private static final String UPDATE_TXS_NOT_CURRENT =
          "UPDATE osee_txs txs1 SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " WHERE txs1.transaction_id = ? AND txs1.gamma_id = ?";
    private static final String GET_EXISTING_ATTRIBUTE_IDS =
@@ -83,7 +85,7 @@ public class SkynetTransaction extends DbTransaction {
    public SkynetTransaction(Branch branch, String comment) {
       this.branch = branch;
       this.comment = comment;
-      OseeDbConnection.reportTxCreation(this, branch);
+      txMonitor.reportTxCreation(this, branch);
    }
 
    /**
@@ -158,7 +160,7 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    private void fetchTxNotCurrent(OseeConnection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          String query = ClientSessionManager.getSql(transactionData.getSelectTxNotCurrentSql());
          chStmt.runPreparedQuery(query, transactionData.getItemId(), this.branch.getId());
@@ -204,12 +206,12 @@ public class SkynetTransaction extends DbTransaction {
    @Override
    public void execute() throws OseeCoreException {
       try {
-         OseeDbConnection.reportTxStart(this, getBranch());
+         txMonitor.reportTxStart(this, getBranch());
          if (madeChanges) {
             super.execute();
          }
       } finally {
-         OseeDbConnection.reportTxEnd(this, getBranch());
+         txMonitor.reportTxEnd(this, getBranch());
       }
    }
 
@@ -273,7 +275,7 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    private int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       AttributeType attributeType = attribute.getAttributeType();
       int attrId = -1;
       // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch 
@@ -359,7 +361,7 @@ public class SkynetTransaction extends DbTransaction {
       executeTransactionDataItems(connection);
       if (branch.getBranchState() == BranchState.CREATED) {
          branch.setBranchState(BranchState.MODIFIED);
-         branch.persist();
+         BranchManager.persist(branch);
       }
    }
 

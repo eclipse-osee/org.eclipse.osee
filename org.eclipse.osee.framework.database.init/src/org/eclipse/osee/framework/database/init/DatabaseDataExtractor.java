@@ -32,6 +32,7 @@ import java.util.regex.Pattern;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
@@ -88,9 +89,10 @@ public class DatabaseDataExtractor {
 
       @Override
       public void run() {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = null;
          OutputStream outputStream = null;
          try {
+            chStmt = ConnectionHandler.getStatement();
             String fileName = table.getFullyQualifiedTableName() + DbConfigFileInformation.getDbDataFileExtension();
             outputStream = new BufferedOutputStream(new FileOutputStream(new File(directory, fileName)));
 
@@ -105,7 +107,9 @@ public class DatabaseDataExtractor {
             OseeLog.log(DatabaseInitActivator.class, Level.SEVERE,
                   "Error Processing Table [ " + table.getSchema() + "." + table.getName() + " ] Data ", ex);
          } finally {
-            chStmt.close();
+            if (chStmt != null) {
+               chStmt.close();
+            }
             if (outputStream != null) {
                try {
                   outputStream.close();
@@ -122,7 +126,8 @@ public class DatabaseDataExtractor {
          try {
             worker.join();
          } catch (InterruptedException ex) {
-            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, "Thread [" + worker.getName() + "] was Interrupted. ", ex);
+            OseeLog.log(DatabaseInitActivator.class, Level.SEVERE,
+                  "Thread [" + worker.getName() + "] was Interrupted. ", ex);
          }
       }
    }
@@ -162,7 +167,7 @@ public class DatabaseDataExtractor {
          columnInfo.name = columnInfo.name.toUpperCase();
 
          int dataType = chStmt.getColumnType(index);
-         if (SupportedDatabase.isDatabaseType(SupportedDatabase.foxpro)) {
+         if (chStmt.isDatabaseType(SupportedDatabase.foxpro)) {
             if (dataType == Types.CHAR) {
                dataType = Types.VARCHAR;
             }

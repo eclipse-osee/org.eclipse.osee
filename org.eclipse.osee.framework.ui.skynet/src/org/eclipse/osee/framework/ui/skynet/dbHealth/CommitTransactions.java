@@ -44,7 +44,7 @@ public class CommitTransactions extends DatabaseHealthOperation {
       if (isFixOperationEnabled()) {
          checkForCancelledStatus(monitor);
 
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(GET_COMMIT_TRANSACTIONS, new Object[0]);
 

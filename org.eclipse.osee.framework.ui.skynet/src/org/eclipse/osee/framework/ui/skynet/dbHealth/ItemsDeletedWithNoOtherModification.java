@@ -68,7 +68,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
    }
 
    private void loadData(String sql, TxChange txChange, ModificationType modificationType) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(sql, txChange.getValue(), modificationType.getValue(), modificationType.getValue());
          while (chStmt.next()) {

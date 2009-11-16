@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
@@ -144,7 +145,7 @@ public class GraphLoader {
       List<TxData> txDatas = new ArrayList<TxData>();
       ConnectionHandlerStatement chStmt = null;
       try {
-         chStmt = new ConnectionHandlerStatement();
+         chStmt = ConnectionHandler.getStatement();
          chStmt.runPreparedQuery(GET_TRANSACTION_DATA, queryId);
          while (chStmt.next()) {
             Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));

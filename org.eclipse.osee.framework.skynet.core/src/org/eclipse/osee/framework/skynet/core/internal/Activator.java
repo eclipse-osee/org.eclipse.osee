@@ -10,11 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
+import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
-import org.eclipse.osee.framework.skynet.core.serverCommit.ICommitService;
 import org.eclipse.osee.framework.skynet.core.serverCommit.CommitService;
+import org.eclipse.osee.framework.skynet.core.serverCommit.ICommitService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -27,6 +28,7 @@ public class Activator implements BundleActivator {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.skynet.core";
    private ServiceRegistration serviceRegistration;
    private ServiceTracker commitServiceTracker;
+   private ServiceTracker translationServiceTracker;
    private static Activator instance;
 
    @Override
@@ -34,31 +36,41 @@ public class Activator implements BundleActivator {
       instance = this;
       ClientSessionManager.class.getCanonicalName();
       HttpAttributeTagger.getInstance();
-      
+
       serviceRegistration = context.registerService(ICommitService.class.getName(), new CommitService(), null);
-      
+
       commitServiceTracker = new ServiceTracker(context, ICommitService.class.getName(), null);
       commitServiceTracker.open();
+
+      translationServiceTracker = new ServiceTracker(context, IDataTranslationService.class.getName(), null);
+      translationServiceTracker.open();
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
       HttpAttributeTagger.getInstance().deregisterFromEventManager();
       RemoteEventManager.deregisterFromRemoteEventManager();
-      
+
       serviceRegistration.unregister();
-      
+
       commitServiceTracker.close();
       commitServiceTracker = null;
-      
+
+      translationServiceTracker.close();
+      translationServiceTracker = null;
+
       instance = null;
    }
-   
-   public static Activator getInstance(){
+
+   public static Activator getInstance() {
       return instance;
    }
-   
+
    public ICommitService getCommitBranchService() {
       return (ICommitService) commitServiceTracker.getService();
+   }
+
+   public IDataTranslationService getTranslationService() {
+      return (IDataTranslationService) translationServiceTracker.getService();
    }
 }

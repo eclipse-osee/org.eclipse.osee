@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
 import org.eclipse.osee.framework.core.data.AbstractOseeType;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchField;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
@@ -99,7 +100,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       String sourceTableName = archive ? "osee_txs" : "osee_txs_archived";
       String destinationTableName = archive ? "osee_txs_archived" : "osee_txs";
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement(connection);
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
       List<Object[]> addressing = new ArrayList<Object[]>();
       List<Object[]> deleteAddressing = new ArrayList<Object[]>();
       String sql = String.format(SELECT_ADDRESSING_BY_BRANCH, sourceTableName);

@@ -15,6 +15,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -42,7 +43,7 @@ public class ArtifactChangeAcquirer extends ChangeAcquirer {
       TransactionRecord toTransactionId;
 
       getMonitor().subTask("Gathering New or Deleted Artifacts");
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
 
          if (hasBranch) { //Changes per a branch

@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -58,7 +59,7 @@ public class ArchiveBranchHandler extends CommandHandler {
          try {
             BranchArchivedState state = branch.getArchiveState();
             branch.setArchived(!state.isArchived());
-            branch.persist();
+            BranchManager.persist(branch);
 
             OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, branch.getId());
          } catch (OseeCoreException ex) {

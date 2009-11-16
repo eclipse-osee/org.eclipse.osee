@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.importing.operations;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;

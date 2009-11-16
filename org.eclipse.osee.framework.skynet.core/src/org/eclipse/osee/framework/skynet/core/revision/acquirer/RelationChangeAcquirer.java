@@ -13,6 +13,7 @@ import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -35,7 +36,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
 
    @Override
    public ArrayList<ChangeBuilder> acquireChanges() throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       TransactionRecord fromTransactionId;
       TransactionRecord toTransactionId;
 
@@ -59,8 +60,7 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
 
             if (getSpecificArtifact() != null) {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_RELATION_FOR_SPECIFIC_ARTIFACT),
-                     getTransaction().getId(), getSpecificArtifact().getArtId(),
-                     getSpecificArtifact().getArtId());
+                     getTransaction().getId(), getSpecificArtifact().getArtId(), getSpecificArtifact().getArtId());
                fromTransactionId = getTransaction();
             } else {
                chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CHANGE_TX_RELATION),
@@ -84,7 +84,8 @@ public class RelationChangeAcquirer extends ChangeAcquirer {
                      new RelationChangeBuilder(getSourceBranch(),
                            ArtifactTypeManager.getType(chStmt.getInt("art_type_id")), chStmt.getInt("gamma_id"),
                            aArtId, toTransactionId, fromTransactionId, modificationType, ChangeType.OUTGOING, bArtId,
-                           relLinkId, rationale,RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")), !hasBranch));
+                           relLinkId, rationale, RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")),
+                           !hasBranch));
             }
          }
          getMonitor().worked(25);

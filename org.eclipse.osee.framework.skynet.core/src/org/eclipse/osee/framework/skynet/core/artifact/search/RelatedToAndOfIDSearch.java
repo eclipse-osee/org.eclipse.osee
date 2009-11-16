@@ -12,14 +12,13 @@ package org.eclipse.osee.framework.skynet.core.artifact.search;
 
 import java.util.List;
 import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.database.sql.SkynetDatabase;
 
 /**
  * @author Robert A. Fisher
  */
 public class RelatedToAndOfIDSearch implements ISearchPrimitive {
-   private int artId;
-   private int relType;
+   private final int artId;
+   private final int relType;
 
    /**
     * @param artId The type of relation for the artifact to be in
@@ -39,9 +38,10 @@ public class RelatedToAndOfIDSearch implements ISearchPrimitive {
    }
 
    public String getTables() {
-      return "(SELECT * FROM " + SkynetDatabase.ARTIFACT_TABLE + " INNER JOIN " + SkynetDatabase.RELATION_LINK_VERSION_TABLE + "	ON (( b_art_id=" + artId + " AND art_id=a_art_id) or (a_art_id=" + artId + " and art_id = b_art_id))) artLinkJoin";
+      return "(SELECT * FROM osee_artifact INNER JOIN osee_relation_link ON (( b_art_id=" + artId + " AND art_id=a_art_id) or (a_art_id=" + artId + " and art_id = b_art_id))) artLinkJoin";
    }
 
+   @Override
    public String toString() {
       return "Related to art_id: " + artId + " With rel type: " + relType;
    }

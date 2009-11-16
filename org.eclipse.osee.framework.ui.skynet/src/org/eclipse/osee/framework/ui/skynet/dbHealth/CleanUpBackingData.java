@@ -45,7 +45,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
 
       List<Object[]> notAddressedGammas = new LinkedList<Object[]>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       String sql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
 
       ResultsEditorTableTab resultsTab = new ResultsEditorTableTab(tableName + " gammas");
@@ -75,7 +75,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
 
       List<Object[]> emptyTransactions = new LinkedList<Object[]>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
 
       ResultsEditorTableTab resultsTab = new ResultsEditorTableTab("Empty transactions");
       getResultsProvider().addResultsTab(resultsTab);

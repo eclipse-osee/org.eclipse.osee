@@ -34,7 +34,7 @@ public class ConflictStatusManager {
          "INSERT INTO osee_conflict ( conflict_id, merge_branch_id, source_gamma_id, dest_gamma_id, status, conflict_type) VALUES ( ?, ?, ?, ?, ?, ?)";
 
    public static void setStatus(ConflictStatus status, int sourceGamma, int destGamma, int mergeBranchId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       //Gammas should be up to date so you can use them to get entry just update the status field.
       try {
          ConnectionHandler.runPreparedUpdate(MERGE_UPDATE_STATUS, status.getValue(), sourceGamma, destGamma,
@@ -49,7 +49,7 @@ public class ConflictStatusManager {
       //add it with an unedited setting and return unedited
       //If gammas are out of date, update the gammas and down grade markedMerged to Edited
 
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(MERGE_ATTRIBUTE_STATUS, branchID, objectID, conflictType);
 
