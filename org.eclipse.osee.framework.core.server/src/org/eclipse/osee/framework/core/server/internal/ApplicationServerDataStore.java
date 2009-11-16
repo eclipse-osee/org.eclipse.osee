@@ -122,7 +122,7 @@ public class ApplicationServerDataStore {
       CompositeKeyHashMap<String, Integer, OseeServerInfo> servers =
             new CompositeKeyHashMap<String, Integer, OseeServerInfo>();
       if (Strings.isValid(clientVersion)) {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(SELECT_FROM_LOOKUP_TABLE);
             while (chStmt.next()) {
@@ -162,7 +162,7 @@ public class ApplicationServerDataStore {
 
    static Set<String> getOseeVersionsByServerId(String serverId) throws OseeDataStoreException {
       Set<String> supportedVersions = new HashSet<String>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_SUPPORTED_VERSIONS_FROM_LOOKUP_TABLE_BY_SERVER_ID, serverId);
          while (chStmt.next()) {

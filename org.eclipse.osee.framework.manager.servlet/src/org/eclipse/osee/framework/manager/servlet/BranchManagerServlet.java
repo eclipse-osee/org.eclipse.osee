@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.manager.servlet.function.ChangeReportFunction;
 import org.eclipse.osee.framework.manager.servlet.function.CreateBranchFunction;
 import org.eclipse.osee.framework.manager.servlet.function.CreateCommitFunction;
 
@@ -34,7 +33,8 @@ public class BranchManagerServlet extends OseeHttpServlet {
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
       try {
-         Function function = Function.fromString(req.getParameter("function"));
+         String rawFunction = req.getParameter("function");
+         Function function = Function.fromString(rawFunction);
          switch (function) {
             case BRANCH_COMMIT:
                new CreateCommitFunction().commitBranch(req, resp);
@@ -43,7 +43,7 @@ public class BranchManagerServlet extends OseeHttpServlet {
                new CreateBranchFunction().createBranch(req, resp);
                break;
             case CHANGE_REPORT:
-               new ChangeReportFunction().getChanges(req, resp);
+               //               new ChangeReportFunction().getChanges(req, resp);
                break;
             default:
                throw new UnsupportedOperationException();

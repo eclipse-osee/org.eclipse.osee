@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public abstract class Branch extends AbstractOseeType implements Comparable<Branch>, IAccessControllable, IAdaptable {
 
-   protected Branch(AbstractOseeCache<? extends AbstractOseeType> cache, String guid, String name) {
-      super(cache, guid, name);
+   protected Branch(String guid, String name) {
+      super(guid, name);
    }
 
    public abstract Branch getParentBranch() throws OseeCoreException;

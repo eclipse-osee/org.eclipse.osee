@@ -14,6 +14,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -29,8 +30,9 @@ public class UserDataStore {
 
    public static IOseeUserInfo getOseeUserFromOseeDb(String userId) {
       IOseeUserInfo toReturn = null;
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = null;
       try {
+         chStmt = ConnectionHandler.getStatement();
          chStmt.runPreparedQuery(LOAD_OSEE_USER, userId);
          if (chStmt.next()) {
             // Only need the userId all other fields will be loaded by the client
@@ -40,7 +42,9 @@ public class UserDataStore {
          OseeLog.log(CoreServerActivator.class, Level.SEVERE, String.format(
                "Unable to find userId [%s] in OSEE database.", userId), ex);
       } finally {
-         chStmt.close();
+         if (chStmt != null) {
+            chStmt.close();
+         }
       }
       return toReturn;
    }

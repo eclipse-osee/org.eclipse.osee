@@ -12,12 +12,13 @@ package org.eclipse.osee.framework.core.test;
 
 import org.eclipse.osee.framework.core.test.data.DataTestSuite;
 import org.eclipse.osee.framework.core.test.exchange.TranslationSuite;
+import org.eclipse.osee.framework.core.test.fields.OseeFieldTestSuite;
 import org.eclipse.osee.framework.core.test.util.ChangeUtilTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ChangeUtilTest.class, DataTestSuite.class, TranslationSuite.class})
+@Suite.SuiteClasses( {ChangeUtilTest.class, OseeFieldTestSuite.class, DataTestSuite.class, TranslationSuite.class})
 /**
  * @author Roberto E. Escobar
  */

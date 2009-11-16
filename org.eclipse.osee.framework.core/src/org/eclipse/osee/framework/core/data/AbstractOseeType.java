@@ -17,21 +17,16 @@ public abstract class AbstractOseeType implements IOseeStorableType {
 
    private final String guid;
    private ModificationType modificationType;
-   private final AbstractOseeCache<? extends AbstractOseeType> cache;
    private final Map<String, IOseeField<?>> fieldMap;
 
-   protected AbstractOseeType(AbstractOseeCache<? extends AbstractOseeType> cache, String guid, String name) {
-      this.cache = cache;
+   protected AbstractOseeType(String guid, String name) {
       this.guid = guid;
       this.fieldMap = new HashMap<String, IOseeField<?>>();
       this.modificationType = ModificationType.NEW;
 
       addField(UNIQUE_ID_FIELD_KEY, new UniqueIdField());
       addField(NAME_FIELD_KEY, new OseeField<String>(name));
-      initializeFields();
    }
-
-   protected abstract void initializeFields();
 
    protected synchronized void addField(String key, AbstractOseeField<?> toAdd) {
       fieldMap.put(key, toAdd);
@@ -88,10 +83,6 @@ public abstract class AbstractOseeType implements IOseeStorableType {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
       }
-   }
-
-   protected AbstractOseeCache<? extends AbstractOseeType> getCache() {
-      return cache;
    }
 
    public final String getGuid() {
@@ -169,9 +160,4 @@ public abstract class AbstractOseeType implements IOseeStorableType {
    public void setModificationType(ModificationType modificationType) {
       this.modificationType = modificationType;
    }
-
-   public void persist() throws OseeCoreException {
-      cache.storeItem(this);
-   }
-
 }

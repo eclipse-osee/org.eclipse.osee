@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.IChangeReportService;
+import org.eclipse.osee.framework.branch.management.ITransactionService;
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -49,6 +50,7 @@ public class MasterServletActivator implements BundleActivator {
       SEARCH_ENGINE,
       DATA_TRANSLATOR_SERVICE,
       SEARCH_ENGINE_TAGGER,
+      TRANSACTION_SERVICE,
       AUTHENTICATION_SERVICE;
    }
 
@@ -71,6 +73,7 @@ public class MasterServletActivator implements BundleActivator {
       createServiceTracker(context, ISearchEngineTagger.class, TrackerId.SEARCH_ENGINE_TAGGER);
 
       createServiceTracker(context, IAuthenticationManager.class, TrackerId.AUTHENTICATION_SERVICE);
+      createServiceTracker(context, ITransactionService.class, TrackerId.TRANSACTION_SERVICE);
 
       createHttpServiceTracker(context, SystemManagerServlet.class, OseeServerContext.MANAGER_CONTEXT);
       createHttpServiceTracker(context, ResourceManagerServlet.class, OseeServerContext.RESOURCE_CONTEXT);
@@ -159,15 +162,19 @@ public class MasterServletActivator implements BundleActivator {
    public IAuthenticationManager getAuthenticationManager() {
       return getTracker(TrackerId.AUTHENTICATION_SERVICE, IAuthenticationManager.class);
    }
-   
-   public IChangeReportService getChangeReportService(){
+
+   public IChangeReportService getChangeReportService() {
       return getTracker(TrackerId.CHANGE_REPORT, IChangeReportService.class);
    }
 
    public IDataTranslationService getTranslationService() {
       return getTracker(TrackerId.DATA_TRANSLATOR_SERVICE, IDataTranslationService.class);
    }
-   
+
+   public ITransactionService getTransactionService() {
+      return getTracker(TrackerId.TRANSACTION_SERVICE, ITransactionService.class);
+   }
+
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
       ServiceTracker tracker = mappedTrackers.get(trackerId);
       Object service = tracker.getService();

@@ -82,7 +82,7 @@ public class SessionDataStore {
 
    public static void loadSessions(String serverId, Map<String, SessionData> sessionCache) throws OseeDataStoreException {
       if (Strings.isValid(serverId)) {
-         ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(LOAD_SESSIONS_BY_SERVER_ID, serverId);
             while (chStmt.next()) {
@@ -99,7 +99,7 @@ public class SessionDataStore {
 
    public static List<SessionData> getSessionsForUserId(String userId) throws OseeDataStoreException {
       List<SessionData> toReturn = new ArrayList<SessionData>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_SESSIONS_FOR_USER_ID, userId);
          while (chStmt.next()) {
@@ -114,7 +114,7 @@ public class SessionDataStore {
 
    public static List<SessionData> getAllSessions() throws OseeDataStoreException {
       List<SessionData> toReturn = new ArrayList<SessionData>();
-      ConnectionHandlerStatement chStmt = new ConnectionHandlerStatement();
+      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ALL_SESSIONS);
          while (chStmt.next()) {

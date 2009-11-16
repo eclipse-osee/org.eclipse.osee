@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.util.Date;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -19,5 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IOseeTypeFactory {
 
-   public Branch createBranch(AbstractOseeCache<Branch> cache, String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException;
+   public Branch createBranch(String guid, String name, BranchType branchType, BranchState branchState, boolean isArchived) throws OseeCoreException;
+
+   public TransactionRecord createTransactionRecord(int transactionNumber, Branch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException;
 }

@@ -15,11 +15,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.branch.management.ITransactionService;
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.BranchCommitData;
 import org.eclipse.osee.framework.core.data.CommitTransactionRecordResponse;
-import org.eclipse.osee.framework.core.exchange.BranchCommitDataResponder;
-import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
 
 /**
@@ -28,18 +27,19 @@ import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
 public class CreateCommitFunction {
 
    public void commitBranch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-      PropertyStore propertyStore = new PropertyStore();
-      propertyStore.load(req.getInputStream());
-
+      ITransactionService transactionService = MasterServletActivator.getInstance().getTransactionService();
       IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
-      BranchCommitData data = service.convert(propertyStore, BranchCommitData.class);
+
+      BranchCommitData data = service.convert(req.getInputStream(), BranchCommitData.class);
+
       CommitTransactionRecordResponse responseData = new CommitTransactionRecordResponse();
       IStatus status =
-            MasterServletActivator.getInstance().getBranchCommit().commitBranch(new NullProgressMonitor(), data);
+            MasterServletActivator.getInstance().getBranchCommit().commitBranch(new NullProgressMonitor(),
+                  transactionService, data);
       if (status.isOK()) {
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/plain");
-         resp.getOutputStream().write(new BranchCommitDataResponder().convertToReponse(responseData));
+         //         resp.getOutputStream().write(new BranchCommitDataResponder().convertToReponse(responseData));
       } else {
          resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
          resp.setContentType("text/plain");
