@@ -173,7 +173,7 @@ attributeType "ats.Released" extends BooleanAttribute {
 }
 
 attributeType "ats.Version Locked" extends BooleanAttribute {
-   guid "AAMFEcnMoUZMLA4zB1AB"
+   guid "AAzRtEJXbjzR5jySOZgA"
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
