@@ -67,7 +67,7 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
    protected void addPages() {
       try {
          OseeContributionItem.addTo(this, true);
-         String loadingStr = "Loading Coverage for " + getCoverageEditorInput().getPreLoadName() + " ...";
+         String loadingStr = "Loading Coverage Package \"" + getCoverageEditorInput().getPreLoadName() + "\" ...";
          coverageEditorLoadingTab = new CoverageEditorLoadingTab(loadingStr, this);
          addFormPage(coverageEditorLoadingTab);
          setPartName("Loading " + getCoverageEditorInput().getPreLoadName());
