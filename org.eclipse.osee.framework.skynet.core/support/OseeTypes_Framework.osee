@@ -226,6 +226,7 @@ artifactType "Universal Group" extends "Group Artifact" {
 artifactType "Renderer Template" extends "Native Artifact" {
    guid "AAMFDhvZnHKgSeFKMXgA"
    attribute "Template Match Criteria"
+   attribute "Whole Word Content"
 }
 
 attributeType "Template Match Criteria" extends StringAttribute {
