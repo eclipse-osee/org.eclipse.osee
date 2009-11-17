@@ -12,20 +12,29 @@ package org.eclipse.osee.coverage.editor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
+import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
+import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.IFrameworkTransactionEventListener;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -51,11 +60,75 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
    private CoverageEditorImportTab coverageEditorImportTab = null;
    private CoverageEditorCoverageTab coverageEditorCoverageTab = null;
    private CoverageEditorOverviewTab coverageEditorOverviewTab = null;
+   private CoverageEditorLoadingTab coverageEditorLoadingTab = null;
+   private Collection<Artifact> artifactLoadCache = null;
 
    @Override
    protected void addPages() {
       try {
          OseeContributionItem.addTo(this, true);
+         String loadingStr = "Loading Coverage for " + getCoverageEditorInput().getPreLoadName() + " ...";
+         coverageEditorLoadingTab = new CoverageEditorLoadingTab(loadingStr, this);
+         addFormPage(coverageEditorLoadingTab);
+         setPartName("Loading " + getCoverageEditorInput().getPreLoadName());
+         setTitleImage(ImageManager.getImage(CoverageImage.COVERAGE));
+         setActivePage(startPage);
+         if (getCoverageEditorInput().isInTest()) {
+            (new LoadCoverage(loadingStr)).doWork(null);
+         } else {
+            Operations.executeAsJob(new LoadCoverage(loadingStr), true);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
+      }
+   }
+
+   private class LoadCoverage extends AbstractOperation {
+
+      public LoadCoverage(String operationName) {
+         super(operationName, Activator.PLUGIN_ID);
+      }
+
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         if (artifactLoadCache == null) {
+            if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
+               try {
+                  artifactLoadCache =
+                        RelationManager.getRelatedArtifacts(
+                              Collections.singleton(getCoverageEditorInput().getCoveragePackageArtifact()), 8,
+                              CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
+               }
+            } else {
+               artifactLoadCache = Collections.emptyList();
+            }
+         }
+         if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
+            CoveragePackage coveragePackage =
+                  OseeCoveragePackageStore.get(getCoverageEditorInput().getCoveragePackageArtifact());
+            getCoverageEditorInput().setCoveragePackageBase(coveragePackage);
+         }
+
+         if (getCoverageEditorInput().isInTest()) {
+            addPagesAfterLoad();
+         } else {
+            Displays.ensureInDisplayThread(new Runnable() {
+               @Override
+               public void run() {
+                  addPagesAfterLoad();
+               }
+            });
+         }
+      }
+   };
+
+   protected void addPagesAfterLoad() {
+      try {
+         // remove loading page
+         removePage(0);
+
          coverageEditorOverviewTab = new CoverageEditorOverviewTab("Overview", this, getCoveragePackageBase());
          addFormPage(coverageEditorOverviewTab);
          coverageEditorCoverageTab = new CoverageEditorCoverageTab("Coverage Items", this, getCoveragePackageBase());
@@ -74,7 +147,9 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
    }
 
    public void simulateImport(String importName) throws OseeCoreException {
-      if (coverageEditorImportTab == null) throw new OseeStateException("Import page == null");
+      if (coverageEditorImportTab == null) {
+         throw new OseeStateException("Import page == null");
+      }
       setActivePage(2);
       coverageEditorImportTab.simulateImport(importName);
    }

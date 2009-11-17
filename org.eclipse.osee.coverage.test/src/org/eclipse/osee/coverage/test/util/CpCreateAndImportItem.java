@@ -35,7 +35,7 @@ public class CpCreateAndImportItem extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       coveragePackage = new CoveragePackage(getName() + " - #" + IncrementingNum.get());
-      CoverageEditor.open(new CoverageEditorInput(null, coveragePackage));
+      CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), null, coveragePackage, true));
       // Process Import 1
       CoverageEditor editor = null;
       for (CoverageEditor coverageEditor : CoverageEditor.getEditors()) {

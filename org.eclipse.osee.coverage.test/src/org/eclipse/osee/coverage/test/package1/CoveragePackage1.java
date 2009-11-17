@@ -33,6 +33,6 @@ public class CoveragePackage1 extends XNavigateItemAction {
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
       CoveragePackage coveragePackage = new CoveragePackage("Coverage Package 1");
-      CoverageEditor.open(new CoverageEditorInput(null, coveragePackage));
+      CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), null, coveragePackage, true));
    }
 }

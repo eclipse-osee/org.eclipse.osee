@@ -41,7 +41,8 @@ public class CpSelectAndImportItem extends XNavigateItemAction {
       if (dialog.open() != 0) return;
       Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
       CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
-      CoverageEditor.open(new CoverageEditorInput(coveragePackageArtifact, coveragePackage));
+      CoverageEditor.open(new CoverageEditorInput(coveragePackage.getName(), coveragePackageArtifact, coveragePackage,
+            true));
       // Process Import 1
       CoverageEditor editor = null;
       for (CoverageEditor coverageEditor : CoverageEditor.getEditors()) {

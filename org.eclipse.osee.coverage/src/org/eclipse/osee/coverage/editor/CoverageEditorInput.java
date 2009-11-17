@@ -21,12 +21,16 @@ import org.eclipse.ui.IPersistableElement;
  */
 public class CoverageEditorInput implements IEditorInput {
 
-   private final CoveragePackageBase coveragePackageBase;
+   private CoveragePackageBase coveragePackageBase;
    private final Artifact coveragePackageArtifact;
+   private final String preLoadName;
+   private final boolean isInTest;
 
-   public CoverageEditorInput(Artifact coveragePackageArtifact, CoveragePackageBase coveragePackageBase) {
+   public CoverageEditorInput(String preLoadName, Artifact coveragePackageArtifact, CoveragePackageBase coveragePackageBase, boolean isInTest) {
+      this.preLoadName = preLoadName;
       this.coveragePackageArtifact = coveragePackageArtifact;
       this.coveragePackageBase = coveragePackageBase;
+      this.isInTest = isInTest;
    }
 
    public boolean exists() {
@@ -53,6 +57,9 @@ public class CoverageEditorInput implements IEditorInput {
 
    @Override
    public String getName() {
+      if (coveragePackageBase == null) {
+         return getPreLoadName();
+      }
       return coveragePackageBase.getName();
    }
 
@@ -62,6 +69,18 @@ public class CoverageEditorInput implements IEditorInput {
 
    public Artifact getCoveragePackageArtifact() {
       return coveragePackageArtifact;
+   }
+
+   public String getPreLoadName() {
+      return preLoadName;
+   }
+
+   public void setCoveragePackageBase(CoveragePackageBase coveragePackageBase) {
+      this.coveragePackageBase = coveragePackageBase;
+   }
+
+   public boolean isInTest() {
+      return isInTest;
    }
 
 }

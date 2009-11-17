@@ -10,7 +10,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
@@ -47,8 +46,8 @@ public class OpenCoveragePackageAction extends Action {
          dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());
          if (dialog.open() == 0) {
             Artifact coveragePackageArtifact = (Artifact) dialog.getResult()[0];
-            CoveragePackage coveragePackage = OseeCoveragePackageStore.get(coveragePackageArtifact);
-            CoverageEditor.open(new CoverageEditorInput(coveragePackageArtifact, coveragePackage));
+            CoverageEditor.open(new CoverageEditorInput(coveragePackageArtifact.getName(), coveragePackageArtifact,
+                  null, false));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);

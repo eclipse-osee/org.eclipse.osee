@@ -12,4 +12,5 @@ Export-Package: org.eclipse.osee.coverage.test,
  org.eclipse.osee.coverage.test.import1,
  org.eclipse.osee.coverage.test.import2,
  org.eclipse.osee.coverage.test.import3,
+ org.eclipse.osee.coverage.test.import4,
  org.eclipse.osee.coverage.test.navigate
