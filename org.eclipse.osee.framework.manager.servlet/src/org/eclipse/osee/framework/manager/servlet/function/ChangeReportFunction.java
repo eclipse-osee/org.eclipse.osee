@@ -29,7 +29,7 @@ import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
  */
 public class ChangeReportFunction {
 
-   public void processRequest(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+   public void getChanges(HttpServletRequest req, HttpServletResponse resp) throws Exception {
       IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
       ChangeReportRequestData data = service.convert(req.getInputStream(), ChangeReportRequestData.class);
       ArrayList<ChangeItem> changes = new ArrayList<ChangeItem>();
