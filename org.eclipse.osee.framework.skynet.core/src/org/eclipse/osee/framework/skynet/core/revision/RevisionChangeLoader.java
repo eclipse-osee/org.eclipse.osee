@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
@@ -147,7 +148,7 @@ public final class RevisionChangeLoader {
                   historical ? transactionId.getId() : SQL3DataType.INTEGER});
          }
          bulkLoadedArtifacts =
-               ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, false);
+               ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.FULL, null, insertParameters, true, historical, true);
       }
 
       //We build the changes after the artifact loader has been run so we can take advantage of bulk loading. 
