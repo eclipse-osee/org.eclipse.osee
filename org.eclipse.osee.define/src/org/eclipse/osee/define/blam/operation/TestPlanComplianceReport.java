@@ -19,6 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.CoreArtifacts;
 import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
@@ -54,15 +55,17 @@ public class TestPlanComplianceReport extends AbstractBlam {
 
       if (isTestPlan(node)) {
          processTestPlan(node);
+      } else {
+         reportLine(node, "N/A (" + node.getArtifactTypeName() + ")", EMPTY);
       }
-      reportLine(node, "N/A (" + node.getArtifactTypeName() + ")", EMPTY);
       for (Artifact child : children) {
          processArtifacts(child);
       }
    }
 
    private boolean isTestPlan(Artifact src) {
-      if (src.getArtifactType().inheritsFrom(CoreArtifacts.TestPlanElement)) {
+      ArtifactType temp = src.getArtifactType();
+      if (temp.inheritsFrom(CoreArtifacts.TestPlanElement)) {
          return true;
       }
 
