@@ -45,8 +45,23 @@ public class ChangeItemTranslatorTest extends BaseTranslatorTest<ChangeItem> {
    @Override
    protected void checkEquals(ChangeItem expected, ChangeItem actual) throws OseeCoreException {
        Assert.assertEquals(expected.getArtId(), actual.getArtId());
+       Assert.assertEquals(expected.getItemId(), actual.getItemId());
+       
+       checkChangeVersion(expected.getBaselineVersion(), actual.getBaselineVersion());
+       checkChangeVersion(expected.getCurrentVersion(), actual.getCurrentVersion());
+       checkChangeVersion(expected.getDestinationVersion(), actual.getDestinationVersion());
+       checkChangeVersion(expected.getNetChange(), actual.getNetChange());
+       checkChangeVersion(expected.getFirstNonCurrentChange(), actual.getFirstNonCurrentChange());
    }
-
+   
+   private void checkChangeVersion(ChangeVersion expected, ChangeVersion actual){
+      if(actual.isValid()){
+         Assert.assertEquals(expected.getGammaId(), actual.getGammaId());
+         Assert.assertEquals(expected.getTransactionNumber(), actual.getTransactionNumber());
+         Assert.assertEquals(expected.getModType(), actual.getModType());
+      }
+   }
+   
    @Parameters
    public static Collection<Object[]> data() {
       DataTranslationService dataTranslationService = new DataTranslationService();
