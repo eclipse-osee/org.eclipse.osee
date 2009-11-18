@@ -70,7 +70,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private final Branch destinationBranch;
    private final Branch mergeBranch;
    private final List<ChangeItem> changes;
-   private CommitTransactionRecordResponse txHolder;
+   private final CommitTransactionRecordResponse txHolder;
 
    private OseeConnection connection;
    private boolean success;

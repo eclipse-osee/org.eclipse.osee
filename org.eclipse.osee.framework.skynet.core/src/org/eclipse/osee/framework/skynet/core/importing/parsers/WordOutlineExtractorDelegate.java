@@ -15,6 +15,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
@@ -116,7 +117,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          collector.addRoughArtifact(roughArtifact);
          roughArtifact.setSectionNumber(parNumber);
 
-         roughArtifact.addAttribute("Imported Paragraph Number", parNumber);
+         roughArtifact.addAttribute(CoreAttributes.PARAGRAPH_NUMBER, parNumber);
 
          return roughArtifact;
       } else {

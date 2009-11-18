@@ -139,7 +139,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
    private IArtifactImportResolver getResolver() {
       ArtifactType primaryArtifactType = mainPage.getArtifactType();
       boolean isUpdateExistingArtifactsSelected = mainPage.isUpdateExistingSelected();
-      Collection<AttributeType> noneChangingAttributes = mainPage.getNoneChangingAttributes();
+      Collection<AttributeType> noneChangingAttributes = mainPage.getNonChangingAttributes();
       IArtifactImportResolver resolver = null;
       try {
          ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");

@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.CoreArtifacts;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -53,11 +54,10 @@ public class TestPlanComplianceReport extends AbstractBlam {
 
       if (isTestPlan(node)) {
          processTestPlan(node);
-      } else {
-         reportLine(node, "N/A (" + node.getArtifactTypeName() + ")", EMPTY);
-         for (Artifact child : children) {
-            processArtifacts(child);
-         }
+      }
+      reportLine(node, "N/A (" + node.getArtifactTypeName() + ")", EMPTY);
+      for (Artifact child : children) {
+         processArtifacts(child);
       }
    }
 
@@ -93,7 +93,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
    }
 
    private String getName(Artifact art) throws OseeCoreException {
-      String testPlanNumber = art.getSoleAttributeValue("Imported Paragraph Number", "");
+      String testPlanNumber = art.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
       String testPlanOutput = testPlanNumber + " " + art.getName();
       return testPlanOutput;
    }
@@ -132,7 +132,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
             testPlan.getRelatedArtifacts(CoreRelationEnumeration.VERIFICATION_PLAN__REQUIREMENT);
       Collection<String> requirementNames = new ArrayList<String>();
       for (Artifact req : requirementArtifacts) {
-         String paragraphNumber = req.getSoleAttributeValueAsString("Imported Paragraph Number", "");
+         String paragraphNumber = req.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
          requirementNames.add(paragraphNumber + " " + req.getName());
       }
 

@@ -18,6 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -39,7 +40,9 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn cCol, int columnIndex) throws OseeCoreException {
       try {
-         if (!(element instanceof Change)) return "";
+         if (!(element instanceof Change)) {
+            return "";
+         }
          Change change = (Change) element;
          if (cCol.equals(ChangeXViewerFactory.Name)) {
             return change.getName();
@@ -62,8 +65,8 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {
             String paragraphNum = "";
 
-            if (change.getArtifact().isAttributeTypeValid("Imported Paragraph Number")) {
-               paragraphNum = change.getArtifact().getSoleAttributeValue("Imported Paragraph Number", "");
+            if (change.getArtifact().isAttributeTypeValid(CoreAttributes.PARAGRAPH_NUMBER)) {
+               paragraphNum = change.getArtifact().getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
             }
             return paragraphNum;
          }
@@ -74,7 +77,9 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
    }
 
    public void dispose() {
-      if (font != null) font.dispose();
+      if (font != null) {
+         font.dispose();
+      }
       font = null;
    }
 
@@ -95,7 +100,9 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       try {
-         if (!(element instanceof Change)) return null;
+         if (!(element instanceof Change)) {
+            return null;
+         }
          Change change = (Change) element;
          if (xCol.equals(ChangeXViewerFactory.Name)) {
             try {

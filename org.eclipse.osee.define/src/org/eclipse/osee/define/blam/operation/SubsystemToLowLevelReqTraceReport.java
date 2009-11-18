@@ -29,6 +29,7 @@ import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.AIFile;
@@ -69,6 +70,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Generate Report", 100);
 
@@ -108,14 +110,14 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       String[] row = new String[7];
 
       for (Artifact lowLevelReq : lowLevelReqs) {
-         row[0] = correct(lowLevelReq.getSoleAttributeValue("Imported Paragraph Number", ""));
+         row[0] = correct(lowLevelReq.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
          row[1] = lowLevelReq.getName();
          if (lowLevelReq.isOfType(reqtypeName)) {
             row[2] = lowLevelReq.getAttributesToString("Qualification Method");
 
             for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(CoreRelationEnumeration.REQUIREMENT_TRACE__HIGHER_LEVEL)) {
                row[3] = getAssociatedSubSystem(subSysReq);
-               row[4] = correct(subSysReq.getSoleAttributeValue("Imported Paragraph Number", ""));
+               row[4] = correct(subSysReq.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
                row[5] = subSysReq.getName();
                row[6] = subSysReq.getSoleAttributeValue(Requirements.SUBSYSTEM, "");
                excelWriter.writeRow(row);
@@ -155,12 +157,12 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
          for (Artifact higherLevelReq : subsysReqs) {
             if (isAllocated(higherLevelReq)) {
-               row[0] = correct(higherLevelReq.getSoleAttributeValue("Imported Paragraph Number", ""));
+               row[0] = correct(higherLevelReq.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
                row[1] = higherLevelReq.getName();
 
                for (Artifact lowerLevelReq : higherLevelReq.getRelatedArtifacts(CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL)) {
                   if (lowLevelReqs.contains(lowerLevelReq)) {
-                     row[2] = correct(lowerLevelReq.getSoleAttributeValue("Imported Paragraph Number", ""));
+                     row[2] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
                      row[3] = lowerLevelReq.getName();
                      excelWriter.writeRow(row);
                      row[0] = row[1] = null;
@@ -233,6 +235,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       return "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" toolTip=\"Select a requirements branch.\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Lower Level Requirements\" /><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Allocation Components\" /><XWidget xwidgetType=\"XArtifactTypeListViewer\" displayName=\"Low Level Requirement Type\" defaultValue=\"Software Requirement\" /></xWidgets>";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Publish");
    }

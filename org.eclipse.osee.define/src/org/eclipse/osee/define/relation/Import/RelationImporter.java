@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
@@ -67,7 +68,7 @@ public class RelationImporter implements RowProcessor {
          monitor.worked(1);
          Collection<Artifact> artifacts =
                ArtifactQuery.getArtifactListFromTypeAndAttribute(Requirements.SUBSYSTEM_REQUIREMENT,
-                     "Imported Paragraph Number", row[1], branch);
+                     CoreAttributes.PARAGRAPH_NUMBER, row[1], branch);
 
          Artifact rowArtifact;
          try {

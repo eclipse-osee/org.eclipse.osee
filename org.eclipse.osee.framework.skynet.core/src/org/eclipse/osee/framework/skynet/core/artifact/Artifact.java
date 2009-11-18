@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
-import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.MultipleAttributesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -501,16 +500,13 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       }
    }
 
-   /**
-    * @param attributeName
-    * @return true if attributeName is valid for the artifact type of this artifact
-    * @throws OseeTypeDoesNotExist
-    * @throws OseeDataStoreException
-    * @throws BranchDoesNotExist
-    */
    public boolean isAttributeTypeValid(String attributeName) throws OseeCoreException {
       AttributeType attributeType = AttributeTypeManager.getType(attributeName);
       return getArtifactType().isValidAttributeType(attributeType, branch);
+   }
+
+   public boolean isAttributeTypeValid(IOseeType attributeType) throws OseeCoreException {
+      return isAttributeTypeValid(attributeType.getName());
    }
 
    /**
@@ -698,6 +694,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
                "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getHumanReadableId());
       }
       return soleAttributes.iterator().next().getValue();
+   }
+
+   public <T> T getSoleAttributeValue(IOseeType attributeType) throws OseeCoreException {
+      return getSoleAttributeValue(attributeType.getName());
    }
 
    /**

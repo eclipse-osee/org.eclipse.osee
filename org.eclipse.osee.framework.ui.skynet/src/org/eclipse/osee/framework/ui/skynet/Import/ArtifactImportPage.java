@@ -96,8 +96,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       artifactTypeSelectPanel.setDialogMessage("Select what artifact type data should be imported as.");
 
       attributeTypeSelectPanel = new AttributeTypeSelectPanel();
-      attributeTypeSelectPanel.setDialogTitle("Import as Attribute Type");
-      attributeTypeSelectPanel.setDialogMessage("Select what artifact type data should be imported as.");
+      attributeTypeSelectPanel.setDialogTitle("Select Attribute Types");
+      attributeTypeSelectPanel.setDialogMessage("Select which attribute types should be used to match imported and existing artifacts.");
 
       importContributionManager = new ArtifactExtractorContributionManager();
       parserSelectPanel = new ArtifactExtractorSelectPanel(importContributionManager);
@@ -153,7 +153,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       createSourceFileArea(composite);
       createParserSelectionArea(composite);
       createArtifactTypeSelectArea(composite);
-      createNoneChangingAttributeTypeSelectArea(composite);
+      createNonChangingAttributeTypeSelectArea(composite);
 
       restoreWidgetValues();
       updateWidgetEnablements();
@@ -202,7 +202,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       artifactTypeSelectPanel.addListener(this);
    }
 
-   private void createNoneChangingAttributeTypeSelectArea(Composite parent) {
+   private void createNonChangingAttributeTypeSelectArea(Composite parent) {
       Group group = new Group(parent, SWT.NONE);
       group.setText("Options");
       group.setLayout(new GridLayout(1, false));
@@ -274,7 +274,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       return artifactTypeSelectPanel.getSelected();
    }
 
-   public Collection<AttributeType> getNoneChangingAttributes() {
+   public Collection<AttributeType> getNonChangingAttributes() {
       return attributeTypeSelectPanel.getSelected();
    }
 

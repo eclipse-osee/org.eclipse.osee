@@ -33,12 +33,12 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  * @author Robert A. Fisher
  */
 public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportResolver {
-   private final Collection<AttributeType> noneChangingAttributes;
+   private final Collection<AttributeType> nonChangingAttributes;
    private final boolean createNewIfNotExist;
 
    public RootAndAttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> noneChangingAttributes, boolean createNewIfNotExist) {
       super(primaryArtifactType, secondaryArtifactType);
-      this.noneChangingAttributes = noneChangingAttributes;
+      this.nonChangingAttributes = noneChangingAttributes;
       this.createNewIfNotExist = createNewIfNotExist;
    }
 
@@ -49,7 +49,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
          roughAttributeMap.put(roughAttribute.getKey(), roughAttribute.getValue());
       }
 
-      for (AttributeType attributeType : noneChangingAttributes) {
+      for (AttributeType attributeType : nonChangingAttributes) {
          Collection<String> attributeValues = artifact.getAttributesToStringList(attributeType.getName());
          Collection<String> roughAttributes = roughAttributeMap.getValues(attributeType.getName());
 
@@ -89,15 +89,15 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
 
    @Override
    public Artifact resolve(RoughArtifact roughArtifact, Branch branch) throws OseeCoreException {
-      if (noneChangingAttributes == null || noneChangingAttributes.isEmpty()) {
-         throw new OseeArgumentException("noneChangingAttributes cannot be null or empty");
+      if (nonChangingAttributes == null || nonChangingAttributes.isEmpty()) {
+         throw new OseeArgumentException("nonChangingAttributes cannot be null or empty");
       }
       Artifact realArtifact = null;
       RoughArtifact roughParent = roughArtifact.getRoughParent();
 
       if (roughParent != null) {
          Artifact real = null;
-         //            toRealArtifact(roughParent);
+         //                     toRealArtifact(roughParent);
 
          List<Artifact> siblings = real.getChildren();
          Collection<Artifact> candidates = new LinkedList<Artifact>();

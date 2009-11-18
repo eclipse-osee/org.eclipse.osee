@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 
 /**
  * @author Roberto E. Escobar
@@ -95,8 +96,8 @@ public class OseeLinkBuilder {
 
    private String getParagraphNumber(Artifact artifact) throws OseeCoreException {
       String paragraphNumber = null;
-      if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-         paragraphNumber = artifact.getSoleAttributeValue("Imported Paragraph Number");
+      if (artifact.isAttributeTypeValid(CoreAttributes.PARAGRAPH_NUMBER)) {
+         paragraphNumber = artifact.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER);
       }
       if (!Strings.isValid(paragraphNumber)) {
          paragraphNumber = "Undefined";

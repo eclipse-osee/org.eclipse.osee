@@ -16,7 +16,7 @@ package org.eclipse.osee.framework.core.data;
 public class CommitTransactionRecordResponse {
    private int transactionNumber;
 
-   //TODO : Might be able to replace this class and use TrasnactionRecord
+   //TODO : Might be able to replace this class and use TransactionRecord
    public CommitTransactionRecordResponse(int transactionNumber) {
       this.transactionNumber = transactionNumber;
    }
@@ -32,5 +32,4 @@ public class CommitTransactionRecordResponse {
    public void setTransactionNumber(int transactionNumber) {
       this.transactionNumber = transactionNumber;
    }
-
 }

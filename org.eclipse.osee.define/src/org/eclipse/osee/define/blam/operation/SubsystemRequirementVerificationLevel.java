@@ -45,7 +45,8 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
    private StringBuilder report;
    private SkynetTransaction transaction;
    private final String[] columnHeaders =
-         {"Requirement", "Subsystem", "Imported Paragraph Number", "Current Verification Level", "Changed"};
+         {"Requirement", "Subsystem", CoreAttributes.PARAGRAPH_NUMBER.getName(), "Current Verification Level",
+               "Changed"};
 
    @SuppressWarnings("unused")
    private Collection<Artifact> bulkRequirements;

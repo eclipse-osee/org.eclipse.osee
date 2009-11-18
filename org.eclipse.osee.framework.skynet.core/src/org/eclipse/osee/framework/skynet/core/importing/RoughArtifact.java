@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 
 /**
@@ -80,6 +81,10 @@ public class RoughArtifact {
 
    public void addAttribute(String name, String value) {
       attributes.put(name, value);
+   }
+
+   public void addAttribute(IOseeType attrType, String value) {
+      attributes.put(attrType.getName(), value);
    }
 
    public Map<String, URI> getURIAttributes() {

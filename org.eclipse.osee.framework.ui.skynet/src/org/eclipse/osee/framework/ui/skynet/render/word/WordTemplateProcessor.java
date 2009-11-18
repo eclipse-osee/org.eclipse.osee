@@ -220,8 +220,8 @@ public class WordTemplateProcessor {
             if (elementType.equals(ARTIFACT)) {
                if (!artifacts.isEmpty()) {
                   Artifact artifact = artifacts.iterator().next();
-                  if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-                     String paragraphNum = artifact.getSoleAttributeValue("Imported Paragraph Number", "");
+                  if (artifact.isAttributeTypeValid(CoreAttributes.PARAGRAPH_NUMBER)) {
+                     String paragraphNum = artifact.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
                      if (paragraphNum != null && !paragraphNum.equals("")) {
                         startParagraphNumber = paragraphNum;
                      }
@@ -364,8 +364,8 @@ public class WordTemplateProcessor {
 
                VariableMap options = renderer.getOptions();
                if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
-                  if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-                     artifact.setSoleAttributeValue("Imported Paragraph Number", paragraphNumber.toString());
+                  if (artifact.isAttributeTypeValid(CoreAttributes.PARAGRAPH_NUMBER)) {
+                     artifact.setSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, paragraphNumber.toString());
                      artifact.persist((SkynetTransaction) options.getValue(ITemplateRenderer.TRANSACTION_OPTION));
                   }
                }
@@ -425,7 +425,7 @@ public class WordTemplateProcessor {
 
       if (attributeTypeName.equals("TIS Traceability")) {
          for (Artifact requirement : artifact.getRelatedArtifacts(CoreRelationEnumeration.Verification__Requirement)) {
-            wordMl.addParagraph(requirement.getSoleAttributeValue("Imported Paragraph Number") + "\t" + requirement.getName());
+            wordMl.addParagraph(requirement.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER) + "\t" + requirement.getName());
          }
          return;
       }

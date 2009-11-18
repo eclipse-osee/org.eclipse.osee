@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.utility.AIFile;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
@@ -48,6 +49,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       excelWriter = new ExcelXmlWriter(charBak.getWriter());
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask(getDescriptionUsage(), 100);
 
@@ -87,7 +89,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       excelWriter.writeRow("Paragraph Number", "Paragraph Title", "Paragraph Number", "Paragraph Title");
 
       for (Artifact subsystemRequirement : subsystem.getDescendants()) {
-         excelWriter.writeCell(subsystemRequirement.getSoleAttributeValue("Imported Paragraph Number", ""));
+         excelWriter.writeCell(subsystemRequirement.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
          excelWriter.writeCell(subsystemRequirement.getName());
 
          if (subsystemRequirement.isOfType("Subsystem Requirement")) {
@@ -95,7 +97,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
             for (Artifact subsystemDesign : subsystemRequirement.getRelatedArtifacts(CoreRelationEnumeration.Design__Design)) {
                if (subsystemDesign.isOfType("Subsystem Design")) {
                   loopNeverRan = false;
-                  excelWriter.writeCell(subsystemDesign.getSoleAttributeValue("Imported Paragraph Number", ""), 2);
+                  excelWriter.writeCell(subsystemDesign.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""), 2);
                   excelWriter.writeCell(subsystemDesign.getName(), 3);
                   excelWriter.endRow();
                }
@@ -123,6 +125,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
       return "<xWidgets><XWidget xwidgetType=\"XListDropViewer\" displayName=\"Subsystem Root Artifacts\" /></xWidgets>";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Define.Publish");
    }

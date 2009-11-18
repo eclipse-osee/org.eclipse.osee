@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.word.WordUtil;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
 
@@ -84,7 +85,7 @@ public class WordTemplateManager {
 
    private String template;
    private final String artifactSetName;
-   private List<ITemplateTask> tasks = new ArrayList<ITemplateTask>();
+   private final List<ITemplateTask> tasks = new ArrayList<ITemplateTask>();
    private final List<ITemplateAttributeHandler> attributeHandlers;
 
    public WordTemplateManager(String template, List<ITemplateAttributeHandler> attributeHandlers) {
@@ -223,7 +224,9 @@ public class WordTemplateManager {
                   inner.process(wordMl, artifact, attributeHandlers);
                }
 
-               if (performedOutLining) wordMl.endOutlineSubSection();
+               if (performedOutLining) {
+                  wordMl.endOutlineSubSection();
+               }
 
                wordMl.setPageLayout(artifact);
             }
@@ -295,9 +298,9 @@ public class WordTemplateManager {
 
             if (!artifacts.isEmpty()) {
                Artifact artifact = artifacts.iterator().next();
-               if (artifact.isAttributeTypeValid("Imported Paragraph Number")) {
-                  if (!artifact.getSoleAttributeValue("Imported Paragraph Number", "").equals("")) {
-                     startParagraphNumber = artifact.getSoleAttributeValue("Imported Paragraph Number", "");
+               if (artifact.isAttributeTypeValid(CoreAttributes.PARAGRAPH_NUMBER)) {
+                  if (!artifact.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "").equals("")) {
+                     startParagraphNumber = artifact.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
                   }
                }
             }
