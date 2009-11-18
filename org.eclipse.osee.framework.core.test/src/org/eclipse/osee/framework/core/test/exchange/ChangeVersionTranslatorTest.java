@@ -55,6 +55,7 @@ public class ChangeVersionTranslatorTest extends BaseTranslatorTest<ChangeVersio
          data.add(new Object[] {new ChangeVersion("test", 1L ,ModificationType.getMod(1),12), translator});
       }
       catch (OseeArgumentException ex) {
+         throw new IllegalArgumentException(ex);
       }
       return data;
    }
