@@ -14,22 +14,18 @@ import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.data.RelationChangeItem;
+import org.eclipse.osee.framework.core.enums.ChangeItemType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.util.ChangeItemBuilder;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+
 
 /**
  * @author Jeff C. Phillips
  */
 public class ChangeItemTranslator implements IDataTranslator<ChangeItem> {
-   private enum Type{
-      ARTIFACT,
-      ATTRIBUTE,
-      RELATION;
-   }
-   
-   private enum Entry {
+   public enum Entry {
       BASE_ENTRY,
       FIRST_CHANGE,
       CURRENT_ENTRY,
@@ -38,7 +34,9 @@ public class ChangeItemTranslator implements IDataTranslator<ChangeItem> {
       ART_ID,
       B_ART_ID,
       TYPE,
-      ITEM_ID;
+      ITEM_ID,
+      REL_TYPE_ID,
+      RATIONALE;
    }
 
    private final IDataTranslationService service;
@@ -50,20 +48,7 @@ public class ChangeItemTranslator implements IDataTranslator<ChangeItem> {
 
    @Override
    public ChangeItem convert(PropertyStore propertyStore) throws OseeCoreException {
-      PropertyStore baseEntryStore = propertyStore.getPropertyStore(Entry.BASE_ENTRY.name());
-      PropertyStore firstChangeStore = propertyStore.getPropertyStore(Entry.FIRST_CHANGE.name());
-      PropertyStore currentEntryStore = propertyStore.getPropertyStore(Entry.CURRENT_ENTRY.name());
-      PropertyStore destinationEntryStore = propertyStore.getPropertyStore(Entry.DESTINATION_ENTRY.name());
-      PropertyStore netEntryStore = propertyStore.getPropertyStore(Entry.NET_ENTRY.name());
-
-      ChangeVersion baseEntry = service.convert(baseEntryStore, ChangeVersion.class);
-      ChangeVersion firstChange = service.convert(firstChangeStore, ChangeVersion.class);
-      ChangeVersion currentEntry = service.convert(currentEntryStore, ChangeVersion.class);
-      ChangeVersion destinationEntry = service.convert(destinationEntryStore, ChangeVersion.class);
-      ChangeVersion netEntry = service.convert(netEntryStore, ChangeVersion.class);
-
-      //create the change item and add its data
-      return null;
+      return ChangeItemBuilder.buildChangeItem(propertyStore, service);
    }
 
    @Override
@@ -71,12 +56,16 @@ public class ChangeItemTranslator implements IDataTranslator<ChangeItem> {
       PropertyStore store = new PropertyStore();
       
       if(changeItem instanceof ArtifactChangeItem){
-         store.put(Entry.TYPE.name(), Type.ARTIFACT.name());
+         store.put(Entry.TYPE.name(), ChangeItemType.ARTIFACT.name());
       } else if (changeItem instanceof AttributeChangeItem){
-         store.put(Entry.TYPE.name(), Type.ATTRIBUTE.name());
+         store.put(Entry.TYPE.name(), ChangeItemType.ATTRIBUTE.name());
       } else if (changeItem instanceof RelationChangeItem){
-         store.put(Entry.TYPE.name(), Type.RELATION.name());
-         store.put(Entry.B_ART_ID.name(), ((RelationChangeItem)changeItem).getBArtId());
+         RelationChangeItem relationChangeItem = (RelationChangeItem) changeItem;
+         
+         store.put(Entry.TYPE.name(), ChangeItemType.RELATION.name());
+         store.put(Entry.B_ART_ID.name(), relationChangeItem.getBArtId());
+         store.put(Entry.REL_TYPE_ID.name(), relationChangeItem.getRelTypeId());
+         store.put(Entry.RATIONALE.name(), relationChangeItem.getRationale());
       }
       
       store.put(Entry.ART_ID.name(), changeItem.getArtId());
@@ -89,5 +78,4 @@ public class ChangeItemTranslator implements IDataTranslator<ChangeItem> {
       
       return store;
    }
-
 }

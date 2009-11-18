@@ -8,6 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+
 package org.eclipse.osee.framework.core.test.exchange;
 
 import java.util.ArrayList;
@@ -16,42 +17,46 @@ import java.util.List;
 
 import junit.framework.Assert;
 
+import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
-import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exchange.ChangeItemTranslator;
 import org.eclipse.osee.framework.core.exchange.ChangeVersionTranslator;
+import org.eclipse.osee.framework.core.exchange.DataTranslationService;
 import org.eclipse.osee.framework.core.exchange.IDataTranslator;
+import org.eclipse.osee.framework.core.util.ChangeItemBuilder;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Test Case For {@link ChangeVersionTranslator}
+ * Test Case For {@link ChangeItemTranslator}
  * 
  * @author Jeff C. Phillips
  */
 @RunWith(Parameterized.class)
-public class ChangeVersionTranslatorTest extends BaseTranslatorTest<ChangeVersion> {
+public class ChangeItemTranslatorTest extends BaseTranslatorTest<ChangeItem> {
 
-   public ChangeVersionTranslatorTest(ChangeVersion data, IDataTranslator<ChangeVersion> translator) {
+   public ChangeItemTranslatorTest(ChangeItem data, IDataTranslator<ChangeItem> translator) {
       super(data, translator);
    }
 
    @Override
-   protected void checkEquals(ChangeVersion expected, ChangeVersion actual) throws OseeCoreException {
-      Assert.assertEquals(expected.getGammaId(), actual.getGammaId());
-      Assert.assertEquals(expected.getModType().getValue(), actual.getModType().getValue());
-      Assert.assertEquals(expected.getTransactionNumber(), actual.getTransactionNumber());
-      Assert.assertEquals(expected.getValue(), actual.getValue());
+   protected void checkEquals(ChangeItem expected, ChangeItem actual) throws OseeCoreException {
+       Assert.assertEquals(expected.getArtId(), actual.getArtId());
    }
 
    @Parameters
    public static Collection<Object[]> data() {
+      DataTranslationService dataTranslationService = new DataTranslationService();
+      dataTranslationService.addTranslator(ChangeItem.class, new ChangeItemTranslator(dataTranslationService));
+      dataTranslationService.addTranslator(ChangeVersion.class, new ChangeVersionTranslator());
+      
       List<Object[]> data = new ArrayList<Object[]>();
-      IDataTranslator<ChangeVersion> translator = new ChangeVersionTranslator();
+      IDataTranslator<ChangeItem> translator = new ChangeItemTranslator(dataTranslationService);
       try {
-         data.add(new Object[] {new ChangeVersion("test", 1L ,ModificationType.getMod(1),12), translator});
+         data.add(new Object[] {ChangeItemBuilder.buildTestChangeItem(), translator});
       }
       catch (OseeArgumentException ex) {
          throw new IllegalArgumentException(ex);

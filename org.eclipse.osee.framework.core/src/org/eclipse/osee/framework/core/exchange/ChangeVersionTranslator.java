@@ -32,22 +32,33 @@ public class ChangeVersionTranslator implements IDataTranslator<ChangeVersion> {
 
    @Override
    public ChangeVersion convert(PropertyStore propertyStore) throws OseeCoreException {
-      String value = propertyStore.get(Entry.VALUE.name());
-      ModificationType modificationType = ModificationType.getMod(Integer.parseInt(propertyStore.get(Entry.MOD_TYPE.name())));
-      Long gammaId = Long.parseLong(propertyStore.get(Entry.GAMMA_ID.name()));
-      Integer transactionNumber = Integer.parseInt(propertyStore.get(Entry.TRANSACTION_NUMBER.name()));
+      ChangeVersion changeVersion = new ChangeVersion();
       
-      return new ChangeVersion(value, gammaId, modificationType, transactionNumber);
+      //if there is no valid gamma then do set any data on the changeVersion
+      if(!propertyStore.get(Entry.GAMMA_ID.name()).isEmpty()){
+         String value = propertyStore.get(Entry.VALUE.name());
+         ModificationType modificationType = ModificationType.getMod(Integer.parseInt(propertyStore.get(Entry.MOD_TYPE.name())));
+         Long gammaId = Long.parseLong(propertyStore.get(Entry.GAMMA_ID.name()));
+         Integer transactionNumber = Integer.parseInt(propertyStore.get(Entry.TRANSACTION_NUMBER.name()));
+         
+         changeVersion.setGammaId(gammaId);
+         changeVersion.setModType(modificationType);
+         changeVersion.setTransactionNumber(transactionNumber);
+         changeVersion.setValue(value);
+      }
+      return changeVersion;
    }
 
    @Override
    public PropertyStore convert(ChangeVersion changeVersion) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       
-      store.put(Entry.GAMMA_ID.name(), changeVersion.getGammaId());
-      store.put(Entry.MOD_TYPE.name(), changeVersion.getModType().getValue());
-      store.put(Entry.VALUE.name(), changeVersion.getValue());
-      store.put(Entry.TRANSACTION_NUMBER.name(), changeVersion.getTransactionNumber());
+      if(changeVersion.isValid()){
+         store.put(Entry.GAMMA_ID.name(), changeVersion.getGammaId());
+         store.put(Entry.MOD_TYPE.name(), changeVersion.getModType().getValue());
+         store.put(Entry.VALUE.name(), changeVersion.getValue());
+         store.put(Entry.TRANSACTION_NUMBER.name(), changeVersion.getTransactionNumber());
+      }
       return store;
    }
 
