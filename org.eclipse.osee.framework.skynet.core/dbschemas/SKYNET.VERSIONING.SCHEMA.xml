@@ -348,7 +348,7 @@
 	
 	<Table name="OSEE_TXS_ARCHIVED" schema="OSEE" tablespace="osee_data">
 		<Column id="TRANSACTION_ID" defaultValue="not null" limits="10" type="INTEGER" />
-		<Column id="GAMMA_ID" defaultValue="not null"limits="19" type="BIGINT" />
+		<Column id="GAMMA_ID" defaultValue="not null" limits="19" type="BIGINT" />
 		<Column id="MOD_TYPE" defaultValue="not null" limits="2" type="INTEGER" />
 		<Column id="TX_CURRENT" defaultValue="not null" limits="1" type="INTEGER" />
 		<Constraint schema="OSEE" id="OSEE_TXSA_G_TX_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID, TRANSACTION_ID"/>
