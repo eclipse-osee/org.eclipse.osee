@@ -17,7 +17,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.data.AbstractOseeCache;
@@ -64,6 +63,11 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private static final String UPDATE_MERGE_COMMIT_TX =
          "update osee_merge set commit_transaction_id = ? Where source_branch_id = ? and dest_branch_id = ?";
 
+   private static final String SELECT_SOURCE_BRANCH_STATE =
+         "select (1) from osee_branch where branch_id=? and branch_state=?";
+
+   private static final String UPDATE_SOURCE_BRANCH_STATE = "update osee_branch set branch_state=? where branch_id=?";
+
    private final IBasicArtifact<?> user;
    private final AbstractOseeCache<Branch> branchCache;
    private final Map<Branch, BranchState> savedBranchStates;
@@ -98,22 +102,35 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       if (changes.isEmpty()) {
          throw new OseeStateException(" A branch can not be commited without any changes made.");
       }
+      checkPreconditions();
+      updateBranchState();
       txHolder.setTransactionNumber(addCommitTransactionToDatabase(user));
 
       //      TODO AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
 
       updatePreviousCurrentsOnDestinationBranch();
-
       insertCommitAddressing();
-
       updateMergeBranchCommitTx();
-
       manageBranchStates();
    }
 
    private void updateMergeBranchCommitTx() throws OseeDataStoreException {
       ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, txHolder.getTransactionNumber(),
             sourceBranch.getId(), destinationBranch.getId());
+   }
+
+   public void checkPreconditions() throws OseeCoreException {
+      int count =
+            ConnectionHandler.runPreparedQueryFetchInt(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getId(),
+                  BranchState.COMMIT_IN_PROGRESS.getValue());
+      if (count > 0) {
+         throw new OseeStateException(String.format("Commit already in progress for [%s]", sourceBranch));
+      }
+   }
+
+   public void updateBranchState() throws OseeCoreException {
+      ConnectionHandler.runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, BranchState.COMMIT_IN_PROGRESS.getValue(),
+            sourceBranch.getId());
    }
 
    private void updatePreviousCurrentsOnDestinationBranch() throws OseeStateException, OseeDataStoreException {
