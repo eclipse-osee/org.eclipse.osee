@@ -50,9 +50,8 @@ public class ChangeReportRequestTranslator implements IDataTranslator<ChangeRepo
    public PropertyStore convert(ChangeReportRequestData data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       store.put(Entry.IS_HISTORY.name(), data.isHistorical());
-      store.put(Entry.TO_TRANSACTION.name(), service.convert(data.getToTransactionRecord()));
+      store.put(Entry.TO_TRANSACTION.name(),  service.convert(data.getToTransactionRecord()));
       store.put(Entry.FROM_TRANSACTION.name(), service.convert(data.getFromTransactionRecord()));
-
       return store;
    }
 

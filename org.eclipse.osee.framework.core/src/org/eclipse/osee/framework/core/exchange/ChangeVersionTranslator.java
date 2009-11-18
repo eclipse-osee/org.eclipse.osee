@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.exchange;
 
-import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,17 +26,14 @@ public class ChangeVersionTranslator implements IDataTranslator<ChangeVersion> {
       TRANSACTION_NUMBER;
    }
 
-   private final IDataTranslationService service;
-   
-   public ChangeVersionTranslator(IDataTranslationService service) {
+   public ChangeVersionTranslator() {
       super();
-      this.service = service;
    }
 
    @Override
    public ChangeVersion convert(PropertyStore propertyStore) throws OseeCoreException {
       String value = propertyStore.get(Entry.VALUE.name());
-      ModificationType modificationType = ModificationType.getMod(Integer.getInteger(propertyStore.get(Entry.MOD_TYPE.name())));
+      ModificationType modificationType = ModificationType.getMod(Integer.parseInt(propertyStore.get(Entry.MOD_TYPE.name())));
       Long gammaId = Long.parseLong(propertyStore.get(Entry.GAMMA_ID.name()));
       Integer transactionNumber = Integer.parseInt(propertyStore.get(Entry.TRANSACTION_NUMBER.name()));
       
