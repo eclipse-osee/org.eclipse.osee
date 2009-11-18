@@ -23,7 +23,8 @@ public class ChangeVersionTranslator implements IDataTranslator<ChangeVersion> {
       GAMMA_ID,
       MOD_TYPE,
       VALUE,
-      TRANSACTION_NUMBER;
+      TRANSACTION_NUMBER,
+      IS_VALID;
    }
 
    public ChangeVersionTranslator() {
@@ -34,8 +35,7 @@ public class ChangeVersionTranslator implements IDataTranslator<ChangeVersion> {
    public ChangeVersion convert(PropertyStore propertyStore) throws OseeCoreException {
       ChangeVersion changeVersion = new ChangeVersion();
       
-      //if there is no valid gamma then do set any data on the changeVersion
-      if(!propertyStore.get(Entry.GAMMA_ID.name()).isEmpty()){
+      if(!propertyStore.get(Entry.IS_VALID.name()).isEmpty()){
          String value = propertyStore.get(Entry.VALUE.name());
          ModificationType modificationType = ModificationType.getMod(Integer.parseInt(propertyStore.get(Entry.MOD_TYPE.name())));
          Long gammaId = Long.parseLong(propertyStore.get(Entry.GAMMA_ID.name()));
@@ -54,6 +54,7 @@ public class ChangeVersionTranslator implements IDataTranslator<ChangeVersion> {
       PropertyStore store = new PropertyStore();
       
       if(changeVersion.isValid()){
+         store.put(Entry.IS_VALID.name(), "IS_VALID");
          store.put(Entry.GAMMA_ID.name(), changeVersion.getGammaId());
          store.put(Entry.MOD_TYPE.name(), changeVersion.getModType().getValue());
          store.put(Entry.VALUE.name(), changeVersion.getValue());
