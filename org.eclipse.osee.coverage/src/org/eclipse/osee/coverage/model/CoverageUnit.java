@@ -332,4 +332,9 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       }
       return "";
    }
+
+   @Override
+   public String getRationale() {
+      return "";
+   }
 }

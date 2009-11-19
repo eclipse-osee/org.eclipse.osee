@@ -58,7 +58,7 @@ public class EditRationaleAction extends Action {
       Set<String> rationale = new HashSet<String>();
       for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
          if (coverageItem instanceof CoverageItem) {
-            rationale.add(((CoverageItem) coverageItem).getCoverageRationale());
+            rationale.add(((CoverageItem) coverageItem).getRationale());
          }
       }
       EntryDialog ed = new EntryDialog("Coverage Rationale", "Enter Coverage Rationale");
@@ -68,7 +68,7 @@ public class EditRationaleAction extends Action {
       if (ed.open() == 0) {
          for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
             if (coverageItem instanceof CoverageItem) {
-               ((CoverageItem) coverageItem).setCoverageRationale(ed.getEntry());
+               ((CoverageItem) coverageItem).setRationale(ed.getEntry());
                refreshable.update(coverageItem);
             }
          }

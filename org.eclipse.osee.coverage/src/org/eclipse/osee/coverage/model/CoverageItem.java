@@ -32,7 +32,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeImage;
 public class CoverageItem implements ICoverage {
 
    CoverageMethodEnum coverageMethod = CoverageMethodEnum.Not_Covered;
-   String coverageRationale;
+   String rationale;
    String executeNum;
    String lineNum;
    String methodNum;
@@ -64,7 +64,8 @@ public class CoverageItem implements ICoverage {
       coverageitem.setLineNum(lineNum);
       coverageitem.setText(text);
       coverageitem.setMethodNum(methodNum);
-      coverageitem.setCoverageRationale(coverageRationale);
+      coverageitem.setRationale(rationale);
+
       return coverageitem;
    }
 
@@ -86,7 +87,7 @@ public class CoverageItem implements ICoverage {
       String text = store.get("text");
       if (Strings.isValid(text)) setText(text);
       String rationale = store.get("rationale");
-      if (Strings.isValid(rationale)) setCoverageRationale(rationale);
+      if (Strings.isValid(rationale)) setRationale(rationale);
       String methodNum = store.get("methodNum");
       if (Strings.isValid(methodNum)) setMethodNum(methodNum);
       String testUnitNames = store.get("testUnits");
@@ -201,8 +202,8 @@ public class CoverageItem implements ICoverage {
       store.put("guid", guid);
       store.put("methodNum", methodNum);
       store.put("line", lineNum);
-      if (Strings.isValid(getCoverageRationale())) {
-         store.put("rationale", coverageRationale);
+      if (Strings.isValid(getRationale())) {
+         store.put("rationale", rationale);
       }
       store.put("executeNum", executeNum);
       store.put("methodType", coverageMethod.toString());
@@ -223,12 +224,12 @@ public class CoverageItem implements ICoverage {
       return Collections.toString(guids, ",");
    }
 
-   public String getCoverageRationale() {
-      return coverageRationale;
+   public String getRationale() {
+      return rationale;
    }
 
-   public void setCoverageRationale(String rationale) {
-      this.coverageRationale = rationale;
+   public void setRationale(String rationale) {
+      this.rationale = rationale;
    }
 
    public String getFileContents() {

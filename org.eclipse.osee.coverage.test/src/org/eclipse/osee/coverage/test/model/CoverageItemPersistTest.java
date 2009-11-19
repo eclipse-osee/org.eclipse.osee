@@ -53,7 +53,7 @@ public class CoverageItemPersistTest {
       ci.setLineNum("55");
       ci.setMethodNum("33");
       ci.setGuid("asdf");
-      ci.setCoverageRationale("this is rationale");
+      ci.setRationale("this is rationale");
       ci.setText("this is text");
       guid = ci.getGuid();
    }
@@ -106,7 +106,7 @@ public class CoverageItemPersistTest {
       Assert.assertEquals(CoverageMethodEnum.Deactivated_Code, ci.getCoverageMethod());
       Assert.assertEquals(10, ci.getTestUnits().size());
       Assert.assertEquals("this is text", ci.getFileContents());
-      Assert.assertEquals("this is rationale", ci.getCoverageRationale());
+      Assert.assertEquals("this is rationale", ci.getRationale());
       Assert.assertFalse(ci.isFolder());
    }
 

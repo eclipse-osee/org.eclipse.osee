@@ -36,6 +36,9 @@ public class CoverageParameters {
    private final CoveragePackageBase coveragePackageBase;
    private Collection<CoverageMethodEnum> coverageMethods = new ArrayList<CoverageMethodEnum>();
    private boolean showAll = false;
+   private String name;
+   private String namespace;
+   private String rationale;
    private String notes;
    private User assignee;
 
@@ -66,6 +69,14 @@ public class CoverageParameters {
       } else {
          boolean add = true;
          if (assignee != null && !CoverageUtil.getCoverageItemUsers(item).contains(assignee)) {
+            add = false;
+         } else if (Strings.isValid(name) && !item.getName().contains(name)) {
+            add = false;
+         } else if (Strings.isValid(namespace) && !item.getNamespace().contains(namespace)) {
+            add = false;
+         } else if (Strings.isValid(rationale) && !item.getRationale().contains(rationale)) {
+            add = false;
+         } else if (Strings.isValid(notes) && !item.getNotes().contains(notes)) {
             add = false;
          }
          if (add && coverageMethods.size() > 0 && (item instanceof CoverageItem)) {
@@ -99,13 +110,6 @@ public class CoverageParameters {
       }
    }
 
-   private void addAllParents(Set<ICoverage> items, ICoverage item) {
-      if (item.getParent() != null) {
-         items.add(item.getParent());
-         addAllParents(items, item.getParent());
-      }
-   }
-
    public String getSelectedName(/*SearchType searchType*/) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       if (isShowAll()) {
@@ -113,6 +117,18 @@ public class CoverageParameters {
       }
       if (getAssignee() != null) {
          sb.append(" - Assignee: " + getAssignee());
+      }
+      if (Strings.isValid(getName())) {
+         sb.append(" - Name: " + getName());
+      }
+      if (Strings.isValid(getNamespace())) {
+         sb.append(" - Namespace: " + getNamespace());
+      }
+      if (Strings.isValid(getRationale())) {
+         sb.append(" - Rationale: " + getRationale());
+      }
+      if (Strings.isValid(getNotes())) {
+         sb.append(" - Notes: " + getNotes());
       }
       if (getSelectedCoverageMethods().size() > 1) {
          sb.append(" - Coverage Method: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ",
@@ -188,6 +204,30 @@ public class CoverageParameters {
 
    public void setAssignee(User assignee) {
       this.assignee = assignee;
+   }
+
+   public String getName() {
+      return name;
+   }
+
+   public void setName(String name) {
+      this.name = name;
+   }
+
+   public String getNamespace() {
+      return namespace;
+   }
+
+   public void setNamespace(String namespace) {
+      this.namespace = namespace;
+   }
+
+   public String getRationale() {
+      return rationale;
+   }
+
+   public void setRationale(String rationale) {
+      this.rationale = rationale;
    }
 
 }

@@ -83,7 +83,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       if (coverage instanceof CoverageItem) {
          CoverageItem coverageItem = (CoverageItem) coverage;
          if (xCol.equals(CoverageXViewerFactory.Line_Number)) return coverageItem.getLineNum();
-         if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) return coverageItem.getCoverageRationale();
+         if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) return coverageItem.getRationale();
          if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageItem.getMethodNum();
          if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return coverageItem.getExecuteNum();
          if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return coverageItem.getCoverageMethod().toString();

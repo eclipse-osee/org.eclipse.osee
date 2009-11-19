@@ -98,6 +98,27 @@ public class CoverageParametersComposite extends Composite {
             coverageParameters.setNotes(getNotesStr());
          }
       });
+      getNameXText().addXModifiedListener(new XModifiedListener() {
+
+         @Override
+         public void widgetModified(XWidget widget) {
+            coverageParameters.setName(getNameXText().get());
+         }
+      });
+      getNamespaceXText().addXModifiedListener(new XModifiedListener() {
+
+         @Override
+         public void widgetModified(XWidget widget) {
+            coverageParameters.setNamespace(getNamespaceStr());
+         }
+      });
+      getRationaleXText().addXModifiedListener(new XModifiedListener() {
+
+         @Override
+         public void widgetModified(XWidget widget) {
+            coverageParameters.setRationale(getRationaleStr());
+         }
+      });
       getCoverageMethodHyperlinkSelection().addXModifiedListener(new XModifiedListener() {
 
          @Override
@@ -125,8 +146,41 @@ public class CoverageParametersComposite extends Composite {
       return "";
    }
 
+   public String getNameStr() {
+      if (getNameXText() != null) {
+         return getNameXText().get();
+      }
+      return "";
+   }
+
+   public String getNamespaceStr() {
+      if (getNamespaceXText() != null) {
+         return getNamespaceXText().get();
+      }
+      return "";
+   }
+
+   public String getRationaleStr() {
+      if (getRationaleXText() != null) {
+         return getRationaleXText().get();
+      }
+      return "";
+   }
+
    public XText getNotesXText() {
       return (XText) getXWidget("Notes");
+   }
+
+   public XText getNameXText() {
+      return (XText) getXWidget("Name");
+   }
+
+   public XText getNamespaceXText() {
+      return (XText) getXWidget("Namespace");
+   }
+
+   public XText getRationaleXText() {
+      return (XText) getXWidget("Rationale");
    }
 
    public XCheckBox getShowAllCheckbox() {
@@ -168,12 +222,18 @@ public class CoverageParametersComposite extends Composite {
                   // 
                   "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>" +
                   //
-                  "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show All\" beginComposite=\"8\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
+                  "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show All\" beginComposite=\"4\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
       if (coverageParameters.getCoveragePackageBase().isAssignable()) {
          sb.append("" +
          //
          "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>");
       }
+      //
+      sb.append("<XWidget xwidgetType=\"XText\" beginComposite=\"8\" displayName=\"Name\" horizontalLabel=\"true\"/>");
+      //
+      sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Namespace\" horizontalLabel=\"true\"/>");
+      //
+      sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Rationale\" horizontalLabel=\"true\"/>");
       //
       sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Notes\" horizontalLabel=\"true\"/>");
       sb.append("</xWidgets>");

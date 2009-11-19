@@ -188,12 +188,12 @@ public class CoverageItemTest {
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getCoverageRationale()}.
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getRationale()}.
     */
    @Test
    public void testSetGetCoverageRationale() {
-      ci1.setCoverageRationale("this is rationale");
-      Assert.assertEquals("this is rationale", ci1.getCoverageRationale());
+      ci1.setRationale("this is rationale");
+      Assert.assertEquals("this is rationale", ci1.getRationale());
    }
 
    /**
@@ -235,7 +235,7 @@ public class CoverageItemTest {
       Assert.assertEquals(ci1.getLineNum(), ci.getLineNum());
       Assert.assertEquals(ci1.getCoverageMethod(), ci.getCoverageMethod());
       Assert.assertEquals(ci1.getFileContents(), ci.getFileContents());
-      Assert.assertEquals(ci1.getCoverageRationale(), ci.getCoverageRationale());
+      Assert.assertEquals(ci1.getRationale(), ci.getRationale());
    }
 
    /**

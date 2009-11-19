@@ -244,6 +244,11 @@ public abstract class CoveragePackageBase implements ICoverage {
    }
 
    @Override
+   public String getRationale() {
+      return null;
+   }
+
+   @Override
    public ICoverage getParent() {
       return null;
    }
