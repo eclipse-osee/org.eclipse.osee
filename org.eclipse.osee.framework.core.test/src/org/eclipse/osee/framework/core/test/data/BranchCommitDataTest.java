@@ -42,20 +42,35 @@ public class BranchCommitDataTest {
       BranchTestUtil destinationBranch =
             new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
       UserArtifactTestUtil userArt = new UserArtifactTestUtil(user, "EJDFKGJDFKGJ19394FDJDLF", 999999);
-      BranchCommitData data = new BranchCommitData(userArt, sourceBranch, destinationBranch, isArchived);
-      assertEquals(userArt, data.getUser());
-      assertEquals(sourceBranch, data.getSourceBranch());
-      assertEquals(destinationBranch, data.getDestinationBranch());
+      BranchCommitData data =
+            new BranchCommitData(getUserArtifact(), getSourceBranch(), getDestinationBranch(), isArchived);
+      assertEquals(getUserArtifact(), data.getUser());
+      assertEquals(getSourceBranch(), data.getSourceBranch());
+      assertEquals(getDestinationBranch(), data.getDestinationBranch());
       assertEquals(isArchived, data.isArchiveAllowed());
 
       sourceBranch = null;
-      assertNotSame(sourceBranch, data.getSourceBranch());
+      assertNotSame(getSourceBranch(), data.getSourceBranch());
 
       destinationBranch = null;
-      assertNotSame(destinationBranch, data.getDestinationBranch());
+      assertNotSame(getDestinationBranch(), data.getDestinationBranch());
 
       assertNotSame(true, data.isArchiveAllowed());
 
+   }
+
+   private BranchTestUtil getSourceBranch() {
+      return new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BranchType.WORKING, BranchArchivedState.UNARCHIVED,
+            isArchived);
+   }
+
+   private BranchTestUtil getDestinationBranch() {
+      return new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED,
+            isArchived);
+   }
+
+   private UserArtifactTestUtil getUserArtifact() {
+      return new UserArtifactTestUtil(user, "EJDFKGJDFKGJ19394FDJDLF", 999999);
    }
 
 }

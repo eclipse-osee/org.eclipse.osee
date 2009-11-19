@@ -13,10 +13,16 @@ package org.eclipse.osee.framework.core.internal;
 import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.BranchCommitData;
+import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.ChangeVersion;
+import org.eclipse.osee.framework.core.data.CommitTransactionRecordResponse;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exchange.BasicArtifactDataTranslator;
+import org.eclipse.osee.framework.core.exchange.BranchCommitDataResponder;
 import org.eclipse.osee.framework.core.exchange.BranchCommitDataTranslator;
 import org.eclipse.osee.framework.core.exchange.BranchTranslator;
+import org.eclipse.osee.framework.core.exchange.ChangeItemTranslator;
+import org.eclipse.osee.framework.core.exchange.ChangeVersionTranslator;
 import org.eclipse.osee.framework.core.exchange.DataTranslationService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -36,8 +42,11 @@ public class Activator implements BundleActivator {
 
       // TODO perform this using DS - register Data Translators
       service.addTranslator(BranchCommitData.class, new BranchCommitDataTranslator(service));
+      service.addTranslator(CommitTransactionRecordResponse.class, new BranchCommitDataResponder(service));
       service.addTranslator(IBasicArtifact.class, new BasicArtifactDataTranslator());
       service.addTranslator(Branch.class, new BranchTranslator(service));
+      service.addTranslator(ChangeVersion.class, new ChangeVersionTranslator());
+      service.addTranslator(ChangeItem.class, new ChangeItemTranslator(service));
 
       registration = context.registerService(IDataTranslationService.class.getName(), service, null);
    }
