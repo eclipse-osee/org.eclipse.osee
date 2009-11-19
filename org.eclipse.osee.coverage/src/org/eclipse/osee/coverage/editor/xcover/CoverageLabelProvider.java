@@ -13,11 +13,13 @@ package org.eclipse.osee.coverage.editor.xcover;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
+import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactory;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.MessageCoverageItem;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -26,6 +28,7 @@ import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
+import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 
@@ -51,6 +54,8 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
    @Override
    public Image getColumnImage(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
+      if (element instanceof MessageCoverageItem && xCol.equals(CoverageMergeXViewerFactory.Name)) return ImageManager.getImage(FrameworkImage.X_RED);
+      if (element instanceof MessageCoverageItem) return null;
       ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
          return getCoverageItemUserImage(coverageItem);
@@ -62,11 +67,12 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
    @Override
    public String getColumnText(Object element, XViewerColumn xCol, int columnIndex) throws OseeCoreException {
       ICoverage coverage = (ICoverage) element;
+      if (xCol.equals(CoverageXViewerFactory.Name)) return coverage.getName();
+      if (element instanceof MessageCoverageItem) return "";
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
          return CoverageUtil.getCoverageItemUsersStr(coverage);
       }
       if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverage.getNotes();
-      if (xCol.equals(CoverageXViewerFactory.Name)) return coverage.getName();
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
          return coverage.getCoveragePercentStr();
       }
@@ -84,7 +90,8 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageItem.getCoverageUnit().getName();
          if (xCol.equals(CoverageXViewerFactory.Coverage_Test_Units)) return Collections.toString(", ",
                coverageItem.getTestUnits());
-         if (xCol.equals(CoverageXViewerFactory.File_Contents)) return Collections.toString(", ", coverageItem.getFileContents());
+         if (xCol.equals(CoverageXViewerFactory.File_Contents)) return Collections.toString(", ",
+               coverageItem.getFileContents());
          return "";
       }
       if ((coverage instanceof CoverageUnit) || (coverage instanceof MergeItem)) {
@@ -120,6 +127,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
    @Override
    public int getColumnGradient(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (element instanceof MessageCoverageItem) return 0;
       ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
          return coverageItem.getCoveragePercent();

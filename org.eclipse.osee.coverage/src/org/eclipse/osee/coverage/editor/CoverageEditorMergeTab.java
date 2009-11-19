@@ -12,7 +12,6 @@ package org.eclipse.osee.coverage.editor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
@@ -21,6 +20,9 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.action.LinkWithImportItemAction;
+import org.eclipse.osee.coverage.editor.params.CoverageParameters;
+import org.eclipse.osee.coverage.editor.params.CoverageParametersComposite;
+import org.eclipse.osee.coverage.editor.params.CoverageParametersTextFilter;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport;
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryPackage;
@@ -50,7 +52,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
-import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.action.CollapseAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction;
 import org.eclipse.osee.framework.ui.skynet.action.RefreshAction;
@@ -82,10 +83,12 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    private ScrolledForm scrolledForm;
    private Label titleLabel1, titleLabel2;
    private final CoverageEditor coverageEditor;
-   private CoverageEditorCoverageParameters parameters;
+   private CoverageParametersComposite coverageParametersComposite;
+   private CoverageParameters coverageParameters;
    LinkWithImportItemAction linkWithImportItemAction;
    private MergeManager mergeManager;
    private boolean loading = false;
+   private CoverageParametersTextFilter parametersFilter;
 
    public CoverageEditorMergeTab(String name, CoverageEditor coverageEditor, CoveragePackage provider1, CoverageImport provider2) {
       super(coverageEditor, name, name);
@@ -107,8 +110,9 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       coverageEditor.getToolkit().adapt(mainComp);
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-      parameters =
-            new CoverageEditorCoverageParameters(mainComp, managedForm, coverageEditor, coverageImport,
+      coverageParameters = new CoverageParameters(coveragePackage);
+      coverageParametersComposite =
+            new CoverageParametersComposite(mainComp, managedForm, coverageEditor, coverageParameters,
                   new SelectionAdapter() {
                      @Override
                      public void widgetSelected(SelectionEvent e) {
@@ -337,7 +341,8 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    };
 
    public void simulateSearchAll() {
-      XHyperlabelCoverageMethodSelection methodSelectionWidget = parameters.getCoverageMethodHyperlinkSelection();
+      XHyperlabelCoverageMethodSelection methodSelectionWidget =
+            coverageParametersComposite.getCoverageMethodHyperlinkSelection();
       List<CoverageMethodEnum> values = new ArrayList<CoverageMethodEnum>();
       for (CoverageMethodEnum method : CoverageMethodEnum.values()) {
          values.add(method);
@@ -357,16 +362,11 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    private void handleSearchButtonPressed() {
-      try {
-         Result result = parameters.isParameterSelectionValid();
-         if (result.isFalse()) {
-            result.popup();
-            return;
-         }
-         xPackageViewer1.loadTable(parameters.performSearchGetResults(coveragePackage));
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+      if (parametersFilter == null) {
+         parametersFilter = new CoverageParametersTextFilter(xPackageViewer1.getXViewer());
+         xPackageViewer1.getXViewer().addFilter(parametersFilter);
       }
+      CoverageEditorCoverageTab.handleSearchButtonPressed(xPackageViewer1, coverageParameters, parametersFilter);
    }
 
    @Override

@@ -7,31 +7,21 @@
  *
  * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
  */
-package org.eclipse.osee.coverage.editor;
+package org.eclipse.osee.coverage.editor.params;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.model.CoverageItem;
+import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
-import org.eclipse.osee.coverage.model.CoveragePackageBase;
-import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
-import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCheckBox;
 import org.eclipse.osee.framework.ui.skynet.widgets.XMembersCombo;
+import org.eclipse.osee.framework.ui.skynet.widgets.XModifiedListener;
 import org.eclipse.osee.framework.ui.skynet.widgets.XText;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultXWidgetOptionResolver;
@@ -50,14 +40,14 @@ import org.eclipse.ui.forms.IManagedForm;
 /**
  * @author Donald G. Dunne
  */
-public class CoverageEditorCoverageParameters extends Composite {
+public class CoverageParametersComposite extends Composite {
 
    private WorkPage page;
-   private final CoveragePackageBase coveragePackageBase;
+   private final CoverageParameters coverageParameters;
 
-   public CoverageEditorCoverageParameters(Composite mainComp, IManagedForm managedForm, CoverageEditor coverageEditor, CoveragePackageBase coveragePackageBase, final SelectionListener selectionListener) {
+   public CoverageParametersComposite(Composite mainComp, IManagedForm managedForm, CoverageEditor coverageEditor, final CoverageParameters coverageParameters, final SelectionListener selectionListener) {
       super(mainComp, SWT.None);
-      this.coveragePackageBase = coveragePackageBase;
+      this.coverageParameters = coverageParameters;
       setLayout(new GridLayout(2, false));
       coverageEditor.getToolkit().adapt(this);
       setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
@@ -86,82 +76,35 @@ public class CoverageEditorCoverageParameters extends Composite {
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-   }
 
-   public Collection<ICoverage> performSearchGetResults(CoveragePackageBase provider) throws OseeCoreException {
-      Set<ICoverage> items = new HashSet<ICoverage>();
-      for (ICoverage coverageItem : provider.getChildren(false)) {
-         performSearchGetResults(items, coverageItem);
-      }
-      Collection<CoverageUnit> topLevelCoverageUnits = ((ICoverageUnitProvider) provider).getCoverageUnits();
-      Set<ICoverage> parents = new HashSet<ICoverage>();
-      for (ICoverage coverageItem : items) {
-         if (topLevelCoverageUnits.contains(coverageItem)) {
-            parents.add(coverageItem);
-         }
-      }
-      return parents;
+      getShowAllCheckbox().addXModifiedListener(new XModifiedListener() {
 
-   }
+         @Override
+         public void widgetModified(XWidget widget) {
+            coverageParameters.setShowAll(isShowAll());
+         }
+      });
+      getAssigeeCombo().addXModifiedListener(new XModifiedListener() {
 
-   public void performSearchGetResults(Set<ICoverage> items, ICoverage item) throws OseeCoreException {
-      Collection<CoverageMethodEnum> coverageMethods = getSelectedCoverageMethods();
-      User assignee = getAssignee();
-      if (isShowAll()) {
-         items.add(item);
-      } else {
-         boolean add = true;
-         if (assignee != null && !CoverageUtil.getCoverageItemUsers(item).contains(assignee)) {
-            add = false;
+         @Override
+         public void widgetModified(XWidget widget) {
+            coverageParameters.setAssignee(getAssignee());
          }
-         if (!add && coverageMethods.size() > 0 && (item instanceof CoverageItem)) {
-            CoverageItem coverageItem = (CoverageItem) item;
-            if (!coverageMethods.contains(coverageItem.getCoverageMethod())) {
-               add = false;
-            }
-         }
-         if (Strings.isValid(getNotesStr())) {
-            if (item instanceof CoverageUnit) {
-               if (!Strings.isValid(((CoverageUnit) item).getNotes())) {
-                  add = false;
-               }
-               if (((CoverageUnit) item).getNotes() == null || !((CoverageUnit) item).getNotes().contains(getNotesStr())) {
-                  add = false;
-               }
-            } else {
-               add = false;
-            }
-         }
-         if (add) {
-            items.add(item);
-            addAllParents(items, item);
-         }
-         for (ICoverage child : item.getChildren()) {
-            performSearchGetResults(items, child);
-         }
-      }
-   }
+      });
+      getNotesXText().addXModifiedListener(new XModifiedListener() {
 
-   private void addAllParents(Set<ICoverage> items, ICoverage item) {
-      if (item.getParent() != null) {
-         items.add(item.getParent());
-         addAllParents(items, item.getParent());
-      }
-   }
+         @Override
+         public void widgetModified(XWidget widget) {
+            coverageParameters.setNotes(getNotesStr());
+         }
+      });
+      getCoverageMethodHyperlinkSelection().addXModifiedListener(new XModifiedListener() {
 
-   public String getSelectedName(/*SearchType searchType*/) throws OseeCoreException {
-      StringBuffer sb = new StringBuffer();
-      if (isShowAll()) {
-         sb.append(" - Show All");
-      }
-      if (getAssignee() != null) {
-         sb.append(" - Assignee: " + getAssignee());
-      }
-      if (getSelectedCoverageMethods().size() > 1) {
-         sb.append(" - Coverage Method: " + org.eclipse.osee.framework.jdk.core.util.Collections.toString(", ",
-               getSelectedCoverageMethods()));
-      }
-      return "Coverage Items " + sb.toString();
+         @Override
+         public void widgetModified(XWidget widget) {
+            coverageParameters.setCoverageMethods(getCoverageMethodHyperlinkSelection().getSelectedCoverageMethods());
+         }
+      });
    }
 
    public boolean isShowAll() {
@@ -218,31 +161,6 @@ public class CoverageEditorCoverageParameters extends Composite {
       return (XHyperlabelCoverageMethodSelection) getXWidget("Coverage Method");
    }
 
-   public Result isParameterSelectionValid() throws OseeCoreException {
-      try {
-         if (isShowAll()) {
-            if (getSelectedCoverageMethods().size() > 0) {
-               return new Result("Can't have Show All and Coverage Methods");
-            }
-            if (getAssignee() != null) {
-               return new Result("Can't have Show All and Assignee selected");
-            }
-            if (Strings.isValid(getNotesStr())) {
-               return new Result("Can't have Show All and Notes");
-            }
-         }
-         if (!isShowAll()) {
-            if (getSelectedCoverageMethods().size() == 0) {
-               return new Result("You must select at least one Coverage Method");
-            }
-         }
-         return Result.TrueResult;
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
-         return new Result("Exception: " + ex.getLocalizedMessage());
-      }
-   }
-
    public String getWidgetXml() {
       StringBuffer sb =
             new StringBuffer(
@@ -251,7 +169,7 @@ public class CoverageEditorCoverageParameters extends Composite {
                   "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>" +
                   //
                   "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show All\" beginComposite=\"8\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      if (coveragePackageBase.isAssignable()) {
+      if (coverageParameters.getCoveragePackageBase().isAssignable()) {
          sb.append("" +
          //
          "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>");

@@ -10,10 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.coverage.editor.xcover;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
@@ -22,78 +19,12 @@ import org.eclipse.osee.coverage.merge.MessageMergeItem;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
-import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
+import org.eclipse.osee.coverage.model.MessageCoverageItem;
 
 public class CoverageContentProvider implements ITreeContentProvider {
 
-   protected Collection<ICoverage> rootSet = new HashSet<ICoverage>();
-   private final CoverageXViewer xViewer;
-   private final SkynetGuiDebug debug = new SkynetGuiDebug(false, "CoverageContentProvider");
-
    public CoverageContentProvider(CoverageXViewer coverageXViewer) {
       super();
-      this.xViewer = coverageXViewer;
-   }
-
-   public void add(final ICoverage item) {
-      add(Arrays.asList(item));
-   }
-
-   public void add(final Collection<? extends ICoverage> items) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            rootSet.addAll(items);
-            xViewer.refresh();
-         };
-      });
-   }
-
-   public void set(final Collection<? extends ICoverage> coverages) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            clear();
-            add(coverages);
-         };
-      });
-   }
-
-   public void remove(final ICoverage coverage) {
-      remove(Arrays.asList(coverage));
-   }
-
-   public void remove(final Collection<? extends ICoverage> coverages) {
-      if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-      ArrayList<ICoverage> delItems = new ArrayList<ICoverage>();
-      delItems.addAll(rootSet);
-      for (ICoverage coverage : coverages) {
-         for (ICoverage currCoverage : rootSet)
-            if (coverage.equals(currCoverage)) delItems.add(currCoverage);
-      }
-      removeItems(delItems);
-   }
-
-   public void removeItems(final Collection<? extends ICoverage> coverages) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            rootSet.removeAll(coverages);
-            xViewer.refresh();
-         };
-      });
-   }
-
-   public void clear() {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            rootSet.clear();
-            xViewer.refresh();
-         };
-      });
    }
 
    @SuppressWarnings("unchecked")
@@ -134,8 +65,8 @@ public class CoverageContentProvider implements ITreeContentProvider {
    }
 
    public Object[] getElements(Object inputElement) {
-      debug.report("getElements");
       if (inputElement instanceof MessageMergeItem) return new Object[] {inputElement};
+      if (inputElement instanceof MessageCoverageItem) return new Object[] {inputElement};
       return getChildren(inputElement);
    }
 
@@ -143,10 +74,6 @@ public class CoverageContentProvider implements ITreeContentProvider {
    }
 
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-   }
-
-   public Collection<ICoverage> getRootSet() {
-      return rootSet;
    }
 
 }

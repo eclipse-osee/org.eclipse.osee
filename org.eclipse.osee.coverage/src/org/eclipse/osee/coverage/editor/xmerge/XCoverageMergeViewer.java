@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.editor.xmerge;
 
+import org.eclipse.osee.coverage.editor.xcover.CoverageContentProvider;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.util.ISaveable;
@@ -54,7 +55,7 @@ public class XCoverageMergeViewer extends XCoverageViewer implements IRefreshAct
       mergeXViewer = (CoverageMergeXViewer) xViewer;
       xViewer.getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
-      xViewer.setContentProvider(new CoverageMergeContentProvider(mergeXViewer));
+      xViewer.setContentProvider(new CoverageContentProvider(mergeXViewer));
       xViewer.setLabelProvider(new CoverageMergeLabelProvider(mergeXViewer));
 
       if (toolkit != null) toolkit.adapt(xViewer.getStatusLabel(), false, false);

@@ -138,7 +138,7 @@ public class CoverageItem implements ICoverage {
 
    @Override
    public String toString() {
-      return "[" + getMethodNum() + ", " + getExecuteNum() + "]";
+      return String.format("Item [%s,%s,%s,%s]", getCoverageMethod(), getMethodNum(), getExecuteNum(), getGuid());
    }
 
    @Override

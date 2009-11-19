@@ -127,11 +127,11 @@ public class XCoverageViewer extends XWidget {
 
    public void loadTable(Collection<ICoverage> items) {
       try {
-         xViewer.set(items);
+         xViewer.setInput(items);
+         xViewer.refresh();
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      refresh();
    }
 
    @SuppressWarnings("unchecked")

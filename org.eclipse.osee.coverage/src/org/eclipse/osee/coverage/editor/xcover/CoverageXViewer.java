@@ -39,8 +39,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
-import org.eclipse.swt.events.DisposeEvent;
-import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -67,11 +65,6 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
    @Override
    protected void createSupportWidgets(Composite parent) {
       super.createSupportWidgets(parent);
-      parent.addDisposeListener(new DisposeListener() {
-         public void widgetDisposed(DisposeEvent e) {
-            ((CoverageContentProvider) getContentProvider()).clear();
-         }
-      });
       createMenuActions();
    }
 
@@ -157,28 +150,6 @@ public class CoverageXViewer extends XViewer implements ISelectedCoverageEditorI
       mm.insertBefore(MENU_GROUP_PRE, new Separator());
       mm.insertBefore(MENU_GROUP_PRE, new org.eclipse.osee.framework.ui.skynet.action.ExpandAllAction(
             xCoverageViewer.getXViewer(), true));
-   }
-
-   public Collection<ICoverage> getLoadedItems() {
-      return ((CoverageContentProvider) getContentProvider()).getRootSet();
-   }
-
-   public void add(Collection<ICoverage> coverageEditorItems) {
-      if ((CoverageContentProvider) getContentProvider() != null) {
-         ((CoverageContentProvider) getContentProvider()).add(coverageEditorItems);
-      }
-   }
-
-   public void set(Collection<? extends ICoverage> coverageEditorItems) {
-      if ((CoverageContentProvider) getContentProvider() != null) {
-         ((CoverageContentProvider) getContentProvider()).set(coverageEditorItems);
-      }
-   }
-
-   public void clear() {
-      if ((CoverageContentProvider) getContentProvider() != null) {
-         ((CoverageContentProvider) getContentProvider()).clear();
-      }
    }
 
    @Override

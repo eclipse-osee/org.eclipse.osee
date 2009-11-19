@@ -92,6 +92,23 @@ public class CoverageUtil {
       return getTopLevelCoverageUnit(coverage.getParent());
    }
 
+   public static CoverageUnit getFirstNonFolderCoverageUnit(ICoverage coverage) {
+      if (coverage instanceof CoverageUnit) {
+         if (coverage.getParent() instanceof CoveragePackageBase) {
+            return (CoverageUnit) coverage;
+         }
+         if (((CoverageUnit) coverage.getParent()).isFolder()) {
+            return (CoverageUnit) coverage;
+         }
+      }
+      ICoverage parentCovergeUnit = getFirstNonFolderCoverageUnit(coverage.getParent());
+      if (parentCovergeUnit != null) {
+         return (CoverageUnit) parentCovergeUnit;
+      } else {
+         return (CoverageUnit) coverage;
+      }
+   }
+
    public static void getParentCoverageUnits(ICoverage coverage, Set<CoverageUnit> parents) {
       if (coverage.getParent() == null) return;
       if (coverage.getParent() instanceof CoverageUnit) {

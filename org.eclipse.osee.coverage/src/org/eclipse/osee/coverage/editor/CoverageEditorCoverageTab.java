@@ -9,15 +9,24 @@
  */
 package org.eclipse.osee.coverage.editor;
 
-import java.util.logging.Level;
+import java.util.HashSet;
+import java.util.Set;
 import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.osee.coverage.editor.params.CoverageParameters;
+import org.eclipse.osee.coverage.editor.params.CoverageParametersComposite;
+import org.eclipse.osee.coverage.editor.params.CoverageParametersTextFilter;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
+import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.MessageCoverageItem;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
@@ -46,7 +55,8 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
    private ScrolledForm scrolledForm;
    private final CoveragePackageBase coveragePackageBase;
    private final CoverageEditor coverageEditor;
-   private CoverageEditorCoverageParameters parameters;
+   private CoverageParameters coverageParameters;
+   private CoverageParametersTextFilter parametersFilter;
 
    public CoverageEditorCoverageTab(String name, CoverageEditor coverageEditor, CoveragePackageBase provider) {
       super(coverageEditor, name, name);
@@ -67,14 +77,14 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
       coverageEditor.getToolkit().adapt(mainComp);
       mainComp.setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-      parameters =
-            new CoverageEditorCoverageParameters(mainComp, managedForm, coverageEditor, coveragePackageBase,
-                  new SelectionAdapter() {
-                     @Override
-                     public void widgetSelected(SelectionEvent e) {
-                        handleSearchButtonPressed();
-                     }
-                  });
+      coverageParameters = new CoverageParameters(coveragePackageBase);
+      new CoverageParametersComposite(mainComp, managedForm, coverageEditor, coverageParameters,
+            new SelectionAdapter() {
+               @Override
+               public void widgetSelected(SelectionEvent e) {
+                  handleSearchButtonPressed();
+               }
+            });
 
       Composite tableComp = new Composite(mainComp, SWT.NONE);
       tableComp.setLayout(ALayout.getZeroMarginLayout(1, false));
@@ -92,19 +102,45 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
       xCoverageViewer.getXViewer().getTree().setLayoutData(new GridData(GridData.FILL_BOTH));
 
       createToolbar();
-
    }
 
    private void handleSearchButtonPressed() {
+      if (parametersFilter == null) {
+         parametersFilter = new CoverageParametersTextFilter(xCoverageViewer.getXViewer());
+         xCoverageViewer.getXViewer().addFilter(parametersFilter);
+      }
+      handleSearchButtonPressed(xCoverageViewer, coverageParameters, parametersFilter);
+   }
+
+   public static void handleSearchButtonPressed(XCoverageViewer xCoverageViewer, CoverageParameters coverageParameters, CoverageParametersTextFilter parametersFilter) {
       try {
-         Result result = parameters.isParameterSelectionValid();
+         Result result = coverageParameters.isParameterSelectionValid();
          if (result.isFalse()) {
             result.popup();
             return;
          }
-         xCoverageViewer.loadTable(parameters.performSearchGetResults(coveragePackageBase));
+         Pair<Set<ICoverage>, Set<ICoverage>> itemsAndParents = coverageParameters.performSearchGetResults();
+         if (itemsAndParents.getSecond().size() != 0) {
+            xCoverageViewer.loadTable(itemsAndParents.getSecond());
+         } else {
+            xCoverageViewer.getXViewer().setInput(new MessageCoverageItem("No Match"));
+         }
+         xCoverageViewer.refresh();
+         parametersFilter.setShowAll(coverageParameters.isShowAll());
+         parametersFilter.setShownCoverages(itemsAndParents.getFirst());
+         xCoverageViewer.getXViewer().refresh();
+
+         // Don't reveal too low cause it's too much, just reveal to first non folder Coverage Unit
+         Set<ICoverage> firstNonFolderCoverageUnits = new HashSet<ICoverage>();
+         for (ICoverage coverage : itemsAndParents.getFirst()) {
+            firstNonFolderCoverageUnits.add(CoverageUtil.getFirstNonFolderCoverageUnit(coverage));
+         }
+         for (ICoverage coverage : firstNonFolderCoverageUnits) {
+            xCoverageViewer.getXViewer().setSelection(new StructuredSelection(coverage));
+            xCoverageViewer.getXViewer().reveal(new StructuredSelection(coverage));
+         }
       } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 

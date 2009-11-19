@@ -21,8 +21,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {Coverage_Suite.class, CoverageItemPersistTest.class, CoverageUnitPersistTest.class,
-      CoveragePackageImportTest.class})
+@Suite.SuiteClasses( {Coverage_Suite.class, CoverageParametersTest.class, CoverageItemPersistTest.class,
+      CoverageUnitPersistTest.class, CoveragePackageImportTest.class})
 /**
  * @author Donald G. Dunne
  */
