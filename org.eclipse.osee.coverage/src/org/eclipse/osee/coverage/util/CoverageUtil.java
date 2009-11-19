@@ -7,6 +7,7 @@ package org.eclipse.osee.coverage.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
@@ -90,6 +91,14 @@ public class CoverageUtil {
          return (CoverageUnit) coverage;
       }
       return getTopLevelCoverageUnit(coverage.getParent());
+   }
+
+   public static Collection<ICoverage> getFirstNonFolderCoverageUnits(Collection<ICoverage> coverages) {
+      Set<ICoverage> firstNonFolderCoverageUnits = new HashSet<ICoverage>();
+      for (ICoverage coverage : coverages) {
+         firstNonFolderCoverageUnits.add(CoverageUtil.getFirstNonFolderCoverageUnit(coverage));
+      }
+      return firstNonFolderCoverageUnits;
    }
 
    public static CoverageUnit getFirstNonFolderCoverageUnit(ICoverage coverage) {

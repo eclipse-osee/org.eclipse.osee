@@ -57,8 +57,7 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
          if (artifact.getArtifactTypeName().equals(OseeCoveragePackageStore.ARTIFACT_NAME)) {
-            CoverageEditor.open(new CoverageEditorInput(artifact.getName(), artifact,
-                  OseeCoveragePackageStore.get(artifact), false));
+            CoverageEditor.open(new CoverageEditorInput(artifact.getName(), artifact, null, false));
          }
       }
    }

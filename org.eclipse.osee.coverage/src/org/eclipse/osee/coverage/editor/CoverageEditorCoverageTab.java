@@ -9,7 +9,6 @@
  */
 package org.eclipse.osee.coverage.editor;
 
-import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -22,6 +21,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.MessageCoverageItem;
+import org.eclipse.osee.coverage.store.OseeCoverageStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -130,14 +130,12 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
          parametersFilter.setShownCoverages(itemsAndParents.getFirst());
          xCoverageViewer.getXViewer().refresh();
 
-         // Don't reveal too low cause it's too much, just reveal to first non folder Coverage Unit
-         Set<ICoverage> firstNonFolderCoverageUnits = new HashSet<ICoverage>();
-         for (ICoverage coverage : itemsAndParents.getFirst()) {
-            firstNonFolderCoverageUnits.add(CoverageUtil.getFirstNonFolderCoverageUnit(coverage));
-         }
-         for (ICoverage coverage : firstNonFolderCoverageUnits) {
-            xCoverageViewer.getXViewer().setSelection(new StructuredSelection(coverage));
-            xCoverageViewer.getXViewer().reveal(new StructuredSelection(coverage));
+         if (!coverageParameters.isShowAll()) {
+            // Don't reveal too low cause it's too much, just reveal to first non folder Coverage Unit
+            for (ICoverage coverage : CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst())) {
+               xCoverageViewer.getXViewer().setSelection(new StructuredSelection(coverage));
+               xCoverageViewer.getXViewer().reveal(new StructuredSelection(coverage));
+            }
          }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -160,18 +158,12 @@ public class CoverageEditorCoverageTab extends FormPage implements ISaveable {
 
    @Override
    public Result isEditable() {
-      if (!(coveragePackageBase instanceof ISaveable)) {
-         return new Result("Not Editable");
-      }
-      return ((ISaveable) coveragePackageBase).isEditable();
+      return coveragePackageBase.isEditable();
    }
 
    @Override
    public Result save() throws OseeCoreException {
-      if (!(coveragePackageBase instanceof ISaveable)) {
-         return new Result("Not Saveable");
-      }
-      return ((ISaveable) coveragePackageBase).save();
+      return OseeCoverageStore.get(coveragePackageBase).save();
    }
 
 }

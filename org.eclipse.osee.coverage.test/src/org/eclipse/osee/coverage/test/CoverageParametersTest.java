@@ -13,6 +13,7 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.junit.Test;
@@ -43,26 +44,32 @@ public class CoverageParametersTest {
       Result result = coverageParameters.isParameterSelectionValid();
       Assert.assertTrue(result.getText().contains("must select at least one"));
 
+      // Test Show All
       coverageParameters.setShowAll(true);
       Pair<Set<ICoverage>, Set<ICoverage>> itemsAndParents = coverageParameters.performSearchGetResults();
-      Assert.assertEquals(4, itemsAndParents.getFirst().size());
+      Assert.assertEquals(180, itemsAndParents.getFirst().size());
       Assert.assertEquals(4, itemsAndParents.getSecond().size());
 
+      // Exception_Handling
       coverageParameters.setShowAll(false);
       coverageParameters.setCoverageMethods(Collections.singleton(CoverageMethodEnum.Exception_Handling));
       itemsAndParents = coverageParameters.performSearchGetResults();
       Assert.assertEquals(0, itemsAndParents.getFirst().size());
       Assert.assertEquals(0, itemsAndParents.getSecond().size());
 
+      // Test_Unit
       coverageParameters.setCoverageMethods(Collections.singleton(CoverageMethodEnum.Test_Unit));
       itemsAndParents = coverageParameters.performSearchGetResults();
       Assert.assertEquals(60, itemsAndParents.getFirst().size());
       Assert.assertEquals(4, itemsAndParents.getSecond().size());
+      Assert.assertEquals(12, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
 
+      // Not_Covered
       coverageParameters.setCoverageMethods(Collections.singleton(CoverageMethodEnum.Not_Covered));
       itemsAndParents = coverageParameters.performSearchGetResults();
       Assert.assertEquals(61, itemsAndParents.getFirst().size());
       Assert.assertEquals(4, itemsAndParents.getSecond().size());
+      Assert.assertEquals(12, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
 
    }
 }
