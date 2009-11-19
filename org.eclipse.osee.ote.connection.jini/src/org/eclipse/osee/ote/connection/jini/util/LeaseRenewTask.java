@@ -64,6 +64,7 @@ public class LeaseRenewTask extends TimerTask {
 	   canceled = true;
       boolean result = super.cancel();
       try {
+    	 System.out.println("Canceling lookup lease"); 
          registration.getLease().cancel();
       } catch (Exception ex) {
          throw new RuntimeException("failed to cancel lease", ex);
