@@ -19,16 +19,18 @@ public class BranchTestUtil extends Branch {
    private BranchState state;
    private BranchType type;
    private boolean isArchived;
+   private BranchArchivedState archivedState;
 
    protected BranchTestUtil(String guid, String name) {
       super(guid, name);
    }
 
-   public BranchTestUtil(String guid, String name, BranchState state, BranchType type, boolean isArchived) {
+   public BranchTestUtil(String guid, String name, BranchState state, BranchType type, BranchArchivedState archivedState, boolean isArchived) {
       super(guid, name);
       this.state = state;
       this.type = type;
       this.isArchived = isArchived;
+      this.archivedState = archivedState;
    }
 
    @Override
@@ -58,7 +60,7 @@ public class BranchTestUtil extends Branch {
 
    @Override
    public BranchArchivedState getArchiveState() {
-      return null;
+      return archivedState;
    }
 
    @Override

@@ -13,11 +13,11 @@ package org.eclipse.osee.framework.core.test.data;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 import org.eclipse.osee.framework.core.data.BranchCommitData;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.test.util.BranchTestUtil;
+import org.eclipse.osee.framework.core.test.util.UserArtifactTestUtil;
 import org.junit.Test;
 
 /**
@@ -36,11 +36,14 @@ public class BranchCommitDataTest {
 
    @Test
    public void testBranchCommitDataConstruction() {
-      BranchTestUtil sourceBranch = new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BranchType.WORKING, isArchived);
-      BranchTestUtil destinationBranch = new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, isArchived);
-      MockUserArtifact user = new MockUserArtifact("Tom Jones", "EJDFKGJDFKGJ19394FDJDLF", 999999);
-      BranchCommitData data = new BranchCommitData(user, sourceBranch, destinationBranch, isArchived);
-      assertEquals(user, data.getUser());
+      BranchTestUtil sourceBranch =
+            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BranchType.WORKING, BranchArchivedState.UNARCHIVED,
+                  isArchived);
+      BranchTestUtil destinationBranch =
+            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
+      UserArtifactTestUtil userArt = new UserArtifactTestUtil(user, "EJDFKGJDFKGJ19394FDJDLF", 999999);
+      BranchCommitData data = new BranchCommitData(userArt, sourceBranch, destinationBranch, isArchived);
+      assertEquals(userArt, data.getUser());
       assertEquals(sourceBranch, data.getSourceBranch());
       assertEquals(destinationBranch, data.getDestinationBranch());
       assertEquals(isArchived, data.isArchiveAllowed());
@@ -55,37 +58,4 @@ public class BranchCommitDataTest {
 
    }
 
-   private class MockUserArtifact implements IBasicArtifact<Object> {
-      private String name;
-      private String guid;
-      private int artId;
-
-      public MockUserArtifact(String name, String guid, int artId) {
-         super();
-         this.name = name;
-         this.guid = guid;
-         this.artId = artId;
-      }
-
-      @Override
-      public int getArtId() {
-         return artId;
-      }
-
-      @Override
-      public Object getFullArtifact() throws OseeCoreException {
-         return null;
-      }
-
-      @Override
-      public String getGuid() {
-         return guid;
-      }
-
-      @Override
-      public String getName() {
-         return name;
-      }
-
-   }
 }

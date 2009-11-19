@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.test.exchange;
 import java.util.Date;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.data.BranchCommitData;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -68,5 +69,12 @@ public class DataUtility {
       Assert.assertEquals(expected.getGuid(), actual.getGuid());
       Assert.assertEquals(expected.getName(), actual.getName());
       Assert.assertEquals(expected.getFullArtifact(), actual.getFullArtifact());
+   }
+
+   public static void assertEquals(BranchCommitData expected, BranchCommitData actual) {
+      Assert.assertEquals(expected.getUser(), actual.getUser());
+      Assert.assertEquals(expected.isArchiveAllowed(), actual.isArchiveAllowed());
+      Assert.assertEquals(expected.getSourceBranch(), actual.getSourceBranch());
+      Assert.assertEquals(expected.getDestinationBranch(), actual.getDestinationBranch());
    }
 }

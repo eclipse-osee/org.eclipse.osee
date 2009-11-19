@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.test.data;
 import static org.junit.Assert.assertEquals;
 import java.util.Date;
 import org.eclipse.osee.framework.core.data.TransactionRecord;
+import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -41,7 +42,8 @@ public class TransactionRecordTest {
 
    @Test
    public void testTransactionRecordConstruction() {
-      BranchTestUtil branch = new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, isArchived);
+      BranchTestUtil branch =
+            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
       Date date = new Date();
       TransactionRecord record =
             new TransactionRecord(transactionNumber, branch, comment, date, authorArtId, commitArtId, txType);
@@ -57,7 +59,8 @@ public class TransactionRecordTest {
 
    @Test
    public void testSetComment() {
-      BranchTestUtil branch = new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, isArchived);
+      BranchTestUtil branch =
+            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
       Date date = new Date();
       TransactionRecord record =
             new TransactionRecord(transactionNumber, branch, comment, date, authorArtId, commitArtId, txType);
@@ -67,7 +70,8 @@ public class TransactionRecordTest {
 
    @Test
    public void testSetTime() {
-      BranchTestUtil branch = new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, isArchived);
+      BranchTestUtil branch =
+            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
       Date date = new Date();
       TransactionRecord record =
             new TransactionRecord(transactionNumber, branch, comment, date, authorArtId, commitArtId, txType);
@@ -77,7 +81,8 @@ public class TransactionRecordTest {
 
    @Test
    public void testSetAuthor() {
-      BranchTestUtil branch = new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, isArchived);
+      BranchTestUtil branch =
+            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
       Date date = new Date();
       TransactionRecord record =
             new TransactionRecord(transactionNumber, branch, comment, date, authorArtId, commitArtId, txType);
@@ -87,7 +92,8 @@ public class TransactionRecordTest {
 
    @Test
    public void testSetCommit() {
-      BranchTestUtil branch = new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, isArchived);
+      BranchTestUtil branch =
+            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
       Date date = new Date();
       TransactionRecord record =
             new TransactionRecord(transactionNumber, branch, comment, date, authorArtId, commitArtId, txType);
