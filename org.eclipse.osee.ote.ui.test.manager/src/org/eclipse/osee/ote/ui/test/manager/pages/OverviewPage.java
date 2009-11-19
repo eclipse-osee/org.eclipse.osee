@@ -12,7 +12,6 @@ package org.eclipse.osee.ote.ui.test.manager.pages;
 
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
 import org.eclipse.osee.ote.core.environment.interfaces.IHostTestEnvironment;
@@ -20,8 +19,6 @@ import org.eclipse.osee.ote.service.ConnectionEvent;
 import org.eclipse.osee.ote.ui.test.manager.TestManagerPlugin;
 import org.eclipse.osee.ote.ui.test.manager.core.TestManagerEditor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseAdapter;
-import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -33,7 +30,7 @@ import org.eclipse.swt.widgets.Label;
 public class OverviewPage extends TestManagerPage implements IActionable {
 
    private static final String pageName = "Overview";
-   private static final String release = ""; 
+   private static final String release = "";
    Map<LabelEnum, Label> labelMap;
 
    private enum LabelEnum {
@@ -126,21 +123,9 @@ public class OverviewPage extends TestManagerPage implements IActionable {
          updateableLabel.setToolTipText(enumEntry.getToolTipText());
 
          labelMap.put(enumEntry, updateableLabel);
-
-         if (enumEntry.equals(LabelEnum.TM_Release)) {
-            updateableLabel.addMouseListener(new MouseAdapter() {
-
-               public void mouseDoubleClick(MouseEvent e) {
-                  // Double right click here to turn on the debug for the plug-in
-                  if (e.button == 3) {
-                     debug.setGlobalDebug();
-                  }
-               }
-            });
-         }
       }
       OseeAts.addButtonToEditorToolBar(this, TestManagerPlugin.getInstance(), composite, TestManagerEditor.namespace,
-      "Test Manager");
+            "Test Manager");
 
    }
 
@@ -168,20 +153,20 @@ public class OverviewPage extends TestManagerPage implements IActionable {
       return "";
    }
 
-    @Override
-    public boolean onConnection(ConnectionEvent event) {
-	return false;
-    }
+   @Override
+   public boolean onConnection(ConnectionEvent event) {
+      return false;
+   }
 
-    @Override
-    public boolean onDisconnect(ConnectionEvent event) {
-	return false;
+   @Override
+   public boolean onDisconnect(ConnectionEvent event) {
+      return false;
 
-    }
+   }
 
-	@Override
-	public boolean onConnectionLost(IHostTestEnvironment testHost) {
-		return false;
-	}
+   @Override
+   public boolean onConnectionLost(IHostTestEnvironment testHost) {
+      return false;
+   }
 
 }

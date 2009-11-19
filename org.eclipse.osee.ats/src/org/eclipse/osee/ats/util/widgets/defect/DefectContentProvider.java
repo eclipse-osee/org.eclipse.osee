@@ -16,14 +16,12 @@ import java.util.HashSet;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
-import org.eclipse.osee.framework.ui.skynet.util.SkynetGuiDebug;
 
 public class DefectContentProvider implements ITreeContentProvider {
 
    protected Collection<DefectItem> rootSet = new HashSet<DefectItem>();
    private final DefectXViewer xViewer;
    private static Object[] EMPTY_ARRAY = new Object[0];
-   private SkynetGuiDebug debug = new SkynetGuiDebug(false, "DefectContentProvider");
 
    public DefectContentProvider(DefectXViewer WorldXViewer) {
       super();
@@ -37,8 +35,7 @@ public class DefectContentProvider implements ITreeContentProvider {
    public void add(final Collection<? extends DefectItem> items) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null)
-               xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
             rootSet.addAll(items);
             xViewer.refresh();
          };
@@ -48,8 +45,7 @@ public class DefectContentProvider implements ITreeContentProvider {
    public void set(final Collection<? extends DefectItem> arts) {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null)
-               xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
             clear();
             add(arts);
          };
@@ -59,8 +55,7 @@ public class DefectContentProvider implements ITreeContentProvider {
    public void clear() {
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null)
-               xViewer.setInput(rootSet);
+            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
             rootSet.clear();
             xViewer.refresh();
          };
@@ -79,19 +74,15 @@ public class DefectContentProvider implements ITreeContentProvider {
    }
 
    public Object getParent(Object element) {
-      debug.report("getParent");
       return null;
    }
 
    public boolean hasChildren(Object element) {
-      debug.report("hasChildren");
       return false;
    }
 
    public Object[] getElements(Object inputElement) {
-      debug.report("getElements");
-      if (inputElement instanceof String)
-         return new Object[] {inputElement};
+      if (inputElement instanceof String) return new Object[] {inputElement};
       return getChildren(inputElement);
    }
 
