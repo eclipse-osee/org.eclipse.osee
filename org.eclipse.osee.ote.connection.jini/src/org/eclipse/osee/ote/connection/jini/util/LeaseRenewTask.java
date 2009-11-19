@@ -14,6 +14,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
 
+import net.jini.core.lease.Lease;
+import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceRegistration;
 
 import org.eclipse.osee.ote.connection.jini.Activator;
@@ -24,14 +26,16 @@ public class LeaseRenewTask extends TimerTask {
     * large to account for delays in communication (i.e. network delays), and allow for at least a few retries in the
     * event the service is not reachable. This time is specified in milliseconds.
     */
-   private static final long RENEWAL_TIME = 2 * 60 * 1000; // 2 minutes
+   private static final long RENEWAL_TIME = 1 * 60 * 1000; // 1 minute
 
    private final ServiceRegistration registration;
    private volatile boolean canceled = false;
+   private ServiceRegistrar registrar;
    
-   public LeaseRenewTask(Timer timer, ServiceRegistration registration) {
+   public LeaseRenewTask(Timer timer, ServiceRegistration registration, ServiceRegistrar registrar) {
       this.registration = registration;
       timer.scheduleAtFixedRate(this, 0, RENEWAL_TIME);
+      this.registrar = registrar;
    }
 
    public void run() {
@@ -40,8 +44,17 @@ public class LeaseRenewTask extends TimerTask {
 	   }
       try {
          // Renew for the maximum amount of time allowed
-	    registration.getLease().renew(RENEWAL_TIME + 10000);
+	    registration.getLease().renew(Lease.FOREVER);
       } catch (Exception ex) {
+    	 String host="unknown";
+    	 int port = 0;
+    	 try{
+    		 host = registrar.getLocator().getHost();
+    		 port = registrar.getLocator().getPort();
+    	 } catch (Throwable th){
+    		 th.printStackTrace();
+    	 }
+    	 System.out.printf("lookup serviceId[%s] host[%s] port[%d]\n", registrar.getServiceID().toString(), host, port);
          Activator.log(Level.SEVERE, "error renewing lease", ex);
       }
    }

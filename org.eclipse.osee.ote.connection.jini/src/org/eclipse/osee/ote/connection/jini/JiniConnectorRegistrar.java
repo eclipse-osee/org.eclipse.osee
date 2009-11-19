@@ -104,7 +104,7 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
                   final ServiceRegistration registration = registrar.register(
                                                                               jiniConnector.getServiceItem(),
                                                                               Long.MAX_VALUE);
-                  jiniConnector.addRegistration(registration);
+                  jiniConnector.addRegistration(registration, registrar);
                }
                catch (RemoteException ex) {
                   Activator.log(Level.WARNING, "Error registering service", ex);
@@ -194,7 +194,7 @@ public class JiniConnectorRegistrar implements IJiniConnectorRegistrar, IConnect
                final ServiceRegistration registration = registrar.register(
                                                                            entry.getKey().getServiceItem(),
                                                                            Long.MAX_VALUE);
-               entry.getKey().addRegistration(registration);
+               entry.getKey().addRegistration(registration, registrar);
                entry.getValue().addAll(serviceRegistrars);
             }
          }

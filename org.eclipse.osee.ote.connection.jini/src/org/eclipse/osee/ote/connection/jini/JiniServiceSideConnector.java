@@ -24,6 +24,7 @@ import java.util.logging.Level;
 import net.jini.core.entry.Entry;
 import net.jini.core.lookup.ServiceID;
 import net.jini.core.lookup.ServiceItem;
+import net.jini.core.lookup.ServiceRegistrar;
 import net.jini.core.lookup.ServiceRegistration;
 import net.jini.id.Uuid;
 import net.jini.id.UuidFactory;
@@ -34,8 +35,6 @@ import net.jini.jeri.tcp.TcpServerEndpoint;
 import org.eclipse.osee.framework.jdk.core.util.EnhancedProperties;
 import org.eclipse.osee.framework.jdk.core.util.Network;
 import org.eclipse.osee.ote.connection.jini.util.LeaseRenewTask;
-
-import sun.reflect.generics.visitor.Reifier;
 
 /**
  * @author Ken J. Aguilar
@@ -108,9 +107,9 @@ public class JiniServiceSideConnector extends JiniConnector implements
 		return new ServiceID(msb.longValue(), lsb.longValue());
 	}
 
-	synchronized void addRegistration(ServiceRegistration registration) {
+	synchronized void addRegistration(ServiceRegistration registration, ServiceRegistrar registrar) {
 		registrations
-		.put(registration, new LeaseRenewTask(timer, registration));
+		.put(registration, new LeaseRenewTask(timer, registration, registrar));
 	}
 
 	ServiceItem getServiceItem() {
