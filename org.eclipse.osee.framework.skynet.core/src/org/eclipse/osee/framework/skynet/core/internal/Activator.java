@@ -10,10 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal;
 
-import org.eclipse.osee.framework.core.IDataTranslationService;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
+import org.eclipse.osee.framework.core.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.OseeCachingService;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerArtifactTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerAttributeTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerBranchAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerOseeEnumTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerRelationTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.serverCommit.CommitService;
 import org.eclipse.osee.framework.skynet.core.serverCommit.ICommitService;
 import org.osgi.framework.BundleActivator;
@@ -24,12 +44,24 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Ryan D. Brooks
  */
-public class Activator implements BundleActivator {
+public class Activator implements BundleActivator, IOseeModelFactoryServiceProvider {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.skynet.core";
-   private ServiceRegistration serviceRegistration;
-   private ServiceTracker commitServiceTracker;
-   private ServiceTracker translationServiceTracker;
+
    private static Activator instance;
+   private final Map<TrackerId, ServiceTracker> mappedTrackers;
+   private final List<ServiceRegistration> services;
+
+   private enum TrackerId {
+      TRANSLATION_SERVICE,
+      OSEE_CACHING_SERVICE,
+      OSEE_FACTORY_SERVICE,
+      COMMIT_SERVICE;
+   }
+
+   public Activator() {
+      this.mappedTrackers = new HashMap<TrackerId, ServiceTracker>();
+      this.services = new ArrayList<ServiceRegistration>();
+   }
 
    @Override
    public void start(BundleContext context) throws Exception {
@@ -37,13 +69,15 @@ public class Activator implements BundleActivator {
       ClientSessionManager.class.getCanonicalName();
       HttpAttributeTagger.getInstance();
 
-      serviceRegistration = context.registerService(ICommitService.class.getName(), new CommitService(), null);
+      IOseeCachingService cachingService = createCachingService();
 
-      commitServiceTracker = new ServiceTracker(context, ICommitService.class.getName(), null);
-      commitServiceTracker.open();
+      createService(context, IOseeCachingService.class, cachingService);
+      createService(context, ICommitService.class, new CommitService());
 
-      translationServiceTracker = new ServiceTracker(context, IDataTranslationService.class.getName(), null);
-      translationServiceTracker.open();
+      createServiceTracker(context, IOseeCachingService.class, TrackerId.OSEE_CACHING_SERVICE);
+      createServiceTracker(context, ICommitService.class, TrackerId.COMMIT_SERVICE);
+      createServiceTracker(context, IDataTranslationService.class, TrackerId.TRANSLATION_SERVICE);
+      createServiceTracker(context, IOseeModelFactoryService.class, TrackerId.OSEE_FACTORY_SERVICE);
    }
 
    @Override
@@ -51,26 +85,72 @@ public class Activator implements BundleActivator {
       HttpAttributeTagger.getInstance().deregisterFromEventManager();
       RemoteEventManager.deregisterFromRemoteEventManager();
 
-      serviceRegistration.unregister();
+      for (ServiceRegistration service : services) {
+         service.unregister();
+      }
 
-      commitServiceTracker.close();
-      commitServiceTracker = null;
-
-      translationServiceTracker.close();
-      translationServiceTracker = null;
+      for (ServiceTracker tracker : mappedTrackers.values()) {
+         tracker.close();
+      }
+      services.clear();
+      mappedTrackers.clear();
 
       instance = null;
+   }
+
+   private IOseeCachingService createCachingService() {
+      OseeEnumTypeCache oseeEnumTypeCache = new OseeEnumTypeCache(new ServerOseeEnumTypeAccessor(this));
+
+      AttributeTypeCache attributeTypeCache =
+            new AttributeTypeCache(new ServerAttributeTypeAccessor(this, oseeEnumTypeCache));
+
+      ArtifactTypeCache artifactTypeCache =
+            new ArtifactTypeCache(new ServerArtifactTypeAccessor(this, attributeTypeCache));
+
+      RelationTypeCache relationTypeCache =
+            new RelationTypeCache(new ServerRelationTypeAccessor(this, artifactTypeCache));
+
+      TransactionCache transactionCache = new TransactionCache(null);
+
+      BranchCache branchCache = new BranchCache(new ServerBranchAccessor(this, transactionCache));
+      return new OseeCachingService(branchCache, transactionCache, artifactTypeCache, attributeTypeCache,
+            relationTypeCache, oseeEnumTypeCache);
    }
 
    public static Activator getInstance() {
       return instance;
    }
 
+   public IOseeCachingService getOseeCacheService() {
+      return getTracker(TrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
+   }
+
    public ICommitService getCommitBranchService() {
-      return (ICommitService) commitServiceTracker.getService();
+      return getTracker(TrackerId.COMMIT_SERVICE, ICommitService.class);
    }
 
    public IDataTranslationService getTranslationService() {
-      return (IDataTranslationService) translationServiceTracker.getService();
+      return getTracker(TrackerId.TRANSLATION_SERVICE, IDataTranslationService.class);
+   }
+
+   @Override
+   public IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
+      return getTracker(TrackerId.OSEE_FACTORY_SERVICE, IOseeModelFactoryService.class);
+   }
+
+   private void createService(BundleContext context, Class<?> serviceInterface, Object serviceImplementation) {
+      services.add(context.registerService(serviceInterface.getName(), serviceImplementation, null));
+   }
+
+   private void createServiceTracker(BundleContext context, Class<?> clazz, TrackerId trackerId) {
+      ServiceTracker tracker = new ServiceTracker(context, clazz.getName(), null);
+      tracker.open();
+      mappedTrackers.put(trackerId, tracker);
+   }
+
+   private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
+      ServiceTracker tracker = mappedTrackers.get(trackerId);
+      Object service = tracker.getService();
+      return clazz.cast(service);
    }
 }

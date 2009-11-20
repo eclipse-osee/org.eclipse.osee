@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.IResource;
@@ -195,7 +195,7 @@ public class CompressedContentFix {
       }
 
       private void doWork(long time) {
-         ConnectionHandlerStatement chStmt = null;
+         IOseeStatement chStmt = null;
          try {
             chStmt = ConnectionHandler.getStatement();
             chStmt.runPreparedQuery(FIND_ALL_NATIVE_CONTENT_SQL);

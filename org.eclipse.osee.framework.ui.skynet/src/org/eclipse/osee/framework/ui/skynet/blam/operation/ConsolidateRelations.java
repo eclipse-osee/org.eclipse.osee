@@ -15,6 +15,7 @@ import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -30,7 +31,7 @@ public class ConsolidateRelations extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
-      IOperation operation = new ConsolidateRelationsTxOperation();
+      IOperation operation = new ConsolidateRelationsTxOperation(SkynetGuiPlugin.getInstance());
       Operations.executeWork(operation, monitor, -1);
       Operations.checkForErrorStatus(operation.getStatus());
    }

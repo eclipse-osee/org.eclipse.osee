@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
@@ -68,7 +68,7 @@ public class ItemsDeletedWithNoOtherModification extends DatabaseHealthOperation
    }
 
    private void loadData(String sql, TxChange txChange, ModificationType modificationType) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(sql, txChange.getValue(), modificationType.getValue(), modificationType.getValue());
          while (chStmt.next()) {

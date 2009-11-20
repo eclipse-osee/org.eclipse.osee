@@ -15,7 +15,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -54,7 +54,7 @@ public class AuthorIdCheck extends DatabaseHealthOperation {
          rd.addRaw(AHTML.addHeaderRowMultiColumnTable(columnHeaders));
 
          Set<Integer> authors = new HashSet<Integer>();
-         ConnectionHandlerStatement chStmt1 = ConnectionHandler.getStatement();
+         IOseeStatement chStmt1 = ConnectionHandler.getStatement();
          try {
             chStmt1.runPreparedQuery(GET_AUTHOR_IDS);
             while (chStmt1.next()) {

@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Collection;
 import java.util.HashSet;
+import org.eclipse.osee.framework.core.enums.CoreArtifacts;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.CoreArtifacts;
 
 /**
  * @author Donald G. Dunne

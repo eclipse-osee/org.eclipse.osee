@@ -21,11 +21,12 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -48,8 +49,10 @@ public abstract class Attribute<T> {
       this.modificationType = modificationType;
 
       try {
+         Class<? extends IAttributeDataProvider> providerClass =
+               AttributeTypeManager.getAttributeProviderClass(attributeType);
          Constructor<? extends IAttributeDataProvider> providerConstructor =
-               attributeType.getProviderAttributeClass().getConstructor(new Class[] {Attribute.class});
+               providerClass.getConstructor(new Class[] {Attribute.class});
          attributeDataProvider = providerConstructor.newInstance(new Object[] {this});
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);

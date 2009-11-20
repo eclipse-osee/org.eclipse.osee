@@ -15,13 +15,13 @@ import java.util.Map;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -49,7 +49,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       Map<Integer, ChangeBuilder> attributesWasValueCache = new HashMap<Integer, ChangeBuilder>();
       Map<Integer, ModificationType> artModTypes = new HashMap<Integer, ModificationType>();
       Set<Integer> modifiedArtifacts = new HashSet<Integer>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       boolean hasBranch = getSourceBranch() != null;
       long time = System.currentTimeMillis();
       try {
@@ -96,7 +96,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
       return getChangeBuilders();
    }
 
-   private void loadIsValues(Branch sourceBranch, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, Map<Integer, ModificationType> artModTypes, Set<Integer> modifiedArtifacts, ConnectionHandlerStatement chStmt, boolean hasBranch, long time, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, boolean hasSpecificArtifact) throws OseeCoreException {
+   private void loadIsValues(Branch sourceBranch, Set<Integer> artIds, ArrayList<ChangeBuilder> changeBuilders, Set<Integer> newAndDeletedArtifactIds, IProgressMonitor monitor, Map<Integer, ChangeBuilder> attributesWasValueCache, Map<Integer, ModificationType> artModTypes, Set<Integer> modifiedArtifacts, IOseeStatement chStmt, boolean hasBranch, long time, TransactionRecord fromTransactionId, TransactionRecord toTransactionId, boolean hasSpecificArtifact) throws OseeCoreException {
       ModificationType artModType;
       AttributeChangeBuilder attributeChangeBuilder;
 
@@ -185,7 +185,7 @@ public class AttributeChangeAcquirer extends ChangeAcquirer {
          int queryId = ArtifactLoader.getNewQueryId();
          Timestamp insertTime = GlobalTime.GreenwichMeanTimestamp();
          List<Object[]> datas = new LinkedList<Object[]>();
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
 
          try {
             // insert into the artifact_join_table

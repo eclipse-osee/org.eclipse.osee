@@ -18,7 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.data.IOseeType;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.core.model.ArtifactType;
 
 /**
  * @author Robert A. Fisher
@@ -161,4 +161,5 @@ public class RoughArtifact {
    public void setPrimaryArtifactType(ArtifactType primaryArtifactType) {
       this.primaryArtifactType = primaryArtifactType;
    }
+
 }

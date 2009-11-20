@@ -15,9 +15,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.Map;
-import org.eclipse.osee.framework.core.IDataTranslationService;
+import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
@@ -33,6 +34,7 @@ public class HttpMessage {
 
    @SuppressWarnings("unchecked")
    public static <J, K> J send(String context, Map<String, String> parameters, K requestData, Class<J> clazzResponse) throws OseeCoreException {
+      parameters.put("sessionId", ClientSessionManager.getSessionId());
       String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(context, parameters);
       InputStream inputStream = null;
       try {

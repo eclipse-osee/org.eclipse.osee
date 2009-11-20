@@ -17,16 +17,16 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -215,7 +215,7 @@ public class ArtifactPersistenceManager {
             TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
       long totalTime = System.currentTimeMillis();
       //Get attribute Gammas
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       RevertAction revertAction = null;
       try {
          chStmt.runPreparedQuery(GET_GAMMAS_ATTRIBUTE_REVERT, branchId, attributeId);
@@ -243,7 +243,7 @@ public class ArtifactPersistenceManager {
    private static void revertRelationLink(OseeConnection connection, int branchId, int relLinkId, int aArtId, int bArtId) throws BranchDoesNotExist, OseeCoreException {
       long time = System.currentTimeMillis();
       long totalTime = time;
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
 
       TransactionRecord transId =
             TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
@@ -268,7 +268,7 @@ public class ArtifactPersistenceManager {
             TransactionManager.createNextTransactionId(BranchManager.getBranch(branchId), UserManager.getUser(), "");
       long totalTime = System.currentTimeMillis();
       //Get attribute Gammas
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(GET_GAMMAS_ARTIFACT_REVERT, branchId, artId, branchId, artId, artId, branchId, artId);
          new RevertAction(connection, chStmt, transId).revertObject(totalTime, artId, "Artifact");

@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.resource.provider.attribute;sing
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.resource.provider.attribute.Activator
 Bundle-Vendor: Eclipse.org
+Eclipse-ExtensibleAPI: true
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.core.server,
@@ -13,5 +14,4 @@ Import-Package: org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.resource.management.util,
  org.osgi.framework
 Service-Component: OSGI-INF/attribute.provider.xml
-Export-Package: org.eclipse.osee.framework.resource.provider.attribute
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

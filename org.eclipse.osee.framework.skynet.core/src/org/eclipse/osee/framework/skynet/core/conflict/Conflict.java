@@ -12,12 +12,12 @@
 package org.eclipse.osee.framework.skynet.core.conflict;
 
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;

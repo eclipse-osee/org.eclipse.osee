@@ -12,7 +12,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.results.MultiPageResultsProvider;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
@@ -206,7 +206,7 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
       resultsTab.addColumn(new XViewerColumn("6", "Mod Type", 80, SWT.LEFT, true, SortDataType.String, false, ""));
       resultsTab.addColumn(new XViewerColumn("7", "TX Current", 80, SWT.LEFT, true, SortDataType.String, false, ""));
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       String sql = String.format(SELECT_ADDRESSES, columnName, tableName, columnName);
       try {
          chStmt.runPreparedQuery(10000, sql);

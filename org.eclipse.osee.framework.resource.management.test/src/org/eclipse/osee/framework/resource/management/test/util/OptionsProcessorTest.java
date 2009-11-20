@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.resource.management.test.util;
 
 import org.eclipse.osee.framework.resource.management.util.OptionsProcessor;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -21,6 +22,7 @@ import org.junit.Test;
  */
 public class OptionsProcessorTest {
 
+   @Ignore
    @Test
    public void testOptionsProcessor() {
       Assert.fail("Error - implement this");

@@ -12,4 +12,5 @@ Export-Package: org.eclipse.osee.framework.skynet.core.test,
  org.eclipse.osee.framework.skynet.core.test.types,
  org.eclipse.osee.framework.skynet.core.test.util
 Import-Package: org.eclipse.osee.framework.core.enums,
+ org.eclipse.osee.framework.core.test.mocks,
  org.eclipse.osee.framework.jdk.core.util

@@ -23,7 +23,7 @@ import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -43,7 +43,7 @@ public class DataStoreBackupApplication implements IApplication {
 
    private List<Integer> getAllBranches() throws OseeDataStoreException {
       List<Integer> toReturn = new ArrayList<Integer>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(100, ALL_BRANCHES_QUERY);
          while (chStmt.next()) {

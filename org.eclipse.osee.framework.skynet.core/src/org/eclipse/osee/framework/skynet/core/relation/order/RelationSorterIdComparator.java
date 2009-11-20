@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
 import java.util.Comparator;
+import org.eclipse.osee.framework.core.data.IRelationSorterId;
 
 /**
  * @author Andrew M. Finkbeiner

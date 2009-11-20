@@ -12,13 +12,13 @@ package org.eclipse.osee.framework.skynet.core.test.relation.order;
 
 import java.util.Arrays;
 import java.util.List;
+import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.LexicographicalRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.sorters.UnorderedRelationSorter;

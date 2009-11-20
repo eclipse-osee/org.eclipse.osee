@@ -20,9 +20,10 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
 import org.eclipse.osee.framework.types.bridge.operations.ModelToFileOperation;
 import org.eclipse.osee.framework.types.bridge.operations.OseeToXtextOperation;
 import org.eclipse.ui.IImportWizard;
@@ -46,9 +47,15 @@ public class OseeTypesExportWizard extends Wizard implements IImportWizard {
    @Override
    public boolean performFinish() {
       final File folder = mainPage.getFile();
+
+      IOseeCachingService provider = Activator.getDefault().getOseeCacheService();
+      OseeTypeCache cache =
+            new OseeTypeCache(provider.getArtifactTypeCache(), provider.getAttributeTypeCache(),
+                  provider.getRelationTypeCache(), provider.getEnumTypeCache());
+
       final Map<String, OseeTypeModel> models = new HashMap<String, OseeTypeModel>();
       List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new OseeToXtextOperation(OseeTypeManager.getCache(), models));
+      ops.add(new OseeToXtextOperation(cache, models));
       ops.add(new ModelToFileOperation(folder, models));
       Operations.executeAsJob(new CompositeOperation("Export Osee Type Model", Activator.PLUGIN_ID, ops), true);
       return true;

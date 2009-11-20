@@ -33,18 +33,8 @@ import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
-import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.AttributeTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.OseeEnumTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.RelationTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseArtifactTypeAccessor;
-import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseAttributeTypeAccessor;
-import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseOseeEnumTypeAccessor;
-import org.eclipse.osee.framework.skynet.core.types.impl.DatabaseRelationTypeAccessor;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.progress.UIJob;
@@ -66,14 +56,15 @@ public class CompareOseeTypeCacheOperation extends AbstractOperation {
    }
 
    private OseeTypeCache createEmptyCache() {
-      IOseeTypeFactory factory = new OseeTypeFactory();
-      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new DatabaseOseeEnumTypeAccessor(factory));
-      AttributeTypeCache attrCache = new AttributeTypeCache(new DatabaseAttributeTypeAccessor(factory, enumCache));
+      //      IOseeTypeFactory factory = new OseeTypeFactory();
+      //      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new DatabaseOseeEnumTypeAccessor(factory));
+      //      AttributeTypeCache attrCache = new AttributeTypeCache(new DatabaseAttributeTypeAccessor(factory, enumCache));
+      //
+      //      ArtifactTypeCache artCache = new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(factory, attrCache));
+      //      RelationTypeCache relCache = new RelationTypeCache(new DatabaseRelationTypeAccessor(factory, artCache));
 
-      ArtifactTypeCache artCache = new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(factory, attrCache));
-      RelationTypeCache relCache = new RelationTypeCache(new DatabaseRelationTypeAccessor(factory, artCache));
-
-      OseeTypeCache storeCache = new OseeTypeCache(factory, artCache, attrCache, relCache, enumCache);
+      OseeTypeCache storeCache = null;
+      //      new OseeTypeCache(factory, artCache, attrCache, relCache, enumCache);
       return storeCache;
    }
 

@@ -8,30 +8,16 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.artifact;
+package org.eclipse.osee.framework.resource.provider.attribute.test;
 
-import org.eclipse.osee.framework.core.data.IOseeType;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {AttributeProviderTest.class})
 /**
  * @author Roberto E. Escobar
  */
-public enum CoreBranches implements IOseeType {
-   COMMON("Common", "AyH_fDpMERA+zDfML4gA"),
-   SYSTEM_ROOT("System Root Branch", "AyH_fDnM2RFEhyybolQA");
+public class AttributeProviderTestSuite {
 
-   private final String name;
-   private final String guid;
-
-   private CoreBranches(String name, String guid) {
-      this.name = name;
-      this.guid = guid;
-   }
-
-   public String getName() {
-      return this.name;
-   }
-
-   public String getGuid() {
-      return guid;
-   }
 }

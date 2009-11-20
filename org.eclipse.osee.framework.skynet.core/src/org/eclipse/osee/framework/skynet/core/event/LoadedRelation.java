@@ -10,9 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
 
 /**

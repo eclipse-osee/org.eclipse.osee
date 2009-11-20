@@ -22,13 +22,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
@@ -201,15 +201,15 @@ public class XFlatDam extends XFlatWidget<String> implements IArtifactWidget {
 
    private XWidget getWidget(String attributeType, Composite parent, String initialInput) {
       XWidget xWidget = null;
-      AttributeType type = null;
+      Class<?> type = null;
       try {
-         type = AttributeTypeManager.getType(attributeType);
+         type = AttributeTypeManager.getAttributeBaseClass(attributeType);
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       if (type != null) {
-         if (type.getBaseAttributeClass().equals(IntegerAttribute.class)) {
+         if (type.equals(IntegerAttribute.class)) {
             XInteger xInteger = new XInteger("");
             xInteger.setFillHorizontally(true);
             xInteger.createWidgets(getManagedForm(), parent, 2);
@@ -217,7 +217,7 @@ public class XFlatDam extends XFlatWidget<String> implements IArtifactWidget {
                xInteger.setText(initialInput);
             }
             xWidget = xInteger;
-         } else if (type.getBaseAttributeClass().equals(DateAttribute.class)) {
+         } else if (type.equals(DateAttribute.class)) {
             XDate xDate = new XDate("");
             xDate.setFillHorizontally(true);
             xDate.createWidgets(getManagedForm(), parent, 2);
@@ -225,7 +225,7 @@ public class XFlatDam extends XFlatWidget<String> implements IArtifactWidget {
                xDate.setDate(toDate(initialInput));
             }
             xWidget = xDate;
-         } else if (type.getBaseAttributeClass().equals(FloatingPointAttribute.class)) {
+         } else if (type.equals(FloatingPointAttribute.class)) {
             XFloat xFloat = new XFloat("");
             xFloat.setFillHorizontally(true);
             xFloat.createWidgets(getManagedForm(), parent, 2);
@@ -233,8 +233,7 @@ public class XFlatDam extends XFlatWidget<String> implements IArtifactWidget {
                xFloat.setText(initialInput);
             }
             xWidget = xFloat;
-         } else if (type.getBaseAttributeClass().equals(CompressedContentAttribute.class) || type.getBaseAttributeClass().equals(
-               JavaObjectAttribute.class)) {
+         } else if (type.equals(CompressedContentAttribute.class) || type.equals(JavaObjectAttribute.class)) {
             XLabel xLabel = new XLabel("");
             xLabel.setFillHorizontally(true);
             xLabel.createWidgets(getManagedForm(), parent, 2);

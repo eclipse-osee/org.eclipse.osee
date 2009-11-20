@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.search.engine.data.AttributeVersion;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
@@ -50,7 +50,7 @@ public class SearchTagDataStore {
 
    public static int deleteTags(OseeConnection connection, int queryId) throws OseeDataStoreException {
       int numberDeleted = 0;
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery("select gamma_id from osee_join_transaction where query_id = ?", queryId);
          List<Object[]> datas = new ArrayList<Object[]>();
@@ -108,7 +108,7 @@ public class SearchTagDataStore {
       final Set<IAttributeLocator> toReturn = new HashSet<IAttributeLocator>();
 
       for (Long codedTag : codedTags) {
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+         IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
          try {
             chStmt.runPreparedQuery(SELECT_SEARCH_TAGS, codedTag);
             while (chStmt.next()) {

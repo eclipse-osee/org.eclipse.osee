@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -137,7 +137,7 @@ public class DuplicateHRID extends DatabaseHealthOperation {
 
    private List<ArtifactData> getDuplicateHRIDArtifacts(IProgressMonitor monitor) throws OseeDataStoreException {
       List<ArtifactData> duplicateItems = new LinkedList<ArtifactData>();
-      ConnectionHandlerStatement chStmt1 = ConnectionHandler.getStatement();
+      IOseeStatement chStmt1 = ConnectionHandler.getStatement();
       try {
          chStmt1.runPreparedQuery(GET_DUPLICATE_HRIDS);
          while (chStmt1.next()) {

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.results.html;
 
 import java.net.URL;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

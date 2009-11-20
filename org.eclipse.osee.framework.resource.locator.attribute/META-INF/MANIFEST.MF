@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.osee.framework.resource.locator.attribute;singl
 Bundle-Version: 0.4.0.qualifier
 Bundle-Activator: org.eclipse.osee.framework.resource.locator.attribute.Activator
 Bundle-Vendor: Eclipse.org
+Eclipse-ExtensibleAPI: true
 Bundle-ActivationPolicy: lazy
 Service-Component: OSGI-INF/locator.provider.attribute.xml
 Import-Package: org.eclipse.osee.framework.core.data,

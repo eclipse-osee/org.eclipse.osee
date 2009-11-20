@@ -14,8 +14,8 @@ import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatab
 import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTIONS_TABLE;
 import static org.eclipse.osee.framework.skynet.core.artifact.search.SkynetDatabase.TRANSACTION_DETAIL_TABLE;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.model.Branch;
 
 /**
  * @author Robert A. Fisher

@@ -17,21 +17,23 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.factory.ArtifactFactoryManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 
 /**
  * Contains methods specific to artifact types. All artifact methods will eventually be moved from the
@@ -44,6 +46,10 @@ public class ArtifactTypeManager {
    private final static ArtifactFactoryManager factoryManager = new ArtifactFactoryManager();
 
    private ArtifactTypeManager() {
+   }
+
+   public static ArtifactTypeCache getCache() {
+      return Activator.getInstance().getOseeCacheService().getArtifactTypeCache();
    }
 
    public static Collection<ArtifactType> getArtifactTypesFromAttributeType(AttributeType attributeType, Branch branch) throws OseeCoreException {
@@ -79,11 +85,11 @@ public class ArtifactTypeManager {
     * @throws OseeCoreException
     */
    public static Collection<ArtifactType> getAllTypes() throws OseeCoreException {
-      return OseeTypeManager.getCache().getArtifactTypeCache().getAll();
+      return getCache().getAll();
    }
 
    public static boolean typeExists(String name) throws OseeCoreException {
-      return !OseeTypeManager.getCache().getArtifactTypeCache().getByName(name).isEmpty();
+      return !getCache().getByName(name).isEmpty();
    }
 
    /**
@@ -96,7 +102,7 @@ public class ArtifactTypeManager {
       if (!GUID.isValid(guid)) {
          throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
       }
-      ArtifactType artifactType = OseeTypeManager.getCache().getArtifactTypeCache().getByGuid(guid);
+      ArtifactType artifactType = getCache().getByGuid(guid);
       if (artifactType == null) {
          throw new OseeTypeDoesNotExist("Artifact type [" + guid + "] is not available.");
       }
@@ -110,7 +116,7 @@ public class ArtifactTypeManager {
     * @throws OseeTypeDoesNotExist
     */
    public static ArtifactType getType(String name) throws OseeCoreException {
-      ArtifactType artifactType = OseeTypeManager.getCache().getArtifactTypeCache().getUniqueByName(name);
+      ArtifactType artifactType = getCache().getUniqueByName(name);
       if (artifactType == null) {
          throw new OseeTypeDoesNotExist("Artifact type [" + name + "] is not available.");
       }
@@ -142,7 +148,7 @@ public class ArtifactTypeManager {
     * @throws OseeTypeDoesNotExist
     */
    public static ArtifactType getType(int artTypeId) throws OseeCoreException {
-      ArtifactType artifactType = OseeTypeManager.getCache().getArtifactTypeCache().getById(artTypeId);
+      ArtifactType artifactType = getCache().getById(artTypeId);
       if (artifactType == null) {
          throw new OseeTypeDoesNotExist("Atrifact type: " + artTypeId + " is not available.");
       }
@@ -269,12 +275,8 @@ public class ArtifactTypeManager {
       }
    }
 
-   public static ArtifactType createType(String guid, boolean isAbstract, String artifactTypeName) throws OseeCoreException {
-      return OseeTypeManager.getCache().getArtifactTypeCache().createType(guid, isAbstract, artifactTypeName);
-   }
-
    public static void persist() throws OseeCoreException {
-      OseeTypeManager.getCache().getArtifactTypeCache().storeAllModified();
+      getCache().storeAllModified();
    }
 
    /**

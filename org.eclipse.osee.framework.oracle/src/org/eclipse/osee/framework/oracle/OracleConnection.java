@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.oracle;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
-import org.eclipse.osee.framework.database.core.IConnection;
+import org.eclipse.osee.framework.database.core.IConnectionFactory;
 
-public class OracleConnection implements IConnection {
+public class OracleConnection implements IConnectionFactory {
 
    private static final String driver = "oracle.jdbc.OracleDriver";
 

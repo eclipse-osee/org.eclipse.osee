@@ -17,14 +17,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IAccessControllable;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -115,7 +116,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    }
 
    private static void populateBranchAccessControlList() throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ALL_BRANCH_ACCESS_CONTROL_LIST);
          while (chStmt.next()) {
@@ -128,7 +129,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
             accessControlListCache.put(subjectId, branchAccessObject, permission);
             objectToSubjectCache.put(branchAccessObject, subjectId);
 
-            if (ArtifactTypeManager.getType(subjectArtifactTypeId).inheritsFrom("User Group")) {
+            ArtifactType toCheck = ArtifactTypeManager.getType("User Group");
+            if (ArtifactTypeManager.getType(subjectArtifactTypeId).inheritsFrom(toCheck)) {
                populateGroupMembers(subjectId);
             }
          }
@@ -138,7 +140,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
    }
 
    private static void populateArtifactAccessControlList() throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ALL_ARTIFACT_ACCESS_CONTROL_LIST);
 
@@ -156,7 +158,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                AccessObject accessObject = ArtifactAccessObject.getArtifactAccessObject(objectId, branchId);
                cacheAccessObject(objectId, subjectId, permission, accessObject);
 
-               if (ArtifactTypeManager.getType(subjectArtifactTypeId).inheritsFrom("User Group")) {
+               ArtifactType toCheck = ArtifactTypeManager.getType("User Group");
+               if (ArtifactTypeManager.getType(subjectArtifactTypeId).inheritsFrom(toCheck)) {
                   populateGroupMembers(subjectId);
                }
             }
@@ -170,7 +173,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
       if (!groupToSubjectsCache.containsKey(groupId)) {
          Integer groupMember;
 
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, RelationTypeManager.getType("Users").getId());
 
@@ -357,12 +360,10 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
                if (data.isBirth()) {
                   ConnectionHandler.runPreparedUpdate(INSERT_INTO_ARTIFACT_ACL, artifactAccessObject.getArtId(),
-                        data.getPermission().getPermId(), data.getSubject().getArtId(),
-                        artifactAccessObject.getId());
+                        data.getPermission().getPermId(), data.getSubject().getArtId(), artifactAccessObject.getId());
                } else {
                   ConnectionHandler.runPreparedUpdate(UPDATE_ARTIFACT_ACL, data.getPermission().getPermId(),
-                        data.getSubject().getArtId(), artifactAccessObject.getArtId(),
-                        artifactAccessObject.getId());
+                        data.getSubject().getArtId(), artifactAccessObject.getArtId(), artifactAccessObject.getId());
                }
 
                if (recurse) {

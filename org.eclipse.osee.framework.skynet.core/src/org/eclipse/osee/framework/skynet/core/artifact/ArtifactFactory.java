@@ -13,12 +13,13 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 
 /**

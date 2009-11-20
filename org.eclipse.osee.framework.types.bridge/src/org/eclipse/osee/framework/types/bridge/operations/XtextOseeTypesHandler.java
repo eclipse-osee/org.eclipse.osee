@@ -16,9 +16,12 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.IOseeTypesHandler;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
+import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
 
 /**
  * @author Roberto E. Escobar
@@ -28,9 +31,12 @@ public class XtextOseeTypesHandler implements IOseeTypesHandler {
    @Override
    public void execute(IProgressMonitor monitor, Object context, URL url) throws OseeCoreException {
       try {
-         IOperation operation = new XTextToOseeTypeOperation(OseeTypeManager.getCache(), true, context, url.toURI());
-         Operations.executeWork(operation, monitor, -1);
-         Operations.checkForErrorStatus(operation.getStatus());
+         OseeTypeCache cache = null; // TODO 
+         IOseeCachingService cacheProvider = Activator.getDefault().getOseeCacheService();
+         IOseeModelFactoryService factoryService = Activator.getDefault().getOseeFactoryService();
+
+         IOperation operation = new XTextToOseeTypeOperation(factoryService, cache, true, context, url.toURI());
+         Operations.executeWorkAndCheckStatus(operation, monitor, -1);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
       }

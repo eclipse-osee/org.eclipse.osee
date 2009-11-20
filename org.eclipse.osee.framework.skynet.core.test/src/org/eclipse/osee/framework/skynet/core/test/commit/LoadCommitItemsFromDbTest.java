@@ -16,11 +16,11 @@ import java.util.List;
 import junit.framework.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -89,7 +89,7 @@ public class LoadCommitItemsFromDbTest {
 
    private Branch findASourceBranch(Branch destination, String branchName) throws OseeCoreException {
       Branch source = null;
-      for (Branch branch : destination.getWorkingBranches()) {
+      for (Branch branch : BranchManager.getWorkingBranches(destination)) {
          if (branch.getName().contains(branchName)) {
             source = branch;
          }

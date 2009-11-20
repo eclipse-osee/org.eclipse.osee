@@ -31,16 +31,16 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
@@ -156,7 +156,7 @@ public abstract class AbstractWordAttributeHealthOperation extends DatabaseHealt
 
       private List<AttrData> loadAttributeData(IProgressMonitor monitor, AttributeType attributeType) throws OseeDataStoreException, OseeTypeDoesNotExist {
          List<AttrData> attrData = new ArrayList<AttrData>();
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(GET_ATTRS, attributeType.getId());
             while (chStmt.next()) {

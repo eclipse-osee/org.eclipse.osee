@@ -10,17 +10,21 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.blam.operation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.PurgeBranchOperation;
-import org.eclipse.osee.framework.skynet.core.types.impl.BranchStoreOperation;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -36,6 +40,7 @@ public class ExperimentalBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      IOseeDatabaseService service = SkynetGuiPlugin.getInstance().getOseeDatabaseService();
       int increment = 0;
       if (!variableMap.getBoolean("Even Branches")) {
          increment = 1;
@@ -44,12 +49,45 @@ public class ExperimentalBlam extends AbstractBlam {
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.ARCHIVED, BranchControlled.ALL,
             BranchType.WORKING)) {
          if ((branch.getId() + increment) % 2 == 0) {
-            if (ConnectionHandler.runPreparedQueryFetchInt(0, PurgeBranchOperation.TEST_TXS, branch.getId()) == 1) {
+            if (service.runPreparedQueryFetchObject(0, PurgeBranchOperation.TEST_TXS, branch.getId()) == 1) {
                System.out.println("Moving: " + branch);
-               BranchStoreOperation.moveBranchAddressing(null, branch, true);
+               moveBranchAddressing(null, branch, true);
             }
          }
       }
+   }
+
+   private static final String SELECT_ADDRESSING_BY_BRANCH =
+         "select * from %s txs, osee_tx_details txd where txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
+   private static final String INSERT_ADDRESSING =
+         "insert into %s (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
+
+   public static final String DELETE_ADDRESSING = "delete from %s where transaction_id = ? and gamma_id = ?";
+
+   public void moveBranchAddressing(IOseeDatabaseService service, Branch branch, boolean archive) throws OseeDataStoreException {
+      String sourceTableName = archive ? "osee_txs" : "osee_txs_archived";
+      String destinationTableName = archive ? "osee_txs_archived" : "osee_txs";
+
+      IOseeStatement chStmt = service.getStatement();
+      List<Object[]> addressing = new ArrayList<Object[]>();
+      List<Object[]> deleteAddressing = new ArrayList<Object[]>();
+      String sql = String.format(SELECT_ADDRESSING_BY_BRANCH, sourceTableName);
+
+      try {
+         chStmt.runPreparedQuery(10000, sql, branch.getId());
+         while (chStmt.next()) {
+            addressing.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"),
+                  chStmt.getInt("mod_type"), chStmt.getInt("tx_current")});
+            deleteAddressing.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
+         }
+      } finally {
+         chStmt.close();
+      }
+      sql = String.format(INSERT_ADDRESSING, destinationTableName);
+      service.runBatchUpdate(sql, addressing);
+
+      sql = String.format(DELETE_ADDRESSING, sourceTableName);
+      service.runBatchUpdate(sql, deleteAddressing);
    }
 
    @Override

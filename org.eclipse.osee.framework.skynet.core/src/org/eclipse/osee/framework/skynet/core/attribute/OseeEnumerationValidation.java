@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.validation.IOseeValidator;
 
@@ -28,8 +29,7 @@ public class OseeEnumerationValidation implements IOseeValidator {
 
    @Override
    public boolean isApplicable(Artifact artifact, AttributeType attributeType) {
-      Class<?> baseClass = attributeType.getBaseAttributeClass();
-      return EnumeratedAttribute.class.isAssignableFrom(baseClass);
+      return attributeType.isEnumerated();
    }
 
    @Override

@@ -21,13 +21,15 @@ import java.util.Random;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -39,7 +41,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -112,7 +113,7 @@ public final class ArtifactLoader {
    public static List<Artifact> loadArtifactsFromQueryId(int queryId, ArtifactLoad loadLevel, ISearchConfirmer confirmer, int fetchSize, boolean reload, boolean historical, boolean allowDeleted) throws OseeCoreException {
       List<Artifact> artifacts = new ArrayList<Artifact>(fetchSize);
       try {
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             String sql;
             if (historical) {
@@ -274,7 +275,7 @@ public final class ArtifactLoader {
     * @param artifactCountEstimate
     */
    public static void selectArtifacts(int queryId, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, String sql, Object[] queryParameters, int artifactCountEstimate, TransactionRecord transactionId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       long time = System.currentTimeMillis();
 
       try {
@@ -301,7 +302,7 @@ public final class ArtifactLoader {
             Lib.getElapseString(time), insertParameters.size()), new Exception("Artifact Selection Time"));
    }
 
-   private static Artifact retrieveShallowArtifact(ConnectionHandlerStatement chStmt, boolean reload, boolean historical) throws OseeCoreException {
+   private static Artifact retrieveShallowArtifact(IOseeStatement chStmt, boolean reload, boolean historical) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
       Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
       TransactionRecord transactionId = TransactionManager.getTransactionId(chStmt);
@@ -375,7 +376,7 @@ public final class ArtifactLoader {
       if (historical) {
          return; // TODO: someday we might have a use for historical relations, but not now
       }
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(artifacts.size() * 8, ClientSessionManager.getSql(OseeSql.LOAD_RELATIONS), queryId);
          while (chStmt.next()) {
@@ -410,7 +411,7 @@ public final class ArtifactLoader {
          return;
       }
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          if (historical) {
             chStmt.runPreparedQuery(artifacts.size() * 8,

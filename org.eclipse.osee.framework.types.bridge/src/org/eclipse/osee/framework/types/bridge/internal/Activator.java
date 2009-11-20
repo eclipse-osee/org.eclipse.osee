@@ -10,19 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.types.bridge.internal;
 
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.ui.plugin.OseeUiActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Roberto E. Escobar
  */
-public class Activator extends OseeUiActivator {
+public class Activator extends OseeUiActivator implements IOseeModelFactoryServiceProvider {
 
    // The plug-in ID
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.types.bridge";
 
    // The shared instance
    private static Activator plugin;
+
+   private ServiceTracker cacheServiceTracker;
+   private ServiceTracker factoryTracker;
 
    /**
     * The constructor
@@ -38,6 +45,13 @@ public class Activator extends OseeUiActivator {
    public void start(BundleContext context) throws Exception {
       super.start(context);
       plugin = this;
+
+      factoryTracker = new ServiceTracker(context, IOseeModelFactoryService.class.getName(), null);
+      factoryTracker.open();
+
+      cacheServiceTracker = new ServiceTracker(context, IOseeCachingService.class.getName(), null);
+      cacheServiceTracker.open();
+
    }
 
    /*
@@ -47,6 +61,8 @@ public class Activator extends OseeUiActivator {
    @Override
    public void stop(BundleContext context) throws Exception {
       plugin = null;
+      cacheServiceTracker.close();
+      factoryTracker.close();
       super.stop(context);
    }
 
@@ -59,4 +75,11 @@ public class Activator extends OseeUiActivator {
       return plugin;
    }
 
+   public IOseeCachingService getOseeCacheService() {
+      return (IOseeCachingService) cacheServiceTracker.getService();
+   }
+
+   public IOseeModelFactoryService getOseeFactoryService() {
+      return (IOseeModelFactoryService) factoryTracker.getService();
+   }
 }

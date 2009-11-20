@@ -11,9 +11,9 @@
 package org.eclipse.osee.framework.ui.branch.graph.core;
 
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;

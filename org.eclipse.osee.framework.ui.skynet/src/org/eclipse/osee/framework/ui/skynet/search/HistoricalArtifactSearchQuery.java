@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.search;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 

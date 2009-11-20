@@ -15,10 +15,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -83,7 +83,7 @@ public class PurgeDbTransaction extends DbTransaction {
          }
          if (batchParameters.size() > 0) {
             ArtifactLoader.insertIntoArtifactJoin(connection, batchParameters);
-            ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+            IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
             try {
                chStmt.runPreparedQuery(COUNT_ARTIFACT_VIOLATIONS, queryId);
                boolean failed = false;

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
+import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
 

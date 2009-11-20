@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.export;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;

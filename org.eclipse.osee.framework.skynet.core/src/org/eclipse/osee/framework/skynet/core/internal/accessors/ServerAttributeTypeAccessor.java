@@ -1,0 +1,47 @@
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.skynet.core.internal.accessors;
+
+import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.AttributeTypeFactory;
+import org.eclipse.osee.framework.core.model.OseeEnumType;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class ServerAttributeTypeAccessor extends AbstractServerDataAccessor<AttributeType> {
+
+   private final AbstractOseeCache<OseeEnumType> enumCache;
+
+   public ServerAttributeTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<OseeEnumType> enumCache) {
+      super(factoryProvider);
+      this.enumCache = enumCache;
+   }
+
+   protected AttributeTypeFactory getFactory() throws OseeCoreException {
+      return getOseeFactoryService().getAttributeTypeFactory();
+   }
+
+   @Override
+   public void load(AbstractOseeCache<AttributeType> cache) throws OseeCoreException {
+      enumCache.ensurePopulated();
+      super.load(cache);
+   }
+
+   @Override
+   protected void updateCache(AbstractOseeCache<AttributeType> cache, CacheUpdateResponse<AttributeType> updateResponse) throws OseeCoreException {
+   }
+
+}

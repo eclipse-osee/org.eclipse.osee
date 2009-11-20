@@ -2,6 +2,6 @@
 <component name="postgresql.connection.driver.provider">
 	<implementation class="org.eclipse.osee.framework.postgresql.PostgresqlConnection"/>
 	<service>
-		<provide interface="org.eclipse.osee.framework.database.core.IConnection"/>
+		<provide interface="org.eclipse.osee.framework.database.core.IConnectionFactory"/>
 	</service>	
 </component>

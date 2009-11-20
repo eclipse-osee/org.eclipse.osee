@@ -14,6 +14,9 @@ import java.util.logging.Level;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -32,7 +35,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.service.packageadmin.PackageAdmin;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEventListener {
+public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEventListener, IOseeDatabaseServiceProvider {
    private static SkynetGuiPlugin pluginInstance; // The shared instance.
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.ui.skynet";
    public static final String CHANGE_REPORT_ATTRIBUTES_PREF =
@@ -43,6 +46,8 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
    public static final String ARTIFACT_SEARCH_RESULTS_ATTRIBUTES_PREF =
          "org.eclipse.osee.framework.ui.skynet.artifactSearchResultsAttributes";
    private ServiceTracker packageAdminTracker;
+   private ServiceTracker cacheServiceTracker;
+   private ServiceTracker databaseServiceTracker;
 
    public SkynetGuiPlugin() {
       super();
@@ -53,6 +58,8 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
       packageAdminTracker.close();
+      cacheServiceTracker.close();
+      databaseServiceTracker.close();
    }
 
    @Override
@@ -60,6 +67,13 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
       super.start(context);
       packageAdminTracker = new ServiceTracker(context, PackageAdmin.class.getName(), null);
       packageAdminTracker.open();
+
+      cacheServiceTracker = new ServiceTracker(context, IOseeCachingService.class.getName(), null);
+      cacheServiceTracker.open();
+
+      databaseServiceTracker = new ServiceTracker(context, IOseeDatabaseService.class.getName(), null);
+      databaseServiceTracker.open();
+
       OseeEventManager.addListener(this);
 
       if (PlatformUI.isWorkbenchRunning()) {
@@ -98,6 +112,14 @@ public class SkynetGuiPlugin extends OseeFormActivator implements IBroadcastEven
 
    public PackageAdmin getPackageAdmin() {
       return (PackageAdmin) this.packageAdminTracker.getService();
+   }
+
+   public IOseeCachingService getOseeCacheService() {
+      return (IOseeCachingService) cacheServiceTracker.getService();
+   }
+
+   public IOseeDatabaseService getOseeDatabaseService() {
+      return (IOseeDatabaseService) databaseServiceTracker.getService();
    }
 
    @Override

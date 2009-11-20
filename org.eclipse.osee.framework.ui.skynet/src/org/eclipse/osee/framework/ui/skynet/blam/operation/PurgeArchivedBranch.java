@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -80,7 +80,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
 
    private List<BranchInfo> purgeSelectedBranches() throws Exception {
       final List<BranchInfo> branches = new ArrayList<BranchInfo>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_ARCHIVED_BRANCHES, systemUserArtId, BranchArchivedState.ARCHIVED.getValue(),
                BranchState.REBASELINED.getValue(), BranchState.DELETED.getValue());
@@ -113,7 +113,7 @@ public class PurgeArchivedBranch extends AbstractBlam {
    private List<BranchInfo> checkUnusualArchivedBranches() throws Exception {
       // check to make sure archived branches are not in states other than Committed, Deleted, Rebaselined
       List<BranchInfo> branches = new ArrayList<BranchInfo>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_UNUSUAL_ARCHIVED_BRANCHES, systemUserArtId,
                BranchArchivedState.ARCHIVED.getValue(), BranchState.COMMITTED.getValue(),

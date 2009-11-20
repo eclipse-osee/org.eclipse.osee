@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.ui.define.test.manager;
 
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.type.IPropertyStore;
 import org.eclipse.osee.ote.define.TestRunStorageKey;
 import org.eclipse.osee.ote.ui.define.panels.GrayableBranchSelectionComposite;

@@ -13,9 +13,9 @@ package org.eclipse.osee.framework.postgresql;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
-import org.eclipse.osee.framework.database.core.IConnection;
+import org.eclipse.osee.framework.database.core.IConnectionFactory;
 
-public class PostgresqlConnection implements IConnection {
+public class PostgresqlConnection implements IConnectionFactory {
 
    private static final String driverName = "org.postgresql.Driver";
 

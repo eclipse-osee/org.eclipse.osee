@@ -15,23 +15,22 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.test.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationOrderAccessor;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.test.types.MockIArtifact;
-import org.eclipse.osee.framework.skynet.core.test.types.OseeTestDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.RelationTypeCache;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -56,12 +55,11 @@ public class RelationOrderDataTest {
       accessor = new MockRelationOrderAccessor();
       data = new RelationOrderData(accessor, artifact);
 
-      OseeTypeFactory factory = new OseeTypeFactory();
-      RelationTypeCache cache = new RelationTypeCache(new OseeTestDataAccessor<RelationType>());
+      RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<RelationType>());
 
-      relationType1 = createRelationType(cache, factory, "Rel 1", RelationOrderBaseTypes.USER_DEFINED.getGuid());
-      relationType2 = createRelationType(cache, factory, "Rel 2", RelationOrderBaseTypes.UNORDERED.getGuid());
-      relationType3 = createRelationType(cache, factory, "Rel 3", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
+      relationType1 = createRelationType(cache, "Rel 1", RelationOrderBaseTypes.USER_DEFINED.getGuid());
+      relationType2 = createRelationType(cache, "Rel 2", RelationOrderBaseTypes.UNORDERED.getGuid());
+      relationType3 = createRelationType(cache, "Rel 3", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
 
       Assert.assertFalse(data.hasEntries());
       Assert.assertEquals(0, data.size());
@@ -269,11 +267,11 @@ public class RelationOrderDataTest {
       return new MockIArtifact(uniqueId, name, guid, null, null);
    }
 
-   private static RelationType createRelationType(RelationTypeCache cache, OseeTypeFactory factory, String name, String delationRelationOrderGuid) throws OseeCoreException {
-      ArtifactType type1 = new ArtifactType(null, GUID.create(), "1", false);
-      ArtifactType type2 = new ArtifactType(null, GUID.create(), "2", false);
+   private static RelationType createRelationType(RelationTypeCache cache, String name, String delationRelationOrderGuid) throws OseeCoreException {
+      ArtifactType type1 = new ArtifactType(GUID.create(), "1", false);
+      ArtifactType type2 = new ArtifactType(GUID.create(), "2", false);
       RelationType relationType =
-            factory.createRelationType(cache, GUID.create(), name, name + "_A", name + "_B", type1, type2,
+            new RelationType(GUID.create(), name, name + "_A", name + "_B", type1, type2,
                   RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
       Assert.assertNotNull(relationType);
       cache.cache(relationType);

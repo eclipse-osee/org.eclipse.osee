@@ -19,19 +19,19 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.core.data.AbstractOseeType;
+import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AbstractOseeType;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.OseeEnumEntry;
+import org.eclipse.osee.framework.core.model.OseeEnumType;
+import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorProvider;
 import org.eclipse.osee.framework.ui.skynet.results.IResultsEditorTab;
 import org.eclipse.osee.framework.ui.skynet.results.ResultsEditor;
@@ -93,9 +93,9 @@ public class ReportDirtyOseeTypesOperation extends AbstractOperation {
          for (String fieldName : type.getFieldNames()) {
             boolean isDirty = type.isFieldDirty(fieldName);
             if (isDirty && ArtifactType.ARTIFACT_INHERITANCE_FIELD_KEY.equals(fieldName)) {
-               data.add(cache.getArtifactSuperType(type).toString());
+               data.add(type.getSuperArtifactTypes().toString());
             } else if (isDirty && ArtifactType.ARTIFACT_TYPE_ATTRIBUTES_FIELD_KEY.equals(fieldName)) {
-               data.add(cache.getLocalAttributeTypes(type).toString());
+               data.add(type.getLocalAttributeTypes().toString());
             } else {
                data.add(String.valueOf(isDirty));
             }

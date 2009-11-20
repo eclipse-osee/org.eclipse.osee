@@ -17,12 +17,12 @@ import static org.junit.Assert.fail;
 import java.util.Collection;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -85,7 +85,7 @@ public class ConflictTest {
 
    /**
     * Test method for
-    * {@link org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal#getConflictsPerBranch(org.eclipse.osee.framework.core.data.Branch, org.eclipse.osee.framework.core.data.Branch, org.eclipse.osee.framework.skynet.core.transaction.TransactionId)}
+    * {@link org.eclipse.osee.framework.skynet.core.revision.ConflictManagerInternal#getConflictsPerBranch(org.eclipse.osee.framework.core.model.Branch, org.eclipse.osee.framework.core.model.Branch, org.eclipse.osee.framework.skynet.core.transaction.TransactionId)}
     * .
     */
    @org.junit.Test
@@ -184,7 +184,6 @@ public class ConflictTest {
       checkNoTxCurrent("art_id", "osee_artifact_version");
       checkNoTxCurrent("attr_id", "osee_attribute");
       checkNoTxCurrent("rel_link_id", "osee_relation_link");
-
       checkMultipleTxCurrent("art_id", "osee_artifact_version");
       checkMultipleTxCurrent("attr_id", "osee_attribute");
       checkMultipleTxCurrent("rel_link_id", "osee_relation_link");
@@ -192,7 +191,7 @@ public class ConflictTest {
    }
 
    private void checkNoTxCurrent(String dataId, String dataTable) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       StringBuilder builder = new StringBuilder();
       builder.append(NO_TX_CURRENT_SET[0]);
       builder.append(dataId);
@@ -215,7 +214,7 @@ public class ConflictTest {
    }
 
    private void checkMultipleTxCurrent(String dataId, String dataTable) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       StringBuilder builder = new StringBuilder();
       builder.append(MULTIPLE_TX_CURRENT_SET[0]);
       builder.append(dataId);

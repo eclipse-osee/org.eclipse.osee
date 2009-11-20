@@ -37,8 +37,7 @@ public class EmbededAttributeEditorFactory {
 
    public static IEmbeddedAttributeEditor getEmbeddedEditor(String attributeName, String displayName, final Collection<?> attributeHolder, boolean persist) {
       try {
-         Class<? extends Attribute> attClass;
-         attClass = AttributeTypeManager.getType(attributeName).getBaseAttributeClass();
+         Class<? extends Attribute> attClass = AttributeTypeManager.getAttributeBaseClass(attributeName);
 
          if (attClass.equals(DateAttribute.class)) {
             return new EmbeddedDateAttributeEditor(null, attributeHolder, displayName, attributeName, persist);
@@ -54,8 +53,9 @@ public class EmbededAttributeEditorFactory {
             return new EmbeddedEnumAttributeEditor(null, attributeHolder, displayName, attributeName, persist);
          } else if (attClass.equals(StringAttribute.class)) {
             return new EmbeddedStringAttributeEditor(null, attributeHolder, displayName, attributeName, persist);
-         } else
+         } else {
             AWorkbench.popup("ERROR", "Unhandled attribute type.  No editor defined for this type");
+         }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }

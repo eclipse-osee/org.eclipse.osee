@@ -13,8 +13,9 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.CompressedContentAttribute;
@@ -54,52 +55,71 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
       DynamicXWidgetLayoutData defaultData = createDynamicXWidgetLayout(attributeType);
       xWidgetLayoutData.add(defaultData);
 
-      if (attributeType.getBaseAttributeClass().equals(EnumeratedAttribute.class)) {
-         if (maxOccurrence == 1) {
-            defaultData.setXWidgetName("XComboDam(" + Collections.toString(",",
-                  AttributeTypeManager.getEnumerationValues(attributeType)) + ")");
+      Throwable th = null;
+      Class<?> baseType = null;
+      try {
+         baseType = AttributeTypeManager.getAttributeBaseClass(attributeType);
+      } catch (OseeCoreException ex) {
+         th = ex;
+      }
+      if (baseType != null) {
+         if (baseType.equals(EnumeratedAttribute.class)) {
+            if (maxOccurrence == 1) {
+               defaultData.setXWidgetName("XComboDam(" + Collections.toString(",",
+                     AttributeTypeManager.getEnumerationValues(attributeType)) + ")");
+            } else {
+               defaultData.setXWidgetName("XSelectFromMultiChoiceDam(" + Collections.toString(",",
+                     AttributeTypeManager.getEnumerationValues(attributeType)) + ")");
+            }
+         } else if (baseType.equals(BooleanAttribute.class)) {
+            if (minOccurrence == 1) {
+               defaultData.setXWidgetName("XCheckBoxDam");
+            } else {
+               defaultData.setXWidgetName("XComboBooleanDam");
+            }
+         } else if (baseType.equals(WordAttribute.class) || CoreAttributes.RELATION_ORDER.getGuid().equals(
+               attributeType.getGuid())) {
+            defaultData.setXWidgetName("XStackedDam");
+            defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
          } else {
-            defaultData.setXWidgetName("XSelectFromMultiChoiceDam(" + Collections.toString(",",
-                  AttributeTypeManager.getEnumerationValues(attributeType)) + ")");
+            String xWidgetName = "";
+            if (maxOccurrence == 1) {
+               xWidgetName = getXWidgetName(baseType);
+            } else {
+               xWidgetName = "XStackedDam";
+            }
+            defaultData.setXWidgetName(xWidgetName);
          }
-      } else if (attributeType.getBaseAttributeClass().equals(BooleanAttribute.class)) {
-         if (minOccurrence == 1) {
-            defaultData.setXWidgetName("XCheckBoxDam");
-         } else {
-            defaultData.setXWidgetName("XComboBooleanDam");
-         }
-      } else if (attributeType.getBaseAttributeClass().equals(WordAttribute.class) || CoreAttributes.RELATION_ORDER.getGuid().equals(
-            attributeType.getGuid())) {
-         defaultData.setXWidgetName("XStackedDam");
-         defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);
       } else {
-         String xWidgetName = "";
-         if (maxOccurrence == 1) {
-            xWidgetName = getXWidgetName(attributeType);
-         } else {
-            xWidgetName = "XStackedDam";
+         defaultData.setXWidgetName("XTextDam");
+         StringBuilder builder = new StringBuilder();
+         builder.append("Unable to determine base type for attribute type");
+         builder.append(String.format("[%]", attributeType.getName()));
+         if (th != null) {
+            builder.append(org.eclipse.osee.framework.jdk.core.util.Lib.exceptionToString(th));
          }
-         defaultData.setXWidgetName(xWidgetName);
+         defaultData.setDefaultValue(builder.toString());
       }
       defaultData.getXOptionHandler().add(XOption.FILL_HORIZONTALLY);
       defaultData.getXOptionHandler().add(XOption.NO_DEFAULT_VALUE);
+
       return xWidgetLayoutData;
    }
 
-   private String getXWidgetName(AttributeType attributeType) {
+   private String getXWidgetName(Class<?> baseType) {
       String toReturn = "";
-      if (attributeType.getBaseAttributeClass().equals(DateAttribute.class)) {
+      if (baseType.equals(DateAttribute.class)) {
          toReturn = "XDateDam";
-      } else if (attributeType.getBaseAttributeClass().equals(IntegerAttribute.class)) {
+      } else if (baseType.equals(IntegerAttribute.class)) {
          toReturn = "XIntegerDam";
-      } else if (attributeType.getBaseAttributeClass().equals(FloatingPointAttribute.class)) {
+      } else if (baseType.equals(FloatingPointAttribute.class)) {
          toReturn = "XFloatDam";
-      } else if (attributeType.getBaseAttributeClass().equals(CompressedContentAttribute.class) || attributeType.getBaseAttributeClass().equals(
-            JavaObjectAttribute.class)) {
+      } else if (baseType.equals(CompressedContentAttribute.class) || baseType.equals(JavaObjectAttribute.class)) {
          toReturn = "XLabelDam";
       } else {
          toReturn = "XTextDam";
       }
       return toReturn;
    }
+
 }

@@ -24,12 +24,14 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jini.discovery.EclipseJiniClassloader;
 import org.eclipse.osee.framework.jini.discovery.IServiceLookupListener;
@@ -71,11 +73,9 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedArtifact;
 import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
@@ -368,7 +368,8 @@ public class RemoteEventManager {
                   } else if (event instanceof NetworkDeletedBranchEvent) {
                      int branchId = ((NetworkDeletedBranchEvent) event).getId();
                      try {
-                        Branch branch = OseeTypeManager.getBranchCache().getById(branchId);
+                        Branch branch =
+                              Activator.getInstance().getOseeCacheService().getBranchCache().getById(branchId);
                         if (branch != null) {
                            branch.setBranchState(BranchState.DELETED);
                            branch.clearDirty();
@@ -380,9 +381,10 @@ public class RemoteEventManager {
                   } else if (event instanceof NetworkPurgeBranchEvent) {
                      int branchId = ((NetworkPurgeBranchEvent) event).getId();
                      try {
-                        Branch branch = OseeTypeManager.getBranchCache().getById(branchId);
+                        BranchCache cache = Activator.getInstance().getOseeCacheService().getBranchCache();
+                        Branch branch = cache.getById(branchId);
                         if (branch != null) {
-                           OseeTypeManager.getBranchCache().decache(branch);
+                           cache.decache(branch);
                         }
                         InternalEventManager.kickBranchEvent(sender, BranchEventType.Purged, branchId);
                      } catch (Exception ex) {

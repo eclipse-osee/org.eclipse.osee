@@ -15,7 +15,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulations;
@@ -40,7 +40,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       super("Duplicate Attribute Errors");
    }
 
-   private DuplicateAttributeData createAttributeData(ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+   private DuplicateAttributeData createAttributeData(IOseeStatement chStmt) throws OseeDataStoreException {
       AttributeData attributeData1 =
             new AttributeData(chStmt.getInt("attr_id_1"), chStmt.getInt("gamma_id_1"), chStmt.getString("value_1"),
                   chStmt.getString("uri_1"));
@@ -65,7 +65,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
       //--- Test's for two attributes that are on the same artifact but have different attr_ids, when ---//
       //--- the attribute type has a maximum of 1 allowable attributes. ---------------------------------//
 
-      ConnectionHandlerStatement chStmt1 = ConnectionHandler.getStatement();
+      IOseeStatement chStmt1 = ConnectionHandler.getStatement();
       try {
          chStmt1.runPreparedQuery(GET_DUPLICATE_ATTRIBUTES);
          monitor.worked(6);
@@ -169,7 +169,7 @@ public class DuplicateAttributes extends DatabaseHealthOperation {
 
    //--- Find out if there is an attribute that is on every branch that has either one of the attributes ---//
    private void loadBranchesWhereOnlyOneIsUsed(AttributeData attributeData, int otherAttrId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(String.format(BRANCHES_WITH_ONLY_ATTR, chStmt.getComplementSql()),
                attributeData.getAttrId(), otherAttrId);

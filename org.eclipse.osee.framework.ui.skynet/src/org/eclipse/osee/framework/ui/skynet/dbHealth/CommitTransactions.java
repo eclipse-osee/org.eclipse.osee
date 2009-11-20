@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -44,7 +44,7 @@ public class CommitTransactions extends DatabaseHealthOperation {
       if (isFixOperationEnabled()) {
          checkForCancelledStatus(monitor);
 
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(GET_COMMIT_TRANSACTIONS, new Object[0]);
 

@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.relation.explorer;
 
+import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 
 public class ArtifactModel {
 

@@ -21,27 +21,26 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Map.Entry;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.test.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationOrderAccessor;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
-import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
 import org.eclipse.osee.framework.skynet.core.test.types.MockIArtifact;
-import org.eclipse.osee.framework.skynet.core.test.types.OseeTestDataAccessor;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.RelationTypeCache;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -219,13 +218,12 @@ public class RelationTypeSideSorterTest {
       RelationSorterProvider provider = new RelationSorterProvider();
       IRelationOrderAccessor accessor = new DoNothingAccessor();
 
-      OseeTypeFactory factory = new OseeTypeFactory();
-      RelationTypeCache cache = new RelationTypeCache(new OseeTestDataAccessor<RelationType>());
+      RelationTypeCache cache = new RelationTypeCache(new MockOseeDataAccessor<RelationType>());
 
       RelationType relationType1 =
-            createRelationType(cache, factory, "Rel 1", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
+            createRelationType(cache, "Rel 1", RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC.getGuid());
       RelationType relationType2 =
-            createRelationType(cache, factory, "Rel 2", RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
+            createRelationType(cache, "Rel 2", RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC.getGuid());
       IArtifact art1 = createArtifact("a", GUID.create());
       IArtifact art2 = createArtifact("b", GUID.create());
 
@@ -249,11 +247,11 @@ public class RelationTypeSideSorterTest {
       return new MockArtifactWithRelations(uniqueId, name, guid, null, null);
    }
 
-   private static RelationType createRelationType(RelationTypeCache cache, OseeTypeFactory factory, String name, String delationRelationOrderGuid) throws OseeCoreException {
-      ArtifactType type1 = new ArtifactType(null, GUID.create(), "1", false);
-      ArtifactType type2 = new ArtifactType(null, GUID.create(), "2", false);
+   private static RelationType createRelationType(RelationTypeCache cache, String name, String delationRelationOrderGuid) throws OseeCoreException {
+      ArtifactType type1 = new ArtifactType(GUID.create(), "1", false);
+      ArtifactType type2 = new ArtifactType(GUID.create(), "2", false);
       RelationType relationType =
-            factory.createRelationType(cache, GUID.create(), name, name + "_A", name + "_B", type1, type2,
+            new RelationType(GUID.create(), name, name + "_A", name + "_B", type1, type2,
                   RelationTypeMultiplicity.MANY_TO_MANY, delationRelationOrderGuid);
       Assert.assertNotNull(relationType);
       cache.cache(relationType);

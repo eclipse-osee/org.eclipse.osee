@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.DoubleKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -214,7 +214,7 @@ public class RelationDatabaseIntegrityCheck extends DatabaseHealthOperation {
    }
 
    private void loadData(String sql, boolean forDelete) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       DoubleKeyHashMap<Integer, Integer, LocalRelationLink> map = forDelete ? deleteMap : updateMap;
       try {
          chStmt.runPreparedQuery(sql);

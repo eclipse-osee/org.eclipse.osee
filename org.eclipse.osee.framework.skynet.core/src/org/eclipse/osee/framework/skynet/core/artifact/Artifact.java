@@ -28,13 +28,13 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.IAccessControllable;
 import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
@@ -46,6 +46,11 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -66,7 +71,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnota
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnotationManager;
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -74,12 +78,9 @@ import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSideSorter;
-import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorterId;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
@@ -329,7 +330,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws OseeTypeDoesNotExist
     */
    public boolean isOfType(String artifactTypeName) throws OseeCoreException {
-      return artifactType.inheritsFrom(artifactTypeName);
+      return artifactType.inheritsFrom(ArtifactTypeManager.getType(artifactTypeName));
    }
 
    public boolean isOfType(IOseeType oseeType) throws OseeCoreException {
@@ -464,8 +465,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    @SuppressWarnings("unchecked")
    private <T> Attribute<T> createAttribute(AttributeType attributeType) throws OseeCoreException {
       Class<? extends Attribute<T>> attributeClass =
-            (Class<? extends Attribute<T>>) attributeType.getBaseAttributeClass();
-
+            (Class<? extends Attribute<T>>) AttributeTypeManager.getAttributeBaseClass(attributeType);
       try {
          Attribute<T> attribute = attributeClass.newInstance();
          attributes.put(attributeType.getName(), attribute);
@@ -1807,7 +1807,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       if (transactionId == null) {
          return new Date();
       }
-      return transactionId.getDate();
+      return transactionId.getTimeStamp();
    }
 
    public User getLastModifiedBy() throws OseeCoreException {

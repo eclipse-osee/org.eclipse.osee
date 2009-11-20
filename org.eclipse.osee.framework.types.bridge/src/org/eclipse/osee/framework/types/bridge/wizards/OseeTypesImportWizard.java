@@ -21,9 +21,10 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
 import org.eclipse.osee.framework.types.bridge.operations.CompareOseeTypeCacheOperation;
 import org.eclipse.osee.framework.types.bridge.operations.ReportDirtyOseeTypesOperation;
 import org.eclipse.osee.framework.types.bridge.operations.XTextToOseeTypeOperation;
@@ -51,10 +52,18 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
       final boolean isPersistAllowed = mainPage.isPersistAllowed();
       final boolean isReport = mainPage.isReportChanges();
       final boolean useCompareEditor = mainPage.useCompareEditor();
-      OseeTypeCache cache = OseeTypeManager.getCache();
+
+      IOseeCachingService cacheProvider = Activator.getDefault().getOseeCacheService();
+      IOseeModelFactoryService factoryService = Activator.getDefault().getOseeFactoryService();
+
+      OseeTypeCache cache = null;
+      //TODO take a snapshot of the current cache ...
+      if (cache == null) {
+         throw new UnsupportedOperationException("Implement Cache copy ");
+      }
 
       List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new XTextToOseeTypeOperation(cache, isPersistAllowed, null, file.toURI()));
+      ops.add(new XTextToOseeTypeOperation(factoryService, cache, isPersistAllowed, null, file.toURI()));
       if (isReport) {
          ops.add(new ReportDirtyOseeTypesOperation(cache));
       }

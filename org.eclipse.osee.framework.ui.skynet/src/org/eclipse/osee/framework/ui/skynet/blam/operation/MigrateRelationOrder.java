@@ -17,15 +17,16 @@ import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactNameComparator;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -116,7 +116,7 @@ public class MigrateRelationOrder extends AbstractBlam {
    private void addToChildBaseilnes(Integer branchId, Integer transactionNumber) throws OseeCoreException {
       final List<Object[]> txGammaList = new ArrayList<Object[]>(3000);
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(3000, SELECT_GAMMA_FROM_TXS, transactionNumber);
          while (chStmt.next()) {
@@ -175,7 +175,7 @@ public class MigrateRelationOrder extends AbstractBlam {
    private void fixPreviousBugForBranch(Integer branchId, Integer transactionNumber) throws OseeDataStoreException {
       final List<Object[]> txGammaList = new ArrayList<Object[]>(3000);
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(3000, SELECT_GAMMA_FROM_TXS, transactionNumber);
          while (chStmt.next()) {

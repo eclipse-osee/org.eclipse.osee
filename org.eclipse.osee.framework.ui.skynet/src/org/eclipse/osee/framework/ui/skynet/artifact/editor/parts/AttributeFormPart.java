@@ -14,10 +14,11 @@ import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -77,7 +78,7 @@ public class AttributeFormPart extends AbstractFormPart {
          List<AttributeType> types = Arrays.asList(AttributeTypeUtil.getTypesWithData(artifact));
          boolean willHaveASection = hasWordAttribute(types);
          for (AttributeType attributeType : types) {
-            if (attributeType.getBaseAttributeClass().equals(WordAttribute.class) || CoreAttributes.RELATION_ORDER.getGuid().equals(
+            if (AttributeTypeManager.getAttributeBaseClass(attributeType).equals(WordAttribute.class) || CoreAttributes.RELATION_ORDER.getGuid().equals(
                   attributeType.getGuid())) {
                createAttributeTypeControlsInSection(parent, toolkit, attributeType, willHaveASection, false);
             } else {
@@ -97,9 +98,9 @@ public class AttributeFormPart extends AbstractFormPart {
       composite.setVisible(true);
    }
 
-   private boolean hasWordAttribute(List<AttributeType> types) {
+   private boolean hasWordAttribute(List<AttributeType> types) throws OseeCoreException {
       for (AttributeType attributeType : types) {
-         if (attributeType.getBaseAttributeClass().equals(WordAttribute.class)) {
+         if (AttributeTypeManager.getAttributeBaseClass(attributeType).equals(WordAttribute.class)) {
             return true;
          }
       }

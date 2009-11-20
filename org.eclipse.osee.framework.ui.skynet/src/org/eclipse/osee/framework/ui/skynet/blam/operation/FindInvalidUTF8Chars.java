@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 
@@ -34,7 +34,7 @@ public class FindInvalidUTF8Chars extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
 
       int count = 0;
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(1000, READ_ATTRIBUTE_VALUES);
          while (chStmt.next()) {

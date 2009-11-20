@@ -16,13 +16,15 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.oseeTypes.AddEnum;
@@ -38,22 +40,23 @@ import org.eclipse.osee.framework.oseeTypes.OverrideOption;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
 import org.eclipse.osee.framework.oseeTypes.RemoveEnum;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
 
 /**
  * @author Ryan D. Brooks
  * @author Roberto E. Escobar
  */
 public class XTextToOseeTypeOperation extends AbstractOperation {
+   private final IOseeModelFactoryService provider;
    private final java.net.URI resource;
    private final Object context;
    private final OseeTypeCache typeCache;
    private final boolean isPersistAllowed;
 
-   public XTextToOseeTypeOperation(OseeTypeCache typeCache, boolean isPersistAllowed, Object context, java.net.URI resource) {
+   public XTextToOseeTypeOperation(IOseeModelFactoryService provider, OseeTypeCache typeCache, boolean isPersistAllowed, Object context, java.net.URI resource) {
       super("OSEE Text Model to OSEE", Activator.PLUGIN_ID);
+      this.provider = provider;
       this.typeCache = typeCache;
       this.resource = resource;
       this.context = context;
@@ -62,6 +65,10 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
 
    private OseeTypeCache getCache() {
       return typeCache;
+   }
+
+   private IOseeModelFactoryService getFactory() throws OseeCoreException {
+      return provider;
    }
 
    private void loadDependencies(OseeTypeModel baseModel, List<OseeTypeModel> models) throws OseeCoreException, URISyntaxException {
@@ -140,9 +147,9 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
     * @throws OseeCoreException
     */
    private void handleArtifactTypeCrossRef(ArtifactType artifactType) throws OseeCoreException {
-      Set<org.eclipse.osee.framework.skynet.core.artifact.ArtifactType> superTypes =
-            new HashSet<org.eclipse.osee.framework.skynet.core.artifact.ArtifactType>();
-      org.eclipse.osee.framework.skynet.core.artifact.ArtifactType targetArtifactType =
+      Set<org.eclipse.osee.framework.core.model.ArtifactType> superTypes =
+            new HashSet<org.eclipse.osee.framework.core.model.ArtifactType>();
+      org.eclipse.osee.framework.core.model.ArtifactType targetArtifactType =
             getCache().getArtifactTypeCache().getByGuid(artifactType.getTypeGuid());
 
       for (ArtifactType superType : artifactType.getSuperArtifactTypes()) {
@@ -151,8 +158,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       if (!superTypes.isEmpty()) {
          targetArtifactType.setSuperType(superTypes);
       }
-      HashCollection<Branch, org.eclipse.osee.framework.skynet.core.attribute.AttributeType> items =
-            new HashCollection<Branch, org.eclipse.osee.framework.skynet.core.attribute.AttributeType>();
+      HashCollection<Branch, org.eclipse.osee.framework.core.model.AttributeType> items =
+            new HashCollection<Branch, org.eclipse.osee.framework.core.model.AttributeType>();
       for (AttributeTypeRef attributeTypeRef : artifactType.getValidAttributeTypes()) {
          AttributeType attributeType = attributeTypeRef.getValidAttributeType();
          //         handleAttributeType(attributeType);
@@ -167,7 +174,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       }
 
       for (Branch branch : items.keySet()) {
-         targetArtifactType.setAttributeTypeValidity(items.getValues(), branch);
+         targetArtifactType.setAttributeTypes(items.getValues(), branch);
       }
    }
 
@@ -177,19 +184,19 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
 
    private void handleArtifactType(ArtifactType artifactType) throws OseeCoreException {
       String artifactTypeName = removeQuotes(artifactType.getName());
-      artifactType.setTypeGuid(getCache().getArtifactTypeCache().createType(artifactType.getTypeGuid(),
+      artifactType.setTypeGuid(getFactory().getArtifactTypeFactory().create(artifactType.getTypeGuid(),
             artifactType.isAbstract(), artifactTypeName).getGuid());
    }
 
    private void handleOseeEnumType(OseeEnumType modelEnumType) throws OseeCoreException {
       String enumTypeName = removeQuotes(modelEnumType.getName());
 
-      org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType =
-            getCache().getEnumTypeCache().createType(modelEnumType.getTypeGuid(), enumTypeName);
+      org.eclipse.osee.framework.core.model.OseeEnumType oseeEnumType =
+            getFactory().getOseeEnumTypeFactory().createEnumType(modelEnumType.getTypeGuid(), enumTypeName);
 
       int lastOrdinal = 0;
-      List<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry> modelEntries =
-            new ArrayList<org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry>();
+      List<org.eclipse.osee.framework.core.model.OseeEnumEntry> modelEntries =
+            new ArrayList<org.eclipse.osee.framework.core.model.OseeEnumEntry>();
       for (OseeEnumEntry enumEntry : modelEnumType.getEnumEntries()) {
          String entryName = removeQuotes(enumEntry.getName());
          String ordinal = enumEntry.getOrdinal();
@@ -197,7 +204,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             lastOrdinal = Integer.parseInt(ordinal);
          }
          // enumEntry guid set to null but if we had we could modify an existing entry
-         modelEntries.add(getCache().getEnumTypeCache().createEntry(null, entryName, lastOrdinal));
+         modelEntries.add(getFactory().getOseeEnumTypeFactory().createEnumEntry(null, entryName, lastOrdinal));
          lastOrdinal++;
       }
       oseeEnumType.setEntries(modelEntries);
@@ -229,12 +236,12 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       if (!attributeType.getMax().equals("unlimited")) {
          max = Integer.parseInt(attributeType.getMax());
       }
-      org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType oseeEnumType = null;
+      org.eclipse.osee.framework.core.model.OseeEnumType oseeEnumType = null;
       OseeEnumType enumType = attributeType.getEnumType();
       if (enumType != null) {
          oseeEnumType = getCache().getEnumTypeCache().getByGuid(enumType.getTypeGuid());
       }
-      attributeType.setTypeGuid(getCache().getAttributeTypeCache().createType(attributeType.getTypeGuid(), //
+      attributeType.setTypeGuid(getFactory().getAttributeTypeFactory().create(attributeType.getTypeGuid(), //
             removeQuotes(attributeType.getName()), //
             attributeType.getBaseAttributeType(), // 
             attributeType.getDataProvider(), // 
@@ -253,7 +260,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             RelationTypeMultiplicity.getFromString(relationType.getMultiplicity().name());
 
       relationType.setTypeGuid(//
-      getCache().getRelationTypeCache().createType(
+      getFactory().getRelationTypeFactory().create(
             relationType.getTypeGuid(),
             removeQuotes(relationType.getName()), //
             relationType.getSideAName(), //

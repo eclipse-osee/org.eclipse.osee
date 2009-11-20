@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.resource.management.IResource;
 import org.eclipse.osee.framework.resource.management.internal.CompressedResourceBridge;
 import org.eclipse.osee.framework.resource.management.util.Resources;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -34,6 +35,7 @@ public class ResourcesTest {
       checkResourceFromBytes("http://a/b/c/d/e/file.zip", "file.zip", true, new byte[] {4, 5, 6, 7, 8, 9});
    }
 
+   @Ignore
    @Test
    public void testCompressResource() {
       Assert.fail("Error - implement this");
@@ -41,6 +43,7 @@ public class ResourcesTest {
       //      Resources.decompressResource(resource)
    }
 
+   @Ignore
    @Test
    public void testDeCompressResource() {
       Assert.fail("Error - implement this");

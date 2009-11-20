@@ -13,12 +13,13 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.BranchCommitData;
-import org.eclipse.osee.framework.core.data.CommitTransactionRecordResponse;
+import org.eclipse.osee.framework.core.data.BranchCommitRequest;
+import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -37,21 +38,21 @@ public class HttpCommitDataRequester {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.BRANCH_COMMIT.name());
 
-      BranchCommitData requestData = new BranchCommitData(user, sourceBranch, destinationBranch, isArchiveAllowed);
+      BranchCommitRequest requestData = new BranchCommitRequest(user, sourceBranch, destinationBranch, isArchiveAllowed);
 
-      CommitTransactionRecordResponse response =
+      BranchCommitResponse response =
             HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, requestData,
-                  CommitTransactionRecordResponse.class);
+                  BranchCommitResponse.class);
 
-      int newTransactionNumber = response.getTransactionNumber();
+      TransactionRecord newTransaction = response.getTransaction();
 
       // Update commit artifact cache with new information
       if (sourceBranch.getAssociatedArtifact().getArtId() > 0) {
          TransactionManager.cacheCommittedArtifactTransaction((IArtifact) sourceBranch.getAssociatedArtifact(),
-               TransactionManager.getTransactionId(newTransactionNumber));
+               newTransaction);
       }
       // reload the committed artifacts since the commit changed them on the destination branch
-      Object[] queryData = new Object[] {newTransactionNumber, newTransactionNumber};
+      Object[] queryData = new Object[] {newTransaction.getId(), newTransaction.getId()};
       ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, queryData, 400, ArtifactLoad.FULL, true, null, true);
       // Kick commit event
       OseeEventManager.kickBranchEvent(HttpCommitDataRequester.class, BranchEventType.Committed, sourceBranch.getId());

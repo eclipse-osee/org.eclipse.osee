@@ -18,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -27,8 +25,11 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SequenceManager;
@@ -42,7 +43,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTransactionData;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTransactionData;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -160,7 +160,7 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    private void fetchTxNotCurrent(OseeConnection connection, BaseTransactionData transactionData, List<Object[]> results) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          String query = ClientSessionManager.getSql(transactionData.getSelectTxNotCurrentSql());
          chStmt.runPreparedQuery(query, transactionData.getItemId(), this.branch.getId());
@@ -275,7 +275,7 @@ public class SkynetTransaction extends DbTransaction {
    }
 
    private int getNewAttributeId(Artifact artifact, Attribute<?> attribute) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       AttributeType attributeType = attribute.getAttributeType();
       int attrId = -1;
       // reuse an existing attribute id when there should only be a max of one and it has already been created on another branch 

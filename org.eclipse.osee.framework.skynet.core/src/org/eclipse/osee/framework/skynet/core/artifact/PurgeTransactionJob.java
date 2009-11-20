@@ -19,14 +19,14 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -222,7 +222,7 @@ public class PurgeTransactionJob extends Job {
       }
 
       private void populateJoinQueryFromSql(OseeConnection connection, TransactionJoinQuery joinQuery, String sql, String txFieldName, Object... data) throws OseeDataStoreException {
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+         IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
          try {
             chStmt.runPreparedQuery(sql, data);
             while (chStmt.next()) {

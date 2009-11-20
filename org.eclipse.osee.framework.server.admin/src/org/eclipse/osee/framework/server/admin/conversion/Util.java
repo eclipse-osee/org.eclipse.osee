@@ -14,7 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 
 /**
  * @author Roberto E. Escobar
@@ -30,7 +30,7 @@ public class Util {
    public static Map<Long, String> getArtIdMap(String attrTypeName) throws OseeDataStoreException {
       Map<Long, String> toReturn = new HashMap<Long, String>(250);
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          int typeId = ConnectionHandler.runPreparedQueryFetchInt(-1, sqlExtensionTypeId, attrTypeName);
          chStmt.runPreparedQuery(sqlExtensionTypes, typeId);

@@ -14,13 +14,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -55,11 +55,11 @@ public class RevertAction {
    List<Integer> transactionIds = new ArrayList<Integer>();
 
    private OseeConnection connection;
-   private ConnectionHandlerStatement chStmt;
+   private IOseeStatement chStmt;
    private TransactionRecord transId;
    private String objectReverted;
 
-   public RevertAction(OseeConnection connection, ConnectionHandlerStatement chStmt, TransactionRecord transId) {
+   public RevertAction(OseeConnection connection, IOseeStatement chStmt, TransactionRecord transId) {
       this.connection = connection;
       this.chStmt = chStmt;
       this.transId = transId;
@@ -168,7 +168,7 @@ public class RevertAction {
    }
 
    private void updateArtifactVersionTxCurrents(int branchId, int artId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       if (DEBUG) {
          try {
             chStmt.runPreparedQuery(REVERT_ARTIFACT_VERSION_CURRENT_SELECT, artId, branchId, artId);

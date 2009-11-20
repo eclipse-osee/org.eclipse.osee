@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -42,7 +42,7 @@ public class UniqueNumberOfCurrentOseeUsers extends AbstractBlam {
       // removeColonFromActionNames
       monitor.beginTask("Counting Users", IProgressMonitor.UNKNOWN);
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_USER_COUNT);
          if (chStmt.next()) {

@@ -17,13 +17,12 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -74,7 +73,7 @@ public final class RevisionChangeLoader {
    private Collection<TransactionRecord> getTransactionsPerArtifact(Branch branch, Artifact artifact, TransactionRecord transactionId) throws OseeCoreException {
       Set<TransactionRecord> transactionIds = new HashSet<TransactionRecord>();
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(
                "SELECT /*+ ordered FIRST_ROWS */ td1.transaction_id from osee_tx_details td1, osee_txs tx1, osee_artifact_version av1 where td1.branch_id = ? and td1.transaction_id = tx1.transaction_id and td1.transaction_id <=? and tx1.gamma_id = av1.gamma_id and av1.art_id = ?",

@@ -21,8 +21,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -31,8 +29,10 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -83,7 +83,7 @@ public class ConflictManagerInternal {
          totalTime = System.currentTimeMillis();
       }
       ArrayList<Conflict> conflicts = new ArrayList<Conflict>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       if (DEBUG) {
          System.out.println("Running Query to find conflicts stored in the DataBase");
          time = System.currentTimeMillis();
@@ -251,7 +251,7 @@ public class ConflictManagerInternal {
          time = System.currentTimeMillis();
       }
       monitor.subTask("Finding Artifact Version Conflicts");
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
 
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ARTIFACTS), sourceBranch.getId(),
@@ -315,7 +315,7 @@ public class ConflictManagerInternal {
          time = System.currentTimeMillis();
       }
       monitor.subTask("Finding the Attribute Conflicts");
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       AttributeConflictBuilder attributeConflictBuilder;
       try {
          chStmt.runPreparedQuery(ClientSessionManager.getSql(OseeSql.CONFLICT_GET_ATTRIBUTES), sourceBranch.getId(),
@@ -382,7 +382,7 @@ public class ConflictManagerInternal {
     * @throws OseeDataStoreException
     */
    private static boolean isAttributeConflictValidOnBranch(int destinationGammaId, Branch branch, int endTransactionNumber) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       boolean isValidConflict;
       try {
          chStmt.runPreparedQuery(
@@ -437,7 +437,7 @@ public class ConflictManagerInternal {
 
    public static Collection<Integer> getDestinationBranchesMerged(int sourceBranchId) throws OseeCoreException {
       List<Integer> destinationBranches = new LinkedList<Integer>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_DESTINATION_BRANCHES, sourceBranchId);
          while (chStmt.next()) {
@@ -452,7 +452,7 @@ public class ConflictManagerInternal {
 
    private static int getCommitTransaction(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
       int transactionId = 0;
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          if (sourceBranch != null && destBranch != null) {
             chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranch.getId(), destBranch.getId());
@@ -475,7 +475,7 @@ public class ConflictManagerInternal {
 
    public static int getMergeBranchId(int sourceBranchId, int destBranchId) throws OseeCoreException {
       int mergeBranchId = 0;
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_MERGE_DATA, sourceBranchId, destBranchId);
          if (chStmt.next()) {

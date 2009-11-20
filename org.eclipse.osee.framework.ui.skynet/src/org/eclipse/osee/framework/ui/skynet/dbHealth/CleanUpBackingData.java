@@ -18,7 +18,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsEditorTableTab;
 import org.eclipse.osee.framework.ui.skynet.results.table.ResultsXViewerRow;
 import org.eclipse.swt.SWT;
@@ -45,7 +45,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
 
       List<Object[]> notAddressedGammas = new LinkedList<Object[]>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       String sql = String.format(NOT_ADDRESSESED_GAMMAS, tableName);
 
       ResultsEditorTableTab resultsTab = new ResultsEditorTableTab(tableName + " gammas");
@@ -75,7 +75,7 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
       checkForCancelledStatus(monitor);
 
       List<Object[]> emptyTransactions = new LinkedList<Object[]>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
 
       ResultsEditorTableTab resultsTab = new ResultsEditorTableTab("Empty transactions");
       getResultsProvider().addResultsTab(resultsTab);

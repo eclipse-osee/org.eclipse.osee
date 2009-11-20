@@ -78,7 +78,7 @@ public class MassLabelProvider extends XViewerLabelProvider {
          if (!artifact.isAttributeTypeValid(colName)) {
             return "";
          }
-         if (AttributeTypeManager.getType(colName).getBaseAttributeClass().equals(DateAttribute.class)) {
+         if (AttributeTypeManager.getAttributeBaseClass(colName).equals(DateAttribute.class)) {
             try {
                return new DateAttribute().MMDDYYHHMM.format(artifact.getSoleAttributeValue(colName));
             } catch (OseeCoreException ex) {

@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -75,7 +75,7 @@ public class AttributeBackingDataCheck extends DatabaseHealthOperation {
    private List<AttrData> getInvalidAttributeData(IProgressMonitor monitor) throws OseeDataStoreException, OseeTypeDoesNotExist {
       List<AttrData> data = new ArrayList<AttrData>();
       SubMonitor subMonitor = SubMonitor.convert(monitor, (int) (getTotalWorkUnits() * 0.80));
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(READ_VALID_ATTRIBUTES);
          while (chStmt.next()) {

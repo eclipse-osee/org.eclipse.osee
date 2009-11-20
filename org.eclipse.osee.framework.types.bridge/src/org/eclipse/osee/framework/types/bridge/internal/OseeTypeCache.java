@@ -8,8 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.types;
+package org.eclipse.osee.framework.types.bridge.internal;
 
+import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
+import org.eclipse.osee.framework.core.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
@@ -24,7 +28,7 @@ public class OseeTypeCache {
 
    private boolean duringPopulate;
 
-   public OseeTypeCache(IOseeTypeFactory factory, ArtifactTypeCache artifactCache, AttributeTypeCache attributeCache, RelationTypeCache relationCache, OseeEnumTypeCache oseeEnumTypeCache) {
+   public OseeTypeCache(ArtifactTypeCache artifactCache, AttributeTypeCache attributeCache, RelationTypeCache relationCache, OseeEnumTypeCache oseeEnumTypeCache) {
       this.duringPopulate = false;
       this.artifactCache = artifactCache;
       this.attributeCache = attributeCache;
@@ -39,22 +43,6 @@ public class OseeTypeCache {
       getRelationTypeCache().storeAllModified();
    }
 
-   public ArtifactTypeCache getArtifactTypeCache() {
-      return artifactCache;
-   }
-
-   public AttributeTypeCache getAttributeTypeCache() {
-      return attributeCache;
-   }
-
-   public RelationTypeCache getRelationTypeCache() {
-      return relationCache;
-   }
-
-   public OseeEnumTypeCache getEnumTypeCache() {
-      return oseeEnumTypeCache;
-   }
-
    public synchronized void ensurePopulated() throws OseeCoreException {
       if (!duringPopulate) {
          duringPopulate = true;
@@ -64,5 +52,21 @@ public class OseeTypeCache {
          getRelationTypeCache().ensurePopulated();
          duringPopulate = false;
       }
+   }
+
+   public ArtifactTypeCache getArtifactTypeCache() {
+      return artifactCache;
+   }
+
+   public AttributeTypeCache getAttributeTypeCache() {
+      return attributeCache;
+   }
+
+   public OseeEnumTypeCache getEnumTypeCache() {
+      return oseeEnumTypeCache;
+   }
+
+   public RelationTypeCache getRelationTypeCache() {
+      return relationCache;
    }
 }

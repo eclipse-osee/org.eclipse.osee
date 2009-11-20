@@ -18,21 +18,21 @@ import java.util.Collection;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.AttributeDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MergeChangesInArtifactException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.jdk.core.util.io.Streams;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
@@ -263,11 +263,6 @@ public class AttributeConflict extends Conflict {
 
    public TreeSet<String> getEnumerationAttributeValues() throws OseeCoreException {
       return new TreeSet<String>(AttributeTypeManager.getEnumerationValues(getAttributeType().getName()));
-   }
-
-   @SuppressWarnings("unchecked")
-   public Class<? extends Attribute> getBaseAttributeClass() throws OseeCoreException {
-      return getAttributeType().getBaseAttributeClass();
    }
 
    public boolean setStringAttributeValue(String value) throws OseeCoreException {

@@ -14,18 +14,18 @@ package org.eclipse.osee.framework.skynet.core.test.branch;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.data.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchFactory;
+import org.eclipse.osee.framework.core.test.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchUtility;
-import org.eclipse.osee.framework.skynet.core.test.types.OseeTestDataAccessor;
-import org.eclipse.osee.framework.skynet.core.types.BranchCache;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
 import org.junit.Test;
 
 /**
@@ -139,8 +139,7 @@ public class BranchUtilityTest {
    }
 
    private Branch createBranch(AbstractOseeCache<Branch> cache, String guid, String name, int id) throws OseeCoreException {
-      Branch branch =
-            new OseeTypeFactory().createBranch(cache, guid, name, BranchType.WORKING, BranchState.MODIFIED, false);
+      Branch branch = new BranchFactory().create(guid, name, BranchType.WORKING, BranchState.MODIFIED, false);
       Assert.assertNotNull(branch);
       branch.setId(id);
       return branch;
@@ -148,7 +147,7 @@ public class BranchUtilityTest {
 
    private final class TestCache extends BranchCache {
       public TestCache() {
-         super(new OseeTestDataAccessor<Branch>());
+         super(new MockOseeDataAccessor<Branch>());
       }
    }
 }

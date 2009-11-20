@@ -37,7 +37,7 @@ import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -284,7 +284,7 @@ public class ResourceManipulation extends AbstractBlam {
    private ArrayList<AttrData> loadAttrData() throws OseeCoreException {
       ArrayList<AttrData> attrData = new ArrayList<AttrData>();
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ATTRS_TEST,
                AttributeTypeManager.getType(WordAttribute.WORD_TEMPLATE_CONTENT).getId());

@@ -18,13 +18,13 @@ import java.util.LinkedList;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -123,7 +123,7 @@ public class DeletionTest {
          }
       }
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       //Let's check both through the API and the SQL to make sure the Artifact is internally deleted
       //and deleted in the Database, That we don't get some bad data case.
 
@@ -348,7 +348,7 @@ public class DeletionTest {
    }
 
    private void checkAttribute(Artifact artifact, Attribute<?> attribute, int value) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(CHECK_FOR_ZERO_TX_CURRENT_ATTRIBUTE, artifact.getBranch().getId(),
                artifact.getTransactionNumber(), attribute.getAttrId());
@@ -374,7 +374,7 @@ public class DeletionTest {
    }
 
    public void checkRelation(Artifact artifact, RelationLink relation, int value) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       assertTrue(
             "Relation should be deleted between Parent: " + relation.getAArtifactId() + " and child " + relation.getBArtifactId(),
             relation.isDeleted());
@@ -406,7 +406,7 @@ public class DeletionTest {
    }
 
    public static void dumpArtifact(Artifact artifact) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          System.out.println("  Artifact Dump : " + artifact.getName());
          chStmt.runPreparedQuery(GET_ARTIFACT_DEBUG, artifact.getBranch().getId(), artifact.getArtId());
@@ -423,7 +423,7 @@ public class DeletionTest {
    }
 
    public static void dumpAttribute(Attribute<?> attribute) throws OseeDataStoreException, OseeStateException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          System.out.println("  Attribute Dump");
          chStmt.runPreparedQuery(GET_ATTRIBUTE_DEBUG, attribute.getArtifact().getBranch().getId(),
@@ -442,7 +442,7 @@ public class DeletionTest {
    }
 
    public static void dumpRelation(RelationLink relation, Artifact artifact) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          System.out.println("  Relation Dump");
          chStmt.runPreparedQuery(GET_RELATION_DEBUG, artifact.getBranch().getId(), relation.getRelationId());

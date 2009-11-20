@@ -15,20 +15,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.types.impl.BranchStoreOperation;
 
 /**
  * @author Jeff C. Phillips
@@ -66,7 +65,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
     * @param branch
     */
    public PurgeBranchOperation(Branch branch) {
-      super(String.format("Purge Branch: [(%s)-%s]", branch.getId(), branch.getShortName()), Activator.PLUGIN_ID);
+      super(null, String.format("Purge Branch: [(%s)-%s]", branch.getId(), branch.getShortName()), Activator.PLUGIN_ID);
       this.branch = branch;
       this.sourceTableName = branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
    }
@@ -139,7 +138,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    }
 
    private void findDeleteableGammas(String sourceTableName, String columnName, double percentage) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       String sql =
             String.format(SELECT_DELETABLE_GAMMAS, columnName, sourceTableName,
                   TransactionDetailsType.NonBaselined.getId(), columnName, columnName);
@@ -157,7 +156,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
 
    private void purgeAddressing(double percentage) throws OseeDataStoreException {
       monitor.setTaskName("Purge txs addressing");
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       List<Object[]> addressing = new ArrayList<Object[]>();
       String sql = String.format(SELECT_ADDRESSING_BY_BRANCH, sourceTableName);
 
@@ -170,7 +169,7 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
          chStmt.close();
       }
 
-      sql = String.format(BranchStoreOperation.DELETE_ADDRESSING, sourceTableName);
+      sql = String.format("delete from %s where transaction_id = ? and gamma_id = ?", sourceTableName);
       ConnectionHandler.runBatchUpdate(connection, sql, addressing);
       monitor.worked(calculateWork(percentage));
    }

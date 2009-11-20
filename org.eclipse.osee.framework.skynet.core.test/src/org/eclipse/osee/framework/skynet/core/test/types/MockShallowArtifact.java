@@ -1,8 +1,8 @@
 package org.eclipse.osee.framework.skynet.core.test.types;
 
+import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.types.BranchCache;
 import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 
 // This class is used to avoid needing a full database to run this test.

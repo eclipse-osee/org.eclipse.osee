@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import org.eclipse.osee.framework.core.enums.RelationSide;
+import org.eclipse.osee.framework.core.model.RelationType;
 
 /**
  * @author Andrew M. Finkbeiner

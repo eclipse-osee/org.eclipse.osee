@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 
 /**
  * This class allows plugins to provide the base images for artifact types by registering via ImageManger.registerImage.

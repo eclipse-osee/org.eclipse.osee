@@ -15,6 +15,7 @@ import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.RelationType;
 
 public enum CoreRelationEnumeration implements IRelationEnumeration, IOseeType {
 

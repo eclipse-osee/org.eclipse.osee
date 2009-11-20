@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.resource.management.IResourceProvider;
 import org.eclipse.osee.framework.resource.management.util.ResourceLocator;
 import org.eclipse.osee.framework.resource.provider.attribute.AttributeProvider;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -42,6 +43,7 @@ public class AttributeProviderTest {
       Assert.assertTrue(provider.isValid(new ResourceLocator(new URI("attr://hello"))));
    }
 
+   @Ignore
    @Test
    public void testOps() throws OseeCoreException, URISyntaxException {
       //      IResourceProvider provider = new AttributeProvider();

@@ -23,9 +23,10 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.ExportImportJoinQuery;
@@ -67,7 +68,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    boolean materiallyDifferent;
    boolean updateAddressing;
    private int counter;
-   private ConnectionHandlerStatement chStmt;
+   private IOseeStatement chStmt;
 
    long previousNetGammaId;
    long previousObsoleteGammaId;
@@ -75,8 +76,8 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    ModificationType netModType;
    TxChange netTxCurrent;
 
-   public ConsolidateRelationsTxOperation() {
-      super("Consolidate Relations", SkynetGuiPlugin.PLUGIN_ID);
+   public ConsolidateRelationsTxOperation(IOseeDatabaseServiceProvider provider) {
+      super(provider, "Consolidate Relations", SkynetGuiPlugin.PLUGIN_ID);
    }
 
    private void init() throws OseeCoreException, IOException {
@@ -271,7 +272,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       return previousRelationTypeId != relationTypeId || previousArtifactAId != artifactAId || previousArtiafctBId != artiafctBId;
    }
 
-   private void relationMateriallyDifferes(ConnectionHandlerStatement chStmt) throws OseeCoreException {
+   private void relationMateriallyDifferes(IOseeStatement chStmt) throws OseeCoreException {
       if (!materiallyDifferent) {
          String currentRationale = chStmt.getString("rationale");
          materiallyDifferent |= Strings.isValid(currentRationale) && !currentRationale.equals(netRationale);

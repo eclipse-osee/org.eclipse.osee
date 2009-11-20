@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.dbHealth;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 /**
@@ -41,7 +41,7 @@ public class CleanUpAddressingData extends DatabaseHealthOperation {
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       boolean fix = isFixOperationEnabled();
       boolean verify = !fix;
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          if (verify || gammas == null) {
             gammas =

@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,7 +25,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.ArtifactEditor;
@@ -172,8 +171,8 @@ public class DefaultArtifactRenderer implements IRenderer {
       try {
          ArtifactGuidToWordML guidResolver = new ArtifactGuidToWordML(new OseeLinkBuilder());
          RelationOrderRenderer renderer =
-               new RelationOrderRenderer(OseeTypeManager.getCache().getRelationTypeCache(), guidResolver,
-                     RelationManager.getSorterProvider());
+               new RelationOrderRenderer(SkynetGuiPlugin.getInstance().getOseeCacheService().getRelationTypeCache(),
+                     guidResolver, RelationManager.getSorterProvider());
 
          WordMLProducer producer = new WordMLProducer(builder);
          RelationOrderData relationOrderData = RelationManager.createRelationOrderData(artifact);

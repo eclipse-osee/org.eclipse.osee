@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.ui.branch.graph.model;
 
 import java.util.Date;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 
@@ -120,7 +120,7 @@ public class TxData {
    }
 
    protected static TxData createTxData(TransactionRecord txId) {
-      return new TxData(txId.getBranch(), txId.getAuthor(), txId.getDate(), txId.getComment(),
+      return new TxData(txId.getBranch(), txId.getAuthor(), txId.getTimeStamp(), txId.getComment(),
             txId.getTxType().getId(), txId.getCommit(), txId.getId());
    }
 }

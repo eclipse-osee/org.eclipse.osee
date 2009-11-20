@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.skynet.core.access;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 
 /**

@@ -17,7 +17,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.TagQueueJoinQuery;
@@ -41,7 +41,7 @@ class TaggerAllWorker extends BaseServerCommand {
    }
 
    private void fetchAndProcessGammas(OseeConnection connection, int branchId, TagProcessListener processor) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(AttributeDataStore.getAllTaggableGammasByBranchQuery(branchId),
                AttributeDataStore.getAllTaggableGammasByBranchQueryData(branchId));

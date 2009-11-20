@@ -18,10 +18,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -136,7 +136,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
                } else {
                   if (artifact.isAttributeTypeValid(colName)) {
                      AttributeType attributeType = AttributeTypeManager.getType(colName);
-                     if (attributeType.getBaseAttributeClass().equals(DateAttribute.class)) {
+                     if (AttributeTypeManager.getAttributeBaseClass(attributeType).equals(DateAttribute.class)) {
                         Date date = null;
                         try {
                            date = artifact.getSoleAttributeValue(colName);

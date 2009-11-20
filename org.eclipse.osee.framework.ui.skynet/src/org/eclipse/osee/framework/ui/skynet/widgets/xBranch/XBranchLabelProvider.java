@@ -19,9 +19,9 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -80,7 +80,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          if (columnIndex == 0) {
             columnText = String.valueOf(headTransaction.getId() + "..." + tailTransaction.getId());
          } else if (columnIndex == 1) {
-            columnText = DATE_FORMAT.format(headTransaction.getDate());
+            columnText = DATE_FORMAT.format(headTransaction.getTimeStamp());
          }
       } else {
          columnText =
@@ -96,7 +96,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          return branch.getArchiveState().toString();
       } else if (cCol.equals(BranchXViewerFactory.timeStamp)) {
          try {
-            return DATE_FORMAT.format(branch.getBaseTransaction().getDate());
+            return DATE_FORMAT.format(branch.getBaseTransaction().getTimeStamp());
          } catch (OseeCoreException ex) {
             return XViewerCells.getCellExceptionString(ex);
          }
@@ -145,7 +145,7 @@ public class XBranchLabelProvider extends XViewerLabelProvider {
          columnText = String.valueOf(transaction.getId());
       }
       if (cCol.equals(BranchXViewerFactory.timeStamp)) {
-         columnText = DATE_FORMAT.format(transaction.getDate());
+         columnText = DATE_FORMAT.format(transaction.getTimeStamp());
       } else if (cCol.equals(BranchXViewerFactory.author)) {
          columnText = UserManager.getUserNameById(transaction.getAuthor());
       } else if (cCol.equals(BranchXViewerFactory.comment)) {

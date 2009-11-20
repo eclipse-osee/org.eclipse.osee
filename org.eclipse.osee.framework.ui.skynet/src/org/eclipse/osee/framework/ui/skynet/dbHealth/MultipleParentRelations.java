@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
@@ -198,7 +198,7 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
    //int relLinkId1, int relLinkId2, Timestamp time1, Timestamp time2, int transactionId1, int transactionId2) {
 
    private void loadData() throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_DUPLICATE_DEFAULT_HIER_LINKS);
          while (chStmt.next()) {
@@ -214,7 +214,7 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
    }
 
    private void setAuthors(LocalRelationLink link) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_AUTHOR, link.transactionId1);
          if (chStmt.next()) {
@@ -234,7 +234,7 @@ public class MultipleParentRelations extends DatabaseHealthOperation {
    }
 
    private void setData(LocalRelationLink link) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ARTIFACT_NAME, link.parentArtId1);
          if (chStmt.next()) {

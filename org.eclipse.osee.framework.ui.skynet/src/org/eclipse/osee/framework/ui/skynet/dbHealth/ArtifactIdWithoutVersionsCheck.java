@@ -18,7 +18,7 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 
 /**
@@ -103,7 +103,7 @@ public class ArtifactIdWithoutVersionsCheck extends DatabaseHealthOperation {
 
    private Set<Integer> getInvalidEntries(IProgressMonitor monitor, Set<Integer> allInvalidArtIds, String query, boolean hasItemId) throws OseeDataStoreException {
       Set<Integer> toReturn = new HashSet<Integer>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(query);
          while (chStmt.next()) {

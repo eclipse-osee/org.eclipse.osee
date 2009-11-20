@@ -2,11 +2,11 @@ package org.eclipse.osee.framework.skynet.core.commit;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
@@ -54,7 +54,7 @@ public class UpdatePreviousTxCurrent {
 
    private void updateNoLongerCurrentGammas(String tableName, String columnName, int queryId) throws OseeDataStoreException {
       List<Object[]> gammaTxPairs = new ArrayList<Object[]>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       String query =
             "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id idj, " + tableName + " item, osee_txs txs, osee_tx_details txd WHERE idj.query_id = ? and idj.id = item." + columnName + " AND item.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ?";
 

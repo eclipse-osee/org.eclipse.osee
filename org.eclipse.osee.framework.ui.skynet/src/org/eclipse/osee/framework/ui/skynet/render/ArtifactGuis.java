@@ -16,10 +16,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
@@ -45,7 +45,7 @@ public class ArtifactGuis {
       // Can only be on other branches it has already been saved
       if (artifact.isInDb()) {
 
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(OTHER_EDIT_SQL, artifact.getArtId(), artifact.getBranch().getId(),
                   artifact.getBranch().getId());

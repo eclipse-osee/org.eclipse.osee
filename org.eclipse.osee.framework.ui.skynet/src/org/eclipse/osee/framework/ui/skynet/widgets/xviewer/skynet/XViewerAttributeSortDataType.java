@@ -11,7 +11,9 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet;
 
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
@@ -22,15 +24,18 @@ import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
  */
 public class XViewerAttributeSortDataType {
 
-   public static SortDataType get(AttributeType attributeType) {
+   public static SortDataType get(AttributeType attributeType) throws OseeCoreException {
       SortDataType sortType = SortDataType.String;
-      if (attributeType.getBaseAttributeClass().equals(DateAttribute.class))
+      Class<?> clazz = AttributeTypeManager.getAttributeBaseClass(attributeType);
+      if (clazz.equals(DateAttribute.class)) {
          sortType = SortDataType.Date;
-      else if (attributeType.getBaseAttributeClass().equals(FloatingPointAttribute.class))
+      } else if (clazz.equals(FloatingPointAttribute.class)) {
          sortType = SortDataType.Float;
-      else if (attributeType.getBaseAttributeClass().equals(IntegerAttribute.class))
+      } else if (clazz.equals(IntegerAttribute.class)) {
          sortType = SortDataType.Integer;
-      else if (attributeType.getBaseAttributeClass().equals(BooleanAttribute.class)) sortType = SortDataType.Boolean;
+      } else if (clazz.equals(BooleanAttribute.class)) {
+         sortType = SortDataType.Boolean;
+      }
       return sortType;
    }
 }

@@ -49,8 +49,7 @@ public class ArtifactPromptChange {
 
    public static boolean promptChangeAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) {
       try {
-         Class<? extends Attribute<?>> attributeBaseType =
-               AttributeTypeManager.getType(attributeName).getBaseAttributeClass();
+         Class<? extends Attribute<?>> attributeBaseType = AttributeTypeManager.getAttributeBaseClass(attributeName);
          if (attributeBaseType.equals(DateAttribute.class)) {
             return ArtifactPromptChange.promptChangeDate(attributeName, displayName, artifacts, persist);
          } else if (attributeBaseType.equals(FloatingPointAttribute.class)) {

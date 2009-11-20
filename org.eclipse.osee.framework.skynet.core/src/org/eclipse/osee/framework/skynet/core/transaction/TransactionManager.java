@@ -17,15 +17,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -63,7 +63,7 @@ public final class TransactionManager {
 
    public static List<TransactionRecord> getTransactionsForBranch(Branch branch) throws OseeCoreException {
       ArrayList<TransactionRecord> transactions = new ArrayList<TransactionRecord>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
 
       try {
          chStmt.runPreparedQuery(SELECT_TRANSACTIONS, branch.getId());
@@ -83,7 +83,7 @@ public final class TransactionManager {
       // happen in this client or as remote commit events come through
       if (transactionIds == null) {
          transactionIds = new ArrayList<TransactionRecord>(5);
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(SELECT_COMMIT_TRANSACTIONS, artifact.getArtId());
             while (chStmt.next()) {
@@ -174,7 +174,7 @@ public final class TransactionManager {
     */
    public static TransactionRecord getPriorTransaction(TransactionRecord transactionId) throws OseeCoreException {
       TransactionRecord priorTransactionId = null;
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
 
       try {
          chStmt.runPreparedQuery(GET_PRIOR_TRANSACTION, transactionId.getBranch().getId(), transactionId.getId());
@@ -196,11 +196,11 @@ public final class TransactionManager {
       return getTransactionId(transactionNumber, null);
    }
 
-   public static TransactionRecord getTransactionId(ConnectionHandlerStatement chStmt) throws OseeCoreException {
+   public static TransactionRecord getTransactionId(IOseeStatement chStmt) throws OseeCoreException {
       return getTransactionId(chStmt.getInt("transaction_id"), chStmt);
    }
 
-   private synchronized static TransactionRecord getTransactionId(int transactionNumber, ConnectionHandlerStatement chStmt) throws OseeCoreException {
+   private synchronized static TransactionRecord getTransactionId(int transactionNumber, IOseeStatement chStmt) throws OseeCoreException {
       TransactionRecord transactionId = instance.transactionIdCache.get(transactionNumber);
       boolean useLocalConnection = chStmt == null;
       if (transactionId == null) {

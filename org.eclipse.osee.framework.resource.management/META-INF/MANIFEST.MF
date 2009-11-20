@@ -3,6 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Management Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.framework.resource.management;singleton:=true
 Bundle-Version: 0.4.0.qualifier
+Eclipse-ExtensibleAPI: true
 Bundle-Activator: org.eclipse.osee.framework.resource.management.Activator
 Import-Package: org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.jdk.core.type,

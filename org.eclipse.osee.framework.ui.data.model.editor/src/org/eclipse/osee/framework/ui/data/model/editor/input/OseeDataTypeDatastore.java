@@ -14,17 +14,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.ui.data.model.editor.model.ArtifactDataType;
 import org.eclipse.osee.framework.ui.data.model.editor.model.AttributeDataType;
@@ -44,11 +44,12 @@ public class OseeDataTypeDatastore {
    public static List<AttributeDataType> getAttributeTypes() throws OseeCoreException {
       List<AttributeDataType> attributeDataTypes = new ArrayList<AttributeDataType>();
       for (AttributeType attributeType : AttributeTypeManager.getAllTypes()) {
+         String baseClass = AttributeTypeManager.getAttributeBaseClass(attributeType).getCanonicalName();
+         String providerClass = AttributeTypeManager.getAttributeProviderClass(attributeType).getCanonicalName();
          AttributeDataType attributeDataType =
-               new AttributeDataType(String.valueOf(attributeType.getId()), attributeType.getName(),
-                     attributeType.getBaseAttributeClass().getCanonicalName(), attributeType.getDefaultValue(),
-                     attributeType.getFileTypeExtension(), attributeType.getMaxOccurrences(),
-                     attributeType.getMinOccurrences(), attributeType.getProviderAttributeClass().getCanonicalName(),
+               new AttributeDataType(String.valueOf(attributeType.getId()), attributeType.getName(), baseClass,
+                     attributeType.getDefaultValue(), attributeType.getFileTypeExtension(),
+                     attributeType.getMaxOccurrences(), attributeType.getMinOccurrences(), providerClass,
                      attributeType.getTaggerId(), attributeType.getDescription(), attributeType.getOseeEnumTypeId());
          attributeDataTypes.add(attributeDataType);
       }
@@ -79,7 +80,7 @@ public class OseeDataTypeDatastore {
 
    public static HashCollection<String, String> getArtifactToAttributeEntries() throws OseeCoreException {
       HashCollection<String, String> toReturn = new HashCollection<String, String>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_ATTRIBUTE_VALIDITY);
          while (chStmt.next()) {

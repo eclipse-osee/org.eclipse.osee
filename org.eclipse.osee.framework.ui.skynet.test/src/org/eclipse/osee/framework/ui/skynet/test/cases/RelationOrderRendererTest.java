@@ -14,25 +14,22 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.data.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.test.mocks.MockOseeDataAccessor;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.linking.OseeLinkBuilder;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationSorterProvider;
-import org.eclipse.osee.framework.skynet.core.test.types.OseeTestDataAccessor;
-import org.eclipse.osee.framework.skynet.core.test.types.OseeTypesUtil;
-import org.eclipse.osee.framework.skynet.core.types.ArtifactTypeCache;
-import org.eclipse.osee.framework.skynet.core.types.IOseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeFactory;
-import org.eclipse.osee.framework.skynet.core.types.RelationTypeCache;
 import org.eclipse.osee.framework.ui.skynet.render.ArtifactGuidToWordML;
 import org.eclipse.osee.framework.ui.skynet.render.RelationOrderRenderer;
 import org.eclipse.osee.framework.ui.skynet.render.word.WordMLProducer;
@@ -53,8 +50,8 @@ public class RelationOrderRendererTest {
    public static void prepareTest() throws OseeCoreException {
       MockArtifactGuidResolver resolver = new MockArtifactGuidResolver(null);
 
-      RelationTypeCache typeCache = new RelationTypeCache(new OseeTestDataAccessor<RelationType>());
-      addRelationTypeData(typeCache, new OseeTypeFactory());
+      AbstractOseeCache<RelationType> typeCache = new RelationTypeCache(new MockOseeDataAccessor<RelationType>());
+      addRelationTypeData(typeCache);
       sorterProvider = new RelationSorterProvider();
       renderer = new RelationOrderRenderer(typeCache, resolver, sorterProvider);
    }
@@ -189,29 +186,28 @@ public class RelationOrderRendererTest {
       Assert.assertEquals(expected, builder.toString());
    }
 
-   private final static void addRelationTypeData(AbstractOseeCache<RelationType> cache, IOseeTypeFactory factory) throws OseeCoreException {
-      ArtifactTypeCache artCache = new ArtifactTypeCache(new OseeTestDataAccessor<ArtifactType>());
-      ArtifactType artifactType1 = createArtifactType(artCache, factory, "Artifact 2");
-      ArtifactType artifactType2 = createArtifactType(artCache, factory, "Artifact 1");
+   private final static void addRelationTypeData(AbstractOseeCache<RelationType> cache) throws OseeCoreException {
+      ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<ArtifactType>());
+      ArtifactType artifactType1 = createArtifactType(artCache, "Artifact 2");
+      ArtifactType artifactType2 = createArtifactType(artCache, "Artifact 1");
 
-      createRelationType(cache, artCache, factory, "Relation 1", artifactType1, artifactType2);
-      createRelationType(cache, artCache, factory, "Relation 2", artifactType1, artifactType2);
-      createRelationType(cache, artCache, factory, "Relation 3", artifactType1, artifactType2);
+      createRelationType(cache, "Relation 1", artifactType1, artifactType2);
+      createRelationType(cache, "Relation 2", artifactType1, artifactType2);
+      createRelationType(cache, "Relation 3", artifactType1, artifactType2);
    }
 
-   private final static ArtifactType createArtifactType(AbstractOseeCache<ArtifactType> artCache, IOseeTypeFactory factory, String name) throws OseeCoreException {
-      ArtifactType artifactType = factory.createArtifactType(artCache, GUID.create(), false, name);
+   private final static ArtifactType createArtifactType(AbstractOseeCache<ArtifactType> artCache, String name) throws OseeCoreException {
+      ArtifactType artifactType = new ArtifactType(GUID.create(), name, false);
       artCache.cache(artifactType);
       return artifactType;
    }
 
-   private final static void createRelationType(AbstractOseeCache<RelationType> cache, AbstractOseeCache<ArtifactType> artCache, IOseeTypeFactory factory, String name, ArtifactType artifactType1, ArtifactType artifactType2) throws OseeCoreException {
+   private final static void createRelationType(AbstractOseeCache<RelationType> cache, String name, ArtifactType artifactType1, ArtifactType artifactType2) throws OseeCoreException {
       RelationType type =
-            OseeTypesUtil.createRelationType(cache, artCache, factory, GUID.create(), name, artifactType1.getGuid(),
-                  artifactType2.getGuid(), RelationTypeMultiplicity.MANY_TO_MANY);
+            new RelationType(GUID.create(), name, name + "_A", name + "_B", artifactType1, artifactType2,
+                  RelationTypeMultiplicity.MANY_TO_MANY, "");
       cache.cache(type);
    }
-
    private final static class MockRelationOrderData extends RelationOrderData {
       public MockRelationOrderData() {
          super(null, null);

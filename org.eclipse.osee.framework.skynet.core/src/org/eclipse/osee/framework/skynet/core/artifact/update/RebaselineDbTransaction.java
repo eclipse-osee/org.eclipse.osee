@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.skynet.core.artifact.update;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;

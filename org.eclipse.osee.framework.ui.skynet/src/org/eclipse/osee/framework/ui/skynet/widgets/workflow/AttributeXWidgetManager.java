@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.plugin.core.util.ExtensionDefinedObjects;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**

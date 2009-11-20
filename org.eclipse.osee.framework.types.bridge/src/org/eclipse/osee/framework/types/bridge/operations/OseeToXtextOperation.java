@@ -16,22 +16,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.OseeEnumEntry;
+import org.eclipse.osee.framework.core.model.OseeEnumType;
+import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumEntry;
-import org.eclipse.osee.framework.skynet.core.attribute.OseeEnumType;
-import org.eclipse.osee.framework.skynet.core.relation.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderBaseTypes;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeCache;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
+import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
 
 /**
  * @author Roberto E. Escobar
@@ -198,8 +198,7 @@ public class OseeToXtextOperation extends AbstractOperation {
          org.eclipse.osee.framework.oseeTypes.ArtifactType modelArtifactType =
                getArtifactType(model, artifactType.getGuid());
 
-         Map<Branch, Collection<AttributeType>> types =
-               cache.getArtifactTypeCache().getLocalAttributeTypes(artifactType);
+         Map<Branch, Collection<AttributeType>> types = artifactType.getLocalAttributeTypes();
          if (types != null) {
             List<AttributeTypeRef> references = new ArrayList<AttributeTypeRef>();
             for (Entry<Branch, Collection<AttributeType>> entry : types.entrySet()) {

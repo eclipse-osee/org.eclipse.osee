@@ -18,7 +18,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -28,6 +27,7 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -75,7 +75,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private OseeConnection connection;
 
    public CommitDbOperation(Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes) {
-      super("Commit Database Operation", Activator.PLUGIN_ID);
+      super(null, "Commit Database Operation", Activator.PLUGIN_ID);
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.mergeBranch = mergeBranch;
@@ -133,8 +133,8 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       String comment = BranchManager.COMMIT_COMMENT + sourceBranch.getName();
       int authorId = userToBlame == null ? -1 : userToBlame.getArtId();
       ConnectionHandler.runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
-            TransactionDetailsType.NonBaselined.getId(), destinationBranch.getId(), newTransactionNumber,
-            comment, timestamp, authorId, sourceBranch.getAssociatedArtifact().getArtId());
+            TransactionDetailsType.NonBaselined.getId(), destinationBranch.getId(), newTransactionNumber, comment,
+            timestamp, authorId, sourceBranch.getAssociatedArtifact().getArtId());
 
       return newTransactionNumber;
    }

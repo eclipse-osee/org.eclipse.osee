@@ -12,7 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.List;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.core.model.AttributeType;
 
 /**
  * @author Donald G. Dunne

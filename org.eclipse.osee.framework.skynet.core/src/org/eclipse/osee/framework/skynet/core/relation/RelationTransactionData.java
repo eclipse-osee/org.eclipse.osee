@@ -11,10 +11,10 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.OseeSql;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.skynet.core.event.ArtifactTransactionModifiedEvent;

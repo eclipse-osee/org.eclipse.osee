@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 
 public class DbDescribe {
 
@@ -43,7 +43,7 @@ public class DbDescribe {
    public List<Describe> getDescription() throws OseeDataStoreException {
       if (dbColumns == null) {
          dbColumns = new ArrayList<Describe>();
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             String sql = "SELECT * FROM " + dbItem.getTableName();
             chStmt.runPreparedQuery(sql);
@@ -65,7 +65,7 @@ public class DbDescribe {
 
    public DbTaskList getDbTaskList(List<Describe> describeList) throws OseeDataStoreException {
       DbTaskList taskList = new DbTaskList();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          String sql = "SELECT * FROM " + dbItem.getTableName();
          chStmt.runPreparedQuery(sql);

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
@@ -55,7 +55,7 @@ public class AttributeDataStore {
    public static Collection<AttributeData> getAttribute(final OseeConnection connection, final int tagQueueQueryId) throws OseeDataStoreException {
       final Collection<AttributeData> attributeData = new ArrayList<AttributeData>();
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       try {
          chStmt.runPreparedQuery(LOAD_ATTRIBUTE, tagQueueQueryId);
          while (chStmt.next()) {
@@ -134,7 +134,7 @@ public class AttributeDataStore {
    public static Set<AttributeData> getAttributesByTags(final int branchId, final SearchOptions options, final Collection<Long> tagData, final Collection<String> attributeTypes) throws OseeDataStoreException {
       final Set<AttributeData> toReturn = new HashSet<AttributeData>();
       AttributeJoinQuery attributeJoin = null;
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          boolean isNameOnly = attributeTypes.size() == 1 && attributeTypes.contains("Name");
          boolean isAttributeFilterValid = !isNameOnly && !attributeTypes.isEmpty();

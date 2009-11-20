@@ -16,20 +16,23 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
+import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
+import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 
 /**
  * @author Ryan D. Brooks
@@ -37,6 +40,10 @@ import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 public class AttributeTypeManager {
 
    private AttributeTypeManager() {
+   }
+
+   public static AbstractOseeCache<AttributeType> getCache() {
+      return Activator.getInstance().getOseeCacheService().getAttributeTypeCache();
    }
 
    public static Collection<AttributeType> getValidAttributeTypes(Branch branch) throws OseeCoreException {
@@ -48,7 +55,7 @@ public class AttributeTypeManager {
    }
 
    public static Collection<AttributeType> getAllTypes() throws OseeCoreException {
-      return OseeTypeManager.getCache().getAttributeTypeCache().getAll();
+      return getCache().getAll();
    }
 
    public static Collection<AttributeType> getTaggableTypes() throws OseeCoreException {
@@ -62,7 +69,7 @@ public class AttributeTypeManager {
    }
 
    public static boolean typeExists(String name) throws OseeCoreException {
-      return !OseeTypeManager.getCache().getAttributeTypeCache().getByName(name).isEmpty();
+      return !getCache().getByName(name).isEmpty();
    }
 
    /**
@@ -75,7 +82,7 @@ public class AttributeTypeManager {
       if (!GUID.isValid(guid)) {
          throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
       }
-      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeCache().getByGuid(guid);
+      AttributeType attributeType = getCache().getByGuid(guid);
       if (attributeType == null) {
          throw new OseeTypeDoesNotExist("Attribute Type [" + guid + "] is not available.");
       }
@@ -88,7 +95,7 @@ public class AttributeTypeManager {
     * @throws OseeCoreException
     */
    public static AttributeType getType(String name) throws OseeCoreException {
-      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeCache().getUniqueByName(name);
+      AttributeType attributeType = getCache().getUniqueByName(name);
       if (attributeType == null) {
          throw new OseeTypeDoesNotExist("Attribute Type with name [" + name + "] does not exist.");
       }
@@ -102,7 +109,7 @@ public class AttributeTypeManager {
     * @throws OseeCoreException
     */
    public static AttributeType getType(int attrTypeId) throws OseeCoreException {
-      AttributeType attributeType = OseeTypeManager.getCache().getAttributeTypeCache().getById(attrTypeId);
+      AttributeType attributeType = getCache().getById(attrTypeId);
       if (attributeType == null) {
          throw new OseeTypeDoesNotExist("Attribute type: " + attrTypeId + " is not available.");
       }
@@ -147,13 +154,19 @@ public class AttributeTypeManager {
       };
    }
 
-   public static AttributeType createType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
-      return OseeTypeManager.getCache().getAttributeTypeCache().createType(guid, typeName, baseAttributeTypeId,
-            attributeProviderNameId, fileTypeExtension, defaultValue, oseeEnumType, minOccurrences, maxOccurrences,
-            description, taggerId);
+   public static void persist() throws OseeCoreException {
+      getCache().storeAllModified();
    }
 
-   public static void persist() throws OseeCoreException {
-      OseeTypeManager.getCache().getAttributeTypeCache().storeAllModified();
+   public static Class<? extends Attribute<?>> getAttributeBaseClass(String attributeType) throws OseeCoreException {
+      return getAttributeBaseClass(getType(attributeType).getBaseAttributeTypeId());
+   }
+
+   public static Class<? extends Attribute<?>> getAttributeBaseClass(AttributeType attributeType) throws OseeCoreException {
+      return AttributeExtensionManager.getAttributeClassFor(attributeType.getBaseAttributeTypeId());
+   }
+
+   public static Class<? extends IAttributeDataProvider> getAttributeProviderClass(AttributeType attributeType) throws OseeCoreException {
+      return AttributeExtensionManager.getAttributeProviderClassFor(attributeType.getAttributeProviderId());
    }
 }

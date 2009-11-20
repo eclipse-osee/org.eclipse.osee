@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.ui.branch.graph.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -143,7 +143,7 @@ public class GraphLoader {
 
    private static List<TxData> getTxData(int queryId) throws OseeCoreException {
       List<TxData> txDatas = new ArrayList<TxData>();
-      ConnectionHandlerStatement chStmt = null;
+      IOseeStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.getStatement();
          chStmt.runPreparedQuery(GET_TRANSACTION_DATA, queryId);

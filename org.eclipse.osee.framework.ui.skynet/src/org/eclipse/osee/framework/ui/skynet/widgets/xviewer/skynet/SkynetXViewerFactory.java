@@ -23,10 +23,10 @@ import org.eclipse.nebula.widgets.xviewer.XViewerTreeReport;
 import org.eclipse.nebula.widgets.xviewer.customize.IXViewerCustomizations;
 import org.eclipse.nebula.widgets.xviewer.customize.XViewerCustomizations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.OseeXViewerTreeReport;
@@ -91,7 +91,7 @@ public class SkynetXViewerFactory extends XViewerFactory {
       return columns;
    }
 
-   public static XViewerColumn getAttributeColumn(AttributeType attributeType) {
+   public static XViewerColumn getAttributeColumn(AttributeType attributeType) throws OseeCoreException {
       return new XViewerAttributeColumn("attribute." + attributeType.getName(), attributeType.getName(),
             attributeType.getName(), 75, SWT.LEFT, false, XViewerAttributeSortDataType.get(attributeType), false, null);
    }
@@ -99,8 +99,9 @@ public class SkynetXViewerFactory extends XViewerFactory {
    /**
     * @param artifacts
     * @return columns for attributes valid for at least on of the given artifacts
+    * @throws OseeCoreException
     */
-   public static List<XViewerColumn> getAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts) {
+   public static List<XViewerColumn> getAllAttributeColumnsForArtifacts(Collection<? extends Artifact> artifacts) throws OseeCoreException {
       List<XViewerColumn> columns = new ArrayList<XViewerColumn>();
       Set<AttributeType> attributeTypes = new HashSet<AttributeType>();
       try {

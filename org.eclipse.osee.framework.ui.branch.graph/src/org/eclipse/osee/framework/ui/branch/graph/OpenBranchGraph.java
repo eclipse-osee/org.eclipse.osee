@@ -15,7 +15,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditor;
 import org.eclipse.osee.framework.ui.branch.graph.core.BranchGraphEditorInput;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.AbstractSelectionChangedHandler;

@@ -8,26 +8,26 @@ package org.eclipse.osee.framework.skynet.core.artifact;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.data.ChangeReportRequestData;
-import org.eclipse.osee.framework.core.data.ChangeReportResponseData;
+import org.eclipse.osee.framework.core.data.ChangeReportRequest;
+import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 
 /**
  * @author Jeff C. Phillips
  */
 public class HttpChangeDataRequester {
 
-   public static ChangeReportResponseData getChanges(TransactionRecord toTransactionRecord, TransactionRecord fromTransactionRecord, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException {
+   public static ChangeReportResponse getChanges(TransactionRecord toTransactionRecord, TransactionRecord fromTransactionRecord, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.CHANGE_REPORT.name());
 
-      ChangeReportRequestData requestData =
-            new ChangeReportRequestData(toTransactionRecord, fromTransactionRecord, isHistorical);
-      ChangeReportResponseData response =
-            HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, requestData, ChangeReportResponseData.class);
+      ChangeReportRequest requestData =
+            new ChangeReportRequest(toTransactionRecord, fromTransactionRecord, isHistorical);
+      ChangeReportResponse response =
+            HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, requestData, ChangeReportResponse.class);
 
       if (response.wasSuccessful()) {
          //OseeEventManager.kickBranchEvent(HttpBranchCreation.class, , branch.getId());

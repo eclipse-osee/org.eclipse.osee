@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.parsers;
 
+import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
 import org.eclipse.osee.framework.skynet.core.importing.operations.RoughArtifactCollector;

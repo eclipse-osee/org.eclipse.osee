@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerTextFilter;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 
 /**
  * @author Donald G. Dunne

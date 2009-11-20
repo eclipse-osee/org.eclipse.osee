@@ -26,17 +26,19 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -54,8 +56,6 @@ import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
-import org.eclipse.osee.framework.skynet.core.types.BranchCache;
-import org.eclipse.osee.framework.skynet.core.types.OseeTypeManager;
 
 /**
  * Provides access to all branches as well as support for creating branches of all types
@@ -81,6 +81,10 @@ public class BranchManager {
       return instance;
    }
 
+   public static BranchCache getCache() {
+      return Activator.getInstance().getOseeCacheService().getBranchCache();
+   }
+
    public static Set<Branch> getAssociatedArtifactBranches(Artifact associatedArtifact, boolean includeArchived, boolean includeDeleted) throws OseeCoreException {
       Set<Branch> branches = new HashSet<Branch>();
       Set<Branch> branchesToCheck = new HashSet<Branch>(getNormalBranches());
@@ -98,7 +102,7 @@ public class BranchManager {
    }
 
    public static Branch getCommonBranch() throws OseeCoreException {
-      return OseeTypeManager.getBranchCache().getCommonBranch();
+      return getCache().getCommonBranch();
    }
 
    /**
@@ -129,7 +133,7 @@ public class BranchManager {
 
    public static List<Branch> getBranches(BranchArchivedState archivedState, BranchControlled branchControlled, BranchType... branchTypes) throws OseeCoreException {
       List<Branch> branches = new ArrayList<Branch>(1000);
-      for (Branch branch : OseeTypeManager.getBranchCache().getAll()) {
+      for (Branch branch : getCache().getAll()) {
          if (branch.getArchiveState().matches(archivedState) && //
          BranchControlled.fromBoolean(isChangeManaged(branch)).matches(branchControlled) && //
          branch.getBranchType().isOfType(branchTypes)) {
@@ -139,8 +143,20 @@ public class BranchManager {
       return branches;
    }
 
+   public static Collection<Branch> getWorkingBranches(Branch parentBranch) throws OseeCoreException {
+      List<Branch> branches = new ArrayList<Branch>(500);
+      for (Branch branch : getCache().getAll()) {
+         if (branch.getArchiveState().isUnArchived() && //
+         branch.getBranchType().isOfType(BranchType.WORKING) && //
+         parentBranch.equals(branch.getParentBranch())) {
+            branches.add(branch);
+         }
+      }
+      return branches;
+   }
+
    public static void refreshBranches() throws OseeCoreException {
-      OseeTypeManager.getBranchCache().reloadCache();
+      getCache().reloadCache();
    }
 
    public static Branch getBranch(String branchName) throws OseeCoreException {
@@ -155,14 +171,14 @@ public class BranchManager {
    }
 
    public static Collection<Branch> getBranchesByName(String branchName) throws OseeCoreException {
-      return OseeTypeManager.getBranchCache().getByName(branchName);
+      return getCache().getByName(branchName);
    }
 
    public static Branch getBranchByGuid(String guid) throws OseeCoreException {
       if (!GUID.isValid(guid)) {
          throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
       }
-      Branch branch = OseeTypeManager.getBranchCache().getByGuid(guid);
+      Branch branch = getCache().getByGuid(guid);
       if (branch == null) {
          throw new BranchDoesNotExist(String.format("Branch with guid [%s] does not exist", guid));
       }
@@ -177,7 +193,7 @@ public class BranchManager {
     * returns the merge branch for this source destination pair from the cache or null if not found
     */
    public static Branch getMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      return OseeTypeManager.getBranchCache().getMergeBranch(sourceBranch, destinationBranch);
+      return getCache().getMergeBranch(sourceBranch, destinationBranch);
    }
 
    public static boolean isMergeBranch(Branch sourceBranch, Branch destBranch) throws OseeCoreException {
@@ -196,7 +212,7 @@ public class BranchManager {
       Branch mergeBranch = getMergeBranch(sourceBranch, destBranch);
       if (mergeBranch == null) {
          mergeBranch = createMergeBranch(sourceBranch, destBranch, expectedArtIds);
-         OseeTypeManager.getBranchCache().cacheMergeBranch(mergeBranch, sourceBranch, destBranch);
+         getCache().cacheMergeBranch(mergeBranch, sourceBranch, destBranch);
       } else {
          UpdateMergeBranch dbTransaction = new UpdateMergeBranch(mergeBranch, expectedArtIds, destBranch, sourceBranch);
          dbTransaction.execute();
@@ -246,7 +262,7 @@ public class BranchManager {
          throw new BranchDoesNotExist("Branch Id is null");
       }
 
-      BranchCache cache = OseeTypeManager.getBranchCache();
+      BranchCache cache = getCache();
       // If someone else made a branch on another machine, we may not know about it
       // so refresh the cache.
       if (cache.getById(branchId) == null) {
@@ -502,15 +518,15 @@ public class BranchManager {
    }
 
    public static Branch getSystemRootBranch() throws OseeCoreException {
-      return OseeTypeManager.getBranchCache().getSystemRootBranch();
+      return getCache().getSystemRootBranch();
    }
 
    public static void persist(Branch... branches) throws OseeCoreException {
-      OseeTypeManager.getBranchCache().storeItems(Arrays.asList(branches));
+      getCache().storeItems(Arrays.asList(branches));
    }
 
    public static void persist(Collection<Branch> branches) throws OseeCoreException {
-      OseeTypeManager.getBranchCache().storeItems(branches);
+      getCache().storeItems(branches);
    }
 
    public static String toFileName(Branch branch) throws OseeCoreException {
@@ -518,15 +534,15 @@ public class BranchManager {
    }
 
    public static Branch fromFileName(String fileName) throws OseeCoreException {
-      return BranchUtility.fromFileName(OseeTypeManager.getBranchCache(), fileName);
+      return BranchUtility.fromFileName(getCache(), fileName);
    }
 
    public static Branch getKeyedBranch(String alias) throws OseeCoreException {
-      return OseeTypeManager.getBranchCache().getUniqueByAlias(alias);
+      return getCache().getUniqueByAlias(alias);
    }
 
    public static void decache(Branch branch) throws OseeCoreException {
-      OseeTypeManager.getBranchCache().decache(branch);
+      getCache().decache(branch);
    }
 
    public static boolean hasChanges(Branch branch) throws OseeCoreException {

@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.util;
 
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 
 /**
  * @author Donald G. Dunne

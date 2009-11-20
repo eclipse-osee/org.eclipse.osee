@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.ui.define.panels;
 
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.event.AccessControlEventType;
 import org.eclipse.osee.framework.skynet.core.event.IAccessControlEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
