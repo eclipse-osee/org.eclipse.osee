@@ -16,11 +16,11 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifacts;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.ArtifactType;
-import org.eclipse.osee.framework.skynet.core.artifact.CoreArtifacts;
 import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -92,8 +92,8 @@ public class TestPlanComplianceReport extends AbstractBlam {
          for (Artifact testResult : testResults) {
             reportLine(testPlan, testProc.getName(), getStatus(testProc), testResult.getName());
          }
+         }
       }
-   }
 
    private String getStatus(Artifact testProc) throws OseeCoreException {
       String returnValue = testProc.getSoleAttributeValue(CoreAttributes.TEST_STATUS);

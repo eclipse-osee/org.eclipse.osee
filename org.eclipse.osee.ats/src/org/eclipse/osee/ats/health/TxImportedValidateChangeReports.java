@@ -22,15 +22,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.OseeInfo;
-import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -102,15 +102,15 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
 
    private List<ImportedId> getImportedIds() {
       List<ImportedId> translators = new ArrayList<ImportedId>();
-      translators.add(new ImportedId(SequenceManager.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
-      translators.add(new ImportedId(SequenceManager.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
-      translators.add(new ImportedId(SequenceManager.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
-      translators.add(new ImportedId(SequenceManager.ART_TYPE_ID_SEQ, ARTIFACT_TYPE_ID));
-      translators.add(new ImportedId(SequenceManager.ATTR_TYPE_ID_SEQ, ATTRIBUTE_TYPE_ID));
-      translators.add(new ImportedId(SequenceManager.REL_LINK_TYPE_ID_SEQ, RELATION_TYPE_ID));
-      translators.add(new ImportedId(SequenceManager.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
-      translators.add(new ImportedId(SequenceManager.ATTR_ID_SEQ, ATTRIBUTE_ID));
-      translators.add(new ImportedId(SequenceManager.REL_LINK_ID_SEQ, RELATION_ID));
+      translators.add(new ImportedId(IOseeSequence.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
+      translators.add(new ImportedId(IOseeSequence.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
+      translators.add(new ImportedId(IOseeSequence.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
+      translators.add(new ImportedId(IOseeSequence.ART_TYPE_ID_SEQ, ARTIFACT_TYPE_ID));
+      translators.add(new ImportedId(IOseeSequence.ATTR_TYPE_ID_SEQ, ATTRIBUTE_TYPE_ID));
+      translators.add(new ImportedId(IOseeSequence.REL_LINK_TYPE_ID_SEQ, RELATION_TYPE_ID));
+      translators.add(new ImportedId(IOseeSequence.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
+      translators.add(new ImportedId(IOseeSequence.ATTR_ID_SEQ, ATTRIBUTE_ID));
+      translators.add(new ImportedId(IOseeSequence.REL_LINK_ID_SEQ, RELATION_ID));
       return translators;
    }
 
@@ -283,7 +283,7 @@ public class TxImportedValidateChangeReports extends AbstractBlam {
       }
 
       public void load(String sourceDatabaseId) throws OseeDataStoreException {
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             originalToMapped.clear();
             chStmt.runPreparedQuery(10000, SELECT_IDS_BY_DB_SOURCE_AND_SEQ_NAME, sourceDatabaseId, getSequence());

@@ -16,11 +16,11 @@ import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -119,7 +119,9 @@ public class CoverageUtil {
    }
 
    public static void getParentCoverageUnits(ICoverage coverage, Set<CoverageUnit> parents) {
-      if (coverage.getParent() == null) return;
+      if (coverage.getParent() == null) {
+         return;
+      }
       if (coverage.getParent() instanceof CoverageUnit) {
          parents.add((CoverageUnit) coverage.getParent());
          getParentCoverageUnits(coverage.getParent(), parents);

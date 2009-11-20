@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.util.widgets;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.framework.skynet.core.attribute.AttributeType;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DefaultAttributeXWidgetProvider;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.DynamicXWidgetLayoutData;
 import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkItemAttributes;

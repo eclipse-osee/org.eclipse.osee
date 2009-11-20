@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.util.widgets.commit;
 
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
