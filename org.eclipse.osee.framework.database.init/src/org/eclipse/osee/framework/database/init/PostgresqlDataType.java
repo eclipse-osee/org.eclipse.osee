@@ -19,42 +19,52 @@ public class PostgresqlDataType extends SqlDataType {
       super();
    }
 
+   @Override
    public String getBooleanType() {
       return "bool";
    }
 
+   @Override
    public String getBitType() {
       return "number";
    }
 
+   @Override
    public String getIntegerType() {
       return "integer";
    }
 
+   @Override
    public String getDecimalType() {
       return "decimal";
    }
 
+   @Override
    public String getFloatType() {
       return "float";
    }
 
+   @Override
    public String getRealType() {
       return "float8";
    }
 
+   @Override
    public String getDoubleType() {
       return "numeric";
    }
 
+   @Override
    public String getDateType() {
       return "date";
    }
 
+   @Override
    public String getCharType() {
       return "char";
    }
 
+   @Override
    public String getVarCharType() {
       return "varchar";
    }

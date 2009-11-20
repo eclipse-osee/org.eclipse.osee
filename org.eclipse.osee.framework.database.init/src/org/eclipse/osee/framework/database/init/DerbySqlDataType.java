@@ -19,42 +19,52 @@ public class DerbySqlDataType extends SqlDataType {
       super();
    }
 
+   @Override
    public String getBooleanType() {
       return "boolean";
    }
 
+   @Override
    public String getBitType() {
       return "smallint";
    }
 
+   @Override
    public String getIntegerType() {
       return "integer";
    }
 
+   @Override
    public String getDecimalType() {
       return "decimal";
    }
 
+   @Override
    public String getFloatType() {
       return "float";
    }
 
+   @Override
    public String getRealType() {
       return "real";
    }
 
+   @Override
    public String getDoubleType() {
       return getRealType();
    }
 
+   @Override
    public String getDateType() {
       return "date";
    }
 
+   @Override
    public String getCharType() {
       return "char";
    }
 
+   @Override
    public String getVarCharType() {
       return "varchar";
    }

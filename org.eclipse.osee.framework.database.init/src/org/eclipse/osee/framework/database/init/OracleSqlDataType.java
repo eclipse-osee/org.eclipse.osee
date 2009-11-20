@@ -30,42 +30,52 @@ public class OracleSqlDataType extends SqlDataType {
       }
    }
 
+   @Override
    public String getBooleanType() {
       return "number";
    }
 
+   @Override
    public String getBitType() {
       return "number";
    }
 
+   @Override
    public String getIntegerType() {
       return "integer";
    }
 
+   @Override
    public String getDecimalType() {
       return "number";
    }
 
+   @Override
    public String getFloatType() {
       return "float";
    }
 
+   @Override
    public String getRealType() {
       return "real";
    }
 
+   @Override
    public String getDoubleType() {
       return "number";
    }
 
+   @Override
    public String getDateType() {
       return "date";
    }
 
+   @Override
    public String getCharType() {
       return "char";
    }
 
+   @Override
    public String getVarCharType() {
       return "varchar2";
    }
