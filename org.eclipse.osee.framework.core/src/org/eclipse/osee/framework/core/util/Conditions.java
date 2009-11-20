@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.jdk.core.util.GUID;
 /**
  * @author Roberto E. Escobar
  */
-public class Conditions {
+public final class Conditions {
 
    private Conditions() {
    }
