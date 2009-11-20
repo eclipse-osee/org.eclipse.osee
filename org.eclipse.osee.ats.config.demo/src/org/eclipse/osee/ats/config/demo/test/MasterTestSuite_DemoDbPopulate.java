@@ -19,6 +19,7 @@ import org.eclipse.osee.ats.config.demo.config.PopulateDemoActions;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationException;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.support.test.util.TestUtil;
@@ -71,7 +72,7 @@ public class MasterTestSuite_DemoDbPopulate {
          PopulateDemoActions populateDemoActions = new PopulateDemoActions(null);
          populateDemoActions.run(false);
       } catch (Exception ex) {
-         Assert.assertNull(ex.getLocalizedMessage(), ex);
+         Assert.fail(Lib.exceptionToString(ex));
       }
    }
 }
