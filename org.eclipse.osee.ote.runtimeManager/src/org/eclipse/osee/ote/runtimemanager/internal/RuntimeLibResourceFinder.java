@@ -10,8 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.runtimemanager.internal;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Collection;
+
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.plugin.core.server.ResourceFinder;
@@ -40,7 +42,7 @@ public class RuntimeLibResourceFinder extends ResourceFinder {
          Collection<BundleInfo> runtimeLibs = safeWorkspaceTracker.getRuntimeLibs();
          for (BundleInfo info : runtimeLibs) {
             if (info.getSymbolicName().equals(path)) {
-               return Lib.fileToBytes(info.getFile());
+               return Lib.inputStreamToBytes(new FileInputStream(info.getFile()));	
             }
          }
       } catch (CoreException ex) {
