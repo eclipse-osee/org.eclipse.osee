@@ -43,8 +43,6 @@ public interface ICoverage {
 
    public String getNamespace();
 
-   public String getRationale();
-
    public int getCoveragePercent();
 
    public String getCoveragePercentStr();

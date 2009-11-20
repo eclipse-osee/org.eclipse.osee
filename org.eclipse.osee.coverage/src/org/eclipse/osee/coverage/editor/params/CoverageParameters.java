@@ -35,12 +35,12 @@ public class CoverageParameters {
 
    private final CoveragePackageBase coveragePackageBase;
    private Collection<CoverageMethodEnum> coverageMethods = new ArrayList<CoverageMethodEnum>();
-   private boolean showAll = false;
    private String name;
    private String namespace;
    private String rationale;
    private String notes;
    private User assignee;
+   private boolean showAll = true;
 
    public CoverageParameters(CoveragePackageBase coveragePackageBase) {
       this.coveragePackageBase = coveragePackageBase;
@@ -61,60 +61,128 @@ public class CoverageParameters {
       return new Pair<Set<ICoverage>, Set<ICoverage>>(items, parents);
    }
 
-   public void performSearchGetResults(Set<ICoverage> items, ICoverage item) throws OseeCoreException {
-      Collection<CoverageMethodEnum> coverageMethods = getSelectedCoverageMethods();
-      User assignee = getAssignee();
-      if (isShowAll()) {
-         items.add(item);
-      } else {
-         boolean add = true;
-         if (assignee != null && !CoverageUtil.getCoverageItemUsers(item).contains(assignee)) {
-            add = false;
-         } else if (Strings.isValid(name) && !item.getName().contains(name)) {
-            add = false;
-         } else if (Strings.isValid(namespace) && !item.getNamespace().contains(namespace)) {
-            add = false;
-         } else if (Strings.isValid(rationale) && !item.getRationale().contains(rationale)) {
-            add = false;
-         } else if (Strings.isValid(notes) && !item.getNotes().contains(notes)) {
-            add = false;
-         }
-         if (add && coverageMethods.size() > 0 && (item instanceof CoverageItem)) {
-            CoverageItem coverageItem = (CoverageItem) item;
-            if (!coverageMethods.contains(coverageItem.getCoverageMethod())) {
-               add = false;
+   // CoverageUnit - name, namespace, assignees, notes
+   // CoverageItem - name, namespace, rationale, coverageMethod
+   public void performSearchGetResults(Set<ICoverage> matchItems, ICoverage coverage) throws OseeCoreException {
+      if (coverage instanceof CoverageItem) {
+         if (isCoverageMethodMatch(coverage) &&
+         //
+         isRationaleMatch(coverage) &&
+         //
+         isNameMatch(coverage) &&
+         //
+         isNamespaceMatch(coverage)) {
+            // CoverageItem matches search criteria; validate CoverageUnits up the hierarchy
+            if (doesParentMatchCriteria(coverage.getParent())) {
+               matchItems.add(coverage);
             }
          }
-         // don't add anything but coverage items if coverage methods specified
-         if (add && coverageMethods.size() > 0 && (!(item instanceof CoverageItem))) {
-            add = false;
-         }
-         if (Strings.isValid(getNotesStr())) {
-            if (item instanceof CoverageUnit) {
-               if (!Strings.isValid(((CoverageUnit) item).getNotes())) {
-                  add = false;
-               }
-               if (((CoverageUnit) item).getNotes() == null || !((CoverageUnit) item).getNotes().contains(getNotesStr())) {
-                  add = false;
-               }
-            } else {
-               add = false;
+      } else if (coverage instanceof CoverageUnit) {
+         if (Strings.isValid(name) || Strings.isValid(namespace) || Strings.isValid(notes) || assignee != null) {
+            if (!((CoverageUnit) coverage).isFolder() && isNameMatch(coverage) || isNamespaceMatch(coverage) || isNotesMatch(coverage) || isAssigneeMatch(coverage)) {
+               matchItems.add(coverage);
             }
          }
-         if (add) {
-            items.add(item);
-         }
       }
-      for (ICoverage child : item.getChildren()) {
-         performSearchGetResults(items, child);
+      for (ICoverage child : coverage.getChildren()) {
+         performSearchGetResults(matchItems, child);
       }
+   }
+
+   /**
+    * Recurse up parent tree to ensure all parents match criteria
+    */
+   private boolean doesParentMatchCriteria(ICoverage coverage) {
+      if (isNameMatch(coverage) || isNamespaceMatch(coverage) || isNotesMatch(coverage) || isAssigneeMatch(coverage)) {
+         return true;
+      } else if (coverage.getParent() instanceof CoverageUnit) {
+         return doesParentMatchCriteria(coverage);
+      }
+      return false;
+   }
+
+   /**
+    * Match if no assignee specified OR<br>
+    * coverage isn't CoverageUnit OR<br>
+    * CoverageUnit assignee equals search assignee
+    */
+   public boolean isAssigneeMatch(ICoverage coverage) {
+      if (assignee == null || !(coverage instanceof CoverageUnit)) return true;
+      if (CoverageUtil.getCoverageItemUsers(coverage).contains(assignee)) {
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Match if no notes specified OR<br>
+    * coverage isn't CoverageUnit OR<br>
+    * CoverageUnit notes contains search string
+    */
+   public boolean isNotesMatch(ICoverage coverage) {
+      if (!Strings.isValid(notes) || !(coverage instanceof CoverageUnit)) return true;
+      if (!Strings.isValid(((CoverageUnit) coverage).getNotes())) return false;
+      if (((CoverageUnit) coverage).getNotes().contains(notes)) {
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Match if no name specified OR<br>
+    * item name contains search string
+    */
+   public boolean isNameMatch(ICoverage coverage) {
+      if (!Strings.isValid(name)) return true;
+      if (!Strings.isValid(coverage.getName())) return false;
+      if (coverage.getName().contains(name)) {
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Match if no namespace specified OR<br>
+    * item namespace contains search string
+    */
+   public boolean isNamespaceMatch(ICoverage coverage) {
+      if (!Strings.isValid(namespace)) return true;
+      if (!Strings.isValid(coverage.getNamespace())) return false;
+      if (coverage.getNamespace().contains(namespace)) {
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Match if no rationale specified OR<br>
+    * coverage isn't CoverageItem OR<br>
+    * CoverageItem rationale contains search string
+    */
+   public boolean isRationaleMatch(ICoverage coverage) {
+      if (!Strings.isValid(rationale) || !(coverage instanceof CoverageItem)) return true;
+      if (!Strings.isValid(((CoverageItem) coverage).getRationale())) return false;
+      if (((CoverageItem) coverage).getRationale().contains(rationale)) {
+         return true;
+      }
+      return false;
+   }
+
+   /**
+    * Match if no coverageMethods specified OR<br>
+    * coverage isn't CoverageItem OR<br>
+    * CoverageItem is method specified
+    */
+   public boolean isCoverageMethodMatch(ICoverage coverage) {
+      if (coverageMethods.size() == 0 || !(coverage instanceof CoverageItem)) return true;
+      if (coverageMethods.contains(((CoverageItem) coverage).getCoverageMethod())) {
+         return true;
+      }
+      return false;
    }
 
    public String getSelectedName(/*SearchType searchType*/) throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
-      if (isShowAll()) {
-         sb.append(" - Show All");
-      }
       if (getAssignee() != null) {
          sb.append(" - Assignee: " + getAssignee());
       }
@@ -137,10 +205,6 @@ public class CoverageParameters {
       return "Coverage Items " + sb.toString();
    }
 
-   public boolean isShowAll() {
-      return showAll;
-   }
-
    public String getNotesStr() {
       return notes;
    }
@@ -155,22 +219,6 @@ public class CoverageParameters {
 
    public Result isParameterSelectionValid() throws OseeCoreException {
       try {
-         if (isShowAll()) {
-            if (getSelectedCoverageMethods().size() > 0) {
-               return new Result("Can't have Show All and Coverage Methods");
-            }
-            if (getAssignee() != null) {
-               return new Result("Can't have Show All and Assignee selected");
-            }
-            if (Strings.isValid(getNotesStr())) {
-               return new Result("Can't have Show All and Notes");
-            }
-         }
-         if (!isShowAll()) {
-            if (getSelectedCoverageMethods().size() == 0) {
-               return new Result("You must select at least one Coverage Method");
-            }
-         }
          return Result.TrueResult;
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
@@ -188,6 +236,7 @@ public class CoverageParameters {
 
    public void setCoverageMethods(Collection<CoverageMethodEnum> coverageMethods) {
       this.coverageMethods = coverageMethods;
+      updateShowAll();
    }
 
    public String getNotes() {
@@ -196,14 +245,30 @@ public class CoverageParameters {
 
    public void setNotes(String notes) {
       this.notes = notes;
+      updateShowAll();
    }
 
-   public void setShowAll(boolean showAll) {
-      this.showAll = showAll;
+   public void clearAll() {
+      setAssignee(null);
+      setNotes(null);
+      setNamespace(null);
+      setRationale(null);
+      setName(null);
+      this.coverageMethods.clear();
+   }
+
+   private void updateShowAll() {
+      this.showAll =
+            getSelectedCoverageMethods().size() == 0 && getAssignee() == null && !Strings.isValid(getNotesStr()) && !Strings.isValid(getNamespace()) && !Strings.isValid(getRationale()) && !Strings.isValid(getName());
+   }
+
+   public boolean isShowAll() {
+      return this.showAll;
    }
 
    public void setAssignee(User assignee) {
       this.assignee = assignee;
+      updateShowAll();
    }
 
    public String getName() {
@@ -212,6 +277,7 @@ public class CoverageParameters {
 
    public void setName(String name) {
       this.name = name;
+      updateShowAll();
    }
 
    public String getNamespace() {
@@ -220,6 +286,7 @@ public class CoverageParameters {
 
    public void setNamespace(String namespace) {
       this.namespace = namespace;
+      updateShowAll();
    }
 
    public String getRationale() {
@@ -228,6 +295,7 @@ public class CoverageParameters {
 
    public void setRationale(String rationale) {
       this.rationale = rationale;
+      updateShowAll();
    }
 
 }

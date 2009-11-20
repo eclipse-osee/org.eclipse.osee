@@ -146,8 +146,4 @@ public class MergeItem implements ICoverage {
       return mergeType.toString() + " - " + importItem.toString();
    }
 
-   @Override
-   public String getRationale() {
-      return null;
-   }
 }

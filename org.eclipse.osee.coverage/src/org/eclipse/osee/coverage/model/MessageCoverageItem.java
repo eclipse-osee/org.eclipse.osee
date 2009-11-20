@@ -107,9 +107,4 @@ public class MessageCoverageItem implements ICoverage {
       return false;
    }
 
-   @Override
-   public String getRationale() {
-      return null;
-   }
-
 }

@@ -126,9 +126,4 @@ public class CoverageTestUnit implements ICoverage {
       return "";
    }
 
-   @Override
-   public String getRationale() {
-      return null;
-   }
-
 }

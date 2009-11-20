@@ -77,13 +77,6 @@ public class CoverageParametersComposite extends Composite {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
 
-      getShowAllCheckbox().addXModifiedListener(new XModifiedListener() {
-
-         @Override
-         public void widgetModified(XWidget widget) {
-            coverageParameters.setShowAll(isShowAll());
-         }
-      });
       getAssigeeCombo().addXModifiedListener(new XModifiedListener() {
 
          @Override
@@ -135,10 +128,6 @@ public class CoverageParametersComposite extends Composite {
       return getShowAllCheckbox().isSelected();
    }
 
-   public XMembersCombo getAssigeeCombo() {
-      return (XMembersCombo) getXWidget("Assignee");
-   }
-
    public String getNotesStr() {
       if (getNotesXText() != null) {
          return getNotesXText().get();
@@ -167,8 +156,12 @@ public class CoverageParametersComposite extends Composite {
       return "";
    }
 
+   public XMembersCombo getAssigeeCombo() {
+      return (XMembersCombo) getXWidget("Coverage Unit Assignee");
+   }
+
    public XText getNotesXText() {
-      return (XText) getXWidget("Notes");
+      return (XText) getXWidget("Coverage Unit Notes");
    }
 
    public XText getNameXText() {
@@ -216,28 +209,22 @@ public class CoverageParametersComposite extends Composite {
    }
 
    public String getWidgetXml() {
-      StringBuffer sb =
-            new StringBuffer(
-                  "<xWidgets>" +
-                  // 
-                  "<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>" +
-                  //
-                  "<XWidget xwidgetType=\"XCheckBox\" displayName=\"Show All\" beginComposite=\"4\" defaultValue=\"false\" labelAfter=\"true\" horizontalLabel=\"true\"/>");
-      if (coverageParameters.getCoveragePackageBase().isAssignable()) {
-         sb.append("" +
-         //
-         "<XWidget xwidgetType=\"XMembersCombo\" displayName=\"Assignee\" horizontalLabel=\"true\"/>");
-      }
+      StringBuffer sb = new StringBuffer("<xWidgets>");
+      sb.append("<XWidget xwidgetType=\"XHyperlabelCoverageMethodSelection\" displayName=\"Coverage Method\" horizontalLabel=\"true\"/>");
       //
-      sb.append("<XWidget xwidgetType=\"XText\" beginComposite=\"8\" displayName=\"Name\" horizontalLabel=\"true\"/>");
+      sb.append("<XWidget xwidgetType=\"XText\" beginComposite=\"6\" displayName=\"Name\" horizontalLabel=\"true\"/>");
       //
       sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Namespace\" horizontalLabel=\"true\"/>");
       //
       sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Rationale\" horizontalLabel=\"true\"/>");
       //
-      sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Notes\" horizontalLabel=\"true\"/>");
+      //
+      if (coverageParameters.getCoveragePackageBase().isAssignable()) {
+         sb.append("<XWidget xwidgetType=\"XMembersCombo\" beginComposite=\"6\" displayName=\"Coverage Unit Assignee\" horizontalLabel=\"true\"/>");
+      }
+      //
+      sb.append("<XWidget xwidgetType=\"XText\" displayName=\"Coverage Unit Notes\" horizontalLabel=\"true\"/>");
       sb.append("</xWidgets>");
       return sb.toString();
    }
-
 }
