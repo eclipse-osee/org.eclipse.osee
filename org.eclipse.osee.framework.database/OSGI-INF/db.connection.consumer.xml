@@ -5,7 +5,7 @@
 		<provide interface="org.eclipse.osee.framework.database.internal.IDbConnectionFactory"/>
 	</service>
 	<reference name="db.connection.provider"
-		interface="org.eclipse.osee.framework.database.core.IConnection"
+		interface="org.eclipse.osee.framework.database.core.IConnectionFactory"
 		bind="bind"
 		unbind="unbind"
 		cardinality="0..n"

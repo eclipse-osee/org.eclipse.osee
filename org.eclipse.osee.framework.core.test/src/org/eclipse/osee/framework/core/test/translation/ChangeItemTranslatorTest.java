@@ -9,7 +9,7 @@
  *     Boeing - initial API and implementation
  *******************************************************************************/
 
-package org.eclipse.osee.framework.core.test.exchange;
+package org.eclipse.osee.framework.core.test.translation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -21,10 +21,10 @@ import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exchange.ChangeItemTranslator;
-import org.eclipse.osee.framework.core.exchange.ChangeVersionTranslator;
-import org.eclipse.osee.framework.core.exchange.DataTranslationService;
-import org.eclipse.osee.framework.core.exchange.ITranslator;
+import org.eclipse.osee.framework.core.translation.ChangeItemTranslator;
+import org.eclipse.osee.framework.core.translation.ChangeVersionTranslator;
+import org.eclipse.osee.framework.core.translation.DataTranslationService;
+import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;

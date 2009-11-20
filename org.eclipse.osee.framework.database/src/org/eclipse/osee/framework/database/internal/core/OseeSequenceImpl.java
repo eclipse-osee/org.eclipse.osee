@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.database.internal.core;
 import java.util.HashMap;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 
@@ -33,14 +34,14 @@ public class OseeSequenceImpl implements IOseeSequence {
 
    private final static HashMap<String, SequenceRange> sequences = new HashMap<String, SequenceRange>(30);
 
-   private final IOseeDatabaseService databaseService;
+   private final IOseeDatabaseServiceProvider serviceProvider;
 
-   public OseeSequenceImpl(IOseeDatabaseService databaseService) {
-      this.databaseService = databaseService;
+   public OseeSequenceImpl(IOseeDatabaseServiceProvider serviceProvider) {
+      this.serviceProvider = serviceProvider;
    }
 
-   private IOseeDatabaseService getDatabase() {
-      return databaseService;
+   private IOseeDatabaseService getDatabase() throws OseeDataStoreException {
+      return serviceProvider.getOseeDatabaseService();
    }
 
    private SequenceRange getRange(String sequenceName) {

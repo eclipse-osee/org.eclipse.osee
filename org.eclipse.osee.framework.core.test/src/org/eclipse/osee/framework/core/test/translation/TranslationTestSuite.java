@@ -8,17 +8,21 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.exchange;
+package org.eclipse.osee.framework.core.test.translation;
 
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
+@RunWith(Suite.class)
+@Suite.SuiteClasses( {//
+DataTranslationServiceTest.class, //
+      BasicArtifactTranslatorTest.class, //
+      BranchTranslatorTest.class, //
+      TransactionRecordTranslatorTest.class //
+})
 /**
  * @author Roberto E. Escobar
  */
-public interface ITranslator<T> {
+public class TranslationTestSuite {
 
-   T convert(PropertyStore propertyStore) throws OseeCoreException;
-
-   PropertyStore convert(T object) throws OseeCoreException;
 }

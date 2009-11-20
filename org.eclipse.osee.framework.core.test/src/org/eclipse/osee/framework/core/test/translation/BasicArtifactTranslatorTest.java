@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test.exchange;
+package org.eclipse.osee.framework.core.test.translation;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,8 +16,8 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exchange.BasicArtifactTranslator;
-import org.eclipse.osee.framework.core.exchange.ITranslator;
+import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
+import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Assert;
 import org.junit.runner.RunWith;

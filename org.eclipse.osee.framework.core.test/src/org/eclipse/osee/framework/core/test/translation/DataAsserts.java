@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test.exchange;
+package org.eclipse.osee.framework.core.test.translation;
 
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;

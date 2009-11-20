@@ -15,10 +15,11 @@ import java.util.List;
 import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.IOseeConnectionProvider;
 import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.internal.IDbConnectionFactory;
 import org.eclipse.osee.framework.database.internal.InternalActivator;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -27,14 +28,18 @@ public class OseeConnectionPoolImpl {
    private final List<OseeConnectionImpl> connections = new CopyOnWriteArrayList<OseeConnectionImpl>();
    private final String dbUrl;
    private final Properties properties;
-   private final IDbConnectionFactory connectionFactory;
+   private final IOseeConnectionProvider connectionProvider;
    private final String driver;
 
-   public OseeConnectionPoolImpl(IDbConnectionFactory connectionFactory, String driver, String dbUrl, Properties properties) {
-      this.connectionFactory = connectionFactory;
+   public OseeConnectionPoolImpl(IOseeConnectionProvider connectionProvider, String driver, String dbUrl, Properties properties) {
+      this.connectionProvider = connectionProvider;
       this.driver = driver;
       this.dbUrl = dbUrl;
       this.properties = properties;
+   }
+
+   private IConnectionFactory createConnection(String driver) throws OseeCoreException {
+      return connectionProvider.getConnectionFactory().get(driver);
    }
 
    public synchronized boolean hasOpenConnection() {
@@ -76,7 +81,7 @@ public class OseeConnectionPoolImpl {
    }
 
    private OseeConnectionImpl getOseeConnection() throws Exception {
-      IConnectionFactory connectionDriver = connectionFactory.get(driver);
+      IConnectionFactory connectionDriver = createConnection(driver);
       Connection connection = connectionDriver.getConnection(properties, dbUrl);
       connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
       return new OseeConnectionImpl(connection, this);

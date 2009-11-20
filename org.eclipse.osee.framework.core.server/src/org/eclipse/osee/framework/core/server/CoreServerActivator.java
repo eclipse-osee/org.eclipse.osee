@@ -14,6 +14,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadFactory;
 import org.eclipse.osee.framework.core.server.internal.ApplicationServerManager;
+import org.eclipse.osee.framework.core.server.internal.ServerDatabaseProvider;
+import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -34,6 +36,7 @@ public class CoreServerActivator implements BundleActivator {
       instance = this;
       services = new ArrayList<ServiceRegistration>();
 
+      services.add(context.registerService(IDatabaseInfoProvider.class.getName(), new ServerDatabaseProvider(), null));
       services.add(context.registerService(IApplicationServerManager.class.getName(), new ApplicationServerManager(),
             null));
 

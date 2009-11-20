@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.exchange;
+package org.eclipse.osee.framework.core.translation;
 
 import java.sql.Timestamp;
 import java.util.Date;

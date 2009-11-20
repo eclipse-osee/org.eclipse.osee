@@ -41,11 +41,11 @@ public class SearchTagDataStore {
          "select ost1.gamma_id from osee_search_tags ost1 where ost1.coded_tag_id = ?";
 
    public static long getTotalQueryIdsInQueue() throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(-1, SELECT_TOTAL_QUERY_IDS_IN_QUEUE);
+      return ConnectionHandler.runPreparedQueryFetchLong(-1L, SELECT_TOTAL_QUERY_IDS_IN_QUEUE);
    }
 
    public static long getTotalTags() throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchInt(-1, SELECT_TOTAL_TAGS);
+      return ConnectionHandler.runPreparedQueryFetchLong(-1L, SELECT_TOTAL_TAGS);
    }
 
    public static int deleteTags(OseeConnection connection, int queryId) throws OseeDataStoreException {

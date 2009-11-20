@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.database.internal.InternalActivator;
 public final class ConnectionHandler {
 
    private static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
-      return InternalActivator.getInstance().getDatabaseService();
+      return InternalActivator.getInstance().getOseeDatabaseService();
    }
 
    /**

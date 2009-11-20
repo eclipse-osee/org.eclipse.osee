@@ -8,23 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test.exchange;
+package org.eclipse.osee.framework.core.test.translation;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exchange.BranchTranslator;
-import org.eclipse.osee.framework.core.exchange.DataTranslationService;
-import org.eclipse.osee.framework.core.exchange.ITranslator;
-import org.eclipse.osee.framework.core.exchange.TransactionRecordTranslator;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.test.mocks.MockCacheServiceFactory;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
+import org.eclipse.osee.framework.core.translation.BranchTranslator;
+import org.eclipse.osee.framework.core.translation.DataTranslationService;
+import org.eclipse.osee.framework.core.translation.ITranslator;
+import org.eclipse.osee.framework.core.translation.TransactionRecordTranslator;
 import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;

@@ -23,7 +23,7 @@ public class SequenceManager {
    }
 
    private static IOseeDatabaseService getDatabase() throws OseeDataStoreException {
-      return InternalActivator.getInstance().getDatabaseService();
+      return InternalActivator.getInstance().getOseeDatabaseService();
    }
 
    private static IOseeSequence getSequence() throws OseeDataStoreException {

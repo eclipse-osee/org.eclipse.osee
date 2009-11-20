@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.branch.management.cache;
 
 import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
@@ -36,11 +37,11 @@ public abstract class AbstractDatabaseAccessor<T extends IOseeStorableType> impl
       return databaseProvider;
    }
 
-   protected IOseeDatabaseService getDatabaseService() {
+   protected IOseeDatabaseService getDatabaseService() throws OseeDataStoreException {
       return getDatabaseServiceProvider().getOseeDatabaseService();
    }
 
-   protected IOseeSequence getSequence() {
+   protected IOseeSequence getSequence() throws OseeDataStoreException {
       return getDatabaseService().getSequence();
    }
 

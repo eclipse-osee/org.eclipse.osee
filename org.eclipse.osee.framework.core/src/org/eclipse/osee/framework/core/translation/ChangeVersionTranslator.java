@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.exchange;
+package org.eclipse.osee.framework.core.translation;
 
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;

@@ -8,14 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.database;
+package org.eclipse.osee.framework.core.translation;
 
-import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Roberto E. Escobar
  */
-public interface IOseeDatabaseServiceProvider {
+public interface ITranslator<T> {
 
-   IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException;
+   T convert(PropertyStore propertyStore) throws OseeCoreException;
+
+   PropertyStore convert(T object) throws OseeCoreException;
 }

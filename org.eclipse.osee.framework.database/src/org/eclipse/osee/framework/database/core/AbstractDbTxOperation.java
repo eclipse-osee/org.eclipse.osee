@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.database.core;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
@@ -28,7 +29,7 @@ public abstract class AbstractDbTxOperation extends AbstractOperation {
       this.provider = provider;
    }
 
-   protected IOseeDatabaseService getDatabaseService() {
+   protected IOseeDatabaseService getDatabaseService() throws OseeDataStoreException {
       return provider.getOseeDatabaseService();
    }
 

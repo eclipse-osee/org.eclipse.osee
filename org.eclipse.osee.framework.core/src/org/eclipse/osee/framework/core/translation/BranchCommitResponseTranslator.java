@@ -8,12 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.exchange;
+package org.eclipse.osee.framework.core.translation;
 
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
@@ -25,17 +25,16 @@ public class BranchCommitResponseTranslator implements ITranslator<BranchCommitR
       TRANSACTION_NUMBER
    }
 
-   private final IOseeCachingServiceProvider cachingService;
+   private final IDataTranslationService service;
 
-   public BranchCommitResponseTranslator(IOseeCachingServiceProvider cachingService) {
-      this.cachingService = cachingService;
+   public BranchCommitResponseTranslator(IDataTranslationService service) {
+      this.service = service;
    }
 
    public BranchCommitResponse convert(PropertyStore propertyStore) throws OseeCoreException {
       BranchCommitResponse response = new BranchCommitResponse();
-      int txNumber = propertyStore.getInt(Entry.TRANSACTION_NUMBER.name());
-      TransactionRecord transactionRecord =
-            cachingService.getOseeCachingService().getTransactionCache().getById(txNumber);
+      PropertyStore innerStore = propertyStore.getPropertyStore(Entry.TRANSACTION_NUMBER.name());
+      TransactionRecord transactionRecord = service.convert(innerStore, TransactionRecord.class);
       response.setTransaction(transactionRecord);
       return response;
    }
@@ -43,7 +42,8 @@ public class BranchCommitResponseTranslator implements ITranslator<BranchCommitR
    public PropertyStore convert(BranchCommitResponse data) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       TransactionRecord record = data.getTransaction();
-      store.put(Entry.TRANSACTION_NUMBER.name(), record != null ? record.getId() : -1);
+      PropertyStore property = service.convert(record);
+      store.put(Entry.TRANSACTION_NUMBER.name(), property);
       return store;
    }
 

@@ -12,9 +12,9 @@ package org.eclipse.osee.framework.core.test;
 
 import org.eclipse.osee.framework.core.test.cache.CacheTestSuite;
 import org.eclipse.osee.framework.core.test.data.DataTestSuite;
-import org.eclipse.osee.framework.core.test.exchange.ExchangeTestSuite;
 import org.eclipse.osee.framework.core.test.fields.FieldTestSuite;
 import org.eclipse.osee.framework.core.test.model.ModelTestSuite;
+import org.eclipse.osee.framework.core.test.translation.TranslationTestSuite;
 import org.eclipse.osee.framework.core.test.util.UtilTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -23,7 +23,7 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {//
 CacheTestSuite.class, //
       DataTestSuite.class, //
-      ExchangeTestSuite.class, //
+      TranslationTestSuite.class, //
       FieldTestSuite.class, //
       ModelTestSuite.class, //
       UtilTestSuite.class, //

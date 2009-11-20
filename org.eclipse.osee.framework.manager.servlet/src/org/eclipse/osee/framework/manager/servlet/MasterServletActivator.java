@@ -68,37 +68,28 @@ public class MasterServletActivator implements BundleActivator {
       createServiceTracker(context, ISessionManager.class, TrackerId.SESSION_MANAGER);
       createServiceTracker(context, IResourceLocatorManager.class, TrackerId.RESOURCE_LOCATOR);
       createServiceTracker(context, IResourceManager.class, TrackerId.RESOURCE_MANAGER);
-
       createServiceTracker(context, ISearchEngine.class, TrackerId.SEARCH_ENGINE);
       createServiceTracker(context, ISearchEngineTagger.class, TrackerId.SEARCH_ENGINE_TAGGER);
-
+      createServiceTracker(context, IDataTranslationService.class, TrackerId.DATA_TRANSLATOR_SERVICE);
       createServiceTracker(context, IAuthenticationManager.class, TrackerId.AUTHENTICATION_SERVICE);
-
-      createHttpServiceTracker(context, SystemManagerServlet.class, OseeServerContext.MANAGER_CONTEXT);
-      createHttpServiceTracker(context, ResourceManagerServlet.class, OseeServerContext.RESOURCE_CONTEXT);
-
-      createHttpServiceTracker(context, ArtifactFileServlet.class, OseeServerContext.PROCESS_CONTEXT);
-      createHttpServiceTracker(context, ArtifactFileServlet.class, OseeServerContext.ARTIFACT_CONTEXT);
-      createHttpServiceTracker(context, ArtifactFileServlet.class, "index");
-
       createServiceTracker(context, IBranchCreation.class, TrackerId.BRANCH_CREATION);
       createServiceTracker(context, IBranchCommitService.class, TrackerId.BRANCH_COMMIT);
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
       createServiceTracker(context, IChangeReportService.class, TrackerId.CHANGE_REPORT);
-
       createServiceTracker(context, IOseeCachingService.class, TrackerId.CACHING_SERVICE);
 
+      createHttpServiceTracker(context, SystemManagerServlet.class, OseeServerContext.MANAGER_CONTEXT);
+      createHttpServiceTracker(context, ResourceManagerServlet.class, OseeServerContext.RESOURCE_CONTEXT);
+      createHttpServiceTracker(context, ArtifactFileServlet.class, OseeServerContext.PROCESS_CONTEXT);
+      createHttpServiceTracker(context, ArtifactFileServlet.class, OseeServerContext.ARTIFACT_CONTEXT);
+      createHttpServiceTracker(context, ArtifactFileServlet.class, "index");
       createHttpServiceTracker(context, BranchExchangeServlet.class, OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
       createHttpServiceTracker(context, BranchManagerServlet.class, OseeServerContext.BRANCH_CONTEXT);
-
       createHttpServiceTracker(context, SearchEngineServlet.class, OseeServerContext.SEARCH_CONTEXT);
       createHttpServiceTracker(context, SearchEngineTaggerServlet.class, OseeServerContext.SEARCH_TAGGING_CONTEXT);
-
       createHttpServiceTracker(context, ServerLookupServlet.class, OseeServerContext.LOOKUP_CONTEXT);
       createHttpServiceTracker(context, SessionManagementServlet.class, OseeServerContext.SESSION_CONTEXT);
-
       createHttpServiceTracker(context, SessionClientLoopbackServlet.class, OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
-
       createHttpServiceTracker(context, ClientInstallInfoServlet.class, "osee/install/info");
       createHttpServiceTracker(context, OseeCacheServlet.class, OseeServerContext.CACHE_CONTEXT);
    }

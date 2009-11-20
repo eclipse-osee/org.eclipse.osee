@@ -16,9 +16,12 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IApplicationDatabaseManager;
+import org.eclipse.osee.framework.database.IOseeConnectionProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.database.internal.core.OseeDatabaseServiceImpl;
+import org.eclipse.osee.framework.database.internal.core.OseeSequenceImpl;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -27,7 +30,7 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Roberto E. Escobar
  */
-public class InternalActivator implements BundleActivator {
+public class InternalActivator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeConnectionProvider {
 
    private static final long TIMEOUT = 20000;
 
@@ -51,7 +54,7 @@ public class InternalActivator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       instance = this;
 
-      createService(context, IOseeDatabaseService.class, new OseeDatabaseServiceImpl());
+      createService(context, IOseeDatabaseService.class, new OseeDatabaseServiceImpl(new OseeSequenceImpl(this), this));
 
       createServiceTracker(context, IDbConnectionFactory.class, TrackerId.CONNECTION_PROVIDER);
       createServiceTracker(context, IDbConnectionInformation.class, TrackerId.CONNECTION_INFOS);
@@ -94,7 +97,8 @@ public class InternalActivator implements BundleActivator {
       return getTracker(TrackerId.CONNECTION_INFOS, IDbConnectionInformation.class, TIMEOUT);
    }
 
-   public IOseeDatabaseService getDatabaseService() throws OseeDataStoreException {
+   @Override
+   public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
       return getTracker(TrackerId.DATABASE_SERVICE, IOseeDatabaseService.class, TIMEOUT);
    }
 
