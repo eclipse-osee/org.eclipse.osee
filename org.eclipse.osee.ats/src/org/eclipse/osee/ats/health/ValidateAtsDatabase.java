@@ -139,7 +139,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
       artIdLists = loadAtsBranchArtifactIds(xResultData, monitor);
 
       // Un-comment to process specific artifact from common - Test Mode
-      //      artIdLists = Arrays.asList((Collection<Integer>) Arrays.asList(new Integer(520234)));
+      //  artIdLists = Arrays.asList((Collection<Integer>) Arrays.asList(new Integer(524575)));
 
       if (monitor != null) {
          monitor.beginTask(getName(), artIdLists.size());
@@ -407,25 +407,31 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                            "Error: Artifact: " + XResultData.getHyperlink(artifact) + " Type [%s] AttrType [%s] Max [%d] Actual [%d] Values [%s] ",
                            artifact.getArtifactTypeName(), attrType.getName(), attrType.getMaxOccurrences(), count,
                            artifact.getAttributesToString(attrType.getName()));
-               Set<String> values = new HashSet<String>();
-               values.addAll(artifact.getAttributesToStringList(attrType.getName()));
-               if (values.size() == 1) {
-                  result += " - SAME VALUES - FIX AVAILABLE";
-                  resultsMap.put("checkAndResolveDuplicateAttributesForAttributeNameContains", result);
+               Map<String, Attribute<?>> valuesAttrMap = new HashMap<String, Attribute<?>>();
+               int latestGamma = 0;
+               String fixInfo = " - FIX AVAILABLE";
+               for (Attribute<?> attr : artifact.getAttributes(attrType.getName())) {
+                  if (attr.getGammaId() > latestGamma) {
+                     latestGamma = attr.getGammaId();
+                  }
+                  String info = String.format("[Gamma [%s] Value [%s]]", attr.getGammaId(), attr.getValue());
+                  valuesAttrMap.put(info, attr);
+                  fixInfo += info;
+               }
+               fixInfo += " - KEEP Gamma" + latestGamma;
+               if (latestGamma != 0) {
+                  result += fixInfo;
                   if (fixAttributeValues) {
-                     Attribute<?> lastAttr = getLatestAttribute(artifact.getAttributes(attrType.getName()));
                      for (Attribute<?> attr : artifact.getAttributes(attrType.getName())) {
-                        if (!attr.equals(lastAttr)) {
+                        if (attr.getGammaId() != latestGamma) {
                            attr.delete();
                         }
                      }
                      artifact.persist(transaction);
                      resultsMap.put("checkAndResolveDuplicateAttributesForAttributeNameContains", "Fixed");
                   }
-               } else {
-                  resultsMap.put("checkAndResolveDuplicateAttributesForAttributeNameContains", result);
                }
-
+               resultsMap.put("checkAndResolveDuplicateAttributesForAttributeNameContains", result);
             }
          }
       }
