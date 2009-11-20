@@ -88,7 +88,7 @@ public class BarChartExample extends XNavigateItemAction {
       return new ResultsEditorHtmlTab("Example Bar Chart Data", "Report", AHTML.simplePage(sb.toString()));
    }
 
-   @SuppressWarnings( {"deprecation", "unchecked"})
+   @SuppressWarnings( {"deprecation"})
    public static Chart createMyChart() {
       // bart charts are based on charts that contain axes
       ChartWithAxes cwaBar = ChartWithAxesImpl.create();
