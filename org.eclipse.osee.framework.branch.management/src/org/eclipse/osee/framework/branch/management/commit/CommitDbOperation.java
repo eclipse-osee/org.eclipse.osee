@@ -19,12 +19,12 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
-import org.eclipse.osee.framework.core.data.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.CommitTransactionRecordResponse;
+import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.RelationChangeItem;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -35,10 +35,11 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeConnection;
-import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.logging.OseeLog;
 
@@ -69,21 +70,23 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private static final String UPDATE_SOURCE_BRANCH_STATE = "update osee_branch set branch_state=? where branch_id=?";
 
    private final IBasicArtifact<?> user;
-   private final AbstractOseeCache<Branch> branchCache;
+   private final BranchCache branchCache;
+   private final TransactionCache transactionCache;
    private final Map<Branch, BranchState> savedBranchStates;
    private final Branch sourceBranch;
    private final Branch destinationBranch;
    private final Branch mergeBranch;
    private final List<ChangeItem> changes;
-   private final CommitTransactionRecordResponse txHolder;
+   private final BranchCommitResponse txHolder;
 
    private OseeConnection connection;
    private boolean success;
 
-   public CommitDbOperation(AbstractOseeCache<Branch> branchCache, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, CommitTransactionRecordResponse txHolder) {
-      super("Commit Database Operation", InternalBranchActivator.PLUGIN_ID);
+   public CommitDbOperation(IOseeDatabaseServiceProvider databaseProvider, BranchCache branchCache, TransactionCache transactionCache, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, BranchCommitResponse txHolder) {
+      super(databaseProvider, "Commit Database Operation", InternalBranchActivator.PLUGIN_ID);
       this.savedBranchStates = new HashMap<Branch, BranchState>();
       this.branchCache = branchCache;
+      this.transactionCache = transactionCache;
       this.user = user;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
@@ -104,24 +107,27 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       }
       checkPreconditions();
       updateBranchState();
-      txHolder.setTransactionNumber(addCommitTransactionToDatabase(user));
+      txHolder.setTransaction(addCommitTransactionToDatabase(user));
 
       //      TODO AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
 
       updatePreviousCurrentsOnDestinationBranch();
+
       insertCommitAddressing();
+
       updateMergeBranchCommitTx();
+
       manageBranchStates();
    }
 
    private void updateMergeBranchCommitTx() throws OseeDataStoreException {
-      ConnectionHandler.runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, txHolder.getTransactionNumber(),
+      getDatabaseService().runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, txHolder.getTransaction(),
             sourceBranch.getId(), destinationBranch.getId());
    }
 
    public void checkPreconditions() throws OseeCoreException {
       int count =
-            ConnectionHandler.runPreparedQueryFetchInt(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getId(),
+            getDatabaseService().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getId(),
                   BranchState.COMMIT_IN_PROGRESS.getValue());
       if (count > 0) {
          throw new OseeStateException(String.format("Commit already in progress for [%s]", sourceBranch));
@@ -129,7 +135,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    }
 
    public void updateBranchState() throws OseeCoreException {
-      ConnectionHandler.runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, BranchState.COMMIT_IN_PROGRESS.getValue(),
+      getDatabaseService().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, BranchState.COMMIT_IN_PROGRESS.getValue(),
             sourceBranch.getId());
    }
 
@@ -150,26 +156,29 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    }
 
    @SuppressWarnings("unchecked")
-   private int addCommitTransactionToDatabase(IBasicArtifact userToBlame) throws OseeCoreException {
-      int newTransactionNumber = SequenceManager.getNextTransactionId();
+   private TransactionRecord addCommitTransactionToDatabase(IBasicArtifact userToBlame) throws OseeCoreException {
+      int newTransactionNumber = getDatabaseService().getSequence().getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
       String comment = COMMIT_COMMENT + sourceBranch.getName();
 
-      ConnectionHandler.runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
+      getDatabaseService().runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
             TransactionDetailsType.NonBaselined.getId(), destinationBranch.getId(), newTransactionNumber, comment,
             timestamp, userToBlame.getArtId(), sourceBranch.getAssociatedArtifact().getArtId());
-      return newTransactionNumber;
+      //      transactioCache;
+      //      TransactionRecord record = new TransactionRecord(newTransactionNumber, , comment, time, author);
+      TransactionRecord record = null;
+      return record;
    }
 
    private void insertCommitAddressing() throws OseeDataStoreException {
       List<Object[]> insertData = new ArrayList<Object[]>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
-         insertData.add(new Object[] {txHolder.getTransactionNumber(), change.getNetChange().getGammaId(),
+         insertData.add(new Object[] {txHolder.getTransaction(), change.getNetChange().getGammaId(),
                modType.getValue(), TxChange.getCurrent(modType).getValue()});
       }
-      ConnectionHandler.runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
+      getDatabaseService().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }
 
    private void manageBranchStates() throws OseeCoreException {
@@ -206,7 +215,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       if (success) {
          // update conflict status, if necessary
          if (mergeBranch != null) {
-            ConnectionHandler.runPreparedUpdate(connection, UPDATE_CONFLICT_STATUS,
+            getDatabaseService().runPreparedUpdate(connection, UPDATE_CONFLICT_STATUS,
                   ConflictStatus.COMMITTED.getValue(), ConflictStatus.RESOLVED.getValue(), mergeBranch.getId());
          }
       }

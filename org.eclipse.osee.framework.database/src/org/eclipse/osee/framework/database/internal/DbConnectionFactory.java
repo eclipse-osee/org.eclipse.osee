@@ -15,24 +15,24 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.database.core.IConnection;
+import org.eclipse.osee.framework.database.core.IConnectionFactory;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class DbConnectionFactory implements IDbConnectionFactory {
 
-   private final List<IConnection> connectionProviders;
+   private final List<IConnectionFactory> connectionProviders;
    private final Object myWait;
 
    public DbConnectionFactory() {
-      connectionProviders = new CopyOnWriteArrayList<IConnection>();
+      connectionProviders = new CopyOnWriteArrayList<IConnectionFactory>();
       myWait = new Object();
    }
 
    @Override
-   public IConnection get(String driver) throws OseeCoreException {
-      IConnection selectedDriver = getInternal(driver);
+   public IConnectionFactory get(String driver) throws OseeCoreException {
+      IConnectionFactory selectedDriver = getInternal(driver);
       if (selectedDriver == null) {
          long endTime = System.currentTimeMillis() + 1000 * 20;
          long timeLeft = 1000 * 20;
@@ -53,8 +53,8 @@ public class DbConnectionFactory implements IDbConnectionFactory {
       return selectedDriver;
    }
 
-   private IConnection getInternal(String driver) {
-      for (IConnection connection : connectionProviders) {
+   private IConnectionFactory getInternal(String driver) {
+      for (IConnectionFactory connection : connectionProviders) {
          if (connection.getDriver().equals(driver)) {
             return connection;
          }
@@ -63,7 +63,7 @@ public class DbConnectionFactory implements IDbConnectionFactory {
    }
 
    @Override
-   public void bind(IConnection connection) {
+   public void bind(IConnectionFactory connection) {
       connectionProviders.add(connection);
       synchronized (myWait) {
          myWait.notifyAll();
@@ -71,7 +71,7 @@ public class DbConnectionFactory implements IDbConnectionFactory {
    }
 
    @Override
-   public void unbind(IConnection connection) {
+   public void unbind(IConnectionFactory connection) {
       connectionProviders.remove(connection);
    }
 

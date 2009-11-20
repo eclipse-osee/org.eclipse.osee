@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.branch.management.remote;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.IBranchArchivingService;
-import org.eclipse.osee.framework.core.data.Branch;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 
 /**
@@ -35,7 +35,7 @@ public class BranchArchivingService implements IBranchArchivingService {
       String sourceTableName = archive ? "osee_txs" : "osee_txs_archived";
       String destinationTableName = archive ? "osee_txs_archived" : "osee_txs";
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       List<Object[]> addressing = new ArrayList<Object[]>();
       List<Object[]> deleteAddressing = new ArrayList<Object[]>();
       String sql = String.format(SELECT_ADDRESSING_BY_BRANCH, sourceTableName);

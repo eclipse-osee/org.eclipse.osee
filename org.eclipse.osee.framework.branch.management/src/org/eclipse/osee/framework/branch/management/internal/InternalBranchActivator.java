@@ -19,14 +19,31 @@ import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.IChangeReportService;
-import org.eclipse.osee.framework.branch.management.ITransactionService;
+import org.eclipse.osee.framework.branch.management.cache.DatabaseArtifactTypeAccessor;
+import org.eclipse.osee.framework.branch.management.cache.DatabaseAttributeTypeAccessor;
+import org.eclipse.osee.framework.branch.management.cache.DatabaseBranchAccessor;
+import org.eclipse.osee.framework.branch.management.cache.DatabaseOseeEnumTypeAccessor;
+import org.eclipse.osee.framework.branch.management.cache.DatabaseRelationTypeAccessor;
 import org.eclipse.osee.framework.branch.management.change.ChangeReportService;
 import org.eclipse.osee.framework.branch.management.commit.BranchCommitService;
 import org.eclipse.osee.framework.branch.management.creation.BranchCreation;
 import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
 import org.eclipse.osee.framework.branch.management.remote.BranchArchivingService;
-import org.eclipse.osee.framework.branch.management.transaction.TransactionService;
+import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
+import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
+import org.eclipse.osee.framework.core.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.cache.TransactionCache;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.osgi.framework.BundleActivator;
@@ -34,14 +51,15 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class InternalBranchActivator implements BundleActivator {
+public class InternalBranchActivator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeModelFactoryServiceProvider {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.branch.management";
 
    private enum TrackerId {
       RESOURCE_LOCATOR,
       RESOURCE_MANAGER,
       BRANCH_EXCHANGE,
-      TRANSACTION_SERVICE,
+      OSEE_DATABASE_SERVICE,
+      OSEE_FACTORY_SERVICE,
       MASTER_SERVICE;
    }
 
@@ -58,19 +76,23 @@ public class InternalBranchActivator implements BundleActivator {
    public void start(BundleContext context) throws Exception {
       InternalBranchActivator.instance = this;
 
-      createService(context, IBranchCreation.class, new BranchCreation());
+      IOseeCachingService cachingService = createCachingService();
+      createService(context, IOseeCachingService.class, cachingService);
+
+      createService(context, IBranchCreation.class, new BranchCreation(this));
       createService(context, IBranchArchivingService.class, new BranchArchivingService());
-      createService(context, IBranchCommitService.class, new BranchCommitService());
-      createService(context, IChangeReportService.class, new ChangeReportService());
-      createService(context, IBranchCreation.class, new BranchCreation());
+      createService(context, IBranchCommitService.class, new BranchCommitService(this, cachingService.getBranchCache(),
+            cachingService.getTransactionCache()));
+      createService(context, IChangeReportService.class, new ChangeReportService(this));
+      createService(context, IBranchCreation.class, new BranchCreation(this));
       createService(context, IBranchExchange.class, new BranchExchange());
-      createService(context, ITransactionService.class, new TransactionService());
 
       createServiceTracker(context, IResourceLocatorManager.class, TrackerId.RESOURCE_LOCATOR);
       createServiceTracker(context, IResourceManager.class, TrackerId.RESOURCE_MANAGER);
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
+
+      createServiceTracker(context, IOseeModelFactoryService.class, TrackerId.OSEE_FACTORY_SERVICE);
       createServiceTracker(context, IApplicationServerManager.class, TrackerId.MASTER_SERVICE);
-      createServiceTracker(context, ITransactionService.class, TrackerId.TRANSACTION_SERVICE);
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -85,6 +107,26 @@ public class InternalBranchActivator implements BundleActivator {
       mappedTrackers.clear();
 
       instance = null;
+   }
+
+   private IOseeCachingService createCachingService() {
+      OseeEnumTypeCache oseeEnumTypeCache = new OseeEnumTypeCache(new DatabaseOseeEnumTypeAccessor(this, this));
+
+      IOseeDataAccessor<AttributeType> attrAccessor = new DatabaseAttributeTypeAccessor(this, this, oseeEnumTypeCache);
+
+      AttributeTypeCache attributeCache = new AttributeTypeCache(attrAccessor);
+
+      TransactionCache transactionCache = new TransactionCache(null);
+      BranchCache branchCache = new BranchCache(new DatabaseBranchAccessor(this, this, transactionCache));
+
+      ArtifactTypeCache artifactCache =
+            new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(this, this, branchCache, attributeCache));
+
+      RelationTypeCache relationCache =
+            new RelationTypeCache(new DatabaseRelationTypeAccessor(this, this, artifactCache));
+
+      return new OseeCachingService(branchCache, transactionCache, artifactCache, attributeCache, relationCache,
+            oseeEnumTypeCache);
    }
 
    private void createService(BundleContext context, Class<?> serviceInterface, Object serviceImplementation) {
@@ -117,8 +159,12 @@ public class InternalBranchActivator implements BundleActivator {
       return getTracker(TrackerId.MASTER_SERVICE, IApplicationServerManager.class);
    }
 
-   public ITransactionService getTransactionService() {
-      return getTracker(TrackerId.TRANSACTION_SERVICE, ITransactionService.class);
+   public IOseeDatabaseService getOseeDatabaseService() {
+      return getTracker(TrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
+   }
+
+   public IOseeModelFactoryService getOseeFactoryService() {
+      return getTracker(TrackerId.OSEE_FACTORY_SERVICE, IOseeModelFactoryService.class);
    }
 
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
@@ -126,4 +172,5 @@ public class InternalBranchActivator implements BundleActivator {
       Object service = tracker.getService();
       return clazz.cast(service);
    }
+
 }

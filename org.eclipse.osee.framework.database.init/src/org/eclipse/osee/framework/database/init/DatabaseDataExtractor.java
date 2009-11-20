@@ -33,7 +33,7 @@ import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.database.init.TableElement.ColumnFields;
@@ -89,7 +89,7 @@ public class DatabaseDataExtractor {
 
       @Override
       public void run() {
-         ConnectionHandlerStatement chStmt = null;
+         IOseeStatement chStmt = null;
          OutputStream outputStream = null;
          try {
             chStmt = ConnectionHandler.getStatement();
@@ -158,7 +158,7 @@ public class DatabaseDataExtractor {
       }
    }
 
-   private void buildXml(ConnectionHandlerStatement chStmt, TableElement table, OutputStream outputStream) throws Exception {
+   private void buildXml(IOseeStatement chStmt, TableElement table, OutputStream outputStream) throws Exception {
       ArrayList<ColumnInfo> columns = new ArrayList<ColumnInfo>();
       int numberOfColumns = chStmt.getColumnCount();
       for (int index = 1; index <= numberOfColumns; index++) {

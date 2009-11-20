@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exchange.ChangeVersionTranslator;
-import org.eclipse.osee.framework.core.exchange.IDataTranslator;
+import org.eclipse.osee.framework.core.exchange.ITranslator;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -34,7 +34,7 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class ChangeVersionTranslatorTest extends BaseTranslatorTest<ChangeVersion> {
 
-   public ChangeVersionTranslatorTest(ChangeVersion data, IDataTranslator<ChangeVersion> translator) {
+   public ChangeVersionTranslatorTest(ChangeVersion data, ITranslator<ChangeVersion> translator) {
       super(data, translator);
    }
 
@@ -49,7 +49,7 @@ public class ChangeVersionTranslatorTest extends BaseTranslatorTest<ChangeVersio
    @Parameters
    public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<Object[]>();
-      IDataTranslator<ChangeVersion> translator = new ChangeVersionTranslator();
+      ITranslator<ChangeVersion> translator = new ChangeVersionTranslator();
       try {
          data.add(new Object[] {new ChangeVersion("test", 1L ,ModificationType.getMod(1),12), translator});
       }

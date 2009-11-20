@@ -11,6 +11,8 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.Branch;
 
 /**
  * @author Roberto E. Escobar
@@ -22,6 +24,10 @@ public interface IBasicArtifact<T> {
    String getGuid();
 
    String getName();
+
+   Branch getBranch();
+
+   ArtifactType getArtifactType();
 
    T getFullArtifact() throws OseeCoreException;
 }

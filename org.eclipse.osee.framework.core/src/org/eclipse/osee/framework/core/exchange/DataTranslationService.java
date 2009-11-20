@@ -17,10 +17,11 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
@@ -28,29 +29,41 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class DataTranslationService implements IDataTranslationService {
 
-   private final Map<Class<?>, IDataTranslator<?>> translators;
+   private final Map<Class<?>, ITranslator<?>> translators;
 
    public DataTranslationService() {
-      this.translators = new HashMap<Class<?>, IDataTranslator<?>>();
+      this.translators = new HashMap<Class<?>, ITranslator<?>>();
    }
 
    @Override
    @SuppressWarnings("unchecked")
    public <T> T convert(PropertyStore propertyStore, Class<T> toMatch) throws OseeCoreException {
-      IDataTranslator<?> translator = getTranslator(toMatch);
-      return (T) translator.convert(propertyStore);
+      Conditions.checkNotNull(toMatch, "class toMatch");
+      T object = null;
+      if (propertyStore != null) {
+         ITranslator<?> translator = getTranslator(toMatch);
+         object = (T) translator.convert(propertyStore);
+      }
+      return object;
    }
 
    @Override
    @SuppressWarnings("unchecked")
    public <T> PropertyStore convert(T object) throws OseeCoreException {
-      IDataTranslator<T> translator = (IDataTranslator<T>) getTranslator(object.getClass());
-      return translator.convert(object);
+      PropertyStore propertyStore = null;
+      if (object == null) {
+         propertyStore = new PropertyStore();
+      } else {
+         ITranslator<T> translator = (ITranslator<T>) getTranslator(object.getClass());
+         propertyStore = translator.convert(object);
+      }
+      return propertyStore;
    }
 
    @Override
-   public IDataTranslator<?> getTranslator(Class<?> toMatch) throws OseeCoreException {
-      for (Entry<Class<?>, IDataTranslator<?>> entry : translators.entrySet()) {
+   public ITranslator<?> getTranslator(Class<?> toMatch) throws OseeCoreException {
+      Conditions.checkNotNull(toMatch, "class toMatch");
+      for (Entry<Class<?>, ITranslator<?>> entry : translators.entrySet()) {
          Class<?> acceptedClass = entry.getKey();
          if (acceptedClass.isAssignableFrom(toMatch)) {
             return entry.getValue();
@@ -60,7 +73,7 @@ public class DataTranslationService implements IDataTranslationService {
    }
 
    @Override
-   public boolean addTranslator(Class<?> clazz, IDataTranslator<?> translator) {
+   public boolean addTranslator(Class<?> clazz, ITranslator<?> translator) {
       boolean wasAdded = false;
       if (!translators.containsKey(clazz)) {
          translators.put(clazz, translator);
@@ -81,6 +94,8 @@ public class DataTranslationService implements IDataTranslationService {
 
    @Override
    public <T> T convert(InputStream inputStream, Class<T> toMatch) throws OseeCoreException {
+      Conditions.checkNotNull(inputStream, "inputStream");
+      Conditions.checkNotNull(toMatch, "class toMatch");
       PropertyStore propertyStore = new PropertyStore();
       try {
          propertyStore.load(inputStream);

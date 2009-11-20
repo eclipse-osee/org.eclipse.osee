@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public abstract class DbTransaction {
+
    /**
     * Gets the name of this transaction. This is provided mainly for logging purposes.
     * 

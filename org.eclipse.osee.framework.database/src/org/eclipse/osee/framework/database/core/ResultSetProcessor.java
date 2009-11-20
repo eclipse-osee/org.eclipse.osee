@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  * @author Roberto E. Escobar
  */
 public class ResultSetProcessor {
-   public static IVariantData parse(ConnectionHandlerStatement chStmt) throws OseeDataStoreException, OseeWrappedException {
+   public static IVariantData parse(IOseeStatement chStmt) throws OseeDataStoreException, OseeWrappedException {
       IVariantData toReturn = new VariantData();
       int numberOfColumns = chStmt.getColumnCount() + 1;
       for (int index = 1; index < numberOfColumns; index++) {

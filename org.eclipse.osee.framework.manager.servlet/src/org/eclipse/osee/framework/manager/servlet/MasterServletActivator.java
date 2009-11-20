@@ -18,13 +18,13 @@ import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.IChangeReportService;
-import org.eclipse.osee.framework.branch.management.ITransactionService;
-import org.eclipse.osee.framework.core.IDataTranslationService;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
@@ -50,7 +50,7 @@ public class MasterServletActivator implements BundleActivator {
       SEARCH_ENGINE,
       DATA_TRANSLATOR_SERVICE,
       SEARCH_ENGINE_TAGGER,
-      TRANSACTION_SERVICE,
+      CACHING_SERVICE,
       AUTHENTICATION_SERVICE;
    }
 
@@ -73,7 +73,6 @@ public class MasterServletActivator implements BundleActivator {
       createServiceTracker(context, ISearchEngineTagger.class, TrackerId.SEARCH_ENGINE_TAGGER);
 
       createServiceTracker(context, IAuthenticationManager.class, TrackerId.AUTHENTICATION_SERVICE);
-      createServiceTracker(context, ITransactionService.class, TrackerId.TRANSACTION_SERVICE);
 
       createHttpServiceTracker(context, SystemManagerServlet.class, OseeServerContext.MANAGER_CONTEXT);
       createHttpServiceTracker(context, ResourceManagerServlet.class, OseeServerContext.RESOURCE_CONTEXT);
@@ -87,6 +86,8 @@ public class MasterServletActivator implements BundleActivator {
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
       createServiceTracker(context, IChangeReportService.class, TrackerId.CHANGE_REPORT);
 
+      createServiceTracker(context, IOseeCachingService.class, TrackerId.CACHING_SERVICE);
+
       createHttpServiceTracker(context, BranchExchangeServlet.class, OseeServerContext.BRANCH_EXCHANGE_CONTEXT);
       createHttpServiceTracker(context, BranchManagerServlet.class, OseeServerContext.BRANCH_CONTEXT);
 
@@ -99,6 +100,7 @@ public class MasterServletActivator implements BundleActivator {
       createHttpServiceTracker(context, SessionClientLoopbackServlet.class, OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
 
       createHttpServiceTracker(context, ClientInstallInfoServlet.class, "osee/install/info");
+      createHttpServiceTracker(context, OseeCacheServlet.class, OseeServerContext.CACHE_CONTEXT);
    }
 
    public void stop(BundleContext context) throws Exception {
@@ -171,8 +173,8 @@ public class MasterServletActivator implements BundleActivator {
       return getTracker(TrackerId.DATA_TRANSLATOR_SERVICE, IDataTranslationService.class);
    }
 
-   public ITransactionService getTransactionService() {
-      return getTracker(TrackerId.TRANSACTION_SERVICE, ITransactionService.class);
+   public IOseeCachingService getOseeCache() {
+      return getTracker(TrackerId.CACHING_SERVICE, IOseeCachingService.class);
    }
 
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {

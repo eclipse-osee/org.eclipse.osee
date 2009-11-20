@@ -22,7 +22,7 @@ import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.database.internal.InternalActivator;
@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Jeff C. Phillips
  * @author Ryan D. Brooks
  */
-public final class ConnectionHandlerStatementImpl extends ConnectionHandlerStatement {
+public final class ConnectionHandlerStatementImpl implements IOseeStatement {
    private ResultSet rSet;
    private PreparedStatement preparedStatement;
    private CallableStatement callableStatement;

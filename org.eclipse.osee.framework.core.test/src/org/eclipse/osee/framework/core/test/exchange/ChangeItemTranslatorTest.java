@@ -14,18 +14,17 @@ package org.eclipse.osee.framework.core.test.exchange;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import junit.framework.Assert;
-
+import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exchange.ChangeItemTranslator;
 import org.eclipse.osee.framework.core.exchange.ChangeVersionTranslator;
 import org.eclipse.osee.framework.core.exchange.DataTranslationService;
-import org.eclipse.osee.framework.core.exchange.IDataTranslator;
-import org.eclipse.osee.framework.core.util.ChangeItemBuilder;
+import org.eclipse.osee.framework.core.exchange.ITranslator;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -38,44 +37,52 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class ChangeItemTranslatorTest extends BaseTranslatorTest<ChangeItem> {
 
-   public ChangeItemTranslatorTest(ChangeItem data, IDataTranslator<ChangeItem> translator) {
+   public ChangeItemTranslatorTest(ChangeItem data, ITranslator<ChangeItem> translator) {
       super(data, translator);
    }
 
    @Override
    protected void checkEquals(ChangeItem expected, ChangeItem actual) throws OseeCoreException {
-       Assert.assertEquals(expected.getArtId(), actual.getArtId());
-       Assert.assertEquals(expected.getItemId(), actual.getItemId());
-       
-       checkChangeVersion(expected.getBaselineVersion(), actual.getBaselineVersion());
-       checkChangeVersion(expected.getCurrentVersion(), actual.getCurrentVersion());
-       checkChangeVersion(expected.getDestinationVersion(), actual.getDestinationVersion());
-       checkChangeVersion(expected.getNetChange(), actual.getNetChange());
-       checkChangeVersion(expected.getFirstNonCurrentChange(), actual.getFirstNonCurrentChange());
+      Assert.assertEquals(expected.getArtId(), actual.getArtId());
+      Assert.assertEquals(expected.getItemId(), actual.getItemId());
+
+      checkChangeVersion(expected.getBaselineVersion(), actual.getBaselineVersion());
+      checkChangeVersion(expected.getCurrentVersion(), actual.getCurrentVersion());
+      checkChangeVersion(expected.getDestinationVersion(), actual.getDestinationVersion());
+      checkChangeVersion(expected.getNetChange(), actual.getNetChange());
+      checkChangeVersion(expected.getFirstNonCurrentChange(), actual.getFirstNonCurrentChange());
    }
-   
-   private void checkChangeVersion(ChangeVersion expected, ChangeVersion actual){
-      if(actual.isValid()){
+
+   private void checkChangeVersion(ChangeVersion expected, ChangeVersion actual) {
+      if (actual.isValid()) {
          Assert.assertEquals(expected.getGammaId(), actual.getGammaId());
          Assert.assertEquals(expected.getTransactionNumber(), actual.getTransactionNumber());
          Assert.assertEquals(expected.getModType(), actual.getModType());
       }
    }
-   
+
    @Parameters
    public static Collection<Object[]> data() {
       DataTranslationService dataTranslationService = new DataTranslationService();
       dataTranslationService.addTranslator(ChangeItem.class, new ChangeItemTranslator(dataTranslationService));
       dataTranslationService.addTranslator(ChangeVersion.class, new ChangeVersionTranslator());
-      
+
       List<Object[]> data = new ArrayList<Object[]>();
-      IDataTranslator<ChangeItem> translator = new ChangeItemTranslator(dataTranslationService);
+      ITranslator<ChangeItem> translator = new ChangeItemTranslator(dataTranslationService);
       try {
-         data.add(new Object[] {ChangeItemBuilder.buildTestChangeItem(), translator});
-      }
-      catch (OseeArgumentException ex) {
+         data.add(new Object[] {createChangeItem(), translator});
+      } catch (OseeArgumentException ex) {
          throw new IllegalArgumentException(ex);
       }
       return data;
+   }
+
+   private static ChangeItem createChangeItem() throws OseeArgumentException {
+      ChangeItem changeItem = new ArtifactChangeItem(1L, ModificationType.getMod(1), 12, 13);
+      changeItem.getDestinationVersion().setGammaId(11L);
+      changeItem.getDestinationVersion().setModType(ModificationType.getMod(1));
+      changeItem.getDestinationVersion().setTransactionNumber(1);
+      changeItem.getDestinationVersion().setValue("hi");
+      return changeItem;
    }
 }

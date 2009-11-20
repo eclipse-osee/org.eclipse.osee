@@ -36,7 +36,6 @@ import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.OseeInfo;
-import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.database.init.internal.DatabaseInitActivator;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -92,7 +91,6 @@ public class DbBootstrapTask implements IDbInitializationTask {
       createOseeSchema();
       initializeApplicationServer();
       OseeInfo.putValue(OseeInfo.DB_ID_KEY, GUID.create());
-      populateSequenceTable();
       addDefaultPermissions();
 
       // Create System Root
@@ -198,15 +196,6 @@ public class DbBootstrapTask implements IDbInitializationTask {
    private void addDefaultPermissions() throws OseeDataStoreException {
       for (PermissionEnum permission : PermissionEnum.values()) {
          ConnectionHandler.runPreparedUpdate(ADD_PERMISSION, permission.getPermId(), permission.getName());
-      }
-   }
-
-   /**
-    * @throws OseeDataStoreException
-    */
-   private void populateSequenceTable() throws OseeDataStoreException {
-      for (String sequenceName : SequenceManager.sequenceNames) {
-         SequenceManager.internalInitializeSequence(sequenceName);
       }
    }
 }

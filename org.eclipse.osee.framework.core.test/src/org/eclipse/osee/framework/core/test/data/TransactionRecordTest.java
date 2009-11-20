@@ -10,95 +10,156 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.data;
 
-import static org.junit.Assert.assertEquals;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
-import org.eclipse.osee.framework.core.enums.BranchArchivedState;
-import org.eclipse.osee.framework.core.enums.BranchState;
-import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.test.util.BranchTestUtil;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
+import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameters;
 
 /**
  * Test Case for {@link TransactionRecord}
  * 
  * @author Megumi Telles
  */
-
+@RunWith(Parameterized.class)
 public class TransactionRecordTest {
 
-   private final String GUID = "gjdkfghfr183848754";
-   private final String BRANCH_NAME = "test branch";
-   private final BranchState BRANCH_STATE = BranchState.CREATED;
-   private final BranchType BRANCH_TYPE = BranchType.BASELINE;
-   private final boolean isArchived = false;
+   private final TransactionRecord transaction;
+   private final int transactionNumber;
+   private final Branch branch;
+   private final TransactionDetailsType txType;
 
-   private final int transactionNumber = 1234;
-   private final String comment = "test branch";
-   private final int authorArtId = 99999;
-   private final int commitArtId = 111111;
-   private final TransactionDetailsType txType = TransactionDetailsType.Baselined;
+   private final String comment;
+   private final Date time;
+   private final int authorArtId;
+   private final int commitArtId;
 
-   @Test
-   public void testTransactionRecordConstruction() {
-      BranchTestUtil branch =
-            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
-      Date date = new Date();
-      TransactionRecord record =
-            new TransactionRecord(transactionNumber, branch, comment, date, authorArtId, commitArtId, txType);
-      assertEquals(transactionNumber, record.getId());
-      assertEquals(branch, record.getBranch());
-      assertEquals(comment, record.getComment());
-      assertEquals(branch, record.getBranch());
-      assertEquals(date, record.getDate());
-      assertEquals(authorArtId, record.getAuthor());
-      assertEquals(commitArtId, record.getCommit());
-      assertEquals(txType, record.getTxType());
+   public TransactionRecordTest(int transactionNumber, Branch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+      this.transaction =
+            new TransactionRecord(transactionNumber, branch, comment, time, authorArtId, commitArtId, txType);
+      this.transactionNumber = transactionNumber;
+      this.branch = branch;
+      this.comment = comment;
+      this.time = time;
+      this.authorArtId = authorArtId;
+      this.commitArtId = commitArtId;
+      this.txType = txType;
    }
 
    @Test
-   public void testSetComment() {
-      BranchTestUtil branch =
-            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
-      Date date = new Date();
-      TransactionRecord record =
-            new TransactionRecord(transactionNumber, branch, comment, date, authorArtId, commitArtId, txType);
-      record.setComment("test set comment");
-      assertEquals("test set comment", record.getComment());
+   public void getBranch() {
+      Assert.assertEquals(branch, transaction.getBranch());
    }
 
    @Test
-   public void testSetTime() {
-      BranchTestUtil branch =
-            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
-      Date date = new Date();
-      TransactionRecord record =
-            new TransactionRecord(transactionNumber, branch, comment, date, authorArtId, commitArtId, txType);
-      record.setTime(date);
-      assertEquals(date, record.getDate());
+   public void getId() {
+      Assert.assertEquals(transactionNumber, transaction.getId());
    }
 
    @Test
-   public void testSetAuthor() {
-      BranchTestUtil branch =
-            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
-      Date date = new Date();
-      TransactionRecord record =
-            new TransactionRecord(transactionNumber, branch, comment, date, authorArtId, commitArtId, txType);
-      record.setAuthor(5678);
-      assertEquals(5678, record.getAuthor());
+   public void getTxType() {
+      Assert.assertEquals(txType, transaction.getTxType());
    }
 
    @Test
-   public void testSetCommit() {
-      BranchTestUtil branch =
-            new BranchTestUtil(GUID, BRANCH_NAME, BRANCH_STATE, BRANCH_TYPE, BranchArchivedState.UNARCHIVED, isArchived);
-      Date date = new Date();
-      TransactionRecord record =
-            new TransactionRecord(transactionNumber, branch, comment, date, authorArtId, commitArtId, txType);
-      record.setCommit(123456);
-      assertEquals(123456, record.getCommit());
+   public void testGetSetComment() {
+      Assert.assertEquals(comment, transaction.getComment());
+
+      transaction.setComment("test set comment");
+      Assert.assertEquals("test set comment", transaction.getComment());
+
+      transaction.setComment(comment);
    }
 
+   @Test
+   public void testGetSetDate() {
+      Assert.assertEquals(time, transaction.getTimeStamp());
+
+      Date anotherDate = new Date(11111111111L);
+      transaction.setTimeStamp(anotherDate);
+      Assert.assertEquals(anotherDate, transaction.getTimeStamp());
+
+      transaction.setTimeStamp(time);
+   }
+
+   @Test
+   public void testGetSetAuthor() {
+      Assert.assertEquals(authorArtId, transaction.getAuthor());
+
+      transaction.setAuthor(authorArtId * 101);
+      Assert.assertEquals(authorArtId * 101, transaction.getAuthor());
+
+      transaction.setAuthor(authorArtId);
+   }
+
+   @Test
+   public void testGetSetCommit() {
+      Assert.assertEquals(commitArtId, transaction.getCommit());
+
+      transaction.setCommit(commitArtId * 333);
+      Assert.assertEquals(commitArtId * 333, transaction.getCommit());
+
+      transaction.setCommit(commitArtId);
+   }
+
+   @Test
+   public void testEqualsAndHashCode() {
+      Branch br1 = MockDataFactory.createBranch(1);
+      Branch br2 = MockDataFactory.createBranch(2);
+      TransactionRecord tx1 = MockDataFactory.createTransaction(99, br1);
+      TransactionRecord tx2 = MockDataFactory.createTransaction(99, br2);
+
+      // Add some variation to tx2 so we are certain that only the txId is used in the equals method;
+      tx2.setAuthor(0);
+      tx2.setComment("a");
+      tx2.setCommit(1);
+      tx2.setTimeStamp(new Date(11111111111L));
+
+      Assert.assertNotSame(tx1, tx2);
+      Assert.assertTrue(tx1.equals(tx2));
+      Assert.assertTrue(tx2.equals(tx1));
+      Assert.assertEquals(tx1.hashCode(), tx2.hashCode());
+
+      Assert.assertFalse(transaction.equals(tx1));
+      Assert.assertFalse(transaction.equals(tx2));
+      Assert.assertFalse(transaction.hashCode() == tx1.hashCode());
+      Assert.assertFalse(transaction.hashCode() == tx2.hashCode());
+   }
+
+   @Test
+   public void testAdaptable() {
+      Assert.assertNull(transaction.getAdapter(null));
+      Assert.assertNull(transaction.getAdapter(Object.class));
+      Assert.assertSame(transaction, transaction.getAdapter(TransactionRecord.class));
+   }
+
+   @Test
+   public void testToString() {
+      String prefix = branch != null ? branch.toString() : "null";
+      Assert.assertEquals(transactionNumber + ":" + prefix, transaction.toString());
+   }
+
+   @Parameters
+   public static Collection<Object[]> getData() {
+      Collection<Object[]> data = new ArrayList<Object[]>();
+      for (int index = 1; index <= 3; index++) {
+         int transactionNumber = index * 11;
+         Branch branch = index == 1 ? null : MockDataFactory.createBranch(index);
+         String comment = GUID.create();
+         Date time = new Date();
+         int authorArtId = index * 47;
+         int commitArtId = index * 37;
+         TransactionDetailsType txType = TransactionDetailsType.toEnum(index % TransactionDetailsType.values().length);
+         data.add(new Object[] {transactionNumber, branch, comment, time, authorArtId, commitArtId, txType});
+      }
+      return data;
+   }
 }

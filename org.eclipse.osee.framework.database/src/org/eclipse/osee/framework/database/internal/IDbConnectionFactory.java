@@ -12,15 +12,15 @@
 package org.eclipse.osee.framework.database.internal;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.database.core.IConnection;
+import org.eclipse.osee.framework.database.core.IConnectionFactory;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public interface IDbConnectionFactory {
-   IConnection get(String driver) throws OseeCoreException;
+   IConnectionFactory get(String driver) throws OseeCoreException;
 
-   void bind(IConnection connection);
+   void bind(IConnectionFactory connection);
 
-   void unbind(IConnection connection);
+   void unbind(IConnectionFactory connection);
 }

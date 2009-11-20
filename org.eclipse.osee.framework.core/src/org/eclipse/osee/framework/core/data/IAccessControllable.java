@@ -10,6 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import org.eclipse.osee.framework.core.model.Branch;
+
 public interface IAccessControllable {
+
    public Branch getAccessControlBranch();
+
 }

@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -122,7 +122,7 @@ public class ApplicationServerDataStore {
       CompositeKeyHashMap<String, Integer, OseeServerInfo> servers =
             new CompositeKeyHashMap<String, Integer, OseeServerInfo>();
       if (Strings.isValid(clientVersion)) {
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(SELECT_FROM_LOOKUP_TABLE);
             while (chStmt.next()) {
@@ -162,7 +162,7 @@ public class ApplicationServerDataStore {
 
    static Set<String> getOseeVersionsByServerId(String serverId) throws OseeDataStoreException {
       Set<String> supportedVersions = new HashSet<String>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_SUPPORTED_VERSIONS_FROM_LOOKUP_TABLE_BY_SERVER_ID, serverId);
          while (chStmt.next()) {

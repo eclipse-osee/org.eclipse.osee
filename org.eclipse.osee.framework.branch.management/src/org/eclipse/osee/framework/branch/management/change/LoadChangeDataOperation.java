@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.branch.management.change;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
@@ -20,16 +19,16 @@ import org.eclipse.osee.framework.core.data.AttributeChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.data.RelationChangeItem;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.JoinUtility.IdJoinQuery;
 import org.eclipse.osee.framework.database.core.JoinUtility.TransactionJoinQuery;
@@ -59,6 +58,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private final TransactionRecord destinationTransactionId;
    private final TransactionRecord mergeTransactionId;
    private final Integer transactionNumber;
+   private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
 
    private static enum LoadingMode {
       FROM_SINGLE_TRANSACTION,
@@ -67,16 +67,19 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
    private final LoadingMode loadChangesEnum;
 
-   public LoadChangeDataOperation(int transactionNumber, TransactionRecord destinationTransactionId, Collection<ChangeItem> changeData) {
-      this(null, destinationTransactionId, null, changeData, transactionNumber, LoadingMode.FROM_SINGLE_TRANSACTION);
+   public LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, int transactionNumber, TransactionRecord destinationTransactionId, Collection<ChangeItem> changeData) {
+      this(oseeDatabaseProvider, null, destinationTransactionId, null, changeData, transactionNumber,
+            LoadingMode.FROM_SINGLE_TRANSACTION);
    }
 
-   public LoadChangeDataOperation(TransactionRecord sourceBranch, TransactionRecord destinationBranch, TransactionRecord mergeBranch, Collection<ChangeItem> changeData) {
-      this(sourceBranch, destinationBranch, mergeBranch, changeData, null, LoadingMode.FROM_ALL_BRANCH_TRANSACTIONS);
+   public LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, TransactionRecord sourceBranch, TransactionRecord destinationBranch, TransactionRecord mergeBranch, Collection<ChangeItem> changeData) {
+      this(oseeDatabaseProvider, sourceBranch, destinationBranch, mergeBranch, changeData, null,
+            LoadingMode.FROM_ALL_BRANCH_TRANSACTIONS);
    }
 
-   private LoadChangeDataOperation(TransactionRecord sourceTransactionId, TransactionRecord destinationTransactionId, TransactionRecord mergeTransactionId, Collection<ChangeItem> changeData, Integer transactionNumber, LoadingMode loadMode) {
+   private LoadChangeDataOperation(IOseeDatabaseServiceProvider oseeDatabaseProvider, TransactionRecord sourceTransactionId, TransactionRecord destinationTransactionId, TransactionRecord mergeTransactionId, Collection<ChangeItem> changeData, Integer transactionNumber, LoadingMode loadMode) {
       super("Load Change Data", InternalBranchActivator.PLUGIN_ID);
+      this.oseeDatabaseProvider = oseeDatabaseProvider;
       this.mergeTransactionId = mergeTransactionId;
       this.sourceTransactionId = sourceTransactionId;
       this.destinationTransactionId = destinationTransactionId;
@@ -108,7 +111,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
    private TransactionJoinQuery loadSourceBranchChanges(IProgressMonitor monitor) throws OseeCoreException {
       TransactionJoinQuery txJoin = JoinUtility.createTransactionJoinQuery();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       Integer currentTransactionNumber;
 
       try {
@@ -142,7 +145,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private void loadArtifactItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       String query =
             "select art_id, txj.gamma_id from osee_artifact_version id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
@@ -162,7 +165,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private void loadAttributeItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       String query =
             "select art_id, attr_id, value, txj.gamma_id from osee_attribute id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
@@ -184,7 +187,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private void loadRelationItemIdsBasedOnGammas(IProgressMonitor monitor, int queryId, HashMap<Integer, ChangeItem> changesByItemId) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       String query =
             "select a_art_id, b_art_id, rel_link_id, rel_link_type_id, rationale, txj.gamma_id from osee_relation_link id, osee_join_transaction txj where id.gamma_id = txj.gamma_id and txj.query_id = ?";
 
@@ -240,7 +243,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private void loadCurrentData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, TransactionRecord destinationTransaction, HashMap<Integer, ChangeItem> changesByItemId) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       String query;
 
       try {
@@ -292,7 +295,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private void loadNonCurrentSourceData(IProgressMonitor monitor, String tableName, String columnName, IdJoinQuery idJoin, HashMap<Integer, ChangeItem> changesByItemId, String columnValueName) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       String query;
 
       try {
@@ -332,7 +335,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
       }
    }
 
-   private void loadVersionData(ConnectionHandlerStatement chStmt, ChangeVersion versionedChange, String columnValueName) throws OseeArgumentException, OseeDataStoreException {
+   private void loadVersionData(IOseeStatement chStmt, ChangeVersion versionedChange, String columnValueName) throws OseeArgumentException, OseeDataStoreException {
       //Tolerates the case of having more than one version of an item on a baseline transaction  by picking the most recent one
       if (versionedChange.getGammaId() == null || versionedChange.getGammaId() < chStmt.getLong("gamma_id")) {
          if (columnValueName != null) {

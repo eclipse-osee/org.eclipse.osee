@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.data.IOseeUserInfo;
 import org.eclipse.osee.framework.core.data.OseeUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
@@ -30,7 +30,7 @@ public class UserDataStore {
 
    public static IOseeUserInfo getOseeUserFromOseeDb(String userId) {
       IOseeUserInfo toReturn = null;
-      ConnectionHandlerStatement chStmt = null;
+      IOseeStatement chStmt = null;
       try {
          chStmt = ConnectionHandler.getStatement();
          chStmt.runPreparedQuery(LOAD_OSEE_USER, userId);

@@ -16,10 +16,8 @@ import static org.eclipse.osee.framework.core.enums.ModificationType.INTRODUCED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.MERGED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.MODIFIED;
 import static org.eclipse.osee.framework.core.enums.ModificationType.NEW;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;

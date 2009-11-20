@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem.IExportColumnListener;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.ExportImportJoinQuery;
@@ -62,7 +62,7 @@ public final class ColumnIdCollector implements IExportColumnListener {
    }
 
    @Override
-   public void onColumnExport(String columnName, ConnectionHandlerStatement chStmt) throws Exception {
+   public void onColumnExport(String columnName, IOseeStatement chStmt) throws Exception {
       if (columnName.equals(getColumnToListenFor())) {
          this.joinQuery.add(chStmt.getLong(columnName), -1L);
       }

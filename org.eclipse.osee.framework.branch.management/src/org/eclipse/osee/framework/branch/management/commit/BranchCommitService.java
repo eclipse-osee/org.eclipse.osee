@@ -13,24 +13,24 @@ package org.eclipse.osee.framework.branch.management.commit;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.branch.management.IBranchCommitService;
-import org.eclipse.osee.framework.branch.management.ITransactionService;
-import org.eclipse.osee.framework.branch.management.ITransactionService.TransactionVersion;
 import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;
 import org.eclipse.osee.framework.branch.management.change.LoadChangeDataOperation;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
-import org.eclipse.osee.framework.core.data.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.BranchCommitData;
+import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.cache.TransactionCache;
+import org.eclipse.osee.framework.core.data.BranchCommitRequest;
+import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.CommitTransactionRecordResponse;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
+import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 
 /**
  * @author Jeff C. Phillips
@@ -39,30 +39,36 @@ import org.eclipse.osee.framework.core.operation.Operations;
  */
 public class BranchCommitService implements IBranchCommitService {
 
-   @Override
-   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService txService, BranchCommitData branchCommitData, CommitTransactionRecordResponse txHolder) throws OseeCoreException {
-      return commitBranch(monitor, txService, branchCommitData.getUser(), branchCommitData.getSourceBranch(),
-            branchCommitData.getDestinationBranch(), txHolder, branchCommitData.isArchiveAllowed());
+   private final BranchCache branchCache;
+   private final TransactionCache transactionCache;
+   private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
+
+   public BranchCommitService(IOseeDatabaseServiceProvider oseeDatabaseProvider, BranchCache branchCache, TransactionCache transactionCache) {
+      this.branchCache = branchCache;
+      this.transactionCache = transactionCache;
+      this.oseeDatabaseProvider = oseeDatabaseProvider;
    }
 
    @Override
-   public IStatus commitBranch(IProgressMonitor monitor, ITransactionService txService, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, CommitTransactionRecordResponse txHolder, boolean archiveSourceBranch) throws OseeCoreException {
-      AbstractOseeCache<Branch> branchCache = null;
-      Branch mergeBranch = null;
+   public void commitBranch(IProgressMonitor monitor, BranchCommitRequest branchCommitData, BranchCommitResponse response) throws OseeCoreException {
+      IBasicArtifact<?> user = branchCommitData.getUser();
+      Branch sourceBranch = branchCommitData.getSourceBranch();
 
-      // TODO this can be obtained through the cache
-      //      BranchManager.getMergeBranch(sourceBranch, destinationBranch);
+      Branch destinationBranch = branchCommitData.getDestinationBranch();
+
+      Branch mergeBranch = branchCache.getMergeBranch(sourceBranch, destinationBranch);
       TransactionVersion txVersion = TransactionVersion.HEAD;
-      TransactionRecord sourceTx = txService.getTransaction(sourceBranch, txVersion);
-      TransactionRecord destinationTx = txService.getTransaction(destinationBranch, txVersion);
-      TransactionRecord mergeTx = txService.getTransaction(mergeBranch, txVersion);
+      TransactionRecord sourceTx = transactionCache.getTransaction(sourceBranch, txVersion);
+      TransactionRecord destinationTx = transactionCache.getTransaction(destinationBranch, txVersion);
+      TransactionRecord mergeTx = transactionCache.getTransaction(mergeBranch, txVersion);
 
       List<ChangeItem> changes = new ArrayList<ChangeItem>();
 
       List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new LoadChangeDataOperation(sourceTx, destinationTx, mergeTx, changes));
+      ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, sourceTx, destinationTx, mergeTx, changes));
       ops.add(new ComputeNetChangeOperation(changes));
-      ops.add(new CommitDbOperation(branchCache, user, sourceBranch, destinationBranch, mergeBranch, changes, txHolder));
+      ops.add(new CommitDbOperation(oseeDatabaseProvider, branchCache, transactionCache, user, sourceBranch,
+            destinationBranch, mergeBranch, changes, response));
 
       String opName =
             String.format("Commit: [%s]->[%s]", sourceBranch.getShortName(), destinationBranch.getShortName());
@@ -70,10 +76,9 @@ public class BranchCommitService implements IBranchCommitService {
 
       Operations.executeWorkAndCheckStatus(op, monitor, -1);
 
-      if (archiveSourceBranch) {
+      if (branchCommitData.isArchiveAllowed()) {
          sourceBranch.setArchived(true);
-         // TODO        BranchManager.persist(sourceBranch);
+         branchCache.storeItem(sourceBranch);
       }
-      return op.getStatus();
    }
 }

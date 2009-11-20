@@ -13,12 +13,12 @@ package org.eclipse.osee.framework.derby;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
-import org.eclipse.osee.framework.database.core.IConnection;
+import org.eclipse.osee.framework.database.core.IConnectionFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public class EmbeddedDerbyConnection implements IConnection {
+public class EmbeddedDerbyConnection implements IConnectionFactory {
 
    private static final String driver = "org.apache.derby.jdbc.EmbeddedDriver";
 

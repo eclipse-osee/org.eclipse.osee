@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.SessionData;
 import org.eclipse.osee.framework.core.server.SessionData.SessionState;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -82,7 +82,7 @@ public class SessionDataStore {
 
    public static void loadSessions(String serverId, Map<String, SessionData> sessionCache) throws OseeDataStoreException {
       if (Strings.isValid(serverId)) {
-         ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+         IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
             chStmt.runPreparedQuery(LOAD_SESSIONS_BY_SERVER_ID, serverId);
             while (chStmt.next()) {
@@ -99,7 +99,7 @@ public class SessionDataStore {
 
    public static List<SessionData> getSessionsForUserId(String userId) throws OseeDataStoreException {
       List<SessionData> toReturn = new ArrayList<SessionData>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_SESSIONS_FOR_USER_ID, userId);
          while (chStmt.next()) {
@@ -114,7 +114,7 @@ public class SessionDataStore {
 
    public static List<SessionData> getAllSessions() throws OseeDataStoreException {
       List<SessionData> toReturn = new ArrayList<SessionData>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(GET_ALL_SESSIONS);
          while (chStmt.next()) {
@@ -127,7 +127,7 @@ public class SessionDataStore {
       return toReturn;
    }
 
-   private static SessionData toSessionData(String sessionId, ConnectionHandlerStatement chStmt) throws OseeDataStoreException {
+   private static SessionData toSessionData(String sessionId, IOseeStatement chStmt) throws OseeDataStoreException {
       OseeSession session =
             new OseeSession(sessionId, chStmt.getString("user_id"), chStmt.getTimestamp("created_on"),
                   chStmt.getString("client_machine_name"), chStmt.getString("client_address"),

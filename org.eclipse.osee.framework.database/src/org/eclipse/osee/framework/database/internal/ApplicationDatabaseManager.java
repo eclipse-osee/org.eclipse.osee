@@ -14,24 +14,24 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IApplicationDatabaseManager;
-import org.eclipse.osee.framework.database.core.IApplicationDatabaseInfoProvider;
+import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ApplicationDatabaseManager implements IApplicationDatabaseManager {
 
-   private List<IApplicationDatabaseInfoProvider> applicationDatabaseInfoProvider;
+   private List<IDatabaseInfoProvider> applicationDatabaseInfoProvider;
    private Object myWait;
 
    public ApplicationDatabaseManager() {
-      this.applicationDatabaseInfoProvider = new CopyOnWriteArrayList<IApplicationDatabaseInfoProvider>();
+      this.applicationDatabaseInfoProvider = new CopyOnWriteArrayList<IDatabaseInfoProvider>();
       myWait = new Object();
    }
 
-   public IApplicationDatabaseInfoProvider getInternal() throws OseeDataStoreException {
-      IApplicationDatabaseInfoProvider toReturn = null;
-      for (IApplicationDatabaseInfoProvider provider : applicationDatabaseInfoProvider) {
+   public IDatabaseInfoProvider getInternal() throws OseeDataStoreException {
+      IDatabaseInfoProvider toReturn = null;
+      for (IDatabaseInfoProvider provider : applicationDatabaseInfoProvider) {
          if (toReturn == null || (toReturn.getPriority() < provider.getPriority())) {
             toReturn = provider;
          }
@@ -39,8 +39,8 @@ public class ApplicationDatabaseManager implements IApplicationDatabaseManager {
       return toReturn;
    }
 
-   public IApplicationDatabaseInfoProvider getProvider() throws OseeDataStoreException {
-      IApplicationDatabaseInfoProvider provider = getInternal();
+   public IDatabaseInfoProvider getProvider() throws OseeDataStoreException {
+      IDatabaseInfoProvider provider = getInternal();
       if (provider == null) {
          long endTime = System.currentTimeMillis() + (1000 * 20);
          long timeLeft = 1000 * 20;
@@ -61,12 +61,12 @@ public class ApplicationDatabaseManager implements IApplicationDatabaseManager {
       return provider;
    }
 
-   public void removeDatabaseProvider(IApplicationDatabaseInfoProvider provider) {
+   public void removeDatabaseProvider(IDatabaseInfoProvider provider) {
       System.out.println("Removing: " + provider);
       applicationDatabaseInfoProvider.remove(provider);
    }
 
-   public void addDatabaseProvider(IApplicationDatabaseInfoProvider provider) {
+   public void addDatabaseProvider(IDatabaseInfoProvider provider) {
       System.out.println("Adding: " + provider);
       applicationDatabaseInfoProvider.add(provider);
       synchronized (myWait) {

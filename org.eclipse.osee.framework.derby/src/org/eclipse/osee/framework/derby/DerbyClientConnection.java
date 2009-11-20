@@ -13,14 +13,14 @@ package org.eclipse.osee.framework.derby;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
-import org.eclipse.osee.framework.database.core.IConnection;
+import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.OseeProperties;
 
 /**
  * @author Roberto E. Escobar
  */
-public class DerbyClientConnection implements IConnection {
+public class DerbyClientConnection implements IConnectionFactory {
 
    private static final String driver = "org.apache.derby.jdbc.ClientDriver";
    private boolean firstTime = true;

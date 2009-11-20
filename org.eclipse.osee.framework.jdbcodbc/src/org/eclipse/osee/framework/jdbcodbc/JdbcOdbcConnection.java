@@ -13,12 +13,12 @@ package org.eclipse.osee.framework.jdbcodbc;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.util.Properties;
-import org.eclipse.osee.framework.database.core.IConnection;
+import org.eclipse.osee.framework.database.core.IConnectionFactory;
 
 /**
  * @author Roberto E. Escobar
  */
-public class JdbcOdbcConnection implements IConnection {
+public class JdbcOdbcConnection implements IConnectionFactory {
 
    private static final String driver = "sun.jdbc.odbc.JdbcOdbcDriver";
 

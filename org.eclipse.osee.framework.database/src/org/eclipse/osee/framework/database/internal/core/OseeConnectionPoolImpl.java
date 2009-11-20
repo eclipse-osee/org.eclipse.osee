@@ -16,7 +16,7 @@ import java.util.Properties;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.IConnection;
+import org.eclipse.osee.framework.database.core.IConnectionFactory;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.internal.IDbConnectionFactory;
 import org.eclipse.osee.framework.database.internal.InternalActivator;
@@ -76,7 +76,7 @@ public class OseeConnectionPoolImpl {
    }
 
    private OseeConnectionImpl getOseeConnection() throws Exception {
-      IConnection connectionDriver = connectionFactory.get(driver);
+      IConnectionFactory connectionDriver = connectionFactory.get(driver);
       Connection connection = connectionDriver.getConnection(properties, dbUrl);
       connection.setTransactionIsolation(Connection.TRANSACTION_READ_COMMITTED);
       return new OseeConnectionImpl(connection, this);

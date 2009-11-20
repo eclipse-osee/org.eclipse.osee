@@ -11,15 +11,12 @@
 package org.eclipse.osee.framework.manager.servlet.function;
 
 import java.io.InputStream;
-import java.net.HttpURLConnection;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.branch.management.ITransactionService;
-import org.eclipse.osee.framework.core.IDataTranslationService;
-import org.eclipse.osee.framework.core.data.BranchCommitData;
-import org.eclipse.osee.framework.core.data.CommitTransactionRecordResponse;
+import org.eclipse.osee.framework.core.data.BranchCommitRequest;
+import org.eclipse.osee.framework.core.data.BranchCommitResponse;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
 
@@ -29,28 +26,19 @@ import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
 public class CreateCommitFunction {
 
    public void commitBranch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-      ITransactionService transactionService = MasterServletActivator.getInstance().getTransactionService();
       IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
+      BranchCommitRequest data = service.convert(req.getInputStream(), BranchCommitRequest.class);
 
-      BranchCommitData data = service.convert(req.getInputStream(), BranchCommitData.class);
+      BranchCommitResponse responseData = new BranchCommitResponse();
+      MasterServletActivator.getInstance().getBranchCommit().commitBranch(new NullProgressMonitor(), data, responseData);
 
-      CommitTransactionRecordResponse responseData = new CommitTransactionRecordResponse();
-      IStatus status =
-            MasterServletActivator.getInstance().getBranchCommit().commitBranch(new NullProgressMonitor(),
-                  transactionService, data, responseData);
-      if (status.isOK()) {
-         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-         resp.setContentType("text/plain");
-         InputStream inputStream = service.convertToStream(responseData);
-         try {
-            Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
-         } finally {
-            Lib.close(inputStream);
-         }
-      } else {
-         resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-         resp.setContentType("text/plain");
-         resp.getWriter().write("Unknown Error during branch creation.");
+      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+      resp.setContentType("text/xml");
+      InputStream inputStream = service.convertToStream(responseData);
+      try {
+         Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
+      } finally {
+         Lib.close(inputStream);
       }
    }
 }

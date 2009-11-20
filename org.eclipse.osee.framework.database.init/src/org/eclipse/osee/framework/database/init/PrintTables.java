@@ -15,7 +15,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 
 public class PrintTables implements IDbInitializationTask {
 
@@ -38,7 +38,7 @@ public class PrintTables implements IDbInitializationTask {
    }
 
    private void printTable(String tableName) throws OseeDataStoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery("select * from " + tableName);
          int numberOfColumns = chStmt.getColumnCount();

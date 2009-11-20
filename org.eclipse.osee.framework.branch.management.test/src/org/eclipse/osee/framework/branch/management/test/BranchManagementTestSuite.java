@@ -10,12 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.test;
 
+import org.eclipse.osee.framework.branch.management.test.cache.CacheAccessorSuite;
 import org.eclipse.osee.framework.branch.management.test.commit.ChangeTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {ChangeTestSuite.class})
+@Suite.SuiteClasses( {CacheAccessorSuite.class, ChangeTestSuite.class})
 /**
  * @author Roberto E. Escobar
  */

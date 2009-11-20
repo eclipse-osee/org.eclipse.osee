@@ -184,4 +184,11 @@ public interface IPropertyStore {
     * @return array item keys
     */
    public Set<String> arrayKeySet();
+
+   /**
+    * Get keys referencing inner property store items
+    * 
+    * @return array item keys
+    */
+   public Set<String> innerStoresKeySet();
 }

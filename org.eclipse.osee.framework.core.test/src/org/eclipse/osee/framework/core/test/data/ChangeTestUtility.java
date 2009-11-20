@@ -10,10 +10,10 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.data;
 
-
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.test.mocks.MockChangeItem;
 import org.junit.Assert;
 
 /**
@@ -65,15 +65,4 @@ public class ChangeTestUtility {
       return change;
    }
 
-   private static final class MockChangeItem extends ChangeItem {
-
-      protected MockChangeItem(long currentSourceGammaId, ModificationType currentSourceModType, int currentSourceTransactionNumber) {
-         super(currentSourceGammaId, currentSourceModType, currentSourceTransactionNumber);
-      }
-
-      @Override
-      public void setItemId(int itemId) {
-         super.setItemId(itemId);
-      }
-   }
 }

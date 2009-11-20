@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExpo
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItemWithType;
-import org.eclipse.osee.framework.database.core.SequenceManager;
+import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -88,7 +88,7 @@ public class ExchangeDb {
    }
 
    public static final String GET_MAX_TX =
-         "SELECT last_sequence FROM osee_sequence WHERE sequence_name = '" + SequenceManager.TRANSACTION_ID_SEQ + "'";
+         "SELECT last_sequence FROM osee_sequence WHERE sequence_name = '" + IOseeSequence.TRANSACTION_ID_SEQ + "'";
 
    private static final String BRANCH_TABLE_QUERY =
          "SELECT br1.* FROM osee_branch br1, osee_join_export_import jex1 WHERE br1.branch_id = jex1.id1 AND jex1.query_id=? ORDER BY br1.branch_id";
@@ -175,15 +175,15 @@ public class ExchangeDb {
 
    static List<IdTranslator> createTranslators() {
       List<IdTranslator> translators = new ArrayList<IdTranslator>();
-      translators.add(new IdTranslator(SequenceManager.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
-      translators.add(new IdTranslator(SequenceManager.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
-      translators.add(new IdTranslator(SequenceManager.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
-      translators.add(new IdTranslator(SequenceManager.ART_TYPE_ID_SEQ, ARTIFACT_TYPE_ID));
-      translators.add(new IdTranslator(SequenceManager.ATTR_TYPE_ID_SEQ, ATTRIBUTE_TYPE_ID));
-      translators.add(new IdTranslator(SequenceManager.REL_LINK_TYPE_ID_SEQ, RELATION_TYPE_ID));
-      translators.add(new IdTranslator(SequenceManager.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
-      translators.add(new IdTranslator(SequenceManager.ATTR_ID_SEQ, ATTRIBUTE_ID));
-      translators.add(new IdTranslator(SequenceManager.REL_LINK_ID_SEQ, RELATION_ID));
+      translators.add(new IdTranslator(IOseeSequence.GAMMA_ID_SEQ, GAMMA_ID_ALIASES));
+      translators.add(new IdTranslator(IOseeSequence.TRANSACTION_ID_SEQ, TRANSACTION_ID_ALIASES));
+      translators.add(new IdTranslator(IOseeSequence.BRANCH_ID_SEQ, BRANCH_ID_ALIASES));
+      translators.add(new IdTranslator(IOseeSequence.ART_TYPE_ID_SEQ, ARTIFACT_TYPE_ID));
+      translators.add(new IdTranslator(IOseeSequence.ATTR_TYPE_ID_SEQ, ATTRIBUTE_TYPE_ID));
+      translators.add(new IdTranslator(IOseeSequence.REL_LINK_TYPE_ID_SEQ, RELATION_TYPE_ID));
+      translators.add(new IdTranslator(IOseeSequence.ART_ID_SEQ, ARTIFACT_ID_ALIASES));
+      translators.add(new IdTranslator(IOseeSequence.ATTR_ID_SEQ, ATTRIBUTE_ID));
+      translators.add(new IdTranslator(IOseeSequence.REL_LINK_ID_SEQ, RELATION_ID));
       return translators;
    }
 

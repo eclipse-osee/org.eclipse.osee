@@ -11,16 +11,15 @@
 package org.eclipse.osee.framework.branch.management;
 
 import java.util.Collection;
-
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 
 /**
  * @author Jeff C. Phillips
  */
 public interface IChangeReportService {
-   public IStatus getChanges(TransactionRecord sourceTransaction, TransactionRecord destinationTransaction, IProgressMonitor monitor, boolean isHistorical, Collection<ChangeItem> changes) throws OseeCoreException;
+
+   public void getChanges(IProgressMonitor monitor, TransactionRecord sourceTransaction, TransactionRecord destinationTransaction, boolean isHistorical, Collection<ChangeItem> changes) throws OseeCoreException;
 }

@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -96,7 +96,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
 
    @Override
    protected void doWork(Appendable appendable) throws Exception {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(getConnection());
+      IOseeStatement chStmt = ConnectionHandler.getStatement(getConnection());
       try {
          Pair<String, Object[]> sqlData = ExchangeDb.getQueryWithOptions(this.query, getJoinQueryId(), getOptions());
          chStmt.runPreparedQuery(sqlData.getFirst(), sqlData.getSecond());
@@ -108,7 +108,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
       }
    }
 
-   protected void processData(Appendable appendable, ConnectionHandlerStatement chStmt) throws Exception {
+   protected void processData(Appendable appendable, IOseeStatement chStmt) throws Exception {
       ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.ENTRY);
       try {
          int numberOfColumns = chStmt.getColumnCount() + 1;
@@ -212,13 +212,13 @@ public class RelationalExportItem extends AbstractDbExportItem {
       super.cleanUp();
    }
 
-   private void notifyOnColumnExport(String columnName, ConnectionHandlerStatement chStmt) throws Exception {
+   private void notifyOnColumnExport(String columnName, IOseeStatement chStmt) throws Exception {
       for (IExportColumnListener listener : this.exportColumnListeners) {
          listener.onColumnExport(columnName, chStmt);
       }
    }
 
    public interface IExportColumnListener {
-      public abstract void onColumnExport(String columnName, ConnectionHandlerStatement chStmt) throws Exception;
+      public abstract void onColumnExport(String columnName, IOseeStatement chStmt) throws Exception;
    }
 }

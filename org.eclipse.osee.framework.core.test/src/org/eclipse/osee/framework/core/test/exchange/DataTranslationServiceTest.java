@@ -10,12 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.exchange;
 
+import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.IDataTranslationService;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exchange.DataTranslationService;
-import org.eclipse.osee.framework.core.exchange.IDataTranslator;
+import org.eclipse.osee.framework.core.exchange.ITranslator;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.junit.Assert;
@@ -32,8 +34,8 @@ public class DataTranslationServiceTest {
    public void testAddRemoveTranslator() {
       IDataTranslationService service = new DataTranslationService();
 
-      IDataTranslator<String> tx1 = new DataTranslatorAdapter<String>();
-      IDataTranslator<Integer> tx2 = new DataTranslatorAdapter<Integer>();
+      ITranslator<String> tx1 = new DataTranslatorAdapter<String>();
+      ITranslator<Integer> tx2 = new DataTranslatorAdapter<Integer>();
 
       Assert.assertTrue(service.getSupportedClasses().isEmpty());
 
@@ -95,6 +97,51 @@ public class DataTranslationServiceTest {
       Assert.assertEquals(expected.three, actual.three);
    }
 
+   @Test
+   public void testNullConverts() throws Exception {
+      DataTranslationService service = new DataTranslationService();
+
+      assertEmpty(service.convert(null));
+      assertEmpty(service.convertToStream(null));
+      Assert.assertNull(service.convert((PropertyStore) null, Object.class));
+   }
+
+   private void assertEmpty(InputStream inputStream) throws Exception {
+      PropertyStore toCheck = new PropertyStore();
+      toCheck.load(inputStream);
+      assertEmpty(toCheck);
+   }
+
+   private void assertEmpty(PropertyStore toCheck) throws Exception {
+      Assert.assertTrue(toCheck.arrayKeySet().isEmpty());
+      Assert.assertTrue(toCheck.keySet().isEmpty());
+      Assert.assertTrue(toCheck.innerStoresKeySet().isEmpty());
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testNullClazz() throws Exception {
+      DataTranslationService service = new DataTranslationService();
+      service.convert(new ByteArrayInputStream(new byte[0]), null);
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testNullClazz2() throws Exception {
+      DataTranslationService service = new DataTranslationService();
+      service.convert(new PropertyStore(), null);
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testNullInputStream() throws Exception {
+      DataTranslationService service = new DataTranslationService();
+      service.convert((InputStream) null, Object.class);
+   }
+
+   @Test(expected = OseeArgumentException.class)
+   public void testNullGetTranslator() throws Exception {
+      DataTranslationService service = new DataTranslationService();
+      service.getTranslator(null);
+   }
+
    private class TestObject {
       String one;
       Integer two;
@@ -109,7 +156,7 @@ public class DataTranslationServiceTest {
 
    }
 
-   private class DataTranslatorAdapter<T> implements IDataTranslator<T> {
+   private class DataTranslatorAdapter<T> implements ITranslator<T> {
       @Override
       public T convert(PropertyStore propertyStore) {
          return null;
@@ -121,7 +168,7 @@ public class DataTranslationServiceTest {
       }
    }
 
-   private class TestObjectTranslator implements IDataTranslator<TestObject> {
+   private class TestObjectTranslator implements ITranslator<TestObject> {
       @Override
       public TestObject convert(PropertyStore propertyStore) {
          return new TestObject(propertyStore.get("one"), propertyStore.getInt("two"), propertyStore.getDouble("three"));

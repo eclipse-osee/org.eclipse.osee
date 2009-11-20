@@ -247,6 +247,12 @@ public class PropertyStore implements IPropertyStore, Serializable {
       return Collections.toSet(items);
    }
 
+   @SuppressWarnings("unchecked")
+   public Set<String> innerStoresKeySet() {
+      List<String> items = Collections.castAll(this.storageProperties.keySet());
+      return Collections.toSet(items);
+   }
+
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof PropertyStore) {

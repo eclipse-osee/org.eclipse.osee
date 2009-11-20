@@ -22,7 +22,7 @@ import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
@@ -163,7 +163,7 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
          guidToImportFileBranchData.put(data.getBranchGuid(), data);
       }
 
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(getConnection());
+      IOseeStatement chStmt = ConnectionHandler.getStatement(getConnection());
       try {
          chStmt.runPreparedQuery("select * from osee_branch");
          while (chStmt.next()) {

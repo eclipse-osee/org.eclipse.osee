@@ -45,15 +45,15 @@ public final class ConnectionHandler {
       return getDatabase().getConnection(info);
    }
 
-   public static ConnectionHandlerStatement getStatement() throws OseeDataStoreException {
+   public static IOseeStatement getStatement() throws OseeDataStoreException {
       return getDatabase().getStatement();
    }
 
-   public static ConnectionHandlerStatement getStatement(OseeConnection connection) throws OseeDataStoreException {
+   public static IOseeStatement getStatement(OseeConnection connection) throws OseeDataStoreException {
       return getDatabase().getStatement(connection);
    }
 
-   public static ConnectionHandlerStatement getStatement(OseeConnection connection, boolean autoClose) throws OseeDataStoreException {
+   public static IOseeStatement getStatement(OseeConnection connection, boolean autoClose) throws OseeDataStoreException {
       return getDatabase().getStatement(connection, autoClose);
    }
 
@@ -66,12 +66,7 @@ public final class ConnectionHandler {
     * @throws OseeDataStoreException
     */
    public static <O extends Object> int runPreparedUpdate(String query, O... data) throws OseeDataStoreException {
-      OseeConnection connection = getDatabase().getConnection();
-      try {
-         return runPreparedUpdate(connection, query, data);
-      } finally {
-         connection.close();
-      }
+      return getDatabase().runPreparedUpdate(query, data);
    }
 
    /**
@@ -83,12 +78,7 @@ public final class ConnectionHandler {
     * @throws OseeDataStoreException
     */
    public static <O extends Object> int runBatchUpdate(String query, List<O[]> dataList) throws OseeDataStoreException {
-      OseeConnection connection = getDatabase().getConnection();
-      try {
-         return runBatchUpdate(connection, query, dataList);
-      } finally {
-         connection.close();
-      }
+      return getDatabase().runBatchUpdate(query, dataList);
    }
 
    /**
@@ -101,37 +91,19 @@ public final class ConnectionHandler {
     * @throws OseeDataStoreException
     */
    public static <O extends Object> int runPreparedUpdate(OseeConnection connection, String query, O... data) throws OseeDataStoreException {
-      if (connection == null) {
-         return runPreparedUpdate(query, data);
-      }
       return getDatabase().runPreparedUpdate(connection, query, data);
    }
 
    public static <O extends Object> int runBatchUpdate(OseeConnection connection, String query, List<O[]> dataList) throws OseeDataStoreException {
-      if (connection == null) {
-         return runBatchUpdate(query, dataList);
-      }
       return getDatabase().runBatchUpdate(connection, query, dataList);
    }
 
    public static <O extends Object> int runPreparedQueryFetchInt(int defaultValue, String query, O... data) throws OseeDataStoreException {
-      return runPreparedQueryFetchInt(getStatement(), defaultValue, query, data);
+      return getDatabase().runPreparedQueryFetchObject(defaultValue, query, data);
    }
 
    public static <O extends Object> int runPreparedQueryFetchInt(OseeConnection connection, int defaultValue, String query, O... data) throws OseeDataStoreException {
-      return runPreparedQueryFetchInt(getStatement(connection), defaultValue, query, data);
-   }
-
-   private static <O extends Object> int runPreparedQueryFetchInt(ConnectionHandlerStatement chStmt, int defaultValue, String query, O... data) throws OseeDataStoreException {
-      try {
-         chStmt.runPreparedQuery(1, query, data);
-         if (chStmt.next()) {
-            return chStmt.getInt(1);
-         }
-         return defaultValue;
-      } finally {
-         chStmt.close();
-      }
+      return getDatabase().runPreparedQueryFetchObject(connection, defaultValue, query, data);
    }
 
    public static <O extends Object> int runCallableStatementFetchInt(String query, O... data) throws OseeDataStoreException {
@@ -142,7 +114,7 @@ public final class ConnectionHandler {
       return runCallableStatementFetchInt(getStatement(connection), query, data);
    }
 
-   public static <O extends Object> int runCallableStatementFetchInt(ConnectionHandlerStatement chStmt, String query, O... data) throws OseeDataStoreException {
+   public static <O extends Object> int runCallableStatementFetchInt(IOseeStatement chStmt, String query, O... data) throws OseeDataStoreException {
       try {
          chStmt.runCallableStatement(query, data);
          return chStmt.getCallableInt(1);
@@ -159,7 +131,7 @@ public final class ConnectionHandler {
       return runCallableStatementFetchDouble(getStatement(connection), query, data);
    }
 
-   private static <O extends Object> double runCallableStatementFetchDouble(ConnectionHandlerStatement chStmt, String query, O... data) throws OseeDataStoreException {
+   private static <O extends Object> double runCallableStatementFetchDouble(IOseeStatement chStmt, String query, O... data) throws OseeDataStoreException {
       try {
          chStmt.runCallableStatement(query, data);
          return chStmt.getCallableDouble(1);
@@ -169,43 +141,19 @@ public final class ConnectionHandler {
    }
 
    public static <O extends Object> long runPreparedQueryFetchLong(long defaultValue, String query, O... data) throws OseeDataStoreException {
-      return runPreparedQueryFetchLong(getStatement(), defaultValue, query, data);
+      return getDatabase().runPreparedQueryFetchObject(defaultValue, query, data);
    }
 
    public static <O extends Object> long runPreparedQueryFetchLong(OseeConnection connection, long defaultValue, String query, O... data) throws OseeDataStoreException {
-      return runPreparedQueryFetchLong(getStatement(connection), defaultValue, query, data);
-   }
-
-   private static <O extends Object> long runPreparedQueryFetchLong(ConnectionHandlerStatement chStmt, long defaultValue, String query, O... data) throws OseeDataStoreException {
-      try {
-         chStmt.runPreparedQuery(1, query, data);
-         if (chStmt.next()) {
-            return chStmt.getLong(1);
-         }
-         return defaultValue;
-      } finally {
-         chStmt.close();
-      }
+      return getDatabase().runPreparedQueryFetchObject(connection, defaultValue, query, data);
    }
 
    public static <O extends Object> String runPreparedQueryFetchString(String defaultValue, String query, O... data) throws OseeDataStoreException {
-      return runPreparedQueryFetchString(getStatement(), defaultValue, query, data);
+      return getDatabase().runPreparedQueryFetchObject(defaultValue, query, data);
    }
 
    public static <O extends Object> String runPreparedQueryFetchString(OseeConnection connection, String defaultValue, String query, O... data) throws OseeDataStoreException {
-      return runPreparedQueryFetchString(getStatement(connection), defaultValue, query, data);
-   }
-
-   private static <O extends Object> String runPreparedQueryFetchString(ConnectionHandlerStatement chStmt, String defaultValue, String query, O... data) throws OseeDataStoreException {
-      try {
-         chStmt.runPreparedQuery(1, query, data);
-         if (chStmt.next()) {
-            return chStmt.getString(1);
-         }
-         return defaultValue;
-      } finally {
-         chStmt.close();
-      }
+      return getDatabase().runPreparedQueryFetchObject(connection, defaultValue, query, data);
    }
 
    /**

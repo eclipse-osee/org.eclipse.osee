@@ -13,14 +13,14 @@ package org.eclipse.osee.framework.core.client.internal;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
-import org.eclipse.osee.framework.database.core.IApplicationDatabaseInfoProvider;
+import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.eclipse.osee.framework.logging.BaseStatus;
 import org.eclipse.osee.framework.logging.OseeLog;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ClientDatabaseProvider implements IApplicationDatabaseInfoProvider {
+public class ClientDatabaseProvider implements IDatabaseInfoProvider {
 
    private static final String NAME = "Client Data Source";
 

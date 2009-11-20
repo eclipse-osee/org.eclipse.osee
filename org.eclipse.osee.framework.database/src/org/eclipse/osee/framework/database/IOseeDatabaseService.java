@@ -13,7 +13,8 @@ package org.eclipse.osee.framework.database;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 
 /**
@@ -21,18 +22,28 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
  */
 public interface IOseeDatabaseService {
 
-   ConnectionHandlerStatement getStatement() throws OseeDataStoreException;
+   IOseeSequence getSequence();
 
-   ConnectionHandlerStatement getStatement(OseeConnection connection) throws OseeDataStoreException;
+   IOseeStatement getStatement() throws OseeDataStoreException;
 
-   ConnectionHandlerStatement getStatement(OseeConnection connection, boolean autoClose) throws OseeDataStoreException;
+   IOseeStatement getStatement(OseeConnection connection) throws OseeDataStoreException;
+
+   IOseeStatement getStatement(OseeConnection connection, boolean autoClose) throws OseeDataStoreException;
 
    OseeConnection getConnection() throws OseeDataStoreException;
 
    OseeConnection getConnection(IDatabaseInfo info) throws OseeDataStoreException;
 
+   <O extends Object> int runBatchUpdate(String query, List<O[]> dataList) throws OseeDataStoreException;
+
+   <O extends Object> int runPreparedUpdate(String query, O... data) throws OseeDataStoreException;
+
    <O extends Object> int runBatchUpdate(OseeConnection connection, String query, List<O[]> dataList) throws OseeDataStoreException;
 
    <O extends Object> int runPreparedUpdate(OseeConnection connection, String query, O... data) throws OseeDataStoreException;
+
+   <T, O extends Object> T runPreparedQueryFetchObject(T defaultValue, String query, O... data) throws OseeDataStoreException;
+
+   <T, O extends Object> T runPreparedQueryFetchObject(OseeConnection connection, T defaultValue, String query, O... data) throws OseeDataStoreException;
 
 }

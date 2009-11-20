@@ -11,16 +11,16 @@
 package org.eclipse.osee.framework.database;
 
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.IApplicationDatabaseInfoProvider;
+import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 
 /**
  * @author Roberto E. Escobar
  */
 public interface IApplicationDatabaseManager {
 
-   public IApplicationDatabaseInfoProvider getProvider() throws OseeDataStoreException;
+   public IDatabaseInfoProvider getProvider() throws OseeDataStoreException;
 
-   public void removeDatabaseProvider(IApplicationDatabaseInfoProvider provider);
+   public void removeDatabaseProvider(IDatabaseInfoProvider provider);
 
-   public void addDatabaseProvider(IApplicationDatabaseInfoProvider provider);
+   public void addDatabaseProvider(IDatabaseInfoProvider provider);
 }

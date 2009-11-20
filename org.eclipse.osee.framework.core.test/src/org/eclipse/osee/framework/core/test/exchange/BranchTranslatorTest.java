@@ -13,44 +13,77 @@ package org.eclipse.osee.framework.core.test.exchange;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.IDataTranslationService;
-import org.eclipse.osee.framework.core.data.Branch;
+import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exchange.BasicArtifactDataTranslator;
+import org.eclipse.osee.framework.core.exchange.BasicArtifactTranslator;
 import org.eclipse.osee.framework.core.exchange.BranchTranslator;
 import org.eclipse.osee.framework.core.exchange.DataTranslationService;
-import org.eclipse.osee.framework.core.exchange.IDataTranslator;
+import org.eclipse.osee.framework.core.exchange.ITranslator;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.test.mocks.MockCacheServiceFactory;
+import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
+import org.eclipse.osee.framework.core.test.mocks.MockOseeCachingService;
+import org.eclipse.osee.framework.core.test.mocks.MockOseeCachingServiceProvider;
+import org.junit.Assert;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Test Case For {@link BasicArtifactDataTranslator}
+ * Test Case For {@link BasicArtifactTranslator}
  * 
  * @author Roberto E. Escobar
  */
 @RunWith(Parameterized.class)
 public class BranchTranslatorTest extends BaseTranslatorTest<Branch> {
 
-   public BranchTranslatorTest(Branch data, IDataTranslator<Branch> translator) {
+   private static BranchCache cache;
+
+   public BranchTranslatorTest(Branch data, ITranslator<Branch> translator) {
       super(data, translator);
    }
 
    @Override
    protected void checkEquals(Branch expected, Branch actual) throws OseeCoreException {
-      DataUtility.assertEquals(expected, actual);
+      boolean isCached = cache.getByGuid(expected.getGuid()) != null;
+      if (isCached) {
+         Assert.assertSame(expected, actual);
+         DataAsserts.assertEquals(expected, actual);
+      } else {
+         Assert.assertNull(actual);
+      }
    }
 
    @Parameters
-   public static Collection<Object[]> data() {
+   public static Collection<Object[]> data() throws OseeCoreException {
+      IOseeCachingServiceProvider serviceProvider = MockCacheServiceFactory.createProvider();
+      cache = serviceProvider.getOseeCachingService().getBranchCache();
+
+      ITranslator<Branch> translator = new BranchTranslator(serviceProvider);
+
       IDataTranslationService service = new DataTranslationService();
-      service.addTranslator(Branch.class, new BranchTranslator(service));
+      service.addTranslator(Branch.class, translator);
 
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 5; index++) {
-         data.add(new Object[] {DataUtility.createBranch(index * 10), service});
+         Branch branch = MockDataFactory.createBranch(index * 10);
+         cache.cache(branch);
+         data.add(new Object[] {branch, translator});
       }
-      data.add(new Object[] {DataUtility.createBranch(-1)});
+      Branch branch = MockDataFactory.createBranch(-1);
+      cache.cache(branch);
+      data.add(new Object[] {branch, translator});
+
+      // Don't add it to the cache
+      data.add(new Object[] {MockDataFactory.createBranch(-2), translator});
       return data;
+   }
+
+   public static IOseeCachingServiceProvider createProvider(BranchCache cache) {
+      IOseeCachingService service = new MockOseeCachingService(cache, null, null, null, null, null);
+      return new MockOseeCachingServiceProvider(service);
    }
 }

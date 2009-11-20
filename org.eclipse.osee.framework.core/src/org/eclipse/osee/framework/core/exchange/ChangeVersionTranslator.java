@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 /**
  * @author Jeff C. Phillips
  */
-public class ChangeVersionTranslator implements IDataTranslator<ChangeVersion> {
+public class ChangeVersionTranslator implements ITranslator<ChangeVersion> {
    private enum Entry {
       GAMMA_ID,
       MOD_TYPE,

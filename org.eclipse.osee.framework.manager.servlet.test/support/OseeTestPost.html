@@ -1,0 +1,122 @@
+<html>
+<head>
+<title>OSEE HTTP POST Test Page</title>
+</head>
+<style type="text/css">
+            .blueBox { color: black; background-color:#999999; display: block; padding: 6px; margin-top: 8px; width:95%; cursor:pointer; border: solid;  border-color:black; border-width: thin; text-align: left; vertical-align: middle; }
+            .results { color: black; background-color:whitesmoke; display: block; padding: 6px; width:95%; border: solid; border-width: thin; text-align: left; vertical-align: middle; }
+</style>
+<script type="text/javascript" language="javascript">
+   var http_request = false;
+	var posturl;
+   function makePOSTRequest(url, data) {
+      http_request = false;
+      if (window.XMLHttpRequest) { // Mozilla, Safari,...
+         http_request = new XMLHttpRequest();
+         if (http_request.overrideMimeType) {
+         	// set type accordingly to anticipated content type
+            //http_request.overrideMimeType('text/xml');
+            http_request.overrideMimeType('text/html');
+         }
+      } else if (window.ActiveXObject) { // IE
+         try {
+            http_request = new ActiveXObject("Msxml2.XMLHTTP");
+         } catch (e) {
+            try {
+               http_request = new ActiveXObject("Microsoft.XMLHTTP");
+            } catch (e) {}
+         }
+      }
+      if (!http_request) {
+         alert('Cannot create XMLHTTP instance');
+         return false;
+      }
+
+      http_request.onreadystatechange = alertContents;
+      http_request.open('POST', url, true);
+      http_request.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      http_request.setRequestHeader("Content-length", data.length);
+      http_request.setRequestHeader("Connection", "close");
+      http_request.send(data);
+   }
+
+   function alertContents() {
+      if (http_request.readyState == 4) {
+         if (http_request.status == 200) {
+            //alert(http_request.responseText);
+            result = http_request.responseText;
+            document.getElementById('myspan').innerHTML = result;
+         } else {
+            alert('There was a problem with the request.' + posturl);
+         }
+      }
+   }
+
+   function get(obj) {
+   posturl = "http://"
+   		+ document.getElementById("serverField").value + ":"
+   		+ document.getElementById("portField").value + "/"
+   		+ document.getElementById("contextField").value + "?sessionId=" +
+   		+ encodeURI( document.getElementById("sessionField").value );
+
+   	var rawParams = document.getElementById("parametersField").value;
+
+  	var entries = rawParams.split("&");
+
+  	if(entries.length > 0){
+   		for(var index = 0; index < entries.length; index++){
+   			var entry = entries[index];
+   			var pair = entry.split("=");
+   			posturl = posturl + "&" + pair[0] + "=" + encodeURI(pair[1]);
+   		}
+   	}
+
+      var poststr = document.getElementById("requestData").value;
+      makePOSTRequest(posturl, poststr);
+   }
+</script>
+<body>
+<h2>OSEE Post Test</h2>
+<table style="width:100%">
+<tr>
+<td style="width:10%">
+<h3>Server-Request:<h3>
+</td>
+<td>
+<div class="results">
+<form action="javascript:get(document.getElementById('myform'));" name="myform" id="myform">
+
+<table>
+<tr><td>Server Address: </td><td><input id="serverField" type="text" value="localhost" style="width:100%"></td></tr>
+<tr><td>Server Port: </td><td><input id="portField" type="text" value="8089" style="width:100%"></td></tr>
+<tr><td>Enter Context: </td><td><input id="contextField" type="text" value="osee" style="width:100%"></td></tr>
+<tr><td>Enter SessionId: </td><td><input id="sessionField" type="text" value="" style="width:100%"></td></tr>
+<tr><td>Url Parameters: </td><td><textarea id="parametersField" wrap="SOFT" style="width:100%">name=value[&]*</textarea></td></tr>
+</table>
+<br>
+Payload Data:
+<textarea id="requestData" wrap="SOFT" style="width:100%">xml format</textarea>
+<br><br>
+<input type="button" name="button" value="Submit" onclick="javascript:get(this.parentNode);">
+<!--<input type="submit" name="button" value="Normal Submit Button"> -->
+</form>
+</div>
+</td>
+</tr>
+</table>
+
+<br>
+<hr>
+<table style="width:100%">
+<tr>
+<td style="width:10%"><h3>Server-Response:<h3></td>
+<td>
+<div class="results">
+<span name="myspan" id="myspan"></span>
+</div>
+</td>
+</tr>
+</table>
+
+</body>
+</html>

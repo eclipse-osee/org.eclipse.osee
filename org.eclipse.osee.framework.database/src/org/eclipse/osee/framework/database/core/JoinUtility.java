@@ -117,7 +117,7 @@ public class JoinUtility {
 
    public static List<Integer> getAllTagQueueQueryIds() throws OseeDataStoreException {
       List<Integer> queryIds = new ArrayList<Integer>();
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement();
+      IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
          chStmt.runPreparedQuery(SELECT_TAG_GAMMA_QUEUE_QUERIES);
          while (chStmt.next()) {

@@ -11,28 +11,39 @@
 package org.eclipse.osee.framework.core.data;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.Branch;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class DefaultBasicArtifact extends BaseExchangeData implements IBasicArtifact<Object> {
+public final class DefaultBasicArtifact implements IBasicArtifact<Object> {
 
    private static final long serialVersionUID = -4997763989583925345L;
-
-   private static final String ARTIFACT_ID = "artifact.id";
-   private static final String ARTIFACT_GUID = "artifact.guid";
-   private static final String ARTIFACT_NAME = "artifact.name";
+   private final int artId;
+   private final String name;
+   private final String guid;
 
    public DefaultBasicArtifact(int artId, String guid, String name) {
       super();
-      backingData.put(ARTIFACT_ID, artId);
-      backingData.put(ARTIFACT_GUID, guid);
-      backingData.put(ARTIFACT_NAME, name);
+      this.artId = artId;
+      this.guid = guid;
+      this.name = name;
    }
 
    @Override
    public int getArtId() {
-      return backingData.getInt(ARTIFACT_ID);
+      return artId;
+   }
+
+   @Override
+   public String getGuid() {
+      return guid;
+   }
+
+   @Override
+   public String getName() {
+      return name;
    }
 
    @Override
@@ -41,13 +52,13 @@ public final class DefaultBasicArtifact extends BaseExchangeData implements IBas
    }
 
    @Override
-   public String getGuid() {
-      return getString(ARTIFACT_GUID);
+   public ArtifactType getArtifactType() {
+      return null;
    }
 
    @Override
-   public String getName() {
-      return getString(ARTIFACT_NAME);
+   public Branch getBranch() {
+      return null;
    }
 
 }

@@ -10,24 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.exchange;
 
-import junit.framework.Assert;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exchange.BasicArtifactDataTranslator;
-import org.eclipse.osee.framework.core.exchange.IDataTranslator;
+import org.eclipse.osee.framework.core.exchange.BasicArtifactTranslator;
+import org.eclipse.osee.framework.core.exchange.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.junit.Test;
 
 /**
- * Test Case For {@link BasicArtifactDataTranslator}
+ * Test Case For {@link BasicArtifactTranslator}
  * 
  * @author Roberto E. Escobar
  */
 public abstract class BaseTranslatorTest<T> {
 
-   private final IDataTranslator<T> translator;
+   private final ITranslator<T> translator;
    private final T data;
 
-   protected BaseTranslatorTest(T data, IDataTranslator<T> translator) {
+   protected BaseTranslatorTest(T data, ITranslator<T> translator) {
       this.data = data;
       this.translator = translator;
    }
@@ -37,7 +36,6 @@ public abstract class BaseTranslatorTest<T> {
       PropertyStore propertyStore = translator.convert(data);
       T actual = translator.convert(propertyStore);
 
-      Assert.assertNotSame(data, actual);
       checkEquals(data, actual);
    }
 

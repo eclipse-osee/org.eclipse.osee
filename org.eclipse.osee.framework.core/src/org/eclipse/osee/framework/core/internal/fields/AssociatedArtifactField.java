@@ -10,59 +10,48 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.internal.fields;
 
-import org.eclipse.osee.framework.core.data.AbstractOseeField;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.util.ChangeUtil;
 
 /**
  * @author Roberto E. Escobar
  */
 public class AssociatedArtifactField extends AbstractOseeField<IBasicArtifact<?>> {
 
-   private IBasicArtifact<?> artifact;
+   private IBasicArtifact<?> basicArtifact;
 
-   public AssociatedArtifactField() {
+   public AssociatedArtifactField(IBasicArtifact<?> basicArtifact) {
       super();
-      artifact = null;
+      this.basicArtifact = basicArtifact;
    }
 
    @Override
    public IBasicArtifact<?> get() throws OseeCoreException {
-      return artifact;
+      return basicArtifact;
    }
 
    @Override
-   public void set(IBasicArtifact<?> newArtifact) throws OseeCoreException {
-      boolean wasDifferent = ChangeUtil.isDifferent(get(), resolve(newArtifact));
+   public void set(IBasicArtifact<?> artifact) throws OseeCoreException {
+      boolean wasDifferent = isDifferent(get(), artifact);
       if (wasDifferent) {
-         this.artifact = newArtifact;
+         this.basicArtifact = artifact;
       }
       isDirty |= wasDifferent;
    }
 
-   private IBasicArtifact<?> resolve(IBasicArtifact<?> artifact) {
-      IBasicArtifact<?> toReturn = artifact;
-      if (artifact != null) {
-         //         // Artifact has already been loaded so check
-         //         // TODO: this method should allow the artifact to be on any branch, not just common
-         //         if (artifact instanceof Artifact) {
-         //            if (artifact.getBranch() != getCommonBranch()) {
-         //               throw new OseeArgumentException(
-         //                     "Setting associated artifact for branch only valid for common branch artifact.");
-         //            }
-         //         }
-         //         IArtifact lastArtifact = branchToAssociatedArtifact.get(branch);
-         //         if (lastArtifact != null) {
-         //            if (!lastArtifact.equals(artifact)) {
-         //               branchToAssociatedArtifact.put(branch, artifact);
-         //            }
-         //         } else {
-         //            branchToAssociatedArtifact.put(branch, artifact);
-         //         }
-         //      } else {
-         //         branchToAssociatedArtifact.remove(branch);
+   private boolean isDifferent(IBasicArtifact<?> art1, IBasicArtifact<?> art2) {
+      boolean result = false;
+      if (art1 != null && art2 == null || art1 == null && art2 != null) {
+         result = true;
+      } else {
+         String guid1 = art1.getGuid();
+         String guid2 = art2.getGuid();
+         if (guid1 != null && guid2 != null) {
+            result = !guid1.equals(guid2);
+         } else {
+            result = art1.getArtId() != art2.getArtId();
+         }
       }
-      return toReturn;
+      return result;
    }
 }

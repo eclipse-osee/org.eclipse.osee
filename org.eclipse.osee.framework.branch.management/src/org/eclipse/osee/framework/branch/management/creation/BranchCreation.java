@@ -15,15 +15,21 @@ import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 
 /**
  * @author Andrew M. Finkbeiner
  */
 public class BranchCreation implements IBranchCreation {
+   private final IOseeDatabaseServiceProvider provider;
+
+   public BranchCreation(IOseeDatabaseServiceProvider provider) {
+      this.provider = provider;
+   }
 
    public int createBranch(Branch branch, int authorId, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws Exception {
       IOperation operation =
-            new CreateBranchOperation(branch, authorId, creationComment, populateBaseTxFromAddressingQueryId,
+            new CreateBranchOperation(provider, branch, authorId, creationComment, populateBaseTxFromAddressingQueryId,
                   destinationBranchId);
       Operations.executeWorkAndCheckStatus(operation, new LogProgressMonitor(), -1);
       return branch.getId();

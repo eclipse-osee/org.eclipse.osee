@@ -13,18 +13,28 @@ package org.eclipse.osee.framework.database.core;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractDbTxOperation extends AbstractOperation {
 
-   public AbstractDbTxOperation(String operationName, String pluginId) {
+   private final IOseeDatabaseServiceProvider provider;
+
+   public AbstractDbTxOperation(IOseeDatabaseServiceProvider provider, String operationName, String pluginId) {
       super(operationName, pluginId);
+      this.provider = provider;
+   }
+
+   protected IOseeDatabaseService getDatabaseService() {
+      return provider.getOseeDatabaseService();
    }
 
    @Override
    protected final void doWork(IProgressMonitor monitor) throws Exception {
+      IOseeDatabaseService service = getDatabaseService();
       Transaction transaction = new Transaction(monitor);
       transaction.execute();
    }

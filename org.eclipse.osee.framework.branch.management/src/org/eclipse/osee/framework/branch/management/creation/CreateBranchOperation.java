@@ -26,9 +26,9 @@ import org.eclipse.osee.framework.core.enums.TxChange;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.ConnectionHandlerStatement;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -75,8 +75,8 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    private final int populateBaseTxFromAddressingQueryId;
    private final int destinationBranchId;
 
-   public CreateBranchOperation(Branch branch, int authorId, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) {
-      super(String.format("Create Branch: [%s from %s]", branch.getName(), branch.getParentBranchId()),
+   public CreateBranchOperation(IOseeDatabaseServiceProvider provider, Branch branch, int authorId, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) {
+      super(provider, String.format("Create Branch: [%s from %s]", branch.getName(), branch.getParentBranchId()),
             InternalBranchActivator.PLUGIN_ID);
       this.branch = branch;
       this.authorId = authorId;
@@ -90,7 +90,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       if (systemUserId == -1) {
          try {
             systemUserId =
-                  ConnectionHandler.runPreparedQueryFetchInt(-1, USER_ID_QUERY, SystemUser.OseeSystem.getUserID());
+                  getDatabaseService().runPreparedQueryFetchObject(-1, USER_ID_QUERY, SystemUser.OseeSystem.getUserID());
          } catch (OseeDataStoreException ex) {
             OseeLog.log(InternalBranchActivator.class, Level.WARNING, "Unable to retrieve the system user");
          }
@@ -104,7 +104,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
          int systemUserId = getSystemUserId();
          if (associatedArtifactId > -1 && associatedArtifactId != systemUserId) {
             int count =
-                  ConnectionHandler.runPreparedQueryFetchInt(0,
+                  getDatabaseService().runPreparedQueryFetchObject(0,
                         "select (1) from osee_branch where associated_art_id=? and branch_state <> ?",
                         branch.getAssociatedArtifactId(), BranchState.DELETED.getValue());
             if (count > 0) {
@@ -141,7 +141,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    protected void handleTxException(IProgressMonitor monitor, Exception ex) {
       if (passedPreConditions) {
          try {
-            ConnectionHandler.runPreparedUpdate(DELETE_BRANCH, branch.getId());
+            getDatabaseService().runPreparedUpdate(DELETE_BRANCH, branch.getId());
          } catch (OseeDataStoreException ex1) {
             OseeLog.log(InternalBranchActivator.class, Level.SEVERE, ex1);
          }
@@ -156,7 +156,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    @SuppressWarnings("unchecked")
    private void addBranchAlias(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch) throws OseeDataStoreException {
       if (branch.getStaticBranchName() != null) {
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES, branch.getStaticBranchName(),
+         getDatabaseService().runPreparedUpdate(connection, INSERT_DEFAULT_BRANCH_NAMES, branch.getStaticBranchName(),
                branch.getId());
       }
       checkForCancelledStatus(monitor);
@@ -165,7 +165,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
 
    private void addMergeBranchEntry(IProgressMonitor monitor, double workAmount, OseeConnection connection, Branch branch, int destinationBranchId) throws OseeDataStoreException {
       if (branch.getBranchType().isMergeBranch()) {
-         ConnectionHandler.runPreparedUpdate(connection, MERGE_BRANCH_INSERT, branch.getParentBranchId(),
+         getDatabaseService().runPreparedUpdate(connection, MERGE_BRANCH_INSERT, branch.getParentBranchId(),
                destinationBranchId, branch.getId(), -1);
       }
       checkForCancelledStatus(monitor);
@@ -181,19 +181,19 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
          if (!GUID.isValid(guid)) {
             guid = GUID.create();
          }
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_BRANCH, branchId, guid, branch.getName(),
+         getDatabaseService().runPreparedUpdate(connection, INSERT_BRANCH, branchId, guid, branch.getName(),
                branch.getParentBranchId(), branch.getParentTransactionId(), 0, branch.getAssociatedArtifactId(),
                branch.getBranchType().getValue(), branch.getBranchState().getValue());
          branch.setGuid(guid);
          branch.setBranchId(branchId);
 
          branch.setBaseTransaction(SequenceManager.getNextTransactionId());
-         ConnectionHandler.runPreparedUpdate(connection, INSERT_TX_DETAILS, branch.getId(),
+         getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, branch.getId(),
                branch.getBaseTransaction(), creationComment, timestamp, authorId, 1);
       } else {
-         ConnectionHandler.runPreparedUpdate(connection, UPDATE_BRANCH, branch.getName(), branch.getParentBranchId(),
-               branch.getParentTransactionId(), 0, branch.getAssociatedArtifactId(), branch.getBranchType().getValue(),
-               branch.getBranchState().getValue(), branch.getId());
+         getDatabaseService().runPreparedUpdate(connection, UPDATE_BRANCH, branch.getName(),
+               branch.getParentBranchId(), branch.getParentTransactionId(), 0, branch.getAssociatedArtifactId(),
+               branch.getBranchType().getValue(), branch.getBranchState().getValue(), branch.getId());
       }
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(workAmount));
@@ -218,7 +218,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
                   TxChange.NOT_CURRENT.getValue(), parentBranchId);
          }
          if (!data.isEmpty()) {
-            ConnectionHandler.runBatchUpdate(connection, INSERT_ADDRESSING, data);
+            getDatabaseService().runBatchUpdate(connection, INSERT_ADDRESSING, data);
          }
          monitor.setTaskName(String.format("Created branch [%s] with [%d] transactions%s", branch.getName(),
                data.size(), extraMessage));
@@ -228,7 +228,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    }
 
    private void populateAddressingToCopy(IProgressMonitor monitor, OseeConnection connection, List<Object[]> data, HashSet<Integer> gammas, String query, Object... parameters) throws OseeCoreException {
-      ConnectionHandlerStatement chStmt = ConnectionHandler.getStatement(connection);
+      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
       try {
          chStmt.runPreparedQuery(10000, query, parameters);
          while (chStmt.next()) {

@@ -12,17 +12,17 @@ package org.eclipse.osee.framework.core.exchange;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import org.eclipse.osee.framework.core.IDataTranslationService;
-import org.eclipse.osee.framework.core.data.Branch;
-import org.eclipse.osee.framework.core.data.TransactionRecord;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Roberto E. Escobar
  */
-public final class TransactionRecordTranslator implements IDataTranslator<TransactionRecord> {
+public final class TransactionRecordTranslator implements ITranslator<TransactionRecord> {
 
    private enum Entry {
       TRANSACTION_ID,
@@ -51,7 +51,8 @@ public final class TransactionRecordTranslator implements IDataTranslator<Transa
       Date time = new Timestamp(store.getLong(Entry.TRANSACTION_TIMESTAMP.name()));
       int authorArtId = store.getInt(Entry.TRANSACTION_AUTHOR_ART_ID.name());
       int commitArtId = store.getInt(Entry.TRANSACTION_COMMIT_ART_ID.name());
-      Branch branch = getService().convert(store.getPropertyStore(Entry.TRANSACTION_BRANCH.name()), Branch.class);
+      PropertyStore innerStore = store.getPropertyStore(Entry.TRANSACTION_BRANCH.name());
+      Branch branch = getService().convert(innerStore, Branch.class);
       return new TransactionRecord(transactionNumber, branch, comment, time, authorArtId, commitArtId, txType);
    }
 
@@ -60,7 +61,7 @@ public final class TransactionRecordTranslator implements IDataTranslator<Transa
       store.put(Entry.TRANSACTION_ID.name(), data.getId());
       store.put(Entry.TRANSACTION_TX_TYPE.name(), data.getTxType().name());
       store.put(Entry.TRANSACTION_COMMENT.name(), data.getComment());
-      store.put(Entry.TRANSACTION_TIMESTAMP.name(), data.getDate().getTime());
+      store.put(Entry.TRANSACTION_TIMESTAMP.name(), data.getTimeStamp().getTime());
       store.put(Entry.TRANSACTION_AUTHOR_ART_ID.name(), data.getAuthor());
 
       store.put(Entry.TRANSACTION_COMMIT_ART_ID.name(), data.getCommit());
