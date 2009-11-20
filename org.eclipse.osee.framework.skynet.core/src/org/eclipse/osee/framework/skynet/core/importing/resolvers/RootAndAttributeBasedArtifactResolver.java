@@ -36,9 +36,9 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
    private final Collection<AttributeType> nonChangingAttributes;
    private final boolean createNewIfNotExist;
 
-   public RootAndAttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> noneChangingAttributes, boolean createNewIfNotExist) {
+   public RootAndAttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist) {
       super(primaryArtifactType, secondaryArtifactType);
-      this.nonChangingAttributes = noneChangingAttributes;
+      this.nonChangingAttributes = nonChangingAttributes;
       this.createNewIfNotExist = createNewIfNotExist;
    }
 
@@ -96,10 +96,10 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
       RoughArtifact roughParent = roughArtifact.getRoughParent();
 
       if (roughParent != null) {
-         Artifact real = null;
+         Artifact realParent = null;
          //                     toRealArtifact(roughParent);
 
-         List<Artifact> siblings = real.getChildren();
+         List<Artifact> siblings = realParent.getChildren();
          Collection<Artifact> candidates = new LinkedList<Artifact>();
 
          for (Artifact artifact : siblings) {

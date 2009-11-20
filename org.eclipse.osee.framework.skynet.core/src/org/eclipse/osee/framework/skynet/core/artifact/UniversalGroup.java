@@ -57,7 +57,7 @@ public class UniversalGroup {
       Artifact groupArt = ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, branch, name);
       groupArt.persist();
       Artifact groupRoot = getTopUniversalGroupArtifact(branch);
-      groupRoot.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, groupArt);
+      groupRoot.addRelation(CoreRelationEnumeration.Universal_Grouping__Members, groupArt);
       groupRoot.persist();
       return groupArt;
    }

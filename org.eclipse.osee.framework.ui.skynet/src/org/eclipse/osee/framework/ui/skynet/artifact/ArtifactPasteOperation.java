@@ -86,7 +86,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
 
    private void pasteRelationOrder(ArtifactPasteConfiguration config, Artifact source, Artifact newArtifact, List<Artifact> copiedChildren) throws OseeCoreException {
       if (config.isKeepRelationOrderSettings()) {
-         IRelationEnumeration relationTypeSide = CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
+         IRelationEnumeration relationTypeSide = CoreRelationEnumeration.Default_Hierarchical__Child;
          RelationOrderData data = RelationManager.createRelationOrderData(source);
          String order = data.getCurrentSorterGuid(relationTypeSide.getRelationType(), relationTypeSide.getSide());
          IRelationSorter sorter = RelationManager.getSorterProvider().getRelationOrder(order);

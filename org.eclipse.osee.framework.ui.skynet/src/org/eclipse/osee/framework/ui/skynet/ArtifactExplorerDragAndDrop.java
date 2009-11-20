@@ -136,7 +136,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   for (Artifact artifact : artifactsToBeRelated) {
                      Artifact currentParent = artifact.getParent();
                      if (currentParent != null) {
-                        currentParent.deleteRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, artifact);
+                        currentParent.deleteRelation(CoreRelationEnumeration.Default_Hierarchical__Child, artifact);
                         currentParent.persist(transaction);
                      }
                      parentArtifact.addChild(RelationOrderBaseTypes.USER_DEFINED, artifact);

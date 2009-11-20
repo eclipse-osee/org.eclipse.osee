@@ -79,9 +79,9 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       if (realArtifact != null) {
          return realArtifact;
       }
-
+      // Get Children
       realArtifact = artifactResolver.resolve(roughArtifact, transaction.getBranch());
-
+      // Returns you 
       for (RoughArtifact childRoughArtifact : roughArtifact.getChildren()) {
          Artifact childArtifact = createArtifact(monitor, roughToRealArtifact, childRoughArtifact);
          if (realArtifact != null && childArtifact != null && !realArtifact.isDeleted() && !childArtifact.isDeleted()) {

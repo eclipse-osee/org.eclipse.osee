@@ -143,7 +143,7 @@ public class MigrateRelationOrder extends AbstractBlam {
    }
 
    private void testOneArtifact(SkynetTransaction transaction, String guid) throws OseeCoreException {
-      writeNewOrder(transaction, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, ArtifactQuery.getArtifactFromId(
+      writeNewOrder(transaction, CoreRelationEnumeration.Default_Hierarchical__Child, ArtifactQuery.getArtifactFromId(
             guid, transaction.getBranch()));
    }
 

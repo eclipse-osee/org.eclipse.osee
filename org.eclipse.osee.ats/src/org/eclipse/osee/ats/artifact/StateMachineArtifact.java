@@ -186,7 +186,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewGroups() throws OseeCoreException {
-      return Artifacts.toString("; ", getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP));
+      return Artifacts.toString("; ", getRelatedArtifacts(CoreRelationEnumeration.Universal_Grouping__Group));
    }
 
    @Override

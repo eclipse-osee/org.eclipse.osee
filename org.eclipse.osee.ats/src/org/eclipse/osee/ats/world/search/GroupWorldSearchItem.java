@@ -79,7 +79,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       getProduct();
       if (getSearchGroup() == null) return EMPTY_SET;
       Collection<Artifact> arts =
-            getSearchGroup().getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS);
+            getSearchGroup().getRelatedArtifacts(CoreRelationEnumeration.Universal_Grouping__Members);
       if (cancelled) return EMPTY_SET;
       return arts;
    }

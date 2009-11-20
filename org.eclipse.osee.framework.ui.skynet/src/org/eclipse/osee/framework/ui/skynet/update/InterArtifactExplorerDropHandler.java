@@ -129,7 +129,7 @@ public class InterArtifactExplorerDropHandler {
             Artifact reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
             if (status == TransferStatus.INTRODUCE) {
                reflectedArtifact.setRelations(RelationOrderBaseTypes.USER_DEFINED,
-                     CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT, Collections.singleton(parentArtifact));
+                     CoreRelationEnumeration.Default_Hierarchical__Parent, Collections.singleton(parentArtifact));
             } else {
                reloadArtifacts.add(reflectedArtifact);
             }

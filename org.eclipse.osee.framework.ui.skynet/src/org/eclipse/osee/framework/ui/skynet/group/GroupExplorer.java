@@ -325,7 +325,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          try {
             SkynetTransaction transaction = new SkynetTransaction(branch);
             for (GroupExplorerItem item : items) {
-               item.getArtifact().deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP,
+               item.getArtifact().deleteRelation(CoreRelationEnumeration.Universal_Grouping__Group,
                      item.getParentItem().getArtifact());
                item.getArtifact().persist(transaction);
             }

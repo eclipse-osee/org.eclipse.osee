@@ -81,7 +81,7 @@ public class SMARelationsSection extends RelationsFormSection {
                AtsRelation.TeamActionableItem_ActionableItem.getName(),
                AtsRelation.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelation.TeamLead_Lead.getName(),
                AtsRelation.TeamMember_Member.getName(), AtsRelation.TeamWorkflowToReview_Review.getName(),
-               AtsRelation.WorkItem__Child.getName(), CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getName(),
+               AtsRelation.WorkItem__Child.getName(), CoreRelationEnumeration.Default_Hierarchical__Child.getName(),
                CoreRelationEnumeration.Users_Artifact.getName());
 
 }

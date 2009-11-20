@@ -63,7 +63,7 @@ public class ReportDirtyOseeTypesOperation extends AbstractOperation {
    }
 
    private void openReport(final List<IResultsEditorTab> resultsTabs) {
-      Job job = new UIJob("Un-Persistted Osee Types") {
+      Job job = new UIJob("Un-Persisted Osee Types") {
 
          @Override
          public IStatus runInUIThread(IProgressMonitor monitor) {
@@ -73,7 +73,7 @@ public class ReportDirtyOseeTypesOperation extends AbstractOperation {
                status = Status.OK_STATUS;
             } catch (Exception ex) {
                status =
-                     new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error creating Un-Persistted Osee Types Report",
+                     new Status(IStatus.ERROR, Activator.PLUGIN_ID, "Error creating Un-Persisted Osee Types Report",
                            ex);
             }
             return status;

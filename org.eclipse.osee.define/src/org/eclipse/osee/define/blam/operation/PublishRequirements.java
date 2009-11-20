@@ -90,7 +90,7 @@ public class PublishRequirements extends AbstractBlam {
       } else {
          linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
       }
-      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
+      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationEnumeration.Default_Hierarchical__Child);
 
       SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch(), getName());
       String templateOption;

@@ -74,7 +74,7 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
          setTitleImage(ImageManager.getImage(CoverageImage.COVERAGE));
          setActivePage(startPage);
          if (getCoverageEditorInput().isInTest()) {
-            (new LoadCoverage(loadingStr)).doWork(null);
+            new LoadCoverage(loadingStr).doWork(null);
          } else {
             Operations.executeAsJob(new LoadCoverage(loadingStr), true);
          }
@@ -97,7 +97,7 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
                   artifactLoadCache =
                         RelationManager.getRelatedArtifacts(
                               Collections.singleton(getCoverageEditorInput().getCoveragePackageArtifact()), 8,
-                              CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD);
+                              CoreRelationEnumeration.Default_Hierarchical__Child);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
                }
@@ -267,7 +267,7 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
          @Override
          public void run() {
             for (IEditorReference editor : AWorkbench.getEditors(EDITOR_ID)) {
-               AWorkbench.getActivePage().closeEditor((editor.getEditor(false)), false);
+               AWorkbench.getActivePage().closeEditor(editor.getEditor(false), false);
             }
          }
       });

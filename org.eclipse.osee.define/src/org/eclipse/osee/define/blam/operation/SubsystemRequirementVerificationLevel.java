@@ -56,7 +56,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       subsystemRequirements = ArtifactQuery.getArtifactListFromType(CoreArtifacts.SubsystemRequirement, branch);
       bulkRequirements =
             RelationManager.getRelatedArtifacts(subsystemRequirements, 1,
-                  CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL);
+                  CoreRelationEnumeration.Requirement_Trace__Lower_Level);
       report = new StringBuilder(AHTML.beginMultiColumnTable(100, 1));
       transaction = new SkynetTransaction(branch, "Set Verification Level for Subsystem Requirements");
    }
@@ -125,12 +125,12 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       }
 
       private int getHardwareComponentCount() throws OseeCoreException {
-         return RelationManager.getRelatedArtifactsCount(req, CoreRelationEnumeration.ALLOCATION__COMPONENT);
+         return RelationManager.getRelatedArtifactsCount(req, CoreRelationEnumeration.Allocation__Component);
       }
 
       private int getSoftwareRequirementCount() throws OseeCoreException {
          Collection<Artifact> traceCollection =
-               RelationManager.getRelatedArtifacts(req, CoreRelationEnumeration.REQUIREMENT_TRACE__LOWER_LEVEL);
+               RelationManager.getRelatedArtifacts(req, CoreRelationEnumeration.Requirement_Trace__Lower_Level);
          int ret = 0;
          for (Artifact trace : traceCollection) {
             if (trace.isOfType(CoreArtifacts.AbstractSoftwareRequirement)) {

@@ -161,5 +161,4 @@ public class RoughArtifact {
    public void setPrimaryArtifactType(ArtifactType primaryArtifactType) {
       this.primaryArtifactType = primaryArtifactType;
    }
-
 }

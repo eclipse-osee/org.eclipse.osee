@@ -12,76 +12,68 @@ package org.eclipse.osee.framework.skynet.core.relation;
 
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
+import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
-public enum CoreRelationEnumeration implements IRelationEnumeration {
+public enum CoreRelationEnumeration implements IRelationEnumeration, IOseeType {
 
-   Users_Artifact(SIDE_A, "Users"), Users_User(SIDE_B, "Users"),
+   //   AddressesIssues_AddressesIssues(SIDE_A, "Addresses Issues", ""),
+   //   AddressesIssues_IssuedArtifact(SIDE_B, "Addresses Issues", ""),
+   //   DEFAULT_STYLESHEET__RENDERER(SIDE_A, "Default Stylesheet", ""),
+   //   DEFAULT_STYLESHEET__STYLESHEET(SIDE_B, "Default Stylesheet", ""),
+   //   TestConfigurationRelation_TestScript(SIDE_A, "Test Configuration Relation", ""),
+   //   TestConfigurationRelation_TestConfiguration(SIDE_B, "Test Configuration Relation", ""),
+   //   RunByRelation_User(SIDE_A, "Run By Relation", ""),
+   //   RunByRelation_TestRun(SIDE_B, "Run By Relation", ""),
+   //   TestRunConfigRelation_TestConfiguration(SIDE_A, "Test Run Config Relation", ""),
+   //   TestRunConfigRelation_TestRun(SIDE_B, "Test Run Config Relation", ""),
 
-   // Define relations
-   Supercedes_Supercedes(SIDE_A, "Supercedes"),
-   Supercedes_Superceded(SIDE_B, "Supercedes"),
-   AddressesIssues_AddressesIssues(SIDE_A, "Addresses Issues"),
-   AddressesIssues_IssuedArtifact(SIDE_B, "Addresses Issues"),
-   SupportingInfo_SupportedBy(SIDE_A, "Supporting Info"),
-   SupportingInfo_SupportingInfo(SIDE_B, "Supporting Info"),
-
-   DEFAULT_STYLESHEET__RENDERER(SIDE_A, "Default Stylesheet"),
-   DEFAULT_STYLESHEET__STYLESHEET(SIDE_B, "Default Stylesheet"),
-   REQUIREMENT_TRACE__HIGHER_LEVEL(SIDE_A, "Requirement Trace"),
-   REQUIREMENT_TRACE__LOWER_LEVEL(SIDE_B, "Requirement Trace"),
-   DEFAULT_HIERARCHICAL__CHILD(SIDE_B, "Default Hierarchical"),
-   DEFAULT_HIERARCHICAL__PARENT(SIDE_A, "Default Hierarchical"),
-
-   Dependency__Dependency(SIDE_B, "Dependency"),
-   Dependency__Artifact(SIDE_A, "Dependency"),
-
-   TeamMember_Team(SIDE_A, "TeamMember"),
-   TeamMember_Member(SIDE_B, "TeamMember"),
-
-   WorkItem__Parent(SIDE_A, "Work Item"),
-   WorkItem__Child(SIDE_B, "Work Item"),
-
-   Design__Design(SIDE_B, "Design"),
-   Design__Requirement(SIDE_A, "Design"),
-
-   UNIVERSAL_GROUPING__MEMBERS(SIDE_B, "Universal Grouping"),
-   UNIVERSAL_GROUPING__GROUP(SIDE_A, "Universal Grouping"),
-
-   ALLOCATION__REQUIREMENT(SIDE_A, "Allocation"),
-   ALLOCATION__COMPONENT(SIDE_B, "Allocation"),
-   Validation__Requirement(SIDE_A, "Validation"),
-   Validation__Validator(SIDE_B, "Validation"),
-
-   Verification__Requirement(SIDE_A, "Verification"),
-   Verification__Verifier(SIDE_B, "Verification"),
-
-   Uses__Requirement(SIDE_A, "Uses"),
-   Uses__TestUnit(SIDE_B, "Uses"),
-
-   CodeRequirement_Requirement(SIDE_B, "Code-Requirement"),
-   CodeRequirement_CodeUnit(SIDE_A, "Code-Requirement"),
-
-   TestConfigurationRelation_TestScript(SIDE_A, "Test Configuration Relation"),
-   TestConfigurationRelation_TestConfiguration(SIDE_B, "Test Configuration Relation"),
-   RunByRelation_User(SIDE_A, "Run By Relation"),
-   RunByRelation_TestRun(SIDE_B, "Run By Relation"),
-   TestRunConfigRelation_TestConfiguration(SIDE_A, "Test Run Config Relation"),
-   TestRunConfigRelation_TestRun(SIDE_B, "Test Run Config Relation"),
-   VERIFICATION_PLAN__REQUIREMENT(SIDE_A, "Verification Plan"),
-   VERIFICATION_PLAN__TEST_PLAN_ELEMENT(SIDE_B, "Verification Plan"),
-   EXECUTES__TEST_PLAN_ELEMENT(SIDE_A, "Executes"),
-   EXECUTES__TEST_PROCEDURE(SIDE_B, "Executes"),
-   TEST_UNIT_RESULT__TEST_UNIT(SIDE_A, "Test Unit Result"),
-   TEST_UNIT_RESULT__TEST_RESULT(SIDE_B, "Test Unit Result");
+   Allocation__Requirement(SIDE_A, "Allocation", "AAMFE+RS8gRV2BXaCtQA"),
+   Allocation__Component(SIDE_B, "Allocation", "AAMFE+RS8gRV2BXaCtQA"),
+   CodeRequirement_Requirement(SIDE_B, "Code-Requirement", "AAMFE+TNKxG5ytcGHqgA"),
+   CodeRequirement_CodeUnit(SIDE_A, "Code-Requirement", "AAMFE+TNKxG5ytcGHqgA"),
+   Default_Hierarchical__Parent(SIDE_A, "Default Hierarchical", "AAMFE9skWhPMi6I1WdAA"),
+   Default_Hierarchical__Child(SIDE_B, "Default Hierarchical", "AAMFE9skWhPMi6I1WdAA"),
+   Dependency__Dependency(SIDE_B, "Dependency", "AAMFE9uek34jqArVRuAA"),
+   Dependency__Artifact(SIDE_A, "Dependency", "AAMFE9uek34jqArVRuAA"),
+   Design__Design(SIDE_B, "Design", "AAMFE+XjcSaqnXfOXVQA"),
+   Design__Requirement(SIDE_A, "Design", "AAMFE+XjcSaqnXfOXVQA"),
+   Executes__Test_Plan_Element(SIDE_A, "Executes", "AWo0+Hkh+2qNMeAlUwQA"),
+   Executes__Test_Procedure(SIDE_B, "Executes", "AWo0+Hkh+2qNMeAlUwQA"),
+   Requirement_Trace__Higher_Level(SIDE_A, "Requirement Trace", "AAMFE+dRBVFN6fAPXdwA"),
+   Requirement_Trace__Lower_Level(SIDE_B, "Requirement Trace", "AAMFE+dRBVFN6fAPXdwA"),
+   Supercedes_Supercedes(SIDE_A, "Supercedes", "AAMFE9qJZC_qegaByjgA"),
+   Supercedes_Superceded(SIDE_B, "Supercedes", "AAMFE9qJZC_qegaByjgA"),
+   SupportingInfo_SupportedBy(SIDE_A, "Supporting Info", "AAMFE9wWnVhFW0wtOPAA"),
+   SupportingInfo_SupportingInfo(SIDE_B, "Supporting Info", "AAMFE9wWnVhFW0wtOPAA"),
+   TeamMember_Team(SIDE_A, "TeamMember", "AAMFE92A6gCO9WJ2ijQA"),
+   TeamMember_Member(SIDE_B, "TeamMember", "AAMFE92A6gCO9WJ2ijQA"),
+   Test_Unit_Result__Test_Unit(SIDE_A, "Results Data", "AQm9ouX6JwBD29WrFoAA"),
+   Test_Unit_Result__Test_Result(SIDE_B, "Results Data", "AQm9ouX6JwBD29WrFoAA"),
+   Universal_Grouping__Members(SIDE_B, "Universal Grouping", "AAMFE9yOp2hIrXwZ13wA"),
+   Universal_Grouping__Group(SIDE_A, "Universal Grouping", "AAMFE9yOp2hIrXwZ13wA"),
+   Users_Artifact(SIDE_A, "Users", "AAMFE9nibXSCqcoXkMAA"),
+   Users_User(SIDE_B, "Users", "AAMFE9nibXSCqcoXkMAA"),
+   Uses__Requirement(SIDE_A, "Uses", "AAMFE_GV43rvba32QqwA"),
+   Uses__TestUnit(SIDE_B, "Uses", "AAMFE_GV43rvba32QqwA"),
+   Validation__Requirement(SIDE_A, "Validation", "AAMFE+fMVRM8f9BUD0AA"),
+   Validation__Validator(SIDE_B, "Validation", "AAMFE+fMVRM8f9BUD0AA"),
+   Verification__Requirement(SIDE_A, "Verification", "AAMFE+ZdqgB+D5zP5+gA"),
+   Verification__Verifier(SIDE_B, "Verification", "AAMFE+ZdqgB+D5zP5+gA"),
+   Verification_Plan__Requirement(SIDE_A, "Verification Plan", "ATmJsVc28wU57zFAi7AA"),
+   Verification_Plan__Test_Plan_Element(SIDE_B, "Verification Plan", "ATmJsVc28wU57zFAi7AA"),
+   WorkItem__Parent(SIDE_A, "Work Item", "AAMFE9jvEzcbzwAfjzwA"),
+   WorkItem__Child(SIDE_B, "Work Item", "AAMFE9jvEzcbzwAfjzwA");
 
    private RelationSide relationSide;
    private String typeName;
+   private String guid;
 
-   private CoreRelationEnumeration(RelationSide side, String typeName) {
+   private CoreRelationEnumeration(RelationSide side, String typeName, String guid) {
       this.relationSide = side;
       this.typeName = typeName;
+      this.guid = guid;
    }
 
    @Deprecated
@@ -108,5 +100,9 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
    @Override
    public RelationSide getSide() {
       return relationSide;
+   }
+
+   public String getGuid() {
+      return guid;
    }
 }

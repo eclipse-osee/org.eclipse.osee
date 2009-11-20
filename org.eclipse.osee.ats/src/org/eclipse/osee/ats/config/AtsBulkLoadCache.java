@@ -66,7 +66,7 @@ public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
          Artifact headingArt = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
          // Loading artifacts will cache them in ArtifactCache
          RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
-               CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, AtsRelation.TeamDefinitionToVersion_Version);
+               CoreRelationEnumeration.Default_Hierarchical__Child, AtsRelation.TeamDefinitionToVersion_Version);
          // Load Work Definitions
          WorkItemDefinitionFactory.loadDefinitions();
       } catch (Exception ex) {

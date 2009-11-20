@@ -54,7 +54,7 @@ public class FrameworkTestUtil {
       softArt.setName(name);
       softArt.addAttribute("Subsystem", DemoSubsystems.Electrical.name());
       Artifact rootArtifact = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch);
-      rootArtifact.addRelation(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, softArt);
+      rootArtifact.addRelation(CoreRelationEnumeration.Default_Hierarchical__Child, softArt);
       return softArt;
    }
 

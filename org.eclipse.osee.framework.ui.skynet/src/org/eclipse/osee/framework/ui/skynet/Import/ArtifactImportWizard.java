@@ -139,7 +139,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
    private IArtifactImportResolver getResolver() {
       ArtifactType primaryArtifactType = mainPage.getArtifactType();
       boolean isUpdateExistingArtifactsSelected = mainPage.isUpdateExistingSelected();
-      Collection<AttributeType> noneChangingAttributes = mainPage.getNonChangingAttributes();
+      Collection<AttributeType> nonChangingAttributes = mainPage.getNonChangingAttributes();
       IArtifactImportResolver resolver = null;
       try {
          ArtifactType secondaryArtifactType = ArtifactTypeManager.getType("Heading");
@@ -147,7 +147,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
          if (isUpdateExistingArtifactsSelected) {
             resolver =
                   new RootAndAttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType,
-                        noneChangingAttributes, false);
+                        nonChangingAttributes, false);
          } else {
             resolver = new NewArtifactImportResolver(primaryArtifactType, secondaryArtifactType);
          }
@@ -155,7 +155,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
          String msg =
                String.format("Unable to create an artifact resolver for [%s]", primaryArtifactType,
                      isUpdateExistingArtifactsSelected ? String.format("using %s as identifiers",
-                           noneChangingAttributes) : "");
+                           nonChangingAttributes) : "");
          ErrorDialog.openError(getContainer().getShell(), "Artifact Import", null, new Status(IStatus.ERROR,
                SkynetGuiPlugin.PLUGIN_ID, msg, ex));
       }

@@ -207,9 +207,9 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
 
                      for (Artifact artifact : insertArts) {
                         // Remove item from old group
-                        parentArtifact.deleteRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, artifact);
+                        parentArtifact.deleteRelation(CoreRelationEnumeration.Universal_Grouping__Members, artifact);
                         // Add items to new group
-                        targetArtifact.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, artifact);
+                        targetArtifact.addRelation(CoreRelationEnumeration.Universal_Grouping__Members, artifact);
                      }
                      Artifacts.persistInTransaction(parentArtifact, targetArtifact);
                   }
@@ -239,7 +239,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                      Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                      for (Artifact art : insertArts) {
-                        parentArtifact.setRelationOrder(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS,
+                        parentArtifact.setRelationOrder(CoreRelationEnumeration.Universal_Grouping__Members,
                               targetArtifact, isFeedbackAfter, art);
                         targetArtifact = art;
                      }
@@ -256,7 +256,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
 
                      for (Artifact art : insertArts) {
                         parentArtifact.addRelation(RelationOrderBaseTypes.USER_DEFINED,
-                              CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, targetArtifact, isFeedbackAfter,
+                              CoreRelationEnumeration.Universal_Grouping__Members, targetArtifact, isFeedbackAfter,
                               art, "");
                      }
                      parentArtifact.persist();
@@ -298,7 +298,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
 
          for (Artifact art : artsToRelate) {
             if (!dragOverExplorerItem.contains(art)) {
-               dragOverExplorerItem.getArtifact().addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, art);
+               dragOverExplorerItem.getArtifact().addRelation(CoreRelationEnumeration.Universal_Grouping__Members, art);
             }
          }
          dragOverExplorerItem.getArtifact().persist(transaction);

@@ -124,7 +124,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       } else if (groups.size() > 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
          for (Artifact groupArt : groups) {
-            for (Artifact art : groupArt.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
+            for (Artifact art : groupArt.getRelatedArtifacts(CoreRelationEnumeration.Universal_Grouping__Members)) {
                if (art instanceof TaskArtifact) {
                   taskArts.add((TaskArtifact) art);
                } else if (art instanceof StateMachineArtifact) {

@@ -90,7 +90,7 @@ public abstract class AbstractOseeType implements IOseeStorableType {
    }
 
    public final int getId() {
-      return getFieldValueLogException(UniqueIdField.UNPERSISTTED_VALUE, UNIQUE_ID_FIELD_KEY);
+      return getFieldValueLogException(UniqueIdField.UNPERSISTED_VALUE, UNIQUE_ID_FIELD_KEY);
    }
 
    public final String getName() {

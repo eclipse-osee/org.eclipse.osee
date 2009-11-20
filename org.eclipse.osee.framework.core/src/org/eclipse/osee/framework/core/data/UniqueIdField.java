@@ -19,18 +19,18 @@ import org.eclipse.osee.framework.core.util.ChangeUtil;
  */
 public final class UniqueIdField extends AbstractOseeField<Integer> {
 
-   public final static Integer UNPERSISTTED_VALUE = Integer.MIN_VALUE;
+   public final static Integer UNPERSISTED_VALUE = Integer.MIN_VALUE;
    private Integer value;
 
    public UniqueIdField() {
       super();
-      this.value = UNPERSISTTED_VALUE;
+      this.value = UNPERSISTED_VALUE;
       isDirty = true;
    }
 
    @Override
    public void set(Integer value) throws OseeCoreException {
-      if (get() == UNPERSISTTED_VALUE) {
+      if (get() == UNPERSISTED_VALUE) {
          isDirty |= ChangeUtil.isDifferent(get(), value);
          this.value = value;
       } else {

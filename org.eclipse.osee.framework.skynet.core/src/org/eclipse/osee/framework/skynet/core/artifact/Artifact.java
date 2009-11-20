@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
+import static org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration.Default_Hierarchical__Child;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -348,7 +348,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     */
    public Artifact getParent() throws OseeCoreException {
       if (hasParent()) {
-         return RelationManager.getRelatedArtifact(this, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT);
+         return RelationManager.getRelatedArtifact(this, CoreRelationEnumeration.Default_Hierarchical__Parent);
       }
       return null;
    }
@@ -368,7 +368,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws MultipleArtifactsExist if this artifact has more than one parent
     */
    public boolean hasParent() throws OseeCoreException {
-      int parentCount = getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT);
+      int parentCount = getRelatedArtifactsCount(CoreRelationEnumeration.Default_Hierarchical__Parent);
       if (parentCount > 1) {
          throw new MultipleArtifactsExist(humanReadableId + " has " + parentCount + " parents");
       }
@@ -409,7 +409,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws OseeCoreException
     */
    public List<Artifact> getChildren() throws OseeCoreException {
-      return getRelatedArtifacts(DEFAULT_HIERARCHICAL__CHILD);
+      return getRelatedArtifacts(Default_Hierarchical__Child);
    }
 
    /**
@@ -417,7 +417,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws OseeCoreException
     */
    public List<Artifact> getChildren(boolean includeDeleted) throws OseeCoreException {
-      return getRelatedArtifacts(DEFAULT_HIERARCHICAL__CHILD, includeDeleted);
+      return getRelatedArtifacts(Default_Hierarchical__Child, includeDeleted);
    }
 
    /**
@@ -442,7 +442,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    }
 
    public void addChild(IRelationSorterId sorterId, Artifact artifact) throws OseeCoreException {
-      addRelation(sorterId, DEFAULT_HIERARCHICAL__CHILD, artifact);
+      addRelation(sorterId, Default_Hierarchical__Child, artifact);
    }
 
    public Artifact addNewChild(IRelationSorterId sorterId, ArtifactType artifactType, String name) throws OseeCoreException {

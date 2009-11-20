@@ -32,9 +32,9 @@ import org.eclipse.osee.framework.ui.skynet.results.html.XResultPage.Manipulatio
 public class TestPlanComplianceReport extends AbstractBlam {
    private static final String MISSING = "?";
    private static final String EMPTY = "&nbsp;";
-   private String[] previousCells = {MISSING, MISSING, MISSING, MISSING};
+   private String[] previousCells = {MISSING, MISSING, MISSING, MISSING, MISSING};
    private final String[] columnHeaders =
-         {"Test Plan & Paragraph", "Perf Spec Requirement(s)", "Test Procedure", "Test Result"};
+         {"Test Plan & Paragraph", "Perf Spec Requirement(s)", "Test Procedure", "Test Status", "Test Result"};
    private Collection<Artifact> inputArtifacts;
    private Collection<Artifact> testPlans;
    private StringBuilder report;
@@ -56,7 +56,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
       if (isTestPlan(node)) {
          processTestPlan(node);
       } else {
-         reportLine(node, "N/A (" + node.getArtifactTypeName() + ")", EMPTY);
+         reportLine(node, "N/A (" + node.getArtifactTypeName() + ")", EMPTY, EMPTY);
       }
       for (Artifact child : children) {
          processArtifacts(child);
@@ -76,7 +76,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
       Collection<Artifact> testProcedures = getTestProcedures(testPlan);
 
       if (testProcedures.isEmpty()) {
-         reportLine(testPlan, MISSING, MISSING);
+         reportLine(testPlan, MISSING, MISSING, MISSING);
       } else {
          for (Artifact testProc : testProcedures) {
             processTestProcedure(testPlan, testProc);
@@ -87,12 +87,18 @@ public class TestPlanComplianceReport extends AbstractBlam {
    private void processTestProcedure(Artifact testPlan, Artifact testProc) throws IOException, OseeCoreException {
       Collection<Artifact> testResults = getTestResults(testProc);
       if (testResults.isEmpty()) {
-         reportLine(testPlan, testProc.getName(), MISSING);
+         reportLine(testPlan, testProc.getName(), MISSING, MISSING);
       } else {
          for (Artifact testResult : testResults) {
-            reportLine(testPlan, testProc.getName(), testResult.getName());
+            reportLine(testPlan, testProc.getName(), getStatus(testProc), testResult.getName());
          }
       }
+   }
+
+   private String getStatus(Artifact testProc) throws OseeCoreException {
+      String returnValue = testProc.getSoleAttributeValue(CoreAttributes.TEST_STATUS);
+
+      return returnValue;
    }
 
    private String getName(Artifact art) throws OseeCoreException {
@@ -102,13 +108,13 @@ public class TestPlanComplianceReport extends AbstractBlam {
    }
 
    private Collection<Artifact> getTestProcedures(Artifact testPlan) throws OseeCoreException {
-      Collection<Artifact> ret = testPlan.getRelatedArtifacts(CoreRelationEnumeration.EXECUTES__TEST_PROCEDURE);
+      Collection<Artifact> ret = testPlan.getRelatedArtifacts(CoreRelationEnumeration.Executes__Test_Procedure);
 
       return ret;
    }
 
    private Collection<Artifact> getTestResults(Artifact testProc) throws OseeCoreException {
-      Collection<Artifact> ret = testProc.getRelatedArtifacts(CoreRelationEnumeration.TEST_UNIT_RESULT__TEST_RESULT);
+      Collection<Artifact> ret = testProc.getRelatedArtifacts(CoreRelationEnumeration.Test_Unit_Result__Test_Result);
 
       return ret;
    }
@@ -132,7 +138,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
 
    private String getRequirementsAsString(Artifact testPlan) throws OseeCoreException {
       Collection<Artifact> requirementArtifacts =
-            testPlan.getRelatedArtifacts(CoreRelationEnumeration.VERIFICATION_PLAN__REQUIREMENT);
+            testPlan.getRelatedArtifacts(CoreRelationEnumeration.Verification_Plan__Requirement);
       Collection<String> requirementNames = new ArrayList<String>();
       for (Artifact req : requirementArtifacts) {
          String paragraphNumber = req.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
@@ -142,11 +148,11 @@ public class TestPlanComplianceReport extends AbstractBlam {
       return StringUtils.join(requirementNames, "\n");
    }
 
-   private void reportLine(Artifact art, String testProc, String testResult) throws IOException, OseeCoreException {
-      String[] outputCells = new String[4];
+   private void reportLine(Artifact art, String testProc, String testStatus, String testResult) throws IOException, OseeCoreException {
+      String[] outputCells = new String[5];
       String testPlanOutput = getName(art);
       String requirements = getRequirementsCellOutput(art);
-      String[] cells = new String[] {testPlanOutput, requirements, testProc, testResult};
+      String[] cells = new String[] {testPlanOutput, requirements, testProc, testStatus, testResult};
       for (int i = 0; i < cells.length; i++) {
          if (previousCells[i].equals(cells[i])) {
             if (i == 0 || outputCells[i - 1].equals(" ")) {
@@ -185,10 +191,10 @@ public class TestPlanComplianceReport extends AbstractBlam {
       for (Artifact input : inputArtifacts) {
          testPlans.addAll(input.getDescendants());
       }
-      RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationEnumeration.VERIFICATION_PLAN__REQUIREMENT);
+      RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationEnumeration.Verification_Plan__Requirement);
       Collection<Artifact> temp =
-            RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationEnumeration.EXECUTES__TEST_PROCEDURE);
-      RelationManager.getRelatedArtifacts(temp, 1, CoreRelationEnumeration.TEST_UNIT_RESULT__TEST_RESULT);
+            RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationEnumeration.Executes__Test_Procedure);
+      RelationManager.getRelatedArtifacts(temp, 1, CoreRelationEnumeration.Test_Unit_Result__Test_Result);
    }
 
    @Override

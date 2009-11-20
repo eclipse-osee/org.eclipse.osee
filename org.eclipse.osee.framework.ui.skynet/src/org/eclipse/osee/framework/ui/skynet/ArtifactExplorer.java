@@ -1338,14 +1338,14 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                }
                try {
                   treeViewer.update(transData.getArtifactsInRelations(ChangeType.Changed,
-                        CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType()).toArray(), null);
+                        CoreRelationEnumeration.Default_Hierarchical__Child.getRelationType()).toArray(), null);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
                try {
                   Set<Artifact> parents = new HashSet<Artifact>();
                   for (Artifact art : transData.getArtifactsInRelations(ChangeType.Added,
-                        CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())) {
+                        CoreRelationEnumeration.Default_Hierarchical__Child.getRelationType())) {
                      if (!art.isDeleted() && art.getParent() != null) {
                         parents.add(art.getParent());
                      }
@@ -1365,7 +1365,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          if (this.branch == null || !this.branch.equals(branch)) {
             return;
          }
-         if (link.getRelationType().equals(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD.getRelationType())) {
+         if (link.getRelationType().equals(CoreRelationEnumeration.Default_Hierarchical__Child.getRelationType())) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {

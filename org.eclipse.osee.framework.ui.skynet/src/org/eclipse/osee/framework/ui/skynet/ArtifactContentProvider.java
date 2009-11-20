@@ -116,7 +116,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                if (artifact.isDeleted()) {
                   return false;
                }
-               return artifact.getRelatedArtifactsCount(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD) > 0;
+               return artifact.getRelatedArtifactsCount(CoreRelationEnumeration.Default_Hierarchical__Child) > 0;
             } else {
                return false;
             }

@@ -448,10 +448,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    @Override
    public String getWorldViewGroups() throws OseeCoreException {
       Set<Artifact> groups = new HashSet<Artifact>();
-      groups.addAll(getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP));
+      groups.addAll(getRelatedArtifacts(CoreRelationEnumeration.Universal_Grouping__Group));
       // Roll up if same for all children
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         groups.addAll(team.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__GROUP));
+         groups.addAll(team.getRelatedArtifacts(CoreRelationEnumeration.Universal_Grouping__Group));
       }
       return Artifacts.toString("; ", groups);
    }

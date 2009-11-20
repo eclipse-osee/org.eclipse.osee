@@ -184,6 +184,7 @@ public class ConflictTest {
       checkNoTxCurrent("art_id", "osee_artifact_version");
       checkNoTxCurrent("attr_id", "osee_attribute");
       checkNoTxCurrent("rel_link_id", "osee_relation_link");
+
       checkMultipleTxCurrent("art_id", "osee_artifact_version");
       checkMultipleTxCurrent("attr_id", "osee_attribute");
       checkMultipleTxCurrent("rel_link_id", "osee_relation_link");

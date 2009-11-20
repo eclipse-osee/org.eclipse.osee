@@ -49,7 +49,7 @@ public class VersionTeamMetrics {
 
    private void bulkLoadArtifacts() throws OseeCoreException {
       RelationManager.getRelatedArtifacts(Arrays.asList(this.verTeamDef), 6,
-            CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, AtsRelation.TeamDefinitionToVersion_Version,
+            CoreRelationEnumeration.Default_Hierarchical__Child, AtsRelation.TeamDefinitionToVersion_Version,
             AtsRelation.TeamWorkflowTargetedForVersion_Workflow, AtsRelation.SmaToTask_Task,
             AtsRelation.ActionToWorkflow_Action);
    }

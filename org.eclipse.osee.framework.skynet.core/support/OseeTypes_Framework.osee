@@ -136,6 +136,23 @@ attributeType "Favorite Branch" extends StringAttribute {
    max unlimited
 }
 
+oseeEnumType "enum.test.proc.status" {
+	guid "AKkmjINR11UDdTOE1WAA"
+	entry "Not Performed"
+	entry "Completed -- Analysis in Work"
+	entry "Completed -- Passed"
+	entry "Completed -- With Issues"
+	entry "Completed -- With Issues Resolved"
+}
+
+attributeType "Test Procedure Status" extends EnumeratedAttribute {
+	guid "AKkUuN2K1ilSHnvIMPQA"
+	dataProvider DefaultAttributeDataProvider
+	min 0
+	max 1
+	enumType "enum.test.proc.status" 
+}
+
 attributeType "User Settings" extends StringAttribute {
    guid "AAMFEbOnewRpnYFgnHQA"
    dataProvider DefaultAttributeDataProvider
@@ -574,6 +591,7 @@ artifactType "Software Design" extends "Design" {
 artifactType "Test Procedure" extends "Test Unit" {
    guid "AAMFDjsjiGhoWpqM4PQA"
    attribute "Subsystem"
+   attribute "Test Procedure Status"
 }
 
 artifactType "Test Procedure WML" extends "Test Procedure" , "MS Word Whole Document"
@@ -1238,7 +1256,7 @@ relationType "Functional decomposition " {
    multiplicity ONE_TO_MANY
 }
 
-relationType "Test Unit Result" {
+relationType "Results Data" {
    guid "AQm9ouX6JwBD29WrFoAA"
    sideAName "test unit"
    sideAArtifactType "Test Unit"

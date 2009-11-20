@@ -156,7 +156,7 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
       List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
       for (OseeEnumType type : oseeEnumTypes) {
-         if (type.getId() != UniqueIdField.UNPERSISTTED_VALUE) {
+         if (type.getId() != UniqueIdField.UNPERSISTED_VALUE) {
             deleteData.add(toDeleteValues(type));
          }
          for (OseeEnumEntry entry : type.values()) {

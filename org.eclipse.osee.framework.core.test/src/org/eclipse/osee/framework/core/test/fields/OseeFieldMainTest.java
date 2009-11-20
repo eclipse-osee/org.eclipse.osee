@@ -120,9 +120,9 @@ public class OseeFieldMainTest {
 
       data.add(new Object[] { //
       new OseeFieldTest<Integer>(new UniqueIdField(), //
-            UniqueIdField.UNPERSISTTED_VALUE, true, //
-            new TestData<Integer>(false, UniqueIdField.UNPERSISTTED_VALUE, UniqueIdField.UNPERSISTTED_VALUE, true), //
-            new TestData<Integer>(true, UniqueIdField.UNPERSISTTED_VALUE, UniqueIdField.UNPERSISTTED_VALUE, false), //
+            UniqueIdField.UNPERSISTED_VALUE, true, //
+            new TestData<Integer>(false, UniqueIdField.UNPERSISTED_VALUE, UniqueIdField.UNPERSISTED_VALUE, true), //
+            new TestData<Integer>(true, UniqueIdField.UNPERSISTED_VALUE, UniqueIdField.UNPERSISTED_VALUE, false), //
             new TestData<Integer>(false, 100, 100, true), //
             new TestData<Integer>(false, 200, 100, true, OseeStateException.class),//
             new TestData<Integer>(true, 300, 100, false, OseeStateException.class)//

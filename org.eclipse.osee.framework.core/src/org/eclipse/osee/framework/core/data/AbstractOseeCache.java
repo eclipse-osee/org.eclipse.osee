@@ -67,7 +67,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       ensurePopulated();
       guidToTypeMap.remove(type.getGuid());
       decacheByName(type);
-      if (type.getId() != UniqueIdField.UNPERSISTTED_VALUE) {
+      if (type.getId() != UniqueIdField.UNPERSISTED_VALUE) {
          idToTypeMap.remove(type.getId());
       }
    }
@@ -111,7 +111,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
          throw new OseeArgumentException("Caching a null value is not allowed");
       }
       ensurePopulated();
-      if (type.getId() != UniqueIdField.UNPERSISTTED_VALUE) {
+      if (type.getId() != UniqueIdField.UNPERSISTED_VALUE) {
          idToTypeMap.put(type.getId(), type);
       }
    }

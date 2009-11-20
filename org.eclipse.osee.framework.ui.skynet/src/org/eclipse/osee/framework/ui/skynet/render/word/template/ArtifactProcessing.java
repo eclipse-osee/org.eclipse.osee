@@ -79,7 +79,7 @@ public class ArtifactProcessing implements ITemplateTask {
          internalOutlineElementsMatcher.reset(outlineElementsMatcher.group(4));
          outlining = true;
          recurseChildren = false;
-         outlineRelation = CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD;
+         outlineRelation = CoreRelationEnumeration.Default_Hierarchical__Child;
 
          while (internalOutlineElementsMatcher.find()) {
             String elementType = internalOutlineElementsMatcher.group(3);

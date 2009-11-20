@@ -92,7 +92,7 @@ public class RelationImporter implements RowProcessor {
                      rationale = "";
                   }
                   columnArtifacts[i].addRelation(RelationOrderBaseTypes.USER_DEFINED,
-                        CoreRelationEnumeration.ALLOCATION__REQUIREMENT, rowArtifact, rationale);
+                        CoreRelationEnumeration.Allocation__Requirement, rowArtifact, rationale);
                   columnArtifacts[i].persist();
                }
             }

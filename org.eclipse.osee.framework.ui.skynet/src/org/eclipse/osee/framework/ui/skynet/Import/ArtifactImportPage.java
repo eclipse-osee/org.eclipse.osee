@@ -72,6 +72,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    private DirectoryOrFileSelector directoryFileSelector;
    private File defaultSourceFile;
    private Button updateExistingArtifacts;
+   private Button deleteUnmatchedArtifacts;
 
    private final ArtifactSelectPanel artifactSelectPanel;
    private final ArtifactExtractorSelectPanel parserSelectPanel;
@@ -214,6 +215,13 @@ public class ArtifactImportPage extends WizardDataTransferPage {
       updateExistingArtifacts.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
       updateExistingArtifacts.setSelection(false);
 
+      deleteUnmatchedArtifacts = new Button(group, SWT.CHECK);
+      deleteUnmatchedArtifacts.setText("Delete unmatched artifacts");
+      deleteUnmatchedArtifacts.setToolTipText("Any child artifacts that cannot be matched to an imported artifact will be deleted.");
+      deleteUnmatchedArtifacts.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
+      deleteUnmatchedArtifacts.setSelection(false);
+      deleteUnmatchedArtifacts.setEnabled(false);
+
       final Composite composite = new Composite(group, SWT.NONE);
       composite.setLayout(ALayout.getZeroMarginLayout(1, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -228,6 +236,7 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          public void widgetSelected(SelectionEvent e) {
             boolean wasSelected = updateExistingArtifacts.getSelection();
             widgetEnabledHelper(composite, wasSelected);
+            deleteUnmatchedArtifacts.setEnabled(wasSelected);
          }
       });
       widgetEnabledHelper(composite, false);
@@ -244,6 +253,10 @@ public class ArtifactImportPage extends WizardDataTransferPage {
 
    public boolean isUpdateExistingSelected() {
       return updateExistingArtifacts.getSelection();
+   }
+
+   public boolean isDeleteUnmatchedSelected() {
+      return deleteUnmatchedArtifacts.getSelection();
    }
 
    public boolean isDirectory() {
@@ -292,7 +305,8 @@ public class ArtifactImportPage extends WizardDataTransferPage {
    protected boolean validateOptionsGroup() {
       return getArtifactParser() != null && //
       selectionLatch.areSelectionsValid() && !selectionLatch.hasChanged() && //
-      getArtifactType() != null;
+      getArtifactType() != null && //
+      (!updateExistingArtifacts.getSelection() || getNonChangingAttributes() != null);
    }
 
    @Override
@@ -330,8 +344,20 @@ public class ArtifactImportPage extends WizardDataTransferPage {
                }
             }
          }
-         updateExistingArtifacts.setSelection(settings.getBoolean("is.update.existing.selected"));
 
+         boolean toUpdate = settings.getBoolean("is.update.existing.selected");
+         updateExistingArtifacts.setSelection(toUpdate);
+         deleteUnmatchedArtifacts.setEnabled(toUpdate);
+         if (toUpdate) {
+            try {
+               attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getAttributeTypes(
+                     getDestinationArtifact().getBranch()));
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage());
+            }
+         } else {
+            attributeTypeSelectPanel.setAllowedAttributeTypes(new ArrayList<AttributeType>());
+         }
       }
    }
 
@@ -382,6 +408,12 @@ public class ArtifactImportPage extends WizardDataTransferPage {
          if (executeOperation(new CompositeOperation("Extracting data from source", SkynetGuiPlugin.PLUGIN_ID, ops))) {
             OseeLog.log(SkynetGuiPlugin.class, Level.INFO, "Extracted items from: " + sourceFile.getAbsoluteFile());
             artifactTypeSelectPanel.setAllowedArtifactTypes(selectedArtifactTypes);
+            try {
+               attributeTypeSelectPanel.setAllowedAttributeTypes(getArtifactType().getAttributeTypes(
+                     getDestinationArtifact().getBranch()));
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex.getLocalizedMessage());
+            }
          }
       }
 

@@ -39,11 +39,11 @@ public class DemoDbGroups {
       for (DemoCodeTeamWorkflowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
 
          // Add Action to Universal Group
-         groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, codeArt.getParentActionArtifact());
+         groupArt.addRelation(CoreRelationEnumeration.Universal_Grouping__Members, codeArt.getParentActionArtifact());
 
          // Add All Team Workflows to Universal Group
          for (Artifact teamWorkflow : codeArt.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
-            groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, teamWorkflow);
+            groupArt.addRelation(CoreRelationEnumeration.Universal_Grouping__Members, teamWorkflow);
          }
 
          codeArt.persist();
@@ -51,7 +51,7 @@ public class DemoDbGroups {
 
       // Add all Tasks to Group
       for (Artifact task : ArtifactQuery.getArtifactListFromType(TaskArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch())) {
-         groupArt.addRelation(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS, task);
+         groupArt.addRelation(CoreRelationEnumeration.Universal_Grouping__Members, task);
       }
       groupArt.persist();
 

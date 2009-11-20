@@ -38,14 +38,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    }
 
    public Artifact resolve(final RoughArtifact roughArtifact, final Branch branch) throws OseeCoreException {
-      ArtifactType artifactType = null;
-      if (roughArtifact.getRoughArtifactKind() == RoughArtifactKind.PRIMARY) {
-         artifactType = primaryArtifactType;
-      } else if (roughArtifact.getRoughArtifactKind() == RoughArtifactKind.SECONDARY) {
-         artifactType = secondaryArtifactType;
-      } else if (roughArtifact.getRoughArtifactKind() == RoughArtifactKind.CONTAINER) {
-         artifactType = ArtifactTypeManager.getType("Folder");
-      }
+      ArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
 
       Artifact realArtifact =
             ArtifactTypeManager.getFactory(artifactType).makeNewArtifact(branch, artifactType, roughArtifact.getGuid(),
@@ -57,6 +50,18 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
                   });
 
       return realArtifact;
+   }
+
+   private ArtifactType getArtifactType(RoughArtifactKind kind) throws OseeCoreException {
+      if (kind == RoughArtifactKind.PRIMARY) {
+         return primaryArtifactType;
+      } else if (kind == RoughArtifactKind.SECONDARY) {
+         return secondaryArtifactType;
+      } else if (kind == RoughArtifactKind.CONTAINER) {
+         return ArtifactTypeManager.getType("Folder");
+      } else {
+         throw new OseeCoreException("Unknown Artifact Kind " + kind);
+      }
    }
 
    protected void translateAttributes(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {

@@ -109,7 +109,7 @@ public class GroupExplorerItem implements IAdaptable {
 //      return items;
       
       try {
-         List<Artifact> related = artifact.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS);
+         List<Artifact> related = artifact.getRelatedArtifacts(CoreRelationEnumeration.Universal_Grouping__Members);
          for (Artifact art : related) {
           addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
          }

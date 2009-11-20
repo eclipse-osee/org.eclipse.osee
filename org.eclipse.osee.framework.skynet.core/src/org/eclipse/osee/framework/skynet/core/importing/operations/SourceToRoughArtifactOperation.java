@@ -66,7 +66,7 @@ public class SourceToRoughArtifactOperation extends AbstractOperation {
                extractArtifacts(monitor, subPercentage, subFiles, collector, directoryArtifact);
             }
          } else {
-            throw new OseeStateException(file + " is not a file or directory");
+            throw new OseeStateException("Source location \"" + file + "\" is not a valid file or directory");
          }
          monitor.worked(workAmount);
       }

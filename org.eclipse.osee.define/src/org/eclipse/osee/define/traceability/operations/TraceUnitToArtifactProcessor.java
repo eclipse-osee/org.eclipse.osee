@@ -267,7 +267,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             folder = getOrCreateUnknownTestUnitFolder(transaction);
          }
 
-         if (folder != null && !folder.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, testUnit)) {
+         if (folder != null && !folder.isRelated(CoreRelationEnumeration.Default_Hierarchical__Child, testUnit)) {
             folder.addChild(testUnit);
             folder.persist(transaction);
          }
@@ -288,7 +288,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private static Artifact getOrCreateCodeUnitFolder(SkynetTransaction transaction) throws OseeCoreException {
          Artifact codeUnitFolder = getOrCreateFolder(transaction, "Code Units");
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
-         if (!root.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, codeUnitFolder)) {
+         if (!root.isRelated(CoreRelationEnumeration.Default_Hierarchical__Child, codeUnitFolder)) {
             root.addChild(codeUnitFolder);
             root.persist(transaction);
          }
@@ -298,7 +298,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private static Artifact getOrCreateTestUnitSubFolder(SkynetTransaction transaction, String folderName) throws OseeCoreException {
          Artifact subFolder = getOrCreateFolder(transaction, folderName);
          Artifact testUnits = getOrCreateTestUnitsFolder(transaction);
-         if (!testUnits.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, subFolder)) {
+         if (!testUnits.isRelated(CoreRelationEnumeration.Default_Hierarchical__Child, subFolder)) {
             testUnits.addChild(subFolder);
             testUnits.persist(transaction);
          }
@@ -308,7 +308,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private static Artifact getOrCreateTestUnitsFolder(SkynetTransaction transaction) throws OseeCoreException {
          Artifact testUnitFolder = getOrCreateFolder(transaction, "Test Units");
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
-         if (!root.isRelated(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD, testUnitFolder)) {
+         if (!root.isRelated(CoreRelationEnumeration.Default_Hierarchical__Child, testUnitFolder)) {
             root.addChild(testUnitFolder);
             root.persist(transaction);
          }

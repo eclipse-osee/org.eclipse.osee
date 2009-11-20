@@ -26,7 +26,7 @@ public class RevertDeletionCheck {
    public static boolean relationWillBeReverted(Artifact artifact) throws OseeCoreException {
       RelationLink link;
       boolean linkToDelete = false;
-      List<RelationLink> childLinks = artifact.getRelations(CoreRelationEnumeration.DEFAULT_HIERARCHICAL__PARENT);
+      List<RelationLink> childLinks = artifact.getRelations(CoreRelationEnumeration.Default_Hierarchical__Parent);
       if (childLinks != null && !childLinks.isEmpty()) {
          link = childLinks.get(0);
          linkToDelete = ArtifactPersistenceManager.isRelationNewOnBranch(link, artifact.getBranch());
