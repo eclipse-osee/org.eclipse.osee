@@ -131,4 +131,8 @@ public interface IOseeStatement {
    String getComplementSql() throws OseeDataStoreException;
 
    boolean isDatabaseType(SupportedDatabase type) throws OseeDataStoreException;
+
+   public abstract void updateInt(String columnName, int value) throws OseeDataStoreException;
+
+   public abstract void updateRow() throws OseeDataStoreException;
 }

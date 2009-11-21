@@ -13,8 +13,8 @@ package org.eclipse.osee.framework.database;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 
 /**
@@ -29,6 +29,8 @@ public interface IOseeDatabaseService {
    IOseeStatement getStatement(OseeConnection connection) throws OseeDataStoreException;
 
    IOseeStatement getStatement(OseeConnection connection, boolean autoClose) throws OseeDataStoreException;
+
+   IOseeStatement getStatement(int resultSetType, int resultSetConcurrency) throws OseeDataStoreException;
 
    OseeConnection getConnection() throws OseeDataStoreException;
 

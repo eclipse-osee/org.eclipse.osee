@@ -14,6 +14,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -61,8 +62,12 @@ public class OseeConnectionImpl extends OseeConnection {
       }
    }
 
+   PreparedStatement prepareStatement(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+      return conn.prepareStatement(sql, resultSetType, resultSetConcurrency);
+   }
+
    PreparedStatement prepareStatement(String sql) throws SQLException {
-      return conn.prepareStatement(sql);
+      return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
    }
 
    CallableStatement prepareCall(String sql) throws SQLException {
