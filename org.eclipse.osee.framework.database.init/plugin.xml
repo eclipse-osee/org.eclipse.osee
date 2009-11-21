@@ -87,6 +87,12 @@
       	   classname="org.eclipse.osee.framework.database.init.DbBootstrapTask">
    	</DatabaseInitializationTask>
 	</extension>
+ <extension
+       point="org.eclipse.osee.framework.database.init.DatabaseInitializationConfiguration">
+    <DatabaseInitializationConfiguration
+          classname="org.eclipse.osee.framework.database.init.AddBaseDbInitChoice">
+    </DatabaseInitializationConfiguration>
+ </extension>
 
 </plugin>
  
