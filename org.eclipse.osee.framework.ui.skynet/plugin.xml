@@ -1819,4 +1819,12 @@
             className="org.eclipse.osee.framework.ui.skynet.blam.operation.ExperimentalBlam">
       </Operation>
    </extension>
+   <extension
+         id="MigrateBranchBlam"
+         name="MigrateBranchBlam"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.MigrateBranchBlam">
+      </Operation>
+   </extension>
 </plugin>
