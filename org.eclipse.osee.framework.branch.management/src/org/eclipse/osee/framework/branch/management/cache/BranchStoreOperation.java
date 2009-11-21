@@ -34,7 +34,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          "update osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ? where branch_id = ?";
 
    private static final String SELECT_ADDRESSING_BY_BRANCH =
-         "select * from %s txs, osee_tx_details txd where txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
+         "select txs.* from %s txs, osee_tx_details txd where txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
    private static final String INSERT_ADDRESSING =
          "insert into %s (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
 
