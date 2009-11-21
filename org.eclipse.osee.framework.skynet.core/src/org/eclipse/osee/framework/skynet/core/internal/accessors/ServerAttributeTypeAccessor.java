@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.AttributeTypeFactory;
@@ -35,13 +35,13 @@ public class ServerAttributeTypeAccessor extends AbstractServerDataAccessor<Attr
    }
 
    @Override
-   public void load(AbstractOseeCache<AttributeType> cache) throws OseeCoreException {
+   public void load(IOseeCache<AttributeType> cache) throws OseeCoreException {
       enumCache.ensurePopulated();
       super.load(cache);
    }
 
-   @Override
-   protected void updateCache(AbstractOseeCache<AttributeType> cache, CacheUpdateResponse<AttributeType> updateResponse) throws OseeCoreException {
-   }
+   //   @Override
+   //   protected void updateCache(AbstractOseeCache<AttributeType> cache, CacheUpdateResponse<AttributeType> updateResponse) throws OseeCoreException {
+   //   }
 
 }

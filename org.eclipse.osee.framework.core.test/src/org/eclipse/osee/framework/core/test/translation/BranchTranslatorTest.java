@@ -16,12 +16,12 @@ import java.util.List;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.test.mocks.MockCacheServiceFactory;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.test.mocks.MockOseeCachingService;
 import org.eclipse.osee.framework.core.test.mocks.MockOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
 import org.eclipse.osee.framework.core.translation.BranchTranslator;
@@ -83,7 +83,7 @@ public class BranchTranslatorTest extends BaseTranslatorTest<Branch> {
    }
 
    public static IOseeCachingServiceProvider createProvider(BranchCache cache) {
-      IOseeCachingService service = new MockOseeCachingService(cache, null, null, null, null, null);
+      IOseeCachingService service = new OseeCachingService(cache, null, null, null, null, null);
       return new MockOseeCachingServiceProvider(service);
    }
 }

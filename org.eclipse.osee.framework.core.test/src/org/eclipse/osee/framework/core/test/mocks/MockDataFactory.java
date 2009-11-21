@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.mocks;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
+import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -76,5 +80,14 @@ public final class MockDataFactory {
       String order = RelationOrderBaseTypes.values()[index % RelationTypeMultiplicity.values().length].getGuid();
       return new RelationType(GUID.create(), "relType_" + index, "sideA_" + index, "sideB_" + index, artTypeA,
             artTypeB, multiplicity, order);
+   }
+
+   public static CacheUpdateRequest createRequest(int index) {
+      OseeCacheEnum cacheEnum = OseeCacheEnum.values()[Math.abs(index % OseeCacheEnum.values().length)];
+      List<String> guids = new ArrayList<String>();
+      for (int j = 1; j <= index * 3; j++) {
+         guids.add(GUID.create());
+      }
+      return new CacheUpdateRequest(cacheEnum, guids);
    }
 }

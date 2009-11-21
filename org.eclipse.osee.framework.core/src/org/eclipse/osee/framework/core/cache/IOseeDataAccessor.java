@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.model.IOseeStorableType;
  */
 public interface IOseeDataAccessor<T extends IOseeStorableType> {
 
-   public void load(AbstractOseeCache<T> cache) throws OseeCoreException;
+   public void load(IOseeCache<T> cache) throws OseeCoreException;
 
    public void store(Collection<T> types) throws OseeCoreException;
 }

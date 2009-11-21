@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -53,7 +53,7 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
    }
 
    @Override
-   public void load(AbstractOseeCache<OseeEnumType> cache) throws OseeCoreException {
+   public void load(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
       HashCollection<OseeEnumType, OseeEnumEntry> types = new HashCollection<OseeEnumType, OseeEnumEntry>();
       OseeEnumTypeFactory factory = getFactoryService().getOseeEnumTypeFactory();
       IOseeStatement chStmt = getDatabaseService().getStatement();

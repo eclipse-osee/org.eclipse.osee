@@ -15,9 +15,12 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {//
-DataTranslationServiceTest.class, //
-      BasicArtifactTranslatorTest.class, //
+BasicArtifactTranslatorTest.class, //
       BranchTranslatorTest.class, //
+      CacheUpdateRequestTranslatorTest.class, //
+      ChangeItemTranslatorTest.class, //
+      ChangeVersionTranslatorTest.class, //
+      DataTranslationServiceTest.class, //
       TransactionRecordTranslatorTest.class //
 })
 /**

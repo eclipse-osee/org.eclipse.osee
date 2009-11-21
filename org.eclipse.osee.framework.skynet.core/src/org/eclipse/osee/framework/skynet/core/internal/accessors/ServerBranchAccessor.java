@@ -10,9 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
-import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
@@ -35,13 +34,13 @@ public class ServerBranchAccessor extends AbstractServerDataAccessor<Branch> {
    }
 
    @Override
-   public void load(AbstractOseeCache<Branch> cache) throws OseeCoreException {
+   public void load(IOseeCache<Branch> cache) throws OseeCoreException {
       transactionCache.ensurePopulated();
       super.load(cache);
    }
 
-   @Override
-   protected void updateCache(AbstractOseeCache<Branch> cache, CacheUpdateResponse<Branch> updateResponse) throws OseeCoreException {
-   }
+   //   @Override
+   //   protected void updateCache(AbstractOseeCache<Branch> cache, CacheUpdateResponse<Branch> updateResponse) throws OseeCoreException {
+   //   }
 
 }

@@ -26,7 +26,7 @@ public class OseeHttpServlet extends InternalOseeHttpServlet {
       String sessionId = request.getParameter("sessionId");
       String interaction =
             String.format("%s %s %s", request.getMethod(), request.getRequestURI(), request.getQueryString());
-      CoreServerActivator.getSessionManager().updateSessionActivity(sessionId, interaction);
+      //      CoreServerActivator.getSessionManager().updateSessionActivity(sessionId, interaction);
    }
 
 }

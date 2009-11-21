@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.core.test.cache;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
@@ -57,7 +57,7 @@ public class BranchCacheTest extends AbstractOseeCacheTest<Branch> {
       }
 
       @Override
-      public void load(AbstractOseeCache<Branch> cache) throws OseeCoreException {
+      public void load(IOseeCache<Branch> cache) throws OseeCoreException {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {

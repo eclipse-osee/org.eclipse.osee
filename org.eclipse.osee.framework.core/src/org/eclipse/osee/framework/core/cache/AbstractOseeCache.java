@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
-import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
@@ -28,7 +27,7 @@ import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractOseeCache<T extends IOseeStorableType> {
+public abstract class AbstractOseeCache<T extends IOseeStorableType> implements IOseeCache<T> {
    private final HashCollection<String, T> nameToTypeMap = new HashCollection<String, T>();
    private final HashMap<Integer, T> idToTypeMap = new HashMap<Integer, T>();
    private final HashMap<String, T> guidToTypeMap = new HashMap<String, T>();
@@ -43,10 +42,12 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       this.dataAccessor = dataAccessor;
    }
 
+   @Override
    public OseeCacheEnum getCacheId() {
       return cacheId;
    }
 
+   @Override
    public int size() {
       return guidToTypeMap.size();
    }
@@ -60,6 +61,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       return guidToTypeMap.containsKey(guid);
    }
 
+   @Override
    public void decache(T... types) throws OseeCoreException {
       Conditions.checkNotNull(types, "types to de-cache");
       for (T type : types) {
@@ -67,6 +69,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       }
    }
 
+   @Override
    public void decache(T type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to de-cache");
       ensurePopulated();
@@ -92,6 +95,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       }
    }
 
+   @Override
    public void cache(T... types) throws OseeCoreException {
       Conditions.checkNotNull(types, "types to cache");
       for (T type : types) {
@@ -99,6 +103,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       }
    }
 
+   @Override
    public void cache(T type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
@@ -131,11 +136,13 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       }
    }
 
+   @Override
    public Collection<T> getAll() throws OseeCoreException {
       ensurePopulated();
       return new ArrayList<T>(guidToTypeMap.values());
    }
 
+   @Override
    public T getById(int typeId) throws OseeCoreException {
       ensurePopulated();
       return idToTypeMap.get(typeId);
@@ -164,6 +171,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       return guidToTypeMap.get(typeGuid);
    }
 
+   @Override
    public Collection<T> getAllDirty() throws OseeCoreException {
       ensurePopulated();
       Collection<T> dirtyItems = new HashSet<T>();
@@ -175,10 +183,12 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       return dirtyItems;
    }
 
+   @Override
    public void storeAllModified() throws OseeCoreException {
       storeItems(getAllDirty());
    }
 
+   @Override
    public void ensurePopulated() throws OseeCoreException {
       if (guidToTypeMap.isEmpty()) {
          if (!duringPopulate) {
@@ -207,16 +217,13 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> {
       getDataAccessor().load(this);
    }
 
-   @SuppressWarnings("unchecked")
-   public void storeItem(AbstractOseeType item) throws OseeCoreException {
-      storeItems((T) item);
-   }
-
+   @Override
    public void storeItems(T... items) throws OseeCoreException {
       Conditions.checkNotNull(items, "items to store");
       storeItems(Arrays.asList(items));
    }
 
+   @Override
    public void storeItems(Collection<T> toStore) throws OseeCoreException {
       Conditions.checkNotNull(toStore, "items to store");
       if (!toStore.isEmpty()) {

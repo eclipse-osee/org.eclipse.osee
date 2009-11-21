@@ -33,7 +33,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Jeff C. Phillips
  * @author Ryan D. Brooks
  */
-public final class ConnectionHandlerStatementImpl implements IOseeStatement {
+public final class OseeStatementImpl implements IOseeStatement {
    private ResultSet rSet;
    private PreparedStatement preparedStatement;
    private CallableStatement callableStatement;
@@ -41,17 +41,17 @@ public final class ConnectionHandlerStatementImpl implements IOseeStatement {
    private final boolean autoClose;
    private final OseeConnectionPoolImpl connectionPool;
 
-   public ConnectionHandlerStatementImpl(OseeConnectionPoolImpl connectionPool, OseeConnectionImpl connection) {
+   public OseeStatementImpl(OseeConnectionPoolImpl connectionPool, OseeConnectionImpl connection) {
       this(connectionPool, connection, connection == null);
    }
 
-   public ConnectionHandlerStatementImpl(OseeConnectionPoolImpl connectionPool, OseeConnectionImpl connection, boolean autoClose) {
+   public OseeStatementImpl(OseeConnectionPoolImpl connectionPool, OseeConnectionImpl connection, boolean autoClose) {
       this.autoClose = autoClose;
       this.connection = connection;
       this.connectionPool = connectionPool;
    }
 
-   public ConnectionHandlerStatementImpl(OseeConnectionPoolImpl connectionPool) {
+   public OseeStatementImpl(OseeConnectionPoolImpl connectionPool) {
       this(connectionPool, null);
    }
 

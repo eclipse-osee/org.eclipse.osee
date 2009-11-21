@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -48,7 +48,7 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
    }
 
    @Override
-   public void load(AbstractOseeCache<RelationType> cache) throws OseeCoreException {
+   public void load(IOseeCache<RelationType> cache) throws OseeCoreException {
       artifactCache.ensurePopulated();
       RelationTypeFactory factory = getFactoryService().getRelationTypeFactory();
       IOseeStatement chStmt = getDatabaseService().getStatement();

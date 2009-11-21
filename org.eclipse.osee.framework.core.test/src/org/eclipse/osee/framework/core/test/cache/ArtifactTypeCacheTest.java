@@ -12,8 +12,8 @@ package org.eclipse.osee.framework.core.test.cache;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
@@ -55,7 +55,7 @@ public class ArtifactTypeCacheTest extends AbstractOseeCacheTest<ArtifactType> {
       }
 
       @Override
-      public void load(AbstractOseeCache<ArtifactType> cache) throws OseeCoreException {
+      public void load(IOseeCache<ArtifactType> cache) throws OseeCoreException {
          super.load(cache);
 
          int typeId = 100;

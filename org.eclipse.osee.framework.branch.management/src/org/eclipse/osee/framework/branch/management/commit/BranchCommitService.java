@@ -78,7 +78,7 @@ public class BranchCommitService implements IBranchCommitService {
 
       if (branchCommitData.isArchiveAllowed()) {
          sourceBranch.setArchived(true);
-         branchCache.storeItem(sourceBranch);
+         branchCache.storeItems(sourceBranch);
       }
    }
 }

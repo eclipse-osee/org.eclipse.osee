@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.test.cache;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
@@ -61,7 +61,7 @@ public class OseeEnumTypeCacheTest extends AbstractOseeCacheTest<OseeEnumType> {
       }
 
       @Override
-      public void load(AbstractOseeCache<OseeEnumType> cache) throws OseeCoreException {
+      public void load(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {

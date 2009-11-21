@@ -10,12 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.services;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
+import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Roberto E. Escobar
@@ -33,4 +37,8 @@ public interface IOseeCachingService {
    RelationTypeCache getRelationTypeCache();
 
    OseeEnumTypeCache getEnumTypeCache();
+
+   Collection<?> getCaches();
+
+   IOseeCache<?> getCache(OseeCacheEnum cacheId) throws OseeCoreException;
 }

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.test.cache;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationType;
@@ -57,7 +57,7 @@ public class RelationTypeCacheTest extends AbstractOseeCacheTest<RelationType> {
       }
 
       @Override
-      public void load(AbstractOseeCache<RelationType> cache) throws OseeCoreException {
+      public void load(IOseeCache<RelationType> cache) throws OseeCoreException {
          super.load(cache);
          int typeId = 100;
          for (int index = 0; index < 10; index++) {

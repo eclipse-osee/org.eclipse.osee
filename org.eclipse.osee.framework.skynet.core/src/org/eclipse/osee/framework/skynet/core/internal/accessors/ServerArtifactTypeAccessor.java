@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.ArtifactTypeFactory;
@@ -35,24 +35,24 @@ public class ServerArtifactTypeAccessor extends AbstractServerDataAccessor<Artif
    }
 
    @Override
-   public void load(AbstractOseeCache<ArtifactType> cache) throws OseeCoreException {
+   public void load(IOseeCache<ArtifactType> cache) throws OseeCoreException {
       attrCache.ensurePopulated();
       super.load(cache);
    }
 
-   @Override
-   protected void updateCache(AbstractOseeCache<ArtifactType> cache, CacheUpdateResponse<ArtifactType> updateResponse) throws OseeCoreException {
-      for (ArtifactType updated : updateResponse.getItems()) {
-         ArtifactType type =
-               getFactory().createOrUpdate(cache, updated.getId(), updated.getModificationType(), updated.getGuid(),
-                     updated.isAbstract(), updated.getName());
-      }
-
-      for (ArtifactType updated : updateResponse.getItems()) {
-         //         for (Entry<Branch, Collection<AttributeType>> entry : updated.getLocalAttributeTypes().entrySet()) {
-         //            type.setAttributeTypes(entry.getValue(), entry.getKey());
-         //         }
-         //         type.setSuperType(new HashSet<ArtifactType>(updated.getSuperArtifactTypes()));
-      }
-   }
+   //   @Override
+   //   protected void updateCache(AbstractOseeCache<ArtifactType> cache, CacheUpdateResponse<ArtifactType> updateResponse) throws OseeCoreException {
+   //      for (ArtifactType updated : updateResponse.getItems()) {
+   //         ArtifactType type =
+   //               getFactory().createOrUpdate(cache, updated.getId(), updated.getModificationType(), updated.getGuid(),
+   //                     updated.isAbstract(), updated.getName());
+   //      }
+   //
+   //      for (ArtifactType updated : updateResponse.getItems()) {
+   //         //         for (Entry<Branch, Collection<AttributeType>> entry : updated.getLocalAttributeTypes().entrySet()) {
+   //         //            type.setAttributeTypes(entry.getValue(), entry.getKey());
+   //         //         }
+   //         //         type.setSuperType(new HashSet<ArtifactType>(updated.getSuperArtifactTypes()));
+   //      }
+   //   }
 }

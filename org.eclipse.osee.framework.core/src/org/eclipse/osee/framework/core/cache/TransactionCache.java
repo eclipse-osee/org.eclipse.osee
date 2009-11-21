@@ -10,10 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.cache;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -25,14 +27,16 @@ import org.eclipse.osee.framework.core.util.Conditions;
 /**
  * @author Roberto E. Escobar
  */
-public class TransactionCache {
+public class TransactionCache implements IOseeCache<TransactionRecord> {
 
    private final ITransactionDataAccessor accessor;
 
    private final Map<Integer, TransactionRecord> transactionIdCache = new HashMap<Integer, TransactionRecord>();
    private final boolean duringPopulate;
+   private final OseeCacheEnum cacheId;
 
    public TransactionCache(ITransactionDataAccessor accessor) {
+      this.cacheId = OseeCacheEnum.TRANSACTION_CACHE;
       this.accessor = accessor;
       this.duringPopulate = false;
    }
@@ -41,6 +45,7 @@ public class TransactionCache {
       return accessor;
    }
 
+   @Override
    public void cache(TransactionRecord... types) throws OseeCoreException {
       Conditions.checkNotNull(types, "types to cache");
       ensurePopulated();
@@ -49,12 +54,14 @@ public class TransactionCache {
       }
    }
 
+   @Override
    public void cache(TransactionRecord type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
       transactionIdCache.put(type.getId(), type);
    }
 
+   @Override
    public void decache(TransactionRecord... types) throws OseeCoreException {
       Conditions.checkNotNull(types, "types to de-cache");
       for (TransactionRecord type : types) {
@@ -62,6 +69,7 @@ public class TransactionCache {
       }
    }
 
+   @Override
    public void decache(TransactionRecord type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to de-cache");
       ensurePopulated();
@@ -70,14 +78,51 @@ public class TransactionCache {
       }
    }
 
-   public void ensurePopulated() throws OseeCoreException {
-      //      if (transactionIdCache.isEmpty()) {
-      //         if (!duringPopulate) {
-      //            duringPopulate = true;
-      //            reloadCache();
-      //            duringPopulate = false;
-      //         }
-      //      }
+   @Override
+   public Collection<TransactionRecord> getAll() throws OseeCoreException {
+      ensurePopulated();
+      return new ArrayList<TransactionRecord>(transactionIdCache.values());
+   }
+
+   @Override
+   public TransactionRecord getById(int txId) throws OseeCoreException {
+      ensurePopulated();
+      TransactionRecord transactionRecord = transactionIdCache.get(txId);
+      if (transactionRecord == null) {
+         loadTransactions(Collections.singletonList(txId));
+         transactionRecord = transactionIdCache.get(txId);
+         if (transactionRecord == null) {
+            throw new OseeStateException(String.format("Transaction Record[%s] was not found", txId));
+         }
+      }
+      return transactionRecord;
+   }
+
+   @Override
+   public OseeCacheEnum getCacheId() {
+      return cacheId;
+   }
+
+   @Override
+   public int size() {
+      return transactionIdCache.size();
+   }
+
+   @Override
+   public Collection<TransactionRecord> getAllDirty() throws OseeCoreException {
+      return null;
+   }
+
+   @Override
+   public void storeAllModified() throws OseeCoreException {
+   }
+
+   @Override
+   public void storeItems(TransactionRecord... items) throws OseeCoreException {
+   }
+
+   @Override
+   public void storeItems(Collection<TransactionRecord> toStore) throws OseeCoreException {
    }
 
    public TransactionRecord getTransaction(Branch branch, TransactionVersion revision) throws OseeCoreException {
@@ -96,24 +141,18 @@ public class TransactionCache {
       return Collections.emptyList();
    }
 
-   public TransactionRecord getById(int txId) throws OseeCoreException {
-      TransactionRecord transactionRecord = transactionIdCache.get(txId);
-      if (transactionRecord == null) {
-         loadTransactions(Collections.singletonList(txId));
-         transactionRecord = transactionIdCache.get(txId);
-         if (transactionRecord == null) {
-            throw new OseeStateException(String.format("Transaction Record[%s] was not found", txId));
-         }
-      }
-      return transactionRecord;
-   }
-
    public void loadTransactions(Collection<Integer> transactionIds) throws OseeCoreException {
       getDataAccessor().loadTransactionRecord(this, transactionIds);
    }
 
-   //
-   //   public void reloadCache() throws OseeCoreException {
-   //      //      getDataAccessor().load(this);
-   //   }
+   @Override
+   public void ensurePopulated() throws OseeCoreException {
+      if (transactionIdCache.isEmpty()) {
+         if (!duringPopulate) {
+            //            duringPopulate = true;
+            //            //            reloadCache();
+            //            duringPopulate = false;
+         }
+      }
+   }
 }

@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.test.mocks;
 
 import java.util.Collection;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorableType;
@@ -42,7 +42,7 @@ public class MockOseeDataAccessor<T extends IOseeStorableType> implements IOseeD
    }
 
    @Override
-   public void load(AbstractOseeCache<T> cache) throws OseeCoreException {
+   public void load(IOseeCache<T> cache) throws OseeCoreException {
       Assert.assertNotNull(cache);
       setLoadCalled(true);
    }

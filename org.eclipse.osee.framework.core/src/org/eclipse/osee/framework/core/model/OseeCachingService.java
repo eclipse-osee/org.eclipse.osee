@@ -10,13 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
+import java.util.Collection;
+import java.util.HashSet;
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
+import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.util.Conditions;
 
 /**
  * @author Roberto E. Escobar
@@ -30,6 +37,7 @@ public class OseeCachingService implements IOseeCachingService {
    private final AttributeTypeCache attributeTypeCache;
    private final RelationTypeCache relationTypeCache;
    private final OseeEnumTypeCache oseeEnumTypeCache;
+   private final Collection<IOseeCache<?>> caches;
 
    public OseeCachingService(BranchCache branchCache, TransactionCache transactionCache, ArtifactTypeCache artifactTypeCache, AttributeTypeCache attributeTypeCache, RelationTypeCache relationTypeCache, OseeEnumTypeCache oseeEnumTypeCache) {
       this.branchCache = branchCache;
@@ -38,6 +46,13 @@ public class OseeCachingService implements IOseeCachingService {
       this.attributeTypeCache = attributeTypeCache;
       this.relationTypeCache = relationTypeCache;
       this.oseeEnumTypeCache = oseeEnumTypeCache;
+      caches = new HashSet<IOseeCache<?>>();
+      caches.add(branchCache);
+      caches.add(transactionCache);
+      caches.add(artifactTypeCache);
+      caches.add(attributeTypeCache);
+      caches.add(relationTypeCache);
+      caches.add(oseeEnumTypeCache);
    }
 
    @Override
@@ -70,4 +85,19 @@ public class OseeCachingService implements IOseeCachingService {
       return relationTypeCache;
    }
 
+   @Override
+   public Collection<IOseeCache<?>> getCaches() {
+      return caches;
+   }
+
+   @Override
+   public IOseeCache<?> getCache(OseeCacheEnum cacheId) throws OseeCoreException {
+      Conditions.checkNotNull(cacheId, "cache id to find");
+      for (IOseeCache<?> cache : getCaches()) {
+         if (cache.getCacheId().equals(cacheId)) {
+            return cache;
+         }
+      }
+      throw new OseeArgumentException(String.format("Unable to find cache for id [%s]", cacheId));
+   }
 }

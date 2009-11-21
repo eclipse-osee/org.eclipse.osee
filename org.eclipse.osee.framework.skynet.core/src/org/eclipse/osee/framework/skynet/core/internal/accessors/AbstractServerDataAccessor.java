@@ -14,15 +14,14 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
 
 /**
  * @author Roberto E. Escobar
@@ -41,20 +40,22 @@ public abstract class AbstractServerDataAccessor<T extends IOseeStorableType> im
 
    @SuppressWarnings("unchecked")
    @Override
-   public void load(AbstractOseeCache<T> cache) throws OseeCoreException {
+   public void load(IOseeCache<T> cache) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("request", "update");
-      CacheUpdateRequest<T> updateRequest = new CacheUpdateRequest<T>();
-      CacheUpdateResponse<T> updateResponse =
-            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, updateRequest, CacheUpdateResponse.class);
-      updateCache(cache, updateResponse);
 
-      for (T updated : updateResponse.getItems()) {
-         T type = cache.getByGuid(updated.getGuid());
-         if (type != null) {
-            type.clearDirty();
-         }
-      }
+      CacheUpdateRequest updateRequest = new CacheUpdateRequest(cache.getCacheId());
+      /*
+       * CacheUpdateResponse<T> updateResponse =
+       * HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, updateRequest, CacheUpdateResponse.class);
+       * updateCache(cache, updateResponse);
+       * for (T updated : updateResponse.getItems()) {
+       * T type = cache.getByGuid(updated.getGuid());
+       * if (type != null) {
+       * type.clearDirty();
+       * }
+       * }
+       */
    }
 
    @SuppressWarnings("unchecked")
@@ -63,18 +64,20 @@ public abstract class AbstractServerDataAccessor<T extends IOseeStorableType> im
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("request", "storage");
 
-      CacheUpdateRequest<T> updateRequest = new CacheUpdateRequest<T>();
-      CacheUpdateResponse<T> updateResponse =
-            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, updateRequest, CacheUpdateResponse.class);
+      //      CacheUpdateRequest updateRequest = new CacheUpdateRequest();
+      //      CacheUpdateResponse<T> updateResponse =
+      //            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, updateRequest, CacheUpdateResponse.class);
 
-      for (T updated : updateResponse.getItems()) {
-         for (T type : types) {
-            if (type.getGuid().equals(updated.getGuid())) {
-               type.clearDirty();
-            }
-         }
-      }
+      //      for (T updated : updateResponse.getItems()) {
+      //         for (T type : types) {
+      //            if (type.getGuid().equals(updated.getGuid())) {
+      //               type.clearDirty();
+      //            }
+      //         }
+      //      }
    }
 
-   protected abstract void updateCache(AbstractOseeCache<T> cache, CacheUpdateResponse<T> updateResponse) throws OseeCoreException;
+   protected void updateCache(AbstractOseeCache<T> cache, CacheUpdateResponse updateResponse) throws OseeCoreException {
+
+   }
 }

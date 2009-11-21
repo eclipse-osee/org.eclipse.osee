@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.model;
 
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -60,8 +61,8 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
       return attributeType;
    }
 
-   public AttributeType createOrUpdate(AbstractOseeCache<AttributeType> cache, int uniqueId, ModificationType modificationType, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
-      AttributeType attributeType = cache.getByGuid(guid);
+   public AttributeType createOrUpdate(IOseeCache<AttributeType> cache, int uniqueId, ModificationType modificationType, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
+      AttributeType attributeType = cache.getById(uniqueId);
       if (attributeType == null) {
          attributeType =
                create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue,

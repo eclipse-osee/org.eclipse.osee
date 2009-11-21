@@ -189,11 +189,6 @@ public abstract class AbstractOseeCacheTest<T extends IOseeStorableType> {
       cache.storeByGuid(Collections.singleton(GUID.create()));
    }
 
-   @Test(expected = OseeArgumentException.class)
-   public void testStoreNull1() throws OseeCoreException {
-      cache.storeItem(null);
-   }
-
    @SuppressWarnings("unchecked")
    @Test(expected = OseeArgumentException.class)
    public void testStoreNull2() throws OseeCoreException {

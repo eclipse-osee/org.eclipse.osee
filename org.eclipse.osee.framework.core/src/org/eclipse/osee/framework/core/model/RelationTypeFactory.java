@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.model;
 
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -52,8 +53,8 @@ public class RelationTypeFactory implements IOseeTypeFactory {
       return relationType;
    }
 
-   public RelationType createOrUpdate(AbstractOseeCache<RelationType> cache, int typeId, ModificationType modificationType, String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
-      RelationType relationType = cache.getByGuid(guid);
+   public RelationType createOrUpdate(IOseeCache<RelationType> cache, int typeId, ModificationType modificationType, String guid, String typeName, String sideAName, String sideBName, ArtifactType artifactTypeSideA, ArtifactType artifactTypeSideB, RelationTypeMultiplicity multiplicity, String defaultOrderTypeGuid) throws OseeCoreException {
+      RelationType relationType = cache.getById(typeId);
       if (relationType == null) {
          relationType =
                create(guid, typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,

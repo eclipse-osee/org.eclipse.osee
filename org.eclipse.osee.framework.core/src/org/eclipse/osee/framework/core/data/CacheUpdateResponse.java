@@ -16,16 +16,17 @@ import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 /**
  * @author Roberto E. Escobar
  */
-public class CacheUpdateResponse<T> {
-   private final Collection<T> items;
-   private final OseeCacheEnum cacheId;
+public class CacheUpdateResponse {
 
-   public CacheUpdateResponse(OseeCacheEnum cacheId, Collection<T> items) {
+   private final OseeCacheEnum cacheId;
+   private final Collection<?> items;
+
+   public CacheUpdateResponse(OseeCacheEnum cacheId, Collection<?> items) {
       this.cacheId = cacheId;
       this.items = items;
    }
 
-   public Collection<T> getItems() {
+   public Collection<?> getItems() {
       return items;
    }
 

@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -40,8 +41,7 @@ public final class MockCacheServiceFactory {
       RelationTypeCache relCache = new RelationTypeCache(new MockOseeDataAccessor<RelationType>());
       OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new MockOseeDataAccessor<OseeEnumType>());
 
-      IOseeCachingService service =
-            new MockOseeCachingService(brCache, txCache, artCache, attrCache, relCache, enumCache);
+      IOseeCachingService service = new OseeCachingService(brCache, txCache, artCache, attrCache, relCache, enumCache);
       return new MockOseeCachingServiceProvider(service);
    }
 

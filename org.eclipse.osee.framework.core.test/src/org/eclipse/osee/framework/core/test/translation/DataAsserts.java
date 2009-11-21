@@ -12,10 +12,12 @@ package org.eclipse.osee.framework.core.test.translation;
 
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
+import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.util.Compare;
 
 /**
  * @author Roberto E. Escobar
@@ -62,5 +64,10 @@ public final class DataAsserts {
       Assert.assertEquals(expected.isArchiveAllowed(), actual.isArchiveAllowed());
       Assert.assertEquals(expected.getSourceBranch(), actual.getSourceBranch());
       Assert.assertEquals(expected.getDestinationBranch(), actual.getDestinationBranch());
+   }
+
+   public static void assertEquals(CacheUpdateRequest expected, CacheUpdateRequest actual) {
+      Assert.assertEquals(expected.getCacheId(), actual.getCacheId());
+      Assert.assertFalse(Compare.isDifferent(expected.getGuids(), actual.getGuids()));
    }
 }

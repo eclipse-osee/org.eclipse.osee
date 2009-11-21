@@ -17,8 +17,8 @@ import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
@@ -70,7 +70,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    //   }
 
    @Override
-   public void load(AbstractOseeCache<Branch> cache) throws OseeCoreException {
+   public void load(IOseeCache<Branch> cache) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
       Map<Branch, Integer> childToParent = new HashMap<Branch, Integer>();
       Map<Branch, Integer> branchToSourceTx = new HashMap<Branch, Integer>();

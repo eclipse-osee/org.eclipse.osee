@@ -10,9 +10,33 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.util.Collection;
+import java.util.Collections;
+import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+
 /**
  * @author Roberto E. Escobar
+ * @author Jeff C. Phillips
  */
-public class CacheUpdateRequest<T> {
+public class CacheUpdateRequest {
 
+   private final OseeCacheEnum cacheId;
+   private final Collection<String> guids;
+
+   public CacheUpdateRequest(OseeCacheEnum cacheId) {
+      this(cacheId, Collections.<String> emptyList());
+   }
+
+   public CacheUpdateRequest(OseeCacheEnum cacheId, Collection<String> guids) {
+      this.cacheId = cacheId;
+      this.guids = guids;
+   }
+
+   public OseeCacheEnum getCacheId() {
+      return cacheId;
+   }
+
+   public Collection<String> getGuids() {
+      return guids;
+   }
 }

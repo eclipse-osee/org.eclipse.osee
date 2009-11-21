@@ -19,10 +19,10 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -78,7 +78,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
    }
 
    @Override
-   public void load(AbstractOseeCache<ArtifactType> cache) throws OseeCoreException {
+   public void load(IOseeCache<ArtifactType> cache) throws OseeCoreException {
       attributeCache.ensurePopulated();
       Set<ArtifactType> loadedTypes = new HashSet<ArtifactType>();
       ArtifactTypeCache artCache = (ArtifactTypeCache) cache;

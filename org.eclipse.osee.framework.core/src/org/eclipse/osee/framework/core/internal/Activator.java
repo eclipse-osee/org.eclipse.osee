@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
+import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
+import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeReportRequest;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
@@ -38,6 +40,8 @@ import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
 import org.eclipse.osee.framework.core.translation.BranchCommitRequestTranslator;
 import org.eclipse.osee.framework.core.translation.BranchCommitResponseTranslator;
 import org.eclipse.osee.framework.core.translation.BranchTranslator;
+import org.eclipse.osee.framework.core.translation.CacheUpdateRequestTranslator;
+import org.eclipse.osee.framework.core.translation.CacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.translation.ChangeItemTranslator;
 import org.eclipse.osee.framework.core.translation.ChangeReportRequestTranslator;
 import org.eclipse.osee.framework.core.translation.ChangeReportResponseTranslator;
@@ -98,6 +102,9 @@ public class Activator implements BundleActivator, IOseeCachingServiceProvider {
       service.addTranslator(ChangeItem.class, new ChangeItemTranslator(service));
       service.addTranslator(ChangeReportResponse.class, new ChangeReportResponseTranslator(service));
       service.addTranslator(ChangeReportRequest.class, new ChangeReportRequestTranslator(service));
+
+      service.addTranslator(CacheUpdateRequest.class, new CacheUpdateRequestTranslator());
+      service.addTranslator(CacheUpdateResponse.class, new CacheUpdateResponseTranslator(service));
 
       return service;
    }

@@ -79,17 +79,17 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
 
    @Override
    public IOseeStatement getStatement() throws OseeDataStoreException {
-      return new ConnectionHandlerStatementImpl(getDefaultConnectionPool());
+      return new OseeStatementImpl(getDefaultConnectionPool());
    }
 
    @Override
    public IOseeStatement getStatement(OseeConnection connection) throws OseeDataStoreException {
-      return new ConnectionHandlerStatementImpl(getDefaultConnectionPool(), (OseeConnectionImpl) connection);
+      return new OseeStatementImpl(getDefaultConnectionPool(), (OseeConnectionImpl) connection);
    }
 
    @Override
    public IOseeStatement getStatement(OseeConnection connection, boolean autoClose) throws OseeDataStoreException {
-      return new ConnectionHandlerStatementImpl(getDefaultConnectionPool(), (OseeConnectionImpl) connection, autoClose);
+      return new OseeStatementImpl(getDefaultConnectionPool(), (OseeConnectionImpl) connection, autoClose);
    }
 
    @Override

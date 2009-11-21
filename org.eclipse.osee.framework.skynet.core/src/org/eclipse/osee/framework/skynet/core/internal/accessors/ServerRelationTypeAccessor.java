@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
-import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.RelationType;
@@ -35,20 +35,20 @@ public class ServerRelationTypeAccessor extends AbstractServerDataAccessor<Relat
    }
 
    @Override
-   public void load(AbstractOseeCache<RelationType> cache) throws OseeCoreException {
+   public void load(IOseeCache<RelationType> cache) throws OseeCoreException {
       artCache.ensurePopulated();
       super.load(cache);
    }
 
-   @Override
-   protected void updateCache(AbstractOseeCache<RelationType> cache, CacheUpdateResponse<RelationType> updateResponse) throws OseeCoreException {
-      for (RelationType updated : updateResponse.getItems()) {
-         ArtifactType aSideType = artCache.getByGuid(updated.getArtifactTypeSideA().getGuid());
-         ArtifactType bSideType = artCache.getByGuid(updated.getArtifactTypeSideB().getGuid());
-         getFactory().createOrUpdate(cache, updated.getId(), updated.getModificationType(), updated.getGuid(),
-               updated.getName(), updated.getSideAName(), updated.getSideBName(), aSideType, bSideType,
-               updated.getMultiplicity(), updated.getDefaultOrderTypeGuid());
-
-      }
-   }
+   //   @Override
+   //   protected void updateCache(AbstractOseeCache<RelationType> cache, CacheUpdateResponse<RelationType> updateResponse) throws OseeCoreException {
+   //      for (RelationType updated : updateResponse.getItems()) {
+   //         ArtifactType aSideType = artCache.getByGuid(updated.getArtifactTypeSideA().getGuid());
+   //         ArtifactType bSideType = artCache.getByGuid(updated.getArtifactTypeSideB().getGuid());
+   //         getFactory().createOrUpdate(cache, updated.getId(), updated.getModificationType(), updated.getGuid(),
+   //               updated.getName(), updated.getSideAName(), updated.getSideBName(), aSideType, bSideType,
+   //               updated.getMultiplicity(), updated.getDefaultOrderTypeGuid());
+   //
+   //      }
+   //   }
 }

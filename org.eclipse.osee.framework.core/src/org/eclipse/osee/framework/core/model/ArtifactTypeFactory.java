@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.model;
 
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -43,7 +44,7 @@ public class ArtifactTypeFactory implements IOseeTypeFactory {
       return artifactType;
    }
 
-   public ArtifactType createOrUpdate(AbstractOseeCache<ArtifactType> cache, int uniqueId, ModificationType modificationType, String guid, boolean isAbstract, String name) throws OseeCoreException {
+   public ArtifactType createOrUpdate(IOseeCache<ArtifactType> cache, int uniqueId, ModificationType modificationType, String guid, boolean isAbstract, String name) throws OseeCoreException {
       ArtifactType artifactType = cache.getById(uniqueId);
       if (artifactType == null) {
          artifactType = create(guid, isAbstract, name);
