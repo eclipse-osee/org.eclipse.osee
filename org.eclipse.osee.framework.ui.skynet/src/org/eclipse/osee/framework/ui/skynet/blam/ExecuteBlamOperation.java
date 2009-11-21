@@ -35,6 +35,7 @@ public class ExecuteBlamOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
+      blamOperation.setOseeDatabaseService(SkynetGuiPlugin.getInstance().getOseeDatabaseService());
       blamOperation.setOutput(output);
       doSubWork(new InternalOperationAdapter(blamOperation), monitor, 1);
    }

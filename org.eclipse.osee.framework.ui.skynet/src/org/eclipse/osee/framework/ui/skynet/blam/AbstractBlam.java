@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -45,6 +46,7 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
    public static final String branchXWidgetXml =
          "<xWidgets><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    public static final String emptyXWidgetsXml = "<xWidgets/>";
+   protected IOseeDatabaseService databaseService;
 
    public abstract void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception;
 
@@ -68,6 +70,10 @@ public abstract class AbstractBlam implements IDynamicWidgetLayoutListener {
 
    public void setOutput(Appendable output) {
       this.output = output;
+   }
+
+   public void setOseeDatabaseService(IOseeDatabaseService service) {
+      databaseService = service;
    }
 
    protected Appendable getOutput() {
