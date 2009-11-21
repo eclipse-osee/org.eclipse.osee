@@ -877,11 +877,8 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     */
    public void setAttributeValues(String attributeTypeName, Collection<String> newValues) throws OseeCoreException {
       ensureAttributesLoaded();
-      HashSet<String> uniqueNewValues = new HashSet<String>(newValues); // ensure
-      // new
-      // values
-      // are
-      // unique
+      // ensure new values are unique
+      HashSet<String> uniqueNewValues = new HashSet<String>(newValues);
 
       List<Attribute<Object>> remainingAttributes = getAttributes(attributeTypeName);
       List<String> remainingNewValues = new ArrayList<String>(uniqueNewValues.size());
@@ -1509,7 +1506,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    private Artifact reflectHelper(Branch branch) throws OseeCoreException {
       Artifact reflectedArtifact =
             ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, guid, humanReadableId,
-                  artifactType, gammaId, branch, ModificationType.INTRODUCED);
+            artifactType, gammaId, branch, ModificationType.INTRODUCED);
 
       for (Attribute<?> sourceAttribute : attributes.getValues()) {
          // In order to reflect attributes they must exist in the data store
@@ -1611,7 +1608,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       artifactAnnotationExtensions = new HashSet<IArtifactAnnotation>();
       IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint(
-                  "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
+            "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
       if (point == null) {
          System.err.println("Can't access ArtifactAnnotation extension point");
          return artifactAnnotationExtensions;
