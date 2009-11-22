@@ -52,7 +52,7 @@ OseeEnumType:
 	'}';
 
 OseeEnumEntry:
-	'entry' name=NAME_REFERENCE (ordinal=WHOLE_NUM_STR)?;
+	'entry' name=NAME_REFERENCE (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid = STRING)?;
 
 OseeEnumOverride:
 	'overrides enum' overridenEnumType = [OseeEnumType|NAME_REFERENCE] '{'

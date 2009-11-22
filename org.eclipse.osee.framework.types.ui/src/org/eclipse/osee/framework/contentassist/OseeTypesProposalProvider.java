@@ -17,6 +17,12 @@ import org.eclipse.xtext.ui.core.editor.contentassist.ICompletionProposalAccepto
 public class OseeTypesProposalProvider extends AbstractOseeTypesProposalProvider {
 
    @Override
+   public void completeOseeEnumEntry_EntryGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
+      super.completeOseeEnumEntry_EntryGuid(model, assignment, context, acceptor);
+      completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
+   }
+
+   @Override
    public void completeArtifactType_TypeGuid(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
       super.completeArtifactType_TypeGuid(model, assignment, context, acceptor);
       completeGuidGeneration((RuleCall) assignment.getTerminal(), context, acceptor);
