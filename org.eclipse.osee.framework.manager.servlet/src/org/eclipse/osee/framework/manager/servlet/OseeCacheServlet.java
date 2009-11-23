@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -52,12 +51,16 @@ public class OseeCacheServlet extends OseeHttpServlet {
                throw new UnsupportedOperationException();
          }
       } catch (Exception ex) {
-         OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format("Branch servlet request error: [%s]",
-               req.toString()), ex);
-         resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-         resp.setContentType("text/plain");
-         resp.getWriter().write(Lib.exceptionToString(ex));
+         handleError(resp, req.toString(), ex);
       }
+   }
+
+   private void handleError(HttpServletResponse resp, String request, Throwable th) throws IOException {
+      OseeLog.log(MasterServletActivator.class, Level.SEVERE, String.format("Osee Cache request error: [%s]", request),
+            th);
+      resp.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+      resp.setContentType("text/plain");
+      resp.getWriter().write(Lib.exceptionToString(th));
       resp.getWriter().flush();
       resp.getWriter().close();
    }
@@ -76,6 +79,10 @@ public class OseeCacheServlet extends OseeHttpServlet {
       } finally {
          Lib.close(inputStream);
       }
+
+      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+      resp.setContentType("text/xml");
+      resp.setCharacterEncoding("UTF-8");
 
       IOseeCache<?> cache = caching.getCache(updateRequest.getCacheId());
       CacheUpdateResponse response = new CacheUpdateResponse(updateRequest.getCacheId(), cache.getAll());

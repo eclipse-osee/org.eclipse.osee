@@ -421,4 +421,22 @@ public final class OseeStatementImpl implements IOseeStatement {
    public boolean isDatabaseType(SupportedDatabase type) throws OseeDataStoreException {
       return SupportedDatabase.isDatabaseType(connection.getMetaData(), type);
    }
+
+   @Override
+   public void updateObject(String columnName, Object value) throws OseeDataStoreException {
+      try {
+         rSet.updateObject(columnName, value);
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
+
+   @Override
+   public void updateRow() throws OseeDataStoreException {
+      try {
+         rSet.updateRow();
+      } catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+   }
 }

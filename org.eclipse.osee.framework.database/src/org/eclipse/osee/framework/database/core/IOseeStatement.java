@@ -132,7 +132,7 @@ public interface IOseeStatement {
 
    boolean isDatabaseType(SupportedDatabase type) throws OseeDataStoreException;
 
-   public abstract void updateInt(String columnName, int value) throws OseeDataStoreException;
+   void updateObject(String columnName, Object value) throws OseeDataStoreException;
 
-   public abstract void updateRow() throws OseeDataStoreException;
+   void updateRow() throws OseeDataStoreException;
 }

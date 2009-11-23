@@ -573,6 +573,16 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getOseeEnumEntry_EntryGuid()
+  {
+    return (EAttribute)oseeEnumEntryEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getOseeEnumOverride()
   {
     return oseeEnumOverrideEClass;
@@ -822,6 +832,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     oseeEnumEntryEClass = createEClass(OSEE_ENUM_ENTRY);
     createEAttribute(oseeEnumEntryEClass, OSEE_ENUM_ENTRY__NAME);
     createEAttribute(oseeEnumEntryEClass, OSEE_ENUM_ENTRY__ORDINAL);
+    createEAttribute(oseeEnumEntryEClass, OSEE_ENUM_ENTRY__ENTRY_GUID);
 
     oseeEnumOverrideEClass = createEClass(OSEE_ENUM_OVERRIDE);
     createEReference(oseeEnumOverrideEClass, OSEE_ENUM_OVERRIDE__OVERRIDEN_ENUM_TYPE);
@@ -932,6 +943,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     initEClass(oseeEnumEntryEClass, OseeEnumEntry.class, "OseeEnumEntry", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getOseeEnumEntry_Name(), ecorePackage.getEString(), "name", null, 0, 1, OseeEnumEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getOseeEnumEntry_Ordinal(), ecorePackage.getEString(), "ordinal", null, 0, 1, OseeEnumEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getOseeEnumEntry_EntryGuid(), ecorePackage.getEString(), "entryGuid", null, 0, 1, OseeEnumEntry.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(oseeEnumOverrideEClass, OseeEnumOverride.class, "OseeEnumOverride", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getOseeEnumOverride_OverridenEnumType(), this.getOseeEnumType(), null, "overridenEnumType", null, 0, 1, OseeEnumOverride.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -521,13 +521,22 @@ public interface OseeTypesPackage extends EPackage
   int OSEE_ENUM_ENTRY__ORDINAL = 1;
 
   /**
+   * The feature id for the '<em><b>Entry Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int OSEE_ENUM_ENTRY__ENTRY_GUID = 2;
+
+  /**
    * The number of structural features of the '<em>Osee Enum Entry</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int OSEE_ENUM_ENTRY_FEATURE_COUNT = 2;
+  int OSEE_ENUM_ENTRY_FEATURE_COUNT = 3;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumOverrideImpl <em>Osee Enum Override</em>}' class.
@@ -1149,6 +1158,17 @@ public interface OseeTypesPackage extends EPackage
   EAttribute getOseeEnumEntry_Ordinal();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getEntryGuid <em>Entry Guid</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Entry Guid</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.OseeEnumEntry#getEntryGuid()
+   * @see #getOseeEnumEntry()
+   * @generated
+   */
+  EAttribute getOseeEnumEntry_EntryGuid();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.OseeEnumOverride <em>Osee Enum Override</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1668,6 +1688,14 @@ public interface OseeTypesPackage extends EPackage
      * @generated
      */
     EAttribute OSEE_ENUM_ENTRY__ORDINAL = eINSTANCE.getOseeEnumEntry_Ordinal();
+
+    /**
+     * The meta object literal for the '<em><b>Entry Guid</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute OSEE_ENUM_ENTRY__ENTRY_GUID = eINSTANCE.getOseeEnumEntry_EntryGuid();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.OseeEnumOverrideImpl <em>Osee Enum Override</em>}' class.

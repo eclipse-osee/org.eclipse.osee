@@ -65,9 +65,7 @@ public class MigrateBranchBlam extends AbstractBlam {
       String sql = "select branch_id, transaction_id from osee_tx_details";
       HashMap<Integer, Integer> branchMap = new HashMap<Integer, Integer>(600000);
 
-      IOseeStatement chStmt =
-            databaseService.getStatement(ResultSet.TYPE_FORWARD_ONLY,
-            ResultSet.CONCUR_UPDATABLE);
+      IOseeStatement chStmt = databaseService.getStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_UPDATABLE);
       try {
          chStmt.runPreparedQuery(10000, sql);
          while (chStmt.next()) {
@@ -87,7 +85,7 @@ public class MigrateBranchBlam extends AbstractBlam {
             if (branchId == null) {
                println("map not not have branch id for transaction id: " + chStmt.getInt("transaction_id"));
             } else {
-               chStmt.updateInt("branch_id", branchId);
+               chStmt.updateObject("branch_id", branchId);
                chStmt.updateRow();
                counter++;
             }

@@ -93,6 +93,11 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    }
 
    @Override
+   public IOseeStatement getStatement(int resultSetType, int resultSetConcurrency) throws OseeDataStoreException {
+      return new OseeStatementImpl(getDefaultConnectionPool(), (OseeConnectionImpl) connection, autoClose);;
+   }
+
+   @Override
    public <O extends Object> int runPreparedUpdate(OseeConnection connection, String query, O... data) throws OseeDataStoreException {
       if (connection == null) {
          return runPreparedUpdate(query, data);
@@ -199,4 +204,5 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
          chStmt.close();
       }
    }
+
 }

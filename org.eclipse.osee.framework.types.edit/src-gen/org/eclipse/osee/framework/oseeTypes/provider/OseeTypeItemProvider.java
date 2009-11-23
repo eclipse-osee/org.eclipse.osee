@@ -64,8 +64,8 @@ public class OseeTypeItemProvider
       if (itemPropertyDescriptors == null) {
          super.getPropertyDescriptors(object);
 
-         addTypeGuidPropertyDescriptor(object);
          addNamePropertyDescriptor(object);
+         addTypeGuidPropertyDescriptor(object);
       }
       return itemPropertyDescriptors;
    }
@@ -151,8 +151,8 @@ public class OseeTypeItemProvider
       updateChildren(notification);
 
       switch (notification.getFeatureID(OseeType.class)) {
-         case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
          case OseeTypesPackage.OSEE_TYPE__NAME:
+         case OseeTypesPackage.OSEE_TYPE__TYPE_GUID:
             fireNotifyChanged(new ViewerNotification(notification, notification.getNotifier(), false, true));
             return;
       }

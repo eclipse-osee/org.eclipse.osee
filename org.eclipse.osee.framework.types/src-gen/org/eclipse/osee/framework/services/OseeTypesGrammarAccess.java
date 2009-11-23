@@ -717,12 +717,16 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		private final RuleCall cNameNAME_REFERENCEParserRuleCall_1_0 = (RuleCall)cNameAssignment_1.eContents().get(0);
 		private final Assignment cOrdinalAssignment_2 = (Assignment)cGroup.eContents().get(2);
 		private final RuleCall cOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0 = (RuleCall)cOrdinalAssignment_2.eContents().get(0);
+		private final Group cGroup_3 = (Group)cGroup.eContents().get(3);
+		private final Keyword cEntryGuidKeyword_3_0 = (Keyword)cGroup_3.eContents().get(0);
+		private final Assignment cEntryGuidAssignment_3_1 = (Assignment)cGroup_3.eContents().get(1);
+		private final RuleCall cEntryGuidSTRINGTerminalRuleCall_3_1_0 = (RuleCall)cEntryGuidAssignment_3_1.eContents().get(0);
 		
 		//OseeEnumEntry:
-		//  "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR?;
+		//  "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
 		public ParserRule getRule() { return rule; }
 
-		//"entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR?
+		//"entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?
 		public Group getGroup() { return cGroup; }
 
 		//"entry"
@@ -739,6 +743,18 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 
 		//WHOLE_NUM_STR
 		public RuleCall getOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0() { return cOrdinalWHOLE_NUM_STRTerminalRuleCall_2_0; }
+
+		//("entryGuid" entryGuid=STRING)?
+		public Group getGroup_3() { return cGroup_3; }
+
+		//"entryGuid"
+		public Keyword getEntryGuidKeyword_3_0() { return cEntryGuidKeyword_3_0; }
+
+		//entryGuid=STRING
+		public Assignment getEntryGuidAssignment_3_1() { return cEntryGuidAssignment_3_1; }
+
+		//STRING
+		public RuleCall getEntryGuidSTRINGTerminalRuleCall_3_1_0() { return cEntryGuidSTRINGTerminalRuleCall_3_1_0; }
 	}
 
 	public class OseeEnumOverrideElements implements IParserRuleAccess {
@@ -1255,7 +1271,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	}
 
 	//OseeEnumEntry:
-	//  "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR?;
+	//  "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
 	public OseeEnumEntryElements getOseeEnumEntryAccess() {
 		return (pOseeEnumEntry != null) ? pOseeEnumEntry : (pOseeEnumEntry = new OseeEnumEntryElements());
 	}

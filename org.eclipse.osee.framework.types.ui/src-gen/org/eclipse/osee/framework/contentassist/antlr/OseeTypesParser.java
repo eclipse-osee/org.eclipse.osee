@@ -71,6 +71,7 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getAttributeTypeAccess().getGroup_17(), "rule__AttributeType__Group_17__0");
 					put(grammarAccess.getOseeEnumTypeAccess().getGroup(), "rule__OseeEnumType__Group__0");
 					put(grammarAccess.getOseeEnumEntryAccess().getGroup(), "rule__OseeEnumEntry__Group__0");
+					put(grammarAccess.getOseeEnumEntryAccess().getGroup_3(), "rule__OseeEnumEntry__Group_3__0");
 					put(grammarAccess.getOseeEnumOverrideAccess().getGroup(), "rule__OseeEnumOverride__Group__0");
 					put(grammarAccess.getAddEnumAccess().getGroup(), "rule__AddEnum__Group__0");
 					put(grammarAccess.getRemoveEnumAccess().getGroup(), "rule__RemoveEnum__Group__0");
@@ -107,6 +108,7 @@ public class OseeTypesParser extends AbstractContentAssistParser {
 					put(grammarAccess.getOseeEnumTypeAccess().getEnumEntriesAssignment_5(), "rule__OseeEnumType__EnumEntriesAssignment_5");
 					put(grammarAccess.getOseeEnumEntryAccess().getNameAssignment_1(), "rule__OseeEnumEntry__NameAssignment_1");
 					put(grammarAccess.getOseeEnumEntryAccess().getOrdinalAssignment_2(), "rule__OseeEnumEntry__OrdinalAssignment_2");
+					put(grammarAccess.getOseeEnumEntryAccess().getEntryGuidAssignment_3_1(), "rule__OseeEnumEntry__EntryGuidAssignment_3_1");
 					put(grammarAccess.getOseeEnumOverrideAccess().getOverridenEnumTypeAssignment_1(), "rule__OseeEnumOverride__OverridenEnumTypeAssignment_1");
 					put(grammarAccess.getOseeEnumOverrideAccess().getInheritAllAssignment_3(), "rule__OseeEnumOverride__InheritAllAssignment_3");
 					put(grammarAccess.getOseeEnumOverrideAccess().getOverrideOptionsAssignment_4(), "rule__OseeEnumOverride__OverrideOptionsAssignment_4");

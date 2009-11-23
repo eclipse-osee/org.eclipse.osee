@@ -2417,11 +2417,11 @@ protected class OseeEnumType_RightCurlyBracketKeyword_6 extends KeywordToken  {
 /************ begin Rule OseeEnumEntry ****************
  *
  * OseeEnumEntry:
- *   "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR?;
+ *   "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?;
  *
  **/
 
-// "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR?
+// "entry" name=NAME_REFERENCE ordinal=WHOLE_NUM_STR? ("entryGuid" entryGuid=STRING)?
 protected class OseeEnumEntry_Group extends GroupToken {
 	
 	public OseeEnumEntry_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -2434,8 +2434,9 @@ protected class OseeEnumEntry_Group extends GroupToken {
 
 	public AbstractToken createFollower(int index, IInstanceDescription inst) {
 		switch(index) {
-			case 0: return new OseeEnumEntry_OrdinalAssignment_2(parent, this, 0, inst);
-			case 1: return new OseeEnumEntry_NameAssignment_1(parent, this, 1, inst);
+			case 0: return new OseeEnumEntry_Group_3(parent, this, 0, inst);
+			case 1: return new OseeEnumEntry_OrdinalAssignment_2(parent, this, 1, inst);
+			case 2: return new OseeEnumEntry_NameAssignment_1(parent, this, 2, inst);
 			default: return null;
 		}	
 	}	
@@ -2526,6 +2527,79 @@ protected class OseeEnumEntry_OrdinalAssignment_2 extends AssignmentToken  {
 	}
 
 }
+
+// ("entryGuid" entryGuid=STRING)?
+protected class OseeEnumEntry_Group_3 extends GroupToken {
+	
+	public OseeEnumEntry_Group_3(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Group getGrammarElement() {
+		return grammarAccess.getOseeEnumEntryAccess().getGroup_3();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumEntry_EntryGuidAssignment_3_1(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+}
+
+// "entryGuid"
+protected class OseeEnumEntry_EntryGuidKeyword_3_0 extends KeywordToken  {
+	
+	public OseeEnumEntry_EntryGuidKeyword_3_0(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Keyword getGrammarElement() {
+		return grammarAccess.getOseeEnumEntryAccess().getEntryGuidKeyword_3_0();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumEntry_OrdinalAssignment_2(parent, this, 0, inst);
+			case 1: return new OseeEnumEntry_NameAssignment_1(parent, this, 1, inst);
+			default: return null;
+		}	
+	}	
+		
+}
+
+// entryGuid=STRING
+protected class OseeEnumEntry_EntryGuidAssignment_3_1 extends AssignmentToken  {
+	
+	public OseeEnumEntry_EntryGuidAssignment_3_1(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
+		super(parent, next, no, current);
+	}
+	
+	public Assignment getGrammarElement() {
+		return grammarAccess.getOseeEnumEntryAccess().getEntryGuidAssignment_3_1();
+	}
+
+	public AbstractToken createFollower(int index, IInstanceDescription inst) {
+		switch(index) {
+			case 0: return new OseeEnumEntry_EntryGuidKeyword_3_0(parent, this, 0, inst);
+			default: return null;
+		}	
+	}	
+		
+	protected IInstanceDescription tryConsumeVal() {
+		if((value = current.getConsumable("entryGuid",false)) == null) return null;
+		IInstanceDescription obj = current.cloneAndConsume("entryGuid");
+		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for lexer rule
+			type = AssignmentType.LRC;
+			element = grammarAccess.getOseeEnumEntryAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0();
+			return obj;
+		}
+		return null;
+	}
+
+}
+
 
 
 /************ end Rule OseeEnumEntry ****************/
