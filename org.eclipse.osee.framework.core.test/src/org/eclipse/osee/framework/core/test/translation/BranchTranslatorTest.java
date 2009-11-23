@@ -65,7 +65,7 @@ public class BranchTranslatorTest extends BaseTranslatorTest<Branch> {
       ITranslator<Branch> translator = new BranchTranslator(serviceProvider);
 
       IDataTranslationService service = new DataTranslationService();
-      service.addTranslator(Branch.class, translator);
+      service.addTranslator(translator, Branch.class);
 
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 5; index++) {

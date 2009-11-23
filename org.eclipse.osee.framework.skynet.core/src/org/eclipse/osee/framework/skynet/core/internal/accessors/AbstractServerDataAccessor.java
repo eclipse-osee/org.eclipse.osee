@@ -18,10 +18,13 @@ import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.core.util.Conditions;
+import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
 
 /**
  * @author Roberto E. Escobar
@@ -45,17 +48,21 @@ public abstract class AbstractServerDataAccessor<T extends IOseeStorableType> im
       parameters.put("request", "update");
 
       CacheUpdateRequest updateRequest = new CacheUpdateRequest(cache.getCacheId());
-      /*
-       * CacheUpdateResponse<T> updateResponse =
-       * HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, updateRequest, CacheUpdateResponse.class);
-       * updateCache(cache, updateResponse);
-       * for (T updated : updateResponse.getItems()) {
-       * T type = cache.getByGuid(updated.getGuid());
-       * if (type != null) {
-       * type.clearDirty();
-       * }
-       * }
-       */
+      CacheUpdateResponse<T> response =
+            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, updateRequest, CacheUpdateResponse.class);
+
+      Conditions.checkExpressionFailOnTrue(cache.getCacheId() != response.getCacheId(),
+            "Reponse does not match cache enum id - cache to update [%s] - reponse cache id [%s]", cache.getCacheId(),
+            response.getCacheId());
+
+      //      Collection<?> items = response.getItems();
+      //      for (Object item : response.getItems()) {
+      //         T updated = (T) item;
+      //         //         T type = cache.getByGuid(updated.getGuid());
+      //         //         if (type != null) {
+      //         //            type.clearDirty();
+      //         //         }
+      //      }
    }
 
    @SuppressWarnings("unchecked")

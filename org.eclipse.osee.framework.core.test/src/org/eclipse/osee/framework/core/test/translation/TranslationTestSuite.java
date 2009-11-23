@@ -20,6 +20,7 @@ BasicArtifactTranslatorTest.class, //
       CacheUpdateRequestTranslatorTest.class, //
       ChangeItemTranslatorTest.class, //
       ChangeVersionTranslatorTest.class, //
+      DataTranslationServiceFactoryTest.class, //
       DataTranslationServiceTest.class, //
       TransactionRecordTranslatorTest.class //
 })

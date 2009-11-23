@@ -13,6 +13,8 @@ package org.eclipse.osee.framework.core.translation;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -29,15 +31,15 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class DataTranslationService implements IDataTranslationService {
 
-   private final Map<Class<?>, ITranslator<?>> translators;
+   private final Map<ClassKey, ITranslator<?>> translators;
 
    public DataTranslationService() {
-      this.translators = new HashMap<Class<?>, ITranslator<?>>();
+      this.translators = new HashMap<ClassKey, ITranslator<?>>();
    }
 
    @Override
    @SuppressWarnings("unchecked")
-   public <T> T convert(PropertyStore propertyStore, Class<T> toMatch) throws OseeCoreException {
+   public <T> T convert(PropertyStore propertyStore, Class<T>... toMatch) throws OseeCoreException {
       Conditions.checkNotNull(toMatch, "class toMatch");
       T object = null;
       if (propertyStore != null) {
@@ -61,41 +63,69 @@ public class DataTranslationService implements IDataTranslationService {
    }
 
    @Override
-   public ITranslator<?> getTranslator(Class<?> toMatch) throws OseeCoreException {
-      Conditions.checkNotNull(toMatch, "class toMatch");
-      for (Entry<Class<?>, ITranslator<?>> entry : translators.entrySet()) {
-         Class<?> acceptedClass = entry.getKey();
-         if (acceptedClass.isAssignableFrom(toMatch)) {
+   public ITranslator<?> getTranslator(Class<?>... toMatch) throws OseeCoreException {
+      Conditions.checkNotNull(toMatch, "classes toMatch");
+      Conditions.checkExpressionFailOnTrue(toMatch.length < 1, "classes toMatch cannot be empty");
+      for (Entry<ClassKey, ITranslator<?>> entry : translators.entrySet()) {
+         ClassKey key = entry.getKey();
+         Class<?>[] classes = key.classes;
+         if (matches(classes, toMatch)) {
             return entry.getValue();
          }
       }
-      throw new OseeStateException(String.format("Unable to translate [%s]", toMatch.getName()));
+      throw new OseeStateException(String.format("Unable to translate [%s]", Arrays.deepToString(toMatch)));
+   }
+
+   private boolean matches(Class<?>[] key, Class<?>[] toMatch) {
+      boolean result = false;
+      if (key.length == toMatch.length) {
+         result = true;
+         for (int index = 0; index < key.length; index++) {
+            result &= key[index] == toMatch[index];
+            if (!result) {
+               break;
+            }
+         }
+      }
+      return result;
    }
 
    @Override
-   public boolean addTranslator(Class<?> clazz, ITranslator<?> translator) {
+   public boolean addTranslator(ITranslator<?> translator, Class<?>... classes) throws OseeCoreException {
+      Conditions.checkNotNull(classes, "classes");
+      Conditions.checkNotNull(translator, "translator");
+      Conditions.checkExpressionFailOnTrue(classes.length < 1, "classes cannot be empty");
       boolean wasAdded = false;
-      if (!translators.containsKey(clazz)) {
-         translators.put(clazz, translator);
+      ClassKey key = new ClassKey(classes);
+      if (!translators.containsKey(key)) {
+         translators.put(key, translator);
          wasAdded = true;
       }
       return wasAdded;
    }
 
    @Override
-   public boolean removeTranslator(Class<?> clazz) {
-      return translators.remove(clazz) != null;
+   public boolean removeTranslator(Class<?>... classes) throws OseeCoreException {
+      Conditions.checkNotNull(classes, "classes");
+      Conditions.checkExpressionFailOnTrue(classes.length < 1, "classes cannot be empty");
+      ClassKey key = new ClassKey(classes);
+      return translators.remove(key) != null;
    }
 
    @Override
-   public Collection<Class<?>> getSupportedClasses() {
-      return translators.keySet();
+   public Collection<Class<?>[]> getSupportedClasses() {
+      Collection<Class<?>[]> keys = new ArrayList<Class<?>[]>();
+      for (ClassKey key : translators.keySet()) {
+         keys.add(key.classes);
+      }
+      return keys;
    }
 
    @Override
-   public <T> T convert(InputStream inputStream, Class<T> toMatch) throws OseeCoreException {
+   public <T> T convert(InputStream inputStream, Class<T>... toMatch) throws OseeCoreException {
       Conditions.checkNotNull(inputStream, "inputStream");
       Conditions.checkNotNull(toMatch, "class toMatch");
+
       PropertyStore propertyStore = new PropertyStore();
       try {
          propertyStore.load(inputStream);
@@ -115,5 +145,48 @@ public class DataTranslationService implements IDataTranslationService {
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
       }
+   }
+
+   private class ClassKey {
+      protected final Class<?>[] classes;
+
+      public ClassKey(Class<?>... classes) {
+         this.classes = classes;
+      }
+
+      @Override
+      public int hashCode() {
+         final int prime = 31;
+         int result = 1;
+         result = prime * result + getOuterType().hashCode();
+         result = prime * result + Arrays.hashCode(classes);
+         return result;
+      }
+
+      @Override
+      public boolean equals(Object obj) {
+         if (this == obj) {
+            return true;
+         }
+         if (obj == null) {
+            return false;
+         }
+         if (getClass() != obj.getClass()) {
+            return false;
+         }
+         ClassKey other = (ClassKey) obj;
+         if (!getOuterType().equals(other.getOuterType())) {
+            return false;
+         }
+         if (!Arrays.equals(classes, other.classes)) {
+            return false;
+         }
+         return true;
+      }
+
+      private DataTranslationService getOuterType() {
+         return DataTranslationService.this;
+      }
+
    }
 }

@@ -62,10 +62,10 @@ public class ChangeItemTranslatorTest extends BaseTranslatorTest<ChangeItem> {
    }
 
    @Parameters
-   public static Collection<Object[]> data() {
+   public static Collection<Object[]> data() throws OseeCoreException {
       DataTranslationService dataTranslationService = new DataTranslationService();
-      dataTranslationService.addTranslator(ChangeItem.class, new ChangeItemTranslator(dataTranslationService));
-      dataTranslationService.addTranslator(ChangeVersion.class, new ChangeVersionTranslator());
+      dataTranslationService.addTranslator(new ChangeItemTranslator(dataTranslationService), ChangeItem.class);
+      dataTranslationService.addTranslator(new ChangeVersionTranslator(), ChangeVersion.class);
 
       List<Object[]> data = new ArrayList<Object[]>();
       ITranslator<ChangeItem> translator = new ChangeItemTranslator(dataTranslationService);

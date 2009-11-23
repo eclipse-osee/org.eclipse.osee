@@ -54,8 +54,8 @@ public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Transact
 
       IDataTranslationService service = new DataTranslationService();
 
-      service.addTranslator(Branch.class, new BranchTranslator(serviceProvider));
-      service.addTranslator(TransactionRecord.class, new TransactionRecordTranslator(service));
+      service.addTranslator(new BranchTranslator(serviceProvider), Branch.class);
+      service.addTranslator(new TransactionRecordTranslator(service), TransactionRecord.class);
 
       ITranslator<TransactionRecord> translator = new TransactionRecordTranslator(service);
 

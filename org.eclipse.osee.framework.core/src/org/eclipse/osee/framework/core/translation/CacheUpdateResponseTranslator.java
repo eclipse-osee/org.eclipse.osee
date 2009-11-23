@@ -1,11 +1,17 @@
-/*
- * Created on Nov 20, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.core.translation;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
 import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -13,39 +19,58 @@ import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
- * @author b1122182
+ * @author Roberto E. Escobar
+ * @author Jeff C. Phillips
  */
-public class CacheUpdateResponseTranslator implements ITranslator<CacheUpdateResponse> {
+public class CacheUpdateResponseTranslator<T> implements ITranslator<CacheUpdateResponse<T>> {
 
    private enum Entry {
       CACHE_ID,
-      COUNT;
+      COUNT,
+      ITEM;
    }
 
    private final IDataTranslationService service;
+   private final Class<T> clazzType;
 
-   public CacheUpdateResponseTranslator(IDataTranslationService service) {
+   public CacheUpdateResponseTranslator(IDataTranslationService service, Class<T> clazzType) {
       this.service = service;
+      this.clazzType = clazzType;
+   }
+
+   private Class<T> getClassType() {
+      return clazzType;
    }
 
    @Override
-   public CacheUpdateResponse convert(PropertyStore propertyStore) throws OseeCoreException {
-      OseeCacheEnum cacheId = OseeCacheEnum.valueOf(propertyStore.get(Entry.CACHE_ID.name()));
-
-      //      return new CacheUpdateRequest(cacheId, Arrays.asList(guids));
-      return new CacheUpdateResponse(cacheId, Collections.emptyList());
+   public CacheUpdateResponse<T> convert(PropertyStore store) throws OseeCoreException {
+      OseeCacheEnum cacheId = OseeCacheEnum.valueOf(store.get(Entry.CACHE_ID.name()));
+      Class<T> clazz = getClassType();
+      Collection<T> items = new ArrayList<T>();
+      int numberOfItems = store.getInt(Entry.COUNT.name());
+      for (int index = 0; index < numberOfItems; index++) {
+         PropertyStore innerStore = store.getPropertyStore(createKey(index));
+         T object = service.convert(innerStore, clazz);
+         items.add(object);
+      }
+      return new CacheUpdateResponse<T>(cacheId, items);
    }
 
    @Override
-   public PropertyStore convert(CacheUpdateResponse object) throws OseeCoreException {
+   public PropertyStore convert(CacheUpdateResponse<T> object) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
-
       store.put(Entry.CACHE_ID.name(), object.getCacheId().name());
 
-      for (Object items : object.getItems()) {
-         service.convert(items);
+      Collection<T> items = object.getItems();
+      store.put(Entry.COUNT.name(), items.size());
+      int index = 0;
+      for (T item : items) {
+         store.put(createKey(index++), service.convert(item));
       }
       return store;
    }
 
+   private String createKey(int index) {
+      return String.format("%s_%s", Entry.ITEM.name(), index);
+   }
 }

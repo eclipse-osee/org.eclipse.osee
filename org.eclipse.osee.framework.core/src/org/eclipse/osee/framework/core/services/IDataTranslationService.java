@@ -29,7 +29,7 @@ public interface IDataTranslationService {
     * @return transformed object
     * @throws OseeCoreException if there are problems during conversion
     */
-   public abstract <T> T convert(InputStream inputStream, Class<T> toMatch) throws OseeCoreException;
+   public abstract <T> T convert(InputStream inputStream, Class<T>... toMatch) throws OseeCoreException;
 
    /**
     * Converts a property store into a specified object
@@ -39,7 +39,7 @@ public interface IDataTranslationService {
     * @return transformed object
     * @throws OseeCoreException if there are problems during conversion
     */
-   public abstract <T> T convert(PropertyStore propertyStore, Class<T> toMatch) throws OseeCoreException;
+   public abstract <T> T convert(PropertyStore propertyStore, Class<T>... toMatch) throws OseeCoreException;
 
    /**
     * Converts an object into a property store
@@ -67,7 +67,7 @@ public interface IDataTranslationService {
     * @throws OseeCoreException if there are problems getting the translator or class does not have a registered
     *            translator
     */
-   public abstract ITranslator<?> getTranslator(Class<?> toMatch) throws OseeCoreException;
+   public abstract ITranslator<?> getTranslator(Class<?>... toMatch) throws OseeCoreException;
 
    /**
     * registers a translator for the specified class
@@ -76,7 +76,7 @@ public interface IDataTranslationService {
     * @param translator to register
     * @return <b>true</b> if translator was added successfully
     */
-   public abstract boolean addTranslator(Class<?> clazz, ITranslator<?> translator);
+   public abstract boolean addTranslator(ITranslator<?> translator, Class<?>... clazz) throws OseeCoreException;
 
    /**
     * removes a translator for the specified class
@@ -84,13 +84,13 @@ public interface IDataTranslationService {
     * @param clazz associated with the translator to remove
     * @return <b>true</b> if the translator associated with the class was removed
     */
-   public abstract boolean removeTranslator(Class<?> clazz);
+   public abstract boolean removeTranslator(Class<?>... clazz) throws OseeCoreException;
 
    /**
     * Get all classes registered with translators
     * 
     * @return classes with registered translators
     */
-   public abstract Collection<Class<?>> getSupportedClasses();
+   public abstract Collection<Class<?>[]> getSupportedClasses();
 
 }

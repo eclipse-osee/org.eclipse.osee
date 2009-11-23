@@ -14,40 +14,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.BranchCommitRequest;
-import org.eclipse.osee.framework.core.data.BranchCommitResponse;
-import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
-import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.ChangeReportRequest;
-import org.eclipse.osee.framework.core.data.ChangeReportResponse;
-import org.eclipse.osee.framework.core.data.ChangeVersion;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.model.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.model.OseeModelFactoryService;
 import org.eclipse.osee.framework.core.model.RelationTypeFactory;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
-import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
-import org.eclipse.osee.framework.core.translation.BranchCommitRequestTranslator;
-import org.eclipse.osee.framework.core.translation.BranchCommitResponseTranslator;
-import org.eclipse.osee.framework.core.translation.BranchTranslator;
-import org.eclipse.osee.framework.core.translation.CacheUpdateRequestTranslator;
-import org.eclipse.osee.framework.core.translation.CacheUpdateResponseTranslator;
-import org.eclipse.osee.framework.core.translation.ChangeItemTranslator;
-import org.eclipse.osee.framework.core.translation.ChangeReportRequestTranslator;
-import org.eclipse.osee.framework.core.translation.ChangeReportResponseTranslator;
-import org.eclipse.osee.framework.core.translation.ChangeVersionTranslator;
-import org.eclipse.osee.framework.core.translation.DataTranslationService;
-import org.eclipse.osee.framework.core.translation.TransactionRecordTranslator;
+import org.eclipse.osee.framework.core.translation.DataTranslationServiceFactory;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -75,9 +53,9 @@ public class Activator implements BundleActivator, IOseeCachingServiceProvider {
       instance.bundleContext = context;
 
       IOseeModelFactoryService factories = createFactoryService();
-      createService(context, IOseeModelFactoryService.class, factories);
+      IDataTranslationService service = new DataTranslationServiceFactory().createService(this);
 
-      IDataTranslationService service = createTranslationServer();
+      createService(context, IOseeModelFactoryService.class, factories);
       createService(context, IDataTranslationService.class, service);
 
       createServiceTracker(context, IOseeCachingService.class, TrackerId.OSEE_CACHING_SERVICE);
@@ -86,27 +64,6 @@ public class Activator implements BundleActivator, IOseeCachingServiceProvider {
    private IOseeModelFactoryService createFactoryService() {
       return new OseeModelFactoryService(new BranchFactory(), new TransactionRecordFactory(),
             new ArtifactTypeFactory(), new AttributeTypeFactory(), new RelationTypeFactory(), new OseeEnumTypeFactory());
-   }
-
-   private IDataTranslationService createTranslationServer() {
-      IDataTranslationService service = new DataTranslationService();
-
-      service.addTranslator(IBasicArtifact.class, new BasicArtifactTranslator());
-      service.addTranslator(Branch.class, new BranchTranslator(this));
-      service.addTranslator(TransactionRecord.class, new TransactionRecordTranslator(service));
-
-      service.addTranslator(BranchCommitRequest.class, new BranchCommitRequestTranslator(service));
-      service.addTranslator(BranchCommitResponse.class, new BranchCommitResponseTranslator(service));
-
-      service.addTranslator(ChangeVersion.class, new ChangeVersionTranslator());
-      service.addTranslator(ChangeItem.class, new ChangeItemTranslator(service));
-      service.addTranslator(ChangeReportResponse.class, new ChangeReportResponseTranslator(service));
-      service.addTranslator(ChangeReportRequest.class, new ChangeReportRequestTranslator(service));
-
-      service.addTranslator(CacheUpdateRequest.class, new CacheUpdateRequestTranslator());
-      service.addTranslator(CacheUpdateResponse.class, new CacheUpdateResponseTranslator(service));
-
-      return service;
    }
 
    public void stop(BundleContext context) throws Exception {
