@@ -70,8 +70,8 @@ public class OseeConnectionImpl extends OseeConnection {
       return prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
    }
 
-   CallableStatement prepareCall(String sql) throws SQLException {
-      return conn.prepareCall(sql);
+   CallableStatement prepareCall(String sql, int resultSetType, int resultSetConcurrency) throws SQLException {
+      return conn.prepareCall(sql, resultSetType, resultSetConcurrency);
    }
 
    synchronized boolean lease() {

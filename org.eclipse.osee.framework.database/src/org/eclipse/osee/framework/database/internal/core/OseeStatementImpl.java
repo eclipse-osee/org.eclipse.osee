@@ -40,19 +40,27 @@ public final class OseeStatementImpl implements IOseeStatement {
    private OseeConnectionImpl connection;
    private final boolean autoClose;
    private final OseeConnectionPoolImpl connectionPool;
+   private final int resultSetType;
+   private final int resultSetConcurrency;
 
    public OseeStatementImpl(OseeConnectionPoolImpl connectionPool, OseeConnectionImpl connection) {
       this(connectionPool, connection, connection == null);
    }
 
    public OseeStatementImpl(OseeConnectionPoolImpl connectionPool, OseeConnectionImpl connection, boolean autoClose) {
-      this.autoClose = autoClose;
-      this.connection = connection;
-      this.connectionPool = connectionPool;
+      this(connectionPool, connection, autoClose, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
    }
 
    public OseeStatementImpl(OseeConnectionPoolImpl connectionPool) {
       this(connectionPool, null);
+   }
+
+   public OseeStatementImpl(OseeConnectionPoolImpl connectionPool, OseeConnectionImpl connection, boolean autoClose, int resultSetType, int resultSetConcurrency) {
+      this.autoClose = autoClose;
+      this.connection = connection;
+      this.connectionPool = connectionPool;
+      this.resultSetType = resultSetType;
+      this.resultSetConcurrency = resultSetConcurrency;
    }
 
    @Override
@@ -73,7 +81,7 @@ public final class OseeStatementImpl implements IOseeStatement {
 
       try {
          allowReuse();
-         preparedStatement = connection.prepareStatement(query);
+         preparedStatement = connection.prepareStatement(query, resultSetType, resultSetConcurrency);
          preparedStatement.setFetchSize(Math.min(fetchSize, 10000));
          StatementUtil.populateValuesForPreparedStatement(preparedStatement, data);
 
@@ -100,7 +108,7 @@ public final class OseeStatementImpl implements IOseeStatement {
 
       try {
          allowReuse();
-         callableStatement = connection.prepareCall(query);
+         callableStatement = connection.prepareCall(query, resultSetType, resultSetConcurrency);
 
          for (int index = 0; index < data.length; index++) {
             if (data[index] instanceof SQL3DataType) {
