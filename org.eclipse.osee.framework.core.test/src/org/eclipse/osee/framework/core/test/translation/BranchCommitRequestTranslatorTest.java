@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
@@ -51,13 +52,13 @@ public class BranchCommitRequestTranslatorTest extends BaseTranslatorTest<Branch
    }
 
    @Parameters
-   public static Collection<Object[]> data() {
+   public static Collection<Object[]> data() throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       IOseeCachingServiceProvider serviceProvider = MockCacheServiceFactory.createProvider();
       IDataTranslationService service = new DataTranslationService();
-      service.addTranslator(Branch.class, new BranchTranslator(serviceProvider));
-      service.addTranslator(IBasicArtifact.class, new BasicArtifactTranslator());
-      service.addTranslator(TransactionRecord.class, new TransactionRecordTranslator(service));
+      service.addTranslator(new BranchTranslator(serviceProvider),Branch.class);
+      service.addTranslator(new BasicArtifactTranslator(), IBasicArtifact.class);
+      service.addTranslator(new TransactionRecordTranslator(service), TransactionRecord.class);
       ITranslator<BranchCommitRequest> translator = new BranchCommitRequestTranslator(service);
       DefaultBasicArtifact user = new DefaultBasicArtifact(345683, "DFJJGFGJDFLJ12394FASD", "Tom Jones");
       data.add(new Object[] {
