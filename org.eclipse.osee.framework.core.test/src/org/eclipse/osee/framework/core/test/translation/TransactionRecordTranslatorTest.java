@@ -19,7 +19,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
-import org.eclipse.osee.framework.core.test.mocks.MockCacheServiceFactory;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.BranchTranslator;
 import org.eclipse.osee.framework.core.translation.DataTranslationService;
@@ -50,7 +49,7 @@ public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Transact
 
    @Parameters
    public static Collection<Object[]> data() throws OseeCoreException {
-      IOseeCachingServiceProvider serviceProvider = MockCacheServiceFactory.createProvider();
+      IOseeCachingServiceProvider serviceProvider = MockDataFactory.createCachingProvider();
 
       IDataTranslationService service = new DataTranslationService();
 

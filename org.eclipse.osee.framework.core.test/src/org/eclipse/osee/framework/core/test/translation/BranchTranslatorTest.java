@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
-import org.eclipse.osee.framework.core.test.mocks.MockCacheServiceFactory;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.test.mocks.MockOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
@@ -59,7 +58,7 @@ public class BranchTranslatorTest extends BaseTranslatorTest<Branch> {
 
    @Parameters
    public static Collection<Object[]> data() throws OseeCoreException {
-      IOseeCachingServiceProvider serviceProvider = MockCacheServiceFactory.createProvider();
+      IOseeCachingServiceProvider serviceProvider = MockDataFactory.createCachingProvider();
       cache = serviceProvider.getOseeCachingService().getBranchCache();
 
       ITranslator<Branch> translator = new BranchTranslator(serviceProvider);

@@ -13,13 +13,21 @@ package org.eclipse.osee.framework.core.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.test.mocks.MockOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
+import org.eclipse.osee.framework.core.translation.DataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.core.translation.RelationTypeTranslator;
 import org.junit.runner.RunWith;
@@ -40,37 +48,31 @@ public class RelationTypeTranslatorTest extends BaseTranslatorTest<RelationType>
 
    @Override
    protected void checkEquals(RelationType expected, RelationType actual) throws OseeCoreException {
-      //      boolean isCached = cache.getByGuid(expected.getGuid()) != null;
-      //      if (isCached) {
-      //         Assert.assertSame(expected, actual);
-      //         DataAsserts.assertEquals(expected, actual);
-      //      } else {
-      //         Assert.assertNull(actual);
-      //      }
+      DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
    public static Collection<Object[]> data() throws OseeCoreException {
-      //      IOseeCachingServiceProvider serviceProvider = MockCacheServiceFactory.createProvider();
-      //      cache = serviceProvider.getOseeCachingService().getBranchCache();
+      IOseeModelFactoryServiceProvider factoryProvider = MockDataFactory.createFactoryProvider();
+      IOseeCachingServiceProvider serviceProvider = MockDataFactory.createCachingProvider();
+      ArtifactTypeCache cache = serviceProvider.getOseeCachingService().getArtifactTypeCache();
 
-      //      ITranslator<RelationType> translator = new RelationTypeTranslator(serviceProvider);
-      //
-      //      IDataTranslationService service = new DataTranslationService();
-      //      service.addTranslator(translator, Branch.class);
-      //
+      IDataTranslationService service = new DataTranslationService();
+      service.addTranslator(new BasicArtifactTranslator(), IBasicArtifact.class);
+
+      ITranslator<RelationType> translator = new RelationTypeTranslator(service, factoryProvider);
+
       List<Object[]> data = new ArrayList<Object[]>();
-      //      for (int index = 1; index <= 5; index++) {
-      //         Branch branch = MockDataFactory.createBranch(index * 10);
-      //         cache.cache(branch);
-      //         data.add(new Object[] {branch, translator});
-      //      }
-      //      Branch branch = MockDataFactory.createBranch(-1);
-      //      cache.cache(branch);
-      //      data.add(new Object[] {branch, translator});
-      //
-      //      // Don't add it to the cache
-      //      data.add(new Object[] {MockDataFactory.createBranch(-2), translator});
+      for (int index = 1; index <= 2; index++) {
+         ArtifactType typeA = MockDataFactory.createArtifactType(index * 7);
+         ArtifactType typeB = MockDataFactory.createArtifactType(index * 3);
+         cache.cache(typeA);
+         cache.cache(typeB);
+         RelationType relType = MockDataFactory.createRelationType(index, typeA, typeB);
+         data.add(new Object[] {relType, translator});
+      }
+
+      data.add(new Object[] {MockDataFactory.createRelationType(999, null, null), translator});
       return data;
    }
 

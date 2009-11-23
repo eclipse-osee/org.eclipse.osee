@@ -13,6 +13,12 @@ package org.eclipse.osee.framework.core.test.mocks;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
+import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
+import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
+import org.eclipse.osee.framework.core.cache.RelationTypeCache;
+import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
@@ -28,6 +34,7 @@ import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
+import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.OseeEnumTypeFactory;
@@ -36,6 +43,8 @@ import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.model.RelationTypeFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -107,5 +116,17 @@ public final class MockDataFactory {
 
    public static IOseeModelFactoryServiceProvider createFactoryProvider() {
       return new MockOseeModelFactoryServiceProvider(createFactoryService());
+   }
+
+   public static IOseeCachingServiceProvider createCachingProvider() {
+      BranchCache brCache = new BranchCache(new MockOseeDataAccessor<Branch>());
+      TransactionCache txCache = new TransactionCache(new MockOseeTransactionDataAccessor());
+      ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<ArtifactType>());
+      AttributeTypeCache attrCache = new AttributeTypeCache(new MockOseeDataAccessor<AttributeType>());
+      RelationTypeCache relCache = new RelationTypeCache(new MockOseeDataAccessor<RelationType>());
+      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new MockOseeDataAccessor<OseeEnumType>());
+
+      IOseeCachingService service = new OseeCachingService(brCache, txCache, artCache, attrCache, relCache, enumCache);
+      return new MockOseeCachingServiceProvider(service);
    }
 }

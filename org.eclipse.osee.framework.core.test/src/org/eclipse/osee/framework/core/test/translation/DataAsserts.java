@@ -17,8 +17,10 @@ import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
+import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Compare;
 
@@ -34,9 +36,7 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         Assert.assertEquals(expected.getId(), actual.getId());
-         Assert.assertEquals(expected.getGuid(), actual.getGuid());
-         Assert.assertEquals(expected.getName(), actual.getName());
+         assertEquals((IOseeStorableType) expected, (IOseeStorableType) actual);
          OseeEnumEntry[] expList = expected.values();
          OseeEnumEntry[] actualList = actual.values();
          Assert.assertEquals(expList.length, actualList.length);
@@ -50,9 +50,7 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         Assert.assertEquals(expected.getId(), actual.getId());
-         Assert.assertEquals(expected.getGuid(), actual.getGuid());
-         Assert.assertEquals(expected.getName(), actual.getName());
+         assertEquals((IOseeStorableType) expected, (IOseeStorableType) actual);
          Assert.assertEquals(expected.ordinal(), actual.ordinal());
       }
    }
@@ -61,9 +59,7 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         Assert.assertEquals(expected.getId(), actual.getId());
-         Assert.assertEquals(expected.getGuid(), actual.getGuid());
-         Assert.assertEquals(expected.getName(), actual.getName());
+         assertEquals((IOseeStorableType) expected, (IOseeStorableType) actual);
          Assert.assertEquals(expected.getShortName(), actual.getShortName());
          Assert.assertEquals(expected.getAccessControlBranch(), actual.getAccessControlBranch());
          Assert.assertEquals(expected.getAliases(), actual.getAliases());
@@ -126,6 +122,32 @@ public final class DataAsserts {
       } else {
          Assert.assertEquals(expected.getCacheId(), actual.getCacheId());
          Assert.assertFalse(Compare.isDifferent(expected.getGuids(), actual.getGuids()));
+      }
+   }
+
+   public static void assertEquals(RelationType expected, RelationType actual) {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      } else {
+         assertEquals((IOseeStorableType) expected, (IOseeStorableType) actual);
+         Assert.assertEquals(expected.getSideAName(), actual.getSideAName());
+         Assert.assertEquals(expected.getSideBName(), actual.getSideBName());
+         Assert.assertEquals(expected.getMultiplicity(), actual.getMultiplicity());
+         Assert.assertEquals(expected.getDefaultOrderTypeGuid(), actual.getDefaultOrderTypeGuid());
+         assertEquals(expected.getArtifactTypeSideA(), actual.getArtifactTypeSideA());
+         assertEquals(expected.getArtifactTypeSideB(), actual.getArtifactTypeSideB());
+      }
+   }
+
+   public static void assertEquals(IOseeStorableType expected, IOseeStorableType actual) {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      } else {
+         Assert.assertEquals(expected.getId(), actual.getId());
+         Assert.assertEquals(expected.getGuid(), actual.getGuid());
+         Assert.assertEquals(expected.getName(), actual.getName());
+         Assert.assertEquals(expected.getModificationType(), actual.getModificationType());
+         Assert.assertEquals(expected.isDirty(), actual.isDirty());
       }
    }
 }

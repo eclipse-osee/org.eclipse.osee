@@ -21,7 +21,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
-import org.eclipse.osee.framework.core.test.mocks.MockCacheServiceFactory;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
 import org.eclipse.osee.framework.core.translation.BranchCommitRequestTranslator;
@@ -53,7 +52,7 @@ public class BranchCommitRequestTranslatorTest extends BaseTranslatorTest<Branch
    @Parameters
    public static Collection<Object[]> data() throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
-      IOseeCachingServiceProvider serviceProvider = MockCacheServiceFactory.createProvider();
+      IOseeCachingServiceProvider serviceProvider = MockDataFactory.createCachingProvider();
       IDataTranslationService service = new DataTranslationService();
       service.addTranslator(new BranchTranslator(serviceProvider), Branch.class);
       service.addTranslator(new BasicArtifactTranslator(), IBasicArtifact.class);
