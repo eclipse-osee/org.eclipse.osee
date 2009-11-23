@@ -22,6 +22,8 @@ BasicArtifactTranslatorTest.class, //
       ChangeVersionTranslatorTest.class, //
       DataTranslationServiceFactoryTest.class, //
       DataTranslationServiceTest.class, //
+      OseeEnumTypeTranslatorTest.class, //
+      RelationTypeTranslatorTest.class, //
       TransactionRecordTranslatorTest.class //
 })
 /**

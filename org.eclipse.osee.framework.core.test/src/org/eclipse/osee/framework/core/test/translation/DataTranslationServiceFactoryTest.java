@@ -24,11 +24,13 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.test.mocks.MockOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.test.mocks.MockOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
 import org.eclipse.osee.framework.core.translation.BranchCommitRequestTranslator;
 import org.eclipse.osee.framework.core.translation.BranchCommitResponseTranslator;
@@ -41,6 +43,9 @@ import org.eclipse.osee.framework.core.translation.ChangeReportResponseTranslato
 import org.eclipse.osee.framework.core.translation.ChangeVersionTranslator;
 import org.eclipse.osee.framework.core.translation.DataTranslationServiceFactory;
 import org.eclipse.osee.framework.core.translation.ITranslator;
+import org.eclipse.osee.framework.core.translation.OseeEnumEntryTranslator;
+import org.eclipse.osee.framework.core.translation.OseeEnumTypeTranslator;
+import org.eclipse.osee.framework.core.translation.RelationTypeTranslator;
 import org.eclipse.osee.framework.core.translation.TransactionRecordTranslator;
 import org.junit.Test;
 
@@ -54,7 +59,8 @@ public class DataTranslationServiceFactoryTest {
    @Test
    public void testServiceCreation() throws OseeCoreException {
       IDataTranslationService service =
-            new DataTranslationServiceFactory().createService(new MockOseeCachingServiceProvider(null));
+            new DataTranslationServiceFactory().createService(new MockOseeCachingServiceProvider(null),
+                  new MockOseeModelFactoryServiceProvider(null));
 
       checkExists(service, BasicArtifactTranslator.class, IBasicArtifact.class);
       checkExists(service, BranchTranslator.class, Branch.class);
@@ -72,6 +78,10 @@ public class DataTranslationServiceFactoryTest {
       checkExists(service, CacheUpdateResponseTranslator.class, CacheUpdateResponse.class, OseeEnumType.class);
       checkExists(service, CacheUpdateResponseTranslator.class, CacheUpdateResponse.class, Branch.class);
       checkExists(service, CacheUpdateResponseTranslator.class, CacheUpdateResponse.class, TransactionRecord.class);
+
+      checkExists(service, RelationTypeTranslator.class, RelationType.class);
+      checkExists(service, OseeEnumTypeTranslator.class, OseeEnumType.class);
+      checkExists(service, OseeEnumEntryTranslator.class, OseeEnumEntry.class);
    }
 
    @SuppressWarnings("unchecked")

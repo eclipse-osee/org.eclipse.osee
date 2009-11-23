@@ -88,6 +88,7 @@ public class DataTranslationServiceTest {
       Assert.assertEquals(value.three, actual.three);
    }
 
+   @SuppressWarnings("unchecked")
    @Test
    public void testConvertStreams() throws OseeCoreException {
       DataTranslationService service = new DataTranslationService();
@@ -110,13 +111,14 @@ public class DataTranslationServiceTest {
       Assert.assertEquals(expected.three, actual.three);
    }
 
+   @SuppressWarnings("unchecked")
    @Test
    public void testNullConverts() throws Exception {
       DataTranslationService service = new DataTranslationService();
 
       assertEmpty(service.convert(null));
       assertEmpty(service.convertToStream(null));
-      Assert.assertNull(service.convert((PropertyStore) null, Object.class));
+      Assert.assertNull(service.convert((PropertyStore) null, (Class<?>) Object.class));
    }
 
    private void assertEmpty(InputStream inputStream) throws Exception {
@@ -131,18 +133,21 @@ public class DataTranslationServiceTest {
       Assert.assertTrue(toCheck.innerStoresKeySet().isEmpty());
    }
 
+   @SuppressWarnings("unchecked")
    @Test(expected = OseeArgumentException.class)
    public void testNullClazz() throws Exception {
       DataTranslationService service = new DataTranslationService();
-      service.convert(new ByteArrayInputStream(new byte[0]), null);
+      service.convert(new ByteArrayInputStream(new byte[0]), (Class<?>) null);
    }
 
+   @SuppressWarnings("unchecked")
    @Test(expected = OseeArgumentException.class)
    public void testNullClazz2() throws Exception {
       DataTranslationService service = new DataTranslationService();
-      service.convert(new PropertyStore(), null);
+      service.convert(new PropertyStore(), (Class<?>) null);
    }
 
+   @SuppressWarnings("unchecked")
    @Test(expected = OseeArgumentException.class)
    public void testNullInputStream() throws Exception {
       DataTranslationService service = new DataTranslationService();
@@ -152,7 +157,7 @@ public class DataTranslationServiceTest {
    @Test(expected = OseeArgumentException.class)
    public void testNullGetTranslator() throws Exception {
       DataTranslationService service = new DataTranslationService();
-      service.getTranslator(null);
+      service.getTranslator((Class<?>) null);
    }
 
    private class TestObject {
