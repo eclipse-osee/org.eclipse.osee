@@ -17,6 +17,8 @@ import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.OseeEnumEntry;
+import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Compare;
 
@@ -26,6 +28,33 @@ import org.eclipse.osee.framework.core.util.Compare;
 public final class DataAsserts {
 
    private DataAsserts() {
+   }
+
+   public static void assertEquals(OseeEnumType expected, OseeEnumType actual) throws OseeCoreException {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      } else {
+         Assert.assertEquals(expected.getId(), actual.getId());
+         Assert.assertEquals(expected.getGuid(), actual.getGuid());
+         Assert.assertEquals(expected.getName(), actual.getName());
+         OseeEnumEntry[] expList = expected.values();
+         OseeEnumEntry[] actualList = actual.values();
+         Assert.assertEquals(expList.length, actualList.length);
+         for (int index = 0; index < expList.length; index++) {
+            assertEquals(expList[index], actualList[index]);
+         }
+      }
+   }
+
+   public static void assertEquals(OseeEnumEntry expected, OseeEnumEntry actual) throws OseeCoreException {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      } else {
+         Assert.assertEquals(expected.getId(), actual.getId());
+         Assert.assertEquals(expected.getGuid(), actual.getGuid());
+         Assert.assertEquals(expected.getName(), actual.getName());
+         Assert.assertEquals(expected.ordinal(), actual.ordinal());
+      }
    }
 
    public static void assertEquals(Branch expected, Branch actual) throws OseeCoreException {

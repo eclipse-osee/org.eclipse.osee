@@ -23,12 +23,21 @@ import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.AttributeTypeFactory;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
+import org.eclipse.osee.framework.core.model.OseeEnumTypeFactory;
+import org.eclipse.osee.framework.core.model.OseeModelFactoryService;
 import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.model.RelationTypeFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
 /**
@@ -57,7 +66,7 @@ public final class MockDataFactory {
    }
 
    public static OseeEnumEntry createEnumEntry(int index) {
-      return new OseeEnumEntry(GUID.create(), "entry_" + index, index * 37);
+      return new OseeEnumEntry(GUID.create(), "entry_" + index, Math.abs(index * 37));
    }
 
    public static OseeEnumType createEnumType(int index) {
@@ -89,5 +98,14 @@ public final class MockDataFactory {
          guids.add(GUID.create());
       }
       return new CacheUpdateRequest(cacheEnum, guids);
+   }
+
+   public static IOseeModelFactoryService createFactoryService() {
+      return new OseeModelFactoryService(new BranchFactory(), new TransactionRecordFactory(),
+            new ArtifactTypeFactory(), new AttributeTypeFactory(), new RelationTypeFactory(), new OseeEnumTypeFactory());
+   }
+
+   public static IOseeModelFactoryServiceProvider createFactoryProvider() {
+      return new MockOseeModelFactoryServiceProvider(createFactoryService());
    }
 }
