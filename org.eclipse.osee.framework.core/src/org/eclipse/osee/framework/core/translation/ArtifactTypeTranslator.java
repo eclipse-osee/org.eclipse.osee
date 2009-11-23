@@ -19,14 +19,29 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class ArtifactTypeTranslator implements ITranslator<ArtifactType> {
 
+   private enum Entry{
+      GUID,
+      NAME,
+      IS_ABSTRACT;
+   }
    @Override
    public ArtifactType convert(PropertyStore propertyStore) throws OseeCoreException {
+      propertyStore.get(Entry.GUID.name());
+      propertyStore.get(Entry.NAME.name());
+      propertyStore.get(Entry.IS_ABSTRACT.name());
+      
       return null;
    }
 
    @Override
-   public PropertyStore convert(ArtifactType object) throws OseeCoreException {
-      return null;
+   public PropertyStore convert(ArtifactType artifactType) throws OseeCoreException {
+      PropertyStore store = new PropertyStore();
+      
+      store.put(Entry.GUID.name(), artifactType.getGuid());
+      store.put(Entry.NAME.name(), artifactType.getName());
+      store.put(Entry.IS_ABSTRACT.name(), artifactType.isAbstract());
+      
+      return store;
    }
 
 }
