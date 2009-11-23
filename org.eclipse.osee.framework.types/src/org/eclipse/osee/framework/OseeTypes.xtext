@@ -64,7 +64,7 @@ OverrideOption:
 	AddEnum | RemoveEnum;
 	
 AddEnum: 
-	'add' enumEntry = NAME_REFERENCE (ordinal=WHOLE_NUM_STR)?;
+	'add' enumEntry = NAME_REFERENCE (ordinal=WHOLE_NUM_STR)? ('entryGuid' entryGuid = STRING)?;
 
 RemoveEnum:
 	'remove' enumEntry = [OseeEnumEntry|NAME_REFERENCE];

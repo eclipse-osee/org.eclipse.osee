@@ -266,9 +266,9 @@ attributeType "ats.Release Date" extends DateAttribute {
 
 oseeEnumType "enum.ats.review.blocks" {
    guid "ABbjHDeufSNcLOtj78wA"
-   entry "None"
-   entry "Transition"
-   entry "Commit"
+   entry "None" entryGuid "CArJmR2JDn5DXT9FGPQA"
+   entry "Transition" entryGuid "CArJmR3xrEmbw7zbyqgA"
+   entry "Commit" entryGuid "CArJmR5WzHmG_n_OKhQA"
 }
 
 attributeType "ats.Review Blocks" extends EnumeratedAttribute {
@@ -281,11 +281,11 @@ attributeType "ats.Review Blocks" extends EnumeratedAttribute {
 
 oseeEnumType "enum.ats.priority" {
    guid "ABbjHDlSoUHxQqPfkQAA"
-   entry "1"
-   entry "2"
-   entry "3"
-   entry "4"
-   entry "5"
+   entry "1" entryGuid "CArJmPvK7mXFU4cMY3gA"
+   entry "2" entryGuid "CArJmR7LQUYx7XRMnwQA"
+   entry "3" entryGuid "CArJmR82AgY40rzzjagA"
+   entry "4" entryGuid "CArJmR+dqR2jW6eRU1AA"
+   entry "5" entryGuid "CArJmSAGIB9IRKqlKuAA"
 }
 
 attributeType "ats.Priority" extends EnumeratedAttribute {
@@ -298,9 +298,9 @@ attributeType "ats.Priority" extends EnumeratedAttribute {
 
 oseeEnumType "enum.ats.change.type" {
    guid "ABbjHDsCxWD6TscnY4AA"
-   entry "Improvement"
-   entry "Problem"
-   entry "Support"
+   entry "Improvement" entryGuid "CArJmSBzfx4jvQ5vEtAA"
+   entry "Problem" entryGuid "CArJmPw6F3bP1V5B59gA"
+   entry "Support" entryGuid "CArJmSDgGAG4aKsU+KAA"
 }
 
 attributeType "ats.Change Type" extends EnumeratedAttribute {
@@ -313,11 +313,11 @@ attributeType "ats.Change Type" extends EnumeratedAttribute {
 
 oseeEnumType "enum.ats.user.community" {
    guid "ABbjHDyl0m_BTHf+IdgA"
-   entry "Program_1"
-   entry "Program_2"
-   entry "Tools"
-   entry "Processes"
-   entry "Other"
+   entry "Program_1" entryGuid "AHcuApVCczNvC7AP52QA"
+   entry "Program_2" entryGuid "AHcuBuS3JDdeZZ1mSxQA"
+   entry "Tools" entryGuid "AHcuBuWaNFeVCgjNfwAA"
+   entry "Processes" entryGuid "AHcuBuaJ0UGsRf0+WqAA"
+   entry "Other" entryGuid "AHcuBud8JBLfUo3PK5AA"
 }
 
 attributeType "ats.User Community" extends EnumeratedAttribute {
