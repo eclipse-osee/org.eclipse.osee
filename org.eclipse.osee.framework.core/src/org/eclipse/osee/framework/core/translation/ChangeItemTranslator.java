@@ -46,6 +46,7 @@ public class ChangeItemTranslator implements ITranslator<ChangeItem> {
       this.service = service;
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    public ChangeItem convert(PropertyStore propertyStore) throws OseeCoreException {
       PropertyStore currentEntryStore = propertyStore.getPropertyStore(Entry.CURRENT_ENTRY.name());
@@ -111,6 +112,7 @@ public class ChangeItemTranslator implements ITranslator<ChangeItem> {
       return changeItem;
    }
 
+   @SuppressWarnings("unchecked")
    private ChangeItem populateChangeItem(ChangeItem changeItem, PropertyStore propertyStore, IDataTranslationService service) throws OseeCoreException {
       PropertyStore baseEntryStore = propertyStore.getPropertyStore(Entry.BASE_ENTRY.name());
       PropertyStore firstChangeStore = propertyStore.getPropertyStore(Entry.FIRST_CHANGE.name());
@@ -134,7 +136,7 @@ public class ChangeItemTranslator implements ITranslator<ChangeItem> {
    }
 
    private void setChangeVersionContent(ChangeVersion destination, ChangeVersion source) {
-      if (source.isValid()) {
+      if (source != null && destination != null && source.isValid()) {
          destination.setGammaId(source.getGammaId());
          destination.setModType(source.getModType());
          destination.setTransactionNumber(source.getTransactionNumber());

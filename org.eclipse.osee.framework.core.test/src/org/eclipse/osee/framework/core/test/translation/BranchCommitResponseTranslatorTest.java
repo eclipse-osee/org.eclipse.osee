@@ -13,9 +13,7 @@ package org.eclipse.osee.framework.core.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.cache.BranchCache;
-import org.eclipse.osee.framework.core.data.BranchCommitRequest;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -23,8 +21,7 @@ import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.test.mocks.MockCacheServiceFactory;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
-import org.eclipse.osee.framework.core.translation.BranchCommitRequestTranslator;
+import org.eclipse.osee.framework.core.translation.BranchCommitResponseTranslator;
 import org.eclipse.osee.framework.core.translation.BranchTranslator;
 import org.eclipse.osee.framework.core.translation.DataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
@@ -34,19 +31,19 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * Test Case for {@link BranchCommitRequestTranslator}
+ * Test Case for {@link BranchCommitResponseTranslator}
  * 
  * @author Megumi Telles
  */
 @RunWith(Parameterized.class)
-public class BranchCommitRequestTranslatorTest extends BaseTranslatorTest<BranchCommitRequest> {
+public class BranchCommitResponseTranslatorTest extends BaseTranslatorTest<BranchCommitResponse> {
 
-   public BranchCommitRequestTranslatorTest(BranchCommitRequest data, ITranslator<BranchCommitRequest> translator) {
+   public BranchCommitResponseTranslatorTest(BranchCommitResponse data, ITranslator<BranchCommitResponse> translator) {
       super(data, translator);
    }
 
    @Override
-   protected void checkEquals(BranchCommitRequest expected, BranchCommitRequest actual) throws OseeCoreException {
+   protected void checkEquals(BranchCommitResponse expected, BranchCommitResponse actual) throws OseeCoreException {
       DataAsserts.assertEquals(expected, actual);
    }
 
@@ -56,23 +53,19 @@ public class BranchCommitRequestTranslatorTest extends BaseTranslatorTest<Branch
       IOseeCachingServiceProvider serviceProvider = MockCacheServiceFactory.createProvider();
       IDataTranslationService service = new DataTranslationService();
       service.addTranslator(new BranchTranslator(serviceProvider), Branch.class);
-      service.addTranslator(new BasicArtifactTranslator(), IBasicArtifact.class);
       service.addTranslator(new TransactionRecordTranslator(service), TransactionRecord.class);
 
-      ITranslator<BranchCommitRequest> translator = new BranchCommitRequestTranslator(service);
+      ITranslator<BranchCommitResponse> translator = new BranchCommitResponseTranslator(service);
+      for (int index = 0; index < 2; index++) {
+         Branch branch = MockDataFactory.createBranch(index);
+         TransactionRecord tx = MockDataFactory.createTransaction(index, branch);
+         serviceProvider.getOseeCachingService().getBranchCache().cache(branch);
 
-      BranchCache cache = serviceProvider.getOseeCachingService().getBranchCache();
-      boolean archive = false;
-      for (int index = 1; index <= 2; index++) {
-         Branch srcBranch = MockDataFactory.createBranch(index);
-         Branch destBranch = MockDataFactory.createBranch(index * 7);
-         cache.cache(srcBranch);
-         cache.cache(destBranch);
-         IBasicArtifact<?> user = MockDataFactory.createArtifact(index);
-         archive ^= archive;
-         data.add(new Object[] {new BranchCommitRequest(user, srcBranch, destBranch, archive), translator});
+         BranchCommitResponse response = new BranchCommitResponse();
+         response.setTransaction(tx);
+         data.add(new Object[] {response, translator});
       }
-      data.add(new Object[] {new BranchCommitRequest(null, null, null, archive), translator});
+      data.add(new Object[] {new BranchCommitResponse(), translator});
       return data;
    }
 }

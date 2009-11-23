@@ -17,11 +17,14 @@ import org.junit.runners.Suite;
 @Suite.SuiteClasses( {//
 BasicArtifactTranslatorTest.class, //
       BranchTranslatorTest.class, //
+      BranchCommitRequestTranslatorTest.class, //
+      BranchCommitResponseTranslatorTest.class, //
       CacheUpdateRequestTranslatorTest.class, //
       ChangeItemTranslatorTest.class, //
       ChangeVersionTranslatorTest.class, //
       DataTranslationServiceFactoryTest.class, //
       DataTranslationServiceTest.class, //
+      OseeEnumEntryTranslatorTest.class, //
       OseeEnumTypeTranslatorTest.class, //
       RelationTypeTranslatorTest.class, //
       TransactionRecordTranslatorTest.class //

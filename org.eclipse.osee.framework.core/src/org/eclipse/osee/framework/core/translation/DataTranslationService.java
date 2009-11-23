@@ -41,8 +41,10 @@ public class DataTranslationService implements IDataTranslationService {
    @SuppressWarnings("unchecked")
    public <T> T convert(PropertyStore propertyStore, Class<T>... toMatch) throws OseeCoreException {
       Conditions.checkNotNull(toMatch, "class toMatch");
+      Conditions.checkDoesNotContainNulls(toMatch, "toMatch cannot contain nulls");
+
       T object = null;
-      if (propertyStore != null) {
+      if (propertyStore != null && !propertyStore.keySet().isEmpty()) {
          ITranslator<?> translator = getTranslator(toMatch);
          object = (T) translator.convert(propertyStore);
       }
@@ -66,6 +68,8 @@ public class DataTranslationService implements IDataTranslationService {
    public ITranslator<?> getTranslator(Class<?>... toMatch) throws OseeCoreException {
       Conditions.checkNotNull(toMatch, "classes toMatch");
       Conditions.checkExpressionFailOnTrue(toMatch.length < 1, "classes toMatch cannot be empty");
+      Conditions.checkDoesNotContainNulls(toMatch, "toMatch cannot contain nulls");
+
       for (Entry<ClassKey, ITranslator<?>> entry : translators.entrySet()) {
          ClassKey key = entry.getKey();
          Class<?>[] classes = key.classes;
@@ -81,7 +85,8 @@ public class DataTranslationService implements IDataTranslationService {
       if (key.length == toMatch.length) {
          result = true;
          for (int index = 0; index < key.length; index++) {
-            result &= key[index] == toMatch[index];
+            result &= //key[index] == toMatch[index] || 
+                  key[index].isAssignableFrom(toMatch[index]);
             if (!result) {
                break;
             }
@@ -95,6 +100,8 @@ public class DataTranslationService implements IDataTranslationService {
       Conditions.checkNotNull(classes, "classes");
       Conditions.checkNotNull(translator, "translator");
       Conditions.checkExpressionFailOnTrue(classes.length < 1, "classes cannot be empty");
+      Conditions.checkDoesNotContainNulls(classes, "classes cannot contain nulls");
+
       boolean wasAdded = false;
       ClassKey key = new ClassKey(classes);
       if (!translators.containsKey(key)) {
@@ -108,6 +115,8 @@ public class DataTranslationService implements IDataTranslationService {
    public boolean removeTranslator(Class<?>... classes) throws OseeCoreException {
       Conditions.checkNotNull(classes, "classes");
       Conditions.checkExpressionFailOnTrue(classes.length < 1, "classes cannot be empty");
+      Conditions.checkDoesNotContainNulls(classes, "classes cannot contain nulls");
+
       ClassKey key = new ClassKey(classes);
       return translators.remove(key) != null;
    }
@@ -125,6 +134,7 @@ public class DataTranslationService implements IDataTranslationService {
    public <T> T convert(InputStream inputStream, Class<T>... toMatch) throws OseeCoreException {
       Conditions.checkNotNull(inputStream, "inputStream");
       Conditions.checkNotNull(toMatch, "class toMatch");
+      Conditions.checkDoesNotContainNulls(toMatch, "toMatch cannot contain nulls");
 
       PropertyStore propertyStore = new PropertyStore();
       try {

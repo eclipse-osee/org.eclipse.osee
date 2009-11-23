@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.util;
 
+import java.util.Arrays;
+import java.util.Collection;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -47,5 +49,24 @@ public final class Conditions {
          toReturn = GUID.create();
       }
       return toReturn;
+   }
+
+   public static void checkDoesNotContainNulls(Object object, String message, Object... data) throws OseeCoreException {
+      checkNotNull(object, message);
+      Collection<?> toCheck = null;
+      if (object instanceof Collection<?>) {
+         toCheck = (Collection<?>) object;
+      } else if (object instanceof Object[]) {
+         toCheck = Arrays.asList((Object[]) object);
+      }
+      if (toCheck != null) {
+         for (Object item : toCheck) {
+            if (item == null) {
+               throw new OseeArgumentException(String.format(message, data));
+            }
+         }
+      } else {
+         throw new OseeArgumentException("object is not an array or a collection");
+      }
    }
 }
