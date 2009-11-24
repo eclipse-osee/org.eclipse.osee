@@ -54,17 +54,22 @@ public class DataTranslationServiceFactory {
 
       service.addTranslator(new CacheUpdateRequestTranslator(), CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);
 
-      createCacheUpdateTx(service, ArtifactType.class, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ARTIFACT_TYPE);
-      createCacheUpdateTx(service, AttributeType.class, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ATTRIBUTE_TYPE);
-      createCacheUpdateTx(service, RelationType.class, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__RELATION_TYPE);
-      createCacheUpdateTx(service, OseeEnumType.class, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__OSEE_ENUM_TYPE);
-      createCacheUpdateTx(service, Branch.class, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__BRANCH);
-      createCacheUpdateTx(service, TransactionRecord.class,
+      createCacheUpdateTx(service, ArtifactType.class, CoreTranslatorId.ARTIFACT_TYPE,
+            CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ARTIFACT_TYPE);
+      createCacheUpdateTx(service, AttributeType.class, CoreTranslatorId.ATTRIBUTE_TYPE,
+            CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ATTRIBUTE_TYPE);
+      createCacheUpdateTx(service, RelationType.class, CoreTranslatorId.RELATION_TYPE,
+            CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__RELATION_TYPE);
+      createCacheUpdateTx(service, OseeEnumType.class, CoreTranslatorId.OSEE_ENUM_TYPE,
+            CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__OSEE_ENUM_TYPE);
+      createCacheUpdateTx(service, Branch.class, CoreTranslatorId.BRANCH,
+            CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__BRANCH);
+      createCacheUpdateTx(service, TransactionRecord.class, CoreTranslatorId.TRANSACTION_RECORD,
             CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__TRANSACTION_RECORD);
       return service;
    }
 
-   private <T> void createCacheUpdateTx(IDataTranslationService service, Class<T> clazz, ITranslatorId translatorId) throws OseeCoreException {
-      service.addTranslator(new CacheUpdateResponseTranslator<T>(service, translatorId), translatorId);
+   private <T> void createCacheUpdateTx(IDataTranslationService service, Class<T> clazz, ITranslatorId internalObject, ITranslatorId translatorId) throws OseeCoreException {
+      service.addTranslator(new CacheUpdateResponseTranslator<T>(service, internalObject), translatorId);
    }
 }

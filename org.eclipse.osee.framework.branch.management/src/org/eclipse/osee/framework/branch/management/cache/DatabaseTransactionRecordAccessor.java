@@ -20,7 +20,10 @@ import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -43,17 +46,28 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
          "select * from osee_tx_details txd, osee_join_id oji where txd.transaction_id = oji.id and oji.query_id = ?";
 
    private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
-   private final IOseeCachingServiceProvider cachingService;
+   private final BranchCache branchCache;
+   private final IOseeModelFactoryServiceProvider factoryProvider;
 
-   public DatabaseTransactionRecordAccessor(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeCachingServiceProvider cachingService) {
+   public DatabaseTransactionRecordAccessor(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeModelFactoryServiceProvider factoryProvider, BranchCache branchCache) {
       this.oseeDatabaseProvider = oseeDatabaseProvider;
-      this.cachingService = cachingService;
+      this.factoryProvider = factoryProvider;
+      this.branchCache = branchCache;
+   }
+
+   protected IOseeModelFactoryService getFactoryService() throws OseeCoreException {
+      return factoryProvider.getOseeFactoryService();
+   }
+
+   private synchronized void ensureDependantCachePopulated() throws OseeCoreException {
+      branchCache.ensurePopulated();
    }
 
    public void loadTransactionRecord(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException {
       if (transactionIds == null || transactionIds.isEmpty()) {
          throw new OseeCoreException("transaction ids cannot be null or empty");
       }
+      ensureDependantCachePopulated();
       if (transactionIds.size() > 1) {
          IdJoinQuery joinQuery = JoinUtility.createIdJoinQuery();
          try {
@@ -73,10 +87,12 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    public void loadTransactionRecord(TransactionCache cache, Branch branch) throws OseeCoreException {
+      ensureDependantCachePopulated();
       loadFromTransaction(cache, branch, 1000, SELECT_BRANCH_TRANSACTIONS, branch.getId());
    }
 
    public void loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException {
+      ensureDependantCachePopulated();
       switch (transactionType) {
          case BASE:
             loadFirstTransactionRecord(cache, branch, SELECT_BASE_TRANSACTION, branch.getId());
@@ -90,16 +106,18 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    private void loadFirstTransactionRecord(TransactionCache cache, Branch branch, String query, Object... parameters) throws OseeCoreException {
+      ensureDependantCachePopulated();
       loadFromTransaction(cache, branch, 1, true, query, parameters);
    }
 
    private void loadFromTransaction(TransactionCache cache, Branch branch, int fetchSize, String query, Object... parameters) throws OseeCoreException {
+      ensureDependantCachePopulated();
       loadFromTransaction(cache, branch, fetchSize, false, query, parameters);
    }
 
    private void loadFromTransaction(TransactionCache cache, Branch branch, int fetchSize, boolean isOnlyReadFirstResult, String query, Object... parameters) throws OseeCoreException {
-      BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
+      TransactionRecordFactory factory = getFactoryService().getTransactionFactory();
       try {
          chStmt.runPreparedQuery(fetchSize, query, parameters);
          while (chStmt.next()) {
@@ -108,12 +126,15 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             }
             int transactionNumber = chStmt.getInt("transaction_id");
             String comment = chStmt.getString("osee_comment");
-            Date time = chStmt.getTimestamp("time");
+            Date timestamp = chStmt.getTimestamp("time");
             int authorArtId = chStmt.getInt("author");
             int commitArtId = chStmt.getInt("commit_art_id");
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
-            cacheAndUpdate(cache, transactionNumber, branch, comment, time, authorArtId, commitArtId, txType);
+            TransactionRecord record =
+                  factory.createOrUpdate(cache, transactionNumber, branch, comment, timestamp, authorArtId,
+                        commitArtId, txType);
+            record.clearDirty();
             if (isOnlyReadFirstResult) {
                break;
             }
@@ -122,18 +143,4 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
          chStmt.close();
       }
    }
-
-   private void cacheAndUpdate(TransactionCache cache, int transactionNumber, Branch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
-      //      TransactionRecord record = cache.getById(transactionNumber);
-      //      if (record == null) {
-      //         record = new TransactionRecord(transactionNumber, branch, comment, time, authorArtId, commitArtId, txType);
-      //         cache.cache(record);
-      //      } else {
-      //         record.setAuthor(authorArtId);
-      //         record.setComment(comment);
-      //         record.setCommit(commitArtId);
-      //         record.setTime(time);
-      //      }
-   }
-
 }

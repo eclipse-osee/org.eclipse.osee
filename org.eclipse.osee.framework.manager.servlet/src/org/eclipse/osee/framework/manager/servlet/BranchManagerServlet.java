@@ -31,40 +31,6 @@ public class BranchManagerServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = 226986283540461526L;
 
-   //   @Override
-   //   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-   //      //      super.checkAccessControl(request);
-   //   }
-   //
-   //   @Override
-   //   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-   //      String rawFunction = req.getParameter("function");
-   //      IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
-   //      //      ArrayList<ChangeItem> changes = new ArrayList<ChangeItem>();
-   //      //      changes.add(new ArtifactChangeItem(1L, ModificationType.MODIFIED, 45, 1));
-   //      //      changes.add(new ArtifactChangeItem(2L, ModificationType.NEW, 77, 2));
-   //      //      changes.add(new ArtifactChangeItem(3L, ModificationType.DELETED, 66, 3));
-   //      //
-   //      //      ChangeReportResponse changeReportResponseData = new ChangeReportResponse(changes);
-   //      BranchCommitResponse responseData = new BranchCommitResponse();
-   //      responseData.setTransaction(new TransactionRecord(45, null, "A comment", new Date(), 45, 12,
-   //            TransactionDetailsType.NonBaselined));
-   //
-   //      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-   //      resp.setContentType("text/xml");
-   //      InputStream inputStream;
-   //      try {
-   //         inputStream = service.convertToStream(responseData);
-   //         try {
-   //            Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
-   //         } finally {
-   //            Lib.close(inputStream);
-   //         }
-   //      } catch (OseeCoreException e) {
-   //      }
-   //
-   //   }
-
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
       try {

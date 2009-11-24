@@ -63,6 +63,7 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
       BRANCH_EXCHANGE,
       OSEE_DATABASE_SERVICE,
       OSEE_FACTORY_SERVICE,
+      OSEE_CACHING_SERVICE,
       MASTER_SERVICE;
    }
 
@@ -94,6 +95,7 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
       createServiceTracker(context, IResourceManager.class, TrackerId.RESOURCE_MANAGER);
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
       createServiceTracker(context, IOseeDatabaseService.class, TrackerId.OSEE_DATABASE_SERVICE);
+      createServiceTracker(context, IOseeCachingService.class, TrackerId.OSEE_CACHING_SERVICE);
 
       createServiceTracker(context, IOseeModelFactoryService.class, TrackerId.OSEE_FACTORY_SERVICE);
       createServiceTracker(context, IApplicationServerManager.class, TrackerId.MASTER_SERVICE);
@@ -120,8 +122,10 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
 
       AttributeTypeCache attributeCache = new AttributeTypeCache(attrAccessor);
 
-      TransactionCache transactionCache = new TransactionCache(new DatabaseTransactionRecordAccessor(this, this));
       BranchCache branchCache = new BranchCache(new DatabaseBranchAccessor(this, this, this));
+
+      TransactionCache transactionCache =
+            new TransactionCache(new DatabaseTransactionRecordAccessor(this, this, branchCache));
 
       ArtifactTypeCache artifactCache =
             new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(this, this, branchCache, attributeCache));
@@ -171,19 +175,15 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
       return getTracker(TrackerId.OSEE_FACTORY_SERVICE, IOseeModelFactoryService.class);
    }
 
+   @Override
+   public IOseeCachingService getOseeCachingService() throws OseeCoreException {
+      return getTracker(TrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
+   }
+
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
       ServiceTracker tracker = mappedTrackers.get(trackerId);
       Object service = tracker.getService();
       return clazz.cast(service);
-   }
-
-   /*
-    * (non-Javadoc)
-    * @see org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider#getOseeCachingService()
-    */
-   @Override
-   public IOseeCachingService getOseeCachingService() throws OseeCoreException {
-      return null;
    }
 
 }

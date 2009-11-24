@@ -114,4 +114,8 @@ public final class TransactionRecord implements IAdaptable {
    public boolean isDirty() {
       return false;
    }
+
+   public void clearDirty() {
+
+   }
 }

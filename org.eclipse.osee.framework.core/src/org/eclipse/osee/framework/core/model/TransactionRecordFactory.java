@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.model;
 
 import java.util.Date;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
+import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -31,5 +32,20 @@ public class TransactionRecordFactory implements IOseeTypeFactory {
       Conditions.checkNotNull(timestamp, "timestamp");
       Conditions.checkNotNull(txType, "transaction type");
       return new TransactionRecord(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType);
+   }
+
+   public TransactionRecord createOrUpdate(TransactionCache cache, int transactionNumber, Branch branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+      TransactionRecord record = cache.getById(transactionNumber);
+      if (record == null) {
+         record = create(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType);
+      } else {
+         cache.decache(record);
+         record.setAuthor(authorArtId);
+         record.setComment(comment);
+         record.setCommit(commitArtId);
+         record.setTimeStamp(timestamp);
+      }
+      cache.cache(record);
+      return record;
    }
 }
