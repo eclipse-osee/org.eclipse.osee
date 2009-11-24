@@ -11,15 +11,16 @@
 package org.eclipse.osee.framework.core.test.translation;
 
 import junit.framework.Assert;
+
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.IOseeStorableType;
-import org.eclipse.osee.framework.core.model.OseeEnumEntry;
-import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.util.Compare;
@@ -31,70 +32,67 @@ public final class DataAsserts {
 
    private DataAsserts() {
    }
-
-   public static void assertEquals(OseeEnumType expected, OseeEnumType actual) throws OseeCoreException {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         assertEquals((IOseeStorableType) expected, (IOseeStorableType) actual);
-         OseeEnumEntry[] expList = expected.values();
-         OseeEnumEntry[] actualList = actual.values();
-         Assert.assertEquals(expList.length, actualList.length);
-         for (int index = 0; index < expList.length; index++) {
-            assertEquals(expList[index], actualList[index]);
-         }
-      }
+   
+   public static void assertEquals(AttributeType expected, AttributeType actual) throws OseeCoreException {
+      Assert.assertEquals(expected.getAttributeProviderId(), actual.getAttributeProviderId());
+      Assert.assertEquals(expected.getBaseAttributeTypeId(), actual.getBaseAttributeTypeId());
+      Assert.assertEquals(expected.getDefaultValue(), actual.getDefaultValue());
+      Assert.assertEquals(expected.getDescription(), actual.getDescription());
+      Assert.assertEquals(expected.getFileTypeExtension(), actual.getFileTypeExtension());
+      Assert.assertEquals(expected.getGuid(), actual.getGuid());
+      Assert.assertEquals(expected.getId(), actual.getId());
+      Assert.assertEquals(expected.getMaxOccurrences(), actual.getMaxOccurrences());
+      Assert.assertEquals(expected.getMinOccurrences(), actual.getMinOccurrences());
+      Assert.assertEquals(expected.getTaggerId(), actual.getTaggerId());
+      Assert.assertEquals(expected.getOseeEnumType(), actual.getOseeEnumType());
    }
-
-   public static void assertEquals(OseeEnumEntry expected, OseeEnumEntry actual) throws OseeCoreException {
-      if (expected == null) {
-         Assert.assertNull(actual);
-      } else {
-         assertEquals((IOseeStorableType) expected, (IOseeStorableType) actual);
-         Assert.assertEquals(expected.ordinal(), actual.ordinal());
-      }
+   
+   public static void assertEquals(ArtifactType expected, ArtifactType actual) throws OseeCoreException {
+      Assert.assertEquals(expected.getId(), actual.getId());
+      Assert.assertEquals(expected.getName(), actual.getName());
+      Assert.assertEquals(expected.isAbstract(), actual.isAbstract());
    }
-
+   
    public static void assertEquals(Branch expected, Branch actual) throws OseeCoreException {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
          assertEquals((IOseeStorableType) expected, (IOseeStorableType) actual);
-         Assert.assertEquals(expected.getShortName(), actual.getShortName());
-         Assert.assertEquals(expected.getAccessControlBranch(), actual.getAccessControlBranch());
-         Assert.assertEquals(expected.getAliases(), actual.getAliases());
-         Assert.assertEquals(expected.getAncestors(), actual.getAncestors());
-         Assert.assertEquals(expected.getArchiveState(), actual.getArchiveState());
-         Assert.assertEquals(expected.getAssociatedArtifact(), actual.getAssociatedArtifact());
-         Assert.assertEquals(expected.getBaseTransaction(), actual.getBaseTransaction());
-         Assert.assertEquals(expected.getSourceTransaction(), actual.getSourceTransaction());
-         Assert.assertEquals(expected.getParentBranch(), actual.getParentBranch());
-      }
+      Assert.assertEquals(expected.getShortName(), actual.getShortName());
+      Assert.assertEquals(expected.getAccessControlBranch(), actual.getAccessControlBranch());
+      Assert.assertEquals(expected.getAliases(), actual.getAliases());
+      Assert.assertEquals(expected.getAncestors(), actual.getAncestors());
+      Assert.assertEquals(expected.getArchiveState(), actual.getArchiveState());
+      Assert.assertEquals(expected.getAssociatedArtifact(), actual.getAssociatedArtifact());
+      Assert.assertEquals(expected.getBaseTransaction(), actual.getBaseTransaction());
+      Assert.assertEquals(expected.getSourceTransaction(), actual.getSourceTransaction());
+      Assert.assertEquals(expected.getParentBranch(), actual.getParentBranch());
+   }
    }
 
    public static void assertEquals(TransactionRecord expected, TransactionRecord actual) throws OseeCoreException {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         Assert.assertEquals(expected.getId(), actual.getId());
-         Assert.assertEquals(expected.getAuthor(), actual.getAuthor());
-         Assert.assertEquals(expected.getComment(), actual.getComment());
-         Assert.assertEquals(expected.getCommit(), actual.getCommit());
-         Assert.assertEquals(expected.getTimeStamp(), actual.getTimeStamp());
-         Assert.assertEquals(expected.getTxType(), actual.getTxType());
-         Assert.assertEquals(expected.getBranch(), actual.getBranch());
-      }
+      Assert.assertEquals(expected.getId(), actual.getId());
+      Assert.assertEquals(expected.getAuthor(), actual.getAuthor());
+      Assert.assertEquals(expected.getComment(), actual.getComment());
+      Assert.assertEquals(expected.getCommit(), actual.getCommit());
+      Assert.assertEquals(expected.getTimeStamp(), actual.getTimeStamp());
+      Assert.assertEquals(expected.getTxType(), actual.getTxType());
+      Assert.assertEquals(expected.getBranch(), actual.getBranch());
+   }
    }
 
    public static void assertEquals(IBasicArtifact<?> expected, IBasicArtifact<?> actual) throws OseeCoreException {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         Assert.assertEquals(expected.getArtId(), actual.getArtId());
-         Assert.assertEquals(expected.getGuid(), actual.getGuid());
-         Assert.assertEquals(expected.getName(), actual.getName());
-         Assert.assertEquals(expected.getFullArtifact(), actual.getFullArtifact());
-      }
+      Assert.assertEquals(expected.getArtId(), actual.getArtId());
+      Assert.assertEquals(expected.getGuid(), actual.getGuid());
+      Assert.assertEquals(expected.getName(), actual.getName());
+      Assert.assertEquals(expected.getFullArtifact(), actual.getFullArtifact());
+   }
    }
 
    public static void assertEquals(BranchCommitRequest expected, BranchCommitRequest actual) throws OseeCoreException {
@@ -102,7 +100,7 @@ public final class DataAsserts {
          Assert.assertNull(actual);
       } else {
          assertEquals(expected.getUser(), actual.getUser());
-         Assert.assertEquals(expected.isArchiveAllowed(), actual.isArchiveAllowed());
+      Assert.assertEquals(expected.isArchiveAllowed(), actual.isArchiveAllowed());
          assertEquals(expected.getSourceBranch(), actual.getSourceBranch());
          assertEquals(expected.getDestinationBranch(), actual.getDestinationBranch());
       }
@@ -120,12 +118,12 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         Assert.assertEquals(expected.getCacheId(), actual.getCacheId());
-         Assert.assertFalse(Compare.isDifferent(expected.getGuids(), actual.getGuids()));
-      }
+      Assert.assertEquals(expected.getCacheId(), actual.getCacheId());
+      Assert.assertFalse(Compare.isDifferent(expected.getGuids(), actual.getGuids()));
    }
+}
 
-   public static void assertEquals(RelationType expected, RelationType actual) {
+   public static void assertEquals(RelationType expected, RelationType actual) throws OseeCoreException {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {

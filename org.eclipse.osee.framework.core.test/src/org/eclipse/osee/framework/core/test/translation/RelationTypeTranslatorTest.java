@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
@@ -26,6 +27,7 @@ import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.test.mocks.MockOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.translation.ArtifactTypeTranslator;
 import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
 import org.eclipse.osee.framework.core.translation.DataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
@@ -59,6 +61,7 @@ public class RelationTypeTranslatorTest extends BaseTranslatorTest<RelationType>
 
       IDataTranslationService service = new DataTranslationService();
       service.addTranslator(new BasicArtifactTranslator(), IBasicArtifact.class);
+      service.addTranslator(new ArtifactTypeTranslator(service, factoryProvider), ArtifactType.class);
 
       ITranslator<RelationType> translator = new RelationTypeTranslator(service, factoryProvider);
 

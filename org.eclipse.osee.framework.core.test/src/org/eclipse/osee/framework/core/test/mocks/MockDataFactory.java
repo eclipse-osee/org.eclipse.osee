@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.test.mocks;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
@@ -28,6 +29,7 @@ import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.AttributeType;
@@ -59,6 +61,12 @@ public final class MockDataFactory {
 
    public static IBasicArtifact<?> createArtifact(int index) {
       return new DefaultBasicArtifact(index * 37, GUID.create(), "user_" + index);
+   }
+   
+   public static AttributeType createAttributeType() throws OseeCoreException{
+      OseeEnumTypeFactory oseeEnumTypeFactory = new OseeEnumTypeFactory();
+      AttributeType attributeType = new AttributeType(GUID.create(), "name", "baseType", "providerName", ".xml", "", oseeEnumTypeFactory.createEnumType(GUID.create(), "enum type name"), 1, 1, "description", "tagger");
+      return attributeType;
    }
 
    public static Branch createBranch(int index) {
