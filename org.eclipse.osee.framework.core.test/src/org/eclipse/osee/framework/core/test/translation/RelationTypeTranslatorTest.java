@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
@@ -60,8 +60,8 @@ public class RelationTypeTranslatorTest extends BaseTranslatorTest<RelationType>
       ArtifactTypeCache cache = serviceProvider.getOseeCachingService().getArtifactTypeCache();
 
       IDataTranslationService service = new DataTranslationService();
-      service.addTranslator(new BasicArtifactTranslator(), CoreTranslationIds.ARTIFACT_METADATA);
-      service.addTranslator(new ArtifactTypeTranslator(service, factoryProvider), CoreTranslationIds.ARTIFACT_TYPE);
+      service.addTranslator(new BasicArtifactTranslator(), CoreTranslatorId.ARTIFACT_METADATA);
+      service.addTranslator(new ArtifactTypeTranslator(service, factoryProvider), CoreTranslatorId.ARTIFACT_TYPE);
 
       ITranslator<RelationType> translator = new RelationTypeTranslator(service, factoryProvider);
 

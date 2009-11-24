@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.translation;
 import java.util.ArrayList;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -40,7 +40,7 @@ public class ChangeReportResponseTranslator implements ITranslator<ChangeReportR
 
       for (int i = 0; i < maxCount; i++) {
          ChangeItem changeItem =
-               service.convert(propertyStore.getPropertyStore(String.valueOf(i)), CoreTranslationIds.CHANGE_ITEM);
+               service.convert(propertyStore.getPropertyStore(String.valueOf(i)), CoreTranslatorId.CHANGE_ITEM);
          changeItems.add(changeItem);
       }
       return new ChangeReportResponse(changeItems);
@@ -53,7 +53,7 @@ public class ChangeReportResponseTranslator implements ITranslator<ChangeReportR
 
       int index = 0;
       for (ChangeItem changeItem : changeReportResponseData.getChangeItems()) {
-         store.put(String.valueOf(index++), service.convert(changeItem, CoreTranslationIds.CHANGE_ITEM));
+         store.put(String.valueOf(index++), service.convert(changeItem, CoreTranslatorId.CHANGE_ITEM));
       }
       return store;
    }

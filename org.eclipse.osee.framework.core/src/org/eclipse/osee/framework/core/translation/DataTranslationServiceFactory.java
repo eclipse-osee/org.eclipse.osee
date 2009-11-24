@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.translation;
 
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
@@ -35,32 +35,32 @@ public class DataTranslationServiceFactory {
    public IDataTranslationService createService(IOseeCachingServiceProvider cachingService, IOseeModelFactoryServiceProvider provider) throws OseeCoreException {
       IDataTranslationService service = new DataTranslationService();
 
-      service.addTranslator(new BasicArtifactTranslator(), CoreTranslationIds.ARTIFACT_METADATA);
-      service.addTranslator(new BranchTranslator(cachingService), CoreTranslationIds.BRANCH);
-      service.addTranslator(new TransactionRecordTranslator(service), CoreTranslationIds.TRANSACTION_RECORD);
-      service.addTranslator(new ArtifactTypeTranslator(service, provider), CoreTranslationIds.ARTIFACT_TYPE);
-      service.addTranslator(new AttributeTypeTranslator(service, provider), CoreTranslationIds.ATTRIBUTE_TYPE);
-      service.addTranslator(new RelationTypeTranslator(service, provider), CoreTranslationIds.RELATION_TYPE);
-      service.addTranslator(new OseeEnumTypeTranslator(service, provider), CoreTranslationIds.OSEE_ENUM_TYPE);
-      service.addTranslator(new OseeEnumEntryTranslator(provider), CoreTranslationIds.OSEE_ENUM_ENTRY);
+      service.addTranslator(new BasicArtifactTranslator(), CoreTranslatorId.ARTIFACT_METADATA);
+      service.addTranslator(new BranchTranslator(cachingService), CoreTranslatorId.BRANCH);
+      service.addTranslator(new TransactionRecordTranslator(service), CoreTranslatorId.TRANSACTION_RECORD);
+      service.addTranslator(new ArtifactTypeTranslator(service, provider), CoreTranslatorId.ARTIFACT_TYPE);
+      service.addTranslator(new AttributeTypeTranslator(service, provider), CoreTranslatorId.ATTRIBUTE_TYPE);
+      service.addTranslator(new RelationTypeTranslator(service, provider), CoreTranslatorId.RELATION_TYPE);
+      service.addTranslator(new OseeEnumTypeTranslator(service, provider), CoreTranslatorId.OSEE_ENUM_TYPE);
+      service.addTranslator(new OseeEnumEntryTranslator(provider), CoreTranslatorId.OSEE_ENUM_ENTRY);
 
-      service.addTranslator(new BranchCommitRequestTranslator(service), CoreTranslationIds.BRANCH_COMMIT_REQUEST);
-      service.addTranslator(new BranchCommitResponseTranslator(service), CoreTranslationIds.BRANCH_COMMIT_RESPONSE);
+      service.addTranslator(new BranchCommitRequestTranslator(service), CoreTranslatorId.BRANCH_COMMIT_REQUEST);
+      service.addTranslator(new BranchCommitResponseTranslator(service), CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
 
-      service.addTranslator(new ChangeVersionTranslator(), CoreTranslationIds.CHANGE_VERSION);
-      service.addTranslator(new ChangeItemTranslator(service), CoreTranslationIds.CHANGE_ITEM);
-      service.addTranslator(new ChangeReportRequestTranslator(service), CoreTranslationIds.CHANGE_REPORT_REQUEST);
-      service.addTranslator(new ChangeReportResponseTranslator(service), CoreTranslationIds.CHANGE_REPORT_RESPONSE);
+      service.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
+      service.addTranslator(new ChangeItemTranslator(service), CoreTranslatorId.CHANGE_ITEM);
+      service.addTranslator(new ChangeReportRequestTranslator(service), CoreTranslatorId.CHANGE_REPORT_REQUEST);
+      service.addTranslator(new ChangeReportResponseTranslator(service), CoreTranslatorId.CHANGE_REPORT_RESPONSE);
 
-      service.addTranslator(new CacheUpdateRequestTranslator(), CoreTranslationIds.OSEE_CACHE_UPDATE_REQUEST);
+      service.addTranslator(new CacheUpdateRequestTranslator(), CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);
 
-      createCacheUpdateTx(service, ArtifactType.class, CoreTranslationIds.OSEE_CACHE_UPDATE_RESPONSE__ARTIFACT_TYPE);
-      createCacheUpdateTx(service, AttributeType.class, CoreTranslationIds.OSEE_CACHE_UPDATE_RESPONSE__ATTRIBUTE_TYPE);
-      createCacheUpdateTx(service, RelationType.class, CoreTranslationIds.OSEE_CACHE_UPDATE_RESPONSE__RELATION_TYPE);
-      createCacheUpdateTx(service, OseeEnumType.class, CoreTranslationIds.OSEE_CACHE_UPDATE_RESPONSE__OSEE_ENUM_TYPE);
-      createCacheUpdateTx(service, Branch.class, CoreTranslationIds.OSEE_CACHE_UPDATE_RESPONSE__BRANCH);
+      createCacheUpdateTx(service, ArtifactType.class, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ARTIFACT_TYPE);
+      createCacheUpdateTx(service, AttributeType.class, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ATTRIBUTE_TYPE);
+      createCacheUpdateTx(service, RelationType.class, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__RELATION_TYPE);
+      createCacheUpdateTx(service, OseeEnumType.class, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__OSEE_ENUM_TYPE);
+      createCacheUpdateTx(service, Branch.class, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__BRANCH);
       createCacheUpdateTx(service, TransactionRecord.class,
-            CoreTranslationIds.OSEE_CACHE_UPDATE_RESPONSE__TRANSACTION_RECORD);
+            CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__TRANSACTION_RECORD);
       return service;
    }
 

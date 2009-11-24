@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
@@ -52,7 +52,7 @@ public abstract class AbstractServerDataAccessor<T extends IOseeStorableType> im
 
       CacheUpdateRequest updateRequest = new CacheUpdateRequest(cache.getCacheId());
       CacheUpdateResponse<T> response =
-            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, CoreTranslationIds.OSEE_CACHE_UPDATE_REQUEST,
+            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST,
                   updateRequest, updateResponseId);
 
       Conditions.checkExpressionFailOnTrue(cache.getCacheId() != response.getCacheId(),

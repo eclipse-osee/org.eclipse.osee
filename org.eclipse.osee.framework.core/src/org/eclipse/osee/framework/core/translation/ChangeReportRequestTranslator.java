@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.core.translation;
 
 import org.eclipse.osee.framework.core.data.ChangeReportRequest;
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
@@ -39,8 +39,8 @@ public class ChangeReportRequestTranslator implements ITranslator<ChangeReportRe
       PropertyStore toTransactionStore = propertyStore.getPropertyStore(Entry.TO_TRANSACTION.name());
       PropertyStore fromTransactionStore = propertyStore.getPropertyStore(Entry.FROM_TRANSACTION.name());
 
-      TransactionRecord toTransaction = service.convert(toTransactionStore, CoreTranslationIds.TRANSACTION_RECORD);
-      TransactionRecord fromTransaction = service.convert(fromTransactionStore, CoreTranslationIds.TRANSACTION_RECORD);
+      TransactionRecord toTransaction = service.convert(toTransactionStore, CoreTranslatorId.TRANSACTION_RECORD);
+      TransactionRecord fromTransaction = service.convert(fromTransactionStore, CoreTranslatorId.TRANSACTION_RECORD);
 
       boolean isHistory = propertyStore.getBoolean(Entry.IS_HISTORY.name());
       ChangeReportRequest data = new ChangeReportRequest(toTransaction, fromTransaction, isHistory);
@@ -52,9 +52,9 @@ public class ChangeReportRequestTranslator implements ITranslator<ChangeReportRe
       PropertyStore store = new PropertyStore();
       store.put(Entry.IS_HISTORY.name(), data.isHistorical());
       store.put(Entry.TO_TRANSACTION.name(), service.convert(data.getToTransactionRecord(),
-            CoreTranslationIds.TRANSACTION_RECORD));
+            CoreTranslatorId.TRANSACTION_RECORD));
       store.put(Entry.FROM_TRANSACTION.name(), service.convert(data.getFromTransactionRecord(),
-            CoreTranslationIds.TRANSACTION_RECORD));
+            CoreTranslatorId.TRANSACTION_RECORD));
       return store;
    }
 

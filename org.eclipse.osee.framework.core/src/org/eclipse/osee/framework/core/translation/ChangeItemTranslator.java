@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.data.RelationChangeItem;
 import org.eclipse.osee.framework.core.enums.ChangeItemType;
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -50,7 +50,7 @@ public class ChangeItemTranslator implements ITranslator<ChangeItem> {
    @Override
    public ChangeItem convert(PropertyStore propertyStore) throws OseeCoreException {
       PropertyStore currentEntryStore = propertyStore.getPropertyStore(Entry.CURRENT_ENTRY.name());
-      ChangeVersion currentEntry = service.convert(currentEntryStore, CoreTranslationIds.CHANGE_VERSION);
+      ChangeVersion currentEntry = service.convert(currentEntryStore, CoreTranslatorId.CHANGE_VERSION);
       ChangeItem changeItem = createChangeItem(propertyStore, currentEntry);
 
       return populateChangeItem(changeItem, propertyStore, service);
@@ -84,7 +84,7 @@ public class ChangeItemTranslator implements ITranslator<ChangeItem> {
    }
 
    private void storeChangeVersion(PropertyStore store, Entry entry, ChangeVersion changeVersion) throws OseeCoreException {
-      store.put(entry.name(), service.convert(changeVersion, CoreTranslationIds.CHANGE_VERSION));
+      store.put(entry.name(), service.convert(changeVersion, CoreTranslatorId.CHANGE_VERSION));
    }
 
    private ChangeItem createChangeItem(PropertyStore propertyStore, ChangeVersion currentChangeVersion) {
@@ -123,11 +123,11 @@ public class ChangeItemTranslator implements ITranslator<ChangeItem> {
       PropertyStore destinationEntryStore = propertyStore.getPropertyStore(Entry.DESTINATION_ENTRY.name());
       PropertyStore netEntryStore = propertyStore.getPropertyStore(Entry.NET_ENTRY.name());
 
-      ChangeVersion baseEntry = service.convert(baseEntryStore, CoreTranslationIds.CHANGE_VERSION);
-      ChangeVersion firstChange = service.convert(firstChangeStore, CoreTranslationIds.CHANGE_VERSION);
-      ChangeVersion currentEntry = service.convert(currentEntryStore, CoreTranslationIds.CHANGE_VERSION);
-      ChangeVersion destinationEntry = service.convert(destinationEntryStore, CoreTranslationIds.CHANGE_VERSION);
-      ChangeVersion netEntry = service.convert(netEntryStore, CoreTranslationIds.CHANGE_VERSION);
+      ChangeVersion baseEntry = service.convert(baseEntryStore, CoreTranslatorId.CHANGE_VERSION);
+      ChangeVersion firstChange = service.convert(firstChangeStore, CoreTranslatorId.CHANGE_VERSION);
+      ChangeVersion currentEntry = service.convert(currentEntryStore, CoreTranslatorId.CHANGE_VERSION);
+      ChangeVersion destinationEntry = service.convert(destinationEntryStore, CoreTranslatorId.CHANGE_VERSION);
+      ChangeVersion netEntry = service.convert(netEntryStore, CoreTranslatorId.CHANGE_VERSION);
 
       setChangeVersionContent(changeItem.getCurrentVersion(), currentEntry);
       setChangeVersionContent(changeItem.getBaselineVersion(), baseEntry);

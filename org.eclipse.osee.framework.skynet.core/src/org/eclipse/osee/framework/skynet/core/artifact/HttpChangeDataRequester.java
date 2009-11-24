@@ -11,7 +11,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.ChangeReportRequest;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -28,8 +28,8 @@ public class HttpChangeDataRequester {
       ChangeReportRequest requestData =
             new ChangeReportRequest(toTransactionRecord, fromTransactionRecord, isHistorical);
       ChangeReportResponse response =
-            HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslationIds.CHANGE_REPORT_REQUEST,
-                  requestData, CoreTranslationIds.CHANGE_REPORT_RESPONSE);
+            HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.CHANGE_REPORT_REQUEST,
+                  requestData, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
 
       if (response.wasSuccessful()) {
          //OseeEventManager.kickBranchEvent(HttpBranchCreation.class, , branch.getId());

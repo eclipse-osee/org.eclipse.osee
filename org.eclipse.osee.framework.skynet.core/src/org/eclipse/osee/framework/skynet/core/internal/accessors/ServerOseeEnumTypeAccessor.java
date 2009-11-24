@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
@@ -26,7 +26,7 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 public class ServerOseeEnumTypeAccessor extends AbstractServerDataAccessor<OseeEnumType> {
 
    public ServerOseeEnumTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider) {
-      super(factoryProvider, CoreTranslationIds.OSEE_CACHE_UPDATE_RESPONSE__OSEE_ENUM_TYPE);
+      super(factoryProvider, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__OSEE_ENUM_TYPE);
    }
 
    protected OseeEnumTypeFactory getFactory() throws OseeCoreException {

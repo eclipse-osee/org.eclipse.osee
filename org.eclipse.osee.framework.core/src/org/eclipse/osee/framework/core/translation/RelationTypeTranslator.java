@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.translation;
 
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -60,9 +60,9 @@ public class RelationTypeTranslator implements ITranslator<RelationType> {
       RelationTypeMultiplicity multiplicity = RelationTypeMultiplicity.valueOf(store.get(Entry.MULTIPLICITY.name()));
 
       ArtifactType artifactTypeSideA =
-            service.convert(store.getPropertyStore(Entry.ART_TYPE_A.name()), CoreTranslationIds.ARTIFACT_TYPE);
+            service.convert(store.getPropertyStore(Entry.ART_TYPE_A.name()), CoreTranslatorId.ARTIFACT_TYPE);
       ArtifactType artifactTypeSideB =
-            service.convert(store.getPropertyStore(Entry.ART_TYPE_B.name()), CoreTranslationIds.ARTIFACT_TYPE);
+            service.convert(store.getPropertyStore(Entry.ART_TYPE_B.name()), CoreTranslatorId.ARTIFACT_TYPE);
 
       RelationType relType =
             provider.getOseeFactoryService().getRelationTypeFactory().create(guid, name, sideA, sideB,
@@ -86,8 +86,8 @@ public class RelationTypeTranslator implements ITranslator<RelationType> {
       store.put(Entry.ORDER_GUID.name(), type.getDefaultOrderTypeGuid());
       store.put(Entry.MULTIPLICITY.name(), type.getMultiplicity().name());
 
-      store.put(Entry.ART_TYPE_A.name(), service.convert(type.getArtifactTypeSideA(), CoreTranslationIds.ARTIFACT_TYPE));
-      store.put(Entry.ART_TYPE_B.name(), service.convert(type.getArtifactTypeSideB(), CoreTranslationIds.ARTIFACT_TYPE));
+      store.put(Entry.ART_TYPE_A.name(), service.convert(type.getArtifactTypeSideA(), CoreTranslatorId.ARTIFACT_TYPE));
+      store.put(Entry.ART_TYPE_B.name(), service.convert(type.getArtifactTypeSideB(), CoreTranslatorId.ARTIFACT_TYPE));
       return store;
    }
 

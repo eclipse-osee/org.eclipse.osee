@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -67,20 +67,20 @@ public class ArtifactTypeTranslator implements ITranslator<ArtifactType> {
       Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
       for (int index = 0; index < superTypeCount; index++) {
          ArtifactType artType =
-               service.convert(store.getPropertyStore(createSuperTypeKey(index)), CoreTranslationIds.ARTIFACT_TYPE);
+               service.convert(store.getPropertyStore(createSuperTypeKey(index)), CoreTranslatorId.ARTIFACT_TYPE);
          superTypes.add(artType);
       }
       type.setSuperType(superTypes);
 
       int branchCount = store.getInt(Fields.BRANCH_COUNT.name());
       for (int index = 0; index < branchCount; index++) {
-         Branch branch = service.convert(store.getPropertyStore(createBranchKey(index)), CoreTranslationIds.BRANCH);
+         Branch branch = service.convert(store.getPropertyStore(createBranchKey(index)), CoreTranslatorId.BRANCH);
          int attrTypeCount = store.getInt(createAttrTypeCountKey(index));
          List<AttributeType> attrTypes = new ArrayList<AttributeType>();
          for (int attrIndex = 0; attrIndex < attrTypeCount; attrIndex++) {
             AttributeType attrType =
                   service.convert(store.getPropertyStore(createAttrTypeKey(index, attrTypeCount)),
-                        CoreTranslationIds.ATTRIBUTE_TYPE);
+                        CoreTranslatorId.ATTRIBUTE_TYPE);
             attrTypes.add(attrType);
          }
          type.setAttributeTypes(attrTypes, branch);
@@ -99,7 +99,7 @@ public class ArtifactTypeTranslator implements ITranslator<ArtifactType> {
 
       int superTypeCount = 0;
       for (ArtifactType superType : type.getSuperArtifactTypes()) {
-         store.put(createSuperTypeKey(superTypeCount), service.convert(superType, CoreTranslationIds.ARTIFACT_TYPE));
+         store.put(createSuperTypeKey(superTypeCount), service.convert(superType, CoreTranslatorId.ARTIFACT_TYPE));
          superTypeCount++;
       }
       store.put(Fields.SUPER_TYPES_COUNT.name(), superTypeCount);
@@ -107,12 +107,12 @@ public class ArtifactTypeTranslator implements ITranslator<ArtifactType> {
       int branchCount = 0;
       for (Entry<Branch, Collection<AttributeType>> entries : type.getLocalAttributeTypes().entrySet()) {
          Branch branch = entries.getKey();
-         store.put(createBranchKey(branchCount), service.convert(branch, CoreTranslationIds.BRANCH));
+         store.put(createBranchKey(branchCount), service.convert(branch, CoreTranslatorId.BRANCH));
 
          int attrTypeCount = 0;
          for (AttributeType attributeType : entries.getValue()) {
             store.put(createAttrTypeKey(branchCount, attrTypeCount), service.convert(attributeType,
-                  CoreTranslationIds.ATTRIBUTE_TYPE));
+                  CoreTranslatorId.ATTRIBUTE_TYPE));
             attrTypeCount++;
          }
          store.put(createAttrTypeCountKey(branchCount), attrTypeCount);

@@ -18,7 +18,7 @@ import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -66,8 +66,8 @@ public class ChangeItemTranslatorTest extends BaseTranslatorTest<ChangeItem> {
    public static Collection<Object[]> data() throws OseeCoreException {
       DataTranslationService dataTranslationService = new DataTranslationService();
       dataTranslationService.addTranslator(new ChangeItemTranslator(dataTranslationService),
-            CoreTranslationIds.CHANGE_ITEM);
-      dataTranslationService.addTranslator(new ChangeVersionTranslator(), CoreTranslationIds.CHANGE_VERSION);
+            CoreTranslatorId.CHANGE_ITEM);
+      dataTranslationService.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
 
       List<Object[]> data = new ArrayList<Object[]>();
       ITranslator<ChangeItem> translator = new ChangeItemTranslator(dataTranslationService);

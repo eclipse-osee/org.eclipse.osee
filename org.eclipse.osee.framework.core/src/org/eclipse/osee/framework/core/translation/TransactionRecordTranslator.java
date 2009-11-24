@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.translation;
 
 import java.sql.Timestamp;
 import java.util.Date;
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -53,7 +53,7 @@ public final class TransactionRecordTranslator implements ITranslator<Transactio
       int authorArtId = store.getInt(Entry.TRANSACTION_AUTHOR_ART_ID.name());
       int commitArtId = store.getInt(Entry.TRANSACTION_COMMIT_ART_ID.name());
       PropertyStore innerStore = store.getPropertyStore(Entry.TRANSACTION_BRANCH.name());
-      Branch branch = getService().convert(innerStore, CoreTranslationIds.BRANCH);
+      Branch branch = getService().convert(innerStore, CoreTranslatorId.BRANCH);
       return new TransactionRecord(transactionNumber, branch, comment, time, authorArtId, commitArtId, txType);
    }
 
@@ -66,7 +66,7 @@ public final class TransactionRecordTranslator implements ITranslator<Transactio
       store.put(Entry.TRANSACTION_AUTHOR_ART_ID.name(), data.getAuthor());
 
       store.put(Entry.TRANSACTION_COMMIT_ART_ID.name(), data.getCommit());
-      store.put(Entry.TRANSACTION_BRANCH.name(), getService().convert(data.getBranch(), CoreTranslationIds.BRANCH));
+      store.put(Entry.TRANSACTION_BRANCH.name(), getService().convert(data.getBranch(), CoreTranslatorId.BRANCH));
       return store;
    }
 }

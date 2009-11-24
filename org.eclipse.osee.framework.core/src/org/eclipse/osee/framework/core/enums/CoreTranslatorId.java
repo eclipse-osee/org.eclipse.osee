@@ -16,7 +16,7 @@ import org.eclipse.osee.framework.core.services.ITranslatorId;
  * @author Megumi Telles
  * @author Roberto E. Escobar
  */
-public enum CoreTranslationIds implements ITranslatorId {
+public enum CoreTranslatorId implements ITranslatorId {
    BRANCH_COMMIT_REQUEST,
    BRANCH_COMMIT_RESPONSE,
 

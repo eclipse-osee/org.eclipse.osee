@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.translation;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
@@ -60,7 +60,7 @@ public class OseeEnumTypeTranslator implements ITranslator<OseeEnumType> {
       int numberOfEntries = store.getInt(Entry.ENTRY_COUNT.name());
       for (int index = 0; index < numberOfEntries; index++) {
          PropertyStore innerStore = store.getPropertyStore(createKey(index));
-         OseeEnumEntry entry = service.convert(innerStore, CoreTranslationIds.OSEE_ENUM_ENTRY);
+         OseeEnumEntry entry = service.convert(innerStore, CoreTranslatorId.OSEE_ENUM_ENTRY);
          entries.add(entry);
       }
       enumType.setEntries(entries);
@@ -80,7 +80,7 @@ public class OseeEnumTypeTranslator implements ITranslator<OseeEnumType> {
 
       for (int index = 0; index < entries.length; index++) {
          OseeEnumEntry entry = entries[index];
-         store.put(createKey(index), service.convert(entry, CoreTranslationIds.OSEE_ENUM_ENTRY));
+         store.put(createKey(index), service.convert(entry, CoreTranslatorId.OSEE_ENUM_ENTRY));
       }
       return store;
    }
