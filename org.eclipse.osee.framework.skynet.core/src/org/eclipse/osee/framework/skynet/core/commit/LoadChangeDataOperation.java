@@ -40,10 +40,10 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
  */
 public class LoadChangeDataOperation extends AbstractOperation {
    private static final String SELECT_SOURCE_BRANCH_CHANGES =
-         "select txs.transaction_id, gamma_id, mod_type from osee_txs txs, osee_tx_details txd where txd.branch_id = ? and txd.transaction_id = txs.transaction_id and txd.tx_type = ? and txs.tx_current <> ?";
+         "select txs.transaction_id, gamma_id, mod_type from osee_tx_details txd, osee_txs txs where txd.branch_id = ? and txd.tx_type = ? and txd.transaction_id = txs.transaction_id and txd.branch_id = txs.branch_id and txs.tx_current <> ?";
 
    private static final String SELECT_SOURCE_TRANSACTION_CHANGES =
-         "select txs.transaction_id, gamma_id, mod_type from osee_txs txs, osee_tx_details txd where txd.transaction_id = ? and txd.transaction_id = txs.transaction_id and txd.tx_type = ?";
+         "select transaction_id, gamma_id, mod_type from osee_txs where branch_id = ? and transaction_id = ?";
 
    private final HashMap<Integer, ChangeItem> artifactChangesByItemId = new HashMap<Integer, ChangeItem>();
    private final HashMap<Integer, ChangeItem> relationChangesByItemId = new HashMap<Integer, ChangeItem>();
@@ -55,7 +55,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    private final TransactionRecord sourceTransactionId;
    private final TransactionRecord destinationTransactionId;
    private final TransactionRecord mergeTransactionId;
-   private final Integer transactionNumber;
+   private final TransactionRecord transactionId;
 
    private static enum LoadingMode {
       FROM_SINGLE_TRANSACTION,
@@ -64,22 +64,22 @@ public class LoadChangeDataOperation extends AbstractOperation {
 
    private final LoadingMode loadChangesEnum;
 
-   public LoadChangeDataOperation(int transactionNumber, TransactionRecord destinationTransactionId, Collection<ChangeItem> changeData) {
-      this(null, destinationTransactionId, null, changeData, transactionNumber, LoadingMode.FROM_SINGLE_TRANSACTION);
+   public LoadChangeDataOperation(TransactionRecord transactionId, TransactionRecord destinationTransactionId, Collection<ChangeItem> changeData) {
+      this(null, destinationTransactionId, null, changeData, transactionId, LoadingMode.FROM_SINGLE_TRANSACTION);
    }
 
    public LoadChangeDataOperation(TransactionRecord sourceBranch, TransactionRecord destinationBranch, TransactionRecord mergeBranch, Collection<ChangeItem> changeData) {
       this(sourceBranch, destinationBranch, mergeBranch, changeData, null, LoadingMode.FROM_ALL_BRANCH_TRANSACTIONS);
    }
 
-   private LoadChangeDataOperation(TransactionRecord sourceTransactionId, TransactionRecord destinationTransactionId, TransactionRecord mergeTransactionId, Collection<ChangeItem> changeData, Integer transactionNumber, LoadingMode loadMode) {
+   private LoadChangeDataOperation(TransactionRecord sourceTransactionId, TransactionRecord destinationTransactionId, TransactionRecord mergeTransactionId, Collection<ChangeItem> changeData, TransactionRecord transactionId, LoadingMode loadMode) {
       super("Load Change Data", Activator.PLUGIN_ID);
       this.mergeTransactionId = mergeTransactionId;
       this.sourceTransactionId = sourceTransactionId;
       this.destinationTransactionId = destinationTransactionId;
       this.changeData = changeData;
       this.loadChangesEnum = loadMode;
-      this.transactionNumber = transactionNumber;
+      this.transactionId = transactionId;
    }
 
    private int getSourceBranchId() {
@@ -116,9 +116,9 @@ public class LoadChangeDataOperation extends AbstractOperation {
                currentTransactionNumber = sourceTransactionId.getId();
                break;
             case FROM_SINGLE_TRANSACTION:
-               chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionNumber,
-                     TransactionDetailsType.NonBaselined.getId());
-               currentTransactionNumber = transactionNumber;
+               chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionId.getBranch().getId(),
+                     transactionId.getId());
+               currentTransactionNumber = transactionId.getId();
                break;
             default:
                throw new UnsupportedOperationException(String.format("Invalid load changes [%s] mode not supported",
@@ -150,7 +150,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
             ArtifactChangeItem changeItem =
                   new ArtifactChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
-                        chStmt.getInt("art_id"));
+                  chStmt.getInt("art_id"));
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }
       } finally {
@@ -170,8 +170,8 @@ public class LoadChangeDataOperation extends AbstractOperation {
             Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
             AttributeChangeItem changeItem =
                   new AttributeChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(),
-                        txsTableData.getFirst(), chStmt.getInt("attr_id"), chStmt.getInt("art_id"),
-                        chStmt.getString("value"));
+                  txsTableData.getFirst(), chStmt.getInt("attr_id"), chStmt.getInt("art_id"),
+                  chStmt.getString("value"));
 
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }
@@ -192,8 +192,8 @@ public class LoadChangeDataOperation extends AbstractOperation {
             Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
             RelationChangeItem changeItem =
                   new RelationChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
-                        chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"), chStmt.getInt("rel_link_id"),
-                        chStmt.getInt("rel_link_type_id"), chStmt.getString("rationale"));
+                  chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"), chStmt.getInt("rel_link_id"),
+                  chStmt.getInt("rel_link_type_id"), chStmt.getString("rationale"));
 
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }

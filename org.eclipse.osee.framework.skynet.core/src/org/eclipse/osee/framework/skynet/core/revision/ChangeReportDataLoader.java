@@ -55,7 +55,7 @@ public class ChangeReportDataLoader {
       boolean isHistorical = sourceBranch == null;
       ArrayList<Change> changes = new ArrayList<Change>();
       List<ChangeItem> changeItems = loadChangeItems(sourceBranch, transactionId, monitor, isHistorical);
-      @SuppressWarnings("unused")
+
       //This is to keep the weak reference from being collected before they can be used.
       Collection<Artifact> bulkLoadedArtifacts =
             preloadArtifacts(changeItems, sourceBranch, transactionId, isHistorical, monitor);
@@ -106,16 +106,16 @@ public class ChangeReportDataLoader {
       if (item instanceof ArtifactChangeItem) {
          change =
                new ArtifactChange(branch, artifact.getArtifactType(),
-                     (int) item.getCurrentVersion().getGammaId().longValue(), item.getItemId(), toTransactionId,
-                     fromTransactionId, item.getNetChange().getModType(), ChangeType.OUTGOING, isHistorical, artifact);
+               (int) item.getCurrentVersion().getGammaId().longValue(), item.getItemId(), toTransactionId,
+               fromTransactionId, item.getNetChange().getModType(), ChangeType.OUTGOING, isHistorical, artifact);
       } else if (item instanceof AttributeChangeItem) {
          change =
                new AttributeChange(branch, artifact.getArtifactType(),
-                     (int) item.getCurrentVersion().getGammaId().longValue(), item.getArtId(), toTransactionId,
-                     fromTransactionId, item.getNetChange().getModType(), ChangeType.OUTGOING,
-                     item.getCurrentVersion().getValue(), wasValue, item.getItemId(), artifact.getAttributeById(
-                           item.getItemId(), true).getAttributeType().getId(), item.getNetChange().getModType(),
-                     isHistorical, artifact);
+               (int) item.getCurrentVersion().getGammaId().longValue(), item.getArtId(), toTransactionId,
+               fromTransactionId, item.getNetChange().getModType(), ChangeType.OUTGOING,
+               item.getCurrentVersion().getValue(), wasValue, item.getItemId(), artifact.getAttributeById(
+               item.getItemId(), true).getAttributeType().getId(), item.getNetChange().getModType(),
+               isHistorical, artifact);
       } else if (item instanceof RelationChangeItem) {
          RelationChangeItem relationChangeItem = (RelationChangeItem) item;
          Artifact bArtifact;
@@ -127,11 +127,11 @@ public class ChangeReportDataLoader {
          }
          change =
                new RelationChange(branch, artifact.getArtifactType(),
-                     (int) relationChangeItem.getCurrentVersion().getGammaId().longValue(), item.getArtId(),
-                     toTransactionId, fromTransactionId, relationChangeItem.getNetChange().getModType(),
-                     ChangeType.OUTGOING, bArtifact.getArtId(), relationChangeItem.getItemId(),
-                     relationChangeItem.getRationale(), RelationTypeManager.getType(relationChangeItem.getRelTypeId()),
-                     isHistorical, artifact, bArtifact);
+               (int) relationChangeItem.getCurrentVersion().getGammaId().longValue(), item.getArtId(),
+               toTransactionId, fromTransactionId, relationChangeItem.getNetChange().getModType(),
+               ChangeType.OUTGOING, bArtifact.getArtId(), relationChangeItem.getItemId(),
+               relationChangeItem.getRationale(), RelationTypeManager.getType(relationChangeItem.getRelTypeId()),
+               isHistorical, artifact, bArtifact);
       } else {
          throw new OseeCoreException("The change item must map to either a artifact, attribute or relation change");
       }
@@ -163,7 +163,7 @@ public class ChangeReportDataLoader {
 
          artifacts =
                ArtifactLoader.loadArtifacts(queryId, ArtifactLoad.ALL_CURRENT, null, insertParameters, true,
-                     isHistorical, true);
+               isHistorical, true);
       }
       return artifacts;
    }
@@ -184,7 +184,7 @@ public class ChangeReportDataLoader {
       if (isHistorical) {
          destinationTransactionId = TransactionManager.getPriorTransaction(transactionId);
          sourceTransactionId = transactionId;
-         ops.add(new LoadChangeDataOperation(sourceTransactionId.getId(), destinationTransactionId, changeItems));
+         ops.add(new LoadChangeDataOperation(sourceTransactionId, destinationTransactionId, changeItems));
       } else {
          destinationTransactionId = TransactionManager.getLastTransaction(sourceBranch.getParentBranch());
          sourceTransactionId = TransactionManager.getLastTransaction(sourceBranch);
@@ -195,7 +195,7 @@ public class ChangeReportDataLoader {
 
       String opName =
             String.format("Gathering changes for %s",
-                  sourceBranch != null ? sourceBranch.getShortName() : transactionId);
+            sourceBranch != null ? sourceBranch.getShortName() : transactionId);
       IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
       Operations.executeWork(op, monitor, -1);
       try {
