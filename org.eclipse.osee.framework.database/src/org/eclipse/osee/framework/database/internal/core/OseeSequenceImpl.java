@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal.core;
 
+import java.math.BigDecimal;
 import java.util.HashMap;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -58,15 +59,19 @@ public class OseeSequenceImpl implements IOseeSequence {
    public synchronized long getNextSequence(String sequenceName) throws OseeDataStoreException {
       SequenceRange range = getRange(sequenceName);
       if (range.lastAvailable == 0) {
-         long lastValue = -1;
+         long lastValue = -1L;
          boolean gotSequence = false;
          OseeConnection connection = getDatabase().getConnection();
          try {
             while (!gotSequence) {
-               lastValue = getDatabase().runPreparedQueryFetchObject(connection, -1, QUERY_SEQUENCE, sequenceName);
-               if (lastValue == -1) {
+               BigDecimal currentValue =
+                     getDatabase().runPreparedQueryFetchObject(connection, (BigDecimal) null, QUERY_SEQUENCE,
+                           sequenceName);
+               if (currentValue == null) {
                   internalInitializeSequence(sequenceName);
-                  //                  throw new OseeDataStoreException("Sequence name [" + sequenceName + "] was not found");
+                  lastValue = 0;
+               } else {
+                  lastValue = currentValue.longValue();
                }
                gotSequence =
                      getDatabase().runPreparedUpdate(connection, UPDATE_SEQUENCE, lastValue + range.prefetchSize,
