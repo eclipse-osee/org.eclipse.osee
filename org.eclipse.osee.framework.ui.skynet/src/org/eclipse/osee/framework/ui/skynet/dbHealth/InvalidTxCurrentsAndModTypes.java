@@ -74,8 +74,6 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
                logIssue("corrected txCurrent: " + address.correctedTxCurrent, address);
                currentData.add(new Object[] {address.correctedTxCurrent.getValue(), address.transactionId,
                      address.gammaId});
-            } else {
-               logIssue("sibling of troubled address", address);
             }
          }
       }
@@ -217,8 +215,8 @@ public class InvalidTxCurrentsAndModTypes extends AbstractOperation {
             checkForCancelledStatus(monitor);
             Address address =
                   new Address(chStmt.getInt("branch_id"), chStmt.getInt(columnName), chStmt.getInt("transaction_id"),
-                        chStmt.getInt("tx_type"), chStmt.getLong("gamma_id"), chStmt.getInt("mod_type"),
-                        chStmt.getInt("tx_current"));
+                  chStmt.getInt("tx_type"), chStmt.getLong("gamma_id"), chStmt.getInt("mod_type"),
+                  chStmt.getInt("tx_current"));
 
             if (!address.isSimilar(previousAddress)) {
                consolidateAddressing();
