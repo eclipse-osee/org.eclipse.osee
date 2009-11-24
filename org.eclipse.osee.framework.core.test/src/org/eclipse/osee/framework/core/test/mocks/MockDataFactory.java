@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.test.mocks;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
@@ -23,8 +22,10 @@ import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreArtifacts;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -62,10 +63,12 @@ public final class MockDataFactory {
    public static IBasicArtifact<?> createArtifact(int index) {
       return new DefaultBasicArtifact(index * 37, GUID.create(), "user_" + index);
    }
-   
-   public static AttributeType createAttributeType() throws OseeCoreException{
+
+   public static AttributeType createAttributeType() throws OseeCoreException {
       OseeEnumTypeFactory oseeEnumTypeFactory = new OseeEnumTypeFactory();
-      AttributeType attributeType = new AttributeType(GUID.create(), "name", "baseType", "providerName", ".xml", "", oseeEnumTypeFactory.createEnumType(GUID.create(), "enum type name"), 1, 1, "description", "tagger");
+      AttributeType attributeType =
+            new AttributeType(GUID.create(), "name", "baseType", "providerName", ".xml", "",
+                  oseeEnumTypeFactory.createEnumType(GUID.create(), "enum type name"), 1, 1, "description", "tagger");
       return attributeType;
    }
 
@@ -98,6 +101,11 @@ public final class MockDataFactory {
 
    public static ArtifactType createArtifactType(int index) {
       return new ArtifactType(GUID.create(), "art_" + index, index % 2 == 0);
+   }
+
+   public static ArtifactType createBaseArtifactType() {
+      IOseeType baseType = CoreArtifacts.Artifact;
+      return new ArtifactType(baseType.getGuid(), baseType.getName(), true);
    }
 
    public static RelationType createRelationType(int index, ArtifactType artTypeA, ArtifactType artTypeB) {

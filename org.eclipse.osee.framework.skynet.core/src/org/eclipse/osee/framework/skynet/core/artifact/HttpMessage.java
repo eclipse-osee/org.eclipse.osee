@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
+import org.eclipse.osee.framework.core.services.ITranslatorId;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
@@ -33,20 +34,20 @@ public class HttpMessage {
    }
 
    @SuppressWarnings("unchecked")
-   public static <J, K> J send(String context, Map<String, String> parameters, K requestData, Class<?>... toMatch) throws OseeCoreException {
+   public static <J, K> J send(String context, Map<String, String> parameters, ITranslatorId requestId, K requestData, ITranslatorId responseId) throws OseeCoreException {
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(context, parameters);
       InputStream inputStream = null;
       try {
          IDataTranslationService service = Activator.getInstance().getTranslationService();
-         inputStream = service.convertToStream(requestData);
+         inputStream = service.convertToStream(requestData, requestId);
          ByteArrayOutputStream buffer = new ByteArrayOutputStream();
          AcquireResult result = HttpProcessor.post(new URL(urlString), inputStream, "text/xml", "UTF-8", buffer);
          if (result.wasSuccessful()) {
-            if (AcquireResult.class == toMatch[0]) {
+            if (responseId == null) {
                return (J) result;
             } else {
-               return service.convert(new ByteArrayInputStream(buffer.toByteArray()), toMatch);
+               return service.convert(new ByteArrayInputStream(buffer.toByteArray()), responseId);
             }
          } else {
             throw new OseeCoreException(String.format("Request [%s] failed.", urlString));

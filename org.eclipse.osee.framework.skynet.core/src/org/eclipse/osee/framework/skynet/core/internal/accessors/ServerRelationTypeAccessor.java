@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.RelationType;
@@ -27,7 +28,7 @@ public class ServerRelationTypeAccessor extends AbstractServerDataAccessor<Relat
    private final AbstractOseeCache<ArtifactType> artCache;
 
    public ServerRelationTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<ArtifactType> artCache) {
-      super(factoryProvider);
+      super(factoryProvider, CoreTranslationIds.OSEE_CACHE_UPDATE_RESPONSE__RELATION_TYPE);
       this.artCache = artCache;
    }
 

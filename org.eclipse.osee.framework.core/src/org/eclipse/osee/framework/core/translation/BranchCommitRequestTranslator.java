@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.translation;
 
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
@@ -45,9 +46,9 @@ public final class BranchCommitRequestTranslator implements ITranslator<BranchCo
       PropertyStore userArtifactStore = propertyStore.getPropertyStore(Entry.userArtifact.name());
 
       IDataTranslationService service = getService();
-      IBasicArtifact<?> userArtifact = service.convert(userArtifactStore, IBasicArtifact.class);
-      Branch sourceBranch = service.convert(sourceBranchStore, Branch.class);
-      Branch destinationBranch = service.convert(destinationBranchStore, Branch.class);
+      IBasicArtifact<?> userArtifact = service.convert(userArtifactStore, CoreTranslationIds.ARTIFACT_METADATA);
+      Branch sourceBranch = service.convert(sourceBranchStore, CoreTranslationIds.BRANCH);
+      Branch destinationBranch = service.convert(destinationBranchStore, CoreTranslationIds.BRANCH);
 
       boolean isArchiveAllowed = propertyStore.getBoolean(Entry.isArchiveAllowed.name());
       BranchCommitRequest data =
@@ -60,9 +61,9 @@ public final class BranchCommitRequestTranslator implements ITranslator<BranchCo
 
       PropertyStore store = new PropertyStore();
       store.put(Entry.isArchiveAllowed.name(), data.isArchiveAllowed());
-      store.put(Entry.userArtifact.name(), service.convert(data.getUser()));
-      store.put(Entry.sourceBranch.name(), service.convert(data.getSourceBranch()));
-      store.put(Entry.destinationBranch.name(), service.convert(data.getDestinationBranch()));
+      store.put(Entry.userArtifact.name(), service.convert(data.getUser(), CoreTranslationIds.ARTIFACT_METADATA));
+      store.put(Entry.sourceBranch.name(), service.convert(data.getSourceBranch(), CoreTranslationIds.BRANCH));
+      store.put(Entry.destinationBranch.name(), service.convert(data.getDestinationBranch(), CoreTranslationIds.BRANCH));
 
       return store;
    }

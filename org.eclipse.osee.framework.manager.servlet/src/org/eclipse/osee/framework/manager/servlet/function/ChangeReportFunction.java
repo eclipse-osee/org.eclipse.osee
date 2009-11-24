@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeReportRequest;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
@@ -29,7 +30,7 @@ public class ChangeReportFunction {
 
    public void getChanges(HttpServletRequest req, HttpServletResponse resp) throws Exception {
       IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
-      ChangeReportRequest data = service.convert(req.getInputStream(), ChangeReportRequest.class);
+      ChangeReportRequest data = service.convert(req.getInputStream(), CoreTranslationIds.CHANGE_REPORT_REQUEST);
       ArrayList<ChangeItem> changes = new ArrayList<ChangeItem>();
 
       MasterServletActivator.getInstance().getChangeReportService().getChanges(new NullProgressMonitor(),
@@ -41,7 +42,8 @@ public class ChangeReportFunction {
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       resp.setContentType("text/xml");
       resp.setCharacterEncoding("UTF-8");
-      InputStream inputStream = service.convertToStream(changeReportResponseData);
+      InputStream inputStream =
+            service.convertToStream(changeReportResponseData, CoreTranslationIds.CHANGE_REPORT_RESPONSE);
       try {
          Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
       } finally {

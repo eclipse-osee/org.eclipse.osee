@@ -12,11 +12,11 @@ package org.eclipse.osee.framework.core.test.translation;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
@@ -60,22 +60,25 @@ public class RelationTypeTranslatorTest extends BaseTranslatorTest<RelationType>
       ArtifactTypeCache cache = serviceProvider.getOseeCachingService().getArtifactTypeCache();
 
       IDataTranslationService service = new DataTranslationService();
-      service.addTranslator(new BasicArtifactTranslator(), IBasicArtifact.class);
-      service.addTranslator(new ArtifactTypeTranslator(service, factoryProvider), ArtifactType.class);
+      service.addTranslator(new BasicArtifactTranslator(), CoreTranslationIds.ARTIFACT_METADATA);
+      service.addTranslator(new ArtifactTypeTranslator(service, factoryProvider), CoreTranslationIds.ARTIFACT_TYPE);
 
       ITranslator<RelationType> translator = new RelationTypeTranslator(service, factoryProvider);
+
+      ArtifactType baseType = MockDataFactory.createBaseArtifactType();
 
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {
          ArtifactType typeA = MockDataFactory.createArtifactType(index * 7);
          ArtifactType typeB = MockDataFactory.createArtifactType(index * 3);
+         typeA.setSuperType(Collections.singleton(baseType));
+         typeB.setSuperType(Collections.singleton(baseType));
          cache.cache(typeA);
          cache.cache(typeB);
          RelationType relType = MockDataFactory.createRelationType(index, typeA, typeB);
          data.add(new Object[] {relType, translator});
       }
 
-      data.add(new Object[] {MockDataFactory.createRelationType(999, null, null), translator});
       return data;
    }
 

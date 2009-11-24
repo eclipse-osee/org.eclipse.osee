@@ -19,10 +19,12 @@ import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.core.services.ITranslatorId;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
 
@@ -32,9 +34,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
 public abstract class AbstractServerDataAccessor<T extends IOseeStorableType> implements IOseeDataAccessor<T> {
 
    private final IOseeModelFactoryServiceProvider factoryProvider;
+   private final ITranslatorId updateResponseId;
 
-   protected AbstractServerDataAccessor(IOseeModelFactoryServiceProvider factoryProvider) {
+   protected AbstractServerDataAccessor(IOseeModelFactoryServiceProvider factoryProvider, ITranslatorId updateResponseId) {
       this.factoryProvider = factoryProvider;
+      this.updateResponseId = updateResponseId;
    }
 
    protected IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
@@ -48,7 +52,8 @@ public abstract class AbstractServerDataAccessor<T extends IOseeStorableType> im
 
       CacheUpdateRequest updateRequest = new CacheUpdateRequest(cache.getCacheId());
       CacheUpdateResponse<T> response =
-            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, updateRequest, CacheUpdateResponse.class);
+            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, CoreTranslationIds.OSEE_CACHE_UPDATE_REQUEST,
+                  updateRequest, updateResponseId);
 
       Conditions.checkExpressionFailOnTrue(cache.getCacheId() != response.getCacheId(),
             "Reponse does not match cache enum id - cache to update [%s] - reponse cache id [%s]", cache.getCacheId(),

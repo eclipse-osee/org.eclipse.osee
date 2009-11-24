@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
+import org.eclipse.osee.framework.core.services.ITranslatorId;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
@@ -31,26 +32,25 @@ public class CacheUpdateResponseTranslator<T> implements ITranslator<CacheUpdate
    }
 
    private final IDataTranslationService service;
-   private final Class<T> clazzType;
+   private final ITranslatorId internalTranslatorId;
 
-   public CacheUpdateResponseTranslator(IDataTranslationService service, Class<T> clazzType) {
+   public CacheUpdateResponseTranslator(IDataTranslationService service, ITranslatorId clazzType) {
       this.service = service;
-      this.clazzType = clazzType;
+      this.internalTranslatorId = clazzType;
    }
 
-   private Class<T> getClassType() {
-      return clazzType;
+   private ITranslatorId getClassType() {
+      return internalTranslatorId;
    }
 
    @Override
    public CacheUpdateResponse<T> convert(PropertyStore store) throws OseeCoreException {
       OseeCacheEnum cacheId = OseeCacheEnum.valueOf(store.get(Entry.CACHE_ID.name()));
-      Class<T> clazz = getClassType();
       Collection<T> items = new ArrayList<T>();
       int numberOfItems = store.getInt(Entry.COUNT.name());
       for (int index = 0; index < numberOfItems; index++) {
          PropertyStore innerStore = store.getPropertyStore(createKey(index));
-         T object = service.convert(innerStore, clazz);
+         T object = service.convert(innerStore, getClassType());
          items.add(object);
       }
       return new CacheUpdateResponse<T>(cacheId, items);
@@ -65,7 +65,7 @@ public class CacheUpdateResponseTranslator<T> implements ITranslator<CacheUpdate
       store.put(Entry.COUNT.name(), items.size());
       int index = 0;
       for (T item : items) {
-         store.put(createKey(index++), service.convert(item));
+         store.put(createKey(index++), service.convert(item, getClassType()));
       }
       return store;
    }

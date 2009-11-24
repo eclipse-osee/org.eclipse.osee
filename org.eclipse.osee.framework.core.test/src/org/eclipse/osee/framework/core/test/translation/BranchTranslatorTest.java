@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
@@ -64,7 +65,7 @@ public class BranchTranslatorTest extends BaseTranslatorTest<Branch> {
       ITranslator<Branch> translator = new BranchTranslator(serviceProvider);
 
       IDataTranslationService service = new DataTranslationService();
-      service.addTranslator(translator, Branch.class);
+      service.addTranslator(translator, CoreTranslationIds.BRANCH);
 
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 5; index++) {

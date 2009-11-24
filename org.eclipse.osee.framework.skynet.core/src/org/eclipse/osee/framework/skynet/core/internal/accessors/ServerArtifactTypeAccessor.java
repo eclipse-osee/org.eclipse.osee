@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.ArtifactTypeFactory;
@@ -34,7 +35,7 @@ public class ServerArtifactTypeAccessor extends AbstractServerDataAccessor<Artif
    private final AbstractOseeCache<Branch> branchCache;
 
    public ServerArtifactTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<AttributeType> attrCache, AbstractOseeCache<Branch> branchCache) {
-      super(factoryProvider);
+      super(factoryProvider, CoreTranslationIds.OSEE_CACHE_UPDATE_RESPONSE__ARTIFACT_TYPE);
       this.attrCache = attrCache;
       this.branchCache = branchCache;
    }

@@ -14,7 +14,7 @@ package org.eclipse.osee.framework.core.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
@@ -47,7 +47,8 @@ public class ArtifactTypeTranslatorTest extends BaseTranslatorTest<ArtifactType>
    public static Collection<Object[]> data() throws OseeCoreException {
       IOseeModelFactoryServiceProvider factoryProvider = MockDataFactory.createFactoryProvider();
       DataTranslationService dataTranslationService = new DataTranslationService();
-      dataTranslationService.addTranslator(new ArtifactTypeTranslator(dataTranslationService, factoryProvider), ArtifactType.class);
+      dataTranslationService.addTranslator(new ArtifactTypeTranslator(dataTranslationService, factoryProvider),
+            CoreTranslationIds.ARTIFACT_TYPE);
 
       List<Object[]> data = new ArrayList<Object[]>();
       ITranslator<ArtifactType> translator = new ArtifactTypeTranslator(dataTranslationService, factoryProvider);

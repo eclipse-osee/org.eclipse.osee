@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.model.OseeEnumEntry;
@@ -56,7 +57,7 @@ public class OseeEnumTypeTranslatorTest extends BaseTranslatorTest<OseeEnumType>
 
       ITranslator<OseeEnumType> translator = new OseeEnumTypeTranslator(service, provider);
 
-      service.addTranslator(new OseeEnumEntryTranslator(provider), OseeEnumEntry.class);
+      service.addTranslator(new OseeEnumEntryTranslator(provider), CoreTranslationIds.OSEE_ENUM_ENTRY);
 
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 3; index++) {

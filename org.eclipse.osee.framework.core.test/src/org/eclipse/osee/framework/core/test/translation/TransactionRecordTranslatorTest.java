@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.cache.BranchCache;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -53,8 +54,8 @@ public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Transact
 
       IDataTranslationService service = new DataTranslationService();
 
-      service.addTranslator(new BranchTranslator(serviceProvider), Branch.class);
-      service.addTranslator(new TransactionRecordTranslator(service), TransactionRecord.class);
+      service.addTranslator(new BranchTranslator(serviceProvider), CoreTranslationIds.BRANCH);
+      service.addTranslator(new TransactionRecordTranslator(service), CoreTranslationIds.TRANSACTION_RECORD);
 
       ITranslator<TransactionRecord> translator = new TransactionRecordTranslator(service);
 

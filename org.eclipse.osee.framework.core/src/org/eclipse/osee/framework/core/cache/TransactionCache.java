@@ -14,7 +14,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -32,6 +34,8 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    private final ITransactionDataAccessor accessor;
 
    private final Map<Integer, TransactionRecord> transactionIdCache = new HashMap<Integer, TransactionRecord>();
+   //   private final Map<Branch, TransactionRecord> branchTransactions = new HashMap<Branch, TransactionRecord>();
+
    private final boolean duringPopulate;
    private final OseeCacheEnum cacheId;
 
@@ -110,7 +114,13 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
 
    @Override
    public Collection<TransactionRecord> getAllDirty() throws OseeCoreException {
-      return null;
+      Set<TransactionRecord> dirtys = new HashSet<TransactionRecord>();
+      for (TransactionRecord record : transactionIdCache.values()) {
+         if (record.isDirty()) {
+            dirtys.add(record);
+         }
+      }
+      return dirtys;
    }
 
    @Override

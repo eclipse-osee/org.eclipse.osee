@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -51,8 +52,8 @@ public class BranchCommitResponseTranslatorTest extends BaseTranslatorTest<Branc
       List<Object[]> data = new ArrayList<Object[]>();
       IOseeCachingServiceProvider serviceProvider = MockDataFactory.createCachingProvider();
       IDataTranslationService service = new DataTranslationService();
-      service.addTranslator(new BranchTranslator(serviceProvider), Branch.class);
-      service.addTranslator(new TransactionRecordTranslator(service), TransactionRecord.class);
+      service.addTranslator(new BranchTranslator(serviceProvider), CoreTranslationIds.BRANCH);
+      service.addTranslator(new TransactionRecordTranslator(service), CoreTranslationIds.TRANSACTION_RECORD);
 
       ITranslator<BranchCommitResponse> translator = new BranchCommitResponseTranslator(service);
       for (int index = 0; index < 2; index++) {

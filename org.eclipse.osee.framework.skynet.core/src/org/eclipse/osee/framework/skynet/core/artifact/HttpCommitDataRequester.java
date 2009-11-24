@@ -16,6 +16,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.enums.Function;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -38,11 +39,12 @@ public class HttpCommitDataRequester {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", Function.BRANCH_COMMIT.name());
 
-      BranchCommitRequest requestData = new BranchCommitRequest(user, sourceBranch, destinationBranch, isArchiveAllowed);
+      BranchCommitRequest requestData =
+            new BranchCommitRequest(user, sourceBranch, destinationBranch, isArchiveAllowed);
 
       BranchCommitResponse response =
-            HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, requestData,
-                  BranchCommitResponse.class);
+            HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslationIds.BRANCH_COMMIT_REQUEST,
+                  requestData, CoreTranslationIds.BRANCH_COMMIT_RESPONSE);
 
       TransactionRecord newTransaction = response.getTransaction();
 

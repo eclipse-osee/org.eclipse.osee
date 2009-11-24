@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
@@ -27,7 +28,7 @@ public class ServerBranchAccessor extends AbstractServerDataAccessor<Branch> {
    private final TransactionCache transactionCache;
 
    public ServerBranchAccessor(IOseeModelFactoryServiceProvider factoryProvider, TransactionCache transactionCache) {
-      super(factoryProvider);
+      super(factoryProvider, CoreTranslationIds.OSEE_CACHE_UPDATE_RESPONSE__BRANCH);
       this.transactionCache = transactionCache;
    }
 

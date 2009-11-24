@@ -110,4 +110,8 @@ public final class TransactionRecord implements IAdaptable {
    public String toString() {
       return String.format("%s:%s", transactionNumber, String.valueOf(getBranch()));
    }
+
+   public boolean isDirty() {
+      return false;
+   }
 }

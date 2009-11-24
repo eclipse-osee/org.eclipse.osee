@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.translation;
 
+import org.eclipse.osee.framework.core.enums.CoreTranslationIds;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
@@ -66,7 +67,7 @@ public class AttributeTypeTranslator implements ITranslator<AttributeType> {
       String fileTypeExtension = store.get(Entry.FILE_EXT.name());
 
       PropertyStore innerStore = store.getPropertyStore(Entry.ENUM_TYPE.name());
-      OseeEnumType oseeEnumType = service.convert(innerStore, OseeEnumType.class);
+      OseeEnumType oseeEnumType = service.convert(innerStore, CoreTranslationIds.OSEE_ENUM_TYPE);
 
       AttributeTypeFactory factory = provider.getOseeFactoryService().getAttributeTypeFactory();
       AttributeType type =
@@ -95,7 +96,7 @@ public class AttributeTypeTranslator implements ITranslator<AttributeType> {
       store.put(Entry.DESCRIPTION.name(), type.getDescription());
       store.put(Entry.FILE_EXT.name(), type.getFileTypeExtension());
 
-      store.put(Entry.ENUM_TYPE.name(), service.convert(type.getOseeEnumType()));
+      store.put(Entry.ENUM_TYPE.name(), service.convert(type.getOseeEnumType(), CoreTranslationIds.OSEE_ENUM_TYPE));
       return store;
    }
 }
