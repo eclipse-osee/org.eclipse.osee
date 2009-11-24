@@ -118,6 +118,7 @@ public class PropertyStoreWriter {
    }
 
    private static class XMLReader {
+      private static final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
       private List<String> valueList;
       private String tagListKey;
       private String innerStoreKey;
@@ -136,7 +137,6 @@ public class PropertyStoreWriter {
 
       public void load(PropertyStore store, Reader input) throws Exception {
          try {
-            XMLInputFactory inputFactory = XMLInputFactory.newInstance();
             XMLStreamReader streamReader = inputFactory.createXMLStreamReader(input);
             while (streamReader.hasNext()) {
                process(store, streamReader);
