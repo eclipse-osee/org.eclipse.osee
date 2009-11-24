@@ -90,6 +90,7 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
       createServiceTracker(context, IResourceLocatorManager.class, TrackerId.RESOURCE_LOCATOR);
       createServiceTracker(context, IResourceManager.class, TrackerId.RESOURCE_MANAGER);
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
+      createServiceTracker(context, IOseeDatabaseService.class, TrackerId.OSEE_DATABASE_SERVICE);
 
       createServiceTracker(context, IOseeModelFactoryService.class, TrackerId.OSEE_FACTORY_SERVICE);
       createServiceTracker(context, IApplicationServerManager.class, TrackerId.MASTER_SERVICE);

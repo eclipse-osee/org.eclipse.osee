@@ -17,12 +17,17 @@ import java.util.logging.Level;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.OseeEnumType;
+import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -84,8 +89,37 @@ public class OseeCacheServlet extends OseeHttpServlet {
       resp.setContentType("text/xml");
       resp.setCharacterEncoding("UTF-8");
 
-      IOseeCache<?> cache = caching.getCache(updateRequest.getCacheId());
-      CacheUpdateResponse response = new CacheUpdateResponse(updateRequest.getCacheId(), cache.getAll());
+      CacheUpdateResponse<?> response = null;
+      switch (updateRequest.getCacheId()) {
+         case ARTIFACT_TYPE_CACHE:
+            response =
+                  new CacheUpdateResponse<ArtifactType>(updateRequest.getCacheId(),
+                        caching.getArtifactTypeCache().getAll());
+            break;
+         case ATTRIBUTE_TYPE_CACHE:
+            response =
+                  new CacheUpdateResponse<AttributeType>(updateRequest.getCacheId(),
+                        caching.getAttributeTypeCache().getAll());
+            break;
+         case BRANCH_CACHE:
+            response = new CacheUpdateResponse<Branch>(updateRequest.getCacheId(), caching.getBranchCache().getAll());
+            break;
+         case OSEE_ENUM_TYPE_CACHE:
+            response =
+                  new CacheUpdateResponse<OseeEnumType>(updateRequest.getCacheId(), caching.getEnumTypeCache().getAll());
+            break;
+         case RELATION_TYPE_CACHE:
+            response =
+                  new CacheUpdateResponse<RelationType>(updateRequest.getCacheId(),
+                        caching.getRelationTypeCache().getAll());
+            break;
+         case TRANSACTION_CACHE:
+            response =
+                  new CacheUpdateResponse<TransactionRecord>(updateRequest.getCacheId(),
+                        caching.getTransactionCache().getAll());
+            break;
+      }
+
       OutputStream outputStream = null;
       try {
          inputStream = service.convertToStream(response);
