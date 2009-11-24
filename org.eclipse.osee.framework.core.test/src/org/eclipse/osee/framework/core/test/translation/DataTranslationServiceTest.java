@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
+import org.eclipse.osee.framework.core.services.ITranslatorId;
 import org.eclipse.osee.framework.core.translation.DataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -30,6 +31,19 @@ import org.junit.Test;
  */
 public class DataTranslationServiceTest {
 
+   private enum TxId implements ITranslatorId {
+      STRING_TX,
+      INTEGER_TX,
+      OBJECT_TX,
+      DUMMY_TX;
+
+      @Override
+      public String getKey() {
+         return name();
+      }
+
+   }
+
    @Test
    public void testAddRemoveTranslator() throws OseeCoreException {
       IDataTranslationService service = new DataTranslationService();
@@ -40,47 +54,47 @@ public class DataTranslationServiceTest {
 
       Assert.assertTrue(service.getSupportedClasses().isEmpty());
 
-      Assert.assertTrue(service.addTranslator(tx1, String.class));
-      Assert.assertTrue(service.addTranslator(tx2, Integer.class));
-      Assert.assertFalse(service.addTranslator(tx2, Integer.class)); // Add again
+      Assert.assertTrue(service.addTranslator(tx1, TxId.STRING_TX));
+      Assert.assertTrue(service.addTranslator(tx2, TxId.INTEGER_TX));
+      Assert.assertFalse(service.addTranslator(tx2, TxId.INTEGER_TX)); // Add again
 
-      Assert.assertTrue(service.addTranslator(tx3, Object.class, Integer.class));
+      Assert.assertTrue(service.addTranslator(tx3, TxId.OBJECT_TX));
       Assert.assertEquals(3, service.getSupportedClasses().size());
 
-      Assert.assertEquals(tx1, service.getTranslator(String.class));
-      Assert.assertEquals(tx2, service.getTranslator(Integer.class));
-      Assert.assertEquals(tx3, service.getTranslator(Object.class, Integer.class));
+      Assert.assertEquals(tx1, service.getTranslator(TxId.STRING_TX));
+      Assert.assertEquals(tx2, service.getTranslator(TxId.INTEGER_TX));
+      Assert.assertEquals(tx3, service.getTranslator(TxId.OBJECT_TX));
 
       try {
-         service.getTranslator(Integer.class, Object.class);
+         service.getTranslator(TxId.DUMMY_TX);
          Assert.fail("Should not be executed");
       } catch (OseeCoreException ex) {
          Assert.assertTrue(ex instanceof OseeStateException);
       }
 
-      Assert.assertTrue(service.removeTranslator(Integer.class));
+      Assert.assertTrue(service.removeTranslator(TxId.INTEGER_TX));
       Assert.assertEquals(2, service.getSupportedClasses().size());
 
-      Assert.assertFalse(service.removeTranslator(Integer.class));
+      Assert.assertFalse(service.removeTranslator(TxId.INTEGER_TX));
 
-      Assert.assertTrue(service.removeTranslator(String.class));
+      Assert.assertTrue(service.removeTranslator(TxId.STRING_TX));
       Assert.assertEquals(1, service.getSupportedClasses().size());
 
-      Assert.assertFalse(service.removeTranslator(Integer.class, Object.class));
+      Assert.assertFalse(service.removeTranslator(TxId.DUMMY_TX));
       Assert.assertEquals(1, service.getSupportedClasses().size());
 
-      Assert.assertTrue(service.removeTranslator(Object.class, Integer.class));
+      Assert.assertTrue(service.removeTranslator(TxId.OBJECT_TX));
       Assert.assertTrue(service.getSupportedClasses().isEmpty());
    }
 
    @Test
    public void testConvert() throws OseeCoreException {
       DataTranslationService service = new DataTranslationService();
-      service.addTranslator(new TestObjectTranslator(), TestObject.class);
+      service.addTranslator(new TestObjectTranslator(), TxId.OBJECT_TX);
 
       TestObject value = new TestObject("hello", 1, 1.0);
-      PropertyStore propertyStore = service.convert(value);
-      TestObject actual = service.convert(propertyStore, TestObject.class);
+      PropertyStore propertyStore = service.convert(value, TxId.OBJECT_TX);
+      TestObject actual = service.convert(propertyStore, TxId.OBJECT_TX);
 
       Assert.assertEquals(value.one, actual.one);
       Assert.assertEquals(value.two, actual.two);
@@ -90,14 +104,14 @@ public class DataTranslationServiceTest {
    @Test
    public void testConvertStreams() throws OseeCoreException {
       DataTranslationService service = new DataTranslationService();
-      service.addTranslator(new TestObjectTranslator(), TestObject.class);
+      service.addTranslator(new TestObjectTranslator(), TxId.OBJECT_TX);
 
       TestObject expected = new TestObject("streamTest", 45, 1.0);
       TestObject actual = null;
       InputStream stream = null;
       try {
-         stream = service.convertToStream(expected);
-         actual = service.convert(stream, TestObject.class);
+         stream = service.convertToStream(expected, TxId.OBJECT_TX);
+         actual = service.convert(stream, TxId.OBJECT_TX);
 
       } finally {
          Lib.close(stream);
@@ -113,9 +127,9 @@ public class DataTranslationServiceTest {
    public void testNullConverts() throws Exception {
       DataTranslationService service = new DataTranslationService();
 
-      assertEmpty(service.convert(null));
-      assertEmpty(service.convertToStream(null));
-      Assert.assertNull(service.convert((PropertyStore) null, (Class<?>) Object.class));
+      assertEmpty(service.convert((Object) null, TxId.OBJECT_TX));
+      assertEmpty(service.convertToStream(null, TxId.OBJECT_TX));
+      Assert.assertNull(service.convert((PropertyStore) null, TxId.OBJECT_TX));
    }
 
    private void assertEmpty(InputStream inputStream) throws Exception {
@@ -133,25 +147,25 @@ public class DataTranslationServiceTest {
    @Test(expected = OseeArgumentException.class)
    public void testNullClazz() throws Exception {
       DataTranslationService service = new DataTranslationService();
-      service.convert(new ByteArrayInputStream(new byte[0]), (Class<?>) null);
+      service.convert(new ByteArrayInputStream(new byte[0]), (ITranslatorId) null);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testNullClazz2() throws Exception {
       DataTranslationService service = new DataTranslationService();
-      service.convert(new PropertyStore(), (Class<?>) null);
+      service.convert(new PropertyStore(), (ITranslatorId) null);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testNullInputStream() throws Exception {
       DataTranslationService service = new DataTranslationService();
-      service.convert((InputStream) null, Object.class);
+      service.convert((InputStream) null, TxId.OBJECT_TX);
    }
 
    @Test(expected = OseeArgumentException.class)
    public void testNullGetTranslator() throws Exception {
       DataTranslationService service = new DataTranslationService();
-      service.getTranslator((Class<?>) null);
+      service.getTranslator((ITranslatorId) null);
    }
 
    private class TestObject {
