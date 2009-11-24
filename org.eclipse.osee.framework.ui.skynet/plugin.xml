@@ -1824,7 +1824,15 @@
          name="MigrateBranchBlam"
          point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
       <Operation
-            className="org.eclipse.osee.framework.ui.skynet.blam.operation.MigrateBranchBlam">
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.PopulateTxsBranchIdColumn">
+      </Operation>
+   </extension>
+   <extension
+         id="MoveArchivedBranches"
+         name="MoveArchivedBranches"
+         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
+      <Operation
+            className="org.eclipse.osee.framework.ui.skynet.blam.operation.MoveArchivedBranches">
       </Operation>
    </extension>
 </plugin>

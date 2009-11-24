@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
 /**
  * @author Ryan D. Brooks
  */
-public class MigrateBranchBlam extends AbstractBlam {
+public class PopulateTxsBranchIdColumn extends AbstractBlam {
 
    @Override
    public String getName() {
@@ -33,10 +33,11 @@ public class MigrateBranchBlam extends AbstractBlam {
 
    @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
+      String tableName = variableMap.getBoolean("Archived Table") ? "osee_txs_archived" : "osee_txs";
       if (variableMap.getBoolean("Incremental Update")) {
-         incrementallySetBranchId();
+         incrementallySetBranchId(tableName);
       } else {
-         fullySetBranchId();
+         fullySetBranchId(tableName);
       }
    }
 
@@ -47,13 +48,15 @@ public class MigrateBranchBlam extends AbstractBlam {
 
    @Override
    public String getXWidgetsXml() {
-      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Incremental Update\" /></xWidgets>";
+      return "<xWidgets><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Incremental Update\" /><XWidget xwidgetType=\"XCheckBox\" horizontalLabel=\"true\" labelAfter=\"true\" displayName=\"Archived Table\" /></xWidgets>";
    }
 
-   private void fullySetBranchId() throws OseeCoreException {
+   private void fullySetBranchId(String tableName) throws OseeCoreException {
       int blockSize = 50000;
       String sql =
-            "update osee_txs txs set branch_id = (select branch_id from osee_tx_details txd where txs.transaction_id = txd.transaction_id) where transaction_id > ? and transaction_id < ?";
+            String.format(
+                  "update %s txs set branch_id = (select branch_id from osee_tx_details txd where txs.transaction_id = txd.transaction_id) where transaction_id > ? and transaction_id < ?",
+                  tableName);
 
       for (int i = 0; i < 1000000; i += blockSize) {
          println("> " + i + " and < " + (i + blockSize + 1));
@@ -61,7 +64,7 @@ public class MigrateBranchBlam extends AbstractBlam {
       }
    }
 
-   private void incrementallySetBranchId() throws OseeCoreException {
+   private void incrementallySetBranchId(String tableName) throws OseeCoreException {
       String sql = "select branch_id, transaction_id from osee_tx_details";
       HashMap<Integer, Integer> branchMap = new HashMap<Integer, Integer>(600000);
 
@@ -76,7 +79,7 @@ public class MigrateBranchBlam extends AbstractBlam {
       }
       println("# of transactions: " + branchMap.size());
 
-      sql = "select transaction_id, branch_id from osee_txs where branch_id is null";
+      sql = String.format("select transaction_id, branch_id from %s where branch_id is null", tableName);
       int counter = 0;
       try {
          chStmt.runPreparedQuery(10000, sql);
