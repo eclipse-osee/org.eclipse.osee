@@ -247,7 +247,7 @@ public class PropertyStoreWriter {
       }
 
       public void printTag(String name, Map<String, String> parameters, boolean close) {
-         printTag(name, parameters, true, true, close);
+         printTag(name, parameters, false, false, close);
       }
 
       private void printTag(String name, Map<String, String> parameters, boolean shouldTab, boolean newLine, boolean close) {
