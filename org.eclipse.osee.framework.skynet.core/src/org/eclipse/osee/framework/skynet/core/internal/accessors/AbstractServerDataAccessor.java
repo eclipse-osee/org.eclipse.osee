@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
@@ -43,7 +44,7 @@ public abstract class AbstractServerDataAccessor<T extends IOseeStorableType> im
    @Override
    public void load(IOseeCache<T> cache) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("request", "update");
+      parameters.put("function", CacheOperation.UPDATE.name());
 
       CacheUpdateRequest updateRequest = new CacheUpdateRequest(cache.getCacheId());
       CacheUpdateResponse<T> response =
