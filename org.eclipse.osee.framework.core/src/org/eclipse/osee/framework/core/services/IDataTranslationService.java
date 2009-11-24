@@ -29,7 +29,7 @@ public interface IDataTranslationService {
     * @return transformed object
     * @throws OseeCoreException if there are problems during conversion
     */
-   public abstract <T> T convert(InputStream inputStream, Class<?>... toMatch) throws OseeCoreException;
+   public abstract <T> T convert(InputStream inputStream, ITranslatorId toMatch) throws OseeCoreException;
 
    /**
     * Converts a property store into a specified object
@@ -39,7 +39,7 @@ public interface IDataTranslationService {
     * @return transformed object
     * @throws OseeCoreException if there are problems during conversion
     */
-   public abstract <T> T convert(PropertyStore propertyStore, Class<?>... toMatch) throws OseeCoreException;
+   public abstract <T> T convert(PropertyStore propertyStore, ITranslatorId toMatch) throws OseeCoreException;
 
    /**
     * Converts an object into a property store
@@ -48,7 +48,7 @@ public interface IDataTranslationService {
     * @return property store representation of the source object
     * @throws OseeCoreException if there are problems during conversion
     */
-   public abstract <T> PropertyStore convert(T object) throws OseeCoreException;
+   public abstract <T> PropertyStore convert(T object, ITranslatorId toMatch) throws OseeCoreException;
 
    /**
     * Converts an object into an input stream
@@ -57,7 +57,7 @@ public interface IDataTranslationService {
     * @return input stream representation of the source object
     * @throws OseeCoreException if there are problems during conversion
     */
-   public abstract <T> InputStream convertToStream(T object) throws OseeCoreException;
+   public abstract <T> InputStream convertToStream(T object, ITranslatorId toMatch) throws OseeCoreException;
 
    /**
     * Gets the translator matching the class
@@ -67,7 +67,7 @@ public interface IDataTranslationService {
     * @throws OseeCoreException if there are problems getting the translator or class does not have a registered
     *            translator
     */
-   public abstract ITranslator<?> getTranslator(Class<?>... toMatch) throws OseeCoreException;
+   public abstract ITranslator<?> getTranslator(ITranslatorId toMatch) throws OseeCoreException;
 
    /**
     * registers a translator for the specified class
@@ -76,7 +76,7 @@ public interface IDataTranslationService {
     * @param translator to register
     * @return <b>true</b> if translator was added successfully
     */
-   public abstract boolean addTranslator(ITranslator<?> translator, Class<?>... clazz) throws OseeCoreException;
+   public abstract boolean addTranslator(ITranslator<?> translator, ITranslatorId toMatch) throws OseeCoreException;
 
    /**
     * removes a translator for the specified class
@@ -84,13 +84,13 @@ public interface IDataTranslationService {
     * @param clazz associated with the translator to remove
     * @return <b>true</b> if the translator associated with the class was removed
     */
-   public abstract boolean removeTranslator(Class<?>... clazz) throws OseeCoreException;
+   public abstract boolean removeTranslator(ITranslatorId toMatch) throws OseeCoreException;
 
    /**
-    * Get all classes registered with translators
+    * Get all translator identifiers registered
     * 
-    * @return classes with registered translators
+    * @return translator identifiers with registered translators
     */
-   public abstract Collection<Class<?>[]> getSupportedClasses();
+   public abstract Collection<ITranslatorId> getSupportedClasses();
 
 }

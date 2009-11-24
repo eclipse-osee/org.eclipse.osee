@@ -24,6 +24,7 @@ import org.eclipse.osee.framework.branch.management.cache.DatabaseAttributeTypeA
 import org.eclipse.osee.framework.branch.management.cache.DatabaseBranchAccessor;
 import org.eclipse.osee.framework.branch.management.cache.DatabaseOseeEnumTypeAccessor;
 import org.eclipse.osee.framework.branch.management.cache.DatabaseRelationTypeAccessor;
+import org.eclipse.osee.framework.branch.management.cache.DatabaseTransactionRecordAccessor;
 import org.eclipse.osee.framework.branch.management.change.ChangeReportService;
 import org.eclipse.osee.framework.branch.management.commit.BranchCommitService;
 import org.eclipse.osee.framework.branch.management.creation.BranchCreation;
@@ -36,10 +37,12 @@ import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -51,7 +54,7 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class InternalBranchActivator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeModelFactoryServiceProvider {
+public class InternalBranchActivator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeModelFactoryServiceProvider, IOseeCachingServiceProvider {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.branch.management";
 
    private enum TrackerId {
@@ -117,8 +120,8 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
 
       AttributeTypeCache attributeCache = new AttributeTypeCache(attrAccessor);
 
-      TransactionCache transactionCache = new TransactionCache(null);
-      BranchCache branchCache = new BranchCache(new DatabaseBranchAccessor(this, this, transactionCache));
+      TransactionCache transactionCache = new TransactionCache(new DatabaseTransactionRecordAccessor(this, this));
+      BranchCache branchCache = new BranchCache(new DatabaseBranchAccessor(this, this, this));
 
       ArtifactTypeCache artifactCache =
             new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(this, this, branchCache, attributeCache));
@@ -172,6 +175,15 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
       ServiceTracker tracker = mappedTrackers.get(trackerId);
       Object service = tracker.getService();
       return clazz.cast(service);
+   }
+
+   /*
+    * (non-Javadoc)
+    * @see org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider#getOseeCachingService()
+    */
+   @Override
+   public IOseeCachingService getOseeCachingService() throws OseeCoreException {
+      return null;
    }
 
 }

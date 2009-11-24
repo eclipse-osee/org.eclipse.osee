@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -54,11 +55,11 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    private static final String SELECT_BRANCH_ALIASES =
          "select * from osee_branch_definitions order by mapped_branch_id";
 
-   private final TransactionCache transactionCache;
+   private final IOseeCachingServiceProvider cachingService;
 
-   public DatabaseBranchAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, TransactionCache transactionCache) {
+   public DatabaseBranchAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, IOseeCachingServiceProvider cachingService) {
       super(databaseProvider, factoryProvider);
-      this.transactionCache = transactionCache;
+      this.cachingService = cachingService;
    }
 
    //   private Object[] toInsertValues(Branch type) throws OseeCoreException {
@@ -104,13 +105,13 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
 
    private void loadBranchRelatedTransactions(BranchCache cache, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {
       //      Set<Integer> transactions = Collections.setUnion(branchToBaseTx.values(), branchToSourceTx.values());
-
-      transactionCache.ensurePopulated();
+      TransactionCache txCache = cachingService.getOseeCachingService().getTransactionCache();
+      txCache.ensurePopulated();
 
       for (Entry<Branch, Integer> entry : branchToBaseTx.entrySet()) {
          Branch branch = entry.getKey();
          if (branch.getBaseTransaction() == null) {
-            TransactionRecord baseTransaction = transactionCache.getById(entry.getValue());
+            TransactionRecord baseTransaction = txCache.getById(entry.getValue());
             cache.cacheBaseTransaction(branch, baseTransaction);
          }
       }
@@ -118,7 +119,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
       for (Entry<Branch, Integer> entry : branchToBaseTx.entrySet()) {
          Branch branch = entry.getKey();
          if (branch.getSourceTransaction() == null) {
-            TransactionRecord sourceTransaction = transactionCache.getById(entry.getValue());
+            TransactionRecord sourceTransaction = txCache.getById(entry.getValue());
             cache.cacheSourceTransaction(branch, sourceTransaction);
          }
       }

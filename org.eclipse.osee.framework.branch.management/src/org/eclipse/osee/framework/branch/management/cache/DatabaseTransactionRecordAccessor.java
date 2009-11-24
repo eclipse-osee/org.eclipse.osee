@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -42,11 +43,11 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
          "select * from osee_tx_details txd, osee_join_id oji where txd.transaction_id = oji.id and oji.query_id = ?";
 
    private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
-   private final BranchCache branchCache;
+   private final IOseeCachingServiceProvider cachingService;
 
-   public DatabaseTransactionRecordAccessor(IOseeDatabaseServiceProvider oseeDatabaseProvider, BranchCache branchCache) {
+   public DatabaseTransactionRecordAccessor(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeCachingServiceProvider cachingService) {
       this.oseeDatabaseProvider = oseeDatabaseProvider;
-      this.branchCache = branchCache;
+      this.cachingService = cachingService;
    }
 
    public void loadTransactionRecord(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException {
@@ -97,6 +98,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    private void loadFromTransaction(TransactionCache cache, Branch branch, int fetchSize, boolean isOnlyReadFirstResult, String query, Object... parameters) throws OseeCoreException {
+      BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(fetchSize, query, parameters);

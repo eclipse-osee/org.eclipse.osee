@@ -73,7 +73,6 @@ public class DataTranslationServiceTest {
       Assert.assertTrue(service.getSupportedClasses().isEmpty());
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void testConvert() throws OseeCoreException {
       DataTranslationService service = new DataTranslationService();
@@ -88,7 +87,6 @@ public class DataTranslationServiceTest {
       Assert.assertEquals(value.three, actual.three);
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void testConvertStreams() throws OseeCoreException {
       DataTranslationService service = new DataTranslationService();
@@ -111,7 +109,6 @@ public class DataTranslationServiceTest {
       Assert.assertEquals(expected.three, actual.three);
    }
 
-   @SuppressWarnings("unchecked")
    @Test
    public void testNullConverts() throws Exception {
       DataTranslationService service = new DataTranslationService();
@@ -133,21 +130,18 @@ public class DataTranslationServiceTest {
       Assert.assertTrue(toCheck.innerStoresKeySet().isEmpty());
    }
 
-   @SuppressWarnings("unchecked")
    @Test(expected = OseeArgumentException.class)
    public void testNullClazz() throws Exception {
       DataTranslationService service = new DataTranslationService();
       service.convert(new ByteArrayInputStream(new byte[0]), (Class<?>) null);
    }
 
-   @SuppressWarnings("unchecked")
    @Test(expected = OseeArgumentException.class)
    public void testNullClazz2() throws Exception {
       DataTranslationService service = new DataTranslationService();
       service.convert(new PropertyStore(), (Class<?>) null);
    }
 
-   @SuppressWarnings("unchecked")
    @Test(expected = OseeArgumentException.class)
    public void testNullInputStream() throws Exception {
       DataTranslationService service = new DataTranslationService();
