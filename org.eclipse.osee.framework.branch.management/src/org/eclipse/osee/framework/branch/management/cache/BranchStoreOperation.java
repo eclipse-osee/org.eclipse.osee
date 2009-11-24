@@ -18,8 +18,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchField;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
-import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 
 /**
@@ -33,12 +31,10 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
    private static final String UPDATE_BRANCH =
          "update osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ? where branch_id = ?";
 
-   private static final String SELECT_ADDRESSING_BY_BRANCH =
-         "select txs.* from %s txs, osee_tx_details txd where txs.transaction_id = txd.transaction_id and txd.branch_id = ?";
    private static final String INSERT_ADDRESSING =
-         "insert into %s (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
+         "insert into %s (transaction_id, gamma_id, tx_current, mod_type) select transaction_id, gamma_id, tx_current, mod_type from osee_txs where branch_id = ?";
 
-   public static final String DELETE_ADDRESSING = "delete from %s where transaction_id = ? and gamma_id = ?";
+   public static final String DELETE_ADDRESSING = "delete from %s where branch_id = ?";
    private final Collection<Branch> branches;
 
    public BranchStoreOperation(IOseeDatabaseServiceProvider provider, Collection<Branch> branches) {
@@ -98,26 +94,11 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       String sourceTableName = archive ? "osee_txs" : "osee_txs_archived";
       String destinationTableName = archive ? "osee_txs_archived" : "osee_txs";
 
-      IOseeStatement chStmt = getDatabaseService().getStatement(connection);
-      List<Object[]> addressing = new ArrayList<Object[]>();
-      List<Object[]> deleteAddressing = new ArrayList<Object[]>();
-      String sql = String.format(SELECT_ADDRESSING_BY_BRANCH, sourceTableName);
-
-      try {
-         chStmt.runPreparedQuery(10000, sql, branch.getId());
-         while (chStmt.next()) {
-            addressing.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id"),
-                  chStmt.getInt("mod_type"), chStmt.getInt("tx_current")});
-            deleteAddressing.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
-         }
-      } finally {
-         chStmt.close();
-      }
-      sql = String.format(INSERT_ADDRESSING, destinationTableName);
-      ConnectionHandler.runBatchUpdate(connection, sql, addressing);
+      String sql = String.format(INSERT_ADDRESSING, destinationTableName);
+      getDatabaseService().runPreparedUpdate(connection, sql, branch.getId());
 
       sql = String.format(DELETE_ADDRESSING, sourceTableName);
-      ConnectionHandler.runBatchUpdate(connection, sql, deleteAddressing);
+      getDatabaseService().runPreparedUpdate(connection, sql, branch.getId());
    }
 
    private boolean isDataDirty(Branch type) throws OseeCoreException {
