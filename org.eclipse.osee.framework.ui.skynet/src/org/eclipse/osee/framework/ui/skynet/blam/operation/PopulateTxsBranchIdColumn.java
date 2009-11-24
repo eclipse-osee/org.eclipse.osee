@@ -28,7 +28,7 @@ public class PopulateTxsBranchIdColumn extends AbstractBlam {
 
    @Override
    public String getName() {
-      return "Migrate Branch Blam";
+      return "Populate Txs Branch Id Column";
    }
 
    @Override
@@ -52,7 +52,7 @@ public class PopulateTxsBranchIdColumn extends AbstractBlam {
    }
 
    private void fullySetBranchId(String tableName) throws OseeCoreException {
-      int blockSize = 50000;
+      int blockSize = 200000;
       String sql =
             String.format(
                   "update %s txs set branch_id = (select branch_id from osee_tx_details txd where txs.transaction_id = txd.transaction_id) where transaction_id > ? and transaction_id < ?",
