@@ -31,6 +31,8 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.test.mocks.MockOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.test.mocks.MockOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.core.translation.ArtifactTypeTranslator;
+import org.eclipse.osee.framework.core.translation.AttributeTypeTranslator;
 import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
 import org.eclipse.osee.framework.core.translation.BranchCommitRequestTranslator;
 import org.eclipse.osee.framework.core.translation.BranchCommitResponseTranslator;
@@ -79,6 +81,8 @@ public class DataTranslationServiceFactoryTest {
       checkExists(service, CacheUpdateResponseTranslator.class, CacheUpdateResponse.class, Branch.class);
       checkExists(service, CacheUpdateResponseTranslator.class, CacheUpdateResponse.class, TransactionRecord.class);
 
+      checkExists(service, ArtifactTypeTranslator.class, ArtifactType.class);
+      checkExists(service, AttributeTypeTranslator.class, AttributeType.class);
       checkExists(service, RelationTypeTranslator.class, RelationType.class);
       checkExists(service, OseeEnumTypeTranslator.class, OseeEnumType.class);
       checkExists(service, OseeEnumEntryTranslator.class, OseeEnumEntry.class);

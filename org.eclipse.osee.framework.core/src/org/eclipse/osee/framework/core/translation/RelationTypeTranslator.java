@@ -45,18 +45,18 @@ public class RelationTypeTranslator implements ITranslator<RelationType> {
       this.provider = provider;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public RelationType convert(PropertyStore store) throws OseeCoreException {
       String guid = store.get(Entry.GUID.name());
       int uniqueId = store.getInt(Entry.UNIQUE_ID.name());
       String name = store.get(Entry.NAME.name());
+      ModificationType modType = ModificationType.valueOf(store.get(Entry.MOD_TYPE.name()));
+
       String sideA = store.get(Entry.SIDE_A_NAME.name());
       String sideB = store.get(Entry.SIDE_B_NAME.name());
 
       String defaultOrderTypeGuid = store.get(Entry.ORDER_GUID.name());
       RelationTypeMultiplicity multiplicity = RelationTypeMultiplicity.valueOf(store.get(Entry.MULTIPLICITY.name()));
-      ModificationType modType = ModificationType.valueOf(store.get(Entry.MOD_TYPE.name()));
 
       ArtifactType artifactTypeSideA =
             service.convert(store.getPropertyStore(Entry.ART_TYPE_A.name()), ArtifactType.class);
@@ -77,12 +77,13 @@ public class RelationTypeTranslator implements ITranslator<RelationType> {
       store.put(Entry.GUID.name(), type.getGuid());
       store.put(Entry.UNIQUE_ID.name(), type.getId());
       store.put(Entry.NAME.name(), type.getName());
+      store.put(Entry.MOD_TYPE.name(), type.getModificationType().name());
+
       store.put(Entry.SIDE_A_NAME.name(), type.getSideAName());
       store.put(Entry.SIDE_B_NAME.name(), type.getSideBName());
 
       store.put(Entry.ORDER_GUID.name(), type.getDefaultOrderTypeGuid());
       store.put(Entry.MULTIPLICITY.name(), type.getMultiplicity().name());
-      store.put(Entry.MOD_TYPE.name(), type.getModificationType().name());
 
       store.put(Entry.ART_TYPE_A.name(), service.convert(type.getArtifactTypeSideA()));
       store.put(Entry.ART_TYPE_B.name(), service.convert(type.getArtifactTypeSideB()));

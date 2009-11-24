@@ -10,7 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
+import java.util.Arrays;
+import java.util.Collection;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.OseeEnumTypeFactory;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
@@ -28,14 +32,15 @@ public class ServerOseeEnumTypeAccessor extends AbstractServerDataAccessor<OseeE
       return getOseeFactoryService().getOseeEnumTypeFactory();
    }
 
-   //   @Override
-   //   protected void updateCache(AbstractOseeCache<OseeEnumType> cache, CacheUpdateResponse<OseeEnumType> updateResponse) throws OseeCoreException {
-   //      for (OseeEnumType updated : updateResponse.getItems()) {
-   //         OseeEnumType type =
-   //               getFactory().createOrUpdate(cache, updated.getId(), updated.getModificationType(), updated.getGuid(),
-   //                     updated.getName());
-   //         OseeEnumEntry[] entries = updated.values();
-   //         type.setEntries(Arrays.asList(entries));
-   //      }
-   //   }
+   @Override
+   protected void updateCache(IOseeCache<OseeEnumType> cache, Collection<OseeEnumType> items) throws OseeCoreException {
+      OseeEnumTypeFactory factory = getFactory();
+      for (OseeEnumType srcItem : items) {
+         OseeEnumType updated =
+               factory.createOrUpdate(cache, srcItem.getId(), srcItem.getModificationType(), srcItem.getGuid(),
+                     srcItem.getName());
+         OseeEnumEntry[] entries = srcItem.values();
+         updated.setEntries(Arrays.asList(entries));
+      }
+   }
 }

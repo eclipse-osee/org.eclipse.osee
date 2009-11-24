@@ -10,11 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 
 /**
@@ -39,8 +41,33 @@ public class ServerBranchAccessor extends AbstractServerDataAccessor<Branch> {
       super.load(cache);
    }
 
-   //   @Override
-   //   protected void updateCache(AbstractOseeCache<Branch> cache, CacheUpdateResponse<Branch> updateResponse) throws OseeCoreException {
-   //   }
+   @Override
+   protected void updateCache(IOseeCache<Branch> cache, Collection<Branch> items) throws OseeCoreException {
+      BranchFactory factory = getFactory();
+      for (Branch srcItem : items) {
+         Branch updated =
+               factory.createOrUpdate(cache, srcItem.getId(), srcItem.getModificationType(), srcItem.getGuid(),
+                     srcItem.getName(), srcItem.getBranchType(), srcItem.getBranchState(),
+                     srcItem.getArchiveState().isArchived());
+         Collection<String> aliases = srcItem.getAliases();
+         updated.setAliases(aliases.toArray(new String[aliases.size()]));
 
+         TransactionRecord baseTx = transactionCache.getById(srcItem.getBaseTransaction().getId());
+         updated.setBaseTransaction(baseTx);
+
+         TransactionRecord srcTx = transactionCache.getById(srcItem.getSourceTransaction().getId());
+         if (srcTx != null) {
+            updated.setSourceTransaction(srcTx);
+         }
+         //         srcItem.setAssociatedArtifact(artifact);
+      }
+
+      for (Branch srcItem : items) {
+         Branch srcParent = srcItem.getParentBranch();
+         if (srcParent != null) {
+            Branch branch = cache.getById(srcItem.getId());
+            branch.setParentBranch(cache.getById(srcParent.getId()));
+         }
+      }
+   }
 }

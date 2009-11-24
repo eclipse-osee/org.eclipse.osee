@@ -33,7 +33,7 @@ public class HttpMessage {
    }
 
    @SuppressWarnings("unchecked")
-   public static <J, K> J send(String context, Map<String, String> parameters, K requestData, Class<J> clazzResponse) throws OseeCoreException {
+   public static <J, K> J send(String context, Map<String, String> parameters, K requestData, Class<?>... toMatch) throws OseeCoreException {
       parameters.put("sessionId", ClientSessionManager.getSessionId());
       String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(context, parameters);
       InputStream inputStream = null;
@@ -43,10 +43,10 @@ public class HttpMessage {
          ByteArrayOutputStream buffer = new ByteArrayOutputStream();
          AcquireResult result = HttpProcessor.post(new URL(urlString), inputStream, "text/xml", "UTF-8", buffer);
          if (result.wasSuccessful()) {
-            if (AcquireResult.class == clazzResponse) {
+            if (AcquireResult.class == toMatch[0]) {
                return (J) result;
             } else {
-               return service.convert(new ByteArrayInputStream(buffer.toByteArray()), clazzResponse);
+               return service.convert(new ByteArrayInputStream(buffer.toByteArray()), toMatch);
             }
          } else {
             throw new OseeCoreException(String.format("Request [%s] failed.", urlString));

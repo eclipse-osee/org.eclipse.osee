@@ -126,6 +126,25 @@ public final class Branch extends AbstractOseeType implements Comparable<Branch>
       setFieldLogException(BranchField.BRANCH_TYPE_FIELD_KEY, branchType);
    }
 
+   public void setParentBranch(Branch parentBranch) throws OseeCoreException {
+      Branch oldParent = getParentBranch();
+      if (oldParent != null) {
+         oldParent.childBranches.remove(this);
+      }
+      setField(BranchField.PARENT_BRANCH, parentBranch);
+      if (parentBranch != null) {
+         parentBranch.childBranches.add(this);
+      }
+   }
+
+   public void setBaseTransaction(TransactionRecord baseTx) throws OseeCoreException {
+      setField(BranchField.BRANCH_BASE_TRANSACTION, baseTx);
+   }
+
+   public void setSourceTransaction(TransactionRecord srcTx) throws OseeCoreException {
+      setField(BranchField.BRANCH_SOURCE_TRANSACTION, srcTx);
+   }
+
    public boolean isEditable() {
       BranchState state = getBranchState();
       return !state.isCommitted() && !state.isRebaselined() && // 

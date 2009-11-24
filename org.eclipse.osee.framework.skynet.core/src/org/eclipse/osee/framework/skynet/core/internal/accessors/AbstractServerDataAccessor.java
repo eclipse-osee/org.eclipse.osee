@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
@@ -41,7 +40,6 @@ public abstract class AbstractServerDataAccessor<T extends IOseeStorableType> im
       return factoryProvider.getOseeFactoryService();
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public void load(IOseeCache<T> cache) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
@@ -54,18 +52,15 @@ public abstract class AbstractServerDataAccessor<T extends IOseeStorableType> im
       Conditions.checkExpressionFailOnTrue(cache.getCacheId() != response.getCacheId(),
             "Reponse does not match cache enum id - cache to update [%s] - reponse cache id [%s]", cache.getCacheId(),
             response.getCacheId());
-
-      //      Collection<?> items = response.getItems();
-      //      for (Object item : response.getItems()) {
-      //         T updated = (T) item;
-      //         //         T type = cache.getByGuid(updated.getGuid());
-      //         //         if (type != null) {
-      //         //            type.clearDirty();
-      //         //         }
-      //      }
+      updateCache(cache, response.getItems());
+      for (T item : response.getItems()) {
+         T type = cache.getById(item.getId());
+         if (type != null) {
+            type.clearDirty();
+         }
+      }
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public void store(Collection<T> types) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
@@ -84,7 +79,5 @@ public abstract class AbstractServerDataAccessor<T extends IOseeStorableType> im
       //      }
    }
 
-   protected void updateCache(AbstractOseeCache<T> cache, CacheUpdateResponse updateResponse) throws OseeCoreException {
-
-   }
+   protected abstract void updateCache(IOseeCache<T> cache, Collection<T> items) throws OseeCoreException;
 }

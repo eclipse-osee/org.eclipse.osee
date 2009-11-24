@@ -42,7 +42,6 @@ public class OseeEnumTypeTranslator implements ITranslator<OseeEnumType> {
       this.provider = provider;
    }
 
-   @SuppressWarnings("unchecked")
    @Override
    public OseeEnumType convert(PropertyStore store) throws OseeCoreException {
       String guid = store.get(Entry.GUID.name());

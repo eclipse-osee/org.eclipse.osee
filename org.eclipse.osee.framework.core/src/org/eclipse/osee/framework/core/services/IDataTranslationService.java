@@ -29,7 +29,7 @@ public interface IDataTranslationService {
     * @return transformed object
     * @throws OseeCoreException if there are problems during conversion
     */
-   public abstract <T> T convert(InputStream inputStream, Class<T>... toMatch) throws OseeCoreException;
+   public abstract <T> T convert(InputStream inputStream, Class<?>... toMatch) throws OseeCoreException;
 
    /**
     * Converts a property store into a specified object
@@ -39,7 +39,7 @@ public interface IDataTranslationService {
     * @return transformed object
     * @throws OseeCoreException if there are problems during conversion
     */
-   public abstract <T> T convert(PropertyStore propertyStore, Class<T>... toMatch) throws OseeCoreException;
+   public abstract <T> T convert(PropertyStore propertyStore, Class<?>... toMatch) throws OseeCoreException;
 
    /**
     * Converts an object into a property store

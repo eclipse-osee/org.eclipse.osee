@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -40,15 +41,15 @@ public class ServerRelationTypeAccessor extends AbstractServerDataAccessor<Relat
       super.load(cache);
    }
 
-   //   @Override
-   //   protected void updateCache(AbstractOseeCache<RelationType> cache, CacheUpdateResponse<RelationType> updateResponse) throws OseeCoreException {
-   //      for (RelationType updated : updateResponse.getItems()) {
-   //         ArtifactType aSideType = artCache.getByGuid(updated.getArtifactTypeSideA().getGuid());
-   //         ArtifactType bSideType = artCache.getByGuid(updated.getArtifactTypeSideB().getGuid());
-   //         getFactory().createOrUpdate(cache, updated.getId(), updated.getModificationType(), updated.getGuid(),
-   //               updated.getName(), updated.getSideAName(), updated.getSideBName(), aSideType, bSideType,
-   //               updated.getMultiplicity(), updated.getDefaultOrderTypeGuid());
-   //
-   //      }
-   //   }
+   @Override
+   protected void updateCache(IOseeCache<RelationType> cache, Collection<RelationType> items) throws OseeCoreException {
+      RelationTypeFactory factory = getFactory();
+      for (RelationType srcItem : items) {
+         ArtifactType aSideType = artCache.getByGuid(srcItem.getArtifactTypeSideA().getGuid());
+         ArtifactType bSideType = artCache.getByGuid(srcItem.getArtifactTypeSideB().getGuid());
+         factory.createOrUpdate(cache, srcItem.getId(), srcItem.getModificationType(), srcItem.getGuid(),
+               srcItem.getName(), srcItem.getSideAName(), srcItem.getSideBName(), aSideType, bSideType,
+               srcItem.getMultiplicity(), srcItem.getDefaultOrderTypeGuid());
+      }
+   }
 }

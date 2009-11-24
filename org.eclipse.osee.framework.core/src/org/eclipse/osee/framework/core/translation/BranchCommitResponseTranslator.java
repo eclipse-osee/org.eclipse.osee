@@ -31,7 +31,6 @@ public class BranchCommitResponseTranslator implements ITranslator<BranchCommitR
       this.service = service;
    }
 
-   @SuppressWarnings("unchecked")
    public BranchCommitResponse convert(PropertyStore propertyStore) throws OseeCoreException {
       BranchCommitResponse response = new BranchCommitResponse();
       PropertyStore innerStore = propertyStore.getPropertyStore(Entry.TRANSACTION_NUMBER.name());

@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
+import java.util.Collection;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -40,8 +41,15 @@ public class ServerAttributeTypeAccessor extends AbstractServerDataAccessor<Attr
       super.load(cache);
    }
 
-   //   @Override
-   //   protected void updateCache(AbstractOseeCache<AttributeType> cache, CacheUpdateResponse<AttributeType> updateResponse) throws OseeCoreException {
-   //   }
-
+   @Override
+   protected void updateCache(IOseeCache<AttributeType> cache, Collection<AttributeType> items) throws OseeCoreException {
+      AttributeTypeFactory factory = getFactory();
+      for (AttributeType srcType : items) {
+         OseeEnumType oseeEnumType = enumCache.getById(srcType.getOseeEnumTypeId());
+         factory.createOrUpdate(cache, srcType.getId(), srcType.getModificationType(), srcType.getGuid(),
+               srcType.getName(), srcType.getBaseAttributeTypeId(), srcType.getAttributeProviderId(),
+               srcType.getFileTypeExtension(), srcType.getDefaultValue(), oseeEnumType, srcType.getMinOccurrences(),
+               srcType.getMaxOccurrences(), srcType.getDescription(), srcType.getTaggerId());
+      }
+   }
 }

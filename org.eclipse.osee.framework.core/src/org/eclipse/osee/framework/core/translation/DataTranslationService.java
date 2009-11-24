@@ -39,7 +39,7 @@ public class DataTranslationService implements IDataTranslationService {
 
    @Override
    @SuppressWarnings("unchecked")
-   public <T> T convert(PropertyStore propertyStore, Class<T>... toMatch) throws OseeCoreException {
+   public <T> T convert(PropertyStore propertyStore, Class<?>... toMatch) throws OseeCoreException {
       Conditions.checkNotNull(toMatch, "class toMatch");
       Conditions.checkDoesNotContainNulls(toMatch, "toMatch cannot contain nulls");
 
@@ -131,7 +131,7 @@ public class DataTranslationService implements IDataTranslationService {
    }
 
    @Override
-   public <T> T convert(InputStream inputStream, Class<T>... toMatch) throws OseeCoreException {
+   public <T> T convert(InputStream inputStream, Class<?>... toMatch) throws OseeCoreException {
       Conditions.checkNotNull(inputStream, "inputStream");
       Conditions.checkNotNull(toMatch, "class toMatch");
       Conditions.checkDoesNotContainNulls(toMatch, "toMatch cannot contain nulls");

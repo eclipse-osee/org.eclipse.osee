@@ -14,26 +14,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.cache.BranchCache;
-import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
-import org.eclipse.osee.framework.core.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerArtifactTypeAccessor;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerAttributeTypeAccessor;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerBranchAccessor;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerOseeEnumTypeAccessor;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerRelationTypeAccessor;
 import org.eclipse.osee.framework.skynet.core.serverCommit.CommitService;
 import org.eclipse.osee.framework.skynet.core.serverCommit.ICommitService;
 import org.osgi.framework.BundleActivator;
@@ -69,7 +57,7 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       ClientSessionManager.class.getCanonicalName();
       HttpAttributeTagger.getInstance();
 
-      IOseeCachingService cachingService = createCachingService();
+      IOseeCachingService cachingService = new ClientCachingServiceFactory().createService(this);
 
       createService(context, IOseeCachingService.class, cachingService);
       createService(context, ICommitService.class, new CommitService());
@@ -96,25 +84,6 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       mappedTrackers.clear();
 
       instance = null;
-   }
-
-   private IOseeCachingService createCachingService() {
-      OseeEnumTypeCache oseeEnumTypeCache = new OseeEnumTypeCache(new ServerOseeEnumTypeAccessor(this));
-
-      AttributeTypeCache attributeTypeCache =
-            new AttributeTypeCache(new ServerAttributeTypeAccessor(this, oseeEnumTypeCache));
-
-      ArtifactTypeCache artifactTypeCache =
-            new ArtifactTypeCache(new ServerArtifactTypeAccessor(this, attributeTypeCache));
-
-      RelationTypeCache relationTypeCache =
-            new RelationTypeCache(new ServerRelationTypeAccessor(this, artifactTypeCache));
-
-      TransactionCache transactionCache = new TransactionCache(null);
-
-      BranchCache branchCache = new BranchCache(new ServerBranchAccessor(this, transactionCache));
-      return new OseeCachingService(branchCache, transactionCache, artifactTypeCache, attributeTypeCache,
-            relationTypeCache, oseeEnumTypeCache);
    }
 
    public static Activator getInstance() {

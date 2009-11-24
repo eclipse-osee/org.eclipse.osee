@@ -57,6 +57,8 @@ public class DataTranslationServiceFactory {
 
       service.addTranslator(new CacheUpdateRequestTranslator(), CacheUpdateRequest.class);
 
+      service.addTranslator(new ArtifactTypeTranslator(service, provider), ArtifactType.class);
+      service.addTranslator(new AttributeTypeTranslator(service, provider), AttributeType.class);
       service.addTranslator(new RelationTypeTranslator(service, provider), RelationType.class);
       service.addTranslator(new OseeEnumTypeTranslator(service, provider), OseeEnumType.class);
       service.addTranslator(new OseeEnumEntryTranslator(provider), OseeEnumEntry.class);

@@ -1402,7 +1402,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    public static boolean isUniqueHRID(String id) throws OseeDataStoreException {
       String DUPLICATE_HRID_SEARCH = "SELECT COUNT(1) FROM osee_artifact t1 WHERE t1.human_readable_id = ?";
 
-      return ConnectionHandler.runPreparedQueryFetchInt(-1, DUPLICATE_HRID_SEARCH, id) == 0;
+      return ConnectionHandler.runPreparedQueryFetchLong(-1L, DUPLICATE_HRID_SEARCH, id) == 0;
    }
 
    /**
@@ -1506,7 +1506,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    private Artifact reflectHelper(Branch branch) throws OseeCoreException {
       Artifact reflectedArtifact =
             ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, guid, humanReadableId,
-            artifactType, gammaId, branch, ModificationType.INTRODUCED);
+                  artifactType, gammaId, branch, ModificationType.INTRODUCED);
 
       for (Attribute<?> sourceAttribute : attributes.getValues()) {
          // In order to reflect attributes they must exist in the data store
@@ -1608,7 +1608,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       artifactAnnotationExtensions = new HashSet<IArtifactAnnotation>();
       IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
+                  "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
       if (point == null) {
          System.err.println("Can't access ArtifactAnnotation extension point");
          return artifactAnnotationExtensions;
