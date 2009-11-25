@@ -16,10 +16,9 @@ import java.util.List;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
-import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.BranchCommitResponseTranslator;
 import org.eclipse.osee.framework.core.translation.BranchTranslator;
@@ -49,17 +48,16 @@ public class BranchCommitResponseTranslatorTest extends BaseTranslatorTest<Branc
 
    @Parameters
    public static Collection<Object[]> data() throws OseeCoreException {
+      IOseeModelFactoryServiceProvider factoryProvider = MockDataFactory.createFactoryProvider();
+
       List<Object[]> data = new ArrayList<Object[]>();
-      IOseeCachingServiceProvider serviceProvider = MockDataFactory.createCachingProvider();
       IDataTranslationService service = new DataTranslationService();
-      service.addTranslator(new BranchTranslator(serviceProvider), CoreTranslatorId.BRANCH);
-      service.addTranslator(new TransactionRecordTranslator(service), CoreTranslatorId.TRANSACTION_RECORD);
+      service.addTranslator(new BranchTranslator(service, factoryProvider), CoreTranslatorId.BRANCH);
+      service.addTranslator(new TransactionRecordTranslator(factoryProvider), CoreTranslatorId.TRANSACTION_RECORD);
 
       ITranslator<BranchCommitResponse> translator = new BranchCommitResponseTranslator(service);
-      for (int index = 0; index < 2; index++) {
-         Branch branch = MockDataFactory.createBranch(index);
-         TransactionRecord tx = MockDataFactory.createTransaction(index, branch);
-         serviceProvider.getOseeCachingService().getBranchCache().cache(branch);
+      for (int index = 1; index <= 2; index++) {
+         TransactionRecord tx = MockDataFactory.createTransaction(index, index * 3);
 
          BranchCommitResponse response = new BranchCommitResponse();
          response.setTransaction(tx);

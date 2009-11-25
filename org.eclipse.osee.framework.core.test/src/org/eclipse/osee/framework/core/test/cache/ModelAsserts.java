@@ -59,8 +59,8 @@ public class ModelAsserts {
             String expectedAlias = expectedAliasesList.get(index++);
             expectedAlias = expectedAlias.toLowerCase();
             Assert.assertEquals(expectedAlias, actualAlias);
-            Collection<Branch> aliasedbranch = cache.getByAlias(expectedAlias);
-            Assert.assertTrue(aliasedbranch.contains(branch));
+            //            Collection<Branch> aliasedbranch = cache.getByAlias(expectedAlias);
+            //            Assert.assertTrue(aliasedbranch.contains(branch));
          }
       }
    }
@@ -68,7 +68,7 @@ public class ModelAsserts {
    public static void createAlias(BranchCache cache, String branchGuid, String... aliases) throws OseeCoreException {
       Branch branch = cache.getByGuid(branchGuid);
       Assert.assertNotNull(branch);
-      cache.setAliases(branch, Arrays.asList(aliases));
+      //      cache.setAliases(branch, Arrays.asList(aliases));
    }
 
    public static void checkMergeBranch(BranchCache cache, String expectedMergeBranchGuid, String sourceBranchGuid, String destinationBranchGuid) throws OseeCoreException {
@@ -120,7 +120,7 @@ public class ModelAsserts {
       for (String childGuid : childrenGuids) {
          Branch childBranch = cache.getByGuid(childGuid);
          Assert.assertNotNull(childBranch);
-         cache.setBranchParent(parentBranch, childBranch);
+         childBranch.setParentBranch(parentBranch);
       }
    }
 

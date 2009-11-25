@@ -89,7 +89,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private int getSourceBranchId() {
-      return sourceTransactionId.getBranch().getId();
+      return sourceTransactionId.getBranchId();
    }
 
    @Override

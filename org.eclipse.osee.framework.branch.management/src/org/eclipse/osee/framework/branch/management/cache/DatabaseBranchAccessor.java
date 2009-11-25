@@ -11,7 +11,6 @@
 package org.eclipse.osee.framework.branch.management.cache;
 
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -33,7 +32,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.model.TransactionRecordFactory;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
@@ -50,6 +48,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    public static final int NULL_PARENT_BRANCH_ID = -1;
    private static final String SELECT_BRANCHES =
          "SELECT ob.*, txd.transaction_id FROM osee_branch ob, osee_tx_details txd WHERE ob.branch_id = txd.branch_id and txd.tx_type = " + TransactionDetailsType.Baselined.getId();
+
    //   private static final String INSERT_BRANCH =
    //         "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state) VALUES (?,?,?,?,?,?,?,?,?)";
    //   private static final String DELETE_BRANCH = "DELETE from osee_branch where branch_id = ?";
@@ -78,16 +77,17 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    public void load(IOseeCache<Branch> cache) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
       Map<Branch, Integer> childToParent = new HashMap<Branch, Integer>();
+      Map<Branch, Integer> branchToParentTx = new HashMap<Branch, Integer>();
       Map<Branch, Integer> branchToSourceTx = new HashMap<Branch, Integer>();
       Map<Branch, Integer> associatedArtifact = new HashMap<Branch, Integer>();
 
       BranchCache brCache = (BranchCache) cache;
-      loadBranches(brCache, childToParent, branchToSourceTx, associatedArtifact);
+      loadBranches(brCache, childToParent, branchToParentTx, branchToSourceTx, associatedArtifact);
       loadBranchHierarchy(brCache, childToParent);
       loadMergeBranches(brCache);
       loadBranchAliases(brCache);
       loadAssociatedArtifacts(brCache, associatedArtifact);
-      loadBranchRelatedTransactions(brCache, branchToSourceTx);
+      loadBranchRelatedTransactions(brCache, branchToParentTx, branchToSourceTx);
 
       for (Branch branch : cache.getAll()) {
          branch.clearDirty();
@@ -96,11 +96,8 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
             Lib.getElapseString(startTime)));
    }
 
-   private void loadBranches(BranchCache cache, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
+   private void loadBranches(BranchCache cache, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToParentTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
       BranchFactory factory = getFactoryService().getBranchFactory();
-      TransactionRecordFactory txFactory = getFactoryService().getTransactionFactory();
-      TransactionCache txCache = cachingService.getOseeCachingService().getTransactionCache();
-
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
          chStmt.runPreparedQuery(2000, SELECT_BRANCHES);
@@ -116,12 +113,12 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
                Branch branch =
                      factory.createOrUpdate(cache, branchId, ModificationType.MODIFIED, branchGuid, branchName,
                            branchType, branchState, isArchived);
-               updateTransactionRecord(chStmt, branch, txCache, txFactory);
 
                Integer parentBranchId = chStmt.getInt("parent_branch_id");
                if (parentBranchId != NULL_PARENT_BRANCH_ID) {
                   childToParent.put(branch, parentBranchId);
                }
+               branchToParentTx.put(branch, chStmt.getInt("transaction_id"));
                branchToSourceTx.put(branch, chStmt.getInt("parent_transaction_id"));
                associatedArtifact.put(branch, chStmt.getInt("associated_art_id"));
             } catch (OseeCoreException ex) {
@@ -143,12 +140,21 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
       //      }
    }
 
-   private void loadBranchRelatedTransactions(BranchCache cache, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {
+   private void loadBranchRelatedTransactions(BranchCache cache, Map<Branch, Integer> branchToParentTx, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {
       TransactionCache txCache = cachingService.getOseeCachingService().getTransactionCache();
 
       Set<Integer> transactionIds = new HashSet<Integer>();
       transactionIds.addAll(branchToSourceTx.values());
+      transactionIds.addAll(branchToParentTx.values());
       txCache.loadTransactions(transactionIds);
+
+      for (Entry<Branch, Integer> entry : branchToParentTx.entrySet()) {
+         Branch branch = entry.getKey();
+         if (branch.getBaseTransaction() == null) {
+            TransactionRecord baseTx = txCache.getById(entry.getValue());
+            branch.setBaseTransaction(baseTx);
+         }
+      }
 
       for (Entry<Branch, Integer> entry : branchToSourceTx.entrySet()) {
          Branch branch = entry.getKey();
@@ -159,18 +165,6 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
       }
    }
 
-   private void updateTransactionRecord(IOseeStatement chStmt, Branch branch, TransactionCache cache, TransactionRecordFactory factory) throws OseeCoreException {
-      int txId = chStmt.getInt("transaction_id");
-      String comment = chStmt.getString("osee_comment");
-      Date timestamp = chStmt.getTimestamp("time");
-      int authorArtId = chStmt.getInt("author");
-      int commitArtId = chStmt.getInt("commit_art_id");
-      TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
-      TransactionRecord record =
-            factory.createOrUpdate(cache, txId, branch, comment, timestamp, authorArtId, commitArtId, txType);
-      record.clearDirty();
-   }
-
    private void loadBranchHierarchy(BranchCache branchCache, Map<Branch, Integer> childToParent) throws OseeCoreException {
       for (Entry<Branch, Integer> entry : childToParent.entrySet()) {
          Branch childBranch = entry.getKey();
@@ -179,8 +173,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
             throw new BranchDoesNotExist(String.format("Parent Branch id:[%s] does not exist for child branch [%s]",
                   entry.getValue(), entry.getKey()));
          }
-         branchCache.setBranchParent(parentBranch, childBranch);
-
+         childBranch.setParentBranch(parentBranch);
       }
    }
 

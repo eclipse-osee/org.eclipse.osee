@@ -12,24 +12,27 @@ package org.eclipse.osee.framework.core.model;
 
 import java.util.Date;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
  * @author Jeff C. Phillips
  */
 public final class TransactionRecord implements IAdaptable {
    private final int transactionNumber;
-   private final Branch branch;
+   private final int branchId;
    private final TransactionDetailsType txType;
 
    private String comment;
    private Date time;
    private int authorArtId;
    private int commitArtId;
+   private AbstractOseeCache<Branch> cache;
 
-   public TransactionRecord(int transactionNumber, Branch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+   public TransactionRecord(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       this.transactionNumber = transactionNumber;
-      this.branch = branch;
+      this.branchId = branchId;
       this.comment = comment;
       this.time = time;
       this.authorArtId = authorArtId;
@@ -37,8 +40,16 @@ public final class TransactionRecord implements IAdaptable {
       this.txType = txType;
    }
 
-   public Branch getBranch() {
-      return branch;
+   public void setBranchCache(AbstractOseeCache<Branch> cache) {
+      this.cache = cache;
+   }
+
+   public int getBranchId() {
+      return branchId;
+   }
+
+   public Branch getBranch() throws OseeCoreException {
+      return cache.getById(getBranchId());
    }
 
    public int getId() {
@@ -108,7 +119,7 @@ public final class TransactionRecord implements IAdaptable {
 
    @Override
    public String toString() {
-      return String.format("%s:%s", transactionNumber, String.valueOf(getBranch()));
+      return String.format("%s:%s", transactionNumber, getBranchId());
    }
 
    public boolean isDirty() {

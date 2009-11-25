@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
 import org.eclipse.osee.framework.core.translation.BranchCommitRequestTranslator;
@@ -53,10 +54,11 @@ public class BranchCommitRequestTranslatorTest extends BaseTranslatorTest<Branch
    public static Collection<Object[]> data() throws OseeCoreException {
       List<Object[]> data = new ArrayList<Object[]>();
       IOseeCachingServiceProvider serviceProvider = MockDataFactory.createCachingProvider();
+      IOseeModelFactoryServiceProvider factoryProvider = MockDataFactory.createFactoryProvider();
       IDataTranslationService service = new DataTranslationService();
-      service.addTranslator(new BranchTranslator(serviceProvider), CoreTranslatorId.BRANCH);
+      service.addTranslator(new BranchTranslator(service, factoryProvider), CoreTranslatorId.BRANCH);
       service.addTranslator(new BasicArtifactTranslator(), CoreTranslatorId.ARTIFACT_METADATA);
-      service.addTranslator(new TransactionRecordTranslator(service), CoreTranslatorId.TRANSACTION_RECORD);
+      service.addTranslator(new TransactionRecordTranslator(factoryProvider), CoreTranslatorId.TRANSACTION_RECORD);
 
       ITranslator<BranchCommitRequest> translator = new BranchCommitRequestTranslator(service);
 

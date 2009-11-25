@@ -79,10 +79,14 @@ public final class MockDataFactory {
       return new Branch(GUID.create(), "branch_" + index, branchType, branchState, isArchived);
    }
 
-   public static TransactionRecord createTransaction(int index, Branch branch) {
+   public static TransactionRecord createTransaction(int index, int branchId) {
       TransactionDetailsType type =
             TransactionDetailsType.values()[Math.abs(index % TransactionDetailsType.values().length)];
-      return new TransactionRecord(index * 47, branch, "comment_" + index, new Date(), index * 37, index * 42, type);
+      int value = index;
+      if (value == 0) {
+         value++;
+      }
+      return new TransactionRecord(value * 47, branchId, "comment_" + value, new Date(), value * 37, value * 42, type);
    }
 
    public static OseeEnumEntry createEnumEntry(int index) {

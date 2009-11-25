@@ -34,7 +34,7 @@ public class TransactionRecordTest {
 
    private final TransactionRecord transaction;
    private final int transactionNumber;
-   private final Branch branch;
+   private final int branchId;
    private final TransactionDetailsType txType;
 
    private final String comment;
@@ -42,11 +42,11 @@ public class TransactionRecordTest {
    private final int authorArtId;
    private final int commitArtId;
 
-   public TransactionRecordTest(int transactionNumber, Branch branch, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
+   public TransactionRecordTest(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       this.transaction =
-            new TransactionRecord(transactionNumber, branch, comment, time, authorArtId, commitArtId, txType);
+            new TransactionRecord(transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType);
       this.transactionNumber = transactionNumber;
-      this.branch = branch;
+      this.branchId = branchId;
       this.comment = comment;
       this.time = time;
       this.authorArtId = authorArtId;
@@ -56,7 +56,7 @@ public class TransactionRecordTest {
 
    @Test
    public void getBranch() {
-      Assert.assertEquals(branch, transaction.getBranch());
+      Assert.assertEquals(branchId, transaction.getBranchId());
    }
 
    @Test
@@ -112,10 +112,8 @@ public class TransactionRecordTest {
 
    @Test
    public void testEqualsAndHashCode() {
-      Branch br1 = MockDataFactory.createBranch(1);
-      Branch br2 = MockDataFactory.createBranch(2);
-      TransactionRecord tx1 = MockDataFactory.createTransaction(99, br1);
-      TransactionRecord tx2 = MockDataFactory.createTransaction(99, br2);
+      TransactionRecord tx1 = MockDataFactory.createTransaction(99, 1);
+      TransactionRecord tx2 = MockDataFactory.createTransaction(99, 2);
 
       // Add some variation to tx2 so we are certain that only the txId is used in the equals method;
       tx2.setAuthor(0);
@@ -143,8 +141,7 @@ public class TransactionRecordTest {
 
    @Test
    public void testToString() {
-      String prefix = branch != null ? branch.toString() : "null";
-      Assert.assertEquals(transactionNumber + ":" + prefix, transaction.toString());
+      Assert.assertEquals(transactionNumber + ":" + branchId, transaction.toString());
    }
 
    @Parameters

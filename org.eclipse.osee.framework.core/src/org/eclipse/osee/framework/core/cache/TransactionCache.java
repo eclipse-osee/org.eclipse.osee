@@ -88,8 +88,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
       return new ArrayList<TransactionRecord>(transactionIdCache.values());
    }
 
-   @Override
-   public TransactionRecord getById(int txId) throws OseeCoreException {
+   public TransactionRecord getOrLoad(int txId) throws OseeCoreException {
       ensurePopulated();
       TransactionRecord transactionRecord = transactionIdCache.get(txId);
       if (transactionRecord == null) {
@@ -100,6 +99,12 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
          }
       }
       return transactionRecord;
+   }
+
+   @Override
+   public TransactionRecord getById(int txId) throws OseeCoreException {
+      ensurePopulated();
+      return transactionIdCache.get(txId);
    }
 
    @Override

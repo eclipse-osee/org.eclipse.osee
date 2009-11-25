@@ -25,19 +25,18 @@ public class TransactionRecordFactory implements IOseeTypeFactory {
    public TransactionRecordFactory() {
    }
 
-   public TransactionRecord create(int transactionNumber, Branch branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+   public TransactionRecord create(int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
       Conditions.checkExpressionFailOnTrue(transactionNumber < 1, "[%s] is not a valid transaction number",
             transactionNumber);
-      Conditions.checkNotNull(branch, "branch");
       Conditions.checkNotNull(timestamp, "timestamp");
       Conditions.checkNotNull(txType, "transaction type");
-      return new TransactionRecord(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType);
+      return new TransactionRecord(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType);
    }
 
-   public TransactionRecord createOrUpdate(TransactionCache cache, int transactionNumber, Branch branch, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
+   public TransactionRecord createOrUpdate(TransactionCache cache, int transactionNumber, int branchId, String comment, Date timestamp, int authorArtId, int commitArtId, TransactionDetailsType txType) throws OseeCoreException {
       TransactionRecord record = cache.getById(transactionNumber);
       if (record == null) {
-         record = create(transactionNumber, branch, comment, timestamp, authorArtId, commitArtId, txType);
+         record = create(transactionNumber, branchId, comment, timestamp, authorArtId, commitArtId, txType);
       } else {
          cache.decache(record);
          record.setAuthor(authorArtId);

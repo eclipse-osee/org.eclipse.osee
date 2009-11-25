@@ -13,13 +13,11 @@ package org.eclipse.osee.framework.core.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
-import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.BranchTranslator;
 import org.eclipse.osee.framework.core.translation.DataTranslationService;
@@ -50,25 +48,19 @@ public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Transact
 
    @Parameters
    public static Collection<Object[]> data() throws OseeCoreException {
-      IOseeCachingServiceProvider serviceProvider = MockDataFactory.createCachingProvider();
+      IOseeModelFactoryServiceProvider factoryProvider = MockDataFactory.createFactoryProvider();
 
       IDataTranslationService service = new DataTranslationService();
+      service.addTranslator(new BranchTranslator(service, factoryProvider), CoreTranslatorId.BRANCH);
 
-      service.addTranslator(new BranchTranslator(serviceProvider), CoreTranslatorId.BRANCH);
-      service.addTranslator(new TransactionRecordTranslator(service), CoreTranslatorId.TRANSACTION_RECORD);
+      ITranslator<TransactionRecord> translator = new TransactionRecordTranslator(factoryProvider);
 
-      ITranslator<TransactionRecord> translator = new TransactionRecordTranslator(service);
-
-      BranchCache cache = serviceProvider.getOseeCachingService().getBranchCache();
+      service.addTranslator(translator, CoreTranslatorId.TRANSACTION_RECORD);
 
       List<Object[]> data = new ArrayList<Object[]>();
-      for (int index = 1; index <= 5; index++) {
-         Branch branch = MockDataFactory.createBranch(index);
-         cache.cache(branch);
-         data.add(new Object[] {MockDataFactory.createTransaction(index * 10, branch), translator});
+      for (int index = 1; index <= 2; index++) {
+         data.add(new Object[] {MockDataFactory.createTransaction(index * 10, index * 3), translator});
       }
-      data.add(new Object[] {MockDataFactory.createTransaction(-1, null), translator});
       return data;
    }
-
 }

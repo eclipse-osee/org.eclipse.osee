@@ -50,7 +50,7 @@ public class BranchCommitResponseTest {
    public static Collection<Object[]> getData() {
       Collection<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {
-         TransactionRecord transaction = MockDataFactory.createTransaction(index, null);
+         TransactionRecord transaction = MockDataFactory.createTransaction(index, 2);
          data.add(new Object[] {new BranchCommitResponse(), transaction});
       }
       return data;

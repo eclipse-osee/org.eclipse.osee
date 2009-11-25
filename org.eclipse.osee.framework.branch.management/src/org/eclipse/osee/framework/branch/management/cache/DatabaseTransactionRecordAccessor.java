@@ -121,9 +121,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       try {
          chStmt.runPreparedQuery(fetchSize, query, parameters);
          while (chStmt.next()) {
-            if (branch == null) {
-               branch = branchCache.getById(chStmt.getInt("branch_id"));
-            }
+            int branchId = chStmt.getInt("branch_id");
             int transactionNumber = chStmt.getInt("transaction_id");
             String comment = chStmt.getString("osee_comment");
             Date timestamp = chStmt.getTimestamp("time");
@@ -132,8 +130,9 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
             TransactionRecord record =
-                  factory.createOrUpdate(cache, transactionNumber, branch, comment, timestamp, authorArtId,
+                  factory.createOrUpdate(cache, transactionNumber, branchId, comment, timestamp, authorArtId,
                         commitArtId, txType);
+            record.setBranchCache(branchCache);
             record.clearDirty();
             if (isOnlyReadFirstResult) {
                break;

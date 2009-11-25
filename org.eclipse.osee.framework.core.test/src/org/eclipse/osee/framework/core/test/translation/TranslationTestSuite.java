@@ -20,6 +20,7 @@ BasicArtifactTranslatorTest.class, //
       BranchCommitRequestTranslatorTest.class, //
       BranchCommitResponseTranslatorTest.class, //
       CacheUpdateRequestTranslatorTest.class, //
+      CacheUpdateResponseTranslatorTest.class, //
       ChangeItemTranslatorTest.class, //
       ChangeVersionTranslatorTest.class, //
       DataTranslationServiceFactoryTest.class, //

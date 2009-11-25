@@ -40,7 +40,8 @@ public enum CoreTranslatorId implements ITranslatorId {
    OSEE_ENUM_ENTRY,
    TRANSACTION_RECORD,
    BRANCH,
-   ARTIFACT_METADATA;
+   ARTIFACT_METADATA,
+   BRANCH_METADATA;
 
    @Override
    public String getKey() {

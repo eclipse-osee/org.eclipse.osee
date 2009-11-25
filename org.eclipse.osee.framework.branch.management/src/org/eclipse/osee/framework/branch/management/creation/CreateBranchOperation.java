@@ -195,6 +195,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
                branch.getParentBranchId(), branch.getParentTransactionId(), 0, branch.getAssociatedArtifactId(),
                branch.getBranchType().getValue(), branch.getBranchState().getValue(), branch.getId());
       }
+
       checkForCancelledStatus(monitor);
       monitor.worked(calculateWork(workAmount));
    }

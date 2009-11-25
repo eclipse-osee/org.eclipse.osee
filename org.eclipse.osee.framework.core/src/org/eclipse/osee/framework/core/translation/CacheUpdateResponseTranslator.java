@@ -34,12 +34,12 @@ public class CacheUpdateResponseTranslator<T> implements ITranslator<CacheUpdate
    private final IDataTranslationService service;
    private final ITranslatorId internalTranslatorId;
 
-   public CacheUpdateResponseTranslator(IDataTranslationService service, ITranslatorId clazzType) {
+   public CacheUpdateResponseTranslator(IDataTranslationService service, ITranslatorId internalTranslatorId) {
       this.service = service;
-      this.internalTranslatorId = clazzType;
+      this.internalTranslatorId = internalTranslatorId;
    }
 
-   private ITranslatorId getClassType() {
+   private ITranslatorId getPayloadTranslatorId() {
       return internalTranslatorId;
    }
 
@@ -50,7 +50,7 @@ public class CacheUpdateResponseTranslator<T> implements ITranslator<CacheUpdate
       int numberOfItems = store.getInt(Entry.COUNT.name());
       for (int index = 0; index < numberOfItems; index++) {
          PropertyStore innerStore = store.getPropertyStore(createKey(index));
-         T object = service.convert(innerStore, getClassType());
+         T object = service.convert(innerStore, getPayloadTranslatorId());
          items.add(object);
       }
       return new CacheUpdateResponse<T>(cacheId, items);
@@ -65,7 +65,8 @@ public class CacheUpdateResponseTranslator<T> implements ITranslator<CacheUpdate
       store.put(Entry.COUNT.name(), items.size());
       int index = 0;
       for (T item : items) {
-         store.put(createKey(index++), service.convert(item, getClassType()));
+         store.put(createKey(index), service.convert(item, getPayloadTranslatorId()));
+         index++;
       }
       return store;
    }
