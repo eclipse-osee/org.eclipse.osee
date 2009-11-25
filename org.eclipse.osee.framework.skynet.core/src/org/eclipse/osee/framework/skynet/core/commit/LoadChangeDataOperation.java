@@ -83,7 +83,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
    }
 
    private int getSourceBranchId() {
-      return sourceTransactionId.getBranch().getId();
+      return sourceTransactionId.getBranchId();
    }
 
    @Override
@@ -150,7 +150,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
             Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
             ArtifactChangeItem changeItem =
                   new ArtifactChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
-                  chStmt.getInt("art_id"));
+                        chStmt.getInt("art_id"));
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }
       } finally {
@@ -170,8 +170,8 @@ public class LoadChangeDataOperation extends AbstractOperation {
             Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
             AttributeChangeItem changeItem =
                   new AttributeChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(),
-                  txsTableData.getFirst(), chStmt.getInt("attr_id"), chStmt.getInt("art_id"),
-                  chStmt.getString("value"));
+                        txsTableData.getFirst(), chStmt.getInt("attr_id"), chStmt.getInt("art_id"),
+                        chStmt.getString("value"));
 
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }
@@ -192,8 +192,8 @@ public class LoadChangeDataOperation extends AbstractOperation {
             Pair<Integer, ModificationType> txsTableData = changeByGammaId.get(chStmt.getLong("gamma_id"));
             RelationChangeItem changeItem =
                   new RelationChangeItem(chStmt.getLong("gamma_id"), txsTableData.getSecond(), txsTableData.getFirst(),
-                  chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"), chStmt.getInt("rel_link_id"),
-                  chStmt.getInt("rel_link_type_id"), chStmt.getString("rationale"));
+                        chStmt.getInt("a_art_id"), chStmt.getInt("b_art_id"), chStmt.getInt("rel_link_id"),
+                        chStmt.getInt("rel_link_type_id"), chStmt.getString("rationale"));
 
             changesByItemId.put(changeItem.getItemId(), changeItem);
          }

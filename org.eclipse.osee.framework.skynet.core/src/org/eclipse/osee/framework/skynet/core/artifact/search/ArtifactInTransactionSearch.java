@@ -23,8 +23,8 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
  * @author Robert A. Fisher
  */
 public class ArtifactInTransactionSearch implements ISearchPrimitive {
-   private Integer fromTransactionNumber;
-   private Integer toTransactionNumber;
+   private final Integer fromTransactionNumber;
+   private final Integer toTransactionNumber;
    private static final String TOKEN = ";";
    private static final String tables =
          TRANSACTIONS_TABLE + "," + TRANSACTION_DETAIL_TABLE + "," + ARTIFACT_VERSION_TABLE;
@@ -34,10 +34,12 @@ public class ArtifactInTransactionSearch implements ISearchPrimitive {
    }
 
    public ArtifactInTransactionSearch(TransactionRecord fromTransactionId, TransactionRecord toTransactionId) {
-      if (!fromTransactionId.getBranch().equals(toTransactionId.getBranch())) throw new IllegalArgumentException(
-            "The fromTransactionId and toTransactionId must be on the same branch");
-      if (fromTransactionId.getId() > toTransactionId.getId()) throw new IllegalArgumentException(
-            "The fromTransactionId can not be greater than the toTransactionId.");
+      if (fromTransactionId.getBranchId() != toTransactionId.getBranchId()) {
+         throw new IllegalArgumentException("The fromTransactionId and toTransactionId must be on the same branch");
+      }
+      if (fromTransactionId.getId() > toTransactionId.getId()) {
+         throw new IllegalArgumentException("The fromTransactionId can not be greater than the toTransactionId.");
+      }
 
       this.fromTransactionNumber = fromTransactionId.getId();
       this.toTransactionNumber = toTransactionId.getId();
@@ -66,10 +68,11 @@ public class ArtifactInTransactionSearch implements ISearchPrimitive {
 
    @Override
    public String toString() {
-      if (fromTransactionNumber.equals(toTransactionNumber))
+      if (fromTransactionNumber.equals(toTransactionNumber)) {
          return "Transaction Number: " + toTransactionNumber;
-      else
+      } else {
          return "Transactions: " + fromTransactionNumber + " to " + toTransactionNumber;
+      }
    }
 
    public String getStorageString() {

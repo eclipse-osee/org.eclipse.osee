@@ -34,7 +34,7 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
    }
 
    public RelationInTransactionSearch(TransactionRecord fromTransactionId, TransactionRecord toTransactionId) {
-      if (!fromTransactionId.getBranch().equals(toTransactionId.getBranch())) {
+      if (fromTransactionId.getBranchId() != toTransactionId.getBranchId()) {
          throw new IllegalArgumentException("The fromTransactionId and toTransactionId must be on the same branch");
       }
       if (fromTransactionId.getId() > toTransactionId.getId()) {
@@ -43,7 +43,7 @@ public class RelationInTransactionSearch implements ISearchPrimitive {
 
       this.fromTransactionNumber = fromTransactionId.getId();
       this.toTransactionNumber = toTransactionId.getId();
-      this.branchId = fromTransactionId.getBranch().getId();
+      this.branchId = fromTransactionId.getBranchId();
    }
 
    public String getArtIdColName() {

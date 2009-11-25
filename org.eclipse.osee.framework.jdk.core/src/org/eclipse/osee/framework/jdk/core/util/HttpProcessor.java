@@ -290,7 +290,7 @@ public class HttpProcessor {
       }
 
       public boolean wasSuccessful() {
-         return code == HttpURLConnection.HTTP_OK;
+         return code == HttpURLConnection.HTTP_OK || code == HttpURLConnection.HTTP_ACCEPTED;
       }
 
       public int getCode() {

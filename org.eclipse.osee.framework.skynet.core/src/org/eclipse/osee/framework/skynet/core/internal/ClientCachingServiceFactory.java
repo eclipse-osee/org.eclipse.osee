@@ -19,11 +19,12 @@ import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerArtifactTypeAccessor;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerAttributeTypeAccessor;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerBranchAccessor;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerOseeEnumTypeAccessor;
-import org.eclipse.osee.framework.skynet.core.internal.accessors.ServerRelationTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientArtifactTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientAttributeTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientBranchAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientOseeEnumTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientRelationTypeAccessor;
+import org.eclipse.osee.framework.skynet.core.internal.accessors.ClientTransactionAccessor;
 
 /**
  * @author Roberto E. Escobar
@@ -34,19 +35,19 @@ public class ClientCachingServiceFactory {
    }
 
    public IOseeCachingService createService(IOseeModelFactoryServiceProvider factoryProvider) {
-      TransactionCache transactionCache = new TransactionCache(null);
+      TransactionCache transactionCache = new TransactionCache(new ClientTransactionAccessor());
 
-      BranchCache branchCache = new BranchCache(new ServerBranchAccessor(factoryProvider, transactionCache));
-      OseeEnumTypeCache oseeEnumTypeCache = new OseeEnumTypeCache(new ServerOseeEnumTypeAccessor(factoryProvider));
+      BranchCache branchCache = new BranchCache(new ClientBranchAccessor(factoryProvider, transactionCache));
+      OseeEnumTypeCache oseeEnumTypeCache = new OseeEnumTypeCache(new ClientOseeEnumTypeAccessor(factoryProvider));
 
       AttributeTypeCache attributeTypeCache =
-            new AttributeTypeCache(new ServerAttributeTypeAccessor(factoryProvider, oseeEnumTypeCache));
+            new AttributeTypeCache(new ClientAttributeTypeAccessor(factoryProvider, oseeEnumTypeCache));
 
       ArtifactTypeCache artifactTypeCache =
-            new ArtifactTypeCache(new ServerArtifactTypeAccessor(factoryProvider, attributeTypeCache, branchCache));
+            new ArtifactTypeCache(new ClientArtifactTypeAccessor(factoryProvider, attributeTypeCache, branchCache));
 
       RelationTypeCache relationTypeCache =
-            new RelationTypeCache(new ServerRelationTypeAccessor(factoryProvider, artifactTypeCache));
+            new RelationTypeCache(new ClientRelationTypeAccessor(factoryProvider, artifactTypeCache));
 
       return new OseeCachingService(branchCache, transactionCache, artifactTypeCache, attributeTypeCache,
             relationTypeCache, oseeEnumTypeCache);

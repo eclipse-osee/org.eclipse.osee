@@ -22,6 +22,7 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -68,12 +69,16 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
    }
 
    public static void open(Branch branch) throws OseeArgumentException {
-      if (branch == null) throw new OseeArgumentException("Branch can't be null");
+      if (branch == null) {
+         throw new OseeArgumentException("Branch can't be null");
+      }
       ChangeView.openViewUpon(branch, null, true);
    }
 
    public static void open(TransactionRecord transactionId) throws OseeArgumentException {
-      if (transactionId == null) throw new OseeArgumentException("TransactionId can't be null");
+      if (transactionId == null) {
+         throw new OseeArgumentException("TransactionId can't be null");
+      }
       ChangeView.openViewUpon(null, transactionId, true);
    }
 
@@ -87,8 +92,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
                   try {
                      IWorkbenchPage page = AWorkbench.getActivePage();
                      ChangeView changeView =
-                           (ChangeView) page.showView(
-                                 VIEW_ID,
+                           (ChangeView) page.showView(VIEW_ID,
                                  String.valueOf(branch != null ? branch.getId() : transactionId.getId()),
                                  IWorkbenchPage.VIEW_ACTIVATE);
 
@@ -157,7 +161,7 @@ public class ChangeView extends ViewPart implements IActionable, IBranchEventLis
       OseeContributionItem.addTo(this, true);
    }
 
-   private void explore(final Branch branch, final TransactionRecord transactionId, boolean loadChangeReport) {
+   private void explore(final Branch branch, final TransactionRecord transactionId, boolean loadChangeReport) throws OseeCoreException {
       if (xChangeWidget != null) {
          this.branch = branch;
          this.transactionId = transactionId;

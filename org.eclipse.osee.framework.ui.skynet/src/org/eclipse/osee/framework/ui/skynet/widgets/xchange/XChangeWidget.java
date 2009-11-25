@@ -336,13 +336,18 @@ public class XChangeWidget extends XWidget implements IActionable {
                            extraInfoLabel.setText(NOT_CHANGES);
                            xChangeViewer.setInput(changes);
                         } else {
-                           String infoLabel =
-                                 String.format(
-                                       "Changes %s to branch: %s\n%s",
-                                       hasBranch || transactionId.getComment() == null ? "made" : "committed",
-                                       hasBranch ? branch : "(" + transactionId.getId() + ") " + transactionId.getBranch(),
-                                       hasBranch || transactionId.getComment() == null ? "" : "Comment: " + transactionId.getComment());
-                           extraInfoLabel.setText(infoLabel);
+                           try {
+                              String infoLabel =
+                                    String.format(
+                                          "Changes %s to branch: %s\n%s",
+                                          hasBranch || transactionId.getComment() == null ? "made" : "committed",
+                                          hasBranch ? branch : "(" + transactionId.getId() + ") " + transactionId.getBranch(),
+                                          hasBranch || transactionId.getComment() == null ? "" : "Comment: " + transactionId.getComment());
+                              extraInfoLabel.setText(infoLabel);
+                           } catch (OseeCoreException ex) {
+                              OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                           }
+
                            xChangeViewer.setInput(changes);
                         }
                         try {

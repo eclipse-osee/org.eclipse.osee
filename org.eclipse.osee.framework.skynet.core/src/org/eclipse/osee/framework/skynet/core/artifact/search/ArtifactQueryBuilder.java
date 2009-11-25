@@ -46,7 +46,7 @@ public class ArtifactQueryBuilder {
    private List<String> hrids;
    private String guidOrHrid;
    private final AbstractArtifactSearchCriteria[] criteria;
-   private final Branch branch;
+   private final int branchId;
    private int artifactId;
    private Collection<Integer> artifactIds;
    private final Collection<ArtifactType> artifactTypes;
@@ -89,12 +89,12 @@ public class ArtifactQueryBuilder {
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
-   public ArtifactQueryBuilder(List<String> guidOrHrids, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(List<String> guidOrHrids, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel) throws OseeCoreException {
       this(null, 0, guidOrHrids, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
       emptyCriteria = guidOrHrids.size() == 0;
    }
 
-   public ArtifactQueryBuilder(int artifactId, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel) {
+   public ArtifactQueryBuilder(int artifactId, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel) throws OseeCoreException {
       this(null, artifactId, null, null, null, transactionId.getBranch(), transactionId, allowDeleted, loadLevel, true);
    }
 
@@ -137,7 +137,7 @@ public class ArtifactQueryBuilder {
 
    private ArtifactQueryBuilder(Collection<Integer> artifactIds, int artifactId, List<String> guidOrHrids, String guidOrHrid, Collection<ArtifactType> artifactTypes, Branch branch, TransactionRecord transactionId, boolean allowDeleted, ArtifactLoad loadLevel, boolean tableOrderForward, AbstractArtifactSearchCriteria... criteria) {
       this.artifactTypes = artifactTypes;
-      this.branch = branch;
+      this.branchId = branch.getId();
       this.criteria = criteria;
       this.loadLevel = loadLevel;
       this.allowDeleted = allowDeleted;
@@ -353,11 +353,11 @@ public class ArtifactQueryBuilder {
       sql.append(".transaction_id=");
       sql.append(txdAlias);
       sql.append(".transaction_id");
-      if (branch != null) {
+      if (branchId > 0) {
          sql.append(" AND ");
          sql.append(txdAlias);
          sql.append(".branch_id=?");
-         addParameter(branch.getId());
+         addParameter(branchId);
       }
    }
 
@@ -512,7 +512,7 @@ public class ArtifactQueryBuilder {
          message.append("\"");
       }
       message.append(" on branch \"");
-      message.append(branch);
+      message.append(branchId);
       message.append("\"");
       return message.toString();
    }

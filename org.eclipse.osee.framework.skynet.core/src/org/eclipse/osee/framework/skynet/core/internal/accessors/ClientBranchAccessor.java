@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 /**
  * @author Roberto E. Escobar
  */
-public class ServerBranchAccessor extends AbstractServerDataAccessor<Branch> {
+public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
 
    private final TransactionCache transactionCache;
 
-   public ServerBranchAccessor(IOseeModelFactoryServiceProvider factoryProvider, TransactionCache transactionCache) {
+   public ClientBranchAccessor(IOseeModelFactoryServiceProvider factoryProvider, TransactionCache transactionCache) {
       super(factoryProvider, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__BRANCH);
       this.transactionCache = transactionCache;
    }
@@ -38,12 +38,11 @@ public class ServerBranchAccessor extends AbstractServerDataAccessor<Branch> {
 
    @Override
    public void load(IOseeCache<Branch> cache) throws OseeCoreException {
-      transactionCache.ensurePopulated();
       super.load(cache);
    }
 
    @Override
-   protected void updateCache(IOseeCache<Branch> cache, Collection<Branch> items) throws OseeCoreException {
+   protected synchronized void updateCache(IOseeCache<Branch> cache, Collection<Branch> items) throws OseeCoreException {
       BranchFactory factory = getFactory();
       for (Branch srcItem : items) {
          Branch updated =

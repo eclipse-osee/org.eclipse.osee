@@ -23,9 +23,9 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 /**
  * @author Roberto E. Escobar
  */
-public class ServerOseeEnumTypeAccessor extends AbstractServerDataAccessor<OseeEnumType> {
+public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<OseeEnumType> {
 
-   public ServerOseeEnumTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider) {
+   public ClientOseeEnumTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider) {
       super(factoryProvider, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__OSEE_ENUM_TYPE);
    }
 

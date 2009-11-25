@@ -108,18 +108,19 @@ public class TxData {
    @Override
    public boolean equals(Object obj) {
       if (obj instanceof TxData) {
-         TxData other = ((TxData) obj);
+         TxData other = (TxData) obj;
          return other.getTxId().longValue() == getTxId().longValue();
       }
       return false;
    }
 
+   @Override
    public String toString() {
       return String.format("Tx:[%s] Author:[%s] Branch:[%s] Comment:[%s]", getTxId(), getAuthor(),
             getBranch().getName(), getComment());
    }
 
-   protected static TxData createTxData(TransactionRecord txId) {
+   protected static TxData createTxData(TransactionRecord txId) throws OseeCoreException {
       return new TxData(txId.getBranch(), txId.getAuthor(), txId.getTimeStamp(), txId.getComment(),
             txId.getTxType().getId(), txId.getCommit(), txId.getId());
    }

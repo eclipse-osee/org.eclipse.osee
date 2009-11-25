@@ -29,12 +29,12 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 /**
  * @author Roberto E. Escobar
  */
-public class ServerArtifactTypeAccessor extends AbstractServerDataAccessor<ArtifactType> {
+public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<ArtifactType> {
 
    private final AbstractOseeCache<AttributeType> attrCache;
    private final AbstractOseeCache<Branch> branchCache;
 
-   public ServerArtifactTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<AttributeType> attrCache, AbstractOseeCache<Branch> branchCache) {
+   public ClientArtifactTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<AttributeType> attrCache, AbstractOseeCache<Branch> branchCache) {
       super(factoryProvider, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ARTIFACT_TYPE);
       this.attrCache = attrCache;
       this.branchCache = branchCache;

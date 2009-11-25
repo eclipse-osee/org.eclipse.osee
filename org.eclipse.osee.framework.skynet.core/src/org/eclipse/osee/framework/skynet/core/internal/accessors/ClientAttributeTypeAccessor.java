@@ -23,11 +23,11 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider
 /**
  * @author Roberto E. Escobar
  */
-public class ServerAttributeTypeAccessor extends AbstractServerDataAccessor<AttributeType> {
+public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<AttributeType> {
 
    private final AbstractOseeCache<OseeEnumType> enumCache;
 
-   public ServerAttributeTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<OseeEnumType> enumCache) {
+   public ClientAttributeTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<OseeEnumType> enumCache) {
       super(factoryProvider, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ATTRIBUTE_TYPE);
       this.enumCache = enumCache;
    }

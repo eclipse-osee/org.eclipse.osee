@@ -31,7 +31,6 @@ import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -152,7 +151,7 @@ public final class TransactionManager {
             authorArtId, branch.getId(), TransactionDetailsType.NonBaselined.getId());
 
       TransactionRecord transactionId =
-            new TransactionRecord(transactionNumber, branch, comment, transactionTime, authorArtId, -1,
+            new TransactionRecord(transactionNumber, branch.getId(), comment, transactionTime, authorArtId, -1,
                   TransactionDetailsType.NonBaselined);
 
       instance.transactionIdCache.put(transactionNumber, transactionId);
@@ -213,12 +212,12 @@ public final class TransactionManager {
                         "The transaction id " + transactionNumber + " does not exist in the databse.");
                }
             }
-            Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
             transactionId =
-                  new TransactionRecord(transactionNumber, branch, chStmt.getString("osee_comment"),
-                        chStmt.getTimestamp("time"), chStmt.getInt("author"), chStmt.getInt("commit_art_id"), txType);
+                  new TransactionRecord(transactionNumber, chStmt.getInt("branch_id"),
+                        chStmt.getString("osee_comment"), chStmt.getTimestamp("time"), chStmt.getInt("author"),
+                        chStmt.getInt("commit_art_id"), txType);
             instance.transactionIdCache.put(transactionNumber, transactionId);
          } finally {
             if (useLocalConnection) {

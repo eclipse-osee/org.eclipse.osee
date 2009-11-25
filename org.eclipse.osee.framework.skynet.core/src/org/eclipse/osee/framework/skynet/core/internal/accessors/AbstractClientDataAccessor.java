@@ -31,12 +31,12 @@ import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
 /**
  * @author Roberto E. Escobar
  */
-public abstract class AbstractServerDataAccessor<T extends IOseeStorableType> implements IOseeDataAccessor<T> {
+public abstract class AbstractClientDataAccessor<T extends IOseeStorableType> implements IOseeDataAccessor<T> {
 
    private final IOseeModelFactoryServiceProvider factoryProvider;
    private final ITranslatorId updateResponseId;
 
-   protected AbstractServerDataAccessor(IOseeModelFactoryServiceProvider factoryProvider, ITranslatorId updateResponseId) {
+   protected AbstractClientDataAccessor(IOseeModelFactoryServiceProvider factoryProvider, ITranslatorId updateResponseId) {
       this.factoryProvider = factoryProvider;
       this.updateResponseId = updateResponseId;
    }
