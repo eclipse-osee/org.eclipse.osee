@@ -15,19 +15,19 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {//
-BasicArtifactTranslatorTest.class, //
-      BranchTranslatorTest.class, //
-      BranchCommitRequestTranslatorTest.class, //
+//BasicArtifactTranslatorTest.class, //
+//      BranchTranslatorTest.class, //
+BranchCommitRequestTranslatorTest.class, //
       BranchCommitResponseTranslatorTest.class, //
       CacheUpdateRequestTranslatorTest.class, //
-      CacheUpdateResponseTranslatorTest.class, //
+      //      CacheUpdateResponseTranslatorTest.class, //
       ChangeItemTranslatorTest.class, //
       ChangeVersionTranslatorTest.class, //
       DataTranslationServiceFactoryTest.class, //
       DataTranslationServiceTest.class, //
-      OseeEnumEntryTranslatorTest.class, //
-      OseeEnumTypeTranslatorTest.class, //
-      RelationTypeTranslatorTest.class, //
+      //      OseeEnumEntryTranslatorTest.class, //
+      //      OseeEnumTypeTranslatorTest.class, //
+      //      RelationTypeTranslatorTest.class, //
       TransactionRecordTranslatorTest.class //
 })
 /**

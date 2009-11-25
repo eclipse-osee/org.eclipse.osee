@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.RelationType;
@@ -28,7 +27,7 @@ public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<Relat
    private final AbstractOseeCache<ArtifactType> artCache;
 
    public ClientRelationTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<ArtifactType> artCache) {
-      super(factoryProvider, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__RELATION_TYPE);
+      super(factoryProvider);
       this.artCache = artCache;
    }
 
@@ -43,14 +42,15 @@ public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<Relat
    }
 
    @Override
-   protected void updateCache(IOseeCache<RelationType> cache, Collection<RelationType> items) throws OseeCoreException {
-      RelationTypeFactory factory = getFactory();
-      for (RelationType srcItem : items) {
-         ArtifactType aSideType = artCache.getByGuid(srcItem.getArtifactTypeSideA().getGuid());
-         ArtifactType bSideType = artCache.getByGuid(srcItem.getArtifactTypeSideB().getGuid());
-         factory.createOrUpdate(cache, srcItem.getId(), srcItem.getModificationType(), srcItem.getGuid(),
-               srcItem.getName(), srcItem.getSideAName(), srcItem.getSideBName(), aSideType, bSideType,
-               srcItem.getMultiplicity(), srcItem.getDefaultOrderTypeGuid());
-      }
+   protected Collection<RelationType> updateCache(IOseeCache<RelationType> cache) throws OseeCoreException {
+      //      RelationTypeFactory factory = getFactory();
+      //      for (RelationType srcItem : items) {
+      //         ArtifactType aSideType = artCache.getByGuid(srcItem.getArtifactTypeSideA().getGuid());
+      //         ArtifactType bSideType = artCache.getByGuid(srcItem.getArtifactTypeSideB().getGuid());
+      //         factory.createOrUpdate(cache, srcItem.getId(), srcItem.getModificationType(), srcItem.getGuid(),
+      //               srcItem.getName(), srcItem.getSideAName(), srcItem.getSideBName(), aSideType, bSideType,
+      //               srcItem.getMultiplicity(), srcItem.getDefaultOrderTypeGuid());
+      //      }
+      return null;
    }
 }

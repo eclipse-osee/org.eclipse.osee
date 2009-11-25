@@ -18,6 +18,8 @@ import java.util.Set;
 import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
+import org.eclipse.osee.framework.core.data.ArtifactTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.data.ArtifactTypeCacheUpdateResponse.ArtifactTypeRow;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -25,6 +27,8 @@ import org.eclipse.osee.framework.core.model.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Triplet;
 
 /**
  * @author Roberto E. Escobar
@@ -35,7 +39,7 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
    private final AbstractOseeCache<Branch> branchCache;
 
    public ClientArtifactTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<AttributeType> attrCache, AbstractOseeCache<Branch> branchCache) {
-      super(factoryProvider, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ARTIFACT_TYPE);
+      super(factoryProvider);
       this.attrCache = attrCache;
       this.branchCache = branchCache;
    }
@@ -52,34 +56,42 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
    }
 
    @Override
-   protected void updateCache(IOseeCache<ArtifactType> cache, Collection<ArtifactType> items) throws OseeCoreException {
-      List<ArtifactType> updatedTypes = new ArrayList<ArtifactType>();
+   protected Collection<ArtifactType> updateCache(IOseeCache<ArtifactType> cache) throws OseeCoreException {
+      List<ArtifactType> updatedItems = new ArrayList<ArtifactType>();
+
+      ArtifactTypeCacheUpdateResponse response =
+            sendUpdateMessage(cache, CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
 
       ArtifactTypeFactory factory = getFactory();
-      for (ArtifactType srcType : items) {
+      for (ArtifactTypeRow row : response.getArtTypeRows()) {
          ArtifactType cached =
-               factory.createOrUpdate(cache, srcType.getId(), srcType.getModificationType(), srcType.getGuid(),
-                     srcType.isAbstract(), srcType.getName());
-         updatedTypes.add(cached);
+               factory.createOrUpdate(cache, row.getId(), row.getModType(), row.getGuid(), row.isAbstract(),
+                     row.getName());
+         updatedItems.add(cached);
+      }
 
-         for (Entry<Branch, Collection<AttributeType>> entries : srcType.getLocalAttributeTypes().entrySet()) {
-            Branch branch = branchCache.getByGuid(entries.getKey().getGuid());
-            List<AttributeType> attrTypes = new ArrayList<AttributeType>();
-            for (AttributeType srcAttr : entries.getValue()) {
-               AttributeType attrType = attrCache.getByGuid(srcAttr.getGuid());
-               attrTypes.add(attrType);
-            }
-            cached.setAttributeTypes(attrTypes, branch);
+      HashCollection<ArtifactType, ArtifactType> superTypes =
+            new HashCollection<ArtifactType, ArtifactType>(false, HashSet.class);
+      for (Entry<Integer, Integer> entry : response.getBaseToSuperTypes().entrySet()) {
+         ArtifactType superType = cache.getById(entry.getValue());
+         if (superType != null) {
+            ArtifactType baseType = cache.getById(entry.getKey());
+            superTypes.put(baseType, superType);
          }
       }
-      for (ArtifactType srcType : items) {
-         ArtifactType baseType = cache.getById(srcType.getId());
-         Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
-         for (ArtifactType srcSuper : srcType.getSuperArtifactTypes()) {
-            ArtifactType superType = cache.getById(srcSuper.getId());
-            superTypes.add(superType);
-         }
-         baseType.setSuperType(superTypes);
+      for (ArtifactType baseType : superTypes.keySet()) {
+         baseType.setSuperType((Set<ArtifactType>) superTypes.getValues(baseType));
       }
+
+      for (Triplet<Integer, Integer, Integer[]> entry : response.getAttributeTypes()) {
+         ArtifactType baseType = cache.getById(entry.getFirst());
+         Branch branch = branchCache.getById(entry.getSecond());
+         List<AttributeType> types = new ArrayList<AttributeType>();
+         for (Integer typeId : entry.getThird()) {
+            types.add(attrCache.getById(typeId));
+         }
+         baseType.setAttributeTypes(types, branch);
+      }
+      return updatedItems;
    }
 }

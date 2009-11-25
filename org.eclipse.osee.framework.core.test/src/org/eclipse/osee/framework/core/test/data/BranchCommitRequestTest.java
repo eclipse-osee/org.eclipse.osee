@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -32,12 +29,12 @@ public class BranchCommitRequestTest {
 
    private final BranchCommitRequest item;
 
-   private final IBasicArtifact<?> expectedUser;
-   private final Branch expectedSrcBranch;
-   private final Branch expectedDestBranch;
+   private final int expectedUser;
+   private final int expectedSrcBranch;
+   private final int expectedDestBranch;
    private final boolean expectedArchive;
 
-   public BranchCommitRequestTest(IBasicArtifact<?> expectedUser, Branch expectedSrcBranch, Branch expectedDestBranch, boolean expectedArchive) {
+   public BranchCommitRequestTest(int expectedUser, int expectedSrcBranch, int expectedDestBranch, boolean expectedArchive) {
       super();
       this.item = new BranchCommitRequest(expectedUser, expectedSrcBranch, expectedDestBranch, expectedArchive);
       this.expectedUser = expectedUser;
@@ -48,17 +45,17 @@ public class BranchCommitRequestTest {
 
    @Test
    public void testGetDestinationBranch() {
-      Assert.assertEquals(expectedDestBranch, item.getDestinationBranch());
+      Assert.assertEquals(expectedDestBranch, item.getDestinationBranchId());
    }
 
    @Test
    public void testGetSourceBranch() {
-      Assert.assertEquals(expectedSrcBranch, item.getSourceBranch());
+      Assert.assertEquals(expectedSrcBranch, item.getSourceBranchId());
    }
 
    @Test
    public void testGetUser() {
-      Assert.assertEquals(expectedUser, item.getUser());
+      Assert.assertEquals(expectedUser, item.getUserArtId());
    }
 
    @Test
@@ -71,9 +68,9 @@ public class BranchCommitRequestTest {
       Collection<Object[]> data = new ArrayList<Object[]>();
       boolean archiveIt = false;
       for (int index = 1; index <= 2; index++) {
-         Branch sourceBranch = MockDataFactory.createBranch(index);
-         Branch destinationBranch = MockDataFactory.createBranch(index + 1);
-         IBasicArtifact<?> userArt = MockDataFactory.createArtifact(index);
+         int sourceBranch = index * 7;
+         int destinationBranch = index * 9;
+         int userArt = index * 11;
          archiveIt ^= archiveIt;
          data.add(new Object[] {userArt, sourceBranch, destinationBranch, archiveIt});
       }

@@ -98,10 +98,10 @@ public final class DataAsserts {
       if (expected == null) {
          Assert.assertNull(actual);
       } else {
-         assertEquals(expected.getUser(), actual.getUser());
+         Assert.assertEquals(expected.getUserArtId(), actual.getUserArtId());
          Assert.assertEquals(expected.isArchiveAllowed(), actual.isArchiveAllowed());
-         assertEquals(expected.getSourceBranch(), actual.getSourceBranch());
-         assertEquals(expected.getDestinationBranch(), actual.getDestinationBranch());
+         Assert.assertEquals(expected.getSourceBranchId(), actual.getSourceBranchId());
+         Assert.assertEquals(expected.getDestinationBranchId(), actual.getDestinationBranchId());
       }
    }
 

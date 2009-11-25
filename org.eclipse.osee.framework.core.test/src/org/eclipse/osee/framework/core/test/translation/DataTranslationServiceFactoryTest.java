@@ -17,23 +17,21 @@ import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.ITranslatorId;
 import org.eclipse.osee.framework.core.test.mocks.MockOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.test.mocks.MockOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.core.translation.ArtifactTypeTranslator;
-import org.eclipse.osee.framework.core.translation.AttributeTypeTranslator;
-import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
+import org.eclipse.osee.framework.core.translation.ArtifactTypeCacheUpdateResponseTranslator;
+import org.eclipse.osee.framework.core.translation.AttributeTypeCacheUpdateResponseTranslator;
+import org.eclipse.osee.framework.core.translation.BranchCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.translation.BranchCommitRequestTranslator;
 import org.eclipse.osee.framework.core.translation.BranchCommitResponseTranslator;
-import org.eclipse.osee.framework.core.translation.BranchTranslator;
 import org.eclipse.osee.framework.core.translation.CacheUpdateRequestTranslator;
-import org.eclipse.osee.framework.core.translation.CacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.translation.ChangeItemTranslator;
 import org.eclipse.osee.framework.core.translation.ChangeReportRequestTranslator;
 import org.eclipse.osee.framework.core.translation.ChangeReportResponseTranslator;
 import org.eclipse.osee.framework.core.translation.ChangeVersionTranslator;
 import org.eclipse.osee.framework.core.translation.DataTranslationServiceFactory;
 import org.eclipse.osee.framework.core.translation.ITranslator;
-import org.eclipse.osee.framework.core.translation.OseeEnumEntryTranslator;
-import org.eclipse.osee.framework.core.translation.OseeEnumTypeTranslator;
-import org.eclipse.osee.framework.core.translation.RelationTypeTranslator;
+import org.eclipse.osee.framework.core.translation.OseeEnumTypeCacheUpdateResponseTranslator;
+import org.eclipse.osee.framework.core.translation.RelationTypeCacheUpdateResponseTranslator;
+import org.eclipse.osee.framework.core.translation.TransactionCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.translation.TransactionRecordTranslator;
 import org.junit.Test;
 
@@ -50,8 +48,9 @@ public class DataTranslationServiceFactoryTest {
             new DataTranslationServiceFactory().createService(new MockOseeCachingServiceProvider(null),
                   new MockOseeModelFactoryServiceProvider(null));
 
-      checkExists(srvc, BasicArtifactTranslator.class, CoreTranslatorId.ARTIFACT_METADATA);
-      checkExists(srvc, BranchTranslator.class, CoreTranslatorId.BRANCH);
+      //      checkExists(srvc, BasicArtifactTranslator.class, CoreTranslatorId.ARTIFACT_METADATA);
+      //      checkExists(srvc, BranchTranslator.class, CoreTranslatorId.BRANCH);
+
       checkExists(srvc, TransactionRecordTranslator.class, CoreTranslatorId.TRANSACTION_RECORD);
       checkExists(srvc, BranchCommitRequestTranslator.class, CoreTranslatorId.BRANCH_COMMIT_REQUEST);
       checkExists(srvc, BranchCommitResponseTranslator.class, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
@@ -61,23 +60,22 @@ public class DataTranslationServiceFactoryTest {
       checkExists(srvc, ChangeReportResponseTranslator.class, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
 
       checkExists(srvc, CacheUpdateRequestTranslator.class, CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);
-      checkExists(srvc, CacheUpdateResponseTranslator.class,
-            CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ARTIFACT_TYPE);
-      checkExists(srvc, CacheUpdateResponseTranslator.class,
-            CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ATTRIBUTE_TYPE);
-      checkExists(srvc, CacheUpdateResponseTranslator.class,
-            CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__RELATION_TYPE);
-      checkExists(srvc, CacheUpdateResponseTranslator.class,
-            CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__OSEE_ENUM_TYPE);
-      checkExists(srvc, CacheUpdateResponseTranslator.class, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__BRANCH);
-      checkExists(srvc, CacheUpdateResponseTranslator.class,
-            CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__TRANSACTION_RECORD);
+      checkExists(srvc, ArtifactTypeCacheUpdateResponseTranslator.class,
+            CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
+      checkExists(srvc, AttributeTypeCacheUpdateResponseTranslator.class,
+            CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
+      checkExists(srvc, RelationTypeCacheUpdateResponseTranslator.class,
+            CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
+      checkExists(srvc, OseeEnumTypeCacheUpdateResponseTranslator.class,
+            CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
+      checkExists(srvc, BranchCacheUpdateResponseTranslator.class, CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
+      checkExists(srvc, TransactionCacheUpdateResponseTranslator.class, CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
 
-      checkExists(srvc, ArtifactTypeTranslator.class, CoreTranslatorId.ARTIFACT_TYPE);
-      checkExists(srvc, AttributeTypeTranslator.class, CoreTranslatorId.ATTRIBUTE_TYPE);
-      checkExists(srvc, RelationTypeTranslator.class, CoreTranslatorId.RELATION_TYPE);
-      checkExists(srvc, OseeEnumTypeTranslator.class, CoreTranslatorId.OSEE_ENUM_TYPE);
-      checkExists(srvc, OseeEnumEntryTranslator.class, CoreTranslatorId.OSEE_ENUM_ENTRY);
+      //      checkExists(srvc, ArtifactTypeTranslator.class, CoreTranslatorId.ARTIFACT_TYPE);
+      //      checkExists(srvc, AttributeTypeTranslator.class, CoreTranslatorId.ATTRIBUTE_TYPE);
+      //      checkExists(srvc, RelationTypeTranslator.class, CoreTranslatorId.RELATION_TYPE);
+      //      checkExists(srvc, OseeEnumTypeTranslator.class, CoreTranslatorId.OSEE_ENUM_TYPE);
+      //      checkExists(srvc, OseeEnumEntryTranslator.class, CoreTranslatorId.OSEE_ENUM_ENTRY);
    }
 
    @SuppressWarnings("unchecked")

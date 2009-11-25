@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.AttributeTypeFactory;
@@ -28,7 +27,7 @@ public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<Attr
    private final AbstractOseeCache<OseeEnumType> enumCache;
 
    public ClientAttributeTypeAccessor(IOseeModelFactoryServiceProvider factoryProvider, AbstractOseeCache<OseeEnumType> enumCache) {
-      super(factoryProvider, CoreTranslatorId.OSEE_CACHE_UPDATE_RESPONSE__ATTRIBUTE_TYPE);
+      super(factoryProvider);
       this.enumCache = enumCache;
    }
 
@@ -43,14 +42,15 @@ public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<Attr
    }
 
    @Override
-   protected void updateCache(IOseeCache<AttributeType> cache, Collection<AttributeType> items) throws OseeCoreException {
-      AttributeTypeFactory factory = getFactory();
-      for (AttributeType srcType : items) {
-         OseeEnumType oseeEnumType = enumCache.getById(srcType.getOseeEnumTypeId());
-         factory.createOrUpdate(cache, srcType.getId(), srcType.getModificationType(), srcType.getGuid(),
-               srcType.getName(), srcType.getBaseAttributeTypeId(), srcType.getAttributeProviderId(),
-               srcType.getFileTypeExtension(), srcType.getDefaultValue(), oseeEnumType, srcType.getMinOccurrences(),
-               srcType.getMaxOccurrences(), srcType.getDescription(), srcType.getTaggerId());
-      }
+   protected Collection<AttributeType> updateCache(IOseeCache<AttributeType> cache) throws OseeCoreException {
+      //      AttributeTypeFactory factory = getFactory();
+      //      for (AttributeType srcType : items) {
+      //         OseeEnumType oseeEnumType = enumCache.getById(srcType.getOseeEnumTypeId());
+      //         factory.createOrUpdate(cache, srcType.getId(), srcType.getModificationType(), srcType.getGuid(),
+      //               srcType.getName(), srcType.getBaseAttributeTypeId(), srcType.getAttributeProviderId(),
+      //               srcType.getFileTypeExtension(), srcType.getDefaultValue(), oseeEnumType, srcType.getMinOccurrences(),
+      //               srcType.getMaxOccurrences(), srcType.getDescription(), srcType.getTaggerId());
+      //      }
+      return null;
    }
 }

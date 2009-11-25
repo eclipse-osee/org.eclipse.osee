@@ -41,7 +41,7 @@ public class HttpCommitDataRequester {
       parameters.put("function", Function.BRANCH_COMMIT.name());
 
       BranchCommitRequest requestData =
-            new BranchCommitRequest(user, sourceBranch, destinationBranch, isArchiveAllowed);
+            new BranchCommitRequest(user.getArtId(), sourceBranch.getId(), destinationBranch.getId(), isArchiveAllowed);
 
       BranchCommitResponse response =
             HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.BRANCH_COMMIT_REQUEST,

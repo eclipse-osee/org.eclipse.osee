@@ -11,13 +11,12 @@
 package org.eclipse.osee.framework.core.test.translation;
 
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.translation.BasicArtifactTranslator;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.junit.Test;
 
 /**
- * Test Case For {@link BasicArtifactTranslator}
+ * Test Case For {@link ITranslator}
  * 
  * @author Roberto E. Escobar
  */

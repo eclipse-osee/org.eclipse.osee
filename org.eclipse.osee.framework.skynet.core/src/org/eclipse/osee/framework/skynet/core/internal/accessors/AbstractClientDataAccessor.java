@@ -16,7 +16,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
-import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -25,7 +24,6 @@ import org.eclipse.osee.framework.core.model.IOseeStorableType;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.services.ITranslatorId;
-import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
 
 /**
@@ -34,11 +32,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
 public abstract class AbstractClientDataAccessor<T extends IOseeStorableType> implements IOseeDataAccessor<T> {
 
    private final IOseeModelFactoryServiceProvider factoryProvider;
-   private final ITranslatorId updateResponseId;
 
-   protected AbstractClientDataAccessor(IOseeModelFactoryServiceProvider factoryProvider, ITranslatorId updateResponseId) {
+   protected AbstractClientDataAccessor(IOseeModelFactoryServiceProvider factoryProvider) {
       this.factoryProvider = factoryProvider;
-      this.updateResponseId = updateResponseId;
    }
 
    protected IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
@@ -47,19 +43,8 @@ public abstract class AbstractClientDataAccessor<T extends IOseeStorableType> im
 
    @Override
    public void load(IOseeCache<T> cache) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("function", CacheOperation.UPDATE.name());
-
-      CacheUpdateRequest updateRequest = new CacheUpdateRequest(cache.getCacheId());
-      CacheUpdateResponse<T> response =
-            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST,
-                  updateRequest, updateResponseId);
-
-      Conditions.checkExpressionFailOnTrue(cache.getCacheId() != response.getCacheId(),
-            "Reponse does not match cache enum id - cache to update [%s] - reponse cache id [%s]", cache.getCacheId(),
-            response.getCacheId());
-      updateCache(cache, response.getItems());
-      for (T item : response.getItems()) {
+      Collection<T> updatedItems = updateCache(cache);
+      for (T item : updatedItems) {
          T type = cache.getById(item.getId());
          if (type != null) {
             type.clearDirty();
@@ -85,5 +70,13 @@ public abstract class AbstractClientDataAccessor<T extends IOseeStorableType> im
       //      }
    }
 
-   protected abstract void updateCache(IOseeCache<T> cache, Collection<T> items) throws OseeCoreException;
+   protected <J> J sendUpdateMessage(IOseeCache<T> cache, ITranslatorId txId) throws OseeCoreException {
+      CacheUpdateRequest updateRequest = new CacheUpdateRequest(cache.getCacheId());
+      Map<String, String> parameters = new HashMap<String, String>();
+      parameters.put("function", CacheOperation.UPDATE.name());
+      return HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST,
+            updateRequest, txId);
+   }
+
+   protected abstract Collection<T> updateCache(IOseeCache<T> cache) throws OseeCoreException;
 }

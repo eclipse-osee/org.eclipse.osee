@@ -10,12 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.data;
 
-import org.eclipse.osee.framework.core.data.CacheUpdateResponse;
+import org.eclipse.osee.framework.core.data.TransactionCacheUpdateResponse;
 import org.junit.Ignore;
 import org.junit.Test;
 
 /**
- * Test Case for {@link CacheUpdateResponse}
+ * Test Case for {@link TransactionCacheUpdateResponse}
  * 
  * @author Roberto E. Escobar
  */

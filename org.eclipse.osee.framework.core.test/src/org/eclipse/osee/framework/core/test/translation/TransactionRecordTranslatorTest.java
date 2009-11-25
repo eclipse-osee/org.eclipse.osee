@@ -13,14 +13,10 @@ package org.eclipse.osee.framework.core.test.translation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
-import org.eclipse.osee.framework.core.translation.BranchTranslator;
-import org.eclipse.osee.framework.core.translation.DataTranslationService;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.core.translation.TransactionRecordTranslator;
 import org.junit.Assert;
@@ -49,14 +45,7 @@ public class TransactionRecordTranslatorTest extends BaseTranslatorTest<Transact
    @Parameters
    public static Collection<Object[]> data() throws OseeCoreException {
       IOseeModelFactoryServiceProvider factoryProvider = MockDataFactory.createFactoryProvider();
-
-      IDataTranslationService service = new DataTranslationService();
-      service.addTranslator(new BranchTranslator(service, factoryProvider), CoreTranslatorId.BRANCH);
-
       ITranslator<TransactionRecord> translator = new TransactionRecordTranslator(factoryProvider);
-
-      service.addTranslator(translator, CoreTranslatorId.TRANSACTION_RECORD);
-
       List<Object[]> data = new ArrayList<Object[]>();
       for (int index = 1; index <= 2; index++) {
          data.add(new Object[] {MockDataFactory.createTransaction(index * 10, index * 3), translator});

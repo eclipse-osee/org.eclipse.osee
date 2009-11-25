@@ -22,7 +22,6 @@ import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -51,12 +50,11 @@ public class BranchCommitService implements IBranchCommitService {
 
    @Override
    public void commitBranch(IProgressMonitor monitor, BranchCommitRequest branchCommitData, BranchCommitResponse response) throws OseeCoreException {
-      IBasicArtifact<?> user = branchCommitData.getUser();
-      Branch sourceBranch = branchCommitData.getSourceBranch();
-
-      Branch destinationBranch = branchCommitData.getDestinationBranch();
-
+      int userId = branchCommitData.getUserArtId();
+      Branch sourceBranch = branchCache.getById(branchCommitData.getSourceBranchId());
+      Branch destinationBranch = branchCache.getById(branchCommitData.getDestinationBranchId());
       Branch mergeBranch = branchCache.getMergeBranch(sourceBranch, destinationBranch);
+
       TransactionVersion txVersion = TransactionVersion.HEAD;
       TransactionRecord sourceTx = transactionCache.getTransaction(sourceBranch, txVersion);
       TransactionRecord destinationTx = transactionCache.getTransaction(destinationBranch, txVersion);
@@ -67,7 +65,7 @@ public class BranchCommitService implements IBranchCommitService {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, sourceTx, destinationTx, mergeTx, changes));
       ops.add(new ComputeNetChangeOperation(changes));
-      ops.add(new CommitDbOperation(oseeDatabaseProvider, branchCache, transactionCache, user, sourceBranch,
+      ops.add(new CommitDbOperation(oseeDatabaseProvider, branchCache, transactionCache, userId, sourceBranch,
             destinationBranch, mergeBranch, changes, response));
 
       String opName =

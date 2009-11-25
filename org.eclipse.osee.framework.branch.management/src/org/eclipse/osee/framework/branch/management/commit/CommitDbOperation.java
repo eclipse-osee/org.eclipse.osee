@@ -23,9 +23,8 @@ import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
-import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.RelationChangeItem;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -69,7 +68,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
    private static final String UPDATE_SOURCE_BRANCH_STATE = "update osee_branch set branch_state=? where branch_id=?";
 
-   private final IBasicArtifact<?> user;
+   private final int userArtId;
    private final BranchCache branchCache;
    private final TransactionCache transactionCache;
    private final Map<Branch, BranchState> savedBranchStates;
@@ -82,12 +81,12 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private OseeConnection connection;
    private boolean success;
 
-   public CommitDbOperation(IOseeDatabaseServiceProvider databaseProvider, BranchCache branchCache, TransactionCache transactionCache, IBasicArtifact<?> user, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, BranchCommitResponse txHolder) {
+   public CommitDbOperation(IOseeDatabaseServiceProvider databaseProvider, BranchCache branchCache, TransactionCache transactionCache, int userArtId, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, BranchCommitResponse txHolder) {
       super(databaseProvider, "Commit Database Operation", InternalBranchActivator.PLUGIN_ID);
       this.savedBranchStates = new HashMap<Branch, BranchState>();
       this.branchCache = branchCache;
       this.transactionCache = transactionCache;
-      this.user = user;
+      this.userArtId = userArtId;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;
       this.mergeBranch = mergeBranch;
@@ -107,7 +106,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       }
       checkPreconditions();
       updateBranchState();
-      txHolder.setTransaction(addCommitTransactionToDatabase(user));
+      txHolder.setTransaction(addCommitTransactionToDatabase(userArtId));
 
       //      TODO AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
 
@@ -156,7 +155,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    }
 
    @SuppressWarnings("unchecked")
-   private TransactionRecord addCommitTransactionToDatabase(IBasicArtifact userToBlame) throws OseeCoreException {
+   private TransactionRecord addCommitTransactionToDatabase(int userArtId) throws OseeCoreException {
       int newTransactionNumber = getDatabaseService().getSequence().getNextTransactionId();
 
       Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
@@ -164,7 +163,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
       getDatabaseService().runPreparedUpdate(connection, INSERT_COMMIT_TRANSACTION,
             TransactionDetailsType.NonBaselined.getId(), destinationBranch.getId(), newTransactionNumber, comment,
-            timestamp, userToBlame.getArtId(), sourceBranch.getAssociatedArtifact().getArtId());
+            timestamp, userArtId, sourceBranch.getAssociatedArtifact().getArtId());
       //      transactioCache;
       //      TransactionRecord record = new TransactionRecord(newTransactionNumber, , comment, time, author);
       TransactionRecord record = null;
