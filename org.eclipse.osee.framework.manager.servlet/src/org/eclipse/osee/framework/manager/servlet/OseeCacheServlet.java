@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.ITranslatorId;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -135,32 +136,35 @@ public class OseeCacheServlet extends OseeHttpServlet {
    }
 
    private Pair<Object, ITranslatorId> createResponse(OseeCacheEnum cacheId, IOseeCachingService caching) throws OseeCoreException {
+      IOseeModelFactoryService factoryService = MasterServletActivator.getInstance().getOseeFactoryService();
       Conditions.checkNotNull(caching, "caching service");
       Object response = null;
       ITranslatorId transalatorId = null;
       switch (cacheId) {
          case BRANCH_CACHE:
-            response = BranchCacheUpdateResponse.fromCache(caching.getBranchCache());
+            response = BranchCacheUpdateResponse.fromCache(caching.getBranchCache().getAll());
             transalatorId = CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE;
             break;
          case TRANSACTION_CACHE:
-            response = TransactionCacheUpdateResponse.fromCache(caching.getTransactionCache());
+            response = TransactionCacheUpdateResponse.fromCache(caching.getTransactionCache().getAll());
             transalatorId = CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE;
             break;
          case ARTIFACT_TYPE_CACHE:
-            response = ArtifactTypeCacheUpdateResponse.fromCache(caching.getArtifactTypeCache());
+            response = ArtifactTypeCacheUpdateResponse.fromCache(caching.getArtifactTypeCache().getAll());
             transalatorId = CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE;
             break;
          case ATTRIBUTE_TYPE_CACHE:
-            response = AttributeTypeCacheUpdateResponse.fromCache(caching.getAttributeTypeCache());
+            response =
+                  AttributeTypeCacheUpdateResponse.fromCache(factoryService.getAttributeTypeFactory(),
+                        caching.getAttributeTypeCache().getAll());
             transalatorId = CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE;
             break;
          case OSEE_ENUM_TYPE_CACHE:
-            response = OseeEnumTypeCacheUpdateResponse.fromCache(caching.getEnumTypeCache());
+            response = OseeEnumTypeCacheUpdateResponse.fromCache(caching.getEnumTypeCache().getAll());
             transalatorId = CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE;
             break;
          case RELATION_TYPE_CACHE:
-            response = RelationTypeCacheUpdateResponse.fromCache(caching.getRelationTypeCache());
+            response = RelationTypeCacheUpdateResponse.fromCache(caching.getRelationTypeCache().getAll());
             transalatorId = CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE;
             break;
          default:

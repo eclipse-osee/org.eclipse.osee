@@ -19,12 +19,15 @@ import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.IChangeReportService;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
 import org.eclipse.osee.framework.core.server.ISessionManager;
 import org.eclipse.osee.framework.core.server.OseeHttpServiceTracker;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
@@ -36,7 +39,7 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Donald G. Dunne
  */
-public class MasterServletActivator implements BundleActivator {
+public class MasterServletActivator implements BundleActivator, IOseeModelFactoryServiceProvider {
    private static MasterServletActivator instance;
 
    private enum TrackerId {
@@ -51,7 +54,8 @@ public class MasterServletActivator implements BundleActivator {
       DATA_TRANSLATOR_SERVICE,
       SEARCH_ENGINE_TAGGER,
       CACHING_SERVICE,
-      AUTHENTICATION_SERVICE;
+      AUTHENTICATION_SERVICE,
+      OSEE_MODEL_FACTORY;
    }
 
    private final List<ServiceTracker> trackers;
@@ -77,6 +81,7 @@ public class MasterServletActivator implements BundleActivator {
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
       createServiceTracker(context, IChangeReportService.class, TrackerId.CHANGE_REPORT);
       createServiceTracker(context, IOseeCachingService.class, TrackerId.CACHING_SERVICE);
+      createServiceTracker(context, IOseeModelFactoryService.class, TrackerId.OSEE_MODEL_FACTORY);
 
       createHttpServiceTracker(context, SystemManagerServlet.class, OseeServerContext.MANAGER_CONTEXT);
       createHttpServiceTracker(context, ResourceManagerServlet.class, OseeServerContext.RESOURCE_CONTEXT);
@@ -168,9 +173,15 @@ public class MasterServletActivator implements BundleActivator {
       return getTracker(TrackerId.CACHING_SERVICE, IOseeCachingService.class);
    }
 
+   @Override
+   public IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
+      return getTracker(TrackerId.OSEE_MODEL_FACTORY, IOseeModelFactoryService.class);
+   }
+
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
       ServiceTracker tracker = mappedTrackers.get(trackerId);
       Object service = tracker.getService();
       return clazz.cast(service);
    }
+
 }

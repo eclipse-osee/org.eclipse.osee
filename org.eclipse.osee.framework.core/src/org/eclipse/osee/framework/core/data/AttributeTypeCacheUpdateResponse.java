@@ -18,7 +18,6 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.AttributeTypeFactory;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 
 /**
  * @author Roberto E. Escobar
@@ -41,8 +40,7 @@ public class AttributeTypeCacheUpdateResponse {
       return attrToEnum;
    }
 
-   public static AttributeTypeCacheUpdateResponse fromCache(IOseeModelFactoryServiceProvider provider, Collection<AttributeType> types) throws OseeCoreException {
-      AttributeTypeFactory factory = provider.getOseeFactoryService().getAttributeTypeFactory();
+   public static AttributeTypeCacheUpdateResponse fromCache(AttributeTypeFactory factory, Collection<AttributeType> types) throws OseeCoreException {
       List<AttributeType> rows = new ArrayList<AttributeType>();
       Map<Integer, Integer> attrToEnum = new HashMap<Integer, Integer>();
       for (AttributeType item : types) {
