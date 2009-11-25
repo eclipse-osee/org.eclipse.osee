@@ -12,8 +12,11 @@ package org.eclipse.osee.framework.core.data;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationType;
 
@@ -23,13 +26,19 @@ import org.eclipse.osee.framework.core.model.RelationType;
 public class RelationTypeCacheUpdateResponse {
 
    private final List<RelationTypeRow> rows;
+   private final Map<Integer, Integer[]> relToArtAB;
 
-   public RelationTypeCacheUpdateResponse(List<RelationTypeRow> rows) {
+   public RelationTypeCacheUpdateResponse(List<RelationTypeRow> rows, Map<Integer, Integer[]> relToArtAB) {
       this.rows = rows;
+      this.relToArtAB = relToArtAB;
    }
 
    public List<RelationTypeRow> getRelationTypeRows() {
       return rows;
+   }
+
+   public Map<Integer, Integer[]> getRelToArtType() {
+      return relToArtAB;
    }
 
    public static final class RelationTypeRow {
@@ -73,13 +82,37 @@ public class RelationTypeCacheUpdateResponse {
          ModificationType modType = ModificationType.valueOf(data[3]);
          return new RelationTypeRow(id, guid, name, modType);
       }
+
+      public ModificationType getModificationType() {
+         return null;
+      }
+
+      public String getSideBName() {
+         return null;
+      }
+
+      public String getSideAName() {
+         return null;
+      }
+
+      public String getDefaultOrderTypeGuid() {
+         return null;
+      }
+
+      public RelationTypeMultiplicity getMultiplicity() {
+         return null;
+      }
    }
 
    public static RelationTypeCacheUpdateResponse fromCache(Collection<RelationType> types) throws OseeCoreException {
       List<RelationTypeRow> rows = new ArrayList<RelationTypeRow>();
+      Map<Integer, Integer[]> relToArtAB = new HashMap<Integer, Integer[]>();
       for (RelationType item : types) {
          rows.add(new RelationTypeRow(item.getId(), item.getGuid(), item.getName(), item.getModificationType()));
+
+         relToArtAB.put(item.getId(), new Integer[] {item.getArtifactTypeSideA().getId(),
+               item.getArtifactTypeSideB().getId()});
       }
-      return new RelationTypeCacheUpdateResponse(rows);
+      return new RelationTypeCacheUpdateResponse(rows, relToArtAB);
    }
 }

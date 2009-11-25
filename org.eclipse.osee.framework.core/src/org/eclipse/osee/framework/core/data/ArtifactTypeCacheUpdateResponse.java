@@ -30,9 +30,9 @@ public class ArtifactTypeCacheUpdateResponse {
 
    private final List<ArtifactTypeRow> rows;
    private final Map<Integer, Integer> baseToSuper;
-   private final List<Triplet<Integer, Integer, Integer[]>> artAttrs;
+   private final List<Triplet<Integer, Integer, Integer>> artAttrs;
 
-   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Integer, Integer> baseToSuper, List<Triplet<Integer, Integer, Integer[]>> artAttrs) {
+   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Integer, Integer> baseToSuper, List<Triplet<Integer, Integer, Integer>> artAttrs) {
       this.rows = rows;
       this.baseToSuper = baseToSuper;
       this.artAttrs = artAttrs;
@@ -46,7 +46,7 @@ public class ArtifactTypeCacheUpdateResponse {
       return baseToSuper;
    }
 
-   public List<Triplet<Integer, Integer, Integer[]>> getAttributeTypes() {
+   public List<Triplet<Integer, Integer, Integer>> getAttributeTypes() {
       return artAttrs;
    }
 
@@ -104,7 +104,7 @@ public class ArtifactTypeCacheUpdateResponse {
    public static ArtifactTypeCacheUpdateResponse fromCache(Collection<ArtifactType> types) throws OseeCoreException {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
       Map<Integer, Integer> baseToSuper = new HashMap<Integer, Integer>();
-      List<Triplet<Integer, Integer, Integer[]>> artAttrs = new ArrayList<Triplet<Integer, Integer, Integer[]>>();
+      List<Triplet<Integer, Integer, Integer>> artAttrs = new ArrayList<Triplet<Integer, Integer, Integer>>();
       for (ArtifactType art : types) {
          rows.add(new ArtifactTypeRow(art.getId(), art.getGuid(), art.getName(), art.isAbstract(),
                art.getModificationType()));
@@ -117,13 +117,10 @@ public class ArtifactTypeCacheUpdateResponse {
          for (Entry<Branch, Collection<AttributeType>> entry : art.getLocalAttributeTypes().entrySet()) {
             Integer branchId = entry.getKey().getId();
             Collection<AttributeType> attrTypes = entry.getValue();
-            Integer[] attrs = new Integer[attrTypes.size()];
-            int index = 0;
             for (AttributeType type : attrTypes) {
-               attrs[index] = type.getId();
-               index++;
+               artAttrs.add(new Triplet<Integer, Integer, Integer>(artId, branchId, type.getId()));
             }
-            artAttrs.add(new Triplet<Integer, Integer, Integer[]>(artId, branchId, attrs));
+
          }
       }
       return new ArtifactTypeCacheUpdateResponse(rows, baseToSuper, artAttrs);

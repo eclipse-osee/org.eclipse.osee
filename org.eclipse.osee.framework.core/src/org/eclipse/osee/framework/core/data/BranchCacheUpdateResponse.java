@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -22,6 +24,8 @@ import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.type.Triplet;
 
 /**
  * @author Roberto E. Escobar
@@ -34,14 +38,16 @@ public class BranchCacheUpdateResponse {
    private final Map<Integer, Integer> branchToSourceTx;
    private final Map<Integer, Integer> branchToAssocArt;
    private final Map<Integer, String[]> branchToAliases;
+   private final List<Triplet<Integer, Integer, Integer>> srcDestMerge;
 
-   public BranchCacheUpdateResponse(List<BranchRow> rows, Map<Integer, Integer> childToParent, Map<Integer, Integer> branchToBaseTx, Map<Integer, Integer> branchToSourceTx, Map<Integer, Integer> branchToAssocArt, Map<Integer, String[]> branchToAliases) {
+   public BranchCacheUpdateResponse(List<BranchRow> rows, Map<Integer, Integer> childToParent, Map<Integer, Integer> branchToBaseTx, Map<Integer, Integer> branchToSourceTx, Map<Integer, Integer> branchToAssocArt, Map<Integer, String[]> branchToAliases, List<Triplet<Integer, Integer, Integer>> srcDestMerge) {
       this.rows = rows;
       this.childToParent = childToParent;
       this.branchToBaseTx = branchToBaseTx;
       this.branchToSourceTx = branchToSourceTx;
       this.branchToAssocArt = branchToAssocArt;
       this.branchToAliases = branchToAliases;
+      this.srcDestMerge = srcDestMerge;
    }
 
    public List<BranchRow> getBranchRows() {
@@ -66,6 +72,10 @@ public class BranchCacheUpdateResponse {
 
    public Map<Integer, String[]> getBranchAliases() {
       return branchToAliases;
+   }
+
+   public List<Triplet<Integer, Integer, Integer>> getMergeBranches() {
+      return srcDestMerge;
    }
 
    public final static class BranchRow {
@@ -135,7 +145,7 @@ public class BranchCacheUpdateResponse {
       }
    }
 
-   public static BranchCacheUpdateResponse fromCache(Collection<Branch> types) throws OseeCoreException {
+   public static BranchCacheUpdateResponse fromCache(BranchCache cache, Collection<Branch> types) throws OseeCoreException {
       List<BranchRow> rowData = new ArrayList<BranchRow>();
       Map<Integer, Integer> childToParent = new HashMap<Integer, Integer>();
       Map<Integer, Integer> branchToBaseTx = new HashMap<Integer, Integer>();
@@ -170,7 +180,15 @@ public class BranchCacheUpdateResponse {
             branchToAssocArt.put(branchId, art.getArtId());
          }
       }
+
+      List<Triplet<Integer, Integer, Integer>> srcDestMerge = new ArrayList<Triplet<Integer, Integer, Integer>>();
+      for (Entry<Pair<Branch, Branch>, Branch> entry : cache.getMergeBranches().entrySet()) {
+         Integer src = entry.getKey().getFirst().getId();
+         Integer dest = entry.getKey().getSecond().getId();
+         Integer merge = entry.getValue().getId();
+         srcDestMerge.add(new Triplet<Integer, Integer, Integer>(src, dest, merge));
+      }
       return new BranchCacheUpdateResponse(rowData, childToParent, childToParent, branchToSourceTx, branchToAssocArt,
-            branchToAliases);
+            branchToAliases, srcDestMerge);
    }
 }

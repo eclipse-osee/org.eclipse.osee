@@ -27,7 +27,9 @@ import org.eclipse.osee.framework.core.model.ArtifactTypeFactory;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 
 /**
@@ -83,14 +85,22 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
          baseType.setSuperType((Set<ArtifactType>) superTypes.getValues(baseType));
       }
 
-      for (Triplet<Integer, Integer, Integer[]> entry : response.getAttributeTypes()) {
-         ArtifactType baseType = cache.getById(entry.getFirst());
-         Branch branch = branchCache.getById(entry.getSecond());
-         List<AttributeType> types = new ArrayList<AttributeType>();
-         for (Integer typeId : entry.getThird()) {
-            types.add(attrCache.getById(typeId));
+      CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> attrs =
+            new CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>>();
+
+      for (Triplet<Integer, Integer, Integer> entry : response.getAttributeTypes()) {
+         ArtifactType key1 = cache.getById(entry.getFirst());
+         Branch key2 = branchCache.getById(entry.getSecond());
+         Collection<AttributeType> types = attrs.get(key1, key2);
+         if (types == null) {
+            types = new HashSet<AttributeType>();
+            attrs.put(key1, key2, types);
          }
-         baseType.setAttributeTypes(types, branch);
+         types.add(attrCache.getById(entry.getThird()));
+      }
+
+      for (Entry<Pair<ArtifactType, Branch>, Collection<AttributeType>> entry : attrs.entrySet()) {
+         entry.getKey().getFirst().setAttributeTypes(entry.getValue(), entry.getKey().getSecond());
       }
       return updatedItems;
    }

@@ -13,59 +13,53 @@ package org.eclipse.osee.framework.core.translation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse.BranchRow;
+import org.eclipse.osee.framework.core.data.ArtifactTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.data.ArtifactTypeCacheUpdateResponse.ArtifactTypeRow;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.type.Triplet;
 
 /**
  * @author Roberto E. Escobar
  */
-public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<BranchCacheUpdateResponse> {
+public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<ArtifactTypeCacheUpdateResponse> {
 
    private enum Fields {
-      BRANCH_COUNT,
-      BRANCH_ROW,
-      CHILD_TO_PARENT,
-      BRANCH_TO_BASE_TX,
-      BRANCH_TO_SRC_TX,
-      BRANCH_TO_ASSOC_ART,
-      BRANCH_TO_ALIASES;
+      ITEM_COUNT,
+      ITEM_ROW,
+      BASE_TO_SUPER_TYPES,
+      BASE_BRANCH_ATTR;
    }
 
    @Override
-   public BranchCacheUpdateResponse convert(PropertyStore store) throws OseeCoreException {
-      List<BranchRow> rows = new ArrayList<BranchRow>();
-      int rowCount = store.getInt(Fields.BRANCH_COUNT.name());
+   public ArtifactTypeCacheUpdateResponse convert(PropertyStore store) throws OseeCoreException {
+      List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
+      int rowCount = store.getInt(Fields.ITEM_COUNT.name());
       for (int index = 0; index < rowCount; index++) {
-         String[] rowData = store.getArray(createKey(Fields.BRANCH_ROW, index));
-         rows.add(BranchRow.fromArray(rowData));
+         String[] rowData = store.getArray(createKey(Fields.ITEM_ROW, index));
+         rows.add(ArtifactTypeRow.fromArray(rowData));
       }
 
-      Map<Integer, Integer> childToParent = TranslationUtil.getMap(store, Fields.CHILD_TO_PARENT);
-      Map<Integer, Integer> branchToBaseTx = TranslationUtil.getMap(store, Fields.BRANCH_TO_BASE_TX);
-      Map<Integer, Integer> branchToSourceTx = TranslationUtil.getMap(store, Fields.BRANCH_TO_SRC_TX);
-      Map<Integer, Integer> associatedArtifact = TranslationUtil.getMap(store, Fields.BRANCH_TO_ASSOC_ART);
-      Map<Integer, String[]> branchAliases = TranslationUtil.getArrayMap(store, Fields.BRANCH_TO_ALIASES);
-      return new BranchCacheUpdateResponse(rows, childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact,
-            branchAliases);
+      Map<Integer, Integer> baseToSuper = TranslationUtil.getMap(store, Fields.BASE_TO_SUPER_TYPES);
+
+      List<Triplet<Integer, Integer, Integer>> artAttrs =
+            TranslationUtil.getTripletList(store, Fields.BASE_BRANCH_ATTR);
+
+      return new ArtifactTypeCacheUpdateResponse(rows, baseToSuper, artAttrs);
    }
 
    @Override
-   public PropertyStore convert(BranchCacheUpdateResponse object) throws OseeCoreException {
+   public PropertyStore convert(ArtifactTypeCacheUpdateResponse object) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
-      List<BranchRow> rows = object.getBranchRows();
+      List<ArtifactTypeRow> rows = object.getArtTypeRows();
       for (int index = 0; index < rows.size(); index++) {
-         BranchRow row = rows.get(index);
-         store.put(createKey(Fields.BRANCH_ROW, index), row.toArray());
+         ArtifactTypeRow row = rows.get(index);
+         store.put(createKey(Fields.ITEM_ROW, index), row.toArray());
       }
-      store.put(Fields.BRANCH_COUNT.name(), rows.size());
+      store.put(Fields.ITEM_COUNT.name(), rows.size());
 
-      TranslationUtil.putMap(store, Fields.CHILD_TO_PARENT, object.getChildToParent());
-      TranslationUtil.putMap(store, Fields.BRANCH_TO_BASE_TX, object.getBranchToBaseTx());
-      TranslationUtil.putMap(store, Fields.BRANCH_TO_SRC_TX, object.getBranchToSourceTx());
-      TranslationUtil.putMap(store, Fields.BRANCH_TO_ASSOC_ART, object.getBranchToAssocArt());
-      TranslationUtil.putArrayMap(store, Fields.BRANCH_TO_ALIASES, object.getBranchAliases());
+      TranslationUtil.putMap(store, Fields.BASE_TO_SUPER_TYPES, object.getBaseToSuperTypes());
+      TranslationUtil.putTripletList(store, Fields.BASE_BRANCH_ATTR, object.getAttributeTypes());
       return store;
    }
 

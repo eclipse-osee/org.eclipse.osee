@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.jdk.core.type.Triplet;
 import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 
 /**
@@ -101,6 +102,13 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
                child.setParentBranch(parent);
             }
          }
+      }
+      BranchCache brCache = (BranchCache) cache;
+      for (Triplet<Integer, Integer, Integer> entry : response.getMergeBranches()) {
+         Branch sourceBranch = cache.getById(entry.getFirst());
+         Branch destinationBranch = cache.getById(entry.getSecond());
+         Branch mergeBranch = cache.getById(entry.getThird());
+         brCache.cacheMergeBranch(mergeBranch, sourceBranch, destinationBranch);
       }
       return updatedItems;
    }

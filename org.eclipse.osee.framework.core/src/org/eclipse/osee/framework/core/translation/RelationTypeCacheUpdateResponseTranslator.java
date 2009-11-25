@@ -13,59 +13,45 @@ package org.eclipse.osee.framework.core.translation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse.BranchRow;
+import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse.RelationTypeRow;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
  * @author Roberto E. Escobar
  */
-public class RelationTypeCacheUpdateResponseTranslator implements ITranslator<BranchCacheUpdateResponse> {
+public class RelationTypeCacheUpdateResponseTranslator implements ITranslator<RelationTypeCacheUpdateResponse> {
 
    private enum Fields {
-      BRANCH_COUNT,
-      BRANCH_ROW,
-      CHILD_TO_PARENT,
-      BRANCH_TO_BASE_TX,
-      BRANCH_TO_SRC_TX,
-      BRANCH_TO_ASSOC_ART,
-      BRANCH_TO_ALIASES;
+      COUNT,
+      ROW,
+      REL_ART_A_B;
    }
 
    @Override
-   public BranchCacheUpdateResponse convert(PropertyStore store) throws OseeCoreException {
-      List<BranchRow> rows = new ArrayList<BranchRow>();
-      int rowCount = store.getInt(Fields.BRANCH_COUNT.name());
+   public RelationTypeCacheUpdateResponse convert(PropertyStore store) throws OseeCoreException {
+      List<RelationTypeRow> rows = new ArrayList<RelationTypeRow>();
+      int rowCount = store.getInt(Fields.COUNT.name());
       for (int index = 0; index < rowCount; index++) {
-         String[] rowData = store.getArray(createKey(Fields.BRANCH_ROW, index));
-         rows.add(BranchRow.fromArray(rowData));
+         String[] rowData = store.getArray(createKey(Fields.ROW, index));
+         rows.add(RelationTypeRow.fromArray(rowData));
       }
-
-      Map<Integer, Integer> childToParent = TranslationUtil.getMap(store, Fields.CHILD_TO_PARENT);
-      Map<Integer, Integer> branchToBaseTx = TranslationUtil.getMap(store, Fields.BRANCH_TO_BASE_TX);
-      Map<Integer, Integer> branchToSourceTx = TranslationUtil.getMap(store, Fields.BRANCH_TO_SRC_TX);
-      Map<Integer, Integer> associatedArtifact = TranslationUtil.getMap(store, Fields.BRANCH_TO_ASSOC_ART);
-      Map<Integer, String[]> branchAliases = TranslationUtil.getArrayMap(store, Fields.BRANCH_TO_ALIASES);
-      return new BranchCacheUpdateResponse(rows, childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact,
-            branchAliases);
+      Map<Integer, Integer[]> relToArtAB = TranslationUtil.getIntArrayMap(store, Fields.REL_ART_A_B);
+      return new RelationTypeCacheUpdateResponse(rows, relToArtAB);
    }
 
    @Override
-   public PropertyStore convert(BranchCacheUpdateResponse object) throws OseeCoreException {
+   public PropertyStore convert(RelationTypeCacheUpdateResponse object) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
-      List<BranchRow> rows = object.getBranchRows();
+      List<RelationTypeRow> rows = object.getRelationTypeRows();
       for (int index = 0; index < rows.size(); index++) {
-         BranchRow row = rows.get(index);
-         store.put(createKey(Fields.BRANCH_ROW, index), row.toArray());
+         RelationTypeRow row = rows.get(index);
+         store.put(createKey(Fields.ROW, index), row.toArray());
       }
-      store.put(Fields.BRANCH_COUNT.name(), rows.size());
+      store.put(Fields.COUNT.name(), rows.size());
 
-      TranslationUtil.putMap(store, Fields.CHILD_TO_PARENT, object.getChildToParent());
-      TranslationUtil.putMap(store, Fields.BRANCH_TO_BASE_TX, object.getBranchToBaseTx());
-      TranslationUtil.putMap(store, Fields.BRANCH_TO_SRC_TX, object.getBranchToSourceTx());
-      TranslationUtil.putMap(store, Fields.BRANCH_TO_ASSOC_ART, object.getBranchToAssocArt());
-      TranslationUtil.putArrayMap(store, Fields.BRANCH_TO_ALIASES, object.getBranchAliases());
+      TranslationUtil.putIntArrayMap(store, Fields.REL_ART_A_B, object.getRelToArtType());
       return store;
    }
 

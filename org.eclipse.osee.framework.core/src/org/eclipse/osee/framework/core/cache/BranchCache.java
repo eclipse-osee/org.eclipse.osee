@@ -17,11 +17,10 @@ import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Roberto E. Escobar
@@ -31,13 +30,12 @@ public class BranchCache extends AbstractOseeCache<Branch> {
          new CompositeKeyHashMap<Branch, Branch, Branch>();
 
    private Branch systemRootBranch;
-
-   //   private final IBasicArtifact<?> defaultAssociatedArtifact;
+   private Branch commonBranch;
 
    public BranchCache(IOseeDataAccessor<Branch> dataAccessor) {
       super(OseeCacheEnum.BRANCH_CACHE, dataAccessor);
-      //      this.defaultAssociatedArtifact = null;
-      //      this.systemRootBranch = null;
+      this.systemRootBranch = null;
+      this.commonBranch = null;
    }
 
    @Override
@@ -48,97 +46,40 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       super.cache(type);
    }
 
-   //
-   //   @Override
-   //   public void decache(Branch branch) throws OseeCoreException {
-   //      super.decache(branch);
-   //      // TODO add decache from all maps
-   //   }
-
    public Branch getSystemRootBranch() throws OseeCoreException {
       ensurePopulated();
       return systemRootBranch;
    }
 
-   //   public Branch getParentBranch(Branch childBranch) throws OseeCoreException {
-   //      ensurePopulated();
-   //      return childToParent.get(childBranch);
-   //   }
-   //
-   //   public Collection<Branch> getChildren(Branch parent) throws OseeCoreException {
-   //      ensurePopulated();
-   //      Collection<Branch> childBranches = new HashSet<Branch>();
-   //      Collection<Branch> children = parentToChildrenBranches.getValues(parent);
-   //      if (children != null) {
-   //         childBranches.addAll(children);
-   //      }
-   //      return childBranches;
-   //   }
+   public CompositeKeyHashMap<Branch, Branch, Branch> getMergeBranches() throws OseeCoreException {
+      return sourceDestMerge;
+   }
 
    public Branch getMergeBranch(Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
       ensurePopulated();
       return sourceDestMerge.get(sourceBranch, destinationBranch);
    }
 
-   //   public void setBranchParent(Branch parentBranch, Branch childBranch) throws OseeCoreException {
-   //      if (parentBranch == null) {
-   //         throw new OseeArgumentException("Parent Branch cannot be null");
-   //      }
-   //      if (childBranch == null) {
-   //         throw new OseeArgumentException("Child Branch cannot be null");
-   //      }
-   //      ensurePopulated();
-   //      parentToChildrenBranches.put(parentBranch, childBranch);
-   //      childToParent.put(childBranch, parentBranch);
-   //   }
-
    public void cacheMergeBranch(Branch mergeBranch, Branch sourceBranch, Branch destinationBranch) throws OseeCoreException {
-      if (mergeBranch == null) {
-         throw new OseeArgumentException("Merge Branch cannot be null");
-      }
-      if (sourceBranch == null) {
-         throw new OseeArgumentException("Source Branch cannot be null");
-      }
-      if (destinationBranch == null) {
-         throw new OseeArgumentException("Destination Branch cannot be null");
-      }
+      Conditions.checkNotNull(mergeBranch, "merge branch");
+      Conditions.checkNotNull(sourceBranch, "source branch");
+      Conditions.checkNotNull(destinationBranch, "destination branch");
+
       ensurePopulated();
       sourceDestMerge.put(sourceBranch, destinationBranch, mergeBranch);
    }
 
-   //   public Collection<String> getAliases(Branch branch) throws OseeCoreException {
-   //      ensurePopulated();
-   //      Collection<String> aliases = new HashSet<String>();
-   //      Collection<String> storedAliases = branchToAlias.getValues(branch);
-   //      if (storedAliases != null) {
-   //         aliases.addAll(storedAliases);
-   //      }
-   //      return aliases;
-   //   }
-
-   //   public void setAliases(Branch branch, Collection<String> aliases) throws OseeCoreException {
-   //      if (branch == null) {
-   //         throw new OseeArgumentException("branch cannot be null");
-   //      }
-   //      ensurePopulated();
-   //      branchToAlias.removeValues(branch);
-   //      for (String alias : aliases) {
-   //         branchToAlias.put(branch, alias.toLowerCase());
-   //      }
-   //   }
-
    public Collection<Branch> getByAlias(String alias) throws OseeCoreException {
-      if (!Strings.isValid(alias)) {
-         throw new OseeArgumentException("Alias cannot be null or empty");
-      }
+      Conditions.checkNotNullOrEmpty(alias, "alias");
+
       ensurePopulated();
       Collection<Branch> branches = new HashSet<Branch>();
       String aliasToMatch = alias.toLowerCase();
-      for (Branch key : getAll()) {
-         Collection<String> aliases = key.getAliases();
-         if (aliases != null) {
+      for (Branch branch : getAll()) {
+         Collection<String> aliases = branch.getAliases();
+         if (aliases != null && !aliases.isEmpty()) {
             if (aliases.contains(aliasToMatch)) {
-               branches.add(key);
+               branches.add(branch);
             }
          }
       }
@@ -157,41 +98,6 @@ public class BranchCache extends AbstractOseeCache<Branch> {
       }
       return branches.iterator().next();
    }
-
-   //   public void cacheBaseTransaction(Branch branch, TransactionRecord baseTransaction) throws OseeCoreException {
-   //      if (branch == null) {
-   //         throw new OseeArgumentException("branch cannot be null");
-   //      }
-   //      if (baseTransaction == null) {
-   //         throw new OseeArgumentException("base transaction cannot be null");
-   //      }
-   //      if (baseTransaction.getTxType() != TransactionDetailsType.Baselined) {
-   //         throw new OseeArgumentException("Transaction should be a baseline type transaction");
-   //      }
-   //      ensurePopulated();
-   //      branchToBaseTx.put(branch, baseTransaction);
-   //   }
-   //
-   //   public void cacheSourceTransaction(Branch branch, TransactionRecord sourceTransaction) throws OseeCoreException {
-   //      if (branch == null) {
-   //         throw new OseeArgumentException("branch cannot be null");
-   //      }
-   //      if (sourceTransaction == null) {
-   //         throw new OseeArgumentException("source transaction cannot be null");
-   //      }
-   //      ensurePopulated();
-   //      branchToSourceTx.put(branch, sourceTransaction);
-   //   }
-
-   //   public TransactionRecord getBaseTransaction(Branch branch) throws OseeCoreException {
-   //      ensurePopulated();
-   //      return branchToBaseTx.get(branch);
-   //   }
-   //
-   //   public TransactionRecord getSourceTransaction(Branch branch) throws OseeCoreException {
-   //      ensurePopulated();
-   //      return branchToSourceTx.get(branch);
-   //   }
 
    //   public void setAssociatedArtifact(Branch branch, IBasicArtifact<?> artifact) throws OseeCoreException {
    //      ensurePopulated();
@@ -226,17 +132,12 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    //      return associatedArtifact;
    //   }
    //
-   //   public IBasicArtifact<?> getDefaultAssociatedArtifact() throws OseeCoreException {
-   //      ensurePopulated();
-   //      return defaultAssociatedArtifact;
-   //   }
-   //
-   //   public void setDefaultAssociatedArtifact(IBasicArtifact<?> artifact) {
-   //      this.defaultAssociatedArtifact = artifact;
-   //   }
-   //
+
    public Branch getCommonBranch() throws OseeCoreException {
       ensurePopulated();
-      return getUniqueByAlias(CoreBranches.COMMON.getName());
+      if (commonBranch == null) {
+         commonBranch = getUniqueByAlias(CoreBranches.COMMON.getName());
+      }
+      return commonBranch;
    }
 }

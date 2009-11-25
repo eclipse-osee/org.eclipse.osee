@@ -17,6 +17,7 @@ import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse.BranchRow;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
+import org.eclipse.osee.framework.jdk.core.type.Triplet;
 
 /**
  * @author Roberto E. Escobar
@@ -31,7 +32,8 @@ public class BranchCacheUpdateResponseTranslator implements ITranslator<BranchCa
       BRANCH_TO_BASE_TX,
       BRANCH_TO_SRC_TX,
       BRANCH_TO_ASSOC_ART,
-      BRANCH_TO_ALIASES;
+      BRANCH_TO_ALIASES,
+      SRC_DEST_MERGE;
    }
 
    @Override
@@ -48,8 +50,10 @@ public class BranchCacheUpdateResponseTranslator implements ITranslator<BranchCa
       Map<Integer, Integer> branchToSourceTx = TranslationUtil.getMap(store, Fields.BRANCH_TO_SRC_TX);
       Map<Integer, Integer> associatedArtifact = TranslationUtil.getMap(store, Fields.BRANCH_TO_ASSOC_ART);
       Map<Integer, String[]> branchAliases = TranslationUtil.getArrayMap(store, Fields.BRANCH_TO_ALIASES);
+      List<Triplet<Integer, Integer, Integer>> srcDestMerge =
+            TranslationUtil.getTripletList(store, Fields.SRC_DEST_MERGE);
       return new BranchCacheUpdateResponse(rows, childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact,
-            branchAliases);
+            branchAliases, srcDestMerge);
    }
 
    @Override
@@ -67,6 +71,7 @@ public class BranchCacheUpdateResponseTranslator implements ITranslator<BranchCa
       TranslationUtil.putMap(store, Fields.BRANCH_TO_SRC_TX, object.getBranchToSourceTx());
       TranslationUtil.putMap(store, Fields.BRANCH_TO_ASSOC_ART, object.getBranchToAssocArt());
       TranslationUtil.putArrayMap(store, Fields.BRANCH_TO_ALIASES, object.getBranchAliases());
+      TranslationUtil.putTripletList(store, Fields.SRC_DEST_MERGE, object.getMergeBranches());
       return store;
    }
 
