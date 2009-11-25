@@ -11,11 +11,7 @@
 package org.eclipse.osee.framework.core.translation;
 
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
-import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
 /**
@@ -24,47 +20,28 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 public final class BranchCommitRequestTranslator implements ITranslator<BranchCommitRequest> {
 
    private enum Entry {
-      userArtifact,
-      sourceBranch,
-      destinationBranch,
-      isArchiveAllowed;
-   }
-
-   private final IDataTranslationService service;
-
-   public BranchCommitRequestTranslator(IDataTranslationService service) {
-      this.service = service;
-   }
-
-   private IDataTranslationService getService() {
-      return service;
+      USER_ART_ID,
+      SRC_BRANCH_ID,
+      DEST_BRANCH_ID,
+      IS_ARCHIVE_ALLOWED;
    }
 
    public BranchCommitRequest convert(PropertyStore propertyStore) throws OseeCoreException {
-      PropertyStore sourceBranchStore = propertyStore.getPropertyStore(Entry.sourceBranch.name());
-      PropertyStore destinationBranchStore = propertyStore.getPropertyStore(Entry.destinationBranch.name());
-      PropertyStore userArtifactStore = propertyStore.getPropertyStore(Entry.userArtifact.name());
+      int srcBranchId = propertyStore.getInt(Entry.SRC_BRANCH_ID.name());
+      int destBranchId = propertyStore.getInt(Entry.DEST_BRANCH_ID.name());
+      int userArtifactId = propertyStore.getInt(Entry.USER_ART_ID.name());
 
-      IDataTranslationService service = getService();
-      IBasicArtifact<?> userArtifact = service.convert(userArtifactStore, CoreTranslatorId.ARTIFACT_METADATA);
-      Branch sourceBranch = service.convert(sourceBranchStore, CoreTranslatorId.BRANCH);
-      Branch destinationBranch = service.convert(destinationBranchStore, CoreTranslatorId.BRANCH);
-
-      boolean isArchiveAllowed = propertyStore.getBoolean(Entry.isArchiveAllowed.name());
-      BranchCommitRequest data =
-            new BranchCommitRequest(userArtifact, sourceBranch, destinationBranch, isArchiveAllowed);
+      boolean isArchiveAllowed = propertyStore.getBoolean(Entry.IS_ARCHIVE_ALLOWED.name());
+      BranchCommitRequest data = new BranchCommitRequest(userArtifactId, srcBranchId, destBranchId, isArchiveAllowed);
       return data;
    }
 
    public PropertyStore convert(BranchCommitRequest data) throws OseeCoreException {
-      IDataTranslationService service = getService();
-
       PropertyStore store = new PropertyStore();
-      store.put(Entry.isArchiveAllowed.name(), data.isArchiveAllowed());
-      store.put(Entry.userArtifact.name(), service.convert(data.getUser(), CoreTranslatorId.ARTIFACT_METADATA));
-      store.put(Entry.sourceBranch.name(), service.convert(data.getSourceBranch(), CoreTranslatorId.BRANCH));
-      store.put(Entry.destinationBranch.name(), service.convert(data.getDestinationBranch(), CoreTranslatorId.BRANCH));
-
+      store.put(Entry.IS_ARCHIVE_ALLOWED.name(), data.isArchiveAllowed());
+      store.put(Entry.USER_ART_ID.name(), data.getUserArtId());
+      store.put(Entry.SRC_BRANCH_ID.name(), data.getSourceBranchId());
+      store.put(Entry.DEST_BRANCH_ID.name(), data.getDestinationBranchId());
       return store;
    }
 

@@ -1,0 +1,132 @@
+/*******************************************************************************
+ * Copyright (c) 2009 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
+package org.eclipse.osee.framework.core.data;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import org.eclipse.osee.framework.core.cache.IOseeCache;
+import org.eclipse.osee.framework.core.enums.ModificationType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.core.model.AttributeType;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.jdk.core.type.Triplet;
+
+/**
+ * @author Roberto E. Escobar
+ */
+public class ArtifactTypeCacheUpdateResponse {
+
+   private final List<ArtifactTypeRow> rows;
+   private final Map<Integer, Integer> baseToSuper;
+   private final List<Triplet<Integer, Integer, Integer[]>> artAttrs;
+
+   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Integer, Integer> baseToSuper, List<Triplet<Integer, Integer, Integer[]>> artAttrs) {
+      this.rows = rows;
+      this.baseToSuper = baseToSuper;
+      this.artAttrs = artAttrs;
+   }
+
+   public List<ArtifactTypeRow> getArtTypeRows() {
+      return rows;
+   }
+
+   public Map<Integer, Integer> getBaseToSuperTypes() {
+      return baseToSuper;
+   }
+
+   public List<Triplet<Integer, Integer, Integer[]>> getAttributeTypes() {
+      return artAttrs;
+   }
+
+   public static final class ArtifactTypeRow {
+      private final int id;
+      private final String name;
+      private final String guid;
+      private final boolean isAbstract;
+      private final ModificationType modType;
+
+      protected ArtifactTypeRow(int id, String guid, String name, boolean isAbstract, ModificationType modType) {
+         super();
+         this.id = id;
+         this.guid = guid;
+         this.name = name;
+         this.isAbstract = isAbstract;
+         this.modType = modType;
+      }
+
+      public int getId() {
+         return id;
+      }
+
+      public String getName() {
+         return name;
+      }
+
+      public String getGuid() {
+         return guid;
+      }
+
+      public boolean isAbstract() {
+         return isAbstract;
+      }
+
+      public ModificationType getModType() {
+         return modType;
+      }
+
+      public String[] toArray() {
+         return new String[] {String.valueOf(getId()), getGuid(), getName(), String.valueOf(isAbstract()),
+               getModType().name()};
+      }
+
+      public static ArtifactTypeRow fromArray(String[] data) {
+         int id = Integer.valueOf(data[0]);
+         String guid = data[1];
+         String name = data[2];
+         boolean isAbstract = Boolean.valueOf(data[3]);
+         ModificationType modType = ModificationType.valueOf(data[4]);
+         return new ArtifactTypeRow(id, guid, name, isAbstract, modType);
+      }
+   }
+
+   public static ArtifactTypeCacheUpdateResponse fromCache(IOseeCache<ArtifactType> cache) throws OseeCoreException {
+      List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
+      Map<Integer, Integer> baseToSuper = new HashMap<Integer, Integer>();
+      List<Triplet<Integer, Integer, Integer[]>> artAttrs = new ArrayList<Triplet<Integer, Integer, Integer[]>>();
+      for (ArtifactType art : cache.getAll()) {
+         rows.add(new ArtifactTypeRow(art.getId(), art.getGuid(), art.getName(), art.isAbstract(),
+               art.getModificationType()));
+
+         Integer artId = art.getId();
+         for (ArtifactType superType : art.getSuperArtifactTypes()) {
+            baseToSuper.put(artId, superType.getId());
+         }
+
+         for (Entry<Branch, Collection<AttributeType>> entry : art.getLocalAttributeTypes().entrySet()) {
+            Integer branchId = entry.getKey().getId();
+            Collection<AttributeType> types = entry.getValue();
+            Integer[] attrs = new Integer[types.size()];
+            int index = 0;
+            for (AttributeType type : types) {
+               attrs[index] = type.getId();
+               index++;
+            }
+            artAttrs.add(new Triplet<Integer, Integer, Integer[]>(artId, branchId, attrs));
+         }
+      }
+      return new ArtifactTypeCacheUpdateResponse(rows, baseToSuper, artAttrs);
+   }
+}

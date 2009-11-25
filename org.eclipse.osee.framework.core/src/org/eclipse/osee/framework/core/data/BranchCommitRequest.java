@@ -10,19 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.model.Branch;
-
 /**
  * @author Roberto E. Escobar
  */
 public class BranchCommitRequest {
 
-   private final IBasicArtifact<?> userArtifact;
-   private final Branch sourceBranch;
-   private final Branch destinationBranch;
+   private final int userArtifact;
+   private final int sourceBranch;
+   private final int destinationBranch;
    private final boolean isArchiveAllowed;
 
-   public BranchCommitRequest(IBasicArtifact<?> userArtifact, Branch sourceBranch, Branch destinationBranch, boolean isArchiveAllowed) {
+   public BranchCommitRequest(int userArtifact, int sourceBranch, int destinationBranch, boolean isArchiveAllowed) {
       super();
       this.userArtifact = userArtifact;
       this.sourceBranch = sourceBranch;
@@ -30,15 +28,15 @@ public class BranchCommitRequest {
       this.isArchiveAllowed = isArchiveAllowed;
    }
 
-   public IBasicArtifact<?> getUser() {
+   public int getUserArtId() {
       return userArtifact;
    }
 
-   public Branch getSourceBranch() {
+   public int getSourceBranchId() {
       return sourceBranch;
    }
 
-   public Branch getDestinationBranch() {
+   public int getDestinationBranchId() {
       return destinationBranch;
    }
 
