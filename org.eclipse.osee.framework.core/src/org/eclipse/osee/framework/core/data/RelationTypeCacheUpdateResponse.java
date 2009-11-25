@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationType;
@@ -75,10 +75,9 @@ public class RelationTypeCacheUpdateResponse {
       }
    }
 
-   public static RelationTypeCacheUpdateResponse fromCache(IOseeCache<RelationType> cache) throws OseeCoreException {
+   public static RelationTypeCacheUpdateResponse fromCache(Collection<RelationType> types) throws OseeCoreException {
       List<RelationTypeRow> rows = new ArrayList<RelationTypeRow>();
-      for (RelationType item : cache.getAll()) {
-
+      for (RelationType item : types) {
          rows.add(new RelationTypeRow(item.getId(), item.getGuid(), item.getName(), item.getModificationType()));
       }
       return new RelationTypeCacheUpdateResponse(rows);

@@ -241,18 +241,21 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       if (enumType != null) {
          oseeEnumType = getCache().getEnumTypeCache().getByGuid(enumType.getTypeGuid());
       }
-      attributeType.setTypeGuid(getFactory().getAttributeTypeFactory().create(attributeType.getTypeGuid(), //
-            removeQuotes(attributeType.getName()), //
-            attributeType.getBaseAttributeType(), // 
-            attributeType.getDataProvider(), // 
-            attributeType.getFileExtension(), //
-            attributeType.getDefaultValue(), //
-            oseeEnumType, //
-            Integer.parseInt(attributeType.getMin()), //
-            max, //
-            attributeType.getDescription(), //
-            attributeType.getTaggerId()//
-      ).getGuid());
+
+      org.eclipse.osee.framework.core.model.AttributeType type =
+            getFactory().getAttributeTypeFactory().create(attributeType.getTypeGuid(), //
+                  removeQuotes(attributeType.getName()), //
+                  attributeType.getBaseAttributeType(), // 
+                  attributeType.getDataProvider(), // 
+                  attributeType.getFileExtension(), //
+                  attributeType.getDefaultValue(), //
+                  Integer.parseInt(attributeType.getMin()), //
+                  max, //
+                  attributeType.getDescription(), //
+                  attributeType.getTaggerId()//
+            );
+      type.setOseeEnumType(oseeEnumType);
+      attributeType.setTypeGuid(type.getGuid());
    }
 
    private void handleRelationType(RelationType relationType) throws OseeCoreException {

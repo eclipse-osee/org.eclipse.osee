@@ -11,8 +11,8 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
@@ -75,9 +75,9 @@ public class OseeEnumTypeCacheUpdateResponse {
       }
    }
 
-   public static OseeEnumTypeCacheUpdateResponse fromCache(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
+   public static OseeEnumTypeCacheUpdateResponse fromCache(Collection<OseeEnumType> types) throws OseeCoreException {
       List<OseeEnumTypeRow> rows = new ArrayList<OseeEnumTypeRow>();
-      for (OseeEnumType item : cache.getAll()) {
+      for (OseeEnumType item : types) {
 
          rows.add(new OseeEnumTypeRow(item.getId(), item.getGuid(), item.getName(), item.getModificationType()));
       }

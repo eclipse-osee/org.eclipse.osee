@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.internal.fields.OseeField;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 
@@ -31,10 +32,10 @@ public final class AttributeType extends AbstractOseeType implements Comparable<
    private static final String ATTRIBUTE_FILE_EXTENSION_FIELD_KEY = "osee.attribute.file.type.extension.field";
    private static final String ATTRIBUTE_TAGGER_ID_FIELD_KEY = "osee.attribute.tagger.id.field";
 
-   public AttributeType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) {
+   public AttributeType(String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String description, String taggerId) {
       super(guid, typeName);
       initializeFields();
-      setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue, oseeEnumType,
+      setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue, null,
             minOccurrences, maxOccurrences, description, taggerId);
    }
 
@@ -95,6 +96,10 @@ public final class AttributeType extends AbstractOseeType implements Comparable<
 
    public OseeEnumType getOseeEnumType() {
       return getFieldValueLogException(null, ATTRIBUTE_ENUM_TYPE_ID_FIELD_KEY);
+   }
+
+   public void setOseeEnumType(OseeEnumType enumType) throws OseeCoreException {
+      setField(ATTRIBUTE_ENUM_TYPE_ID_FIELD_KEY, enumType);
    }
 
    @Override

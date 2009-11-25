@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -136,7 +135,7 @@ public class BranchCacheUpdateResponse {
       }
    }
 
-   public static BranchCacheUpdateResponse fromCache(IOseeCache<Branch> cache) throws OseeCoreException {
+   public static BranchCacheUpdateResponse fromCache(Collection<Branch> types) throws OseeCoreException {
       List<BranchRow> rowData = new ArrayList<BranchRow>();
       Map<Integer, Integer> childToParent = new HashMap<Integer, Integer>();
       Map<Integer, Integer> branchToBaseTx = new HashMap<Integer, Integer>();
@@ -144,7 +143,7 @@ public class BranchCacheUpdateResponse {
       Map<Integer, Integer> branchToAssocArt = new HashMap<Integer, Integer>();
       Map<Integer, String[]> branchToAliases = new HashMap<Integer, String[]>();
 
-      for (Branch br : cache.getAll()) {
+      for (Branch br : types) {
          Integer branchId = br.getId();
          rowData.add(new BranchRow(br.getId(), br.getGuid(), br.getName(), br.getBranchType(), br.getBranchState(),
                br.getArchiveState(), br.getModificationType()));

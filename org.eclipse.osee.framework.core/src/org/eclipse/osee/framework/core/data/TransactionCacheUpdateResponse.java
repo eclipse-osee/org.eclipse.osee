@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
@@ -100,10 +100,10 @@ public class TransactionCacheUpdateResponse {
       }
    }
 
-   public static TransactionCacheUpdateResponse fromCache(IOseeCache<TransactionRecord> cache) throws OseeCoreException {
+   public static TransactionCacheUpdateResponse fromCache(Collection<TransactionRecord> types) throws OseeCoreException {
       List<TxRow> rows = new ArrayList<TxRow>();
       Map<Integer, Integer> txToBranchId = new HashMap<Integer, Integer>();
-      for (TransactionRecord tx : cache.getAll()) {
+      for (TransactionRecord tx : types) {
          rows.add(new TxRow(tx.getId(), tx.getTxType(), tx.getComment(), tx.getTimeStamp(), tx.getAuthor(),
                tx.getCommit()));
          txToBranchId.put(tx.getId(), tx.getBranchId());

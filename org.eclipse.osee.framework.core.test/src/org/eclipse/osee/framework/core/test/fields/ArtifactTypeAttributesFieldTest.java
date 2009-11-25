@@ -40,7 +40,7 @@ public class ArtifactTypeAttributesFieldTest {
    private static Branch br2;
 
    @BeforeClass
-   public static void prepareTest() {
+   public static void prepareTest() throws OseeCoreException {
       attr1 = MockDataFactory.createAttributeType(1, null);
       attr2 = MockDataFactory.createAttributeType(2, null);
       attr3 = MockDataFactory.createAttributeType(3, null);

@@ -25,7 +25,7 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
    public AttributeTypeFactory() {
    }
 
-   public AttributeType create(String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
+   public AttributeType create(String guid, String name, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, int minOccurrences, int maxOccurrences, String tipText, String taggerId) throws OseeCoreException {
       Conditions.checkNotNullOrEmpty(name, "attribute type name");
       //      checkNameUnique(cache, name);
       Conditions.checkNotNullOrEmpty(baseAttributeTypeId, "attribute base type id");
@@ -39,7 +39,7 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
 
       String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);
       return new AttributeType(checkedGuid, name, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
-            defaultValue, oseeEnumType, minOccurrences, maxOccurrences, tipText, taggerId);
+            defaultValue, minOccurrences, maxOccurrences, tipText, taggerId);
    }
 
    public AttributeType createOrUpdate(AbstractOseeCache<AttributeType> cache, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
@@ -51,7 +51,8 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
       if (attributeType == null) {
          attributeType =
                create(guid, typeName, resolvedBaseAttributeType, resolvedProviderType, fileTypeExtension, defaultValue,
-                     oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
+                     minOccurrences, maxOccurrences, description, taggerId);
+         attributeType.setOseeEnumType(oseeEnumType);
       } else {
          cache.decache(attributeType);
          attributeType.setFields(typeName, resolvedBaseAttributeType, resolvedProviderType, fileTypeExtension,
@@ -66,7 +67,8 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
       if (attributeType == null) {
          attributeType =
                create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue,
-                     oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
+                     minOccurrences, maxOccurrences, description, taggerId);
+         attributeType.setOseeEnumType(oseeEnumType);
          attributeType.setId(uniqueId);
          attributeType.setModificationType(modificationType);
       } else {

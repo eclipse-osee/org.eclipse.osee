@@ -141,7 +141,7 @@ public class ModelAsserts {
 
    public static AttributeType createAttributeType(String guid, String name) throws OseeCoreException {
       AttributeType attributeType =
-            new AttributeType(guid, name, "DummyBase", "DummyProvider", "none", "none", null, 1, 1, "test data", null);
+            new AttributeType(guid, name, "DummyBase", "DummyProvider", "none", "none", 1, 1, "test data", null);
       Assert.assertNotNull(attributeType);
       return attributeType;
    }

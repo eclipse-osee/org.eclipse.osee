@@ -16,7 +16,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -102,11 +101,11 @@ public class ArtifactTypeCacheUpdateResponse {
       }
    }
 
-   public static ArtifactTypeCacheUpdateResponse fromCache(IOseeCache<ArtifactType> cache) throws OseeCoreException {
+   public static ArtifactTypeCacheUpdateResponse fromCache(Collection<ArtifactType> types) throws OseeCoreException {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
       Map<Integer, Integer> baseToSuper = new HashMap<Integer, Integer>();
       List<Triplet<Integer, Integer, Integer[]>> artAttrs = new ArrayList<Triplet<Integer, Integer, Integer[]>>();
-      for (ArtifactType art : cache.getAll()) {
+      for (ArtifactType art : types) {
          rows.add(new ArtifactTypeRow(art.getId(), art.getGuid(), art.getName(), art.isAbstract(),
                art.getModificationType()));
 
@@ -117,10 +116,10 @@ public class ArtifactTypeCacheUpdateResponse {
 
          for (Entry<Branch, Collection<AttributeType>> entry : art.getLocalAttributeTypes().entrySet()) {
             Integer branchId = entry.getKey().getId();
-            Collection<AttributeType> types = entry.getValue();
-            Integer[] attrs = new Integer[types.size()];
+            Collection<AttributeType> attrTypes = entry.getValue();
+            Integer[] attrs = new Integer[attrTypes.size()];
             int index = 0;
-            for (AttributeType type : types) {
+            for (AttributeType type : attrTypes) {
                attrs[index] = type.getId();
                index++;
             }

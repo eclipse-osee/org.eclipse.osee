@@ -10,9 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
+import org.eclipse.osee.framework.core.data.AttributeTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.AttributeTypeFactory;
@@ -43,14 +48,25 @@ public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<Attr
 
    @Override
    protected Collection<AttributeType> updateCache(IOseeCache<AttributeType> cache) throws OseeCoreException {
-      //      AttributeTypeFactory factory = getFactory();
-      //      for (AttributeType srcType : items) {
-      //         OseeEnumType oseeEnumType = enumCache.getById(srcType.getOseeEnumTypeId());
-      //         factory.createOrUpdate(cache, srcType.getId(), srcType.getModificationType(), srcType.getGuid(),
-      //               srcType.getName(), srcType.getBaseAttributeTypeId(), srcType.getAttributeProviderId(),
-      //               srcType.getFileTypeExtension(), srcType.getDefaultValue(), oseeEnumType, srcType.getMinOccurrences(),
-      //               srcType.getMaxOccurrences(), srcType.getDescription(), srcType.getTaggerId());
-      //      }
-      return null;
+      List<AttributeType> updatedItems = new ArrayList<AttributeType>();
+
+      AttributeTypeCacheUpdateResponse response =
+            sendUpdateMessage(cache, CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
+
+      Map<Integer, Integer> attrToEnums = response.getAttrToEnums();
+      AttributeTypeFactory factory = getFactory();
+      for (AttributeType row : response.getAttrTypeRows()) {
+         Integer uniqueId = row.getId();
+         OseeEnumType oseeEnumType = null;
+         Integer enumId = attrToEnums.get(uniqueId);
+         if (enumId != null) {
+            oseeEnumType = enumCache.getById(enumId);
+         }
+         factory.createOrUpdate(cache, row.getId(), row.getModificationType(), row.getGuid(), row.getName(),
+               row.getBaseAttributeTypeId(), row.getAttributeProviderId(), row.getFileTypeExtension(),
+               row.getDefaultValue(), oseeEnumType, row.getMinOccurrences(), row.getMaxOccurrences(),
+               row.getDescription(), row.getTaggerId());
+      }
+      return updatedItems;
    }
 }

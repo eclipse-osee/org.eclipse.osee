@@ -49,12 +49,16 @@ public class DataTranslationServiceFactory {
       service.addTranslator(new CacheUpdateRequestTranslator(), CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);
       service.addTranslator(new BranchCacheUpdateResponseTranslator(), CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
       service.addTranslator(new TransactionCacheUpdateResponseTranslator(), CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
+
       service.addTranslator(new ArtifactTypeCacheUpdateResponseTranslator(),
             CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
-      service.addTranslator(new AttributeTypeCacheUpdateResponseTranslator(),
+
+      service.addTranslator(new AttributeTypeCacheUpdateResponseTranslator(factoryProvider),
             CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
+
       service.addTranslator(new RelationTypeCacheUpdateResponseTranslator(),
             CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
+
       service.addTranslator(new OseeEnumTypeCacheUpdateResponseTranslator(),
             CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
       return service;
