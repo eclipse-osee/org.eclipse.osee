@@ -54,7 +54,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
          "insert into osee_tx_details(tx_type, branch_id, transaction_id, osee_comment, time, author, commit_art_id) values(?,?,?,?,?,?,?)";
 
    private static final String ARTIFACT_CHANGES =
-         "SELECT av1.art_id, branch_id FROM osee_txs txs1, osee_tx_details txd1, osee_artifact_version av1 WHERE txs1.transaction_id = ? AND txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = av1.gamma_id UNION ALL SELECT ar1.art_id, branch_id FROM osee_txs txs2, osee_tx_details txd2, osee_relation_link rl1, osee_artifact ar1 WHERE (rl1.a_art_id = ar1.art_id OR rl1.b_art_id = ar1.art_id) AND txs2.transaction_id = ? AND txs2.transaction_id = txd2.transaction_id AND txs2.gamma_id = rl1.gamma_id";
+         "SELECT av.art_id, txs1.branch_id FROM osee_txs txs1, osee_artifact_version av WHERE  txs1.branch_id = ? AND txs1.transaction_id = ? AND txs1.gamma_id = av.gamma_id UNION ALL SELECT art.art_id, txs2.branch_id FROM osee_txs txs2, osee_relation_link rel, osee_artifact art WHERE txs2.branch_id = ? and txs2.transaction_id = ? AND txs2.gamma_id = rel.gamma_id AND (rel.a_art_id = art.art_id OR rel.b_art_id = art.art_id) UNION ALL SELECT att.attr_id, txs3.branch_id FROM osee_txs txs3, osee_attribute att WHERE txs3.branch_id = ? AND txs3.transaction_id = ? AND txs3.gamma_id = att.gamma_id";
 
    private static final String INSERT_COMMIT_ADDRESSING =
          "insert into osee_txs(transaction_id, gamma_id, mod_type, tx_current) values(?,?,?,?)";
@@ -187,7 +187,9 @@ public class CommitDbOperation extends AbstractDbTxOperation {
                   TransactionManager.getTransactionId(newTransactionNumber));
          }
 
-         Object[] queryData = new Object[] {newTransactionNumber, newTransactionNumber};
+         Object[] queryData =
+               new Object[] {destinationBranch.getId(), newTransactionNumber, destinationBranch.getId(),
+                     newTransactionNumber, destinationBranch.getId(), newTransactionNumber};
          // reload the committed artifacts since the commit changed them on the destination branch
          ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, queryData, 400, ArtifactLoad.FULL, true, null, true);
 
