@@ -73,7 +73,7 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
                String guid = chStmt.getString("rel_link_type_guid");
 
                RelationType relationType =
-                     factory.createOrUpdate(cache, bArtTypeId, ModificationType.MODIFIED, guid, typeName, sideAName,
+                     factory.createOrUpdate(cache, typeId, ModificationType.MODIFIED, guid, typeName, sideAName,
                            sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity, defaultOrderTypeGuid);
                relationType.clearDirty();
             } catch (OseeCoreException ex) {

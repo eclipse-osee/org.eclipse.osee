@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.translation;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse.RelationTypeRow;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -25,8 +24,7 @@ public class RelationTypeCacheUpdateResponseTranslator implements ITranslator<Re
 
    private enum Fields {
       COUNT,
-      ROW,
-      REL_ART_A_B;
+      ROW
    }
 
    @Override
@@ -37,8 +35,7 @@ public class RelationTypeCacheUpdateResponseTranslator implements ITranslator<Re
          String[] rowData = store.getArray(createKey(Fields.ROW, index));
          rows.add(RelationTypeRow.fromArray(rowData));
       }
-      Map<Integer, Integer[]> relToArtAB = TranslationUtil.getIntArrayMap(store, Fields.REL_ART_A_B);
-      return new RelationTypeCacheUpdateResponse(rows, relToArtAB);
+      return new RelationTypeCacheUpdateResponse(rows);
    }
 
    @Override
@@ -50,8 +47,6 @@ public class RelationTypeCacheUpdateResponseTranslator implements ITranslator<Re
          store.put(createKey(Fields.ROW, index), row.toArray());
       }
       store.put(Fields.COUNT.name(), rows.size());
-
-      TranslationUtil.putIntArrayMap(store, Fields.REL_ART_A_B, object.getRelToArtType());
       return store;
    }
 

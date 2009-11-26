@@ -77,17 +77,17 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    public void load(IOseeCache<Branch> cache) throws OseeCoreException {
       long startTime = System.currentTimeMillis();
       Map<Branch, Integer> childToParent = new HashMap<Branch, Integer>();
-      Map<Branch, Integer> branchToParentTx = new HashMap<Branch, Integer>();
+      Map<Branch, Integer> branchToBaseTx = new HashMap<Branch, Integer>();
       Map<Branch, Integer> branchToSourceTx = new HashMap<Branch, Integer>();
       Map<Branch, Integer> associatedArtifact = new HashMap<Branch, Integer>();
 
       BranchCache brCache = (BranchCache) cache;
-      loadBranches(brCache, childToParent, branchToParentTx, branchToSourceTx, associatedArtifact);
+      loadBranches(brCache, childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact);
       loadBranchHierarchy(brCache, childToParent);
       loadMergeBranches(brCache);
       loadBranchAliases(brCache);
       loadAssociatedArtifacts(brCache, associatedArtifact);
-      loadBranchRelatedTransactions(brCache, branchToParentTx, branchToSourceTx);
+      loadBranchRelatedTransactions(brCache, branchToBaseTx, branchToSourceTx);
 
       for (Branch branch : cache.getAll()) {
          branch.clearDirty();
@@ -96,7 +96,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
             Lib.getElapseString(startTime)));
    }
 
-   private void loadBranches(BranchCache cache, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToParentTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
+   private void loadBranches(BranchCache cache, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
       BranchFactory factory = getFactoryService().getBranchFactory();
       IOseeStatement chStmt = getDatabaseService().getStatement();
       try {
@@ -118,7 +118,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
                if (parentBranchId != NULL_PARENT_BRANCH_ID) {
                   childToParent.put(branch, parentBranchId);
                }
-               branchToParentTx.put(branch, chStmt.getInt("transaction_id"));
+               branchToBaseTx.put(branch, chStmt.getInt("transaction_id"));
                branchToSourceTx.put(branch, chStmt.getInt("parent_transaction_id"));
                associatedArtifact.put(branch, chStmt.getInt("associated_art_id"));
             } catch (OseeCoreException ex) {
@@ -140,15 +140,15 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
       //      }
    }
 
-   private void loadBranchRelatedTransactions(BranchCache cache, Map<Branch, Integer> branchToParentTx, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {
+   private void loadBranchRelatedTransactions(BranchCache cache, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {
       TransactionCache txCache = cachingService.getOseeCachingService().getTransactionCache();
 
       Set<Integer> transactionIds = new HashSet<Integer>();
       transactionIds.addAll(branchToSourceTx.values());
-      transactionIds.addAll(branchToParentTx.values());
+      transactionIds.addAll(branchToBaseTx.values());
       txCache.loadTransactions(transactionIds);
 
-      for (Entry<Branch, Integer> entry : branchToParentTx.entrySet()) {
+      for (Entry<Branch, Integer> entry : branchToBaseTx.entrySet()) {
          Branch branch = entry.getKey();
          if (branch.getBaseTransaction() == null) {
             TransactionRecord baseTx = txCache.getById(entry.getValue());

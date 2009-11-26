@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse;
@@ -54,18 +53,16 @@ public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<Relat
       RelationTypeCacheUpdateResponse response =
             sendUpdateMessage(cache, CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
 
-      Map<Integer, Integer[]> relToArts = response.getRelToArtType();
       RelationTypeFactory factory = getFactory();
       for (RelationTypeRow row : response.getRelationTypeRows()) {
-         Integer uniqueId = row.getId();
-         Integer[] ids = relToArts.get(uniqueId);
+         ArtifactType aSideType = artCache.getById(row.getArtifactTypeSideA());
+         ArtifactType bSideType = artCache.getById(row.getArtifactTypeSideB());
 
-         ArtifactType aSideType = artCache.getById(ids[0]);
-         ArtifactType bSideType = artCache.getById(ids[1]);
-
-         factory.createOrUpdate(cache, row.getId(), row.getModificationType(), row.getGuid(), row.getName(),
-               row.getSideAName(), row.getSideBName(), aSideType, bSideType, row.getMultiplicity(),
-               row.getDefaultOrderTypeGuid());
+         RelationType type =
+               factory.createOrUpdate(cache, row.getId(), row.getModType(), row.getGuid(), row.getName(),
+                     row.getSideAName(), row.getSideBName(), aSideType, bSideType, row.getMultiplicity(),
+                     row.getDefaultOrderTypeGuid());
+         updatedItems.add(type);
       }
       return updatedItems;
    }

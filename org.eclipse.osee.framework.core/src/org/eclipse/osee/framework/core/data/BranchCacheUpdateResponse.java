@@ -188,7 +188,7 @@ public class BranchCacheUpdateResponse {
          Integer merge = entry.getValue().getId();
          srcDestMerge.add(new Triplet<Integer, Integer, Integer>(src, dest, merge));
       }
-      return new BranchCacheUpdateResponse(rowData, childToParent, childToParent, branchToSourceTx, branchToAssocArt,
+      return new BranchCacheUpdateResponse(rowData, childToParent, branchToBaseTx, branchToSourceTx, branchToAssocArt,
             branchToAliases, srcDestMerge);
    }
 }
