@@ -91,11 +91,11 @@ public enum CoreRelationEnumeration implements IRelationEnumeration, IOseeType {
    }
 
    public RelationType getRelationType() throws OseeCoreException {
-      return RelationTypeManager.getType(typeName);
+      return RelationTypeManager.getByGuid(getGuid());
    }
 
    public boolean isThisType(RelationLink link) {
-      return link.getRelationType().getName().equals(typeName);
+      return link.getRelationType().getGuid().equals(getGuid());
    }
 
    @Override
