@@ -129,7 +129,7 @@ public class RelationTypeCacheUpdateResponse {
    public static RelationTypeCacheUpdateResponse fromCache(Collection<RelationType> types) throws OseeCoreException {
       List<RelationTypeRow> rows = new ArrayList<RelationTypeRow>();
       for (RelationType item : types) {
-         rows.add(new RelationTypeRow(item.getId(), item.getGuid(), item.getName(), item.getModificationType(),
+         rows.add(new RelationTypeRow(item.getId(), item.getName(), item.getGuid(), item.getModificationType(),
                item.getSideAName(), item.getSideBName(), item.getArtifactTypeSideA().getId(),
                item.getArtifactTypeSideB().getId(), item.getMultiplicity(), item.getDefaultOrderTypeGuid()));
       }

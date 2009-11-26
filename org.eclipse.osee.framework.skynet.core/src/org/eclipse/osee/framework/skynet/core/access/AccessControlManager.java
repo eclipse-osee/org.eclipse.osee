@@ -43,6 +43,7 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
+import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
@@ -175,7 +176,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, RelationTypeManager.getType("Users").getId());
+            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, RelationTypeManager.getByGuid(
+                  CoreRelationEnumeration.Users_User.getGuid()).getId());
 
             // get group members and populate subjectToGroupCache
             while (chStmt.next()) {

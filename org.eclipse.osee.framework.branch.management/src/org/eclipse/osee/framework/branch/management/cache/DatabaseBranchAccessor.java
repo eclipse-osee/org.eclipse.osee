@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.branch.management.internal.InternalBranchActiv
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
+import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -131,13 +132,10 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    }
 
    private void loadAssociatedArtifacts(BranchCache cache, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
-      //      if (cache.getDefaultAssociatedArtifact() == null) {
-      //         cache.setDefaultAssociatedArtifact(new ShallowArtifact(cache, -1));
-      //      }
-      //      for (Entry<Branch, Integer> entry : associatedArtifact.entrySet()) {
-      //         Branch branch = entry.getKey();
-      //         branch.setAssociatedArtifact(new ShallowArtifact(cache, entry.getValue()));
-      //      }
+      for (Entry<Branch, Integer> entry : associatedArtifact.entrySet()) {
+         Branch branch = entry.getKey();
+         branch.setAssociatedArtifact(new DefaultBasicArtifact(entry.getValue(), null, null));
+      }
    }
 
    private void loadBranchRelatedTransactions(BranchCache cache, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {

@@ -551,7 +551,9 @@ public class BranchManager {
    }
 
    public static boolean isChangeManaged(Branch branch) throws OseeCoreException {
+      // TODO use Associated Artifacts
       int systemUserArtId = UserManager.getUser(SystemUser.OseeSystem).getArtId();
+
       int assocArtId = branch.getAssociatedArtifact().getArtId();
       return assocArtId > 0 && assocArtId != systemUserArtId;
    }
