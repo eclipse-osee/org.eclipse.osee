@@ -29,7 +29,7 @@ import org.eclipse.swt.SWT;
  */
 public class CleanUpBackingData extends DatabaseHealthOperation {
    private static final String NOT_ADDRESSESED_GAMMAS =
-         "select gamma_id from osee_attribute t1 where not exists (select 1 from osee_txs txs1 where t1.gamma_id = txs1.gamma_id) and not exists (select 1 from osee_removed_txs txs2 where t1.gamma_id = txs2.rem_gamma_id) and not exists (select 1 from osee_txs_archived txs3 where t1.gamma_id = txs3.gamma_id)";
+         "select gamma_id from %s t1 where not exists (select 1 from osee_txs txs1 where t1.gamma_id = txs1.gamma_id) and not exists (select 1 from osee_removed_txs txs2 where t1.gamma_id = txs2.rem_gamma_id) and not exists (select 1 from osee_txs_archived txs3 where t1.gamma_id = txs3.gamma_id)";
    private static final String EMPTY_TRANSACTIONS =
          "select transaction_id from osee_tx_details txd where tx_type = 0 and not exists (select 1 from osee_txs txs1 where txd.transaction_id = txs1.transaction_id) and not exists (select 1 from osee_removed_txs txs2 where txd.transaction_id = txs2.transaction_id or txd.transaction_id = txs2.rem_transaction_id) and not exists (select 1 from osee_txs_archived txs3 where txd.transaction_id = txs3.transaction_id)";
    private static final String DELETE_GAMMAS = "DELETE FROM %s WHERE gamma_id = ?";
@@ -102,11 +102,9 @@ public class CleanUpBackingData extends DatabaseHealthOperation {
    protected void doHealthCheck(IProgressMonitor monitor) throws Exception {
       this.monitor = monitor;
 
-      if (false) {
-         processNotAddressedGammas("osee_attribute");
-         processNotAddressedGammas("osee_artifact_version");
-         processNotAddressedGammas("osee_relation_link");
-      }
+      processNotAddressedGammas("osee_attribute");
+      processNotAddressedGammas("osee_artifact_version");
+      processNotAddressedGammas("osee_relation_link");
       processEmptyTransactions();
 
       monitor.worked(calculateWork(0.20));
