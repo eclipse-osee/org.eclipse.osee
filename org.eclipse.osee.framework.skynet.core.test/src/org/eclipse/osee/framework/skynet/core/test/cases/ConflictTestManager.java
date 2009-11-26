@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -33,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.attribute.FloatingPointAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.IntegerAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.StringAttribute;
 import org.eclipse.osee.framework.skynet.core.conflict.AttributeConflict;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 

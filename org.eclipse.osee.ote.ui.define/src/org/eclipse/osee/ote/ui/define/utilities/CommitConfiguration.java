@@ -11,10 +11,10 @@
 package org.eclipse.osee.ote.ui.define.utilities;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 
 /**
  * @author Roberto E. Escobar

@@ -15,7 +15,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
@@ -48,7 +47,7 @@ public class ExchangeUtil {
       File indexFile = new File(tempFolder, name);
       Writer writer =
             new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), ExportImportXml.XML_ENCODING),
-                  bufferSize);
+            bufferSize);
       writer.write(ExportImportXml.XML_HEADER);
       return writer;
    }
@@ -73,7 +72,8 @@ public class ExchangeUtil {
    }
 
    public static void cleanUpTempExchangeFile(File exchangeSource, boolean wasZipExtractionRequired) {
-      if (wasZipExtractionRequired && exchangeSource != null && exchangeSource.exists() && exchangeSource.getAbsolutePath() != ExchangeProvider.getExchangeFilePath()) {
+      if (wasZipExtractionRequired && exchangeSource != null && exchangeSource.exists() && !exchangeSource.getAbsolutePath().equals(
+            ExchangeProvider.getExchangeFilePath())) {
          OseeLog.log(ExchangeUtil.class, Level.INFO, String.format("Deleting Branch Import Temp Folder - [%s]",
                exchangeSource));
          Lib.deleteDir(exchangeSource);
@@ -88,24 +88,24 @@ public class ExchangeUtil {
       return rootDirectory;
    }
 
-   public static void readExchange(File zipFile, String fileToProcess, ContentHandler handler) throws OseeCoreException {
-      InputStream inputStream = null;
+   public static void saxParseXml(InputStream byteStream, ContentHandler handler) throws Exception {
       try {
-         File entry = new File(zipFile, fileToProcess);
-         inputStream = new BufferedInputStream(new FileInputStream(entry));
          XMLReader reader = XMLReaderFactory.createXMLReader();
          reader.setContentHandler(handler);
-         reader.parse(new InputSource(inputStream));
+         reader.parse(new InputSource(byteStream));
+      } finally {
+         byteStream.close();
+      }
+   }
+
+   public static void readExchange(File exchangePath, String fileToProcess, ContentHandler handler) throws OseeCoreException {
+      InputStream byteStream = null;
+      try {
+         File entry = new File(exchangePath, fileToProcess);
+         byteStream = new BufferedInputStream(new FileInputStream(entry));
+         saxParseXml(byteStream, handler);
       } catch (Exception ex) {
          throw new OseeWrappedException(String.format("Error reading: [%s]", fileToProcess), ex);
-      } finally {
-         if (inputStream != null) {
-            try {
-               inputStream.close();
-            } catch (IOException ex) {
-               throw new OseeWrappedException(ex);
-            }
-         }
       }
    }
 }

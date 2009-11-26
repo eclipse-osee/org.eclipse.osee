@@ -10,14 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.event;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
-import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactModType;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -90,15 +89,18 @@ public class FrameworkTransactionData {
       return branchId;
    }
 
-   public Collection<Artifact> getArtifactsInRelations(ChangeType changeType, RelationType relationTypes) {
-      return getArtifactsInRelations(changeType, Arrays.asList(relationTypes));
+   public Collection<Artifact> getArtifactsInRelations(ChangeType changeType, IOseeType relationType) {
+      Set<Artifact> artifacts = new HashSet<Artifact>();
+      getArtifactsInRelations(changeType, relationType, artifacts, cacheAddedRelations);
+      getArtifactsInRelations(changeType, relationType, artifacts, cacheDeletedRelations);
+      getArtifactsInRelations(changeType, relationType, artifacts, cacheChangedRelations);
+      return artifacts;
    }
 
-   public Collection<Artifact> getArtifactsInRelations(ChangeType changeType, Collection<RelationType> relationTypes) {
-      Set<Artifact> artifacts = new HashSet<Artifact>();
+   private void getArtifactsInRelations(ChangeType changeType, IOseeType relationType, Set<Artifact> artifacts, Set<LoadedRelation> cache) {
       if (changeType == ChangeType.Added || changeType == ChangeType.All) {
-         for (LoadedRelation loadedRelation : cacheAddedRelations) {
-            if (relationTypes.contains(loadedRelation.getRelationType())) {
+         for (LoadedRelation loadedRelation : cache) {
+            if (loadedRelation.getRelationType().equals(relationType)) {
                if (loadedRelation.getArtifactA() != null) {
                   artifacts.add(loadedRelation.getArtifactA());
                }
@@ -108,31 +110,6 @@ public class FrameworkTransactionData {
             }
          }
       }
-      if (changeType == ChangeType.Deleted || changeType == ChangeType.All) {
-         for (LoadedRelation loadedRelation : cacheDeletedRelations) {
-            if (relationTypes.contains(loadedRelation.getRelationType())) {
-               if (loadedRelation.getArtifactA() != null) {
-                  artifacts.add(loadedRelation.getArtifactA());
-               }
-               if (loadedRelation.getArtifactB() != null) {
-                  artifacts.add(loadedRelation.getArtifactB());
-               }
-            }
-         }
-      }
-      if (changeType == ChangeType.Changed || changeType == ChangeType.All) {
-         for (LoadedRelation loadedRelation : cacheChangedRelations) {
-            if (relationTypes.contains(loadedRelation.getRelationType())) {
-               if (loadedRelation.getArtifactA() != null) {
-                  artifacts.add(loadedRelation.getArtifactA());
-               }
-               if (loadedRelation.getArtifactB() != null) {
-                  artifacts.add(loadedRelation.getArtifactB());
-               }
-            }
-         }
-      }
-      return artifacts;
    }
 
    @Deprecated

@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core.relation;
 
+import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.model.RelationType;
 
@@ -27,7 +28,6 @@ public class RelationTypeSide implements IRelationEnumeration {
       this.side = side;
    }
 
-   @Override
    public RelationType getRelationType() {
       return type;
    }
@@ -38,11 +38,6 @@ public class RelationTypeSide implements IRelationEnumeration {
    }
 
    @Override
-   public String getSideName() {
-      return type.getSideName(side);
-   }
-
-   @Override
    public String getName() {
       return type.getName();
    }
@@ -50,11 +45,6 @@ public class RelationTypeSide implements IRelationEnumeration {
    @Override
    public boolean isSideA() {
       return side == RelationSide.SIDE_A;
-   }
-
-   @Override
-   public boolean isThisType(RelationLink link) {
-      return link.getRelationType() == type;
    }
 
    @Override
@@ -72,5 +62,10 @@ public class RelationTypeSide implements IRelationEnumeration {
       hashCode = hashCode * 31 + type.hashCode();
       hashCode = hashCode * 31 + side.hashCode();
       return hashCode;
+   }
+
+   @Override
+   public String getGuid() {
+      return type.getGuid();
    }
 }

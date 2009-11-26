@@ -22,6 +22,7 @@ import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -333,7 +334,8 @@ public class RelationManager {
             } else {
                for (IRelationEnumeration relationEnum : relationEnums) {
                   selectedRelations =
-                        relationsByType.get(threadLocalKey.get().getKey(artifact), relationEnum.getRelationType());
+                        relationsByType.get(threadLocalKey.get().getKey(artifact),
+                              RelationTypeManager.getType(relationEnum));
                   addRelatedArtifactIds(queryId, artifact, newArtifacts, insertParameters, insertMap,
                         selectedRelations, relationEnum.getSide());
                }
@@ -354,16 +356,17 @@ public class RelationManager {
 
    @SuppressWarnings("unchecked")
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum, boolean includeDeleted) throws OseeCoreException {
+      RelationType relationType = RelationTypeManager.getType(relationEnum);
       if (includeDeleted) {
          List<Artifact> artifacts =
-               getRelatedArtifacts(artifact, relationEnum.getRelationType(), relationEnum.getSide());
+               getRelatedArtifacts(artifact, relationType, relationEnum.getSide());
          int queryId = ArtifactLoader.getNewQueryId();
 
          Object[] formatArgs = relationEnum.getSide().isSideA() ? new Object[] {"a", "b"} : new Object[] {"b", "a"};
          String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
 
          ConnectionHandler.runPreparedUpdate(sql, queryId, SQL3DataType.INTEGER,
-               artifact.getBranch().getId(), relationEnum.getRelationType().getId(), artifact.getArtId());
+               artifact.getBranch().getId(), relationType.getId(), artifact.getArtId());
 
          List<Artifact> deletedArtifacts =
                ArtifactLoader.loadArtifactsFromQueryId(queryId, ArtifactLoad.FULL, null, 4, false, false, true);
@@ -379,13 +382,13 @@ public class RelationManager {
 
          return artifacts;
       } else {
-         return getRelatedArtifacts(artifact, relationEnum.getRelationType(), relationEnum.getSide());
+         return getRelatedArtifacts(artifact, relationType, relationEnum.getSide());
       }
 
    }
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
-      return getRelatedArtifacts(artifact, relationEnum.getRelationType(), relationEnum.getSide());
+      return getRelatedArtifacts(artifact, RelationTypeManager.getType(relationEnum), relationEnum.getSide());
    }
 
    private static Artifact getRelatedArtifact(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
@@ -406,11 +409,12 @@ public class RelationManager {
    }
 
    public static Artifact getRelatedArtifact(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
-      return getRelatedArtifact(artifact, relationEnum.getRelationType(), relationEnum.getSide());
+      return getRelatedArtifact(artifact, RelationTypeManager.getType(relationEnum), relationEnum.getSide());
    }
 
    public static int getRelatedArtifactsCount(Artifact artifact, IRelationEnumeration relationTypeEnum) throws OseeCoreException {
-      return getRelatedArtifactsCount(artifact, relationTypeEnum.getRelationType(), relationTypeEnum.getSide());
+      return getRelatedArtifactsCount(artifact, RelationTypeManager.getType(relationTypeEnum),
+            relationTypeEnum.getSide());
    }
 
    public static int getRelatedArtifactsCount(Artifact artifact, RelationType relationType, RelationSide relationSide) {

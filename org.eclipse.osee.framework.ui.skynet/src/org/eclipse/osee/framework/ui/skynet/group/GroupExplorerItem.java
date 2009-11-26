@@ -15,10 +15,10 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
 /**

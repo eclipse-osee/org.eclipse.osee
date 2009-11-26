@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.skynet.core.relation;
 
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
@@ -92,7 +93,7 @@ public class RelationLink {
       if (relation == null || relation.modificationType != modificationType || relation.getRelationId() != relationId) {
          relation =
                new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
-                     rationale, aOrder, bOrder, modificationType);
+               rationale, aOrder, bOrder, modificationType);
       }
       RelationManager.manageRelation(relation, RelationSide.SIDE_A);
       RelationManager.manageRelation(relation, RelationSide.SIDE_B);
@@ -293,6 +294,10 @@ public class RelationLink {
       }
    }
 
+   public boolean isOfType(IOseeType oseeType) throws OseeCoreException {
+      return relationType.equals(oseeType);
+   }
+
    public RelationType getRelationType() {
       return relationType;
    }
@@ -445,11 +450,11 @@ public class RelationLink {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
          boolean result = aArtifactId == other.aArtifactId && aBranch.equals(other.aBranch) &&
-         //
+                        //
          bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
-         //
+                        //
          other.modificationType == modificationType &&
-         //
+                        //
          relationType.equals(other.relationType);
 
          // This should eventually be removed once DB cleanup occurs
@@ -466,11 +471,11 @@ public class RelationLink {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
          boolean result = aArtifactId == other.aArtifactId && aBranch.equals(other.aBranch) &&
-         //
+                        //
          bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
-         //
+                        //
          other.modificationType == modificationType &&
-         //
+                        //
          relationType.equals(other.relationType);
 
          return result;

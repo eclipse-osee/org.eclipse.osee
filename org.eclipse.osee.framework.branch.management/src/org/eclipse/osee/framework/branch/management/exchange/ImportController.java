@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
-import java.io.File;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,12 +23,14 @@ import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDefinitionsSaxHandler;
+import org.eclipse.osee.framework.branch.management.exchange.handler.IOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaData;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaDataSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalTypeCheckSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
+import org.eclipse.osee.framework.branch.management.exchange.transform.OseeDbExportTransformer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -39,10 +40,8 @@ import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
 
 /**
@@ -61,26 +60,23 @@ final class ImportController {
    private static final String QUERY_SAVE_POINTS_FROM_IMPORT_MAP =
          "SELECT save_point_name from osee_import_save_point oisp, osee_import_source ois WHERE ois.import_id = oisp.import_id AND oisp.status = 1 AND ois.db_source_guid = ? AND ois.source_export_date = ?";
 
-   private final IResourceLocator locator;
+   private final IOseeDbExportDataProvider exportDataProvider;
    private final Options options;
    private final int[] branchesToImport;
    private final Map<String, SavePoint> savePoints;
 
-   private File importSource;
    private TranslationManager translator;
    private ManifestSaxHandler manifestHandler;
    private MetaDataSaxHandler metadataHandler;
-   private boolean wasZipExtractionRequired;
    private String currentSavePoint;
 
-   ImportController(IResourceLocator locator, Options options, int... branchesToImport) {
-      this.locator = locator;
+   ImportController(IOseeDbExportDataProvider exportDataProvider, Options options, int... branchesToImport) {
+      this.exportDataProvider = exportDataProvider;
       this.options = options;
       this.branchesToImport = branchesToImport;
       if (branchesToImport != null && branchesToImport.length > 0) {
          throw new UnsupportedOperationException("selective branch import is not supported.");
       }
-      this.wasZipExtractionRequired = false;
       this.savePoints = new LinkedHashMap<String, SavePoint>();
    }
 
@@ -92,9 +88,9 @@ final class ImportController {
 
    private void setup() throws Exception {
       currentSavePoint = "sourceSetup";
-      Pair<Boolean, File> result = ExchangeUtil.getTempExchangeFile(locator);
-      wasZipExtractionRequired = result.getFirst();
-      importSource = result.getSecond();
+
+      // Apply xml transforms
+      OseeDbExportTransformer t = new OseeDbExportTransformer(exportDataProvider);
 
       currentSavePoint = "setup";
       translator = new TranslationManager();
@@ -103,12 +99,12 @@ final class ImportController {
       // Process manifest
       currentSavePoint = "manifest";
       manifestHandler = new ManifestSaxHandler();
-      ExchangeUtil.readExchange(importSource, "export.manifest.xml", manifestHandler);
+      exportDataProvider.startSaxParsing("export.manifest.xml", manifestHandler);
 
       // Process database meta data
       currentSavePoint = manifestHandler.getMetadataFile();
       metadataHandler = new MetaDataSaxHandler();
-      ExchangeUtil.readExchange(importSource, manifestHandler.getMetadataFile(), metadataHandler);
+      exportDataProvider.startSaxParsing(manifestHandler.getMetadataFile(), metadataHandler);
       metadataHandler.checkAndLoadTargetDbMetadata();
 
       // Load Import Indexes
@@ -127,12 +123,10 @@ final class ImportController {
                "Error during save point save - you will not be able to reimport from last source again.");
          throw ex;
       } finally {
-         ExchangeUtil.cleanUpTempExchangeFile(importSource, wasZipExtractionRequired);
+         exportDataProvider.cleanUp();
          translator = null;
          manifestHandler = null;
          metadataHandler = null;
-         wasZipExtractionRequired = false;
-         importSource = null;
          savePoints.clear();
       }
    }
@@ -143,14 +137,17 @@ final class ImportController {
       try {
          currentSavePoint = "start";
          addSavePoint(currentSavePoint);
+
          setup();
 
          ImportBranchesTx importBranchesTx = new ImportBranchesTx();
          importBranchesTx.execute();
 
          currentSavePoint = "init.relational.objects";
-         RelationalTypeCheckSaxHandler typeCheckHandler = RelationalTypeCheckSaxHandler.createWithLimitedCache(50000);
-         RelationalSaxHandler relationalSaxHandler = RelationalSaxHandler.createWithLimitedCache(50000);
+         RelationalTypeCheckSaxHandler typeCheckHandler =
+               RelationalTypeCheckSaxHandler.createWithLimitedCache(exportDataProvider, 50000);
+         RelationalSaxHandler relationalSaxHandler =
+               RelationalSaxHandler.createWithLimitedCache(exportDataProvider, 50000);
          relationalSaxHandler.setSelectedBranchIds(branchesToImport);
 
          processImportFiles(manifestHandler.getTypeFiles(), typeCheckHandler);
@@ -187,7 +184,7 @@ final class ImportController {
             handler.clearDataTable();
          }
       }
-      ExchangeUtil.readExchange(importSource, importSourceFile.getFileName(), handler);
+      exportDataProvider.startSaxParsing(importSourceFile.getFileName(), handler);
    }
 
    private MetaData checkMetadata(ImportFile importFile) {
@@ -199,7 +196,6 @@ final class ImportController {
    }
 
    private void processImportFiles(Collection<ImportFile> importFiles, final RelationalSaxHandler handler) throws Exception {
-      handler.setDecompressedFolder(importSource);
       for (final ImportFile item : importFiles) {
          currentSavePoint = item.getSource();
          if (!doesSavePointExist(currentSavePoint)) {

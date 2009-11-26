@@ -20,18 +20,18 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
  */
 public class RelationalTypeCheckSaxHandler extends RelationalSaxHandler {
 
-   public static RelationalTypeCheckSaxHandler createWithCacheAll() {
-      return new RelationalTypeCheckSaxHandler(true, 0);
+   public static RelationalTypeCheckSaxHandler createWithCacheAll(IOseeDbExportDataProvider exportDataProvider) {
+      return new RelationalTypeCheckSaxHandler(exportDataProvider, true, 0);
    }
 
-   public static RelationalTypeCheckSaxHandler createWithLimitedCache(int cacheLimit) {
-      return new RelationalTypeCheckSaxHandler(false, cacheLimit);
+   public static RelationalTypeCheckSaxHandler createWithLimitedCache(IOseeDbExportDataProvider exportDataProvider, int cacheLimit) {
+      return new RelationalTypeCheckSaxHandler(exportDataProvider, false, cacheLimit);
    }
 
    private final StringBuffer errorCheck;
 
-   private RelationalTypeCheckSaxHandler(boolean isCacheAll, int cacheLimit) {
-      super(isCacheAll, cacheLimit);
+   private RelationalTypeCheckSaxHandler(IOseeDbExportDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
+      super(exportDataProvider, isCacheAll, cacheLimit);
       this.errorCheck = new StringBuffer();
    }
 

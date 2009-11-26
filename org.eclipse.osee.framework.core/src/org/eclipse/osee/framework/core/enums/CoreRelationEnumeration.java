@@ -8,16 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.relation;
+package org.eclipse.osee.framework.core.enums;
 
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
-import org.eclipse.osee.framework.core.data.IOseeType;
-import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.RelationType;
 
-public enum CoreRelationEnumeration implements IRelationEnumeration, IOseeType {
+public enum CoreRelationEnumeration implements IRelationEnumeration {
 
    //   AddressesIssues_AddressesIssues(SIDE_A, "Addresses Issues", ""),
    //   AddressesIssues_IssuedArtifact(SIDE_B, "Addresses Issues", ""),
@@ -82,20 +78,8 @@ public enum CoreRelationEnumeration implements IRelationEnumeration, IOseeType {
       return relationSide.isSideA();
    }
 
-   public String getSideName() throws OseeCoreException {
-      return getRelationType().getSideName(relationSide);
-   }
-
    public String getName() {
       return typeName;
-   }
-
-   public RelationType getRelationType() throws OseeCoreException {
-      return RelationTypeManager.getByGuid(getGuid());
-   }
-
-   public boolean isThisType(RelationLink link) {
-      return link.getRelationType().getGuid().equals(getGuid());
    }
 
    @Override

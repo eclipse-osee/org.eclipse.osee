@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAccessControllable;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -43,7 +44,6 @@ import org.eclipse.osee.framework.skynet.core.event.IBranchEventListener;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 
@@ -371,7 +371,7 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
                if (recurse) {
                   Artifact artifact =
                         ArtifactQuery.getArtifactFromId(artifactAccessObject.getArtId(),
-                              BranchManager.getBranch(artifactAccessObject.getId()));
+                        BranchManager.getBranch(artifactAccessObject.getId()));
                   AccessControlData childAccessControlData = null;
 
                   for (Artifact child : artifact.getChildren()) {

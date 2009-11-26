@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
+import org.eclipse.osee.framework.branch.management.exchange.handler.StandardOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeLocatorProvider;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
@@ -40,8 +41,10 @@ public class BranchExchange implements IBranchExchange {
    }
 
    @Override
-   public void importBranch(IResourceLocator fileToImport, Options options, int... branchIds) throws Exception {
-      ImportController importController = new ImportController(fileToImport, options, branchIds);
+   public void importBranch(IResourceLocator exportDataLocator, Options options, int... branchIds) throws Exception {
+
+      ImportController importController =
+            new ImportController(new StandardOseeDbExportDataProvider(exportDataLocator), options, branchIds);
       importController.execute();
    }
 
@@ -56,7 +59,8 @@ public class BranchExchange implements IBranchExchange {
 
    @Override
    public IResourceLocator checkIntegrity(IResourceLocator fileToCheck) throws Exception {
-      ExchangeIntegrity exchangeIntegrityCheck = new ExchangeIntegrity(fileToCheck);
+      ExchangeIntegrity exchangeIntegrityCheck =
+            new ExchangeIntegrity(new StandardOseeDbExportDataProvider(fileToCheck));
       exchangeIntegrityCheck.execute();
       return InternalBranchActivator.getInstance().getResourceLocatorManager().generateResourceLocator(
             ExchangeLocatorProvider.PROTOCOL, "", exchangeIntegrityCheck.getExchangeCheckFileName());

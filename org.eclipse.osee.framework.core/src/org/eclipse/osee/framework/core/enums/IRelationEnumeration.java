@@ -8,22 +8,12 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.skynet.core.relation;
+package org.eclipse.osee.framework.core.enums;
 
-import org.eclipse.osee.framework.core.enums.RelationSide;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.RelationType;
+import org.eclipse.osee.framework.core.data.IOseeType;
 
-public interface IRelationEnumeration {
+public interface IRelationEnumeration extends IOseeType {
    boolean isSideA();
-
-   String getSideName() throws OseeCoreException;
-
-   public String getName();
-
-   public RelationType getRelationType() throws OseeCoreException;
-
-   public boolean isThisType(RelationLink link);
 
    public RelationSide getSide();
 }

@@ -17,26 +17,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.branch.management.exchange.handler.IOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
 import org.eclipse.osee.framework.core.enums.ConflictType;
-import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.resource.management.IResourceLocator;
 
 /**
  * @author Roberto E. Escobar
  */
 public class ExchangeIntegrity {
-   private final IResourceLocator locator;
+   private final IOseeDbExportDataProvider exportDataProvider;
    private String checkExchange;
 
-   public ExchangeIntegrity(IResourceLocator locator) {
-      this.locator = locator;
+   public ExchangeIntegrity(IOseeDbExportDataProvider exportDataProvider) {
+      this.exportDataProvider = exportDataProvider;
    }
 
    public String getExchangeCheckFileName() {
@@ -45,11 +44,10 @@ public class ExchangeIntegrity {
 
    public void execute() throws Exception {
       long startTime = System.currentTimeMillis();
-      Pair<Boolean, File> tempExchange = ExchangeUtil.getTempExchangeFile(locator);
-      final File exchange = tempExchange.getSecond();
       try {
          ManifestSaxHandler manifestSaxHandler = new ManifestSaxHandler();
-         ExchangeUtil.readExchange(exchange, "export.manifest.xml", manifestSaxHandler);
+         exportDataProvider.startSaxParsing("export.manifest.xml", manifestSaxHandler);
+
          List<ImportFile> filesToCheck = new ArrayList<ImportFile>();
          filesToCheck.addAll(manifestSaxHandler.getImportFiles());
          filesToCheck.add(manifestSaxHandler.getBranchFile());
@@ -57,14 +55,16 @@ public class ExchangeIntegrity {
 
          final List<IndexCollector> checkList = ExchangeDb.createCheckList();
          for (final ImportFile importFile : filesToCheck) {
-            ExchangeUtil.readExchange(exchange, importFile.getFileName(), new CheckSaxHandler(checkList,
+            exportDataProvider.startSaxParsing(importFile.getFileName(), new CheckSaxHandler(exportDataProvider,
+                  checkList,
                   importFile.getFileName()));
          }
-         checkExchange = exchange.getName() + ".verify.xml";
-         writeResults(exchange.getParentFile(), checkExchange, checkList);
+         checkExchange = exportDataProvider.getExportedDataRoot() + ".verify.xml";
+         writeResults(exportDataProvider.getExportedDataRoot().getParentFile(), checkExchange, checkList);
       } finally {
-         ExchangeUtil.cleanUpTempExchangeFile(exchange, tempExchange.getFirst());
-         OseeLog.log(this.getClass(), Level.INFO, String.format("Verified [%s] in [%s]", locator.getLocation(),
+         exportDataProvider.cleanUp();
+         OseeLog.log(this.getClass(), Level.INFO, String.format("Verified [%s] in [%s]",
+               exportDataProvider.getExportedDataRoot(),
                Lib.getElapseString(startTime)));
       }
    }
@@ -113,8 +113,8 @@ public class ExchangeIntegrity {
       private final List<IndexCollector> checkList;
       private final String fileBeingProcessed;
 
-      protected CheckSaxHandler(List<IndexCollector> checkList, String fileBeingProcessed) {
-         super(true, 0);
+      protected CheckSaxHandler(IOseeDbExportDataProvider exportDataProvider, List<IndexCollector> checkList, String fileBeingProcessed) {
+         super(exportDataProvider, true, 0);
          this.checkList = checkList;
          this.fileBeingProcessed = Lib.removeExtension(fileBeingProcessed);
          System.out.println(String.format("Verifying: [%s]", fileBeingProcessed));

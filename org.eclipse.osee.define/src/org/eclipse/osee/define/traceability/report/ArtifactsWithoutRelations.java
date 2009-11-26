@@ -11,9 +11,9 @@
 package org.eclipse.osee.define.traceability.report;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 
 /**
  * @author Roberto E. Escobar

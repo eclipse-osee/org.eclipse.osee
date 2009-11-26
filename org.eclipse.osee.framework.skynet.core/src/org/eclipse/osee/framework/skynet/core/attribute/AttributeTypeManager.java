@@ -12,10 +12,8 @@ package org.eclipse.osee.framework.skynet.core.attribute;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.logging.Level;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -28,7 +26,6 @@ import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.providers.IAttributeDataProvider;
@@ -117,13 +114,8 @@ public class AttributeTypeManager {
       return attributeType;
    }
 
-   public static Set<String> getEnumerationValues(AttributeType attributeType) {
-      try {
-         return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
-      } catch (Exception ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-         return Collections.emptySet();
-      }
+   public static Set<String> getEnumerationValues(AttributeType attributeType) throws OseeCoreException {
+      return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
    }
 
    public static Set<String> getEnumerationValues(String attributeName) throws OseeCoreException {

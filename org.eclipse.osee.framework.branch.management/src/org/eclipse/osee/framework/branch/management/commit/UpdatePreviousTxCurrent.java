@@ -21,7 +21,7 @@ public class UpdatePreviousTxCurrent {
    private final IdJoinQuery attributeJoin = JoinUtility.createIdJoinQuery();
    private final IdJoinQuery relationJoin = JoinUtility.createIdJoinQuery();
    private static final String UPDATE_TXS_NOT_CURRENT =
-         "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " where transaction_id = ? AND gamma_id = ?";
+         "update osee_txs SET tx_current = " + TxChange.NOT_CURRENT.getValue() + " where branch_id = ? AND gamma_id = ? and tx_current <> ? and transaction_id = ?";
 
    public UpdatePreviousTxCurrent(Branch branch, OseeConnection connection) {
       this.branch = branch;
@@ -53,7 +53,7 @@ public class UpdatePreviousTxCurrent {
    }
 
    private void updateNoLongerCurrentGammas(String tableName, String columnName, int queryId) throws OseeDataStoreException {
-      List<Object[]> gammaTxPairs = new ArrayList<Object[]>();
+      List<Object[]> updateData = new ArrayList<Object[]>();
       IOseeStatement chStmt = ConnectionHandler.getStatement(connection);
       String query =
             "SELECT txs.transaction_id, txs.gamma_id FROM osee_join_id idj, " + tableName + " item, osee_txs txs, osee_tx_details txd WHERE idj.query_id = ? and idj.id = item." + columnName + " AND item.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ?";
@@ -61,12 +61,13 @@ public class UpdatePreviousTxCurrent {
       try {
          chStmt.runPreparedQuery(10000, query, queryId, branch.getId());
          while (chStmt.next()) {
-            gammaTxPairs.add(new Object[] {chStmt.getInt("transaction_id"), chStmt.getLong("gamma_id")});
+            updateData.add(new Object[] {branch.getId(), chStmt.getLong("gamma_id"), TxChange.NOT_CURRENT.getValue(),
+                  chStmt.getInt("transaction_id")});
          }
       } finally {
          chStmt.close();
       }
 
-      ConnectionHandler.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, gammaTxPairs);
+      ConnectionHandler.runBatchUpdate(connection, UPDATE_TXS_NOT_CURRENT, updateData);
    }
 }

@@ -10,23 +10,23 @@
  *******************************************************************************/
 package org.eclipse.osee.ote.define.AUTOGEN;
 
+import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 public enum OTE_SKYNET_RELATIONS implements IRelationEnumeration {
-   TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT(RelationSide.SIDE_A, "Test Script to Run Relation"),
-   TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN(RelationSide.SIDE_B, "Test Script to Run Relation");
+   TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT(RelationSide.SIDE_A, "Test Case to Run Relation", "AAMFE+jMyBDK7CV479wA"),
+   TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN(RelationSide.SIDE_B, "Test Case to Run Relation", "AAMFE+jMyBDK7CV479wA");
    private final RelationSide relationSide;
-
+   private final String guid;
    private String typeName;
 
-   private OTE_SKYNET_RELATIONS(RelationSide relationSide, String typeName) {
+   private OTE_SKYNET_RELATIONS(RelationSide relationSide, String typeName, String guid) {
       this.relationSide = relationSide;
       this.typeName = typeName;
+      this.guid = guid;
    }
 
    /**
@@ -34,10 +34,6 @@ public enum OTE_SKYNET_RELATIONS implements IRelationEnumeration {
     */
    public boolean isSideA() {
       return relationSide.isSideA();
-   }
-
-   public String getSideName() throws OseeCoreException {
-      return getRelationType().getSideName(relationSide);
    }
 
    /**
@@ -51,12 +47,13 @@ public enum OTE_SKYNET_RELATIONS implements IRelationEnumeration {
       return RelationTypeManager.getType(typeName);
    }
 
-   public boolean isThisType(RelationLink link) {
-      return link.getRelationType().getName().equals(typeName);
-   }
-
    @Override
    public RelationSide getSide() {
       return relationSide;
+   }
+
+   @Override
+   public String getGuid() {
+      return guid;
    }
 }

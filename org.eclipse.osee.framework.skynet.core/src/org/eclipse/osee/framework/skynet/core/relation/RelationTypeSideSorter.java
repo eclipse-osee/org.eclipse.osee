@@ -116,6 +116,10 @@ public class RelationTypeSideSorter extends RelationTypeSide {
       orderData.store(getRelationType(), getSide(), sorterId, relatives);
    }
 
+   public String getSideName() {
+      return getRelationType().getSideName(getSide());
+   }
+
    @Override
    public String toString() {
       IRelationSorterId sorterId = null;

@@ -15,6 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -22,9 +24,8 @@ import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.order.IRelationSorter;
 import org.eclipse.osee.framework.skynet.core.relation.order.RelationOrderData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -88,7 +89,8 @@ public class ArtifactPasteOperation extends AbstractOperation {
       if (config.isKeepRelationOrderSettings()) {
          IRelationEnumeration relationTypeSide = CoreRelationEnumeration.Default_Hierarchical__Child;
          RelationOrderData data = RelationManager.createRelationOrderData(source);
-         String order = data.getCurrentSorterGuid(relationTypeSide.getRelationType(), relationTypeSide.getSide());
+         String order =
+               data.getCurrentSorterGuid(RelationTypeManager.getType(relationTypeSide), relationTypeSide.getSide());
          IRelationSorter sorter = RelationManager.getSorterProvider().getRelationOrder(order);
          if (RelationOrderBaseTypes.USER_DEFINED == sorter.getSorterId()) {
             newArtifact.setRelationOrder(relationTypeSide, copiedChildren);

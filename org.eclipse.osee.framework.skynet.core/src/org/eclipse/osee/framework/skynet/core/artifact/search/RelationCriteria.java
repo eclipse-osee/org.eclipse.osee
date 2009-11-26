@@ -10,10 +10,11 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact.search;
 
+import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationType;
-import org.eclipse.osee.framework.skynet.core.relation.IRelationEnumeration;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
 /**
  * @author Ryan D. Brooks
@@ -34,7 +35,7 @@ public class RelationCriteria extends AbstractArtifactSearchCriteria {
     * @throws OseeCoreException
     */
    public RelationCriteria(IRelationEnumeration relationEnum) throws OseeCoreException {
-      this(relationEnum.getRelationType(), relationEnum.getSide());
+      this(RelationTypeManager.getType(relationEnum), relationEnum.getSide());
    }
 
    public RelationCriteria(RelationType relationType, RelationSide relationSide) {

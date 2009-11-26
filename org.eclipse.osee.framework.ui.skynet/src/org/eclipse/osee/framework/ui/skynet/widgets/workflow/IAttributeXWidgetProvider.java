@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.List;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 
 /**
@@ -19,5 +20,5 @@ import org.eclipse.osee.framework.core.model.AttributeType;
  */
 public interface IAttributeXWidgetProvider {
 
-   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType);
+   public List<DynamicXWidgetLayoutData> getDynamicXWidgetLayoutData(AttributeType attributeType) throws OseeCoreException;
 }

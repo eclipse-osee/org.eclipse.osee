@@ -31,6 +31,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -66,7 +67,6 @@ import org.eclipse.osee.framework.skynet.core.event.IRelationModifiedEventListen
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData.ChangeType;
-import org.eclipse.osee.framework.skynet.core.relation.CoreRelationEnumeration;
 import org.eclipse.osee.framework.skynet.core.relation.RelationEventType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -446,23 +446,23 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    private void addOpenQuickSearchAction(IToolBarManager toolbarManager) {
       Action openQuickSearch =
             new Action("Quick Search", ImageManager.getImageDescriptor(FrameworkImage.ARTIFACT_SEARCH)) {
-               @Override
-               public void run() {
-                  try {
-                     IViewPart viewPart =
-                           PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
-                                 QuickSearchView.VIEW_ID);
-                     if (viewPart != null) {
-                        Branch branch = getBranch();
-                        if (branch != null) {
-                           ((QuickSearchView) viewPart).setBranch(branch);
-                        }
-                     }
-                  } catch (Exception ex) {
-                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         @Override
+         public void run() {
+            try {
+               IViewPart viewPart =
+                     PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().showView(
+                     QuickSearchView.VIEW_ID);
+               if (viewPart != null) {
+                  Branch branch = getBranch();
+                  if (branch != null) {
+                     ((QuickSearchView) viewPart).setBranch(branch);
                   }
                }
-            };
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
+         }
+      };
       openQuickSearch.setToolTipText("Open Quick Search View");
       toolbarManager.add(openQuickSearch);
    }
@@ -510,7 +510,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
             try {
                artifactExplorer =
                      (ArtifactExplorer) page.showView(ArtifactExplorer.VIEW_ID, GUID.create(),
-                           IWorkbenchPage.VIEW_ACTIVATE);
+                     IWorkbenchPage.VIEW_ACTIVATE);
                artifactExplorer.explore(OseeSystemArtifacts.getDefaultHierarchyRootArtifact(branch));
                artifactExplorer.setExpandedArtifacts(treeViewer.getExpandedElements());
             } catch (Exception ex) {
@@ -579,7 +579,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                }
                ArtifactTypeFilteredTreeEntryDialog dialog =
                      new ArtifactTypeFilteredTreeEntryDialog("New Child",
-                           "Enter name and select Artifact type to create", "Artifact Name");
+                     "Enter name and select Artifact type to create", "Artifact Name");
                dialog.setInput(descriptors);
                if (dialog.open() == Window.OK) {
 
@@ -597,7 +597,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                      exploreRoot.persist(transaction);
                   } else {
                      while (itemsIter.hasNext()) {
-                        Artifact parent = ((Artifact) itemsIter.next());
+                        Artifact parent = (Artifact) itemsIter.next();
                         parent.addNewChild(sorterId, descriptor, name);
                         parent.persist(transaction);
                      }
@@ -1338,14 +1338,14 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                }
                try {
                   treeViewer.update(transData.getArtifactsInRelations(ChangeType.Changed,
-                        CoreRelationEnumeration.Default_Hierarchical__Child.getRelationType()).toArray(), null);
+                        CoreRelationEnumeration.Default_Hierarchical__Child).toArray(), null);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
                try {
                   Set<Artifact> parents = new HashSet<Artifact>();
                   for (Artifact art : transData.getArtifactsInRelations(ChangeType.Added,
-                        CoreRelationEnumeration.Default_Hierarchical__Child.getRelationType())) {
+                        CoreRelationEnumeration.Default_Hierarchical__Child)) {
                      if (!art.isDeleted() && art.getParent() != null) {
                         parents.add(art.getParent());
                      }
@@ -1365,7 +1365,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          if (this.branch == null || !this.branch.equals(branch)) {
             return;
          }
-         if (link.getRelationType().equals(CoreRelationEnumeration.Default_Hierarchical__Child.getRelationType())) {
+         if (link.isOfType(CoreRelationEnumeration.Default_Hierarchical__Child)) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {

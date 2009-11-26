@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryR
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,23 +36,23 @@ import org.eclipse.osee.framework.resource.management.Options;
  */
 public class RelationalSaxHandler extends BaseDbSaxHandler {
 
-   public static RelationalSaxHandler createWithCacheAll() {
-      return new RelationalSaxHandler(true, 0);
+   public static RelationalSaxHandler createWithCacheAll(IOseeDbExportDataProvider exportDataProvider) {
+      return new RelationalSaxHandler(exportDataProvider, true, 0);
    }
 
-   public static RelationalSaxHandler createWithLimitedCache(int cacheLimit) {
-      return new RelationalSaxHandler(false, cacheLimit);
+   public static RelationalSaxHandler createWithLimitedCache(IOseeDbExportDataProvider exportDataProvider, int cacheLimit) {
+      return new RelationalSaxHandler(exportDataProvider, false, cacheLimit);
    }
 
    private final List<IResourceLocator> transferredBinaryContent;
    private final Set<Integer> branchesToImport;
-   private File decompressedFolder;
+   private final IOseeDbExportDataProvider exportDataProvider;
 
-   protected RelationalSaxHandler(boolean isCacheAll, int cacheLimit) {
+   protected RelationalSaxHandler(IOseeDbExportDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
       super(isCacheAll, cacheLimit);
       this.branchesToImport = new HashSet<Integer>();
-      this.decompressedFolder = null;
       this.transferredBinaryContent = new ArrayList<IResourceLocator>();
+      this.exportDataProvider = exportDataProvider;
    }
 
    public void setSelectedBranchIds(int... branchIds) {
@@ -63,14 +64,6 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       }
    }
 
-   public void setDecompressedFolder(File decompressedFolder) {
-      this.decompressedFolder = decompressedFolder;
-   }
-
-   public File getDecompressedFolder() {
-      return decompressedFolder;
-   }
-
    public void store() throws OseeDataStoreException {
       super.store(this.getConnection());
    }
@@ -78,26 +71,26 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
    private String importBinaryContent(String uriValue, String gammaId) throws Exception {
       String relativePath = Lib.isWindows() ? uriValue : uriValue.replaceAll("\\\\", File.separator);
       String entrySearch = ExportImportXml.RESOURCE_FOLDER_NAME + File.separator + relativePath;
-      if (this.decompressedFolder != null) {
-         File entry = new File(decompressedFolder, entrySearch);
+      if (exportDataProvider.getExportedDataRoot() != null) {
+         File entry = new File(exportDataProvider.getExportedDataRoot(), entrySearch);
          if (entry.exists()) {
 
             String name = uriValue.substring(uriValue.lastIndexOf('\\') + 1, uriValue.length());
             IResourceLocator locatorHint =
                   InternalBranchActivator.getInstance().getResourceLocatorManager().generateResourceLocator("attr",
-                        gammaId, name);
+                  gammaId, name);
 
             IResourceLocator locator =
                   InternalBranchActivator.getInstance().getResourceManager().save(locatorHint,
-                        new ZipBinaryResource(entry, locatorHint), new Options());
+                  new ZipBinaryResource(entry, locatorHint), new Options());
             transferredBinaryContent.add(locator);
             return locator.getLocation().toASCIIString();
          } else {
-            throw new RuntimeException(String.format(
+            throw new OseeStateException(String.format(
                   "Unable to locate resource in zip file - ZipEntry was null for [%s]", uriValue));
          }
       } else {
-         throw new RuntimeException("Uncompressed folder was Null.");
+         throw new OseeStateException("Uncompressed folder was Null.");
       }
    }
 

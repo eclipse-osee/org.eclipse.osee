@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.RelationChangeItem;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -50,9 +51,6 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
    private static final String INSERT_COMMIT_TRANSACTION =
          "insert into osee_tx_details(tx_type, branch_id, transaction_id, osee_comment, time, author, commit_art_id) values(?,?,?,?,?,?,?)";
-
-   private static final String ARTIFACT_CHANGES =
-         "select av1.art_id, branch_id FROM osee_txs txs1, osee_tx_details txd1, osee_artifact_version av1 WHERE txs1.transaction_id = ? AND txs1.transaction_id = txd1.transaction_id AND txs1.gamma_id = av1.gamma_id UNION ALL SELECT ar1.art_id, branch_id FROM osee_txs txs2, osee_tx_details txd2, osee_relation_link rl1, osee_artifact ar1 WHERE (rl1.a_art_id = ar1.art_id OR rl1.b_art_id = ar1.art_id) AND txs2.transaction_id = ? AND txs2.transaction_id = txd2.transaction_id AND txs2.gamma_id = rl1.gamma_id";
 
    private static final String INSERT_COMMIT_ADDRESSING =
          "insert into osee_txs(transaction_id, gamma_id, mod_type, tx_current) values(?,?,?,?)";
@@ -127,7 +125,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    public void checkPreconditions() throws OseeCoreException {
       int count =
             getDatabaseService().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getId(),
-                  BranchState.COMMIT_IN_PROGRESS.getValue());
+            BranchState.COMMIT_IN_PROGRESS.getValue());
       if (count > 0) {
          throw new OseeStateException(String.format("Commit already in progress for [%s]", sourceBranch));
       }

@@ -117,7 +117,9 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          OseeEventManager.removeListener(this);
          return;
       }
-      if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
+      if (transData.branchId != AtsUtil.getAtsBranch().getId()) {
+         return;
+      }
       for (Artifact artifact : transData.cacheDeletedArtifacts) {
          if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
                WorkPageDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
@@ -142,7 +144,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          }
       }
       for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All,
-            AtsRelation.WorkItem__Child.getRelationType())) {
+            AtsRelation.WorkItem__Child)) {
          if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkRuleDefinition(artifact), artifact);

@@ -22,9 +22,10 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
-import org.eclipse.osee.framework.ui.skynet.skywalker.RelTypeContentProvider.RelationLinkDescriptorSide;
 import org.eclipse.zest.core.viewers.IGraphEntityContentProvider;
 
 /**
@@ -71,10 +72,10 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
                   }
                }
             }
-            if (obj instanceof RelationLinkDescriptorSide) {
-               RelationLinkDescriptorSide side = (RelationLinkDescriptorSide) obj;
+            if (obj instanceof RelationTypeSide) {
+               RelationTypeSide side = (RelationTypeSide) obj;
                if (options.isValidRelationLinkDescriptorSide(side)) {
-                  for (Artifact art : artifact.getRelatedArtifacts(side)) {
+                  for (Artifact art : RelationManager.getRelatedArtifacts(artifact, side)) {
                      if (options.isValidArtifactType(art.getArtifactType()) && displayArtifacts.contains(art)) {
                         otherItems.add(art);
                      }
@@ -132,10 +133,10 @@ public class ArtifactGraphContentProvider implements IGraphEntityContentProvider
                      }
                   }
                }
-               if (obj instanceof RelationLinkDescriptorSide) {
-                  RelationLinkDescriptorSide side = (RelationLinkDescriptorSide) obj;
+               if (obj instanceof RelationTypeSide) {
+                  RelationTypeSide side = (RelationTypeSide) obj;
                   if (options.isValidRelationLinkDescriptorSide(side)) {
-                     for (Artifact art : artifact.getRelatedArtifacts(side)) {
+                     for (Artifact art : RelationManager.getRelatedArtifacts(artifact, side)) {
                         if (options.isValidArtifactType(art.getArtifactType())) {
                            displayArtifacts.add(art);
                            getDescendants(displayArtifacts, art, level - 1);

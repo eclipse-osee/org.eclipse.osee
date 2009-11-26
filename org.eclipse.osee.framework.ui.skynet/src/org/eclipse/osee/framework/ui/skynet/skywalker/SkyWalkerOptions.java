@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
+import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.AttributeType;
@@ -32,9 +33,9 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
+import org.eclipse.osee.framework.skynet.core.relation.RelationTypeSide;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.skywalker.ISkyWalkerOptionsChangeListener.ModType;
-import org.eclipse.osee.framework.ui.skynet.skywalker.RelTypeContentProvider.RelationLinkDescriptorSide;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.AbstractLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.GridLayoutAlgorithm;
@@ -125,10 +126,10 @@ public class SkyWalkerOptions {
       if (relTypes == null) {
          relTypes = new HashMap<Object, Boolean>();
          try {
-            for (RelationType descriptor : RelationTypeManager.getValidTypes(artifact.getBranch())) {
-               relTypes.put(descriptor, true);
-               relTypes.put(new RelTypeContentProvider.RelationLinkDescriptorSide(descriptor, true), true);
-               relTypes.put(new RelTypeContentProvider.RelationLinkDescriptorSide(descriptor, false), true);
+            for (RelationType relationType : RelationTypeManager.getValidTypes(artifact.getBranch())) {
+               relTypes.put(relationType, true);
+               relTypes.put(new RelationTypeSide(relationType, RelationSide.SIDE_A), true);
+               relTypes.put(new RelationTypeSide(relationType, RelationSide.SIDE_B), true);
             }
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
@@ -312,7 +313,7 @@ public class SkyWalkerOptions {
       return getSelectedRelTypes().contains(type);
    }
 
-   public boolean isValidRelationLinkDescriptorSide(RelationLinkDescriptorSide side) {
+   public boolean isValidRelationLinkDescriptorSide(RelationTypeSide side) {
       if (!isFilterEnabled()) {
          return true;
       }

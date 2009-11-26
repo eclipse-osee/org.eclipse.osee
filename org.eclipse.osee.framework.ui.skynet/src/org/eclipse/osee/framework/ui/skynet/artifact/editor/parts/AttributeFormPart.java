@@ -150,9 +150,9 @@ public class AttributeFormPart extends AbstractFormPart {
 
       internalComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
-      IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
-      List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
       try {
+         IAttributeXWidgetProvider xWidgetProvider = AttributeXWidgetManager.getAttributeXWidgetProvider(attributeType);
+         List<DynamicXWidgetLayoutData> concreteWidgets = xWidgetProvider.getDynamicXWidgetLayoutData(attributeType);
          if (isExpandable) {
             for (DynamicXWidgetLayoutData data : concreteWidgets) {
                data.getXOptionHandler().add(XOption.NO_LABEL);
@@ -182,7 +182,7 @@ public class AttributeFormPart extends AbstractFormPart {
 
       Composite composite =
             createAttributeTypeControls(expandable, toolkit, artifact, attributeType, willHaveASection, isEditable,
-                  true);
+            true);
       expandable.setClient(composite);
 
       expandable.addExpansionListener(new IExpansionListener() {
