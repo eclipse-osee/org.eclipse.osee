@@ -12,7 +12,11 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
+import org.eclipse.osee.framework.core.data.OseeEnumTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.OseeEnumTypeFactory;
@@ -33,15 +37,22 @@ public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<OseeE
 
    @Override
    protected Collection<OseeEnumType> updateCache(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
-      Collection<OseeEnumType> updated = new ArrayList<OseeEnumType>();
-      //      OseeEnumTypeFactory factory = getFactory();
-      //      for (OseeEnumType srcItem : items) {
-      //         OseeEnumType updated =
-      //               factory.createOrUpdate(cache, srcItem.getId(), srcItem.getModificationType(), srcItem.getGuid(),
-      //                     srcItem.getName());
-      //         OseeEnumEntry[] entries = srcItem.values();
-      //         updated.setEntries(Arrays.asList(entries));
-      //      }
-      return updated;
+      List<OseeEnumType> enumTypes = new ArrayList<OseeEnumType>();
+      OseeEnumTypeCacheUpdateResponse response =
+            sendUpdateMessage(cache, CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
+
+      OseeEnumTypeFactory factory = getFactory();
+
+      for (String[] enumTypeRow : response.getEnumEntryRows()) {
+         enumTypes.add(
+               factory.createOrUpdate(cache, Integer.parseInt(enumTypeRow[0]),
+               ModificationType.valueOf(enumTypeRow[1]), enumTypeRow[2], enumTypeRow[3]));
+      }
+
+      for (String[] enumEntryRow : response.getEnumEntryRows()) {
+         factory.createOrUpdate(cache, enumEntryRow[0], enumEntryRow[1], enumEntryRow[2],
+               Integer.parseInt(enumEntryRow[3]));
+      }
+      return enumTypes;
    }
 }

@@ -56,6 +56,16 @@ public class OseeEnumType extends AbstractOseeType implements Comparable<OseeEnu
       return entries.toArray(new OseeEnumEntry[entries.size()]);
    }
 
+   public OseeEnumEntry getEntryByGuid(String entryGuid) throws OseeCoreException {
+      Collection<OseeEnumEntry> values = getFieldValue(OSEE_ENUM_TYPE_ENTRIES_FIELD);
+      for (OseeEnumEntry entry : values) {
+         if (entry.getGuid().equals(entryGuid)) {
+            return entry;
+         }
+      }
+      return null;
+   }
+
    public Set<String> valuesAsOrderedStringSet() throws OseeCoreException {
       Set<String> values = new LinkedHashSet<String>();
       for (OseeEnumEntry oseeEnumEntry : values()) {
