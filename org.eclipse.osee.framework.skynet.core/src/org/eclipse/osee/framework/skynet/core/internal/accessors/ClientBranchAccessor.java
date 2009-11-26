@@ -27,6 +27,7 @@ import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
+import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 
 /**
@@ -77,13 +78,13 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
 
          Integer baseTxId = branchToBaseTx.get(branchId);
          if (baseTxId != null) {
-            TransactionRecord baseTx = transactionCache.getById(baseTxId);
+            TransactionRecord baseTx = TransactionManager.getTransactionId(baseTxId);
             updated.setBaseTransaction(baseTx);
          }
 
          Integer srcTxId = branchToSourceTx.get(branchId);
          if (srcTxId != null) {
-            TransactionRecord srcTx = transactionCache.getById(srcTxId);
+            TransactionRecord srcTx = TransactionManager.getTransactionId(srcTxId); //transactionCache.getById(srcTxId);
             if (srcTx != null) {
                updated.setSourceTransaction(srcTx);
             }

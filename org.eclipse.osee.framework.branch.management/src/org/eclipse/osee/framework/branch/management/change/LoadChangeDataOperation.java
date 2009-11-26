@@ -255,7 +255,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
                            " and item.gamma_id = txs.gamma_id and txs.tx_current <> ? and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.transaction_id <= ?";
 
                chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), TxChange.NOT_CURRENT.getValue(),
-                     destinationTransaction.getBranch().getId(), destinationTransaction.getId());
+                     destinationTransaction.getBranchId(), destinationTransaction.getId());
                break;
             case FROM_SINGLE_TRANSACTION:
                query =

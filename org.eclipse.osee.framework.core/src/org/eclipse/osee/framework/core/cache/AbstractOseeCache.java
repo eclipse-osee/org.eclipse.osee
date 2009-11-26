@@ -114,6 +114,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
    }
 
    private void checkNameUnique(T type) throws OseeCoreException {
+      ensurePopulated();
       Collection<T> cachedTypes = getByName(type.getName());
       int count = 0;
       Set<String> itemsFound = new HashSet<String>();
@@ -149,6 +150,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
    }
 
    public T getUniqueByName(String typeName) throws OseeCoreException {
+      ensurePopulated();
       Collection<T> values = getByName(typeName);
       if (values.size() > 1) {
          throw new OseeStateException(String.format("Multiple items matching [%s] name exist", typeName));

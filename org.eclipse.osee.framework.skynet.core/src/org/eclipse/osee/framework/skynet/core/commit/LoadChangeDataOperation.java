@@ -116,7 +116,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
                currentTransactionNumber = sourceTransactionId.getId();
                break;
             case FROM_SINGLE_TRANSACTION:
-               chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionId.getBranch().getId(),
+               chStmt.runPreparedQuery(10000, SELECT_SOURCE_TRANSACTION_CHANGES, transactionId.getBranchId(),
                      transactionId.getId());
                currentTransactionNumber = transactionId.getId();
                break;
@@ -257,7 +257,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
                            + tableName + " item, osee_txs txs, osee_tx_details txd where idj.query_id = ? and idj.id = item." + columnName + //
                            " and item.gamma_id = txs.gamma_id and txs.transaction_id = txd.transaction_id and txd.branch_id = ? and txd.transaction_id <= ?";
 
-               chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), destinationTransaction.getBranch().getId(),
+               chStmt.runPreparedQuery(10000, query, idJoin.getQueryId(), destinationTransaction.getBranchId(),
                      destinationTransaction.getId());
                break;
             default:

@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -38,17 +37,17 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
       return new OseeEnumEntry(checkedGuid, name, ordinal);
    }
 
-   public OseeEnumType createOrUpdate(AbstractOseeCache<OseeEnumType> cache, String guid, String enumTypeName) throws OseeCoreException {
-      OseeEnumType oseeEnumType = cache.getByGuid(guid);
-      if (oseeEnumType == null) {
-         oseeEnumType = createEnumType(guid, enumTypeName);
-      } else {
-         cache.decache(oseeEnumType);
-         oseeEnumType.setName(enumTypeName);
-      }
-      cache.cache(oseeEnumType);
-      return oseeEnumType;
-   }
+   //   public OseeEnumType createOrUpdate(AbstractOseeCache<OseeEnumType> cache, String guid, String enumTypeName) throws OseeCoreException {
+   //      OseeEnumType oseeEnumType = cache.getByGuid(guid);
+   //      if (oseeEnumType == null) {
+   //         oseeEnumType = createEnumType(guid, enumTypeName);
+   //      } else {
+   //         cache.decache(oseeEnumType);
+   //         oseeEnumType.setName(enumTypeName);
+   //      }
+   //      cache.cache(oseeEnumType);
+   //      return oseeEnumType;
+   //   }
 
    public OseeEnumType createOrUpdate(IOseeCache<OseeEnumType> cache, int uniqueId, ModificationType modificationType, String guid, String enumTypeName) throws OseeCoreException {
       OseeEnumType oseeEnumType = cache.getById(uniqueId);

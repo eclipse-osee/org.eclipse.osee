@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.model;
 
 import java.util.Date;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
@@ -21,14 +21,14 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public final class TransactionRecord implements IAdaptable {
    private final int transactionNumber;
-   private final int branchId;
    private final TransactionDetailsType txType;
 
+   private final int branchId;
    private String comment;
    private Date time;
    private int authorArtId;
    private int commitArtId;
-   private AbstractOseeCache<Branch> cache;
+   private BranchCache branchCache;
 
    public TransactionRecord(int transactionNumber, int branchId, String comment, Date time, int authorArtId, int commitArtId, TransactionDetailsType txType) {
       this.transactionNumber = transactionNumber;
@@ -38,10 +38,7 @@ public final class TransactionRecord implements IAdaptable {
       this.authorArtId = authorArtId;
       this.commitArtId = commitArtId;
       this.txType = txType;
-   }
-
-   public void setBranchCache(AbstractOseeCache<Branch> cache) {
-      this.cache = cache;
+      this.branchCache = null;
    }
 
    public int getBranchId() {
@@ -49,7 +46,7 @@ public final class TransactionRecord implements IAdaptable {
    }
 
    public Branch getBranch() throws OseeCoreException {
-      return cache.getById(getBranchId());
+      return branchCache.getById(getBranchId());
    }
 
    public int getId() {
@@ -128,5 +125,9 @@ public final class TransactionRecord implements IAdaptable {
 
    public void clearDirty() {
 
+   }
+
+   public void setBranchCache(BranchCache branchCache) {
+      this.branchCache = branchCache;
    }
 }

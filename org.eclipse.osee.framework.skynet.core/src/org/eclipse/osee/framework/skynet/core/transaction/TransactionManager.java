@@ -31,6 +31,7 @@ import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.types.IArtifact;
 
 /**
@@ -153,6 +154,7 @@ public final class TransactionManager {
       TransactionRecord transactionId =
             new TransactionRecord(transactionNumber, branch.getId(), comment, transactionTime, authorArtId, -1,
                   TransactionDetailsType.NonBaselined);
+      transactionId.setBranchCache(Activator.getInstance().getOseeCacheService().getBranchCache());
 
       instance.transactionIdCache.put(transactionNumber, transactionId);
       return transactionId;
@@ -176,7 +178,7 @@ public final class TransactionManager {
       IOseeStatement chStmt = ConnectionHandler.getStatement();
 
       try {
-         chStmt.runPreparedQuery(GET_PRIOR_TRANSACTION, transactionId.getBranch().getId(), transactionId.getId());
+         chStmt.runPreparedQuery(GET_PRIOR_TRANSACTION, transactionId.getBranchId(), transactionId.getId());
 
          if (chStmt.next()) {
             int priorId = chStmt.getInt("prior_id");
@@ -218,6 +220,7 @@ public final class TransactionManager {
                   new TransactionRecord(transactionNumber, chStmt.getInt("branch_id"),
                         chStmt.getString("osee_comment"), chStmt.getTimestamp("time"), chStmt.getInt("author"),
                         chStmt.getInt("commit_art_id"), txType);
+            transactionId.setBranchCache(Activator.getInstance().getOseeCacheService().getBranchCache());
             instance.transactionIdCache.put(transactionNumber, transactionId);
          } finally {
             if (useLocalConnection) {

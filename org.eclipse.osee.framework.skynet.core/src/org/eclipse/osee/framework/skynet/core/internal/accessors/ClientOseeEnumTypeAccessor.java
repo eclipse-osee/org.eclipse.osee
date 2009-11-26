@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -32,6 +33,7 @@ public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<OseeE
 
    @Override
    protected Collection<OseeEnumType> updateCache(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
+      Collection<OseeEnumType> updated = new ArrayList<OseeEnumType>();
       //      OseeEnumTypeFactory factory = getFactory();
       //      for (OseeEnumType srcItem : items) {
       //         OseeEnumType updated =
@@ -40,6 +42,6 @@ public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<OseeE
       //         OseeEnumEntry[] entries = srcItem.values();
       //         updated.setEntries(Arrays.asList(entries));
       //      }
-      return null;
+      return updated;
    }
 }

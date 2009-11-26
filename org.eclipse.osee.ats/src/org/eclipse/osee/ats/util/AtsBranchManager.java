@@ -158,7 +158,7 @@ public class AtsBranchManager {
       Collection<TransactionRecord> transactions =
             TransactionManager.getCommittedArtifactTransactionIds(smaMgr.getSma());
       for (TransactionRecord transId : transactions) {
-         if (transId.getBranch().equals(branch)) {
+         if (transId.getBranchId() == branch.getId()) {
             if (smaMgr.getBranchMgr().isMergeBranchExists(branch)) {
                return CommitStatus.Committed_With_Merge;
             } else {
@@ -186,7 +186,7 @@ public class AtsBranchManager {
                getWorkingBranch()).getFirst());
       } else if (isCommittedBranchExists()) {
          for (TransactionRecord transactionId : getTransactionIds(true)) {
-            if (transactionId.getBranch() == destinationBranch) {
+            if (transactionId.getBranchId() == destinationBranch.getId()) {
                MergeView.openView(transactionId);
 
             }
@@ -833,7 +833,7 @@ public class AtsBranchManager {
          } finally {
             if (workflowWorkingBranch != null) {
                branchesInCommit.remove(workflowWorkingBranch);
-         }
+            }
          }
          return Status.OK_STATUS;
       }

@@ -45,17 +45,14 @@ public abstract class AbstractClientDataAccessor<T extends IOseeStorableType> im
    public void load(IOseeCache<T> cache) throws OseeCoreException {
       Collection<T> updatedItems = updateCache(cache);
       for (T item : updatedItems) {
-         T type = cache.getById(item.getId());
-         if (type != null) {
-            type.clearDirty();
-         }
+         item.clearDirty();
       }
    }
 
    @Override
    public void store(Collection<T> types) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("request", "storage");
+      //      Map<String, String> parameters = new HashMap<String, String>();
+      //      parameters.put("request", "storage");
 
       //      CacheUpdateRequest updateRequest = new CacheUpdateRequest();
       //      CacheUpdateResponse<T> updateResponse =

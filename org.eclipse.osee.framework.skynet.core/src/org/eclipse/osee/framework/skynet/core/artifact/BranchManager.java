@@ -388,7 +388,7 @@ public class BranchManager {
     * @throws OseeCoreException
     */
    public static Branch createWorkingBranch(TransactionRecord parentTransactionId, String childBranchName, Artifact associatedArtifact) throws OseeCoreException {
-      int parentBranchId = parentTransactionId.getBranch().getId();
+      int parentBranchId = parentTransactionId.getBranchId();
       int parentTransactionNumber = parentTransactionId.getId();
 
       Branch parentBranch = BranchManager.getBranch(parentBranchId);
