@@ -91,7 +91,7 @@ public final class TranslationUtil {
 
    private static Map<Integer, String[]> storeToArrayMap(PropertyStore innerStore) {
       Map<Integer, String[]> map = new HashMap<Integer, String[]>();
-      for (String strkey : innerStore.keySet()) {
+      for (String strkey : innerStore.arrayKeySet()) {
          Integer key = Integer.valueOf(strkey);
          String[] value = innerStore.getArray(strkey);
          map.put(key, value);
@@ -101,7 +101,7 @@ public final class TranslationUtil {
 
    private static Map<Integer, Integer[]> storeToIntArrayMap(PropertyStore innerStore) {
       Map<Integer, Integer[]> map = new HashMap<Integer, Integer[]>();
-      for (String strkey : innerStore.keySet()) {
+      for (String strkey : innerStore.arrayKeySet()) {
          Integer key = Integer.valueOf(strkey);
          String[] value = innerStore.getArray(strkey);
          Integer[] intValues = new Integer[value.length];
@@ -115,7 +115,7 @@ public final class TranslationUtil {
 
    private static List<Triplet<Integer, Integer, Integer>> storeToTripletList(PropertyStore innerStore) {
       List<Triplet<Integer, Integer, Integer>> data = new ArrayList<Triplet<Integer, Integer, Integer>>();
-      for (String strKey : innerStore.keySet()) {
+      for (String strKey : innerStore.arrayKeySet()) {
          String[] value = innerStore.getArray(strKey);
          Integer first = Integer.valueOf(value[0]);
          Integer second = Integer.valueOf(value[1]);
