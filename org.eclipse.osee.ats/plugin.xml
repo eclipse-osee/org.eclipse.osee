@@ -181,12 +181,6 @@
       </Operation>
    </extension>
    <extension
-         id="ConnectWorkflowToTransaction"
-         name="Connect Workflow To Transaction"
-         point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-      <Operation className="org.eclipse.osee.ats.operation.ConnectWorkflowToTransaction"/>
-   </extension>
-   <extension
          id="ats"
          point="org.eclipse.osee.framework.ui.skynet.ArtifactRenderer">
       <Renderer classname="org.eclipse.osee.ats.editor.AtsWorkflowRenderer"/>
