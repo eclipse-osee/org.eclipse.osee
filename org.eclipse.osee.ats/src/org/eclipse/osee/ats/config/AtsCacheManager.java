@@ -15,9 +15,9 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -144,7 +144,7 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          }
       }
       for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All,
-            AtsRelation.WorkItem__Child)) {
+            CoreRelationEnumeration.WorkItem__Child)) {
          if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkRuleDefinition(artifact), artifact);

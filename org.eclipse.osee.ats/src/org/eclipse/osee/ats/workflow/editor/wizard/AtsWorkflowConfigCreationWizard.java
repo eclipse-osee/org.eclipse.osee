@@ -18,7 +18,6 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
@@ -26,6 +25,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsEndorseWorkPageDefinition;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -146,8 +146,8 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          }
 
          // Add same relations as default work pages to new work pages (widgets and rules)
-         for (Artifact art : defaultStateArt.getRelatedArtifacts(AtsRelation.WorkItem__Child)) {
-            newStateArt.addRelation(AtsRelation.WorkItem__Child, art);
+         for (Artifact art : defaultStateArt.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
+            newStateArt.addRelation(CoreRelationEnumeration.WorkItem__Child, art);
          }
 
          AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(newStateArt, transaction);
@@ -189,7 +189,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
       artifacts.add(cancelledPage.toArtifact(WriteType.New));
       Artifact workflowArt = workflow.toArtifact(WriteType.New);
       if (teamDef != null) {
-         teamDef.addRelation(AtsRelation.WorkItem__Child, workflowArt);
+         teamDef.addRelation(CoreRelationEnumeration.WorkItem__Child, workflowArt);
          artifacts.add(teamDef);
       }
       artifacts.add(workflowArt);

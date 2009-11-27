@@ -168,7 +168,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * @return parent TeamDefinition that holds the work flow id attribute
     */
    public TeamDefinitionArtifact getTeamDefinitionHoldingWorkFlow() throws OseeCoreException {
-      for (Artifact artifact : getRelatedArtifacts(AtsRelation.WorkItem__Child, Artifact.class)) {
+      for (Artifact artifact : getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class)) {
          if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
             return this;
          }
@@ -285,7 +285,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
          return null;
       }
       Artifact workFlowArt = null;
-      for (Artifact artifact : teamDef.getRelatedArtifacts(AtsRelation.WorkItem__Child, Artifact.class)) {
+      for (Artifact artifact : teamDef.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class)) {
          if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
             if (workFlowArt != null) {
                OseeLog.log(

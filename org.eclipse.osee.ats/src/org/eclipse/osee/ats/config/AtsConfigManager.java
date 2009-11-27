@@ -25,6 +25,7 @@ import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard.WorkflowData;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -67,7 +68,7 @@ public class AtsConfigManager {
       // Create team def
       TeamDefinitionArtifact teamDef =
             (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
-                  AtsUtil.getAtsBranch(), teamDefName);
+            AtsUtil.getAtsBranch(), teamDefName);
       if (versionNames == null || versionNames.size() > 0) {
          teamDef.setSoleAttributeValue(ATSAttributes.TEAM_USES_VERSIONS_ATTRIBUTE.getStoreName(), true);
       }
@@ -81,7 +82,7 @@ public class AtsConfigManager {
       // Create top actionable item
       ActionableItemArtifact topAia =
             (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
-                  AtsUtil.getAtsBranch(), teamDefName);
+            AtsUtil.getAtsBranch(), teamDefName);
       topAia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), false);
       topAia.persist(transaction);
 
@@ -94,7 +95,7 @@ public class AtsConfigManager {
       for (String name : actionableItems) {
          ActionableItemArtifact aia =
                (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
-                     AtsUtil.getAtsBranch(), name);
+               AtsUtil.getAtsBranch(), name);
          aia.setSoleAttributeValue(ATSAttributes.ACTIONABLE_ATTRIBUTE.getStoreName(), true);
          topAia.addChild(aia);
          aia.persist(transaction);
@@ -107,7 +108,7 @@ public class AtsConfigManager {
          for (String name : versionNames) {
             VersionArtifact version =
                   (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME,
-                        AtsUtil.getAtsBranch(), name);
+                  AtsUtil.getAtsBranch(), name);
             teamDef.addRelation(AtsRelation.TeamDefinitionToVersion_Version, version);
             versions.add(version);
             version.persist(transaction);
@@ -117,7 +118,7 @@ public class AtsConfigManager {
       // create workflow
       Artifact workflowArt =
             ArtifactQuery.checkArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
-                  AtsUtil.getAtsBranch());
+            AtsUtil.getAtsBranch());
       WorkFlowDefinition workFlowDefinition;
       // If can't be found, create a new one
       if (workflowArt == null) {
@@ -132,7 +133,7 @@ public class AtsConfigManager {
          workFlowDefinition = (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workflowId);
       }
       // Relate new team def to workflow artifact
-      teamDef.addRelation(AtsRelation.WorkItem__Child, workflowArt);
+      teamDef.addRelation(CoreRelationEnumeration.WorkItem__Child, workflowArt);
       teamDef.persist(transaction);
 
       transaction.execute();

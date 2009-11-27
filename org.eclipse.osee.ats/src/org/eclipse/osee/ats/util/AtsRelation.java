@@ -20,72 +20,66 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
  * @author Donald G. Dunne
  */
 public enum AtsRelation implements IRelationEnumeration {
-
-   // ATS Relations
-   ActionToWorkflow_Action(true, "ActionToWorkflow"),
-   ActionToWorkflow_WorkFlow(false, "ActionToWorkflow"),
+   ActionToWorkflow_Action(true, "ActionToWorkflow", "AAMFE953ixQThusHUPwA"),
+   ActionToWorkflow_WorkFlow(false, "ActionToWorkflow", "AAMFE953ixQThusHUPwA"),
       //
-   TeamActionableItem_Team(true, "TeamActionableItem"),
-   TeamActionableItem_ActionableItem(false, "TeamActionableItem"),
+   TeamActionableItem_Team(true, "TeamActionableItem", "AAMFE939Ul9Oenq9wWgA"),
+   TeamActionableItem_ActionableItem(false, "TeamActionableItem", "AAMFE939Ul9Oenq9wWgA"),
       //
-   TeamLead_Team(true, "TeamLead"),
-   TeamLead_Lead(false, "TeamLead"),
+   TeamLead_Team(true, "TeamLead", "AAMFE90HyTZPyHuQWOQA"),
+   TeamLead_Lead(false, "TeamLead", "AAMFE90HyTZPyHuQWOQA"),
       //
-   TeamMember_Team(true, "TeamMember"),
-   TeamMember_Member(false, "TeamMember"),
+   TeamMember_Team(true, "TeamMember", "AAMFE92A6gCO9WJ2ijQA"),
+   TeamMember_Member(false, "TeamMember", "AAMFE92A6gCO9WJ2ijQA"),
       //
-   Goal_Member(false, "Goal"),
-   Goal_Goal(true, "Goal"),
+   Goal_Member(false, "Goal", "ABMn0wPKdyN+Mfo5nwgA"),
+   Goal_Goal(true, "Goal", "ABMn0wPKdyN+Mfo5nwgA"),
       //
-   ParallelVersion_Parent(true, "ParallelVersion"),
-   ParallelVersion_Child(false, "ParallelVersion"),
+   ParallelVersion_Parent(true, "ParallelVersion", "AAMFE_EJHSBGb9msPXQA"),
+   ParallelVersion_Child(false, "ParallelVersion", "AAMFE_EJHSBGb9msPXQA"),
       //
-   PrivilegedMember_Team(true, "PrivilegedMember"),
-   PrivilegedMember_Member(false, "PrivilegedMember"),
+   PrivilegedMember_Team(true, "PrivilegedMember", "AAMFE9XfiibyK1x2FiwA"),
+   PrivilegedMember_Member(false, "PrivilegedMember", "AAMFE9XfiibyK1x2FiwA"),
       //
-   SmaToTask_Sma(true, "SmaToTask"),
-   SmaToTask_Task(false, "SmaToTask"),
+   SmaToTask_Sma(true, "SmaToTask", "AAMFE97xw1BM5l+GxKAA"),
+   SmaToTask_Task(false, "SmaToTask", "AAMFE97xw1BM5l+GxKAA"),
       //
-   TeamWorkflowTargetedForVersion_Workflow(true, "TeamWorkflowTargetedForVersion"),
-   TeamWorkflowTargetedForVersion_Version(false, "TeamWorkflowTargetedForVersion"),
+   TeamWorkflowTargetedForVersion_Workflow(true, "TeamWorkflowTargetedForVersion", "AAMFE99pzm4zSibDT9gA"),
+   TeamWorkflowTargetedForVersion_Version(false, "TeamWorkflowTargetedForVersion", "AAMFE99pzm4zSibDT9gA"),
       //
-   TeamDefinitionToVersion_TeamDefinition(true, "TeamDefinitionToVersion"),
-   TeamDefinitionToVersion_Version(false, "TeamDefinitionToVersion"),
+   TeamDefinitionToVersion_TeamDefinition(true, "TeamDefinitionToVersion", "AAMFE9_i7zG3lR1kGWQA"),
+   TeamDefinitionToVersion_Version(false, "TeamDefinitionToVersion", "AAMFE9_i7zG3lR1kGWQA"),
       //
-   TeamDefinitionToWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToWorkflowDiagram"),
-   TeamDefinitionToWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToWorkflowDiagram"),
+   TeamDefinitionToWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToWorkflowDiagram", "AAMFE+BpKTGewbN8c3gA"),
+   TeamDefinitionToWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToWorkflowDiagram", "AAMFE+BpKTGewbN8c3gA"),
       //
-   TeamDefinitionToTaskWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToTaskWorkflowDiagram"),
-   TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToTaskWorkflowDiagram"),
+   TeamDefinitionToTaskWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToTaskWorkflowDiagram", "AAMFE+DkeQ9mRBPca0QA"),
+   TeamDefinitionToTaskWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToTaskWorkflowDiagram", "AAMFE+DkeQ9mRBPca0QA"),
       //
-   TeamDefinitionToDecisionReviewWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToDecisionReviewWorkflowDiagram"),
-   TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToDecisionReviewWorkflowDiagram"),
+   TeamDefinitionToDecisionReviewWorkflowDiagram_TeamDefinition(true, "TeamDefinitionToDecisionReviewWorkflowDiagram", "AAMFE+Fg4RmKrda_jJQA"),
+   TeamDefinitionToDecisionReviewWorkflowDiagram_WorkflowDiagram(false, "TeamDefinitionToDecisionReviewWorkflowDiagram", "AAMFE+Fg4RmKrda_jJQA"),
       //
    TeamDefinitionToPeerToPeerReviewWorkflowDiagram_TeamDefinition(true,
-         "TeamDefinitionToPeerToPeerReviewWorkflowDiagram"),
+         "TeamDefinitionToPeerToPeerReviewWorkflowDiagram", "AAMFE+HqYUG262IxMFwA"),
    TeamDefinitionToPeerToPeerReviewWorkflowDiagram_WorkflowDiagram(false,
-         "TeamDefinitionToPeerToPeerReviewWorkflowDiagram"),
+         "TeamDefinitionToPeerToPeerReviewWorkflowDiagram", "AAMFE+HqYUG262IxMFwA"),
       //
-   TeamWorkflowToReview_Team(true, "TeamWorkflowToReview"),
-   TeamWorkflowToReview_Review(false, "TeamWorkflowToReview"),
+   TeamWorkflowToReview_Team(true, "TeamWorkflowToReview", "AAMFE+JqDz+8tuRDdIwA"),
+   TeamWorkflowToReview_Review(false, "TeamWorkflowToReview", "AAMFE+JqDz+8tuRDdIwA"),
       //
-   Supercedes_Supercedes(true, "Supercedes"), Supercedes_Superceded(false, "Supercedes"),
-   AddressesIssues_AddressesIssues(true, "Addresses Issues"),
-   AddressesIssues_IssuedArtifact(false, "Addresses Issues"), SupportingInfo_SupportedBy(true, "Supporting Info"),
-   SupportingInfo_SupportingInfo(false, "Supporting Info"),
-      //
-   WorkItem__Parent(true, "Work Item"), WorkItem__Child(false, "Work Item"),
-      //   
-   Dependency__Dependency(false, "Dependency"), Dependency__Artifact(true, "Dependency"), SubscribedUser_Artifact(true,
-         "SubscribedUser"), SubscribedUser_User(false, "SubscribedUser"), FavoriteUser_Artifact(true, "FavoriteUser"),
-   FavoriteUser_User(false, "FavoriteUser");
+   SubscribedUser_Artifact(true, "SubscribedUser", "AAMFE+LkSAkfUWoTHdwA"),
+   SubscribedUser_User(false, "SubscribedUser", "AAMFE+LkSAkfUWoTHdwA"),
+   FavoriteUser_Artifact(true, "FavoriteUser", "AAMFE+NegDLK1g2ph+AA"),
+   FavoriteUser_User(false, "FavoriteUser", "AAMFE+NegDLK1g2ph+AA");
 
    private final RelationSide relationSide;
-   private String typeName;
+   private final String typeName;
+   private final String guid;
 
-   private AtsRelation(boolean sideA, String typeName) {
+   private AtsRelation(boolean sideA, String typeName, String guid) {
       this.relationSide = sideA ? RelationSide.SIDE_A : RelationSide.SIDE_B;
       this.typeName = typeName;
+      this.guid = guid;
    }
 
    /**
@@ -118,6 +112,6 @@ public enum AtsRelation implements IRelationEnumeration {
     */
    @Override
    public String getGuid() {
-      throw new UnsupportedOperationException("need to add guids to ATSRelation");
+      return guid;
    }
 }

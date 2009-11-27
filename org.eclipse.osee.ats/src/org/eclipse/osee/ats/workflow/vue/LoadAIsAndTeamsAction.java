@@ -36,6 +36,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
 import org.eclipse.osee.framework.core.data.OseeUser;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -235,11 +236,11 @@ public class LoadAIsAndTeamsAction {
          if (getOrCreate) {
             teamDefArt =
                   (TeamDefinitionArtifact) OseeSystemArtifacts.getOrCreateArtifact(
-                        TeamDefinitionArtifact.ARTIFACT_NAME, page.getName(), AtsUtil.getAtsBranch());
+                  TeamDefinitionArtifact.ARTIFACT_NAME, page.getName(), AtsUtil.getAtsBranch());
          } else {
             teamDefArt =
                   (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
-                        AtsUtil.getAtsBranch(), page.getName());
+                  AtsUtil.getAtsBranch(), page.getName());
          }
          if (!teamDefArt.isInDb()) {
             teamDefArt.initialize(fullName, desc, leads, members, actionableItems,
@@ -263,9 +264,9 @@ public class LoadAIsAndTeamsAction {
             try {
                Artifact workflowArt =
                      ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
-                           AtsUtil.getAtsBranch());
+                     AtsUtil.getAtsBranch());
                if (workflowArt != null) {
-                  teamDefArt.addRelation(AtsRelation.WorkItem__Child, workflowArt);
+                  teamDefArt.addRelation(CoreRelationEnumeration.WorkItem__Child, workflowArt);
                } else {
                   System.err.println("Can't find workflow with id \"" + workflowId + "\"");
                }
@@ -313,12 +314,12 @@ public class LoadAIsAndTeamsAction {
          if (getOrCreate) {
             aia =
                   (ActionableItemArtifact) ArtifactQuery.checkArtifactFromTypeAndName(
-                        ActionableItemArtifact.ARTIFACT_NAME, page.getName(), AtsUtil.getAtsBranch());
+                  ActionableItemArtifact.ARTIFACT_NAME, page.getName(), AtsUtil.getAtsBranch());
          }
          if (aia == null) {
             aia =
                   (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
-                        AtsUtil.getAtsBranch());
+                  AtsUtil.getAtsBranch());
             aia.setName(page.getName());
             for (String staticId : staticIds) {
                StaticIdManager.setSingletonAttributeValue(aia, staticId);

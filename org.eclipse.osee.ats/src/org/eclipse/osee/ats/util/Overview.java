@@ -25,6 +25,8 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.SMAState;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.jdk.core.util.AHTML.CellItem;
@@ -47,9 +49,11 @@ public class Overview {
       NONE, MAP, TASKS, NOTES, LOG, HYPEROPEN, NO_SUBSCRIBE_OR_FAVORITE;
 
       public static boolean contains(PreviewStyle[] styles, PreviewStyle style) {
-         for (PreviewStyle st : styles)
-            if (st.equals(style))
+         for (PreviewStyle st : styles) {
+            if (st.equals(style)) {
                return true;
+            }
+         }
          return false;
       }
    };
@@ -138,11 +142,12 @@ public class Overview {
             AHTML.getLabelStr(labelFont, "Id: ") + sma.getHumanReadableId()}));
       addTable(getLabelValue("Originator", smaMgr.getOriginator().getName()), getLabelValue("Creation Date",
             XDate.getDateStr(smaMgr.getLog().getCreationDate(), XDate.MMDDYYHHMM)));
-      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact)
+      if (smaMgr.getSma() instanceof TeamWorkFlowArtifact) {
          addTable(getLabelValue("Team", ((TeamWorkFlowArtifact) smaMgr.getSma()).getTeamName()), getLabelValue(
                "Assignees", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
-      else
+      } else {
          addTable(getLabelValue("Assignees", Artifacts.toString("; ", smaMgr.getStateMgr().getAssignees())));
+      }
       addTable(getLabelValue("Description", smaMgr.getSma().getDescription()));
       if (smaMgr.isCancelled()) {
          LogItem item = smaMgr.getLog().getStateEvent(LogType.StateCancelled);
@@ -171,19 +176,18 @@ public class Overview {
    }
 
    public void addRelationsBlock(ATSArtifact artifact) {
-      addRelationTable("Is Superceded By", AtsRelation.Supercedes_Supercedes, artifact);
-      addRelationTable("Supercedes", AtsRelation.Supercedes_Superceded, artifact);
-      addRelationTable("Issues Addressed By", AtsRelation.AddressesIssues_AddressesIssues, artifact);
-      addRelationTable("Addresses Issues In", AtsRelation.AddressesIssues_IssuedArtifact, artifact);
-      addRelationTable("Supports", AtsRelation.SupportingInfo_SupportedBy, artifact);
-      addRelationTable("Is Supported By", AtsRelation.SupportingInfo_SupportingInfo, artifact);
+      addRelationTable("Is Superceded By", CoreRelationEnumeration.Supercedes_Supercedes, artifact);
+      addRelationTable("Supercedes", CoreRelationEnumeration.Supercedes_Superceded, artifact);
+      addRelationTable("Supports", CoreRelationEnumeration.SupportingInfo_SupportedBy, artifact);
+      addRelationTable("Is Supported By", CoreRelationEnumeration.SupportingInfo_SupportingInfo, artifact);
    }
 
    public void addNotes(Artifact artifact) {
       if (artifact instanceof StateMachineArtifact) {
          String notesHtml = ((StateMachineArtifact) artifact).getSmaMgr().getNotes().getTable(null);
-         if (notesHtml.equals(""))
+         if (notesHtml.equals("")) {
             return;
+         }
          this.html.append(notesHtml);
       }
    }
@@ -208,18 +212,20 @@ public class Overview {
       return builder.toString();
    }
 
-   public void addRelationTable(String name, AtsRelation side, Artifact parent) {
+   public void addRelationTable(String name, IRelationEnumeration side, Artifact parent) {
       try {
          List<Artifact> arts = parent.getRelatedArtifacts(side);
-         if (arts.size() == 0)
+         if (arts.size() == 0) {
             return;
+         }
          startBorderTable(false, name);
          html.append(AHTML.addHeaderRowMultiColumnTable(new String[] {"Type", "Name", "Rationale"}));
          for (Artifact art : arts) {
             String rationale = "";
             RelationLink link = parent.getRelations(side, art).iterator().next();
-            if (!link.getRationale().equals(""))
+            if (!link.getRationale().equals("")) {
                rationale = link.getRationale();
+            }
             String hyperStr = Overview.getOpenHyperlinkHtml(art);
             html.append(AHTML.addRowMultiColumnTable(new String[] {art.getArtifactTypeName(), hyperStr, rationale}));
          }
@@ -270,8 +276,9 @@ public class Overview {
 
    public void addLog(StateMachineArtifact artifact) throws OseeCoreException {
       ATSLog artifactLog = artifact.getSmaMgr().getLog();
-      if (artifactLog != null && artifactLog.getLogItems().size() > 0)
+      if (artifactLog != null && artifactLog.getLogItems().size() > 0) {
          addTable(artifact.getSmaMgr().getLog().getTable());
+      }
    }
 
    public void startStateBorderTable(SMAManager smaMgr, SMAState state) throws OseeCoreException {
@@ -281,18 +288,19 @@ public class Overview {
    }
 
    public void startStateBorderTable(boolean active, String name, String assignee) {
-      if (assignee != null && !assignee.equals(""))
+      if (assignee != null && !assignee.equals("")) {
          startBorderTable(active, String.format("%s (%s)", name, assignee));
-      else
+      } else {
          startBorderTable(active, String.format("%s", name));
+      }
    }
 
    public void startBorderTable(boolean active, String caption) {
-      this.html.append(AHTML.startBorderTable(TABLE_WIDTH, (active) ? activeColor : normalColor, caption));
+      this.html.append(AHTML.startBorderTable(TABLE_WIDTH, active ? activeColor : normalColor, caption));
    }
 
    public void startBorderTable(int width, boolean active, String caption) {
-      this.html.append(AHTML.startBorderTable(width, (active) ? activeColor : normalColor, caption));
+      this.html.append(AHTML.startBorderTable(width, active ? activeColor : normalColor, caption));
    }
 
    public void startBorderTable(int width, String caption, String backgroundColor) {

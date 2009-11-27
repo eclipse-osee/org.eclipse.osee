@@ -23,6 +23,7 @@ import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
+import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -69,7 +70,9 @@ public class AtsArtifactChecks extends ArtifactCheck {
    private String checkActionableItems(Collection<Artifact> artifacts) throws OseeCoreException {
       Set<ActionableItemArtifact> aias = new HashSet<ActionableItemArtifact>();
       for (Artifact art : artifacts) {
-         if (art instanceof ActionableItemArtifact) aias.add((ActionableItemArtifact) art);
+         if (art instanceof ActionableItemArtifact) {
+            aias.add((ActionableItemArtifact) art);
+         }
       }
       if (aias.size() > 0) {
          ActionableItemWorldSearchItem srch = new ActionableItemWorldSearchItem("AI search", aias, true, true, false);
@@ -83,7 +86,9 @@ public class AtsArtifactChecks extends ArtifactCheck {
    private String checkTeamDefinitions(Collection<Artifact> artifacts) throws OseeCoreException {
       Set<TeamDefinitionArtifact> teamDefs = new HashSet<TeamDefinitionArtifact>();
       for (Artifact art : artifacts) {
-         if (art instanceof TeamDefinitionArtifact) teamDefs.add((TeamDefinitionArtifact) art);
+         if (art instanceof TeamDefinitionArtifact) {
+            teamDefs.add((TeamDefinitionArtifact) art);
+         }
       }
       if (teamDefs.size() > 0) {
 
@@ -99,17 +104,17 @@ public class AtsArtifactChecks extends ArtifactCheck {
    private String checkAtsWorkflows(Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact art : artifacts) {
          if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
-            if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent).size() > 0) {
+            if (art.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Parent).size() > 0) {
                return "ATS WorkFlowDefinition  [" + art + "] selected to delete has related Team Definition(s) via WorkItem__Parent; Re-assign Team Definitions to new WorkFlowDefinition first.";
             }
          }
          if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
-            if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent).size() > 0) {
+            if (art.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Parent).size() > 0) {
                return "ATS WorkRuleDefinition [" + art + "] selected to delete has related Work Items via WorkItem__Parent that must be removed first.";
             }
          }
          if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
-            if (art.getRelatedArtifacts(AtsRelation.WorkItem__Parent).size() > 0) {
+            if (art.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Parent).size() > 0) {
                return "ATS WorkWidgetDefinition [" + art + "] selected to delete has related Work Items via WorkItem__Parent that must be removed first.";
             }
          }
@@ -120,7 +125,9 @@ public class AtsArtifactChecks extends ArtifactCheck {
    private String checkUsers(Collection<Artifact> artifacts) throws OseeCoreException {
       Set<User> users = new HashSet<User>();
       for (Artifact art : artifacts) {
-         if (art instanceof User) users.add((User) art);
+         if (art instanceof User) {
+            users.add((User) art);
+         }
       }
       for (User user : users) {
          UserRelatedToAtsObjectSearch srch =
