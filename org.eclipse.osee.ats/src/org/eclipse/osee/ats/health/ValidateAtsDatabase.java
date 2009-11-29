@@ -48,7 +48,7 @@ import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -651,7 +651,7 @@ public class ValidateAtsDatabase extends WorldXNavigateItemAction {
                         "Error: " + sma.getArtifactTypeName() + " " + XResultData.getHyperlink(sma) + " In Work without assignees");
                }
                List<Artifact> relationAssigned =
-                     art.getRelatedArtifacts(CoreRelationEnumeration.Users_User, Artifact.class);
+                     art.getRelatedArtifacts(CoreRelations.Users_User, Artifact.class);
                if ((smaMgr.isCompleted() || smaMgr.isCancelled()) && relationAssigned.size() > 0) {
                   testNameToResultsMap.put(
                         "testStateMachineAssignees",

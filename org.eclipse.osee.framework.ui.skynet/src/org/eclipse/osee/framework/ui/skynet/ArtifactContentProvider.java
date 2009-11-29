@@ -16,7 +16,7 @@ import org.eclipse.jface.viewers.IContentProvider;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -116,7 +116,7 @@ public class ArtifactContentProvider implements ITreeContentProvider, ArtifactCh
                if (artifact.isDeleted()) {
                   return false;
                }
-               return artifact.getRelatedArtifactsCount(CoreRelationEnumeration.Default_Hierarchical__Child) > 0;
+               return artifact.getRelatedArtifactsCount(CoreRelations.Default_Hierarchical__Child) > 0;
             } else {
                return false;
             }

@@ -18,7 +18,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -327,7 +327,7 @@ public class ConflictTestManager {
                      break;
                   case RELATION:
                      createRelation((Artifact) modification.object, (Artifact) modification.object2);
-                     ((Artifact) modification.object).deleteRelation(CoreRelationEnumeration.Dependency__Dependency,
+                     ((Artifact) modification.object).deleteRelation(CoreRelations.Dependency__Dependency,
                            (Artifact) modification.object2);
                      ((Artifact) modification.object).persist();
                      break;
@@ -365,9 +365,9 @@ public class ConflictTestManager {
    }
 
    protected static RelationLink createRelation(Artifact artifact, Artifact artifactB) throws OseeCoreException {
-      artifact.addRelation(CoreRelationEnumeration.Dependency__Dependency, artifactB);
+      artifact.addRelation(CoreRelations.Dependency__Dependency, artifactB);
       artifact.persist();
-      return artifact.getRelations(CoreRelationEnumeration.Dependency__Dependency).get(0);
+      return artifact.getRelations(CoreRelations.Dependency__Dependency).get(0);
    }
 
    public static void cleanUpConflictTest() throws Exception {

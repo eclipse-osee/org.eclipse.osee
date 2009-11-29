@@ -14,13 +14,13 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifacts;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -56,7 +56,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       subsystemRequirements = ArtifactQuery.getArtifactListFromType(CoreArtifacts.SubsystemRequirement, branch);
       bulkRequirements =
             RelationManager.getRelatedArtifacts(subsystemRequirements, 1,
-                  CoreRelationEnumeration.Requirement_Trace__Lower_Level);
+                  CoreRelations.Requirement_Trace__Lower_Level);
       report = new StringBuilder(AHTML.beginMultiColumnTable(100, 1));
       transaction = new SkynetTransaction(branch, "Set Verification Level for Subsystem Requirements");
    }
@@ -125,12 +125,12 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       }
 
       private int getHardwareComponentCount() throws OseeCoreException {
-         return RelationManager.getRelatedArtifactsCount(req, CoreRelationEnumeration.Allocation__Component);
+         return RelationManager.getRelatedArtifactsCount(req, CoreRelations.Allocation__Component);
       }
 
       private int getSoftwareRequirementCount() throws OseeCoreException {
          Collection<Artifact> traceCollection =
-               RelationManager.getRelatedArtifacts(req, CoreRelationEnumeration.Requirement_Trace__Lower_Level);
+               RelationManager.getRelatedArtifacts(req, CoreRelations.Requirement_Trace__Lower_Level);
          int ret = 0;
          for (Artifact trace : traceCollection) {
             if (trace.isOfType(CoreArtifacts.AbstractSoftwareRequirement)) {

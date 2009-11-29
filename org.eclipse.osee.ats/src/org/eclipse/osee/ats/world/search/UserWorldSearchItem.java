@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.SMAUtil;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -72,7 +72,7 @@ public class UserWorldSearchItem {
          searchArts.addAll(getFavoritesArtifacts());
       } else {
          searchArts.addAll(SMAUtil.getSMAs(RelationManager.getRelatedArtifacts(Arrays.asList(user), 1,
-               CoreRelationEnumeration.Users_Artifact)));
+               CoreRelations.Users_Artifact)));
          // If include cancelled or completed, need to perform extra search
          // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
          if (options.contains(UserSearchOption.IncludeCancelled) || options.contains(UserSearchOption.IncludeCompleted)) {

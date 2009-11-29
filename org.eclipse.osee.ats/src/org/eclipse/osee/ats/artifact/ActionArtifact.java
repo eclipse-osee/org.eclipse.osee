@@ -33,7 +33,7 @@ import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -448,10 +448,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    @Override
    public String getWorldViewGroups() throws OseeCoreException {
       Set<Artifact> groups = new HashSet<Artifact>();
-      groups.addAll(getRelatedArtifacts(CoreRelationEnumeration.Universal_Grouping__Group));
+      groups.addAll(getRelatedArtifacts(CoreRelations.Universal_Grouping__Group));
       // Roll up if same for all children
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         groups.addAll(team.getRelatedArtifacts(CoreRelationEnumeration.Universal_Grouping__Group));
+         groups.addAll(team.getRelatedArtifacts(CoreRelations.Universal_Grouping__Group));
       }
       return Artifacts.toString("; ", groups);
    }

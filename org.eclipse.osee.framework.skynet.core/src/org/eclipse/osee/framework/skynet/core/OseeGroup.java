@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -51,7 +51,7 @@ public class OseeGroup {
     * @param user
     */
    public void addMember(User user) throws OseeCoreException {
-      getGroupArtifact().addRelation(CoreRelationEnumeration.Users_User, user);
+      getGroupArtifact().addRelation(CoreRelations.Users_User, user);
    }
 
    /**
@@ -62,7 +62,7 @@ public class OseeGroup {
     * @throws OseeCoreException
     */
    public boolean isMember(User user) throws OseeCoreException {
-      return getGroupArtifact().isRelated(CoreRelationEnumeration.Users_User, user);
+      return getGroupArtifact().isRelated(CoreRelations.Users_User, user);
    }
 
    /**

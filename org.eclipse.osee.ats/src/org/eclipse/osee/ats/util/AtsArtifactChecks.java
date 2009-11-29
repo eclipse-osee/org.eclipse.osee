@@ -23,7 +23,7 @@ import org.eclipse.osee.ats.world.search.TeamWorldSearchItem;
 import org.eclipse.osee.ats.world.search.UserRelatedToAtsObjectSearch;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
 import org.eclipse.osee.ats.world.search.WorldSearchItem.LoadView;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -104,17 +104,17 @@ public class AtsArtifactChecks extends ArtifactCheck {
    private String checkAtsWorkflows(Collection<Artifact> artifacts) throws OseeCoreException {
       for (Artifact art : artifacts) {
          if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
-            if (art.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Parent).size() > 0) {
+            if (art.getRelatedArtifacts(CoreRelations.WorkItem__Parent).size() > 0) {
                return "ATS WorkFlowDefinition  [" + art + "] selected to delete has related Team Definition(s) via WorkItem__Parent; Re-assign Team Definitions to new WorkFlowDefinition first.";
             }
          }
          if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
-            if (art.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Parent).size() > 0) {
+            if (art.getRelatedArtifacts(CoreRelations.WorkItem__Parent).size() > 0) {
                return "ATS WorkRuleDefinition [" + art + "] selected to delete has related Work Items via WorkItem__Parent that must be removed first.";
             }
          }
          if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
-            if (art.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Parent).size() > 0) {
+            if (art.getRelatedArtifacts(CoreRelations.WorkItem__Parent).size() > 0) {
                return "ATS WorkWidgetDefinition [" + art + "] selected to delete has related Work Items via WorkItem__Parent that must be removed first.";
             }
          }

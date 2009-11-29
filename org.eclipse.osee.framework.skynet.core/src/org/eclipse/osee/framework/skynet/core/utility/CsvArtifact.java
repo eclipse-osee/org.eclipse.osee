@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.StaticIdManager;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 
 /**
  * Supports the loading, modifying and saving of General Document artifacts of extension csv

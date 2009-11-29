@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 
@@ -29,7 +29,7 @@ public abstract class WorkItemWithChildrenDefinition extends WorkItemDefinition 
 
    public WorkItemWithChildrenDefinition(Artifact artifact, String itemName, String pageName, String pageId, String parentId) throws OseeCoreException {
       this(itemName, pageId, parentId);
-      for (Artifact art : artifact.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
+      for (Artifact art : artifact.getRelatedArtifacts(CoreRelations.WorkItem__Child)) {
          String widId = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), (String) null);
          workItemIds.add(widId);
       }
@@ -55,8 +55,8 @@ public abstract class WorkItemWithChildrenDefinition extends WorkItemDefinition 
          children.add(widArt);
       }
       // This supports both relating new children and when WriteType.Overwrite of updating
-      art.setRelations(CoreRelationEnumeration.WorkItem__Child, children);
-      art.setRelationOrder(CoreRelationEnumeration.WorkItem__Child, children);
+      art.setRelations(CoreRelations.WorkItem__Child, children);
+      art.setRelationOrder(CoreRelations.WorkItem__Child, children);
       return art;
    }
 

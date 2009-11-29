@@ -16,14 +16,14 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 
-public enum OTE_SKYNET_RELATIONS implements IRelationEnumeration {
+public enum OteRelations implements IRelationEnumeration {
    TEST_SCRIPT_TO_RUN_RELATION__TEST_SCRIPT(RelationSide.SIDE_A, "Test Case to Run Relation", "AAMFE+jMyBDK7CV479wA"),
    TEST_SCRIPT_TO_RUN_RELATION__TEST_RUN(RelationSide.SIDE_B, "Test Case to Run Relation", "AAMFE+jMyBDK7CV479wA");
    private final RelationSide relationSide;
    private final String guid;
    private String typeName;
 
-   private OTE_SKYNET_RELATIONS(RelationSide relationSide, String typeName, String guid) {
+   private OteRelations(RelationSide relationSide, String typeName, String guid) {
       this.relationSide = relationSide;
       this.typeName = typeName;
       this.guid = guid;

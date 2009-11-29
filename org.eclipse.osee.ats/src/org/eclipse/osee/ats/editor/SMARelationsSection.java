@@ -17,7 +17,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
@@ -81,7 +81,7 @@ public class SMARelationsSection extends RelationsFormSection {
                AtsRelation.TeamActionableItem_ActionableItem.getName(),
                AtsRelation.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelation.TeamLead_Lead.getName(),
                AtsRelation.TeamMember_Member.getName(), AtsRelation.TeamWorkflowToReview_Review.getName(),
-               CoreRelationEnumeration.WorkItem__Child.getName(), CoreRelationEnumeration.Default_Hierarchical__Child.getName(),
-               CoreRelationEnumeration.Users_Artifact.getName());
+               CoreRelations.WorkItem__Child.getName(), CoreRelations.Default_Hierarchical__Child.getName(),
+               CoreRelations.Users_Artifact.getName());
 
 }

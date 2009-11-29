@@ -38,7 +38,7 @@ import org.eclipse.osee.ats.util.widgets.commit.XCommitManager;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -423,9 +423,9 @@ public class AtsBranchConfigurationTest {
       OseeLog.log(AtsPlugin.class, Level.INFO, "Setup new workflow page to have create/commit branch widgets");
       String implementPageId = namespace + ".Implement";
       Artifact implementPageDef = WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(implementPageId);
-      implementPageDef.addRelation(CoreRelationEnumeration.WorkItem__Child,
+      implementPageDef.addRelation(CoreRelations.WorkItem__Child,
             WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.WORKING_BRANCH_WIDGET.getStoreName()));
-      implementPageDef.addRelation(CoreRelationEnumeration.WorkItem__Child,
+      implementPageDef.addRelation(CoreRelations.WorkItem__Child,
             WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(ATSAttributes.COMMIT_MANAGER_WIDGET.getStoreName()));
       implementPageDef.persist();
    }

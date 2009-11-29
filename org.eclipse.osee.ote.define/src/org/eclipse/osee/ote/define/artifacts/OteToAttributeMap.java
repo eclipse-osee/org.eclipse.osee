@@ -13,8 +13,8 @@ package org.eclipse.osee.ote.define.artifacts;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.ote.define.TestRunField;
 import org.eclipse.osee.ote.define.AUTOGEN.OteAttributes;
 

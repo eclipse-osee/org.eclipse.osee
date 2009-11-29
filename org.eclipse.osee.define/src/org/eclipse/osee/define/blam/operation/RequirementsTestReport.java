@@ -16,12 +16,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifacts;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -63,7 +63,7 @@ public class RequirementsTestReport extends AbstractBlam {
    }
 
    private void processRequirement(Artifact req) throws OseeCoreException {
-      Collection<Artifact> testProcs = req.getRelatedArtifacts(CoreRelationEnumeration.Verification__Verifier);
+      Collection<Artifact> testProcs = req.getRelatedArtifacts(CoreRelations.Verification__Verifier);
       if (testProcs.isEmpty()) {
          reportLine(getReqCellOutput(req), MISSING, MISSING, MISSING);
       } else {
@@ -76,7 +76,7 @@ public class RequirementsTestReport extends AbstractBlam {
    private void processTestProcedure(Artifact req, Artifact testProc) throws OseeCoreException {
       String testStatus = MISSING;//testProc.getSoleAttributeValue(CoreAttributes.TEST_STATUS);
       Collection<Artifact> resultFiles =
-            testProc.getRelatedArtifacts(CoreRelationEnumeration.Test_Unit_Result__Test_Result);
+            testProc.getRelatedArtifacts(CoreRelations.Test_Unit_Result__Test_Result);
 
       if (resultFiles.isEmpty()) {
          reportLine(getReqCellOutput(req), testProc.getName(), testStatus, MISSING);
@@ -144,9 +144,9 @@ public class RequirementsTestReport extends AbstractBlam {
          requirementsBulkLoad.addAll(input.getDescendants());
       }
       Collection<Artifact> temp =
-            RelationManager.getRelatedArtifacts(requirementsBulkLoad, 1, CoreRelationEnumeration.Verification__Verifier);
+            RelationManager.getRelatedArtifacts(requirementsBulkLoad, 1, CoreRelations.Verification__Verifier);
       Collection<Artifact> temp2 =
-            RelationManager.getRelatedArtifacts(temp, 1, CoreRelationEnumeration.Test_Unit_Result__Test_Result);
+            RelationManager.getRelatedArtifacts(temp, 1, CoreRelations.Test_Unit_Result__Test_Result);
       System.out.println("Bulk loaded " + temp2.size() + " test results");
    }
 

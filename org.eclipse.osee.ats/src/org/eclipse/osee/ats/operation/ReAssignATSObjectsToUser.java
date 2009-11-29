@@ -18,7 +18,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -64,7 +64,7 @@ public class ReAssignATSObjectsToUser extends AbstractBlam {
 
                // Get all things user is directly assigned to
                Collection<Artifact> assignedToArts =
-                     fromUser.getRelatedArtifacts(CoreRelationEnumeration.Users_Artifact, Artifact.class);
+                     fromUser.getRelatedArtifacts(CoreRelations.Users_Artifact, Artifact.class);
                Set<Artifact> atsArts = new HashSet<Artifact>();
                for (Artifact assignedArt : assignedToArts) {
                   if (assignedArt instanceof StateMachineArtifact) {

@@ -25,7 +25,7 @@ import org.eclipse.core.filesystem.IFileStore;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.traceability.data.RequirementData;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -121,9 +121,9 @@ public class UiToTestBlam extends AbstractBlam {
             }
             addRow(appendable, headers.toArray(new String[headers.size()]));
             for (Artifact requirement : toTrace) {
-               processTrace(appendable, requirement, "Verified By", CoreRelationEnumeration.Verification__Verifier);
-               processTrace(appendable, requirement, "Used By", CoreRelationEnumeration.Uses__TestUnit);
-               processTrace(appendable, requirement, "Validated By", CoreRelationEnumeration.Validation__Validator);
+               processTrace(appendable, requirement, "Verified By", CoreRelations.Verification__Verifier);
+               processTrace(appendable, requirement, "Used By", CoreRelations.Uses__TestUnit);
+               processTrace(appendable, requirement, "Validated By", CoreRelations.Validation__Validator);
             }
          }
 
@@ -200,9 +200,9 @@ public class UiToTestBlam extends AbstractBlam {
          for (Artifact testUnit : testUnits) {
             String testUnitName = testUnit.getName();
             String testUnitType = testUnit.getArtifactTypeName();
-            List<String> verified = getTrace(testUnit, CoreRelationEnumeration.Verification__Requirement);
-            List<String> used = getTrace(testUnit, CoreRelationEnumeration.Uses__Requirement);
-            List<String> validates = getTrace(testUnit, CoreRelationEnumeration.Validation__Requirement);
+            List<String> verified = getTrace(testUnit, CoreRelations.Verification__Requirement);
+            List<String> used = getTrace(testUnit, CoreRelations.Uses__Requirement);
+            List<String> validates = getTrace(testUnit, CoreRelations.Validation__Requirement);
             String verifyStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(verified, ",");
             String usesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(used, ",");
             String validatesStr = org.eclipse.osee.framework.jdk.core.util.Collections.toString(validates, ",");

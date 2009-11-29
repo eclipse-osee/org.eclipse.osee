@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -168,7 +168,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * @return parent TeamDefinition that holds the work flow id attribute
     */
    public TeamDefinitionArtifact getTeamDefinitionHoldingWorkFlow() throws OseeCoreException {
-      for (Artifact artifact : getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class)) {
+      for (Artifact artifact : getRelatedArtifacts(CoreRelations.WorkItem__Child, Artifact.class)) {
          if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
             return this;
          }
@@ -285,7 +285,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
          return null;
       }
       Artifact workFlowArt = null;
-      for (Artifact artifact : teamDef.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class)) {
+      for (Artifact artifact : teamDef.getRelatedArtifacts(CoreRelations.WorkItem__Child, Artifact.class)) {
          if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
             if (workFlowArt != null) {
                OseeLog.log(
@@ -328,7 +328,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public Collection<WorkRuleDefinition> getWorkRules() throws OseeCoreException {
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
       // Get work rules from team definition
-      for (Artifact art : getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
+      for (Artifact art : getRelatedArtifacts(CoreRelations.WorkItem__Child)) {
          if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
             String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
             if (id != null && !id.equals("")) {
@@ -467,13 +467,13 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
          if (artifact == null) {
             throw new IllegalArgumentException("Rule \"" + ruleId + "\" does not exist.");
          } else {
-            addRelation(CoreRelationEnumeration.WorkItem__Child, artifact);
+            addRelation(CoreRelations.WorkItem__Child, artifact);
          }
       }
    }
 
    public boolean hasWorkRule(String ruleId) throws OseeCoreException {
-      for (Artifact art : getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child)) {
+      for (Artifact art : getRelatedArtifacts(CoreRelations.WorkItem__Child)) {
          if (art.getName().equals(ruleId)) {
             return true;
          }

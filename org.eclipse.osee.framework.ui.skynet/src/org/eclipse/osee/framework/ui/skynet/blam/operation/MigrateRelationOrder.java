@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationSide;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
@@ -143,7 +143,7 @@ public class MigrateRelationOrder extends AbstractBlam {
    }
 
    private void testOneArtifact(SkynetTransaction transaction, String guid) throws OseeCoreException {
-      writeNewOrder(transaction, CoreRelationEnumeration.Default_Hierarchical__Child, ArtifactQuery.getArtifactFromId(
+      writeNewOrder(transaction, CoreRelations.Default_Hierarchical__Child, ArtifactQuery.getArtifactFromId(
             guid, transaction.getBranch()));
    }
 

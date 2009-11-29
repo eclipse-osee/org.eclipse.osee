@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -114,8 +114,8 @@ public class WorkItemDefinitionFactory {
          throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
       }
       Artifact childArt = childArts.iterator().next();
-      if (!parentArt.getRelatedArtifacts(CoreRelationEnumeration.WorkItem__Child, Artifact.class).contains(childArt)) {
-         parentArt.addRelation(CoreRelationEnumeration.WorkItem__Child, childArt);
+      if (!parentArt.getRelatedArtifacts(CoreRelations.WorkItem__Child, Artifact.class).contains(childArt)) {
+         parentArt.addRelation(CoreRelations.WorkItem__Child, childArt);
          parentArt.persist();
       }
    }

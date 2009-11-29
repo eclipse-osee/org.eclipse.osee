@@ -13,10 +13,10 @@ package org.eclipse.osee.framework.ui.skynet.render;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.swt.program.Program;
 
 /**

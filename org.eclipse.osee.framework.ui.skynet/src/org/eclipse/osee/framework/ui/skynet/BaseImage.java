@@ -13,11 +13,11 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.io.ByteArrayInputStream;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.swt.graphics.ImageData;
 
 /**

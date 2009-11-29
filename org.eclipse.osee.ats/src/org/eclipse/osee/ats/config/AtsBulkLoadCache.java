@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -66,7 +66,7 @@ public class AtsBulkLoadCache extends org.eclipse.core.runtime.jobs.Job {
          Artifact headingArt = AtsFolderUtil.getFolder(AtsFolder.Ats_Heading);
          // Loading artifacts will cache them in ArtifactCache
          RelationManager.getRelatedArtifacts(Collections.singleton(headingArt), 8,
-               CoreRelationEnumeration.Default_Hierarchical__Child, AtsRelation.TeamDefinitionToVersion_Version);
+               CoreRelations.Default_Hierarchical__Child, AtsRelation.TeamDefinitionToVersion_Version);
          // Load Work Definitions
          WorkItemDefinitionFactory.loadDefinitions();
       } catch (Exception ex) {

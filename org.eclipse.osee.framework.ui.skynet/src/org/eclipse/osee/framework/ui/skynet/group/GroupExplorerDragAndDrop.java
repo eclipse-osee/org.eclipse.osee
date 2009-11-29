@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -207,9 +207,9 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
 
                      for (Artifact artifact : insertArts) {
                         // Remove item from old group
-                        parentArtifact.deleteRelation(CoreRelationEnumeration.Universal_Grouping__Members, artifact);
+                        parentArtifact.deleteRelation(CoreRelations.Universal_Grouping__Members, artifact);
                         // Add items to new group
-                        targetArtifact.addRelation(CoreRelationEnumeration.Universal_Grouping__Members, artifact);
+                        targetArtifact.addRelation(CoreRelations.Universal_Grouping__Members, artifact);
                      }
                      Artifacts.persistInTransaction(parentArtifact, targetArtifact);
                   }
@@ -239,7 +239,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
                      Artifact targetArtifact = dragOverExplorerItem.getArtifact();
 
                      for (Artifact art : insertArts) {
-                        parentArtifact.setRelationOrder(CoreRelationEnumeration.Universal_Grouping__Members,
+                        parentArtifact.setRelationOrder(CoreRelations.Universal_Grouping__Members,
                               targetArtifact, isFeedbackAfter, art);
                         targetArtifact = art;
                      }
@@ -256,7 +256,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
 
                      for (Artifact art : insertArts) {
                         parentArtifact.addRelation(RelationOrderBaseTypes.USER_DEFINED,
-                              CoreRelationEnumeration.Universal_Grouping__Members, targetArtifact, isFeedbackAfter,
+                              CoreRelations.Universal_Grouping__Members, targetArtifact, isFeedbackAfter,
                               art, "");
                      }
                      parentArtifact.persist();
@@ -298,7 +298,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
 
          for (Artifact art : artsToRelate) {
             if (!dragOverExplorerItem.contains(art)) {
-               dragOverExplorerItem.getArtifact().addRelation(CoreRelationEnumeration.Universal_Grouping__Members, art);
+               dragOverExplorerItem.getArtifact().addRelation(CoreRelations.Universal_Grouping__Members, art);
             }
          }
          dragOverExplorerItem.getArtifact().persist(transaction);

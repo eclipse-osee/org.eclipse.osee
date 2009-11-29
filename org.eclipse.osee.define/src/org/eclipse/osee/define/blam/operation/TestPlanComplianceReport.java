@@ -17,12 +17,12 @@ import java.util.Collection;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifacts;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -108,13 +108,13 @@ public class TestPlanComplianceReport extends AbstractBlam {
    }
 
    private Collection<Artifact> getTestProcedures(Artifact testPlan) throws OseeCoreException {
-      Collection<Artifact> ret = testPlan.getRelatedArtifacts(CoreRelationEnumeration.Executes__Test_Procedure);
+      Collection<Artifact> ret = testPlan.getRelatedArtifacts(CoreRelations.Executes__Test_Procedure);
 
       return ret;
    }
 
    private Collection<Artifact> getTestResults(Artifact testProc) throws OseeCoreException {
-      Collection<Artifact> ret = testProc.getRelatedArtifacts(CoreRelationEnumeration.Test_Unit_Result__Test_Result);
+      Collection<Artifact> ret = testProc.getRelatedArtifacts(CoreRelations.Test_Unit_Result__Test_Result);
 
       return ret;
    }
@@ -138,7 +138,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
 
    private String getRequirementsAsString(Artifact testPlan) throws OseeCoreException {
       Collection<Artifact> requirementArtifacts =
-            testPlan.getRelatedArtifacts(CoreRelationEnumeration.Verification_Plan__Requirement);
+            testPlan.getRelatedArtifacts(CoreRelations.Verification_Plan__Requirement);
       Collection<String> requirementNames = new ArrayList<String>();
       for (Artifact req : requirementArtifacts) {
          String paragraphNumber = req.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
@@ -191,10 +191,10 @@ public class TestPlanComplianceReport extends AbstractBlam {
       for (Artifact input : inputArtifacts) {
          testPlans.addAll(input.getDescendants());
       }
-      RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationEnumeration.Verification_Plan__Requirement);
+      RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelations.Verification_Plan__Requirement);
       Collection<Artifact> temp =
-            RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationEnumeration.Executes__Test_Procedure);
-      RelationManager.getRelatedArtifacts(temp, 1, CoreRelationEnumeration.Test_Unit_Result__Test_Result);
+            RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelations.Executes__Test_Procedure);
+      RelationManager.getRelatedArtifacts(temp, 1, CoreRelations.Test_Unit_Result__Test_Result);
    }
 
    @Override

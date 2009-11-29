@@ -10,13 +10,13 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.linking;
 
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactURL;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 
 /**
  * @author Roberto E. Escobar

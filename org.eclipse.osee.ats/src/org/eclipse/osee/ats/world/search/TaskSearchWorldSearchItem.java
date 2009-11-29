@@ -28,7 +28,7 @@ import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -124,7 +124,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       } else if (groups.size() > 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
          for (Artifact groupArt : groups) {
-            for (Artifact art : groupArt.getRelatedArtifacts(CoreRelationEnumeration.Universal_Grouping__Members)) {
+            for (Artifact art : groupArt.getRelatedArtifacts(CoreRelations.Universal_Grouping__Members)) {
                if (art instanceof TaskArtifact) {
                   taskArts.add((TaskArtifact) art);
                } else if (art instanceof StateMachineArtifact) {
@@ -148,7 +148,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
    private Collection<TaskArtifact> getUserAssignedTaskArtifacts() throws OseeCoreException {
       Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
-      for (Artifact art : getSelectedUser().getRelatedArtifacts(CoreRelationEnumeration.Users_Artifact)) {
+      for (Artifact art : getSelectedUser().getRelatedArtifacts(CoreRelations.Users_Artifact)) {
          if (art instanceof TaskArtifact) {
             tasks.add((TaskArtifact) art);
          }

@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.artifact;
 
-import static org.eclipse.osee.framework.core.enums.CoreRelationEnumeration.Default_Hierarchical__Child;
+import static org.eclipse.osee.framework.core.enums.CoreRelations.Default_Hierarchical__Child;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -32,7 +32,8 @@ import org.eclipse.osee.framework.core.data.IAccessControllable;
 import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
@@ -74,7 +75,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.annotation.AttributeAnnot
 import org.eclipse.osee.framework.skynet.core.artifact.annotation.IArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
@@ -351,7 +351,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     */
    public Artifact getParent() throws OseeCoreException {
       if (hasParent()) {
-         return RelationManager.getRelatedArtifact(this, CoreRelationEnumeration.Default_Hierarchical__Parent);
+         return RelationManager.getRelatedArtifact(this, CoreRelations.Default_Hierarchical__Parent);
       }
       return null;
    }
@@ -371,7 +371,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws MultipleArtifactsExist if this artifact has more than one parent
     */
    public boolean hasParent() throws OseeCoreException {
-      int parentCount = getRelatedArtifactsCount(CoreRelationEnumeration.Default_Hierarchical__Parent);
+      int parentCount = getRelatedArtifactsCount(CoreRelations.Default_Hierarchical__Parent);
       if (parentCount > 1) {
          throw new MultipleArtifactsExist(humanReadableId + " has " + parentCount + " parents");
       }

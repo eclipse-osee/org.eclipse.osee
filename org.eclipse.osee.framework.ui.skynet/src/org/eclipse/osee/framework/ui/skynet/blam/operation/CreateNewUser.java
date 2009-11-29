@@ -16,7 +16,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.CoreArtifacts;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -104,9 +104,9 @@ public class CreateNewUser extends AbstractBlam {
          for (Artifact groupArt : groupArts) {
             if (groupNameListItem.getName().equals(groupArt.getName())) {
                if (groupArt.getArtifactTypeName().equals("Universal Group")) {
-                  groupArt.addRelation(CoreRelationEnumeration.Universal_Grouping__Members, user);
+                  groupArt.addRelation(CoreRelations.Universal_Grouping__Members, user);
                } else if (groupArt.getArtifactTypeName().equals("User Group")) {
-                  groupArt.addRelation(CoreRelationEnumeration.Users_User, user);
+                  groupArt.addRelation(CoreRelations.Users_User, user);
                }
             }
          }

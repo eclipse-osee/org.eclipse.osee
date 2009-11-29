@@ -25,7 +25,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -325,7 +325,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          try {
             SkynetTransaction transaction = new SkynetTransaction(branch);
             for (GroupExplorerItem item : items) {
-               item.getArtifact().deleteRelation(CoreRelationEnumeration.Universal_Grouping__Group,
+               item.getArtifact().deleteRelation(CoreRelations.Universal_Grouping__Group,
                      item.getParentItem().getArtifact());
                item.getArtifact().persist(transaction);
             }

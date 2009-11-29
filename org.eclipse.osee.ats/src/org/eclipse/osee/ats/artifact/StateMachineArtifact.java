@@ -34,7 +34,7 @@ import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -186,7 +186,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewGroups() throws OseeCoreException {
-      return Artifacts.toString("; ", getRelatedArtifacts(CoreRelationEnumeration.Universal_Grouping__Group));
+      return Artifacts.toString("; ", getRelatedArtifacts(CoreRelations.Universal_Grouping__Group));
    }
 
    @Override

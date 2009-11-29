@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
@@ -49,7 +49,7 @@ public class VersionTeamMetrics {
 
    private void bulkLoadArtifacts() throws OseeCoreException {
       RelationManager.getRelatedArtifacts(Arrays.asList(this.verTeamDef), 6,
-            CoreRelationEnumeration.Default_Hierarchical__Child, AtsRelation.TeamDefinitionToVersion_Version,
+            CoreRelations.Default_Hierarchical__Child, AtsRelation.TeamDefinitionToVersion_Version,
             AtsRelation.TeamWorkflowTargetedForVersion_Workflow, AtsRelation.SmaToTask_Task,
             AtsRelation.ActionToWorkflow_Action);
    }

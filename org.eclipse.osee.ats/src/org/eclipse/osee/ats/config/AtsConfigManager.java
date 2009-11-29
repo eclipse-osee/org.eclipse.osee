@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.editor.AtsWorkflowConfigEditor;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard;
 import org.eclipse.osee.ats.workflow.editor.wizard.AtsWorkflowConfigCreationWizard.WorkflowData;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -133,7 +133,7 @@ public class AtsConfigManager {
          workFlowDefinition = (WorkFlowDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(workflowId);
       }
       // Relate new team def to workflow artifact
-      teamDef.addRelation(CoreRelationEnumeration.WorkItem__Child, workflowArt);
+      teamDef.addRelation(CoreRelations.WorkItem__Child, workflowArt);
       teamDef.persist(transaction);
 
       transaction.execute();

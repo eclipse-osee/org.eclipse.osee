@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -43,9 +43,9 @@ public class SMARelationsHyperlinkComposite extends Composite {
    private final XFormToolkit toolkit;
    private static IRelationEnumeration[] sides =
          new IRelationEnumeration[] {AtsRelation.TeamWorkflowToReview_Review, AtsRelation.TeamWorkflowToReview_Team,
-         CoreRelationEnumeration.Supercedes_Superceded, CoreRelationEnumeration.Supercedes_Supercedes,
-         CoreRelationEnumeration.SupportingInfo_SupportedBy, CoreRelationEnumeration.SupportingInfo_SupportingInfo,
-         CoreRelationEnumeration.Dependency__Artifact, CoreRelationEnumeration.Dependency__Dependency};
+         CoreRelations.Supercedes_Superceded, CoreRelations.Supercedes_Supercedes,
+         CoreRelations.SupportingInfo_SupportedBy, CoreRelations.SupportingInfo_SupportingInfo,
+         CoreRelations.Dependency__Artifact, CoreRelations.Dependency__Dependency};
    private SMAManager smaMgr;
    private Label actionableItemsLabel;
 
@@ -71,17 +71,17 @@ public class SMARelationsHyperlinkComposite extends Composite {
             AtsRelation.TeamWorkflowToReview_Review);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "reviews", AtsRelation.TeamWorkflowToReview_Team);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "supercedes",
-            CoreRelationEnumeration.Supercedes_Superceded);
+            CoreRelations.Supercedes_Superceded);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is superceded by",
-            CoreRelationEnumeration.Supercedes_Supercedes);
+            CoreRelations.Supercedes_Supercedes);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "depends on",
-            CoreRelationEnumeration.Dependency__Dependency);
+            CoreRelations.Dependency__Dependency);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is dependency of",
-            CoreRelationEnumeration.Dependency__Artifact);
+            CoreRelations.Dependency__Artifact);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is supported info for",
-            CoreRelationEnumeration.SupportingInfo_SupportedBy);
+            CoreRelations.SupportingInfo_SupportedBy);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "has supporting info",
-            CoreRelationEnumeration.SupportingInfo_SupportingInfo);
+            CoreRelations.SupportingInfo_SupportingInfo);
 
       // Create label for review's related actionable items (if any) 
       if (smaMgr.getSma() instanceof ReviewSMArtifact) {

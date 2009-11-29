@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -203,7 +203,7 @@ public class WorkFlowDefinition extends WorkItemWithChildrenDefinition {
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
       // Get work rules from team definition
       for (Artifact art : WorkItemDefinitionFactory.getWorkItemDefinitionArtifact(getId()).getRelatedArtifacts(
-            CoreRelationEnumeration.WorkItem__Child)) {
+            CoreRelations.WorkItem__Child)) {
          String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
          if (id != null && !id.equals("")) {
             workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));

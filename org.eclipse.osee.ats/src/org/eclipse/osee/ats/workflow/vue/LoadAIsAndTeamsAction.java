@@ -36,7 +36,7 @@ import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
 import org.eclipse.osee.framework.core.data.OseeUser;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -266,7 +266,7 @@ public class LoadAIsAndTeamsAction {
                      ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
                      AtsUtil.getAtsBranch());
                if (workflowArt != null) {
-                  teamDefArt.addRelation(CoreRelationEnumeration.WorkItem__Child, workflowArt);
+                  teamDefArt.addRelation(CoreRelations.WorkItem__Child, workflowArt);
                } else {
                   System.err.println("Can't find workflow with id \"" + workflowId + "\"");
                }

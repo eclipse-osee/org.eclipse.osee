@@ -22,7 +22,7 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.util.AtsRelation;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -54,7 +54,7 @@ public class MyReviewWorkflowItem extends UserSearchItem {
    protected Collection<Artifact> searchIt(User user) throws OseeCoreException {
 
       Set<Artifact> assigned =
-            RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelationEnumeration.Users_Artifact);
+            RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelations.Users_Artifact);
       Set<Artifact> artifacts = new HashSet<Artifact>(50);
       // Because user can be assigned directly to review or through being assigned to task, add in
       // all the original artifacts.

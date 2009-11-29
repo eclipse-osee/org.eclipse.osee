@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.util.widgets.SMAState;
 import org.eclipse.osee.ats.util.widgets.XCurrentStateDam;
 import org.eclipse.osee.ats.util.widgets.XStateDam;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -88,7 +88,7 @@ public class StateManager {
    public static void updateAssigneeRelations(SMAManager smaMgr) throws OseeCoreException {
       Collection<User> assignees = smaMgr.getStateMgr().getAssignees();
       assignees.remove(UserManager.getUser(SystemUser.UnAssigned));
-      smaMgr.getSma().setRelations(CoreRelationEnumeration.Users_User, assignees);
+      smaMgr.getSma().setRelations(CoreRelations.Users_User, assignees);
    }
 
    /**

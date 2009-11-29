@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -109,7 +109,7 @@ public class GroupExplorerItem implements IAdaptable {
 //      return items;
       
       try {
-         List<Artifact> related = artifact.getRelatedArtifacts(CoreRelationEnumeration.Universal_Grouping__Members);
+         List<Artifact> related = artifact.getRelatedArtifacts(CoreRelations.Universal_Grouping__Members);
          for (Artifact art : related) {
           addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
          }

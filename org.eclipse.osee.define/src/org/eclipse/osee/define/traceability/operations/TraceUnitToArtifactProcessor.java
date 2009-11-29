@@ -28,7 +28,7 @@ import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
 import org.eclipse.osee.framework.core.enums.CoreArtifacts;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -185,12 +185,12 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    private IRelationEnumeration getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) throws OseeCoreException {
       if (traceUnitArtifact.isOfType(CoreArtifacts.TestUnit)) {
          if (isUsesTraceType(traceType)) {
-            return CoreRelationEnumeration.Uses__TestUnit;
+            return CoreRelations.Uses__TestUnit;
          } else {
-            return CoreRelationEnumeration.Verification__Verifier;
+            return CoreRelations.Verification__Verifier;
          }
       } else if (traceUnitArtifact.isOfType(CoreArtifacts.CodeUnit)) {
-         return CoreRelationEnumeration.CodeRequirement_CodeUnit;
+         return CoreRelations.CodeRequirement_CodeUnit;
       }
       return null;
    }
@@ -267,7 +267,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             folder = getOrCreateUnknownTestUnitFolder(transaction);
          }
 
-         if (folder != null && !folder.isRelated(CoreRelationEnumeration.Default_Hierarchical__Child, testUnit)) {
+         if (folder != null && !folder.isRelated(CoreRelations.Default_Hierarchical__Child, testUnit)) {
             folder.addChild(testUnit);
             folder.persist(transaction);
          }
@@ -288,7 +288,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private static Artifact getOrCreateCodeUnitFolder(SkynetTransaction transaction) throws OseeCoreException {
          Artifact codeUnitFolder = getOrCreateFolder(transaction, "Code Units");
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
-         if (!root.isRelated(CoreRelationEnumeration.Default_Hierarchical__Child, codeUnitFolder)) {
+         if (!root.isRelated(CoreRelations.Default_Hierarchical__Child, codeUnitFolder)) {
             root.addChild(codeUnitFolder);
             root.persist(transaction);
          }
@@ -298,7 +298,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private static Artifact getOrCreateTestUnitSubFolder(SkynetTransaction transaction, String folderName) throws OseeCoreException {
          Artifact subFolder = getOrCreateFolder(transaction, folderName);
          Artifact testUnits = getOrCreateTestUnitsFolder(transaction);
-         if (!testUnits.isRelated(CoreRelationEnumeration.Default_Hierarchical__Child, subFolder)) {
+         if (!testUnits.isRelated(CoreRelations.Default_Hierarchical__Child, subFolder)) {
             testUnits.addChild(subFolder);
             testUnits.persist(transaction);
          }
@@ -308,7 +308,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private static Artifact getOrCreateTestUnitsFolder(SkynetTransaction transaction) throws OseeCoreException {
          Artifact testUnitFolder = getOrCreateFolder(transaction, "Test Units");
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
-         if (!root.isRelated(CoreRelationEnumeration.Default_Hierarchical__Child, testUnitFolder)) {
+         if (!root.isRelated(CoreRelations.Default_Hierarchical__Child, testUnitFolder)) {
             root.addChild(testUnitFolder);
             root.persist(transaction);
          }

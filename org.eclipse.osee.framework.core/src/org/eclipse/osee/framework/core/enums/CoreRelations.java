@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.enums;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 
-public enum CoreRelationEnumeration implements IRelationEnumeration {
+public enum CoreRelations implements IRelationEnumeration {
 
    //   AddressesIssues_AddressesIssues(SIDE_A, "Addresses Issues", ""),
    //   AddressesIssues_IssuedArtifact(SIDE_B, "Addresses Issues", ""),
@@ -67,7 +67,7 @@ public enum CoreRelationEnumeration implements IRelationEnumeration {
    private String typeName;
    private String guid;
 
-   private CoreRelationEnumeration(RelationSide side, String typeName, String guid) {
+   private CoreRelations(RelationSide side, String typeName, String guid) {
       this.relationSide = side;
       this.typeName = typeName;
       this.guid = guid;

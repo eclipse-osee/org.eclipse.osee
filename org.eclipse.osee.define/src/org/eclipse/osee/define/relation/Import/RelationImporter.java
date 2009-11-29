@@ -17,7 +17,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -92,7 +92,7 @@ public class RelationImporter implements RowProcessor {
                      rationale = "";
                   }
                   columnArtifacts[i].addRelation(RelationOrderBaseTypes.USER_DEFINED,
-                        CoreRelationEnumeration.Allocation__Requirement, rowArtifact, rationale);
+                        CoreRelations.Allocation__Requirement, rowArtifact, rationale);
                   columnArtifacts[i].persist();
                }
             }

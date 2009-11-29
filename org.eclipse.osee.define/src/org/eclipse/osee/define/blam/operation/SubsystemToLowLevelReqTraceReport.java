@@ -20,7 +20,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -30,7 +31,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 import org.eclipse.osee.framework.skynet.core.utility.AIFile;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
@@ -115,7 +115,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
          if (lowLevelReq.isOfType(reqtypeName)) {
             row[2] = lowLevelReq.getAttributesToString("Qualification Method");
 
-            for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(CoreRelationEnumeration.Requirement_Trace__Higher_Level)) {
+            for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(CoreRelations.Requirement_Trace__Higher_Level)) {
                row[3] = getAssociatedSubSystem(subSysReq);
                row[4] = correct(subSysReq.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
                row[5] = subSysReq.getName();
@@ -160,7 +160,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
                row[0] = correct(higherLevelReq.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
                row[1] = higherLevelReq.getName();
 
-               for (Artifact lowerLevelReq : higherLevelReq.getRelatedArtifacts(CoreRelationEnumeration.Requirement_Trace__Lower_Level)) {
+               for (Artifact lowerLevelReq : higherLevelReq.getRelatedArtifacts(CoreRelations.Requirement_Trace__Lower_Level)) {
                   if (lowLevelReqs.contains(lowerLevelReq)) {
                      row[2] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
                      row[3] = lowerLevelReq.getName();
@@ -188,7 +188,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void initLowLevelRequirements(List<Artifact> artifacts) throws OseeCoreException {
-      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationEnumeration.Default_Hierarchical__Child);
+      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelations.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
          if (!artifact.isOfType("Folder")) {
             lowLevelReqs.add(artifact);
@@ -198,7 +198,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void initAllocationComponents(List<Artifact> artifacts) throws OseeCoreException {
-      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationEnumeration.Default_Hierarchical__Child);
+      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelations.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
          if (!artifact.isOfType("Folder")) {
             components.add(artifact);

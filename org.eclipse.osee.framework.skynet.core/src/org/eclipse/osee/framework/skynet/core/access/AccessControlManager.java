@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IAccessControllable;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeAuthenticationRequiredException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -176,8 +176,8 @@ public class AccessControlManager implements IBranchEventListener, IArtifactsPur
 
          IOseeStatement chStmt = ConnectionHandler.getStatement();
          try {
-            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, RelationTypeManager.getByGuid(
-                  CoreRelationEnumeration.Users_User.getGuid()).getId());
+            chStmt.runPreparedQuery(USER_GROUP_MEMBERS, groupId, RelationTypeManager.getType(
+                  CoreRelations.Users_User).getId());
 
             // get group members and populate subjectToGroupCache
             while (chStmt.next()) {

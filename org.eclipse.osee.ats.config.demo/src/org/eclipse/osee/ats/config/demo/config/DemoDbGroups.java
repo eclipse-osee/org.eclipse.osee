@@ -18,7 +18,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.demo.artifact.DemoCodeTeamWorkflowArtifact;
 import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.UniversalGroup;
@@ -39,11 +39,11 @@ public class DemoDbGroups {
       for (DemoCodeTeamWorkflowArtifact codeArt : DemoDbUtil.getSampleCodeWorkflows()) {
 
          // Add Action to Universal Group
-         groupArt.addRelation(CoreRelationEnumeration.Universal_Grouping__Members, codeArt.getParentActionArtifact());
+         groupArt.addRelation(CoreRelations.Universal_Grouping__Members, codeArt.getParentActionArtifact());
 
          // Add All Team Workflows to Universal Group
          for (Artifact teamWorkflow : codeArt.getParentActionArtifact().getTeamWorkFlowArtifacts()) {
-            groupArt.addRelation(CoreRelationEnumeration.Universal_Grouping__Members, teamWorkflow);
+            groupArt.addRelation(CoreRelations.Universal_Grouping__Members, teamWorkflow);
          }
 
          codeArt.persist();
@@ -51,7 +51,7 @@ public class DemoDbGroups {
 
       // Add all Tasks to Group
       for (Artifact task : ArtifactQuery.getArtifactListFromType(TaskArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch())) {
-         groupArt.addRelation(CoreRelationEnumeration.Universal_Grouping__Members, task);
+         groupArt.addRelation(CoreRelations.Universal_Grouping__Members, task);
       }
       groupArt.persist();
 

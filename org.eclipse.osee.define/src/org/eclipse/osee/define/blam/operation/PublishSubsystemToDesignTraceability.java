@@ -16,7 +16,8 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelXmlWriter;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ISheetWriter;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
-import org.eclipse.osee.framework.skynet.core.attribute.CoreAttributes;
 import org.eclipse.osee.framework.skynet.core.utility.AIFile;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
@@ -94,7 +94,7 @@ public class PublishSubsystemToDesignTraceability extends AbstractBlam {
 
          if (subsystemRequirement.isOfType("Subsystem Requirement")) {
             boolean loopNeverRan = true;
-            for (Artifact subsystemDesign : subsystemRequirement.getRelatedArtifacts(CoreRelationEnumeration.Design__Design)) {
+            for (Artifact subsystemDesign : subsystemRequirement.getRelatedArtifacts(CoreRelations.Design__Design)) {
                if (subsystemDesign.isOfType("Subsystem Design")) {
                   loopNeverRan = false;
                   excelWriter.writeCell(subsystemDesign.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""), 2);

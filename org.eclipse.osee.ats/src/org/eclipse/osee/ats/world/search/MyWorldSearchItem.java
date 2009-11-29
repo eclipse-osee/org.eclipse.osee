@@ -19,7 +19,7 @@ import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.framework.core.enums.CoreRelationEnumeration;
+import org.eclipse.osee.framework.core.enums.CoreRelations;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -49,7 +49,7 @@ public class MyWorldSearchItem extends UserSearchItem {
    @Override
    public Collection<Artifact> searchIt(User user) throws OseeCoreException {
       Set<Artifact> assigned =
-            RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelationEnumeration.Users_Artifact);
+            RelationManager.getRelatedArtifacts(Arrays.asList(user), 1, CoreRelations.Users_Artifact);
 
       List<Artifact> artifactsToReturn = new ArrayList<Artifact>(assigned.size());
       for (Artifact artifact : assigned) {
