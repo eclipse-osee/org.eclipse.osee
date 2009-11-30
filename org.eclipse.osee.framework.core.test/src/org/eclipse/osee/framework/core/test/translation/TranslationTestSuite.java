@@ -23,6 +23,7 @@ BranchCommitRequestTranslatorTest.class, //
       //      CacheUpdateResponseTranslatorTest.class, //
       ChangeItemTranslatorTest.class, //
       ChangeVersionTranslatorTest.class, //
+      ChangeReportResponseTranslatorTest.class,//
       DataTranslationServiceFactoryTest.class, //
       DataTranslationServiceTest.class, //
       //      OseeEnumEntryTranslatorTest.class, //
