@@ -11,9 +11,12 @@
 package org.eclipse.osee.framework.core.test.translation;
 
 import junit.framework.Assert;
+
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
+import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -32,6 +35,25 @@ public final class DataAsserts {
    private DataAsserts() {
    }
 
+   public static void assertEquals(ChangeItem expected, ChangeItem actual) throws OseeCoreException {
+      Assert.assertEquals(expected.getArtId(), actual.getArtId());
+      Assert.assertEquals(expected.getItemId(), actual.getItemId());
+
+      checkChangeVersion(expected.getBaselineVersion(), actual.getBaselineVersion());
+      checkChangeVersion(expected.getCurrentVersion(), actual.getCurrentVersion());
+      checkChangeVersion(expected.getDestinationVersion(), actual.getDestinationVersion());
+      checkChangeVersion(expected.getNetChange(), actual.getNetChange());
+      checkChangeVersion(expected.getFirstNonCurrentChange(), actual.getFirstNonCurrentChange());
+   }
+
+   private static void checkChangeVersion(ChangeVersion expected, ChangeVersion actual) {
+      if (actual.isValid()) {
+         Assert.assertEquals(expected.getGammaId(), actual.getGammaId());
+         Assert.assertEquals(expected.getTransactionNumber(), actual.getTransactionNumber());
+         Assert.assertEquals(expected.getModType(), actual.getModType());
+      }
+   }
+   
    public static void assertEquals(AttributeType expected, AttributeType actual) throws OseeCoreException {
       Assert.assertEquals(expected.getAttributeProviderId(), actual.getAttributeProviderId());
       Assert.assertEquals(expected.getBaseAttributeTypeId(), actual.getBaseAttributeTypeId());

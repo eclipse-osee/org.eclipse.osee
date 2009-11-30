@@ -10,20 +10,20 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import java.util.Collection;
+import java.util.ArrayList;
 
 /**
  * @author Jeff C. Phillips
  */
 public class ChangeReportResponse {
 
-   private final Collection<ChangeItem> changeItems;
+   private final ArrayList<ChangeItem> changeItems;
 
-   public Collection<ChangeItem> getChangeItems() {
+   public ArrayList<ChangeItem> getChangeItems() {
       return changeItems;
    }
 
-   public ChangeReportResponse(Collection<ChangeItem> changeItems) {
+   public ChangeReportResponse(ArrayList<ChangeItem> changeItems) {
       super();
       this.changeItems = changeItems;
    }

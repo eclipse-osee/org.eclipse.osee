@@ -13,12 +13,14 @@ package org.eclipse.osee.framework.core.test.mocks;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
+import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
@@ -26,10 +28,12 @@ import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.ArtifactTypeFactory;
@@ -64,6 +68,19 @@ public final class MockDataFactory {
       return new DefaultBasicArtifact(index * 37, GUID.create(), "user_" + index);
    }
 
+   public static ArtifactChangeItem createArtifactChangeItem() throws OseeArgumentException{
+      int artId = (int)Math.random();
+      int transactionNumber = (int)Math.random();
+      Long gammaIdNumber = Long.valueOf((int)Math.random());
+      
+      ArtifactChangeItem changeItem = new ArtifactChangeItem(gammaIdNumber, ModificationType.getMod(1), transactionNumber, artId);
+      changeItem.getDestinationVersion().setGammaId(11L);
+      changeItem.getDestinationVersion().setModType(ModificationType.getMod(1));
+      changeItem.getDestinationVersion().setTransactionNumber(1);
+      changeItem.getDestinationVersion().setValue("Value");
+      return changeItem;
+   }
+   
    public static AttributeType createAttributeType() throws OseeCoreException {
       OseeEnumTypeFactory oseeEnumTypeFactory = new OseeEnumTypeFactory();
       AttributeType attributeType =
