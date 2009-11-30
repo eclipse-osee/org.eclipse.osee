@@ -125,9 +125,6 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
                   otherArts.add(art);
                }
             }
-            ElapsedTime elapsedTime = new ElapsedTime("WorldComposite - setInput");
-            worldXViewer.setInput(worldArts);
-            elapsedTime.end();
             if (customizeData != null && !worldXViewer.getCustomizeMgr().generateCustDataFromTable().equals(
                   customizeData)) {
                setCustomizeData(customizeData);
@@ -137,8 +134,9 @@ public class WorldComposite extends ScrolledComposite implements IOpenNewAtsWorl
             } else {
                setTableTitle(name, false);
             }
-            elapsedTime.start("WorldComposite - refresh");
-            worldXViewer.refresh();
+            ElapsedTime elapsedTime = new ElapsedTime("WorldComposite - setInput");
+            worldXViewer.setInput(worldArts);
+            worldXViewer.updateStatusLabel();
             elapsedTime.end();
             if (otherArts.size() > 0) {
                if (MessageDialog.openConfirm(
