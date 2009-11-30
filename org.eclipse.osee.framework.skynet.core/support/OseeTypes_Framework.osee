@@ -19,7 +19,7 @@ attributeType "osee.config.Default Mail Server" extends StringAttribute {
    max 1
    taggerId DefaultAttributeTaggerProvider
    description
-   "fully qualified name of the machice running the SMTP server which will be used by default for sending email"
+   "fully qualified name of the machine running the SMTP server which will be used by default for sending email"
 }
 
 abstract artifactType "Test Unit" extends "Artifact" {
