@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.core.data.IDatabaseInfo;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.database.IOseeConnectionProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
@@ -196,14 +198,29 @@ public class OseeDatabaseServiceImpl implements IOseeDatabaseService {
    @SuppressWarnings("unchecked")
    private <T, O extends Object> T runPreparedQueryFetchObject(IOseeStatement chStmt, T defaultValue, String query, O... data) throws OseeDataStoreException {
       try {
+         Conditions.checkNotNull(defaultValue, "default value");
+      } catch (OseeCoreException ex) {
+         throw new OseeDataStoreException(ex);
+      }
+      try {
          chStmt.runPreparedQuery(1, query, data);
          if (chStmt.next()) {
-            return (T) chStmt.getObject(1);
+            Object toReturn = null;
+            Class<?> classValue = defaultValue.getClass();
+            if (classValue.isAssignableFrom(Integer.class)) {
+               toReturn = chStmt.getInt(1);
+            } else if (classValue.isAssignableFrom(String.class)) {
+               toReturn = chStmt.getString(1);
+            } else if (classValue.isAssignableFrom(Long.class)) {
+               toReturn = chStmt.getLong(1);
+            } else {
+               toReturn = chStmt.getObject(1);
+            }
+            return (T) toReturn;
          }
          return defaultValue;
       } finally {
          chStmt.close();
       }
    }
-
 }
