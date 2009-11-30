@@ -67,10 +67,10 @@ public class OseeTypesSetup {
          Map<String, URL> itemsToProcess = getOseeTypeExtensionsById(uniqueIdsToImport);
          combinedFile = createCombinedFile(itemsToProcess);
          processOseeTypeData(combinedFile.toURI().toURL());
+         // Only delete file if no problems processing
+         combinedFile.delete();
       } catch (IOException ex) {
          throw new OseeWrappedException(ex);
-      } finally {
-         combinedFile.delete();
       }
    }
 
