@@ -12,7 +12,6 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -111,7 +110,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
    }
 
    @Override
-   public void handleArtifactsPurgedEvent(Sender sender, LoadedArtifacts loadedArtifacts) {
+   public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
       if (thisXViewer.getTree().isDisposed()) {
          OseeEventManager.removeListener(this);
          return;
@@ -120,14 +119,24 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
          if (loadedArtifacts.getLoadedArtifacts().isEmpty()) {
             return;
          }
-         IContentProvider contentProvider = getContentProvider();
-         if (contentProvider instanceof WorldContentProvider) {
-            // ContentProvider ensures in display thread
-            ((WorldContentProvider) contentProvider).removeAll(loadedArtifacts.getLoadedArtifacts());
-         }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
+      Displays.ensureInDisplayThread(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               IContentProvider contentProvider = getContentProvider();
+               if (contentProvider instanceof WorldContentProvider) {
+                  remove(loadedArtifacts.getLoadedArtifacts().toArray(
+                        new Object[loadedArtifacts.getLoadedArtifacts().size()]));
+               }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
+         }
+      });
+
    }
 
    @Override
@@ -144,7 +153,8 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             @Override
             public void run() {
                try {
-                  ((WorldContentProvider) getContentProvider()).removeAll(loadedArtifacts.getLoadedArtifacts());
+                  remove(loadedArtifacts.getLoadedArtifacts().toArray(
+                        new Object[loadedArtifacts.getLoadedArtifacts().size()]));
                } catch (OseeCoreException ex) {
                   OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
                }
@@ -171,10 +181,10 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
                return;
             }
             if (transData.cacheDeletedArtifacts.size() > 0) {
-               ((WorldContentProvider) getContentProvider()).removeAll(transData.cacheDeletedArtifacts);
+               remove(transData.cacheDeletedArtifacts.toArray(new Object[transData.cacheDeletedArtifacts.size()]));
             }
             if (transData.cacheChangedArtifacts.size() > 0) {
-               ((WorldContentProvider) getContentProvider()).updateAll(transData.cacheChangedArtifacts);
+               update(transData.cacheChangedArtifacts.toArray(new Object[transData.cacheChangedArtifacts.size()]), null);
                for (Artifact art : transData.cacheChangedArtifacts) {
                   if (art instanceof IWorldViewArtifact) {
                      // If parent is loaded and child changed, refresh parent
@@ -815,27 +825,6 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       return title;
    }
 
-   public void set(Collection<? extends Artifact> artifacts) {
-      ((WorldContentProvider) getContentProvider()).set(artifacts);
-   }
-
-   public void add(Collection<Artifact> artifacts) {
-      ((WorldContentProvider) getContentProvider()).add(artifacts);
-   }
-
-   public void add(final Artifact artifact) {
-      add(Arrays.asList(artifact));
-   }
-
-   public void remove(final Artifact artifact) {
-      ((WorldContentProvider) getContentProvider()).remove(artifact);
-   }
-
-   @Override
-   public void remove(final Collection<Object> artifacts) {
-      ((WorldContentProvider) getContentProvider()).removeAll(artifacts);
-   }
-
    @Override
    public void load(Collection<Object> objects) {
       Set<Artifact> arts = new HashSet<Artifact>();
@@ -844,7 +833,7 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
             arts.add((Artifact) obj);
          }
       }
-      set(arts);
+      setInput(arts);
    }
 
    public ArrayList<Artifact> getSelectedArtifactItems() {
@@ -961,33 +950,21 @@ public class WorldXViewer extends XViewer implements ISelectedAtsArtifacts, IArt
       return false;
    }
 
-   /**
-    * @return the extendedStatusString
-    */
    public String getExtendedStatusString() {
       return extendedStatusString;
    }
 
-   /**
-    * @param extendedStatusString the extendedStatusString to set
-    */
    public void setExtendedStatusString(String extendedStatusString) {
       this.extendedStatusString = extendedStatusString;
       updateStatusLabel();
    }
 
-   /* (non-Javadoc)
-    * @see org.eclipse.osee.framework.skynet.core.event.IArtifactReloadEventListener#handleReloadEvent(org.eclipse.osee.framework.skynet.core.event.Sender, java.util.Collection)
-    */
    @Override
    public void handleReloadEvent(Sender sender, final Collection<? extends Artifact> artifacts) throws OseeCoreException {
       if (!artifacts.iterator().next().getBranch().equals(AtsUtil.getAtsBranch())) {
          return;
       }
       Displays.ensureInDisplayThread(new Runnable() {
-         /* (non-Javadoc)
-          * @see java.lang.Runnable#run()
-          */
          @Override
          public void run() {
             for (Artifact art : artifacts) {

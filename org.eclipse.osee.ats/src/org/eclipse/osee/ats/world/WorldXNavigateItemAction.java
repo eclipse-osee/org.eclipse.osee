@@ -28,7 +28,7 @@ public class WorldXNavigateItemAction extends XNavigateItemAction {
     * @param oseeImage
     * @throws OseeArgumentException
     */
-   public WorldXNavigateItemAction(XNavigateItem parent, String name, OseeImage oseeImage) throws OseeArgumentException {
+   public WorldXNavigateItemAction(XNavigateItem parent, String name, OseeImage oseeImage) {
       super(parent, name, oseeImage);
    }
 
@@ -37,7 +37,7 @@ public class WorldXNavigateItemAction extends XNavigateItemAction {
     * @param name
     * @throws OseeArgumentException
     */
-   public WorldXNavigateItemAction(XNavigateItem parent, String name) throws OseeArgumentException {
+   public WorldXNavigateItemAction(XNavigateItem parent, String name) {
       super(parent, name, determineImage(name));
    }
 

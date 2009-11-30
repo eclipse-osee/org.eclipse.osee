@@ -10,7 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.notify;
 
+import java.util.Collection;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -47,30 +55,51 @@ public class AtsNotificationNavigateItem extends XNavigateItemAction {
             AWorkbench.popup("Error", "No Notifications Selected");
             return;
          }
-         XResultData rd = new XResultData();
-         if (diag.isSendNotifications()) {
-            rd.addRaw(AHTML.bold("Notifications were sent"));
-         } else {
-            rd.addRaw("Report Only - Notifications were NOT sent");
-         }
-         rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
-         rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id", "User(s)"}));
-         for (IAtsNotification notify : diag.getSelectedAtsNotifications()) {
-            for (OseeNotificationEvent event : notify.getNotificationEvents()) {
-               rd.addRaw(AHTML.addRowMultiColumnTable(event.getType(), event.getDescription(), event.getId(),
-                     Artifacts.semmicolonArts(event.getUsers())));
-               if (diag.isSendNotifications()) {
-                  OseeNotificationManager.addNotificationEvent(event);
-               }
-            }
-         }
-         rd.addRaw(AHTML.endMultiColumnTable());
-         rd.report(getName());
-         if (diag.isSendNotifications()) {
-            OseeNotificationManager.sendNotifications();
-            AWorkbench.popup("Complete", "Notifications Sent");
-         }
+         Operations.executeAsJob(new NotificationJob(diag.isSendNotifications(), diag.getSelectedAtsNotifications()),
+               true);
       }
    }
 
+   public class NotificationJob extends AbstractOperation {
+
+      private final boolean sendNotifications;
+      private final Collection<IAtsNotification> notifications;
+
+      public NotificationJob(boolean sendNotifications, Collection<IAtsNotification> notifications) {
+         super("Processing ATS Notifications", AtsPlugin.PLUGIN_ID);
+         this.sendNotifications = sendNotifications;
+         this.notifications = notifications;
+      }
+
+      @Override
+      protected void doWork(IProgressMonitor monitor) throws Exception {
+         try {
+            XResultData rd = new XResultData();
+            if (sendNotifications) {
+               rd.addRaw(AHTML.bold("Notifications were sent"));
+            } else {
+               rd.addRaw("Report Only - Notifications were NOT sent");
+            }
+            rd.addRaw(AHTML.beginMultiColumnTable(100, 1));
+            rd.addRaw(AHTML.addHeaderRowMultiColumnTable(new String[] {"Reason", "Description", "Id", "User(s)"}));
+            for (IAtsNotification notify : notifications) {
+               for (OseeNotificationEvent event : notify.getNotificationEvents()) {
+                  rd.addRaw(AHTML.addRowMultiColumnTable(event.getType(), event.getDescription(), event.getId(),
+                        Artifacts.semmicolonArts(event.getUsers())));
+                  if (sendNotifications) {
+                     OseeNotificationManager.addNotificationEvent(event);
+                  }
+               }
+            }
+            rd.addRaw(AHTML.endMultiColumnTable());
+            rd.report(getName());
+            if (sendNotifications) {
+               OseeNotificationManager.sendNotifications();
+               AWorkbench.popup("Complete", "Notifications Sent");
+            }
+         } catch (OseeCoreException ex) {
+            OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
+      }
+   };
 }

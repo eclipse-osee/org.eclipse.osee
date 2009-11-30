@@ -46,8 +46,6 @@ import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.forms.widgets.Section;
@@ -191,29 +189,9 @@ public class TaskTabXWidgetActionPage extends AtsXWidgetActionFormPage implement
          try {
             if (taskComposite.getIXTaskViewer().isTaskable()) {
                addActionToMenu(fMenu, new ImportTasksViaSpreadsheet(
-                     (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getParentSmaMgr().getSma(),
-                     new Listener() {
-                        @Override
-                        public void handleEvent(Event event) {
-                           try {
-                              taskComposite.loadTable();
-                           } catch (OseeCoreException ex) {
-                              OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                           }
-                        }
-                     }));
+                     (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getParentSmaMgr().getSma(), null));
                addActionToMenu(fMenu, new ImportTasksViaSimpleList(
-                     (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getParentSmaMgr().getSma(),
-                     new Listener() {
-                        @Override
-                        public void handleEvent(Event event) {
-                           try {
-                              taskComposite.loadTable();
-                           } catch (OseeCoreException ex) {
-                              OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
-                           }
-                        }
-                     }));
+                     (TaskableStateMachineArtifact) taskComposite.getIXTaskViewer().getParentSmaMgr().getSma(), null));
 
             }
          } catch (OseeCoreException ex) {

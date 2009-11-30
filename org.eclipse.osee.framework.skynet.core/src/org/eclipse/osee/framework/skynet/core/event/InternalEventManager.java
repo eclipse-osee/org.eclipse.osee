@@ -16,8 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
@@ -69,7 +68,7 @@ import org.eclipse.osee.framework.ui.plugin.event.UnloadedRelation;
  */
 public class InternalEventManager {
 
-   private static final Set<IEventListener> listeners = new CopyOnWriteArraySet<IEventListener>();
+   private static final List<IEventListener> listeners = new CopyOnWriteArrayList<IEventListener>();
    public static final Collection<UnloadedArtifact> EMPTY_UNLOADED_ARTIFACTS = Collections.emptyList();
    private static boolean disableEvents = false;
 
@@ -96,8 +95,8 @@ public class InternalEventManager {
             // Kick LOCAL
             try {
                if (sender.isLocal() && remoteEventServiceEventType.isLocalEventType()) {
-                  safelyInvokeListeners(IRemoteEventManagerEventListener.class, "handleRemoteEventManagerEvent", sender,
-                        remoteEventServiceEventType);
+                  safelyInvokeListeners(IRemoteEventManagerEventListener.class, "handleRemoteEventManagerEvent",
+                        sender, remoteEventServiceEventType);
                }
             } catch (Exception ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);
@@ -482,7 +481,9 @@ public class InternalEventManager {
       if (listener == null) {
          throw new IllegalArgumentException("listener can not be null");
       }
-      listeners.add(listener);
+      if (!listeners.contains(listener)) {
+         listeners.add(listener);
+      }
       eventLog("OEM: addListener (" + listeners.size() + ") " + listener);
    }
 
@@ -559,8 +560,8 @@ public class InternalEventManager {
    private static SkynetArtifactEventBase getArtifactEventBase(ArtifactModifiedEvent artEvent, Sender sender) {
       Artifact artifact = artEvent.artifact;
       SkynetArtifactEventBase eventBase =
-            new SkynetArtifactEventBase(artifact.getBranch().getId(), artEvent.transactionNumber,
-                  artifact.getArtId(), artifact.getArtTypeId(), artifact.getFactory().getClass().getCanonicalName(),
+            new SkynetArtifactEventBase(artifact.getBranch().getId(), artEvent.transactionNumber, artifact.getArtId(),
+                  artifact.getArtTypeId(), artifact.getFactory().getClass().getCanonicalName(),
                   artEvent.sender.getNetworkSender());
 
       return eventBase;
@@ -672,10 +673,8 @@ public class InternalEventManager {
             }
             // Else, get information from unloadedRelation (if != null)
             else if (unloadedRelation != null) {
-               Artifact artA =
-                     ArtifactCache.getActive(unloadedRelation.getArtifactAId(), unloadedRelation.getId());
-               Artifact artB =
-                     ArtifactCache.getActive(unloadedRelation.getArtifactBId(), unloadedRelation.getId());
+               Artifact artA = ArtifactCache.getActive(unloadedRelation.getArtifactAId(), unloadedRelation.getId());
+               Artifact artB = ArtifactCache.getActive(unloadedRelation.getArtifactBId(), unloadedRelation.getId());
                if (artA != null || artB != null) {
                   try {
                      loadedRelation =

@@ -29,14 +29,6 @@ import org.eclipse.osee.framework.ui.skynet.widgets.workflow.WorkPageDefinition;
  */
 public abstract class TaskableStateMachineArtifact extends StateMachineArtifact {
 
-   /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
-    * @param artifactType
-    * @throws OseeDataStoreException
-    */
    public TaskableStateMachineArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
       registerSMAEditorRelation(AtsRelationTypes.SmaToTask_Task);

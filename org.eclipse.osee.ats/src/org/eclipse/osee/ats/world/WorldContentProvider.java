@@ -12,8 +12,8 @@
 package org.eclipse.osee.ats.world;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -35,7 +35,6 @@ import org.eclipse.osee.framework.ui.plugin.util.Displays;
 
 public class WorldContentProvider implements ITreeContentProvider {
 
-   protected List<Artifact> rootSet = new ArrayList<Artifact>();
    // Store off relatedArts as they are discovered so they're not garbage collected
    protected Set<Artifact> relatedArts = new HashSet<Artifact>();
    private final WorldXViewer xViewer;
@@ -51,77 +50,17 @@ public class WorldContentProvider implements ITreeContentProvider {
       return "WorldContentProvider";
    }
 
-   public void add(final Artifact item) {
-      add(Arrays.asList(item));
-   }
-
-   public void add(final Collection<? extends Artifact> items) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            for (Artifact item : items) {
-               if (!rootSet.contains(item)) {
-                  rootSet.add(item);
-               }
-            }
-            xViewer.refresh();
-         };
-      });
-   }
-
-   public void set(final Collection<? extends Artifact> arts) {
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            rootSet.clear();
-            add(arts);
-         };
-      });
-   }
-
-   public void remove(final Artifact art) {
-      removeAll(Arrays.asList(art));
-   }
-
-   public void removeAll(final Collection<? extends Object> arts) {
-      if (arts.size() == 0) return;
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            for (Object art : arts) {
-               rootSet.remove(art);
-            }
-            xViewer.refresh();
-         };
-      });
-   }
-
-   public void updateAll(final Collection<? extends Object> arts) {
-      if (arts.size() == 0) return;
-      Displays.ensureInDisplayThread(new Runnable() {
-         public void run() {
-            if (xViewer.getInput() == null) xViewer.setInput(rootSet);
-            for (Object art : arts) {
-               xViewer.update(art, null);
-            }
-         };
-      });
-   }
-
    public void clear() {
-      rootSet.clear();
       Displays.ensureInDisplayThread(new Runnable() {
          public void run() {
-            if (xViewer.getInput() == null) {
-               xViewer.setInput(rootSet);
-            }
+            xViewer.setInput(Collections.emptyList());
             xViewer.refresh();
          };
       });
    }
 
    public Object[] getChildren(Object parentElement) {
-      if (parentElement instanceof Collection) {
+      if (parentElement instanceof Collection<?>) {
          return ((Collection<?>) parentElement).toArray();
       }
       if (parentElement instanceof Artifact) {
@@ -187,7 +126,7 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public boolean hasChildren(Object element) {
-      if (element instanceof Collection) return true;
+      if (element instanceof Collection<?>) return true;
       if (element instanceof String) return false;
       if (((Artifact) element).isDeleted()) return false;
       if (element instanceof ActionArtifact) return true;
@@ -210,13 +149,6 @@ public class WorldContentProvider implements ITreeContentProvider {
    }
 
    public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-   }
-
-   /**
-    * @return the rootSet
-    */
-   public Collection<Artifact> getRootSet() {
-      return rootSet;
    }
 
 }

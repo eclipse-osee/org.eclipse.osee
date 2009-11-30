@@ -110,10 +110,7 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
          clearHyperLinkLabel.setToolTipText("Select to Clear");
          clearHyperLinkLabel.addListener(SWT.MouseUp, new Listener() {
             public void handleEvent(Event event) {
-               if (handleClear()) {
-                  refresh();
-                  notifyXModifiedListeners();
-               }
+               clear();
             }
          });
       }
@@ -122,6 +119,13 @@ public abstract class XHyperlinkLabelCmdValueSelection extends XWidget {
       valueLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
 
       refresh();
+   }
+
+   public void clear() {
+      if (handleClear()) {
+         refresh();
+         notifyXModifiedListeners();
+      }
    }
 
    @Override

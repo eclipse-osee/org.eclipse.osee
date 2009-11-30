@@ -226,8 +226,6 @@ public class ImageManager {
    public static Image getAnnotationImage(ArtifactAnnotation.Type annotationType) {
       if (annotationType == ArtifactAnnotation.Type.Warning) {
          return getImage(FrameworkImage.WARNING);
-      } else if (annotationType == ArtifactAnnotation.Type.Error) {
-         return getImage(FrameworkImage.ERROR);
       }
       return getImage(FrameworkImage.INFO_LG);
    }
@@ -286,9 +284,7 @@ public class ImageManager {
             return setupImageWithOverlay(baseImageEnum, overlay, Location.TOP_LEFT);
          }
 
-         if (castedArtifact.getMainAnnotationType() == ArtifactAnnotation.Type.Error) {
-            return setupImageWithOverlay(baseImageEnum, FrameworkImage.ERROR_OVERLAY, Location.BOT_LEFT);
-         } else if (castedArtifact.getMainAnnotationType() == ArtifactAnnotation.Type.Warning) {
+         if (castedArtifact.isAnnotationWarning()) {
             return setupImageWithOverlay(baseImageEnum, FrameworkImage.WARNING_OVERLAY, Location.BOT_LEFT);
          }
       } catch (OseeCoreException ex) {

@@ -28,10 +28,10 @@ import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
 import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldXViewer;
 import org.eclipse.osee.ats.world.WorldXViewerFactory;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -39,13 +39,11 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.event.Sender;
-import org.eclipse.osee.framework.skynet.core.utility.LoadedArtifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactPromptChange;
 import org.eclipse.osee.framework.ui.swt.IDirtiableEditor;
-import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -59,13 +57,11 @@ public class TaskXViewer extends WorldXViewer {
    private boolean tasksEditable = true;
    private boolean addDeleteTaskEnabled = false;
    private static String viewerId = GUID.create();
+   private final TaskComposite taskComposite;
 
-   /**
-    * @param parent
-    * @param style
-    */
-   public TaskXViewer(Composite parent, int style, IDirtiableEditor editor, TaskComposite xTaskViewer) {
-      super(parent, style, new TaskXViewerFactory());
+   public TaskXViewer(TaskComposite taskComposite, int style, IDirtiableEditor editor, TaskComposite xTaskViewer) {
+      super(taskComposite, style, new TaskXViewerFactory());
+      this.taskComposite = taskComposite;
       this.editor = editor;
       this.xTaskViewer = xTaskViewer;
    }
@@ -101,30 +97,6 @@ public class TaskXViewer extends WorldXViewer {
          items.add((TaskArtifact) item.getData());
       refresh();
       editor.onDirtied();
-   }
-
-   @Override
-   public void set(Collection<? extends Artifact> artifacts) {
-      for (Artifact art : artifacts)
-         if (!(art instanceof TaskArtifact)) throw new IllegalArgumentException("set only allowed for TaskArtifact");
-      ((WorldContentProvider) getContentProvider()).set(artifacts);
-   }
-
-   @Override
-   public void add(final Artifact artifact) {
-      if (!(artifact instanceof TaskArtifact)) throw new IllegalArgumentException("set only allowed for TaskArtifact");
-      add(Arrays.asList(artifact));
-   }
-
-   @Override
-   public void add(Collection<Artifact> artifacts) {
-      for (Artifact art : artifacts)
-         if (!(art instanceof TaskArtifact)) throw new IllegalArgumentException("add only allowed for TaskArtifact");
-      ((WorldContentProvider) getContentProvider()).add(artifacts);
-   }
-
-   public void removeTask(final Collection<TaskArtifact> artifacts) {
-      ((WorldContentProvider) getContentProvider()).removeAll(artifacts);
    }
 
    public TaskArtifact getSelectedTaskArtifact() {
@@ -403,41 +375,6 @@ public class TaskXViewer extends WorldXViewer {
    }
 
    @Override
-   public void handleArtifactsPurgedEvent(Sender sender, final LoadedArtifacts loadedArtifacts) {
-      try {
-         if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
-         // ContentProvider ensures in display thread
-         Displays.ensureInDisplayThread(new Runnable() {
-            @Override
-            public void run() {
-               try {
-                  WorldContentProvider contentProvider =
-                        (WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider();
-                  if (contentProvider != null) {
-                     contentProvider.removeAll(loadedArtifacts.getLoadedArtifacts());
-                  }
-               } catch (Exception ex) {
-                  OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-               }
-            }
-         });
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
-   @Override
-   public void handleArtifactsChangeTypeEvent(Sender sender, int toArtifactTypeId, LoadedArtifacts loadedArtifacts) {
-      try {
-         if (loadedArtifacts.getLoadedArtifacts().size() == 0) return;
-         // ContentProvider ensures in display thread
-         ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).removeAll(loadedArtifacts.getLoadedArtifacts());
-      } catch (OseeCoreException ex) {
-         OseeLog.log(AtsPlugin.class, Level.SEVERE, ex);
-      }
-   }
-
-   @Override
    public void dispose() {
       OseeEventManager.removeListener(this);
       super.dispose();
@@ -450,9 +387,8 @@ public class TaskXViewer extends WorldXViewer {
          @Override
          public void run() {
             if (xTaskViewer.getTaskXViewer().getContentProvider() == null) return;
-            ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).removeAll(transData.cacheDeletedArtifacts);
-            ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).updateAll(transData.cacheChangedArtifacts);
-
+            remove(transData.cacheDeletedArtifacts.toArray(new Object[transData.cacheDeletedArtifacts.size()]));
+            update(transData.cacheChangedArtifacts.toArray(new Object[transData.cacheChangedArtifacts.size()]), null);
             try {
                if (xTaskViewer.getIXTaskViewer().getParentSmaMgr() == null) {
                   return;
@@ -460,21 +396,21 @@ public class TaskXViewer extends WorldXViewer {
                Artifact parentSma = xTaskViewer.getIXTaskViewer().getParentSmaMgr().getSma();
                if (parentSma != null) {
                   // Add any new tasks related to parent sma
-                  Collection<Artifact> artifacts =
-                        transData.getRelatedArtifacts(parentSma.getArtId(),
-                              AtsRelationTypes.SmaToTask_Task.getRelationType().getId(),
-                              AtsUtil.getAtsBranch().getId(), transData.cacheAddedRelations);
+                  Collection<TaskArtifact> artifacts =
+                        Collections.castMatching(TaskArtifact.class, transData.getRelatedArtifacts(
+                              parentSma.getArtId(), AtsRelationTypes.SmaToTask_Task.getRelationType().getId(),
+                              AtsUtil.getAtsBranch().getId(), transData.cacheAddedRelations));
                   if (artifacts.size() > 0) {
-                     ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).add(artifacts);
+                     taskComposite.add(artifacts);
                   }
 
                   // Remove any tasks related to parent sma
                   artifacts =
-                        transData.getRelatedArtifacts(parentSma.getArtId(),
-                              AtsRelationTypes.SmaToTask_Task.getRelationType().getId(),
-                              AtsUtil.getAtsBranch().getId(), transData.cacheDeletedRelations);
+                        Collections.castMatching(TaskArtifact.class, transData.getRelatedArtifacts(
+                              parentSma.getArtId(), AtsRelationTypes.SmaToTask_Task.getRelationType().getId(),
+                              AtsUtil.getAtsBranch().getId(), transData.cacheDeletedRelations));
                   if (artifacts.size() > 0) {
-                     ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).removeAll(artifacts);
+                     remove(artifacts.toArray(new Object[artifacts.size()]));
                   }
                }
             } catch (Exception ex) {

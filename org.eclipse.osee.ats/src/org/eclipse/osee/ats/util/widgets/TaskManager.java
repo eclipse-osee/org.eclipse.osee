@@ -62,7 +62,7 @@ public class TaskManager {
    }
 
    public Collection<TaskArtifact> getTaskArtifacts() throws OseeCoreException {
-      return smaMgr.getSma().getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
+      return smaMgr.getSma().getRelatedArtifactsUnSorted(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
    }
 
    public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws OseeCoreException {
@@ -71,7 +71,7 @@ public class TaskManager {
 
    public Collection<TaskArtifact> getTaskArtifacts(String stateName) throws OseeCoreException {
       List<TaskArtifact> arts = new ArrayList<TaskArtifact>();
-      for (TaskArtifact taskArt : smaMgr.getSma().getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class)) {
+      for (TaskArtifact taskArt : getTaskArtifacts()) {
          if (taskArt.getSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), "").equals(
                stateName)) {
             arts.add(taskArt);

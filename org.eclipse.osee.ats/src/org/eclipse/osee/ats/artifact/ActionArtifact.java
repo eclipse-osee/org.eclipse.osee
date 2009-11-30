@@ -66,13 +66,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       Duplicate_If_Exists; // If option exists, then duplication of workflow of same team definition is allowed
    };
 
-   /**
-    * @param parentFactory
-    * @param guid
-    * @param humanReadableId
-    * @param branch
-    * @throws OseeDataStoreException
-    */
    public ActionArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
    }
@@ -167,7 +160,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
       if (changeType != null && getChangeType() != changeType) {
          setChangeType(changeType);
-      }
+            }
       return;
    }
 
@@ -189,7 +182,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
       if (priorityType != null && getPriority() != priorityType) {
          setPriority(priorityType);
-      }
+            }
       return;
    }
 
@@ -220,7 +213,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public Collection<TeamWorkFlowArtifact> getTeamWorkFlowArtifacts() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class);
+      return getRelatedArtifactsUnSorted(AtsRelationTypes.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class);
    }
 
    public String getWorldViewType() throws OseeCoreException {
@@ -350,7 +343,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       for (TeamWorkFlowArtifact art : getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_WorkFlow,
             TeamWorkFlowArtifact.class)) {
          art.atsDelete(deleteArts, allRelated);
-      }
+   }
    }
 
    public String getWorldViewTeam() throws OseeCoreException {
@@ -934,6 +927,14 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          notifications.addAll(team.getAnnotations());
       }
       return notifications;
+   }
+
+   @Override
+   public boolean isAnnotationWarning() throws OseeCoreException {
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         if (team.isAnnotationWarning()) return true;
+      }
+      return super.isAnnotationWarning();
    }
 
    public Result isWorldViewDeadlineAlerting() throws OseeCoreException {

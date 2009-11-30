@@ -128,8 +128,18 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
       return iXTaskViewer;
    }
 
+   public void add(Collection<TaskArtifact> taskArts) {
+      if (getTaskXViewer().getInput() == null) {
+         getTaskXViewer().setInput(Collections.singleton(taskArts));
+      } else {
+         ((Collection) getTaskXViewer().getInput()).addAll(taskArts);
+      }
+      taskXViewer.refresh();
+      taskXViewer.getTree().setFocus();
+   }
+
    public void loadTable() throws OseeCoreException {
-      getTaskXViewer().set(iXTaskViewer.getTaskArtifacts(""));
+      getTaskXViewer().setInput(iXTaskViewer.getTaskArtifacts(""));
       taskXViewer.refresh();
       taskXViewer.getTree().setFocus();
    }
@@ -187,7 +197,7 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
          try {
             taskArt = iXTaskViewer.getParentSmaMgr().getTaskMgr().createNewTask(ed.getEntry());
             iXTaskViewer.getEditor().onDirtied();
-            taskXViewer.add(taskArt);
+            add(Collections.singleton(taskArt));
             taskXViewer.getTree().setFocus();
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
