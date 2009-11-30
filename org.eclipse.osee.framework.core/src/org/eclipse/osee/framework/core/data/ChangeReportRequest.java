@@ -24,7 +24,6 @@ public class ChangeReportRequest {
       super();
       this.toTransactionRecord = toTransactionRecord;
       this.fromTransactionRecord = fromTransactionRecord;
-
       this.isHistorical = isHistorical;
    }
 
