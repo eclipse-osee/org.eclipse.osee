@@ -56,9 +56,8 @@ public enum OseeSql {
    CHANGE_TX_RELATION(CHANGE_TX_RELATION_PREFIX.sql + " AND txd1.tx_type = 0", Strings.HINTS__ORDERED__FIRST_ROWS),
    CHANGE_TX_RELATION_FOR_SPECIFIC_ARTIFACT(CHANGE_TX_RELATION_PREFIX.sql + " and (rel1.a_art_id =? or rel1.b_art_id=?)", Strings.HINTS__ORDERED__FIRST_ROWS),
    CHANGE_BRANCH_ARTIFACT("select%s art1.art_id, art1.art_type_id, atv1.gamma_id, txs1.mod_type FROM osee_tx_details txd1, osee_txs txs1, osee_artifact_version atv1, osee_artifact art1 WHERE txd1.branch_id = ? AND txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId() + " AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = atv1.gamma_id AND txs1.mod_type in (" + ModificationType.DELETED.getValue() + ", " + ModificationType.NEW.getValue() + ", " + ModificationType.INTRODUCED.getValue() + ")  AND atv1.art_id = art1.art_id", Strings.HINTS__ORDERED__FIRST_ROWS),
-   CHANGE_TX_ARTIFACT_PREFIX("select%s art1.art_id, art1.art_type_id, atv1.gamma_id, txs1.mod_type FROM osee_tx_details txd1, osee_txs txs1, osee_artifact_version atv1, osee_artifact art1 WHERE txd1.transaction_id = ? AND txd1.transaction_id = txs1.transaction_id AND txs1.gamma_id = atv1.gamma_id AND txs1.mod_type in (" + ModificationType.DELETED.getValue() + ", " + ModificationType.NEW.getValue() + ", " + ModificationType.INTRODUCED.getValue() + ")  AND atv1.art_id = art1.art_id", Strings.HINTS__ORDERED__FIRST_ROWS),
-   CHANGE_TX_ARTIFACT(CHANGE_TX_ARTIFACT_PREFIX.sql + " AND txd1.tx_type = " + TransactionDetailsType.NonBaselined.getId(), Strings.HINTS__ORDERED__FIRST_ROWS),
-   CHANGE_TX_ARTIFACT_FOR_SPECIFIC_ARTIFACT(CHANGE_TX_ARTIFACT_PREFIX.sql + " and art1.art_id =?", Strings.HINTS__ORDERED__FIRST_ROWS),
+   CHANGE_TX_ARTIFACT("select art.art_id, art.art_type_id, arv.gamma_id, txs.mod_type FROM osee_txs txs, osee_artifact_version arv, osee_artifact art WHERE txs.transaction_id = ? AND txs.gamma_id = arv.gamma_id AND txs.mod_type in (" + ModificationType.DELETED.getValue() + ", " + ModificationType.NEW.getValue() + ", " + ModificationType.INTRODUCED.getValue() + ")  AND arv.art_id = art.art_id"),
+   CHANGE_TX_ARTIFACT_FOR_SPECIFIC_ARTIFACT(CHANGE_TX_ARTIFACT.sql + " and art1.art_id =?"),
    CHANGE_TX_MODIFYING("SELECT arj.art_id, arj.branch_id, txd.transaction_id from osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = arj.branch_id AND txd.transaction_id <= arj.transaction_id AND txd.tx_type = " + TransactionDetailsType.NonBaselined.getId(), Strings.HINTS__ORDERED__FIRST_ROWS),
    CHANGE_BRANCH_MODIFYING("SELECT count(txd.transaction_id) as tx_count, arj.branch_id, arj.art_id FROM osee_join_artifact arj, osee_artifact_version arv, osee_txs txs, osee_tx_details txd where arj.query_id = ? AND arj.art_id = arv.art_id AND arv.gamma_id = txs.gamma_id AND txs.transaction_id = txd.transaction_id AND txd.branch_id = arj.branch_id and tx_type = 0 group by arj.art_id, arj.branch_id", Strings.HINTS__ORDERED__FIRST_ROWS),
 
@@ -73,7 +72,7 @@ public enum OseeSql {
    }
 
    private OseeSql(String sql) {
-      this(sql, "");
+      this(sql, null);
    }
 
    public static Properties getSqlProperties(DatabaseMetaData metaData) throws OseeDataStoreException {
@@ -81,10 +80,12 @@ public enum OseeSql {
       boolean areHintsSupported = SupportedDatabase.areHintsSupported(metaData);
       for (OseeSql oseeSql : OseeSql.values()) {
          String sql;
-         if (areHintsSupported && oseeSql.hints != null) {
-            sql = String.format(oseeSql.sql, oseeSql.hints);
-         } else {
+
+         if (oseeSql.hints == null) {
             sql = oseeSql.sql;
+         } else {
+            String hints = areHintsSupported ? oseeSql.hints : "";
+            sql = String.format(oseeSql.sql, hints);
          }
 
          sqlProperties.setProperty(oseeSql.toString(), sql);
