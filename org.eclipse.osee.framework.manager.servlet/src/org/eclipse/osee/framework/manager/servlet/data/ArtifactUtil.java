@@ -41,6 +41,6 @@ public class ArtifactUtil {
    }
 
    private static String getUri(String query, Object... dataBindings) throws OseeDataStoreException {
-      return ConnectionHandler.runPreparedQueryFetchString((String) null, query, dataBindings);
+      return ConnectionHandler.runPreparedQueryFetchString("", query, dataBindings);
    }
 }

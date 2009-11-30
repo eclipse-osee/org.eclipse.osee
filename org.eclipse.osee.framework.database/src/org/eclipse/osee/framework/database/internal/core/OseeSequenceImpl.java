@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.database.internal.core;
 
-import java.math.BigDecimal;
 import java.util.HashMap;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -27,11 +26,6 @@ public class OseeSequenceImpl implements IOseeSequence {
          "INSERT INTO osee_sequence (last_sequence, sequence_name) VALUES (?,?)";
    private static final String UPDATE_SEQUENCE =
          "UPDATE osee_sequence SET last_sequence = ? WHERE sequence_name = ? AND last_sequence = ?";
-
-   //   private static final String[] sequenceNames =
-   //         new String[] {ART_ID_SEQ, ENUM_TYPE_ID_SEQ, ART_TYPE_ID_SEQ, ATTR_BASE_TYPE_ID_SEQ, ATTR_PROVIDER_TYPE_ID_SEQ,
-   //               ATTR_ID_SEQ, ATTR_TYPE_ID_SEQ, FACTORY_ID_SEQ, BRANCH_ID_SEQ, REL_LINK_TYPE_ID_SEQ, REL_LINK_ID_SEQ,
-   //               GAMMA_ID_SEQ, TRANSACTION_ID_SEQ, IMPORT_ID_SEQ, IMPORT_MAPPED_INDEX_SEQ, TTE_SESSION_SEQ};
 
    private final static HashMap<String, SequenceRange> sequences = new HashMap<String, SequenceRange>(30);
 
@@ -64,14 +58,13 @@ public class OseeSequenceImpl implements IOseeSequence {
          OseeConnection connection = getDatabase().getConnection();
          try {
             while (!gotSequence) {
-               BigDecimal currentValue =
-                     getDatabase().runPreparedQueryFetchObject(connection, (BigDecimal) null, QUERY_SEQUENCE,
-                           sequenceName);
-               if (currentValue == null) {
+               long currentValue =
+                     getDatabase().runPreparedQueryFetchObject(connection, lastValue, QUERY_SEQUENCE, sequenceName);
+               if (currentValue == lastValue) {
                   internalInitializeSequence(sequenceName);
                   lastValue = 0;
                } else {
-                  lastValue = currentValue.longValue();
+                  lastValue = currentValue;
                }
                gotSequence =
                      getDatabase().runPreparedUpdate(connection, UPDATE_SEQUENCE, lastValue + range.prefetchSize,
