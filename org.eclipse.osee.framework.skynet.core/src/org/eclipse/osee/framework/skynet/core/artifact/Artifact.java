@@ -138,15 +138,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return historical;
    }
 
-   public boolean isAnnotation(ArtifactAnnotation.Type type) throws OseeCoreException {
-      for (ArtifactAnnotation notify : getAnnotations()) {
-         if (notify.getType() == type) {
-            return true;
-         }
-      }
-      return false;
-   }
-
    public Set<ArtifactAnnotation> getAnnotations() throws OseeCoreException {
       Set<ArtifactAnnotation> annotations = new HashSet<ArtifactAnnotation>();
       for (IArtifactAnnotation annotation : getAnnotationExtensions()) {
@@ -155,15 +146,13 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       return annotations;
    }
 
-   public ArtifactAnnotation.Type getMainAnnotationType() throws OseeCoreException {
-      if (isAnnotation(ArtifactAnnotation.Type.Error)) {
-         return ArtifactAnnotation.Type.Error;
-      } else if (isAnnotation(ArtifactAnnotation.Type.Warning)) {
-         return ArtifactAnnotation.Type.Warning;
-      } else if (isAnnotation(ArtifactAnnotation.Type.Info)) {
-         return ArtifactAnnotation.Type.Info;
+   public boolean isAnnotationWarning() throws OseeCoreException {
+      for (ArtifactAnnotation notify : getAnnotations()) {
+         if (notify.getType() == ArtifactAnnotation.Type.Warning || notify.getType() == ArtifactAnnotation.Type.Error) {
+            return true;
+         }
       }
-      return ArtifactAnnotation.Type.None;
+      return false;
    }
 
    /**
@@ -187,6 +176,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
 
    public List<? extends IArtifact> getRelatedArtifacts(RelationTypeSide relationTypeSide) throws OseeCoreException {
       return RelationManager.getRelatedArtifacts(this, relationTypeSide);
+   }
+
+   public List<Artifact> getRelatedArtifactsUnSorted(IRelationEnumeration relationEnum) throws OseeCoreException {
+      return RelationManager.getRelatedArtifactsUnSorted(this, relationEnum);
    }
 
    public List<Artifact> getRelatedArtifacts(IRelationEnumeration relationEnum) throws OseeCoreException {
@@ -254,12 +247,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
             relationSorter.getSide());
    }
 
-   /**
-    * @param <A>
-    * @param side
-    * @param clazz
-    * @throws OseeCoreException
-    */
+   public <A extends Artifact> List<A> getRelatedArtifactsUnSorted(IRelationEnumeration side, Class<A> clazz) throws OseeCoreException {
+      return Collections.castAll(getRelatedArtifactsUnSorted(side));
+   }
+
    public <A extends Artifact> List<A> getRelatedArtifacts(IRelationEnumeration side, Class<A> clazz) throws OseeCoreException {
       return Collections.castAll(getRelatedArtifacts(side));
    }
@@ -1513,7 +1504,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    private Artifact reflectHelper(Branch branch) throws OseeCoreException {
       Artifact reflectedArtifact =
             ArtifactTypeManager.getFactory(artifactType).reflectExisitingArtifact(artId, guid, humanReadableId,
-            artifactType, gammaId, branch, ModificationType.INTRODUCED);
+                  artifactType, gammaId, branch, ModificationType.INTRODUCED);
 
       for (Attribute<?> sourceAttribute : attributes.getValues()) {
          // In order to reflect attributes they must exist in the data store
@@ -1615,7 +1606,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       artifactAnnotationExtensions = new HashSet<IArtifactAnnotation>();
       IExtensionPoint point =
             Platform.getExtensionRegistry().getExtensionPoint(
-            "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
+                  "org.eclipse.osee.framework.skynet.core.ArtifactAnnotation");
       if (point == null) {
          System.err.println("Can't access ArtifactAnnotation extension point");
          return artifactAnnotationExtensions;
