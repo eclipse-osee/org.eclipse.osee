@@ -305,7 +305,7 @@ public final class ArtifactLoader {
    private static Artifact retrieveShallowArtifact(IOseeStatement chStmt, boolean reload, boolean historical) throws OseeCoreException {
       int artifactId = chStmt.getInt("art_id");
       Branch branch = BranchManager.getBranch(chStmt.getInt("branch_id"));
-      TransactionRecord transactionId = TransactionManager.getTransactionId(chStmt);
+      TransactionRecord transactionId = TransactionManager.getTransactionId(chStmt.getInt("transaction_id"));
       Artifact artifact;
 
       if (historical) {
