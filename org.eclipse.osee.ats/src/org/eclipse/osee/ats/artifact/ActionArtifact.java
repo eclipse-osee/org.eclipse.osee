@@ -47,7 +47,6 @@ import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
-import org.eclipse.osee.framework.skynet.core.artifact.annotation.ArtifactAnnotation;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -160,7 +159,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
       if (changeType != null && getChangeType() != changeType) {
          setChangeType(changeType);
-            }
+      }
       return;
    }
 
@@ -182,7 +181,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
       if (priorityType != null && getPriority() != priorityType) {
          setPriority(priorityType);
-            }
+      }
       return;
    }
 
@@ -343,7 +342,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       for (TeamWorkFlowArtifact art : getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_WorkFlow,
             TeamWorkFlowArtifact.class)) {
          art.atsDelete(deleteArts, allRelated);
-   }
+      }
    }
 
    public String getWorldViewTeam() throws OseeCoreException {
@@ -918,23 +917,6 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
          }
       }
       return Result.TrueResult;
-   }
-
-   @Override
-   public Set<ArtifactAnnotation> getAnnotations() throws OseeCoreException {
-      Set<ArtifactAnnotation> notifications = super.getAnnotations();
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         notifications.addAll(team.getAnnotations());
-      }
-      return notifications;
-   }
-
-   @Override
-   public boolean isAnnotationWarning() throws OseeCoreException {
-      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (team.isAnnotationWarning()) return true;
-      }
-      return super.isAnnotationWarning();
    }
 
    public Result isWorldViewDeadlineAlerting() throws OseeCoreException {
