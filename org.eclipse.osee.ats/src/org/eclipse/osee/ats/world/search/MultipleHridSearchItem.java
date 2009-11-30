@@ -19,7 +19,6 @@ import java.util.Set;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.LegacyPCRActions;
@@ -83,13 +82,8 @@ public class MultipleHridSearchItem extends WorldUISearchItem {
       Set<Artifact> resultNonAtsArts = new HashSet<Artifact>();
       Set<Artifact> artifacts = new HashSet<Artifact>();
 
-      Collection<ActionArtifact> actionArts =
-            LegacyPCRActions.getTeamsActionArtifacts(ids, (Collection<TeamDefinitionArtifact>) null);
-      if (actionArts.size() != 0) {
-         for (ActionArtifact teamWf : actionArts) {
-            resultAtsArts.add(teamWf);
-         }
-      }
+      resultAtsArts.addAll(LegacyPCRActions.getTeamsTeamWorkflowArtifacts(ids,
+            (Collection<TeamDefinitionArtifact>) null));
 
       // This does artId search
       if (includeArtIds && branch != null) {
