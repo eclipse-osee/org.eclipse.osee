@@ -33,10 +33,12 @@ public class ShallowArtifact implements IArtifact {
 
    private int artifactId;
    private final BranchCache cache;
+   private Artifact associatedArtifact;
 
    public ShallowArtifact(BranchCache cache, int artifactId) {
       this.artifactId = artifactId;
       this.cache = cache;
+      associatedArtifact = null;
    }
 
    @Override
@@ -115,12 +117,13 @@ public class ShallowArtifact implements IArtifact {
 
    @Override
    public Artifact getFullArtifact() throws OseeCoreException {
-      Artifact associatedArtifact = null;
-      if (getArtId() > 0) {
-         associatedArtifact = ArtifactQuery.getArtifactFromId(getArtId(), getBranch());
-      } else {
-         associatedArtifact = UserManager.getUser(SystemUser.OseeSystem);
-         artifactId = associatedArtifact.getArtId();
+      if (associatedArtifact == null) {
+         if (getArtId() > 0) {
+            associatedArtifact = ArtifactQuery.getArtifactFromId(getArtId(), getBranch());
+         } else {
+            associatedArtifact = UserManager.getUser(SystemUser.OseeSystem);
+            artifactId = associatedArtifact.getArtId();
+         }
       }
       return associatedArtifact;
    }

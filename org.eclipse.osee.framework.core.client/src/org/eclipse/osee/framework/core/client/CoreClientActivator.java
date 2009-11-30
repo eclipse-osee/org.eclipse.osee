@@ -11,8 +11,11 @@
 package org.eclipse.osee.framework.core.client;
 
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.osee.framework.core.client.internal.ClientDatabaseProvider;
 import org.eclipse.osee.framework.core.client.server.HttpServer;
+import org.eclipse.osee.framework.database.core.IDatabaseInfoProvider;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -22,6 +25,7 @@ public class CoreClientActivator extends Plugin {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.core.client";
    private static CoreClientActivator instance;
    private BundleContext context;
+   private ServiceRegistration registration;
 
    public CoreClientActivator() {
       instance = this;
@@ -32,12 +36,16 @@ public class CoreClientActivator extends Plugin {
    public void start(BundleContext context) throws Exception {
       super.start(context);
       this.context = context;
+
+      registration = context.registerService(IDatabaseInfoProvider.class.getName(), new ClientDatabaseProvider(), null);
+
       HttpServer.startServer(1);
    }
 
    @Override
    public void stop(BundleContext context) throws Exception {
       super.stop(context);
+      registration.unregister();
       HttpServer.stopServer();
 
       ClientSessionManager.releaseSession();
