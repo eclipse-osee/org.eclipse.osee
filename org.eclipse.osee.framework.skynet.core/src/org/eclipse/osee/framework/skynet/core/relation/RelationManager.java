@@ -228,7 +228,15 @@ public class RelationManager {
       return links;
    }
 
+   private static List<Artifact> getRelatedArtifactsUnSorted(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
+      return getRelatedArtifacts(artifact, relationType, relationSide, false);
+   }
+
    private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide) throws OseeCoreException {
+      return getRelatedArtifacts(artifact, relationType, relationSide, true);
+   }
+
+   private static List<Artifact> getRelatedArtifacts(Artifact artifact, RelationType relationType, RelationSide relationSide, boolean sort) throws OseeCoreException {
       if (relationSide == null) {
          throw new OseeArgumentException("RelationSide cannot be null");
       }
@@ -274,7 +282,9 @@ public class RelationManager {
             }
          }
       }
-      sort(artifact, relationType, relationSide, relatedArtifacts);
+      if (sort) {
+         sort(artifact, relationType, relationSide, relatedArtifacts);
+      }
       return relatedArtifacts;
    }
 
@@ -358,15 +368,14 @@ public class RelationManager {
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum, boolean includeDeleted) throws OseeCoreException {
       RelationType relationType = RelationTypeManager.getType(relationEnum);
       if (includeDeleted) {
-         List<Artifact> artifacts =
-               getRelatedArtifacts(artifact, relationType, relationEnum.getSide());
+         List<Artifact> artifacts = getRelatedArtifacts(artifact, relationType, relationEnum.getSide());
          int queryId = ArtifactLoader.getNewQueryId();
 
          Object[] formatArgs = relationEnum.getSide().isSideA() ? new Object[] {"a", "b"} : new Object[] {"b", "a"};
          String sql = String.format(GET_DELETED_ARTIFACT, formatArgs);
 
-         ConnectionHandler.runPreparedUpdate(sql, queryId, SQL3DataType.INTEGER,
-               artifact.getBranch().getId(), relationType.getId(), artifact.getArtId());
+         ConnectionHandler.runPreparedUpdate(sql, queryId, SQL3DataType.INTEGER, artifact.getBranch().getId(),
+               relationType.getId(), artifact.getArtId());
 
          List<Artifact> deletedArtifacts =
                ArtifactLoader.loadArtifactsFromQueryId(queryId, ArtifactLoad.FULL, null, 4, false, false, true);
@@ -385,6 +394,11 @@ public class RelationManager {
          return getRelatedArtifacts(artifact, relationType, relationEnum.getSide());
       }
 
+   }
+
+   public static List<Artifact> getRelatedArtifactsUnSorted(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
+      RelationType relationType = RelationTypeManager.getType(relationEnum);
+      return getRelatedArtifactsUnSorted(artifact, relationType, relationEnum.getSide());
    }
 
    public static List<Artifact> getRelatedArtifacts(Artifact artifact, IRelationEnumeration relationEnum) throws OseeCoreException {
@@ -505,7 +519,7 @@ public class RelationManager {
                   Artifact artifactOnOtherSide = relation.getArtifactOnOtherSide(artifact);
                   List<RelationLink> otherSideRelations =
                         relationsByType.get(threadLocalKey.get().getKey(artifactOnOtherSide),
-                        relation.getRelationType());
+                              relation.getRelationType());
                   for (int i = 0; i < otherSideRelations.size(); i++) {
                      if (relation.equals(otherSideRelations.get(i))) {
                         if (i + 1 < otherSideRelations.size()) {
