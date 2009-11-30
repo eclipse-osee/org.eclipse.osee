@@ -20,7 +20,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResOptionDefinition;
 import org.eclipse.osee.ats.util.widgets.dialog.TaskResolutionOptionRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
@@ -299,7 +299,7 @@ public class TaskArtifact extends StateMachineArtifact implements IWorldViewArti
    public StateMachineArtifact getParentSMA() throws OseeCoreException {
       if (parentSma != null) return parentSma;
       Collection<StateMachineArtifact> smas =
-            getRelatedArtifacts(AtsRelation.SmaToTask_Sma, StateMachineArtifact.class);
+            getRelatedArtifacts(AtsRelationTypes.SmaToTask_Sma, StateMachineArtifact.class);
       parentSma = smas.iterator().next();
       return parentSma;
    }

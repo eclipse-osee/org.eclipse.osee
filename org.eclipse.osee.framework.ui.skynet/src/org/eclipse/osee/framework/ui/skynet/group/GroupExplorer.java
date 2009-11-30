@@ -25,7 +25,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -130,7 +130,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
                refresh();
                groupExpDnd.setBranch(branch);
             } catch (Exception ex) {
-               OseeLog.log(getClass(), Level.SEVERE, ex);
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
          }
 
@@ -182,7 +182,11 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            handleRemoveFromGroup();
+            try {
+               handleRemoveFromGroup();
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
       });
 
@@ -191,7 +195,11 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       item.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            handleDeleteGroup();
+            try {
+               handleDeleteGroup();
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
       });
 
@@ -299,7 +307,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
    private void handleNewGroup() {
       EntryDialog ed =
             new EntryDialog(Display.getCurrent().getActiveShell(), "Create New Group", null, "Enter Group Name",
-                  MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
+            MessageDialog.QUESTION, new String[] {"OK", "Cancel"}, 0);
       if (ed.open() == 0) {
          try {
             UniversalGroup.addGroup(ed.getEntry(), branch);
@@ -310,7 +318,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       }
    }
 
-   private void handleRemoveFromGroup() {
+   private void handleRemoveFromGroup() throws OseeCoreException {
       if (getSelectedUniversalGroupItems().size() > 0) {
          AWorkbench.popup("ERROR", "Can't remove Group, use \"Delete Group\".");
          return;
@@ -325,7 +333,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          try {
             SkynetTransaction transaction = new SkynetTransaction(branch);
             for (GroupExplorerItem item : items) {
-               item.getArtifact().deleteRelation(CoreRelations.Universal_Grouping__Group,
+               item.getArtifact().deleteRelation(CoreRelationTypes.Universal_Grouping__Group,
                      item.getParentItem().getArtifact());
                item.getArtifact().persist(transaction);
             }
@@ -336,7 +344,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       }
    }
 
-   private void handleDeleteGroup() {
+   private void handleDeleteGroup() throws OseeCoreException {
       final ArrayList<GroupExplorerItem> items = getSelectedUniversalGroupItems();
       if (items.size() == 0) {
          AWorkbench.popup("ERROR", "No groups selected.");
@@ -346,23 +354,25 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          AWorkbench.popup("ERROR", "Only select groups to be deleted.");
          return;
       }
-      String names = "";
-      for (GroupExplorerItem item : items) {
-         if (item.isUniversalGroup()) {
-            names += String.format("%s\n", item.getArtifact().getName());
+
+      try {
+         String names = "";
+         for (GroupExplorerItem item : items) {
+            if (item.isUniversalGroup()) {
+               names += String.format("%s\n", item.getArtifact().getName());
+            }
          }
-      }
-      if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Groups",
-            "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
-         try {
+         if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Groups",
+               "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
+
             SkynetTransaction transaction = new SkynetTransaction(branch);
             for (GroupExplorerItem item : items) {
                item.getArtifact().deleteAndPersist(transaction);
             }
             transaction.execute();
-         } catch (Exception ex) {
-            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
+      } catch (Exception ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
@@ -414,7 +424,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       return arts;
    }
 
-   private ArrayList<GroupExplorerItem> getSelectedUniversalGroupItems() {
+   private ArrayList<GroupExplorerItem> getSelectedUniversalGroupItems() throws OseeCoreException {
       ArrayList<GroupExplorerItem> arts = new ArrayList<GroupExplorerItem>();
       Iterator<?> i = ((IStructuredSelection) treeViewer.getSelection()).iterator();
       while (i.hasNext()) {
@@ -426,7 +436,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       return arts;
    }
 
-   private boolean isOnlyGroupsSelected() {
+   private boolean isOnlyGroupsSelected() throws OseeCoreException {
       if (getSelectedItems().size() == 0) {
          return false;
       }
@@ -438,7 +448,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       return true;
    }
 
-   private boolean isOnlyGroupItemsSelected() {
+   private boolean isOnlyGroupItemsSelected() throws OseeCoreException {
       return getSelectedUniversalGroupItems().size() == 0 && getSelectedItems().size() > 0;
    }
 

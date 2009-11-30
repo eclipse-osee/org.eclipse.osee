@@ -11,7 +11,7 @@
 package org.eclipse.osee.ote.ui.define.utilities;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -30,7 +30,7 @@ public class CommitConfiguration {
 
       try {
          User user = UserManager.getUser();
-         Collection<Artifact> teams = user.getRelatedArtifacts(CoreRelations.TeamMember_Team);
+         Collection<Artifact> teams = user.getRelatedArtifacts(CoreRelationTypes.TeamMember_Team);
          for (Artifact team : teams) {
             if (team.getName().equals("OSEE")) {
                isAllowed = true;

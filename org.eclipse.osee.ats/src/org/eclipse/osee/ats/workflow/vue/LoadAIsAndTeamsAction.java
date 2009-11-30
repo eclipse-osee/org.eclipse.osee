@@ -30,13 +30,14 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact.TeamDefinitionOptions;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.workflow.vue.DiagramNode.PageType;
 import org.eclipse.osee.framework.core.data.OseeUser;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -235,12 +236,12 @@ public class LoadAIsAndTeamsAction {
 
          if (getOrCreate) {
             teamDefArt =
-                  (TeamDefinitionArtifact) OseeSystemArtifacts.getOrCreateArtifact(
-                  TeamDefinitionArtifact.ARTIFACT_NAME, page.getName(), AtsUtil.getAtsBranch());
+                  (TeamDefinitionArtifact) OseeSystemArtifacts.getOrCreateArtifact(AtsArtifactTypes.TeamDefinition,
+                        page.getName(), AtsUtil.getAtsBranch());
          } else {
             teamDefArt =
                   (TeamDefinitionArtifact) ArtifactTypeManager.addArtifact(TeamDefinitionArtifact.ARTIFACT_NAME,
-                  AtsUtil.getAtsBranch(), page.getName());
+                        AtsUtil.getAtsBranch(), page.getName());
          }
          if (!teamDefArt.isInDb()) {
             teamDefArt.initialize(fullName, desc, leads, members, actionableItems,
@@ -253,7 +254,7 @@ public class LoadAIsAndTeamsAction {
             parent.persist(transaction);
 
             for (Artifact actionableItem : actionableItems) {
-               teamDefArt.addRelation(AtsRelation.TeamActionableItem_ActionableItem, actionableItem);
+               teamDefArt.addRelation(AtsRelationTypes.TeamActionableItem_ActionableItem, actionableItem);
             }
             for (String staticId : staticIds) {
                StaticIdManager.setSingletonAttributeValue(teamDefArt, staticId);
@@ -264,9 +265,9 @@ public class LoadAIsAndTeamsAction {
             try {
                Artifact workflowArt =
                      ArtifactQuery.getArtifactFromTypeAndName(WorkFlowDefinition.ARTIFACT_NAME, workflowId,
-                     AtsUtil.getAtsBranch());
+                           AtsUtil.getAtsBranch());
                if (workflowArt != null) {
-                  teamDefArt.addRelation(CoreRelations.WorkItem__Child, workflowArt);
+                  teamDefArt.addRelation(CoreRelationTypes.WorkItem__Child, workflowArt);
                } else {
                   System.err.println("Can't find workflow with id \"" + workflowId + "\"");
                }
@@ -313,19 +314,19 @@ public class LoadAIsAndTeamsAction {
       } else {
          if (getOrCreate) {
             aia =
-                  (ActionableItemArtifact) ArtifactQuery.checkArtifactFromTypeAndName(
-                  ActionableItemArtifact.ARTIFACT_NAME, page.getName(), AtsUtil.getAtsBranch());
+                  (ActionableItemArtifact) ArtifactQuery.checkArtifactFromTypeAndName(AtsArtifactTypes.ActionableItem,
+                        page.getName(), AtsUtil.getAtsBranch());
          }
          if (aia == null) {
             aia =
                   (ActionableItemArtifact) ArtifactTypeManager.addArtifact(ActionableItemArtifact.ARTIFACT_NAME,
-                  AtsUtil.getAtsBranch());
+                        AtsUtil.getAtsBranch());
             aia.setName(page.getName());
             for (String staticId : staticIds) {
                StaticIdManager.setSingletonAttributeValue(aia, staticId);
             }
             for (User user : leads) {
-               aia.addRelation(AtsRelation.TeamLead_Lead, user);
+               aia.addRelation(AtsRelationTypes.TeamLead_Lead, user);
             }
 
             aia.persist(transaction);

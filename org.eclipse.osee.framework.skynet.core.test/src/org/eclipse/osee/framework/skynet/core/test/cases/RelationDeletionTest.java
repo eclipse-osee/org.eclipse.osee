@@ -14,7 +14,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.List;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -47,15 +47,15 @@ public class RelationDeletionTest {
       Artifact child1 = createArtifact(ARTIFACT_TYPE, branch);
       Artifact child2 = createArtifact(ARTIFACT_TYPE, branch);
       Artifact child3 = createArtifact(ARTIFACT_TYPE, branch);
-      parent.addRelation(CoreRelations.Default_Hierarchical__Child, child1);
-      parent.addRelation(CoreRelations.Default_Hierarchical__Child, child2);
-      parent.addRelation(CoreRelations.Default_Hierarchical__Child, child3);
+      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
+      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child2);
+      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child3);
       parent.persist();
 
       assertTrue("Failed to add all three children", parent.getRelatedArtifacts(
-            CoreRelations.Default_Hierarchical__Child).size() == 3);
+            CoreRelationTypes.Default_Hierarchical__Child).size() == 3);
 
-      child1.deleteRelation(CoreRelations.Default_Hierarchical__Parent, parent);
+      child1.deleteRelation(CoreRelationTypes.Default_Hierarchical__Parent, parent);
 
       assertTrue("We removed a relation so it should still be dirty.", child1.isDirty());
       assertTrue("Parent artifact should be marked as dirty since it's relation has changed.", parent.isDirty());
@@ -65,7 +65,7 @@ public class RelationDeletionTest {
       assertFalse("Parent artifact should be clean now.", parent.isDirty());
       assertFalse("Child artifact should also be clean.", child1.isDirty());
 
-      List<Artifact> children = parent.getRelatedArtifacts(CoreRelations.Default_Hierarchical__Child);
+      List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
 
       assertTrue("The deleted child was not successfully removed.", children.size() == 2);
 

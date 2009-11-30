@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -87,7 +87,7 @@ public class ArtifactPasteOperation extends AbstractOperation {
 
    private void pasteRelationOrder(ArtifactPasteConfiguration config, Artifact source, Artifact newArtifact, List<Artifact> copiedChildren) throws OseeCoreException {
       if (config.isKeepRelationOrderSettings()) {
-         IRelationEnumeration relationTypeSide = CoreRelations.Default_Hierarchical__Child;
+         IRelationEnumeration relationTypeSide = CoreRelationTypes.Default_Hierarchical__Child;
          RelationOrderData data = RelationManager.createRelationOrderData(source);
          String order =
                data.getCurrentSorterGuid(RelationTypeManager.getType(relationTypeSide), relationTypeSide.getSide());

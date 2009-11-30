@@ -19,7 +19,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -88,7 +88,7 @@ public class WordChangesMadeToHandler extends AbstractHandler {
             boolean readPermission = AccessControlManager.hasPermission(changedArtifact, PermissionEnum.READ);
 
             boolean wordArtifactSelected =
-                  changedArtifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName()) || changedArtifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName());
+                  changedArtifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT.getName()) || changedArtifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName());
 
             isEnabled = readPermission && wordArtifactSelected;
          } catch (Exception ex) {

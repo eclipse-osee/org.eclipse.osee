@@ -31,14 +31,14 @@ import org.eclipse.osee.ats.config.demo.internal.OseeAtsConfigDemoActivator;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams;
 import org.eclipse.osee.ats.config.demo.util.DemoTeams.Team;
 import org.eclipse.osee.ats.util.ActionManager;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.FavoritesManager;
 import org.eclipse.osee.ats.util.SubscribeManager;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -243,7 +243,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Artifact navArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Navigation.name(),
                      reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
-         art.addRelation(CoreRelations.Allocation__Component, navArt);
+         art.addRelation(CoreRelationTypes.Allocation__Component, navArt);
          art.persist();
       }
 
@@ -257,7 +257,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Artifact robotArt =
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Robot_API.name(),
                      reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
-         art.addRelation(CoreRelations.Allocation__Component, robotArt);
+         art.addRelation(CoreRelationTypes.Allocation__Component, robotArt);
          art.persist();
       }
 
@@ -325,7 +325,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
       Artifact comArt =
             ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Robot_API.name(),
                   reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
-      branchArtifact.addRelation(CoreRelations.Allocation__Component, comArt);
+      branchArtifact.addRelation(CoreRelationTypes.Allocation__Component, comArt);
       branchArtifact.persist();
 
       Artifact parentArtifact =
@@ -372,7 +372,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                ArtifactQuery.getArtifactFromTypeAndName(Requirements.COMPONENT, DemoSubsystems.Robot_API.name(),
                      reqTeam.getSmaMgr().getBranchMgr().getWorkingBranch());
 
-         art.addRelation(CoreRelations.Allocation__Component, comArt);
+         art.addRelation(CoreRelationTypes.Allocation__Component, comArt);
          art.persist();
       }
 
@@ -445,7 +445,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   VersionArtifact verArt =
                         (VersionArtifact) ArtifactQuery.getArtifactFromTypeAndName(VersionArtifact.ARTIFACT_NAME,
                               versionStr, AtsUtil.getAtsBranch());
-                  teamWf.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, verArt);
+                  teamWf.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, verArt);
                   teamWf.persist(transaction);
                }
             }
@@ -517,26 +517,26 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
          // Relate System to SubSystem to Software Requirements
          for (Artifact systemArt : systemArts) {
-            relate(CoreRelations.Requirement_Trace__Lower_Level, systemArt, subSystemArts);
+            relate(CoreRelationTypes.Requirement_Trace__Lower_Level, systemArt, subSystemArts);
             systemArt.persist(transaction);
 
             for (Artifact subSystemArt : subSystemArts) {
-               relate(CoreRelations.Requirement_Trace__Lower_Level, subSystemArt, softArts);
+               relate(CoreRelationTypes.Requirement_Trace__Lower_Level, subSystemArt, softArts);
                subSystemArt.persist(transaction);
             }
          }
 
          // Relate System, SubSystem and Software Requirements to Componets
          for (Artifact art : systemArts) {
-            relate(CoreRelations.Allocation__Component, art, component);
+            relate(CoreRelationTypes.Allocation__Component, art, component);
             art.persist(transaction);
          }
          for (Artifact art : subSystemArts) {
-            relate(CoreRelations.Allocation__Component, art, component);
+            relate(CoreRelationTypes.Allocation__Component, art, component);
             art.persist(transaction);
          }
          for (Artifact art : softArts) {
-            relate(CoreRelations.Allocation__Component, art, component);
+            relate(CoreRelationTypes.Allocation__Component, art, component);
          }
 
          // Create Test Script Artifacts
@@ -550,7 +550,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   ArtifactTypeManager.addArtifact(Requirements.TEST_CASE, verificationHeader.getBranch(),
                         "Verification Test " + str);
             verificationTests.add(newArt);
-            verificationHeader.addRelation(CoreRelations.Default_Hierarchical__Child, newArt);
+            verificationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
             newArt.persist(transaction);
          }
          Artifact verificationTestsArray[] = verificationTests.toArray(new Artifact[verificationTests.size()]);
@@ -566,7 +566,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, validationHeader.getBranch(),
                         "Validation Test " + str);
             validationTests.add(newArt);
-            validationHeader.addRelation(CoreRelations.Default_Hierarchical__Child, newArt);
+            validationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
             newArt.persist(transaction);
          }
          Artifact validationTestsArray[] = validationTests.toArray(new Artifact[validationTests.size()]);
@@ -582,22 +582,22 @@ public class PopulateDemoActions extends XNavigateItemAction {
                   ArtifactTypeManager.addArtifact(Requirements.TEST_PROCEDURE, integrationHeader.getBranch(),
                         "integration Test " + str);
             integrationTests.add(newArt);
-            integrationHeader.addRelation(CoreRelations.Default_Hierarchical__Child, newArt);
+            integrationHeader.addRelation(CoreRelationTypes.Default_Hierarchical__Child, newArt);
             newArt.persist(transaction);
          }
          Artifact integrationTestsArray[] = integrationTests.toArray(new Artifact[integrationTests.size()]);
 
          // Relate Software Artifacts to Tests
          Artifact softReqsArray[] = softArts.toArray(new Artifact[softArts.size()]);
-         softReqsArray[0].addRelation(CoreRelations.Validation__Validator, verificationTestsArray[0]);
-         softReqsArray[0].addRelation(CoreRelations.Validation__Validator, verificationTestsArray[1]);
-         softReqsArray[1].addRelation(CoreRelations.Validation__Validator, verificationTestsArray[0]);
-         softReqsArray[1].addRelation(CoreRelations.Validation__Validator, validationTestsArray[1]);
-         softReqsArray[2].addRelation(CoreRelations.Validation__Validator, validationTestsArray[0]);
-         softReqsArray[2].addRelation(CoreRelations.Validation__Validator, integrationTestsArray[1]);
-         softReqsArray[3].addRelation(CoreRelations.Validation__Validator, integrationTestsArray[0]);
-         softReqsArray[4].addRelation(CoreRelations.Validation__Validator, integrationTestsArray[2]);
-         softReqsArray[5].addRelation(CoreRelations.Validation__Validator, validationTestsArray[2]);
+         softReqsArray[0].addRelation(CoreRelationTypes.Validation__Validator, verificationTestsArray[0]);
+         softReqsArray[0].addRelation(CoreRelationTypes.Validation__Validator, verificationTestsArray[1]);
+         softReqsArray[1].addRelation(CoreRelationTypes.Validation__Validator, verificationTestsArray[0]);
+         softReqsArray[1].addRelation(CoreRelationTypes.Validation__Validator, validationTestsArray[1]);
+         softReqsArray[2].addRelation(CoreRelationTypes.Validation__Validator, validationTestsArray[0]);
+         softReqsArray[2].addRelation(CoreRelationTypes.Validation__Validator, integrationTestsArray[1]);
+         softReqsArray[3].addRelation(CoreRelationTypes.Validation__Validator, integrationTestsArray[0]);
+         softReqsArray[4].addRelation(CoreRelationTypes.Validation__Validator, integrationTestsArray[2]);
+         softReqsArray[5].addRelation(CoreRelationTypes.Validation__Validator, validationTestsArray[2]);
 
          for (Artifact artifact : softArts) {
             artifact.persist(transaction);

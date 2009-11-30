@@ -28,13 +28,13 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.util.Overview.PreviewStyle;
 import org.eclipse.osee.ats.workflow.item.AtsStatePercentCompleteWeightRule;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -186,7 +186,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
 
    @Override
    public String getWorldViewGroups() throws OseeCoreException {
-      return Artifacts.toString("; ", getRelatedArtifacts(CoreRelations.Universal_Grouping__Group));
+      return Artifacts.toString("; ", getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
    }
 
    @Override
@@ -340,7 +340,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * 
     * @param side
     */
-   public void registerSMAEditorRelation(AtsRelation side) {
+   public void registerSMAEditorRelation(AtsRelationTypes side) {
       smaEditorRelations.add(side);
    }
 
@@ -349,7 +349,7 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
     * 
     * @param side
     */
-   public void registerAtsWorldRelation(AtsRelation side) {
+   public void registerAtsWorldRelation(AtsRelationTypes side) {
       atsWorldRelations.add(side);
    }
 
@@ -375,49 +375,49 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
    }
 
    public void addSubscribed(User user, SkynetTransaction transaction) throws OseeCoreException {
-      if (!getRelatedArtifacts(AtsRelation.SubscribedUser_User).contains(user)) {
-         addRelation(AtsRelation.SubscribedUser_User, user);
+      if (!getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User).contains(user)) {
+         addRelation(AtsRelationTypes.SubscribedUser_User, user);
          persist(transaction);
       }
 
    }
 
    public void removeSubscribed(User user, SkynetTransaction transaction) throws OseeCoreException {
-      deleteRelation(AtsRelation.SubscribedUser_User, user);
+      deleteRelation(AtsRelationTypes.SubscribedUser_User, user);
       persist(transaction);
    }
 
    public boolean isSubscribed(User user) throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelation.SubscribedUser_User).contains(user);
+      return getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User).contains(user);
    }
 
    public ArrayList<User> getSubscribed() throws OseeCoreException {
       ArrayList<User> arts = new ArrayList<User>();
-      for (Artifact art : getRelatedArtifacts(AtsRelation.SubscribedUser_User)) {
+      for (Artifact art : getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User)) {
          arts.add((User) art);
       }
       return arts;
    }
 
    public void addFavorite(User user, SkynetTransaction transaction) throws OseeCoreException {
-      if (!getRelatedArtifacts(AtsRelation.FavoriteUser_User).contains(user)) {
-         addRelation(AtsRelation.FavoriteUser_User, user);
+      if (!getRelatedArtifacts(AtsRelationTypes.FavoriteUser_User).contains(user)) {
+         addRelation(AtsRelationTypes.FavoriteUser_User, user);
          persist(transaction);
       }
    }
 
    public void removeFavorite(User user, SkynetTransaction transaction) throws OseeCoreException {
-      deleteRelation(AtsRelation.FavoriteUser_User, user);
+      deleteRelation(AtsRelationTypes.FavoriteUser_User, user);
       persist(transaction);
    }
 
    public boolean isFavorite(User user) throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelation.FavoriteUser_User).contains(user);
+      return getRelatedArtifacts(AtsRelationTypes.FavoriteUser_User).contains(user);
    }
 
    public ArrayList<User> getFavorites() throws OseeCoreException {
       ArrayList<User> arts = new ArrayList<User>();
-      for (Artifact art : getRelatedArtifacts(AtsRelation.FavoriteUser_User)) {
+      for (Artifact art : getRelatedArtifacts(AtsRelationTypes.FavoriteUser_User)) {
          arts.add((User) art);
       }
       return arts;

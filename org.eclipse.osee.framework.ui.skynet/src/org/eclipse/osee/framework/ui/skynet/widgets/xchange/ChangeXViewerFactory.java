@@ -14,7 +14,7 @@ import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerSorter;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn.SortDataType;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.ui.skynet.widgets.xviewer.skynet.SkynetXViewerFactory;
 import org.eclipse.swt.SWT;
 
@@ -49,7 +49,7 @@ public class ChangeXViewerFactory extends SkynetXViewerFactory {
    public static XViewerColumn lastModDate =
       new XViewerColumn("attribute.Last Modified Date", "Last Modified Date", 50, SWT.LEFT, false, SortDataType.String, false, null);
    public static XViewerColumn paraNumber =
-         new XViewerColumn("attribute.Imported Paragraph Number", CoreAttributes.PARAGRAPH_NUMBER.getName(), 50,
+         new XViewerColumn("attribute.Imported Paragraph Number", CoreAttributeTypes.PARAGRAPH_NUMBER.getName(), 50,
                SWT.LEFT, false, SortDataType.Paragraph_Number, false, null);
    
    public static String NAMESPACE = "osee.skynet.gui.ChangeXViewer";

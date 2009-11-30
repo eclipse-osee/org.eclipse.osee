@@ -16,7 +16,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -77,7 +77,7 @@ public class WordChangesBetweenCurrentAndParentHandler extends AbstractHandler {
             boolean readPermission = AccessControlManager.hasPermission(artifact, PermissionEnum.READ);
 
             boolean wordArtifactSelected =
-                  artifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName()) || artifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName());
+                  artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT.getName()) || artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName());
             boolean modifiedWordArtifactSelected =
                   wordArtifactSelected && change.getModificationType() == ModificationType.MODIFIED;
             boolean conflictedWordArtifactSelected =

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.utility;
 
 import java.util.Collection;
 import java.util.HashSet;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -69,7 +69,7 @@ public class Requirements {
    }
 
    public final static Collection<ArtifactType> getAllSoftwareRequirementTypes() throws OseeCoreException {
-      ArtifactType abstractSoftwareReq = ArtifactTypeManager.getType(CoreArtifacts.AbstractSoftwareRequirement);
+      ArtifactType abstractSoftwareReq = ArtifactTypeManager.getType(CoreArtifactTypes.AbstractSoftwareRequirement);
       Collection<ArtifactType> types = abstractSoftwareReq.getAllDescendantTypes();
       types.add(abstractSoftwareReq);
       return types;
@@ -79,7 +79,7 @@ public class Requirements {
       Collection<ArtifactType> types = getAllSoftwareRequirementTypes();
       Collection<ArtifactType> nonDirectRequirements = new HashSet<ArtifactType>();
       for (ArtifactType type : types) {
-         if (type.inheritsFrom(CoreArtifacts.IndirectSoftwareRequirement)) {
+         if (type.inheritsFrom(CoreArtifactTypes.IndirectSoftwareRequirement)) {
             nonDirectRequirements.add(type);
          }
       }

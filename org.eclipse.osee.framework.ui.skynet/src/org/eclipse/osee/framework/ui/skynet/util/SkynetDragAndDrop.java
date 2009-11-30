@@ -12,10 +12,14 @@ package org.eclipse.osee.framework.ui.skynet.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.logging.Level;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactData;
 import org.eclipse.osee.framework.ui.skynet.HTMLTransferFormatter;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.artifact.ArtifactTransfer;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DragSource;
@@ -34,7 +38,7 @@ import org.eclipse.swt.widgets.Control;
  * @author Jeff C. Phillips
  */
 public abstract class SkynetDragAndDrop {
-   private String viewId;
+   private final String viewId;
    private DragSource source;
    private DropTarget target;
 
@@ -93,24 +97,32 @@ public abstract class SkynetDragAndDrop {
             ArtifactTransfer.getInstance()});
       target.addDropListener(new DropTargetAdapter() {
 
+         @Override
          public void dragOperationChanged(DropTargetEvent event) {
             operationChanged(event);
          }
 
+         @Override
          public void drop(DropTargetEvent event) {
             performDrop(event);
          }
 
+         @Override
          public void dragOver(DropTargetEvent event) {
-			performDragOver(event);
+            try {
+               performDragOver(event);
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+            }
          }
 
+         @Override
          public void dropAccept(DropTargetEvent event) {
          }
       });
    }
 
-   public void performDragOver(DropTargetEvent event) {
+   public void performDragOver(DropTargetEvent event) throws OseeCoreException {
    }
 
    public void artifactTransferDragSetData(DragSourceEvent event) {
@@ -119,7 +131,7 @@ public abstract class SkynetDragAndDrop {
             event.data = new ArtifactData(getArtifacts(), "work", viewId);
          }
       } catch (Exception ex) {
-//         OSEELog.logException(ChangeReportView.class, ex, true);
+         //         OSEELog.logException(ChangeReportView.class, ex, true);
       }
    }
 
@@ -129,7 +141,7 @@ public abstract class SkynetDragAndDrop {
             event.data = HTMLTransferFormatter.getHtml(getArtifacts());
          }
       } catch (Exception ex) {
-//         OSEELog.logException(ChangeReportView.class, ex, true);
+         //         OSEELog.logException(ChangeReportView.class, ex, true);
       }
    }
 
@@ -139,13 +151,14 @@ public abstract class SkynetDragAndDrop {
             Artifact[] artifacts = getArtifacts();
             Collection<String> names = new ArrayList<String>(artifacts.length);
 
-            for (Artifact artifact : artifacts)
+            for (Artifact artifact : artifacts) {
                names.add(artifact.getName());
+            }
 
             event.data = Collections.toString(names, null, ", ", null);
          }
       } catch (Exception ex) {
-//         OSEELog.logException(ChangeReportView.class, ex, true);
+         //         OSEELog.logException(ChangeReportView.class, ex, true);
       }
    }
 

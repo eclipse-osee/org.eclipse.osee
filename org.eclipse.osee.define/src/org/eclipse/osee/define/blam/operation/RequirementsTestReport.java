@@ -15,9 +15,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -63,7 +63,7 @@ public class RequirementsTestReport extends AbstractBlam {
    }
 
    private void processRequirement(Artifact req) throws OseeCoreException {
-      Collection<Artifact> testProcs = req.getRelatedArtifacts(CoreRelations.Verification__Verifier);
+      Collection<Artifact> testProcs = req.getRelatedArtifacts(CoreRelationTypes.Verification__Verifier);
       if (testProcs.isEmpty()) {
          reportLine(getReqCellOutput(req), MISSING, MISSING, MISSING);
       } else {
@@ -76,7 +76,7 @@ public class RequirementsTestReport extends AbstractBlam {
    private void processTestProcedure(Artifact req, Artifact testProc) throws OseeCoreException {
       String testStatus = MISSING;//testProc.getSoleAttributeValue(CoreAttributes.TEST_STATUS);
       Collection<Artifact> resultFiles =
-            testProc.getRelatedArtifacts(CoreRelations.Test_Unit_Result__Test_Result);
+            testProc.getRelatedArtifacts(CoreRelationTypes.Test_Unit_Result__Test_Result);
 
       if (resultFiles.isEmpty()) {
          reportLine(getReqCellOutput(req), testProc.getName(), testStatus, MISSING);
@@ -88,7 +88,7 @@ public class RequirementsTestReport extends AbstractBlam {
    }
 
    private String getReqCellOutput(Artifact req) throws OseeCoreException {
-      String paragraphNumber = req.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER.getName(), "");
+      String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER.getName(), "");
       String reqName = req.getName();
       String returnValue = paragraphNumber + SPACE + reqName;
       return returnValue;
@@ -96,7 +96,7 @@ public class RequirementsTestReport extends AbstractBlam {
 
    private boolean isRequirement(Artifact src) {
       ArtifactType temp = src.getArtifactType();
-      if (temp.inheritsFrom(CoreArtifacts.SubsystemRequirement)) {
+      if (temp.inheritsFrom(CoreArtifactTypes.SubsystemRequirement)) {
          return true;
       }
 
@@ -144,9 +144,9 @@ public class RequirementsTestReport extends AbstractBlam {
          requirementsBulkLoad.addAll(input.getDescendants());
       }
       Collection<Artifact> temp =
-            RelationManager.getRelatedArtifacts(requirementsBulkLoad, 1, CoreRelations.Verification__Verifier);
+            RelationManager.getRelatedArtifacts(requirementsBulkLoad, 1, CoreRelationTypes.Verification__Verifier);
       Collection<Artifact> temp2 =
-            RelationManager.getRelatedArtifacts(temp, 1, CoreRelations.Test_Unit_Result__Test_Result);
+            RelationManager.getRelatedArtifacts(temp, 1, CoreRelationTypes.Test_Unit_Result__Test_Result);
       System.out.println("Bulk loaded " + temp2.size() + " test results");
    }
 

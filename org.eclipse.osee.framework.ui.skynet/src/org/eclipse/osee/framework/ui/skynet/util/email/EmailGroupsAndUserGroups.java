@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -81,14 +81,14 @@ public class EmailGroupsAndUserGroups extends XNavigateItemAction {
 
          Set<String> emails = new HashSet<String>();
          for (Artifact artifact : dialog.getSelection()) {
-            if (artifact.getArtifactTypeName().equals("Universal Group")) {
-               for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelations.Universal_Grouping__Members)) {
+            if (artifact.isOfType("Universal Group")) {
+               for (Artifact userArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                   if (userArt instanceof User) {
                      emails.add(((User) userArt).getEmail());
                   }
                }
-            } else if (artifact.getArtifactTypeName().equals("User Group")) {
-               for (User user : artifact.getRelatedArtifacts(CoreRelations.Users_User, User.class)) {
+            } else if (artifact.isOfType("User Group")) {
+               for (User user : artifact.getRelatedArtifacts(CoreRelationTypes.Users_User, User.class)) {
                   emails.add(user.getEmail());
                }
             }

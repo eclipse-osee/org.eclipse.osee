@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAPromptChangeStatus;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.WorldContentProvider;
 import org.eclipse.osee.ats.world.WorldXViewer;
@@ -462,7 +462,7 @@ public class TaskXViewer extends WorldXViewer {
                   // Add any new tasks related to parent sma
                   Collection<Artifact> artifacts =
                         transData.getRelatedArtifacts(parentSma.getArtId(),
-                              AtsRelation.SmaToTask_Task.getRelationType().getId(),
+                              AtsRelationTypes.SmaToTask_Task.getRelationType().getId(),
                               AtsUtil.getAtsBranch().getId(), transData.cacheAddedRelations);
                   if (artifacts.size() > 0) {
                      ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).add(artifacts);
@@ -471,7 +471,7 @@ public class TaskXViewer extends WorldXViewer {
                   // Remove any tasks related to parent sma
                   artifacts =
                         transData.getRelatedArtifacts(parentSma.getArtId(),
-                              AtsRelation.SmaToTask_Task.getRelationType().getId(),
+                              AtsRelationTypes.SmaToTask_Task.getRelationType().getId(),
                               AtsUtil.getAtsBranch().getId(), transData.cacheDeletedRelations);
                   if (artifacts.size() > 0) {
                      ((WorldContentProvider) xTaskViewer.getTaskXViewer().getContentProvider()).removeAll(artifacts);

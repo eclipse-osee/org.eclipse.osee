@@ -25,10 +25,10 @@ import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.task.ITaskEditorProvider;
 import org.eclipse.osee.ats.task.TaskEditorParameterSearchItem;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.XHyperlabelTeamDefinitionSelection;
 import org.eclipse.osee.ats.world.search.TeamWorldSearchItem.ReleasedOption;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -106,7 +106,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
          return handleOnlyUserSelected();
       } // If version specified, get workflows from targeted relation
       if (verArt != null) {
-         for (Artifact art : verArt.getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow)) {
+         for (Artifact art : verArt.getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow)) {
             if (teamDefs.size() == 0) {
                workflows.add(art);
             }
@@ -124,7 +124,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       } else if (groups.size() > 0) {
          Set<TaskArtifact> taskArts = new HashSet<TaskArtifact>();
          for (Artifact groupArt : groups) {
-            for (Artifact art : groupArt.getRelatedArtifacts(CoreRelations.Universal_Grouping__Members)) {
+            for (Artifact art : groupArt.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                if (art instanceof TaskArtifact) {
                   taskArts.add((TaskArtifact) art);
                } else if (art instanceof StateMachineArtifact) {
@@ -136,7 +136,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
       }
 
       // Bulk load tasks related to workflows
-      Collection<Artifact> artifacts = RelationManager.getRelatedArtifacts(workflows, 1, AtsRelation.SmaToTask_Task);
+      Collection<Artifact> artifacts = RelationManager.getRelatedArtifacts(workflows, 1, AtsRelationTypes.SmaToTask_Task);
 
       // Apply the remaining criteria
       return filterByCompletedAndSelectedUser(artifacts);
@@ -148,7 +148,7 @@ public class TaskSearchWorldSearchItem extends TaskEditorParameterSearchItem {
 
    private Collection<TaskArtifact> getUserAssignedTaskArtifacts() throws OseeCoreException {
       Set<TaskArtifact> tasks = new HashSet<TaskArtifact>();
-      for (Artifact art : getSelectedUser().getRelatedArtifacts(CoreRelations.Users_Artifact)) {
+      for (Artifact art : getSelectedUser().getRelatedArtifacts(CoreRelationTypes.Users_Artifact)) {
          if (art instanceof TaskArtifact) {
             tasks.add((TaskArtifact) art);
          }

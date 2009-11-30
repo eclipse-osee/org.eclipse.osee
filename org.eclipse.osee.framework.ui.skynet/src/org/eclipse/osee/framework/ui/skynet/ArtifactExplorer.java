@@ -31,7 +31,7 @@ import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.osee.framework.core.data.IRelationSorterId;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationSide;
@@ -1338,14 +1338,14 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                }
                try {
                   treeViewer.update(transData.getArtifactsInRelations(ChangeType.Changed,
-                        CoreRelations.Default_Hierarchical__Child).toArray(), null);
+                        CoreRelationTypes.Default_Hierarchical__Child).toArray(), null);
                } catch (Exception ex) {
                   OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
                }
                try {
                   Set<Artifact> parents = new HashSet<Artifact>();
                   for (Artifact art : transData.getArtifactsInRelations(ChangeType.Added,
-                        CoreRelations.Default_Hierarchical__Child)) {
+                        CoreRelationTypes.Default_Hierarchical__Child)) {
                      if (!art.isDeleted() && art.getParent() != null) {
                         parents.add(art.getParent());
                      }
@@ -1365,7 +1365,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
          if (this.branch == null || !this.branch.equals(branch)) {
             return;
          }
-         if (link.isOfType(CoreRelations.Default_Hierarchical__Child)) {
+         if (link.isOfType(CoreRelationTypes.Default_Hierarchical__Child)) {
             Displays.ensureInDisplayThread(new Runnable() {
                @Override
                public void run() {

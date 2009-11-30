@@ -15,25 +15,34 @@ import org.eclipse.osee.framework.core.data.IOseeType;
 /**
  * @author Ryan D. Brooks
  */
-public enum CoreArtifacts implements IOseeType {
-   Artifact("Artifact", "AAMFDh6S7gRLupAMwywA"),
-   User("User", "AAMFDhmr+Dqqe5pn3kAA"),
+public enum CoreArtifactTypes implements IOseeType {
    AbstractSoftwareRequirement("Abstract Software Requirement", "ABNAYPwV6H4EkjQ3+QQA"),
+   AbstractTestResult("Abstract Test Result", "ATkaanWmHH3PkhGNVjwA"),
+   Artifact("Artifact", "AAMFDh6S7gRLupAMwywA"),
+   CodeUnit("Code Unit", "AAMFDkEh216dzK1mTZgA"),
+   Folder("Folder", "AAMFDg_wmiYHHY5swJwA"),
+   GlobalPreferences("Global Preferences", "AAMFDho2kBqyoOZEw+gA"),
+   Heading("Heading", "AAMFDhEzni8FpFb5yHwA"),
    IndirectSoftwareRequirement("Indirect Software Requirement", "AAMFDiC7HRQMqr5S0QwA"),
+   RootArtifact("Root Artifact", "AAMFDhHDqlbzKcIxcsAA"),
+   SoftwareRequirement("Software Requirement", "AAMFDiAwhRFXwIyapJAA"),
    SoftwareRequirementDrawing("Software Requirement Drawing", "ABNClhgUfwj6A3EAArQA"),
    SubsystemRequirement("Subsystem Requirement", "AAMFDiN9KiAkhuLqOhQA"),
-   CodeUnit("Code Unit", "AAMFDkEh216dzK1mTZgA"),
-   TestUnit("Test Unit", "ABM2d6uxUw66aSdo0LwA"),
    TestPlanElement("Test Plan Element", "ATi_kUpvPBiW2upYC_wA"),
    TestProcedure("Test Procedure", "AAMFDjsjiGhoWpqM4PQA"),
-   AbstractTestResult("Abstract Test Result", "ATkaanWmHH3PkhGNVjwA"),
+   TestResultNative("Test Result Native", "ATkaanWmHH3PkhGNVjwA"),
    TestResultWML("Test Result WML", "ATk6NKFFmD_zg1b_eaQA"),
-   TestResultNative("Test Result Native", "ATkaanWmHH3PkhGNVjwA");
+   TestUnit("Test Unit", "ABM2d6uxUw66aSdo0LwA"),
+   UniversalGroup("Universal Group", "AAMFDhLY2TnADPA_EQQA"),
+   User("User", "AAMFDhmr+Dqqe5pn3kAA"),
+   UserGroup("User Group", "AAMFDhrEbXqZKPfWkwAA"),
+   WorkFlowDefinition("Work Flow Definition", "AAMFDh16eQ1GIHPWlYQA"),
+   XViewerGlobalCustomization("XViewer Global Customization", "AAMFDhtN7T4of30iYhAA");
 
    private final String name;
    private final String guid;
 
-   private CoreArtifacts(String name, String guid) {
+   private CoreArtifactTypes(String name, String guid) {
       this.name = name;
       this.guid = guid;
    }

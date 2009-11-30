@@ -13,7 +13,7 @@ artifactType "Test Run Disposition" extends "Artifact" {
    attribute "Disposition"
 }
 
-artifactType "Test Run" extends "Artifact" {
+artifactType "Test Run" extends "Abstract Test Result" {
    guid "AAMFDjqDHWo+orlSpaQA"
    attribute "Test Script GUID"
    attribute "Test Script URL"

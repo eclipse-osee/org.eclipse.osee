@@ -199,7 +199,7 @@ public class OseeAts {
    public static void openATSArtifact(String guid) {
       try {
          Artifact art = ArtifactQuery.getArtifactFromId(guid, BranchManager.getCommonBranch());
-         if (art.getArtifactTypeName().equals("Action")) {
+         if (art.isOfType("Action")) {
             atsLib.openATSAction(art, AtsOpenOption.OpenOneOrPopupSelect);
          } else {
             AWorkbench.popup("ERROR", "Trying to open " + art.getArtifactTypeName() + " with SMAEditor");

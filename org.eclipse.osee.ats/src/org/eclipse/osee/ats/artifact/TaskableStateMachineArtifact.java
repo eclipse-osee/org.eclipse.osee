@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.artifact;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -39,8 +39,8 @@ public abstract class TaskableStateMachineArtifact extends StateMachineArtifact 
     */
    public TaskableStateMachineArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMAEditorRelation(AtsRelation.SmaToTask_Task);
-      registerAtsWorldRelation(AtsRelation.SmaToTask_Task);
+      registerSMAEditorRelation(AtsRelationTypes.SmaToTask_Task);
+      registerAtsWorldRelation(AtsRelationTypes.SmaToTask_Task);
    }
 
    @Override

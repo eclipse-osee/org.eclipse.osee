@@ -14,7 +14,7 @@ import java.io.File;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -136,7 +136,7 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   for (Artifact artifact : artifactsToBeRelated) {
                      Artifact currentParent = artifact.getParent();
                      if (currentParent != null) {
-                        currentParent.deleteRelation(CoreRelations.Default_Hierarchical__Child, artifact);
+                        currentParent.deleteRelation(CoreRelationTypes.Default_Hierarchical__Child, artifact);
                         currentParent.persist(transaction);
                      }
                      parentArtifact.addChild(RelationOrderBaseTypes.USER_DEFINED, artifact);

@@ -15,9 +15,9 @@ import java.util.List;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.BaseArtifactEditorInput;
 import org.eclipse.osee.framework.ui.skynet.artifact.editor.sections.RelationsFormSection;
@@ -77,11 +77,11 @@ public class SMARelationsSection extends RelationsFormSection {
    };
 
    private static List<String> filteredRelationTypeNames =
-         Arrays.asList(AtsRelation.ActionToWorkflow_Action.getName(), AtsRelation.SmaToTask_Sma.getName(),
-               AtsRelation.TeamActionableItem_ActionableItem.getName(),
-               AtsRelation.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelation.TeamLead_Lead.getName(),
-               AtsRelation.TeamMember_Member.getName(), AtsRelation.TeamWorkflowToReview_Review.getName(),
-               CoreRelations.WorkItem__Child.getName(), CoreRelations.Default_Hierarchical__Child.getName(),
-               CoreRelations.Users_Artifact.getName());
+         Arrays.asList(AtsRelationTypes.ActionToWorkflow_Action.getName(), AtsRelationTypes.SmaToTask_Sma.getName(),
+               AtsRelationTypes.TeamActionableItem_ActionableItem.getName(),
+               AtsRelationTypes.TeamWorkflowTargetedForVersion_Version.getName(), AtsRelationTypes.TeamLead_Lead.getName(),
+               AtsRelationTypes.TeamMember_Member.getName(), AtsRelationTypes.TeamWorkflowToReview_Review.getName(),
+               CoreRelationTypes.WorkItem__Child.getName(), CoreRelationTypes.Default_Hierarchical__Child.getName(),
+               CoreRelationTypes.Users_Artifact.getName());
 
 }

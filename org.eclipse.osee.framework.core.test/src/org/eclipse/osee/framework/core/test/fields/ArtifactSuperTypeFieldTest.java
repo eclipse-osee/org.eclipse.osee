@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import junit.framework.Assert;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.internal.fields.ArtifactSuperTypeField;
@@ -43,7 +43,7 @@ public class ArtifactSuperTypeFieldTest {
       art1 = MockDataFactory.createArtifactType(1);
       art2 = MockDataFactory.createArtifactType(2);
       art3 = MockDataFactory.createArtifactType(3);
-      base = new ArtifactType(CoreArtifacts.Artifact.getGuid(), CoreArtifacts.Artifact.getName(), false);
+      base = new ArtifactType(CoreArtifactTypes.Artifact.getGuid(), CoreArtifactTypes.Artifact.getName(), false);
    }
 
    @Test

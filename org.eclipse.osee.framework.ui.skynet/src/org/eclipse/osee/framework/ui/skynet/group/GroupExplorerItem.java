@@ -15,7 +15,8 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -46,7 +47,9 @@ public class GroupExplorerItem implements IAdaptable {
 
    public boolean contains(Artifact artifact) {
       for (GroupExplorerItem item : getGroupItemsCached()) {
-         if (item.getArtifact() != null && item.getArtifact().equals(artifact)) return true;
+         if (item.getArtifact() != null && item.getArtifact().equals(artifact)) {
+            return true;
+         }
       }
       return false;
    }
@@ -63,22 +66,31 @@ public class GroupExplorerItem implements IAdaptable {
     * @return UGI that contains artifact
     */
    public GroupExplorerItem getItem(Artifact artifact) {
-      if (this.artifact != null && this.artifact.equals(artifact)) return this;
+      if (this.artifact != null && this.artifact.equals(artifact)) {
+         return this;
+      }
       for (GroupExplorerItem item : getGroupItemsCached()) {
          GroupExplorerItem ugi = item.getItem(artifact);
-         if (ugi != null) return ugi;
+         if (ugi != null) {
+            return ugi;
+         }
       }
       return null;
    }
 
    public void dispose() {
-      if (groupItems != null) for (GroupExplorerItem item : groupItems)
-         item.dispose();
+      if (groupItems != null) {
+         for (GroupExplorerItem item : groupItems) {
+            item.dispose();
+         }
+      }
    }
 
-   public boolean isUniversalGroup() {
-      if (artifact == null || artifact.isDeleted()) return false;
-      return artifact.getArtifactTypeName().equals("Universal Group");
+   public boolean isUniversalGroup() throws OseeCoreException {
+      if (artifact == null || artifact.isDeleted()) {
+         return false;
+      }
+      return artifact.isOfType(CoreArtifactTypes.UniversalGroup);
    }
 
    public String getTableArtifactType() {
@@ -101,41 +113,43 @@ public class GroupExplorerItem implements IAdaptable {
       // Light loading; load the first time getChildren is called
       if (groupItems == null) {
          groupItems = new ArrayList<GroupExplorerItem>();
-//         populateUpdateCategory();
+         //         populateUpdateCategory();
       }
-//      populateUpdateCategory();
-//      List<GroupExplorerItem> items = new ArrayList<GroupExplorerItem>();
-//      if (groupItems != null) items.addAll(groupItems);
-//      return items;
-      
+      //      populateUpdateCategory();
+      //      List<GroupExplorerItem> items = new ArrayList<GroupExplorerItem>();
+      //      if (groupItems != null) items.addAll(groupItems);
+      //      return items;
+
       try {
-         List<Artifact> related = artifact.getRelatedArtifacts(CoreRelations.Universal_Grouping__Members);
+         List<Artifact> related = artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members);
          for (Artifact art : related) {
-          addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
+            addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       List<GroupExplorerItem> items = new ArrayList<GroupExplorerItem>();
-      if (groupItems != null) items.addAll(groupItems);
+      if (groupItems != null) {
+         items.addAll(groupItems);
+      }
       return items;
    }
 
-//   /**
-//    * Populate/Update this category with it's necessary children items
-//    */
-//   public void populateUpdateCategory() {
-//      try {
-//         for (GroupExplorerItem item : getGroupItems()) {
-//            removeGroupItem(item);
-//         }
-//         for (Artifact art : artifact.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
-//            addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
-//         }
-//      } catch (OseeCoreException ex) {
-//         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
-//      }
-//   }
+   //   /**
+   //    * Populate/Update this category with it's necessary children items
+   //    */
+   //   public void populateUpdateCategory() {
+   //      try {
+   //         for (GroupExplorerItem item : getGroupItems()) {
+   //            removeGroupItem(item);
+   //         }
+   //         for (Artifact art : artifact.getRelatedArtifacts(CoreRelationEnumeration.UNIVERSAL_GROUPING__MEMBERS)) {
+   //            addGroupItem(new GroupExplorerItem(treeViewer, art, this, groupExplorer));
+   //         }
+   //      } catch (OseeCoreException ex) {
+   //         OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+   //      }
+   //   }
 
    public void addGroupItem(GroupExplorerItem item) {
       if (!groupItems.contains(item)) {
@@ -175,7 +189,9 @@ public class GroupExplorerItem implements IAdaptable {
 
    @Override
    public Object getAdapter(Class adapter) {
-      if (adapter == null) throw new IllegalArgumentException("adapter can not be null");
+      if (adapter == null) {
+         throw new IllegalArgumentException("adapter can not be null");
+      }
 
       if (adapter == Artifact.class) {
          return getArtifact();

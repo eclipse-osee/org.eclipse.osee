@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.editor;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
@@ -42,11 +42,11 @@ public class AtsWorldEditorRenderer extends DefaultArtifactRenderer {
       if (artifact instanceof IATSArtifact) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
-      if (artifact.getArtifactTypeName().equals("Universal Group")) {
-         if (artifact.getRelatedArtifactsCount(CoreRelations.Universal_Grouping__Members) == 0) {
+      if (artifact.isOfType("Universal Group")) {
+         if (artifact.getRelatedArtifactsCount(CoreRelationTypes.Universal_Grouping__Members) == 0) {
             return NO_MATCH;
          }
-         for (Artifact childArt : artifact.getRelatedArtifacts(CoreRelations.Universal_Grouping__Members)) {
+         for (Artifact childArt : artifact.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
             if (childArt instanceof IATSArtifact) {
                return PRESENTATION_SUBTYPE_MATCH;
             }

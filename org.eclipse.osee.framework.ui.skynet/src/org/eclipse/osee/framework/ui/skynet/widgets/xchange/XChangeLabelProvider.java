@@ -15,7 +15,7 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.nebula.widgets.xviewer.XViewerLabelProvider;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -65,8 +65,8 @@ public class XChangeLabelProvider extends XViewerLabelProvider {
          } else if (cCol.equals(ChangeXViewerFactory.paraNumber)) {
             String paragraphNum = "";
 
-            if (change.getArtifact().isAttributeTypeValid(CoreAttributes.PARAGRAPH_NUMBER)) {
-               paragraphNum = change.getArtifact().getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
+            if (change.getArtifact().isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
+               paragraphNum = change.getArtifact().getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
             }
             return paragraphNum;
          }

@@ -315,7 +315,7 @@ public class AtsNavigateItemsToWorldViewTest {
       WorldEditor.closeAll();
       Artifact groupArt =
             ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, "Test Group",
-                  AtsUtil.getAtsBranch());
+            AtsUtil.getAtsBranch());
       assertTrue(groupArt != null);
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Group Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof GroupWorldSearchItem);
@@ -556,7 +556,7 @@ public class AtsNavigateItemsToWorldViewTest {
    public void getAllTreeItems(TreeItem[] treeItem, List<Artifact> taskArts) throws OseeCoreException {
       for (TreeItem item : treeItem) {
          if (item.getData() instanceof Artifact) {
-            if (((Artifact) item.getData()).getArtifactTypeName().equals("Task")) {
+            if (((Artifact) item.getData()).isOfType("Task")) {
                getXViewer().getTree().setSelection(item);
                taskArts.add((Artifact) item.getData());
             }
@@ -655,10 +655,10 @@ public class AtsNavigateItemsToWorldViewTest {
       }
    }
 
-   public void verifyArtifactsHasErrors(ITableLabelProvider labelProv, Collection<Artifact> arts, XViewerColumn xCol, int colIndex, String attributeToDelete, List<String> actualErrorCols) {
+   public void verifyArtifactsHasErrors(ITableLabelProvider labelProv, Collection<Artifact> arts, XViewerColumn xCol, int colIndex, String attributeToDelete, List<String> actualErrorCols) throws OseeCoreException {
       for (Artifact art : arts) {
          String colText = labelProv.getColumnText(art, colIndex);
-         if (art.getArtifactTypeName().equals("Demo Code Team Workflow")) {
+         if (art.isOfType("Demo Code Team Workflow")) {
             if (colText.contains("!Error")) {
                if (!actualErrorCols.contains(xCol.getId())) {
                   actualErrorCols.add(xCol.getId());

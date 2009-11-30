@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.artifact.factory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -32,12 +32,12 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class UserArtifactFactory extends ArtifactFactory {
 
    public UserArtifactFactory() {
-      super(CoreArtifacts.User.getName());
+      super(CoreArtifactTypes.User.getName());
    }
 
    public @Override
    Artifact getArtifactInstance(String guid, String humandReadableId, Branch branch, ArtifactType artifactType) throws OseeCoreException {
-      if (artifactType.getGuid().equals(CoreArtifacts.User.getGuid())) {
+      if (artifactType.getGuid().equals(CoreArtifactTypes.User.getGuid())) {
          return new User(this, guid, humandReadableId, branch, artifactType);
       }
       throw new OseeArgumentException("did not recognize the artifact type: " + artifactType.getName());
@@ -47,7 +47,7 @@ public class UserArtifactFactory extends ArtifactFactory {
    public Collection<ArtifactType> getEternalArtifactTypes() throws OseeCoreException {
       List<ArtifactType> artifactTypes = new ArrayList<ArtifactType>();
       try {
-         artifactTypes.add(ArtifactTypeManager.getTypeByGuid(CoreArtifacts.User.getGuid()));
+         artifactTypes.add(ArtifactTypeManager.getTypeByGuid(CoreArtifactTypes.User.getGuid()));
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
       }

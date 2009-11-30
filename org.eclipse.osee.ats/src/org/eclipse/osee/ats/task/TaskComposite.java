@@ -29,7 +29,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.Overview;
 import org.eclipse.osee.ats.world.WorldContentProvider;
@@ -298,9 +298,9 @@ public class TaskComposite extends Composite implements IOpenNewAtsTaskEditorSel
                      return;
                   }
                   if (taskArt.getParentSMA() != null) {
-                     taskArt.deleteRelation(AtsRelation.SmaToTask_Sma, taskArt.getParentSMA());
+                     taskArt.deleteRelation(AtsRelationTypes.SmaToTask_Sma, taskArt.getParentSMA());
                   }
-                  taskArt.addRelation(AtsRelation.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma());
+                  taskArt.addRelation(AtsRelationTypes.SmaToTask_Sma, iXTaskViewer.getParentSmaMgr().getSma());
                   taskArt.persist(transaction);
                }
             }

@@ -17,8 +17,8 @@ import java.util.Collection;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
@@ -68,7 +68,7 @@ public class RelationImporter implements RowProcessor {
          monitor.worked(1);
          Collection<Artifact> artifacts =
                ArtifactQuery.getArtifactListFromTypeAndAttribute(Requirements.SUBSYSTEM_REQUIREMENT,
-                     CoreAttributes.PARAGRAPH_NUMBER, row[1], branch);
+                     CoreAttributeTypes.PARAGRAPH_NUMBER, row[1], branch);
 
          Artifact rowArtifact;
          try {
@@ -92,7 +92,7 @@ public class RelationImporter implements RowProcessor {
                      rationale = "";
                   }
                   columnArtifacts[i].addRelation(RelationOrderBaseTypes.USER_DEFINED,
-                        CoreRelations.Allocation__Requirement, rowArtifact, rationale);
+                        CoreRelationTypes.Allocation__Requirement, rowArtifact, rationale);
                   columnArtifacts[i].persist();
                }
             }

@@ -28,7 +28,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -107,9 +107,9 @@ public class UpdateArtifactJob extends UpdateJob {
          singleGuid = singleEditMatcher.group(1);
          artifact = ArtifactQuery.getArtifactFromId(singleGuid, branch);
 
-         if (artifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName()) || artifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName())) {
+         if (artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT.getName()) || artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName())) {
             wordArtifactUpdate(getArtifacts(workingFile, true), branch);
-         } else if (artifact.isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName())) {
+         } else if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName())) {
             updateNativeArtifact(artifact);
          } else {
             throw new OseeArgumentException("Artifact must be of type WordArtifact or NativeArtifact.");
@@ -128,7 +128,7 @@ public class UpdateArtifactJob extends UpdateJob {
 
    private void updateNativeArtifact(Artifact artifact) throws OseeCoreException, FileNotFoundException {
       if (!artifact.isReadOnly()) {
-         artifact.setSoleAttributeFromStream(CoreAttributes.NATIVE_CONTENT.getName(), new FileInputStream(workingFile));
+         artifact.setSoleAttributeFromStream(CoreAttributeTypes.NATIVE_CONTENT.getName(), new FileInputStream(workingFile));
          artifact.persist();
       } else {
          logUpdateSkip(artifact);

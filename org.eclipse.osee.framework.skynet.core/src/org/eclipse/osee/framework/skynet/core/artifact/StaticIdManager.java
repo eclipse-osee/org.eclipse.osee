@@ -80,7 +80,7 @@ public class StaticIdManager {
       Set<Artifact> artifacts = new HashSet<Artifact>();
       // Retrieve cached artifacts first
       for (Artifact artifact : ArtifactCache.getArtifactsByStaticId(staticId, branch)) {
-         if (artifact.getArtifactTypeName().equals(artifactTypeName) && !artifact.isDeleted()) {
+         if (artifact.isOfType(artifactTypeName) && !artifact.isDeleted()) {
             artifacts.add(artifact);
          }
       }

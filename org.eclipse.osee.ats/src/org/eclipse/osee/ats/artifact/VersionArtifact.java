@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsCacheManager;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
@@ -78,7 +78,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    }
 
    public TeamDefinitionArtifact getParentTeamDefinition() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelation.TeamDefinitionToVersion_TeamDefinition, TeamDefinitionArtifact.class).iterator().next();
+      return getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition, TeamDefinitionArtifact.class).iterator().next();
    }
 
    public Boolean isReleased() throws OseeCoreException {
@@ -91,7 +91,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    public void getParallelVersions(Set<ICommitConfigArtifact> configArts) throws OseeCoreException {
       configArts.add(this);
-      for (VersionArtifact verArt : getRelatedArtifacts(AtsRelation.ParallelVersion_Child, VersionArtifact.class)) {
+      for (VersionArtifact verArt : getRelatedArtifacts(AtsRelationTypes.ParallelVersion_Child, VersionArtifact.class)) {
          verArt.getParallelVersions(configArts);
       }
    }
@@ -134,7 +134,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
    }
 
    public Collection<TeamWorkFlowArtifact> getTargetedForTeamArtifacts() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Workflow, TeamWorkFlowArtifact.class);
+      return getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, TeamWorkFlowArtifact.class);
    }
 
    public String getFullDisplayName() throws OseeCoreException {
@@ -161,7 +161,7 @@ public class VersionArtifact extends Artifact implements ICommitConfigArtifact {
 
    public TeamDefinitionArtifact getTeamDefinitionArtifact() throws OseeCoreException {
       try {
-         return (TeamDefinitionArtifact) getRelatedArtifact(AtsRelation.TeamDefinitionToVersion_TeamDefinition);
+         return (TeamDefinitionArtifact) getRelatedArtifact(AtsRelationTypes.TeamDefinitionToVersion_TeamDefinition);
       } catch (ArtifactDoesNotExist ex) {
          return null;
       }

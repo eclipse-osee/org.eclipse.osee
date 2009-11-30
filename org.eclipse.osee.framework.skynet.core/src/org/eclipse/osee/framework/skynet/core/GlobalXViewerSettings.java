@@ -11,6 +11,7 @@
 
 package org.eclipse.osee.framework.skynet.core;
 
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
@@ -22,17 +23,16 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  * @author Donald G. Dunne
  */
 public final class GlobalXViewerSettings {
-   private static final String ARTIFACT_TYPE_NAME = "XViewer Global Customization";
-
    private GlobalXViewerSettings() {
    }
 
    public static Artifact getCustomArtifact() throws OseeCoreException {
-      return OseeSystemArtifacts.getCachedArtifact(ARTIFACT_TYPE_NAME, ARTIFACT_TYPE_NAME,
-            BranchManager.getCommonBranch());
+      return OseeSystemArtifacts.getCachedArtifact(CoreArtifactTypes.XViewerGlobalCustomization,
+            CoreArtifactTypes.XViewerGlobalCustomization.getName(), BranchManager.getCommonBranch());
    }
 
    public static Artifact createCustomArtifact() throws OseeCoreException {
-      return ArtifactTypeManager.addArtifact(ARTIFACT_TYPE_NAME, BranchManager.getCommonBranch(), ARTIFACT_TYPE_NAME);
+      return ArtifactTypeManager.addArtifact(CoreArtifactTypes.XViewerGlobalCustomization, BranchManager.getCommonBranch(),
+            CoreArtifactTypes.XViewerGlobalCustomization.getName());
    }
 }

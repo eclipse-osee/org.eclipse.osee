@@ -12,7 +12,7 @@ package org.eclipse.osee.framework.core.internal.fields;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeInvalidInheritanceException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -33,7 +33,7 @@ public final class ArtifactSuperTypeField extends CollectionField<ArtifactType> 
    protected Collection<ArtifactType> checkInput(Collection<ArtifactType> input) throws OseeCoreException {
       Collection<ArtifactType> toReturn = Collections.emptyList();
       if (input == null || input.isEmpty()) {
-         if (!baseType.equals(CoreArtifacts.Artifact)) {
+         if (!baseType.equals(CoreArtifactTypes.Artifact)) {
             throw new OseeInvalidInheritanceException(String.format(
                   "All artifacts must inherit from [Artifact] - attempted make [%s] have null inheritance", baseType));
          }

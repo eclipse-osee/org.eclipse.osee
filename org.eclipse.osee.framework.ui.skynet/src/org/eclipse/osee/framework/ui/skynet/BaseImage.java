@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet;
 import java.io.ByteArrayInputStream;
 import java.util.logging.Level;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -67,8 +67,8 @@ public class BaseImage implements OseeImage {
          return ImageManager.getOverrideImageEnum();
       }
       try {
-         if (artifact.isAttributeTypeValid(CoreAttributes.NATIVE_EXTENSION.getName())) {
-            String extension = artifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName(), "");
+         if (artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_EXTENSION.getName())) {
+            String extension = artifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_EXTENSION.getName(), "");
             if (Strings.isValid(extension)) {
                return new ProgramImage(extension);
             }

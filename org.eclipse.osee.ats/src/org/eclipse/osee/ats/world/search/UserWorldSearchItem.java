@@ -23,10 +23,10 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.SMAUtil;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -72,7 +72,7 @@ public class UserWorldSearchItem {
          searchArts.addAll(getFavoritesArtifacts());
       } else {
          searchArts.addAll(SMAUtil.getSMAs(RelationManager.getRelatedArtifacts(Arrays.asList(user), 1,
-               CoreRelations.Users_Artifact)));
+               CoreRelationTypes.Users_Artifact)));
          // If include cancelled or completed, need to perform extra search
          // Note: Don't need to do this for Originator, Subscribed or Favorites, cause it does completed canceled in it's own searches
          if (options.contains(UserSearchOption.IncludeCancelled) || options.contains(UserSearchOption.IncludeCompleted)) {
@@ -136,11 +136,11 @@ public class UserWorldSearchItem {
    }
 
    private Collection<StateMachineArtifact> getSubscribedArtifacts() throws OseeCoreException {
-      return user.getRelatedArtifactsOfType(AtsRelation.SubscribedUser_Artifact, StateMachineArtifact.class);
+      return user.getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact, StateMachineArtifact.class);
    }
 
    private Collection<StateMachineArtifact> getFavoritesArtifacts() throws OseeCoreException {
-      return user.getRelatedArtifactsOfType(AtsRelation.FavoriteUser_Artifact, StateMachineArtifact.class);
+      return user.getRelatedArtifactsOfType(AtsRelationTypes.FavoriteUser_Artifact, StateMachineArtifact.class);
    }
 
 }

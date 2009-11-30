@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.util.widgets.SMAState;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -176,10 +176,10 @@ public class Overview {
    }
 
    public void addRelationsBlock(ATSArtifact artifact) {
-      addRelationTable("Is Superceded By", CoreRelations.Supercedes_Supercedes, artifact);
-      addRelationTable("Supercedes", CoreRelations.Supercedes_Superceded, artifact);
-      addRelationTable("Supports", CoreRelations.SupportingInfo_SupportedBy, artifact);
-      addRelationTable("Is Supported By", CoreRelations.SupportingInfo_SupportingInfo, artifact);
+      addRelationTable("Is Superceded By", CoreRelationTypes.Supercedes_Supercedes, artifact);
+      addRelationTable("Supercedes", CoreRelationTypes.Supercedes_Superceded, artifact);
+      addRelationTable("Supports", CoreRelationTypes.SupportingInfo_SupportedBy, artifact);
+      addRelationTable("Is Supported By", CoreRelationTypes.SupportingInfo_SupportingInfo, artifact);
    }
 
    public void addNotes(Artifact artifact) {

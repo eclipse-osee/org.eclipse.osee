@@ -19,7 +19,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewer;
 import org.eclipse.osee.framework.core.enums.ConflictType;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.MergeChangesInArtifactException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -197,7 +197,7 @@ public class MergeXViewer extends XViewer {
                   CompareHandler compareHandler = new CompareHandler(leftContributionItem, rightContributionItem, null);
                   compareHandler.compare();
                } else {
-                  if (attributeConflict.getArtifact().isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName())) {
+                  if (attributeConflict.getArtifact().isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName())) {
                      MessageDialog dialog =
                            new MessageDialog(
                                  shell,

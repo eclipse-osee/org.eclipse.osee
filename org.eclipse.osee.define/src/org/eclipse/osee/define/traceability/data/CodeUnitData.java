@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
@@ -34,7 +34,7 @@ public class CodeUnitData extends BaseTraceDataCache {
 
    @Override
    protected void doBulkLoad(IProgressMonitor monitor) throws Exception {
-      List<Artifact> codeUnits = ArtifactQuery.getArtifactListFromType(CoreArtifacts.CodeUnit, getBranch());
+      List<Artifact> codeUnits = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.CodeUnit, getBranch());
       populateTraceMap(monitor, codeUnits, codeUnitMap);
       monitor.worked(30);
    }

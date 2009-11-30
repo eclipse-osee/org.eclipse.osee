@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.navigate;
 import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionCheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -45,11 +45,11 @@ public class SubscribeByTeamDefinition extends XNavigateItemAction {
                   Active.Active);
       try {
          List<TeamDefinitionArtifact> objs =
-               Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(AtsRelation.SubscribedUser_Artifact,
+               Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact,
                      TeamDefinitionArtifact.class));
          diag.setInitialTeamDefs(objs);
          if (diag.open() != 0) return;
-         UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelation.SubscribedUser_Artifact, diag.getChecked(),
+         UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact, diag.getChecked(),
                TeamDefinitionArtifact.class);
          UserManager.getUser().persist();
          AWorkbench.popup(getName(), "Subscriptions updated.");

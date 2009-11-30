@@ -24,7 +24,7 @@ import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.config.AtsBulkLoadCache;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -158,7 +158,7 @@ public class ActionHyperView extends HyperView implements IPartListener, IAction
          }
          if (topArt instanceof GoalArtifact) {
             List<TaskArtifact> taskArts = new ArrayList<TaskArtifact>();
-            for (Artifact member : topArt.getRelatedArtifacts(AtsRelation.Goal_Member)) {
+            for (Artifact member : topArt.getRelatedArtifacts(AtsRelationTypes.Goal_Member)) {
                if (member instanceof TaskArtifact) {
                   taskArts.add((TaskArtifact) member);
                } else if ((member instanceof IHyperArtifact)) {

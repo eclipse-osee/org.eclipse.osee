@@ -13,19 +13,7 @@ package org.eclipse.osee.framework.core.enums;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_A;
 import static org.eclipse.osee.framework.core.enums.RelationSide.SIDE_B;
 
-public enum CoreRelations implements IRelationEnumeration {
-
-   //   AddressesIssues_AddressesIssues(SIDE_A, "Addresses Issues", ""),
-   //   AddressesIssues_IssuedArtifact(SIDE_B, "Addresses Issues", ""),
-   //   DEFAULT_STYLESHEET__RENDERER(SIDE_A, "Default Stylesheet", ""),
-   //   DEFAULT_STYLESHEET__STYLESHEET(SIDE_B, "Default Stylesheet", ""),
-   //   TestConfigurationRelation_TestScript(SIDE_A, "Test Configuration Relation", ""),
-   //   TestConfigurationRelation_TestConfiguration(SIDE_B, "Test Configuration Relation", ""),
-   //   RunByRelation_User(SIDE_A, "Run By Relation", ""),
-   //   RunByRelation_TestRun(SIDE_B, "Run By Relation", ""),
-   //   TestRunConfigRelation_TestConfiguration(SIDE_A, "Test Run Config Relation", ""),
-   //   TestRunConfigRelation_TestRun(SIDE_B, "Test Run Config Relation", ""),
-
+public enum CoreRelationTypes implements IRelationEnumeration {
    Allocation__Requirement(SIDE_A, "Allocation", "AAMFE+RS8gRV2BXaCtQA"),
    Allocation__Component(SIDE_B, "Allocation", "AAMFE+RS8gRV2BXaCtQA"),
    CodeRequirement_Requirement(SIDE_B, "Code-Requirement", "AAMFE+TNKxG5ytcGHqgA"),
@@ -67,7 +55,7 @@ public enum CoreRelations implements IRelationEnumeration {
    private String typeName;
    private String guid;
 
-   private CoreRelations(RelationSide side, String typeName, String guid) {
+   private CoreRelationTypes(RelationSide side, String typeName, String guid) {
       this.relationSide = side;
       this.typeName = typeName;
       this.guid = guid;

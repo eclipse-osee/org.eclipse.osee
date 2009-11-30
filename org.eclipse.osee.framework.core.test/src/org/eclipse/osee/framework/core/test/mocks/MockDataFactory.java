@@ -25,7 +25,7 @@ import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -111,7 +111,7 @@ public final class MockDataFactory {
    }
 
    public static ArtifactType createBaseArtifactType() {
-      IOseeType baseType = CoreArtifacts.Artifact;
+      IOseeType baseType = CoreArtifactTypes.Artifact;
       return new ArtifactType(baseType.getGuid(), baseType.getName(), true);
    }
 

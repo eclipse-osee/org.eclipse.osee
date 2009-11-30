@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.utility;
 
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -36,13 +36,13 @@ public class CsvArtifact {
    }
 
    public void setCsvData(String csvData) throws OseeCoreException {
-      artifact.setSoleAttributeFromString(CoreAttributes.NATIVE_CONTENT.getName(), csvData);
+      artifact.setSoleAttributeFromString(CoreAttributeTypes.NATIVE_CONTENT.getName(), csvData);
    }
 
    public String getCsvData() throws OseeCoreException {
       String csvData = null;
       if (artifact != null) {
-         csvData = artifact.getSoleAttributeValueAsString(CoreAttributes.NATIVE_CONTENT.getName(), null);
+         csvData = artifact.getSoleAttributeValueAsString(CoreAttributeTypes.NATIVE_CONTENT.getName(), null);
       }
       return csvData;
    }
@@ -71,7 +71,7 @@ public class CsvArtifact {
       Artifact artifact = ArtifactTypeManager.addArtifact("General Document", branch);
       artifact.setName(artifactName);
       artifact.setSoleAttributeValue("Extension", "csv");
-      artifact.setSoleAttributeFromString(CoreAttributes.NATIVE_CONTENT.getName(), csvData);
+      artifact.setSoleAttributeFromString(CoreAttributeTypes.NATIVE_CONTENT.getName(), csvData);
       StaticIdManager.setSingletonAttributeValue(artifact, staticId);
       return new CsvArtifact(artifact);
    }

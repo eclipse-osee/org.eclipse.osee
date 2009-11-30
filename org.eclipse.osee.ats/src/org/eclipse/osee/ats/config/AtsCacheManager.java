@@ -17,7 +17,8 @@ import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -99,9 +100,9 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
       }
       try {
          for (Artifact artifact : loadedArtifacts.getLoadedArtifacts()) {
-            if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
-                  WorkPageDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
-                  WorkFlowDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
+            if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME) || artifact.isOfType(
+                  WorkPageDefinition.ARTIFACT_NAME) || artifact.isOfType(
+                  CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(
                   WorkWidgetDefinition.ARTIFACT_NAME)) {
                WorkItemDefinitionFactory.deCache(artifact);
             }
@@ -121,40 +122,40 @@ public class AtsCacheManager implements IArtifactsPurgedEventListener, IFramewor
          return;
       }
       for (Artifact artifact : transData.cacheDeletedArtifacts) {
-         if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
-               WorkPageDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
-               WorkFlowDefinition.ARTIFACT_NAME) || artifact.getArtifactTypeName().equals(
+         if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME) || artifact.isOfType(
+               WorkPageDefinition.ARTIFACT_NAME) || artifact.isOfType(
+               CoreArtifactTypes.WorkFlowDefinition) || artifact.isOfType(
                WorkWidgetDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.deCache(artifact);
          }
       }
       for (Artifact artifact : transData.cacheAddedArtifacts) {
-         if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+         if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkRuleDefinition(artifact), artifact);
-         } else if (artifact.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
+         } else if (artifact.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkPageDefinition(artifact), artifact);
-         } else if (artifact.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
+         } else if (artifact.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
                   artifact), artifact);
-         } else if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+         } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkFlowDefinition(artifact), artifact);
          }
       }
       for (Artifact artifact : transData.getArtifactsInRelations(ChangeType.All,
-            CoreRelations.WorkItem__Child)) {
-         if (artifact.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+            CoreRelationTypes.WorkItem__Child)) {
+         if (artifact.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkRuleDefinition(artifact), artifact);
-         } else if (artifact.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
+         } else if (artifact.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkPageDefinition(artifact), artifact);
-         } else if (artifact.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
+         } else if (artifact.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update, new WorkWidgetDefinition(
                   artifact), artifact);
-         } else if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+         } else if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             WorkItemDefinitionFactory.cacheWorkItemDefinitionArtifact(WriteType.Update,
                   new WorkFlowDefinition(artifact), artifact);
          }

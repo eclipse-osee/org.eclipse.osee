@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core;
 
+import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -29,16 +31,17 @@ public final class OseeSystemArtifacts {
    public static final String ROOT_ARTIFACT_TYPE_NAME = "Root Artifact";
 
    public static Artifact getGlobalPreferenceArtifact() throws OseeCoreException {
-      return getCachedArtifact("Global Preferences", "Global Preferences", BranchManager.getCommonBranch());
+      return getCachedArtifact(CoreArtifactTypes.GlobalPreferences, CoreArtifactTypes.GlobalPreferences.getName(),
+            BranchManager.getCommonBranch());
    }
 
    public static Artifact getDefaultHierarchyRootArtifact(Branch branch) throws OseeCoreException {
-      return getCachedArtifact(ROOT_ARTIFACT_TYPE_NAME, DEFAULT_HIERARCHY_ROOT_NAME, branch);
+      return getCachedArtifact(CoreArtifactTypes.RootArtifact, DEFAULT_HIERARCHY_ROOT_NAME, branch);
    }
 
    public static Artifact createGlobalPreferenceArtifact() throws OseeCoreException {
-      return ArtifactTypeManager.addArtifact("Global Preferences", BranchManager.getCommonBranch(),
-            "Global Preferences");
+      return ArtifactTypeManager.addArtifact(CoreArtifactTypes.GlobalPreferences, BranchManager.getCommonBranch(),
+            CoreArtifactTypes.GlobalPreferences.getName());
    }
 
    /**
@@ -49,26 +52,26 @@ public final class OseeSystemArtifacts {
     *         accessed, and finally a new artifact is created if it can not be found
     * @throws OseeCoreException
     */
-   public static Artifact getOrCreateArtifact(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
-      return getOrCreateCachedArtifact(artifactTypeName, artifactName, branch, true);
+   public static Artifact getOrCreateArtifact(IOseeType artifactType, String artifactName, Branch branch) throws OseeCoreException {
+      return getOrCreateCachedArtifact(artifactType, artifactName, branch, true);
    }
 
-   public static Artifact getCachedArtifact(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
-      return getOrCreateCachedArtifact(artifactTypeName, artifactName, branch, false);
+   public static Artifact getCachedArtifact(IOseeType artifactType, String artifactName, Branch branch) throws OseeCoreException {
+      return getOrCreateCachedArtifact(artifactType, artifactName, branch, false);
    }
 
-   private static Artifact getOrCreateCachedArtifact(String artifactTypeName, String artifactName, Branch branch, boolean create) throws OseeCoreException {
-      Artifact artifact = ArtifactCache.getByTextId(artifactTypeName + "." + artifactName, branch);
+   private static Artifact getOrCreateCachedArtifact(IOseeType artifactType, String artifactName, Branch branch, boolean create) throws OseeCoreException {
+      Artifact artifact = ArtifactCache.getByTextId(artifactType.getName() + "." + artifactName, branch);
       if (artifact == null) {
-         artifact = ArtifactQuery.checkArtifactFromTypeAndName(artifactTypeName, artifactName, branch);
+         artifact = ArtifactQuery.checkArtifactFromTypeAndName(artifactType, artifactName, branch);
          if (artifact == null && create) {
-            artifact = ArtifactTypeManager.addArtifact(artifactTypeName, branch, artifactName);
+            artifact = ArtifactTypeManager.addArtifact(artifactType, branch, artifactName);
          }
          if (artifact == null) {
             throw new ArtifactDoesNotExist(
-                  "Artifact of type " + artifactTypeName + "with name " + artifactName + " does not exist on branch " + branch);
+                  "Artifact of type " + artifactType + " with name " + artifactName + " does not exist on branch " + branch);
          }
-         ArtifactCache.cacheByTextId(artifactTypeName + "." + artifactName, artifact);
+         ArtifactCache.cacheByTextId(artifactType.getName() + "." + artifactName, artifact);
       }
       return artifact;
    }

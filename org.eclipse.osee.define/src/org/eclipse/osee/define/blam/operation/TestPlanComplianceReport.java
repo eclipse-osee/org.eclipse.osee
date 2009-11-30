@@ -16,9 +16,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -65,7 +65,7 @@ public class TestPlanComplianceReport extends AbstractBlam {
 
    private boolean isTestPlan(Artifact src) {
       ArtifactType temp = src.getArtifactType();
-      if (temp.inheritsFrom(CoreArtifacts.TestPlanElement)) {
+      if (temp.inheritsFrom(CoreArtifactTypes.TestPlanElement)) {
          return true;
       }
 
@@ -96,31 +96,31 @@ public class TestPlanComplianceReport extends AbstractBlam {
       }
 
    private String getStatus(Artifact testProc) throws OseeCoreException {
-      String returnValue = testProc.getSoleAttributeValue(CoreAttributes.TEST_STATUS);
+      String returnValue = testProc.getSoleAttributeValue(CoreAttributeTypes.TEST_STATUS);
 
       return returnValue;
    }
 
    private String getName(Artifact art) throws OseeCoreException {
-      String testPlanNumber = art.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
+      String testPlanNumber = art.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
       String testPlanOutput = testPlanNumber + " " + art.getName();
       return testPlanOutput;
    }
 
    private Collection<Artifact> getTestProcedures(Artifact testPlan) throws OseeCoreException {
-      Collection<Artifact> ret = testPlan.getRelatedArtifacts(CoreRelations.Executes__Test_Procedure);
+      Collection<Artifact> ret = testPlan.getRelatedArtifacts(CoreRelationTypes.Executes__Test_Procedure);
 
       return ret;
    }
 
    private Collection<Artifact> getTestResults(Artifact testProc) throws OseeCoreException {
-      Collection<Artifact> ret = testProc.getRelatedArtifacts(CoreRelations.Test_Unit_Result__Test_Result);
+      Collection<Artifact> ret = testProc.getRelatedArtifacts(CoreRelationTypes.Test_Unit_Result__Test_Result);
 
       return ret;
    }
 
    private String getRequirementsCellOutput(Artifact art) throws OseeCoreException {
-      if (art.getArtifactType().inheritsFrom(CoreArtifacts.TestPlanElement)) {
+      if (art.getArtifactType().inheritsFrom(CoreArtifactTypes.TestPlanElement)) {
          return getRequirementsCellOutputForTestPlan(art);
       }
 
@@ -138,10 +138,10 @@ public class TestPlanComplianceReport extends AbstractBlam {
 
    private String getRequirementsAsString(Artifact testPlan) throws OseeCoreException {
       Collection<Artifact> requirementArtifacts =
-            testPlan.getRelatedArtifacts(CoreRelations.Verification_Plan__Requirement);
+            testPlan.getRelatedArtifacts(CoreRelationTypes.Verification_Plan__Requirement);
       Collection<String> requirementNames = new ArrayList<String>();
       for (Artifact req : requirementArtifacts) {
-         String paragraphNumber = req.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
+         String paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
          requirementNames.add(paragraphNumber + " " + req.getName());
       }
 
@@ -191,10 +191,10 @@ public class TestPlanComplianceReport extends AbstractBlam {
       for (Artifact input : inputArtifacts) {
          testPlans.addAll(input.getDescendants());
       }
-      RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelations.Verification_Plan__Requirement);
+      RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationTypes.Verification_Plan__Requirement);
       Collection<Artifact> temp =
-            RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelations.Executes__Test_Procedure);
-      RelationManager.getRelatedArtifacts(temp, 1, CoreRelations.Test_Unit_Result__Test_Result);
+            RelationManager.getRelatedArtifacts(testPlans, 1, CoreRelationTypes.Executes__Test_Procedure);
+      RelationManager.getRelatedArtifacts(temp, 1, CoreRelationTypes.Test_Unit_Result__Test_Result);
    }
 
    @Override

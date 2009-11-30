@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -56,11 +56,11 @@ public class UserRelatedToAtsObjectSearch extends UserSearchItem {
                false, false, false, ATSAttributes.CURRENT_STATE_ATTRIBUTE.getStoreName(),
                ATSAttributes.STATE_ATTRIBUTE.getStoreName(), ATSAttributes.LOG_ATTRIBUTE.getStoreName()));
       }
-      arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamLead_Team));
-      arts.addAll(user.getRelatedArtifacts(AtsRelation.TeamMember_Team));
-      arts.addAll(user.getRelatedArtifacts(AtsRelation.FavoriteUser_Artifact));
-      arts.addAll(user.getRelatedArtifacts(AtsRelation.SubscribedUser_Artifact));
-      arts.addAll(user.getRelatedArtifacts(AtsRelation.PrivilegedMember_Team));
+      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamLead_Team));
+      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team));
+      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.FavoriteUser_Artifact));
+      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_Artifact));
+      arts.addAll(user.getRelatedArtifacts(AtsRelationTypes.PrivilegedMember_Team));
 
       if (isCancelled()) return EMPTY_SET;
       return arts;

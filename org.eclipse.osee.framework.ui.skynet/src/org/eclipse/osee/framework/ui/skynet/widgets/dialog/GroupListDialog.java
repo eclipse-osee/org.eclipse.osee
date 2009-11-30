@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -35,7 +36,7 @@ import org.eclipse.swt.widgets.Shell;
  */
 public class GroupListDialog extends ArtifactListDialog {
    BranchSelectComposite branchSelect;
-   
+
    public GroupListDialog(Shell parent) {
       super(parent, null);
       setTitle("Select group");
@@ -61,7 +62,7 @@ public class GroupListDialog extends ArtifactListDialog {
                }
             }
          }
-            } catch (OseeCoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
       if (getTableViewer() == null) {
@@ -69,9 +70,9 @@ public class GroupListDialog extends ArtifactListDialog {
       } else {
          updateArtifacts(arts);
       }
-      
+
    }
-   
+
    public class GroupsDescriptiveLabelProvider implements ILabelProvider {
 
       public Image getImage(Object arg0) {
@@ -81,8 +82,12 @@ public class GroupListDialog extends ArtifactListDialog {
       public String getText(Object obj) {
          if (obj instanceof Artifact) {
             Artifact art = (Artifact) obj;
-            if (art.getArtifactTypeName().equals(UniversalGroup.ARTIFACT_TYPE_NAME)) {
-               return art.toString() + " (" + art.getBranch().getShortName() + ")";
+            try {
+               if (art.isOfType(CoreArtifactTypes.UniversalGroup)) {
+                  return art.toString() + " (" + art.getBranch().getShortName() + ")";
+               }
+            } catch (Exception ex) {
+               OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
             }
             art.toString();
          }
@@ -104,7 +109,7 @@ public class GroupListDialog extends ArtifactListDialog {
 
    }
 
-      @Override
+   @Override
    protected Control createDialogArea(Composite container) {
       Control c = super.createDialogArea(container);
       branchSelect = new BranchSelectComposite(container, SWT.NONE, false);
@@ -117,6 +122,5 @@ public class GroupListDialog extends ArtifactListDialog {
       });
       return c;
    }
-
 
 }

@@ -19,7 +19,7 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 /**
  * @author Donald G. Dunne
  */
-public enum AtsRelation implements IRelationEnumeration {
+public enum AtsRelationTypes implements IRelationEnumeration {
    ActionToWorkflow_Action(true, "ActionToWorkflow", "AAMFE953ixQThusHUPwA"),
    ActionToWorkflow_WorkFlow(false, "ActionToWorkflow", "AAMFE953ixQThusHUPwA"),
       //
@@ -76,7 +76,7 @@ public enum AtsRelation implements IRelationEnumeration {
    private final String typeName;
    private final String guid;
 
-   private AtsRelation(boolean sideA, String typeName, String guid) {
+   private AtsRelationTypes(boolean sideA, String typeName, String guid) {
       this.relationSide = sideA ? RelationSide.SIDE_A : RelationSide.SIDE_B;
       this.typeName = typeName;
       this.guid = guid;

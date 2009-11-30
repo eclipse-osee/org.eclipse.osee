@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsEndorseWorkPageDefinition;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -146,8 +146,8 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
          }
 
          // Add same relations as default work pages to new work pages (widgets and rules)
-         for (Artifact art : defaultStateArt.getRelatedArtifacts(CoreRelations.WorkItem__Child)) {
-            newStateArt.addRelation(CoreRelations.WorkItem__Child, art);
+         for (Artifact art : defaultStateArt.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
+            newStateArt.addRelation(CoreRelationTypes.WorkItem__Child, art);
          }
 
          AtsWorkDefinitions.addUpdateWorkItemToDefaultHeirarchy(newStateArt, transaction);
@@ -189,7 +189,7 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
       artifacts.add(cancelledPage.toArtifact(WriteType.New));
       Artifact workflowArt = workflow.toArtifact(WriteType.New);
       if (teamDef != null) {
-         teamDef.addRelation(CoreRelations.WorkItem__Child, workflowArt);
+         teamDef.addRelation(CoreRelationTypes.WorkItem__Child, workflowArt);
          artifacts.add(teamDef);
       }
       artifacts.add(workflowArt);

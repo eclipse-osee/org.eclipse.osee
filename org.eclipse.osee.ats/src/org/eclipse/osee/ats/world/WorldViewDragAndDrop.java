@@ -22,7 +22,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.world.search.GroupWorldSearchItem;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.plugin.core.util.Jobs;
@@ -54,20 +56,21 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
       List<Artifact> artifacts = new ArrayList<Artifact>();
       while (i.hasNext()) {
          Object object = i.next();
-         if (object instanceof Artifact) artifacts.add((Artifact) object);
+         if (object instanceof Artifact) {
+            artifacts.add((Artifact) object);
+         }
       }
       return artifacts.toArray(new Artifact[artifacts.size()]);
    }
 
-   private boolean isValidForArtifactDrop(DropTargetEvent event) {
+   private boolean isValidForArtifactDrop(DropTargetEvent event) throws OseeCoreException {
       if (ArtifactTransfer.getInstance().isSupportedType(event.currentDataType)) {
          ArtifactData artData = ArtifactTransfer.getInstance().nativeToJava(event.currentDataType);
 
          if (artData != null) {
             Artifact[] artifacts = artData.getArtifacts();
             for (Artifact art : artifacts) {
-               if ((art instanceof IWorldViewArtifact) || art.getArtifactTypeName().equals(
-                     UniversalGroup.ARTIFACT_TYPE_NAME)) {
+               if (art instanceof IWorldViewArtifact || art.isOfType(CoreArtifactTypes.UniversalGroup)) {
                   return true;
                }
             }
@@ -77,7 +80,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
    }
 
    @Override
-   public void performDragOver(DropTargetEvent event) {
+   public void performDragOver(DropTargetEvent event) throws OseeCoreException {
       if (isValidForArtifactDrop(event)) {
          event.detail = DND.DROP_COPY;
       }
@@ -99,7 +102,7 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                         Artifact art = artifacts[0];
                         if (art instanceof IWorldViewArtifact) {
                            name = art.getName();
-                        } else if (art.getArtifactTypeName().equals(UniversalGroup.ARTIFACT_TYPE_NAME)) {
+                        } else if (art.isOfType(UniversalGroup.ARTIFACT_TYPE_NAME)) {
                            GroupWorldSearchItem groupWorldSearchItem = new GroupWorldSearchItem(art.getBranch());
                            groupWorldSearchItem.setSelectedGroup(art);
                            WorldEditor.open(new WorldEditorUISearchItemProvider(groupWorldSearchItem, null,
@@ -110,8 +113,8 @@ public class WorldViewDragAndDrop extends SkynetDragAndDrop {
                      for (Artifact art : artifacts) {
                         if (art instanceof IWorldViewArtifact) {
                            arts.add(art);
-                        } else if (art.getArtifactTypeName().equals(UniversalGroup.ARTIFACT_TYPE_NAME)) {
-                           for (Artifact relArt : art.getRelatedArtifacts(CoreRelations.Universal_Grouping__Members)) {
+                        } else if (art.isOfType(UniversalGroup.ARTIFACT_TYPE_NAME)) {
+                           for (Artifact relArt : art.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members)) {
                               if (relArt instanceof IWorldViewArtifact) {
                                  arts.add(relArt);
                               }

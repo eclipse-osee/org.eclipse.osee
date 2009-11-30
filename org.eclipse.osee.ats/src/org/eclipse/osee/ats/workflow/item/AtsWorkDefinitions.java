@@ -33,7 +33,8 @@ import org.eclipse.osee.ats.workflow.flow.TaskWorkflowDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCancelledWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsCompletedWorkPageDefinition;
 import org.eclipse.osee.ats.workflow.page.AtsDecisionDecisionWorkPageDefinition;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -283,17 +284,17 @@ public class AtsWorkDefinitions implements IWorkDefinitionProvider {
 
    public static void addUpdateWorkItemToDefaultHeirarchy(Artifact art, SkynetTransaction transaction) throws OseeCoreException {
       // Relate if not already related
-      if (art.getRelatedArtifacts(CoreRelations.WorkItem__Parent, Artifact.class).size() == 0) {
-         if (art.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
+      if (art.getRelatedArtifacts(CoreRelationTypes.WorkItem__Parent, Artifact.class).size() == 0) {
+         if (art.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
             relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkPages), art, transaction);
          }
-         if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
             relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkRules), art, transaction);
          }
-         if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
             relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkWidgets), art, transaction);
          }
-         if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             relateIfNotRelated(AtsFolderUtil.getFolder(AtsFolder.WorkFlow), art, transaction);
          }
       }

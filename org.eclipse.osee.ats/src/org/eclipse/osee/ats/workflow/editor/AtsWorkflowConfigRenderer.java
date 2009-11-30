@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -52,7 +53,7 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       try {
          for (Artifact artifact : artifacts) {
-            if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+            if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
                AtsWorkflowConfigEditor.editWorkflow(new WorkFlowDefinition(artifact));
             }
          }
@@ -67,8 +68,8 @@ public class AtsWorkflowConfigRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

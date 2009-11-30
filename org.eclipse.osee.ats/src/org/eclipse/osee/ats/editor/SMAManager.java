@@ -35,7 +35,7 @@ import org.eclipse.osee.ats.editor.stateItem.AtsStateItems;
 import org.eclipse.osee.ats.editor.stateItem.IAtsStateItem;
 import org.eclipse.osee.ats.util.AtsBranchManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.DeadlineManager;
 import org.eclipse.osee.ats.util.StateManager;
@@ -409,7 +409,7 @@ public class SMAManager {
       }
 
       for (TeamWorkFlowArtifact teamArt : smas) {
-         teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version,
+         teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version,
                java.util.Collections.singleton(newVersion));
       }
       if (persist) {

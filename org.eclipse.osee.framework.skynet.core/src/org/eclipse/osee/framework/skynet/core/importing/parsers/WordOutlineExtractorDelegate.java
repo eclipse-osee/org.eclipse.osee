@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.attribute.WordAttribute;
@@ -117,7 +117,7 @@ public class WordOutlineExtractorDelegate implements IArtifactExtractorDelegate 
          collector.addRoughArtifact(roughArtifact);
          roughArtifact.setSectionNumber(parNumber);
 
-         roughArtifact.addAttribute(CoreAttributes.PARAGRAPH_NUMBER, parNumber);
+         roughArtifact.addAttribute(CoreAttributeTypes.PARAGRAPH_NUMBER, parNumber);
 
          return roughArtifact;
       } else {

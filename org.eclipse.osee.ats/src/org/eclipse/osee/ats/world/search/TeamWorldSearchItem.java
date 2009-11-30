@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.config.AtsCacheManager;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.User;
@@ -197,7 +197,7 @@ public class TeamWorldSearchItem extends WorldUISearchItem {
          resultSet.add(art);
       }
       if (showAction) {
-         return RelationManager.getRelatedArtifacts(resultSet, 1, AtsRelation.ActionToWorkflow_Action);
+         return RelationManager.getRelatedArtifacts(resultSet, 1, AtsRelationTypes.ActionToWorkflow_Action);
       } else {
          return resultSet;
       }

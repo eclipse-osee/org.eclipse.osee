@@ -15,7 +15,7 @@ import org.eclipse.osee.framework.core.data.IOseeType;
 /**
  * @author Roberto E. Escobar
  */
-public enum CoreAttributes implements IOseeType {
+public enum CoreAttributeTypes implements IOseeType {
    FAVORITE_BRANCH("Favorite Branch", "AAMFEbMnzS7P92knZKAA"),
    NAME("Name", "AAMFEcF1AzV7PKuHmxwA"),
    NATIVE_CONTENT("Native Content", "AAMFEcdBJGBK9nr9TTQA"),
@@ -32,7 +32,7 @@ public enum CoreAttributes implements IOseeType {
    private final String name;
    private final String guid;
 
-   private CoreAttributes(String name, String guid) {
+   private CoreAttributeTypes(String name, String guid) {
       this.name = name;
       this.guid = guid;
    }

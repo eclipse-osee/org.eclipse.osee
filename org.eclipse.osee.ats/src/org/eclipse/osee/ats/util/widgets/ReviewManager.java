@@ -27,7 +27,7 @@ import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact.ReviewBlockType;
 import org.eclipse.osee.ats.editor.SMAManager;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -134,7 +134,7 @@ public class ReviewManager {
                   AtsUtil.getAtsBranch(), reviewTitle == null ? "Peer to Peer Review" : reviewTitle);
 
       if (teamParent != null) {
-         teamParent.addRelation(AtsRelation.TeamWorkflowToReview_Review, peerToPeerRev);
+         teamParent.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, peerToPeerRev);
          if (againstState != null) peerToPeerRev.setSoleAttributeValue(
                ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), againstState);
       }
@@ -214,7 +214,7 @@ public class ReviewManager {
    }
 
    public Collection<ReviewSMArtifact> getReviews() throws OseeCoreException {
-      return smaMgr.getSma().getRelatedArtifacts(AtsRelation.TeamWorkflowToReview_Review, ReviewSMArtifact.class);
+      return smaMgr.getSma().getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Review, ReviewSMArtifact.class);
    }
 
    public Collection<ReviewSMArtifact> getReviewsFromCurrentState() throws OseeCoreException {
@@ -231,7 +231,7 @@ public class ReviewManager {
 
    public boolean hasReviews() {
       try {
-         return smaMgr.getSma().getRelatedArtifactsCount(AtsRelation.TeamWorkflowToReview_Review) > 0;
+         return smaMgr.getSma().getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowToReview_Review) > 0;
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          return false;
@@ -303,7 +303,7 @@ public class ReviewManager {
                   AtsUtil.getAtsBranch(), title);
 
       if (teamParent != null) {
-         teamParent.addRelation(AtsRelation.TeamWorkflowToReview_Review, decRev);
+         teamParent.addRelation(AtsRelationTypes.TeamWorkflowToReview_Review, decRev);
       }
       if (relatedToState != null && !relatedToState.equals("")) {
          decRev.setSoleAttributeValue(ATSAttributes.RELATED_TO_STATE_ATTRIBUTE.getStoreName(), relatedToState);

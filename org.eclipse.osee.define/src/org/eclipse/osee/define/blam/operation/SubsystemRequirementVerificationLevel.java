@@ -13,9 +13,9 @@ package org.eclipse.osee.define.blam.operation;
 import java.util.Arrays;
 import java.util.Collection;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
@@ -45,7 +45,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
    private StringBuilder report;
    private SkynetTransaction transaction;
    private final String[] columnHeaders =
-         {"Requirement", "Subsystem", CoreAttributes.PARAGRAPH_NUMBER.getName(), "Current Verification Level",
+         {"Requirement", "Subsystem", CoreAttributeTypes.PARAGRAPH_NUMBER.getName(), "Current Verification Level",
                "Changed"};
 
    @SuppressWarnings("unused")
@@ -53,10 +53,10 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
 
    private void loadFields(VariableMap variableMap) throws OseeCoreException {
       branch = variableMap.getBranch("Branch");
-      subsystemRequirements = ArtifactQuery.getArtifactListFromType(CoreArtifacts.SubsystemRequirement, branch);
+      subsystemRequirements = ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.SubsystemRequirement, branch);
       bulkRequirements =
             RelationManager.getRelatedArtifacts(subsystemRequirements, 1,
-                  CoreRelations.Requirement_Trace__Lower_Level);
+                  CoreRelationTypes.Requirement_Trace__Lower_Level);
       report = new StringBuilder(AHTML.beginMultiColumnTable(100, 1));
       transaction = new SkynetTransaction(branch, "Set Verification Level for Subsystem Requirements");
    }
@@ -119,21 +119,21 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       private void getData() throws OseeCoreException {
          this.hardwareComponents = getHardwareComponentCount();
          this.softwareRequirements = getSoftwareRequirementCount();
-         paragraphNumber = req.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "UNDEFINED");
-         subsystem = req.getSoleAttributeValue(CoreAttributes.SUBSYSTEM, "UNDEFINED");
-         verificationLevel = req.getSoleAttributeValue(CoreAttributes.VERIFICATION_LEVEL, "UNDEFINED");
+         paragraphNumber = req.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "UNDEFINED");
+         subsystem = req.getSoleAttributeValue(CoreAttributeTypes.SUBSYSTEM, "UNDEFINED");
+         verificationLevel = req.getSoleAttributeValue(CoreAttributeTypes.VERIFICATION_LEVEL, "UNDEFINED");
       }
 
       private int getHardwareComponentCount() throws OseeCoreException {
-         return RelationManager.getRelatedArtifactsCount(req, CoreRelations.Allocation__Component);
+         return RelationManager.getRelatedArtifactsCount(req, CoreRelationTypes.Allocation__Component);
       }
 
       private int getSoftwareRequirementCount() throws OseeCoreException {
          Collection<Artifact> traceCollection =
-               RelationManager.getRelatedArtifacts(req, CoreRelations.Requirement_Trace__Lower_Level);
+               RelationManager.getRelatedArtifacts(req, CoreRelationTypes.Requirement_Trace__Lower_Level);
          int ret = 0;
          for (Artifact trace : traceCollection) {
-            if (trace.isOfType(CoreArtifacts.AbstractSoftwareRequirement)) {
+            if (trace.isOfType(CoreArtifactTypes.AbstractSoftwareRequirement)) {
                ret++;
             }
          }
@@ -145,7 +145,7 @@ public class SubsystemRequirementVerificationLevel extends AbstractBlam {
       }
 
       private void adjustVerificationLevel() throws OseeCoreException {
-         req.setSoleAttributeValue(CoreAttributes.VERIFICATION_LEVEL, "Component");
+         req.setSoleAttributeValue(CoreAttributeTypes.VERIFICATION_LEVEL, "Component");
          req.persist(SubsystemRequirementVerificationLevel.this.transaction);
       }
 

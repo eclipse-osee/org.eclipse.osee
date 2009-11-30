@@ -23,7 +23,7 @@ import java.util.Map.Entry;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 
@@ -49,9 +49,9 @@ public class VersionTeamMetrics {
 
    private void bulkLoadArtifacts() throws OseeCoreException {
       RelationManager.getRelatedArtifacts(Arrays.asList(this.verTeamDef), 6,
-            CoreRelations.Default_Hierarchical__Child, AtsRelation.TeamDefinitionToVersion_Version,
-            AtsRelation.TeamWorkflowTargetedForVersion_Workflow, AtsRelation.SmaToTask_Task,
-            AtsRelation.ActionToWorkflow_Action);
+            CoreRelationTypes.Default_Hierarchical__Child, AtsRelationTypes.TeamDefinitionToVersion_Version,
+            AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, AtsRelationTypes.SmaToTask_Task,
+            AtsRelationTypes.ActionToWorkflow_Action);
    }
 
    private Map<TeamWorkFlowArtifact, Date> teamWorkflowToOrigDate = null;

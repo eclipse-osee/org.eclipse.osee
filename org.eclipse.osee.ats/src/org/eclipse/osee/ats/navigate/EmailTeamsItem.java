@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionTreeWithChildrenDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -61,11 +61,11 @@ public class EmailTeamsItem extends XNavigateItemAction {
       Set<String> emails = new HashSet<String>();
       for (TeamDefinitionArtifact teamDef : teamDefs) {
          if (memberTypes.contains(MemberType.Members) || memberTypes.contains(MemberType.Both)) {
-            for (User user : teamDef.getRelatedArtifacts(AtsRelation.TeamMember_Member, User.class))
+            for (User user : teamDef.getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class))
                if (!user.getEmail().equals("")) emails.add(user.getEmail());
          }
          if (memberTypes.contains(MemberType.Leads) || memberTypes.contains(MemberType.Both)) {
-            for (User user : teamDef.getRelatedArtifacts(AtsRelation.TeamLead_Lead, User.class))
+            for (User user : teamDef.getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class))
                if (!user.getEmail().equals("")) emails.add(user.getEmail());
          }
       }

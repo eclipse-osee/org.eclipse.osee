@@ -13,14 +13,14 @@ package org.eclipse.osee.ote.define.AUTOGEN;
 import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 
-public enum OteArtifacts implements IOseeType {
+public enum OteArtifactTypes implements IOseeType {
    TEST_RUN(Requirements.TEST_RUN, "AAMFDjqDHWo+orlSpaQA"),
    TEST_SCRIPT(Requirements.TEST_CASE, "AAMFDikEi0TGK27TKPgA");
 
    private final String name;
    private final String guid;
 
-   private OteArtifacts(String name, String guid) {
+   private OteArtifactTypes(String name, String guid) {
       this.name = name;
       this.guid = guid;
    }

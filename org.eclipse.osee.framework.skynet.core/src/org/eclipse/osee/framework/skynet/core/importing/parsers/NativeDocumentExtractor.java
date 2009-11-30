@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.skynet.core.importing.parsers;
 import java.io.File;
 import java.io.FileFilter;
 import java.net.URI;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifact;
 import org.eclipse.osee.framework.skynet.core.importing.RoughArtifactKind;
@@ -32,8 +32,8 @@ public class NativeDocumentExtractor extends AbstractArtifactExtractor {
 
       RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY, name);
       collector.addRoughArtifact(roughArtifact);
-      roughArtifact.addAttribute(CoreAttributes.NATIVE_EXTENSION.getName(), extension);
-      roughArtifact.addURIAttribute(CoreAttributes.NATIVE_CONTENT.getName(), source);
+      roughArtifact.addAttribute(CoreAttributeTypes.NATIVE_EXTENSION.getName(), extension);
+      roughArtifact.addURIAttribute(CoreAttributeTypes.NATIVE_CONTENT.getName(), source);
    }
 
    public FileFilter getFileFilter() {

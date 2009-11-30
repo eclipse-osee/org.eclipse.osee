@@ -17,7 +17,7 @@ import java.io.StringWriter;
 import java.util.Collection;
 import java.util.HashSet;
 import org.eclipse.osee.framework.core.data.SystemUser;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -120,7 +120,7 @@ public class User extends Artifact implements Serializable {
       }
 
       boolean found = false;
-      Collection<Attribute<String>> attributes = getAttributes(CoreAttributes.FAVORITE_BRANCH.getName());
+      Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FAVORITE_BRANCH.getName());
       for (Attribute<String> attribute : attributes) {
          // Remove attributes that are no longer valid
          if (!branchGuids.contains(attribute.getValue())) {
@@ -133,13 +133,13 @@ public class User extends Artifact implements Serializable {
       }
 
       if (!found) {
-         addAttribute(CoreAttributes.FAVORITE_BRANCH.getName(), favoriteBranch.getGuid());
+         addAttribute(CoreAttributeTypes.FAVORITE_BRANCH.getName(), favoriteBranch.getGuid());
       }
-      setSetting(CoreAttributes.FAVORITE_BRANCH.getName(), favoriteBranch.getGuid());
+      setSetting(CoreAttributeTypes.FAVORITE_BRANCH.getName(), favoriteBranch.getGuid());
    }
 
    public boolean isFavoriteBranch(Branch branch) throws OseeCoreException {
-      Collection<Attribute<String>> attributes = getAttributes(CoreAttributes.FAVORITE_BRANCH.getName());
+      Collection<Attribute<String>> attributes = getAttributes(CoreAttributeTypes.FAVORITE_BRANCH.getName());
       for (Attribute<String> attribute : attributes) {
          if (branch.getGuid().equals(attribute.getValue())) {
             return true;

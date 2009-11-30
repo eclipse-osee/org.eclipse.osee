@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.artifact.editor.parts;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.jface.dialogs.IMessageProvider;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -78,7 +78,7 @@ public class AttributeFormPart extends AbstractFormPart {
          List<AttributeType> types = Arrays.asList(AttributeTypeUtil.getTypesWithData(artifact));
          boolean willHaveASection = hasWordAttribute(types);
          for (AttributeType attributeType : types) {
-            if (AttributeTypeManager.getAttributeBaseClass(attributeType).equals(WordAttribute.class) || CoreAttributes.RELATION_ORDER.getGuid().equals(
+            if (AttributeTypeManager.getAttributeBaseClass(attributeType).equals(WordAttribute.class) || CoreAttributeTypes.RELATION_ORDER.getGuid().equals(
                   attributeType.getGuid())) {
                createAttributeTypeControlsInSection(parent, toolkit, attributeType, willHaveASection, false);
             } else {

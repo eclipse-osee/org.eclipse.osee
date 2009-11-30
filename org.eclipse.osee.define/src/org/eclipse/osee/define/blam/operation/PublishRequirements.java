@@ -22,7 +22,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.define.DefinePlugin;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -90,7 +90,7 @@ public class PublishRequirements extends AbstractBlam {
       } else {
          linkType = LinkType.INTERNAL_DOC_REFERENCE_USE_NAME;
       }
-      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelations.Default_Hierarchical__Child);
+      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationTypes.Default_Hierarchical__Child);
 
       SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch(), getName());
       String templateOption;

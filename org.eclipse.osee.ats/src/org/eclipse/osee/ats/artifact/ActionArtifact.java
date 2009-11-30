@@ -27,13 +27,14 @@ import org.eclipse.osee.ats.actions.wizard.IAtsTeamWorkflow;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.ats.world.IWorldViewArtifact;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -104,9 +105,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    private void resetTitleOffChildren() throws OseeCoreException {
       String title = "";
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (title.equals(""))
+         if (title.equals("")) {
             title = team.getName();
-         else if (!title.equals(team.getName())) return;
+         } else if (!title.equals(team.getName())) {
+            return;
+         }
       }
       if (!title.equals(getName())) {
          setName(title);
@@ -117,11 +120,13 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    private void resetValidationOffChildren() throws OseeCoreException {
       boolean validationRequired = false;
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (team.getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false)) validationRequired =
-               true;
+         if (team.getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false)) {
+            validationRequired = true;
+         }
       }
-      if (validationRequired != getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false)) setSoleAttributeValue(
-            ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), validationRequired);
+      if (validationRequired != getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false)) {
+         setSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), validationRequired);
+      }
    }
 
    /**
@@ -130,9 +135,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    private void resetDescriptionOffChildren() throws OseeCoreException {
       String desc = "";
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (desc.equals(""))
+         if (desc.equals("")) {
             desc = team.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), "");
-         else if (!desc.equals(team.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""))) return;
+         } else if (!desc.equals(team.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""))) {
+            return;
+         }
       }
       if (!desc.equals(getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""))) {
          setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
@@ -145,43 +152,51 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    private void resetChangeTypeOffChildren() throws OseeCoreException {
       ChangeType changeType = null;
       Collection<TeamWorkFlowArtifact> teamArts = getTeamWorkFlowArtifacts();
-      if (teamArts.size() == 1)
+      if (teamArts.size() == 1) {
          changeType = teamArts.iterator().next().getChangeType();
-      else
-         for (TeamWorkFlowArtifact team : teamArts)
-            if (!(new SMAManager(team)).isCancelled()) {
-               if (changeType == null)
+      } else {
+         for (TeamWorkFlowArtifact team : teamArts) {
+            if (!new SMAManager(team).isCancelled()) {
+               if (changeType == null) {
                   changeType = team.getChangeType();
-               // if change type of this team is different than others, can't
-               // change to common type so just return
-               else if (changeType != team.getChangeType()) return;
+               } else if (changeType != team.getChangeType()) {
+                  return;
+               }
             }
-      if (changeType != null && getChangeType() != changeType) setChangeType(changeType);
+         }
+      }
+      if (changeType != null && getChangeType() != changeType) {
+         setChangeType(changeType);
+      }
       return;
    }
 
    private void resetPriorityOffChildren() throws OseeCoreException {
       PriorityType priorityType = null;
       Collection<TeamWorkFlowArtifact> teamArts = getTeamWorkFlowArtifacts();
-      if (teamArts.size() == 1)
+      if (teamArts.size() == 1) {
          priorityType = teamArts.iterator().next().getPriority();
-      else
-         for (TeamWorkFlowArtifact team : teamArts)
-            if (!(new SMAManager(team)).isCancelled()) {
-               if (priorityType == null)
+      } else {
+         for (TeamWorkFlowArtifact team : teamArts) {
+            if (!new SMAManager(team).isCancelled()) {
+               if (priorityType == null) {
                   priorityType = team.getPriority();
-               // if change type of this team is different than others, can't
-               // change to common type so just return
-               else if (priorityType != team.getPriority()) return;
+               } else if (priorityType != team.getPriority()) {
+                  return;
+               }
             }
-      if (priorityType != null && getPriority() != priorityType) setPriority(priorityType);
+         }
+      }
+      if (priorityType != null && getPriority() != priorityType) {
+         setPriority(priorityType);
+      }
       return;
    }
 
    private void resetUserCommunityOffChildren() throws OseeCoreException {
       Set<String> userComs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!(new SMAManager(team)).isCancelled()) {
+         if (!new SMAManager(team).isCancelled()) {
             userComs.addAll(team.getAttributesToStringList(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()));
          }
       }
@@ -205,11 +220,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public Collection<TeamWorkFlowArtifact> getTeamWorkFlowArtifacts() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelation.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class);
+      return getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_WorkFlow, TeamWorkFlowArtifact.class);
    }
 
    public String getWorldViewType() throws OseeCoreException {
-      return ARTIFACT_NAME;
+      return AtsArtifactTypes.Action.getName();
    }
 
    public String getWorldViewTitle() throws OseeCoreException {
@@ -223,7 +238,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public String getWorldViewBranchStatus() throws OseeCoreException {
       StringBuffer sb = new StringBuffer();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         if (!team.getWorldViewBranchStatus().equals("")) sb.append(team.getWorldViewBranchStatus() + ", ");
+         if (!team.getWorldViewBranchStatus().equals("")) {
+            sb.append(team.getWorldViewBranchStatus() + ", ");
+         }
       }
       return sb.toString().replaceFirst(", $", "");
    }
@@ -306,7 +323,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public Image getAssigneeImage() throws OseeCoreException {
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          Image image = team.getAssigneeImage();
-         if (image != null) return image;
+         if (image != null) {
+            return image;
+         }
       }
       return null;
    }
@@ -328,9 +347,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       super.atsDelete(deleteArts, allRelated);
       // Delete all products
-      for (TeamWorkFlowArtifact art : getRelatedArtifacts(AtsRelation.ActionToWorkflow_WorkFlow,
-            TeamWorkFlowArtifact.class))
+      for (TeamWorkFlowArtifact art : getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_WorkFlow,
+            TeamWorkFlowArtifact.class)) {
          art.atsDelete(deleteArts, allRelated);
+      }
    }
 
    public String getWorldViewTeam() throws OseeCoreException {
@@ -412,9 +432,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    }
 
    public int getWorldViewStatePercentComplete() throws OseeCoreException {
-      if (getTeamWorkFlowArtifacts().size() == 1)
+      if (getTeamWorkFlowArtifacts().size() == 1) {
          return getTeamWorkFlowArtifacts().iterator().next().getWorldViewStatePercentComplete();
-      else {
+      } else {
          double percent = 0;
          int items = 0;
          for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -448,10 +468,10 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    @Override
    public String getWorldViewGroups() throws OseeCoreException {
       Set<Artifact> groups = new HashSet<Artifact>();
-      groups.addAll(getRelatedArtifacts(CoreRelations.Universal_Grouping__Group));
+      groups.addAll(getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
       // Roll up if same for all children
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
-         groups.addAll(team.getRelatedArtifacts(CoreRelations.Universal_Grouping__Group));
+         groups.addAll(team.getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Group));
       }
       return Artifacts.toString("; ", groups);
    }
@@ -554,7 +574,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
                   Active.Active);
 
       diag.setInitialAias(getActionableItems());
-      if (diag.open() != 0) return Result.FalseResult;
+      if (diag.open() != 0) {
+         return Result.FalseResult;
+      }
 
       // ensure that at least one actionable item exists for each team after aias added/removed
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
@@ -650,7 +672,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             createTeamWorkflow(teamDef, actionableItems, assignees, teamWorkflowArtifactName, transaction,
                   createTeamOption);
       // Notify extension that workflow was created
-      if (teamExt != null) teamExt.teamWorkflowCreated(teamArt);
+      if (teamExt != null) {
+         teamExt.teamWorkflowCreated(teamArt);
+      }
       return teamArt;
    }
 
@@ -673,19 +697,23 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       }
 
       TeamWorkFlowArtifact teamArt = null;
-      if (guid == null)
+      if (guid == null) {
          teamArt = (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsUtil.getAtsBranch());
-      else
+      } else {
          teamArt =
                (TeamWorkFlowArtifact) ArtifactTypeManager.addArtifact(artifactName, AtsUtil.getAtsBranch(), guid, hrid);
+      }
       setArtifactIdentifyData(this, teamArt);
 
       teamArt.getSmaMgr().getLog().addLog(LogType.Originated, "", "");
 
       // Relate Workflow to ActionableItems (by guid) if team is responsible
       // for that AI
-      for (ActionableItemArtifact aia : actionableItems)
-         if (aia.getImpactedTeamDefs().contains(teamDef)) teamArt.getActionableItemsDam().addActionableItem(aia);
+      for (ActionableItemArtifact aia : actionableItems) {
+         if (aia.getImpactedTeamDefs().contains(teamDef)) {
+            teamArt.getActionableItemsDam().addActionableItem(aia);
+         }
+      }
 
       // Initialize state machine
       teamArt.getSmaMgr().getStateMgr().initializeStateMachine(DefaultTeamState.Endorse.name(), assignees);
@@ -696,7 +724,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       teamArt.setTeamDefinition(teamDef);
 
       // Relate Action to WorkFlow
-      addRelation(AtsRelation.ActionToWorkflow_WorkFlow, teamArt);
+      addRelation(AtsRelationTypes.ActionToWorkflow_WorkFlow, teamArt);
 
       teamArt.persist(transaction);
 
@@ -713,12 +741,13 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public static void setArtifactIdentifyData(ActionArtifact fromAction, TeamWorkFlowArtifact toTeam) throws OseeCoreException {
       String priorityStr = fromAction.getSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), "");
       PriorityType priType = null;
-      if (priorityStr.equals(""))
+      if (priorityStr.equals("")) {
          priType = null;
-      else if (!priorityStr.equals(""))
+      } else if (!priorityStr.equals("")) {
          priType = PriorityType.getPriority(priorityStr);
-      else
+      } else {
          throw new OseeArgumentException("Invalid priority => " + priorityStr);
+      }
       setArtifactIdentifyData(toTeam, fromAction.getName(), fromAction.getSoleAttributeValue(
             ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""),
             ChangeType.getChangeType(fromAction.getSoleAttributeValue(
@@ -735,14 +764,20 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     */
    public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, Boolean validationRequired, Date needByDate) throws OseeCoreException {
       art.setName(title);
-      if (!desc.equals("")) art.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
+      if (!desc.equals("")) {
+         art.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
+      }
       art.setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name());
       art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
-      if (priority != null) art.setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
-            priority.getShortName());
-      if (needByDate != null) art.setSoleAttributeValue(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName(), needByDate);
-      if (validationRequired) art.setSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(),
-            true);
+      if (priority != null) {
+         art.setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), priority.getShortName());
+      }
+      if (needByDate != null) {
+         art.setSoleAttributeValue(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName(), needByDate);
+      }
+      if (validationRequired) {
+         art.setSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), true);
+      }
    }
 
    public String getWorldViewDecision() throws OseeCoreException {
@@ -819,8 +854,11 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    public Result isWorldViewManDaysNeededValid() {
       try {
-         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts())
-            if (team.isWorldViewManDaysNeededValid().isFalse()) return team.isWorldViewManDaysNeededValid();
+         for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+            if (team.isWorldViewManDaysNeededValid().isFalse()) {
+               return team.isWorldViewManDaysNeededValid();
+            }
+         }
       } catch (OseeCoreException ex) {
          // Do nothing
       }
@@ -882,7 +920,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public Result isWorldViewAnnualCostAvoidanceValid() throws OseeCoreException {
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          Result result = team.isWorldViewAnnualCostAvoidanceValid();
-         if (result.isFalse()) return result;
+         if (result.isFalse()) {
+            return result;
+         }
       }
       return Result.TrueResult;
    }
@@ -899,7 +939,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
    public Result isWorldViewDeadlineAlerting() throws OseeCoreException {
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
          Result result = team.isWorldViewDeadlineAlerting();
-         if (result.isTrue()) return result;
+         if (result.isTrue()) {
+            return result;
+         }
       }
       return Result.FalseResult;
    }
@@ -1003,7 +1045,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             percent += team.getWorldViewPercentCompleteState();
          }
       }
-      if (percent == 0) return 0;
+      if (percent == 0) {
+         return 0;
+      }
       Double rollPercent = percent / getTeamWorkFlowArtifacts().size();
       return rollPercent.intValue();
    }
@@ -1016,7 +1060,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             percent += team.getWorldViewPercentCompleteStateReview();
          }
       }
-      if (percent == 0) return 0;
+      if (percent == 0) {
+         return 0;
+      }
       Double rollPercent = percent / getTeamWorkFlowArtifacts().size();
       return rollPercent.intValue();
    }
@@ -1029,7 +1075,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             percent += team.getWorldViewPercentCompleteStateTask();
          }
       }
-      if (percent == 0) return 0;
+      if (percent == 0) {
+         return 0;
+      }
       Double rollPercent = percent / getTeamWorkFlowArtifacts().size();
       return rollPercent.intValue();
    }
@@ -1042,7 +1090,9 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             percent += team.getWorldViewPercentCompleteTotal();
          }
       }
-      if (percent == 0) return 0;
+      if (percent == 0) {
+         return 0;
+      }
       Double rollPercent = percent / getTeamWorkFlowArtifacts().size();
       return rollPercent.intValue();
    }
@@ -1110,11 +1160,15 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
 
    @Override
    public Collection<TeamWorkFlowArtifact> getWorldViewOriginatingWorkflows() throws OseeCoreException {
-      if (getTeamWorkFlowArtifacts().size() == 1) return getTeamWorkFlowArtifacts();
+      if (getTeamWorkFlowArtifacts().size() == 1) {
+         return getTeamWorkFlowArtifacts();
+      }
       Collection<TeamWorkFlowArtifact> results = new ArrayList<TeamWorkFlowArtifact>();
       Date origDate = null;
       for (TeamWorkFlowArtifact teamArt : getTeamWorkFlowArtifacts()) {
-         if (teamArt.getSmaMgr().isCancelled()) continue;
+         if (teamArt.getSmaMgr().isCancelled()) {
+            continue;
+         }
          if (origDate == null || teamArt.getWorldViewCreatedDate().before(origDate)) {
             results.clear();
             origDate = teamArt.getWorldViewCreatedDate();

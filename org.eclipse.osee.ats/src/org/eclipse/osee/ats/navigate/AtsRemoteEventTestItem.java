@@ -23,7 +23,8 @@ import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
 import org.eclipse.osee.ats.editor.SMAManager.TransitionOption;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsArtifactTypes;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.world.WorldXNavigateItemAction;
@@ -127,7 +128,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             PriorityType.Priority_2.getShortName());
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "yes");
-      teamArt.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, getVersion256());
+      teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion256());
       teamArt.persist(transaction);
       transaction.execute();
 
@@ -138,8 +139,8 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.persist();
 
       // Make changes and persist
-      teamArt.deleteRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, getVersion256());
-      teamArt.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version, getVersion257());
+      teamArt.deleteRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion256());
+      teamArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, getVersion257());
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "no");
       teamArt.persist();
 
@@ -151,7 +152,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       teamArt.setSoleAttributeFromString(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), ChangeType.Support.name());
       teamArt.setSoleAttributeFromString(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(),
             PriorityType.Priority_3.getShortName());
-      teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion258()));
+      teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion258()));
       teamArt.persist(transaction);
       transaction.execute();
 
@@ -161,7 +162,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
 
       // Make changes and transition
       transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Remote Event Test");
-      teamArt.setRelations(AtsRelation.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion257()));
+      teamArt.setRelations(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, Collections.singleton(getVersion257()));
       teamArt.setSoleAttributeFromString(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), "no");
       teamArt.persist(transaction);
       transaction.execute();
@@ -259,7 +260,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Running " + title);
 
       ActionArtifact actionArt =
-            (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(ActionArtifact.ARTIFACT_NAME, actionTitle,
+            (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
                   AtsUtil.getAtsBranch());
 
       if (actionArt == null) {
@@ -278,7 +279,7 @@ public class AtsRemoteEventTestItem extends WorldXNavigateItemAction {
       resultData.log("Running " + title);
 
       ActionArtifact actionArt =
-            (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(ActionArtifact.ARTIFACT_NAME, actionTitle,
+            (ActionArtifact) ArtifactQuery.getArtifactFromTypeAndName(AtsArtifactTypes.Action, actionTitle,
                   AtsUtil.getAtsBranch());
 
       if (actionArt == null) {

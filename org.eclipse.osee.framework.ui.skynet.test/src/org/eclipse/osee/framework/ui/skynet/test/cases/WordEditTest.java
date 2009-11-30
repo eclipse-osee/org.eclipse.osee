@@ -25,6 +25,7 @@ import java.util.List;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.NullProgressMonitor;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.SevereLoggingMonitor;
@@ -111,7 +112,7 @@ public class WordEditTest {
       Collection<Change> changes = ChangeManager.getChangesPerBranch(branch, new NullProgressMonitor());
       for (Change change : changes) {
          Artifact art = change.getArtifact();
-         if (art.isOfType(Requirements.ABSTRACT_SOFTWARE_REQUIREMENT)) {
+         if (art.isOfType(CoreArtifactTypes.AbstractSoftwareRequirement)) {
             arts.add(art);
          }
       }

@@ -30,8 +30,8 @@ import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -220,8 +220,8 @@ public class WordTemplateProcessor {
             if (elementType.equals(ARTIFACT)) {
                if (!artifacts.isEmpty()) {
                   Artifact artifact = artifacts.iterator().next();
-                  if (artifact.isAttributeTypeValid(CoreAttributes.PARAGRAPH_NUMBER)) {
-                     String paragraphNum = artifact.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
+                  if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
+                     String paragraphNum = artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
                      if (paragraphNum != null && !paragraphNum.equals("")) {
                         startParagraphNumber = paragraphNum;
                      }
@@ -354,7 +354,7 @@ public class WordTemplateProcessor {
    }
 
    private void processObjectArtifact(VariableMap variableMap, Artifact artifact, WordMLProducer wordMl, String outlineType, PresentationType presentationType, boolean multipleArtifacts) throws OseeCoreException {
-      if (!artifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName())) {
+      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName())) {
          //If the artifact has not been processed
          if (!processedArtifacts.contains(artifact)) {
             if (outlining) {
@@ -364,8 +364,8 @@ public class WordTemplateProcessor {
 
                VariableMap options = renderer.getOptions();
                if (renderer.getBooleanOption(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION)) {
-                  if (artifact.isAttributeTypeValid(CoreAttributes.PARAGRAPH_NUMBER)) {
-                     artifact.setSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, paragraphNumber.toString());
+                  if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
+                     artifact.setSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, paragraphNumber.toString());
                      artifact.persist((SkynetTransaction) options.getValue(ITemplateRenderer.TRANSACTION_OPTION));
                   }
                }
@@ -424,8 +424,8 @@ public class WordTemplateProcessor {
       }
 
       if (attributeTypeName.equals("TIS Traceability")) {
-         for (Artifact requirement : artifact.getRelatedArtifacts(CoreRelations.Verification__Requirement)) {
-            wordMl.addParagraph(requirement.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER) + "\t" + requirement.getName());
+         for (Artifact requirement : artifact.getRelatedArtifacts(CoreRelationTypes.Verification__Requirement)) {
+            wordMl.addParagraph(requirement.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER) + "\t" + requirement.getName());
          }
          return;
       }
@@ -453,7 +453,7 @@ public class WordTemplateProcessor {
                variableMap != null ? Boolean.TRUE.equals(variableMap.getBoolean("inPublishMode")) : false;
          if (variableMap != null && isInPublishMode) {
             // Do not publish relation order during publishing
-            if (CoreAttributes.RELATION_ORDER.equals(attributeType.getName())) {
+            if (CoreAttributeTypes.RELATION_ORDER.equals(attributeType.getName())) {
                return;
             }
          }

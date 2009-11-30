@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -77,7 +77,7 @@ public class DefaultAttributeXWidgetProvider implements IAttributeXWidgetProvide
             } else {
                defaultData.setXWidgetName("XComboBooleanDam");
             }
-         } else if (baseType.equals(WordAttribute.class) || CoreAttributes.RELATION_ORDER.getGuid().equals(
+         } else if (baseType.equals(WordAttribute.class) || CoreAttributeTypes.RELATION_ORDER.getGuid().equals(
                attributeType.getGuid())) {
             defaultData.setXWidgetName("XStackedDam");
             defaultData.getXOptionHandler().add(XOption.NOT_EDITABLE);

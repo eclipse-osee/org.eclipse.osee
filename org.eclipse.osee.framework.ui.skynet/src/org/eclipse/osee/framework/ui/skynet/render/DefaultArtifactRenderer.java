@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -150,7 +150,7 @@ public class DefaultArtifactRenderer implements IRenderer {
          wordMl.addWordMl(Xml.escape(attributeElement.getLabel()));
       }
 
-      if (attributeTypeName.equals(CoreAttributes.RELATION_ORDER.getName())) {
+      if (attributeTypeName.equals(CoreAttributeTypes.RELATION_ORDER.getName())) {
          wordMl.endParagraph();
          String data = renderRelationOrder(artifact);
          wordMl.addWordMl(data);

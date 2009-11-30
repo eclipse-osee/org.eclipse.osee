@@ -24,12 +24,12 @@ import org.eclipse.osee.framework.skynet.core.relation.RelationManager;
 public class AtsBulkLoad {
 
    public static Set<Artifact> loadFromActions(Collection<? extends Artifact> actions) throws OseeCoreException {
-      return RelationManager.getRelatedArtifacts(actions, 4, AtsRelation.SmaToTask_Task,
-            AtsRelation.ActionToWorkflow_WorkFlow, AtsRelation.TeamWorkflowToReview_Review);
+      return RelationManager.getRelatedArtifacts(actions, 4, AtsRelationTypes.SmaToTask_Task,
+            AtsRelationTypes.ActionToWorkflow_WorkFlow, AtsRelationTypes.TeamWorkflowToReview_Review);
    }
 
    public static Set<Artifact> loadFromTeamWorkflows(Collection<? extends Artifact> teams) throws OseeCoreException {
-      return RelationManager.getRelatedArtifacts(teams, 3, AtsRelation.SmaToTask_Task,
-            AtsRelation.TeamWorkflowToReview_Team, AtsRelation.ActionToWorkflow_Action);
+      return RelationManager.getRelatedArtifacts(teams, 3, AtsRelationTypes.SmaToTask_Task,
+            AtsRelationTypes.TeamWorkflowToReview_Team, AtsRelationTypes.ActionToWorkflow_Action);
    }
 }

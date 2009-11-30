@@ -26,15 +26,15 @@ import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactTypeManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.ote.define.OteDefinePlugin;
-import org.eclipse.osee.ote.define.AUTOGEN.OteArtifacts;
+import org.eclipse.osee.ote.define.AUTOGEN.OteArtifactTypes;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OteArtifactFetcher<T extends Artifact> {
-   private OteArtifacts oteArtifactType;
+   private OteArtifactTypes oteArtifactType;
 
-   protected OteArtifactFetcher(OteArtifacts oteArtifactType) {
+   protected OteArtifactFetcher(OteArtifactTypes oteArtifactType) {
       this.oteArtifactType = oteArtifactType;
    }
 

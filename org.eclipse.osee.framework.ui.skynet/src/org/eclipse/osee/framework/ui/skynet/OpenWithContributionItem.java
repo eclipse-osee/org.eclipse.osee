@@ -20,7 +20,7 @@ import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -99,7 +99,7 @@ public class OpenWithContributionItem extends CompoundContributionItem {
          if (render instanceof WordRenderer) {
             imageDescriptor = WordRenderer.getImageDescriptor();
          } else if (render instanceof NativeRenderer) {
-            String fileExtension = firstArtifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName());
+            String fileExtension = firstArtifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_EXTENSION.getName());
             if (Strings.isValid(fileExtension)) {
                imageDescriptor = ImageManager.getProgramImageDescriptor(fileExtension);
             }

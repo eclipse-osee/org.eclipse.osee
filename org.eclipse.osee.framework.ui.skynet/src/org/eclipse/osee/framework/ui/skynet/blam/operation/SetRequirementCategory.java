@@ -16,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleArtifactsExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -94,10 +94,10 @@ public class SetRequirementCategory extends AbstractBlam {
       } else {
          try {
             requirement =
-                  ArtifactQuery.getArtifactFromAttribute(CoreAttributes.NAME.getName(), requirementName, branch);
+                  ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.NAME.getName(), requirementName, branch);
          } catch (ArtifactDoesNotExist ex) {
             requirement =
-                  ArtifactQuery.getArtifactFromAttribute(CoreAttributes.NAME.getName(), canonicalRequirementName,
+                  ArtifactQuery.getArtifactFromAttribute(CoreAttributeTypes.NAME.getName(), canonicalRequirementName,
                         branch);
          }
       }

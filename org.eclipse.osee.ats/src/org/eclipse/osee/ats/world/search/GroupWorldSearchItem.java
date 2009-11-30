@@ -11,7 +11,7 @@
 package org.eclipse.osee.ats.world.search;
 
 import java.util.Collection;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -79,7 +79,7 @@ public class GroupWorldSearchItem extends WorldUISearchItem {
       getProduct();
       if (getSearchGroup() == null) return EMPTY_SET;
       Collection<Artifact> arts =
-            getSearchGroup().getRelatedArtifacts(CoreRelations.Universal_Grouping__Members);
+            getSearchGroup().getRelatedArtifacts(CoreRelationTypes.Universal_Grouping__Members);
       if (cancelled) return EMPTY_SET;
       return arts;
    }

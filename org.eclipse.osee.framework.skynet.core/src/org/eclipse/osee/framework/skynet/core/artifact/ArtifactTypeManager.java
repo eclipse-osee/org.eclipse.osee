@@ -179,6 +179,12 @@ public class ArtifactTypeManager {
       return artifact;
    }
 
+   public static Artifact addArtifact(IOseeType artifactType, Branch branch, String name) throws OseeCoreException {
+      Artifact artifact = makeNewArtifact(getType(artifactType), branch);
+      artifact.setName(name);
+      return artifact;
+   }
+
    /**
     * Get a new instance of the type of artifact. This is just a convenience method that calls makeNewArtifact on the
     * known factory with this descriptor for the descriptor parameter, and the supplied branch.

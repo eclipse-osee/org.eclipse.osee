@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
 import org.eclipse.osee.ats.util.widgets.defect.DefectManager;
 import org.eclipse.osee.ats.util.widgets.role.UserRole;
@@ -208,7 +208,7 @@ public abstract class ReviewSMArtifact extends TaskableStateMachineArtifact {
       if (isStandAloneReview()) return null;
       if (parentTeamArt != null) return parentTeamArt;
       List<TeamWorkFlowArtifact> teams =
-            getRelatedArtifacts(AtsRelation.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
+            getRelatedArtifacts(AtsRelationTypes.TeamWorkflowToReview_Team, TeamWorkFlowArtifact.class);
       if (teams.size() > 1) {
          OseeLog.log(AtsPlugin.class, Level.SEVERE,
                getArtifactTypeName() + " " + getHumanReadableId() + " has multiple parent workflows");

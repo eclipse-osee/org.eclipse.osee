@@ -12,7 +12,7 @@ package org.eclipse.osee.ote.define.AUTOGEN;
 
 import org.eclipse.osee.framework.core.data.IOseeType;
 
-public enum OteAttributes implements IOseeType {
+public enum OteAttributeTypes implements IOseeType {
    BUILD_ID("Build Id", "AAMFEXG6_W9diA9nUXAA"),
    CHECKSUM("Checksum", "AAMFEXJbaHt5uKG9kogA"),
    ELAPSED_DATE("Elapsed Date", "AAMFEWuD6yH04y89M3wA"),
@@ -45,7 +45,7 @@ public enum OteAttributes implements IOseeType {
    private final String name;
    private final String guid;
 
-   private OteAttributes(String name, String guid) {
+   private OteAttributeTypes(String name, String guid) {
       this.name = name;
       this.guid = guid;
    }

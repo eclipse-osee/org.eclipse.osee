@@ -22,7 +22,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.nebula.widgets.xviewer.XViewerCells;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.config.AtsCacheManager;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
 import org.eclipse.osee.ats.util.widgets.XActionableItemsDam;
@@ -64,8 +64,8 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    public TeamWorkFlowArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerSMAEditorRelation(AtsRelation.TeamWorkflowTargetedForVersion_Version);
-      registerAtsWorldRelation(AtsRelation.TeamWorkflowToReview_Review);
+      registerSMAEditorRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
+      registerAtsWorldRelation(AtsRelationTypes.TeamWorkflowToReview_Review);
    }
 
    @Override
@@ -267,7 +267,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public ActionArtifact getParentActionArtifact() throws OseeCoreException {
       if (parentAction != null) return parentAction;
-      Collection<ActionArtifact> arts = getRelatedArtifacts(AtsRelation.ActionToWorkflow_Action, ActionArtifact.class);
+      Collection<ActionArtifact> arts = getRelatedArtifacts(AtsRelationTypes.ActionToWorkflow_Action, ActionArtifact.class);
       if (arts.size() == 0) {
          throw new OseeStateException("Team " + getHumanReadableId() + " has no parent Action");
       } else if (arts.size() > 1) {
@@ -285,7 +285,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public String getWorldViewTargetedVersionStr() throws OseeCoreException {
       Collection<VersionArtifact> verArts =
-            getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
+            getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       if (verArts.size() == 0) return "";
       if (verArts.size() > 1) {
          String errStr =
@@ -306,8 +306,8 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
 
    @Override
    public VersionArtifact getWorldViewTargetedVersion() throws OseeCoreException {
-      if (getRelatedArtifactsCount(AtsRelation.TeamWorkflowTargetedForVersion_Version) > 0) {
-         return (VersionArtifact) getRelatedArtifact(AtsRelation.TeamWorkflowTargetedForVersion_Version);
+      if (getRelatedArtifactsCount(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version) > 0) {
+         return (VersionArtifact) getRelatedArtifact(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version);
       }
       return null;
    }
@@ -418,7 +418,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public Date getWorldViewEstimatedReleaseDate() throws OseeCoreException {
       Collection<VersionArtifact> vers =
-            getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
+            getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       Date date = null;
       if (vers.size() > 0) {
          date = vers.iterator().next().getEstimatedReleaseDate();
@@ -437,7 +437,7 @@ public class TeamWorkFlowArtifact extends TaskableStateMachineArtifact implement
    @Override
    public Date getWorldViewReleaseDate() throws OseeCoreException {
       Collection<VersionArtifact> vers =
-            getRelatedArtifacts(AtsRelation.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
+            getRelatedArtifacts(AtsRelationTypes.TeamWorkflowTargetedForVersion_Version, VersionArtifact.class);
       Date date = null;
       if (vers.size() > 0) {
          date = vers.iterator().next().getReleaseDate();

@@ -23,7 +23,7 @@ import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -97,7 +97,7 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
                   artifactLoadCache =
                         RelationManager.getRelatedArtifacts(
                               Collections.singleton(getCoverageEditorInput().getCoveragePackageArtifact()), 8,
-                              CoreRelations.Default_Hierarchical__Child);
+                              CoreRelationTypes.Default_Hierarchical__Child);
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
                }

@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
 import org.eclipse.osee.ats.artifact.TaskArtifact;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -133,9 +133,9 @@ public class WorldContentProvider implements ITreeContentProvider {
                return ((ActionArtifact) artifact).getTeamWorkFlowArtifacts().toArray();
             }
             if (artifact instanceof GoalArtifact) {
-               List<Artifact> arts = artifact.getRelatedArtifacts(AtsRelation.Goal_Member, false);
+               List<Artifact> arts = artifact.getRelatedArtifacts(AtsRelationTypes.Goal_Member, false);
                relatedArts.addAll(arts);
-               return arts.toArray(new Artifact[artifact.getRelatedArtifactsCount(AtsRelation.Goal_Member)]);
+               return arts.toArray(new Artifact[artifact.getRelatedArtifactsCount(AtsRelationTypes.Goal_Member)]);
             }
             if (artifact instanceof TeamWorkFlowArtifact) {
                TeamWorkFlowArtifact teamArt = (TeamWorkFlowArtifact) artifact;

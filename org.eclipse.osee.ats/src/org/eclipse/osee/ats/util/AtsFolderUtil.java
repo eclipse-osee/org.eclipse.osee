@@ -12,8 +12,8 @@ package org.eclipse.osee.ats.util;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
+import org.eclipse.osee.framework.core.data.IOseeType;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.skynet.core.OseeSystemArtifacts;
@@ -27,21 +27,21 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 public class AtsFolderUtil {
 
    public enum AtsFolder {
-      Ats_Heading("Action Tracking System", "ats.HeadingFolder", FOLDER_ARTIFACT),
-      Teams("Teams", "osee.ats.TopTeamDefinition", TeamDefinitionArtifact.ARTIFACT_NAME),
-      ActionableItem("Actionable Items", "osee.ats.TopActionableItem", ActionableItemArtifact.ARTIFACT_NAME),
-      WorkFlow("Work Flows", "Work Flows", FOLDER_ARTIFACT),
-      WorkRules("Work Rules", "Work Rules", FOLDER_ARTIFACT),
-      WorkWidgets("Work Widgets", "Work Widgets", FOLDER_ARTIFACT),
-      WorkPages("Work Pages", "Work Pages", FOLDER_ARTIFACT);
+      Ats_Heading("Action Tracking System", "ats.HeadingFolder", CoreArtifactTypes.Folder),
+      Teams("Teams", "osee.ats.TopTeamDefinition", AtsArtifactTypes.TeamDefinition),
+      ActionableItem("Actionable Items", "osee.ats.TopActionableItem", AtsArtifactTypes.ActionableItem),
+      WorkFlow("Work Flows", "Work Flows", CoreArtifactTypes.Folder),
+      WorkRules("Work Rules", "Work Rules", CoreArtifactTypes.Folder),
+      WorkWidgets("Work Widgets", "Work Widgets", CoreArtifactTypes.Folder),
+      WorkPages("Work Pages", "Work Pages", CoreArtifactTypes.Folder);
       protected final String displayName;
       protected final String staticId;
-      protected final String artifactTypeName;
+      protected final IOseeType artifactType;
 
-      private AtsFolder(String displayName, String staticId, String artifactTypeName) {
+      private AtsFolder(String displayName, String staticId, IOseeType artifactType) {
          this.displayName = displayName;
          this.staticId = staticId;
-         this.artifactTypeName = artifactTypeName;
+         this.artifactType = artifactType;
       }
 
       /**
@@ -65,7 +65,7 @@ public class AtsFolderUtil {
    public static Artifact getFolder(AtsFolder atsFolder) throws OseeCoreException {
       if (!folderMap.containsKey(atsFolder)) {
          Artifact artifact =
-               StaticIdManager.getSingletonArtifact(atsFolder.artifactTypeName, atsFolder.staticId,
+               StaticIdManager.getSingletonArtifact(atsFolder.artifactType.getName(), atsFolder.staticId,
                      AtsUtil.getAtsBranch(), true);
          if (artifact == null) {
             throw new OseeStateException(String.format("Can't retrieve Ats folder [%s]", atsFolder.displayName));
@@ -79,7 +79,7 @@ public class AtsFolderUtil {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create ATS Folders");
 
       Artifact headingArt =
-            OseeSystemArtifacts.getOrCreateArtifact(AtsFolderUtil.FOLDER_ARTIFACT, AtsFolder.Ats_Heading.displayName,
+            OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, AtsFolder.Ats_Heading.displayName,
                   AtsUtil.getAtsBranch());
       if (!headingArt.hasParent()) {
          Artifact rootArt = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(AtsUtil.getAtsBranch());
@@ -93,7 +93,7 @@ public class AtsFolderUtil {
             continue;
          }
          Artifact art =
-               OseeSystemArtifacts.getOrCreateArtifact(atsFolder.artifactTypeName, atsFolder.displayName,
+               OseeSystemArtifacts.getOrCreateArtifact(atsFolder.artifactType, atsFolder.displayName,
                      AtsUtil.getAtsBranch());
          StaticIdManager.setSingletonAttributeValue(art, atsFolder.staticId);
          headingArt.addChild(art);

@@ -15,8 +15,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -53,7 +53,7 @@ public class CreateNewUser extends AbstractBlam {
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       monitor.beginTask("Create New User", IProgressMonitor.UNKNOWN);
 
-      User user = (User) ArtifactTypeManager.addArtifact(CoreArtifacts.User.getName(), BranchManager.getCommonBranch());
+      User user = (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User.getName(), BranchManager.getCommonBranch());
 
       String name = variableMap.getString("Name (Last, First)");
       if (name.equals("")) {
@@ -103,10 +103,10 @@ public class CreateNewUser extends AbstractBlam {
       for (XListItem groupNameListItem : variableMap.getCollection(XListItem.class, "Groups")) {
          for (Artifact groupArt : groupArts) {
             if (groupNameListItem.getName().equals(groupArt.getName())) {
-               if (groupArt.getArtifactTypeName().equals("Universal Group")) {
-                  groupArt.addRelation(CoreRelations.Universal_Grouping__Members, user);
-               } else if (groupArt.getArtifactTypeName().equals("User Group")) {
-                  groupArt.addRelation(CoreRelations.Users_User, user);
+               if (groupArt.isOfType("Universal Group")) {
+                  groupArt.addRelation(CoreRelationTypes.Universal_Grouping__Members, user);
+               } else if (groupArt.isOfType("User Group")) {
+                  groupArt.addRelation(CoreRelationTypes.Users_User, user);
                }
             }
          }

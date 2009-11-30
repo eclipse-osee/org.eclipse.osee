@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamWorkFlowArtifact.DefaultTeamState;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -66,7 +66,7 @@ public class ShowOpenWorkflowsByArtifactType extends WorldUISearchItem {
       }
 
       if (showWorkflow) {
-         return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelation.TeamWorkflowToReview_Team);
+         return RelationManager.getRelatedArtifacts(artifacts, 1, AtsRelationTypes.TeamWorkflowToReview_Team);
       } else {
          return artifacts;
       }

@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -67,7 +67,7 @@ public class ActionableItemArtifact extends Artifact {
    }
 
    public Collection<User> getLeads() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelation.TeamLead_Lead, User.class);
+      return getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class);
    }
 
    public static ActionableItemArtifact getTopActionableItem() throws OseeCoreException {

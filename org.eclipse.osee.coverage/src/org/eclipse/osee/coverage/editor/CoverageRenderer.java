@@ -56,7 +56,7 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    @Override
    public void open(List<Artifact> artifacts) throws OseeCoreException {
       for (Artifact artifact : artifacts) {
-         if (artifact.getArtifactTypeName().equals(OseeCoveragePackageStore.ARTIFACT_NAME)) {
+         if (artifact.isOfType(OseeCoveragePackageStore.ARTIFACT_NAME)) {
             CoverageEditor.open(new CoverageEditorInput(artifact.getName(), artifact, null, false));
          }
       }
@@ -68,8 +68,8 @@ public class CoverageRenderer extends DefaultArtifactRenderer {
    }
 
    @Override
-   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) {
-      if (artifact.getArtifactTypeName().equals(OseeCoveragePackageStore.ARTIFACT_NAME) && (!artifact.isHistorical())) {
+   public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
+      if (artifact.isOfType(OseeCoveragePackageStore.ARTIFACT_NAME) && !artifact.isHistorical()) {
          return PRESENTATION_SUBTYPE_MATCH;
       }
       return NO_MATCH;

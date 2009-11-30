@@ -13,7 +13,7 @@ package org.eclipse.osee.ats.artifact;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -43,7 +43,7 @@ public class GoalArtifact extends StateMachineArtifact {
     */
    public GoalArtifact(ArtifactFactory parentFactory, String guid, String humanReadableId, Branch branch, ArtifactType artifactType) throws OseeDataStoreException {
       super(parentFactory, guid, humanReadableId, branch, artifactType);
-      registerAtsWorldRelation(AtsRelation.Goal_Member);
+      registerAtsWorldRelation(AtsRelationTypes.Goal_Member);
    }
 
    @Override
@@ -53,7 +53,7 @@ public class GoalArtifact extends StateMachineArtifact {
 
    @Override
    public StateMachineArtifact getParentSMA() throws OseeCoreException {
-      List<Artifact> parents = getRelatedArtifacts(AtsRelation.Goal_Goal);
+      List<Artifact> parents = getRelatedArtifacts(AtsRelationTypes.Goal_Goal);
       if (parents.size() == 0) {
          return null;
       }

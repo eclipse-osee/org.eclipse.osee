@@ -14,11 +14,11 @@ package org.eclipse.osee.ats.editor;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ReviewSMArtifact;
 import org.eclipse.osee.ats.artifact.StateMachineArtifact;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -42,10 +42,10 @@ public class SMARelationsHyperlinkComposite extends Composite {
 
    private final XFormToolkit toolkit;
    private static IRelationEnumeration[] sides =
-         new IRelationEnumeration[] {AtsRelation.TeamWorkflowToReview_Review, AtsRelation.TeamWorkflowToReview_Team,
-         CoreRelations.Supercedes_Superceded, CoreRelations.Supercedes_Supercedes,
-         CoreRelations.SupportingInfo_SupportedBy, CoreRelations.SupportingInfo_SupportingInfo,
-         CoreRelations.Dependency__Artifact, CoreRelations.Dependency__Dependency};
+         new IRelationEnumeration[] {AtsRelationTypes.TeamWorkflowToReview_Review, AtsRelationTypes.TeamWorkflowToReview_Team,
+         CoreRelationTypes.Supercedes_Superceded, CoreRelationTypes.Supercedes_Supercedes,
+         CoreRelationTypes.SupportingInfo_SupportedBy, CoreRelationTypes.SupportingInfo_SupportingInfo,
+         CoreRelationTypes.Dependency__Artifact, CoreRelationTypes.Dependency__Dependency};
    private SMAManager smaMgr;
    private Label actionableItemsLabel;
 
@@ -68,20 +68,20 @@ public class SMARelationsHyperlinkComposite extends Composite {
 
       // Create all hyperlinks from this artifact to others of interest
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is reviewed by",
-            AtsRelation.TeamWorkflowToReview_Review);
-      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "reviews", AtsRelation.TeamWorkflowToReview_Team);
+            AtsRelationTypes.TeamWorkflowToReview_Review);
+      createArtifactRelationHyperlinks("This", smaMgr.getSma(), "reviews", AtsRelationTypes.TeamWorkflowToReview_Team);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "supercedes",
-            CoreRelations.Supercedes_Superceded);
+            CoreRelationTypes.Supercedes_Superceded);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is superceded by",
-            CoreRelations.Supercedes_Supercedes);
+            CoreRelationTypes.Supercedes_Supercedes);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "depends on",
-            CoreRelations.Dependency__Dependency);
+            CoreRelationTypes.Dependency__Dependency);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is dependency of",
-            CoreRelations.Dependency__Artifact);
+            CoreRelationTypes.Dependency__Artifact);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "is supported info for",
-            CoreRelations.SupportingInfo_SupportedBy);
+            CoreRelationTypes.SupportingInfo_SupportedBy);
       createArtifactRelationHyperlinks("This", smaMgr.getSma(), "has supporting info",
-            CoreRelations.SupportingInfo_SupportingInfo);
+            CoreRelationTypes.SupportingInfo_SupportingInfo);
 
       // Create label for review's related actionable items (if any) 
       if (smaMgr.getSma() instanceof ReviewSMArtifact) {

@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -69,7 +69,7 @@ public class LegacyPCRActionsWorldSearchItem extends WorldUISearchItem {
       }
 
       if (returnActions) {
-         criteria.add(new RelationCriteria(AtsRelation.ActionToWorkflow_Action));
+         criteria.add(new RelationCriteria(AtsRelationTypes.ActionToWorkflow_Action));
       }
 
       return ArtifactQuery.getArtifactListFromCriteria(AtsUtil.getAtsBranch(), 200, criteria);

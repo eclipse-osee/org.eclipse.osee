@@ -17,7 +17,7 @@ import java.util.logging.Level;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.artifact.VersionArtifact;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.TeamDefinitionDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -86,7 +86,7 @@ public class NextVersionSearchItem extends WorldUISearchItem {
       }
       List<Artifact> arts =
             getTeamDefinition(searchType).getNextReleaseVersion().getRelatedArtifacts(
-                  AtsRelation.TeamWorkflowTargetedForVersion_Workflow);
+                  AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow);
       if (isCancelled()) {
          return EMPTY_SET;
       }

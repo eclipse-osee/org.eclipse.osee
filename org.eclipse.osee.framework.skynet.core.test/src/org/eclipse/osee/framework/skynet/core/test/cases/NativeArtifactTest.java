@@ -18,7 +18,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Collection;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -47,22 +47,22 @@ public class NativeArtifactTest {
                   BranchManager.getKeyedBranch(DemoSawBuilds.SAW_Bld_1.name()), true);
       assertNotNull(csvArtifact);
       Artifact artifact = csvArtifact.getArtifact();
-      assertTrue(artifact.isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName()));
-      assertTrue(artifact.isAttributeTypeValid(CoreAttributes.NATIVE_EXTENSION.getName()));
+      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName()));
+      assertTrue(artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_EXTENSION.getName()));
    }
 
    @org.junit.Test
    public void testGetFileExtension() throws Exception {
       Artifact nativeArtifact = getNativeArtifact();
-      assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributes.NATIVE_EXTENSION.getName(), "").equals("csv"));
+      assertTrue(nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_EXTENSION.getName(), "").equals("csv"));
    }
 
    @org.junit.Test
    public void testSetAndGetValueAsString() throws Exception {
       Artifact nativeArtifact = getNativeArtifact();
-      nativeArtifact.setSoleAttributeFromString(CoreAttributes.NATIVE_CONTENT.getName(), "hello world");
+      nativeArtifact.setSoleAttributeFromString(CoreAttributeTypes.NATIVE_CONTENT.getName(), "hello world");
       nativeArtifact.persist();
-      String content = nativeArtifact.getSoleAttributeValueAsString(CoreAttributes.NATIVE_CONTENT.getName(), "");
+      String content = nativeArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.NATIVE_CONTENT.getName(), "");
       assertEquals("hello world", content);
    }
 
@@ -71,11 +71,11 @@ public class NativeArtifactTest {
       File file = OseeData.getFile(GUID.create() + ".txt");
       Lib.writeStringToFile("hello world", file);
       Artifact nativeArtifact = getNativeArtifact();
-      nativeArtifact.setSoleAttributeFromStream(CoreAttributes.NATIVE_CONTENT.getName(), new FileInputStream(file));
+      nativeArtifact.setSoleAttributeFromStream(CoreAttributeTypes.NATIVE_CONTENT.getName(), new FileInputStream(file));
       nativeArtifact.persist();
       InputStream inputStream = null;
       try {
-         inputStream = nativeArtifact.getSoleAttributeValue(CoreAttributes.NATIVE_CONTENT.getName(), null);
+         inputStream = nativeArtifact.getSoleAttributeValue(CoreAttributeTypes.NATIVE_CONTENT.getName(), null);
          String content = Lib.inputStreamToString(inputStream);
          assertEquals("hello world", content);
       } finally {

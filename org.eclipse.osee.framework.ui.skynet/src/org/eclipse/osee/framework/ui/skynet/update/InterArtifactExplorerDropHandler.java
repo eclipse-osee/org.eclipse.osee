@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.window.Window;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.PermissionEnum;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -129,7 +129,7 @@ public class InterArtifactExplorerDropHandler {
             Artifact reflectedArtifact = sourceArtifact.reflect(destinationArtifact.getBranch());
             if (status == TransferStatus.INTRODUCE) {
                reflectedArtifact.setRelations(RelationOrderBaseTypes.USER_DEFINED,
-                     CoreRelations.Default_Hierarchical__Parent, Collections.singleton(parentArtifact));
+                     CoreRelationTypes.Default_Hierarchical__Parent, Collections.singleton(parentArtifact));
             } else {
                reloadArtifacts.add(reflectedArtifact);
             }

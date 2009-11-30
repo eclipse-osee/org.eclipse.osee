@@ -31,7 +31,7 @@ public class TeamBasedDefaultBranchProvider implements IDefaultInitialBranchesPr
       User user = UserManager.getUser();
       try {
          Collection<TeamDefinitionArtifact> teams =
-               user.getRelatedArtifacts(AtsRelation.TeamMember_Team, TeamDefinitionArtifact.class);
+               user.getRelatedArtifacts(AtsRelationTypes.TeamMember_Team, TeamDefinitionArtifact.class);
          Collection<Branch> branches = new LinkedList<Branch>();
 
          Branch branch;

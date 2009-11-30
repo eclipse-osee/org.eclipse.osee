@@ -17,7 +17,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -75,13 +76,13 @@ public class WorkItemDefinitionFactory {
          artifactTypeNames.add(WorkWidgetDefinition.ARTIFACT_NAME);
          for (Artifact art : ArtifactQuery.getArtifactListFromTypes(artifactTypeNames, BranchManager.getCommonBranch(),
                false)) {
-            if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+            if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
                addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
-            } else if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
+            } else if (art.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
                addItemDefinition(WriteType.New, new WorkWidgetDefinition(art), art);
-            } else if (art.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
+            } else if (art.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
                addItemDefinition(WriteType.New, new WorkPageDefinition(art), art);
-            } else if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+            } else if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
                addItemDefinition(WriteType.New, new WorkFlowDefinition(art), art);
             }
          }
@@ -114,8 +115,8 @@ public class WorkItemDefinitionFactory {
          throw new IllegalArgumentException("Can't access childWorkflowId " + childWorkflowId);
       }
       Artifact childArt = childArts.iterator().next();
-      if (!parentArt.getRelatedArtifacts(CoreRelations.WorkItem__Child, Artifact.class).contains(childArt)) {
-         parentArt.addRelation(CoreRelations.WorkItem__Child, childArt);
+      if (!parentArt.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child, Artifact.class).contains(childArt)) {
+         parentArt.addRelation(CoreRelationTypes.WorkItem__Child, childArt);
          parentArt.persist();
       }
    }
@@ -134,19 +135,19 @@ public class WorkItemDefinitionFactory {
 
    public static void loadDefinitions(Collection<Artifact> arts) throws OseeCoreException {
       for (Artifact art : arts) {
-         if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
             addItemDefinition(WriteType.New, new WorkRuleDefinition(art), art);
          }
-         if (art.getArtifactTypeName().equals(WorkWidgetDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(WorkWidgetDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
             addItemDefinition(WriteType.New, new WorkWidgetDefinition(art), art);
          }
-         if (art.getArtifactTypeName().equals(WorkPageDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(WorkPageDefinition.ARTIFACT_NAME)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
             addItemDefinition(WriteType.New, new WorkPageDefinition(art), art);
          }
-         if (art.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+         if (art.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             System.out.println("Updating WorkItemDefinition cache with " + art);
             addItemDefinition(WriteType.New, new WorkFlowDefinition(art), art);
          }

@@ -158,6 +158,11 @@ public class ArtifactQuery {
       return queryFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch).getOrCheckArtifact(QueryType.GET);
    }
 
+   public static Artifact getArtifactFromTypeAndName(IOseeType artifactType, String artifactName, Branch branch) throws OseeCoreException {
+      return queryFromTypeAndAttribute(ArtifactTypeManager.getType(artifactType), "Name", artifactName, branch).getOrCheckArtifact(
+            QueryType.GET);
+   }
+
    public static int countArtifactsFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
       return queryFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch).countArtifacts();
    }
@@ -175,8 +180,8 @@ public class ArtifactQuery {
     * @return one artifact based on its type and name if it exists, otherwise null
     * @throws OseeCoreException
     */
-   public static Artifact checkArtifactFromTypeAndName(String artifactTypeName, String artifactName, Branch branch) throws OseeCoreException {
-      return queryFromTypeAndAttribute(artifactTypeName, "Name", artifactName, branch).getOrCheckArtifact(
+   public static Artifact checkArtifactFromTypeAndName(IOseeType artifactType, String artifactName, Branch branch) throws OseeCoreException {
+      return queryFromTypeAndAttribute(ArtifactTypeManager.getType(artifactType), "Name", artifactName, branch).getOrCheckArtifact(
             QueryType.CHECK);
    }
 
@@ -403,8 +408,13 @@ public class ArtifactQuery {
    }
 
    private static ArtifactQueryBuilder queryFromTypeAndAttribute(String artifactTypeName, String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
-      return new ArtifactQueryBuilder(ArtifactTypeManager.getType(artifactTypeName), branch, FULL,
-            new AttributeCriteria(attributeTypeName, attributeValue));
+      return queryFromTypeAndAttribute(ArtifactTypeManager.getType(artifactTypeName), attributeTypeName,
+            attributeValue, branch);
+   }
+
+   private static ArtifactQueryBuilder queryFromTypeAndAttribute(ArtifactType artifactType, String attributeTypeName, String attributeValue, Branch branch) throws OseeCoreException {
+      return new ArtifactQueryBuilder(artifactType, branch, FULL, new AttributeCriteria(attributeTypeName,
+            attributeValue));
    }
 
    public static List<Artifact> getArtifactListFromHistoricalAttributeValue(String attributeValue, Branch branch) throws OseeCoreException {

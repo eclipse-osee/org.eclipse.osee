@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -370,12 +370,12 @@ public class WordTemplateRenderer extends WordRenderer implements ITemplateRende
 
    @Override
    public int getApplicabilityRating(PresentationType presentationType, Artifact artifact) throws OseeCoreException {
-      if (!artifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributes.NATIVE_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributes.WHOLE_WORD_CONTENT.getName())) {
+      if (!artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributeTypes.NATIVE_CONTENT.getName()) && !artifact.isAttributeTypeValid(CoreAttributeTypes.WHOLE_WORD_CONTENT.getName())) {
          if (presentationType == PresentationType.DIFF || presentationType == PresentationType.PREVIEW) {
             return WORD_PUBLICATION;
          }
       }
-      if (artifact.isAttributeTypeValid(CoreAttributes.WORD_TEMPLATE_CONTENT.getName())) {
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.WORD_TEMPLATE_CONTENT.getName())) {
          if (presentationType != PresentationType.GENERALIZED_EDIT) {
             return PRESENTATION_SUBTYPE_MATCH;
          }

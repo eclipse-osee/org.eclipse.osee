@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.relation.order;
 
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -31,7 +31,7 @@ public class ArtifactRelationOrderAccessor implements IRelationOrderAccessor {
    public void load(IArtifact artifact, RelationOrderData orderData) throws OseeCoreException {
       Artifact fullArtifact = artifact.getFullArtifact();
       String value =
-            fullArtifact.getSoleAttributeValueAsString(CoreAttributes.RELATION_ORDER.getName(), Strings.emptyString());
+            fullArtifact.getSoleAttributeValueAsString(CoreAttributeTypes.RELATION_ORDER.getName(), Strings.emptyString());
 
       parser.loadFromXml(orderData, value);
    }
@@ -40,9 +40,9 @@ public class ArtifactRelationOrderAccessor implements IRelationOrderAccessor {
    public void store(IArtifact artifact, RelationOrderData orderData) throws OseeCoreException {
       Artifact fullArtifact = artifact.getFullArtifact();
       if (orderData.hasEntries() && !fullArtifact.isDeleted()) {
-         fullArtifact.setSoleAttributeFromString(CoreAttributes.RELATION_ORDER.getName(), parser.toXml(orderData));
+         fullArtifact.setSoleAttributeFromString(CoreAttributeTypes.RELATION_ORDER.getName(), parser.toXml(orderData));
       } else {
-         fullArtifact.deleteSoleAttribute(CoreAttributes.RELATION_ORDER.getName());
+         fullArtifact.deleteSoleAttribute(CoreAttributeTypes.RELATION_ORDER.getName());
       }
    }
 }

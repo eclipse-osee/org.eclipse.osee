@@ -25,7 +25,7 @@ import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.ActionManager;
 import org.eclipse.osee.ats.util.AtsNotifyUsers;
 import org.eclipse.osee.ats.util.AtsPriority;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.ExcelSaxHandler;
@@ -129,7 +129,7 @@ public class ExcelAtsActionArtifactExtractor {
                            ArtifactTypeManager.getType(VersionArtifact.ARTIFACT_NAME), aData.version);
 
                for (TeamWorkFlowArtifact team : actionArt.getTeamWorkFlowArtifacts()) {
-                  verArt.addRelation(AtsRelation.TeamWorkflowTargetedForVersion_Workflow, team);
+                  verArt.addRelation(AtsRelationTypes.TeamWorkflowTargetedForVersion_Workflow, team);
                }
             }
             if (aData.assigneeStrs.size() > 0) {

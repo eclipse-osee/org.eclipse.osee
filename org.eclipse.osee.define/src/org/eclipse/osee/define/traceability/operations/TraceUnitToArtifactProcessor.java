@@ -27,8 +27,8 @@ import org.eclipse.osee.define.traceability.data.RequirementData;
 import org.eclipse.osee.define.traceability.data.TestUnitData;
 import org.eclipse.osee.define.traceability.data.TraceMark;
 import org.eclipse.osee.define.traceability.data.TraceUnit;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -103,7 +103,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
 
    private Artifact getArtifactFromCache(IProgressMonitor monitor, String artifactTypeName, String name) throws OseeCoreException {
       ArtifactType typeValue = ArtifactTypeManager.getType(artifactTypeName);
-      if (typeValue.inheritsFrom(CoreArtifacts.TestUnit)) {
+      if (typeValue.inheritsFrom(CoreArtifactTypes.TestUnit)) {
          if (testUnitData == null) {
             testUnitData = new TestUnitData(importIntoBranch);
             if (!monitor.isCanceled()) {
@@ -111,7 +111,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             }
          }
          return testUnitData.getTestUnitByName(name);
-      } else if (typeValue.inheritsFrom(CoreArtifacts.CodeUnit)) {
+      } else if (typeValue.inheritsFrom(CoreArtifactTypes.CodeUnit)) {
          if (codeUnitData == null) {
             codeUnitData = new CodeUnitData(importIntoBranch);
             if (!monitor.isCanceled()) {
@@ -183,14 +183,14 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
    }
 
    private IRelationEnumeration getRelationFromTraceType(Artifact traceUnitArtifact, String traceType) throws OseeCoreException {
-      if (traceUnitArtifact.isOfType(CoreArtifacts.TestUnit)) {
+      if (traceUnitArtifact.isOfType(CoreArtifactTypes.TestUnit)) {
          if (isUsesTraceType(traceType)) {
-            return CoreRelations.Uses__TestUnit;
+            return CoreRelationTypes.Uses__TestUnit;
          } else {
-            return CoreRelations.Verification__Verifier;
+            return CoreRelationTypes.Verification__Verifier;
          }
-      } else if (traceUnitArtifact.isOfType(CoreArtifacts.CodeUnit)) {
-         return CoreRelations.CodeRequirement_CodeUnit;
+      } else if (traceUnitArtifact.isOfType(CoreArtifactTypes.CodeUnit)) {
+         return CoreRelationTypes.CodeRequirement_CodeUnit;
       }
       return null;
    }
@@ -261,13 +261,13 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
             folder = getOrCreateTestCaseFolder(transaction);
          } else if (testUnit.isOfType(Requirements.TEST_SUPPORT)) {
             folder = getOrCreateTestSupportFolder(transaction);
-         } else if (testUnit.isOfType(CoreArtifacts.CodeUnit)) {
+         } else if (testUnit.isOfType(CoreArtifactTypes.CodeUnit)) {
             folder = getOrCreateCodeUnitFolder(transaction);
          } else {
             folder = getOrCreateUnknownTestUnitFolder(transaction);
          }
 
-         if (folder != null && !folder.isRelated(CoreRelations.Default_Hierarchical__Child, testUnit)) {
+         if (folder != null && !folder.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testUnit)) {
             folder.addChild(testUnit);
             folder.persist(transaction);
          }
@@ -288,7 +288,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private static Artifact getOrCreateCodeUnitFolder(SkynetTransaction transaction) throws OseeCoreException {
          Artifact codeUnitFolder = getOrCreateFolder(transaction, "Code Units");
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
-         if (!root.isRelated(CoreRelations.Default_Hierarchical__Child, codeUnitFolder)) {
+         if (!root.isRelated(CoreRelationTypes.Default_Hierarchical__Child, codeUnitFolder)) {
             root.addChild(codeUnitFolder);
             root.persist(transaction);
          }
@@ -298,7 +298,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private static Artifact getOrCreateTestUnitSubFolder(SkynetTransaction transaction, String folderName) throws OseeCoreException {
          Artifact subFolder = getOrCreateFolder(transaction, folderName);
          Artifact testUnits = getOrCreateTestUnitsFolder(transaction);
-         if (!testUnits.isRelated(CoreRelations.Default_Hierarchical__Child, subFolder)) {
+         if (!testUnits.isRelated(CoreRelationTypes.Default_Hierarchical__Child, subFolder)) {
             testUnits.addChild(subFolder);
             testUnits.persist(transaction);
          }
@@ -308,7 +308,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       private static Artifact getOrCreateTestUnitsFolder(SkynetTransaction transaction) throws OseeCoreException {
          Artifact testUnitFolder = getOrCreateFolder(transaction, "Test Units");
          Artifact root = OseeSystemArtifacts.getDefaultHierarchyRootArtifact(transaction.getBranch());
-         if (!root.isRelated(CoreRelations.Default_Hierarchical__Child, testUnitFolder)) {
+         if (!root.isRelated(CoreRelationTypes.Default_Hierarchical__Child, testUnitFolder)) {
             root.addChild(testUnitFolder);
             root.persist(transaction);
          }
@@ -316,7 +316,7 @@ public class TraceUnitToArtifactProcessor implements ITraceUnitProcessor {
       }
 
       private static Artifact getOrCreateFolder(SkynetTransaction transaction, String folderName) throws OseeCoreException {
-         return OseeSystemArtifacts.getOrCreateArtifact("Folder", folderName, transaction.getBranch());
+         return OseeSystemArtifacts.getOrCreateArtifact(CoreArtifactTypes.Folder, folderName, transaction.getBranch());
       }
    }
 

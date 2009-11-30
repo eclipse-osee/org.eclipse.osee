@@ -69,14 +69,14 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
          coverageUnit.setFileContents(artifact.getSoleAttributeValueAsString(
                CoverageAttributes.FILE_CONTENTS.getStoreName(), ""));
          coverageUnit.setNotes(artifact.getSoleAttributeValueAsString(CoverageAttributes.NOTES.getStoreName(), ""));
-         coverageUnit.setFolder(artifact.getArtifactTypeName().equals(ARTIFACT_FOLDER_NAME));
+         coverageUnit.setFolder(artifact.isOfType(ARTIFACT_FOLDER_NAME));
          coverageUnit.setAssignees(artifact.getSoleAttributeValueAsString(CoverageAttributes.ASSIGNEES.getStoreName(),
                ""));
          coverageUnit.setNamespace(artifact.getSoleAttributeValueAsString(CoverageAttributes.NAMESPACE.getStoreName(),
                ""));
          coverageUnit.setLocation(artifact.getSoleAttributeValueAsString(CoverageAttributes.LOCATION.getStoreName(), ""));
          for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.getArtifactTypeName().equals(ARTIFACT_NAME) || childArt.getArtifactTypeName().equals(
+            if (childArt.isOfType(ARTIFACT_NAME) || childArt.isOfType(
                   ARTIFACT_FOLDER_NAME)) {
                coverageUnit.addCoverageUnit(OseeCoverageUnitStore.get(coverageUnit, childArt));
             }

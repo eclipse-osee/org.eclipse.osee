@@ -21,13 +21,14 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.VersionArtifact.VersionReleaseType;
 import org.eclipse.osee.ats.config.AtsCacheManager;
 import org.eclipse.osee.ats.util.AtsFolderUtil;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.util.AtsFolderUtil.AtsFolder;
 import org.eclipse.osee.ats.util.widgets.commit.ICommitConfigArtifact;
 import org.eclipse.osee.ats.workflow.item.AtsWorkDefinitions.RuleWorkItemId;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -96,12 +97,12 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), description);
       setSoleAttributeValue(ATSAttributes.FULL_NAME_ATTRIBUTE.getStoreName(), fullname);
       for (User user : leads) {
-         addRelation(AtsRelation.TeamLead_Lead, user);
+         addRelation(AtsRelationTypes.TeamLead_Lead, user);
          // All leads are members
-         addRelation(AtsRelation.TeamMember_Member, user);
+         addRelation(AtsRelationTypes.TeamMember_Member, user);
       }
       for (User user : members) {
-         addRelation(AtsRelation.TeamMember_Member, user);
+         addRelation(AtsRelationTypes.TeamMember_Member, user);
       }
 
       if (teamDefOptions.contains(TeamDefinitionOptions.TeamUsesVersions)) {
@@ -113,7 +114,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
 
       // Relate to actionable items
       for (ActionableItemArtifact aia : actionableItems) {
-         addRelation(AtsRelation.TeamActionableItem_ActionableItem, aia);
+         addRelation(AtsRelationTypes.TeamActionableItem_ActionableItem, aia);
       }
    }
 
@@ -168,8 +169,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * @return parent TeamDefinition that holds the work flow id attribute
     */
    public TeamDefinitionArtifact getTeamDefinitionHoldingWorkFlow() throws OseeCoreException {
-      for (Artifact artifact : getRelatedArtifacts(CoreRelations.WorkItem__Child, Artifact.class)) {
-         if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+      for (Artifact artifact : getRelatedArtifacts(CoreRelationTypes.WorkItem__Child, Artifact.class)) {
+         if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             return this;
          }
       }
@@ -183,7 +184,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    public VersionArtifact getNextReleaseVersion() throws OseeCoreException {
-      for (VersionArtifact verArt : getRelatedArtifacts(AtsRelation.TeamDefinitionToVersion_Version,
+      for (VersionArtifact verArt : getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version,
             VersionArtifact.class)) {
          if (verArt.getSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), false)) {
             return verArt;
@@ -237,8 +238,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    private static List<TeamDefinitionArtifact> getImpactedTeamDefInherited(ActionableItemArtifact aia) throws OseeCoreException {
-      if (aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team).size() > 0) {
-         return aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team, TeamDefinitionArtifact.class);
+      if (aia.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team).size() > 0) {
+         return aia.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team, TeamDefinitionArtifact.class);
       }
       Artifact parentArt = aia.getParent();
       if (parentArt instanceof ActionableItemArtifact) {
@@ -265,8 +266,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    private static void getTeamFromItemAndChildren(ActionableItemArtifact aia, Set<TeamDefinitionArtifact> aiaTeams) throws OseeCoreException {
-      if (aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team).size() > 0) {
-         aiaTeams.addAll(aia.getRelatedArtifacts(AtsRelation.TeamActionableItem_Team, TeamDefinitionArtifact.class));
+      if (aia.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team).size() > 0) {
+         aiaTeams.addAll(aia.getRelatedArtifacts(AtsRelationTypes.TeamActionableItem_Team, TeamDefinitionArtifact.class));
       }
       for (Artifact childArt : aia.getChildren()) {
          if (childArt instanceof ActionableItemArtifact) {
@@ -285,8 +286,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
          return null;
       }
       Artifact workFlowArt = null;
-      for (Artifact artifact : teamDef.getRelatedArtifacts(CoreRelations.WorkItem__Child, Artifact.class)) {
-         if (artifact.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+      for (Artifact artifact : teamDef.getRelatedArtifacts(CoreRelationTypes.WorkItem__Child, Artifact.class)) {
+         if (artifact.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             if (workFlowArt != null) {
                OseeLog.log(
                      AtsPlugin.class,
@@ -328,8 +329,8 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    public Collection<WorkRuleDefinition> getWorkRules() throws OseeCoreException {
       Set<WorkRuleDefinition> workRules = new HashSet<WorkRuleDefinition>();
       // Get work rules from team definition
-      for (Artifact art : getRelatedArtifacts(CoreRelations.WorkItem__Child)) {
-         if (art.getArtifactTypeName().equals(WorkRuleDefinition.ARTIFACT_NAME)) {
+      for (Artifact art : getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
+         if (art.isOfType(WorkRuleDefinition.ARTIFACT_NAME)) {
             String id = art.getSoleAttributeValue(WorkItemAttributes.WORK_ID.getAttributeTypeName(), "");
             if (id != null && !id.equals("")) {
                workRules.add((WorkRuleDefinition) WorkItemDefinitionFactory.getWorkItemDefinition(id));
@@ -371,11 +372,11 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
     * @throws OseeCoreException
     */
    public Collection<User> getLeads() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelation.TeamLead_Lead, User.class);
+      return getRelatedArtifacts(AtsRelationTypes.TeamLead_Lead, User.class);
    }
 
    public Collection<User> getPrivilegedMembers() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelation.PrivilegedMember_Member, User.class);
+      return getRelatedArtifacts(AtsRelationTypes.PrivilegedMember_Member, User.class);
    }
 
    /**
@@ -406,7 +407,7 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
    }
 
    public Collection<User> getMembers() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelation.TeamMember_Member, User.class);
+      return getRelatedArtifacts(AtsRelationTypes.TeamMember_Member, User.class);
    }
 
    public VersionArtifact getVersionArtifact(String name, boolean create) throws OseeCoreException {
@@ -425,12 +426,12 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
       VersionArtifact versionArt =
             (VersionArtifact) ArtifactTypeManager.addArtifact(VersionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch(),
                   name);
-      addRelation(AtsRelation.TeamDefinitionToVersion_Version, versionArt);
+      addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, versionArt);
       return versionArt;
    }
 
    public Collection<VersionArtifact> getVersionsArtifacts() throws OseeCoreException {
-      return getRelatedArtifacts(AtsRelation.TeamDefinitionToVersion_Version, VersionArtifact.class);
+      return getRelatedArtifacts(AtsRelationTypes.TeamDefinitionToVersion_Version, VersionArtifact.class);
    }
 
    public Collection<VersionArtifact> getVersionsArtifacts(VersionReleaseType releaseType) throws OseeCoreException {
@@ -467,13 +468,13 @@ public class TeamDefinitionArtifact extends Artifact implements ICommitConfigArt
          if (artifact == null) {
             throw new IllegalArgumentException("Rule \"" + ruleId + "\" does not exist.");
          } else {
-            addRelation(CoreRelations.WorkItem__Child, artifact);
+            addRelation(CoreRelationTypes.WorkItem__Child, artifact);
          }
       }
    }
 
    public boolean hasWorkRule(String ruleId) throws OseeCoreException {
-      for (Artifact art : getRelatedArtifacts(CoreRelations.WorkItem__Child)) {
+      for (Artifact art : getRelatedArtifacts(CoreRelationTypes.WorkItem__Child)) {
          if (art.getName().equals(ruleId)) {
             return true;
          }

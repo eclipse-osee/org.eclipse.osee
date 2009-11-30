@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedList;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -57,7 +57,7 @@ public class UniversalGroup {
       Artifact groupArt = ArtifactTypeManager.addArtifact(UniversalGroup.ARTIFACT_TYPE_NAME, branch, name);
       groupArt.persist();
       Artifact groupRoot = getTopUniversalGroupArtifact(branch);
-      groupRoot.addRelation(CoreRelations.Universal_Grouping__Members, groupArt);
+      groupRoot.addRelation(CoreRelationTypes.Universal_Grouping__Members, groupArt);
       groupRoot.persist();
       return groupArt;
    }

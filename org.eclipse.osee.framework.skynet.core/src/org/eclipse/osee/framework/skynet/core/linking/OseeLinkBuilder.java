@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.linking;
 
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -96,8 +96,8 @@ public class OseeLinkBuilder {
 
    private String getParagraphNumber(Artifact artifact) throws OseeCoreException {
       String paragraphNumber = null;
-      if (artifact.isAttributeTypeValid(CoreAttributes.PARAGRAPH_NUMBER)) {
-         paragraphNumber = artifact.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER);
+      if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
+         paragraphNumber = artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER);
       }
       if (!Strings.isValid(paragraphNumber)) {
          paragraphNumber = "Undefined";

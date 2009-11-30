@@ -36,7 +36,7 @@ import org.eclipse.osee.define.traceability.report.ArtifactToRelatedArtifact;
 import org.eclipse.osee.define.traceability.report.ArtifactTraceCount;
 import org.eclipse.osee.define.traceability.report.ArtifactsWithoutRelations;
 import org.eclipse.osee.define.traceability.report.IReportDataCollector;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.IRelationEnumeration;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -388,10 +388,10 @@ public class TraceReportBlam extends AbstractBlam {
    }
 
    private enum TraceTypeEnum {
-      Code_Unit_Trace(CoreRelations.CodeRequirement_Requirement, CoreRelations.CodeRequirement_CodeUnit, false),
-      Verified_By_Test_Unit_Trace(CoreRelations.Verification__Requirement, CoreRelations.Verification__Verifier, true),
-      Used_By_Test_Unit_Trace(CoreRelations.Uses__Requirement, CoreRelations.Uses__TestUnit, true),
-      Validation_By_TestProcedure(CoreRelations.Validation__Requirement, CoreRelations.Validation__Validator, true);
+      Code_Unit_Trace(CoreRelationTypes.CodeRequirement_Requirement, CoreRelationTypes.CodeRequirement_CodeUnit, false),
+      Verified_By_Test_Unit_Trace(CoreRelationTypes.Verification__Requirement, CoreRelationTypes.Verification__Verifier, true),
+      Used_By_Test_Unit_Trace(CoreRelationTypes.Uses__Requirement, CoreRelationTypes.Uses__TestUnit, true),
+      Validation_By_TestProcedure(CoreRelationTypes.Validation__Requirement, CoreRelationTypes.Validation__Validator, true);
 
       private IRelationEnumeration toReq;
       private IRelationEnumeration toTraceUnit;

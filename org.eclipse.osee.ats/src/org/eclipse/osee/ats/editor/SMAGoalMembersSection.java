@@ -12,7 +12,7 @@ package org.eclipse.osee.ats.editor;
 
 import org.eclipse.nebula.widgets.xviewer.customize.CustomizeData;
 import org.eclipse.osee.ats.AtsPlugin;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.world.IWorldEditor;
 import org.eclipse.osee.ats.world.IWorldEditorProvider;
 import org.eclipse.osee.ats.world.WorldComposite;
@@ -65,7 +65,7 @@ public class SMAGoalMembersSection extends SectionPart implements IWorldEditor {
 
       worldComposite = new WorldComposite(this, sectionBody, SWT.BORDER);
       try {
-         worldComposite.load("Members", editor.getSmaMgr().getSma().getRelatedArtifacts(AtsRelation.Goal_Member),
+         worldComposite.load("Members", editor.getSmaMgr().getSma().getRelatedArtifacts(AtsRelationTypes.Goal_Member),
                (CustomizeData) null, TableLoadOption.None);
       } catch (OseeCoreException ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE, ex);

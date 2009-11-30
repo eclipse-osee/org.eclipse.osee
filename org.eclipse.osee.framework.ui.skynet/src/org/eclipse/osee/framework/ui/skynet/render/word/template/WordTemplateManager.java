@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -298,9 +298,9 @@ public class WordTemplateManager {
 
             if (!artifacts.isEmpty()) {
                Artifact artifact = artifacts.iterator().next();
-               if (artifact.isAttributeTypeValid(CoreAttributes.PARAGRAPH_NUMBER)) {
-                  if (!artifact.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "").equals("")) {
-                     startParagraphNumber = artifact.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, "");
+               if (artifact.isAttributeTypeValid(CoreAttributeTypes.PARAGRAPH_NUMBER)) {
+                  if (!artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "").equals("")) {
+                     startParagraphNumber = artifact.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, "");
                   }
                }
             }

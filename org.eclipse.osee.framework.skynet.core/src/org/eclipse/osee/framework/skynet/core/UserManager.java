@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.data.IOseeUser;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.Active;
-import org.eclipse.osee.framework.core.enums.CoreArtifacts;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.ArtifactDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -83,13 +83,13 @@ public final class UserManager {
    }
 
    private static List<User> getFromCache() throws OseeCoreException {
-      ArtifactType userType = ArtifactTypeManager.getTypeByGuid(CoreArtifacts.User.getGuid());
+      ArtifactType userType = ArtifactTypeManager.getTypeByGuid(CoreArtifactTypes.User.getGuid());
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(userType));
    }
 
    private static List<User> getUsers(Active userStatus) throws OseeCoreException {
       ensurePopulated();
-      ArtifactType userType = ArtifactTypeManager.getTypeByGuid(CoreArtifacts.User.getGuid());
+      ArtifactType userType = ArtifactTypeManager.getTypeByGuid(CoreArtifactTypes.User.getGuid());
       return org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ArtifactCache.getArtifactsByType(userType,
             userStatus));
    }
@@ -198,7 +198,7 @@ public final class UserManager {
    private static synchronized void ensurePopulated() throws OseeCoreException {
       if (!userCacheIsLoaded) {
          List<Artifact> artifactsFound =
-               ArtifactQuery.getArtifactListFromType(CoreArtifacts.User, BranchManager.getCommonBranch(), false);
+               ArtifactQuery.getArtifactListFromType(CoreArtifactTypes.User, BranchManager.getCommonBranch(), false);
          for (Artifact artifact : artifactsFound) {
             User user = (User) artifact;
             User cachedUser = cacheByUserId(user);
@@ -244,7 +244,7 @@ public final class UserManager {
          user.setActive(userEnum.isActive());
       } else {
          user =
-               (User) ArtifactTypeManager.addArtifact(CoreArtifacts.User.getName(), BranchManager.getCommonBranch(),
+               (User) ArtifactTypeManager.addArtifact(CoreArtifactTypes.User.getName(), BranchManager.getCommonBranch(),
                      userEnum.getName());
          user.setActive(userEnum.isActive());
          user.setUserID(userEnum.getUserID());

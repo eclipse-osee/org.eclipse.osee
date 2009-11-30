@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.revert;
 
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactPersistenceManager;
@@ -26,7 +26,7 @@ public class RevertDeletionCheck {
    public static boolean relationWillBeReverted(Artifact artifact) throws OseeCoreException {
       RelationLink link;
       boolean linkToDelete = false;
-      List<RelationLink> childLinks = artifact.getRelations(CoreRelations.Default_Hierarchical__Parent);
+      List<RelationLink> childLinks = artifact.getRelations(CoreRelationTypes.Default_Hierarchical__Parent);
       if (childLinks != null && !childLinks.isEmpty()) {
          link = childLinks.get(0);
          linkToDelete = ArtifactPersistenceManager.isRelationNewOnBranch(link, artifact.getBranch());

@@ -49,6 +49,7 @@ import org.eclipse.osee.ats.workflow.editor.model.WorkPageShape;
 import org.eclipse.osee.ats.workflow.editor.model.WorkflowDiagram;
 import org.eclipse.osee.ats.workflow.editor.parts.ShapesEditPartFactory;
 import org.eclipse.osee.ats.workflow.editor.parts.ShapesTreeEditPartFactory;
+import org.eclipse.osee.framework.core.enums.CoreArtifactTypes;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -410,7 +411,7 @@ public class AtsWorkflowConfigEditor extends GraphicalEditorWithFlyoutPalette im
    public void handleFrameworkTransactionEvent(Sender sender, FrameworkTransactionData transData) throws OseeCoreException {
       if (transData.branchId != AtsUtil.getAtsBranch().getId()) return;
       for (Artifact delArt : transData.cacheDeletedArtifacts) {
-         if (delArt.getArtifactTypeName().equals(WorkFlowDefinition.ARTIFACT_NAME)) {
+         if (delArt.isOfType(CoreArtifactTypes.WorkFlowDefinition)) {
             if (delArt.getName().equals(getPartName())) {
                closeEditor();
             }

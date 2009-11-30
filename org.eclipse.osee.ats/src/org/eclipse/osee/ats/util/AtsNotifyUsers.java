@@ -207,7 +207,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
                // Handle Team Definitions
                Collection<User> subscribedUsers =
                      Collections.castAll(teamArt.getTeamDefinition().getRelatedArtifacts(
-                           AtsRelation.SubscribedUser_User));
+                           AtsRelationTypes.SubscribedUser_User));
                if (subscribedUsers.size() > 0) {
                   notificationAdded = true;
                   OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(
@@ -219,7 +219,7 @@ public class AtsNotifyUsers implements IFrameworkTransactionEventListener {
 
                // Handle Actionable Items
                for (ActionableItemArtifact aia : teamArt.getActionableItemsDam().getActionableItems()) {
-                  subscribedUsers = Collections.castAll(aia.getRelatedArtifacts(AtsRelation.SubscribedUser_User));
+                  subscribedUsers = Collections.castAll(aia.getRelatedArtifacts(AtsRelationTypes.SubscribedUser_User));
                   if (subscribedUsers.size() > 0) {
                      notificationAdded = true;
                      OseeNotificationManager.addNotificationEvent(new OseeNotificationEvent(

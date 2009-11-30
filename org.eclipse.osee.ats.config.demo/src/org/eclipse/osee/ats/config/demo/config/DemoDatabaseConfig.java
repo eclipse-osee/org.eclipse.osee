@@ -20,7 +20,7 @@ import org.eclipse.osee.ats.config.demo.workflow.DemoCodeWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoReqWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoSWDesignWorkFlowDefinition;
 import org.eclipse.osee.ats.config.demo.workflow.DemoTestWorkFlowDefinition;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.workflow.vue.AtsDbConfig;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -80,7 +80,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
       Artifact teamDef =
             ArtifactQuery.getArtifactFromTypeAndName(TeamDefinitionArtifact.ARTIFACT_NAME, "SAW Test",
                   AtsUtil.getAtsBranch());
-      teamDef.addRelation(AtsRelation.PrivilegedMember_Member, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith));
+      teamDef.addRelation(AtsRelationTypes.PrivilegedMember_Member, DemoDbUtil.getDemoUser(DemoUsers.Joe_Smith));
       teamDef.persist(transaction);
 
       transaction.execute();
@@ -138,7 +138,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
             ver.setSoleAttributeValue(ATSAttributes.ALLOW_COMMIT_BRANCH.getStoreName(), true);
             ver.setSoleAttributeValue(ATSAttributes.ALLOW_CREATE_BRANCH.getStoreName(), true);
          }
-         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
+         DemoTeams.getInstance().getTeamDef(Team.SAW_SW).addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, ver);
          ver.persist();
       }
 
@@ -154,7 +154,7 @@ public class DemoDatabaseConfig extends AtsDbConfig implements IDbInitialization
          if (verName.contains("2")) {
             ver.setSoleAttributeValue(ATSAttributes.NEXT_VERSION_ATTRIBUTE.getStoreName(), true);
          }
-         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(AtsRelation.TeamDefinitionToVersion_Version, ver);
+         DemoTeams.getInstance().getTeamDef(Team.CIS_SW).addRelation(AtsRelationTypes.TeamDefinitionToVersion_Version, ver);
          ver.persist();
       }
    }

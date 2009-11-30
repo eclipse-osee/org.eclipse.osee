@@ -361,7 +361,7 @@ public class AtsUtil implements IAtsLib {
    public void openInAtsWorldEditor(String name, Collection<Artifact> artifacts) throws OseeCoreException {
       Set<Artifact> otherArts = new HashSet<Artifact>();
       for (Artifact art : artifacts) {
-         if (art.getArtifactTypeName().equals(UniversalGroup.ARTIFACT_TYPE_NAME)) {
+         if (art.isOfType(UniversalGroup.ARTIFACT_TYPE_NAME)) {
             WorldEditor.open(new WorldEditorUISearchItemProvider(new GroupWorldSearchItem(art), null,
                   TableLoadOption.None));
          } else {

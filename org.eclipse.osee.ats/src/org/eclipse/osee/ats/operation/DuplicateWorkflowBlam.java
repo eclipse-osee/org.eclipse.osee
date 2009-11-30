@@ -26,7 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamWorkflowExtensions;
 import org.eclipse.osee.ats.artifact.ATSLog.LogType;
 import org.eclipse.osee.ats.artifact.ActionArtifact.CreateTeamOption;
 import org.eclipse.osee.ats.editor.SMAEditor;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
@@ -147,7 +147,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
          if (title != null && !title.equals("")) {
             dupArt.setName(getDefaultTitle());
          }
-         dupArt.addRelation(AtsRelation.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
+         dupArt.addRelation(AtsRelationTypes.ActionToWorkflow_Action, teamArt.getParentActionArtifact());
          dupArt.getSmaMgr().getLog().addLog(LogType.Note, null,
                "Workflow duplicated from " + teamArt.getHumanReadableId());
          if (duplicateTasks) {
@@ -155,7 +155,7 @@ public class DuplicateWorkflowBlam extends AbstractBlam {
                TaskArtifact dupTaskArt = (TaskArtifact) taskArt.duplicate(AtsUtil.getAtsBranch());
                dupTaskArt.getSmaMgr().getLog().addLog(LogType.Note, null,
                      "Task duplicated from " + taskArt.getHumanReadableId());
-               dupArt.addRelation(AtsRelation.SmaToTask_Task, dupTaskArt);
+               dupArt.addRelation(AtsRelationTypes.SmaToTask_Task, dupTaskArt);
                dupArt.persist(transaction);
             }
             newTeamArts.add(dupArt);

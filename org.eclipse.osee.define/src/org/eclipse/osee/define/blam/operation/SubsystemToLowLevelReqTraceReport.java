@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map.Entry;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -110,14 +110,14 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
       String[] row = new String[7];
 
       for (Artifact lowLevelReq : lowLevelReqs) {
-         row[0] = correct(lowLevelReq.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
+         row[0] = correct(lowLevelReq.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""));
          row[1] = lowLevelReq.getName();
          if (lowLevelReq.isOfType(reqtypeName)) {
             row[2] = lowLevelReq.getAttributesToString("Qualification Method");
 
-            for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(CoreRelations.Requirement_Trace__Higher_Level)) {
+            for (Artifact subSysReq : lowLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Higher_Level)) {
                row[3] = getAssociatedSubSystem(subSysReq);
-               row[4] = correct(subSysReq.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
+               row[4] = correct(subSysReq.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""));
                row[5] = subSysReq.getName();
                row[6] = subSysReq.getSoleAttributeValue(Requirements.SUBSYSTEM, "");
                excelWriter.writeRow(row);
@@ -157,12 +157,12 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
 
          for (Artifact higherLevelReq : subsysReqs) {
             if (isAllocated(higherLevelReq)) {
-               row[0] = correct(higherLevelReq.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
+               row[0] = correct(higherLevelReq.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""));
                row[1] = higherLevelReq.getName();
 
-               for (Artifact lowerLevelReq : higherLevelReq.getRelatedArtifacts(CoreRelations.Requirement_Trace__Lower_Level)) {
+               for (Artifact lowerLevelReq : higherLevelReq.getRelatedArtifacts(CoreRelationTypes.Requirement_Trace__Lower_Level)) {
                   if (lowLevelReqs.contains(lowerLevelReq)) {
-                     row[2] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributes.PARAGRAPH_NUMBER, ""));
+                     row[2] = correct(lowerLevelReq.getSoleAttributeValue(CoreAttributeTypes.PARAGRAPH_NUMBER, ""));
                      row[3] = lowerLevelReq.getName();
                      excelWriter.writeRow(row);
                      row[0] = row[1] = null;
@@ -188,7 +188,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void initLowLevelRequirements(List<Artifact> artifacts) throws OseeCoreException {
-      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelations.Default_Hierarchical__Child);
+      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
          if (!artifact.isOfType("Folder")) {
             lowLevelReqs.add(artifact);
@@ -198,7 +198,7 @@ public class SubsystemToLowLevelReqTraceReport extends AbstractBlam {
    }
 
    private void initAllocationComponents(List<Artifact> artifacts) throws OseeCoreException {
-      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelations.Default_Hierarchical__Child);
+      RelationManager.getRelatedArtifacts(artifacts, 999, true, CoreRelationTypes.Default_Hierarchical__Child);
       for (Artifact artifact : artifacts) {
          if (!artifact.isOfType("Folder")) {
             components.add(artifact);

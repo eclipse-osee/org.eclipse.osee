@@ -14,8 +14,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.osee.framework.core.enums.CoreAttributes;
-import org.eclipse.osee.framework.core.enums.CoreRelations;
+import org.eclipse.osee.framework.core.enums.CoreAttributeTypes;
+import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -54,9 +54,9 @@ public class RelationOrderingTest {
       child3 = createArtifact(ARTIFACT_TYPE, branch);
       child3.setSoleAttributeFromString("Name", "c_child");
 
-      parent.addRelation(CoreRelations.Default_Hierarchical__Child, child1);
-      parent.addRelation(CoreRelations.Default_Hierarchical__Child, child2);
-      parent.addRelation(CoreRelations.Default_Hierarchical__Child, child3);
+      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child1);
+      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child2);
+      parent.addRelation(CoreRelationTypes.Default_Hierarchical__Child, child3);
    }
 
    @After
@@ -76,9 +76,9 @@ public class RelationOrderingTest {
 
       checkUserDefined();
 
-      parent.setRelationOrder(CoreRelations.Default_Hierarchical__Child,
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
             RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
-      Attribute<Object> attribute = parent.getSoleAttribute(CoreAttributes.RELATION_ORDER.getName());
+      Attribute<Object> attribute = parent.getSoleAttribute(CoreAttributeTypes.RELATION_ORDER.getName());
       assertTrue("Setting the attribute back to the default type did not cause an attribute to be deleted",
             (attribute == null || attribute.isDeleted()));
 
@@ -90,28 +90,28 @@ public class RelationOrderingTest {
       child2.setSoleAttributeFromString("Name", "b_child");
       Artifact child6 = createArtifact("User", branch);
 
-      parent.addRelation(CoreRelations.Users_User, child4);
-      parent.addRelation(CoreRelations.Users_User, child5);
-      parent.addRelation(CoreRelations.Users_User, child6);
+      parent.addRelation(CoreRelationTypes.Users_User, child4);
+      parent.addRelation(CoreRelationTypes.Users_User, child5);
+      parent.addRelation(CoreRelationTypes.Users_User, child6);
       parent.persist();
 
-      parent.setRelationOrder(CoreRelations.Users_User, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+      parent.setRelationOrder(CoreRelationTypes.Users_User, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
 
-      parent.setRelationOrder(CoreRelations.Users_Artifact, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
+      parent.setRelationOrder(CoreRelationTypes.Users_Artifact, RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
 
-      parent.setRelationOrder(CoreRelations.Default_Hierarchical__Child,
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
             RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
 
-      attribute = parent.getSoleAttribute(CoreAttributes.RELATION_ORDER.getName());
+      attribute = parent.getSoleAttribute(CoreAttributeTypes.RELATION_ORDER.getName());
       assertTrue("The attribute was deleted even though there was a still a non default sort order on the artifact.",
             (attribute != null));
 
    }
 
    private void checkAsc() throws OseeCoreException {
-      parent.setRelationOrder(CoreRelations.Default_Hierarchical__Child,
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
             RelationOrderBaseTypes.LEXICOGRAPHICAL_ASC);
-      List<Artifact> children = parent.getRelatedArtifacts(CoreRelations.Default_Hierarchical__Child);
+      List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
       Assert.assertEquals(3, children.size());
       Assert.assertEquals(children.get(0).getName(), "a_child");
       Assert.assertEquals(children.get(1).getName(), "b_child");
@@ -119,9 +119,9 @@ public class RelationOrderingTest {
    }
 
    private void checkDesc() throws OseeCoreException {
-      parent.setRelationOrder(CoreRelations.Default_Hierarchical__Child,
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child,
             RelationOrderBaseTypes.LEXICOGRAPHICAL_DESC);
-      List<Artifact> children = parent.getRelatedArtifacts(CoreRelations.Default_Hierarchical__Child);
+      List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
       Assert.assertEquals(3, children.size());
       Assert.assertEquals(children.get(0).getName(), "c_child");
       Assert.assertEquals(children.get(1).getName(), "b_child");
@@ -133,8 +133,8 @@ public class RelationOrderingTest {
       children.add(child2);
       children.add(child3);
       children.add(child1);
-      parent.setRelationOrder(CoreRelations.Default_Hierarchical__Child, children);
-      children = parent.getRelatedArtifacts(CoreRelations.Default_Hierarchical__Child);
+      parent.setRelationOrder(CoreRelationTypes.Default_Hierarchical__Child, children);
+      children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
       Assert.assertEquals(3, children.size());
       Assert.assertEquals(children.get(0).getName(), "b_child");
       Assert.assertEquals(children.get(1).getName(), "c_child");
@@ -147,13 +147,13 @@ public class RelationOrderingTest {
 
       String artifactGuid = child3.getGuid();
 
-      parent.deleteRelation(CoreRelations.Default_Hierarchical__Child, child3);
+      parent.deleteRelation(CoreRelationTypes.Default_Hierarchical__Child, child3);
 
-      String orderString = parent.getSoleAttributeValue(CoreAttributes.RELATION_ORDER.getName());
+      String orderString = parent.getSoleAttributeValue(CoreAttributeTypes.RELATION_ORDER.getName());
 
       assertFalse(orderString.contains(artifactGuid));
 
-      List<Artifact> children = parent.getRelatedArtifacts(CoreRelations.Default_Hierarchical__Child);
+      List<Artifact> children = parent.getRelatedArtifacts(CoreRelationTypes.Default_Hierarchical__Child);
       Assert.assertEquals(2, children.size());
       Assert.assertEquals(children.get(0).getName(), "b_child");
       Assert.assertEquals(children.get(1).getName(), "a_child");

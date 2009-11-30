@@ -14,7 +14,7 @@ package org.eclipse.osee.ats.navigate;
 import java.util.List;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
-import org.eclipse.osee.ats.util.AtsRelation;
+import org.eclipse.osee.ats.util.AtsRelationTypes;
 import org.eclipse.osee.ats.util.widgets.dialog.AICheckTreeDialog;
 import org.eclipse.osee.framework.core.enums.Active;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -45,11 +45,11 @@ public class SubscribeByActionableItem extends XNavigateItemAction {
                   Active.Active);
       try {
          List<ActionableItemArtifact> objs =
-               Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(AtsRelation.SubscribedUser_Artifact,
+               Collections.castAll(UserManager.getUser().getRelatedArtifactsOfType(AtsRelationTypes.SubscribedUser_Artifact,
                      ActionableItemArtifact.class));
          diag.setInitialAias(objs);
          if (diag.open() != 0) return;
-         UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelation.SubscribedUser_Artifact, diag.getChecked(),
+         UserManager.getUser().setRelationsOfTypeUseCurrentOrder(AtsRelationTypes.SubscribedUser_Artifact, diag.getChecked(),
                ActionableItemArtifact.class);
          UserManager.getUser().persist();
          AWorkbench.popup(getName(), "Subscriptions updated.");
