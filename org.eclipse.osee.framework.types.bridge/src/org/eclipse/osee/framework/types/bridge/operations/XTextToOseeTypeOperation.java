@@ -72,10 +72,12 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    }
 
    private void loadDependencies(OseeTypeModel baseModel, List<OseeTypeModel> models) throws OseeCoreException, URISyntaxException {
+      // This is commented out cause we're using a combined file.  Once combined files
+      // are no longer generated, this should be uncommented.
       //      for (Import dependant : baseModel.getImports()) {
-      //         OseeTypeModel childModel = OseeTypeModelUtil.loadModel(context, new URI(depenant.getImportURI()));
+      //         OseeTypeModel childModel = OseeTypeModelUtil.loadModel(context, new URI(dependant.getImportURI()));
       //         loadDependencies(childModel, models);
-      //         //         System.out.println("depends on: " + depenant.getImportURI());
+      //         System.out.println("depends on: " + dependant.getImportURI());
       //      }
       //      System.out.println("Added on: " + baseModel.eResource().getURI());
       models.add(baseModel);

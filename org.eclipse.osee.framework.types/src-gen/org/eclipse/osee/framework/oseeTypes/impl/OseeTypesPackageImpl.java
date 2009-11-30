@@ -663,6 +663,16 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
    * <!-- end-user-doc -->
    * @generated
    */
+  public EAttribute getAddEnum_EntryGuid()
+  {
+    return (EAttribute)addEnumEClass.getEStructuralFeatures().get(2);
+  }
+
+  /**
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   */
   public EClass getRemoveEnum()
   {
     return removeEnumEClass;
@@ -844,6 +854,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     addEnumEClass = createEClass(ADD_ENUM);
     createEAttribute(addEnumEClass, ADD_ENUM__ENUM_ENTRY);
     createEAttribute(addEnumEClass, ADD_ENUM__ORDINAL);
+    createEAttribute(addEnumEClass, ADD_ENUM__ENTRY_GUID);
 
     removeEnumEClass = createEClass(REMOVE_ENUM);
     createEReference(removeEnumEClass, REMOVE_ENUM__ENUM_ENTRY);
@@ -955,6 +966,7 @@ public class OseeTypesPackageImpl extends EPackageImpl implements OseeTypesPacka
     initEClass(addEnumEClass, AddEnum.class, "AddEnum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEAttribute(getAddEnum_EnumEntry(), ecorePackage.getEString(), "enumEntry", null, 0, 1, AddEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
     initEAttribute(getAddEnum_Ordinal(), ecorePackage.getEString(), "ordinal", null, 0, 1, AddEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+    initEAttribute(getAddEnum_EntryGuid(), ecorePackage.getEString(), "entryGuid", null, 0, 1, AddEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
     initEClass(removeEnumEClass, RemoveEnum.class, "RemoveEnum", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
     initEReference(getRemoveEnum_EnumEntry(), this.getOseeEnumEntry(), null, "enumEntry", null, 0, 1, RemoveEnum.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

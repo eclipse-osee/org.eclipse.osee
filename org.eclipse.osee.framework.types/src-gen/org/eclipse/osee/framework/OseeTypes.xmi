@@ -350,6 +350,12 @@
         <tokens xsi:type="xtext:Assignment" cardinality="?" feature="ordinal" operator="=">
           <terminal xsi:type="xtext:RuleCall" rule="/0/@rules.2"/>
         </tokens>
+        <tokens xsi:type="xtext:Group" cardinality="?">
+          <tokens xsi:type="xtext:Keyword" value="entryGuid"/>
+          <tokens xsi:type="xtext:Assignment" feature="entryGuid" operator="=">
+            <terminal xsi:type="xtext:RuleCall" rule="/1/@rules.2"/>
+          </tokens>
+        </tokens>
       </alternatives>
     </rules>
     <rules xsi:type="xtext:ParserRule" name="RemoveEnum">

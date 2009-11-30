@@ -1462,7 +1462,31 @@ ruleAddEnum returns [EObject current=null]
 	        }
 	    }
 	
-)?);
+)?('entryGuid' 
+    {
+        createLeafNode(grammarAccess.getAddEnumAccess().getEntryGuidKeyword_3_0(), null); 
+    }
+(	
+	
+	    lv_entryGuid_4=	RULE_STRING
+	{
+		createLeafNode(grammarAccess.getAddEnumAccess().getEntryGuidSTRINGTerminalRuleCall_3_1_0(), "entryGuid"); 
+	}
+ 
+	    {
+	        if ($current==null) {
+	            $current = factory.create(grammarAccess.getAddEnumRule().getType().getClassifier());
+	            associateNodeWithAstElement(currentNode, $current);
+	        }
+	        
+	        try {
+	       		set($current, "entryGuid", lv_entryGuid_4, "STRING", lastConsumedNode);
+	        } catch (ValueConverterException vce) {
+				handleValueConverterException(vce);
+	        }
+	    }
+	
+))?);
 
 
 

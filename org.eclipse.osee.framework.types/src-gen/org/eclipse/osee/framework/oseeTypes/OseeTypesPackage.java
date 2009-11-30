@@ -632,13 +632,22 @@ public interface OseeTypesPackage extends EPackage
   int ADD_ENUM__ORDINAL = OVERRIDE_OPTION_FEATURE_COUNT + 1;
 
   /**
+   * The feature id for the '<em><b>Entry Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @generated
+   * @ordered
+   */
+  int ADD_ENUM__ENTRY_GUID = OVERRIDE_OPTION_FEATURE_COUNT + 2;
+
+  /**
    * The number of structural features of the '<em>Add Enum</em>' class.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
    * @generated
    * @ordered
    */
-  int ADD_ENUM_FEATURE_COUNT = OVERRIDE_OPTION_FEATURE_COUNT + 2;
+  int ADD_ENUM_FEATURE_COUNT = OVERRIDE_OPTION_FEATURE_COUNT + 3;
 
   /**
    * The meta object id for the '{@link org.eclipse.osee.framework.oseeTypes.impl.RemoveEnumImpl <em>Remove Enum</em>}' class.
@@ -1254,6 +1263,17 @@ public interface OseeTypesPackage extends EPackage
   EAttribute getAddEnum_Ordinal();
 
   /**
+   * Returns the meta object for the attribute '{@link org.eclipse.osee.framework.oseeTypes.AddEnum#getEntryGuid <em>Entry Guid</em>}'.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @return the meta object for the attribute '<em>Entry Guid</em>'.
+   * @see org.eclipse.osee.framework.oseeTypes.AddEnum#getEntryGuid()
+   * @see #getAddEnum()
+   * @generated
+   */
+  EAttribute getAddEnum_EntryGuid();
+
+  /**
    * Returns the meta object for class '{@link org.eclipse.osee.framework.oseeTypes.RemoveEnum <em>Remove Enum</em>}'.
    * <!-- begin-user-doc -->
    * <!-- end-user-doc -->
@@ -1766,6 +1786,14 @@ public interface OseeTypesPackage extends EPackage
      * @generated
      */
     EAttribute ADD_ENUM__ORDINAL = eINSTANCE.getAddEnum_Ordinal();
+
+    /**
+     * The meta object literal for the '<em><b>Entry Guid</b></em>' attribute feature.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    EAttribute ADD_ENUM__ENTRY_GUID = eINSTANCE.getAddEnum_EntryGuid();
 
     /**
      * The meta object literal for the '{@link org.eclipse.osee.framework.oseeTypes.impl.RemoveEnumImpl <em>Remove Enum</em>}' class.

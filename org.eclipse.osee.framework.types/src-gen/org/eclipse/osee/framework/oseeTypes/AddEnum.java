@@ -17,6 +17,7 @@ package org.eclipse.osee.framework.oseeTypes;
  * <ul>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.AddEnum#getEnumEntry <em>Enum Entry</em>}</li>
  *   <li>{@link org.eclipse.osee.framework.oseeTypes.AddEnum#getOrdinal <em>Ordinal</em>}</li>
+ *   <li>{@link org.eclipse.osee.framework.oseeTypes.AddEnum#getEntryGuid <em>Entry Guid</em>}</li>
  * </ul>
  * </p>
  *
@@ -77,5 +78,31 @@ public interface AddEnum extends OverrideOption
    * @generated
    */
   void setOrdinal(String value);
+
+  /**
+   * Returns the value of the '<em><b>Entry Guid</b></em>' attribute.
+   * <!-- begin-user-doc -->
+   * <p>
+   * If the meaning of the '<em>Entry Guid</em>' attribute isn't clear,
+   * there really should be more of a description here...
+   * </p>
+   * <!-- end-user-doc -->
+   * @return the value of the '<em>Entry Guid</em>' attribute.
+   * @see #setEntryGuid(String)
+   * @see org.eclipse.osee.framework.oseeTypes.OseeTypesPackage#getAddEnum_EntryGuid()
+   * @model
+   * @generated
+   */
+  String getEntryGuid();
+
+  /**
+   * Sets the value of the '{@link org.eclipse.osee.framework.oseeTypes.AddEnum#getEntryGuid <em>Entry Guid</em>}' attribute.
+   * <!-- begin-user-doc -->
+   * <!-- end-user-doc -->
+   * @param value the new value of the '<em>Entry Guid</em>' attribute.
+   * @see #getEntryGuid()
+   * @generated
+   */
+  void setEntryGuid(String value);
 
 } // AddEnum
