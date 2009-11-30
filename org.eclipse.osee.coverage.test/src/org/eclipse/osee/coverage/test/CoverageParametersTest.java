@@ -5,6 +5,7 @@
  */
 package org.eclipse.osee.coverage.test;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Set;
 import junit.framework.Assert;
@@ -14,12 +15,12 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.coverage.test.import1.CoverageImport1TestBlam;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.skynet.core.UserManager;
-import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.junit.Test;
 
@@ -46,7 +47,7 @@ public class CoverageParametersTest {
       // Will match item cause item doesn't store assignee
       Assert.assertTrue(coverageParameters.isAssigneeMatch(item));
 
-      unit.setAssignees(UsersByIds.getStorageString(Collections.singleton(UserManager.getUser(SystemUser.Guest))));
+      OseeCoverageUnitStore.setAssignees(unit, UserManager.getUser(SystemUser.Guest));
       // Will match unit cause assignees match
       Assert.assertTrue(coverageParameters.isAssigneeMatch(unit));
    }
@@ -228,5 +229,111 @@ public class CoverageParametersTest {
       Assert.assertEquals(61, itemsAndParents.getFirst().size());
       Assert.assertEquals(4, itemsAndParents.getSecond().size());
       Assert.assertEquals(12, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
+
+      // Test_Unit and Not_Covered
+      coverageParameters.setCoverageMethods(Arrays.asList(CoverageMethodEnum.Not_Covered, CoverageMethodEnum.Test_Unit));
+      itemsAndParents = coverageParameters.performSearchGetResults();
+      Assert.assertEquals(121, itemsAndParents.getFirst().size());
+      Assert.assertEquals(4, itemsAndParents.getSecond().size());
+      Assert.assertEquals(12, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
+
+      // Name = Power
+      coverageParameters.clearAll();
+      coverageParameters.setName("Power");
+      itemsAndParents = coverageParameters.performSearchGetResults();
+      Assert.assertEquals(54, itemsAndParents.getFirst().size());
+      Assert.assertEquals(2, itemsAndParents.getSecond().size());
+      Assert.assertEquals(4, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
+
+      // Name = Power; Namespace = apu
+      coverageParameters.clearAll();
+      coverageParameters.setName("Power");
+      coverageParameters.setNamespace("apu");
+      itemsAndParents = coverageParameters.performSearchGetResults();
+      Assert.assertEquals(22, itemsAndParents.getFirst().size());
+      Assert.assertEquals(1, itemsAndParents.getSecond().size());
+      Assert.assertEquals(2, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
+
+      // Assignee
+      coverageParameters.clearAll();
+      coverageParameters.setName("ScreenBButton");
+      itemsAndParents = coverageParameters.performSearchGetResults();
+      CoverageUnit button1 = null;
+      CoverageUnit button2 = null;
+      CoverageUnit button3 = null;
+      for (ICoverage coverage : itemsAndParents.getFirst()) {
+         if (coverage.getName().startsWith("ScreenBButton1")) {
+            button1 = (CoverageUnit) coverage;
+            continue;
+         }
+         if (coverage.getName().startsWith("ScreenBButton2")) {
+            button2 = (CoverageUnit) coverage;
+            continue;
+         }
+         if (coverage.getName().startsWith("ScreenBButton3")) {
+            button3 = (CoverageUnit) coverage;
+            continue;
+         }
+      }
+      Assert.assertNotNull(button1);
+      Assert.assertNotNull(button2);
+      Assert.assertNotNull(button3);
+
+      CoverageUnit power1 = null;
+      CoverageUnit power2 = null;
+      coverageParameters.setName("PowerUnit");
+      itemsAndParents = coverageParameters.performSearchGetResults();
+      for (ICoverage coverage : itemsAndParents.getFirst()) {
+         if (coverage.getName().startsWith("PowerUnit1")) {
+            power1 = (CoverageUnit) coverage;
+            continue;
+         }
+         if (coverage.getName().startsWith("PowerUnit2")) {
+            power2 = (CoverageUnit) coverage;
+            continue;
+         }
+      }
+      Assert.assertNotNull(power1);
+      Assert.assertNotNull(power2);
+
+      OseeCoverageUnitStore.setAssignees(button1, UserManager.getUser(SystemUser.Guest));
+      OseeCoverageUnitStore.setAssignees(button2, UserManager.getUser());
+      OseeCoverageUnitStore.setAssignees(button3, UserManager.getUser(SystemUser.Guest));
+      OseeCoverageUnitStore.setAssignees(power1, UserManager.getUser());
+      OseeCoverageUnitStore.setAssignees(power2, UserManager.getUser(SystemUser.Guest));
+
+      // Test Assignee search
+      coverageParameters.clearAll();
+      coverageParameters.setAssignee(UserManager.getUser());
+      itemsAndParents = coverageParameters.performSearchGetResults();
+      Assert.assertEquals(28, itemsAndParents.getFirst().size());
+      Assert.assertEquals(2, itemsAndParents.getSecond().size());
+      Assert.assertEquals(2, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
+
+      // Add Power name to Assignee search
+      coverageParameters.setName("Power");
+      coverageParameters.setAssignee(UserManager.getUser());
+      itemsAndParents = coverageParameters.performSearchGetResults();
+      Assert.assertEquals(18, itemsAndParents.getFirst().size());
+      Assert.assertEquals(1, itemsAndParents.getSecond().size());
+      Assert.assertEquals(1, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
+
+      // Test Notes search
+      button2.setNotes("now is the time");
+      power1.setNotes("now is the time");
+      coverageParameters.clearAll();
+      coverageParameters.setNotes("time");
+      itemsAndParents = coverageParameters.performSearchGetResults();
+      Assert.assertEquals(28, itemsAndParents.getFirst().size());
+      Assert.assertEquals(2, itemsAndParents.getSecond().size());
+      Assert.assertEquals(2, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
+
+      // Add Power name to Assignee search
+      coverageParameters.setName("Power");
+      itemsAndParents = coverageParameters.performSearchGetResults();
+      Assert.assertEquals(18, itemsAndParents.getFirst().size());
+      Assert.assertEquals(1, itemsAndParents.getSecond().size());
+      Assert.assertEquals(1, CoverageUtil.getFirstNonFolderCoverageUnits(itemsAndParents.getFirst()).size());
+
    }
 }

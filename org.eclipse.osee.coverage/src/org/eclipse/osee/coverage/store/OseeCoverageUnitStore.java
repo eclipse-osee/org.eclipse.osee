@@ -6,6 +6,8 @@
 package org.eclipse.osee.coverage.store;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageUnit;
@@ -13,9 +15,11 @@ import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
+import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 
 /**
@@ -127,4 +131,26 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       return coverageUnit;
    }
 
+   public static void setAssignees(CoverageUnit coverageUnit, User user) throws OseeCoreException {
+      setAssignees(coverageUnit, Collections.singleton(user));
+   }
+
+   public static void setAssignees(CoverageUnit coverageUnit, Collection<User> users) throws OseeCoreException {
+      coverageUnit.setAssignees(getAssigneesToString(users));
+   }
+
+   private static String getAssigneesToString(Collection<User> users) throws OseeCoreException {
+      return UsersByIds.getStorageString(users);
+   }
+
+   public static Collection<User> getAssignees(CoverageUnit coverageUnit) throws OseeCoreException {
+      return getAssigneesFromString(coverageUnit.getAssignees());
+   }
+
+   private static Collection<User> getAssigneesFromString(String string) throws OseeCoreException {
+      if (!Strings.isValid(string)) {
+         return Collections.emptyList();
+      }
+      return UsersByIds.getUsers(string);
+   }
 }

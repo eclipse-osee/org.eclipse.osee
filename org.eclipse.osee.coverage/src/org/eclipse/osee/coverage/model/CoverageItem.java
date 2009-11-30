@@ -41,6 +41,7 @@ public class CoverageItem implements ICoverage {
    final Set<String> testUnitNames = new HashSet<String>();
    String guid = GUID.create();
    private static String PROPERTY_STORE_ID = "coverage.item";
+   private static int numFixed = 0, numRemain = 0;
 
    public CoverageItem(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethod, String executeNum) {
       super();
@@ -71,6 +72,7 @@ public class CoverageItem implements ICoverage {
 
    public void fromXml(String xml) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
+      //      PropertyStoreRegEx store = new PropertyStoreRegEx();
       try {
          store.load(xml);
       } catch (Exception ex) {
@@ -94,6 +96,14 @@ public class CoverageItem implements ICoverage {
       if (Strings.isValid(testUnitNames)) {
          for (String name : testUnitNames.split(";"))
             addTestUnitName(name);
+      }
+      if (xml.length() > 4000) {
+         int est = 400 + (testUnitNames.split(";").length * guid.length());
+         if (est < 4000)
+            numFixed++;
+         else
+            numRemain++;
+         System.out.println(String.format("Fixed %d Remain %d EstLength %d", numFixed, numRemain, est));
       }
    }
 

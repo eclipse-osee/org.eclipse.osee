@@ -71,9 +71,15 @@ public class CoverageXViewerFactory extends SkynetXViewerFactory {
             Coverage_Rationale, Coverage_Test_Units, Assignees_Col, Notes_Col, Parent_Coverage_Unit, Line_Number,
             Location, Guid, File_Contents);
    }
+
    @Override
    public boolean isCellGradientOn() {
       return true;
+   }
+
+   @Override
+   public boolean isFilterUiAvailable() {
+      return false;
    }
 
 }

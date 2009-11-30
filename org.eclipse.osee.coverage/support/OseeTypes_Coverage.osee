@@ -40,7 +40,7 @@ attributeType "coverage.Location" extends StringAttribute {
 
 attributeType "coverage.Coverage Item" extends StringAttribute {
    guid "AARr8BmsQHKLOHNzOcQA"
-   dataProvider UriAttributeDataProvider
+   dataProvider DefaultAttributeDataProvider
    min 0
    max unlimited
    fileExtension "xml"

@@ -26,9 +26,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
-import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
 import org.eclipse.osee.framework.ui.skynet.branch.BranchSelectionDialog;
 import org.eclipse.swt.widgets.Listener;
@@ -40,10 +38,6 @@ public class CoverageUtil {
 
    private static Branch branch = null;
    private static List<Listener> branchChangeListeners = new ArrayList<Listener>();
-
-   public static String getCoverageItemUsersStr(ICoverage coverageItem) {
-      return Collections.toString(getCoverageItemUsers(coverageItem), "; ");
-   }
 
    public static boolean getBranchFromUser(boolean force) throws OseeCoreException {
       if (force || CoverageUtil.getBranch() == null) {
@@ -59,17 +53,6 @@ public class CoverageUtil {
          CoverageUtil.setBranch(dialog.getSelected());
       }
       return true;
-   }
-
-   public static Collection<User> getCoverageItemUsers(ICoverage coverageItem) {
-      try {
-         if (coverageItem.isAssignable() && Strings.isValid(coverageItem.getAssignees())) {
-            return UsersByIds.getUsers(coverageItem.getAssignees());
-         }
-      } catch (OseeCoreException ex) {
-         OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
-      }
-      return java.util.Collections.emptyList();
    }
 
    public static OseeImage getCoveragePackageBaseImage(CoveragePackageBase coveragePackageBase) {

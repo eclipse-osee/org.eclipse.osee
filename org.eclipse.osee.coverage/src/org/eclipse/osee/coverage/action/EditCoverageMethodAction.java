@@ -45,9 +45,16 @@ public class EditCoverageMethodAction extends Action {
    @Override
    public void run() {
       if (selectedCoverageEditorItem.getSelectedCoverageEditorItems().size() == 0) {
-         AWorkbench.popup("Select Coverage Item");
+         AWorkbench.popup("Select Coverage Item(s)");
          return;
       }
+      for (ICoverage coverage : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
+         if (!(coverage instanceof CoverageItem)) {
+            AWorkbench.popup("Coverage Method can only be set on Coverage Items");
+            return;
+         }
+      }
+
       Result result = saveable.isEditable();
       if (result.isFalse()) {
          result.popup();

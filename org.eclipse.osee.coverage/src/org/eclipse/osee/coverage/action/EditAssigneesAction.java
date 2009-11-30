@@ -13,6 +13,7 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -49,8 +50,14 @@ public class EditAssigneesAction extends Action {
    @Override
    public void run() {
       if (selectedCoverageEditorItem.getSelectedCoverageEditorItems().size() == 0) {
-         AWorkbench.popup("Select Coverage Item");
+         AWorkbench.popup("Select Coverage Unit(s)");
          return;
+      }
+      for (ICoverage coverage : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
+         if (!(coverage instanceof CoverageUnit)) {
+            AWorkbench.popup("Assignees can only be set on Coverage Units");
+            return;
+         }
       }
       Result result = saveable.isEditable();
       if (result.isFalse()) {
@@ -73,11 +80,9 @@ public class EditAssigneesAction extends Action {
          uld.setMessage("Select to assign.\nDeSelect to un-assign.");
          if (uld.open() == 0) {
             Collection<User> users = uld.getUsersSelected();
-            String storageString = "";
-            storageString = UsersByIds.getStorageString(users);
             for (ICoverage coverageItem : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
                if (coverageItem.isAssignable()) {
-                  ((CoverageUnit) coverageItem).setAssignees(storageString);
+                  OseeCoverageUnitStore.setAssignees(((CoverageUnit) coverageItem), users);
                   refreshable.update(coverageItem);
                }
             }

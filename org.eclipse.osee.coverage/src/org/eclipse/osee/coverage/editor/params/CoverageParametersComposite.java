@@ -52,18 +52,37 @@ public class CoverageParametersComposite extends Composite {
       coverageEditor.getToolkit().adapt(this);
       setLayoutData(new GridData(SWT.FILL, SWT.NONE, true, false));
 
-      Button runButton = new Button(this, SWT.PUSH);
+      Composite buttonComp = new Composite(this, SWT.NONE);
+      buttonComp.setLayout(new GridLayout(1, false));
+      buttonComp.setLayoutData(new GridData(SWT.NONE, SWT.NONE, false, false));
+      coverageEditor.getToolkit().adapt(buttonComp);
+
+      Button runButton = new Button(buttonComp, SWT.PUSH);
       runButton.setText("Search");
-      GridData gridData = new GridData(GridData.VERTICAL_ALIGN_BEGINNING);
-      runButton.setLayoutData(gridData);
+      runButton.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
       runButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
             selectionListener.widgetSelected(e);
          }
       });
-      runButton.setLayoutData(gridData);
       coverageEditor.getToolkit().adapt(runButton, true, true);
+
+      Button clearButton = new Button(buttonComp, SWT.PUSH);
+      clearButton.setText("Clear");
+      clearButton.setLayoutData(new GridData(GridData.VERTICAL_ALIGN_BEGINNING));
+      clearButton.addSelectionListener(new SelectionAdapter() {
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            getAssigeeCombo().clear();
+            getNotesXText().set("");
+            getNameXText().set("");
+            getNamespaceXText().set("");
+            getRationaleXText().set("");
+            getCoverageMethodHyperlinkSelection().clear();
+         }
+      });
+      coverageEditor.getToolkit().adapt(clearButton, true, true);
 
       Composite paramComp = new Composite(this, SWT.NONE);
       paramComp.setLayout(ALayout.getZeroMarginLayout(1, false));

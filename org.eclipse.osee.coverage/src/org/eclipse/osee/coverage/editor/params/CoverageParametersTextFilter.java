@@ -24,13 +24,11 @@ import org.eclipse.osee.coverage.model.MessageCoverageItem;
  */
 public class CoverageParametersTextFilter extends ViewerFilter {
 
-   private final XViewer xViewer;
    private Set<ICoverage> shownCoverages;
    private Set<ICoverage> parentCoverages = new HashSet<ICoverage>(1000);
    private boolean showAll = true;
 
    public CoverageParametersTextFilter(XViewer xViewer) {
-      this.xViewer = xViewer;
    }
 
    @Override

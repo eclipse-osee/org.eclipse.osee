@@ -47,9 +47,16 @@ public class EditCoverageNotesAction extends Action {
    @Override
    public void run() {
       if (selectedCoverageEditorItem.getSelectedCoverageEditorItems().size() == 0) {
-         AWorkbench.popup("Select Coverage Item");
+         AWorkbench.popup("Select Coverage Unit(s)");
          return;
       }
+      for (ICoverage coverage : selectedCoverageEditorItem.getSelectedCoverageEditorItems()) {
+         if (!(coverage instanceof CoverageUnit)) {
+            AWorkbench.popup("Notes can only be set on Coverage Units");
+            return;
+         }
+      }
+
       Result result = saveable.isEditable();
       if (result.isFalse()) {
          result.popup();

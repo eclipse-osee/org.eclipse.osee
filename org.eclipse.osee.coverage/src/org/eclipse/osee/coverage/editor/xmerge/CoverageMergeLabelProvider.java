@@ -16,9 +16,11 @@ import org.eclipse.osee.coverage.editor.xcover.CoverageLabelProvider;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
 import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MessageMergeItem;
+import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
-import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
 import org.eclipse.swt.graphics.Image;
@@ -67,7 +69,10 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
          return coverage.getCoveragePercentStr();
       }
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
-         return CoverageUtil.getCoverageItemUsersStr(coverage);
+         if (coverage instanceof CoverageUnit) {
+            return Artifacts.toString("; ", OseeCoverageUnitStore.getAssignees((CoverageUnit) coverage));
+         }
+         return "";
       }
 
       if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof MergeItem) {

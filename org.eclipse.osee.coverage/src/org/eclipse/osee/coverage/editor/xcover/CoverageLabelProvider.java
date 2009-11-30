@@ -20,12 +20,13 @@ import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.coverage.model.MessageCoverageItem;
-import org.eclipse.osee.coverage.util.CoverageUtil;
+import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.skynet.core.utility.Artifacts;
 import org.eclipse.osee.framework.skynet.core.utility.UsersByIds;
 import org.eclipse.osee.framework.ui.skynet.FrameworkArtifactImageProvider;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
@@ -70,7 +71,10 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
       if (xCol.equals(CoverageXViewerFactory.Name)) return coverage.getName();
       if (element instanceof MessageCoverageItem) return "";
       if (xCol.equals(CoverageXViewerFactory.Assignees_Col)) {
-         return CoverageUtil.getCoverageItemUsersStr(coverage);
+         if (element instanceof CoverageUnit) {
+            return Artifacts.toString("; ", OseeCoverageUnitStore.getAssignees((CoverageUnit) coverage));
+         }
+         return "";
       }
       if (xCol.equals(CoverageXViewerFactory.Notes_Col)) return coverage.getNotes();
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {
@@ -127,6 +131,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
    @Override
    public int getColumnGradient(Object element, XViewerColumn xCol, int columnIndex) throws Exception {
+      if (element == null) return 0;
       if (element instanceof MessageCoverageItem) return 0;
       ICoverage coverageItem = (ICoverage) element;
       if (xCol.equals(CoverageXViewerFactory.Coverage_Percent)) {

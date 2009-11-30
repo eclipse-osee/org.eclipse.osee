@@ -12,6 +12,7 @@ package org.eclipse.osee.coverage.editor.params;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.coverage.internal.Activator;
 import org.eclipse.osee.coverage.model.CoverageItem;
@@ -19,6 +20,7 @@ import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.store.OseeCoverageUnitStore;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -34,7 +36,7 @@ import org.eclipse.osee.framework.ui.plugin.util.Result;
 public class CoverageParameters {
 
    private final CoveragePackageBase coveragePackageBase;
-   private Collection<CoverageMethodEnum> coverageMethods = new ArrayList<CoverageMethodEnum>();
+   private List<CoverageMethodEnum> coverageMethods = new ArrayList<CoverageMethodEnum>();
    private String name;
    private String namespace;
    private String rationale;
@@ -79,8 +81,20 @@ public class CoverageParameters {
          }
       } else if (coverage instanceof CoverageUnit) {
          if (Strings.isValid(name) || Strings.isValid(namespace) || Strings.isValid(notes) || assignee != null) {
-            if (!((CoverageUnit) coverage).isFolder() && isNameMatch(coverage) || isNamespaceMatch(coverage) || isNotesMatch(coverage) || isAssigneeMatch(coverage)) {
+            if (!((CoverageUnit) coverage).isFolder() && isNameMatch(coverage) && isNamespaceMatch(coverage) && isNotesMatch(coverage) && isAssigneeMatch(coverage)) {
                matchItems.add(coverage);
+               // If CoverageUnit matches, include all coverage items in match
+               for (CoverageItem coverageItem : ((CoverageUnit) coverage).getCoverageItems(true)) {
+                  // Don't check name cause name of coverge unit won't match name of item
+                  // Checking namespace shouldn't matter cause children will have namespace of parent
+                  if (isCoverageMethodMatch(coverageItem) &&
+                  //
+                  isRationaleMatch(coverageItem) &&
+                  //
+                  isNamespaceMatch(coverageItem)) {
+                     matchItems.add(coverageItem);
+                  }
+               }
             }
          }
       }
@@ -92,11 +106,11 @@ public class CoverageParameters {
    /**
     * Recurse up parent tree to ensure all parents match criteria
     */
-   private boolean doesParentMatchCriteria(ICoverage coverage) {
-      if (isNameMatch(coverage) || isNamespaceMatch(coverage) || isNotesMatch(coverage) || isAssigneeMatch(coverage)) {
+   private boolean doesParentMatchCriteria(ICoverage coverage) throws OseeCoreException {
+      if ((isNameMatch(coverage) || isNamespaceMatch(coverage)) && isNotesMatch(coverage) && isAssigneeMatch(coverage)) {
          return true;
       } else if (coverage.getParent() instanceof CoverageUnit) {
-         return doesParentMatchCriteria(coverage);
+         return doesParentMatchCriteria(coverage.getParent());
       }
       return false;
    }
@@ -105,10 +119,12 @@ public class CoverageParameters {
     * Match if no assignee specified OR<br>
     * coverage isn't CoverageUnit OR<br>
     * CoverageUnit assignee equals search assignee
+    * 
+    * @throws OseeCoreException
     */
-   public boolean isAssigneeMatch(ICoverage coverage) {
+   public boolean isAssigneeMatch(ICoverage coverage) throws OseeCoreException {
       if (assignee == null || !(coverage instanceof CoverageUnit)) return true;
-      if (CoverageUtil.getCoverageItemUsers(coverage).contains(assignee)) {
+      if (OseeCoverageUnitStore.getAssignees((CoverageUnit) coverage).contains(assignee)) {
          return true;
       }
       return false;
@@ -235,7 +251,11 @@ public class CoverageParameters {
    }
 
    public void setCoverageMethods(Collection<CoverageMethodEnum> coverageMethods) {
-      this.coverageMethods = coverageMethods;
+      if (coverageMethods == null) {
+         this.coverageMethods.clear();
+      }
+      this.coverageMethods.clear();
+      this.coverageMethods.addAll(coverageMethods);
       updateShowAll();
    }
 
