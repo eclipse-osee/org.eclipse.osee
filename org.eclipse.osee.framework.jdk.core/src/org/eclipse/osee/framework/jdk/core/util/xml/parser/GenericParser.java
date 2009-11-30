@@ -38,6 +38,7 @@ public class GenericParser extends AbstractSaxHandler {
    private TreeNode<XmlNode> currentNode;
    private Set<IXmlNodeListener> listeners;
    private Set<IProcessingInstructionsListener> instructionListeners;
+   private static XMLReader xmlReader;
 
    public GenericParser(String startTag) {
       this.toFind = startTag;
@@ -137,8 +138,9 @@ public class GenericParser extends AbstractSaxHandler {
 
    public void process(InputStream xmlSource) throws SAXException, IOException {
       this.reset();
-      XMLReader xmlReader;
-      xmlReader = XMLReaderFactory.createXMLReader();
+      if (xmlReader == null) {
+         xmlReader = XMLReaderFactory.createXMLReader();
+      }
       xmlReader.setContentHandler(this);
       xmlReader.setErrorHandler(new ErrorHandler() {
 
