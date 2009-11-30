@@ -65,6 +65,10 @@ public class TaskManager {
       return smaMgr.getSma().getRelatedArtifactsUnSorted(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
    }
 
+   public Collection<TaskArtifact> getTaskArtifactsSorted() throws OseeCoreException {
+      return smaMgr.getSma().getRelatedArtifacts(AtsRelationTypes.SmaToTask_Task, TaskArtifact.class);
+   }
+
    public Collection<TaskArtifact> getTaskArtifactsFromCurrentState() throws OseeCoreException {
       return getTaskArtifacts(smaMgr.getStateMgr().getCurrentStateName());
    }
