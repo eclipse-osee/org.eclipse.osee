@@ -13,7 +13,6 @@ package org.eclipse.osee.ote.service;
 import java.util.Collection;
 import java.util.Date;
 import java.util.LinkedList;
-
 import org.eclipse.osee.connection.service.IServiceConnector;
 import org.eclipse.osee.ote.core.OSEEPerson1_4;
 
@@ -24,6 +23,7 @@ public class OteServiceProperties {
    private final IServiceConnector connector;
 
    private static final String NA = "N.A.";
+   private boolean debug = false;
 
    public OteServiceProperties(IServiceConnector connector) {
       this.connector = connector;
@@ -82,7 +82,7 @@ public class OteServiceProperties {
     * @return the dateStart
     */
    public Date getDateStarted() {
-	return (Date) connector.getProperty("date", null);
+      return (Date) connector.getProperty("date", null);
    }
 
    public Collection<OSEEPerson1_4> getUserList() {
@@ -90,11 +90,13 @@ public class OteServiceProperties {
    }
 
    public void printStats() {
-      System.out.printf("test service found:\n\tname: %s\n\tstation: %s\n\ttype: %s\n\tcomment: %s\n\t%s\n", getName(),
-            getStation(), getType(), getComment(), getGroup());
+      if (debug) {
+         System.out.printf("test service found:\n\tname: %s\n\tstation: %s\n\ttype: %s\n\tcomment: %s\n\t%s\n",
+               getName(), getStation(), getType(), getComment(), getGroup());
+      }
    }
 
    public String getOwner() {
-	return (String) connector.getProperty("owner", NA);
-    }
+      return (String) connector.getProperty("owner", NA);
+   }
 }
