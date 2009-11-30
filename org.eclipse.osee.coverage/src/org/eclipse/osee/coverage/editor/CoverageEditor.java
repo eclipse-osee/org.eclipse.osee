@@ -13,7 +13,6 @@ package org.eclipse.osee.coverage.editor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -43,6 +42,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeContributionItem;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.ats.IActionable;
 import org.eclipse.osee.framework.ui.skynet.ats.OseeAts;
+import org.eclipse.osee.framework.ui.skynet.util.ElapsedTime;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorReference;
@@ -94,16 +94,15 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
          if (artifactLoadCache == null) {
-            System.out.println("Get Package ARtifact " + XDate.getTimeStamp());
+            System.out.println("Get Package Artifact " + XDate.getTimeStamp());
             if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
                try {
-                  System.out.println("Bulk load start " + XDate.getTimeStamp());
-
+                  ElapsedTime elapsedTime = new ElapsedTime("Coverage - bulk load");
                   artifactLoadCache =
                         RelationManager.getRelatedArtifacts(
                               Collections.singleton(getCoverageEditorInput().getCoveragePackageArtifact()), 8,
                               CoreRelationTypes.Default_Hierarchical__Child);
-                  System.out.println("Bulk load end " + XDate.getTimeStamp());
+                  elapsedTime.end();
                } catch (OseeCoreException ex) {
                   OseeLog.log(Activator.class, OseeLevel.SEVERE, ex);
                }
@@ -112,15 +111,11 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
             }
          }
          if (getCoverageEditorInput().getCoveragePackageArtifact() != null) {
-            Date startDate = new Date();
-            System.out.println("Load model start " + XDate.getTimeStamp());
+            ElapsedTime elapsedTime = new ElapsedTime("Coverage - load model");
             CoveragePackage coveragePackage =
                   OseeCoveragePackageStore.get(getCoverageEditorInput().getCoveragePackageArtifact());
             getCoverageEditorInput().setCoveragePackageBase(coveragePackage);
-            System.out.println("Load model end " + XDate.getTimeStamp());
-            Date endDate = new Date();
-            long diff = endDate.getTime() - startDate.getTime();
-            System.out.println("Elapsed time " + diff / 1000 + " seconds");
+            elapsedTime.end();
          }
 
          if (getCoverageEditorInput().isInTest()) {
