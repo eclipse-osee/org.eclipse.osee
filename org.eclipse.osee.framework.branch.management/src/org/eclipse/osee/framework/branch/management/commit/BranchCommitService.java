@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.branch.management.commit;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;
@@ -56,9 +57,9 @@ public class BranchCommitService implements IBranchCommitService {
       Branch mergeBranch = branchCache.getMergeBranch(sourceBranch, destinationBranch);
 
       TransactionVersion txVersion = TransactionVersion.HEAD;
-      TransactionRecord sourceTx = transactionCache.getTransaction(sourceBranch, txVersion);
-      TransactionRecord destinationTx = transactionCache.getTransaction(destinationBranch, txVersion);
-      TransactionRecord mergeTx = transactionCache.getTransaction(mergeBranch, txVersion);
+      TransactionRecord sourceTx = sourceBranch != null ? transactionCache.getTransaction(sourceBranch, txVersion): null;
+      TransactionRecord destinationTx = destinationBranch != null ? transactionCache.getTransaction(destinationBranch, txVersion): null;
+      TransactionRecord mergeTx = mergeBranch != null ? transactionCache.getTransaction(mergeBranch, txVersion): null;
 
       List<ChangeItem> changes = new ArrayList<ChangeItem>();
 
