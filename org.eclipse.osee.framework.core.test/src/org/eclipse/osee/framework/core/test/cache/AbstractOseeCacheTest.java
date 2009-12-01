@@ -19,6 +19,7 @@ import junit.framework.Assert;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
 import org.eclipse.osee.framework.core.model.IOseeStorableType;
@@ -157,31 +158,49 @@ public abstract class AbstractOseeCacheTest<T extends IOseeStorableType> {
 
       String originalName = item1.getName();
       if (item1 instanceof AbstractOseeType) {
+         cache.decache(item1);
+
          ((AbstractOseeType) item1).setName(item2.getName());
 
-         cache.decache(item1);
-         cache.cache(item1);
+         if (cache.isNameUniquenessEnforced()) {
+            try {
+               cache.cache(item1);
+               Assert.fail("This line should not be executed");
+            } catch (OseeCoreException ex) {
+               Assert.assertTrue(ex instanceof OseeStateException);
+            }
 
-         actual = cache.getByName(originalName);
-         Assert.assertNotNull(actual);
-         Assert.assertEquals(0, actual.size());
+            actual = cache.getByName(originalName);
+            Assert.assertNotNull(actual);
+            Assert.assertEquals(0, actual.size());
 
-         actual = cache.getByName(item2.getName());
-         Assert.assertNotNull(actual);
-         Assert.assertEquals(2, actual.size());
+         } else {
+            cache.cache(item1);
 
-         checkEquals(item2, actual.iterator().next());
+            actual = cache.getByName(originalName);
+            Assert.assertNotNull(actual);
+            Assert.assertEquals(0, actual.size());
 
+            actual = cache.getByName(item2.getName());
+            Assert.assertNotNull(actual);
+            Assert.assertEquals(2, actual.size());
+
+            checkEquals(item2, actual.iterator().next());
+         }
          ((AbstractOseeType) item1).setName(originalName);
       }
    }
 
    @Test
    public void testReload() throws OseeCoreException {
-      int value = cache.size();
-      Assert.assertTrue(value > 0);
+      int fullCacheSize = cache.size();
+      Assert.assertTrue(fullCacheSize > 0);
+      for (T type : cache.getAll()) {
+         cache.decache(type);
+      }
+      Assert.assertEquals(0, cache.size());
       cache.reloadCache();
-      Assert.assertEquals(value * 2, cache.size());
+      Assert.assertEquals(fullCacheSize, cache.size());
    }
 
    @Test(expected = OseeTypeDoesNotExist.class)

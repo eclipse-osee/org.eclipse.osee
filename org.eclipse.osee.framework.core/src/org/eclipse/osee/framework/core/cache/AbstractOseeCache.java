@@ -112,9 +112,13 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
       nameToTypeMap.put(type.getName(), type);
       guidToTypeMap.put(type.getGuid(), type);
       cacheById(type);
-      if (uniqueName) {
+      if (isNameUniquenessEnforced()) {
          checkNameUnique(type);
       }
+   }
+
+   public boolean isNameUniquenessEnforced() {
+      return uniqueName;
    }
 
    private void checkNameUnique(T type) throws OseeCoreException {
@@ -197,11 +201,7 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
    @Override
    public void ensurePopulated() throws OseeCoreException {
       if (guidToTypeMap.isEmpty()) {
-         if (!duringPopulate) {
-            duringPopulate = true;
-            reloadCache();
-            duringPopulate = false;
-         }
+         reloadCache();
       }
    }
 
@@ -220,7 +220,11 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
    }
 
    public void reloadCache() throws OseeCoreException {
-      getDataAccessor().load(this);
+      if (!duringPopulate) {
+         duringPopulate = true;
+         getDataAccessor().load(this);
+         duringPopulate = false;
+      }
    }
 
    @Override

@@ -39,8 +39,6 @@ public class RelationTypeCacheTest extends AbstractOseeCacheTest<RelationType> {
       cache = new RelationTypeCache(relationAccessor);
 
       cache.ensurePopulated();
-
-      cache.ensurePopulated();
       Assert.assertTrue(relationAccessor.wasLoaded());
    }
 
