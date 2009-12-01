@@ -10,9 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.BranchCreationRequest;
+import org.eclipse.osee.framework.core.data.BranchCreationResponse;
+
 /**
  * @author Andrew M Finkbeiner
  */
 public interface IBranchCreation {
-   public int createBranch(Branch branch, int authorId, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws Exception;
+
+   public void createBranch(IProgressMonitor monitor, BranchCreationRequest request, BranchCreationResponse response) throws Exception;
+
 }

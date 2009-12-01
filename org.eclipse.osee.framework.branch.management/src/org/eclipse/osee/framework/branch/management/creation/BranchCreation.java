@@ -10,11 +10,15 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.creation;
 
-import org.eclipse.osee.framework.branch.management.Branch;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
+import org.eclipse.osee.framework.core.data.BranchCreationRequest;
+import org.eclipse.osee.framework.core.data.BranchCreationResponse;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 
 /**
@@ -22,16 +26,18 @@ import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
  */
 public class BranchCreation implements IBranchCreation {
    private final IOseeDatabaseServiceProvider provider;
+   private final IOseeCachingServiceProvider cachingService;
+   private final IOseeModelFactoryServiceProvider modelFactory;
 
-   public BranchCreation(IOseeDatabaseServiceProvider provider) {
+   public BranchCreation(IOseeDatabaseServiceProvider provider, IOseeCachingServiceProvider cachingService, IOseeModelFactoryServiceProvider modelFactory) {
       this.provider = provider;
+      this.cachingService = cachingService;
+      this.modelFactory = modelFactory;
    }
 
-   public int createBranch(Branch branch, int authorId, String creationComment, int populateBaseTxFromAddressingQueryId, int destinationBranchId) throws Exception {
-      IOperation operation =
-            new CreateBranchOperation(provider, branch, authorId, creationComment, populateBaseTxFromAddressingQueryId,
-                  destinationBranchId);
+   @Override
+   public void createBranch(IProgressMonitor monitor, BranchCreationRequest request, BranchCreationResponse response) throws Exception {
+      IOperation operation = new CreateBranchOperation(provider, modelFactory, cachingService, request, response);
       Operations.executeWorkAndCheckStatus(operation, new LogProgressMonitor(), -1);
-      return branch.getId();
    }
 }

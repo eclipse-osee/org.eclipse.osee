@@ -46,13 +46,9 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
-   public static final int NULL_PARENT_BRANCH_ID = -1;
+
    private static final String SELECT_BRANCHES =
          "SELECT ob.*, txd.transaction_id FROM osee_branch ob, osee_tx_details txd WHERE ob.branch_id = txd.branch_id and txd.tx_type = " + TransactionDetailsType.Baselined.getId();
-
-   //   private static final String INSERT_BRANCH =
-   //         "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state) VALUES (?,?,?,?,?,?,?,?,?)";
-   //   private static final String DELETE_BRANCH = "DELETE from osee_branch where branch_id = ?";
 
    private static final String SELECT_MERGE_BRANCHES = "SELECT * FROM osee_merge";
 
@@ -65,14 +61,6 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
       super(databaseProvider, factoryProvider);
       this.cachingService = cachingService;
    }
-
-   //   private Object[] toInsertValues(Branch type) throws OseeCoreException {
-   //      Branch parentBranch = type.getParentBranch();
-   //      int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
-   //      return new Object[] {type.getId(), type.getGuid(), type.getName(),
-   //            parentBranchId, type.getBaseTransaction().getTransactionNumber(), type.getArchiveState().getValue(),
-   //            type.getAssociatedArtifactId(), type.getBranchType().getValue(), type.getBranchState().getValue()};
-   //   }
 
    @Override
    public void load(IOseeCache<Branch> cache) throws OseeCoreException {
@@ -116,7 +104,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
                            branchType, branchState, isArchived);
 
                Integer parentBranchId = chStmt.getInt("parent_branch_id");
-               if (parentBranchId != NULL_PARENT_BRANCH_ID) {
+               if (parentBranchId != BranchStoreOperation.NULL_PARENT_BRANCH_ID) {
                   childToParent.put(branch, parentBranchId);
                }
                branchToBaseTx.put(branch, chStmt.getInt("transaction_id"));
@@ -215,7 +203,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
 
    @Override
    public void store(Collection<Branch> branches) throws OseeCoreException {
-      Operations.executeWork(new BranchStoreOperation(getDatabaseServiceProvider(), branches),
+      Operations.executeWorkAndCheckStatus(new BranchStoreOperation(getDatabaseServiceProvider(), branches),
             new NullProgressMonitor(), -1);
    }
 

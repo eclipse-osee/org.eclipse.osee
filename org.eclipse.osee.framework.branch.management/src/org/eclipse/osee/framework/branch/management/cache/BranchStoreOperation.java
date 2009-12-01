@@ -24,17 +24,26 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
  * @author Ryan D. Brooks
  */
 public class BranchStoreOperation extends AbstractDbTxOperation {
-   private static final String INSERT_BRANCH_ALIASES =
-         "insert into osee_branch_definitions (mapped_branch_id, static_branch_name) VALUES (?, ?)";
-   private static final String DELETE_BRANCH_ALIASES = "delete from osee_branch_definitions where mapped_branch_id = ?";
+   protected static final int NULL_PARENT_BRANCH_ID = -1;
+
+   private static final String INSERT_BRANCH =
+         "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state) VALUES (?,?,?,?,?,?,?,?,?)";
 
    private static final String UPDATE_BRANCH =
          "update osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ? where branch_id = ?";
+
+   private static final String DELETE_BRANCH = "DELETE from osee_branch where branch_id = ?";
+
+   private static final String INSERT_BRANCH_ALIASES =
+         "insert into osee_branch_definitions (mapped_branch_id, static_branch_name) VALUES (?, ?)";
+
+   private static final String DELETE_BRANCH_ALIASES = "delete from osee_branch_definitions where mapped_branch_id = ?";
 
    private static final String INSERT_ADDRESSING =
          "insert into %s (transaction_id, gamma_id, tx_current, mod_type) select transaction_id, gamma_id, tx_current, mod_type from osee_txs where branch_id = ?";
 
    public static final String DELETE_ADDRESSING = "delete from %s where branch_id = ?";
+
    private final Collection<Branch> branches;
 
    public BranchStoreOperation(IOseeDatabaseServiceProvider provider, Collection<Branch> branches) {
@@ -46,7 +55,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       Collection<Branch> dirtyAliases = new HashSet<Branch>();
 
-      //      List<Object[]> insertData = new ArrayList<Object[]>();
+      List<Object[]> insertData = new ArrayList<Object[]>();
       List<Object[]> updateData = new ArrayList<Object[]>();
       List<Object[]> deleteData = new ArrayList<Object[]>();
 
@@ -54,17 +63,15 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          if (isDataDirty(branch)) {
             switch (branch.getModificationType()) {
                case NEW:
-                  throw new UnsupportedOperationException(
-                        "Branch Object Creation should only be performed by app server");
-                  // TODO remove this exception once this class is only useb by the app server.
-                  //               branch.setId(SequenceManager.getNextBranchId());
-                  //               insertData.add(toInsertValues(branch));
-                  //               break;
+                  branch.setId(getDatabaseService().getSequence().getNextBranchId());
+                  insertData.add(toInsertValues(branch));
+                  break;
                case MODIFIED:
                   updateData.add(toUpdateValues(branch));
                   break;
                case DELETED:
                   deleteData.add(toDeleteValues(branch));
+                  dirtyAliases.add(branch);
                   break;
                default:
                   break;
@@ -78,9 +85,9 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          }
 
       }
-      //       getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH, insertData);
+      getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH, insertData);
       getDatabaseService().runBatchUpdate(connection, UPDATE_BRANCH, updateData);
-      //       getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH, deleteData);
+      getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH, deleteData);
 
       storeAliases(connection, dirtyAliases);
       sendChangeEvents(branches);
@@ -88,6 +95,14 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       for (Branch branch : branches) {
          branch.clearDirty();
       }
+   }
+
+   private Object[] toInsertValues(Branch type) throws OseeCoreException {
+      Branch parentBranch = type.getParentBranch();
+      int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
+      return new Object[] {type.getId(), type.getGuid(), type.getName(), parentBranchId,
+            type.getSourceTransaction().getId(), type.getArchiveState().getValue(),
+            type.getAssociatedArtifact().getArtId(), type.getBranchType().getValue(), type.getBranchState().getValue()};
    }
 
    public void moveBranchAddressing(OseeConnection connection, Branch branch, boolean archive) throws OseeDataStoreException {
@@ -116,8 +131,10 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       List<Object[]> insertData = new ArrayList<Object[]>();
       for (Branch branch : branches) {
          deleteData.add(new Object[] {branch.getId()});
-         for (String alias : branch.getAliases()) {
-            insertData.add(new Object[] {branch.getId(), alias});
+         if (!branch.getModificationType().isDeleted()) {
+            for (String alias : branch.getAliases()) {
+               insertData.add(new Object[] {branch.getId(), alias});
+            }
          }
       }
       getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH_ALIASES, deleteData);
@@ -147,7 +164,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
 
    private Object[] toUpdateValues(Branch type) throws OseeCoreException {
       Branch parentBranch = type.getParentBranch();
-      int parentBranchId = parentBranch != null ? parentBranch.getId() : DatabaseBranchAccessor.NULL_PARENT_BRANCH_ID;
+      int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
       return new Object[] {type.getName(), parentBranchId, type.getBaseTransaction().getId(),
             type.getArchiveState().getValue(), type.getAssociatedArtifact().getArtId(),
             type.getBranchType().getValue(), type.getBranchState().getValue(), type.getId()};
