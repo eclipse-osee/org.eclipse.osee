@@ -10,8 +10,12 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.test.data;
 
+import java.util.Arrays;
+import java.util.List;
+import junit.framework.Assert;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
-import org.junit.Ignore;
+import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.jdk.core.util.GUID;
 import org.junit.Test;
 
 /**
@@ -21,9 +25,18 @@ import org.junit.Test;
  */
 public class CacheUpdateRequestTest {
 
-   @Ignore
    @Test
-   public void test() {
+   public void testNoGuids() {
+      CacheUpdateRequest request = new CacheUpdateRequest(OseeCacheEnum.ARTIFACT_TYPE_CACHE);
+      Assert.assertEquals(OseeCacheEnum.ARTIFACT_TYPE_CACHE, request.getCacheId());
+      Assert.assertTrue(request.getGuids().isEmpty());
+   }
 
+   @Test
+   public void testWithGuids() {
+      List<String> guids = Arrays.asList(GUID.create(), GUID.create());
+      CacheUpdateRequest request = new CacheUpdateRequest(OseeCacheEnum.ATTRIBUTE_TYPE_CACHE, guids);
+      Assert.assertEquals(OseeCacheEnum.ATTRIBUTE_TYPE_CACHE, request.getCacheId());
+      Assert.assertEquals(guids, request.getGuids());
    }
 }

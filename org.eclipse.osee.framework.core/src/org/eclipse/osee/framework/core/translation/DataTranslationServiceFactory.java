@@ -49,7 +49,8 @@ public class DataTranslationServiceFactory {
       service.addTranslator(new CacheUpdateRequestTranslator(), CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);
 
       service.addTranslator(new BranchCacheUpdateResponseTranslator(), CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
-      service.addTranslator(new TransactionCacheUpdateResponseTranslator(), CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
+      service.addTranslator(new TransactionCacheUpdateResponseTranslator(factoryProvider),
+            CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
 
       service.addTranslator(new ArtifactTypeCacheUpdateResponseTranslator(),
             CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);

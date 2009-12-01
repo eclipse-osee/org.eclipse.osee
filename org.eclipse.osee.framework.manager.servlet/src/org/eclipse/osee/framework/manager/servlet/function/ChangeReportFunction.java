@@ -44,10 +44,6 @@ public class ChangeReportFunction {
       resp.setCharacterEncoding("UTF-8");
       InputStream inputStream =
             service.convertToStream(changeReportResponseData, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
-      try {
-         Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
-      } finally {
-         Lib.close(inputStream);
-      }
+      Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
    }
 }

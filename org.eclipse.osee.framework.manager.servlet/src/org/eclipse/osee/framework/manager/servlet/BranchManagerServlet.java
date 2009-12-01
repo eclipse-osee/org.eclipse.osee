@@ -40,7 +40,7 @@ public class BranchManagerServlet extends OseeHttpServlet {
             case BRANCH_COMMIT:
                new CreateCommitFunction().commitBranch(req, resp);
                break;
-            case CREATEFULLBRANCH:
+            case CREATE_BRANCH:
                new CreateBranchFunction().createBranch(req, resp);
                break;
             case CHANGE_REPORT:

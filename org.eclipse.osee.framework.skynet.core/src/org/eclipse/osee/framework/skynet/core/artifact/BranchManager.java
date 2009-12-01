@@ -238,7 +238,7 @@ public class BranchManager {
                      destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
          mergeBranch =
-               HttpBranchCreation.createFullBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(), branchName,
+               HttpBranchCreation.createBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(), branchName,
                      null, null, UserManager.getUser(), creationComment, populateBaseTxFromAddressingQueryId,
                      destBranch.getId());
       } finally {
@@ -394,7 +394,7 @@ public class BranchManager {
       Branch parentBranch = BranchManager.getBranch(parentBranchId);
       String creationComment = "New Branch from " + parentBranch.getName() + "(" + parentTransactionNumber + ")";
 
-      return HttpBranchCreation.createFullBranch(BranchType.WORKING, parentTransactionNumber, parentBranchId,
+      return HttpBranchCreation.createBranch(BranchType.WORKING, parentTransactionNumber, parentBranchId,
             childBranchName, null, null, associatedArtifact, creationComment, -1, -1);
    }
 
@@ -420,7 +420,7 @@ public class BranchManager {
    public static Branch createBaselineBranch(Branch parentBranch, String branchName, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(parentBranch);
       String creationComment = String.format("Root Branch [%s] Creation", branchName);
-      return HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getId(),
+      return HttpBranchCreation.createBranch(BranchType.BASELINE, parentTransactionId.getId(),
             parentTransactionId.getBranch().getId(), branchName, null, null, associatedArtifact, creationComment, -1,
             -1);
    }
@@ -442,7 +442,7 @@ public class BranchManager {
       TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(systemRootBranch);
       String creationComment = String.format("Root Branch [%s] Creation", branchName);
       Branch branch =
-            HttpBranchCreation.createFullBranch(BranchType.BASELINE, parentTransactionId.getId(),
+            HttpBranchCreation.createBranch(BranchType.BASELINE, parentTransactionId.getId(),
                   systemRootBranch.getId(), branchName, staticBranchName, branchGuid, null, creationComment, -1, -1);
       if (staticBranchName != null) {
          branch.setAliases(staticBranchName);
@@ -451,7 +451,7 @@ public class BranchManager {
    }
 
    public static Branch createSystemRootBranch() throws OseeCoreException {
-      return HttpBranchCreation.createFullBranch(BranchType.SYSTEM_ROOT, 1, NULL_PARENT_BRANCH_ID,
+      return HttpBranchCreation.createBranch(BranchType.SYSTEM_ROOT, 1, NULL_PARENT_BRANCH_ID,
             CoreBranches.SYSTEM_ROOT.getName(), null, CoreBranches.SYSTEM_ROOT.getGuid(), null,
             CoreBranches.SYSTEM_ROOT.getName() + " Creation", -1, -1);
    }

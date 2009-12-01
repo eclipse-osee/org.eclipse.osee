@@ -10,34 +10,37 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.manager.servlet.function;
 
-import java.net.HttpURLConnection;
-
+import java.io.InputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.eclipse.osee.framework.core.data.BranchCreationRequest;
+import org.eclipse.osee.framework.core.data.BranchCreationResponse;
+import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.operation.LogProgressMonitor;
+import org.eclipse.osee.framework.core.services.IDataTranslationService;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
-import org.eclipse.osee.framework.manager.servlet.data.HttpBranchCreationInfo;
 
 /**
  * @author Jeff C. Phillips
  */
 public class CreateBranchFunction {
-   
-   public void createBranch(HttpServletRequest req, HttpServletResponse resp)throws Exception {
-      HttpBranchCreationInfo info = new HttpBranchCreationInfo(req);
-      int branchId = -1;
-      branchId =
-            MasterServletActivator.getInstance().getBranchCreation().createBranch(info.getBranch(), info.getAuthorId(),
-                  info.getCreationComment(), info.getPopulateBaseTxFromAddressingQueryId(),
-                  info.getDestinationBranchId());
-      if (branchId == -1) {
-         resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
-         resp.setContentType("text/plain");
-         resp.getWriter().write("Unknown Error during branch creation.");
-      } else {
-         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-         resp.setContentType("text/plain");
-         resp.getWriter().write(Integer.toString(branchId));
-      }
+
+   public void createBranch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
+      IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
+
+      BranchCreationRequest creationRequest =
+            service.convert(req.getInputStream(), CoreTranslatorId.BRANCH_CREATION_REQUEST);
+
+      BranchCreationResponse creationResponse = new BranchCreationResponse(-1);
+
+      MasterServletActivator.getInstance().getBranchCreation().createBranch(new LogProgressMonitor(), creationRequest,
+            creationResponse);
+
+      resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+      resp.setContentType("text/xml");
+      resp.setCharacterEncoding("UTF-8");
+      InputStream inputStream = service.convertToStream(creationResponse, CoreTranslatorId.BRANCH_CREATION_RESPONSE);
+      Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
    }
 }

@@ -19,9 +19,9 @@ import org.junit.runners.Suite;
 BranchCommitRequestTest.class, // 
       BranchCommitResponseTest.class, //
       CacheUpdateRequestTest.class, //
-      CacheUpdateResponseTest.class, //
       ChangeItemTest.class, //
       ChangeVersionTest.class, //
+      TransactionCacheUpdateResponseTest.class, //
       TransactionRecordTest.class, //
 })
 /**

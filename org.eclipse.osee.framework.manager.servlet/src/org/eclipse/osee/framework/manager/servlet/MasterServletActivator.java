@@ -97,6 +97,7 @@ public class MasterServletActivator implements BundleActivator, IOseeModelFactor
       createHttpServiceTracker(context, SessionClientLoopbackServlet.class, OseeServerContext.CLIENT_LOOPBACK_CONTEXT);
       createHttpServiceTracker(context, ClientInstallInfoServlet.class, "osee/install/info");
       createHttpServiceTracker(context, OseeCacheServlet.class, OseeServerContext.CACHE_CONTEXT);
+      createHttpServiceTracker(context, OseeModelServlet.class, OseeServerContext.OSEE_MODEL_CONTEXT);
    }
 
    public void stop(BundleContext context) throws Exception {

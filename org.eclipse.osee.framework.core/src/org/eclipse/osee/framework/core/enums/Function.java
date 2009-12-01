@@ -19,7 +19,7 @@ public enum Function {
 
    BRANCH_COMMIT,
    CHANGE_REPORT,
-   CREATEFULLBRANCH;
+   CREATE_BRANCH;
 
    public static Function fromString(String toMatch) throws OseeCoreException {
       for (Function function : Function.values()) {

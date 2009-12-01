@@ -35,7 +35,9 @@ public class HttpMessage {
 
    @SuppressWarnings("unchecked")
    public static <J, K> J send(String context, Map<String, String> parameters, ITranslatorId requestId, K requestData, ITranslatorId responseId) throws OseeCoreException {
-      parameters.put("sessionId", ClientSessionManager.getSessionId());
+      if (!parameters.containsKey("sessionId")) {
+         parameters.put("sessionId", ClientSessionManager.getSessionId());
+      }
       String urlString = HttpUrlBuilder.getInstance().getOsgiServletServiceUrl(context, parameters);
       InputStream inputStream = null;
       try {

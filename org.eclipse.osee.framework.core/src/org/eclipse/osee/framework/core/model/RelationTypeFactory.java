@@ -45,7 +45,6 @@ public class RelationTypeFactory implements IOseeTypeFactory {
                      defaultOrderTypeGuid);
          relationType.setId(typeId);
          relationType.setModificationType(modificationType);
-         cache.cache(relationType);
       } else {
          cache.decache(relationType);
          relationType.setFields(typeName, sideAName, sideBName, artifactTypeSideA, artifactTypeSideB, multiplicity,

@@ -36,10 +36,6 @@ public class CreateCommitFunction {
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       resp.setContentType("text/xml");
       InputStream inputStream = service.convertToStream(responseData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
-      try {
-         Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
-      } finally {
-         Lib.close(inputStream);
-      }
+      Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
    }
 }

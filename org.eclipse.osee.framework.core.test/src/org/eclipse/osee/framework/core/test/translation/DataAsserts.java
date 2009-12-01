@@ -11,9 +11,10 @@
 package org.eclipse.osee.framework.core.test.translation;
 
 import junit.framework.Assert;
-
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
+import org.eclipse.osee.framework.core.data.BranchCreationRequest;
+import org.eclipse.osee.framework.core.data.BranchCreationResponse;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
@@ -53,7 +54,7 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getModType(), actual.getModType());
       }
    }
-   
+
    public static void assertEquals(AttributeType expected, AttributeType actual) throws OseeCoreException {
       Assert.assertEquals(expected.getAttributeProviderId(), actual.getAttributeProviderId());
       Assert.assertEquals(expected.getBaseAttributeTypeId(), actual.getBaseAttributeTypeId());
@@ -167,6 +168,33 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getName(), actual.getName());
          Assert.assertEquals(expected.getModificationType(), actual.getModificationType());
          Assert.assertEquals(expected.isDirty(), actual.isDirty());
+      }
+   }
+
+   public static void assertEquals(BranchCreationRequest expected, BranchCreationRequest actual) {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      } else {
+         Assert.assertEquals(expected.getAssociatedArtifactId(), actual.getAssociatedArtifactId());
+         Assert.assertEquals(expected.getAuthorId(), actual.getAuthorId());
+         Assert.assertEquals(expected.getBranchGuid(), actual.getBranchGuid());
+         Assert.assertEquals(expected.getBranchName(), actual.getBranchName());
+         Assert.assertEquals(expected.getCreationComment(), actual.getCreationComment());
+         Assert.assertEquals(expected.getDestinationBranchId(), actual.getDestinationBranchId());
+         Assert.assertEquals(expected.getParentBranchId(), actual.getParentBranchId());
+         Assert.assertEquals(expected.getPopulateBaseTxFromAddressingQueryId(),
+               actual.getPopulateBaseTxFromAddressingQueryId());
+         Assert.assertEquals(expected.getSourceTransactionId(), actual.getSourceTransactionId());
+         Assert.assertEquals(expected.getStaticBranchName(), actual.getStaticBranchName());
+         Assert.assertEquals(expected.getBranchType(), actual.getBranchType());
+      }
+   }
+
+   public static void assertEquals(BranchCreationResponse expected, BranchCreationResponse actual) {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      } else {
+         Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
       }
    }
 }

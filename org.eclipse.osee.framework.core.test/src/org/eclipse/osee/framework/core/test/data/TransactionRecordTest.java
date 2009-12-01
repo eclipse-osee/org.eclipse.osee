@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
-import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -147,15 +146,15 @@ public class TransactionRecordTest {
    @Parameters
    public static Collection<Object[]> getData() {
       Collection<Object[]> data = new ArrayList<Object[]>();
-      for (int index = 1; index <= 3; index++) {
+      for (int index = 1; index <= 2; index++) {
          int transactionNumber = index * 11;
-         Branch branch = index == 1 ? null : MockDataFactory.createBranch(index);
+         int branchId = index * 9;
          String comment = GUID.create();
          Date time = new Date();
          int authorArtId = index * 47;
          int commitArtId = index * 37;
          TransactionDetailsType txType = TransactionDetailsType.toEnum(index % TransactionDetailsType.values().length);
-         data.add(new Object[] {transactionNumber, branch, comment, time, authorArtId, commitArtId, txType});
+         data.add(new Object[] {transactionNumber, branchId, comment, time, authorArtId, commitArtId, txType});
       }
       return data;
    }

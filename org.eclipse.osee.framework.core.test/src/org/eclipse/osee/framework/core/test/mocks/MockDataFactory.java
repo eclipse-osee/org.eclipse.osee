@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.core.test.mocks;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
@@ -21,6 +20,8 @@ import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.cache.RelationTypeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
+import org.eclipse.osee.framework.core.data.BranchCreationRequest;
+import org.eclipse.osee.framework.core.data.BranchCreationResponse;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
@@ -68,19 +69,20 @@ public final class MockDataFactory {
       return new DefaultBasicArtifact(index * 37, GUID.create(), "user_" + index);
    }
 
-   public static ArtifactChangeItem createArtifactChangeItem() throws OseeArgumentException{
-      int artId = (int)Math.random();
-      int transactionNumber = (int)Math.random();
-      Long gammaIdNumber = Long.valueOf((int)Math.random());
-      
-      ArtifactChangeItem changeItem = new ArtifactChangeItem(gammaIdNumber, ModificationType.getMod(1), transactionNumber, artId);
+   public static ArtifactChangeItem createArtifactChangeItem() throws OseeArgumentException {
+      int artId = (int) Math.random();
+      int transactionNumber = (int) Math.random();
+      Long gammaIdNumber = Long.valueOf((int) Math.random());
+
+      ArtifactChangeItem changeItem =
+            new ArtifactChangeItem(gammaIdNumber, ModificationType.getMod(1), transactionNumber, artId);
       changeItem.getDestinationVersion().setGammaId(11L);
       changeItem.getDestinationVersion().setModType(ModificationType.getMod(1));
       changeItem.getDestinationVersion().setTransactionNumber(1);
       changeItem.getDestinationVersion().setValue("Value");
       return changeItem;
    }
-   
+
    public static AttributeType createAttributeType() throws OseeCoreException {
       OseeEnumTypeFactory oseeEnumTypeFactory = new OseeEnumTypeFactory();
       AttributeType attributeType =
@@ -168,5 +170,30 @@ public final class MockDataFactory {
 
       IOseeCachingService service = new OseeCachingService(brCache, txCache, artCache, attrCache, relCache, enumCache);
       return new MockOseeCachingServiceProvider(service);
+   }
+
+   public static BranchCreationRequest createBranchCreateRequest(int index) {
+      BranchType branchType = BranchType.values()[Math.abs(index % BranchType.values().length)];
+      String branchName = "branch_" + index;
+      int parentBranchId = index;
+      int associatedArtifactId = index * 3;
+      int sourceTransactionId = index * 7;
+      String staticBranchName = "static_name_" + index;
+      String branchGuid = GUID.create();
+
+      int authorId = index * 7;
+
+      String creationComment = "creation_comment_" + index;
+
+      int populateBaseTxFromAddressingQueryId = -1;
+      int destinationBranchId = -1;
+
+      return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
+            associatedArtifactId, staticBranchName, authorId, creationComment, populateBaseTxFromAddressingQueryId,
+            destinationBranchId);
+   }
+
+   public static Object createBranchCreateResponse(int index) {
+      return new BranchCreationResponse(index);
    }
 }
