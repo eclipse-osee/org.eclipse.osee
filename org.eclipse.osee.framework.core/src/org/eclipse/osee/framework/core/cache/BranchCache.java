@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.cache;
 
 import java.util.Collection;
 import java.util.HashSet;
+
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
@@ -33,7 +34,7 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    private Branch commonBranch;
 
    public BranchCache(IOseeDataAccessor<Branch> dataAccessor) {
-      super(OseeCacheEnum.BRANCH_CACHE, dataAccessor);
+      super(OseeCacheEnum.BRANCH_CACHE, dataAccessor, false);
       this.systemRootBranch = null;
       this.commonBranch = null;
    }

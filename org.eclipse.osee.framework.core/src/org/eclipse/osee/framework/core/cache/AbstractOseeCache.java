@@ -35,11 +35,13 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
    private final IOseeDataAccessor<T> dataAccessor;
    private boolean duringPopulate;
    private final OseeCacheEnum cacheId;
+   private final boolean uniqueName;
 
-   protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<T> dataAccessor) {
+   protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<T> dataAccessor, boolean uniqueName) {
       this.cacheId = cacheId;
       this.duringPopulate = false;
       this.dataAccessor = dataAccessor;
+      this.uniqueName = uniqueName;
    }
 
    @Override
@@ -107,23 +109,25 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
    public void cache(T type) throws OseeCoreException {
       Conditions.checkNotNull(type, "type to cache");
       ensurePopulated();
-      checkNameUnique(type);
       nameToTypeMap.put(type.getName(), type);
       guidToTypeMap.put(type.getGuid(), type);
       cacheById(type);
+      if (uniqueName) {
+         checkNameUnique(type);
+      }
    }
 
    private void checkNameUnique(T type) throws OseeCoreException {
       ensurePopulated();
       Collection<T> cachedTypes = getByName(type.getName());
-      int count = 0;
       Set<String> itemsFound = new HashSet<String>();
-      for (T cachedType : cachedTypes) {
-         if (!cachedType.getGuid().equals(type.getGuid()) && !cachedType.getModificationType().isDeleted()) {
-            itemsFound.add(String.format("[%s:%s]", cachedType.getName(), cachedType.getGuid()));
-         }
-      }
-      if (count > 0) {
+      // TODO Need to revisit this based on deleted types
+      //      for (T cachedType : cachedTypes) {
+      //         if (!cachedType.getGuid().equals(type.getGuid()) && !cachedType.getModificationType().isDeleted()) {
+      //            itemsFound.add(String.format("[%s:%s]", cachedType.getName(), cachedType.getGuid()));
+      //         }
+      //      }
+      if (cachedTypes.size() > 1) {
          throw new OseeStateException(String.format("Item [%s:%s] does not have a unique name. Matching types - ",
                type.getName(), type.getGuid(), itemsFound));
       }

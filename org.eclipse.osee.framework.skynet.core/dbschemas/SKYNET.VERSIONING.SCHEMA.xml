@@ -57,6 +57,27 @@
 		</Index>
 	</Table>
 	
+	<Table name="OSEE_JOIN_CLEANUP" schema="OSEE" tablespace="osee_data">
+		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="SESSION_ID" defaultValue="not null" type="VARCHAR" limits="28" />
+		<Column id="TABLE_NAME" defaultValue="not null" type="VARCHAR" limits="28"/>		
+		
+		<Constraint schema="OSEE" id="SESSION_ID_FK" type="FOREIGN KEY" appliesTo="SESSION_ID" deferrable="true">
+			<References schema="OSEE" table="OSEE_SESSION" column="SESSION_ID" />
+		</Constraint>
+		<Index id="OSEE_JOIN_CLEANUP__Q_IDX" type="UNIQUE" tablespace="osee_index">
+			<AppliesTo id="QUERY_ID"/>		
+		</Index>		
+	</Table>
+	
+	<Table name="OSEE_JOIN_CHAR_ID" schema="OSEE" tablespace="osee_data">
+		<Column id="QUERY_ID" defaultValue="not null" type="INTEGER" />
+		<Column id="ID" defaultValue="not null" type="VARCHAR" limits="28"/>			
+		<Index id="OSEE_JOIN_CHAR__Q_IDX" tablespace="osee_index">
+			<AppliesTo id="QUERY_ID"/>		
+		</Index>			
+	</Table>
+	
 	<Table name="OSEE_ARTIFACT_VERSION" schema="OSEE" tablespace="osee_data">
 		<Column id="ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="GAMMA_ID" defaultValue="not null" type="BIGINT" />

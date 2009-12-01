@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
+import org.eclipse.osee.framework.database.internal.InternalActivator;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 
 /**
@@ -44,6 +45,11 @@ public class JoinUtility {
    private static final String INSERT_INTO_JOIN_ID =
          "INSERT INTO osee_join_id (query_id, insert_time, id) VALUES (?, ?, ?)";
 
+   private static final String INSERT_INTO_JOIN_CLEANUP =
+         "INSERT INTO osee_join_cleanup (query_id, table_name, session_id) VALUES (?, ?, ?)";
+
+   private static final String INSERT_INTO_JOIN_CHAR_ID = "INSERT INTO osee_join_char_id (query_id, id) VALUES (?, ?)";
+
    private static final String DELETE_FROM_JOIN_ID = "DELETE FROM osee_join_id WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_TRANSACTION = "DELETE FROM osee_join_transaction WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_ARTIFACT = "DELETE FROM osee_join_artifact WHERE query_id = ?";
@@ -51,7 +57,8 @@ public class JoinUtility {
    private static final String DELETE_FROM_JOIN_SEARCH_TAGS = "DELETE FROM osee_join_search_tags WHERE query_id = ?";
    private static final String DELETE_FROM_TAG_GAMMA_QUEUE = "DELETE FROM osee_tag_gamma_queue WHERE query_id = ?";
    private static final String DELETE_FROM_JOIN_EXPORT_IMPORT = "DELETE FROM osee_join_export_import WHERE query_id =?";
-
+   private static final String DELETE_FROM_JOIN = "DELETE FROM osee_join_cleanup WHERE query_id =?";
+   private static final String DELETE_FROM_JOIN_CHAR_ID = "DELETE FROM osee_join_char_id WHERE query_id =?";
    private static final String SELECT_TAG_GAMMA_QUEUE_QUERIES = "select DISTINCT query_id from osee_tag_gamma_queue";
 
    public enum JoinItem {
@@ -61,7 +68,9 @@ public class JoinUtility {
       SEARCH_TAGS(INSERT_INTO_JOIN_SEARCH_TAGS, DELETE_FROM_JOIN_SEARCH_TAGS),
       TAG_GAMMA_QUEUE(INSERT_INTO_TAG_GAMMA_QUEUE, DELETE_FROM_TAG_GAMMA_QUEUE),
       EXPORT_IMPORT(INSERT_INTO_JOIN_EXPORT_IMPORT, DELETE_FROM_JOIN_EXPORT_IMPORT),
-      ID(INSERT_INTO_JOIN_ID, DELETE_FROM_JOIN_ID);
+      ID(INSERT_INTO_JOIN_ID, DELETE_FROM_JOIN_ID),
+      JOIN(INSERT_INTO_JOIN_CLEANUP, DELETE_FROM_JOIN),
+      CHAR_ID(INSERT_INTO_JOIN_CHAR_ID, DELETE_FROM_JOIN_CHAR_ID);
 
       private final String deleteSql;
       private final String insertSql;
@@ -88,31 +97,35 @@ public class JoinUtility {
    }
 
    public static TransactionJoinQuery createTransactionJoinQuery() {
-      return new TransactionJoinQuery();
+      return new TransactionJoinQuery("");
    }
 
    public static IdJoinQuery createIdJoinQuery() {
-      return new IdJoinQuery();
+      return new IdJoinQuery("");
    }
 
    public static ArtifactJoinQuery createArtifactJoinQuery() {
-      return new ArtifactJoinQuery();
+      return new ArtifactJoinQuery("");
    }
 
    public static AttributeJoinQuery createAttributeJoinQuery() {
-      return new AttributeJoinQuery();
+      return new AttributeJoinQuery("");
    }
 
    public static SearchTagJoinQuery createSearchTagJoinQuery() {
-      return new SearchTagJoinQuery();
+      return new SearchTagJoinQuery("");
    }
 
    public static TagQueueJoinQuery createTagQueueJoinQuery() {
-      return new TagQueueJoinQuery();
+      return new TagQueueJoinQuery("");
    }
 
    public static ExportImportJoinQuery createExportImportJoinQuery() {
-      return new ExportImportJoinQuery();
+      return new ExportImportJoinQuery("");
+   }
+
+   public static CharIdQuery createGuidJoinQuery(String sessionId) {
+      return new CharIdQuery(sessionId);
    }
 
    public static List<Integer> getAllTagQueueQueryIds() throws OseeDataStoreException {
@@ -135,15 +148,19 @@ public class JoinUtility {
       protected Set<IJoinRow> entries;
       private boolean wasStored;
       private int storedSize;
+      private String sessionId;
 
-      protected JoinQueryEntry(JoinItem joinItem) {
+      protected JoinQueryEntry(JoinItem joinItem, String sessionId) {
          this.wasStored = false;
          this.joinItem = joinItem;
          this.queryId = getNewQueryId();
          this.insertTime = GlobalTime.GreenwichMeanTimestamp();
          this.entries = new HashSet<IJoinRow>();
          this.storedSize = -1;
+         this.sessionId = sessionId;
       }
+
+      public abstract String getJoinTableName();
 
       public boolean isEmpty() {
          return this.wasStored != true ? entries.isEmpty() : this.storedSize > 0;
@@ -161,6 +178,7 @@ public class JoinUtility {
          return insertTime;
       }
 
+      @SuppressWarnings("unchecked")
       public void store(OseeConnection connection) throws OseeDataStoreException {
          if (this.wasStored != true) {
             List<Object[]> data = new ArrayList<Object[]>();
@@ -168,6 +186,10 @@ public class JoinUtility {
                data.add(joinArray.toArray());
             }
             ConnectionHandler.runBatchUpdate(connection, joinItem.getInsertSql(), data);
+            if (!sessionId.equals("")) {
+               InternalActivator.getInstance().getOseeDatabaseService().runPreparedUpdate(connection,
+                     INSERT_INTO_JOIN_CLEANUP, getQueryId(), getJoinTableName(), sessionId);
+            }
             this.storedSize = this.entries.size();
             this.wasStored = true;
             this.entries.clear();
@@ -180,6 +202,8 @@ public class JoinUtility {
          int updated = 0;
          if (queryId != -1) {
             updated = ConnectionHandler.runPreparedUpdate(connection, joinItem.getDeleteSql(), queryId);
+            InternalActivator.getInstance().getOseeDatabaseService().runPreparedUpdate(connection, DELETE_FROM_JOIN,
+                  getQueryId());
          }
          return updated;
       }
@@ -252,12 +276,20 @@ public class JoinUtility {
          }
       }
 
-      private IdJoinQuery() {
-         super(JoinItem.ID);
+      private IdJoinQuery(String sessionId) {
+         super(JoinItem.ID, sessionId);
       }
 
       public void add(Integer id) {
          entries.add(new TempIdEntry(id));
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
+       */
+      @Override
+      public String getJoinTableName() {
+         return "osee_join_id";
       }
    }
 
@@ -299,12 +331,20 @@ public class JoinUtility {
          }
       }
 
-      private TransactionJoinQuery() {
-         super(JoinItem.TRANSACTION);
+      private TransactionJoinQuery(String sessionId) {
+         super(JoinItem.TRANSACTION, sessionId);
       }
 
       public void add(Long gammaId, Integer transactionId) {
          entries.add(new TempTransactionEntry(gammaId, transactionId));
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
+       */
+      @Override
+      public String getJoinTableName() {
+         return "osee_join_transaction";
       }
    }
 
@@ -346,12 +386,17 @@ public class JoinUtility {
          }
       }
 
-      private ArtifactJoinQuery() {
-         super(JoinItem.ARTIFACT);
+      private ArtifactJoinQuery(String sessionId) {
+         super(JoinItem.ARTIFACT, sessionId);
       }
 
       public void add(Integer art_id, Integer branchId) {
          entries.add(new Entry(art_id, branchId));
+      }
+
+      @Override
+      public String getJoinTableName() {
+         return "osee_join_artifact";
       }
    }
 
@@ -391,12 +436,20 @@ public class JoinUtility {
          }
       }
 
-      private AttributeJoinQuery() {
-         super(JoinItem.ATTRIBUTE);
+      private AttributeJoinQuery(String sessionId) {
+         super(JoinItem.ATTRIBUTE, sessionId);
       }
 
       public void add(String value) {
          entries.add(new Entry(value));
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
+       */
+      @Override
+      public String getJoinTableName() {
+         return "osee_join_attribute";
       }
    }
 
@@ -436,12 +489,17 @@ public class JoinUtility {
          }
       }
 
-      private SearchTagJoinQuery() {
-         super(JoinItem.SEARCH_TAGS);
+      private SearchTagJoinQuery(String sessionId) {
+         super(JoinItem.SEARCH_TAGS, sessionId);
       }
 
       public void add(Long tag) {
          entries.add(new TagEntry(tag));
+      }
+
+      @Override
+      public String getJoinTableName() {
+         return "osee_join_search_tags";
       }
    }
 
@@ -481,12 +539,20 @@ public class JoinUtility {
          }
       }
 
-      private TagQueueJoinQuery() {
-         super(JoinItem.TAG_GAMMA_QUEUE);
+      private TagQueueJoinQuery(String sessionId) {
+         super(JoinItem.TAG_GAMMA_QUEUE, sessionId);
       }
 
       public void add(Long gammaId) {
          entries.add(new GammaEntry(gammaId));
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
+       */
+      @Override
+      public String getJoinTableName() {
+         return "osee_tag_gamma_queue";
       }
    }
 
@@ -528,12 +594,60 @@ public class JoinUtility {
          }
       }
 
-      private ExportImportJoinQuery() {
-         super(JoinItem.EXPORT_IMPORT);
+      private ExportImportJoinQuery(String sessionId) {
+         super(JoinItem.EXPORT_IMPORT, sessionId);
       }
 
       public void add(Long id1, Long id2) {
          entries.add(new ExportImportEntry(id1, id2));
+      }
+
+      /* (non-Javadoc)
+       * @see org.eclipse.osee.framework.database.core.JoinUtility.JoinQueryEntry#getJoinTableName()
+       */
+      @Override
+      public String getJoinTableName() {
+         return null;
+      }
+   }
+
+   public static final class CharIdQuery extends JoinQueryEntry {
+
+      protected CharIdQuery(String sessionId) {
+         super(JoinItem.CHAR_ID, sessionId);
+      }
+
+      private final class CharIdEntry implements IJoinRow {
+         private String charId;
+
+         private CharIdEntry(String id) {
+            this.charId = id;
+         }
+
+         @Override
+         public Object[] toArray() {
+            return new Object[] {getQueryId(), charId};
+         }
+
+         @Override
+         public int hashCode() {
+            return 37 * charId.hashCode();
+         }
+
+         @Override
+         public String toString() {
+            return String.format("char id=%s", charId);
+         }
+
+      }
+
+      public void add(String id) {
+         entries.add(new CharIdEntry(id));
+      }
+
+      @Override
+      public String getJoinTableName() {
+         return "osee_join_char_id";
       }
    }
 }

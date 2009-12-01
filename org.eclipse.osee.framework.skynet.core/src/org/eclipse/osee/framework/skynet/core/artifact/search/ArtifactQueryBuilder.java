@@ -26,7 +26,9 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
+import org.eclipse.osee.framework.database.core.JoinUtility;
 import org.eclipse.osee.framework.database.core.OseeSql;
+import org.eclipse.osee.framework.database.core.JoinUtility.CharIdQuery;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
@@ -57,6 +59,7 @@ public class ArtifactQueryBuilder {
    private boolean firstTable = true;
    private final boolean tableOrderForward;
    private final TransactionRecord transactionId;
+   private CharIdQuery guidJoinQuery;
 
    /**
     * @param artId
@@ -175,6 +178,7 @@ public class ArtifactQueryBuilder {
       nextAliases.put("osee_artifact_version", new NextAlias("arv"));
       nextAliases.put("osee_attribute", new NextAlias("att"));
       nextAliases.put("osee_relation_link", new NextAlias("rel"));
+      nextAliases.put("osee_join_char_id", new NextAlias("jch"));
    }
 
    private static AbstractArtifactSearchCriteria[] toArray(List<AbstractArtifactSearchCriteria> criteria) {
@@ -202,7 +206,11 @@ public class ArtifactQueryBuilder {
       }
 
       String artAlias, artvAlias, txsAlias, txdAlias;
+      String jguidAlias = "";
       if (tableOrderForward) {
+         if (guids != null && guids.size() > 0) {
+            jguidAlias = appendAliasedTable("osee_join_char_id");
+         }
          artAlias = appendAliasedTable("osee_artifact");
          artvAlias = appendAliasedTable("osee_artifact_version");
          txsAlias = appendAliasedTable("osee_txs");
@@ -212,6 +220,9 @@ public class ArtifactQueryBuilder {
          txsAlias = appendAliasedTable("osee_txs");
          artvAlias = appendAliasedTable("osee_artifact_version");
          artAlias = appendAliasedTable("osee_artifact");
+         if (guids != null && guids.size() > 0) {
+            jguidAlias = appendAliasedTable("osee_join_char_id");
+         }
       }
       sql.append("\n");
 
@@ -256,9 +267,13 @@ public class ArtifactQueryBuilder {
       }
 
       if (guids != null && guids.size() > 0) {
+         addToGuidJoin();
          sql.append(artAlias);
-         sql.append(".guid IN ('" + Collections.toString("','", guids) + "') AND ");
+         sql.append(".guid= ");
+         sql.append(jguidAlias);
+         sql.append(".id AND ");
       }
+
       if (hrids != null && hrids.size() > 0) {
          sql.append(artAlias);
          sql.append(".human_readable_id IN ('" + Collections.toString("','", hrids) + "') AND ");
@@ -325,6 +340,14 @@ public class ArtifactQueryBuilder {
          paramList.add(txdAlias);
       }
       return String.format(sql.toString(), paramList.toArray());
+   }
+
+   private void addToGuidJoin() throws OseeDataStoreException {
+      guidJoinQuery = JoinUtility.createGuidJoinQuery(ClientSessionManager.getSessionId());
+      for (String guid : guids) {
+         guidJoinQuery.add(guid);
+      }
+      guidJoinQuery.store();
    }
 
    public void append(String sqlSnippet) {
@@ -415,11 +438,21 @@ public class ArtifactQueryBuilder {
       if (emptyCriteria) {
          return java.util.Collections.emptyList();
       }
+
       List<Artifact> artifacts =
             ArtifactLoader.getArtifacts(getArtifactSelectSql(), queryParameters.toArray(), artifactCountEstimate,
                   loadLevel, reload, confirmer, transactionId, allowDeleted);
-      clearCriteria();
+      cleanup();
+
       return artifacts;
+   }
+
+   private void cleanup() throws OseeCoreException {
+      clearCriteria();
+      if (guidJoinQuery != null) {
+         guidJoinQuery.delete();
+         guidJoinQuery = null;
+      }
    }
 
    private void clearCriteria() throws OseeDataStoreException {
@@ -433,7 +466,7 @@ public class ArtifactQueryBuilder {
    public void selectArtifacts(int queryId, int artifactCountEstimate, CompositeKeyHashMap<Integer, Integer, Object[]> insertParameters, TransactionRecord transactionId) throws OseeCoreException {
       ArtifactLoader.selectArtifacts(queryId, insertParameters, getArtifactSelectSql(), queryParameters.toArray(),
             artifactCountEstimate, transactionId);
-      clearCriteria();
+      cleanup();
    }
 
    public List<Integer> selectArtifacts(int artifactCountEstimate) throws OseeCoreException {
@@ -449,7 +482,7 @@ public class ArtifactQueryBuilder {
       } finally {
          chStmt.close();
       }
-      clearCriteria();
+      cleanup();
       return artifactIds;
    }
 
@@ -462,7 +495,7 @@ public class ArtifactQueryBuilder {
       try {
          return ConnectionHandler.runPreparedQueryFetchInt(0, getArtifactSelectSql(), queryParameters.toArray());
       } finally {
-         clearCriteria();
+         cleanup();
       }
    }
 
