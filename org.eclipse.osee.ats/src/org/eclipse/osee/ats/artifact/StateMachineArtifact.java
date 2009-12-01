@@ -712,6 +712,14 @@ public abstract class StateMachineArtifact extends ATSArtifact implements IGroup
       return getSoleAttributeValue(ATSAttributes.WORK_PACKAGE_ATTRIBUTE.getStoreName(), "");
    }
 
+   public String getWorldViewNumeric1() throws OseeCoreException {
+      return getSoleAttributeValue(ATSAttributes.NUMERIC1_ATTRIBUTE.getStoreName(), "");
+   }
+
+   public String getWorldViewNumeric2() throws OseeCoreException {
+      return getSoleAttributeValue(ATSAttributes.NUMERIC2_ATTRIBUTE.getStoreName(), "");
+   }
+
    public String getWorldViewCategory() throws OseeCoreException {
       return getSoleAttributeValue(ATSAttributes.CATEGORY_ATTRIBUTE.getStoreName(), "");
    }

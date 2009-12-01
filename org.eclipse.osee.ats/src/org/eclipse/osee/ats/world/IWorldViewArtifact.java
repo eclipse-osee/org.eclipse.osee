@@ -39,6 +39,10 @@ public interface IWorldViewArtifact {
 
    public String getWorldViewCancelledDateStr() throws OseeCoreException;
 
+   public String getWorldViewNumeric1() throws OseeCoreException;
+
+   public String getWorldViewNumeric2() throws OseeCoreException;
+
    public String getWorldViewCategory() throws OseeCoreException;
 
    public String getWorldViewCategory2() throws OseeCoreException;

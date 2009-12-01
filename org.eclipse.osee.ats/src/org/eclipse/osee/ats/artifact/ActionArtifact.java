@@ -468,6 +468,22 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
       return Artifacts.toString("; ", groups);
    }
 
+   public String getWorldViewNumeric1() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewNumeric1());
+      }
+      return Collections.toString(";", strs);
+   }
+
+   public String getWorldViewNumeric2() throws OseeCoreException {
+      Set<String> strs = new HashSet<String>();
+      for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
+         strs.add(team.getWorldViewNumeric2());
+      }
+      return Collections.toString(";", strs);
+   }
+
    public String getWorldViewCategory() throws OseeCoreException {
       Set<String> strs = new HashSet<String>();
       for (TeamWorkFlowArtifact team : getTeamWorkFlowArtifacts()) {
