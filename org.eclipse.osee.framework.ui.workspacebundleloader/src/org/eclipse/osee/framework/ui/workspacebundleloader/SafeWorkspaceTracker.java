@@ -17,9 +17,13 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.logging.Level;
+
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.ui.plugin.workspace.SafeWorkspaceAccess;
 import org.eclipse.osee.framework.ui.workspacebundleloader.internal.Activator;
 import org.osgi.framework.Bundle;
@@ -59,18 +63,34 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    }
 
    void setupWorkspaceBundleLoadingAfterBenchStartup() {
-      IWorkspace workspace = service.getWorkspace();
+	  Jobs.runInJob(new PrecompileStartup("Loading Precompiled Libraries", Activator.BUNDLE_ID), false);
+   }
+   
+   private class PrecompileStartup extends AbstractOperation {
 
-      this.workspaceListener =
-            new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID, this);
-      try {
-         installWorkspacePlugins();
-      } catch (CoreException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      } catch (BundleException ex) {
-         OseeLog.log(Activator.class, Level.SEVERE, ex);
-      }
-      workspace.addResourceChangeListener(workspaceListener);
+	/**
+	 * @param operationName
+	 * @param pluginId
+	 */
+	public PrecompileStartup(String operationName, String pluginId) {
+		super(operationName, pluginId);
+	}
+
+	@Override
+	protected void doWork(IProgressMonitor monitor) throws Exception {
+	      IWorkspace workspace = service.getWorkspace();
+	      workspaceListener =
+	            new JarChangeResourceListener<WorkspaceStarterNature>(WorkspaceStarterNature.NATURE_ID, SafeWorkspaceTracker.this);
+	      try {
+	         installWorkspacePlugins();
+	      } catch (CoreException ex) {
+	         OseeLog.log(Activator.class, Level.SEVERE, ex);
+	      } catch (BundleException ex) {
+	         OseeLog.log(Activator.class, Level.SEVERE, ex);
+	      }
+	      workspace.addResourceChangeListener(workspaceListener);
+	}
+	   
    }
 
    @Override
@@ -107,7 +127,8 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    }
 
    /**
-    * @throws CoreException
+    * @param monitor 
+ * @throws CoreException
     * @throws CoreException
     * @throws BundleException
     * @throws BundleException
@@ -115,7 +136,7 @@ public class SafeWorkspaceTracker extends ServiceTracker implements IJarChangeLi
    private void installWorkspacePlugins() throws CoreException, BundleException {
 
       for (WorkspaceStarterNature starterNature : WorkspaceStarterNature.getWorkspaceProjects()) {
-         for (URL url : starterNature.getBundles()) {
+    	  for (URL url : starterNature.getBundles()) {
             try {
                handleBundleAdded(url);
             } catch (Exception ex) {
