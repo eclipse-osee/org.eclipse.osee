@@ -91,6 +91,8 @@ abstract artifactType "ats.State Machine" extends "ats.Ats Artifact" {
    attribute "ats.Category"
    attribute "ats.Category2"
    attribute "ats.Category3"
+   attribute "ats.Numeric1"
+   attribute "ats.Numeric2"
    attribute "ats.Current State"
    attribute "ats.Estimated Completion Date"
    attribute "ats.Estimated Hours"
@@ -333,6 +335,22 @@ attributeType "ats.Estimated Hours" extends FloatingPointAttribute {
    dataProvider DefaultAttributeDataProvider
    min 0
    max 1
+   defaultValue "0.0"
+}
+
+attributeType "ats.Numeric1" extends FloatingPointAttribute {
+   guid "AABY2xxQsDm811kCViwA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
+   defaultValue "0.0"
+}
+
+attributeType "ats.Numeric2" extends FloatingPointAttribute {
+   guid "AABiRtvZsAEkU4BS9qwA"
+   dataProvider DefaultAttributeDataProvider
+   min 0
+   max unlimited
    defaultValue "0.0"
 }
 

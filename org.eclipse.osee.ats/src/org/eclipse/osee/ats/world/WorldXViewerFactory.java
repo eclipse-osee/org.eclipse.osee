@@ -111,6 +111,12 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
    public static final XViewerColumn Work_Package_Col =
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".workPackage", ATSAttributes.WORK_PACKAGE_ATTRIBUTE, 80,
                SWT.LEFT, false, SortDataType.String, true);
+   public static final XViewerColumn Numeric1_Col =
+         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".numeric1", ATSAttributes.NUMERIC1_ATTRIBUTE, 40, SWT.LEFT,
+               false, SortDataType.Float, true);
+   public static final XViewerColumn Numeric2_Col =
+         new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".numeric2", ATSAttributes.NUMERIC2_ATTRIBUTE, 40, SWT.LEFT,
+               false, SortDataType.Float, true);
    public static final XViewerColumn Category_Col =
          new XViewerAtsAttributeColumn(COLUMN_NAMESPACE + ".category", ATSAttributes.CATEGORY_ATTRIBUTE, 80, SWT.LEFT,
                false, SortDataType.String, true);
@@ -267,7 +273,7 @@ public class WorldXViewerFactory extends SkynetXViewerFactory {
                Percent_Rework_Col, Branch_Status_Col, Number_of_Tasks_Col, Number_of_Tasks_Remining_Col,
                Last_Modified_Col, Last_Statused_Col, Validation_Required_Col, Review_Major_Defects,
                Review_Minor_Defects, Review_Issues, Actions_Initiating_Workflow_Col, Artifact_Type_Col,
-               Originating_Workflow, Parent_ID_Col, Days_In_Current_State, Parent_State_Col};
+               Originating_Workflow, Parent_ID_Col, Days_In_Current_State, Parent_State_Col, Numeric1_Col, Numeric2_Col};
    private static String NAMESPACE = "org.eclipse.osee.ats.WorldXViewer";
 
    public WorldXViewerFactory() {
