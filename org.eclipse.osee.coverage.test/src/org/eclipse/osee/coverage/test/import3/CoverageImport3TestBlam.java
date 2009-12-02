@@ -14,7 +14,7 @@ import java.util.Arrays;
 import org.eclipse.osee.coverage.test.util.CoverageImportTestBlam;
 
 /**
- * Imports two completely new file CoverageUnits PowerUnit1 and ComScrnAButton1
+ * Imports new method initAdded to end of PowerUnit1
  * 
  * @author Donald G. Dunne
  */
@@ -25,7 +25,7 @@ public class CoverageImport3TestBlam extends CoverageImportTestBlam {
    public CoverageImport3TestBlam() {
       super(NAME, Arrays.asList(
       //
-      "import3/epu/PowerUnit1.java"
+            "import3/epu/PowerUnit1.java", "import1/epu/PowerUnit2.java", "import2/epu/PowerUnit3.java"
       //
       ));
    }

@@ -130,7 +130,7 @@ public class CoveragePackageImportManager {
    private boolean validateMergeTypes(XResultData rd, Collection<MergeItem> mergeItems) throws OseeCoreException {
       boolean valid = true;
       for (MergeItem mergeItem : mergeItems) {
-         if (mergeItem.getMergeType() == MergeType.Error) {
+         if (mergeItem.getMergeType().isError()) {
             rd.log(String.format("Can't merge item [%s] with error", mergeItem));
             valid = false;
          }

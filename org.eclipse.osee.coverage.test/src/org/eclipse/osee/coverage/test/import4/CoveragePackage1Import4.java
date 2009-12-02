@@ -14,7 +14,7 @@ import org.eclipse.osee.coverage.test.util.CpSelectAndImportItem;
 import org.eclipse.osee.framework.ui.skynet.widgets.xnavigate.XNavigateItem;
 
 /**
- * Imports two completely new file CoverageUnits PowerUnit1 and ComScrnAButton1
+ * Imports deselectAdded to middle of epu.PowerUnit1
  * 
  * @author Donald G. Dunne
  */

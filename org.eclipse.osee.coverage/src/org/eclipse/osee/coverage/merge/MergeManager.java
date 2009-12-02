@@ -67,7 +67,7 @@ public class MergeManager {
             importItemToMatchItem.put(childCoverage, childMatchItem);
          }
 
-         // Case 1 - All match and package # children == import # children; continue and check children's children
+         // Case A - All match and package # children == import # children; continue and check children's children
          if (packageItemChildren.size() == importItemChildren.size() && MatchItem.isAllMatchType(
                Collections.singleton(MatchType.Match__Name_And_Method), importItemToMatchItem.values())) {
             // process all children
@@ -76,7 +76,7 @@ public class MergeManager {
             }
          }
 
-         // Case 2 - Import children all full match except Import has more that don't match, items added to end
+         // Case B - Addition - Import children all full match except Import has more that don't match, items added to end
          else if (MatchItem.isAllMatchType(Arrays.asList(MatchType.Match__Name_And_Method,
                MatchType.No_Match__Name_Or_Method_Num), importItemToMatchItem.values()) && importItemChildren.size() > packageItemChildren.size()) {
             for (ICoverage childCoverage : importItemChildren) {
@@ -92,17 +92,30 @@ public class MergeManager {
             }
          }
 
-         // Case 3 - Import children all full or partial match except import has more; item added/items moved
-
-         // Else, just process children
-         else {
+         // Case C - Addition/Move - Import children all full or partial match except import has more; item added/items moved
+         else if (MatchItem.isAllMatchType(Arrays.asList(MatchType.Match__Name_And_Method,
+               MatchType.No_Match__Name_Or_Method_Num, MatchType.Match__Name_Only), importItemToMatchItem.values()) && importItemChildren.size() > packageItemChildren.size()) {
             for (ICoverage childCoverage : importItemChildren) {
                MatchItem childMatchItem = importItemToMatchItem.get(childCoverage);
-               // This child matches, just process children
+               // This child matches fully, just process children
                if (childMatchItem.getMatchType() == MatchType.Match__Name_And_Method) {
                   processImportCoverage(childCoverage);
                }
+               // This child is new, mark as added; no need to process children cause their new
+               if (childMatchItem.getMatchType() == MatchType.No_Match__Name_Or_Method_Num) {
+                  mergeItems.add(new MergeItem(MergeType.Add, null, childMatchItem.getImportItem()));
+               }
+               // This child is moved, mark as modified; process children cause they existed before
+               if (childMatchItem.getMatchType() == MatchType.No_Match__Name_Or_Method_Num) {
+                  mergeItems.add(new MergeItem(MergeType.Add, null, childMatchItem.getImportItem()));
+                  processImportCoverage(childCoverage);
+               }
             }
+         }
+
+         // Case Else - unhandled case
+         else {
+            mergeItems.add(new MergeItem(MergeType.Error__UnMergable, null, importCoverage));
          }
       }
       return;

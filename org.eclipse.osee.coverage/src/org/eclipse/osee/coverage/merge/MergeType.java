@@ -19,5 +19,11 @@ public enum MergeType {
    //
    Update_Children,
    //
-   Error
+   Error__Message,
+   //
+   Error__UnMergable;
+
+   public boolean isError() {
+      return toString().startsWith("Error__");
+   }
 }
