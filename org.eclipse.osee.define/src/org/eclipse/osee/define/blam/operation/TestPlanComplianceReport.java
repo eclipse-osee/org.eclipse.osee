@@ -92,11 +92,11 @@ public class TestPlanComplianceReport extends AbstractBlam {
          for (Artifact testResult : testResults) {
             reportLine(testPlan, testProc.getName(), getStatus(testProc), testResult.getName());
          }
-         }
       }
+   }
 
    private String getStatus(Artifact testProc) throws OseeCoreException {
-      String returnValue = testProc.getSoleAttributeValue(CoreAttributeTypes.TEST_STATUS);
+      String returnValue = testProc.getSoleAttributeValue(CoreAttributeTypes.TEST_PROCEDURE_STATUS);
 
       return returnValue;
    }
