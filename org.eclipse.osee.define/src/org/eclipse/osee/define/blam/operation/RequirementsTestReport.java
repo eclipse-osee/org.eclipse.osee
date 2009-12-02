@@ -74,7 +74,12 @@ public class RequirementsTestReport extends AbstractBlam {
    }
 
    private void processTestProcedure(Artifact req, Artifact testProc) throws OseeCoreException {
-      String testStatus = testProc.getSoleAttributeValue(CoreAttributeTypes.TEST_PROCEDURE_STATUS, MISSING);
+      String testStatus;
+      try {
+         testStatus = testProc.getSoleAttributeValue(CoreAttributeTypes.TEST_PROCEDURE_STATUS);
+      } catch (OseeCoreException e) {
+         testStatus = "N/A (" + testProc.getArtifactTypeName() + ")";
+      }
       Collection<Artifact> resultFiles = testProc.getRelatedArtifacts(CoreRelationTypes.Test_Unit_Result__Test_Result);
 
       if (resultFiles.isEmpty()) {
