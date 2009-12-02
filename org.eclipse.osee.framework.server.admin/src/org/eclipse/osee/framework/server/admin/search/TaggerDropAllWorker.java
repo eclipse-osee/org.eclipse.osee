@@ -29,10 +29,10 @@ class TaggerDropAllWorker extends BaseServerCommand {
    @Override
    protected void doCommandWork(IProgressMonitor monitor) throws Exception {
       String deleteSql = null;
-      if (SupportedDatabase.isDatabaseType(ConnectionHandler.getMetaData(), SupportedDatabase.postgresql)) {
-         deleteSql = TRUNCATE_SQL;
-      } else {
+      if (SupportedDatabase.isDatabaseType(ConnectionHandler.getMetaData(), SupportedDatabase.derby)) {
          deleteSql = DELETE_TABLE_SQL;
+      } else {
+         deleteSql = TRUNCATE_SQL;
       }
       ConnectionHandler.runPreparedUpdate(deleteSql);
    }
