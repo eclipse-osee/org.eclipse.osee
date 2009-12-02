@@ -104,13 +104,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.osee.framework.osgi"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.osee.framework.manager.servlet"
          download-size="0"
          install-size="0"
@@ -126,6 +119,13 @@
 
    <plugin
          id="org.eclipse.osee.framework.derby"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.osee.framework.types"
          download-size="0"
          install-size="0"
          version="0.0.0"
