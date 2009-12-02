@@ -8,6 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+
 package org.eclipse.osee.framework.core.test.translation;
 
 import java.util.ArrayList;
@@ -17,9 +18,8 @@ import java.util.List;
 import junit.framework.Assert;
 
 import org.eclipse.osee.framework.core.data.ChangeVersion;
-import org.eclipse.osee.framework.core.enums.ModificationType;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.ChangeVersionTranslator;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.junit.runner.RunWith;
@@ -40,22 +40,15 @@ public class ChangeVersionTranslatorTest extends BaseTranslatorTest<ChangeVersio
 
    @Override
    protected void checkEquals(ChangeVersion expected, ChangeVersion actual) throws OseeCoreException {
-      Assert.assertEquals(expected.getGammaId(), actual.getGammaId());
-      Assert.assertEquals(expected.getModType().getValue(), actual.getModType().getValue());
-      Assert.assertEquals(expected.getTransactionNumber(), actual.getTransactionNumber());
-      Assert.assertEquals(expected.getValue(), actual.getValue());
+      Assert.assertNotSame(expected, actual);
+      DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
    public static Collection<Object[]> data() {
       List<Object[]> data = new ArrayList<Object[]>();
       ITranslator<ChangeVersion> translator = new ChangeVersionTranslator();
-      try {
-         data.add(new Object[] {new ChangeVersion("test", 1L ,ModificationType.getMod(1),12), translator});
-      }
-      catch (OseeArgumentException ex) {
-         throw new IllegalArgumentException(ex);
-      }
+      data.add(new Object[] {MockDataFactory.createChangeVersion(22), translator});
       return data;
    }
 }

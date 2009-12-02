@@ -1,8 +1,13 @@
-/*
- * Created on Nov 9, 2009
+/*******************************************************************************
+ * Copyright (c) 2004, 2007 Boeing.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
  *
- * PLACE_YOUR_DISTRIBUTION_STATEMENT_RIGHT_HERE
- */
+ * Contributors:
+ *     Boeing - initial API and implementation
+ *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.revision;
 
 import java.sql.Timestamp;
@@ -13,22 +18,27 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
+
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
+import org.eclipse.osee.framework.core.data.AttributeChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.data.ChangeVersion;
+import org.eclipse.osee.framework.core.data.RelationChangeItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
-import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.util.ChangeItemUtil;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoad;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactLoader;
+import org.eclipse.osee.framework.skynet.core.artifact.HttpChangeDataRequester;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.change.ArtifactChange;
 import org.eclipse.osee.framework.skynet.core.change.AttributeChange;
@@ -36,13 +46,6 @@ import org.eclipse.osee.framework.skynet.core.change.Change;
 import org.eclipse.osee.framework.skynet.core.change.ChangeType;
 import org.eclipse.osee.framework.skynet.core.change.ErrorChange;
 import org.eclipse.osee.framework.skynet.core.change.RelationChange;
-import org.eclipse.osee.framework.skynet.core.commit.ArtifactChangeItem;
-import org.eclipse.osee.framework.skynet.core.commit.AttributeChangeItem;
-import org.eclipse.osee.framework.skynet.core.commit.ChangeItemUtil;
-import org.eclipse.osee.framework.skynet.core.commit.ComputeNetChangeOperation;
-import org.eclipse.osee.framework.skynet.core.commit.LoadChangeDataOperation;
-import org.eclipse.osee.framework.skynet.core.commit.RelationChangeItem;
-import org.eclipse.osee.framework.skynet.core.internal.Activator;
 import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 
@@ -184,29 +187,33 @@ public class ChangeReportDataLoader {
       if (isHistorical) {
          destinationTransactionId = TransactionManager.getPriorTransaction(transactionId);
          sourceTransactionId = transactionId;
-         ops.add(new LoadChangeDataOperation(sourceTransactionId, destinationTransactionId, changeItems));
+//         ops.add(new LoadChangeDataOperation(sourceTransactionId, destinationTransactionId, changeItems));
       } else {
          destinationTransactionId = TransactionManager.getLastTransaction(sourceBranch.getParentBranch());
          sourceTransactionId = TransactionManager.getLastTransaction(sourceBranch);
-         ops.add(new LoadChangeDataOperation(sourceTransactionId, destinationTransactionId, null, changeItems));
+//         ops.add(new LoadChangeDataOperation(sourceTransactionId, destinationTransactionId, null, changeItems));
       }
 
-      ops.add(new ComputeNetChangeOperation(changeItems));
-
-      String opName =
-            String.format("Gathering changes for %s",
-            sourceBranch != null ? sourceBranch.getShortName() : transactionId);
-      IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
-      Operations.executeWork(op, monitor, -1);
-      try {
-         Operations.checkForErrorStatus(op.getStatus());
-      } catch (Exception ex) {
-         if (ex instanceof OseeCoreException) {
-            throw (OseeCoreException) ex;
-         } else {
-            throw new OseeWrappedException(ex);
-         }
-      }
-      return changeItems;
+      ChangeReportResponse response = HttpChangeDataRequester.getChanges(sourceTransactionId, destinationTransactionId, monitor, isHistorical);
+//      System.out.println(response.getChangeItems().size());
+//      
+//      
+//      ops.add(new ComputeNetChangeOperation(changeItems));
+//
+//      String opName =
+//            String.format("Gathering changes for %s",
+//            sourceBranch != null ? sourceBranch.getShortName() : transactionId);
+//      IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
+//      Operations.executeWork(op, monitor, -1);
+//      try {
+//         Operations.checkForErrorStatus(op.getStatus());
+//      } catch (Exception ex) {
+//         if (ex instanceof OseeCoreException) {
+//            throw (OseeCoreException) ex;
+//         } else {
+//            throw new OseeWrappedException(ex);
+//         }
+//      }
+      return response.getChangeItems();
    }
 }

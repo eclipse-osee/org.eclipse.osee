@@ -8,13 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.test.util;
 
+package org.eclipse.osee.framework.core.test.util;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {CompareTest.class})
+@Suite.SuiteClasses( {//
+ChangeItemUtilTest.class, //
+      CompareTest.class, //
+})
 /**
  * @author Roberto E. Escobar
  */

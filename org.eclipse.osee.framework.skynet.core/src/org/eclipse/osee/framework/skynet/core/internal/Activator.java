@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
@@ -22,8 +23,6 @@ import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.skynet.core.attribute.HttpAttributeTagger;
 import org.eclipse.osee.framework.skynet.core.event.RemoteEventManager;
-import org.eclipse.osee.framework.skynet.core.serverCommit.CommitService;
-import org.eclipse.osee.framework.skynet.core.serverCommit.ICommitService;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
@@ -60,10 +59,8 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
       IOseeCachingService cachingService = new ClientCachingServiceFactory().createService(this);
 
       createService(context, IOseeCachingService.class, cachingService);
-      createService(context, ICommitService.class, new CommitService());
 
       createServiceTracker(context, IOseeCachingService.class, TrackerId.OSEE_CACHING_SERVICE);
-      createServiceTracker(context, ICommitService.class, TrackerId.COMMIT_SERVICE);
       createServiceTracker(context, IDataTranslationService.class, TrackerId.TRANSLATION_SERVICE);
       createServiceTracker(context, IOseeModelFactoryService.class, TrackerId.OSEE_FACTORY_SERVICE);
    }
@@ -92,10 +89,6 @@ public class Activator implements BundleActivator, IOseeModelFactoryServiceProvi
 
    public IOseeCachingService getOseeCacheService() {
       return getTracker(TrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
-   }
-
-   public ICommitService getCommitBranchService() {
-      return getTracker(TrackerId.COMMIT_SERVICE, ICommitService.class);
    }
 
    public IDataTranslationService getTranslationService() {

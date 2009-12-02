@@ -8,9 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
+
 package org.eclipse.osee.framework.core.test.translation;
 
 import junit.framework.Assert;
+
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.BranchCreationRequest;
@@ -37,21 +39,18 @@ public final class DataAsserts {
    }
 
    public static void assertEquals(ChangeItem expected, ChangeItem actual) throws OseeCoreException {
-      Assert.assertEquals(expected.getArtId(), actual.getArtId());
-      Assert.assertEquals(expected.getItemId(), actual.getItemId());
+      if (expected == null) {
+         Assert.assertNull(actual);
+      }
+      else {
+         Assert.assertEquals(expected.getArtId(), actual.getArtId());
+         Assert.assertEquals(expected.getItemId(), actual.getItemId());
 
-      checkChangeVersion(expected.getBaselineVersion(), actual.getBaselineVersion());
-      checkChangeVersion(expected.getCurrentVersion(), actual.getCurrentVersion());
-      checkChangeVersion(expected.getDestinationVersion(), actual.getDestinationVersion());
-      checkChangeVersion(expected.getNetChange(), actual.getNetChange());
-      checkChangeVersion(expected.getFirstNonCurrentChange(), actual.getFirstNonCurrentChange());
-   }
-
-   private static void checkChangeVersion(ChangeVersion expected, ChangeVersion actual) {
-      if (actual.isValid()) {
-         Assert.assertEquals(expected.getGammaId(), actual.getGammaId());
-         Assert.assertEquals(expected.getTransactionNumber(), actual.getTransactionNumber());
-         Assert.assertEquals(expected.getModType(), actual.getModType());
+         assertEquals(expected.getBaselineVersion(), actual.getBaselineVersion());
+         assertEquals(expected.getCurrentVersion(), actual.getCurrentVersion());
+         assertEquals(expected.getDestinationVersion(), actual.getDestinationVersion());
+         assertEquals(expected.getNetChange(), actual.getNetChange());
+         assertEquals(expected.getFirstNonCurrentChange(), actual.getFirstNonCurrentChange());
       }
    }
 
@@ -78,7 +77,8 @@ public final class DataAsserts {
    public static void assertEquals(Branch expected, Branch actual) throws OseeCoreException {
       if (expected == null) {
          Assert.assertNull(actual);
-      } else {
+      }
+      else {
          assertEquals((IOseeStorableType) expected, (IOseeStorableType) actual);
          Assert.assertEquals(expected.getShortName(), actual.getShortName());
          Assert.assertEquals(expected.getAccessControlBranch(), actual.getAccessControlBranch());
@@ -95,7 +95,8 @@ public final class DataAsserts {
    public static void assertEquals(TransactionRecord expected, TransactionRecord actual) throws OseeCoreException {
       if (expected == null) {
          Assert.assertNull(actual);
-      } else {
+      }
+      else {
          Assert.assertEquals(expected.getId(), actual.getId());
          Assert.assertEquals(expected.getAuthor(), actual.getAuthor());
          Assert.assertEquals(expected.getComment(), actual.getComment());
@@ -109,7 +110,8 @@ public final class DataAsserts {
    public static void assertEquals(IBasicArtifact<?> expected, IBasicArtifact<?> actual) throws OseeCoreException {
       if (expected == null) {
          Assert.assertNull(actual);
-      } else {
+      }
+      else {
          Assert.assertEquals(expected.getArtId(), actual.getArtId());
          Assert.assertEquals(expected.getGuid(), actual.getGuid());
          Assert.assertEquals(expected.getName(), actual.getName());
@@ -120,7 +122,8 @@ public final class DataAsserts {
    public static void assertEquals(BranchCommitRequest expected, BranchCommitRequest actual) throws OseeCoreException {
       if (expected == null) {
          Assert.assertNull(actual);
-      } else {
+      }
+      else {
          Assert.assertEquals(expected.getUserArtId(), actual.getUserArtId());
          Assert.assertEquals(expected.isArchiveAllowed(), actual.isArchiveAllowed());
          Assert.assertEquals(expected.getSourceBranchId(), actual.getSourceBranchId());
@@ -131,7 +134,8 @@ public final class DataAsserts {
    public static void assertEquals(BranchCommitResponse expected, BranchCommitResponse actual) throws OseeCoreException {
       if (expected == null) {
          Assert.assertNull(actual);
-      } else {
+      }
+      else {
          assertEquals(expected.getTransaction(), actual.getTransaction());
       }
    }
@@ -139,7 +143,8 @@ public final class DataAsserts {
    public static void assertEquals(CacheUpdateRequest expected, CacheUpdateRequest actual) {
       if (expected == null) {
          Assert.assertNull(actual);
-      } else {
+      }
+      else {
          Assert.assertEquals(expected.getCacheId(), actual.getCacheId());
          Assert.assertFalse(Compare.isDifferent(expected.getGuids(), actual.getGuids()));
       }
@@ -148,7 +153,8 @@ public final class DataAsserts {
    public static void assertEquals(RelationType expected, RelationType actual) throws OseeCoreException {
       if (expected == null) {
          Assert.assertNull(actual);
-      } else {
+      }
+      else {
          assertEquals((IOseeStorableType) expected, (IOseeStorableType) actual);
          Assert.assertEquals(expected.getSideAName(), actual.getSideAName());
          Assert.assertEquals(expected.getSideBName(), actual.getSideBName());
@@ -162,7 +168,8 @@ public final class DataAsserts {
    public static void assertEquals(IOseeStorableType expected, IOseeStorableType actual) {
       if (expected == null) {
          Assert.assertNull(actual);
-      } else {
+      }
+      else {
          Assert.assertEquals(expected.getId(), actual.getId());
          Assert.assertEquals(expected.getGuid(), actual.getGuid());
          Assert.assertEquals(expected.getName(), actual.getName());
@@ -174,7 +181,8 @@ public final class DataAsserts {
    public static void assertEquals(BranchCreationRequest expected, BranchCreationRequest actual) {
       if (expected == null) {
          Assert.assertNull(actual);
-      } else {
+      }
+      else {
          Assert.assertEquals(expected.getAssociatedArtifactId(), actual.getAssociatedArtifactId());
          Assert.assertEquals(expected.getAuthorId(), actual.getAuthorId());
          Assert.assertEquals(expected.getBranchGuid(), actual.getBranchGuid());
@@ -183,7 +191,7 @@ public final class DataAsserts {
          Assert.assertEquals(expected.getDestinationBranchId(), actual.getDestinationBranchId());
          Assert.assertEquals(expected.getParentBranchId(), actual.getParentBranchId());
          Assert.assertEquals(expected.getPopulateBaseTxFromAddressingQueryId(),
-               actual.getPopulateBaseTxFromAddressingQueryId());
+                             actual.getPopulateBaseTxFromAddressingQueryId());
          Assert.assertEquals(expected.getSourceTransactionId(), actual.getSourceTransactionId());
          Assert.assertEquals(expected.getStaticBranchName(), actual.getStaticBranchName());
          Assert.assertEquals(expected.getBranchType(), actual.getBranchType());
@@ -193,8 +201,22 @@ public final class DataAsserts {
    public static void assertEquals(BranchCreationResponse expected, BranchCreationResponse actual) {
       if (expected == null) {
          Assert.assertNull(actual);
-      } else {
+      }
+      else {
          Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
+      }
+   }
+
+   public static void assertEquals(ChangeVersion expected, ChangeVersion actual) {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      }
+      else {
+         Assert.assertEquals(expected.isValid(), actual.isValid());
+         Assert.assertEquals(expected.getGammaId(), actual.getGammaId());
+         Assert.assertEquals(expected.getModType(), actual.getModType());
+         Assert.assertEquals(expected.getTransactionNumber(), actual.getTransactionNumber());
+         Assert.assertEquals(expected.getValue(), actual.getValue());
       }
    }
 }

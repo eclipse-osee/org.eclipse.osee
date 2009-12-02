@@ -15,9 +15,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import junit.framework.Assert;
+
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.test.mocks.MockDataFactory;
 import org.eclipse.osee.framework.core.translation.ChangeItemTranslator;
@@ -42,23 +43,19 @@ public class ChangeItemTranslatorTest extends BaseTranslatorTest<ChangeItem> {
 
    @Override
    protected void checkEquals(ChangeItem expected, ChangeItem actual) throws OseeCoreException {
+      Assert.assertNotSame(expected, actual);
       DataAsserts.assertEquals(expected, actual);
    }
 
    @Parameters
    public static Collection<Object[]> data() throws OseeCoreException {
       DataTranslationService dataTranslationService = new DataTranslationService();
-      dataTranslationService.addTranslator(new ChangeItemTranslator(dataTranslationService),
-            CoreTranslatorId.CHANGE_ITEM);
-      dataTranslationService.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
+      dataTranslationService.addTranslator(new ChangeVersionTranslator(),
+                                           CoreTranslatorId.CHANGE_VERSION);
 
       List<Object[]> data = new ArrayList<Object[]>();
       ITranslator<ChangeItem> translator = new ChangeItemTranslator(dataTranslationService);
-      try {
-         data.add(new Object[] {MockDataFactory.createArtifactChangeItem(), translator});
-      } catch (OseeArgumentException ex) {
-         throw new IllegalArgumentException(ex);
-      }
+      data.add(new Object[] {MockDataFactory.createArtifactChangeItem(), translator});
       return data;
    }
 }
