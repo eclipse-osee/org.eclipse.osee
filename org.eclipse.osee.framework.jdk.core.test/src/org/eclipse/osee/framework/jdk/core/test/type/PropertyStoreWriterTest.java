@@ -14,6 +14,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
+
 import org.eclipse.osee.framework.jdk.core.test.type.PropertyStoreTestUtil.MockPropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStoreWriter;
 import org.junit.Before;
@@ -44,6 +45,8 @@ public class PropertyStoreWriterTest {
       store.put("key7", new String[] {"entry1", "entry2", "entry3"});
       store.put("key8", new String[] {"entry4", "entry5", "entry6"});
       nested = PropertyStoreTestUtil.createPropertyStore(System.getProperties());
+      nested.put("inner array 1", new String[]{"value1", "value2"});
+      nested.put("inner store 1", PropertyStoreTestUtil.createPropertyStore(System.getProperties()));
       store.put("key9", nested);
    }
 
