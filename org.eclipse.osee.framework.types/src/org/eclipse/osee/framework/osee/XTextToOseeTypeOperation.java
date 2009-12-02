@@ -8,23 +8,23 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.types.bridge.operations;
+package org.eclipse.osee.framework.osee;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
+import org.eclipse.osee.framework.internal.InternalTypesActivator;
 import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.oseeTypes.AddEnum;
@@ -39,9 +39,6 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.OverrideOption;
 import org.eclipse.osee.framework.oseeTypes.RelationType;
 import org.eclipse.osee.framework.oseeTypes.RemoveEnum;
-import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.types.bridge.internal.Activator;
-import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
 
 /**
  * @author Ryan D. Brooks
@@ -49,105 +46,75 @@ import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
  */
 public class XTextToOseeTypeOperation extends AbstractOperation {
    private final IOseeModelFactoryService provider;
-   private final java.net.URI resource;
-   private final Object context;
+   private final OseeTypeModel model;
    private final OseeTypeCache typeCache;
-   private final boolean isPersistAllowed;
+   private final BranchCache branchCache;
 
-   public XTextToOseeTypeOperation(IOseeModelFactoryService provider, OseeTypeCache typeCache, boolean isPersistAllowed, Object context, java.net.URI resource) {
-      super("OSEE Text Model to OSEE", Activator.PLUGIN_ID);
+   public XTextToOseeTypeOperation(IOseeModelFactoryService provider, OseeTypeCache typeCache, BranchCache branchCache, OseeTypeModel model) {
+      super("OSEE Text Model to OSEE", InternalTypesActivator.PLUGIN_ID);
       this.provider = provider;
       this.typeCache = typeCache;
-      this.resource = resource;
-      this.context = context;
-      this.isPersistAllowed = isPersistAllowed;
+      this.branchCache = branchCache;
+      this.model = model;
    }
 
    private OseeTypeCache getCache() {
       return typeCache;
    }
 
+   private BranchCache getBranchCache() {
+      return branchCache;
+   }
+
    private IOseeModelFactoryService getFactory() throws OseeCoreException {
       return provider;
    }
 
-   private void loadDependencies(OseeTypeModel baseModel, List<OseeTypeModel> models) throws OseeCoreException, URISyntaxException {
-      // This is commented out cause we're using a combined file.  Once combined files
-      // are no longer generated, this should be uncommented.
-      //      for (Import dependant : baseModel.getImports()) {
-      //         OseeTypeModel childModel = OseeTypeModelUtil.loadModel(context, new URI(dependant.getImportURI()));
-      //         loadDependencies(childModel, models);
-      //         System.out.println("depends on: " + dependant.getImportURI());
-      //      }
-      //      System.out.println("Added on: " + baseModel.eResource().getURI());
-      models.add(baseModel);
-   }
-
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      List<OseeTypeModel> models = new ArrayList<OseeTypeModel>();
-      OseeTypeModel targetModel = null;
-      try {
-         targetModel = OseeTypeModelUtil.loadModel(context, resource);
-      } catch (OseeCoreException ex) {
-         throw new OseeWrappedException(String.format("Error loading: [%s]", resource), ex);
-      }
-      loadDependencies(targetModel, models);
+      double workAmount = 1.0;
 
-      if (!models.isEmpty()) {
-         double workAmount = 1.0 / models.size();
-         for (OseeTypeModel model : models) {
+      int count = model.getArtifactTypes().size();
+      count += model.getAttributeTypes().size();
+      count += model.getRelationTypes().size();
+      count += model.getEnumTypes().size();
+      count += model.getEnumOverrides().size();
 
-            int count = model.getArtifactTypes().size();
-            count += model.getAttributeTypes().size();
-            count += model.getRelationTypes().size();
-            count += model.getEnumTypes().size();
-            count += model.getEnumOverrides().size();
+      if (count > 0) {
+         double workPercentage = workAmount / count;
 
-            if (count > 0) {
-               double workPercentage = workAmount / count;
-
-               for (ArtifactType type : model.getArtifactTypes()) {
-                  handleArtifactType(type);
-                  monitor.worked(calculateWork(workPercentage));
-               }
-
-               for (OseeEnumOverride enumOverride : model.getEnumOverrides()) {
-                  handleEnumOverride(enumOverride);
-                  monitor.worked(calculateWork(workPercentage));
-               }
-
-               for (OseeEnumType enumType : model.getEnumTypes()) {
-                  handleOseeEnumType(enumType);
-                  monitor.worked(calculateWork(workPercentage));
-               }
-
-               for (AttributeType type : model.getAttributeTypes()) {
-                  handleAttributeType(type);
-                  monitor.worked(calculateWork(workPercentage));
-               }
-
-               for (ArtifactType type : model.getArtifactTypes()) {
-                  handleArtifactTypeCrossRef(type);
-                  monitor.worked(calculateWork(workPercentage));
-               }
-
-               for (RelationType type : model.getRelationTypes()) {
-                  handleRelationType(type);
-                  monitor.worked(calculateWork(workPercentage));
-               }
-            }
+         for (ArtifactType type : model.getArtifactTypes()) {
+            handleArtifactType(type);
+            monitor.worked(calculateWork(workPercentage));
          }
-         if (isPersistAllowed) {
-            getCache().storeAllModified();
+
+         for (OseeEnumOverride enumOverride : model.getEnumOverrides()) {
+            handleEnumOverride(enumOverride);
+            monitor.worked(calculateWork(workPercentage));
+         }
+
+         for (OseeEnumType enumType : model.getEnumTypes()) {
+            handleOseeEnumType(enumType);
+            monitor.worked(calculateWork(workPercentage));
+         }
+
+         for (AttributeType type : model.getAttributeTypes()) {
+            handleAttributeType(type);
+            monitor.worked(calculateWork(workPercentage));
+         }
+
+         for (ArtifactType type : model.getArtifactTypes()) {
+            handleArtifactTypeCrossRef(type);
+            monitor.worked(calculateWork(workPercentage));
+         }
+
+         for (RelationType type : model.getRelationTypes()) {
+            handleRelationType(type);
+            monitor.worked(calculateWork(workPercentage));
          }
       }
    }
 
-   /**
-    * @param type
-    * @throws OseeCoreException
-    */
    private void handleArtifactTypeCrossRef(ArtifactType artifactType) throws OseeCoreException {
       Set<org.eclipse.osee.framework.core.model.ArtifactType> superTypes =
             new HashSet<org.eclipse.osee.framework.core.model.ArtifactType>();
@@ -160,6 +127,9 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       if (!superTypes.isEmpty()) {
          targetArtifactType.setSuperType(superTypes);
       }
+
+      BranchCache branchCache = getBranchCache();
+      Branch systemRoot = branchCache.getSystemRootBranch();
       HashCollection<Branch, org.eclipse.osee.framework.core.model.AttributeType> items =
             new HashCollection<Branch, org.eclipse.osee.framework.core.model.AttributeType>();
       for (AttributeTypeRef attributeTypeRef : artifactType.getValidAttributeTypes()) {
@@ -168,9 +138,9 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          Branch branch;
          String branchGuid = attributeTypeRef.getBranchGuid();
          if (branchGuid == null) {
-            branch = BranchManager.getSystemRootBranch();
+            branch = systemRoot;
          } else {
-            branch = BranchManager.getBranchByGuid(branchGuid);
+            branch = branchCache.getByGuid(branchGuid);
          }
          items.put(branch, getCache().getAttributeTypeCache().getByGuid(attributeType.getTypeGuid()));
       }
@@ -282,4 +252,5 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private String convertOrderTypeNameToGuid(String orderTypeName) throws OseeArgumentException {
       return RelationOrderBaseTypes.getFromOrderTypeName(orderTypeName.replaceAll("_", " ")).getGuid();
    }
+
 }

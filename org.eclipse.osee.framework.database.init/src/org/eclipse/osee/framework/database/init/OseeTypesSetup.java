@@ -15,6 +15,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
+import java.net.URI;
 import java.net.URL;
 import java.util.Collection;
 import java.util.HashMap;
@@ -66,7 +67,7 @@ public class OseeTypesSetup {
       try {
          Map<String, URL> itemsToProcess = getOseeTypeExtensionsById(uniqueIdsToImport);
          combinedFile = createCombinedFile(itemsToProcess);
-         processOseeTypeData(combinedFile.toURI().toURL());
+         processOseeTypeData(combinedFile.toURI());
          // Only delete file if no problems processing
          combinedFile.delete();
       } catch (IOException ex) {
@@ -127,20 +128,20 @@ public class OseeTypesSetup {
       return items;
    }
 
-   public void processOseeTypeData(URL url) throws OseeCoreException {
-      IOseeTypesHandler handler = getHandler(url);
+   public void processOseeTypeData(URI uri) throws OseeCoreException {
+      IOseeTypesHandler handler = getHandler(uri);
       if (handler != null) {
-         handler.execute(new NullProgressMonitor(), null, url);
+         handler.execute(new NullProgressMonitor(), uri);
       } else {
          OseeLog.log(DatabaseInitActivator.class, Level.SEVERE, String.format(
-               "Unable to find handler for [%s] - handlers - %s", url.toExternalForm(),
+               "Unable to find handler for [%s] - handlers - %s", uri.toASCIIString(),
                this.extensionObjects.getObjects()));
       }
    }
 
-   private IOseeTypesHandler getHandler(URL url) {
+   private IOseeTypesHandler getHandler(URI uri) {
       IOseeTypesHandler toReturn = null;
-      String urlString = url.toExternalForm();
+      String urlString = uri.toASCIIString();
       for (IOseeTypesHandler handler : extensionObjects.getObjects()) {
          if (handler.isApplicable(urlString)) {
             toReturn = handler;

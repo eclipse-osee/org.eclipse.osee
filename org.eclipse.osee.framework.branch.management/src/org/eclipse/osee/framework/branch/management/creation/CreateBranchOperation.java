@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.BranchCreationRequest;
 import org.eclipse.osee.framework.core.data.BranchCreationResponse;
+import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
 import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
@@ -116,6 +117,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       }
    }
 
+   @SuppressWarnings("unchecked")
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       passedPreConditions = false;
@@ -132,9 +134,23 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       branch =
             factoryService.getOseeFactoryService().getBranchFactory().create(guid, request.getBranchName(),
                   request.getBranchType(), BranchState.CREATION_IN_PROGRESS, false);
-      branch.setParentBranch(branchCache.getById(request.getParentBranchId()));
-      branch.setSourceTransaction(txCache.getOrLoad(request.getSourceTransactionId()));
 
+      branch.setParentBranch(branchCache.getById(request.getParentBranchId()));
+      branch.setAssociatedArtifact(new DefaultBasicArtifact(request.getAssociatedArtifactId(), "", ""));
+
+      Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
+      int nextTransactionId = getDatabaseService().getSequence().getNextTransactionId();
+
+      if (branch.getBranchType().isSystemRootBranch()) {
+         TransactionRecord systemTx =
+               factoryService.getOseeFactoryService().getTransactionFactory().create(nextTransactionId, branch.getId(),
+                     request.getCreationComment(), timestamp, request.getAuthorId(), -1,
+                     TransactionDetailsType.Baselined);
+         systemTx.setBranchCache(branchCache);
+         branch.setSourceTransaction(systemTx);
+      } else {
+         branch.setSourceTransaction(txCache.getOrLoad(request.getSourceTransactionId()));
+      }
       if (request.getStaticBranchName() != null) {
          branch.setAliases(request.getStaticBranchName());
       }
@@ -142,17 +158,17 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       branchCache.cache(branch);
       branchCache.storeItems(branch);
 
-      Timestamp timestamp = GlobalTime.GreenwichMeanTimestamp();
-      int nextTransactionId = getDatabaseService().getSequence().getNextTransactionId();
-
       getDatabaseService().runPreparedUpdate(connection, INSERT_TX_DETAILS, branch.getId(), nextTransactionId,
-            request.getCreationComment(), timestamp, request.getAuthorId(), TransactionDetailsType.Baselined);
+            request.getCreationComment(), timestamp, request.getAuthorId(), TransactionDetailsType.Baselined.getId());
 
       TransactionRecord record =
             factoryService.getOseeFactoryService().getTransactionFactory().create(nextTransactionId, branch.getId(),
                   request.getCreationComment(), timestamp, request.getAuthorId(), -1, TransactionDetailsType.Baselined);
 
       record.setBranchCache(branchCache);
+      if (branch.getBranchType().isSystemRootBranch()) {
+         branch.setSourceTransaction(record);
+      }
       branch.setBaseTransaction(record);
 
       txCache.cache(record);

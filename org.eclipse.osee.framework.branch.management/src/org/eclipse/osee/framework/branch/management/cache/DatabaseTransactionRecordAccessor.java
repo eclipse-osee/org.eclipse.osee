@@ -64,8 +64,8 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    }
 
    public void loadTransactionRecord(TransactionCache cache, Collection<Integer> transactionIds) throws OseeCoreException {
-      if (transactionIds == null || transactionIds.isEmpty()) {
-         throw new OseeCoreException("transaction ids cannot be null or empty");
+      if (transactionIds.isEmpty()) {
+         return;
       }
       ensureDependantCachePopulated();
       if (transactionIds.size() > 1) {

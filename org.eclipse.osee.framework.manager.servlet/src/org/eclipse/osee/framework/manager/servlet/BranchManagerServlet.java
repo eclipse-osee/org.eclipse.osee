@@ -55,9 +55,8 @@ public class BranchManagerServlet extends OseeHttpServlet {
          resp.setStatus(HttpURLConnection.HTTP_INTERNAL_ERROR);
          resp.setContentType("text/plain");
          resp.getWriter().write(Lib.exceptionToString(ex));
+         resp.getWriter().flush();
+         resp.getWriter().close();
       }
-      resp.getWriter().flush();
-      resp.getWriter().close();
    }
-
 }

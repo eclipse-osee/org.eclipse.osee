@@ -146,4 +146,8 @@ public final class TranslationUtil {
    public static void putIntArrayMap(PropertyStore store, Enum<?> key, Map<Integer, Integer[]> map) {
       store.put(key.name(), intArrayMapToStore(map));
    }
+
+   public static String createKey(Enum<?> prefix, int index) {
+      return prefix.name() + "_" + index;
+   }
 }

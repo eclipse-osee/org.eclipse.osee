@@ -11,23 +11,15 @@
 package org.eclipse.osee.framework.types.bridge.wizards;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
-import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
-import org.eclipse.osee.framework.types.bridge.operations.CompareOseeTypeCacheOperation;
-import org.eclipse.osee.framework.types.bridge.operations.ReportDirtyOseeTypesOperation;
-import org.eclipse.osee.framework.types.bridge.operations.XTextToOseeTypeOperation;
+import org.eclipse.osee.framework.types.bridge.operations.OseeTypesImportOperation;
 import org.eclipse.ui.IImportWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -36,7 +28,6 @@ import org.eclipse.ui.IWorkbench;
  */
 public class OseeTypesImportWizard extends Wizard implements IImportWizard {
    private OseeTypesImportPage mainPage;
-   private IStructuredSelection selection;
 
    public OseeTypesImportWizard() {
       super();
@@ -49,29 +40,11 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
    @Override
    public boolean performFinish() {
       final File file = mainPage.getTypesToImport();
-      final boolean isPersistAllowed = mainPage.isPersistAllowed();
-      final boolean isReport = mainPage.isReportChanges();
-      final boolean useCompareEditor = mainPage.useCompareEditor();
+      boolean isReport = mainPage.isReportChanges();
+      boolean useCompareEditor = mainPage.useCompareEditor();
+      boolean isPersistAllowed = mainPage.isPersistAllowed();
 
-      IOseeCachingService cacheProvider = Activator.getDefault().getOseeCacheService();
-      IOseeModelFactoryService factoryService = Activator.getDefault().getOseeFactoryService();
-
-      OseeTypeCache cache = null;
-      //TODO take a snapshot of the current cache ...
-      if (cache == null) {
-         throw new UnsupportedOperationException("Implement Cache copy ");
-      }
-
-      List<IOperation> ops = new ArrayList<IOperation>();
-      ops.add(new XTextToOseeTypeOperation(factoryService, cache, isPersistAllowed, null, file.toURI()));
-      if (isReport) {
-         ops.add(new ReportDirtyOseeTypesOperation(cache));
-      }
-      if (useCompareEditor) {
-         ops.add(new CompareOseeTypeCacheOperation(cache));
-      }
-      IOperation operation = new CompositeOperation("Import Osee Types", Activator.PLUGIN_ID, ops);
-
+      IOperation operation = new OseeTypesImportOperation(file.toURI(), isReport, useCompareEditor, isPersistAllowed);
       Job job = Operations.executeAsJob(operation, true);
       job.addJobChangeListener(new JobChangeAdapter() {
          @Override
@@ -84,12 +57,11 @@ public class OseeTypesImportWizard extends Wizard implements IImportWizard {
 
    @Override
    public void init(IWorkbench workbench, IStructuredSelection selection) {
-      this.selection = selection;
+      mainPage = new OseeTypesImportPage(selection, getWindowTitle());
    }
 
    @Override
    public void addPages() {
-      mainPage = new OseeTypesImportPage(selection, getWindowTitle());
       addPage(mainPage);
    }
 }

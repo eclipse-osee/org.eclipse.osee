@@ -38,6 +38,10 @@ public class DataTranslationServiceFactory {
       //      service.addTranslator(new OseeEnumTypeTranslator(service, factoryProvider), CoreTranslatorId.OSEE_ENUM_TYPE);
 
       service.addTranslator(new TransactionRecordTranslator(factoryProvider), CoreTranslatorId.TRANSACTION_RECORD);
+
+      service.addTranslator(new BranchCreationRequestTranslator(), CoreTranslatorId.BRANCH_CREATION_REQUEST);
+      service.addTranslator(new BranchCreationResponseTranslator(), CoreTranslatorId.BRANCH_CREATION_RESPONSE);
+
       service.addTranslator(new BranchCommitRequestTranslator(), CoreTranslatorId.BRANCH_COMMIT_REQUEST);
       service.addTranslator(new BranchCommitResponseTranslator(service), CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
 
@@ -63,6 +67,11 @@ public class DataTranslationServiceFactory {
 
       service.addTranslator(new OseeEnumTypeCacheUpdateResponseTranslator(),
             CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
+
+      service.addTranslator(new OseeImportModelRequestTranslation(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
+      service.addTranslator(new OseeImportModelResponseTranslation(service),
+            CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
+      service.addTranslator(new TableDataTranslator(), CoreTranslatorId.TABLE_DATA);
       return service;
    }
 }

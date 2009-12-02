@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.types.bridge.operations;
+package org.eclipse.osee.framework.osee;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,26 +26,25 @@ import org.eclipse.osee.framework.core.model.OseeEnumEntry;
 import org.eclipse.osee.framework.core.model.OseeEnumType;
 import org.eclipse.osee.framework.core.model.RelationType;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
+import org.eclipse.osee.framework.internal.InternalTypesActivator;
 import org.eclipse.osee.framework.oseeTypes.AttributeTypeRef;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 import org.eclipse.osee.framework.oseeTypes.RelationMultiplicityEnum;
-import org.eclipse.osee.framework.types.bridge.internal.Activator;
-import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
 
 /**
  * @author Roberto E. Escobar
  */
 public class OseeToXtextOperation extends AbstractOperation {
 
-   private final Map<String, OseeTypeModel> oseeModels;
+   private final OseeTypeModel oseeModel;
    private final OseeTypesFactory factory;
    private final OseeTypeCache cache;
 
-   public OseeToXtextOperation(OseeTypeCache cache, Map<String, OseeTypeModel> oseeModels) {
-      super("OSEE to Text Model", Activator.PLUGIN_ID);
-      this.oseeModels = oseeModels;
-      this.factory = OseeTypesFactory.eINSTANCE;
+   public OseeToXtextOperation(OseeTypeCache cache, OseeTypesFactory factory, OseeTypeModel oseeModel) {
+      super("OSEE to Text Model", InternalTypesActivator.PLUGIN_ID);
+      this.oseeModel = oseeModel;
+      this.factory = factory;
       this.cache = cache;
    }
 
@@ -54,13 +53,7 @@ public class OseeToXtextOperation extends AbstractOperation {
    }
 
    private OseeTypeModel getModelByNamespace(String namespace) {
-      OseeTypeModel model = oseeModels.get(namespace);
-      if (model == null) {
-         model = factory.createOseeTypeModel();
-         model.getImports();
-         oseeModels.put(namespace, model);
-      }
-      return model;
+      return oseeModel;
    }
 
    private String getNamespace(String name) {

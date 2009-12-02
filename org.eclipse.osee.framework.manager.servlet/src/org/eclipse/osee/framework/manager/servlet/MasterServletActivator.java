@@ -32,6 +32,8 @@ import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
 import org.eclipse.osee.framework.search.engine.ISearchEngine;
 import org.eclipse.osee.framework.search.engine.ISearchEngineTagger;
+import org.eclipse.osee.framework.services.IOseeModelingService;
+import org.eclipse.osee.framework.services.IOseeModelingServiceProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -39,7 +41,7 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * @author Donald G. Dunne
  */
-public class MasterServletActivator implements BundleActivator, IOseeModelFactoryServiceProvider {
+public class MasterServletActivator implements BundleActivator, IOseeModelFactoryServiceProvider, IOseeModelingServiceProvider {
    private static MasterServletActivator instance;
 
    private enum TrackerId {
@@ -55,7 +57,8 @@ public class MasterServletActivator implements BundleActivator, IOseeModelFactor
       SEARCH_ENGINE_TAGGER,
       CACHING_SERVICE,
       AUTHENTICATION_SERVICE,
-      OSEE_MODEL_FACTORY;
+      OSEE_MODEL_FACTORY,
+      OSEE_MODELING_SERVICE;
    }
 
    private final List<ServiceTracker> trackers;
@@ -82,6 +85,7 @@ public class MasterServletActivator implements BundleActivator, IOseeModelFactor
       createServiceTracker(context, IChangeReportService.class, TrackerId.CHANGE_REPORT);
       createServiceTracker(context, IOseeCachingService.class, TrackerId.CACHING_SERVICE);
       createServiceTracker(context, IOseeModelFactoryService.class, TrackerId.OSEE_MODEL_FACTORY);
+      createServiceTracker(context, IOseeModelingService.class, TrackerId.OSEE_MODELING_SERVICE);
 
       createHttpServiceTracker(context, SystemManagerServlet.class, OseeServerContext.MANAGER_CONTEXT);
       createHttpServiceTracker(context, ResourceManagerServlet.class, OseeServerContext.RESOURCE_CONTEXT);
@@ -120,6 +124,12 @@ public class MasterServletActivator implements BundleActivator, IOseeModelFactor
       ServiceTracker tracker = new OseeHttpServiceTracker(context, servletAlias, servletClass);
       tracker.open();
       trackers.add(tracker);
+   }
+
+   private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
+      ServiceTracker tracker = mappedTrackers.get(trackerId);
+      Object service = tracker.getService();
+      return clazz.cast(service);
    }
 
    public static MasterServletActivator getInstance() {
@@ -179,10 +189,8 @@ public class MasterServletActivator implements BundleActivator, IOseeModelFactor
       return getTracker(TrackerId.OSEE_MODEL_FACTORY, IOseeModelFactoryService.class);
    }
 
-   private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {
-      ServiceTracker tracker = mappedTrackers.get(trackerId);
-      Object service = tracker.getService();
-      return clazz.cast(service);
+   @Override
+   public IOseeModelingService getOseeModelingService() throws OseeCoreException {
+      return getTracker(TrackerId.OSEE_MODELING_SERVICE, IOseeModelingService.class);
    }
-
 }

@@ -1,18 +1,25 @@
 package org.eclipse.osee.framework.types.bridge.wizards;
 
 import java.io.File;
-import org.eclipse.osee.framework.ui.plugin.util.DirectoryOrFileSelector;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
+import org.eclipse.osee.framework.ui.plugin.util.AWorkspace;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.DirectoryDialog;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.dialogs.WizardDataTransferPage;
 
 public class ResourceSelectionPage extends WizardDataTransferPage {
    private static final String PAGE_NAME = "osee.define.wizardPage.artifactImportSourcePage";
 
-   private DirectoryOrFileSelector fileSelector;
+   private Text text;
 
    protected ResourceSelectionPage(String title) {
       super(PAGE_NAME);
@@ -35,13 +42,37 @@ public class ResourceSelectionPage extends WizardDataTransferPage {
    public void createControl(Composite parent) {
       initializeDialogUnits(parent);
 
-      Composite composite = new Composite(parent, SWT.NULL);
-      composite.setLayout(new GridLayout(1, false));
+      Group composite = new Group(parent, SWT.NONE);
+      composite.setText("Select destination...");
+      composite.setLayout(new GridLayout(2, false));
       composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
       composite.setFont(parent.getFont());
 
-      fileSelector = new DirectoryOrFileSelector(composite, SWT.NONE, "File", this);
-      fileSelector.addListener(SWT.Selection, this);
+      text = new Text(composite, SWT.SINGLE | SWT.BORDER);
+      text.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+      text.addListener(SWT.Modify, this);
+
+      Button button = new Button(composite, SWT.PUSH);
+      button.setText("&Browse...");
+      button.addSelectionListener(new SelectionAdapter() {
+
+         @Override
+         public void widgetSelected(SelectionEvent e) {
+            DirectoryDialog dialog = new DirectoryDialog(getShell(), SWT.OPEN);
+            File file = getFile();
+            if (file != null && Strings.isValid(file.getAbsolutePath())) {
+               dialog.setFilterPath(file.getAbsolutePath());
+            } else {
+               dialog.setFilterPath(AWorkspace.getWorkspacePath());
+            }
+            String path = dialog.open();
+
+            File directory = path != null ? new File(path) : null;
+            if (directory != null && directory.isDirectory()) {
+               text.setText(directory.getPath());
+            }
+         }
+      });
 
       restoreWidgetValues();
       updateWidgetEnablements();
@@ -50,7 +81,7 @@ public class ResourceSelectionPage extends WizardDataTransferPage {
    }
 
    public File getFile() {
-      return fileSelector.getFile();
+      return new File(text.getText());
    }
 
 }

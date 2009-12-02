@@ -20,6 +20,7 @@ import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.osee.ModelUtil;
 import org.eclipse.osee.framework.oseeTypes.OseeTypeModel;
 import org.eclipse.osee.framework.skynet.core.importing.ExcelOseeTypeDataParser;
 import org.eclipse.osee.framework.types.bridge.internal.Activator;
@@ -74,7 +75,7 @@ public class OseeExcelImportOperation extends AbstractOperation {
             target = destinationFile.toURI();
          }
 
-         OseeTypeModelUtil.saveModel(target, entry.getValue());
+         ModelUtil.saveModel(target, entry.getValue());
       }
    }
    private final class ExcelFilter implements FilenameFilter {

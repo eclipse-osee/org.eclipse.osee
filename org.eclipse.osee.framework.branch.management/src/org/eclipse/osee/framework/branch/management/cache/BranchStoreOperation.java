@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.AbstractOseeType;
@@ -93,6 +94,9 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       sendChangeEvents(branches);
 
       for (Branch branch : branches) {
+         if (branch.getModificationType() == ModificationType.NEW) {
+            branch.setModificationType(ModificationType.MODIFIED);
+         }
          branch.clearDirty();
       }
    }

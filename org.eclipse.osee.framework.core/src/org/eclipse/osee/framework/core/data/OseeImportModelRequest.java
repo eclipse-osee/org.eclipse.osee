@@ -13,31 +13,34 @@ package org.eclipse.osee.framework.core.data;
 /**
  * @author Roberto E. Escobar
  */
-public class OseeModelRequest {
+public class OseeImportModelRequest {
 
-   public enum RequestType {
-      IMPORT_TYPES;
-   }
-
-   private final RequestType requestType;
    private final String model;
    private final boolean isPersistAllowed;
+   private final boolean createTypeChangeReport;
+   private final boolean createCompareReport;
 
-   public OseeModelRequest(RequestType requestType, String model, boolean isPersistAllowed) {
-      this.requestType = requestType;
+   public OseeImportModelRequest(String model, boolean createTypeChangeReport, boolean createCompareReport, boolean isPersistAllowed) {
       this.model = model;
       this.isPersistAllowed = isPersistAllowed;
+      this.createCompareReport = createCompareReport;
+      this.createTypeChangeReport = createTypeChangeReport;
    }
 
    public String getModel() {
       return model;
    }
 
+   public boolean isCreateTypeChangeReport() {
+      return createTypeChangeReport;
+   }
+
+   public boolean isCreateCompareReport() {
+      return createCompareReport;
+   }
+
    public boolean isPersistAllowed() {
       return isPersistAllowed;
    }
 
-   public RequestType getRequestType() {
-      return requestType;
-   }
 }

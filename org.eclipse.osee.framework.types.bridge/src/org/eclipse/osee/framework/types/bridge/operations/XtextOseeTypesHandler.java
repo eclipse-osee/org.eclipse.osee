@@ -10,18 +10,14 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.types.bridge.operations;
 
-import java.net.URL;
+import java.net.URI;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.services.IOseeCachingService;
-import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.importing.IOseeTypesHandler;
-import org.eclipse.osee.framework.types.bridge.internal.Activator;
-import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
 
 /**
  * @author Roberto E. Escobar
@@ -29,13 +25,9 @@ import org.eclipse.osee.framework.types.bridge.internal.OseeTypeCache;
 public class XtextOseeTypesHandler implements IOseeTypesHandler {
 
    @Override
-   public void execute(IProgressMonitor monitor, Object context, URL url) throws OseeCoreException {
+   public void execute(IProgressMonitor monitor, URI uri) throws OseeCoreException {
       try {
-         OseeTypeCache cache = null; // TODO 
-         IOseeCachingService cacheProvider = Activator.getDefault().getOseeCacheService();
-         IOseeModelFactoryService factoryService = Activator.getDefault().getOseeFactoryService();
-
-         IOperation operation = new XTextToOseeTypeOperation(factoryService, cache, true, context, url.toURI());
+         IOperation operation = new OseeTypesImportOperation(uri, false, false, true);
          Operations.executeWorkAndCheckStatus(operation, monitor, -1);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
