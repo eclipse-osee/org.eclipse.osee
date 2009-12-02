@@ -143,11 +143,22 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          } else {
             branch = branchCache.getByGuid(branchGuid);
          }
-         items.put(branch, getCache().getAttributeTypeCache().getByGuid(attributeType.getTypeGuid()));
+         org.eclipse.osee.framework.core.model.AttributeType type =
+               getCache().getAttributeTypeCache().getByGuid(attributeType.getTypeGuid());
+         if (type != null) {
+            items.put(branch, type);
+         } else {
+            System.out.println("Type was null for: " + artifactType.getName());
+         }
       }
 
       for (Branch branch : items.keySet()) {
-         targetArtifactType.setAttributeTypes(items.getValues(), branch);
+         List<org.eclipse.osee.framework.core.model.AttributeType> attributeTypes = items.getValues();
+         if (attributeTypes != null) {
+            targetArtifactType.setAttributeTypes(attributeTypes, branch);
+         } else {
+            System.out.println("Types were null for: " + artifactType.getName());
+         }
       }
    }
 
@@ -157,8 +168,12 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
 
    private void handleArtifactType(ArtifactType artifactType) throws OseeCoreException {
       String artifactTypeName = removeQuotes(artifactType.getName());
-      artifactType.setTypeGuid(getFactory().getArtifactTypeFactory().create(artifactType.getTypeGuid(),
-            artifactType.isAbstract(), artifactTypeName).getGuid());
+
+      org.eclipse.osee.framework.core.model.ArtifactType type =
+            getFactory().getArtifactTypeFactory().create(artifactType.getTypeGuid(), artifactType.isAbstract(),
+                  artifactTypeName);
+      artifactType.setTypeGuid(type.getGuid());
+      getCache().getArtifactTypeCache().cache(type);
    }
 
    private void handleOseeEnumType(OseeEnumType modelEnumType) throws OseeCoreException {
@@ -181,6 +196,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          lastOrdinal++;
       }
       oseeEnumType.setEntries(modelEntries);
+      getCache().getEnumTypeCache().cache(oseeEnumType);
    }
 
    private void handleEnumOverride(OseeEnumOverride enumOverride) throws OseeCoreException {
@@ -236,19 +252,23 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       RelationTypeMultiplicity multiplicity =
             RelationTypeMultiplicity.getFromString(relationType.getMultiplicity().name());
 
+      org.eclipse.osee.framework.core.model.RelationType type =
+            getFactory().getRelationTypeFactory().create(
+                  relationType.getTypeGuid(),
+                  removeQuotes(relationType.getName()), //
+                  relationType.getSideAName(), //
+                  relationType.getSideBName(), //
+                  getCache().getArtifactTypeCache().getUniqueByName(
+                        removeQuotes(relationType.getSideAArtifactType().getName())), //
+                  getCache().getArtifactTypeCache().getUniqueByName(
+                        removeQuotes(relationType.getSideBArtifactType().getName())), //
+                  multiplicity, //
+                  convertOrderTypeNameToGuid(relationType.getDefaultOrderType())//
+            );
+
       relationType.setTypeGuid(//
-      getFactory().getRelationTypeFactory().create(
-            relationType.getTypeGuid(),
-            removeQuotes(relationType.getName()), //
-            relationType.getSideAName(), //
-            relationType.getSideBName(), //
-            getCache().getArtifactTypeCache().getUniqueByName(
-                  removeQuotes(relationType.getSideAArtifactType().getName())), //
-            getCache().getArtifactTypeCache().getUniqueByName(
-                  removeQuotes(relationType.getSideBArtifactType().getName())), //
-            multiplicity, //
-            convertOrderTypeNameToGuid(relationType.getDefaultOrderType())//
-      ).getGuid());
+      type.getGuid());
+      getCache().getRelationTypeCache().cache(type);
    }
 
    private String convertOrderTypeNameToGuid(String orderTypeName) throws OseeArgumentException {
