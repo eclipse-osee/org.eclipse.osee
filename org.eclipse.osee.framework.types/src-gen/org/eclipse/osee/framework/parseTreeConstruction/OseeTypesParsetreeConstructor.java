@@ -1302,22 +1302,22 @@ protected class AttributeTypeRef_BranchGuidAssignment_2_1 extends AssignmentToke
  *   "attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
  *   ("overrides" override=[AttributeType|NAME_REFERENCE])? "{" "guid" typeGuid=STRING
  *   "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
- *   "UriAttributeDataProvider" | "MappedAttributeDataProvider" | QUALIFIED_NAME ) "min" min
- *   =WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=(
- *   "DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? ("enumType" enumType=[
- *   OseeEnumType|NAME_REFERENCE])? ("description" description=STRING)? ("defaultValue"
- *   defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}";
+ *   "UriAttributeDataProvider" | QUALIFIED_NAME ) "min" min=WHOLE_NUM_STR "max" max=(
+ *   WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=( "DefaultAttributeTaggerProvider" |
+ *   QUALIFIED_NAME ))? ("enumType" enumType=[OseeEnumType|NAME_REFERENCE])? (
+ *   "description" description=STRING)? ("defaultValue" defaultValue=STRING)? (
+ *   "fileExtension" fileExtension=STRING)? "}";
  *
  **/
 
 // "attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
 // ("overrides" override=[AttributeType|NAME_REFERENCE])? "{" "guid" typeGuid=STRING
 // "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
-// "UriAttributeDataProvider" | "MappedAttributeDataProvider" | QUALIFIED_NAME ) "min" min
-// =WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=(
-// "DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? ("enumType" enumType=[
-// OseeEnumType|NAME_REFERENCE])? ("description" description=STRING)? ("defaultValue"
-// defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}"
+// "UriAttributeDataProvider" | QUALIFIED_NAME ) "min" min=WHOLE_NUM_STR "max" max=(
+// WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=( "DefaultAttributeTaggerProvider" |
+// QUALIFIED_NAME ))? ("enumType" enumType=[OseeEnumType|NAME_REFERENCE])? (
+// "description" description=STRING)? ("defaultValue" defaultValue=STRING)? (
+// "fileExtension" fileExtension=STRING)? "}"
 protected class AttributeType_Group extends GroupToken {
 	
 	public AttributeType_Group(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1631,7 +1631,7 @@ protected class AttributeType_DataProviderKeyword_7 extends KeywordToken  {
 }
 
 // dataProvider=( "DefaultAttributeDataProvider" | "UriAttributeDataProvider" |
-// "MappedAttributeDataProvider" | QUALIFIED_NAME )
+// QUALIFIED_NAME )
 protected class AttributeType_DataProviderAssignment_8 extends AssignmentToken  {
 	
 	public AttributeType_DataProviderAssignment_8(AbstractToken parent, AbstractToken next, int no, IInstanceDescription current) {
@@ -1662,14 +1662,9 @@ protected class AttributeType_DataProviderAssignment_8 extends AssignmentToken  
 			element = grammarAccess.getAttributeTypeAccess().getDataProviderUriAttributeDataProviderKeyword_8_0_1();
 			return obj;
 		}
-		if("MappedAttributeDataProvider".equals(value)) { // org::eclipse::xtext::impl::KeywordImpl
-			type = AssignmentType.KW;
-			element = grammarAccess.getAttributeTypeAccess().getDataProviderMappedAttributeDataProviderKeyword_8_0_2();
-			return obj;
-		}
 		if(Boolean.TRUE.booleanValue()) { // org::eclipse::xtext::impl::RuleCallImpl FIXME: check if value is valid for datatype rule
 			type = AssignmentType.DRC;
-			element = grammarAccess.getAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_3();
+			element = grammarAccess.getAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_2();
 			return obj;
 		}
 		return null;

@@ -192,7 +192,6 @@
           <terminal xsi:type="xtext:Alternatives">
             <groups xsi:type="xtext:Keyword" value="DefaultAttributeDataProvider"/>
             <groups xsi:type="xtext:Keyword" value="UriAttributeDataProvider"/>
-            <groups xsi:type="xtext:Keyword" value="MappedAttributeDataProvider"/>
             <groups xsi:type="xtext:RuleCall" rule="/0/@rules.4"/>
           </terminal>
         </tokens>

@@ -171,8 +171,7 @@ public class AbstractOseeTypesProposalProvider extends TerminalsProposalProvider
 		}
 		// subclasses may override
 		// subclasses may override
-		// subclasses may override
-		completeRuleCall(((RuleCall)((Alternatives)assignment.getTerminal()).getGroups().get(3)), context, acceptor);
+		completeRuleCall(((RuleCall)((Alternatives)assignment.getTerminal()).getGroups().get(2)), context, acceptor);
 	}
 	public void completeAttributeType_Min(EObject model, Assignment assignment, ContentAssistContext context, ICompletionProposalAcceptor acceptor) {
 		if (logger.isDebugEnabled()) {

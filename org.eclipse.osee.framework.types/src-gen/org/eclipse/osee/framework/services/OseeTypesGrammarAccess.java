@@ -375,8 +375,7 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		private final Alternatives cDataProviderAlternatives_8_0 = (Alternatives)cDataProviderAssignment_8.eContents().get(0);
 		private final Keyword cDataProviderDefaultAttributeDataProviderKeyword_8_0_0 = (Keyword)cDataProviderAlternatives_8_0.eContents().get(0);
 		private final Keyword cDataProviderUriAttributeDataProviderKeyword_8_0_1 = (Keyword)cDataProviderAlternatives_8_0.eContents().get(1);
-		private final Keyword cDataProviderMappedAttributeDataProviderKeyword_8_0_2 = (Keyword)cDataProviderAlternatives_8_0.eContents().get(2);
-		private final RuleCall cDataProviderQUALIFIED_NAMEParserRuleCall_8_0_3 = (RuleCall)cDataProviderAlternatives_8_0.eContents().get(3);
+		private final RuleCall cDataProviderQUALIFIED_NAMEParserRuleCall_8_0_2 = (RuleCall)cDataProviderAlternatives_8_0.eContents().get(2);
 		private final Keyword cMinKeyword_9 = (Keyword)cGroup.eContents().get(9);
 		private final Assignment cMinAssignment_10 = (Assignment)cGroup.eContents().get(10);
 		private final RuleCall cMinWHOLE_NUM_STRTerminalRuleCall_10_0 = (RuleCall)cMinAssignment_10.eContents().get(0);
@@ -414,21 +413,21 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		//  "attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
 		//  ("overrides" override=[AttributeType|NAME_REFERENCE])? "{" "guid" typeGuid=STRING
 		//  "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
-		//  "UriAttributeDataProvider" | "MappedAttributeDataProvider" | QUALIFIED_NAME ) "min" min
-		//  =WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=(
-		//  "DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? ("enumType" enumType=[
-		//  OseeEnumType|NAME_REFERENCE])? ("description" description=STRING)? ("defaultValue"
-		//  defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}";
+		//  "UriAttributeDataProvider" | QUALIFIED_NAME ) "min" min=WHOLE_NUM_STR "max" max=(
+		//  WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=( "DefaultAttributeTaggerProvider" |
+		//  QUALIFIED_NAME ))? ("enumType" enumType=[OseeEnumType|NAME_REFERENCE])? (
+		//  "description" description=STRING)? ("defaultValue" defaultValue=STRING)? (
+		//  "fileExtension" fileExtension=STRING)? "}";
 		public ParserRule getRule() { return rule; }
 
 		//"attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
 		//("overrides" override=[AttributeType|NAME_REFERENCE])? "{" "guid" typeGuid=STRING
 		//"dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
-		//"UriAttributeDataProvider" | "MappedAttributeDataProvider" | QUALIFIED_NAME ) "min" min
-		//=WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=(
-		//"DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? ("enumType" enumType=[
-		//OseeEnumType|NAME_REFERENCE])? ("description" description=STRING)? ("defaultValue"
-		//defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}"
+		//"UriAttributeDataProvider" | QUALIFIED_NAME ) "min" min=WHOLE_NUM_STR "max" max=(
+		//WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=( "DefaultAttributeTaggerProvider" |
+		//QUALIFIED_NAME ))? ("enumType" enumType=[OseeEnumType|NAME_REFERENCE])? (
+		//"description" description=STRING)? ("defaultValue" defaultValue=STRING)? (
+		//"fileExtension" fileExtension=STRING)? "}"
 		public Group getGroup() { return cGroup; }
 
 		//"attributeType"
@@ -483,11 +482,10 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		public Keyword getDataProviderKeyword_7() { return cDataProviderKeyword_7; }
 
 		//dataProvider=( "DefaultAttributeDataProvider" | "UriAttributeDataProvider" |
-		//"MappedAttributeDataProvider" | QUALIFIED_NAME )
+		//QUALIFIED_NAME )
 		public Assignment getDataProviderAssignment_8() { return cDataProviderAssignment_8; }
 
-		//"DefaultAttributeDataProvider"|"UriAttributeDataProvider"|
-		//"MappedAttributeDataProvider"|QUALIFIED_NAME
+		//"DefaultAttributeDataProvider"|"UriAttributeDataProvider"|QUALIFIED_NAME
 		public Alternatives getDataProviderAlternatives_8_0() { return cDataProviderAlternatives_8_0; }
 
 		//"DefaultAttributeDataProvider"
@@ -496,11 +494,8 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 		//"UriAttributeDataProvider"
 		public Keyword getDataProviderUriAttributeDataProviderKeyword_8_0_1() { return cDataProviderUriAttributeDataProviderKeyword_8_0_1; }
 
-		//"MappedAttributeDataProvider"
-		public Keyword getDataProviderMappedAttributeDataProviderKeyword_8_0_2() { return cDataProviderMappedAttributeDataProviderKeyword_8_0_2; }
-
 		//QUALIFIED_NAME
-		public RuleCall getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_3() { return cDataProviderQUALIFIED_NAMEParserRuleCall_8_0_3; }
+		public RuleCall getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_2() { return cDataProviderQUALIFIED_NAMEParserRuleCall_8_0_2; }
 
 		//"min"
 		public Keyword getMinKeyword_9() { return cMinKeyword_9; }
@@ -1252,11 +1247,11 @@ public class OseeTypesGrammarAccess implements IGrammarAccess {
 	//  "attributeType" name=NAME_REFERENCE ("extends" baseAttributeType=AttributeBaseType)
 	//  ("overrides" override=[AttributeType|NAME_REFERENCE])? "{" "guid" typeGuid=STRING
 	//  "dataProvider" dataProvider=( "DefaultAttributeDataProvider" |
-	//  "UriAttributeDataProvider" | "MappedAttributeDataProvider" | QUALIFIED_NAME ) "min" min
-	//  =WHOLE_NUM_STR "max" max=( WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=(
-	//  "DefaultAttributeTaggerProvider" | QUALIFIED_NAME ))? ("enumType" enumType=[
-	//  OseeEnumType|NAME_REFERENCE])? ("description" description=STRING)? ("defaultValue"
-	//  defaultValue=STRING)? ("fileExtension" fileExtension=STRING)? "}";
+	//  "UriAttributeDataProvider" | QUALIFIED_NAME ) "min" min=WHOLE_NUM_STR "max" max=(
+	//  WHOLE_NUM_STR | "unlimited" ) ("taggerId" taggerId=( "DefaultAttributeTaggerProvider" |
+	//  QUALIFIED_NAME ))? ("enumType" enumType=[OseeEnumType|NAME_REFERENCE])? (
+	//  "description" description=STRING)? ("defaultValue" defaultValue=STRING)? (
+	//  "fileExtension" fileExtension=STRING)? "}";
 	public AttributeTypeElements getAttributeTypeAccess() {
 		return (pAttributeType != null) ? pAttributeType : (pAttributeType = new AttributeTypeElements());
 	}

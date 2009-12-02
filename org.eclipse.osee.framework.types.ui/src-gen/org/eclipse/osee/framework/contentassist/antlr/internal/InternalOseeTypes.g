@@ -634,17 +634,9 @@ rule__AttributeType__DataProviderAlternatives_8_0
 )
 
     |(
-{ before(grammarAccess.getAttributeTypeAccess().getDataProviderMappedAttributeDataProviderKeyword_8_0_2()); }
-
-	'MappedAttributeDataProvider' 
-
-{ after(grammarAccess.getAttributeTypeAccess().getDataProviderMappedAttributeDataProviderKeyword_8_0_2()); }
-)
-
-    |(
-{ before(grammarAccess.getAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_3()); }
+{ before(grammarAccess.getAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_2()); }
 	ruleQUALIFIED_NAME
-{ after(grammarAccess.getAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_3()); }
+{ after(grammarAccess.getAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_2()); }
 )
 
 ;

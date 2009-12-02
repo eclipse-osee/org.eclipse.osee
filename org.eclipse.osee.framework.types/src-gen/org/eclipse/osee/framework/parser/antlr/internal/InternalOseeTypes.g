@@ -764,14 +764,8 @@ ruleAttributeType returns [EObject current=null]
     }
 
 
-    |'MappedAttributeDataProvider' 
-    {
-        createLeafNode(grammarAccess.getAttributeTypeAccess().getDataProviderMappedAttributeDataProviderKeyword_8_0_2(), "dataProvider"); 
-    }
-
-
     |	{ 
-        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_3(), currentNode); 
+        currentNode=createCompositeNode(grammarAccess.getAttributeTypeAccess().getDataProviderQUALIFIED_NAMEParserRuleCall_8_0_2(), currentNode); 
     }
 	ruleQUALIFIED_NAME	{ 
         currentNode = currentNode.getParent();
