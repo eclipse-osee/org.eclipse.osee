@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.branch.management.commit;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.change.ComputeNetChangeOperation;
@@ -30,6 +29,7 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 
 /**
@@ -39,27 +39,30 @@ import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
  */
 public class BranchCommitService implements IBranchCommitService {
 
-   private final BranchCache branchCache;
-   private final TransactionCache transactionCache;
    private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
+   private final IOseeCachingServiceProvider cachingService;
 
-   public BranchCommitService(IOseeDatabaseServiceProvider oseeDatabaseProvider, BranchCache branchCache, TransactionCache transactionCache) {
-      this.branchCache = branchCache;
-      this.transactionCache = transactionCache;
+   public BranchCommitService(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeCachingServiceProvider cachingService) {
       this.oseeDatabaseProvider = oseeDatabaseProvider;
+      this.cachingService = cachingService;
    }
 
    @Override
    public void commitBranch(IProgressMonitor monitor, BranchCommitRequest branchCommitData, BranchCommitResponse response) throws OseeCoreException {
       int userId = branchCommitData.getUserArtId();
+      BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
+      TransactionCache transactionCache = cachingService.getOseeCachingService().getTransactionCache();
+
       Branch sourceBranch = branchCache.getById(branchCommitData.getSourceBranchId());
       Branch destinationBranch = branchCache.getById(branchCommitData.getDestinationBranchId());
       Branch mergeBranch = branchCache.getMergeBranch(sourceBranch, destinationBranch);
 
       TransactionVersion txVersion = TransactionVersion.HEAD;
-      TransactionRecord sourceTx = sourceBranch != null ? transactionCache.getTransaction(sourceBranch, txVersion): null;
-      TransactionRecord destinationTx = destinationBranch != null ? transactionCache.getTransaction(destinationBranch, txVersion): null;
-      TransactionRecord mergeTx = mergeBranch != null ? transactionCache.getTransaction(mergeBranch, txVersion): null;
+      TransactionRecord sourceTx =
+            sourceBranch != null ? transactionCache.getTransaction(sourceBranch, txVersion) : null;
+      TransactionRecord destinationTx =
+            destinationBranch != null ? transactionCache.getTransaction(destinationBranch, txVersion) : null;
+      TransactionRecord mergeTx = mergeBranch != null ? transactionCache.getTransaction(mergeBranch, txVersion) : null;
 
       List<ChangeItem> changes = new ArrayList<ChangeItem>();
 
