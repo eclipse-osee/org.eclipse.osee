@@ -7,6 +7,8 @@ package org.eclipse.osee.coverage.util;
 
 import java.util.Collection;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.merge.MatchItem;
+import org.eclipse.osee.coverage.merge.MatchType;
 import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.merge.MergeType;
@@ -15,6 +17,7 @@ import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -81,7 +84,8 @@ public class CoveragePackageImportManager {
          }
          CoverageUnit importCoverageUnit = (CoverageUnit) importItem;
 
-         ICoverage packageItem = mergeManager.getPackageCoverageItem(importItem);
+         MatchItem matchItem = mergeManager.getPackageCoverageItem(importItem);
+         ICoverage packageItem = matchItem == null ? null : matchItem.getPackageItem();
          // Determine if item already exists first
          if (packageItem != null) {
             // save assignees and notes and RATIONALE before child overwrites
@@ -97,12 +101,15 @@ public class CoveragePackageImportManager {
                rd.log(String.format("Added [%s] as top level CoverageUnit", importCoverageUnit));
                rd.log("");
             } else {
+
                // Else, want to add item to same parent
                CoverageUnit parentCoverageUnit = (CoverageUnit) importItem.getParent();
-               CoverageUnit parentPackageItem = (CoverageUnit) mergeManager.getPackageCoverageItem(parentCoverageUnit);
+               MatchItem parentMatchItem = mergeManager.getPackageCoverageItem(parentCoverageUnit);
+               CoverageUnit parentPackageItem = (CoverageUnit) parentMatchItem.getPackageItem();
                parentPackageItem.addCoverageUnit(importCoverageUnit.copy(true));
                rd.log(String.format("Added [%s] to parent [%s]", importCoverageUnit, parentCoverageUnit));
                rd.log("");
+
             }
          }
       } catch (Exception ex) {
@@ -131,7 +138,7 @@ public class CoveragePackageImportManager {
       return valid;
    }
 
-   public boolean validateChildrenAreUnique(XResultData rd, Collection<MergeItem> mergeItems) {
+   public boolean validateChildrenAreUnique(XResultData rd, Collection<MergeItem> mergeItems) throws OseeStateException {
       boolean valid = true;
       for (MergeItem mergeItem : mergeItems) {
          if (!(mergeItem.getImportItem() instanceof CoverageUnit)) {
@@ -146,11 +153,13 @@ public class CoveragePackageImportManager {
       return valid;
    }
 
-   private boolean validateChildrenAreUniqueRecurse(XResultData rd, CoverageUnit coverageUnit) {
+   private boolean validateChildrenAreUniqueRecurse(XResultData rd, CoverageUnit coverageUnit) throws OseeStateException {
       boolean valid = true;
       for (ICoverage importItem1 : coverageUnit.getChildren()) {
          for (ICoverage importItem2 : coverageUnit.getChildren()) {
-            if (MergeManager.isConceptuallyEqual(importItem1, importItem2) && importItem1 != importItem2) {
+
+            MatchType matchType = MergeManager.isConceptuallyEqual(importItem1, importItem2);
+            if ((matchType == MatchType.Match__Name_And_Method) && importItem1 != importItem2) {
                rd.logError(String.format("CoverageUnit [%s] has two equal children [%s][%s]; Can't import.",
                      coverageUnit, importItem1, importItem2));
                valid = false;

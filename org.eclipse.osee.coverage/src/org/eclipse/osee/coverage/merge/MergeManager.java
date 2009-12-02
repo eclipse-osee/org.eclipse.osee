@@ -6,12 +6,18 @@
 package org.eclipse.osee.coverage.merge;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.eclipse.osee.coverage.model.CoverageImport;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 
 /**
  * @author Donald G. Dunne
@@ -26,7 +32,7 @@ public class MergeManager {
       this.coverageImport = coverageImport;
    }
 
-   public List<MergeItem> getMergeItems() {
+   public List<MergeItem> getMergeItems() throws OseeStateException {
       if (mergeItems == null) {
          mergeItems = new ArrayList<MergeItem>();
          for (ICoverage importCoverage : coverageImport.getChildren()) {
@@ -39,75 +45,134 @@ public class MergeManager {
       return mergeItems;
    }
 
-   private void processImportCoverage(ICoverage importCoverage) {
+   private void processImportCoverage(ICoverage importCoverage) throws OseeStateException {
       System.err.println("Merging check " + importCoverage);
-      ICoverage packageCoverage = getPackageCoverageItem(importCoverage);
-      // if no corresponding package coverage, add this and all children
-      if (packageCoverage == null) {
+      MatchItem matchItem = getPackageCoverageItem(importCoverage);
+      // No matching coverage package item, Add this and all children
+      if (MatchType.isNoMatch(matchItem.getMatchType())) {
          mergeItems.add(new MergeItem(MergeType.Add, null, importCoverage));
-      } else {
-         // process all children
-         for (ICoverage childCoverage : importCoverage.getChildren()) {
-            processImportCoverage(childCoverage);
+      }
+      // Import item matched Package item, check children
+      else {
+         ICoverage packageICoverage = matchItem.getPackageItem();
+         ICoverage importICoverage = matchItem.getImportItem();
+
+         Collection<? extends ICoverage> packageItemChildren = packageICoverage.getChildren();
+         Collection<? extends ICoverage> importItemChildren = importICoverage.getChildren();
+         Map<ICoverage, MatchItem> importItemToMatchItem = new HashMap<ICoverage, MatchItem>(10);
+
+         // Determine match for all import item children
+         for (ICoverage childCoverage : importItemChildren) {
+            MatchItem childMatchItem = getPackageCoverageItemRecurse(packageICoverage, childCoverage);
+            importItemToMatchItem.put(childCoverage, childMatchItem);
+         }
+
+         // Case 1 - All match and package # children == import # children; continue and check children's children
+         if (packageItemChildren.size() == importItemChildren.size() && MatchItem.isAllMatchType(
+               Collections.singleton(MatchType.Match__Name_And_Method), importItemToMatchItem.values())) {
+            // process all children
+            for (ICoverage childCoverage : importItemChildren) {
+               processImportCoverage(childCoverage);
+            }
+         }
+
+         // Case 2 - Import children all full match except Import has more that don't match, items added to end
+         else if (MatchItem.isAllMatchType(Arrays.asList(MatchType.Match__Name_And_Method,
+               MatchType.No_Match__Name_Or_Method_Num), importItemToMatchItem.values()) && importItemChildren.size() > packageItemChildren.size()) {
+            for (ICoverage childCoverage : importItemChildren) {
+               MatchItem childMatchItem = importItemToMatchItem.get(childCoverage);
+               // This child matches, just process children
+               if (childMatchItem.getMatchType() == MatchType.Match__Name_And_Method) {
+                  processImportCoverage(childCoverage);
+               }
+               // This child is new, mark as added; no need to process children cause their new
+               if (childMatchItem.getMatchType() == MatchType.No_Match__Name_Or_Method_Num) {
+                  mergeItems.add(new MergeItem(MergeType.Add, null, childMatchItem.getImportItem()));
+               }
+            }
+         }
+
+         // Case 3 - Import children all full or partial match except import has more; item added/items moved
+
+         // Else, just process children
+         else {
+            for (ICoverage childCoverage : importItemChildren) {
+               MatchItem childMatchItem = importItemToMatchItem.get(childCoverage);
+               // This child matches, just process children
+               if (childMatchItem.getMatchType() == MatchType.Match__Name_And_Method) {
+                  processImportCoverage(childCoverage);
+               }
+            }
          }
       }
       return;
    }
 
-   public ICoverage getPackageCoverageItem(ICoverage importItem) {
+   public MatchItem getPackageCoverageItem(ICoverage importItem) throws OseeStateException {
       return getPackageCoverageItem(coveragePackage, importItem);
    }
 
    /**
     * Recurse through coverage package to find importItem equivalent
     */
-   public static ICoverage getPackageCoverageItem(CoveragePackageBase coveragePackageBase, ICoverage importItem) {
+   public static MatchItem getPackageCoverageItem(CoveragePackageBase coveragePackageBase, ICoverage importItem) throws OseeStateException {
       for (ICoverage childCoverage : coveragePackageBase.getChildren(false)) {
-         ICoverage result = getPackageCoverageItem(childCoverage, importItem);
-         if (result != null) return result;
+         MatchItem matchItem = getPackageCoverageItemRecurse(childCoverage, importItem);
+         if (matchItem.isMatchType(Arrays.asList(MatchType.Match__Name_And_Method, MatchType.Match__Name_Only))) {
+            return matchItem;
+         }
       }
-      return null;
+      return new MatchItem(MatchType.No_Match__Name_Or_Method_Num, null, importItem);
    }
 
    /**
     * Recurse through package item and children to find importItem equivalent
     */
-   public static ICoverage getPackageCoverageItem(ICoverage packageItem, ICoverage importItem) {
-      boolean equal = isConceptuallyEqual(packageItem, importItem);
-      if (equal) return packageItem;
+   public static MatchItem getPackageCoverageItemRecurse(ICoverage packageItem, ICoverage importItem) throws OseeStateException {
+      MatchType matchType = isConceptuallyEqual(packageItem, importItem);
+      if (matchType == MatchType.Match__Coverage_Base || matchType == MatchType.Match__Name_And_Method) {
+         return new MatchItem(matchType, packageItem, importItem);
+      }
       // Only check children if importItem should be child of packageItem by namespace
       if (importItem.getNamespace().startsWith(packageItem.getNamespace())) {
          for (ICoverage childPackageItem : packageItem.getChildren(false)) {
-            ICoverage result = getPackageCoverageItem(childPackageItem, importItem);
-            if (result != null) return result;
+            MatchItem childMatchItem = getPackageCoverageItemRecurse(childPackageItem, importItem);
+            if (childMatchItem != null && (childMatchItem.getMatchType() == MatchType.Match__Coverage_Base || childMatchItem.getMatchType() == MatchType.Match__Name_And_Method)) {
+               return childMatchItem;
+            }
          }
       }
-      return null;
+      return new MatchItem(MatchType.No_Match__Name_Or_Method_Num, null, importItem);
    }
 
-   public static boolean isConceptuallyEqual(ICoverage packageItem, ICoverage importItem) {
-      if (packageItem.equals(importItem)) return true;
-      if (packageItem.getNamespace() == null && importItem.getNamespace() == null) return true;
-      if (packageItem.getNamespace() == null) return false;
-      if (importItem.getNamespace() == null) return false;
-      if (!packageItem.getNamespace().equals(importItem.getNamespace())) return false;
+   public static MatchType isConceptuallyEqual(ICoverage packageItem, ICoverage importItem) throws OseeStateException {
+      if (packageItem instanceof CoveragePackage && importItem instanceof CoverageImport) {
+         return MatchType.Match__Coverage_Base;
+      }
+      if (packageItem.getNamespace() == null || importItem.getNamespace() == null) throw new OseeStateException(
+            "Namespaces can't be null");
+      if (!packageItem.getNamespace().equals(importItem.getNamespace())) return MatchType.No_Match__Namespace;
       if (packageItem instanceof CoverageUnit && importItem instanceof CoverageUnit) {
          if (!((CoverageUnit) packageItem).getMethodNumber().equals(((CoverageUnit) importItem).getMethodNumber())) {
-            return false;
+            if (packageItem.getName().equals(importItem.getName())) {
+               return MatchType.Match__Name_Only;
+            } else {
+               return MatchType.No_Match__Name_Or_Method_Num;
+            }
          }
       }
       if (packageItem.getName().equals(importItem.getName())) {
          if (packageItem.getParent() instanceof CoveragePackage && importItem.getParent() instanceof CoverageImport) {
-            return true;
+            return MatchType.Match__Name_And_Method;
          } else {
-            if (isConceptuallyEqual(packageItem.getParent(), importItem.getParent())) {
-               return true;
-            } else {
-               return false;
+            if (packageItem.getParent() == null && importItem.getParent() == null) {
+               return MatchType.Match__Coverage_Base;
             }
+            MatchType matchType = isConceptuallyEqual(packageItem.getParent(), importItem.getParent());
+            return matchType;
          }
       }
-      return false;
+      return MatchType.No_Match__Name_Or_Method_Num;
    }
 
    public CoveragePackage getCoveragePackage() {
