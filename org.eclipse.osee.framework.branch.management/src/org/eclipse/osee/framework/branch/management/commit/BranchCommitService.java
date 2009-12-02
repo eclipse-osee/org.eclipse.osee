@@ -30,6 +30,7 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 
 /**
@@ -41,10 +42,12 @@ public class BranchCommitService implements IBranchCommitService {
 
    private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
    private final IOseeCachingServiceProvider cachingService;
+   private final IOseeModelFactoryServiceProvider modelFactory;
 
-   public BranchCommitService(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeCachingServiceProvider cachingService) {
+   public BranchCommitService(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeCachingServiceProvider cachingService, IOseeModelFactoryServiceProvider modelFactory) {
       this.oseeDatabaseProvider = oseeDatabaseProvider;
       this.cachingService = cachingService;
+      this.modelFactory = modelFactory;
    }
 
    @Override
@@ -70,7 +73,7 @@ public class BranchCommitService implements IBranchCommitService {
       ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, sourceTx, destinationTx, mergeTx, changes));
       ops.add(new ComputeNetChangeOperation(changes));
       ops.add(new CommitDbOperation(oseeDatabaseProvider, branchCache, transactionCache, userId, sourceBranch,
-            destinationBranch, mergeBranch, changes, response));
+            destinationBranch, mergeBranch, changes, response, modelFactory));
 
       String opName =
             String.format("Commit: [%s]->[%s]", sourceBranch.getShortName(), destinationBranch.getShortName());

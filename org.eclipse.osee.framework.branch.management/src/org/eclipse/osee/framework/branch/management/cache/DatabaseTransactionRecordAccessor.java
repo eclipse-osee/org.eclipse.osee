@@ -48,11 +48,13 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
    private final BranchCache branchCache;
    private final IOseeModelFactoryServiceProvider factoryProvider;
+   private TransactionRecord record;
 
-   public DatabaseTransactionRecordAccessor(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeModelFactoryServiceProvider factoryProvider, BranchCache branchCache) {
+   public DatabaseTransactionRecordAccessor(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeModelFactoryServiceProvider factoryProvider, BranchCache branchCache, TransactionRecord record) {
       this.oseeDatabaseProvider = oseeDatabaseProvider;
       this.factoryProvider = factoryProvider;
       this.branchCache = branchCache;
+      this.record = record;
    }
 
    protected IOseeModelFactoryService getFactoryService() throws OseeCoreException {
@@ -129,7 +131,7 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
             int commitArtId = chStmt.getInt("commit_art_id");
             TransactionDetailsType txType = TransactionDetailsType.toEnum(chStmt.getInt("tx_type"));
 
-            TransactionRecord record =
+            record =
                   factory.createOrUpdate(cache, transactionNumber, branchId, comment, timestamp, authorArtId,
                         commitArtId, txType);
             record.setBranchCache(branchCache);
@@ -141,5 +143,10 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       } finally {
          chStmt.close();
       }
+   }
+
+   @Override
+   public TransactionRecord getTransactionRecord() {
+      return record;
    }
 }

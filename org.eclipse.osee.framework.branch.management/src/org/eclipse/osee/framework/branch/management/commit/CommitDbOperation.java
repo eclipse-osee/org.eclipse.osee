@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.branch.management.commit;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,7 +26,6 @@ import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.data.ChangeItem;
-import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.RelationChangeItem;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
@@ -37,6 +37,7 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.OseeConnection;
@@ -75,11 +76,12 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private final Branch mergeBranch;
    private final List<ChangeItem> changes;
    private final BranchCommitResponse txHolder;
+   private final IOseeModelFactoryServiceProvider modelFactory;
 
    private OseeConnection connection;
    private boolean success;
 
-   public CommitDbOperation(IOseeDatabaseServiceProvider databaseProvider, BranchCache branchCache, TransactionCache transactionCache, int userArtId, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, BranchCommitResponse txHolder) {
+   public CommitDbOperation(IOseeDatabaseServiceProvider databaseProvider, BranchCache branchCache, TransactionCache transactionCache, int userArtId, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, BranchCommitResponse txHolder, IOseeModelFactoryServiceProvider modelFactory) {
       super(databaseProvider, "Commit Database Operation", InternalBranchActivator.PLUGIN_ID);
       this.savedBranchStates = new HashMap<Branch, BranchState>();
       this.branchCache = branchCache;
@@ -90,6 +92,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       this.mergeBranch = mergeBranch;
       this.changes = changes;
       this.txHolder = txHolder;
+      this.modelFactory = modelFactory;
 
       this.success = true;
       savedBranchStates.put(sourceBranch, sourceBranch.getBranchState());
@@ -118,14 +121,14 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    }
 
    private void updateMergeBranchCommitTx() throws OseeDataStoreException {
-      getDatabaseService().runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, txHolder.getTransaction(),
+      getDatabaseService().runPreparedUpdate(connection, UPDATE_MERGE_COMMIT_TX, txHolder.getTransaction().getId(),
             sourceBranch.getId(), destinationBranch.getId());
    }
 
    public void checkPreconditions() throws OseeCoreException {
       int count =
             getDatabaseService().runPreparedQueryFetchObject(0, SELECT_SOURCE_BRANCH_STATE, sourceBranch.getId(),
-            BranchState.COMMIT_IN_PROGRESS.getValue());
+                  BranchState.COMMIT_IN_PROGRESS.getValue());
       if (count > 0) {
          throw new OseeStateException(String.format("Commit already in progress for [%s]", sourceBranch));
       }
@@ -163,8 +166,10 @@ public class CommitDbOperation extends AbstractDbTxOperation {
             TransactionDetailsType.NonBaselined.getId(), destinationBranch.getId(), newTransactionNumber, comment,
             timestamp, userArtId, sourceBranch.getAssociatedArtifact().getArtId());
       //      transactioCache;
-      //      TransactionRecord record = new TransactionRecord(newTransactionNumber, , comment, time, author);
-      TransactionRecord record = null;
+      TransactionRecord record =
+            modelFactory.getOseeFactoryService().getTransactionFactory().create(newTransactionNumber,
+                  destinationBranch.getId(), comment, new Date(), userArtId,
+                  sourceBranch.getAssociatedArtifact().getArtId(), TransactionDetailsType.NonBaselined);
       return record;
    }
 
@@ -172,7 +177,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       List<Object[]> insertData = new ArrayList<Object[]>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
-         insertData.add(new Object[] {txHolder.getTransaction(), change.getNetChange().getGammaId(),
+         insertData.add(new Object[] {txHolder.getTransaction().getId(), change.getNetChange().getGammaId(),
                modType.getValue(), TxChange.getCurrent(modType).getValue()});
       }
       getDatabaseService().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);

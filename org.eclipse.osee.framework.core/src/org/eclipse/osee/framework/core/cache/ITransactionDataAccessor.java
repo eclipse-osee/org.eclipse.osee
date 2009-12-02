@@ -14,6 +14,7 @@ import java.util.Collection;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 
 /**
  * @author Roberto E. Escobar
@@ -49,5 +50,7 @@ public interface ITransactionDataAccessor {
     * @throws OseeCoreException
     */
    public void loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException;
+
+   public TransactionRecord getTransactionRecord();
 
 }

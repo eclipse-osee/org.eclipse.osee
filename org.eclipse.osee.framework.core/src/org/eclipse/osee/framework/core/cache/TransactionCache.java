@@ -147,6 +147,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
       }
       if (toReturn == null) {
          getDataAccessor().loadTransactionRecord(this, branch, revision);
+         toReturn = getDataAccessor().getTransactionRecord();
 
       }
       return toReturn;

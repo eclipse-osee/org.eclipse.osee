@@ -238,8 +238,8 @@ public class BranchManager {
                      destBranch.getName());
          String branchName = "Merge " + sourceBranch.getShortName() + " <=> " + destBranch.getShortName();
          mergeBranch =
-               HttpBranchCreation.createBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(), branchName,
-                     null, null, UserManager.getUser(), creationComment, populateBaseTxFromAddressingQueryId,
+               HttpBranchCreation.createBranch(BranchType.MERGE, parentTxId, sourceBranch.getId(), branchName, null,
+                     null, UserManager.getUser(), creationComment, populateBaseTxFromAddressingQueryId,
                      destBranch.getId());
       } finally {
          ArtifactLoader.clearQuery(populateBaseTxFromAddressingQueryId);
@@ -347,9 +347,9 @@ public class BranchManager {
          throw new OseeCoreException("Commit failed - unable to commit into a non-editable branch");
       }
       runCommitExtPointActions(conflictManager.getSourceBranch());
-      //      HttpCommitDataRequester.commitBranch(monitor, UserManager.getUser(), conflictManager.getSourceBranch(),
-      //            conflictManager.getDestinationBranch(), archiveSourceBranch);
-      Activator.getInstance().getCommitBranchService().commitBranch(monitor, conflictManager, archiveSourceBranch);
+      HttpCommitDataRequester.commitBranch(monitor, UserManager.getUser(), conflictManager.getSourceBranch(),
+            conflictManager.getDestinationBranch(), archiveSourceBranch);
+      //      Activator.getInstance().getCommitBranchService().commitBranch(monitor, conflictManager, archiveSourceBranch);
    }
 
    private static void runCommitExtPointActions(Branch branch) throws OseeCoreException {
@@ -442,8 +442,8 @@ public class BranchManager {
       TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(systemRootBranch);
       String creationComment = String.format("Root Branch [%s] Creation", branchName);
       Branch branch =
-            HttpBranchCreation.createBranch(BranchType.BASELINE, parentTransactionId.getId(),
-                  systemRootBranch.getId(), branchName, staticBranchName, branchGuid, null, creationComment, -1, -1);
+            HttpBranchCreation.createBranch(BranchType.BASELINE, parentTransactionId.getId(), systemRootBranch.getId(),
+                  branchName, staticBranchName, branchGuid, null, creationComment, -1, -1);
       if (staticBranchName != null) {
          branch.setAliases(staticBranchName);
       }

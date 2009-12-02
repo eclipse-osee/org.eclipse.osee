@@ -35,6 +35,7 @@ public class CreateCommitFunction {
 
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       resp.setContentType("text/xml");
+      resp.setCharacterEncoding("UTF-8");
       InputStream inputStream = service.convertToStream(responseData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
       Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
    }

@@ -85,7 +85,7 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
 
       createService(context, IBranchCreation.class, new BranchCreation(this, this, this));
       createService(context, IBranchArchivingService.class, new BranchArchivingService());
-      createService(context, IBranchCommitService.class, new BranchCommitService(this, this));
+      createService(context, IBranchCommitService.class, new BranchCommitService(this, this, this));
       createService(context, IChangeReportService.class, new ChangeReportService(this, this));
 
       createService(context, IBranchExchange.class, new BranchExchange());
@@ -124,7 +124,7 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
       BranchCache branchCache = new BranchCache(new DatabaseBranchAccessor(this, this, this));
 
       TransactionCache transactionCache =
-            new TransactionCache(new DatabaseTransactionRecordAccessor(this, this, branchCache));
+            new TransactionCache(new DatabaseTransactionRecordAccessor(this, this, branchCache, null));
 
       ArtifactTypeCache artifactCache =
             new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(this, this, branchCache, attributeCache));

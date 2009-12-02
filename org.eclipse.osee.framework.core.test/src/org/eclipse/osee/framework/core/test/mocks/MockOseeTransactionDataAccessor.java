@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.enums.TransactionVersion;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 
 /**
  * @author Roberto E. Escobar
@@ -64,6 +65,11 @@ public class MockOseeTransactionDataAccessor implements ITransactionDataAccessor
 
    @Override
    public void loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException {
+   }
+
+   @Override
+   public TransactionRecord getTransactionRecord() {
+      return null;
    }
 
 }
