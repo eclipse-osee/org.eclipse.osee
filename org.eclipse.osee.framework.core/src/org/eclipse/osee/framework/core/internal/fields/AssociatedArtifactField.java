@@ -44,13 +44,7 @@ public class AssociatedArtifactField extends AbstractOseeField<IBasicArtifact<?>
       if (art1 != null && art2 == null || art1 == null && art2 != null) {
          result = true;
       } else {
-         String guid1 = art1.getGuid();
-         String guid2 = art2.getGuid();
-         if (guid1 != null && guid2 != null) {
-            result = !guid1.equals(guid2);
-         } else {
-            result = art1.getArtId() != art2.getArtId();
-         }
+         result = art1.getArtId() != art2.getArtId();
       }
       return result;
    }
