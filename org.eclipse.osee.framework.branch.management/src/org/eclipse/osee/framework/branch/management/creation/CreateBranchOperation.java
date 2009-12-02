@@ -46,11 +46,6 @@ import org.eclipse.osee.framework.logging.OseeLog;
  * @author Roberto E. Escobar
  */
 public class CreateBranchOperation extends AbstractDbTxOperation {
-   private static final String INSERT_BRANCH =
-         "INSERT INTO osee_branch (branch_id, branch_guid, branch_name, parent_branch_id, parent_transaction_id, archived, associated_art_id, branch_type, branch_state) VALUES (?,?,?,?,?,?,?,?,?)";
-   private static final String UPDATE_BRANCH =
-         "UPDATE osee_branch SET branch_name = ?, parent_branch_id = ?, parent_transaction_id = ?, archived = ?, associated_art_id = ?, branch_type = ?, branch_state = ? where branch_id = ?";
-   private static final String DELETE_BRANCH = "DELETE from osee_branch where branch_id = ?";
 
    private static final String INSERT_TX_DETAILS =
          "INSERT INTO osee_TX_DETAILS ( branch_id, transaction_id, OSEE_COMMENT, time, author, tx_type ) VALUES ( ?, ?, ?, ?, ?, ?)";

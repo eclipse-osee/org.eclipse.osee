@@ -15,12 +15,11 @@ import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {//
-ChangeItemUtilTest.class, // 
-      ComputeNetChangeTest.class, //
+BranchCommitServiceTest.class // 
 })
 /**
  * @author Roberto E. Escobar
  */
-public class ChangeTestSuite {
+public class CommitTestSuite {
 
 }

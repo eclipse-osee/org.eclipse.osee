@@ -8,7 +8,7 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.branch.management.test.commit;
+package org.eclipse.osee.framework.branch.management.test.change;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

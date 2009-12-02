@@ -8,22 +8,19 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.branch.management.test;
+package org.eclipse.osee.framework.branch.management.test.change;
 
-import org.eclipse.osee.framework.branch.management.test.cache.CacheAccessorSuite;
-import org.eclipse.osee.framework.branch.management.test.change.ChangeTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses( {//
-CacheAccessorSuite.class, //
-      ChangeTestSuite.class, //
-      ChangeTestSuite.class//
+ChangeItemUtilTest.class, // 
+      ComputeNetChangeTest.class, //
 })
 /**
  * @author Roberto E. Escobar
  */
-public class BranchManagementTestSuite {
+public class ChangeTestSuite {
 
 }
