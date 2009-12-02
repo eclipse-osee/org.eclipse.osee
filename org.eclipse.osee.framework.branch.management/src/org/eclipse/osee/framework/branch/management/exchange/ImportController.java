@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -23,6 +24,7 @@ import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDefinitionsSaxHandler;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaData;
@@ -30,16 +32,19 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.MetaDataSax
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalTypeCheckSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
-import org.eclipse.osee.framework.branch.management.exchange.transform.OseeDbExportTransformer;
+import org.eclipse.osee.framework.branch.management.exchange.transform.IOseeDbExportTransformer;
+import org.eclipse.osee.framework.branch.management.exchange.transform.LegacyExportTransformer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
+import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.Options;
@@ -47,9 +52,8 @@ import org.eclipse.osee.framework.resource.management.Options;
 /**
  * @author Roberto E. Escobar
  */
-final class ImportController {
+public final class ImportController {
    private static final String SAVE_POINT_PREFIX = "save.point.";
-   private static final String EMPTY_STRING = "";
 
    private static final String INSERT_INTO_IMPORT_SOURCES =
          "INSERT INTO osee_import_source (import_id, db_source_guid, source_export_date, date_imported) VALUES (?, ?, ?, ?)";
@@ -89,22 +93,20 @@ final class ImportController {
    private void setup() throws Exception {
       currentSavePoint = "sourceSetup";
 
-      // Apply xml transforms
-      OseeDbExportTransformer t = new OseeDbExportTransformer(exportDataProvider);
+      currentSavePoint = "manifest";
+      manifestHandler = new ManifestSaxHandler();
+      exportDataProvider.startSaxParsing(ExportItemId.EXPORT_MANIFEST, manifestHandler);
+
+      applyTransforms();
 
       currentSavePoint = "setup";
       translator = new TranslationManager();
       translator.configure(options);
 
-      // Process manifest
-      currentSavePoint = "manifest";
-      manifestHandler = new ManifestSaxHandler();
-      exportDataProvider.startSaxParsing("export.manifest.xml", manifestHandler);
-
       // Process database meta data
       currentSavePoint = manifestHandler.getMetadataFile();
       metadataHandler = new MetaDataSaxHandler();
-      exportDataProvider.startSaxParsing(manifestHandler.getMetadataFile(), metadataHandler);
+      exportDataProvider.startSaxParsing(ExportItemId.EXPORT_DB_SCHEMA, metadataHandler);
       metadataHandler.checkAndLoadTargetDbMetadata();
 
       // Load Import Indexes
@@ -112,6 +114,25 @@ final class ImportController {
       translator.loadTranslators(manifestHandler.getSourceDatabaseId());
 
       loadImportTrace(manifestHandler.getSourceDatabaseId(), manifestHandler.getSourceExportDate());
+   }
+
+   public void transformExportItem(ExportItemId exportItem, Rule rule) throws OseeWrappedException {
+      try {
+         rule.process(exportDataProvider.getFile(exportItem));
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
+
+   private void applyTransforms() throws OseeCoreException {
+      IOseeDbExportTransformer[] transforms = new IOseeDbExportTransformer[] {new LegacyExportTransformer()};
+      String exportVersion = manifestHandler.getSourceExportVersion();
+
+      for (IOseeDbExportTransformer transform : transforms) {
+         if (transform.isApplicable(exportVersion)) {
+            exportVersion = transform.applyTransform(this);
+         }
+      }
    }
 
    private void cleanup() throws Exception {
@@ -184,7 +205,7 @@ final class ImportController {
             handler.clearDataTable();
          }
       }
-      exportDataProvider.startSaxParsing(importSourceFile.getFileName(), handler);
+      exportDataProvider.startSaxParsing(importSourceFile, handler);
    }
 
    private MetaData checkMetadata(ImportFile importFile) {
@@ -343,7 +364,7 @@ final class ImportController {
             List<Object[]> data = new ArrayList<Object[]>();
             for (SavePoint savePoint : savePoints.values()) {
                int status = 1;
-               String comment = EMPTY_STRING;
+               String comment = "";
                if (savePoint.hasErrors()) {
                   status = -1;
                   StringBuilder builder = new StringBuilder();

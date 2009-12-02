@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -43,8 +44,8 @@ public class RelationalExportItem extends AbstractDbExportItem {
    private final StringBuffer rationaleBuffer;
    private final Set<IExportColumnListener> exportColumnListeners;
 
-   public RelationalExportItem(int priority, String name, String source, String query) {
-      super(priority, name, source.toLowerCase());
+   public RelationalExportItem(ExportItemId id, String query) {
+      super(id);
       this.query = query;
       this.binaryContentBuffer = new StringBuffer();
       this.stringContentBuffer = new StringBuffer();

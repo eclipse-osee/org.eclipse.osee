@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
 import java.io.File;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -22,10 +23,10 @@ public class RelationalExportItemWithType extends RelationalExportItem {
    private final RelationalExportItem typeExportItem;
    private final ColumnIdCollector typeCollector;
 
-   public RelationalExportItemWithType(int priority, String name, String source, String typeColumn, String regularQuery, String typeQuery) {
-      super(priority, name, source, regularQuery);
+   public RelationalExportItemWithType(ExportItemId id, ExportItemId typeId, String typeColumn, String regularQuery, String typeQuery) {
+      super(id, regularQuery);
       this.typeCollector = new ColumnIdCollector(typeColumn);
-      this.typeExportItem = new RelationalExportItem(priority * -1, name + ".type", getSource() + "_type", typeQuery);
+      this.typeExportItem = new RelationalExportItem(typeId, typeQuery);
    }
 
    @Override

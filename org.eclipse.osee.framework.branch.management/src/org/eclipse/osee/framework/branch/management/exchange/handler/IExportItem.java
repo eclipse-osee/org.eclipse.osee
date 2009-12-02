@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2007 Boeing.
+ * Copyright (c) 2009 Boeing.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,18 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.branch.management.exchange.transform;
-
-import org.eclipse.osee.framework.branch.management.exchange.handler.IOseeDbExportDataProvider;
+package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 /**
  * @author Ryan D. Brooks
  */
-public class OseeDbExportTransformer {
-   private final IOseeDbExportDataProvider exportDataProvider;
+public interface IExportItem {
+   public String getFileName();
 
-   public OseeDbExportTransformer(IOseeDbExportDataProvider exportDataProvider) {
-      this.exportDataProvider = exportDataProvider;
-   }
+   public String getSource();
 
+   public int getPriority();
 }

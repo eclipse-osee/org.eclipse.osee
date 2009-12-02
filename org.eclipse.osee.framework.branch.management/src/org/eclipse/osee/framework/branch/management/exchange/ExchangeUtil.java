@@ -47,7 +47,7 @@ public class ExchangeUtil {
       File indexFile = new File(tempFolder, name);
       Writer writer =
             new BufferedWriter(new OutputStreamWriter(new FileOutputStream(indexFile), ExportImportXml.XML_ENCODING),
-            bufferSize);
+                  bufferSize);
       writer.write(ExportImportXml.XML_HEADER);
       return writer;
    }
@@ -98,14 +98,13 @@ public class ExchangeUtil {
       }
    }
 
-   public static void readExchange(File exchangePath, String fileToProcess, ContentHandler handler) throws OseeCoreException {
+   public static void readExchange(File entry, ContentHandler handler) throws OseeCoreException {
       InputStream byteStream = null;
       try {
-         File entry = new File(exchangePath, fileToProcess);
          byteStream = new BufferedInputStream(new FileInputStream(entry));
          saxParseXml(byteStream, handler);
       } catch (Exception ex) {
-         throw new OseeWrappedException(String.format("Error reading: [%s]", fileToProcess), ex);
+         throw new OseeWrappedException(String.format("Error reading: [%s]", entry), ex);
       }
    }
 }

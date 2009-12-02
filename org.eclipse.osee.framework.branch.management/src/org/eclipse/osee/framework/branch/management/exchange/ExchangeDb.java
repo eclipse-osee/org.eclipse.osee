@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExpo
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItemWithType;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -137,25 +138,23 @@ public class ExchangeDb {
 
    static List<AbstractExportItem> createTaskList() {
       List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
-      items.add(new ManifestExportItem(0, "export.manifest", items));
-      items.add(new MetadataExportItem(0, "export.db.schema", items));
-      items.add(new RelationalExportItem(1, "osee.branch.data", "osee_branch", BRANCH_TABLE_QUERY));
-      items.add(new RelationalExportItem(2, "osee.branch.definitions", "osee_branch_definitions",
-            BRANCH_DEFINITION_QUERY));
-      items.add(new RelationalExportItem(3, "osee.tx.details.data", "osee_tx_details", TX_DETAILS_TABLE_QUERY));
-      items.add(new RelationalExportItem(4, "osee.txs.data", "osee_txs", TXS_TABLE_QUERY));
-      items.add(new RelationalExportItemWithType(5, "osee.artifact.data", "osee_artifact", ARTIFACT_TYPE_ID,
-            ARTIFACT_TABLE_QUERY, ARTIFACT_TYPE_QUERY));
-      items.add(new RelationalExportItem(6, "osee.artifact.version.data", "osee_artifact_version",
-            ARTIFACT_VERSION_QUERY));
-      items.add(new RelationalExportItemWithType(7, "osee.attribute.data", "osee_attribute", ATTRIBUTE_TYPE_ID,
-            ATTRIBUTE_TABLE_QUERY, ATTRIBUTE_TYPE_QUERY));
-      items.add(new RelationalExportItemWithType(8, "osee.relation.link.data", "osee_relation_link", RELATION_TYPE_ID,
-            RELATION_LINK_TABLE_QUERY, RELATION_TYPE_QUERY));
-      items.add(new RelationalExportItem(9, "osee.merge.data", "osee_merge", MERGE_TABLE_QUERY));
-      items.add(new RelationalExportItem(10, "osee.conflict.data", "osee_conflict", CONFLICT_TABLE_QUERY));
-      items.add(new RelationalExportItem(11, "osee.branch.acl.data", "osee_branch_acl", BRANCH_ACL_QUERY));
-      items.add(new RelationalExportItem(12, "osee.artifact.acl.data", "osee_artifact_acl", ARTIFACT_ACL_QUERY));
+      items.add(new ManifestExportItem(items));
+      items.add(new MetadataExportItem(items));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_BRANCH_DEFINITIONS, BRANCH_DEFINITION_QUERY));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_TXS_DATA, TXS_TABLE_QUERY));
+      items.add(new RelationalExportItemWithType(ExportItemId.OSEE_ARTIFACT_DATA, ExportItemId.OSEE_ARTIFACT_TYPE,
+            ARTIFACT_TYPE_ID, ARTIFACT_TABLE_QUERY, ARTIFACT_TYPE_QUERY));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_ARTIFACT_VERSION_DATA, ARTIFACT_VERSION_QUERY));
+      items.add(new RelationalExportItemWithType(ExportItemId.OSEE_ATTRIBUTE_DATA, ExportItemId.OSEE_ATTRIBUTE_TYPE,
+            ATTRIBUTE_TYPE_ID, ATTRIBUTE_TABLE_QUERY, ATTRIBUTE_TYPE_QUERY));
+      items.add(new RelationalExportItemWithType(ExportItemId.OSEE_RELATION_LINK_DATA, ExportItemId.OSEE_RELATION_TYPE,
+            RELATION_TYPE_ID, RELATION_LINK_TABLE_QUERY, RELATION_TYPE_QUERY));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_MERGE_DATA, MERGE_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY));
 
       return items;
    }

@@ -15,6 +15,8 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
+import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 
 /**
@@ -23,8 +25,8 @@ import org.eclipse.osee.framework.database.core.OseeInfo;
 public class ManifestExportItem extends AbstractExportItem {
    private final List<AbstractExportItem> exportItems;
 
-   public ManifestExportItem(int priority, String name, List<AbstractExportItem> exportItems) {
-      super(priority, name, "");
+   public ManifestExportItem(List<AbstractExportItem> exportItems) {
+      super(ExportItemId.EXPORT_MANIFEST);
       this.exportItems = exportItems;
    }
 
@@ -40,6 +42,8 @@ public class ManifestExportItem extends AbstractExportItem {
    protected void doWork(Appendable appendable) throws Exception {
       ExportImportXml.openPartialXmlNode(appendable, ExportImportXml.EXPORT_ENTRY);
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.DATABASE_ID, OseeInfo.getDatabaseGuid());
+      ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_VERSION, OseeCodeVersion.getVersion());
+
       ExportImportXml.addXmlAttribute(appendable, ExportImportXml.EXPORT_DATE,
             new Long(new Date().getTime()).toString());
       ExportImportXml.closePartialXmlNode(appendable);

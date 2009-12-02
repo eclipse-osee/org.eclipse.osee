@@ -19,34 +19,31 @@ import java.util.Set;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeUtil;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
 import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractExportItem implements Runnable {
-   private final String name;
+   private final ExportItemId id;
    private final String fileName;
-   private final int priority;
    private final Set<IExchangeTaskListener> exportListeners;
-   private final String source;
 
    private File writeLocation;
    private Options options;
    private boolean cancel;
 
-   public AbstractExportItem(int priority, String name, String source) {
-      this.name = name;
-      this.fileName = name + ExportImportXml.XML_EXTENSION;
-      this.priority = priority;
+   public AbstractExportItem(ExportItemId id) {
+      this.id = id;
+      this.fileName = id.toString() + ExportImportXml.XML_EXTENSION;
       this.options = null;
       this.cancel = false;
-      this.source = source;
       this.exportListeners = Collections.synchronizedSet(new HashSet<IExchangeTaskListener>());
    }
 
    public String getSource() {
-      return this.source;
+      return id.getSource();
    }
 
    public String getFileName() {
@@ -54,11 +51,11 @@ public abstract class AbstractExportItem implements Runnable {
    }
 
    public String getName() {
-      return name;
+      return id.toString();
    }
 
    public int getPriority() {
-      return priority;
+      return id.getPriority();
    }
 
    public int getBufferSize() {

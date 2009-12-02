@@ -32,6 +32,7 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
    private ImportFile branchDefinitionsFile;
    private String sourceDatabaseId;
    private Date sourceExportDate;
+   private String exportVersion;
 
    public ManifestSaxHandler() {
       super();
@@ -50,6 +51,7 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
          if (localName.equalsIgnoreCase(ExportImportXml.EXPORT_ENTRY)) {
             sourceDatabaseId = attributes.getValue(ExportImportXml.DATABASE_ID);
             sourceExportDate = new Date(Long.parseLong(attributes.getValue(ExportImportXml.EXPORT_DATE)));
+            exportVersion = attributes.getValue(ExportImportXml.EXPORT_VERSION);
          }
       } catch (Exception ex) {
          throw new IllegalStateException(ex);
@@ -105,6 +107,10 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       return sourceExportDate;
    }
 
+   public String getSourceExportVersion() {
+      return exportVersion;
+   }
+
    public List<ImportFile> getImportFiles() {
       Collections.sort(filesToImport);
       return filesToImport;
@@ -115,45 +121,52 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       return typesToCheck;
    }
 
-   public class ImportFile implements Comparable<ImportFile> {
-      private String fileName;
-      private String source;
-      private Integer priority;
+   public class ImportFile implements Comparable<ImportFile>, IExportItem {
+      private final String fileName;
+      private final String source;
+      private final int priority;
 
-      public ImportFile(String fileName, String source, Integer priority) {
+      public ImportFile(String fileName, String source, int priority) {
          this.fileName = fileName;
          this.source = source;
          this.priority = priority;
       }
 
+      @Override
       public String getFileName() {
          return fileName;
       }
 
-      public Integer getPriority() {
+      @Override
+      public int getPriority() {
          return priority;
       }
 
+      @Override
       public String getSource() {
          return source;
       }
 
       @Override
       public boolean equals(Object obj) {
-         if (obj == this) return true;
-         if (!(obj instanceof ImportFile)) return false;
+         if (obj == this) {
+            return true;
+         }
+         if (!(obj instanceof ImportFile)) {
+            return false;
+         }
          ImportFile other = (ImportFile) obj;
          return this.priority == other.priority && this.fileName.equals(other.fileName);
       }
 
       @Override
       public int hashCode() {
-         return (int) (37 * priority);
+         return 37 * priority;
       }
 
       @Override
       public int compareTo(ImportFile other) {
-         return this.priority.compareTo(other.priority);
+         return priority - other.priority;
       }
    }
 }

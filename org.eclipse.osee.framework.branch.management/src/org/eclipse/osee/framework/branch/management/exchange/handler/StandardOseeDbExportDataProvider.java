@@ -18,6 +18,9 @@ import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.xml.sax.ContentHandler;
 
+/**
+ * @author Ryan D. Brooks
+ */
 public class StandardOseeDbExportDataProvider implements IOseeDbExportDataProvider {
    private final File exportDataRootPath;
    private final boolean wasZipExtractionRequired;
@@ -30,8 +33,13 @@ public class StandardOseeDbExportDataProvider implements IOseeDbExportDataProvid
    }
 
    @Override
-   public void startSaxParsing(String xmlName, ContentHandler handler) throws OseeCoreException {
-      ExchangeUtil.readExchange(exportDataRootPath, xmlName, handler);
+   public void startSaxParsing(IExportItem item, ContentHandler handler) throws OseeCoreException {
+      ExchangeUtil.readExchange(getFile(item), handler);
+   }
+
+   @Override
+   public File getFile(IExportItem item) {
+      return new File(exportDataRootPath, item.getFileName());
    }
 
    @Override
