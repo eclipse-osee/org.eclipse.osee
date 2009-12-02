@@ -41,7 +41,8 @@ public class ChangeReportResponseTranslator implements ITranslator<ChangeReportR
 
 		for (int index = 0; index < numberOfItems; index++) {
 			String key = TranslationUtil.createKey(Entry.CHANGE_ITEM, index);
-			ChangeItem changeItem = service.convert(propertyStore.getPropertyStore(key), CoreTranslatorId.CHANGE_ITEM);
+			PropertyStore innerStore = propertyStore.getPropertyStore(key);
+			ChangeItem changeItem = service.convert(innerStore, CoreTranslatorId.CHANGE_ITEM);
 			data.addItem(changeItem);
 		}
 		return data;
