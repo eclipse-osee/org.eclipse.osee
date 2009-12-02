@@ -74,9 +74,8 @@ public class RequirementsTestReport extends AbstractBlam {
    }
 
    private void processTestProcedure(Artifact req, Artifact testProc) throws OseeCoreException {
-      String testStatus = MISSING;//testProc.getSoleAttributeValue(CoreAttributes.TEST_STATUS);
-      Collection<Artifact> resultFiles =
-            testProc.getRelatedArtifacts(CoreRelationTypes.Test_Unit_Result__Test_Result);
+      String testStatus = testProc.getSoleAttributeValue(CoreAttributeTypes.TEST_PROCEDURE_STATUS, MISSING);
+      Collection<Artifact> resultFiles = testProc.getRelatedArtifacts(CoreRelationTypes.Test_Unit_Result__Test_Result);
 
       if (resultFiles.isEmpty()) {
          reportLine(getReqCellOutput(req), testProc.getName(), testStatus, MISSING);
