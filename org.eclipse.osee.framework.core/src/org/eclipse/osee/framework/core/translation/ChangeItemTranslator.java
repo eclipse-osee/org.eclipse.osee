@@ -18,6 +18,7 @@ import org.eclipse.osee.framework.core.data.RelationChangeItem;
 import org.eclipse.osee.framework.core.enums.ChangeItemType;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 
@@ -26,123 +27,107 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class ChangeItemTranslator implements ITranslator<ChangeItem> {
 
-   private enum Entry {
-      BASE_ENTRY,
-      FIRST_CHANGE,
-      CURRENT_ENTRY,
-      DESTINATION_ENTRY,
-      NET_ENTRY,
-      ART_ID,
-      B_ART_ID,
-      TYPE,
-      ITEM_ID,
-      REL_TYPE_ID,
-      RATIONALE;
-   }
+	private enum Entry {
+		BASE_ENTRY, FIRST_CHANGE, CURRENT_ENTRY, DESTINATION_ENTRY, NET_ENTRY, ART_ID, B_ART_ID, TYPE, ITEM_ID, REL_TYPE_ID, RATIONALE;
+	}
 
-   private final IDataTranslationService service;
+	private final IDataTranslationService service;
 
-   public ChangeItemTranslator(IDataTranslationService service) {
-      super();
-      this.service = service;
-   }
+	public ChangeItemTranslator(IDataTranslationService service) {
+		super();
+		this.service = service;
+	}
 
-   @Override
-   public ChangeItem convert(PropertyStore propertyStore) throws OseeCoreException {
-      PropertyStore currentEntryStore = propertyStore.getPropertyStore(Entry.CURRENT_ENTRY.name());
-      ChangeVersion currentEntry = service.convert(currentEntryStore, CoreTranslatorId.CHANGE_VERSION);
-      ChangeItem changeItem = createChangeItem(propertyStore, currentEntry);
+	@Override
+	public ChangeItem convert(PropertyStore store) throws OseeCoreException {
+		PropertyStore currentEntryStore = store.getPropertyStore(Entry.CURRENT_ENTRY.name());
+		ChangeVersion currentEntry = service.convert(currentEntryStore, CoreTranslatorId.CHANGE_VERSION);
 
-      return populateChangeItem(changeItem, propertyStore, service);
-   }
+		ChangeItem changeItem = createChangeItem(store, currentEntry);
 
-   @Override
-   public PropertyStore convert(ChangeItem changeItem) throws OseeCoreException {
-      PropertyStore store = new PropertyStore();
+		populateChangeVersion(store, changeItem.getCurrentVersion(), Entry.CURRENT_ENTRY);
+		populateChangeVersion(store, changeItem.getBaselineVersion(), Entry.BASE_ENTRY);
+		populateChangeVersion(store, changeItem.getDestinationVersion(), Entry.DESTINATION_ENTRY);
+		populateChangeVersion(store, changeItem.getFirstNonCurrentChange(), Entry.FIRST_CHANGE);
+		populateChangeVersion(store, changeItem.getNetChange(), Entry.NET_ENTRY);
+		return changeItem;
+	}
 
-      if (changeItem instanceof ArtifactChangeItem) {
-         store.put(Entry.TYPE.name(), ChangeItemType.ARTIFACT.name());
-      } else if (changeItem instanceof AttributeChangeItem) {
-         store.put(Entry.TYPE.name(), ChangeItemType.ATTRIBUTE.name());
-      } else if (changeItem instanceof RelationChangeItem) {
-         RelationChangeItem relationChangeItem = (RelationChangeItem) changeItem;
+	private ChangeItem createChangeItem(PropertyStore propertyStore, ChangeVersion currentChangeVersion)
+			throws OseeStateException {
+		ChangeItem changeItem = null;
 
-         store.put(Entry.TYPE.name(), ChangeItemType.RELATION.name());
-         store.put(Entry.B_ART_ID.name(), relationChangeItem.getBArtId());
-         store.put(Entry.REL_TYPE_ID.name(), relationChangeItem.getRelTypeId());
-         store.put(Entry.RATIONALE.name(), relationChangeItem.getRationale());
-      }
+		int artId = Integer.parseInt(propertyStore.get(Entry.ART_ID.name()));
+		int itemId = Integer.parseInt(propertyStore.get(Entry.ITEM_ID.name()));
+		ChangeItemType type = ChangeItemType.getType(propertyStore.get(Entry.TYPE.name()));
 
-      store.put(Entry.ART_ID.name(), changeItem.getArtId());
-      store.put(Entry.ITEM_ID.name(), changeItem.getItemId());
-      storeChangeVersion(store, Entry.BASE_ENTRY, changeItem.getBaselineVersion());
-      storeChangeVersion(store, Entry.FIRST_CHANGE, changeItem.getFirstNonCurrentChange());
-      storeChangeVersion(store, Entry.CURRENT_ENTRY, changeItem.getCurrentVersion());
-      storeChangeVersion(store, Entry.DESTINATION_ENTRY, changeItem.getDestinationVersion());
-      storeChangeVersion(store, Entry.NET_ENTRY, changeItem.getNetChange());
-      return store;
-   }
+		switch (type) {
+		case ARTIFACT:
+			changeItem = new ArtifactChangeItem(currentChangeVersion.getGammaId(), currentChangeVersion.getModType(),
+					currentChangeVersion.getTransactionNumber(), artId);
+			break;
+		case ATTRIBUTE:
+			changeItem = new AttributeChangeItem(currentChangeVersion.getGammaId(), currentChangeVersion.getModType(),
+					currentChangeVersion.getTransactionNumber(), itemId, artId, currentChangeVersion.getValue());
+			break;
+		case RELATION:
+			int bArtId = Integer.parseInt(propertyStore.get(Entry.B_ART_ID.name()));
+			int relTypeId = Integer.parseInt(propertyStore.get(Entry.REL_TYPE_ID.name()));
+			String rationale = propertyStore.get(Entry.RATIONALE.name());
 
-   private void storeChangeVersion(PropertyStore store, Entry entry, ChangeVersion changeVersion) throws OseeCoreException {
-      store.put(entry.name(), service.convert(changeVersion, CoreTranslatorId.CHANGE_VERSION));
-   }
+			changeItem = new RelationChangeItem(currentChangeVersion.getGammaId(), currentChangeVersion.getModType(),
+					currentChangeVersion.getTransactionNumber(), artId, bArtId, itemId, relTypeId, rationale);
+			break;
+		default:
+			throw new OseeStateException("Invalid change item type");
+		}
+		return changeItem;
+	}
 
-   private ChangeItem createChangeItem(PropertyStore propertyStore, ChangeVersion currentChangeVersion) {
-      ChangeItem changeItem = null;
-      int itemId = Integer.parseInt(propertyStore.get(Entry.ITEM_ID.name()));
-      ChangeItemType type = ChangeItemType.getType(propertyStore.get(Entry.TYPE.name()));
-      int artId = Integer.parseInt(propertyStore.get(Entry.ART_ID.name()));
+	private void populateChangeVersion(PropertyStore store, ChangeVersion destVersion, Enum<?> key)
+			throws OseeCoreException {
+		PropertyStore innerStore = store.getPropertyStore(key.name());
+		ChangeVersion srcVersion = service.convert(innerStore, CoreTranslatorId.CHANGE_VERSION);
+		if (srcVersion != null && destVersion != null && srcVersion.isValid()) {
+			destVersion.setGammaId(srcVersion.getGammaId());
+			destVersion.setModType(srcVersion.getModType());
+			destVersion.setTransactionNumber(srcVersion.getTransactionNumber());
+			destVersion.setValue(srcVersion.getValue());
+		}
+	}
 
-      switch (type) {
-         case ARTIFACT:
-            changeItem =
-                  new ArtifactChangeItem(currentChangeVersion.getGammaId(), currentChangeVersion.getModType(),
-                        currentChangeVersion.getTransactionNumber(), artId);
-            break;
-         case ATTRIBUTE:
-            changeItem =
-                  new AttributeChangeItem(currentChangeVersion.getGammaId(), currentChangeVersion.getModType(),
-                        currentChangeVersion.getTransactionNumber(), itemId, artId, currentChangeVersion.getValue());
-            break;
-         case RELATION:
-            int bArtId = Integer.parseInt(propertyStore.get(Entry.B_ART_ID.name()));
-            int relTypeId = Integer.parseInt(propertyStore.get(Entry.REL_TYPE_ID.name()));
-            String rationale = propertyStore.get(Entry.RATIONALE.name());
-            changeItem =
-                  new RelationChangeItem(currentChangeVersion.getGammaId(), currentChangeVersion.getModType(),
-                        currentChangeVersion.getTransactionNumber(), artId, bArtId, itemId, relTypeId, rationale);
-            break;
-      }
-      return changeItem;
-   }
+	@Override
+	public PropertyStore convert(ChangeItem changeItem) throws OseeCoreException {
+		PropertyStore store = new PropertyStore();
 
-   private ChangeItem populateChangeItem(ChangeItem changeItem, PropertyStore propertyStore, IDataTranslationService service) throws OseeCoreException {
-      PropertyStore baseEntryStore = propertyStore.getPropertyStore(Entry.BASE_ENTRY.name());
-      PropertyStore firstChangeStore = propertyStore.getPropertyStore(Entry.FIRST_CHANGE.name());
-      PropertyStore currentEntryStore = propertyStore.getPropertyStore(Entry.CURRENT_ENTRY.name());
-      PropertyStore destinationEntryStore = propertyStore.getPropertyStore(Entry.DESTINATION_ENTRY.name());
-      PropertyStore netEntryStore = propertyStore.getPropertyStore(Entry.NET_ENTRY.name());
+		store.put(Entry.ART_ID.name(), changeItem.getArtId());
+		store.put(Entry.ITEM_ID.name(), changeItem.getItemId());
 
-      ChangeVersion baseEntry = service.convert(baseEntryStore, CoreTranslatorId.CHANGE_VERSION);
-      ChangeVersion firstChange = service.convert(firstChangeStore, CoreTranslatorId.CHANGE_VERSION);
-      ChangeVersion currentEntry = service.convert(currentEntryStore, CoreTranslatorId.CHANGE_VERSION);
-      ChangeVersion destinationEntry = service.convert(destinationEntryStore, CoreTranslatorId.CHANGE_VERSION);
-      ChangeVersion netEntry = service.convert(netEntryStore, CoreTranslatorId.CHANGE_VERSION);
+		if (changeItem instanceof ArtifactChangeItem) {
+			store.put(Entry.TYPE.name(), ChangeItemType.ARTIFACT.name());
+		} else if (changeItem instanceof AttributeChangeItem) {
+			store.put(Entry.TYPE.name(), ChangeItemType.ATTRIBUTE.name());
+		} else if (changeItem instanceof RelationChangeItem) {
+			store.put(Entry.TYPE.name(), ChangeItemType.RELATION.name());
 
-      setChangeVersionContent(changeItem.getCurrentVersion(), currentEntry);
-      setChangeVersionContent(changeItem.getBaselineVersion(), baseEntry);
-      setChangeVersionContent(changeItem.getDestinationVersion(), destinationEntry);
-      setChangeVersionContent(changeItem.getFirstNonCurrentChange(), firstChange);
-      setChangeVersionContent(changeItem.getNetChange(), netEntry);
-      return changeItem;
-   }
+			RelationChangeItem relationChangeItem = (RelationChangeItem) changeItem;
+			store.put(Entry.B_ART_ID.name(), relationChangeItem.getBArtId());
+			store.put(Entry.REL_TYPE_ID.name(), relationChangeItem.getRelTypeId());
+			store.put(Entry.RATIONALE.name(), relationChangeItem.getRationale());
+		}
 
-   private void setChangeVersionContent(ChangeVersion destination, ChangeVersion source) {
-      if (source != null && destination != null && source.isValid()) {
-         destination.setGammaId(source.getGammaId());
-         destination.setModType(source.getModType());
-         destination.setTransactionNumber(source.getTransactionNumber());
-         destination.setValue(source.getValue());
-      }
-   }
+		storeChangeVersion(store, Entry.CURRENT_ENTRY, changeItem.getCurrentVersion());
+
+		storeChangeVersion(store, Entry.BASE_ENTRY, changeItem.getBaselineVersion());
+		storeChangeVersion(store, Entry.FIRST_CHANGE, changeItem.getFirstNonCurrentChange());
+		storeChangeVersion(store, Entry.DESTINATION_ENTRY, changeItem.getDestinationVersion());
+		storeChangeVersion(store, Entry.NET_ENTRY, changeItem.getNetChange());
+		return store;
+	}
+
+	private void storeChangeVersion(PropertyStore store, Enum<?> entry, ChangeVersion changeVersion)
+			throws OseeCoreException {
+		store.put(entry.name(), service.convert(changeVersion, CoreTranslatorId.CHANGE_VERSION));
+	}
+
 }

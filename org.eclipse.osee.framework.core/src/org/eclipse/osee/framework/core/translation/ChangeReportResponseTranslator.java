@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.translation;
 
+import java.util.List;
+
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -22,7 +24,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  */
 public class ChangeReportResponseTranslator implements ITranslator<ChangeReportResponse> {
 	public enum Entry {
-		COUNT;
+		CHANGE_ITEM, COUNT;
 	}
 
 	private final IDataTranslationService service;
@@ -35,11 +37,11 @@ public class ChangeReportResponseTranslator implements ITranslator<ChangeReportR
 	@Override
 	public ChangeReportResponse convert(PropertyStore propertyStore) throws OseeCoreException {
 		ChangeReportResponse data = new ChangeReportResponse();
-		int maxCount = propertyStore.getInt(Entry.COUNT.name());
+		int numberOfItems = propertyStore.getInt(Entry.COUNT.name());
 
-		for (int i = 0; i < maxCount; i++) {
-			ChangeItem changeItem = service.convert(propertyStore.getPropertyStore(String.valueOf(i)),
-					CoreTranslatorId.CHANGE_ITEM);
+		for (int index = 0; index < numberOfItems; index++) {
+			String key = TranslationUtil.createKey(Entry.CHANGE_ITEM, index);
+			ChangeItem changeItem = service.convert(propertyStore.getPropertyStore(key), CoreTranslatorId.CHANGE_ITEM);
 			data.addItem(changeItem);
 		}
 		return data;
@@ -48,12 +50,14 @@ public class ChangeReportResponseTranslator implements ITranslator<ChangeReportR
 	@Override
 	public PropertyStore convert(ChangeReportResponse changeReportResponseData) throws OseeCoreException {
 		PropertyStore store = new PropertyStore();
-		store.put(Entry.COUNT.name(), changeReportResponseData.getChangeItems().size());
+		List<ChangeItem> items = changeReportResponseData.getChangeItems();
 
-		int index = 0;
-		for (ChangeItem changeItem : changeReportResponseData.getChangeItems()) {
-			store.put(String.valueOf(index++), service.convert(changeItem, CoreTranslatorId.CHANGE_ITEM));
+		for (int index = 0; index < items.size(); index++) {
+			ChangeItem changeItem = items.get(index);
+			PropertyStore innerStore = service.convert(changeItem, CoreTranslatorId.CHANGE_ITEM);
+			store.put(TranslationUtil.createKey(Entry.CHANGE_ITEM, index), innerStore);
 		}
+		store.put(Entry.COUNT.name(), items.size());
 		return store;
 	}
 }
