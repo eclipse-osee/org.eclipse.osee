@@ -52,12 +52,11 @@ public class ATSPerspective implements IPerspectiveFactory {
       // Editors are placed for free.
       final String editorArea = layout.getEditorArea();
 
-      // Place navigator and outline to left of
-      // editor area.
+      // Place navigator and outline to left of editor area.
       final IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, (float) 0.19, editorArea);
+      left.addView(ArtifactExplorer.VIEW_ID);
       left.addView(NavigateView.VIEW_ID);
       left.addView(GroupExplorer.VIEW_ID);
-      left.addView(ArtifactExplorer.VIEW_ID);
       left.addView(BranchView.VIEW_ID);
 
       if (AtsUtil.isAtsAdmin()) {
@@ -66,9 +65,7 @@ public class ATSPerspective implements IPerspectiveFactory {
       }
 
       IFolderLayout botLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, (float) 0.60, NavigateView.VIEW_ID);
-      //      botLeft.addView(ActionSkyWalker.VIEW_ID);
       botLeft.addView(ActionHyperView.VIEW_ID);
       botLeft.addView(QuickSearchView.VIEW_ID);
-
    }
 }

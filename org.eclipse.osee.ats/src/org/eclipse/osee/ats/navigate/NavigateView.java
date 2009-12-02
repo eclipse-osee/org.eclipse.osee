@@ -63,9 +63,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
 /**
- * Insert the type's description here.
- * 
- * @see ViewPart
  * @author Donald G. Dunne
  */
 public class NavigateView extends ViewPart implements IActionable {
@@ -94,12 +91,11 @@ public class NavigateView extends ViewPart implements IActionable {
       super.dispose();
    }
 
-   /*
-    * @see IWorkbenchPart#createPartControl(Composite)
-    */
    @Override
    public void createPartControl(Composite parent) {
-      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) return;
+      if (!DbConnectionExceptionComposite.dbConnectionIsOk(parent)) {
+         return;
+      }
 
       OseeContributionItem.addTo(this, false);
 
@@ -120,7 +116,9 @@ public class NavigateView extends ViewPart implements IActionable {
 
       Label label = new Label(xNavComp, SWT.None);
       String str = getWhoAmI();
-      if (AtsUtil.isAtsAdmin()) str += " - Admin";
+      if (AtsUtil.isAtsAdmin()) {
+         str += " - Admin";
+      }
       if (!str.equals("")) {
          if (AtsUtil.isAtsAdmin()) {
             label.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
@@ -256,8 +254,10 @@ public class NavigateView extends ViewPart implements IActionable {
 
    public String getActionDescription() {
       IStructuredSelection sel = (IStructuredSelection) xNavComp.getFilteredTree().getViewer().getSelection();
-      if (sel.iterator().hasNext()) return String.format("Currently Selected - %s",
-            ((XNavigateItem) sel.iterator().next()).getName());
+      if (sel.iterator().hasNext()) {
+         return String.format("Currently Selected - %s",
+               ((XNavigateItem) sel.iterator().next()).getName());
+      }
       return "";
    }
 

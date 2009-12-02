@@ -40,15 +40,11 @@ import org.eclipse.swt.widgets.Label;
  */
 public class AtsNavigateComposite extends XNavigateComposite {
 
-   /**
-    * @param parent
-    * @param style
-    */
    public AtsNavigateComposite(XNavigateViewItems navigateViewItems, Composite parent, int style) {
       super(navigateViewItems, parent, style);
       Result result = AtsPlugin.areOSEEServicesAvailable();
       if (result.isFalse()) {
-         (new Label(parent, SWT.NONE)).setText(result.getText());
+         new Label(parent, SWT.NONE).setText(result.getText());
          return;
       }
    }
@@ -56,7 +52,9 @@ public class AtsNavigateComposite extends XNavigateComposite {
    @Override
    protected void handleDoubleClick() throws OseeCoreException {
       IStructuredSelection sel = (IStructuredSelection) filteredTree.getViewer().getSelection();
-      if (!sel.iterator().hasNext()) return;
+      if (!sel.iterator().hasNext()) {
+         return;
+      }
       XNavigateItem item = (XNavigateItem) sel.iterator().next();
       handleDoubleClick(item);
    }
@@ -90,8 +88,9 @@ public class AtsNavigateComposite extends XNavigateComposite {
          } else {
             AWorkbench.popup("ERROR", "Unhandled navigate item");
          }
-      } else
+      } else {
          super.handleDoubleClick(item, tableLoadOptions);
+      }
    }
 
    @Override
@@ -105,5 +104,4 @@ public class AtsNavigateComposite extends XNavigateComposite {
          }
       }
    }
-
 }
