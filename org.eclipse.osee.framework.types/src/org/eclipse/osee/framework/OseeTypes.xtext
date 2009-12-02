@@ -32,7 +32,7 @@ AttributeTypeRef:
 AttributeType:
 		'attributeType' name=NAME_REFERENCE ('extends' baseAttributeType=AttributeBaseType) ('overrides' override=[AttributeType|NAME_REFERENCE])? '{'
 		'guid' typeGuid = STRING
-		'dataProvider' dataProvider = ('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | 'MappedAttributeDataProvider' | QUALIFIED_NAME)
+		'dataProvider' dataProvider = ('DefaultAttributeDataProvider' | 'UriAttributeDataProvider' | QUALIFIED_NAME)
 		'min' min=WHOLE_NUM_STR
 		'max' max=(WHOLE_NUM_STR | 'unlimited')
 		('taggerId' taggerId = ('DefaultAttributeTaggerProvider' | QUALIFIED_NAME))?
