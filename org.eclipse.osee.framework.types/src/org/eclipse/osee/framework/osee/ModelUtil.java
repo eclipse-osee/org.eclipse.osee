@@ -68,8 +68,21 @@ public final class ModelUtil {
 
    public static OseeTypeModel loadModel(String xTextData) throws OseeCoreException {
       try {
-         return ModelUtil.loadModel(new ByteArrayInputStream(xTextData.getBytes("UTF-8")), false);
-      } catch (UnsupportedEncodingException ex) {
+         OseeTypesStandaloneSetup setup = new OseeTypesStandaloneSetup();
+         Injector injector = setup.createInjectorAndDoEMFRegistration();
+         XtextResourceSet set = injector.getInstance(XtextResourceSet.class);
+
+         set.setClasspathURIContext(ModelUtil.class);
+         set.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
+
+         Resource resource = set.createResource(URI.createURI("dummy:/example.osee"));
+         resource.load(new ByteArrayInputStream(xTextData.getBytes("UTF-8")), set.getLoadOptions());
+         OseeTypeModel model = (OseeTypeModel) resource.getContents().get(0);
+         for (Diagnostic diagnostic : resource.getErrors()) {
+            throw new OseeStateException(diagnostic.toString());
+         }
+         return model;
+      } catch (IOException ex) {
          throw new OseeWrappedException(ex);
       }
    }
