@@ -26,6 +26,7 @@ public enum CoreAttributeTypes implements IOseeType {
    RELATION_ORDER("Relation Order", "ABM5kHa9cFsTbI_ooyQA"),
    SUBSYSTEM("Subsystem", "AAMFERJ1GweNukuSd8QA"),
    TEST_STATUS("Test Status", "AKTJWsjz3EjFV94XNHAA"),
+   TEST_PROCEDURE_STATUS("Test Procedure Status", "AKkUuN2K1ilSHnvIMPQA"),
    USER_ID("User Id", "AAMFEbKl8RCQr17bDAQA"),
    VERIFICATION_LEVEL("Verification Level", "AAMFEXRTkyKVIFqcMwQA");
 
