@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Message Plug-in (Incubation)
 Bundle-SymbolicName: org.eclipse.osee.ote.message;singleton:=true
-Bundle-Version: 0.4.0.qualifier
+Bundle-Version: 0.9.0.qualifier
 Bundle-Vendor: Eclipse.org
 Export-Package: org.eclipse.osee.ote.message,
  org.eclipse.osee.ote.message.commands,
