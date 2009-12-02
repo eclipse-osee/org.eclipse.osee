@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.core.cache;
 
 import java.util.Collection;
 import java.util.HashSet;
-
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
@@ -41,10 +40,10 @@ public class BranchCache extends AbstractOseeCache<Branch> {
 
    @Override
    public void cache(Branch type) throws OseeCoreException {
+      super.cache(type);
       if (BranchType.SYSTEM_ROOT == type.getBranchType()) {
          systemRootBranch = type;
       }
-      super.cache(type);
    }
 
    public Branch getSystemRootBranch() throws OseeCoreException {

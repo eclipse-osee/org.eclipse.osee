@@ -118,6 +118,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
    private void handleArtifactTypeCrossRef(ArtifactType artifactType) throws OseeCoreException {
       Set<org.eclipse.osee.framework.core.model.ArtifactType> superTypes =
             new HashSet<org.eclipse.osee.framework.core.model.ArtifactType>();
+
       org.eclipse.osee.framework.core.model.ArtifactType targetArtifactType =
             getCache().getArtifactTypeCache().getByGuid(artifactType.getTypeGuid());
 
@@ -131,7 +132,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       BranchCache branchCache = getBranchCache();
       Branch systemRoot = branchCache.getSystemRootBranch();
       HashCollection<Branch, org.eclipse.osee.framework.core.model.AttributeType> items =
-            new HashCollection<Branch, org.eclipse.osee.framework.core.model.AttributeType>();
+            new HashCollection<Branch, org.eclipse.osee.framework.core.model.AttributeType>(false, HashSet.class);
       for (AttributeTypeRef attributeTypeRef : artifactType.getValidAttributeTypes()) {
          AttributeType attributeType = attributeTypeRef.getValidAttributeType();
          //         handleAttributeType(attributeType);
@@ -228,6 +229,7 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             );
       type.setOseeEnumType(oseeEnumType);
       attributeType.setTypeGuid(type.getGuid());
+      getCache().getAttributeTypeCache().cache(type);
    }
 
    private void handleRelationType(RelationType relationType) throws OseeCoreException {

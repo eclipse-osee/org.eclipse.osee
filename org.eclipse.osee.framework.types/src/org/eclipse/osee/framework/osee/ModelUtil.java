@@ -84,7 +84,7 @@ public final class ModelUtil {
          options.put(XtextResource.OPTION_ZIP, Boolean.TRUE);
       }
       try {
-         resource.setURI(URI.createURI("http://org.eclipse/osee/types/oseetypecache"));
+         resource.setURI(URI.createURI("http://www.eclipse.org/osee/framework/OseeTypes"));
          resource.load(inputStream, options);
       } catch (IOException ex) {
          throw new OseeWrappedException(ex);

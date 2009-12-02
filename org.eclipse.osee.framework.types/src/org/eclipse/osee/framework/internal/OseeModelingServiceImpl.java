@@ -74,6 +74,7 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
 
    @Override
    public void importOseeTypes(IProgressMonitor monitor, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException {
+      //      System.out.println(request.getModel());
       OseeTypeModel inputModel = ModelUtil.loadModel(request.getModel());
 
       IOseeCachingService cachingService = cachingProvider.getOseeCachingService();

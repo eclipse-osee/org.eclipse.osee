@@ -36,10 +36,12 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
    private boolean duringPopulate;
    private final OseeCacheEnum cacheId;
    private final boolean uniqueName;
+   private boolean ensurePopulatedRanOnce;
 
    protected AbstractOseeCache(OseeCacheEnum cacheId, IOseeDataAccessor<T> dataAccessor, boolean uniqueName) {
       this.cacheId = cacheId;
       this.duringPopulate = false;
+      this.ensurePopulatedRanOnce = false;
       this.dataAccessor = dataAccessor;
       this.uniqueName = uniqueName;
    }
@@ -200,7 +202,8 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
 
    @Override
    public void ensurePopulated() throws OseeCoreException {
-      if (guidToTypeMap.isEmpty()) {
+      if (!ensurePopulatedRanOnce && guidToTypeMap.isEmpty()) {
+         ensurePopulatedRanOnce = true;
          reloadCache();
       }
    }
