@@ -137,7 +137,7 @@ public final class ModelUtil {
       resource.save(options);
    }
 
-   public static void saveModel(OseeTypeModel model, OutputStream outputStream, boolean isZipped) throws IOException {
+   public static void saveModel(OseeTypeModel model, String uri, OutputStream outputStream, boolean isZipped) throws IOException {
       Injector injector = new OseeTypesStandaloneSetup().createInjectorAndDoEMFRegistration();
       XtextResource resource = injector.getInstance(XtextResource.class);
 
@@ -147,6 +147,7 @@ public final class ModelUtil {
       if (isZipped) {
          options.put(XtextResource.OPTION_ZIP, Boolean.TRUE);
       }
+      resource.setURI(URI.createURI(uri));
       resource.getContents().add(model);
       resource.save(outputStream, options);
    }
