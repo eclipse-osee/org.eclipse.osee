@@ -28,6 +28,7 @@ import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.osee.CreateOseeTypeChangesReportOperation;
 import org.eclipse.osee.framework.osee.EMFCompareOperation;
 import org.eclipse.osee.framework.osee.ModelUtil;
@@ -65,7 +66,7 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       IOperation operation = new OseeToXtextOperation(cache, modelFactory, model);
       Operations.executeWorkAndCheckStatus(operation, monitor, -1);
       try {
-         ModelUtil.saveModel(model, outputStream, false);
+         ModelUtil.saveModel(model, "osee:/oseeTypes_" + Lib.getDateTimeString() + ".osee", outputStream, false);
       } catch (IOException ex) {
          throw new OseeWrappedException(ex);
       }
