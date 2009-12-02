@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.Stack;
 import java.util.Map.Entry;
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamConstants;
@@ -121,18 +122,22 @@ public class PropertyStoreWriter {
       private static final XMLInputFactory inputFactory = XMLInputFactory.newInstance();
       private List<String> valueList;
       private String tagListKey;
-      private String innerStoreKey;
       private boolean isInTagList;
-      private boolean isInInnerStore;
-      private PropertyStore innerStore;
+      private final Stack<Pair<String, PropertyStore>> innerStoreStack;
 
       public XMLReader() {
          isInTagList = false;
-         isInInnerStore = false;
          valueList = null;
          tagListKey = null;
-         innerStore = null;
-         innerStoreKey = null;
+         innerStoreStack = new Stack<Pair<String, PropertyStore>>();
+      }
+
+      private boolean isInNestedStore() {
+         return !innerStoreStack.isEmpty();
+      }
+
+      private PropertyStore getCurrentInnerStore() {
+         return innerStoreStack.peek().getSecond();
       }
 
       public void load(PropertyStore store, Reader input) throws Exception {
@@ -157,15 +162,14 @@ public class PropertyStoreWriter {
          switch (eventType) {
             case XMLStreamConstants.START_ELEMENT:
                if (TAG_SECTION.equals(name)) {
-                  if (isInInnerStore) {
-                     innerStore = new PropertyStore();
-                     innerStore.setId(reader.getAttributeValue(uri, TAG_NAME));
+                  if (isInNestedStore()) {
+                     getCurrentInnerStore().setId(reader.getAttributeValue(uri, TAG_NAME));
                   } else {
                      store.setId(reader.getAttributeValue(uri, TAG_NAME));
                   }
                } else if (TAG_ITEM.equals(name)) {
-                  if (isInInnerStore) {
-                     processTagItemSection(uri, innerStore, reader);
+                  if (isInNestedStore()) {
+                     processTagItemSection(uri, getCurrentInnerStore(), reader);
                   } else {
                      processTagItemSection(uri, store, reader);
                   }
@@ -173,8 +177,8 @@ public class PropertyStoreWriter {
                   isInTagList = true;
                   tagListKey = reader.getAttributeValue(uri, TAG_KEY);
                } else if (TAG_INNER.equals(name)) {
-                  isInInnerStore = true;
-                  innerStoreKey = reader.getAttributeValue(uri, TAG_KEY);
+                  String key = reader.getAttributeValue(uri, TAG_KEY);
+                  innerStoreStack.add(new Pair<String, PropertyStore>(key, new PropertyStore()));
                }
                break;
             case XMLStreamConstants.END_ELEMENT:
@@ -182,8 +186,8 @@ public class PropertyStoreWriter {
                   isInTagList = false;
                   if (Strings.isValid(tagListKey) && valueList != null && !valueList.isEmpty()) {
                      String[] value = valueList.toArray(new String[valueList.size()]);
-                     if (isInInnerStore) {
-                        innerStore.put(tagListKey, value);
+                     if (isInNestedStore()) {
+                        getCurrentInnerStore().put(tagListKey, value);
                      } else {
                         store.put(tagListKey, value);
                      }
@@ -191,12 +195,14 @@ public class PropertyStoreWriter {
                   valueList = null;
                   tagListKey = null;
                } else if (TAG_INNER.equals(name)) {
-                  isInInnerStore = false;
-                  if (Strings.isValid(innerStoreKey) && innerStore != null) {
-                     store.put(innerStoreKey, innerStore);
+                  Pair<String, PropertyStore> completedPair = innerStoreStack.pop();
+                  String completedKey = completedPair.getFirst();
+                  PropertyStore completedStore = completedPair.getSecond();
+                  if (isInNestedStore()) {
+                     getCurrentInnerStore().put(completedKey, completedStore);
+                  } else {
+                     store.put(completedKey, completedStore);
                   }
-                  innerStoreKey = null;
-                  innerStore = null;
                }
 
                break;
