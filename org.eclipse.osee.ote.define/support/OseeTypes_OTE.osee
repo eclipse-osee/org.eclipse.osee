@@ -317,7 +317,7 @@ attributeType "Test Log" extends CompressedContentAttribute {
    max 1 description "Compressed Data" fileExtension "txt"
 }
 
-relationType "Test Script to Run Relation" {
+relationType "Test Case to Run Relation" {
    guid "AAMFE+jMyBDK7CV479wA"
    sideAName "Test Case"
    sideAArtifactType "Test Case"
