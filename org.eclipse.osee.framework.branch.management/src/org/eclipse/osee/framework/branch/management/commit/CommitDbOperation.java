@@ -54,7 +54,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
          "insert into osee_tx_details(tx_type, branch_id, transaction_id, osee_comment, time, author, commit_art_id) values(?,?,?,?,?,?,?)";
 
    private static final String INSERT_COMMIT_ADDRESSING =
-         "insert into osee_txs(transaction_id, gamma_id, mod_type, tx_current) values(?,?,?,?)";
+         "insert into osee_txs(transaction_id, branch_id, gamma_id, mod_type, tx_current) values(?,?,?,?,?)";
 
    private static final String UPDATE_CONFLICT_STATUS =
          "update osee_conflict SET status = ? WHERE status = ? AND merge_branch_id = ?";
@@ -177,7 +177,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       List<Object[]> insertData = new ArrayList<Object[]>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
-         insertData.add(new Object[] {txHolder.getTransaction().getId(), change.getNetChange().getGammaId(),
+         insertData.add(new Object[] {txHolder.getTransaction().getId(), destinationBranch.getId(), change.getNetChange().getGammaId(),
                modType.getValue(), TxChange.getCurrent(modType).getValue()});
       }
       getDatabaseService().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
