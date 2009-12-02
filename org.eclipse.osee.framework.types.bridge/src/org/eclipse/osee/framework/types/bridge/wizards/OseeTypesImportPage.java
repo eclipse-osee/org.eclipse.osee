@@ -146,7 +146,7 @@ public class OseeTypesImportPage extends WizardDataTransferPage {
 
       useCompareEditor = new Button(composite, SWT.CHECK);
       useCompareEditor.setText("Use Compare Editor");
-      useCompareEditor.setSelection(true);
+      useCompareEditor.setSelection(false);
 
       persistChanges = new Button(composite, SWT.CHECK);
       persistChanges.setText("Persist Changes");
