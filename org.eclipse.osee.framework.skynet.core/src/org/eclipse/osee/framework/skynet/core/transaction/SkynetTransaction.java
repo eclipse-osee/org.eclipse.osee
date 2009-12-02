@@ -78,7 +78,7 @@ public class SkynetTransaction extends DbTransaction {
 
    @Deprecated
    // please provide a more meaningful comment than empty quote
-   public SkynetTransaction(Branch branch) throws OseeCoreException {
+   public SkynetTransaction(Branch branch) {
       this(branch, "");
    }
 

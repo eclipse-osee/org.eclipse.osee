@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.resolvers;
 
+import static org.eclipse.osee.framework.jdk.core.util.Collections.asCollection;
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -37,7 +38,7 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
       this.secondaryArtifactType = secondaryArtifactType;
    }
 
-   public Artifact resolve(final RoughArtifact roughArtifact, final Branch branch) throws OseeCoreException {
+   public Artifact resolve(final RoughArtifact roughArtifact, final Branch branch, Artifact realParent) throws OseeCoreException {
       ArtifactType artifactType = getArtifactType(roughArtifact.getRoughArtifactKind());
 
       Artifact realArtifact =
@@ -65,9 +66,11 @@ public class NewArtifactImportResolver implements IArtifactImportResolver {
    }
 
    protected void translateAttributes(RoughArtifact roughArtifact, Artifact artifact) throws OseeCoreException {
-      for (Entry<String, String> roughtAttribute : roughArtifact.getAttributes().entrySet()) {
-         if (roughtAttribute.getKey() != null) {
-            artifact.addAttributeFromString(roughtAttribute.getKey(), roughtAttribute.getValue());
+      for (Entry<String, String> roughAttribute : roughArtifact.getAttributes().entrySet()) {
+         if (roughAttribute.getKey() != null) {
+            String key = roughAttribute.getKey();
+            String val = roughAttribute.getValue();
+            artifact.setAttributeValues(key, asCollection(val));
          }
       }
       transferBinaryAttributes(roughArtifact, artifact);

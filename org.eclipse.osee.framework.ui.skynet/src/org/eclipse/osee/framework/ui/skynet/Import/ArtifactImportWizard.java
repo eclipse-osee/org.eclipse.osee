@@ -98,6 +98,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
    @Override
    public boolean performFinish() {
       final Artifact destinationArtifact = mainPage.getDestinationArtifact();
+      final boolean isDeleteUnmatchedSelected = mainPage.isDeleteUnmatchedSelected();
       final String opName = "Importing Artifacts onto: " + destinationArtifact;
       final RoughArtifactCollector roughItems = mainPage.getCollectedArtifacts();
       final IArtifactImportResolver resolver = getResolver();
@@ -106,12 +107,7 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
          @Override
          protected void doWork(IProgressMonitor monitor) throws Exception {
             SkynetTransaction transaction = null;
-            try {
-               transaction = new SkynetTransaction(destinationArtifact.getBranch());
-            } catch (OseeCoreException ex) {
-               reportError("Unable to create transaction for: artifact:[%s] branch:[%s]",
-                     destinationArtifact.getGuid(), destinationArtifact.getBranch().getGuid(), ex);
-            }
+            transaction = new SkynetTransaction(destinationArtifact.getBranch(), "Artifact Import Wizard transaction");
             List<Artifact> children = new ArrayList<Artifact>();
             try {
                children = destinationArtifact.getDescendants();
@@ -120,7 +116,8 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
                      destinationArtifact.getBranch().getGuid(), ex);
             }
             List<IOperation> subOps = new ArrayList<IOperation>();
-            subOps.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, roughItems, resolver));
+            subOps.add(new RoughToRealArtifactOperation(transaction, destinationArtifact, roughItems, resolver,
+                  isDeleteUnmatchedSelected));
             subOps.add(new ArtifactValidationCheckOperation(children, false));
             subOps.add(new CompleteArtifactImportOperation(transaction, destinationArtifact));
             IOperation ret = new CompositeOperation(opName, SkynetGuiPlugin.PLUGIN_ID, subOps);
@@ -147,15 +144,16 @@ public class ArtifactImportWizard extends Wizard implements IImportWizard {
          if (isUpdateExistingArtifactsSelected) {
             resolver =
                   new RootAndAttributeBasedArtifactResolver(primaryArtifactType, secondaryArtifactType,
-                        nonChangingAttributes, false);
+                        nonChangingAttributes, true, mainPage.isDeleteUnmatchedSelected());
          } else {
             resolver = new NewArtifactImportResolver(primaryArtifactType, secondaryArtifactType);
          }
       } catch (OseeCoreException ex) {
          String msg =
-               String.format("Unable to create an artifact resolver for [%s]", primaryArtifactType,
-                     isUpdateExistingArtifactsSelected ? String.format("using %s as identifiers",
-                           nonChangingAttributes) : "");
+               String.format(
+                     "Unable to create an artifact resolver for [%s]",
+                     primaryArtifactType,
+                     isUpdateExistingArtifactsSelected ? String.format("using %s as identifiers", nonChangingAttributes) : "");
          ErrorDialog.openError(getContainer().getShell(), "Artifact Import", null, new Status(IStatus.ERROR,
                SkynetGuiPlugin.PLUGIN_ID, msg, ex));
       }

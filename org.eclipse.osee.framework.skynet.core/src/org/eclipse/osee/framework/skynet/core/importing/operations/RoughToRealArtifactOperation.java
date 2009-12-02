@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.importing.operations;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
@@ -41,8 +42,10 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
    private final Map<RoughArtifact, Artifact> roughToRealArtifact;
    private final Artifact destinationArtifact;
    private final IRelationSorterId importArtifactOrder;
-   
-   public RoughToRealArtifactOperation(SkynetTransaction transaction, Artifact destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver) {
+   private final boolean deleteUnmatchedArtifacts;
+   private Collection<Artifact> unmatchedArtifacts;
+
+   public RoughToRealArtifactOperation(SkynetTransaction transaction, Artifact destinationArtifact, RoughArtifactCollector rawData, IArtifactImportResolver artifactResolver, boolean deleteUnmatchedArtifacts) {
       super("Materialize Artifacts", Activator.PLUGIN_ID);
       this.rawData = rawData;
       this.transaction = transaction;
@@ -50,17 +53,19 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
       this.destinationArtifact = destinationArtifact;
       this.importArtifactOrder = RelationOrderBaseTypes.USER_DEFINED;
       this.roughToRealArtifact = new HashMap<RoughArtifact, Artifact>();
+      this.deleteUnmatchedArtifacts = deleteUnmatchedArtifacts;
       roughToRealArtifact.put(rawData.getParentRoughArtifact(), this.destinationArtifact);
    }
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       monitor.setTaskName("Creating Artifacts");
+      this.unmatchedArtifacts = destinationArtifact.getDescendants();
       int totalItems = rawData.getRoughArtifacts().size() + rawData.getRoughRelations().size();
       int unitOfWork = calculateWork(totalItems / getTotalWorkUnits());
 
       for (RoughArtifact roughArtifact : rawData.getParentRoughArtifact().getChildren()) {
-         Artifact child = createArtifact(monitor, roughToRealArtifact, roughArtifact);
+         Artifact child = createArtifact(monitor, roughToRealArtifact, roughArtifact, destinationArtifact);
          if (child != null) {
             destinationArtifact.addChild(importArtifactOrder, child);
          }
@@ -72,18 +77,27 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
          createRelation(monitor, roughRelation);
          monitor.worked(unitOfWork);
       }
+
+      if (deleteUnmatchedArtifacts) {
+         System.out.println("Will delete:");
+         for (Artifact toDelete : unmatchedArtifacts) {
+            System.out.println("\t" + toDelete.getName());
+            toDelete.deleteAndPersist(transaction);
+         }
+      }
    }
 
-   private Artifact createArtifact(IProgressMonitor monitor, Map<RoughArtifact, Artifact> roughToRealArtifact, RoughArtifact roughArtifact) throws OseeCoreException {
+   private Artifact createArtifact(IProgressMonitor monitor, Map<RoughArtifact, Artifact> roughToRealArtifact, RoughArtifact roughArtifact, Artifact realParent) throws OseeCoreException {
       Artifact realArtifact = roughToRealArtifact.get(roughArtifact);
       if (realArtifact != null) {
          return realArtifact;
       }
-      // Get Children
-      realArtifact = artifactResolver.resolve(roughArtifact, transaction.getBranch());
-      // Returns you 
+
+      realArtifact = artifactResolver.resolve(roughArtifact, transaction.getBranch(), realParent);
+      unmatchedArtifacts.remove(realArtifact);
+
       for (RoughArtifact childRoughArtifact : roughArtifact.getChildren()) {
-         Artifact childArtifact = createArtifact(monitor, roughToRealArtifact, childRoughArtifact);
+         Artifact childArtifact = createArtifact(monitor, roughToRealArtifact, childRoughArtifact, realArtifact);
          if (realArtifact != null && childArtifact != null && !realArtifact.isDeleted() && !childArtifact.isDeleted()) {
             if (!childArtifact.hasParent()) {
                realArtifact.addChild(importArtifactOrder, childArtifact);
@@ -120,8 +134,7 @@ public class RoughToRealArtifactOperation extends AbstractOperation {
          try {
             monitor.subTask(aArt.getName() + " <--> " + bArt.getName());
             monitor.worked(1);
-            RelationManager.addRelation(importArtifactOrder, relationType, aArt, bArt,
-                  roughRelation.getRationale());
+            RelationManager.addRelation(importArtifactOrder, relationType, aArt, bArt, roughRelation.getRationale());
             aArt.persist(transaction);
          } catch (IllegalArgumentException ex) {
             OseeLog.log(Activator.class, Level.WARNING, ex.getLocalizedMessage());

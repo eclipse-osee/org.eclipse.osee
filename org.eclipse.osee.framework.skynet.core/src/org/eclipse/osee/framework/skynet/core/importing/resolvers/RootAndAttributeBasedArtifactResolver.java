@@ -36,7 +36,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
    private final Collection<AttributeType> nonChangingAttributes;
    private final boolean createNewIfNotExist;
 
-   public RootAndAttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist) {
+   public RootAndAttributeBasedArtifactResolver(ArtifactType primaryArtifactType, ArtifactType secondaryArtifactType, Collection<AttributeType> nonChangingAttributes, boolean createNewIfNotExist, boolean deleteUnmatchedArtifacts) {
       super(primaryArtifactType, secondaryArtifactType);
       this.nonChangingAttributes = nonChangingAttributes;
       this.createNewIfNotExist = createNewIfNotExist;
@@ -88,7 +88,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
    }
 
    @Override
-   public Artifact resolve(RoughArtifact roughArtifact, Branch branch) throws OseeCoreException {
+   public Artifact resolve(RoughArtifact roughArtifact, Branch branch, Artifact realParent) throws OseeCoreException {
       if (nonChangingAttributes == null || nonChangingAttributes.isEmpty()) {
          throw new OseeArgumentException("nonChangingAttributes cannot be null or empty");
       }
@@ -96,9 +96,6 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
       RoughArtifact roughParent = roughArtifact.getRoughParent();
 
       if (roughParent != null) {
-         Artifact realParent = null;
-         //                     toRealArtifact(roughParent);
-
          List<Artifact> siblings = realParent.getChildren();
          Collection<Artifact> candidates = new LinkedList<Artifact>();
 
@@ -115,7 +112,7 @@ public class RootAndAttributeBasedArtifactResolver extends NewArtifactImportReso
             OseeLog.log(Activator.class, Level.INFO,
                   "Found " + candidates.size() + " candidates during reuse import for " + roughArtifact.getName());
             if (createNewIfNotExist) {
-               realArtifact = super.resolve(roughArtifact, branch);
+               realArtifact = super.resolve(roughArtifact, branch, null);
             }
          }
       }
