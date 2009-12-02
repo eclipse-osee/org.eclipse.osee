@@ -3,6 +3,7 @@ fragment@org.eclipse.osee.ats.test=SVN,trunk,https://dev.eclipse.org/svnroot/tec
 fragment@org.eclipse.osee.coverage.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.coverage.test
 fragment@org.eclipse.osee.framework.skynet.core.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.skynet.core.test
 fragment@org.eclipse.osee.framework.ui.skynet.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.ui.skynet.test
+fragment@org.eclipse.osee.framework.core.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.core.test
 fragment@org.eclipse.osee.framework.jdk.core.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.framework.jdk.core.test
 plugin@org.eclipse.osee.support.test=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.support.test
 plugin@org.eclipse.osee.support.test.util=SVN,trunk,https://dev.eclipse.org/svnroot/technology/org.eclipse.osee,,org.eclipse.osee.support.test.util
