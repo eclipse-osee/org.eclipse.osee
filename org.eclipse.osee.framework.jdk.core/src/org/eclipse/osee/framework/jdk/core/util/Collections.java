@@ -43,24 +43,31 @@ public class Collections {
       Iterator i = c.iterator();
       StringBuilder myString = new StringBuilder();
 
-      if (start != null) myString.append(start);
+      if (start != null) {
+         myString.append(start);
+      }
 
       boolean first = true;
       while (i.hasNext()) {
-         if (!first) myString.append(separator);
+         if (!first) {
+            myString.append(separator);
+         }
          myString.append(i.next().toString());
          first = false;
       }
 
-      if (end != null) myString.append(end);
+      if (end != null) {
+         myString.append(end);
+      }
 
       return myString.toString();
    }
 
    public static String toString(String separator, Object... objects) {
       Collection<Object> objectsCol = new ArrayList<Object>(objects.length);
-      for (Object obj : objects)
+      for (Object obj : objects) {
          objectsCol.add(obj);
+      }
       return toString(objectsCol, null, separator, null);
    }
 
@@ -85,10 +92,11 @@ public class Collections {
       List<Collection<A>> result = new ArrayList<Collection<A>>();
       for (int i = 0; i < collection.size() / size + 1; i++) {
          int maxLength;
-         if (i * size + size > collection.size())
+         if (i * size + size > collection.size()) {
             maxLength = collection.size();
-         else
+         } else {
             maxLength = i * size + size;
+         }
          List sublist = new ArrayList();
          for (int j = i * size; j < maxLength; j++) {
             sublist.add(collection.get(j));
@@ -162,7 +170,9 @@ public class Collections {
     * @return boolean
     */
    public static <T> boolean isEqual(Collection<T> listA, Collection<T> listB) {
-      if (listA.size() != listB.size()) return false;
+      if (listA.size() != listB.size()) {
+         return false;
+      }
       return listA.size() == setIntersection(listA, listB).size();
    }
 
@@ -196,11 +206,15 @@ public class Collections {
    }
 
    public static List<Object> getAggregateTree(List<Object> items, int maxPerList) {
-      if (items == null) throw new IllegalArgumentException("items can not be null");
-      if (maxPerList < 2) throw new IllegalArgumentException("maxPerList can not be less than 2");
+      if (items == null) {
+         throw new IllegalArgumentException("items can not be null");
+      }
+      if (maxPerList < 2) {
+         throw new IllegalArgumentException("maxPerList can not be less than 2");
+      }
 
       if (items.size() > maxPerList) {
-         return (recursiveAggregateTree(items, maxPerList));
+         return recursiveAggregateTree(items, maxPerList);
       } else {
          return new ArrayList<Object>(items);
       }
@@ -247,10 +261,11 @@ public class Collections {
     */
    private static <A extends Object> List<A> cast(Class<A> clazz, Collection<? extends Object> objects, CastOption castOption) {
       List<A> results = new ArrayList<A>(objects.size());
-      for (Object object : objects)
-         if ((castOption == CastOption.ALL) || ((castOption == CastOption.MATCHING) && (clazz.isAssignableFrom(object.getClass())))) {
+      for (Object object : objects) {
+         if (castOption == CastOption.ALL || castOption == CastOption.MATCHING && clazz.isAssignableFrom(object.getClass())) {
             results.add((A) object);
          }
+      }
       return results;
    }
 
@@ -295,6 +310,12 @@ public class Collections {
     */
    public static <A extends Object> List<A> castMatching(Class<A> clazz, Collection<? extends Object> objects) {
       return cast(clazz, objects, CastOption.MATCHING);
+   }
+
+   public static <T extends Object> Collection<T> asCollection(T arg) {
+      Collection<T> ret = new ArrayList<T>();
+      ret.add(arg);
+      return ret;
    }
 
 }
