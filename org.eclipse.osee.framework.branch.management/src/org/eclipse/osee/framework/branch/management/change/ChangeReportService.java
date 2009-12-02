@@ -16,37 +16,48 @@ import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.IChangeReportService;
 import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.ChangeItem;
+import org.eclipse.osee.framework.core.data.ChangeReportRequest;
+import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
+import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 
 /**
  * @author Jeff C. Phillips
  */
 public class ChangeReportService implements IChangeReportService {
-   private final IOseeDatabaseServiceProvider provider;
+	private final IOseeDatabaseServiceProvider provider;
+	private final IOseeCachingServiceProvider cachingProvider;
 
-   public ChangeReportService(IOseeDatabaseServiceProvider provider) {
-      this.provider = provider;
-   }
+	public ChangeReportService(IOseeDatabaseServiceProvider provider, IOseeCachingServiceProvider cachingProvider) {
+		this.provider = provider;
+		this.cachingProvider = cachingProvider;
+	}
 
-   public void getChanges(IProgressMonitor monitor, TransactionRecord sourceTransaction, TransactionRecord destinationTransaction, boolean isHistorical, Collection<ChangeItem> changes) throws OseeCoreException {
-      List<IOperation> ops = new ArrayList<IOperation>();
+	public void getChanges(IProgressMonitor monitor, ChangeReportRequest request, ChangeReportResponse response)
+			throws OseeCoreException {
 
-      if (isHistorical) {
-         ops.add(new LoadChangeDataOperation(provider, sourceTransaction.getId(), destinationTransaction, changes));
-      } else {
-         ops.add(new LoadChangeDataOperation(provider, sourceTransaction, destinationTransaction, null, changes));
-      }
-      ops.add(new ComputeNetChangeOperation(changes));
+		TransactionCache txCache = cachingProvider.getOseeCachingService().getTransactionCache();
+		TransactionRecord srcTx = txCache.getOrLoad(request.getSourceTx());
+		TransactionRecord destTx = txCache.getOrLoad(request.getDestinationTx());
 
-      String opName = String.format("Gathering changes");
-      IOperation op = new CompositeOperation(opName, InternalBranchActivator.PLUGIN_ID, ops);
-      Operations.executeWorkAndCheckStatus(op, monitor, -1);
-   }
+		List<IOperation> ops = new ArrayList<IOperation>();
+		if (request.isHistorical()) {
+			ops.add(new LoadChangeDataOperation(provider, srcTx.getId(), destTx, response.getChangeItems()));
+		} else {
+			ops.add(new LoadChangeDataOperation(provider, srcTx, destTx, null, response.getChangeItems()));
+		}
+		ops.add(new ComputeNetChangeOperation(response.getChangeItems()));
+
+		String opName = String.format("Gathering changes");
+		IOperation op = new CompositeOperation(opName, InternalBranchActivator.PLUGIN_ID, ops);
+		Operations.executeWorkAndCheckStatus(op, monitor, -1);
+	}
 
 }

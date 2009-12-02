@@ -11,11 +11,11 @@
 package org.eclipse.osee.framework.manager.servlet.function;
 
 import java.io.InputStream;
-import java.util.ArrayList;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeReportRequest;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -30,20 +30,19 @@ public class ChangeReportFunction {
 
    public void getChanges(HttpServletRequest req, HttpServletResponse resp) throws Exception {
       IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
-      ChangeReportRequest data = service.convert(req.getInputStream(), CoreTranslatorId.CHANGE_REPORT_REQUEST);
-      ArrayList<ChangeItem> changes = new ArrayList<ChangeItem>();
-
+      ChangeReportRequest request = service.convert(req.getInputStream(), CoreTranslatorId.CHANGE_REPORT_REQUEST);
+      
+      ChangeReportResponse response = new ChangeReportResponse();
+      
       MasterServletActivator.getInstance().getChangeReportService().getChanges(new NullProgressMonitor(),
-            data.getToTransactionRecord(), data.getFromTransactionRecord(), data.isHistorical(), changes);
+    		  request, response);
 
-      //      ArrayList<ChangeItem> changes = new ArrayList<ChangeItem>();
-      //      changes.add(new ArtifactChangeItem(45L, ModificationType.MODIFIED, 567, 45));
-      ChangeReportResponse changeReportResponseData = new ChangeReportResponse(changes);
+
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       resp.setContentType("text/xml");
       resp.setCharacterEncoding("UTF-8");
       InputStream inputStream =
-            service.convertToStream(changeReportResponseData, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
+            service.convertToStream(response, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
       Lib.inputStreamToOutputStream(inputStream, resp.getOutputStream());
    }
 }

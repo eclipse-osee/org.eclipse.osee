@@ -37,35 +37,36 @@ import org.junit.runners.Parameterized.Parameters;
 @RunWith(Parameterized.class)
 public class ChangeReportResponseTranslatorTest extends BaseTranslatorTest<ChangeReportResponse> {
 
-   public ChangeReportResponseTranslatorTest(ChangeReportResponse data, ITranslator<ChangeReportResponse> translator) {
-      super(data, translator);
-   }
+	public ChangeReportResponseTranslatorTest(ChangeReportResponse data, ITranslator<ChangeReportResponse> translator) {
+		super(data, translator);
+	}
 
-   @Override
-   protected void checkEquals(ChangeReportResponse expected, ChangeReportResponse actual) throws OseeCoreException {
-     ArrayList<ChangeItem> expectedChangeItems = expected.getChangeItems();
-     ArrayList<ChangeItem> actualChangeItems = expected.getChangeItems();
-      
-      for(int i = 0; i< expected.getChangeItems().size();i++){
-         DataAsserts.assertEquals(expectedChangeItems.get(i), actualChangeItems.get(i));
-      }
-   }
+	@Override
+	protected void checkEquals(ChangeReportResponse expected, ChangeReportResponse actual) throws OseeCoreException {
+		List<ChangeItem> expectedChangeItems = expected.getChangeItems();
+		List<ChangeItem> actualChangeItems = actual.getChangeItems();
 
-   @Parameters
-   public static Collection<Object[]> data() throws OseeCoreException {
-      DataTranslationService dataTranslationService = new DataTranslationService();
-      dataTranslationService.addTranslator(new ChangeReportResponseTranslator(dataTranslationService), CoreTranslatorId.CHANGE_REPORT_RESPONSE);
-      dataTranslationService.addTranslator(new ChangeItemTranslator(dataTranslationService), CoreTranslatorId.CHANGE_ITEM);
-      dataTranslationService.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
-      
-      ArrayList<ChangeItem> changeItems = new ArrayList<ChangeItem>();
-      changeItems.add(MockDataFactory.createArtifactChangeItem());
-      changeItems.add(MockDataFactory.createArtifactChangeItem());
-      changeItems.add(MockDataFactory.createArtifactChangeItem());
-      
-      List<Object[]> data = new ArrayList<Object[]>();
-      ITranslator<ChangeReportResponse> translator = new ChangeReportResponseTranslator(dataTranslationService);
-      data.add(new Object[] {new ChangeReportResponse(changeItems), translator});
-      return data;
-   }
+		for (int i = 0; i < expected.getChangeItems().size(); i++) {
+			DataAsserts.assertEquals(expectedChangeItems.get(i), actualChangeItems.get(i));
+		}
+	}
+
+	@Parameters
+	public static Collection<Object[]> data() throws OseeCoreException {
+		DataTranslationService dataTranslationService = new DataTranslationService();
+		dataTranslationService.addTranslator(new ChangeItemTranslator(dataTranslationService),
+				CoreTranslatorId.CHANGE_ITEM);
+		dataTranslationService.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
+
+		ChangeReportResponse response = new ChangeReportResponse();
+		response.addItem(MockDataFactory.createArtifactChangeItem());
+		response.addItem(MockDataFactory.createArtifactChangeItem());
+		response.addItem(MockDataFactory.createArtifactChangeItem());
+
+		List<Object[]> data = new ArrayList<Object[]>();
+		ITranslator<ChangeReportResponse> translator = new ChangeReportResponseTranslator(dataTranslationService);
+
+		data.add(new Object[] { response, translator });
+		return data;
+	}
 }

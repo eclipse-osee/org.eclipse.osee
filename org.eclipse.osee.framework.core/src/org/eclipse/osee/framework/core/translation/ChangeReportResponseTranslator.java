@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.translation;
 
-import java.util.ArrayList;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeReportResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
@@ -22,39 +21,39 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  * @author Jeff C. Phillips
  */
 public class ChangeReportResponseTranslator implements ITranslator<ChangeReportResponse> {
-   public enum Entry {
-      COUNT;
-   }
+	public enum Entry {
+		COUNT;
+	}
 
-   private final IDataTranslationService service;
+	private final IDataTranslationService service;
 
-   public ChangeReportResponseTranslator(IDataTranslationService service) {
-      super();
-      this.service = service;
-   }
+	public ChangeReportResponseTranslator(IDataTranslationService service) {
+		super();
+		this.service = service;
+	}
 
-   @Override
-   public ChangeReportResponse convert(PropertyStore propertyStore) throws OseeCoreException {
-      ArrayList<ChangeItem> changeItems = new ArrayList<ChangeItem>();
-      int maxCount = propertyStore.getInt(Entry.COUNT.name());
+	@Override
+	public ChangeReportResponse convert(PropertyStore propertyStore) throws OseeCoreException {
+		ChangeReportResponse data = new ChangeReportResponse();
+		int maxCount = propertyStore.getInt(Entry.COUNT.name());
 
-      for (int i = 0; i < maxCount; i++) {
-         ChangeItem changeItem =
-               service.convert(propertyStore.getPropertyStore(String.valueOf(i)), CoreTranslatorId.CHANGE_ITEM);
-         changeItems.add(changeItem);
-      }
-      return new ChangeReportResponse(changeItems);
-   }
+		for (int i = 0; i < maxCount; i++) {
+			ChangeItem changeItem = service.convert(propertyStore.getPropertyStore(String.valueOf(i)),
+					CoreTranslatorId.CHANGE_ITEM);
+			data.addItem(changeItem);
+		}
+		return data;
+	}
 
-   @Override
-   public PropertyStore convert(ChangeReportResponse changeReportResponseData) throws OseeCoreException {
-      PropertyStore store = new PropertyStore();
-      store.put(Entry.COUNT.name(), changeReportResponseData.getChangeItems().size());
+	@Override
+	public PropertyStore convert(ChangeReportResponse changeReportResponseData) throws OseeCoreException {
+		PropertyStore store = new PropertyStore();
+		store.put(Entry.COUNT.name(), changeReportResponseData.getChangeItems().size());
 
-      int index = 0;
-      for (ChangeItem changeItem : changeReportResponseData.getChangeItems()) {
-         store.put(String.valueOf(index++), service.convert(changeItem, CoreTranslatorId.CHANGE_ITEM));
-      }
-      return store;
-   }
+		int index = 0;
+		for (ChangeItem changeItem : changeReportResponseData.getChangeItems()) {
+			store.put(String.valueOf(index++), service.convert(changeItem, CoreTranslatorId.CHANGE_ITEM));
+		}
+		return store;
+	}
 }

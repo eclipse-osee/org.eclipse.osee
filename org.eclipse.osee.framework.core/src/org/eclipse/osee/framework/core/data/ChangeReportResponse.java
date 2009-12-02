@@ -11,24 +11,34 @@
 package org.eclipse.osee.framework.core.data;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author Jeff C. Phillips
  */
 public class ChangeReportResponse {
 
-   private final ArrayList<ChangeItem> changeItems;
+	private final List<ChangeItem> changeItems;
 
-   public ArrayList<ChangeItem> getChangeItems() {
-      return changeItems;
-   }
+	public ChangeReportResponse() {
+		super();
+		this.changeItems = new ArrayList<ChangeItem>();
+	}
 
-   public ChangeReportResponse(ArrayList<ChangeItem> changeItems) {
-      super();
-      this.changeItems = changeItems;
-   }
+	public void setChangeItems(Collection<ChangeItem> items) {
+		this.changeItems.addAll(items);
+	}
 
-   public boolean wasSuccessful() {
-      return !changeItems.isEmpty();
-   }
+	public void addItem(ChangeItem item) {
+		this.changeItems.add(item);
+	}
+
+	public List<ChangeItem> getChangeItems() {
+		return changeItems;
+	}
+
+	public boolean wasSuccessful() {
+		return !changeItems.isEmpty();
+	}
 }

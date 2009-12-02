@@ -21,19 +21,21 @@ import org.eclipse.osee.framework.core.model.TransactionRecord;
  */
 public class HttpChangeDataRequester {
 
-   public static ChangeReportResponse getChanges(TransactionRecord toTransactionRecord, TransactionRecord fromTransactionRecord, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException {
-      Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("function", Function.CHANGE_REPORT.name());
+	public static ChangeReportResponse getChanges(TransactionRecord srcTransactionRecord,
+			TransactionRecord destTransactionRecord, IProgressMonitor monitor, boolean isHistorical)
+			throws OseeCoreException {
+		Map<String, String> parameters = new HashMap<String, String>();
+		parameters.put("function", Function.CHANGE_REPORT.name());
 
-      ChangeReportRequest requestData =
-            new ChangeReportRequest(toTransactionRecord, fromTransactionRecord, isHistorical);
-      ChangeReportResponse response =
-            HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.CHANGE_REPORT_REQUEST,
-                  requestData, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
+		ChangeReportRequest requestData = new ChangeReportRequest(srcTransactionRecord.getId(), destTransactionRecord
+				.getId(), isHistorical);
+		ChangeReportResponse response = HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters,
+				CoreTranslatorId.CHANGE_REPORT_REQUEST, requestData, CoreTranslatorId.CHANGE_REPORT_RESPONSE);
 
-      if (response.wasSuccessful()) {
-         //OseeEventManager.kickBranchEvent(HttpBranchCreation.class, , branch.getId());
-      }
-      return response;
-   }
+		if (response.wasSuccessful()) {
+			// OseeEventManager.kickBranchEvent(HttpBranchCreation.class, ,
+			// branch.getId());
+		}
+		return response;
+	}
 }

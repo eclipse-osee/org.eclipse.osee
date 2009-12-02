@@ -87,7 +87,7 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
       createService(context, IBranchArchivingService.class, new BranchArchivingService());
       createService(context, IBranchCommitService.class, new BranchCommitService(this, cachingService.getBranchCache(),
             cachingService.getTransactionCache()));
-      createService(context, IChangeReportService.class, new ChangeReportService(this));
+      createService(context, IChangeReportService.class, new ChangeReportService(this, this));
 
       createService(context, IBranchExchange.class, new BranchExchange());
 

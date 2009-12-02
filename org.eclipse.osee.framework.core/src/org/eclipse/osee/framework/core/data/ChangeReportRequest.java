@@ -10,32 +10,30 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
-import org.eclipse.osee.framework.core.model.TransactionRecord;
-
 /**
  * @author Jeff C. Phillips
  */
 public class ChangeReportRequest {
-   private final TransactionRecord toTransactionRecord;
-   private final TransactionRecord fromTransactionRecord;
-   private final boolean isHistorical;
+	private final int srcTx;
+	private final int destTx;
+	private final boolean isHistorical;
 
-   public ChangeReportRequest(TransactionRecord toTransactionRecord, TransactionRecord fromTransactionRecord, boolean isHistorical) {
-      super();
-      this.toTransactionRecord = toTransactionRecord;
-      this.fromTransactionRecord = fromTransactionRecord;
-      this.isHistorical = isHistorical;
-   }
+	public ChangeReportRequest(int srcTx, int destTx, boolean isHistorical) {
+		super();
+		this.srcTx = srcTx;
+		this.destTx = destTx;
+		this.isHistorical = isHistorical;
+	}
 
-   public TransactionRecord getToTransactionRecord() {
-      return toTransactionRecord;
-   }
+	public int getSourceTx() {
+		return srcTx;
+	}
 
-   public TransactionRecord getFromTransactionRecord() {
-      return fromTransactionRecord;
-   }
+	public int getDestinationTx() {
+		return destTx;
+	}
 
-   public boolean isHistorical() {
-      return isHistorical;
-   }
+	public boolean isHistorical() {
+		return isHistorical;
+	}
 }
