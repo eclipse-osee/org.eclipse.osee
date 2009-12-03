@@ -184,18 +184,14 @@ public final class Branch extends AbstractOseeType implements Comparable<Branch>
    }
 
    private void getChildBranches(Branch parentBranch, Collection<Branch> children, boolean recurse) throws OseeCoreException {
-      throw new UnsupportedOperationException();
-      //      int parentBranchId = parentBranch.getId();
-      //      for (Branch branch : BranchManager.getNormalBranches()) {
-      //         if (branch.hasParentBranch()) {
-      //            if (parentBranchId == branch.getParentBranch().getId()) {
-      //               children.add(branch);
-      //               if (recurse) {
-      //                  getChildBranches(branch, children, recurse);
-      //               }
-      //            }
-      //         }
-      //      }
+      for (Branch branch : parentBranch.getChildren()) {
+         if (branch.getArchiveState().isUnArchived() && !branch.getBranchType().isMergeBranch()) {
+            children.add(branch);
+            if (recurse) {
+               getChildBranches(branch, children, recurse);
+            }
+         }
+      }
    }
 
    public Collection<Branch> getAncestors() throws OseeCoreException {
