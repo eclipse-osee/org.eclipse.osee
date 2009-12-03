@@ -33,8 +33,8 @@ public class StandardOseeDbExportDataProvider implements IOseeDbExportDataProvid
    }
 
    @Override
-   public void startSaxParsing(IExportItem item, ContentHandler handler) throws OseeCoreException {
-      ExchangeUtil.readExchange(getFile(item), handler);
+   public void saxParse(IExportItem exportItem, ContentHandler handler) throws OseeCoreException {
+      ExchangeUtil.readExchange(getFile(exportItem), handler);
    }
 
    @Override

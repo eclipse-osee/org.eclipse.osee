@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -20,6 +22,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
+import javax.xml.stream.XMLOutputFactory;
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataSaxHandler;
@@ -33,7 +38,9 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalS
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalTypeCheckSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
 import org.eclipse.osee.framework.branch.management.exchange.transform.IOseeDbExportTransformer;
-import org.eclipse.osee.framework.branch.management.exchange.transform.LegacyExportTransformer;
+import org.eclipse.osee.framework.branch.management.exchange.transform.ManifestVersionRule;
+import org.eclipse.osee.framework.branch.management.exchange.transform.V0_8_3_LegacyExportTransformer;
+import org.eclipse.osee.framework.branch.management.exchange.transform.V0_9_0Transformer;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -46,6 +53,7 @@ import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
 import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.Options;
 
@@ -95,7 +103,7 @@ public final class ImportController {
 
       currentSavePoint = "manifest";
       manifestHandler = new ManifestSaxHandler();
-      exportDataProvider.startSaxParsing(ExportItemId.EXPORT_MANIFEST, manifestHandler);
+      exportDataProvider.saxParse(ExportItemId.EXPORT_MANIFEST, manifestHandler);
 
       applyTransforms();
 
@@ -106,7 +114,7 @@ public final class ImportController {
       // Process database meta data
       currentSavePoint = manifestHandler.getMetadataFile();
       metadataHandler = new MetaDataSaxHandler();
-      exportDataProvider.startSaxParsing(ExportItemId.EXPORT_DB_SCHEMA, metadataHandler);
+      exportDataProvider.saxParse(ExportItemId.EXPORT_DB_SCHEMA, metadataHandler);
       metadataHandler.checkAndLoadTargetDbMetadata();
 
       // Load Import Indexes
@@ -124,13 +132,36 @@ public final class ImportController {
       }
    }
 
+   public void transformExportItem(ExportItemId exportItem, SaxTransformer transformer) throws OseeCoreException {
+      try {
+
+         File orignalFile = exportDataProvider.getFile(exportItem);
+         File tempFile = new File(Lib.changeExtension(orignalFile.getPath(), "temp"));
+         if (!orignalFile.renameTo(tempFile)) {
+            throw new OseeStateException("not able to rename " + orignalFile);
+         }
+
+         XMLOutputFactory factory = XMLOutputFactory.newInstance();
+         XMLStreamWriter writer = factory.createXMLStreamWriter(new FileWriter(orignalFile));
+         transformer.setWriter(writer);
+         ExchangeUtil.readExchange(tempFile, transformer);
+         tempFile.delete();
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      } catch (XMLStreamException ex) {
+         throw new OseeWrappedException(ex);
+      }
+   }
+
    private void applyTransforms() throws OseeCoreException {
-      IOseeDbExportTransformer[] transforms = new IOseeDbExportTransformer[] {new LegacyExportTransformer()};
+      IOseeDbExportTransformer[] transforms =
+            new IOseeDbExportTransformer[] {new V0_8_3_LegacyExportTransformer(), new V0_9_0Transformer()};
       String exportVersion = manifestHandler.getSourceExportVersion();
 
       for (IOseeDbExportTransformer transform : transforms) {
          if (transform.isApplicable(exportVersion)) {
             exportVersion = transform.applyTransform(this);
+            transformExportItem(ExportItemId.EXPORT_MANIFEST, new ManifestVersionRule(exportVersion));
          }
       }
    }
@@ -205,7 +236,7 @@ public final class ImportController {
             handler.clearDataTable();
          }
       }
-      exportDataProvider.startSaxParsing(importSourceFile, handler);
+      exportDataProvider.saxParse(importSourceFile, handler);
    }
 
    private MetaData checkMetadata(ImportFile importFile) {

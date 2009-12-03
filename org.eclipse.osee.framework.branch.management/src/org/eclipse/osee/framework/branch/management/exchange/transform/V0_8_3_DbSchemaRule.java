@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 
-public class LegacyDbSchemaRule extends Rule {
+public class V0_8_3_DbSchemaRule extends Rule {
    private static final Pattern typeTablePattern =
          Pattern.compile("\\s+<table name=\"osee_\\w+_type\".*?</table>", Pattern.DOTALL);
 
@@ -18,7 +18,7 @@ public class LegacyDbSchemaRule extends Rule {
 
    private static final Pattern txsTablePattern = Pattern.compile("<table name=\"osee_txs\" >\\s+");
 
-   public LegacyDbSchemaRule() {
+   public V0_8_3_DbSchemaRule() {
       super(null);
    }
 

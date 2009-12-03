@@ -47,7 +47,7 @@ public class ExchangeIntegrity {
       long startTime = System.currentTimeMillis();
       try {
          ManifestSaxHandler manifestSaxHandler = new ManifestSaxHandler();
-         exportDataProvider.startSaxParsing(ExportItemId.EXPORT_MANIFEST, manifestSaxHandler);
+         exportDataProvider.saxParse(ExportItemId.EXPORT_MANIFEST, manifestSaxHandler);
 
          List<ImportFile> filesToCheck = new ArrayList<ImportFile>();
          filesToCheck.addAll(manifestSaxHandler.getImportFiles());
@@ -56,7 +56,7 @@ public class ExchangeIntegrity {
 
          final List<IndexCollector> checkList = ExchangeDb.createCheckList();
          for (final ImportFile importFile : filesToCheck) {
-            exportDataProvider.startSaxParsing(importFile, new CheckSaxHandler(exportDataProvider, checkList,
+            exportDataProvider.saxParse(importFile, new CheckSaxHandler(exportDataProvider, checkList,
                   importFile.getFileName()));
          }
          checkExchange = exportDataProvider.getExportedDataRoot() + ".verify.xml";

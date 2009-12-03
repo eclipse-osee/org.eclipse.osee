@@ -11,10 +11,10 @@ import org.eclipse.osee.framework.jdk.core.text.Rule;
 import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
 
-public class LegacyBranchRule extends Rule {
+public class V0_8_3_BranchRule extends Rule {
    private static final Pattern branchPattern = Pattern.compile("<entry ()branch_type");
 
-   public LegacyBranchRule() {
+   public V0_8_3_BranchRule() {
       super(null);
    }
 
