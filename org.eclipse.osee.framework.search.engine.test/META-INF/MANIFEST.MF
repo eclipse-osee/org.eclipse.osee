@@ -3,12 +3,9 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Search Engine Test Plug-in
 Bundle-SymbolicName: org.eclipse.osee.framework.search.engine.test;singleton:=true
 Bundle-Version: 0.2.0.qualifier
-Bundle-Activator: org.eclipse.osee.framework.search.engine.test.Activator
 Bundle-Vendor: Eclipse.org
-Bundle-ActivationPolicy: lazy
-Service-Component: OSGI-INF/tests.xml
-Import-Package: junit.framework,
- org.eclipse.osee.framework.core.data,
+Fragment-Host: org.eclipse.osee.framework.search.engine;bundle-version="0.4.0"
+Import-Package: org.eclipse.osee.framework.core.data,
  org.eclipse.osee.framework.core.exception,
  org.eclipse.osee.framework.database.core,
  org.eclipse.osee.framework.jdk.core.type,
@@ -20,3 +17,5 @@ Import-Package: junit.framework,
  org.osgi.framework,
  org.osgi.util.tracker
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Require-Bundle: org.junit4;bundle-version="4.5.0"
+Export-Package: org.eclipse.osee.framework.search.engine.test
