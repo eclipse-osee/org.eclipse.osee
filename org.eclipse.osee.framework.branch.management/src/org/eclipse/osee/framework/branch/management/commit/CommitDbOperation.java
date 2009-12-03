@@ -100,23 +100,25 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
+      BranchState storedBranchState;
       this.connection = connection;
       if (changes.isEmpty()) {
          throw new OseeStateException(" A branch can not be commited without any changes made.");
       }
       checkPreconditions();
-      updateBranchState();
-      txHolder.setTransaction(addCommitTransactionToDatabase(userArtId));
+      storedBranchState = sourceBranch.getBranchState();
+      updateBranchState(BranchState.COMMIT_IN_PROGRESS);
 
-      //      TODO AccessControlManager.removeAllPermissionsFromBranch(connection, sourceBranch);
-
-      updatePreviousCurrentsOnDestinationBranch();
-
-      insertCommitAddressing();
-
-      updateMergeBranchCommitTx();
-
-      manageBranchStates();
+      try {
+         txHolder.setTransaction(addCommitTransactionToDatabase(userArtId));
+         updatePreviousCurrentsOnDestinationBranch();
+         insertCommitAddressing();
+         updateMergeBranchCommitTx();
+         manageBranchStates();
+      } catch (OseeCoreException ex) {
+         updateBranchState(storedBranchState);
+         throw ex;
+      }
    }
 
    private void updateMergeBranchCommitTx() throws OseeDataStoreException {
@@ -133,9 +135,8 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       }
    }
 
-   public void updateBranchState() throws OseeCoreException {
-      getDatabaseService().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, BranchState.COMMIT_IN_PROGRESS.getValue(),
-            sourceBranch.getId());
+   public void updateBranchState(BranchState state) throws OseeCoreException {
+      getDatabaseService().runPreparedUpdate(UPDATE_SOURCE_BRANCH_STATE, state.getValue(), sourceBranch.getId());
    }
 
    private void updatePreviousCurrentsOnDestinationBranch() throws OseeStateException, OseeDataStoreException {

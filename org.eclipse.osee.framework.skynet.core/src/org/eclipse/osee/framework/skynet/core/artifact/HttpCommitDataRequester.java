@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.skynet.core.User;
+import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
 import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
@@ -46,19 +47,22 @@ public class HttpCommitDataRequester {
             HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.BRANCH_COMMIT_REQUEST,
                   requestData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
 
-      TransactionRecord newTransaction = response.getTransaction();
-
-      // Update commit artifact cache with new information
-      if (sourceBranch.getAssociatedArtifact().getArtId() > 0) {
-         TransactionManager.cacheCommittedArtifactTransaction((IArtifact) sourceBranch.getAssociatedArtifact(),
-               newTransaction);
+      if (response != null) {
+         TransactionRecord newTransaction = response.getTransaction();
+         AccessControlManager.removeAllPermissionsFromBranch(null, sourceBranch);
+         // Update commit artifact cache with new information
+         if (sourceBranch.getAssociatedArtifact().getArtId() > 0) {
+            TransactionManager.cacheCommittedArtifactTransaction((IArtifact) sourceBranch.getAssociatedArtifact(),
+                  newTransaction);
+         }
+         // reload the committed artifacts since the commit changed them on the destination branch
+         Object[] queryData =
+               new Object[] {newTransaction.getBranchId(), newTransaction.getId(), newTransaction.getBranchId(),
+                     newTransaction.getId(), newTransaction.getBranchId(), newTransaction.getId()};
+         ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, queryData, 400, ArtifactLoad.FULL, true, null, true);
+         // Kick commit event
+         OseeEventManager.kickBranchEvent(HttpCommitDataRequester.class, BranchEventType.Committed,
+               sourceBranch.getId());
       }
-      // reload the committed artifacts since the commit changed them on the destination branch
-      Object[] queryData =
-            new Object[] {newTransaction.getBranchId(), newTransaction.getId(), newTransaction.getBranchId(),
-                  newTransaction.getId(), newTransaction.getBranchId(), newTransaction.getId()};
-      ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, queryData, 400, ArtifactLoad.FULL, true, null, true);
-      // Kick commit event
-      OseeEventManager.kickBranchEvent(HttpCommitDataRequester.class, BranchEventType.Committed, sourceBranch.getId());
    }
 }
