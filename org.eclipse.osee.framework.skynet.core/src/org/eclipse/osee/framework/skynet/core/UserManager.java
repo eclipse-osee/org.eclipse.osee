@@ -25,6 +25,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.UserInDatabaseMultipleTimes;
 import org.eclipse.osee.framework.core.exception.UserNotInDatabase;
 import org.eclipse.osee.framework.core.model.ArtifactType;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactCache;
@@ -175,7 +176,7 @@ public final class UserManager {
    }
 
    public static User getUserByUserId(String userId) throws OseeCoreException {
-      if (userId == null || userId.equals("")) {
+      if (!Strings.isValid(userId)) {
          throw new OseeArgumentException("UserId can't be null or \"\"");
       }
 
