@@ -349,7 +349,6 @@ public class BranchManager {
       runCommitExtPointActions(conflictManager.getSourceBranch());
       HttpCommitDataRequester.commitBranch(monitor, UserManager.getUser(), conflictManager.getSourceBranch(),
             conflictManager.getDestinationBranch(), archiveSourceBranch);
-      //      Activator.getInstance().getCommitBranchService().commitBranch(monitor, conflictManager, archiveSourceBranch);
    }
 
    private static void runCommitExtPointActions(Branch branch) throws OseeCoreException {
