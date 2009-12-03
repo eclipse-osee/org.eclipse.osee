@@ -14,10 +14,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.IChangeReportService;
+import org.eclipse.osee.framework.branch.management.IPurgeBranchService;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.IAuthenticationManager;
@@ -50,6 +52,7 @@ public class MasterServletActivator implements BundleActivator, IOseeModelFactor
       RESOURCE_MANAGER,
       BRANCH_EXCHANGE,
       BRANCH_CREATION,
+      PURGE_BRANCH,
       CHANGE_REPORT,
       BRANCH_COMMIT,
       SEARCH_ENGINE,
@@ -81,6 +84,7 @@ public class MasterServletActivator implements BundleActivator, IOseeModelFactor
       createServiceTracker(context, IAuthenticationManager.class, TrackerId.AUTHENTICATION_SERVICE);
       createServiceTracker(context, IBranchCreation.class, TrackerId.BRANCH_CREATION);
       createServiceTracker(context, IBranchCommitService.class, TrackerId.BRANCH_COMMIT);
+      createServiceTracker(context, IPurgeBranchService.class, TrackerId.PURGE_BRANCH);
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
       createServiceTracker(context, IChangeReportService.class, TrackerId.CHANGE_REPORT);
       createServiceTracker(context, IOseeCachingService.class, TrackerId.CACHING_SERVICE);
@@ -192,5 +196,9 @@ public class MasterServletActivator implements BundleActivator, IOseeModelFactor
    @Override
    public IOseeModelingService getOseeModelingService() throws OseeCoreException {
       return getTracker(TrackerId.OSEE_MODELING_SERVICE, IOseeModelingService.class);
+   }
+
+   public IPurgeBranchService getPurgeBranchService() {
+      return getTracker(TrackerId.PURGE_BRANCH, IPurgeBranchService.class);
    }
 }

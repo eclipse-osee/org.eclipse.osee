@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -75,6 +76,11 @@ public class OpenChangeReportByIdItem extends XNavigateItemAction {
                            if (team.getSmaMgr().getBranchMgr().isCommittedBranchExists() || team.getSmaMgr().getBranchMgr().isWorkingBranchInWork()) {
                               addedArts.add(team);
                            }
+                        }
+                     }
+                     if (artifact instanceof TeamWorkFlowArtifact) {
+                        if (((TeamWorkFlowArtifact)artifact).getSmaMgr().getBranchMgr().isCommittedBranchExists() || ((TeamWorkFlowArtifact)artifact).getSmaMgr().getBranchMgr().isWorkingBranchInWork()) {
+                           addedArts.add((artifact));
                         }
                      }
                   }

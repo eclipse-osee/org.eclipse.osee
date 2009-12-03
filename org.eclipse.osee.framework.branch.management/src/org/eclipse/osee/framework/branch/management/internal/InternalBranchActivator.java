@@ -14,15 +14,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.eclipse.osee.framework.branch.management.IBranchArchivingService;
 import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.IChangeReportService;
+import org.eclipse.osee.framework.branch.management.IPurgeBranchService;
 import org.eclipse.osee.framework.branch.management.change.ChangeReportService;
 import org.eclipse.osee.framework.branch.management.commit.BranchCommitService;
 import org.eclipse.osee.framework.branch.management.creation.BranchCreation;
 import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
+import org.eclipse.osee.framework.branch.management.purge.PurgeBranchService;
 import org.eclipse.osee.framework.branch.management.remote.BranchArchivingService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
@@ -75,6 +78,7 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
       createService(context, IBranchCreation.class, new BranchCreation(this, this, this));
       createService(context, IBranchArchivingService.class, new BranchArchivingService());
       createService(context, IBranchCommitService.class, new BranchCommitService(this, this, this));
+      createService(context, IPurgeBranchService.class, new PurgeBranchService(this, this));
       createService(context, IChangeReportService.class, new ChangeReportService(this, this));
 
       createService(context, IBranchExchange.class, new BranchExchange());

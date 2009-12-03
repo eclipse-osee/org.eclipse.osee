@@ -19,6 +19,7 @@ import org.eclipse.osee.framework.core.services.ITranslatorId;
 public enum CoreTranslatorId implements ITranslatorId {
    BRANCH_COMMIT_REQUEST,
    BRANCH_COMMIT_RESPONSE,
+   PURGE_BRANCH_REQUEST,
 
    CHANGE_VERSION,
    CHANGE_ITEM,
@@ -39,7 +40,9 @@ public enum CoreTranslatorId implements ITranslatorId {
    TRANSACTION_RECORD,
    BRANCH_CREATION_REQUEST,
    BRANCH_CREATION_RESPONSE,
-   TABLE_DATA;
+   TABLE_DATA,
+   
+   STATUS_RESPONSE;
 
    @Override
    public String getKey() {

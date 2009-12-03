@@ -30,7 +30,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
-import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.util.ChangeItemUtil;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.jdk.core.util.time.GlobalTime;
@@ -179,41 +178,17 @@ public class ChangeReportDataLoader {
     * @throws OseeWrappedException
     */
    private List<ChangeItem> loadChangeItems(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor, boolean isHistorical) throws OseeCoreException, OseeWrappedException {
-      List<ChangeItem> changeItems = new ArrayList<ChangeItem>();
-      List<IOperation> ops = new ArrayList<IOperation>();
       TransactionRecord destinationTransactionId;
       TransactionRecord sourceTransactionId;
 
       if (isHistorical) {
          destinationTransactionId = TransactionManager.getPriorTransaction(transactionId);
          sourceTransactionId = transactionId;
-//         ops.add(new LoadChangeDataOperation(sourceTransactionId, destinationTransactionId, changeItems));
       } else {
          destinationTransactionId = TransactionManager.getLastTransaction(sourceBranch.getParentBranch());
          sourceTransactionId = TransactionManager.getLastTransaction(sourceBranch);
-//         ops.add(new LoadChangeDataOperation(sourceTransactionId, destinationTransactionId, null, changeItems));
       }
-
       ChangeReportResponse response = HttpChangeDataRequester.getChanges(sourceTransactionId, destinationTransactionId, monitor, isHistorical);
-//      System.out.println(response.getChangeItems().size());
-//      
-//      
-//      ops.add(new ComputeNetChangeOperation(changeItems));
-//
-//      String opName =
-//            String.format("Gathering changes for %s",
-//            sourceBranch != null ? sourceBranch.getShortName() : transactionId);
-//      IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
-//      Operations.executeWork(op, monitor, -1);
-//      try {
-//         Operations.checkForErrorStatus(op.getStatus());
-//      } catch (Exception ex) {
-//         if (ex instanceof OseeCoreException) {
-//            throw (OseeCoreException) ex;
-//         } else {
-//            throw new OseeWrappedException(ex);
-//         }
-//      }
       return response.getChangeItems();
    }
 }

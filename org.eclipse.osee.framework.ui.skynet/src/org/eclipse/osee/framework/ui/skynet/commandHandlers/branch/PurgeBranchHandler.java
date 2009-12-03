@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
 import java.util.List;
+
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -18,7 +19,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
@@ -55,6 +55,6 @@ public class PurgeBranchHandler extends CommandHandler {
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-      return branches.size() == 1 && AccessControlManager.isOseeAdmin();
+      return branches.size() == 1 ;//&& AccessControlManager.isOseeAdmin();
    }
 }

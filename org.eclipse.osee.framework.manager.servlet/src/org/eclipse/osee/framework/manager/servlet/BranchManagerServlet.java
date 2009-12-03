@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.manager.servlet.function.ChangeReportFunction;
 import org.eclipse.osee.framework.manager.servlet.function.CreateBranchFunction;
 import org.eclipse.osee.framework.manager.servlet.function.CreateCommitFunction;
+import org.eclipse.osee.framework.manager.servlet.function.PurgeBranchFunction;
 
 /**
  * @author Andrew M Finkbeiner
@@ -84,6 +85,9 @@ public class BranchManagerServlet extends OseeHttpServlet {
 			case CHANGE_REPORT:
 				new ChangeReportFunction().getChanges(req, resp);
 				break;
+            case PURGE_BRANCH:
+               new PurgeBranchFunction().purge(req, resp);
+               break;
 			default:
 				throw new UnsupportedOperationException();
 			}

@@ -21,8 +21,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
+
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
 import org.eclipse.core.runtime.jobs.Job;
@@ -51,6 +51,7 @@ import org.eclipse.osee.framework.plugin.core.util.Jobs;
 import org.eclipse.osee.framework.skynet.core.UserManager;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.FinishUpdateBranchOperation;
 import org.eclipse.osee.framework.skynet.core.artifact.operation.UpdateBranchOperation;
+import org.eclipse.osee.framework.skynet.core.artifact.requester.HttpPurgeBranchRequester;
 import org.eclipse.osee.framework.skynet.core.artifact.update.ConflictResolverOperation;
 import org.eclipse.osee.framework.skynet.core.commit.actions.CommitAction;
 import org.eclipse.osee.framework.skynet.core.conflict.ConflictManagerExternal;
@@ -303,15 +304,18 @@ public class BranchManager {
     * 
     * @param branch
     */
-   public static Job purgeBranchInJob(final Branch branch) {
-      return Operations.executeAsJob(new PurgeBranchOperation(branch), true);
+   public static void purgeBranchInJob(final Branch branch) {
+      try {
+         HttpPurgeBranchRequester.purge(branch);
+      }
+      catch (OseeCoreException ex) {
+         
+      }
    }
 
    public static void purgeBranch(final Branch branch) throws OseeCoreException {
-      IOperation operation = new PurgeBranchOperation(branch);
-      Operations.executeWork(operation, new NullProgressMonitor(), -1);
       try {
-         Operations.checkForStatusSeverityMask(operation.getStatus(), IStatus.ERROR | IStatus.WARNING);
+         HttpPurgeBranchRequester.purge(branch);
       } catch (Exception ex) {
          throw new OseeWrappedException(ex);
       }

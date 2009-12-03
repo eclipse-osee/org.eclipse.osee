@@ -8,26 +8,17 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.enums;
+package org.eclipse.osee.framework.branch.management;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.data.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
+ * @author Jeff C. Phillips
  * @author Megumi Telles
  */
-public enum Function {
+public interface IPurgeBranchService {
 
-   BRANCH_COMMIT,
-   CHANGE_REPORT,
-   CREATE_BRANCH,
-   PURGE_BRANCH;
-
-   public static Function fromString(String toMatch) throws OseeCoreException {
-      for (Function function : Function.values()) {
-         if (function.name().equalsIgnoreCase(toMatch)) {
-            return function;
-         }
-      }
-      throw new OseeCoreException(String.format("Invalid name - Function [%s] was not found ", toMatch));
-   }
+   public void purge(IProgressMonitor monitor, PurgeBranchRequest request) throws OseeCoreException;
 }
