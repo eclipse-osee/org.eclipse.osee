@@ -41,7 +41,6 @@ public class PropertyStoreTestUtil {
       Assert.assertEquals(id, store.getId());
       Assert.assertNotNull(store.getItems());
       Assert.assertNotNull(store.getArrays());
-      Assert.assertFalse(store.isEmpty());
       return store;
    }
 
@@ -51,7 +50,6 @@ public class PropertyStoreTestUtil {
       Assert.assertEquals(String.valueOf(properties.hashCode()), store.getId());
       Assert.assertNotNull(store.getItems());
       Assert.assertNotNull(store.getArrays());
-      Assert.assertFalse(store.isEmpty());
       return store;
    }
 

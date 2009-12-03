@@ -10,7 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.types.tests;
 
-import org.eclipse.osee.framework.oseeTypes.tests.OseeTypesAllTests;
 import org.eclipse.osee.framework.types.tests.osee.OseeModelTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -21,7 +20,7 @@ import org.junit.runners.Suite;
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { //
 OseeModelTestSuite.class, //
-      OseeTypesAllTests.class, //
+//      OseeTypesAllTests.class, //
 })
 public class OseeTypesTestSuite {
 

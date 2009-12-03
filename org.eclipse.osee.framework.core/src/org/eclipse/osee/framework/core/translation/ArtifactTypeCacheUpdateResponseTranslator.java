@@ -40,7 +40,7 @@ public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<Ar
          rows.add(ArtifactTypeRow.fromArray(rowData));
       }
 
-      Map<Integer, Integer> baseToSuper = TranslationUtil.getMap(store, Fields.BASE_TO_SUPER_TYPES);
+      Map<Integer, Integer[]> baseToSuper = TranslationUtil.getIntArrayMap(store, Fields.BASE_TO_SUPER_TYPES);
 
       List<Triplet<Integer, Integer, Integer>> artAttrs =
             TranslationUtil.getTripletList(store, Fields.BASE_BRANCH_ATTR);
@@ -58,7 +58,7 @@ public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<Ar
       }
       store.put(Fields.ITEM_COUNT.name(), rows.size());
 
-      TranslationUtil.putMap(store, Fields.BASE_TO_SUPER_TYPES, object.getBaseToSuperTypes());
+      TranslationUtil.putIntArrayMap(store, Fields.BASE_TO_SUPER_TYPES, object.getBaseToSuperTypes());
       TranslationUtil.putTripletList(store, Fields.BASE_BRANCH_ATTR, object.getAttributeTypes());
       return store;
    }

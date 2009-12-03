@@ -28,7 +28,6 @@ import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
-import org.eclipse.osee.framework.jdk.core.type.HashCollection;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 
@@ -72,17 +71,16 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
          updatedItems.add(cached);
       }
 
-      HashCollection<ArtifactType, ArtifactType> superTypes =
-            new HashCollection<ArtifactType, ArtifactType>(false, HashSet.class);
-      for (Entry<Integer, Integer> entry : response.getBaseToSuperTypes().entrySet()) {
-         ArtifactType superType = cache.getById(entry.getValue());
-         if (superType != null) {
-            ArtifactType baseType = cache.getById(entry.getKey());
-            superTypes.put(baseType, superType);
+      for (Entry<Integer, Integer[]> entry : response.getBaseToSuperTypes().entrySet()) {
+         ArtifactType baseType = cache.getById(entry.getKey());
+         Set<ArtifactType> superTypes = new HashSet<ArtifactType>();
+         for (Integer superId : entry.getValue()) {
+            ArtifactType superType = cache.getById(superId);
+            if (superType != null) {
+               superTypes.add(superType);
+            }
          }
-      }
-      for (ArtifactType baseType : superTypes.keySet()) {
-         baseType.setSuperType((Set<ArtifactType>) superTypes.getValues(baseType));
+         baseType.setSuperType(superTypes);
       }
 
       CompositeKeyHashMap<ArtifactType, Branch, Collection<AttributeType>> attrs =

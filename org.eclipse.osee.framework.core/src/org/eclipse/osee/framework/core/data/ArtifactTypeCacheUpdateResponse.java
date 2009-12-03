@@ -29,10 +29,10 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
 public class ArtifactTypeCacheUpdateResponse {
 
    private final List<ArtifactTypeRow> rows;
-   private final Map<Integer, Integer> baseToSuper;
+   private final Map<Integer, Integer[]> baseToSuper;
    private final List<Triplet<Integer, Integer, Integer>> artAttrs;
 
-   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Integer, Integer> baseToSuper, List<Triplet<Integer, Integer, Integer>> artAttrs) {
+   public ArtifactTypeCacheUpdateResponse(List<ArtifactTypeRow> rows, Map<Integer, Integer[]> baseToSuper, List<Triplet<Integer, Integer, Integer>> artAttrs) {
       this.rows = rows;
       this.baseToSuper = baseToSuper;
       this.artAttrs = artAttrs;
@@ -42,7 +42,7 @@ public class ArtifactTypeCacheUpdateResponse {
       return rows;
    }
 
-   public Map<Integer, Integer> getBaseToSuperTypes() {
+   public Map<Integer, Integer[]> getBaseToSuperTypes() {
       return baseToSuper;
    }
 
@@ -103,15 +103,21 @@ public class ArtifactTypeCacheUpdateResponse {
 
    public static ArtifactTypeCacheUpdateResponse fromCache(Collection<ArtifactType> types) throws OseeCoreException {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
-      Map<Integer, Integer> baseToSuper = new HashMap<Integer, Integer>();
+      Map<Integer, Integer[]> baseToSuper = new HashMap<Integer, Integer[]>();
       List<Triplet<Integer, Integer, Integer>> artAttrs = new ArrayList<Triplet<Integer, Integer, Integer>>();
       for (ArtifactType art : types) {
          rows.add(new ArtifactTypeRow(art.getId(), art.getGuid(), art.getName(), art.isAbstract(),
                art.getModificationType()));
 
          Integer artId = art.getId();
-         for (ArtifactType superType : art.getSuperArtifactTypes()) {
-            baseToSuper.put(artId, superType.getId());
+         Collection<ArtifactType> superTypes = art.getSuperArtifactTypes();
+         if (!superTypes.isEmpty()) {
+            Integer[] intSuperTypes = new Integer[superTypes.size()];
+            int index = 0;
+            for (ArtifactType superType : superTypes) {
+               intSuperTypes[index++] = superType.getId();
+            }
+            baseToSuper.put(artId, intSuperTypes);
          }
 
          for (Entry<Branch, Collection<AttributeType>> entry : art.getLocalAttributeTypes().entrySet()) {

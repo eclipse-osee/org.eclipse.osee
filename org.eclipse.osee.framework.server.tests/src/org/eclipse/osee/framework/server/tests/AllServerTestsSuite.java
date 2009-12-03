@@ -16,6 +16,7 @@ import org.eclipse.osee.framework.jdk.core.test.JdkCoreTestSuite;
 import org.eclipse.osee.framework.resource.locator.attribute.test.AttributeLocatorProviderTestSuite;
 import org.eclipse.osee.framework.resource.management.test.ResourceManagementTestSuite;
 import org.eclipse.osee.framework.resource.provider.attribute.test.AttributeProviderTestSuite;
+import org.eclipse.osee.framework.search.engine.test.AllSearchEngineTestSuite;
 import org.eclipse.osee.framework.types.tests.OseeTypesTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -31,6 +32,7 @@ JdkCoreTestSuite.class, //
       ResourceManagementTestSuite.class, //
       AttributeLocatorProviderTestSuite.class, //
       AttributeProviderTestSuite.class, //
+      AllSearchEngineTestSuite.class, //
       OseeTypesTestSuite.class, //
 })
 public class AllServerTestsSuite {
