@@ -28,7 +28,7 @@ import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
  */
 public class ActionManager {
 
-   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
+   public static ActionArtifact createAction(IProgressMonitor monitor, String title, String desc, ChangeType changeType, PriorityType priority, boolean validationRequired, Date needByDate, Collection<ActionableItemArtifact> actionableItems, SkynetTransaction transaction) throws OseeCoreException {
       // if "tt" is title, this is an action created for development. To
       // make it easier, all fields are automatically filled in for ATS developer
 
@@ -37,8 +37,8 @@ public class ActionManager {
       }
       ActionArtifact actionArt =
             (ActionArtifact) ArtifactTypeManager.addArtifact(ActionArtifact.ARTIFACT_NAME, AtsUtil.getAtsBranch());
-      ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, userComms,
-            validationRequired, needByDate);
+      ActionArtifact.setArtifactIdentifyData(actionArt, title, desc, changeType, priority, validationRequired,
+            needByDate);
 
       // Retrieve Team Definitions corresponding to selected Actionable Items
       if (monitor != null) {

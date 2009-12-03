@@ -65,12 +65,16 @@ public class NewActionJob extends Job {
    public IStatus run(final IProgressMonitor monitor) {
       try {
          SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Create New Action");
-         if (title.equals("tt")) title += " " + AtsUtil.getAtsDeveloperIncrementingNum();
+         if (title.equals("tt")) {
+            title += " " + AtsUtil.getAtsDeveloperIncrementingNum();
+         }
          actionArt =
-               ActionManager.createAction(monitor, title, desc, changeType, priority, userComms, validationRequired,
-                     needByDate, actionableItems, transaction);
+               ActionManager.createAction(monitor, title, desc, changeType, priority, validationRequired, needByDate,
+                     actionableItems, transaction);
 
-         if (wizard != null) wizard.notifyAtsWizardItemExtensions(actionArt, transaction);
+         if (wizard != null) {
+            wizard.notifyAtsWizardItemExtensions(actionArt, transaction);
+         }
 
          monitor.subTask("Persisting");
          transaction.execute();

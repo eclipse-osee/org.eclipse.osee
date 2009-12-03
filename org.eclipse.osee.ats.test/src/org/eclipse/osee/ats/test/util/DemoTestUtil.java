@@ -38,7 +38,6 @@ import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.skynet.core.utility.Requirements;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.util.ChangeType;
-import org.eclipse.osee.support.test.util.AtsUserCommunity;
 import org.eclipse.osee.support.test.util.DemoActionableItems;
 import org.eclipse.osee.support.test.util.DemoSawBuilds;
 import org.eclipse.osee.support.test.util.DemoUsers;
@@ -89,7 +88,7 @@ public class DemoTestUtil {
    public static TeamWorkFlowArtifact createSimpleAction(String title, SkynetTransaction transaction) throws OseeCoreException {
       ActionArtifact actionArt =
             ActionManager.createAction(null, title, "Description", ChangeType.Improvement, PriorityType.Priority_2,
-                  Arrays.asList(AtsUserCommunity.Other.name()), false, null,
+                  false, null,
                   ActionableItemArtifact.getActionableItems(Arrays.asList(DemoActionableItems.SAW_Code.getName())),
                   transaction);
 

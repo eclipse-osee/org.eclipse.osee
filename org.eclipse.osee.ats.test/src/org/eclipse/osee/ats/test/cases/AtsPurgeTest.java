@@ -67,10 +67,9 @@ public class AtsPurgeTest {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Purge Test");
       ActionArtifact actionArt =
             ActionManager.createAction(null, getClass().getSimpleName(), "description", ChangeType.Improvement,
-                  PriorityType.Priority_2, Arrays.asList("Other"), false, null,
-                  org.eclipse.osee.framework.jdk.core.util.Collections.castAll(ActionableItemArtifact.class,
-                        ArtifactQuery.getArtifactListFromTypeAndName(ActionableItemArtifact.ARTIFACT_NAME, "SAW Test",
-                              AtsUtil.getAtsBranch())), transaction);
+                  PriorityType.Priority_2, false, null, org.eclipse.osee.framework.jdk.core.util.Collections.castAll(
+                        ActionableItemArtifact.class, ArtifactQuery.getArtifactListFromTypeAndName(
+                              ActionableItemArtifact.ARTIFACT_NAME, "SAW Test", AtsUtil.getAtsBranch())), transaction);
       actionArt.persist(transaction);
       transaction.execute();
 

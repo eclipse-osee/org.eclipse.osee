@@ -147,7 +147,7 @@ public class AtsBranchConfigurationTest {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Branch Configuration Test");
       ActionArtifact actionArt =
             ActionManager.createAction(null, TestType.BranchViaVersions.name() + " Req Changes", "description",
-                  ChangeType.Problem, PriorityType.Priority_1, Arrays.asList("Other"), false, null,
+                  ChangeType.Problem, PriorityType.Priority_1, false, null,
                   ActionableItemArtifact.getActionableItems(Arrays.asList(TestType.BranchViaVersions.name() + "- A1")),
                   transaction);
       actionArt.getTeamWorkFlowArtifacts().iterator().next().addRelation(
@@ -248,7 +248,7 @@ public class AtsBranchConfigurationTest {
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
       ActionArtifact actionArt =
             ActionManager.createAction(null, TestType.BranchViaTeamDef.name() + " Req Changes", "description",
-                  ChangeType.Problem, PriorityType.Priority_1, Arrays.asList("Other"), false, null,
+                  ChangeType.Problem, PriorityType.Priority_1, false, null,
                   ActionableItemArtifact.getActionableItems(Arrays.asList(TestType.BranchViaTeamDef.name() + "- A1")),
                   transaction);
       transaction.execute();

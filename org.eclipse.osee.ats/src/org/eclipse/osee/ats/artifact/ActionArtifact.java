@@ -760,7 +760,7 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
             ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""),
             ChangeType.getChangeType(fromAction.getSoleAttributeValue(
                   ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), "")), priType,
-            fromAction.getAttributesToStringList(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()),
+            //            fromAction.getAttributesToStringList(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName()),
             fromAction.getSoleAttributeValue(ATSAttributes.VALIDATION_REQUIRED_ATTRIBUTE.getStoreName(), false),
             fromAction.getSoleAttributeValue(ATSAttributes.NEED_BY_ATTRIBUTE.getStoreName(), null, Date.class));
    }
@@ -770,13 +770,13 @@ public class ActionArtifact extends ATSArtifact implements IWorldViewArtifact {
     * 
     * @param art
     */
-   public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Collection<String> userComms, Boolean validationRequired, Date needByDate) throws OseeCoreException {
+   public static void setArtifactIdentifyData(Artifact art, String title, String desc, ChangeType changeType, PriorityType priority, Boolean validationRequired, Date needByDate) throws OseeCoreException {
       art.setName(title);
       if (!desc.equals("")) {
          art.setSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), desc);
       }
       art.setSoleAttributeValue(ATSAttributes.CHANGE_TYPE_ATTRIBUTE.getStoreName(), changeType.name());
-      art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
+      //      art.setAttributeValues(ATSAttributes.USER_COMMUNITY_ATTRIBUTE.getStoreName(), userComms);
       if (priority != null) {
          art.setSoleAttributeValue(ATSAttributes.PRIORITY_TYPE_ATTRIBUTE.getStoreName(), priority.getShortName());
       }

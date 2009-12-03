@@ -120,7 +120,7 @@ public class ExcelAtsActionArtifactExtractor {
          for (ActionData aData : actionDatas) {
             ActionArtifact actionArt =
                   ActionManager.createAction(null, aData.title, aData.desc, ChangeType.getChangeType(aData.changeType),
-                        AtsPriority.PriorityType.getPriority(aData.priorityStr), aData.userComms, false, null,
+                        AtsPriority.PriorityType.getPriority(aData.priorityStr), false, null,
                         ActionableItemArtifact.getActionableItems(aData.actionableItems), transaction);
             actionArts.add(actionArt);
             if (!aData.version.equals("")) {
@@ -199,7 +199,14 @@ public class ExcelAtsActionArtifactExtractor {
    private final static class InternalRowProcessor implements RowProcessor {
 
       private static enum Columns {
-         Title, Description, ActionableItems, Assignees, Priority, ChangeType, UserCommunity, Version
+         Title,
+         Description,
+         ActionableItems,
+         Assignees,
+         Priority,
+         ChangeType,
+         UserCommunity,
+         Version
       };
 
       private String[] headerRow;

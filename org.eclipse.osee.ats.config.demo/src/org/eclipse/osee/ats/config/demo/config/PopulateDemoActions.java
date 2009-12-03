@@ -186,11 +186,17 @@ public class PopulateDemoActions extends XNavigateItemAction {
       try {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.INFO, "Creating SAW_Bld_2 branch off SAW_Bld_1");
          // Create SAW_Bld_2 branch off SAW_Bld_1
-         Branch branch = createChildMainWorkingBranch(DemoSawBuilds.SAW_Bld_1.name(), DemoSawBuilds.SAW_Bld_2.name());
+         Branch parentBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
+         Branch childBranch =
+               BranchManager.createBaselineBranch(parentBranch, DemoSawBuilds.SAW_Bld_2.name(),
+                     UserManager.getUser(SystemUser.OseeSystem));
+         childBranch.setAliases(DemoSawBuilds.SAW_Bld_2.name());
+         BranchManager.persist(childBranch);
+
          DemoDbUtil.sleep(5000);
          // need to update the branch type;  
          ConnectionHandler.runPreparedUpdate(UPDATE_BRANCH_TYPE, new Object[] {BranchType.BASELINE.getValue(),
-               branch.getId()});
+               childBranch.getId()});
          BranchManager.refreshBranches();
          // Map team definitions versions to their related branches
          SkynetTransaction transaction =
@@ -201,15 +207,6 @@ public class PopulateDemoActions extends XNavigateItemAction {
       } catch (Exception ex) {
          OseeLog.log(OseeAtsConfigDemoActivator.class, Level.SEVERE, ex);
       }
-   }
-
-   public static Branch createChildMainWorkingBranch(String parentBrachName, String childBranchName) throws Exception {
-      Branch parentBranch = BranchManager.getKeyedBranch(parentBrachName);
-      Branch childBranch =
-            BranchManager.createWorkingBranch(parentBranch, childBranchName, UserManager.getUser(SystemUser.OseeSystem));
-      childBranch.setAliases(childBranchName);
-      BranchManager.persist(childBranch);
-      return childBranch;
    }
 
    private void makeAction1ReqChanges(ActionArtifact actionArt) throws Exception {
@@ -425,8 +422,8 @@ public class PopulateDemoActions extends XNavigateItemAction {
          for (String prefixTitle : aData.prefixTitles) {
             ActionArtifact actionArt =
                   ActionManager.createAction(null, prefixTitle + " " + aData.postFixTitle,
-                        TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], PriorityType.Priority_1,
-                        aData.getUserCommunities(), false, null, aData.getActionableItems(), transaction);
+                        TITLE_PREFIX[x] + " " + aData.postFixTitle, CHANGE_TYPE[x], PriorityType.Priority_1, false,
+                        null, aData.getActionableItems(), transaction);
             actionArts.add(actionArt);
             for (TeamWorkFlowArtifact teamWf : actionArt.getTeamWorkFlowArtifacts()) {
                TeamWorkflowManager dtwm = new TeamWorkflowManager(teamWf);
@@ -483,7 +480,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
 
       IOperation operation =
             ArtifactImportOperationFactory.createOperation(file, systemReq, extractor, artifactResolver, false);
-      Operations.executeWork(operation, new NullProgressMonitor(), -1);
+      Operations.executeWorkAndCheckStatus(operation, new NullProgressMonitor(), -1);
 
       // Validate that something was imported
       if (systemReq.getChildren().size() == 0) {
