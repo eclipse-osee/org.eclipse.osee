@@ -1115,9 +1115,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * Reloads this artifact's attributes and relations back to the last state saved. This will have no effect if the
     * artifact has never been saved.
     * 
-    * @throws MultipleArtifactsExist
-    * @throws ArtifactDoesNotExist
-    * @throws IllegalStateException if the artifact is deleted
+    * @throws OseeCoreException
     */
    public void reloadAttributesAndRelations() throws OseeCoreException {
       if (!isInDb()) {
