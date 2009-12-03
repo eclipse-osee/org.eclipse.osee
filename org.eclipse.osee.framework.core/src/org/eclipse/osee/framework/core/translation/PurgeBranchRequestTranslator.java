@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
  * @author Megumi Telles
  * @author Jeff C. Phillips
  */
-public class PurgeBranchResponseTranslator implements ITranslator<PurgeBranchRequest> {
+public class PurgeBranchRequestTranslator implements ITranslator<PurgeBranchRequest> {
    private enum Entry {
       BRANCH_ID
   }

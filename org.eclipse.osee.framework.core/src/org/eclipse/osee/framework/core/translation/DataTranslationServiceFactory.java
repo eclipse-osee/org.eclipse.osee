@@ -57,7 +57,7 @@ public class DataTranslationServiceFactory {
 		service.addTranslator(new ChangeItemTranslator(service), CoreTranslatorId.CHANGE_ITEM);
 		service.addTranslator(new ChangeReportRequestTranslator(), CoreTranslatorId.CHANGE_REPORT_REQUEST);
 		service.addTranslator(new ChangeReportResponseTranslator(service), CoreTranslatorId.CHANGE_REPORT_RESPONSE);
-	      service.addTranslator(new PurgeBranchResponseTranslator(), CoreTranslatorId.PURGE_BRANCH_REQUEST);
+	      service.addTranslator(new PurgeBranchRequestTranslator(), CoreTranslatorId.PURGE_BRANCH_REQUEST);
 
 		service.addTranslator(new CacheUpdateRequestTranslator(), CoreTranslatorId.OSEE_CACHE_UPDATE_REQUEST);
 

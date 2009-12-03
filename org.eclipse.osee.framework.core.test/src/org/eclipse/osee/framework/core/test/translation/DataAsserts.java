@@ -22,6 +22,7 @@ import org.eclipse.osee.framework.core.data.ChangeVersion;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.OseeImportModelRequest;
 import org.eclipse.osee.framework.core.data.OseeImportModelResponse;
+import org.eclipse.osee.framework.core.data.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.data.TableData;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
@@ -234,6 +235,14 @@ public final class DataAsserts {
          for (int index = 0; index < expDatas.size(); index++) {
             assertEquals(expDatas.get(index), actualData.get(index));
          }
+      }
+   }
+
+   public static void assertEquals(PurgeBranchRequest expected, PurgeBranchRequest actual) throws OseeCoreException {
+      if (expected == null) {
+         Assert.assertNull(actual);
+      } else {
+         Assert.assertEquals(expected.getBranchId(), actual.getBranchId());
       }
    }
 
