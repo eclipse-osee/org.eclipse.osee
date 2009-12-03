@@ -20,6 +20,7 @@ import org.eclipse.osee.framework.core.model.BranchField;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.AbstractDbTxOperation;
 import org.eclipse.osee.framework.database.core.OseeConnection;
+import org.eclipse.osee.framework.jdk.core.util.Strings;
 
 /**
  * @author Ryan D. Brooks
@@ -137,7 +138,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          deleteData.add(new Object[] {branch.getId()});
          if (!branch.getModificationType().isDeleted()) {
             for (String alias : branch.getAliases()) {
-               if (alias != null && !alias.equals("")) {
+               if (Strings.isValid(alias)) {
                   insertData.add(new Object[] {branch.getId(), alias});
                }
             }
