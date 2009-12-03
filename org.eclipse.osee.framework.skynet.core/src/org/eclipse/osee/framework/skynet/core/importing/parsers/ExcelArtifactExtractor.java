@@ -91,10 +91,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
          importingRelations = false;
       }
 
-      /*
-       * (non-Javadoc)
-       * @see org.eclipse.osee.framework.jdk.core.util.io.xml.RowProcessor#detectedRowAndColumnCounts(int, int)
-       */
       @Override
       public void detectedRowAndColumnCounts(int rowCount, int columnCount) {
       }
@@ -155,9 +151,6 @@ public class ExcelArtifactExtractor extends AbstractArtifactExtractor {
                OseeLog.log(Activator.class, Level.WARNING,
                      "we failed to add a relation because at least on of its guids are null");
             }
-            // TODO Add relation order
-            //         int aOrder = Integer.parseInt(row[3]);
-            //         int bOrder = Integer.parseInt(row[4]);
             collector.addRoughRelation(new RoughRelation(row[0], guida, guidb, row[5]));
          } else {
             RoughArtifact roughArtifact = new RoughArtifact(RoughArtifactKind.PRIMARY);
