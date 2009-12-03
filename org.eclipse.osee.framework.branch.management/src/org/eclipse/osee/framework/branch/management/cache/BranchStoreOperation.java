@@ -41,7 +41,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
    private static final String DELETE_BRANCH_ALIASES = "delete from osee_branch_definitions where mapped_branch_id = ?";
 
    private static final String INSERT_ADDRESSING =
-         "insert into %s (transaction_id, gamma_id, tx_current, mod_type) select transaction_id, gamma_id, tx_current, mod_type from osee_txs where branch_id = ?";
+         "insert into %s (transaction_id, gamma_id, tx_current, mod_type, branch_id) select transaction_id, gamma_id, tx_current, mod_type, branch_id from osee_txs where branch_id = ?";
 
    public static final String DELETE_ADDRESSING = "delete from %s where branch_id = ?";
 
