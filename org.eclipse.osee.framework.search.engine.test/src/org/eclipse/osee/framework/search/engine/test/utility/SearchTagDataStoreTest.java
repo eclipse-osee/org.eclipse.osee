@@ -8,12 +8,11 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.search.engine.test;
+package org.eclipse.osee.framework.search.engine.test.utility;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import junit.framework.TestCase;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.database.core.DbTransaction;
 import org.eclipse.osee.framework.database.core.JoinUtility;
@@ -23,13 +22,16 @@ import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.search.engine.data.IAttributeLocator;
 import org.eclipse.osee.framework.search.engine.data.SearchTag;
 import org.eclipse.osee.framework.search.engine.utility.SearchTagDataStore;
+import org.junit.Assert;
+import org.junit.Ignore;
+import org.junit.Test;
 
 /**
- * Application Server Test
+ * Test Case for {@link SearchTagDataStore}
  * 
  * @author Roberto E. Escobar
  */
-public class TestSearchDataStore extends TestCase {
+public class SearchTagDataStoreTest {
 
    private List<SearchTag> getTestSearchTagDataStoreData() {
       List<SearchTag> tags = new ArrayList<SearchTag>();
@@ -52,6 +54,9 @@ public class TestSearchDataStore extends TestCase {
       return tags;
    }
 
+   @Ignore
+   // Decouple from database
+   @Test
    public void testSearchTagDataStore() throws OseeCoreException {
       new DbTransaction() {
          @Override
@@ -62,24 +67,27 @@ public class TestSearchDataStore extends TestCase {
                totalTags += searchTag.cacheSize();
             }
             int updated = SearchTagDataStore.storeTags(connection, testData);
-            assertEquals(totalTags, updated);
+            Assert.assertEquals(totalTags, updated);
 
             for (SearchTag tag : testData) {
                for (Long codedTag : tag.getTags()) {
                   Set<IAttributeLocator> locators = SearchTagDataStore.fetchTagEntries(connection, codedTag);
-                  assertEquals(locators.size(), 1);
+                  Assert.assertEquals(locators.size(), 1);
                   IAttributeLocator locator = locators.iterator().next();
-                  assertEquals(locator.getGammaId(), tag.getGammaId());
+                  Assert.assertEquals(locator.getGammaId(), tag.getGammaId());
                }
             }
 
             List<IAttributeLocator> locators = Collections.castAll(testData);
             updated = SearchTagDataStore.deleteTags(connection, locators);
-            assertEquals(totalTags, updated);
+            Assert.assertEquals(totalTags, updated);
          }
       }.execute();
    }
 
+   @Ignore
+   // Decouple from database
+   @Test
    public void testSearchTagDataStoreDeleteByQuery() throws Exception {
       new DbTransaction() {
          @Override
@@ -92,14 +100,14 @@ public class TestSearchDataStore extends TestCase {
             }
 
             int updated = SearchTagDataStore.storeTags(connection, testData);
-            assertEquals(totalTags, updated);
+            Assert.assertEquals(totalTags, updated);
 
             for (SearchTag tag : testData) {
                for (Long codedTag : tag.getTags()) {
                   Set<IAttributeLocator> locators = SearchTagDataStore.fetchTagEntries(connection, codedTag);
-                  assertEquals(locators.size(), 1);
+                  Assert.assertEquals(locators.size(), 1);
                   IAttributeLocator locator = locators.iterator().next();
-                  assertEquals(locator.getGammaId(), tag.getGammaId());
+                  Assert.assertEquals(locator.getGammaId(), tag.getGammaId());
                }
             }
             try {
@@ -109,7 +117,7 @@ public class TestSearchDataStore extends TestCase {
                }
                joinQuery.store(connection);
                updated = SearchTagDataStore.deleteTags(connection, joinQuery.getQueryId());
-               assertEquals(totalTags, updated);
+               Assert.assertEquals(totalTags, updated);
             } finally {
                if (joinQuery != null) {
                   joinQuery.delete(connection);

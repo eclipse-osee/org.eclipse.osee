@@ -10,18 +10,17 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.search.engine.test;
 
-import junit.framework.TestSuite;
+import org.eclipse.osee.framework.search.engine.test.utility.UtilityTestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
 
 /**
  * @author Roberto E. Escobar
  */
-public class AllSearchEngineTests extends TestSuite {
-
-   public AllSearchEngineTests() {
-      addTestSuite(TestWordsUtil.class);
-      addTestSuite(TestSearchDataStore.class);
-      addTestSuite(TestSearchEngine.class);//
-      addTestSuite(TestTagProcessor.class);
-   }
+@RunWith(Suite.class)
+@Suite.SuiteClasses( { //
+UtilityTestSuite.class, //
+})
+public class AllSearchEngineTestSuite {
 
 }
