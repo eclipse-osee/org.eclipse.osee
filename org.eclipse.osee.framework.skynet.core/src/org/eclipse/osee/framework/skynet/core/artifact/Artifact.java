@@ -684,7 +684,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
                "Attribute \"" + attributeTypeName + "\" does not exist for artifact " + getGuid());
       } else if (soleAttributes.size() > 1) {
          throw new MultipleAttributesExist(
-               "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getHumanReadableId());
+               "Attribute \"" + attributeTypeName + "\" must have exactly one instance.  It currently has " + soleAttributes.size() + " for artifact " + getGuid());
       }
       return soleAttributes.iterator().next().getValue();
    }
@@ -749,7 +749,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
             OseeLog.log(
                   Activator.class,
                   Level.SEVERE,
-                  "Attribute \"" + attributeTypeName + "\" has null value for Artifact " + getHumanReadableId() + " \"" + getName() + "\"");
+                  "Attribute \"" + attributeTypeName + "\" has null value for Artifact " + getGuid() + " \"" + getName() + "\"");
             return defaultReturnValue;
          }
          return value;
