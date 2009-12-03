@@ -16,11 +16,14 @@ import org.eclipse.osee.framework.core.data.IOseeType;
  * @author Roberto E. Escobar
  */
 public enum CoreAttributeTypes implements IOseeType {
+   ACTIVE("Active", "AAMFEbImQyR38BY8A5QA"),
+   EMAIL("Email", "AAMFEbaZjEVoecDFCCQA"),
    FAVORITE_BRANCH("Favorite Branch", "AAMFEbMnzS7P92knZKAA"),
    NAME("Name", "AAMFEcF1AzV7PKuHmxwA"),
    NATIVE_CONTENT("Native Content", "AAMFEcdBJGBK9nr9TTQA"),
    NATIVE_EXTENSION("Extension", "AAMFEcUbJEERZTnwJzAA"),
    PARAGRAPH_NUMBER("Imported Paragraph Number", "AAMFEQ3boD3sp6VfArAA"),
+   PHONE("Phone", "AAMFEbUkVSwKu4LSpWAA"),
    WHOLE_WORD_CONTENT("Whole Word Content", "AAMFEchZmAzZo2tHjVAA"),
    WORD_TEMPLATE_CONTENT("Word Template Content", "AAMFEcfcGS2V3SqQN2wA"),
    RELATION_ORDER("Relation Order", "ABM5kHa9cFsTbI_ooyQA"),

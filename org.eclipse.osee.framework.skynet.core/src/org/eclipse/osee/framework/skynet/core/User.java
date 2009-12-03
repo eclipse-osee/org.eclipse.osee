@@ -36,10 +36,6 @@ public class User extends Artifact implements Serializable {
    private static final long serialVersionUID = 834749078806388387L;
    public static final String userIdAttributeName = "User Id";
 
-   public static enum Attributes {
-      Phone, Email, Active, Policy
-   };
-
    private PropertyStore userSettings;
 
    @Override
@@ -86,33 +82,29 @@ public class User extends Artifact implements Serializable {
    }
 
    public String getEmail() throws OseeCoreException {
-      return getSoleAttributeValue(Attributes.Email.toString(), "");
+      return getSoleAttributeValue(CoreAttributeTypes.EMAIL, "");
    }
 
    public void setEmail(String email) throws OseeCoreException {
-      setSoleAttributeValue(Attributes.Email.toString(), email);
+      setSoleAttributeValue(CoreAttributeTypes.EMAIL, email);
    }
 
    public String getPhone() throws OseeCoreException {
-      return getSoleAttributeValue(Attributes.Phone.toString(), "");
+      return getSoleAttributeValue(CoreAttributeTypes.PHONE, "");
    }
 
    public void setPhone(String phone) throws OseeCoreException {
-      setSoleAttributeValue(Attributes.Phone.toString(), phone);
+      setSoleAttributeValue(CoreAttributeTypes.PHONE, phone);
    }
 
    public Boolean isActive() throws OseeCoreException {
-      return getSoleAttributeValue(Attributes.Active.toString());
+      return getSoleAttributeValue(CoreAttributeTypes.ACTIVE);
    }
 
    public void setActive(boolean active) throws OseeCoreException {
-      setSoleAttributeValue(Attributes.Active.toString(), active);
+      setSoleAttributeValue(CoreAttributeTypes.ACTIVE, active);
    }
 
-   /**
-    * @param favoriteBranch
-    * @throws OseeCoreException
-    */
    public void toggleFavoriteBranch(Branch favoriteBranch) throws OseeCoreException {
       HashSet<String> branchGuids = new HashSet<String>();
       for (Branch branch : BranchManager.getNormalBranches()) {
