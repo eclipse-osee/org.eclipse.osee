@@ -17,28 +17,31 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 /**
  * @author Roberto E. Escobar
  */
-public class OseeImportModelRequestTranslation implements ITranslator<OseeImportModelRequest> {
+public class OseeImportModelRequestTranslator implements ITranslator<OseeImportModelRequest> {
 
    private enum Fields {
       PERSIST,
       GENERATE_EMF_COMPARE,
       GENERATE_DIRTY_REPORT,
+      MODEL_NAME,
       MODEL;
    }
 
    @Override
    public OseeImportModelRequest convert(PropertyStore store) throws OseeCoreException {
       String model = store.get(Fields.MODEL.name());
+      String modelName = store.get(Fields.MODEL_NAME.name());
       boolean createTypeChangeReport = store.getBoolean(Fields.GENERATE_DIRTY_REPORT.name());
       boolean createCompareReport = store.getBoolean(Fields.GENERATE_EMF_COMPARE.name());
       boolean isPersistAllowed = store.getBoolean(Fields.PERSIST.name());
 
-      return new OseeImportModelRequest(model, createTypeChangeReport, createCompareReport, isPersistAllowed);
+      return new OseeImportModelRequest(modelName, model, createTypeChangeReport, createCompareReport, isPersistAllowed);
    }
 
    @Override
    public PropertyStore convert(OseeImportModelRequest object) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
+      store.put(Fields.MODEL_NAME.name(), object.getModelName());
       store.put(Fields.MODEL.name(), object.getModel());
       store.put(Fields.GENERATE_DIRTY_REPORT.name(), object.isCreateTypeChangeReport());
       store.put(Fields.GENERATE_EMF_COMPARE.name(), object.isCreateCompareReport());

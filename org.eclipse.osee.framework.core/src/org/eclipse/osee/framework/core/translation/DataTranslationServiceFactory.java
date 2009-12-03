@@ -55,7 +55,6 @@ public class DataTranslationServiceFactory {
 
 		service.addTranslator(new ChangeVersionTranslator(), CoreTranslatorId.CHANGE_VERSION);
 		service.addTranslator(new ChangeItemTranslator(service), CoreTranslatorId.CHANGE_ITEM);
-		
 		service.addTranslator(new ChangeReportRequestTranslator(), CoreTranslatorId.CHANGE_REPORT_REQUEST);
 		service.addTranslator(new ChangeReportResponseTranslator(service), CoreTranslatorId.CHANGE_REPORT_RESPONSE);
 
@@ -77,8 +76,8 @@ public class DataTranslationServiceFactory {
 		service.addTranslator(new OseeEnumTypeCacheUpdateResponseTranslator(),
 				CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
 
-		service.addTranslator(new OseeImportModelRequestTranslation(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
-		service.addTranslator(new OseeImportModelResponseTranslation(service),
+		service.addTranslator(new OseeImportModelRequestTranslator(), CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
+		service.addTranslator(new OseeImportModelResponseTranslator(service),
 				CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
 		service.addTranslator(new TableDataTranslator(), CoreTranslatorId.TABLE_DATA);
 		return service;

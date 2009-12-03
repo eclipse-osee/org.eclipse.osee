@@ -21,7 +21,8 @@ public class OseeImportModelResponse {
 
    private final List<TableData> reportData;
    private boolean wasPersisted;
-   private String comparisonSnapshot;
+   private String comparisonSnapshotModel;
+   private String comparisonSnapshotModelName;
 
    public OseeImportModelResponse() {
       this.wasPersisted = false;
@@ -44,11 +45,19 @@ public class OseeImportModelResponse {
       this.wasPersisted = wasPersisted;
    }
 
-   public String getComparisonSnapshot() {
-      return comparisonSnapshot;
+   public String getComparisonSnapshotModel() {
+      return comparisonSnapshotModel;
    }
 
-   public void setComparisonSnapshot(String comparisonSnapshot) {
-      this.comparisonSnapshot = comparisonSnapshot;
+   public String getComparisonSnapshotModelName() {
+      return comparisonSnapshotModelName;
+   }
+
+   public void setComparisonSnapshotModel(String comparisonSnapshotModel) {
+      this.comparisonSnapshotModel = comparisonSnapshotModel;
+   }
+
+   public void setComparisonSnapshotModelName(String comparisonSnapshotModelName) {
+      this.comparisonSnapshotModelName = comparisonSnapshotModelName;
    }
 }

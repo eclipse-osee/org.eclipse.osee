@@ -46,6 +46,22 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
       this.uniqueName = uniqueName;
    }
 
+   public final synchronized void decacheAll() {
+      if (!duringPopulate) {
+         this.duringPopulate = true;
+         clearAdditionalData();
+         nameToTypeMap.clear();
+         idToTypeMap.clear();
+         guidToTypeMap.clear();
+         this.ensurePopulatedRanOnce = false;
+         this.duringPopulate = false;
+      }
+   }
+
+   protected void clearAdditionalData() {
+
+   }
+
    @Override
    public OseeCacheEnum getCacheId() {
       return cacheId;

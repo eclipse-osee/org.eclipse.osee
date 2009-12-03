@@ -22,11 +22,12 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 /**
  * @author Roberto E. Escobar
  */
-public class OseeImportModelResponseTranslation implements ITranslator<OseeImportModelResponse> {
+public class OseeImportModelResponseTranslator implements ITranslator<OseeImportModelResponse> {
 
    private enum Fields {
       WAS_PERSISTED,
       EMF_COMPARE_REPORT,
+      EMF_COMPARE_NAME,
       DIRTY_REPORT,
       TABLE_COUNT,
       TABLE,
@@ -38,7 +39,7 @@ public class OseeImportModelResponseTranslation implements ITranslator<OseeImpor
 
    private final IDataTranslationService service;
 
-   public OseeImportModelResponseTranslation(IDataTranslationService service) {
+   public OseeImportModelResponseTranslator(IDataTranslationService service) {
       this.service = service;
    }
 
@@ -46,7 +47,8 @@ public class OseeImportModelResponseTranslation implements ITranslator<OseeImpor
    public OseeImportModelResponse convert(PropertyStore store) throws OseeCoreException {
       OseeImportModelResponse response = new OseeImportModelResponse();
       response.setPersisted(store.getBoolean(Fields.WAS_PERSISTED.name()));
-      response.setComparisonSnapshot(store.get(Fields.EMF_COMPARE_REPORT.name()));
+      response.setComparisonSnapshotModelName(store.get(Fields.EMF_COMPARE_NAME.name()));
+      response.setComparisonSnapshotModel(store.get(Fields.EMF_COMPARE_REPORT.name()));
       List<TableData> data = new ArrayList<TableData>();
 
       int numberOfTables = store.getInt(Fields.TABLE_COUNT.name());
@@ -63,7 +65,8 @@ public class OseeImportModelResponseTranslation implements ITranslator<OseeImpor
    public PropertyStore convert(OseeImportModelResponse object) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       store.put(Fields.WAS_PERSISTED.name(), object.wasPersisted());
-      store.put(Fields.EMF_COMPARE_REPORT.name(), object.getComparisonSnapshot());
+      store.put(Fields.EMF_COMPARE_NAME.name(), object.getComparisonSnapshotModelName());
+      store.put(Fields.EMF_COMPARE_REPORT.name(), object.getComparisonSnapshotModel());
 
       List<TableData> tableData = object.getReportData();
       for (int index = 0; index < tableData.size(); index++) {

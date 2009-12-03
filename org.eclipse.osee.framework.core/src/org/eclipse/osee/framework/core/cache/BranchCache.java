@@ -39,6 +39,13 @@ public class BranchCache extends AbstractOseeCache<Branch> {
    }
 
    @Override
+   protected void clearAdditionalData() {
+      sourceDestMerge.clear();
+      systemRootBranch = null;
+      commonBranch = null;
+   }
+
+   @Override
    public void cache(Branch type) throws OseeCoreException {
       super.cache(type);
       if (BranchType.SYSTEM_ROOT == type.getBranchType()) {

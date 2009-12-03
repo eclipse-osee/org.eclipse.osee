@@ -32,8 +32,8 @@ import org.eclipse.osee.framework.core.translation.ChangeVersionTranslator;
 import org.eclipse.osee.framework.core.translation.DataTranslationServiceFactory;
 import org.eclipse.osee.framework.core.translation.ITranslator;
 import org.eclipse.osee.framework.core.translation.OseeEnumTypeCacheUpdateResponseTranslator;
-import org.eclipse.osee.framework.core.translation.OseeImportModelRequestTranslation;
-import org.eclipse.osee.framework.core.translation.OseeImportModelResponseTranslation;
+import org.eclipse.osee.framework.core.translation.OseeImportModelRequestTranslator;
+import org.eclipse.osee.framework.core.translation.OseeImportModelResponseTranslator;
 import org.eclipse.osee.framework.core.translation.RelationTypeCacheUpdateResponseTranslator;
 import org.eclipse.osee.framework.core.translation.TableDataTranslator;
 import org.eclipse.osee.framework.core.translation.TransactionCacheUpdateResponseTranslator;
@@ -77,8 +77,8 @@ public class DataTranslationServiceFactoryTest {
       checkExists(srvc, BranchCacheUpdateResponseTranslator.class, CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
       checkExists(srvc, TransactionCacheUpdateResponseTranslator.class, CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE);
 
-      checkExists(srvc, OseeImportModelRequestTranslation.class, CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
-      checkExists(srvc, OseeImportModelResponseTranslation.class, CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
+      checkExists(srvc, OseeImportModelRequestTranslator.class, CoreTranslatorId.OSEE_IMPORT_MODEL_REQUEST);
+      checkExists(srvc, OseeImportModelResponseTranslator.class, CoreTranslatorId.OSEE_IMPORT_MODEL_RESPONSE);
       checkExists(srvc, TableDataTranslator.class, CoreTranslatorId.TABLE_DATA);
 
       //      checkExists(srvc, BasicArtifactTranslator.class, CoreTranslatorId.ARTIFACT_METADATA);

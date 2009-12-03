@@ -16,11 +16,13 @@ package org.eclipse.osee.framework.core.data;
 public class OseeImportModelRequest {
 
    private final String model;
+   private final String modelName;
    private final boolean isPersistAllowed;
    private final boolean createTypeChangeReport;
    private final boolean createCompareReport;
 
-   public OseeImportModelRequest(String model, boolean createTypeChangeReport, boolean createCompareReport, boolean isPersistAllowed) {
+   public OseeImportModelRequest(String modelName, String model, boolean createTypeChangeReport, boolean createCompareReport, boolean isPersistAllowed) {
+      this.modelName = modelName;
       this.model = model;
       this.isPersistAllowed = isPersistAllowed;
       this.createCompareReport = createCompareReport;
@@ -41,6 +43,10 @@ public class OseeImportModelRequest {
 
    public boolean isPersistAllowed() {
       return isPersistAllowed;
+   }
+
+   public String getModelName() {
+      return modelName;
    }
 
 }

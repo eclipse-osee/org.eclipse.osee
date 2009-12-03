@@ -225,7 +225,7 @@ public class HttpProcessor {
          method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
          statusCode = getHttpClient().executeMethod(method);
-         if (statusCode == HttpStatus.SC_OK) {
+         if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_ACCEPTED) {
             inputStream = method.getResponseBodyAsStream();
             result.setEncoding(method.getResponseCharSet());
             result.setContentType(getContentType(method));

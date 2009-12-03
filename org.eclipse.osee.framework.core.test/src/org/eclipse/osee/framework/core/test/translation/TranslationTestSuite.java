@@ -25,6 +25,9 @@ BranchCommitRequestTranslatorTest.class, //
       ChangeReportResponseTranslatorTest.class,//
       DataTranslationServiceFactoryTest.class, //
       DataTranslationServiceTest.class, //
+      OseeImportModelRequestTranslatorTest.class, //
+      OseeImportModelResponseTranslatorTest.class, //
+      TableDataTranslatorTest.class, //
       TransactionCacheUpdateResponseTranslatorTest.class, //
       TransactionRecordTranslatorTest.class //
 })
