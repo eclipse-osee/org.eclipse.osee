@@ -44,7 +44,7 @@ public class HttpCommitDataRequester {
 
       BranchCommitResponse response =
             HttpMessage.send(OseeServerContext.BRANCH_CONTEXT, parameters, CoreTranslatorId.BRANCH_COMMIT_REQUEST,
-            requestData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
+                  requestData, CoreTranslatorId.BRANCH_COMMIT_RESPONSE);
 
       TransactionRecord newTransaction = response.getTransaction();
 
@@ -54,7 +54,9 @@ public class HttpCommitDataRequester {
                newTransaction);
       }
       // reload the committed artifacts since the commit changed them on the destination branch
-      Object[] queryData = new Object[] {newTransaction.getId(), newTransaction.getId()};
+      Object[] queryData =
+            new Object[] {newTransaction.getBranchId(), newTransaction.getId(), newTransaction.getBranchId(),
+                  newTransaction.getId(), newTransaction.getBranchId(), newTransaction.getId()};
       ArtifactLoader.getArtifacts(ARTIFACT_CHANGES, queryData, 400, ArtifactLoad.FULL, true, null, true);
       // Kick commit event
       OseeEventManager.kickBranchEvent(HttpCommitDataRequester.class, BranchEventType.Committed, sourceBranch.getId());

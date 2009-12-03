@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.branch.management.commit;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -168,7 +167,7 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       //      transactioCache;
       TransactionRecord record =
             modelFactory.getOseeFactoryService().getTransactionFactory().create(newTransactionNumber,
-                  destinationBranch.getId(), comment, new Date(), userArtId,
+                  destinationBranch.getId(), comment, timestamp, userArtId,
                   sourceBranch.getAssociatedArtifact().getArtId(), TransactionDetailsType.NonBaselined);
       return record;
    }
@@ -177,8 +176,8 @@ public class CommitDbOperation extends AbstractDbTxOperation {
       List<Object[]> insertData = new ArrayList<Object[]>();
       for (ChangeItem change : changes) {
          ModificationType modType = change.getNetChange().getModType();
-         insertData.add(new Object[] {txHolder.getTransaction().getId(), destinationBranch.getId(), change.getNetChange().getGammaId(),
-               modType.getValue(), TxChange.getCurrent(modType).getValue()});
+         insertData.add(new Object[] {txHolder.getTransaction().getId(), destinationBranch.getId(),
+               change.getNetChange().getGammaId(), modType.getValue(), TxChange.getCurrent(modType).getValue()});
       }
       getDatabaseService().runBatchUpdate(connection, INSERT_COMMIT_ADDRESSING, insertData);
    }
