@@ -23,17 +23,17 @@ import org.eclipse.swt.graphics.Image;
 /**
  * @author Jeff C. Phillips
  */
-public class CompareItem implements IStreamContentAccessor, ITypedElement, IModificationDate , IEditableContent{
+public class CompareItem implements IStreamContentAccessor, ITypedElement, IModificationDate, IEditableContent {
    private String contents;
    private final String name;
    private final boolean isEditable;
    private final long time;
    private final Image image;
 
-   CompareItem(String name, String contents, long time) {
-      this(name, contents, time, false, null) ;
+   public CompareItem(String name, String contents, long time) {
+      this(name, contents, time, false, null);
    }
-   
+
    CompareItem(String name, String contents, long time, boolean isEditable, Image image) {
       this.name = name;
       this.contents = contents;
@@ -53,10 +53,10 @@ public class CompareItem implements IStreamContentAccessor, ITypedElement, IModi
    public Image getImage() {
       return image;
    }
-   
+
    public boolean isEditable() {
       return isEditable;
-  }
+   }
 
    public long getModificationDate() {
       return time;
@@ -87,6 +87,7 @@ public class CompareItem implements IStreamContentAccessor, ITypedElement, IModi
          throw new RuntimeException(ex);
       }
    }
+
    /**
     * This method must be overridden by a subclass if they want to be notified when the compare editor has been saved
     */

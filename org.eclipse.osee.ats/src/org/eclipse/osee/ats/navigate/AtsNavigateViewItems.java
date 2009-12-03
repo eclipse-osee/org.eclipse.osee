@@ -24,6 +24,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.ats.AtsImage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.actions.NewAction;
+import org.eclipse.osee.ats.actions.CompareTwoStringsAction;
 import org.eclipse.osee.ats.artifact.DecisionReviewArtifact;
 import org.eclipse.osee.ats.artifact.PeerToPeerReviewArtifact;
 import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
@@ -163,6 +164,7 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
          new XNavigateItem(reportItems, "ATS World Reports - Input from Actions in ATS World", AtsImage.REPORT);
          new BarChartExample(reportItems);
          new ResultsEditorExample(reportItems);
+         new CompareEditorExample(reportItems);
          new XViewerExample(reportItems);
          new XResultDataExample(reportItems);
          //      new ExtendedStatusReportItem(atsReportItems, "ATS World Extended Status Report");
@@ -178,9 +180,10 @@ public class AtsNavigateViewItems extends XNavigateViewItems {
 
          items.add(reportItems);
 
-         XNavigateItem importItems = new XNavigateItem(null, "Import", FrameworkImage.IMPORT);
-         new ImportActionsViaSpreadsheet(importItems);
-         items.add(importItems);
+         XNavigateItem utilItems = new XNavigateItem(null, "Util", FrameworkImage.GEAR);
+         new ImportActionsViaSpreadsheet(utilItems);
+         new XNavigateItemAction(utilItems, new CompareTwoStringsAction(), FrameworkImage.EDIT);
+         items.add(utilItems);
 
          BlamContributionManager.addBlamOperationsToNavigator(items);
 
