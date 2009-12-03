@@ -51,8 +51,8 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
 
    @Override
    public void load(IOseeCache<ArtifactType> cache) throws OseeCoreException {
-      branchCache.ensurePopulated();
       attrCache.ensurePopulated();
+      branchCache.ensurePopulated();
       super.load(cache);
    }
 
