@@ -27,7 +27,7 @@ public class DemoDbActionData {
    public final PriorityType priority;
    public final String[] actionableItems;
    public final DefaultTeamState toState;
-   public final Integer[] userCommunityIndecies;
+   public final Integer[] userCommunityIndices;
    public final String[] prefixTitles;
    private final CreateReview[] createReviews;
    public enum CreateReview {
@@ -39,7 +39,7 @@ public class DemoDbActionData {
       this.postFixTitle = postFixTitle;
       this.priority = priority;
       this.actionableItems = actionableItems;
-      this.userCommunityIndecies = userCommunityIndecies;
+      this.userCommunityIndices = userCommunityIndecies;
       this.toState = toState;
       this.createReviews = createReviews;
    }
@@ -48,7 +48,7 @@ public class DemoDbActionData {
       String[] configuredUserCommunities = UserCommunity.getInstance().getUserCommunityNames().toArray(new String[] {});
       Set<String> userComms = new HashSet<String>();
 
-      for (Integer index : userCommunityIndecies) {
+      for (Integer index : userCommunityIndices) {
          userComms.add(configuredUserCommunities[index]);
       }
       return userComms;
