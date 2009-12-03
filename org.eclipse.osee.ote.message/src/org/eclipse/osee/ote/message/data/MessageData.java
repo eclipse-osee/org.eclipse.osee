@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.ote.core.GCHelper;
 import org.eclipse.osee.ote.core.log.Env;
@@ -615,5 +616,9 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
 
    public boolean containsSendListener(IMessageSendListener listener) {
       return messageSendListeners.contains(listener);
+   }
+   
+   public boolean isMessageCollectionNotEmpty(){
+	   return messages.size() > 0;
    }
 }
