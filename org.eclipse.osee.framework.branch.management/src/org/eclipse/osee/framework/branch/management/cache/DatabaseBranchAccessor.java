@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.operation.Operations;
-import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -55,11 +54,11 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    private static final String SELECT_BRANCH_ALIASES =
          "select * from osee_branch_definitions order by mapped_branch_id";
 
-   private final IOseeCachingServiceProvider cachingService;
+   private final TransactionCache txCache;
 
-   public DatabaseBranchAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, IOseeCachingServiceProvider cachingService) {
+   public DatabaseBranchAccessor(IOseeDatabaseServiceProvider databaseProvider, IOseeModelFactoryServiceProvider factoryProvider, TransactionCache txCache) {
       super(databaseProvider, factoryProvider);
-      this.cachingService = cachingService;
+      this.txCache = txCache;
    }
 
    @Override
@@ -127,8 +126,6 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
    }
 
    private void loadBranchRelatedTransactions(BranchCache cache, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx) throws OseeCoreException {
-      TransactionCache txCache = cachingService.getOseeCachingService().getTransactionCache();
-
       Set<Integer> transactionIds = new HashSet<Integer>();
       transactionIds.addAll(branchToSourceTx.values());
       transactionIds.addAll(branchToBaseTx.values());

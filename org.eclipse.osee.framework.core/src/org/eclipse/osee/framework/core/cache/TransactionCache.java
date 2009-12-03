@@ -31,7 +31,7 @@ import org.eclipse.osee.framework.core.util.Conditions;
  */
 public class TransactionCache implements IOseeCache<TransactionRecord> {
 
-   private final ITransactionDataAccessor accessor;
+   private ITransactionDataAccessor accessor;
 
    private final Map<Integer, TransactionRecord> transactionIdCache = new HashMap<Integer, TransactionRecord>();
    //   private final Map<Branch, TransactionRecord> branchTransactions = new HashMap<Branch, TransactionRecord>();
@@ -39,10 +39,13 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    private final boolean duringPopulate;
    private final OseeCacheEnum cacheId;
 
-   public TransactionCache(ITransactionDataAccessor accessor) {
+   public TransactionCache() {
       this.cacheId = OseeCacheEnum.TRANSACTION_CACHE;
-      this.accessor = accessor;
       this.duringPopulate = false;
+   }
+
+   public void setAccessor(ITransactionDataAccessor accessor) {
+      this.accessor = accessor;
    }
 
    protected ITransactionDataAccessor getDataAccessor() {
@@ -146,8 +149,7 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
          toReturn = branch.getBaseTransaction();
       }
       if (toReturn == null) {
-         getDataAccessor().loadTransactionRecord(this, branch, revision);
-         toReturn = getDataAccessor().getTransactionRecord();
+         toReturn = getDataAccessor().loadTransactionRecord(this, branch, revision);
 
       }
       return toReturn;
@@ -170,5 +172,11 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
             //            duringPopulate = false;
          }
       }
+   }
+
+   public void reloadCache() {
+   }
+
+   public void decacheAll() {
    }
 }

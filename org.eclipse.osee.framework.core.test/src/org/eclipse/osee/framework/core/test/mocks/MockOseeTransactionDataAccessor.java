@@ -64,11 +64,7 @@ public class MockOseeTransactionDataAccessor implements ITransactionDataAccessor
    }
 
    @Override
-   public void loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException {
-   }
-
-   @Override
-   public TransactionRecord getTransactionRecord() {
+   public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException {
       return null;
    }
 

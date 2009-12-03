@@ -14,7 +14,6 @@ package org.eclipse.osee.framework.core.test.mocks;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
@@ -77,9 +76,8 @@ public final class MockDataFactory {
       int transactionNumber = (int) Math.random();
       Long gammaIdNumber = Long.valueOf((int) Math.random());
 
-      ArtifactChangeItem changeItem = new ArtifactChangeItem(gammaIdNumber,
-                                                             ModificationType.getMod(1),
-                                                             transactionNumber, artId);
+      ArtifactChangeItem changeItem =
+            new ArtifactChangeItem(gammaIdNumber, ModificationType.getMod(1), transactionNumber, artId);
       populateChangeVersion(changeItem.getDestinationVersion(), 22);
       populateChangeVersion(changeItem.getCurrentVersion(), 15);
       return changeItem;
@@ -87,8 +85,7 @@ public final class MockDataFactory {
 
    public static ChangeVersion createChangeVersion(int index) {
       ModificationType modType = ModificationType.values()[index % ModificationType.values().length];
-      return new ChangeVersion("change_version_value_" + index, (long) (index * Integer.MAX_VALUE),
-                               modType, index * 11);
+      return new ChangeVersion("change_version_value_" + index, (long) (index * Integer.MAX_VALUE), modType, index * 11);
    }
 
    public static void populateChangeVersion(ChangeVersion changeVersion, int index) {
@@ -101,11 +98,10 @@ public final class MockDataFactory {
 
    public static AttributeType createAttributeType() throws OseeCoreException {
       OseeEnumTypeFactory oseeEnumTypeFactory = new OseeEnumTypeFactory();
-      AttributeType attributeType = new AttributeType(GUID.create(), "name", "baseType",
-                                                      "providerName", ".xml", "", 1, 1,
-                                                      "description", "tagger");
-      attributeType.setOseeEnumType(oseeEnumTypeFactory.createEnumType(GUID.create(),
-                                                                       "enum type name"));
+      AttributeType attributeType =
+            new AttributeType(GUID.create(), "name", "baseType", "providerName", ".xml", "", 1, 1, "description",
+                  "tagger");
+      attributeType.setOseeEnumType(oseeEnumTypeFactory.createEnumType(GUID.create(), "enum type name"));
       return attributeType;
    }
 
@@ -117,14 +113,13 @@ public final class MockDataFactory {
    }
 
    public static TransactionRecord createTransaction(int index, int branchId) {
-      TransactionDetailsType type = TransactionDetailsType.values()[Math.abs(index
-                                                                             % TransactionDetailsType.values().length)];
+      TransactionDetailsType type =
+            TransactionDetailsType.values()[Math.abs(index % TransactionDetailsType.values().length)];
       int value = index;
       if (value == 0) {
          value++;
       }
-      return new TransactionRecord(value * 47, branchId, "comment_" + value, new Date(),
-                                   value * 37, value * 42, type);
+      return new TransactionRecord(value * 47, branchId, "comment_" + value, new Date(), value * 37, value * 42, type);
    }
 
    public static OseeEnumEntry createEnumEntry(int index) {
@@ -136,12 +131,9 @@ public final class MockDataFactory {
    }
 
    public static AttributeType createAttributeType(int index, OseeEnumType oseeEnumType) throws OseeCoreException {
-      AttributeType type = new AttributeType(GUID.create(), "attrType_" + index, "baseClass_"
-                                                                                 + index,
-                                             "providerId_" + index, "ext_" + index, "default_"
-                                                                                    + index,
-                                             index * 2, index * 7, "description_" + index, "tag_"
-                                                                                           + index);
+      AttributeType type =
+            new AttributeType(GUID.create(), "attrType_" + index, "baseClass_" + index, "providerId_" + index,
+                  "ext_" + index, "default_" + index, index * 2, index * 7, "description_" + index, "tag_" + index);
       type.setOseeEnumType(oseeEnumType);
       return type;
    }
@@ -155,19 +147,16 @@ public final class MockDataFactory {
       return new ArtifactType(baseType.getGuid(), baseType.getName(), true);
    }
 
-   public static RelationType createRelationType(int index, ArtifactType artTypeA,
-         ArtifactType artTypeB) {
-      RelationTypeMultiplicity multiplicity = RelationTypeMultiplicity.values()[Math.abs(index
-                                                                                         % RelationTypeMultiplicity.values().length)];
-      String order = RelationOrderBaseTypes.values()[index
-                                                     % RelationTypeMultiplicity.values().length].getGuid();
-      return new RelationType(GUID.create(), "relType_" + index, "sideA_" + index,
-                              "sideB_" + index, artTypeA, artTypeB, multiplicity, order);
+   public static RelationType createRelationType(int index, ArtifactType artTypeA, ArtifactType artTypeB) {
+      RelationTypeMultiplicity multiplicity =
+            RelationTypeMultiplicity.values()[Math.abs(index % RelationTypeMultiplicity.values().length)];
+      String order = RelationOrderBaseTypes.values()[index % RelationTypeMultiplicity.values().length].getGuid();
+      return new RelationType(GUID.create(), "relType_" + index, "sideA_" + index, "sideB_" + index, artTypeA,
+            artTypeB, multiplicity, order);
    }
 
    public static CacheUpdateRequest createRequest(int index) {
-      OseeCacheEnum cacheEnum = OseeCacheEnum.values()[Math.abs(index
-                                                                % OseeCacheEnum.values().length)];
+      OseeCacheEnum cacheEnum = OseeCacheEnum.values()[Math.abs(index % OseeCacheEnum.values().length)];
       List<String> guids = new ArrayList<String>();
       for (int j = 1; j <= index * 3; j++) {
          guids.add(GUID.create());
@@ -177,8 +166,7 @@ public final class MockDataFactory {
 
    public static IOseeModelFactoryService createFactoryService() {
       return new OseeModelFactoryService(new BranchFactory(), new TransactionRecordFactory(),
-                                         new ArtifactTypeFactory(), new AttributeTypeFactory(),
-                                         new RelationTypeFactory(), new OseeEnumTypeFactory());
+            new ArtifactTypeFactory(), new AttributeTypeFactory(), new RelationTypeFactory(), new OseeEnumTypeFactory());
    }
 
    public static IOseeModelFactoryServiceProvider createFactoryProvider() {
@@ -187,15 +175,14 @@ public final class MockDataFactory {
 
    public static IOseeCachingServiceProvider createCachingProvider() {
       BranchCache brCache = new BranchCache(new MockOseeDataAccessor<Branch>());
-      TransactionCache txCache = new TransactionCache(new MockOseeTransactionDataAccessor());
+      TransactionCache txCache = new TransactionCache();
+      txCache.setAccessor(new MockOseeTransactionDataAccessor());
       ArtifactTypeCache artCache = new ArtifactTypeCache(new MockOseeDataAccessor<ArtifactType>());
-      AttributeTypeCache attrCache = new AttributeTypeCache(
-                                                            new MockOseeDataAccessor<AttributeType>());
+      AttributeTypeCache attrCache = new AttributeTypeCache(new MockOseeDataAccessor<AttributeType>());
       RelationTypeCache relCache = new RelationTypeCache(new MockOseeDataAccessor<RelationType>());
       OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new MockOseeDataAccessor<OseeEnumType>());
 
-      IOseeCachingService service = new OseeCachingService(brCache, txCache, artCache, attrCache,
-                                                           relCache, enumCache);
+      IOseeCachingService service = new OseeCachingService(brCache, txCache, artCache, attrCache, relCache, enumCache);
       return new MockOseeCachingServiceProvider(service);
    }
 
@@ -215,10 +202,9 @@ public final class MockDataFactory {
       int populateBaseTxFromAddressingQueryId = -1;
       int destinationBranchId = -1;
 
-      return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid,
-                                       branchName, associatedArtifactId, staticBranchName,
-                                       authorId, creationComment,
-                                       populateBaseTxFromAddressingQueryId, destinationBranchId);
+      return new BranchCreationRequest(branchType, sourceTransactionId, parentBranchId, branchGuid, branchName,
+            associatedArtifactId, staticBranchName, authorId, creationComment, populateBaseTxFromAddressingQueryId,
+            destinationBranchId);
    }
 
    public static Object createBranchCreateResponse(int index) {

@@ -100,4 +100,24 @@ public class OseeCachingService implements IOseeCachingService {
       }
       throw new OseeArgumentException(String.format("Unable to find cache for id [%s]", cacheId));
    }
+
+   @Override
+   public synchronized void reloadAll() throws OseeCoreException {
+      getBranchCache().reloadCache();
+      getTransactionCache().reloadCache();
+      getEnumTypeCache().reloadCache();
+      getAttributeTypeCache().reloadCache();
+      getArtifactTypeCache().reloadCache();
+      getRelationTypeCache().reloadCache();
+   }
+
+   @Override
+   public synchronized void clearAll() {
+      getBranchCache().decacheAll();
+      getTransactionCache().decacheAll();
+      getEnumTypeCache().decacheAll();
+      getAttributeTypeCache().decacheAll();
+      getArtifactTypeCache().decacheAll();
+      getRelationTypeCache().decacheAll();
+   }
 }

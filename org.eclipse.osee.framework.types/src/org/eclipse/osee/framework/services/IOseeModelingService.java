@@ -21,7 +21,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  */
 public interface IOseeModelingService {
 
-   void importOseeTypes(IProgressMonitor monitor, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException;
+   void importOseeTypes(IProgressMonitor monitor, boolean isInitializing, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException;
 
    void exportOseeTypes(IProgressMonitor monitor, OutputStream outputStream) throws OseeCoreException;
 

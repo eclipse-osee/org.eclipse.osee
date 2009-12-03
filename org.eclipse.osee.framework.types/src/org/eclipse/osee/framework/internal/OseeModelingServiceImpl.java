@@ -26,6 +26,7 @@ import org.eclipse.osee.framework.core.operation.CompositeOperation;
 import org.eclipse.osee.framework.core.operation.IOperation;
 import org.eclipse.osee.framework.core.operation.Operations;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactoryProvider;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
@@ -46,10 +47,12 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
 
    private final IOseeModelFactoryServiceProvider provider;
    private final IOseeCachingServiceProvider cachingProvider;
+   private final IOseeCachingServiceFactoryProvider cacheFactoryProvider;
    private final OseeTypesFactory modelFactory;
 
-   public OseeModelingServiceImpl(IOseeModelFactoryServiceProvider provider, IOseeCachingServiceProvider cachingProvider) {
+   public OseeModelingServiceImpl(IOseeModelFactoryServiceProvider provider, IOseeCachingServiceProvider cachingProvider, IOseeCachingServiceFactoryProvider cacheFactoryProvider) {
       this.provider = provider;
+      this.cacheFactoryProvider = cacheFactoryProvider;
       this.cachingProvider = cachingProvider;
       this.modelFactory = OseeTypesFactory.eINSTANCE;
    }
@@ -73,25 +76,17 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
    }
 
    @Override
-   public void importOseeTypes(IProgressMonitor monitor, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException {
+   public void importOseeTypes(IProgressMonitor monitor, boolean isInitializing, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException {
       String modelName = request.getModelName();
       if (!modelName.endsWith(".osee")) {
          modelName += ".osee";
       }
       OseeTypeModel inputModel = ModelUtil.loadModel("osee:/" + modelName, request.getModel());
 
-      IOseeCachingService cachingService = cachingProvider.getOseeCachingService();
-
-      OseeTypeCache cache = null;
-
-      //      if (request.isPersistAllowed()) {
-      cache =
-            new OseeTypeCache(cachingService.getArtifactTypeCache(), cachingService.getAttributeTypeCache(),
-                  cachingService.getRelationTypeCache(), cachingService.getEnumTypeCache());
-      //      cache.clearAll();
-      //      } else {
-      // Load a copy of the currentCache;
-      //      }
+      IOseeCachingService newCacheService = cacheFactoryProvider.getFactory().createCachingService();
+      OseeTypeCache cache =
+            new OseeTypeCache(newCacheService.getArtifactTypeCache(), newCacheService.getAttributeTypeCache(),
+                  newCacheService.getRelationTypeCache(), newCacheService.getEnumTypeCache());
 
       List<TableData> reportData = new ArrayList<TableData>();
       ComparisonResourceSnapshot comparisonSnapshot = DiffFactory.eINSTANCE.createComparisonResourceSnapshot();
@@ -104,7 +99,7 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
          ops.add(new OseeToXtextOperation(cache, modelFactory, baseModel));
       }
 
-      ops.add(new XTextToOseeTypeOperation(provider.getOseeFactoryService(), cache, cachingService.getBranchCache(),
+      ops.add(new XTextToOseeTypeOperation(provider.getOseeFactoryService(), cache, newCacheService.getBranchCache(),
             inputModel));
       if (request.isCreateTypeChangeReport()) {
          ops.add(new CreateOseeTypeChangesReportOperation(cache, reportData));
@@ -119,6 +114,11 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       if (request.isPersistAllowed()) {
          cache.storeAllModified();
          response.setPersisted(true);
+         IOseeCachingService systemCachingService = cachingProvider.getOseeCachingService();
+         if (isInitializing) {
+            systemCachingService.clearAll();
+         }
+         systemCachingService.reloadAll();
       } else {
          response.setPersisted(false);
       }
@@ -130,16 +130,6 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       //            Collections.<String, Boolean> emptyMap()));
    }
 
-   //   private OseeTypeCache createEmptyCache() {
-   //      //      IOseeTypeFactory factory = new OseeTypeFactory();
-   //      //      OseeEnumTypeCache enumCache = new OseeEnumTypeCache(new DatabaseOseeEnumTypeAccessor(factory));
-   //      //      AttributeTypeCache attrCache = new AttributeTypeCache(new DatabaseAttributeTypeAccessor(factory, enumCache));
-   //      //      ArtifactTypeCache artCache = new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(factory, attrCache));
-   //      //      RelationTypeCache relCache = new RelationTypeCache(new DatabaseRelationTypeAccessor(factory, artCache));
-   //
-   //      //      OseeTypeCache storeCache = new OseeTypeCache(factory, artCache, attrCache, relCache, enumCache);
-   //      //      return storeCache;
-   //
    //      Map<String, OseeTypeModel> changedModels = new HashMap<String, OseeTypeModel>();
    //      doSubWork(new OseeToXtextOperation(modifiedCache, changedModels), monitor, 0.20);
    //

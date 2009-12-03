@@ -49,8 +49,6 @@ public interface ITransactionDataAccessor {
     *           {@link TransactionVersion#BASE}
     * @throws OseeCoreException
     */
-   public void loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException;
-
-   public TransactionRecord getTransactionRecord();
+   public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException;
 
 }

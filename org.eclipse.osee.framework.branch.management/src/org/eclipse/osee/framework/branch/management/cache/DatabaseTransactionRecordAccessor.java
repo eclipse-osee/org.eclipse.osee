@@ -48,13 +48,11 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
    private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
    private final BranchCache branchCache;
    private final IOseeModelFactoryServiceProvider factoryProvider;
-   private TransactionRecord record;
 
-   public DatabaseTransactionRecordAccessor(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeModelFactoryServiceProvider factoryProvider, BranchCache branchCache, TransactionRecord record) {
+   public DatabaseTransactionRecordAccessor(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeModelFactoryServiceProvider factoryProvider, BranchCache branchCache) {
       this.oseeDatabaseProvider = oseeDatabaseProvider;
       this.factoryProvider = factoryProvider;
       this.branchCache = branchCache;
-      this.record = record;
    }
 
    protected IOseeModelFactoryService getFactoryService() throws OseeCoreException {
@@ -93,23 +91,25 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       loadFromTransaction(cache, branch, 1000, SELECT_BRANCH_TRANSACTIONS, branch.getId());
    }
 
-   public void loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException {
+   public TransactionRecord loadTransactionRecord(TransactionCache cache, Branch branch, TransactionVersion transactionType) throws OseeCoreException {
       ensureDependantCachePopulated();
+      TransactionRecord toReturn = null;
       switch (transactionType) {
          case BASE:
-            loadFirstTransactionRecord(cache, branch, SELECT_BASE_TRANSACTION, branch.getId());
+            toReturn = loadFirstTransactionRecord(cache, branch, SELECT_BASE_TRANSACTION, branch.getId());
             break;
          case HEAD:
-            loadFirstTransactionRecord(cache, branch, SELECT_BRANCH_TRANSACTIONS, branch.getId());
+            toReturn = loadFirstTransactionRecord(cache, branch, SELECT_BRANCH_TRANSACTIONS, branch.getId());
             break;
          default:
             throw new OseeStateException(String.format("Transaction Type [%s] is not supported", transactionType));
       }
+      return toReturn;
    }
 
-   private void loadFirstTransactionRecord(TransactionCache cache, Branch branch, String query, Object... parameters) throws OseeCoreException {
+   private TransactionRecord loadFirstTransactionRecord(TransactionCache cache, Branch branch, String query, Object... parameters) throws OseeCoreException {
       ensureDependantCachePopulated();
-      loadFromTransaction(cache, branch, 1, true, query, parameters);
+      return loadFromTransaction(cache, branch, 1, true, query, parameters);
    }
 
    private void loadFromTransaction(TransactionCache cache, Branch branch, int fetchSize, String query, Object... parameters) throws OseeCoreException {
@@ -117,9 +117,10 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       loadFromTransaction(cache, branch, fetchSize, false, query, parameters);
    }
 
-   private void loadFromTransaction(TransactionCache cache, Branch branch, int fetchSize, boolean isOnlyReadFirstResult, String query, Object... parameters) throws OseeCoreException {
+   private TransactionRecord loadFromTransaction(TransactionCache cache, Branch branch, int fetchSize, boolean isOnlyReadFirstResult, String query, Object... parameters) throws OseeCoreException {
       IOseeStatement chStmt = oseeDatabaseProvider.getOseeDatabaseService().getStatement();
       TransactionRecordFactory factory = getFactoryService().getTransactionFactory();
+      TransactionRecord record = null;
       try {
          chStmt.runPreparedQuery(fetchSize, query, parameters);
          while (chStmt.next()) {
@@ -143,10 +144,6 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       } finally {
          chStmt.close();
       }
-   }
-
-   @Override
-   public TransactionRecord getTransactionRecord() {
       return record;
    }
 }

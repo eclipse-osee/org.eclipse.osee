@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.server;
 
 import javax.servlet.http.HttpServletRequest;
+import org.eclipse.osee.framework.core.data.SystemUser;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.server.internal.InternalOseeHttpServlet;
 
@@ -29,4 +30,10 @@ public class OseeHttpServlet extends InternalOseeHttpServlet {
       //      CoreServerActivator.getSessionManager().updateSessionActivity(sessionId, interaction);
    }
 
+   public boolean isInitializing(HttpServletRequest request) {
+      String sessionId = request.getParameter("sessionId");
+      SessionData sessionData = CoreServerActivator.getSessionManager().getSessionById(sessionId);
+      String userId = sessionData.getSession().getUserId();
+      return SystemUser.BootStrap.getUserID().equals(userId);
+   }
 }

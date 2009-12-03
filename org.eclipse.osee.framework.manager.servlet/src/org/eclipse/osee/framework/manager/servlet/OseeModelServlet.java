@@ -75,7 +75,8 @@ public class OseeModelServlet extends OseeHttpServlet {
 
          OseeImportModelResponse modelResponse = new OseeImportModelResponse();
 
-         getModelingService().importOseeTypes(new LogProgressMonitor(), modelRequest, modelResponse);
+         getModelingService().importOseeTypes(new LogProgressMonitor(), isInitializing(req), modelRequest,
+               modelResponse);
 
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");

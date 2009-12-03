@@ -19,29 +19,15 @@ import org.eclipse.osee.framework.branch.management.IBranchCommitService;
 import org.eclipse.osee.framework.branch.management.IBranchCreation;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.IChangeReportService;
-import org.eclipse.osee.framework.branch.management.cache.DatabaseArtifactTypeAccessor;
-import org.eclipse.osee.framework.branch.management.cache.DatabaseAttributeTypeAccessor;
-import org.eclipse.osee.framework.branch.management.cache.DatabaseBranchAccessor;
-import org.eclipse.osee.framework.branch.management.cache.DatabaseOseeEnumTypeAccessor;
-import org.eclipse.osee.framework.branch.management.cache.DatabaseRelationTypeAccessor;
-import org.eclipse.osee.framework.branch.management.cache.DatabaseTransactionRecordAccessor;
 import org.eclipse.osee.framework.branch.management.change.ChangeReportService;
 import org.eclipse.osee.framework.branch.management.commit.BranchCommitService;
 import org.eclipse.osee.framework.branch.management.creation.BranchCreation;
 import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
 import org.eclipse.osee.framework.branch.management.remote.BranchArchivingService;
-import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
-import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
-import org.eclipse.osee.framework.core.cache.BranchCache;
-import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
-import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
-import org.eclipse.osee.framework.core.cache.RelationTypeCache;
-import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.model.AttributeType;
-import org.eclipse.osee.framework.core.model.OseeCachingService;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeCachingServiceFactory;
 import org.eclipse.osee.framework.core.services.IOseeCachingServiceProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
@@ -80,7 +66,10 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
    public void start(BundleContext context) throws Exception {
       InternalBranchActivator.instance = this;
 
-      IOseeCachingService cachingService = createCachingService();
+      IOseeCachingServiceFactory factory = new ServerOseeCachingServiceFactory(this, this);
+      createService(context, IOseeCachingServiceFactory.class, factory);
+
+      IOseeCachingService cachingService = factory.createCachingService();
       createService(context, IOseeCachingService.class, cachingService);
 
       createService(context, IBranchCreation.class, new BranchCreation(this, this, this));
@@ -112,28 +101,6 @@ public class InternalBranchActivator implements BundleActivator, IOseeDatabaseSe
       mappedTrackers.clear();
 
       instance = null;
-   }
-
-   private IOseeCachingService createCachingService() {
-      OseeEnumTypeCache oseeEnumTypeCache = new OseeEnumTypeCache(new DatabaseOseeEnumTypeAccessor(this, this));
-
-      IOseeDataAccessor<AttributeType> attrAccessor = new DatabaseAttributeTypeAccessor(this, this, oseeEnumTypeCache);
-
-      AttributeTypeCache attributeCache = new AttributeTypeCache(attrAccessor);
-
-      BranchCache branchCache = new BranchCache(new DatabaseBranchAccessor(this, this, this));
-
-      TransactionCache transactionCache =
-            new TransactionCache(new DatabaseTransactionRecordAccessor(this, this, branchCache, null));
-
-      ArtifactTypeCache artifactCache =
-            new ArtifactTypeCache(new DatabaseArtifactTypeAccessor(this, this, branchCache, attributeCache));
-
-      RelationTypeCache relationCache =
-            new RelationTypeCache(new DatabaseRelationTypeAccessor(this, this, artifactCache));
-
-      return new OseeCachingService(branchCache, transactionCache, artifactCache, attributeCache, relationCache,
-            oseeEnumTypeCache);
    }
 
    private void createService(BundleContext context, Class<?> serviceInterface, Object serviceImplementation) {
