@@ -50,14 +50,14 @@ public class TableElement implements Xmlizable {
    private Map<String, ColumnMetadata> columns;
    private List<ConstraintElement> constraints;
    private List<ForeignKey> foreignKeys;
-   private List<IndexElement> indeces;
+   private List<IndexElement> indices;
 
    public TableElement() {
       this.tableDescription = new HashMap<TableDescriptionFields, String>();
       this.columns = new HashMap<String, ColumnMetadata>();
       this.constraints = new ArrayList<ConstraintElement>();
       this.foreignKeys = new ArrayList<ForeignKey>();
-      this.indeces = new ArrayList<IndexElement>();
+      this.indices = new ArrayList<IndexElement>();
    }
 
    public void addColumn(ColumnMetadata column) {
@@ -73,7 +73,7 @@ public class TableElement implements Xmlizable {
    }
    
    public void addIndexData(IndexElement indexData){
-      indeces.add(indexData);
+      indices.add(indexData);
    }
 
    public String getSchema() {
@@ -141,7 +141,7 @@ public class TableElement implements Xmlizable {
    }
          
    public List<IndexElement> getIndexData(){
-      return indeces;
+      return indices;
    }
    
    public String toString(){
@@ -165,7 +165,7 @@ public class TableElement implements Xmlizable {
          toReturn.append("\t[" + ++count + "] " + fkeys.toString() + "\n");            
       }
       count = 0;
-      for(IndexElement iData : indeces){
+      for(IndexElement iData : indices){
          toReturn.append("\t[" + ++count + "] " + iData.toString() + "\n");
       }
       return toReturn.toString();
@@ -189,7 +189,7 @@ public class TableElement implements Xmlizable {
       for(ForeignKey constraint : foreignKeys){
          tableElement.appendChild(constraint.toXml(doc));
       }
-      for(IndexElement iData : indeces){
+      for(IndexElement iData : indices){
          tableElement.appendChild(iData.toXml(doc));
       }
       return tableElement;
@@ -221,14 +221,14 @@ public class TableElement implements Xmlizable {
             .append(this.columns, that.getColumns())
             .append(this.constraints, that.getConstraints())
             .append(this.foreignKeys, that.getForeignKeyConstraints())
-            .append(this.indeces, that.getIndexData())
+            .append(this.indices, that.getIndexData())
       .isEquals();
    }
 
    @Override
    public int hashCode() {
       return new HashCodeBuilder(79, 17).append(tableDescription).append(columns)
-      .append(constraints).append(foreignKeys).append(indeces).toHashCode();
+      .append(constraints).append(foreignKeys).append(indices).toHashCode();
    }
 
    public String getTablespace() {

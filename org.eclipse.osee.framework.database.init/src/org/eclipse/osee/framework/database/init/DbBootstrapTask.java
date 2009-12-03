@@ -73,14 +73,14 @@ public class DbBootstrapTask implements IDbInitializationTask {
          schemaExtractor.extractSchemaData();
          Map<String, SchemaData> currentDatabaseConfig = schemaExtractor.getSchemas();
          Set<String> schemas = userSpecifiedConfig.keySet();
-         dbInit.dropIndeces(schemas, userSpecifiedConfig, currentDatabaseConfig);
+         dbInit.dropIndices(schemas, userSpecifiedConfig, currentDatabaseConfig);
          dbInit.dropTables(schemas, userSpecifiedConfig, currentDatabaseConfig);
          if (SupportedDatabase.isDatabaseType(metaData, SupportedDatabase.postgresql)) {
             dbInit.dropSchema(schemas);
             dbInit.createSchema(schemas);
          }
          dbInit.addTables(schemas, userSpecifiedConfig);
-         dbInit.addIndeces(schemas, userSpecifiedConfig);
+         dbInit.addIndices(schemas, userSpecifiedConfig);
       } finally {
          connection.close();
       }

@@ -21,12 +21,12 @@ public class DbInit {
       this.manager = manager;
    }
 
-   public void addIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeDataStoreException {
+   public void addIndices(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig) throws OseeDataStoreException {
       for (String schemaId : schemas) {
          if (userSpecifiedConfig.containsKey(schemaId)) {
             SchemaData userSpecifiedSchemaData = userSpecifiedConfig.get(schemaId);
             DbFactory userDbFactory = new DbFactory(manager, userSpecifiedSchemaData);
-            userDbFactory.createIndeces();
+            userDbFactory.createIndices();
          }
       }
    }
@@ -63,8 +63,8 @@ public class DbInit {
       }
    }
 
-   public void dropIndeces(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
-      System.out.println("Drop Indeces");
+   public void dropIndices(Set<String> schemas, Map<String, SchemaData> userSpecifiedConfig, Map<String, SchemaData> currentDatabaseConfig) throws OseeDataStoreException {
+      System.out.println("Drop Indices");
       for (String schemaId : schemas) {
          if (currentDatabaseConfig.containsKey(schemaId)) {
             SchemaData currentDbSchemaData = currentDatabaseConfig.get(schemaId);
@@ -81,7 +81,7 @@ public class DbInit {
                }
             }
             DbFactory currentDbFactory = new DbFactory(manager, toDrop);
-            currentDbFactory.dropIndeces();
+            currentDbFactory.dropIndices();
          }
       }
    }

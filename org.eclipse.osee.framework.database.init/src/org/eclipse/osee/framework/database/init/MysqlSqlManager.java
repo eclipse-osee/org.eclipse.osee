@@ -79,9 +79,9 @@ public class MysqlSqlManager extends SqlManagerImpl {
 
    @Override
    public void dropIndex(TableElement tableDef) throws OseeDataStoreException {
-      List<IndexElement> tableIndeces = tableDef.getIndexData();
+      List<IndexElement> tableIndices = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
-      for (IndexElement iData : tableIndeces) {
+      for (IndexElement iData : tableIndices) {
          if (iData.ignoreMySql()) {
             continue;
          }

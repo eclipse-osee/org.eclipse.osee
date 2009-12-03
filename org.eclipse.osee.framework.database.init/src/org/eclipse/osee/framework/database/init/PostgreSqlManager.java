@@ -77,9 +77,9 @@ public class PostgreSqlManager extends SqlManagerImpl {
    }
 
    public void dropIndex(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
-      List<IndexElement> tableIndeces = tableDef.getIndexData();
+      List<IndexElement> tableIndices = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
-      for (IndexElement iData : tableIndeces) {
+      for (IndexElement iData : tableIndices) {
          if (iData.ignoreMySql()) {
             continue;
          }
@@ -153,11 +153,11 @@ public class PostgreSqlManager extends SqlManagerImpl {
    }
 
    public void createIndex(OseeConnection connection, TableElement tableDef) throws OseeDataStoreException {
-      List<IndexElement> tableIndeces = tableDef.getIndexData();
+      List<IndexElement> tableIndices = tableDef.getIndexData();
       String indexId = null;
       StringBuilder appliesTo = new StringBuilder();
       String tableName = formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.");
-      for (IndexElement iData : tableIndeces) {
+      for (IndexElement iData : tableIndices) {
          if (iData.ignoreMySql()) {
             continue;
          }

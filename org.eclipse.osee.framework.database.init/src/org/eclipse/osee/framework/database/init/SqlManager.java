@@ -244,11 +244,11 @@ public abstract class SqlManager {
    }
 
    public void createIndex(TableElement tableDef) throws OseeDataStoreException {
-      List<IndexElement> tableIndeces = tableDef.getIndexData();
+      List<IndexElement> tableIndices = tableDef.getIndexData();
       String indexId = null;
       StringBuilder appliesTo = new StringBuilder();
       String tableName = formatQuotedString(tableDef.getFullyQualifiedTableName(), "\\.");
-      for (IndexElement iData : tableIndeces) {
+      for (IndexElement iData : tableIndices) {
          if (iData.ignoreMySql()) {
             continue;
          }
@@ -288,9 +288,9 @@ public abstract class SqlManager {
    }
 
    public void dropIndex(TableElement tableDef) throws OseeDataStoreException {
-      List<IndexElement> tableIndeces = tableDef.getIndexData();
+      List<IndexElement> tableIndices = tableDef.getIndexData();
       String tableName = tableDef.getFullyQualifiedTableName();
-      for (IndexElement iData : tableIndeces) {
+      for (IndexElement iData : tableIndices) {
          OseeLog.log(DatabaseInitActivator.class, Level.FINE, String.format("Dropping Index: [%s] FROM [%s]\n",
                iData.getId(), tableName));
          ConnectionHandler.runPreparedUpdate(DROP_STRING + " INDEX " + iData.getId());

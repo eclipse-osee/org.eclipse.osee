@@ -40,13 +40,13 @@ public class DbFactory {
       }
    }
 
-   public void createIndeces() throws OseeDataStoreException {
+   public void createIndices() throws OseeDataStoreException {
       for (TableElement tableDef : schemaData.getTableMap().values()) {
          sqlManager.createIndex(tableDef);
       }
    }
 
-   public void dropIndeces() throws OseeDataStoreException {
+   public void dropIndices() throws OseeDataStoreException {
       for (TableElement tableDef : schemaData.getTableMap().values()) {
          sqlManager.dropIndex(tableDef);
       }

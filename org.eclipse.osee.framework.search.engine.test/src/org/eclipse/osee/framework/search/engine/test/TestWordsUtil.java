@@ -59,7 +59,7 @@ public class TestWordsUtil extends TestCase {
       testMap.put("heroes", "hero");
       testMap.put("cantos", "canto");
       testMap.put("porticos", "portico");
-      testMap.put("indeces", "index");
+      testMap.put("indices", "index");
       testMap.put("leaves", "leaf");
       testMap.put("hello", "hello");
       testMap.put("axes", "axis");
