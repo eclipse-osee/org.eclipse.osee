@@ -34,7 +34,6 @@ import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
  */
 public class User extends Artifact implements Serializable {
    private static final long serialVersionUID = 834749078806388387L;
-   public static final String userIdAttributeName = "User Id";
 
    private PropertyStore userSettings;
 
@@ -74,11 +73,11 @@ public class User extends Artifact implements Serializable {
    }
 
    public String getUserId() throws OseeCoreException {
-      return getSoleAttributeValue(userIdAttributeName, "");
+      return getSoleAttributeValue(CoreAttributeTypes.USER_ID, "");
    }
 
    public void setUserID(String userId) throws OseeCoreException {
-      setSoleAttributeValue(userIdAttributeName, userId);
+      setSoleAttributeValue(CoreAttributeTypes.USER_ID, userId);
    }
 
    public String getEmail() throws OseeCoreException {
