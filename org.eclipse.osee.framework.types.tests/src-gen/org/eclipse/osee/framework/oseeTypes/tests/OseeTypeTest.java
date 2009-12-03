@@ -6,10 +6,7 @@
  */
 package org.eclipse.osee.framework.oseeTypes.tests;
 
-import junit.framework.TestCase;
-
 import junit.textui.TestRunner;
-
 import org.eclipse.osee.framework.oseeTypes.OseeType;
 import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
 
@@ -17,6 +14,7 @@ import org.eclipse.osee.framework.oseeTypes.OseeTypesFactory;
  * <!-- begin-user-doc -->
  * A test case for the model object '<em><b>Osee Type</b></em>'.
  * <!-- end-user-doc -->
+ * 
  * @generated
  */
 public class OseeTypeTest extends OseeElementTest {
@@ -24,6 +22,7 @@ public class OseeTypeTest extends OseeElementTest {
    /**
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
+    * 
     * @generated
     */
    public static void main(String[] args) {
@@ -34,6 +33,7 @@ public class OseeTypeTest extends OseeElementTest {
     * Constructs a new Osee Type test case with the given name.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
+    * 
     * @generated
     */
    public OseeTypeTest(String name) {
@@ -44,16 +44,18 @@ public class OseeTypeTest extends OseeElementTest {
     * Returns the fixture for this Osee Type test case.
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
+    * 
     * @generated
     */
    @Override
    protected OseeType getFixture() {
-      return (OseeType)fixture;
+      return (OseeType) fixture;
    }
 
    /**
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
+    * 
     * @see junit.framework.TestCase#setUp()
     * @generated
     */
@@ -65,6 +67,7 @@ public class OseeTypeTest extends OseeElementTest {
    /**
     * <!-- begin-user-doc -->
     * <!-- end-user-doc -->
+    * 
     * @see junit.framework.TestCase#tearDown()
     * @generated
     */
