@@ -88,14 +88,12 @@ public class EditAttributeWizardPage extends WizardPage {
    public EditAttributeWizardPage(AttributeConflict conflict) {
       super(TITLE);
       try {
-         if (conflict != null) {
-            this.conflict = conflict;
-            changeType = conflict.getAttributeType().getName();
-         }
+         this.conflict = conflict;
+         changeType = conflict.getAttributeType().getName();
          if (!conflict.isWordAttribute()) {
             editor =
-                  EmbededAttributeEditorFactory.getEmbeddedEditor(changeType, conflict.getSourceDisplayData(),
-                        Arrays.asList(conflict), true);
+                  EmbededAttributeEditorFactory.getEmbeddedEditor(conflict.getAttributeType(),
+                        conflict.getSourceDisplayData(), Arrays.asList(conflict), true);
          }
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);

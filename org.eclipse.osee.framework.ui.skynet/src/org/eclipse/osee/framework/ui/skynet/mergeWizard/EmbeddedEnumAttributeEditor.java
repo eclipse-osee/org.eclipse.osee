@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
 import java.util.TreeSet;
+import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -29,10 +30,10 @@ import org.eclipse.swt.widgets.Composite;
  * @author Theron Virgin
  */
 
-/* 
- * All of the instance of checks are needed to support both artifacts and 
- * conflicts.  The reason to support both is I created the classes for
- * artifacts so all of the work was already done for them.  I then realized 
+/*
+ * All of the instance of checks are needed to support both artifacts and
+ * conflicts. The reason to support both is I created the classes for
+ * artifacts so all of the work was already done for them. I then realized
  * that I needed to control the setting of values for conflicts and thus had to call
  * the conflict specific methods instead of simply setting the values.
  */
@@ -41,22 +42,26 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
    private static final String PROMPT = "Please select a value from the combo box";
    private static final String ERROR_PROMPT =
          "All artifacts must be of the same type when edited in an enumeration editor.";
-   protected String attributeName;
+   protected IOseeType attributeType;
    protected String displayName;
    protected Collection<?> attributeHolder;
    protected boolean persist;
    protected EmbeddedEnumEditor editor;
 
-   public EmbeddedEnumAttributeEditor(String arg, Collection<?> attributeHolder, String displayName, String attributeName, boolean persist) {
-      this.attributeName = attributeName;
+   public EmbeddedEnumAttributeEditor(String arg, Collection<?> attributeHolder, String displayName, IOseeType attributeType, boolean persist) {
+      this.attributeType = attributeType;
       this.displayName = displayName;
       this.attributeHolder = attributeHolder;
       this.persist = persist;
    }
 
    public boolean create(Composite composite, GridData gd) {
-      if (attributeHolder == null) return false;
-      if (attributeHolder.size() < 1) return false;
+      if (attributeHolder == null) {
+         return false;
+      }
+      if (attributeHolder.size() < 1) {
+         return false;
+      }
       Object obj = attributeHolder.iterator().next();
       if (obj instanceof Artifact) {
          String type = ((Artifact) obj).getArtifactTypeName();
@@ -66,8 +71,9 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
                   AWorkbench.popup("ERROR", ERROR_PROMPT);
                   return false;
                }
-            } else
+            } else {
                return false;
+            }
          }
       }
       editor = new EmbeddedEnumEditor(PROMPT);
@@ -75,8 +81,7 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
       TreeSet<String> options = new TreeSet<String>();
       try {
          if (obj instanceof Artifact) {
-            options =
-                  new TreeSet<String>(AttributeTypeManager.getEnumerationValues(attributeName));
+            options = new TreeSet<String>(AttributeTypeManager.getEnumerationValues(attributeType));
          }
          if (obj instanceof AttributeConflict) {
             options = ((AttributeConflict) obj).getEnumerationAttributeValues();
@@ -89,7 +94,7 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
       }
       if (obj instanceof Artifact) {
          try {
-            editor.setSelected(((Artifact) obj).getSoleAttributeValue(attributeName).toString());
+            editor.setSelected(((Artifact) obj).getSoleAttributeValue(attributeType).toString());
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -114,8 +119,10 @@ public class EmbeddedEnumAttributeEditor implements IEmbeddedAttributeEditor {
       try {
          for (Object object : attributeHolder) {
             if (object instanceof Artifact) {
-               ((Artifact) object).setSoleAttributeFromString(attributeName, selection);
-               if (persist) ((Artifact) object).persist();
+               ((Artifact) object).setSoleAttributeFromString(attributeType, selection);
+               if (persist) {
+                  ((Artifact) object).persist();
+               }
             }
             if (object instanceof AttributeConflict) {
                if (selection.equals("")) {

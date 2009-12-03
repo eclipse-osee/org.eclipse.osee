@@ -12,6 +12,7 @@
 package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
+import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -25,31 +26,35 @@ import org.eclipse.swt.widgets.Composite;
 /**
  * @author Theron Virgin
  */
-/* 
- * All of the instance of checks are needed to support both artifacts and 
- * conflicts.  The reason to support both is I created the classes for
- * artifacts so all of the work was already done for them.  I then realized 
+/*
+ * All of the instance of checks are needed to support both artifacts and
+ * conflicts. The reason to support both is I created the classes for
+ * artifacts so all of the work was already done for them. I then realized
  * that I needed to control the setting of values for conflicts and thus had to call
  * the conflict specific methods instead of simply setting the values.
  */
 public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor {
 
-   protected String attributeName;
+   protected IOseeType attributeType;
    protected String displayName;
    protected Collection<?> attributeHolder;
    protected boolean persist;
    protected EmbeddedBooleanEditor editor;
 
-   public EmbeddedBooleanAttributeEditor(String prompt, Collection<?> attributeHolder, String displayName, String attributeName, boolean persist) {
-      this.attributeName = attributeName;
+   public EmbeddedBooleanAttributeEditor(String prompt, Collection<?> attributeHolder, String displayName, IOseeType attributeType, boolean persist) {
+      this.attributeType = attributeType;
       this.displayName = displayName;
       this.attributeHolder = attributeHolder;
       this.persist = persist;
    }
 
    public boolean create(Composite composite, GridData gd) {
-      if (attributeHolder == null) return false;
-      if (attributeHolder.size() < 1) return false;
+      if (attributeHolder == null) {
+         return false;
+      }
+      if (attributeHolder.size() < 1) {
+         return false;
+      }
       Object obj = attributeHolder.iterator().next();
       if (obj instanceof Artifact) {
          String type = ((Artifact) obj).getArtifactTypeName();
@@ -60,20 +65,21 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
                         "All artifacts must be of the same type when " + "edited in a boolean editor.");
                   return false;
                }
-            } else
+            } else {
                return false;
+            }
          }
       }
-      editor = new EmbeddedBooleanEditor("Select a value for the " + attributeName);
+      editor = new EmbeddedBooleanEditor("Select a value for the " + attributeType);
       editor.createEditor(composite, gd);
 
       try {
          if (obj instanceof Artifact) {
             try {
-               Object object = ((Artifact) obj).getSoleAttributeValue(attributeName);
-               if (object instanceof Boolean)
+               Object object = ((Artifact) obj).getSoleAttributeValue(attributeType);
+               if (object instanceof Boolean) {
                   editor.setEntry(((Boolean) object).booleanValue());
-               else {
+               } else {
                   OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, new Exception(
                         "Boolean editor did not receive a boolean value"));
                }
@@ -94,7 +100,9 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
    }
 
    public void update(Object value) {
-      if (editor != null) editor.setEntry(((Boolean) value).booleanValue());
+      if (editor != null) {
+         editor.setEntry(((Boolean) value).booleanValue());
+      }
    }
 
    public boolean commit() {
@@ -103,8 +111,10 @@ public class EmbeddedBooleanAttributeEditor implements IEmbeddedAttributeEditor 
          try {
             for (Object obj : attributeHolder) {
                if (obj instanceof Artifact) {
-                  ((Artifact) obj).setSoleAttributeValue(attributeName, new Boolean(value));
-                  if (persist) ((Artifact) obj).persist();
+                  ((Artifact) obj).setSoleAttributeValue(attributeType, new Boolean(value));
+                  if (persist) {
+                     ((Artifact) obj).persist();
+                  }
                }
                if (obj instanceof AttributeConflict) {
                   if (!((AttributeConflict) obj).setAttributeValue(new Boolean(value))) {

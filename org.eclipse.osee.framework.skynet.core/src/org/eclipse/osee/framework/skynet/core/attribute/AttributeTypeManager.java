@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -75,7 +76,7 @@ public class AttributeTypeManager {
     * @throws OseeDataStoreException
     * @throws OseeTypeDoesNotExist
     */
-   public static AttributeType getTypeByGuid(String guid) throws OseeCoreException {
+   private static AttributeType getTypeByGuid(String guid) throws OseeCoreException {
       if (!GUID.isValid(guid)) {
          throw new OseeArgumentException(String.format("[%s] is not a valid guid", guid));
       }
@@ -84,6 +85,10 @@ public class AttributeTypeManager {
          throw new OseeTypeDoesNotExist("Attribute Type [" + guid + "] is not available.");
       }
       return attributeType;
+   }
+
+   public static AttributeType getType(IOseeType type) throws OseeCoreException {
+      return getTypeByGuid(type.getGuid());
    }
 
    /**
@@ -118,6 +123,10 @@ public class AttributeTypeManager {
       return attributeType.getOseeEnumType().valuesAsOrderedStringSet();
    }
 
+   public static Set<String> getEnumerationValues(IOseeType attributeType) throws OseeCoreException {
+      return getEnumerationValues(getType(attributeType));
+   }
+
    public static Set<String> getEnumerationValues(String attributeName) throws OseeCoreException {
       return getEnumerationValues(getType(attributeName));
    }
@@ -150,8 +159,13 @@ public class AttributeTypeManager {
       getCache().storeAllModified();
    }
 
-   public static Class<? extends Attribute<?>> getAttributeBaseClass(String attributeType) throws OseeCoreException {
-      return getAttributeBaseClass(getType(attributeType).getBaseAttributeTypeId());
+   @SuppressWarnings("unchecked")
+   public static boolean isBaseTypeCompatible(Class<? extends Attribute> baseType, String attributeTypeName) throws OseeCoreException {
+      return getAttributeBaseClass(getType(attributeTypeName)).isAssignableFrom(baseType);
+   }
+
+   public static boolean isBaseTypeCompatible(Class<? extends Attribute<?>> baseType, IOseeType attributeType) throws OseeCoreException {
+      return getAttributeBaseClass(getType(attributeType)).isAssignableFrom(baseType);
    }
 
    public static Class<? extends Attribute<?>> getAttributeBaseClass(AttributeType attributeType) throws OseeCoreException {

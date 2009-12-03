@@ -26,7 +26,6 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
-import org.eclipse.osee.framework.skynet.core.artifact.Attribute;
 import org.eclipse.osee.framework.skynet.core.attribute.AttributeTypeManager;
 import org.eclipse.osee.framework.skynet.core.attribute.BooleanAttribute;
 import org.eclipse.osee.framework.skynet.core.attribute.DateAttribute;
@@ -49,18 +48,17 @@ public class ArtifactPromptChange {
 
    public static boolean promptChangeAttribute(String attributeName, String displayName, final Collection<? extends Artifact> artifacts, boolean persist) {
       try {
-         Class<? extends Attribute<?>> attributeBaseType = AttributeTypeManager.getAttributeBaseClass(attributeName);
-         if (attributeBaseType.equals(DateAttribute.class)) {
+         if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeName)) {
             return ArtifactPromptChange.promptChangeDate(attributeName, displayName, artifacts, persist);
-         } else if (attributeBaseType.equals(FloatingPointAttribute.class)) {
+         } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeName)) {
             return ArtifactPromptChange.promptChangeFloatAttribute(attributeName, displayName, artifacts, persist);
-         } else if (attributeBaseType.equals(IntegerAttribute.class)) {
+         } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeName)) {
             return ArtifactPromptChange.promptChangeIntegerAttribute(attributeName, displayName, artifacts, persist);
-         } else if (attributeBaseType.equals(BooleanAttribute.class)) {
+         } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeName)) {
             return ArtifactPromptChange.promptChangeBoolean(attributeName, displayName, artifacts, null, persist);
-         } else if (attributeBaseType.equals(EnumeratedAttribute.class)) {
+         } else if (AttributeTypeManager.isBaseTypeCompatible(EnumeratedAttribute.class, attributeName)) {
             return ArtifactPromptChange.promptChangeEnumeratedAttribute(attributeName, displayName, artifacts, persist);
-         } else if (attributeBaseType.equals(StringAttribute.class)) {
+         } else if (AttributeTypeManager.isBaseTypeCompatible(StringAttribute.class, attributeName)) {
             return ArtifactPromptChange.promptChangeStringAttribute(attributeName, displayName, artifacts, persist,
                   true);
          } else {

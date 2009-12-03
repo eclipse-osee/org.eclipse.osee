@@ -136,7 +136,7 @@ public class ArtifactItem extends DataItem implements IXViewerItem, IFrameworkTr
                } else {
                   if (artifact.isAttributeTypeValid(colName)) {
                      AttributeType attributeType = AttributeTypeManager.getType(colName);
-                     if (AttributeTypeManager.getAttributeBaseClass(attributeType).equals(DateAttribute.class)) {
+                     if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
                         Date date = null;
                         try {
                            date = artifact.getSoleAttributeValue(colName);

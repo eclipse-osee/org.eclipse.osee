@@ -26,14 +26,13 @@ public class XViewerAttributeSortDataType {
 
    public static SortDataType get(AttributeType attributeType) throws OseeCoreException {
       SortDataType sortType = SortDataType.String;
-      Class<?> clazz = AttributeTypeManager.getAttributeBaseClass(attributeType);
-      if (clazz.equals(DateAttribute.class)) {
+      if (AttributeTypeManager.isBaseTypeCompatible(DateAttribute.class, attributeType)) {
          sortType = SortDataType.Date;
-      } else if (clazz.equals(FloatingPointAttribute.class)) {
+      } else if (AttributeTypeManager.isBaseTypeCompatible(FloatingPointAttribute.class, attributeType)) {
          sortType = SortDataType.Float;
-      } else if (clazz.equals(IntegerAttribute.class)) {
+      } else if (AttributeTypeManager.isBaseTypeCompatible(IntegerAttribute.class, attributeType)) {
          sortType = SortDataType.Integer;
-      } else if (clazz.equals(BooleanAttribute.class)) {
+      } else if (AttributeTypeManager.isBaseTypeCompatible(BooleanAttribute.class, attributeType)) {
          sortType = SortDataType.Boolean;
       }
       return sortType;

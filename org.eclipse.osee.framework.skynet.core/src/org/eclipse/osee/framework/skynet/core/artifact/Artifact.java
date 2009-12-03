@@ -199,8 +199,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    public void setRelationRationale(Artifact artifact, IRelationEnumeration relationTypeSide, String rationale) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       RelationManager.setRelationRationale(sides.getFirst(), sides.getSecond(),
-            RelationTypeManager.getType(relationTypeSide),
-            rationale);
+            RelationTypeManager.getType(relationTypeSide), rationale);
    }
 
    private Pair<Artifact, Artifact> determineArtifactSides(Artifact artifact, IRelationEnumeration relationSide) {
@@ -824,6 +823,10 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       getOrCreateSoleAttribute(attributeTypeEnum.getName()).setValue(value);
    }
 
+   public <T> void setSoleAttributeFromString(IOseeType attributeType, String value) throws OseeCoreException {
+      getOrCreateSoleAttribute(attributeType.getName()).setFromString(value);
+   }
+
    public <T> void setSoleAttributeFromString(String attributeTypeName, String value) throws OseeCoreException {
       getOrCreateSoleAttribute(attributeTypeName).setFromString(value);
    }
@@ -1251,8 +1254,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    public void addRelation(IRelationSorterId sorterId, IRelationEnumeration relationTypeSide, Artifact artifact, String rationale) throws OseeCoreException {
       Pair<Artifact, Artifact> sides = determineArtifactSides(artifact, relationTypeSide);
       RelationManager.addRelation(sorterId, RelationTypeManager.getType(relationTypeSide), sides.getFirst(),
-            sides.getSecond(),
-            rationale);
+            sides.getSecond(), rationale);
    }
 
    public void addRelation(IRelationEnumeration relationSide, Artifact artifact) throws OseeCoreException {
@@ -1284,8 +1286,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
       } else {
          List<Artifact> empty = java.util.Collections.emptyList();
          RelationManager.setRelationOrder(this, RelationTypeManager.getType(relationEnumeration),
-               relationEnumeration.getSide(),
-               orderId, empty);
+               relationEnumeration.getSide(), orderId, empty);
       }
    }
 
@@ -1314,8 +1315,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
          currentOrder.add(itemToAdd);
       }
       RelationManager.setRelationOrder(this, RelationTypeManager.getType(relationEnumeration),
-            relationEnumeration.getSide(),
-            RelationOrderBaseTypes.USER_DEFINED, currentOrder);
+            relationEnumeration.getSide(), RelationOrderBaseTypes.USER_DEFINED, currentOrder);
    }
 
    public void deleteRelation(IRelationEnumeration relationTypeSide, Artifact artifact) throws OseeCoreException {

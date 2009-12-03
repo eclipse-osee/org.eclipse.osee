@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.ui.skynet.mergeWizard;
 
 import java.util.Collection;
 import java.util.Date;
+import org.eclipse.osee.framework.core.data.IOseeType;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
@@ -27,10 +28,10 @@ import org.eclipse.swt.widgets.Composite;
  * @author Theron Virgin
  */
 
-/* 
- * All of the instance of checks are needed to support both artifacts and 
- * conflicts.  The reason to support both is I created the classes for
- * artifacts so all of the work was already done for them.  I then realized 
+/*
+ * All of the instance of checks are needed to support both artifacts and
+ * conflicts. The reason to support both is I created the classes for
+ * artifacts so all of the work was already done for them. I then realized
  * that I needed to control the setting of values for conflicts and thus had to call
  * the conflict specific methods instead of simply setting the values.
  */
@@ -42,7 +43,7 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
    protected boolean persist;
    protected EmbeddedDateEditor editor;
 
-   public EmbeddedDateAttributeEditor(String notUsed, Collection<?> attributeHolder, String displayName, String attributeName, boolean persist) {
+   public EmbeddedDateAttributeEditor(String notUsed, Collection<?> attributeHolder, String displayName, IOseeType attributeType, boolean persist) {
       this.attributeName = attributeName;
       this.displayName = displayName;
       this.attributeHolder = attributeHolder;
@@ -50,8 +51,12 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
    }
 
    public boolean create(Composite composite, GridData gd) {
-      if (attributeHolder == null) return false;
-      if (attributeHolder.size() < 1) return false;
+      if (attributeHolder == null) {
+         return false;
+      }
+      if (attributeHolder.size() < 1) {
+         return false;
+      }
       Object obj = attributeHolder.iterator().next();
       if (obj instanceof Artifact) {
          String type = ((Artifact) obj).getArtifactTypeName();
@@ -62,26 +67,31 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
                         "All artifacts must be of the same " + "type when edited in an date editor.");
                   return false;
                }
-            } else
+            } else {
                return false;
+            }
          }
       }
       Date date = new Date();
       if (obj instanceof Artifact) {
          try {
             Object object = ((Artifact) obj).getSoleAttributeValue(attributeName);
-            if (object instanceof Date) date = (Date) object;
+            if (object instanceof Date) {
+               date = (Date) object;
+            }
          } catch (Exception ex) {
             OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
       }
-      if (obj instanceof AttributeConflict) try {
-         Object object = ((AttributeConflict) obj).getMergeObject();
-         if (object instanceof Date) {
-            date = (Date) object;
+      if (obj instanceof AttributeConflict) {
+         try {
+            Object object = ((AttributeConflict) obj).getMergeObject();
+            if (object instanceof Date) {
+               date = (Date) object;
+            }
+         } catch (Exception ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
-      } catch (Exception ex) {
-         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
 
       editor = new EmbeddedDateEditor("Edit " + displayName, date);
@@ -98,11 +108,14 @@ public class EmbeddedDateAttributeEditor implements IEmbeddedAttributeEditor {
       try {
          for (Object object : attributeHolder) {
             if (object instanceof Artifact) {
-               if (selected == null)
+               if (selected == null) {
                   ((Artifact) object).setSoleAttributeValue(attributeName, "");
-               else
+               } else {
                   ((Artifact) object).setSoleAttributeValue(attributeName, selected.getTime() + "");
-               if (persist) ((Artifact) object).persist();
+               }
+               if (persist) {
+                  ((Artifact) object).persist();
+               }
             }
             if (object instanceof AttributeConflict) {
                if (selected == null) {

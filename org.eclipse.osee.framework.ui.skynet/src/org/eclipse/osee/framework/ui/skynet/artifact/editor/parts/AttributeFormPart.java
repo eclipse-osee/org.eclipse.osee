@@ -78,8 +78,7 @@ public class AttributeFormPart extends AbstractFormPart {
          List<AttributeType> types = Arrays.asList(AttributeTypeUtil.getTypesWithData(artifact));
          boolean willHaveASection = hasWordAttribute(types);
          for (AttributeType attributeType : types) {
-            if (AttributeTypeManager.getAttributeBaseClass(attributeType).equals(WordAttribute.class) || CoreAttributeTypes.RELATION_ORDER.getGuid().equals(
-                  attributeType.getGuid())) {
+            if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType) || attributeType.equals(CoreAttributeTypes.RELATION_ORDER)) {
                createAttributeTypeControlsInSection(parent, toolkit, attributeType, willHaveASection, false);
             } else {
                createAttributeTypeControls(composite, toolkit, artifact, attributeType, willHaveASection, isEditable,
@@ -100,7 +99,7 @@ public class AttributeFormPart extends AbstractFormPart {
 
    private boolean hasWordAttribute(List<AttributeType> types) throws OseeCoreException {
       for (AttributeType attributeType : types) {
-         if (AttributeTypeManager.getAttributeBaseClass(attributeType).equals(WordAttribute.class)) {
+         if (AttributeTypeManager.isBaseTypeCompatible(WordAttribute.class, attributeType)) {
             return true;
          }
       }
@@ -182,7 +181,7 @@ public class AttributeFormPart extends AbstractFormPart {
 
       Composite composite =
             createAttributeTypeControls(expandable, toolkit, artifact, attributeType, willHaveASection, isEditable,
-            true);
+                  true);
       expandable.setClient(composite);
 
       expandable.addExpansionListener(new IExpansionListener() {
