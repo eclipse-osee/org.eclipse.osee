@@ -179,6 +179,11 @@ public interface IPropertyStore {
    public Set<String> keySet();
 
    /**
+    * @return whether the propertyStore is empty
+    */
+   public boolean isEmpty();
+
+   /**
     * Get keys referencing arrayItems
     * 
     * @return array item keys

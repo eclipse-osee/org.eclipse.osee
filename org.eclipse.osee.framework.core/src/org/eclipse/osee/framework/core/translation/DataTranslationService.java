@@ -42,8 +42,7 @@ public class DataTranslationService implements IDataTranslationService {
       Conditions.checkNotNull(txId, "translator Id");
 
       T object = null;
-      int i = 0;
-      if ((propertyStore != null) && (!propertyStore.keySet().isEmpty() || !propertyStore.innerStoresKeySet().isEmpty())) {
+      if ((propertyStore != null) && !propertyStore.isEmpty()) {
          ITranslator<?> translator = getTranslator(txId);
          object = (T) translator.convert(propertyStore);
       }

@@ -312,4 +312,9 @@ public class PropertyStore implements IPropertyStore, Serializable {
       return result;
    }
 
+   @Override
+   public boolean isEmpty() {
+      return keySet().isEmpty() && innerStoresKeySet().isEmpty() && arrayKeySet().isEmpty();
+   }
+
 }
