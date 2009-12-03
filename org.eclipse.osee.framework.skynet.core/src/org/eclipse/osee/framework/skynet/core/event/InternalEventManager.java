@@ -42,7 +42,6 @@ import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkNewBranchE
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkPurgeBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkCreatedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkDeletedEvent;
-import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkOrderModifiedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRelationLinkRationalModifiedEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkRenameBranchEvent;
 import org.eclipse.osee.framework.messaging.event.skynet.event.NetworkTransactionDeletedEvent;
@@ -573,18 +572,14 @@ public class InternalEventManager {
       SkynetRelationLinkEventBase networkEvent;
 
       String rationale = link.getRationale();
-      int aOrder = link.getAOrder();
-      int bOrder = link.getBOrder();
       String descriptorName = link.getRelationType().getName();
 
-      if (relEvent.relationEventType == RelationEventType.ReOrdered) {
-         networkEvent = new NetworkRelationLinkOrderModifiedEvent(eventBase, rationale, aOrder, bOrder);
-      } else if (relEvent.relationEventType == RelationEventType.RationaleMod) {
-         networkEvent = new NetworkRelationLinkRationalModifiedEvent(eventBase, rationale, aOrder, bOrder);
+      if (relEvent.relationEventType == RelationEventType.RationaleMod) {
+         networkEvent = new NetworkRelationLinkRationalModifiedEvent(eventBase, rationale);
       } else if (relEvent.relationEventType == RelationEventType.Deleted) {
          networkEvent = new NetworkRelationLinkDeletedEvent(eventBase);
       } else if (relEvent.relationEventType == RelationEventType.Added) {
-         networkEvent = new NetworkRelationLinkCreatedEvent(eventBase, rationale, aOrder, bOrder, descriptorName);
+         networkEvent = new NetworkRelationLinkCreatedEvent(eventBase, rationale, descriptorName);
       } else {
          OseeLog.log(InternalEventManager.class, Level.SEVERE, "Unhandled xRelationModifiedEvent event: " + relEvent);
          networkEvent = null;
@@ -729,7 +724,7 @@ public class InternalEventManager {
                   }
                }
             }
-            if (xRelationModifiedEvent.relationEventType == RelationEventType.ReOrdered || xRelationModifiedEvent.relationEventType == RelationEventType.RationaleMod) {
+            if (xRelationModifiedEvent.relationEventType == RelationEventType.RationaleMod) {
                if (loadedRelation != null) {
                   transData.cacheChangedRelations.add(loadedRelation);
                   if (loadedRelation.getArtifactA() != null) {

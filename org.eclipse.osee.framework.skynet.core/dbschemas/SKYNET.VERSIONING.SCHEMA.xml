@@ -239,8 +239,6 @@
 		<Column id="REL_LINK_TYPE_ID" defaultValue="not null" type="smallint" />
 		<Column id="A_ART_ID" defaultValue="not null" type="INTEGER" />
 		<Column id="B_ART_ID" defaultValue="not null" type="INTEGER" />
-		<Column id="A_ORDER" defaultValue="not null" type="INTEGER" />
-		<Column id="B_ORDER" defaultValue="not null" type="INTEGER" />
 		<Column id="RATIONALE" limits="4000" type="VARCHAR" />
 		<Constraint schema="OSEE" id="OSEE_REL_LINK_G_PK" type="PRIMARY KEY" appliesTo="GAMMA_ID" />
 		<Constraint schema="OSEE" id="OSEE_FOREIGN_B_ART" type="FOREIGN KEY" appliesTo="B_ART_ID" deferrable="true">

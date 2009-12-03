@@ -26,7 +26,6 @@ import org.eclipse.osee.ats.editor.SMAEditor;
 import org.eclipse.osee.ats.util.AtsUtil;
 import org.eclipse.osee.ats.world.search.MultipleHridSearchItem;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.event.FrameworkTransactionData;
@@ -131,12 +130,8 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
             }
 
             Artifact otherArt = link.getArtifactB();
-            int otherOrder = link.getBOrder();
-            int thisOrder = link.getAOrder();
             if (otherArt.equals(currentArtifact)) {
                otherArt = link.getArtifactA();
-               otherOrder = link.getAOrder();
-               thisOrder = link.getBOrder();
             }
             if (!otherArt.isDeleted()) {
                ArtifactHyperItem ahi = new ArtifactHyperItem(otherArt);
@@ -145,9 +140,7 @@ public class ArtifactHyperView extends HyperView implements IFrameworkTransactio
                   tip += "(" + link.getRationale() + ")";
                }
                ahi.setRelationToolTip(tip);
-               String label =
-                     (isShowOrder() ? "(" + thisOrder + ") " : "") + Strings.truncate(
-                           link.getRelationType().getName(), 20) + (isShowOrder() ? "(" + otherOrder + ") " : "");
+               String label = "";
                if (!link.getRationale().equals("")) {
                   label += "(" + link.getRationale() + ")";
                }

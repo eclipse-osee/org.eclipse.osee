@@ -1266,12 +1266,6 @@
     </Operation>
  </extension>
  <extension
-            point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-         <Operation
-               className="org.eclipse.osee.framework.ui.skynet.blam.operation.RelationOrderAnalysisOnBranch">
-         </Operation>
- </extension>
- <extension
        point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
     <Operation
           className="org.eclipse.osee.framework.ui.skynet.blam.operation.ReportAttributeTypesUsageBlam">
@@ -1774,12 +1768,6 @@
               point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
            <Operation
                  className="org.eclipse.osee.framework.ui.skynet.blam.operation.ChangeArtifactTypeBlam">
-           </Operation>
-        </extension>
-        <extension
-              point="org.eclipse.osee.framework.ui.skynet.BlamOperation">
-           <Operation
-                 className="org.eclipse.osee.framework.ui.skynet.blam.operation.MigrateRelationOrder">
            </Operation>
         </extension>
         <extension

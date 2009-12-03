@@ -18,31 +18,17 @@ public class NetworkRelationLinkRationalModifiedEvent extends SkynetRelationLink
    private static final long serialVersionUID = 548299278567054333L;
 
    private final String rationale;
-   int aOrder;
-   int bOrder;
 
-   public NetworkRelationLinkRationalModifiedEvent(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, int relTypeId, NetworkSender networkSender, String rationale, int aOrder, int bOrder) {
+   public NetworkRelationLinkRationalModifiedEvent(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, int relTypeId, NetworkSender networkSender, String rationale) {
       super(gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, relTypeId, networkSender);
 
       this.rationale = rationale;
-      this.aOrder = aOrder;
-      this.bOrder = bOrder;
    }
 
-   public NetworkRelationLinkRationalModifiedEvent(SkynetRelationLinkEventBase base, String rationale, int aOrder, int bOrder) {
+   public NetworkRelationLinkRationalModifiedEvent(SkynetRelationLinkEventBase base, String rationale) {
       super(base);
 
       this.rationale = rationale;
-      this.aOrder = aOrder;
-      this.bOrder = bOrder;
-   }
-
-   public int getAOrder() {
-      return aOrder;
-   }
-
-   public int getBOrder() {
-      return bOrder;
    }
 
    public String getRationale() {

@@ -73,7 +73,6 @@ import org.eclipse.ui.part.ViewPart;
 public class HyperView extends ViewPart implements IPartListener {
 
    private static final boolean debugOn = false;
-   private boolean showOrder = false;
    public static String VIEW_ID = "org.eclipse.osee.ats.hyper.HyperView";
    private LightweightSystem lws;
    private HyperViewItem centerSearchItem;
@@ -108,7 +107,7 @@ public class HyperView extends ViewPart implements IPartListener {
    protected static final Color whiteColor = ColorConstants.white;
    private ScrollBar vsb;
    private ScrollBar hsb;
-   private Action titleAction, backAction, forwardAction, showOrderAction;
+   private Action titleAction, backAction, forwardAction;
    private Zoom zoom;
    protected Zoom defaultZoom = new Zoom();
    private int verticalSelection = 40;
@@ -1058,21 +1057,10 @@ public class HyperView extends ViewPart implements IPartListener {
       ImageManager.getImageDescriptor(FrameworkImage.REFRESH);
       refreshAction.setImageDescriptor(ImageManager.getImageDescriptor(FrameworkImage.REFRESH));
 
-      showOrderAction = new Action("Show Order Value", IAction.AS_CHECK_BOX) {
-
-         @Override
-         public void run() {
-            setShowOrder(showOrderAction.isChecked());
-            handleRefreshButton();
-         }
-      };
-      showOrderAction.setToolTipText("Show Order Value");
-
       IActionBars bars = getViewSite().getActionBars();
       IMenuManager mm = bars.getMenuManager();
       mm.add(new Separator());
       mm.add(titleAction);
-      mm.add(showOrderAction);
 
       IToolBarManager tbm = bars.getToolBarManager();
       tbm.add(new Separator());
@@ -1151,13 +1139,5 @@ public class HyperView extends ViewPart implements IPartListener {
 
    public Figure getContainer() {
       return container;
-   }
-
-   public boolean isShowOrder() {
-      return showOrder;
-   }
-
-   public void setShowOrder(boolean showOrder) {
-      this.showOrder = showOrder;
    }
 }

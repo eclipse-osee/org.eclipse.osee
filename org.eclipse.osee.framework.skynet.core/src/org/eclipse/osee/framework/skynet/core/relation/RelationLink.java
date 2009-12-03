@@ -34,8 +34,6 @@ import org.eclipse.osee.framework.skynet.core.internal.Activator;
 public class RelationLink {
    private int relationId;
    private int gammaId;
-   private int aOrder;
-   private int bOrder;
    private String rationale;
    private final RelationType relationType;
    private boolean dirty;
@@ -52,15 +50,11 @@ public class RelationLink {
    /**
     * Private constructor. Use getOrCreate().
     */
-   private RelationLink(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder, ModificationType modificationType) {
+   private RelationLink(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) {
       this.relationType = relationType;
       this.relationId = relationId;
       this.gammaId = gammaId;
       this.rationale = rationale == null ? "" : rationale;
-      if (relationType.isOrdered()) {
-         this.aOrder = aOrder;
-         this.bOrder = bOrder;
-      }
       this.dirty = false;
       this.aArtifactId = aArtifactId;
       this.bArtifactId = bArtifactId;
@@ -79,7 +73,7 @@ public class RelationLink {
     * 
     * @param relationId 0 or relationId if already created
     */
-   public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, int aOrder, int bOrder, ModificationType modificationType) {
+   public static synchronized RelationLink getOrCreate(int aArtifactId, int bArtifactId, Branch aBranch, Branch bBranch, RelationType relationType, int relationId, int gammaId, String rationale, ModificationType modificationType) {
       RelationLink relation = null;
       if (relationId != 0) {
          relation = RelationManager.getLoadedRelationById(relationId, aArtifactId, bArtifactId, aBranch, bBranch);
@@ -93,7 +87,7 @@ public class RelationLink {
       if (relation == null || relation.modificationType != modificationType || relation.getRelationId() != relationId) {
          relation =
                new RelationLink(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
-               rationale, aOrder, bOrder, modificationType);
+                     rationale, modificationType);
       }
       RelationManager.manageRelation(relation, RelationSide.SIDE_A);
       RelationManager.manageRelation(relation, RelationSide.SIDE_B);
@@ -103,7 +97,7 @@ public class RelationLink {
 
    public static RelationLink getOrCreate(Artifact aArtifact, Artifact bArtifact, RelationType relationType, String rationale, ModificationType modificationType) {
       return getOrCreate(aArtifact.getArtId(), bArtifact.getArtId(), aArtifact.getBranch(), bArtifact.getBranch(),
-            relationType, 0, 0, rationale, 0, 0, modificationType);
+            relationType, 0, 0, rationale, modificationType);
    }
 
    public RelationSide getSide(Artifact artifact) {
@@ -225,44 +219,6 @@ public class RelationLink {
    }
 
    /**
-    * @return Returns the order.
-    */
-   public int getAOrder() {
-      return aOrder;
-   }
-
-   /**
-    * @param order The order to set.
-    */
-   public void setAOrder(int order) {
-      if (aOrder != order) {
-         aOrder = order;
-         markedAsChanged(ModificationType.MODIFIED, SET_DIRTY);
-      }
-   }
-
-   /**
-    * @return Returns the order.
-    */
-   public int getBOrder() {
-      return bOrder;
-   }
-
-   public int getOrder(RelationSide relationSide) {
-      return relationSide == RelationSide.SIDE_A ? aOrder : bOrder;
-   }
-
-   /**
-    * @param order The order to set.
-    */
-   public void setBOrder(int order) {
-      if (bOrder != order) {
-         bOrder = order;
-         markedAsChanged(ModificationType.MODIFIED, SET_DIRTY);
-      }
-   }
-
-   /**
     * @return Returns the rationale.
     */
    public String getRationale() {
@@ -345,10 +301,9 @@ public class RelationLink {
       } catch (Exception ex) {
          // do nothing
       }
-      return String.format(
-            "type[%s] id[%d] modType[%s] [%s]: aName[%s] aId[%d] aOrder[%d] <--> bName[%s] bId[%s] bOrder[%d]",
+      return String.format("type[%s] id[%d] modType[%s] [%s]: aName[%s] aId[%d] <--> bName[%s] bId[%s]",
             relationType.getName(), relationId, getModificationType(), (isDirty() ? "dirty" : "not dirty"), artAName,
-            aArtifactId, aOrder, artBName, bArtifactId, bOrder);
+            aArtifactId, artBName, bArtifactId);
    }
 
    public boolean isExplorable() {
@@ -413,14 +368,6 @@ public class RelationLink {
       return getBranch(RelationSide.SIDE_A);
    }
 
-   public void setOrder(RelationSide side, int order) {
-      if (RelationSide.SIDE_A == side) {
-         setAOrder(order);
-      } else if (RelationSide.SIDE_B == side) {
-         setBOrder(order);
-      }
-   }
-
    private void markedAsChanged(ModificationType modificationType, boolean setDirty) {
       //Because deletes can reorder links and we want the final mod type to be the delete and not the modify.
       if (modificationType != ModificationType.DELETED || modificationType != ModificationType.ARTIFACT_DELETED) {
@@ -450,11 +397,11 @@ public class RelationLink {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
          boolean result = aArtifactId == other.aArtifactId && aBranch.equals(other.aBranch) &&
-                        //
+         //
          bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
-                        //
+         //
          other.modificationType == modificationType &&
-                        //
+         //
          relationType.equals(other.relationType);
 
          // This should eventually be removed once DB cleanup occurs
@@ -471,11 +418,11 @@ public class RelationLink {
       if (obj instanceof RelationLink) {
          RelationLink other = (RelationLink) obj;
          boolean result = aArtifactId == other.aArtifactId && aBranch.equals(other.aBranch) &&
-                        //
+         //
          bArtifactId == other.bArtifactId && bBranch.equals(other.bBranch) &&
-                        //
+         //
          other.modificationType == modificationType &&
-                        //
+         //
          relationType.equals(other.relationType);
 
          return result;

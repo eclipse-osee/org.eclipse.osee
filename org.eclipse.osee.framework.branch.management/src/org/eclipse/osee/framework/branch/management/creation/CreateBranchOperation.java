@@ -55,7 +55,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    private static final String SELECT_ADDRESSING =
          "SELECT gamma_id, mod_type FROM osee_txs txs, osee_tx_details txd WHERE txs.tx_current <> ? AND txs.transaction_id = txd.transaction_id AND txd.branch_id = ? order by txd.transaction_id desc";
    private static final String INSERT_ADDRESSING =
-         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current) VALUES (?,?,?,?)";
+         "INSERT INTO osee_txs (transaction_id, gamma_id, mod_type, tx_current, branch_id) VALUES (?,?,?,?,?)";
    private static final String USER_ID_QUERY =
          "select oa.art_id from osee_attribute_type oat, osee_attribute oa, osee_txs txs where oat.name = 'User Id' and oat.attr_type_id = oa.attr_type_id and oa.gamma_id = txs.gamma_id and txs.tx_current = 1 and oa.value = ?";
 
@@ -253,7 +253,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
             if (!gammas.contains(gamma)) {
                ModificationType modType = ModificationType.getMod(chStmt.getInt("mod_type"));
                TxChange txCurrent = TxChange.getCurrent(modType);
-               data.add(new Object[] {baseTxId, gamma, modType.getValue(), txCurrent.getValue()});
+               data.add(new Object[] {baseTxId, gamma, modType.getValue(), txCurrent.getValue(), branch.getId()});
                gammas.add(gamma);
             }
          }

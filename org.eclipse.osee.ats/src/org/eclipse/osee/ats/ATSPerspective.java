@@ -54,10 +54,10 @@ public class ATSPerspective implements IPerspectiveFactory {
 
       // Place navigator and outline to left of editor area.
       final IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, (float) 0.19, editorArea);
+      left.addView(BranchView.VIEW_ID);
       left.addView(ArtifactExplorer.VIEW_ID);
       left.addView(NavigateView.VIEW_ID);
       left.addView(GroupExplorer.VIEW_ID);
-      left.addView(BranchView.VIEW_ID);
 
       if (AtsUtil.isAtsAdmin()) {
          final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, (float) 0.80, editorArea);

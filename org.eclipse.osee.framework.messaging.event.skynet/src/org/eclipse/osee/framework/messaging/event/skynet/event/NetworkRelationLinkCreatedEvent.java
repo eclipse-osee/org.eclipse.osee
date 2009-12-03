@@ -20,33 +20,19 @@ public class NetworkRelationLinkCreatedEvent extends SkynetRelationLinkEventBase
 
    private final String rationale;
    private final String descriptorName;
-   private final int aOrder;
-   private final int bOrder;
 
-   public NetworkRelationLinkCreatedEvent(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, int relTypeId, NetworkSender networkSender, String rationale, int aOrder, int bOrder, String descriptorName) {
+   public NetworkRelationLinkCreatedEvent(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, int relTypeId, NetworkSender networkSender, String rationale, String descriptorName) {
       super(gammaId, branchId, relId, artAId, artATypeId, artBId, artBTypeId, relTypeId, networkSender);
 
       this.rationale = rationale;
-      this.aOrder = aOrder;
-      this.bOrder = bOrder;
       this.descriptorName = descriptorName;
    }
 
-   public NetworkRelationLinkCreatedEvent(SkynetRelationLinkEventBase base, String rationale, int aOrder, int bOrder, String descriptorName) {
+   public NetworkRelationLinkCreatedEvent(SkynetRelationLinkEventBase base, String rationale, String descriptorName) {
       super(base);
 
       this.rationale = rationale;
-      this.aOrder = aOrder;
-      this.bOrder = bOrder;
       this.descriptorName = descriptorName;
-   }
-
-   public int getAOrder() {
-      return aOrder;
-   }
-
-   public int getBOrder() {
-      return bOrder;
    }
 
    public String getRationale() {

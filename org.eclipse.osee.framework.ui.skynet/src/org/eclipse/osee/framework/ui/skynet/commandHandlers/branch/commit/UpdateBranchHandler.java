@@ -95,7 +95,7 @@ public class UpdateBranchHandler extends CommandHandler {
       return null;
    }
 
-   private final class UserConflictResolver extends ConflictResolverOperation {
+   private static final class UserConflictResolver extends ConflictResolverOperation {
 
       public UserConflictResolver() {
          super("Launch Merge Manager", SkynetGuiPlugin.PLUGIN_ID);

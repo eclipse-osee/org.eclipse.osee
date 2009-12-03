@@ -387,16 +387,11 @@ public final class ArtifactLoader {
             Branch bBranch = aBranch; // TODO these branch ids need to come from the relation link table
             RelationType relationType = RelationTypeManager.getType(chStmt.getInt("rel_link_type_id"));
 
-            if (relationId == 43135 && aArtifactId == 52002 && bArtifactId == 108) {
-               System.out.println("loading that relation with gamma " + chStmt.getInt("gamma_id"));
-            }
-            int aOrderValue = chStmt.getInt("a_order");
-            int bOrderValue = chStmt.getInt("b_order");
             int gammaId = chStmt.getInt("gamma_id");
             String rationale = chStmt.getString("rationale");
 
             RelationLink.getOrCreate(aArtifactId, bArtifactId, aBranch, bBranch, relationType, relationId, gammaId,
-                  rationale, aOrderValue, bOrderValue, ModificationType.getMod(chStmt.getInt("mod_type")));
+                  rationale, ModificationType.getMod(chStmt.getInt("mod_type")));
          }
       } finally {
          chStmt.close();

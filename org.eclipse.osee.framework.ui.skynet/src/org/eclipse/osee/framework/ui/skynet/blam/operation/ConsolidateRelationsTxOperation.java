@@ -32,7 +32,6 @@ import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.JoinUtility.ExportImportJoinQuery;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.skynet.core.relation.RelationTypeManager;
 import org.eclipse.osee.framework.skynet.core.utility.OseeData;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 
@@ -62,8 +61,6 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
    private int previousArtifactAId;
    private int previousArtiafctBId;
    private long netGamma;
-   private int netOrderA;
-   private int netOrderB;
    private String netRationale;
    boolean materiallyDifferent;
    boolean updateAddressing;
@@ -109,7 +106,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       try {
          init();
 
-         findObsoleteRelatins();
+         findObsoleteRelations();
 
          System.out.println("gamma join size: " + gammaJoin.size());
 
@@ -121,7 +118,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       }
    }
 
-   private void findObsoleteRelatins() throws OseeCoreException {
+   private void findObsoleteRelations() throws OseeCoreException {
       try {
          chStmt.runPreparedQuery(10000, SELECT_RELATIONS);
          while (chStmt.next()) {
@@ -134,7 +131,7 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
                initNextConceptualRelation(relationTypeId, artifactAId, artiafctBId);
             } else {
                obsoleteGammas.add(chStmt.getLong("gamma_id"));
-               relationMateriallyDifferes(chStmt);
+               relationMateriallyDiffers(chStmt);
             }
          }
       } finally {
@@ -272,14 +269,10 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       return previousRelationTypeId != relationTypeId || previousArtifactAId != artifactAId || previousArtiafctBId != artiafctBId;
    }
 
-   private void relationMateriallyDifferes(IOseeStatement chStmt) throws OseeCoreException {
+   private void relationMateriallyDiffers(IOseeStatement chStmt) throws OseeCoreException {
       if (!materiallyDifferent) {
          String currentRationale = chStmt.getString("rationale");
          materiallyDifferent |= Strings.isValid(currentRationale) && !currentRationale.equals(netRationale);
-         if (RelationTypeManager.getType(chStmt.getInt("rel_link_type_id")).isOrdered()) {
-            materiallyDifferent |= chStmt.getInt("a_order") != 0 && netOrderA != chStmt.getInt("a_order");
-            materiallyDifferent |= chStmt.getInt("b_order") != 0 && netOrderB != chStmt.getInt("b_order");
-         }
       }
    }
 
@@ -289,8 +282,6 @@ public class ConsolidateRelationsTxOperation extends AbstractDbTxOperation {
       previousArtifactAId = artifactAId;
       previousArtiafctBId = artiafctBId;
       netGamma = chStmt.getInt("gamma_id");
-      netOrderA = chStmt.getInt("a_order");
-      netOrderB = chStmt.getInt("b_order");
       netRationale = chStmt.getString("rationale");
       materiallyDifferent = false;
    }

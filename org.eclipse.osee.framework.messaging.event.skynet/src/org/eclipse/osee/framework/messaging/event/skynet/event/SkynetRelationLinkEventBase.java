@@ -27,14 +27,6 @@ public class SkynetRelationLinkEventBase extends SkynetEventBase implements ISky
    private final int gammaId;
    private final int branchId;
 
-   /**
-    * @param branchId
-    * @param transactionId
-    * @param relId
-    * @param artAId
-    * @param artBId
-    * @param networkSender
-    */
    public SkynetRelationLinkEventBase(int gammaId, int branchId, int relId, int artAId, int artATypeId, int artBId, int artBTypeId, int relTypeId, NetworkSender networkSender) {
       super(networkSender);
       this.branchId = branchId;

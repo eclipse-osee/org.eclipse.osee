@@ -489,8 +489,7 @@ abstract artifactType "Abstract Software Requirement" extends "Requirement" {
    attribute "Training Effectivity"
 }
 
-artifactType "Software Requirement" extends "MS Word Template" ,
-"Abstract Software Requirement" {
+artifactType "Software Requirement" extends "MS Word Template", "Abstract Software Requirement" {
    guid "AAMFDiAwhRFXwIyapJAA"
 }
 
