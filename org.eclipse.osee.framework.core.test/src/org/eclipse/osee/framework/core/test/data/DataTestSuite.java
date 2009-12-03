@@ -23,6 +23,7 @@ BranchCommitRequestTest.class, //
       ChangeVersionTest.class, //
       TransactionCacheUpdateResponseTest.class, //
       TransactionRecordTest.class, //
+      PurgeBranchRequestTest.class, //
 })
 /**
  * @author Roberto E. Escobar

@@ -29,7 +29,8 @@ BranchCommitRequestTranslatorTest.class, //
       OseeImportModelResponseTranslatorTest.class, //
       TableDataTranslatorTest.class, //
       TransactionCacheUpdateResponseTranslatorTest.class, //
-      TransactionRecordTranslatorTest.class //
+      TransactionRecordTranslatorTest.class, //
+      PurgeBranchRequestTranslatorTest.class //
 })
 /**
  * @author Roberto E. Escobar
