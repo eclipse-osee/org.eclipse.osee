@@ -32,10 +32,7 @@ import org.junit.Test;
 public class DataTranslationServiceTest {
 
    private enum TxId implements ITranslatorId {
-      STRING_TX,
-      INTEGER_TX,
-      OBJECT_TX,
-      DUMMY_TX;
+      STRING_TX, INTEGER_TX, OBJECT_TX, DUMMY_TX;
 
       @Override
       public String getKey() {
@@ -94,6 +91,7 @@ public class DataTranslationServiceTest {
 
       TestObject value = new TestObject("hello", 1, 1.0);
       PropertyStore propertyStore = service.convert(value, TxId.OBJECT_TX);
+      Assert.assertFalse(propertyStore.isEmpty());
       TestObject actual = service.convert(propertyStore, TxId.OBJECT_TX);
 
       Assert.assertEquals(value.one, actual.one);
@@ -134,6 +132,7 @@ public class DataTranslationServiceTest {
 
    private void assertEmpty(InputStream inputStream) throws Exception {
       PropertyStore toCheck = new PropertyStore();
+      Assert.assertTrue(toCheck.isEmpty());
       toCheck.load(inputStream);
       assertEmpty(toCheck);
    }
@@ -142,6 +141,7 @@ public class DataTranslationServiceTest {
       Assert.assertTrue(toCheck.arrayKeySet().isEmpty());
       Assert.assertTrue(toCheck.keySet().isEmpty());
       Assert.assertTrue(toCheck.innerStoresKeySet().isEmpty());
+      Assert.assertTrue(toCheck.isEmpty());
    }
 
    @Test(expected = OseeArgumentException.class)

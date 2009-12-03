@@ -242,8 +242,4 @@ public class PropertyStoreTest {
       PropertyStoreTestUtil.checkEquals(store1, store2);
    }
 
-   @org.junit.Test
-   public void testIsEmpty() {
-
-   }
 }
