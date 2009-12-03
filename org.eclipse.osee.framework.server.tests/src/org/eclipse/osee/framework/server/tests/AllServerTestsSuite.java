@@ -33,6 +33,6 @@ JdkCoreTestSuite.class, //
       AttributeProviderTestSuite.class, //
       OseeTypesTestSuite.class, //
 })
-public class AllTestsSuite {
+public class AllServerTestsSuite {
 
 }

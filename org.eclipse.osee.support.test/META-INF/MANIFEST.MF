@@ -18,6 +18,7 @@ Import-Package: org.eclipse.osee.ats.test,
  org.eclipse.osee.ats.test.cases,
  org.eclipse.osee.ats.test.util,
  org.eclipse.osee.framework.core.exception,
+ org.eclipse.osee.framework.core.test,
  org.eclipse.osee.framework.jdk.core.test,
  org.eclipse.osee.framework.skynet.core.test,
  org.eclipse.osee.framework.skynet.core.test.cases
