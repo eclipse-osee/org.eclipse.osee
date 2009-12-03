@@ -137,12 +137,16 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          deleteData.add(new Object[] {branch.getId()});
          if (!branch.getModificationType().isDeleted()) {
             for (String alias : branch.getAliases()) {
-               insertData.add(new Object[] {branch.getId(), alias});
+               if (alias != null && !alias.equals("")) {
+                  insertData.add(new Object[] {branch.getId(), alias});
+               }
             }
          }
       }
       getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH_ALIASES, deleteData);
-      getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH_ALIASES, insertData);
+      if (!insertData.isEmpty()) {
+         getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH_ALIASES, insertData);
+      }
    }
 
    private void sendChangeEvents(Collection<Branch> branches) {
