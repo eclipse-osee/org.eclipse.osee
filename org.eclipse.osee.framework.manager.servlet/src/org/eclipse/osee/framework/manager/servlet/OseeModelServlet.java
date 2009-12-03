@@ -62,7 +62,7 @@ public class OseeModelServlet extends OseeHttpServlet {
 
          Lib.inputStreamToOutputStream(new ByteArrayInputStream(outputStream.toByteArray()), resp.getOutputStream());
       } catch (Exception ex) {
-         handleError(resp, req.toString(), ex);
+         handleError(resp, req.getQueryString(), ex);
       }
    }
 

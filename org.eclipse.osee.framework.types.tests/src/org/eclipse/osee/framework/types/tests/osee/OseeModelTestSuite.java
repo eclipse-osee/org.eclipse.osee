@@ -8,10 +8,8 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.types.tests;
+package org.eclipse.osee.framework.types.tests.osee;
 
-import org.eclipse.osee.framework.oseeTypes.tests.OseeTypesAllTests;
-import org.eclipse.osee.framework.types.tests.osee.OseeModelTestSuite;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -20,9 +18,8 @@ import org.junit.runners.Suite;
  */
 @RunWith(Suite.class)
 @Suite.SuiteClasses( { //
-OseeModelTestSuite.class, //
-      OseeTypesAllTests.class, //
+ModeUtilTest.class, //
 })
-public class OseeTypesTestSuite {
+public class OseeModelTestSuite {
 
 }

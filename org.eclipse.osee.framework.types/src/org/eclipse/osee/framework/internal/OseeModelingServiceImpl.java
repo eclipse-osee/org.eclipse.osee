@@ -74,19 +74,24 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
 
    @Override
    public void importOseeTypes(IProgressMonitor monitor, OseeImportModelRequest request, OseeImportModelResponse response) throws OseeCoreException {
-      OseeTypeModel inputModel = ModelUtil.loadModel(request.getModel());
+      String modelName = request.getModelName();
+      if (!modelName.endsWith(".osee")) {
+         modelName += ".osee";
+      }
+      OseeTypeModel inputModel = ModelUtil.loadModel("osee:/" + modelName, request.getModel());
 
       IOseeCachingService cachingService = cachingProvider.getOseeCachingService();
 
       OseeTypeCache cache = null;
-      if (request.isPersistAllowed()) {
-         cache =
-               new OseeTypeCache(cachingService.getArtifactTypeCache(), cachingService.getAttributeTypeCache(),
-                     cachingService.getRelationTypeCache(), cachingService.getEnumTypeCache());
-      } else {
-         // Load a copy of the currentCache;
 
-      }
+      //      if (request.isPersistAllowed()) {
+      cache =
+            new OseeTypeCache(cachingService.getArtifactTypeCache(), cachingService.getAttributeTypeCache(),
+                  cachingService.getRelationTypeCache(), cachingService.getEnumTypeCache());
+      //      cache.clearAll();
+      //      } else {
+      // Load a copy of the currentCache;
+      //      }
 
       List<TableData> reportData = new ArrayList<TableData>();
       ComparisonResourceSnapshot comparisonSnapshot = DiffFactory.eINSTANCE.createComparisonResourceSnapshot();
@@ -119,7 +124,8 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       }
       response.setReportData(reportData);
 
-      response.setComparisonSnapshot("");
+      response.setComparisonSnapshotModelName("");
+      response.setComparisonSnapshotModel("");
       //   TODO   ModelUtil.modelToString(comparisonSnapshot,
       //            Collections.<String, Boolean> emptyMap()));
    }

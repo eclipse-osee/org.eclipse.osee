@@ -54,6 +54,17 @@ public class OseeTypeCache {
       }
    }
 
+   public synchronized void clearAll() throws OseeCoreException {
+      if (!duringPopulate) {
+         duringPopulate = true;
+         getEnumTypeCache().decacheAll();
+         getAttributeTypeCache().decacheAll();
+         getArtifactTypeCache().decacheAll();
+         getRelationTypeCache().decacheAll();
+         duringPopulate = false;
+      }
+   }
+
    public ArtifactTypeCache getArtifactTypeCache() {
       return artifactCache;
    }

@@ -71,13 +71,22 @@ public class OseeTypesImportOperation extends AbstractOperation {
       }
    }
 
+   private String getName(URI uri) {
+      String name = uri.toASCIIString();
+      int index = name.lastIndexOf("/");
+      if (index > 0) {
+         name = name.substring(index + 1, name.length());
+      }
+      return name;
+   }
+
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
       Map<String, String> parameters = new HashMap<String, String>();
 
       OseeImportModelRequest modelRequest =
-            new OseeImportModelRequest(getModel(model.toURL()), createTypeChangeReport, createCompareReport,
-                  isPersistAllowed);
+            new OseeImportModelRequest(getName(model), getModel(model.toURL()), createTypeChangeReport,
+                  createCompareReport, isPersistAllowed);
 
       OseeImportModelResponse response =
             HttpMessage.send(OseeServerContext.OSEE_MODEL_CONTEXT, parameters,
@@ -94,9 +103,10 @@ public class OseeTypesImportOperation extends AbstractOperation {
 
       openTabReport(response.getReportData());
 
-      String compareData = response.getComparisonSnapshot();
-      if (Strings.isValid(compareData)) {
-         ComparisonSnapshot snapshot = ModelUtil.loadComparisonSnapshot(compareData);
+      String compareName = response.getComparisonSnapshotModelName();
+      String compareData = response.getComparisonSnapshotModel();
+      if (Strings.isValid(compareData) && Strings.isValid(compareName)) {
+         ComparisonSnapshot snapshot = ModelUtil.loadComparisonSnapshot(compareName, compareData);
          openCompareEditor(snapshot);
       }
    }

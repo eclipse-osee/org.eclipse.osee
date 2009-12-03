@@ -66,7 +66,7 @@ public final class ModelUtil {
    //   }
    //   loadDependencies(targetModel, models);
 
-   public static OseeTypeModel loadModel(String xTextData) throws OseeCoreException {
+   public static OseeTypeModel loadModel(String uri, String xTextData) throws OseeCoreException {
       try {
          OseeTypesStandaloneSetup setup = new OseeTypesStandaloneSetup();
          Injector injector = setup.createInjectorAndDoEMFRegistration();
@@ -75,7 +75,7 @@ public final class ModelUtil {
          set.setClasspathURIContext(ModelUtil.class);
          set.addLoadOption(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
 
-         Resource resource = set.createResource(URI.createURI("dummy:/example.osee"));
+         Resource resource = set.createResource(URI.createURI(uri));
          resource.load(new ByteArrayInputStream(xTextData.getBytes("UTF-8")), set.getLoadOptions());
          OseeTypeModel model = (OseeTypeModel) resource.getContents().get(0);
          for (Diagnostic diagnostic : resource.getErrors()) {
@@ -138,32 +138,34 @@ public final class ModelUtil {
    }
 
    public static void saveModel(OseeTypeModel model, String uri, OutputStream outputStream, boolean isZipped) throws IOException {
-      Injector injector = new OseeTypesStandaloneSetup().createInjectorAndDoEMFRegistration();
-      XtextResource resource = injector.getInstance(XtextResource.class);
+      OseeTypesStandaloneSetup.doSetup();
+
+      ResourceSet resourceSet = new ResourceSetImpl();
+      Resource resource = resourceSet.createResource(URI.createURI(uri));
+      resource.getContents().add(model);
 
       Map<String, Boolean> options = new HashMap<String, Boolean>();
       options.put(XtextResource.OPTION_FORMAT, Boolean.TRUE);
-      options.put(XtextResource.OPTION_RESOLVE_ALL, Boolean.TRUE);
       if (isZipped) {
          options.put(XtextResource.OPTION_ZIP, Boolean.TRUE);
       }
-      resource.setURI(URI.createURI(uri));
-      resource.getContents().add(model);
       resource.save(outputStream, options);
    }
 
-   private static void storeModel(OutputStream outputStream, EObject object, Map<String, Boolean> options) throws OseeCoreException {
+   private static void storeModel(OutputStream outputStream, EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
       Resource resource = new ResourceImpl();
       try {
+         resource.setURI(URI.createURI(uri));
+         resource.getContents().add(object);
          resource.save(outputStream, options);
       } catch (IOException ex) {
          throw new OseeWrappedException(ex);
       }
    }
 
-   public static String modelToString(EObject object, Map<String, Boolean> options) throws OseeCoreException {
+   public static String modelToString(EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
       ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-      storeModel(outputStream, object, options);
+      storeModel(outputStream, object, uri, options);
       try {
          return outputStream.toString("UTF-8");
       } catch (UnsupportedEncodingException ex) {
@@ -171,7 +173,7 @@ public final class ModelUtil {
       }
    }
 
-   public static ComparisonSnapshot loadComparisonSnapshot(String compareData) {
+   public static ComparisonSnapshot loadComparisonSnapshot(String compareName, String compareData) {
       return null;
    }
 }

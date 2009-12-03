@@ -18,6 +18,7 @@ import java.util.Map;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
 import org.eclipse.osee.framework.core.client.server.HttpUrlBuilder;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.ITranslatorId;
 import org.eclipse.osee.framework.jdk.core.util.HttpProcessor;
@@ -55,7 +56,7 @@ public class HttpMessage {
             throw new OseeCoreException(String.format("Request [%s] failed.", urlString));
          }
       } catch (Exception ex) {
-         throw new OseeCoreException(ex);
+         throw new OseeWrappedException(ex);
       } finally {
          Lib.close(inputStream);
       }
