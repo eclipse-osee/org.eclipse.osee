@@ -68,6 +68,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
          "SELECT item.gamma_id, txs.mod_type FROM osee_artifact_version item, osee_txs txs, osee_tx_details txd, osee_join_artifact artjoin WHERE txd.branch_id = ? AND txd.transaction_id = txs.transaction_id AND txs.tx_current <> ? AND txs.gamma_id = item.gamma_id AND item.art_id = artjoin.art_id and artjoin.query_id = ? order by txd.transaction_id desc";
 
    private boolean passedPreConditions;
+   private boolean wasSuccessful;
    private int systemUserId;
 
    private final IOseeCachingServiceProvider cachingService;
@@ -84,7 +85,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       this.factoryService = factoryService;
       this.request = request;
       this.response = response;
-
+      this.wasSuccessful = false;
       this.systemUserId = -1;
    }
 
@@ -176,10 +177,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
       populateBaseTransaction(monitor, 0.30, connection, branch, request.getPopulateBaseTxFromAddressingQueryId());
 
       addMergeBranchEntry(monitor, 0.20, connection, branch, request.getDestinationBranchId());
-
-      branch.setBranchState(BranchState.CREATED);
-      branchCache.storeItems(branch);
-      response.setBranchId(branch.getId());
+      wasSuccessful = true;
    }
 
    @Override
@@ -198,6 +196,12 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
 
    @Override
    protected void handleTxFinally(IProgressMonitor monitor) throws OseeCoreException {
+      if (wasSuccessful) {
+         BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
+         branch.setBranchState(BranchState.CREATED);
+         branchCache.storeItems(branch);
+         response.setBranchId(branch.getId());
+      }
       monitor.worked(calculateWork(0.10));
    }
 
