@@ -4,6 +4,7 @@
 
 	<target name="PdeBuild">
 		<tstamp />
+		<property name="releaseVersion" value="0.9.0" />
 		<property name="topLevelElementType" value="feature" />
 		<property name="builder" value="${basedir}" />
 		<dirname property="baseLocation" file="${eclipse.launcher}" />
