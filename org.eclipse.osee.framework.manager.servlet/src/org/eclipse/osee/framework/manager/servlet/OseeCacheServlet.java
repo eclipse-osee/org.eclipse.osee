@@ -33,6 +33,7 @@ import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
+import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -49,7 +50,6 @@ import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 
 /**
  * @author Roberto E. Escobar
@@ -63,7 +63,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
       super();
       this.dataTransalatorProvider = dataTransalatorProvider;
    }
-   
+
    @Override
    protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
    }
@@ -73,11 +73,15 @@ public class OseeCacheServlet extends OseeHttpServlet {
       OseeCacheEnum cacheId = OseeCacheEnum.valueOf(req.getParameter("cacheId"));
       IOseeCachingService caching = MasterServletActivator.getInstance().getOseeCache();
       try {
-         IDataTranslationService service = dataTransalatorProvider.getTranslatorService();         
-         Pair<Object, ITranslatorId> pair = createResponse(cacheId, caching);
+         IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
+         Pair<Object, ITranslatorId> pair = createResponse(new CacheUpdateRequest(cacheId), caching);
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
          resp.setCharacterEncoding("UTF-8");
+      } catch (Exception ex) {
+         handleError(resp, req.getQueryString(), ex);
+      }
+   }
 
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
