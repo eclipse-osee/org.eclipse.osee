@@ -331,7 +331,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
       if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Remove From Group",
             "Remove From Group - (Artifacts will not be deleted)\n\nAre you sure?")) {
          try {
-            SkynetTransaction transaction = new SkynetTransaction(branch);
+            SkynetTransaction transaction = new SkynetTransaction(branch, "Artifacts removed from group");
             for (GroupExplorerItem item : items) {
                item.getArtifact().deleteRelation(CoreRelationTypes.Universal_Grouping__Group,
                      item.getParentItem().getArtifact());
@@ -365,7 +365,7 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          if (MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), "Delete Groups",
                "Delete Groups - (Contained Artifacts will not be deleted)\n\n" + names + "\nAre you sure?")) {
 
-            SkynetTransaction transaction = new SkynetTransaction(branch);
+            SkynetTransaction transaction = new SkynetTransaction(branch, "Delete Groups: " + names);
             for (GroupExplorerItem item : items) {
                item.getArtifact().deleteAndPersist(transaction);
             }
@@ -434,22 +434,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
          }
       }
       return arts;
-   }
-
-   private boolean isOnlyGroupsSelected() throws OseeCoreException {
-      if (getSelectedItems().size() == 0) {
-         return false;
-      }
-      for (GroupExplorerItem item : getSelectedItems()) {
-         if (!item.isUniversalGroup()) {
-            return false;
-         }
-      }
-      return true;
-   }
-
-   private boolean isOnlyGroupItemsSelected() throws OseeCoreException {
-      return getSelectedUniversalGroupItems().size() == 0 && getSelectedItems().size() > 0;
    }
 
    private void expandAll(IStructuredSelection selection) {
@@ -529,10 +513,6 @@ public class GroupExplorer extends ViewPart implements IFrameworkTransactionEven
 
       public NeedProjectMenuListener() {
          this.items = new LinkedList<MenuItem>();
-      }
-
-      public void add(MenuItem item) {
-         items.add(item);
       }
 
       public void menuHidden(MenuEvent e) {
