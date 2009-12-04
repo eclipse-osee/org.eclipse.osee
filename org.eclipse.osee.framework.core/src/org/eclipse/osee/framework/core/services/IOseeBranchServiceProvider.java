@@ -8,22 +8,15 @@
  * Contributors:
  *     Boeing - initial API and implementation
  *******************************************************************************/
-package org.eclipse.osee.framework.core.server;
+package org.eclipse.osee.framework.core.services;
 
-import org.eclipse.osee.framework.core.server.internal.InternalHttpServiceTracker;
-import org.osgi.framework.BundleContext;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 
 /**
- * @author Roberto E. Escobar
+ * @author Jeff C. Phillips
  */
-public class OseeHttpServiceTracker extends InternalHttpServiceTracker {
+public interface IOseeBranchServiceProvider {
 
-   /**
-    * @param context
-    * @param contextName
-    * @param servletClass
-    */
-   public OseeHttpServiceTracker(BundleContext context, String contextName, OseeHttpServlet servletClass) {
-      super(context, contextName, servletClass);
-   }
+   public IOseeBranchService getBranchService() throws OseeCoreException;
+
 }

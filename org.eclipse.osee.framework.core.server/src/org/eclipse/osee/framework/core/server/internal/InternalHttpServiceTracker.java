@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.server.internal;
 
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.server.CoreServerActivator;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -24,20 +25,19 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class InternalHttpServiceTracker extends ServiceTracker {
 
-   private String contextName;
-   private Class<? extends OseeHttpServlet> servletClass;
+   private final String contextName;
+   private final OseeHttpServlet servlet;
 
-   public InternalHttpServiceTracker(BundleContext context, String contextName, Class<? extends OseeHttpServlet> servletClass) {
+   public InternalHttpServiceTracker(BundleContext context, String contextName, OseeHttpServlet servlet) {
       super(context, HttpService.class.getName(), null);
       this.contextName = !contextName.startsWith("/") ? "/" + contextName : contextName;
-      this.servletClass = servletClass;
+      this.servlet = servlet;
    }
 
+   @Override
    public Object addingService(ServiceReference reference) {
       HttpService httpService = (HttpService) context.getService(reference);
       try {
-         OseeHttpServlet servlet =
-               (OseeHttpServlet) this.servletClass.getConstructor(new Class[0]).newInstance(new Object[0]);
          httpService.registerServlet(contextName, servlet, null, null);
          ApplicationServerManager serverManager =
                (ApplicationServerManager) CoreServerActivator.getApplicationServerManager();
@@ -49,6 +49,7 @@ public class InternalHttpServiceTracker extends ServiceTracker {
       return httpService;
    }
 
+   @Override
    public void removedService(ServiceReference reference, Object service) {
       HttpService httpService = (HttpService) service;
       httpService.unregister(contextName);

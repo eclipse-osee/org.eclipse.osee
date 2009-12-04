@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
@@ -51,6 +52,7 @@ public abstract class AbstractClientDataAccessor<T extends IOseeStorableType> im
 
    @Override
    public void store(Collection<T> types) throws OseeCoreException {
+      
       //      Map<String, String> parameters = new HashMap<String, String>();
       //      parameters.put("request", "storage");
 

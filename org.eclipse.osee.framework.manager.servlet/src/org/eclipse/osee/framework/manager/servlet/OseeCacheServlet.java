@@ -14,9 +14,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.logging.Level;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.osee.framework.core.data.ArtifactTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.AttributeTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
@@ -33,6 +35,7 @@ import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
+import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.ITranslatorId;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -46,7 +49,13 @@ import org.eclipse.osee.framework.logging.OseeLog;
 public class OseeCacheServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = 6693534844874109524L;
+   private final IOseeDataTranslationProvider dataTransalatorProvider;
 
+   public OseeCacheServlet(IOseeDataTranslationProvider dataTransalatorProvider) {
+      super();
+      this.dataTransalatorProvider = dataTransalatorProvider;
+   }
+   
    @Override
    protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
    }
@@ -55,8 +64,8 @@ public class OseeCacheServlet extends OseeHttpServlet {
    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
       OseeCacheEnum cacheId = OseeCacheEnum.valueOf(req.getParameter("cacheId"));
       IOseeCachingService caching = MasterServletActivator.getInstance().getOseeCache();
-      IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
       try {
+         IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
          Pair<Object, ITranslatorId> pair = createResponse(cacheId, caching);
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
@@ -105,7 +114,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
    }
 
    private void sendUpdates(HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
-      IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
+      IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
       IOseeCachingService caching = MasterServletActivator.getInstance().getOseeCache();
 
       CacheUpdateRequest updateRequest = null;

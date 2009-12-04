@@ -11,27 +11,30 @@
 package org.eclipse.osee.framework.manager.servlet.function;
 
 import java.io.InputStream;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.BranchCommitRequest;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
+import org.eclipse.osee.framework.core.services.IOseeBranchServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
-import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
 
 /**
  * @author Megumi Telles
  */
 public class CreateCommitFunction {
 
-   public void commitBranch(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-      IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
+   public void commitBranch(HttpServletRequest req, HttpServletResponse resp, IOseeBranchServiceProvider branchServiceProvider, IOseeDataTranslationProvider dataTransalatorProvider) throws Exception {
+      IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
       BranchCommitRequest data = service.convert(req.getInputStream(), CoreTranslatorId.BRANCH_COMMIT_REQUEST);
 
       BranchCommitResponse responseData = new BranchCommitResponse();
-      MasterServletActivator.getInstance().getBranchCommit().commitBranch(new NullProgressMonitor(), data, responseData);
+      branchServiceProvider.getBranchService().commitBranch(new NullProgressMonitor(), data, responseData);
 
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       resp.setContentType("text/xml");

@@ -17,7 +17,8 @@ import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.core.data.PurgeBranchRequest;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
-import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
+import org.eclipse.osee.framework.core.services.IOseeBranchServiceProvider;
+import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
 
 /**
  * @author Megumi Telles
@@ -25,10 +26,10 @@ import org.eclipse.osee.framework.manager.servlet.MasterServletActivator;
  */
 public class PurgeBranchFunction {
 
-   public void purge(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-      IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
+   public void purge(HttpServletRequest req, HttpServletResponse resp, IOseeBranchServiceProvider branchServiceProvider, IOseeDataTranslationProvider dataTransalatorProvider) throws Exception {
+      IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
       PurgeBranchRequest request = service.convert(req.getInputStream(), CoreTranslatorId.PURGE_BRANCH_REQUEST);
-      MasterServletActivator.getInstance().getPurgeBranchService().purge(new NullProgressMonitor(), request);
+      branchServiceProvider.getBranchService().purge(new NullProgressMonitor(), request);
 
       resp.setStatus(HttpServletResponse.SC_ACCEPTED);
       resp.setContentType("text/plain");

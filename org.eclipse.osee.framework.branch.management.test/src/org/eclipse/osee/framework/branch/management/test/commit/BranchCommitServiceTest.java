@@ -5,7 +5,6 @@
  */
 package org.eclipse.osee.framework.branch.management.test.commit;
 
-import org.eclipse.osee.framework.branch.management.commit.BranchCommitService;
 import org.junit.Ignore;
 import org.junit.Test;
 
