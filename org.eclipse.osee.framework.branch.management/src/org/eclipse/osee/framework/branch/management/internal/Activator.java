@@ -14,11 +14,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.branch.management.IBranchArchivingService;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.exchange.BranchExchange;
-import org.eclipse.osee.framework.branch.management.remote.BranchArchivingService;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.server.IApplicationServerManager;
 import org.eclipse.osee.framework.core.services.IOseeBranchService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
@@ -30,12 +29,14 @@ import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.database.IOseeDatabaseServiceProvider;
 import org.eclipse.osee.framework.resource.management.IResourceLocatorManager;
 import org.eclipse.osee.framework.resource.management.IResourceManager;
+import org.eclipse.osee.framework.services.IOseeModelingService;
+import org.eclipse.osee.framework.services.IOseeModelingServiceProvider;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.util.tracker.ServiceTracker;
 
-public class Activator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeModelFactoryServiceProvider, IOseeCachingServiceProvider {
+public class Activator implements BundleActivator, IOseeDatabaseServiceProvider, IOseeModelFactoryServiceProvider, IOseeCachingServiceProvider, IOseeModelingServiceProvider {
    public static final String PLUGIN_ID = "org.eclipse.osee.framework.branch.management";
 
    private enum TrackerId {
@@ -45,6 +46,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       OSEE_DATABASE_SERVICE,
       OSEE_FACTORY_SERVICE,
       OSEE_CACHING_SERVICE,
+      OSEE_MODELING_SERVICE,
       MASTER_SERVICE;
    }
 
@@ -67,8 +69,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       IOseeCachingService cachingService = factory.createCachingService();
       createService(context, IOseeCachingService.class, cachingService);
 
-      createService(context, IBranchArchivingService.class, new BranchArchivingService());
-      createService(context, IBranchExchange.class, new BranchExchange());
+      createService(context, IBranchExchange.class, new BranchExchange(this));
       createService(context, IOseeBranchService.class, new OseeBranchService(this, this, this));
 
       createServiceTracker(context, IResourceLocatorManager.class, TrackerId.RESOURCE_LOCATOR);
@@ -76,6 +77,7 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       createServiceTracker(context, IBranchExchange.class, TrackerId.BRANCH_EXCHANGE);
       createServiceTracker(context, IOseeDatabaseService.class, TrackerId.OSEE_DATABASE_SERVICE);
       createServiceTracker(context, IOseeCachingService.class, TrackerId.OSEE_CACHING_SERVICE);
+      createServiceTracker(context, IOseeModelingService.class, TrackerId.OSEE_MODELING_SERVICE);
 
       createServiceTracker(context, IOseeModelFactoryService.class, TrackerId.OSEE_FACTORY_SERVICE);
       createServiceTracker(context, IApplicationServerManager.class, TrackerId.MASTER_SERVICE);
@@ -125,17 +127,24 @@ public class Activator implements BundleActivator, IOseeDatabaseServiceProvider,
       return getTracker(TrackerId.MASTER_SERVICE, IApplicationServerManager.class);
    }
 
-   public IOseeDatabaseService getOseeDatabaseService() {
+   @Override
+   public IOseeDatabaseService getOseeDatabaseService() throws OseeDataStoreException {
       return getTracker(TrackerId.OSEE_DATABASE_SERVICE, IOseeDatabaseService.class);
    }
 
-   public IOseeModelFactoryService getOseeFactoryService() {
+   @Override
+   public IOseeModelFactoryService getOseeFactoryService() throws OseeCoreException {
       return getTracker(TrackerId.OSEE_FACTORY_SERVICE, IOseeModelFactoryService.class);
    }
 
    @Override
    public IOseeCachingService getOseeCachingService() throws OseeCoreException {
       return getTracker(TrackerId.OSEE_CACHING_SERVICE, IOseeCachingService.class);
+   }
+
+   @Override
+   public IOseeModelingService getOseeModelingService() throws OseeCoreException {
+      return getTracker(TrackerId.OSEE_MODELING_SERVICE, IOseeModelingService.class);
    }
 
    private <T> T getTracker(TrackerId trackerId, Class<T> clazz) {

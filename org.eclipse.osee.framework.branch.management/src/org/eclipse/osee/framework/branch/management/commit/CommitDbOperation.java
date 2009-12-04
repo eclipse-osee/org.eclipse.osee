@@ -20,7 +20,6 @@ import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.BranchCache;
-import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
 import org.eclipse.osee.framework.core.data.BranchCommitResponse;
@@ -68,7 +67,6 @@ public class CommitDbOperation extends AbstractDbTxOperation {
 
    private final int userArtId;
    private final BranchCache branchCache;
-   private final TransactionCache transactionCache;
    private final Map<Branch, BranchState> savedBranchStates;
    private final Branch sourceBranch;
    private final Branch destinationBranch;
@@ -80,11 +78,10 @@ public class CommitDbOperation extends AbstractDbTxOperation {
    private OseeConnection connection;
    private boolean success;
 
-   public CommitDbOperation(IOseeDatabaseServiceProvider databaseProvider, BranchCache branchCache, TransactionCache transactionCache, int userArtId, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, BranchCommitResponse txHolder, IOseeModelFactoryServiceProvider modelFactory) {
+   public CommitDbOperation(IOseeDatabaseServiceProvider databaseProvider, BranchCache branchCache, int userArtId, Branch sourceBranch, Branch destinationBranch, Branch mergeBranch, List<ChangeItem> changes, BranchCommitResponse txHolder, IOseeModelFactoryServiceProvider modelFactory) {
       super(databaseProvider, "Commit Database Operation", Activator.PLUGIN_ID);
       this.savedBranchStates = new HashMap<Branch, BranchState>();
       this.branchCache = branchCache;
-      this.transactionCache = transactionCache;
       this.userArtId = userArtId;
       this.sourceBranch = sourceBranch;
       this.destinationBranch = destinationBranch;

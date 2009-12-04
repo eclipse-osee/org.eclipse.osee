@@ -85,15 +85,16 @@ public class OseeBranchService implements IOseeBranchService {
       List<IOperation> ops = new ArrayList<IOperation>();
       ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, sourceTx, destinationTx, mergeTx, changes));
       ops.add(new ComputeNetChangeOperation(changes));
-      ops.add(new CommitDbOperation(oseeDatabaseProvider, branchCache, transactionCache, userId, sourceBranch,
-            destinationBranch, mergeBranch, changes, response, modelFactory));
+      ops.add(new CommitDbOperation(oseeDatabaseProvider, branchCache, userId, sourceBranch, destinationBranch,
+            mergeBranch, changes, response, modelFactory));
 
       String opName =
             String.format("Commit: [%s]->[%s]", sourceBranch.getShortName(), destinationBranch.getShortName());
       IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
-
       Operations.executeWorkAndCheckStatus(op, monitor, -1);
 
+      response.getTransaction().setBranchCache(branchCache);
+      transactionCache.cache(response.getTransaction());
       if (branchCommitData.isArchiveAllowed()) {
          sourceBranch.setArchived(true);
          branchCache.storeItems(sourceBranch);
