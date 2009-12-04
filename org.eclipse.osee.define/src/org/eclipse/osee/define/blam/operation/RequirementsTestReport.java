@@ -100,7 +100,7 @@ public class RequirementsTestReport extends AbstractBlam {
 
    private boolean isRequirement(Artifact src) {
       ArtifactType temp = src.getArtifactType();
-      if (temp.inheritsFrom(CoreArtifactTypes.SubsystemRequirement)) {
+      if (temp.inheritsFrom(CoreArtifactTypes.Requirement)) {
          return true;
       }
 

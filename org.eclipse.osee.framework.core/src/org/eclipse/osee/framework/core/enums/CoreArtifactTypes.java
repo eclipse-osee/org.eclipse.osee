@@ -24,6 +24,7 @@ public enum CoreArtifactTypes implements IOseeType {
    GlobalPreferences("Global Preferences", "AAMFDho2kBqyoOZEw+gA"),
    Heading("Heading", "AAMFDhEzni8FpFb5yHwA"),
    IndirectSoftwareRequirement("Indirect Software Requirement", "AAMFDiC7HRQMqr5S0QwA"),
+   Requirement("Requirement", "ABM_vxEEowY+8i2_q9gA"),
    RootArtifact("Root Artifact", "AAMFDhHDqlbzKcIxcsAA"),
    SoftwareRequirement("Software Requirement", "AAMFDiAwhRFXwIyapJAA"),
    SoftwareRequirementDrawing("Software Requirement Drawing", "ABNClhgUfwj6A3EAArQA"),

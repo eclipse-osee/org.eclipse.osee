@@ -99,6 +99,11 @@ public class ArtifactTypeCacheUpdateResponse {
          ModificationType modType = ModificationType.valueOf(data[4]);
          return new ArtifactTypeRow(id, guid, name, isAbstract, modType);
       }
+
+      @Override
+      public String toString() {
+         return String.format("%s (%s)", name, guid);
+      }
    }
 
    public static ArtifactTypeCacheUpdateResponse fromCache(Collection<ArtifactType> types) throws OseeCoreException {
@@ -131,4 +136,10 @@ public class ArtifactTypeCacheUpdateResponse {
       }
       return new ArtifactTypeCacheUpdateResponse(rows, baseToSuper, artAttrs);
    }
+
+   @Override
+   public String toString() {
+      return "ArtifactTypeCacheUpdateResponse [artAttrs=" + artAttrs + ", baseToSuper=" + baseToSuper + ", rows=" + rows + "]";
+   }
+
 }
