@@ -44,12 +44,10 @@ import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule;
 import org.eclipse.osee.ats.workflow.item.AtsAddPeerToPeerReviewRule;
 import org.eclipse.osee.ats.workflow.item.StateEventType;
 import org.eclipse.osee.ats.workflow.item.AtsAddDecisionReviewRule.DecisionRuleOption;
-import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.MultipleBranchesExist;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
-import org.eclipse.osee.framework.core.exception.TransactionDoesNotExist;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -937,19 +935,11 @@ public class AtsBranchManager {
       return changeData;
    }
 
-   /**
-    * @return true if working branch is In Work and changes exist
-    * @throws TransactionDoesNotExist
-    * @throws BranchDoesNotExist
-    */
    public Boolean isWorkingBranchHaveChanges() throws OseeCoreException {
       Branch branch = getWorkingBranch();
       return branch != null && BranchManager.hasChanges(branch);
    }
 
-   /**
-    * @return the smaMgr
-    */
    public SMAManager getSmaMgr() {
       return smaMgr;
    }
