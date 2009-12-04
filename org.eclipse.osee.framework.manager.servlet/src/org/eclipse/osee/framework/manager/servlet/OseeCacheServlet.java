@@ -78,8 +78,17 @@ public class OseeCacheServlet extends OseeHttpServlet {
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
          resp.setCharacterEncoding("UTF-8");
+         InputStream inputStream = null;
+         OutputStream outputStream = null;
+         try {
+            inputStream = service.convertToStream(pair.getFirst(), pair.getSecond());
+            outputStream = resp.getOutputStream();
+            Lib.inputStreamToOutputStream(inputStream, outputStream);
+         } catch (IOException ex) {
+            throw new OseeWrappedException(ex);
+         }
       } catch (Exception ex) {
-         handleError(resp, req.getQueryString(), ex);
+         OseeLog.log(getClass(), Level.SEVERE, ex);
       }
    }
 
