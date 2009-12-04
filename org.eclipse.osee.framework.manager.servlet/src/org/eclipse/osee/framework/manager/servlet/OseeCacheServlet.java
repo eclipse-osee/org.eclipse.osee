@@ -47,34 +47,34 @@ public class OseeCacheServlet extends OseeHttpServlet {
 
    private static final long serialVersionUID = 6693534844874109524L;
 
-   //   @Override
-   //   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
-   //   }
-   //
-   //   @Override
-   //   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-   //      OseeCacheEnum cacheId = OseeCacheEnum.valueOf(req.getParameter("cacheId"));
-   //      IOseeCachingService caching = MasterServletActivator.getInstance().getOseeCache();
-   //      IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
-   //      try {
-   //         Pair<Object, ITranslatorId> pair = createResponse(cacheId, caching);
-   //         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
-   //         resp.setContentType("text/xml");
-   //         resp.setCharacterEncoding("UTF-8");
-   //
-   //         InputStream inputStream = null;
-   //         OutputStream outputStream = null;
-   //         try {
-   //            inputStream = service.convertToStream(pair.getFirst(), pair.getSecond());
-   //            outputStream = resp.getOutputStream();
-   //            Lib.inputStreamToOutputStream(inputStream, outputStream);
-   //         } catch (IOException ex) {
-   //            throw new OseeWrappedException(ex);
-   //         }
-   //      } catch (Exception ex) {
-   //         OseeLog.log(getClass(), Level.SEVERE, ex);
-   //      }
-   //   }
+   @Override
+   protected void checkAccessControl(HttpServletRequest request) throws OseeCoreException {
+   }
+
+   @Override
+   protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+      OseeCacheEnum cacheId = OseeCacheEnum.valueOf(req.getParameter("cacheId"));
+      IOseeCachingService caching = MasterServletActivator.getInstance().getOseeCache();
+      IDataTranslationService service = MasterServletActivator.getInstance().getTranslationService();
+      try {
+         Pair<Object, ITranslatorId> pair = createResponse(cacheId, caching);
+         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+         resp.setContentType("text/xml");
+         resp.setCharacterEncoding("UTF-8");
+
+         InputStream inputStream = null;
+         OutputStream outputStream = null;
+         try {
+            inputStream = service.convertToStream(pair.getFirst(), pair.getSecond());
+            outputStream = resp.getOutputStream();
+            Lib.inputStreamToOutputStream(inputStream, outputStream);
+         } catch (IOException ex) {
+            throw new OseeWrappedException(ex);
+         }
+      } catch (Exception ex) {
+         OseeLog.log(getClass(), Level.SEVERE, ex);
+      }
+   }
 
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
