@@ -21,7 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.jobs.IJobChangeListener;
@@ -307,9 +306,8 @@ public class BranchManager {
    public static void purgeBranchInJob(final Branch branch) {
       try {
          HttpPurgeBranchRequester.purge(branch);
-      }
-      catch (OseeCoreException ex) {
-         
+      } catch (OseeCoreException ex) {
+
       }
    }
 
@@ -420,12 +418,12 @@ public class BranchManager {
     * @param childBranchName
     * @throws OseeCoreException
     */
-   public static Branch createBaselineBranch(Branch parentBranch, String branchName, Artifact associatedArtifact) throws OseeCoreException {
+   public static Branch createBaselineBranch(Branch parentBranch, String branchName, String staticBranchName, Artifact associatedArtifact) throws OseeCoreException {
       TransactionRecord parentTransactionId = TransactionManager.getLastTransaction(parentBranch);
       String creationComment = String.format("Root Branch [%s] Creation", branchName);
       return HttpBranchCreation.createBranch(BranchType.BASELINE, parentTransactionId.getId(),
-            parentTransactionId.getBranch().getId(), branchName, null, null, associatedArtifact, creationComment, -1,
-            -1);
+            parentTransactionId.getBranch().getId(), branchName, staticBranchName, null, associatedArtifact,
+            creationComment, -1, -1);
    }
 
    /**

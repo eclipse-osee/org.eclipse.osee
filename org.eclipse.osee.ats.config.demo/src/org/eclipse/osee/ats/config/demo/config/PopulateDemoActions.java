@@ -189,9 +189,7 @@ public class PopulateDemoActions extends XNavigateItemAction {
          Branch parentBranch = BranchManager.getBranchByGuid(DemoSawBuilds.SAW_Bld_1.getGuid());
          Branch childBranch =
                BranchManager.createBaselineBranch(parentBranch, DemoSawBuilds.SAW_Bld_2.name(),
-                     UserManager.getUser(SystemUser.OseeSystem));
-         childBranch.setAliases(DemoSawBuilds.SAW_Bld_2.name());
-         BranchManager.persist(childBranch);
+                     DemoSawBuilds.SAW_Bld_2.name(), UserManager.getUser(SystemUser.OseeSystem));
 
          DemoDbUtil.sleep(5000);
          // need to update the branch type;  
