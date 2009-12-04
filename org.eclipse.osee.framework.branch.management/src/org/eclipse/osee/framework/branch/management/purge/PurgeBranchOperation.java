@@ -14,9 +14,8 @@ package org.eclipse.osee.framework.branch.management.purge;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
-
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.enums.TransactionDetailsType;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
@@ -65,7 +64,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
    private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
 
    public PurgeBranchOperation(Branch branch, IOseeCachingServiceProvider cachingService, IOseeDatabaseServiceProvider oseeDatabaseProvider) {
-      super(oseeDatabaseProvider, String.format("Purge Branch: [(%s)-%s]", branch.getId(), branch.getShortName()), InternalBranchActivator.PLUGIN_ID);
+      super(oseeDatabaseProvider, String.format("Purge Branch: [(%s)-%s]", branch.getId(), branch.getShortName()),
+            Activator.PLUGIN_ID);
       this.branch = branch;
       this.sourceTableName = branch.getArchiveState().isArchived() ? "osee_txs_archived" : "osee_txs";
       this.cachingService = cachingService;
@@ -77,7 +77,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
       this.connection = connection;
       this.monitor = monitor;
       int numberOfChildren =
-         oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, COUNT_CHILD_BRANCHES, branch.getId());
+            oseeDatabaseProvider.getOseeDatabaseService().runPreparedQueryFetchObject(0, COUNT_CHILD_BRANCHES,
+                  branch.getId());
       if (numberOfChildren > 0) {
          throw new OseeArgumentException("Unable to purge a branch containing children");
       }
@@ -113,9 +114,8 @@ public class PurgeBranchOperation extends AbstractDbTxOperation {
          try {
             branchCache = cachingService.getOseeCachingService().getBranchCache();
             branchCache.decache(branch);
-         }
-         catch (OseeCoreException ex) {
-            OseeLog.log(InternalBranchActivator.class, Level.SEVERE, ex);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

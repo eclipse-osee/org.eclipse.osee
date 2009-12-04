@@ -12,7 +12,6 @@ package org.eclipse.osee.framework.branch.management.internal;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
@@ -56,9 +55,8 @@ public class OseeBranchService implements IOseeBranchService {
    private final IOseeDatabaseServiceProvider oseeDatabaseProvider;
    private final IOseeCachingServiceProvider cachingService;
    private final IOseeModelFactoryServiceProvider modelFactory;
-   
-   public OseeBranchService(IOseeDatabaseServiceProvider oseeDatabaseProvider,
-         IOseeCachingServiceProvider cachingService, IOseeModelFactoryServiceProvider modelFactory) {
+
+   public OseeBranchService(IOseeDatabaseServiceProvider oseeDatabaseProvider, IOseeCachingServiceProvider cachingService, IOseeModelFactoryServiceProvider modelFactory) {
       super();
       this.oseeDatabaseProvider = oseeDatabaseProvider;
       this.cachingService = cachingService;
@@ -66,8 +64,7 @@ public class OseeBranchService implements IOseeBranchService {
    }
 
    @Override
-   public void commitBranch(IProgressMonitor monitor, BranchCommitRequest branchCommitData,
-         BranchCommitResponse response) throws OseeCoreException {
+   public void commitBranch(IProgressMonitor monitor, BranchCommitRequest branchCommitData, BranchCommitResponse response) throws OseeCoreException {
       int userId = branchCommitData.getUserArtId();
       BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
       TransactionCache transactionCache = cachingService.getOseeCachingService().getTransactionCache();
@@ -93,7 +90,7 @@ public class OseeBranchService implements IOseeBranchService {
 
       String opName =
             String.format("Commit: [%s]->[%s]", sourceBranch.getShortName(), destinationBranch.getShortName());
-      IOperation op = new CompositeOperation(opName, InternalBranchActivator.PLUGIN_ID, ops);
+      IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
 
       Operations.executeWorkAndCheckStatus(op, monitor, -1);
 
@@ -104,36 +101,36 @@ public class OseeBranchService implements IOseeBranchService {
    }
 
    @Override
-   public void createBranch(IProgressMonitor monitor, BranchCreationRequest request,
-         BranchCreationResponse response) throws OseeCoreException {
-      IOperation operation = new CreateBranchOperation(oseeDatabaseProvider, modelFactory, cachingService, request, response);
+   public void createBranch(IProgressMonitor monitor, BranchCreationRequest request, BranchCreationResponse response) throws OseeCoreException {
+      IOperation operation =
+            new CreateBranchOperation(oseeDatabaseProvider, modelFactory, cachingService, request, response);
       Operations.executeWorkAndCheckStatus(operation, new LogProgressMonitor(), -1);
    }
 
    @Override
-   public void getChanges(IProgressMonitor monitor, ChangeReportRequest request,
-         ChangeReportResponse response) throws OseeCoreException {
+   public void getChanges(IProgressMonitor monitor, ChangeReportRequest request, ChangeReportResponse response) throws OseeCoreException {
       TransactionCache txCache = cachingService.getOseeCachingService().getTransactionCache();
       TransactionRecord srcTx = txCache.getOrLoad(request.getSourceTx());
       TransactionRecord destTx = txCache.getOrLoad(request.getDestinationTx());
 
       List<IOperation> ops = new ArrayList<IOperation>();
       if (request.isHistorical()) {
-          ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, srcTx.getId(), destTx, response.getChangeItems()));
+         ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, srcTx.getId(), destTx, response.getChangeItems()));
       } else {
-          ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, srcTx, destTx, null, response.getChangeItems()));
+         ops.add(new LoadChangeDataOperation(oseeDatabaseProvider, srcTx, destTx, null, response.getChangeItems()));
       }
       ops.add(new ComputeNetChangeOperation(response.getChangeItems()));
 
       String opName = String.format("Gathering changes");
-      IOperation op = new CompositeOperation(opName, InternalBranchActivator.PLUGIN_ID, ops);
+      IOperation op = new CompositeOperation(opName, Activator.PLUGIN_ID, ops);
       Operations.executeWorkAndCheckStatus(op, monitor, -1);
    }
 
    @Override
    public void purge(IProgressMonitor monitor, PurgeBranchRequest request) throws OseeCoreException {
       BranchCache branchCache = cachingService.getOseeCachingService().getBranchCache();
-      IOperation operation = new PurgeBranchOperation(branchCache.getById(request.getBranchId()), cachingService, oseeDatabaseProvider);
+      IOperation operation =
+            new PurgeBranchOperation(branchCache.getById(request.getBranchId()), cachingService, oseeDatabaseProvider);
       Operations.executeWork(operation, new NullProgressMonitor(), -1);
       try {
          Operations.checkForStatusSeverityMask(operation.getStatus(), IStatus.ERROR | IStatus.WARNING);

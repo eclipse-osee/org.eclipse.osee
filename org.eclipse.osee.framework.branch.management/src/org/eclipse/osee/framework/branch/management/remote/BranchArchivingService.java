@@ -11,7 +11,7 @@
 package org.eclipse.osee.framework.branch.management.remote;
 
 import org.eclipse.osee.framework.branch.management.IBranchArchivingService;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
@@ -28,7 +28,7 @@ public class BranchArchivingService implements IBranchArchivingService {
    public static final String DELETE_ADDRESSING = "delete from %s where branch_id = ?";
 
    public static void moveBranchAddressing(OseeConnection connection, Branch branch, boolean archive) throws OseeDataStoreException {
-      IOseeDatabaseService service = InternalBranchActivator.getInstance().getOseeDatabaseService();
+      IOseeDatabaseService service = Activator.getInstance().getOseeDatabaseService();
 
       String sourceTableName = archive ? "osee_txs" : "osee_txs_archived";
       String destinationTableName = archive ? "osee_txs_archived" : "osee_txs";
