@@ -371,14 +371,14 @@ public class AtsBranchConfigurationTest {
          for (Branch workingBranch : BranchManager.getBranches(BranchArchivedState.ALL, BranchControlled.ALL,
                BranchType.WORKING)) {
             if (workingBranch.getName().contains(testType.name())) {
-               BranchManager.purgeBranchInJob(workingBranch);
+               BranchManager.purgeBranch(workingBranch);
                TestUtil.sleep(2000);
             }
          }
          // delete baseline branch
          Branch branch = BranchManager.getBranchByGuid(testType.getGuid());
          if (branch != null) {
-            BranchManager.purgeBranchInJob(branch);
+            BranchManager.purgeBranch(branch);
             TestUtil.sleep(2000);
          }
 

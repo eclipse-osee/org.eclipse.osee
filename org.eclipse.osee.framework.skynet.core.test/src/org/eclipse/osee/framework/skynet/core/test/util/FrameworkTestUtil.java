@@ -68,7 +68,7 @@ public class FrameworkTestUtil {
 
    public static void purgeBranch(Branch branch) throws Exception {
       try {
-         BranchManager.purgeBranchInJob(branch);
+         BranchManager.purgeBranch(branch);
          TestUtil.sleep(2000);
       } catch (BranchDoesNotExist ex) {
          // do nothing
@@ -82,7 +82,7 @@ public class FrameworkTestUtil {
                BranchType.WORKING)) {
             for (String branchName : branchNamesContain) {
                if (workingBranch.getName().contains(branchName)) {
-                  BranchManager.purgeBranchInJob(workingBranch);
+                  BranchManager.purgeBranch(workingBranch);
                   TestUtil.sleep(2000);
                }
             }

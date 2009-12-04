@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.database.IOseeDatabaseService;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
-import org.eclipse.osee.framework.skynet.core.artifact.PurgeBranchOperation;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
@@ -29,6 +28,9 @@ import org.eclipse.osee.framework.ui.skynet.blam.VariableMap;
  * @author Ryan D. Brooks
  */
 public class MoveArchivedBranches extends AbstractBlam {
+
+   private static final String TEST_TXS =
+         "select count(1) from osee_tx_details txd where txd.branch_id = ? AND txd.tx_type = 1 AND exists (select 1 from osee_txs txs where txd.transaction_id = txs.transaction_id)";
 
    @Override
    public String getName() {
@@ -46,7 +48,7 @@ public class MoveArchivedBranches extends AbstractBlam {
       for (Branch branch : BranchManager.getBranches(BranchArchivedState.ARCHIVED, BranchControlled.ALL,
             BranchType.WORKING)) {
          if ((branch.getId() + increment) % 2 == 0) {
-            if (service.runPreparedQueryFetchObject(0, PurgeBranchOperation.TEST_TXS, branch.getId()) == 1) {
+            if (service.runPreparedQueryFetchObject(0, TEST_TXS, branch.getId()) == 1) {
                System.out.println("Moving: " + branch);
                moveBranchAddressing(null, branch, true);
             }

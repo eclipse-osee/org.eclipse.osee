@@ -18,10 +18,12 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
 import org.eclipse.osee.framework.ui.plugin.util.CommandHandler;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.commandHandlers.Handlers;
 import org.eclipse.swt.widgets.Display;
 
@@ -42,7 +44,12 @@ public class PurgeBranchHandler extends CommandHandler {
                   new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
 
       if (dialog.open() == 0) {
-         BranchManager.purgeBranchInJob(selectedBranch);
+         try {
+            BranchManager.purgeBranch(selectedBranch);
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            return null;
+         }
       }
 
       return null;
@@ -55,6 +62,6 @@ public class PurgeBranchHandler extends CommandHandler {
             (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-      return branches.size() == 1 && AccessControlManager.isOseeAdmin();
+      return branches.size() == 1; //&& AccessControlManager.isOseeAdmin();
    }
 }

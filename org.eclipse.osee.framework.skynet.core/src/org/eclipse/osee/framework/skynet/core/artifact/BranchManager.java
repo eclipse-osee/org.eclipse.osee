@@ -298,19 +298,6 @@ public class BranchManager {
       return Operations.executeAsJob(operation, true);
    }
 
-   /**
-    * Purges a branch from the system. (This operation cannot be undone.) All branch data will be removed.
-    * 
-    * @param branch
-    */
-   public static void purgeBranchInJob(final Branch branch) {
-      try {
-         HttpPurgeBranchRequester.purge(branch);
-      } catch (OseeCoreException ex) {
-
-      }
-   }
-
    public static void purgeBranch(final Branch branch) throws OseeCoreException {
       try {
          HttpPurgeBranchRequester.purge(branch);
