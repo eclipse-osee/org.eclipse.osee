@@ -92,7 +92,6 @@ public class AtsNavigateItemsToWorldViewTest {
       NavigateTestUtil.getAllArtifactChildren(getXViewer().getTree().getItems(), arts);
       // delete an artifact, look for expected !Errors in the XCol
       deleteAttributesForXColErrorTest(arts, "ats.Team Definition");
-      deleteAttributesForXColErrorTest(arts, "ats.User Community");
       deleteAttributesForXColErrorTest(arts, "ats.Actionable Item");
       deleteAttributesForXColErrorTest(arts, "ats.Change Type");
    }
@@ -315,7 +314,7 @@ public class AtsNavigateItemsToWorldViewTest {
       WorldEditor.closeAll();
       Artifact groupArt =
             ArtifactQuery.getArtifactFromTypeAndName(UniversalGroup.ARTIFACT_TYPE_NAME, "Test Group",
-            AtsUtil.getAtsBranch());
+                  AtsUtil.getAtsBranch());
       assertTrue(groupArt != null);
       XNavigateItem item = NavigateTestUtil.getAtsNavigateItem("Group Search");
       assertTrue(((SearchNavigateItem) item).getWorldSearchItem() instanceof GroupWorldSearchItem);

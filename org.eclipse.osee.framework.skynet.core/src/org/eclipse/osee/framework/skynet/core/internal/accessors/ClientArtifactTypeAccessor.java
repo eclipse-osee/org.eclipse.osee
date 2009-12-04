@@ -61,7 +61,7 @@ public class ClientArtifactTypeAccessor extends AbstractClientDataAccessor<Artif
       List<ArtifactType> updatedItems = new ArrayList<ArtifactType>();
 
       ArtifactTypeCacheUpdateResponse response =
-            sendUpdateMessage(cache, CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
+            requestUpdateMessage(cache, CoreTranslatorId.ARTIFACT_TYPE_CACHE_UPDATE_RESPONSE);
 
       ArtifactTypeFactory factory = getFactory();
       for (ArtifactTypeRow row : response.getArtTypeRows()) {

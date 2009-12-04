@@ -36,8 +36,8 @@ public class ClientCachingServiceFactory {
 
    public IOseeCachingService createService(IOseeModelFactoryServiceProvider factoryProvider) {
       TransactionCache transactionCache = new TransactionCache();
-      transactionCache.setAccessor(new ClientTransactionAccessor());
       BranchCache branchCache = new BranchCache(new ClientBranchAccessor(factoryProvider, transactionCache));
+      transactionCache.setAccessor(new ClientTransactionAccessor(factoryProvider, branchCache));
       OseeEnumTypeCache oseeEnumTypeCache = new OseeEnumTypeCache(new ClientOseeEnumTypeAccessor(factoryProvider));
 
       AttributeTypeCache attributeTypeCache =

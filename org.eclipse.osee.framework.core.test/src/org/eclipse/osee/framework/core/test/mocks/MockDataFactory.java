@@ -157,9 +157,9 @@ public final class MockDataFactory {
 
    public static CacheUpdateRequest createRequest(int index) {
       OseeCacheEnum cacheEnum = OseeCacheEnum.values()[Math.abs(index % OseeCacheEnum.values().length)];
-      List<String> guids = new ArrayList<String>();
+      List<Integer> guids = new ArrayList<Integer>();
       for (int j = 1; j <= index * 3; j++) {
-         guids.add(GUID.create());
+         guids.add(j * index);
       }
       return new CacheUpdateRequest(cacheEnum, guids);
    }

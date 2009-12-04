@@ -39,7 +39,7 @@ public class ClientOseeEnumTypeAccessor extends AbstractClientDataAccessor<OseeE
    protected Collection<OseeEnumType> updateCache(IOseeCache<OseeEnumType> cache) throws OseeCoreException {
       List<OseeEnumType> enumTypes = new ArrayList<OseeEnumType>();
       OseeEnumTypeCacheUpdateResponse response =
-            sendUpdateMessage(cache, CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
+            requestUpdateMessage(cache, CoreTranslatorId.OSEE_ENUM_TYPE_CACHE_UPDATE_RESPONSE);
 
       OseeEnumTypeFactory factory = getFactory();
 

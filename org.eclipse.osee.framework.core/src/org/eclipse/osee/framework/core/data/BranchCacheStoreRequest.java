@@ -26,13 +26,13 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
 /**
  * @author Roberto E. Escobar
  */
-public class BranchCacheUpdateResponse extends AbstractBranchCacheMessage {
+public class BranchCacheStoreRequest extends AbstractBranchCacheMessage {
 
-   public BranchCacheUpdateResponse(List<BranchRow> rows, Map<Integer, Integer> childToParent, Map<Integer, Integer> branchToBaseTx, Map<Integer, Integer> branchToSourceTx, Map<Integer, Integer> branchToAssocArt, Map<Integer, String[]> branchToAliases, List<Triplet<Integer, Integer, Integer>> srcDestMerge) {
+   public BranchCacheStoreRequest(List<BranchRow> rows, Map<Integer, Integer> childToParent, Map<Integer, Integer> branchToBaseTx, Map<Integer, Integer> branchToSourceTx, Map<Integer, Integer> branchToAssocArt, Map<Integer, String[]> branchToAliases, List<Triplet<Integer, Integer, Integer>> srcDestMerge) {
       super(rows, childToParent, branchToBaseTx, branchToSourceTx, branchToAssocArt, branchToAliases, srcDestMerge);
    }
 
-   public static BranchCacheUpdateResponse fromCache(BranchCache cache, Collection<Branch> types) throws OseeCoreException {
+   public static BranchCacheStoreRequest fromCache(BranchCache cache, Collection<Branch> types) throws OseeCoreException {
       List<BranchRow> rowData = new ArrayList<BranchRow>();
       Map<Integer, Integer> childToParent = new HashMap<Integer, Integer>();
       Map<Integer, Integer> branchToBaseTx = new HashMap<Integer, Integer>();
@@ -75,7 +75,8 @@ public class BranchCacheUpdateResponse extends AbstractBranchCacheMessage {
          Integer merge = entry.getValue().getId();
          srcDestMerge.add(new Triplet<Integer, Integer, Integer>(src, dest, merge));
       }
-      return new BranchCacheUpdateResponse(rowData, childToParent, branchToBaseTx, branchToSourceTx, branchToAssocArt,
+      return new BranchCacheStoreRequest(rowData, childToParent, branchToBaseTx, branchToSourceTx, branchToAssocArt,
             branchToAliases, srcDestMerge);
    }
+
 }

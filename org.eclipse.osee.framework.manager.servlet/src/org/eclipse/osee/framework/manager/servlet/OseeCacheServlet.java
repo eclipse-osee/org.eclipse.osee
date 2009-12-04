@@ -13,35 +13,43 @@ package org.eclipse.osee.framework.manager.servlet;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.logging.Level;
-
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
+import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.ArtifactTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.AttributeTypeCacheUpdateResponse;
+import org.eclipse.osee.framework.core.data.BranchCacheStoreRequest;
 import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
+import org.eclipse.osee.framework.core.data.DefaultBasicArtifact;
+import org.eclipse.osee.framework.core.data.IArtifactFactory;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.OseeEnumTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.RelationTypeCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.TransactionCacheUpdateResponse;
 import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
-import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
+import org.eclipse.osee.framework.core.model.Branch;
+import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.server.OseeHttpServlet;
 import org.eclipse.osee.framework.core.services.IDataTranslationService;
 import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.core.services.IOseeDataTranslationProvider;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryService;
 import org.eclipse.osee.framework.core.services.ITranslatorId;
+import org.eclipse.osee.framework.core.util.BranchCacheUpdateUtil;
 import org.eclipse.osee.framework.core.util.Conditions;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
+import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 
 /**
  * @author Roberto E. Escobar
@@ -65,25 +73,11 @@ public class OseeCacheServlet extends OseeHttpServlet {
       OseeCacheEnum cacheId = OseeCacheEnum.valueOf(req.getParameter("cacheId"));
       IOseeCachingService caching = MasterServletActivator.getInstance().getOseeCache();
       try {
-         IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
+         IDataTranslationService service = dataTransalatorProvider.getTranslatorService();         
          Pair<Object, ITranslatorId> pair = createResponse(cacheId, caching);
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
          resp.setCharacterEncoding("UTF-8");
-
-         InputStream inputStream = null;
-         OutputStream outputStream = null;
-         try {
-            inputStream = service.convertToStream(pair.getFirst(), pair.getSecond());
-            outputStream = resp.getOutputStream();
-            Lib.inputStreamToOutputStream(inputStream, outputStream);
-         } catch (IOException ex) {
-            throw new OseeWrappedException(ex);
-         }
-      } catch (Exception ex) {
-         OseeLog.log(getClass(), Level.SEVERE, ex);
-      }
-   }
 
    @Override
    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -94,7 +88,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
                sendUpdates(req, resp);
                break;
             case STORE:
-               throw new UnsupportedOperationException();
+               storeUpdates(req, resp);
             default:
                throw new UnsupportedOperationException();
          }
@@ -111,6 +105,40 @@ public class OseeCacheServlet extends OseeHttpServlet {
       resp.getWriter().write(Lib.exceptionToString(th));
       resp.getWriter().flush();
       resp.getWriter().close();
+   }
+
+   private void storeUpdates(HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
+      IDataTranslationService service = dataTransalatorProvider.getTranslatorService();
+      IOseeCachingService caching = MasterServletActivator.getInstance().getOseeCache();
+      TransactionCache txCache = caching.getTransactionCache();
+
+      BranchCacheStoreRequest updateRequest = null;
+      InputStream inputStream = null;
+      try {
+         inputStream = req.getInputStream();
+         updateRequest = service.convert(inputStream, CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST);
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      } finally {
+         Lib.close(inputStream);
+      }
+      IOseeModelFactoryService factoryService = MasterServletActivator.getInstance().getOseeFactoryService();
+      Collection<Branch> updated =
+            new BranchCacheUpdateUtil(factoryService.getBranchFactory(), txCache, new IArtifactFactory<Object>() {
+               @Override
+               public IBasicArtifact<Object> createArtifact(int artId) {
+                  return new DefaultBasicArtifact(artId, null, null);
+               }
+            }).updateCache(updateRequest, caching.getBranchCache());
+      caching.getBranchCache().storeItems(updated);
+      try {
+         resp.setStatus(HttpServletResponse.SC_ACCEPTED);
+         resp.setContentType("text/plain");
+         resp.setCharacterEncoding("UTF-8");
+         resp.getWriter().write("Branch Store Successful");
+      } catch (IOException ex) {
+         throw new OseeWrappedException(ex);
+      }
    }
 
    private void sendUpdates(HttpServletRequest req, HttpServletResponse resp) throws OseeCoreException {
@@ -130,7 +158,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
 
       OutputStream outputStream = null;
       try {
-         Pair<Object, ITranslatorId> pair = createResponse(updateRequest.getCacheId(), caching);
+         Pair<Object, ITranslatorId> pair = createResponse(updateRequest, caching);
 
          resp.setStatus(HttpServletResponse.SC_ACCEPTED);
          resp.setContentType("text/xml");
@@ -144,20 +172,29 @@ public class OseeCacheServlet extends OseeHttpServlet {
       }
    }
 
-   private Pair<Object, ITranslatorId> createResponse(OseeCacheEnum cacheId, IOseeCachingService caching) throws OseeCoreException {
+   private Pair<Object, ITranslatorId> createResponse(CacheUpdateRequest updateRequest, IOseeCachingService caching) throws OseeCoreException {
       IOseeModelFactoryService factoryService = MasterServletActivator.getInstance().getOseeFactoryService();
       Conditions.checkNotNull(caching, "caching service");
       Object response = null;
       ITranslatorId transalatorId = null;
-      switch (cacheId) {
+      switch (updateRequest.getCacheId()) {
          case BRANCH_CACHE:
             response = BranchCacheUpdateResponse.fromCache(caching.getBranchCache(), caching.getBranchCache().getAll());
             transalatorId = CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE;
             break;
          case TRANSACTION_CACHE:
-            response =
-                  TransactionCacheUpdateResponse.fromCache(factoryService.getTransactionFactory(),
-                        caching.getTransactionCache().getAll());
+            Collection<TransactionRecord> record;
+            TransactionCache txCache = caching.getTransactionCache();
+
+            if (updateRequest.getItemsIds().isEmpty()) {
+               record = txCache.getAll();
+            } else {
+               record = new ArrayList<TransactionRecord>();
+               for (Integer item : updateRequest.getItemsIds()) {
+                  record.add(txCache.getOrLoad(item));
+               }
+            }
+            response = TransactionCacheUpdateResponse.fromCache(factoryService.getTransactionFactory(), record);
             transalatorId = CoreTranslatorId.TX_CACHE_UPDATE_RESPONSE;
             break;
          case ARTIFACT_TYPE_CACHE:
@@ -179,7 +216,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
             transalatorId = CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE;
             break;
          default:
-            throw new OseeArgumentException(String.format("Invalid cacheId [%s]", cacheId));
+            throw new OseeArgumentException(String.format("Invalid cacheId [%s]", updateRequest.getCacheId()));
       }
       return new Pair<Object, ITranslatorId>(response, transalatorId);
    }

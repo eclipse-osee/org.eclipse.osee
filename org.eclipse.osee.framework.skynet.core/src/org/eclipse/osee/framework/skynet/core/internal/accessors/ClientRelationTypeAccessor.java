@@ -51,7 +51,7 @@ public class ClientRelationTypeAccessor extends AbstractClientDataAccessor<Relat
       List<RelationType> updatedItems = new ArrayList<RelationType>();
 
       RelationTypeCacheUpdateResponse response =
-            sendUpdateMessage(cache, CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
+            requestUpdateMessage(cache, CoreTranslatorId.RELATION_TYPE_CACHE_UPDATE_RESPONSE);
 
       RelationTypeFactory factory = getFactory();
       for (RelationTypeRow row : response.getRelationTypeRows()) {

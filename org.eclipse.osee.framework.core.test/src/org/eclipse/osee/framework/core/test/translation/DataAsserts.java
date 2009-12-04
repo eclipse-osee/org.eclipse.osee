@@ -142,7 +142,7 @@ public final class DataAsserts {
          Assert.assertNull(actual);
       } else {
          Assert.assertEquals(expected.getCacheId(), actual.getCacheId());
-         Assert.assertFalse(Compare.isDifferent(expected.getGuids(), actual.getGuids()));
+         Assert.assertFalse(Compare.isDifferent(expected.getItemsIds(), actual.getItemsIds()));
       }
    }
 

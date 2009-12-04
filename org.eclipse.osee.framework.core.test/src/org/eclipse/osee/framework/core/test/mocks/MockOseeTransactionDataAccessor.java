@@ -68,4 +68,8 @@ public class MockOseeTransactionDataAccessor implements ITransactionDataAccessor
       return null;
    }
 
+   @Override
+   public void load(TransactionCache transactionCache) throws OseeCoreException {
+   }
+
 }

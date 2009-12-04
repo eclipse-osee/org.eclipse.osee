@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.skynet.core.internal.accessors;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeDataAccessor;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
@@ -52,24 +51,10 @@ public abstract class AbstractClientDataAccessor<T extends IOseeStorableType> im
 
    @Override
    public void store(Collection<T> types) throws OseeCoreException {
-      
-      //      Map<String, String> parameters = new HashMap<String, String>();
-      //      parameters.put("request", "storage");
-
-      //      CacheUpdateRequest updateRequest = new CacheUpdateRequest();
-      //      CacheUpdateResponse<T> updateResponse =
-      //            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, updateRequest, CacheUpdateResponse.class);
-
-      //      for (T updated : updateResponse.getItems()) {
-      //         for (T type : types) {
-      //            if (type.getGuid().equals(updated.getGuid())) {
-      //               type.clearDirty();
-      //            }
-      //         }
-      //      }
+      //do nothing
    }
 
-   protected <J> J sendUpdateMessage(IOseeCache<T> cache, ITranslatorId txId) throws OseeCoreException {
+   protected <J> J requestUpdateMessage(IOseeCache<T> cache, ITranslatorId txId) throws OseeCoreException {
       CacheUpdateRequest updateRequest = new CacheUpdateRequest(cache.getCacheId());
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("function", CacheOperation.UPDATE.name());

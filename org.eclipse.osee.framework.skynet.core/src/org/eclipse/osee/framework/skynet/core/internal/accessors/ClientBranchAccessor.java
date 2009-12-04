@@ -10,24 +10,26 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.skynet.core.internal.accessors;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
+import org.eclipse.osee.framework.core.data.BranchCacheStoreRequest;
 import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
-import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse.BranchRow;
+import org.eclipse.osee.framework.core.data.IArtifactFactory;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
+import org.eclipse.osee.framework.core.data.OseeServerContext;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
-import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.core.services.IOseeModelFactoryServiceProvider;
-import org.eclipse.osee.framework.jdk.core.type.Triplet;
-import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
+import org.eclipse.osee.framework.core.util.BranchCacheUpdateUtil;
+import org.eclipse.osee.framework.jdk.core.util.HttpProcessor.AcquireResult;
+import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.HttpMessage;
 import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 
 /**
@@ -54,63 +56,42 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
 
    @Override
    protected Collection<Branch> updateCache(IOseeCache<Branch> cache) throws OseeCoreException {
-      List<Branch> updatedItems = new ArrayList<Branch>();
+      BranchCacheUpdateResponse response = requestUpdateMessage(cache, CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
+      ShallowArtifactFactory artFactory = new ShallowArtifactFactory((BranchCache) cache);
 
-      BranchCacheUpdateResponse response = sendUpdateMessage(cache, CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
-      Map<Integer, String[]> branchToAliases = response.getBranchAliases();
+      return (new BranchCacheUpdateUtil(getFactory(), transactionCache, artFactory)).updateCache(response, cache);
+   }
 
-      Map<Integer, Integer> branchToBaseTx = response.getBranchToBaseTx();
-      Map<Integer, Integer> branchToSourceTx = response.getBranchToSourceTx();
-      Map<Integer, Integer> branchToAssocArt = response.getBranchToAssocArt();
+   public void store(IOseeCache<Branch> cache, Collection<Branch> types) throws OseeCoreException {
+      Map<String, String> parameters = new HashMap<String, String>();
+      parameters.put("request", "storage");
 
-      BranchFactory factory = getFactory();
-      for (BranchRow srcItem : response.getBranchRows()) {
-         int branchId = srcItem.getBranchId();
-         Branch updated =
-               factory.createOrUpdate(cache, srcItem.getBranchId(), srcItem.getModType(), srcItem.getBranchGuid(),
-                     srcItem.getBranchName(), srcItem.getBranchType(), srcItem.getBranchState(),
-                     srcItem.getBranchArchived().isArchived());
-         updatedItems.add(updated);
-         String[] aliases = branchToAliases.get(branchId);
-         if (aliases != null && aliases.length > 0) {
-            updated.setAliases(aliases);
-         }
+      BranchCacheStoreRequest request = BranchCacheStoreRequest.fromCache((BranchCache) cache, types);
+      AcquireResult updateResponse =
+            HttpMessage.send(OseeServerContext.CACHE_CONTEXT, parameters, CoreTranslatorId.BRANCH_CACHE_STORE_REQUEST,
+                  request, null);
 
-         Integer baseTxId = branchToBaseTx.get(branchId);
-         if (baseTxId != null) {
-            TransactionRecord baseTx = TransactionManager.getTransactionId(baseTxId);
-            updated.setBaseTransaction(baseTx);
-         }
-
-         Integer srcTxId = branchToSourceTx.get(branchId);
-         if (srcTxId != null) {
-            TransactionRecord srcTx = TransactionManager.getTransactionId(srcTxId); //transactionCache.getById(srcTxId);
-            if (srcTx != null) {
-               updated.setSourceTransaction(srcTx);
-            }
-         }
-         Integer artifactId = branchToAssocArt.get(branchId);
-         if (artifactId != null) {
-            updated.setAssociatedArtifact(new ShallowArtifact((BranchCache) cache, artifactId));
+      if (updateResponse.wasSuccessful()) {
+         for (Branch type : types) {
+            type.clearDirty();
          }
       }
 
-      for (Entry<Integer, Integer> entry : response.getChildToParent().entrySet()) {
-         Branch parent = cache.getById(entry.getValue());
-         if (parent != null) {
-            Branch child = cache.getById(entry.getKey());
-            if (child != null) {
-               child.setParentBranch(parent);
-            }
-         }
+   }
+
+   private final static class ShallowArtifactFactory implements IArtifactFactory<Artifact> {
+
+      private final BranchCache cache;
+
+      public ShallowArtifactFactory(BranchCache cache) {
+         super();
+         this.cache = cache;
       }
-      BranchCache brCache = (BranchCache) cache;
-      for (Triplet<Integer, Integer, Integer> entry : response.getMergeBranches()) {
-         Branch sourceBranch = cache.getById(entry.getFirst());
-         Branch destinationBranch = cache.getById(entry.getSecond());
-         Branch mergeBranch = cache.getById(entry.getThird());
-         brCache.cacheMergeBranch(mergeBranch, sourceBranch, destinationBranch);
+
+      @Override
+      public IBasicArtifact<Artifact> createArtifact(int artId) {
+         return new ShallowArtifact(cache, artId);
       }
-      return updatedItems;
+
    }
 }

@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.core.translation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
+import org.eclipse.osee.framework.core.data.BranchCacheStoreRequest;
 import org.eclipse.osee.framework.core.data.BranchRow;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.jdk.core.type.Triplet;
  * @author Roberto E. Escobar
  * @author Jeff C. Phillips
  */
-public class BranchCacheUpdateResponseTranslator implements ITranslator<BranchCacheUpdateResponse> {
+public class BranchCacheStoreRequestTranslator implements ITranslator<BranchCacheStoreRequest> {
 
    private enum Fields {
       BRANCH_COUNT,
@@ -37,7 +37,7 @@ public class BranchCacheUpdateResponseTranslator implements ITranslator<BranchCa
    }
 
    @Override
-   public BranchCacheUpdateResponse convert(PropertyStore store) throws OseeCoreException {
+   public BranchCacheStoreRequest convert(PropertyStore store) throws OseeCoreException {
       List<BranchRow> rows = new ArrayList<BranchRow>();
       int rowCount = store.getInt(Fields.BRANCH_COUNT.name());
       for (int index = 0; index < rowCount; index++) {
@@ -52,12 +52,12 @@ public class BranchCacheUpdateResponseTranslator implements ITranslator<BranchCa
       Map<Integer, String[]> branchAliases = TranslationUtil.getArrayMap(store, Fields.BRANCH_TO_ALIASES);
       List<Triplet<Integer, Integer, Integer>> srcDestMerge =
             TranslationUtil.getTripletList(store, Fields.SRC_DEST_MERGE);
-      return new BranchCacheUpdateResponse(rows, childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact,
+      return new BranchCacheStoreRequest(rows, childToParent, branchToBaseTx, branchToSourceTx, associatedArtifact,
             branchAliases, srcDestMerge);
    }
 
    @Override
-   public PropertyStore convert(BranchCacheUpdateResponse object) throws OseeCoreException {
+   public PropertyStore convert(BranchCacheStoreRequest object) throws OseeCoreException {
       PropertyStore store = new PropertyStore();
       List<BranchRow> rows = object.getBranchRows();
       for (int index = 0; index < rows.size(); index++) {

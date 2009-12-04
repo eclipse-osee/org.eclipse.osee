@@ -146,4 +146,8 @@ public class DatabaseTransactionRecordAccessor implements ITransactionDataAccess
       }
       return record;
    }
+
+   @Override
+   public void load(TransactionCache transactionCache) throws OseeCoreException {
+   }
 }

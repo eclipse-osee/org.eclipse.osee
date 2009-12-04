@@ -10,8 +10,9 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.translation;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import org.eclipse.osee.framework.core.data.CacheUpdateRequest;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -24,15 +25,20 @@ import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 public class CacheUpdateRequestTranslator implements ITranslator<CacheUpdateRequest> {
 
    private enum Entry {
-      CACHE_ID,
-      GUIDS;
+      CACHE_ID, ITEM_IDS;
    }
 
    @Override
    public CacheUpdateRequest convert(PropertyStore propertyStore) throws OseeCoreException {
       OseeCacheEnum cacheId = OseeCacheEnum.valueOf(propertyStore.get(Entry.CACHE_ID.name()));
-      String[] guids = propertyStore.getArray(Entry.GUIDS.name());
-      return new CacheUpdateRequest(cacheId, Arrays.asList(guids));
+      String[] itemId = propertyStore.getArray(Entry.ITEM_IDS.name());
+      List<Integer> itemIds = new ArrayList<Integer>();
+      if (itemId != null && itemId.length > 0) {
+         for (String item : itemId) {
+            itemIds.add(Integer.valueOf(item));
+         }
+      }
+      return new CacheUpdateRequest(cacheId, itemIds);
    }
 
    @Override
@@ -40,9 +46,14 @@ public class CacheUpdateRequestTranslator implements ITranslator<CacheUpdateRequ
       PropertyStore store = new PropertyStore();
 
       store.put(Entry.CACHE_ID.name(), object.getCacheId().name());
-      Collection<String> guids = object.getGuids();
-      if (!guids.isEmpty()) {
-         store.put(Entry.GUIDS.name(), guids.toArray(new String[guids.size()]));
+      Collection<Integer> itemIds = object.getItemsIds();
+      if (!itemIds.isEmpty()) {
+         String[] itemStr = new String[itemIds.size()];
+         int index = 0;
+         for (Integer item : itemIds) {
+            itemStr[index] = (String.valueOf(item));
+         }
+         store.put(Entry.ITEM_IDS.name(), itemStr);
       }
       return store;
    }

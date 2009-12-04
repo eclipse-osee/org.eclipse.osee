@@ -21,22 +21,22 @@ import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
 public class CacheUpdateRequest {
 
    private final OseeCacheEnum cacheId;
-   private final Collection<String> guids;
+   private final Collection<Integer> itemsIds;
 
    public CacheUpdateRequest(OseeCacheEnum cacheId) {
-      this(cacheId, Collections.<String> emptyList());
+      this(cacheId, Collections.<Integer> emptyList());
    }
 
-   public CacheUpdateRequest(OseeCacheEnum cacheId, Collection<String> guids) {
+   public CacheUpdateRequest(OseeCacheEnum cacheId, Collection<Integer> itemsIds) {
       this.cacheId = cacheId;
-      this.guids = guids;
+      this.itemsIds = itemsIds;
    }
 
    public OseeCacheEnum getCacheId() {
       return cacheId;
    }
 
-   public Collection<String> getGuids() {
-      return guids;
+   public Collection<Integer> getItemsIds() {
+      return itemsIds;
    }
 }

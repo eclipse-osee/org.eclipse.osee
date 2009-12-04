@@ -36,12 +36,14 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
    private final Map<Integer, TransactionRecord> transactionIdCache = new HashMap<Integer, TransactionRecord>();
    //   private final Map<Branch, TransactionRecord> branchTransactions = new HashMap<Branch, TransactionRecord>();
 
-   private final boolean duringPopulate;
+   private boolean duringPopulate;
    private final OseeCacheEnum cacheId;
+   private boolean ensurePopulatedRanOnce;
 
    public TransactionCache() {
       this.cacheId = OseeCacheEnum.TRANSACTION_CACHE;
       this.duringPopulate = false;
+      this.ensurePopulatedRanOnce = false;
    }
 
    public void setAccessor(ITransactionDataAccessor accessor) {
@@ -165,16 +167,18 @@ public class TransactionCache implements IOseeCache<TransactionRecord> {
 
    @Override
    public void ensurePopulated() throws OseeCoreException {
-      if (transactionIdCache.isEmpty()) {
-         if (!duringPopulate) {
-            //            duringPopulate = true;
-            //            //            reloadCache();
-            //            duringPopulate = false;
-         }
+      if (!ensurePopulatedRanOnce && transactionIdCache.isEmpty()) {
+         ensurePopulatedRanOnce = true;
+         reloadCache();
       }
    }
 
-   public void reloadCache() {
+   public void reloadCache() throws OseeCoreException {
+      if (!duringPopulate) {
+         duringPopulate = true;
+         getDataAccessor().load(this);
+         duringPopulate = false;
+      }
    }
 
    public void decacheAll() {

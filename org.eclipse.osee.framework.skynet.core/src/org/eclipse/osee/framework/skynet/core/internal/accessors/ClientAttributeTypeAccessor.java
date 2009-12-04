@@ -51,7 +51,7 @@ public class ClientAttributeTypeAccessor extends AbstractClientDataAccessor<Attr
       List<AttributeType> updatedItems = new ArrayList<AttributeType>();
 
       AttributeTypeCacheUpdateResponse response =
-            sendUpdateMessage(cache, CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
+            requestUpdateMessage(cache, CoreTranslatorId.ATTRIBUTE_TYPE_CACHE_UPDATE_RESPONSE);
 
       Map<Integer, Integer> attrToEnums = response.getAttrToEnums();
       AttributeTypeFactory factory = getFactory();
