@@ -49,23 +49,27 @@ public class ATSPerspective implements IPerspectiveFactory {
    }
 
    public void defineLayout(final IPageLayout layout) {
-      // Editors are placed for free.
       final String editorArea = layout.getEditorArea();
 
-      // Place navigator and outline to left of editor area.
-      final IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, (float) 0.19, editorArea);
-      left.addView(GroupExplorer.VIEW_ID);
-      left.addView(BranchView.VIEW_ID);
-      left.addView(ArtifactExplorer.VIEW_ID);
+      final IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, 0.3f, editorArea);
+      final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, .6f, editorArea);
+      final IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.75f, editorArea);
+
       left.addView(NavigateView.VIEW_ID);
 
-      if (AtsUtil.isAtsAdmin()) {
-         final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, (float) 0.80, editorArea);
-         right.addView("org.eclipse.pde.runtime.LogView");
-      }
+      right.addView(ArtifactExplorer.VIEW_ID);
 
-      IFolderLayout botLeft = layout.createFolder("bottomLeft", IPageLayout.BOTTOM, (float) 0.60, NavigateView.VIEW_ID);
-      botLeft.addView(ActionHyperView.VIEW_ID);
-      botLeft.addView(QuickSearchView.VIEW_ID);
+      if (AtsUtil.isAtsAdmin()) {
+         bottom.addView("org.eclipse.pde.runtime.LogView");
+      }
+      bottom.addView(BranchView.VIEW_ID);
+      bottom.addView(GroupExplorer.VIEW_ID);
+
+      final IFolderLayout bottomRight =
+            layout.createFolder("bottomRight", IPageLayout.BOTTOM, 0.6f, ArtifactExplorer.VIEW_ID);
+      final IFolderLayout bottomLeft =
+            layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.6f, NavigateView.VIEW_ID);
+      bottomLeft.addView(QuickSearchView.VIEW_ID);
+      bottomRight.addView(ActionHyperView.VIEW_ID);
    }
 }
