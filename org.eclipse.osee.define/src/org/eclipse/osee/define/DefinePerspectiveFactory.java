@@ -29,10 +29,8 @@ import org.eclipse.ui.IPerspectiveFactory;
 public class DefinePerspectiveFactory implements IPerspectiveFactory {
 
    public void createInitialLayout(IPageLayout layout) {
-      // Get the editor area.
       String editorArea = layout.getEditorArea();
 
-      // Add views to Window -> Show View
       layout.addShowViewShortcut(ArtifactExplorer.VIEW_ID);
       layout.addShowViewShortcut(BranchView.VIEW_ID);
       layout.addShowViewShortcut(QueryLogView.VIEW_ID);
@@ -40,7 +38,6 @@ public class DefinePerspectiveFactory implements IPerspectiveFactory {
       layout.addShowViewShortcut(DefineNavigateView.VIEW_ID);
       layout.addShowViewShortcut("org.eclipse.pde.runtime.LogView");
 
-      // Top left: Artifact Explorer
       IFolderLayout topLeft = layout.createFolder("topLeft", IPageLayout.LEFT, 0.25f, editorArea);
       topLeft.addPlaceholder(ArtifactExplorer.VIEW_ID + ":*");
       topLeft.addView(ArtifactExplorer.VIEW_ID);
