@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.data.ChangeItem;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -29,7 +29,7 @@ public class ComputeNetChangeOperation extends AbstractOperation {
    private final Collection<ChangeItem> changes;
 
    public ComputeNetChangeOperation(Collection<ChangeItem> changes) {
-      super("Compute Net Change", InternalBranchActivator.PLUGIN_ID);
+      super("Compute Net Change", Activator.PLUGIN_ID);
       this.changes = changes;
    }
 

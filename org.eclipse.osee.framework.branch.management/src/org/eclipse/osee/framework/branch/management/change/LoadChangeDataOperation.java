@@ -13,7 +13,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.data.ArtifactChangeItem;
 import org.eclipse.osee.framework.core.data.AttributeChangeItem;
 import org.eclipse.osee.framework.core.data.ChangeItem;
@@ -79,7 +79,7 @@ public class LoadChangeDataOperation extends AbstractOperation {
 			TransactionRecord sourceTransactionId, TransactionRecord destinationTransactionId,
 			TransactionRecord mergeTransactionId, Collection<ChangeItem> changeData, Integer transactionNumber,
 			LoadingMode loadMode) {
-		super("Load Change Data", InternalBranchActivator.PLUGIN_ID);
+		super("Load Change Data", Activator.PLUGIN_ID);
 		this.oseeDatabaseProvider = oseeDatabaseProvider;
 		this.mergeTransactionId = mergeTransactionId;
 		this.sourceTransactionId = sourceTransactionId;
