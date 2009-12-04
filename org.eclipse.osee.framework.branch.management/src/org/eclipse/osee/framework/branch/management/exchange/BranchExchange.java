@@ -14,20 +14,28 @@ import java.util.List;
 import org.eclipse.osee.framework.branch.management.IBranchExchange;
 import org.eclipse.osee.framework.branch.management.exchange.handler.StandardOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeLocatorProvider;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
+import org.eclipse.osee.framework.services.IOseeModelingServiceProvider;
 
 /**
  * @author Roberto E. Escobar
  */
 public class BranchExchange implements IBranchExchange {
 
+   private final IOseeModelingServiceProvider modelingServiceProvider;
+
+   public BranchExchange(IOseeModelingServiceProvider modelingServiceProvider) {
+      this.modelingServiceProvider = modelingServiceProvider;
+   }
+
    @Override
    public IResourceLocator exportBranch(String exportName, Options options, int... branchIds) throws Exception {
-      ExportController controller = new ExportController(exportName, options, branchIds);
+      ExportController controller =
+            new ExportController(modelingServiceProvider.getOseeModelingService(), exportName, options, branchIds);
       controller.execute();
-      return InternalBranchActivator.getInstance().getResourceLocatorManager().generateResourceLocator(
+      return Activator.getInstance().getResourceLocatorManager().generateResourceLocator(
             ExchangeLocatorProvider.PROTOCOL, "", controller.getExchangeFileName());
    }
 
@@ -62,7 +70,7 @@ public class BranchExchange implements IBranchExchange {
       ExchangeIntegrity exchangeIntegrityCheck =
             new ExchangeIntegrity(new StandardOseeDbExportDataProvider(fileToCheck));
       exchangeIntegrityCheck.execute();
-      return InternalBranchActivator.getInstance().getResourceLocatorManager().generateResourceLocator(
+      return Activator.getInstance().getResourceLocatorManager().generateResourceLocator(
             ExchangeLocatorProvider.PROTOCOL, "", exchangeIntegrityCheck.getExchangeCheckFileName());
    }
 }

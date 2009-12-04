@@ -30,17 +30,18 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.BaseDbSaxHa
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDataSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.BranchDefinitionsSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
+import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaData;
 import org.eclipse.osee.framework.branch.management.exchange.handler.MetaDataSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
-import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalTypeCheckSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
 import org.eclipse.osee.framework.branch.management.exchange.transform.IOseeDbExportTransformer;
 import org.eclipse.osee.framework.branch.management.exchange.transform.ManifestVersionRule;
-import org.eclipse.osee.framework.branch.management.exchange.transform.V0_8_3_LegacyExportTransformer;
+import org.eclipse.osee.framework.branch.management.exchange.transform.V0_8_3Transformer;
 import org.eclipse.osee.framework.branch.management.exchange.transform.V0_9_0Transformer;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -56,6 +57,7 @@ import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.Options;
+import org.xml.sax.ContentHandler;
 
 /**
  * @author Roberto E. Escobar
@@ -101,11 +103,11 @@ public final class ImportController {
    private void setup() throws Exception {
       currentSavePoint = "sourceSetup";
 
+      applyTransforms();
+
       currentSavePoint = "manifest";
       manifestHandler = new ManifestSaxHandler();
       exportDataProvider.saxParse(ExportItemId.EXPORT_MANIFEST, manifestHandler);
-
-      applyTransforms();
 
       currentSavePoint = "setup";
       translator = new TranslationManager();
@@ -132,6 +134,14 @@ public final class ImportController {
       }
    }
 
+   public void parseExportItem(IExportItem exportItem, ContentHandler handler) throws OseeCoreException {
+      exportDataProvider.saxParse(exportItem, handler);
+   }
+
+   public void parseExportItem(String fileName, ContentHandler handler) throws OseeCoreException {
+      exportDataProvider.saxParse(fileName, handler);
+   }
+
    public void transformExportItem(ExportItemId exportItem, SaxTransformer transformer) throws OseeCoreException {
       try {
 
@@ -155,13 +165,18 @@ public final class ImportController {
 
    private void applyTransforms() throws OseeCoreException {
       IOseeDbExportTransformer[] transforms =
-            new IOseeDbExportTransformer[] {new V0_8_3_LegacyExportTransformer(), new V0_9_0Transformer()};
-      String exportVersion = manifestHandler.getSourceExportVersion();
+            new IOseeDbExportTransformer[] {new V0_8_3Transformer(), new V0_9_0Transformer()};
+
+      ManifestVersionRule versionRule = new ManifestVersionRule();
+      versionRule.setReplaceVersion(false);
+      String version = versionRule.getVersion();
+      versionRule.setReplaceVersion(true);
 
       for (IOseeDbExportTransformer transform : transforms) {
-         if (transform.isApplicable(exportVersion)) {
-            exportVersion = transform.applyTransform(this);
-            transformExportItem(ExportItemId.EXPORT_MANIFEST, new ManifestVersionRule(exportVersion));
+         if (transform.isApplicable(version)) {
+            version = transform.applyTransform(this);
+            versionRule.setVersion(version);
+            transformExportItem(ExportItemId.EXPORT_MANIFEST, versionRule);
          }
       }
    }
@@ -196,13 +211,10 @@ public final class ImportController {
          importBranchesTx.execute();
 
          currentSavePoint = "init.relational.objects";
-         RelationalTypeCheckSaxHandler typeCheckHandler =
-               RelationalTypeCheckSaxHandler.createWithLimitedCache(exportDataProvider, 50000);
          RelationalSaxHandler relationalSaxHandler =
                RelationalSaxHandler.createWithLimitedCache(exportDataProvider, 50000);
          relationalSaxHandler.setSelectedBranchIds(branchesToImport);
 
-         processImportFiles(manifestHandler.getTypeFiles(), typeCheckHandler);
          processImportFiles(manifestHandler.getImportFiles(), relationalSaxHandler);
 
          importBranchesTx.updateBranchParentTransactionId();
@@ -211,7 +223,7 @@ public final class ImportController {
          addSavePoint(currentSavePoint);
       } catch (Throwable ex) {
          reportError(currentSavePoint, ex);
-         OseeLog.log(this.getClass(), Level.SEVERE, ex);
+         OseeLog.log(Activator.class, Level.SEVERE, ex);
       } finally {
          cleanup();
       }

@@ -11,25 +11,29 @@
 package org.eclipse.osee.framework.branch.management.exchange.transform;
 
 import java.util.HashMap;
-import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
+import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
 import org.xml.sax.Attributes;
+import org.xml.sax.SAXException;
 
 /**
  * @author Ryan D. Brooks
  */
-public class V0_9_0TxsTransformer extends SaxTransformer {
-   private final HashMap<Integer, Integer> branchIdMap;
+public class V0_9_0TxDetailsHandler extends AbstractSaxHandler {
+   private final HashMap<Integer, Integer> branchIdMap = new HashMap<Integer, Integer>(10000);
 
-   public V0_9_0TxsTransformer(HashMap<Integer, Integer> branchIdMap) {
-      this.branchIdMap = branchIdMap;
+   @Override
+   public void endElementFound(String uri, String localName, String qName) throws SAXException {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws Exception {
-      super.startElementFound(uri, localName, qName, attributes);
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
       if (localName.equals("entry")) {
-         writer.writeAttribute("branch_id",
-               String.valueOf(branchIdMap.get(Integer.parseInt(attributes.getValue("transaction_id")))));
+         branchIdMap.put(Integer.parseInt(attributes.getValue("transaction_id")),
+               Integer.parseInt(attributes.getValue("branch_id")));
       }
+   }
+
+   public HashMap<Integer, Integer> getBranchIdMap() {
+      return branchIdMap;
    }
 }

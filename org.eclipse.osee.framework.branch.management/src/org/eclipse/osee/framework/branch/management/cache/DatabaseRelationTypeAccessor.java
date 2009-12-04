@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -81,7 +81,7 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
                      String.format(
                            "Error loading relation type - name:[%s] id:[%s] aArtTypeId:[%s] bArtTypeid:[%s] multiplicity:[%s]",
                            typeName, typeId, aArtTypeId, bArtTypeId, multiplicityValue);
-               OseeLog.log(InternalBranchActivator.class, Level.SEVERE, message, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, message, ex);
             }
          }
       } finally {

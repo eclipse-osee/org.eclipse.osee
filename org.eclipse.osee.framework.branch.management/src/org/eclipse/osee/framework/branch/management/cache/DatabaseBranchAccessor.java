@@ -18,7 +18,7 @@ import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
@@ -80,7 +80,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
       for (Branch branch : cache.getAll()) {
          branch.clearDirty();
       }
-      OseeLog.log(InternalBranchActivator.class, Level.INFO, String.format("Branch Cache loaded [%s]",
+      OseeLog.log(Activator.class, Level.INFO, String.format("Branch Cache loaded [%s]",
             Lib.getElapseString(startTime)));
    }
 
@@ -110,7 +110,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
                branchToSourceTx.put(branch, chStmt.getInt("parent_transaction_id"));
                associatedArtifact.put(branch, chStmt.getInt("associated_art_id"));
             } catch (OseeCoreException ex) {
-               OseeLog.log(InternalBranchActivator.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       } finally {

@@ -11,13 +11,16 @@
 package org.eclipse.osee.framework.branch.management.exchange;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.logging.Level;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.export.AbstractDbExportItem;
@@ -36,6 +39,7 @@ import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.eclipse.osee.framework.resource.management.exception.MalformedLocatorException;
+import org.eclipse.osee.framework.services.IOseeModelingService;
 
 /**
  * @author Roberto E. Escobar
@@ -49,11 +53,13 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
    private ExportImportJoinQuery joinQuery;
    private ExecutorService executorService;
    private final List<String> errorList;
+   private final IOseeModelingService modelingService;
 
-   ExportController(String exportName, Options options, int... branchIds) throws Exception {
+   ExportController(IOseeModelingService modelingService, String exportName, Options options, int... branchIds) throws Exception {
       if (branchIds == null || branchIds.length <= 0) {
          throw new Exception("No branch selected for export.");
       }
+      this.modelingService = modelingService;
       this.exportName = exportName;
       this.options = options;
       this.branchIds = branchIds;
@@ -116,8 +122,10 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          }
          exportItem.addExportListener(this);
       }
+
       executorService =
-            Executors.newFixedThreadPool(2, CoreServerActivator.createNewThreadFactory("branch.export.worker"));
+            Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors(),
+                  CoreServerActivator.createNewThreadFactory("branch.export.worker"));
    }
 
    @Override
@@ -128,17 +136,7 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
          File tempFolder = createTempFolder();
          setUp(connection, taskList, tempFolder);
 
-         List<Future<?>> futures = new ArrayList<Future<?>>();
-         for (AbstractExportItem exportItem : taskList) {
-            futures.add(this.executorService.submit(exportItem));
-         }
-
-         for (Future<?> future : futures) {
-            future.get();
-            if (this.errorList.size() > 0) {
-               throw new OseeCoreException(errorList.toString());
-            }
-         }
+         sendTasksToExecutor(taskList, tempFolder);
 
          String zipTargetName = exportName + ZIP_EXTENSION;
          if (this.options.getBoolean(ExportOptions.COMPRESS.name())) {
@@ -163,6 +161,32 @@ final class ExportController extends DbTransaction implements IExchangeTaskListe
       int branchTotal = branchIds != null ? branchIds.length : 0;
       OseeLog.log(this.getClass(), Level.INFO, String.format("Exported [%s] branch%s in [%s]", branchTotal,
             branchTotal != 1 ? "es" : "", Lib.getElapseString(startTime)));
+   }
+
+   private void sendTasksToExecutor(List<AbstractExportItem> taskList, final File exportFolder) throws InterruptedException, ExecutionException, OseeCoreException {
+      List<Future<?>> futures = new ArrayList<Future<?>>();
+      for (AbstractExportItem exportItem : taskList) {
+         futures.add(this.executorService.submit(exportItem));
+      }
+
+      futures.add(this.executorService.submit(new Runnable() {
+         @Override
+         public void run() {
+            try {
+               modelingService.exportOseeTypes(new NullProgressMonitor(), new FileOutputStream(new File(exportFolder,
+                     "OseeModel.osee")));
+            } catch (Exception ex) {
+               onException("model export", ex);
+            }
+         }
+      }));
+
+      for (Future<?> future : futures) {
+         future.get();
+         if (this.errorList.size() > 0) {
+            throw new OseeCoreException(errorList.toString());
+         }
+      }
    }
 
    @Override

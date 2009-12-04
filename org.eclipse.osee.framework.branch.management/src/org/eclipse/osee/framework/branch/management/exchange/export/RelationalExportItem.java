@@ -16,12 +16,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.HashSet;
-import java.util.Set;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -42,7 +40,6 @@ public class RelationalExportItem extends AbstractDbExportItem {
    private final StringBuffer oseeCommentBuffer;
    private final StringBuffer branchNameBuffer;
    private final StringBuffer rationaleBuffer;
-   private final Set<IExportColumnListener> exportColumnListeners;
 
    public RelationalExportItem(ExportItemId id, String query) {
       super(id);
@@ -52,7 +49,6 @@ public class RelationalExportItem extends AbstractDbExportItem {
       this.oseeCommentBuffer = new StringBuffer();
       this.branchNameBuffer = new StringBuffer();
       this.rationaleBuffer = new StringBuffer();
-      this.exportColumnListeners = java.util.Collections.synchronizedSet(new HashSet<IExportColumnListener>());
    }
 
    protected String exportBinaryDataTo(File tempFolder, String uriTarget) throws Exception {
@@ -62,8 +58,8 @@ public class RelationalExportItem extends AbstractDbExportItem {
       }
 
       IResourceLocator locator =
-            InternalBranchActivator.getInstance().getResourceLocatorManager().getResourceLocator(uriTarget);
-      IResource resource = InternalBranchActivator.getInstance().getResourceManager().acquire(locator, new Options());
+            Activator.getInstance().getResourceLocatorManager().getResourceLocator(uriTarget);
+      IResource resource = Activator.getInstance().getResourceManager().acquire(locator, new Options());
 
       File target = new File(tempFolder, locator.getRawPath());
       if (target.getParentFile() != null) {
@@ -115,7 +111,6 @@ public class RelationalExportItem extends AbstractDbExportItem {
          int numberOfColumns = chStmt.getColumnCount() + 1;
          for (int columnIndex = 1; columnIndex < numberOfColumns; columnIndex++) {
             String name = chStmt.getColumnName(columnIndex).toLowerCase();
-            notifyOnColumnExport(name, chStmt);
             if (name.equals("uri")) {
                handleBinaryContent(binaryContentBuffer, getWriteLocation(), chStmt.getString(name));
             } else if (name.equals("value")) {
@@ -130,6 +125,8 @@ public class RelationalExportItem extends AbstractDbExportItem {
             } else if (name.equals(ExportImportXml.RATIONALE)) {
                handleStringContent(rationaleBuffer, getWriteLocation(), chStmt.getString(name),
                      ExportImportXml.RATIONALE);
+            } else if (name.equals(ExportImportXml.ART_TYPE_ID) || name.equals(ExportImportXml.ATTR_TYPE_ID) || name.equals(ExportImportXml.REL_TYPE_ID)) {
+               ExportImportXml.addXmlAttribute(appendable, ExportImportXml.TYPE_GUID, chStmt.getString(name));
             } else {
                switch (chStmt.getColumnType(columnIndex)) {
                   case Types.TIMESTAMP:
@@ -195,31 +192,8 @@ public class RelationalExportItem extends AbstractDbExportItem {
       }
    }
 
-   public void addExportColumnListener(IExportColumnListener exportColumnListener) {
-      if (exportColumnListener != null) {
-         this.exportColumnListeners.add(exportColumnListener);
-      }
-   }
-
-   public void removeExportColumnListener(IExportColumnListener exportColumnListener) {
-      if (exportColumnListener != null) {
-         this.exportColumnListeners.remove(exportColumnListener);
-      }
-   }
-
    @Override
    public void cleanUp() {
-      this.exportColumnListeners.clear();
       super.cleanUp();
-   }
-
-   private void notifyOnColumnExport(String columnName, IOseeStatement chStmt) throws Exception {
-      for (IExportColumnListener listener : this.exportColumnListeners) {
-         listener.onColumnExport(columnName, chStmt);
-      }
-   }
-
-   public interface IExportColumnListener {
-      public abstract void onColumnExport(String columnName, IOseeStatement chStmt) throws Exception;
    }
 }

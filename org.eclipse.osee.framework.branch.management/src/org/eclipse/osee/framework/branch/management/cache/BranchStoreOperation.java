@@ -10,7 +10,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
@@ -49,7 +49,7 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
    private final Collection<Branch> branches;
 
    public BranchStoreOperation(IOseeDatabaseServiceProvider provider, Collection<Branch> branches) {
-      super(provider, "Branch Archive Operation", InternalBranchActivator.PLUGIN_ID);
+      super(provider, "Branch Archive Operation", Activator.PLUGIN_ID);
       this.branches = branches;
    }
 
@@ -139,15 +139,15 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          if (!branch.getModificationType().isDeleted()) {
             for (String alias : branch.getAliases()) {
                if (Strings.isValid(alias)) {
-                  insertData.add(new Object[] {branch.getId(), alias});
-               }
+               insertData.add(new Object[] {branch.getId(), alias});
             }
          }
       }
+      }
       getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH_ALIASES, deleteData);
       if (!insertData.isEmpty()) {
-         getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH_ALIASES, insertData);
-      }
+      getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH_ALIASES, insertData);
+   }
    }
 
    private void sendChangeEvents(Collection<Branch> branches) {

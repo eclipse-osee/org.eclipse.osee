@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
@@ -109,7 +109,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
                            artifactTypeName);
                loadedTypes.add(artifactType);
             } catch (OseeDataStoreException ex) {
-               OseeLog.log(InternalBranchActivator.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       } finally {
@@ -169,7 +169,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
                }
                attributes.add(attributeType);
             } catch (OseeCoreException ex) {
-               OseeLog.log(InternalBranchActivator.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       } finally {
@@ -180,7 +180,7 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
             Pair<ArtifactType, Branch> key = entry.getKey();
             key.getFirst().setAttributeTypes(entry.getValue(), key.getSecond());
          } catch (OseeCoreException ex) {
-            OseeLog.log(InternalBranchActivator.class, Level.SEVERE, ex);
+            OseeLog.log(Activator.class, Level.SEVERE, ex);
          }
       }
    }

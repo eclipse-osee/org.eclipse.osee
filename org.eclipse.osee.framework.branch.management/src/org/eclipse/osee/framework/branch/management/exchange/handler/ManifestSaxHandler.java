@@ -26,7 +26,6 @@ import org.xml.sax.SAXException;
 public class ManifestSaxHandler extends BaseExportImportSaxHandler {
 
    private final List<ImportFile> filesToImport;
-   private final List<ImportFile> typesToCheck;
    private String metadataFile;
    private ImportFile branchFile;
    private ImportFile branchDefinitionsFile;
@@ -37,7 +36,6 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
    public ManifestSaxHandler() {
       super();
       this.filesToImport = new ArrayList<ImportFile>();
-      this.typesToCheck = new ArrayList<ImportFile>();
       this.metadataFile = null;
       this.branchFile = null;
       this.branchDefinitionsFile = null;
@@ -47,17 +45,12 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
 
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
-      try {
-         if (localName.equalsIgnoreCase(ExportImportXml.EXPORT_ENTRY)) {
-            sourceDatabaseId = attributes.getValue(ExportImportXml.DATABASE_ID);
-            sourceExportDate = new Date(Long.parseLong(attributes.getValue(ExportImportXml.EXPORT_DATE)));
-            exportVersion = attributes.getValue(ExportImportXml.EXPORT_VERSION);
-         }
-      } catch (Exception ex) {
-         throw new IllegalStateException(ex);
+      if (localName.equalsIgnoreCase(ExportImportXml.EXPORT_ENTRY)) {
+         sourceDatabaseId = attributes.getValue(ExportImportXml.DATABASE_ID);
+         sourceExportDate = new Date(Long.parseLong(attributes.getValue(ExportImportXml.EXPORT_DATE)));
+         exportVersion = attributes.getValue(ExportImportXml.EXPORT_VERSION);
       }
       super.startElementFound(uri, localName, name, attributes);
-
    }
 
    @Override
@@ -70,19 +63,14 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
          if (source.equals(ExportImportXml.DB_SCHEMA)) {
             this.metadataFile = fileName;
          } else {
-            if (priority > 0) {
-               ImportFile importFile = new ImportFile(fileName, source, priority);
-               if (source.equals("osee_branch")) {
-                  branchFile = importFile;
-               } else if (source.equals("osee_branch_definitions")) {
-                  branchDefinitionsFile = importFile;
-               } else {
-                  filesToImport.add(importFile);
-               }
+            ImportFile importFile = new ImportFile(fileName, source, priority);
+            if (source.equals("osee_branch")) {
+               branchFile = importFile;
+            } else if (source.equals("osee_branch_definitions")) {
+               branchDefinitionsFile = importFile;
             } else {
-               typesToCheck.add(new ImportFile(fileName, source, priority));
+               filesToImport.add(importFile);
             }
-
          }
       }
    }
@@ -114,11 +102,6 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
    public List<ImportFile> getImportFiles() {
       Collections.sort(filesToImport);
       return filesToImport;
-   }
-
-   public List<ImportFile> getTypeFiles() {
-      Collections.sort(typesToCheck);
-      return typesToCheck;
    }
 
    public class ImportFile implements Comparable<ImportFile>, IExportItem {

@@ -34,16 +34,12 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
 
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
-      try {
-         if (localName.equalsIgnoreCase(ExportImportXml.DATA)) {
-            handleData(attributes);
-         } else if (localName.equalsIgnoreCase(ExportImportXml.ENTRY)) {
-            handleEntry(attributes);
-         } else if (localName.equalsIgnoreCase(ExportImportXml.BINARY_CONTENT)) {
-            handleBinaryContent(attributes);
-         }
-      } catch (Exception ex) {
-         throw new IllegalStateException(ex);
+      if (localName.equalsIgnoreCase(ExportImportXml.DATA)) {
+         handleData(attributes);
+      } else if (localName.equalsIgnoreCase(ExportImportXml.ENTRY)) {
+         handleEntry(attributes);
+      } else if (localName.equalsIgnoreCase(ExportImportXml.BINARY_CONTENT)) {
+         handleBinaryContent(attributes);
       }
    }
 

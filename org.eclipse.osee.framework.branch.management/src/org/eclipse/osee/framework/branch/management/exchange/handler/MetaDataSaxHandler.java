@@ -48,25 +48,21 @@ public class MetaDataSaxHandler extends AbstractSaxHandler {
 
    @Override
    public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
-      try {
-         if (localName.equalsIgnoreCase(ExportImportXml.METADATA)) {
-            this.importMetadataMap.clear();
-         } else if (localName.equalsIgnoreCase(ExportImportXml.TABLE)) {
-            String tableName = attributes.getValue(ExportImportXml.TABLE_NAME);
-            if (Strings.isValid(tableName)) {
-               this.currentMetadata = new MetaData(tableName);
-               this.importMetadataMap.put(tableName, currentMetadata);
-            } else {
-               this.currentMetadata = null;
-            }
-         } else if (localName.equalsIgnoreCase(ExportImportXml.COLUMN)) {
-            String columnName = attributes.getValue(ExportImportXml.ID);
-            String typeName = attributes.getValue(ExportImportXml.TYPE);
-            SQL3DataType sql3DataType = SQL3DataType.valueOf(typeName);
-            this.currentMetadata.addColumn(columnName, sql3DataType);
+      if (localName.equalsIgnoreCase(ExportImportXml.METADATA)) {
+         this.importMetadataMap.clear();
+      } else if (localName.equalsIgnoreCase(ExportImportXml.TABLE)) {
+         String tableName = attributes.getValue(ExportImportXml.TABLE_NAME);
+         if (Strings.isValid(tableName)) {
+            this.currentMetadata = new MetaData(tableName);
+            this.importMetadataMap.put(tableName, currentMetadata);
+         } else {
+            this.currentMetadata = null;
          }
-      } catch (Exception ex) {
-         throw new IllegalStateException(ex);
+      } else if (localName.equalsIgnoreCase(ExportImportXml.COLUMN)) {
+         String columnName = attributes.getValue(ExportImportXml.ID);
+         String typeName = attributes.getValue(ExportImportXml.TYPE);
+         SQL3DataType sql3DataType = SQL3DataType.valueOf(typeName);
+         this.currentMetadata.addColumn(columnName, sql3DataType);
       }
    }
 

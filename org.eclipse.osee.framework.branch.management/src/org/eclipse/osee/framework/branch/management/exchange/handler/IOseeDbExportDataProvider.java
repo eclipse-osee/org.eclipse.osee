@@ -19,7 +19,9 @@ import org.xml.sax.ContentHandler;
  */
 public interface IOseeDbExportDataProvider {
 
-   public void saxParse(IExportItem id, ContentHandler handler) throws OseeCoreException;
+   public void saxParse(IExportItem exportItem, ContentHandler handler) throws OseeCoreException;
+
+   public void saxParse(String fileName, ContentHandler handler) throws OseeCoreException;
 
    public boolean wasZipExtractionRequired();
 

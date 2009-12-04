@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -91,7 +91,7 @@ public class DatabaseAttributeTypeAccessor extends AbstractDatabaseAccessor<Attr
 
                attributeType.clearDirty();
             } catch (OseeCoreException ex) {
-               OseeLog.log(InternalBranchActivator.class, Level.SEVERE, ex);
+               OseeLog.log(Activator.class, Level.SEVERE, ex);
             }
          }
       } finally {

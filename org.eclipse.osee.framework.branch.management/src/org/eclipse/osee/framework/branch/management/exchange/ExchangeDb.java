@@ -20,7 +20,6 @@ import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExpo
 import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem;
-import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItemWithType;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
@@ -115,15 +114,6 @@ public class ExchangeDb {
    private static final String RELATION_LINK_TABLE_QUERY =
          "SELECT DISTINCT (rel1.GAMMA_ID), rel1.REL_LINK_ID, rel1.B_ART_ID, rel1.A_ART_ID, rel1.RATIONALE, rel1.REL_LINK_TYPE_ID FROM osee_relation_link rel1, osee_txs txs1, osee_tx_details txd1, osee_join_export_import jex1 WHERE rel1.gamma_id = txs1.gamma_id AND txs1.transaction_id = txd1.transaction_id AND txd1.branch_id = jex1.id1 AND jex1.query_id=? %s";
 
-   private static final String ARTIFACT_TYPE_QUERY =
-         "SELECT type1.name, type1.art_type_id FROM osee_artifact_type type1, osee_join_export_import jex1 WHERE type1.art_type_id = jex1.id1 AND jex1.query_id = ?";
-
-   private static final String ATTRIBUTE_TYPE_QUERY =
-         "SELECT type1.name, type1.attr_type_id FROM osee_attribute_type type1, osee_join_export_import jex1 WHERE type1.attr_type_id = jex1.id1 AND jex1.query_id = ?";
-
-   private static final String RELATION_TYPE_QUERY =
-         "SELECT type1.type_name, type1.rel_link_type_id FROM osee_relation_link_type type1, osee_join_export_import jex1 WHERE type1.rel_link_type_id = jex1.id1 AND jex1.query_id = ?";
-
    private static final String MERGE_TABLE_QUERY =
          "SELECT om1.* FROM osee_merge om1, osee_join_export_import jex1 WHERE om1.merge_branch_id = jex1.id1 AND jex1.query_id=? %s";
 
@@ -144,13 +134,10 @@ public class ExchangeDb {
       items.add(new RelationalExportItem(ExportItemId.OSEE_BRANCH_DEFINITIONS, BRANCH_DEFINITION_QUERY));
       items.add(new RelationalExportItem(ExportItemId.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
       items.add(new RelationalExportItem(ExportItemId.OSEE_TXS_DATA, TXS_TABLE_QUERY));
-      items.add(new RelationalExportItemWithType(ExportItemId.OSEE_ARTIFACT_DATA, ExportItemId.OSEE_ARTIFACT_TYPE,
-            ARTIFACT_TYPE_ID, ARTIFACT_TABLE_QUERY, ARTIFACT_TYPE_QUERY));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY));
       items.add(new RelationalExportItem(ExportItemId.OSEE_ARTIFACT_VERSION_DATA, ARTIFACT_VERSION_QUERY));
-      items.add(new RelationalExportItemWithType(ExportItemId.OSEE_ATTRIBUTE_DATA, ExportItemId.OSEE_ATTRIBUTE_TYPE,
-            ATTRIBUTE_TYPE_ID, ATTRIBUTE_TABLE_QUERY, ATTRIBUTE_TYPE_QUERY));
-      items.add(new RelationalExportItemWithType(ExportItemId.OSEE_RELATION_LINK_DATA, ExportItemId.OSEE_RELATION_TYPE,
-            RELATION_TYPE_ID, RELATION_LINK_TABLE_QUERY, RELATION_TYPE_QUERY));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItemId.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY));
       items.add(new RelationalExportItem(ExportItemId.OSEE_MERGE_DATA, MERGE_TABLE_QUERY));
       items.add(new RelationalExportItem(ExportItemId.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY));
       items.add(new RelationalExportItem(ExportItemId.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY));

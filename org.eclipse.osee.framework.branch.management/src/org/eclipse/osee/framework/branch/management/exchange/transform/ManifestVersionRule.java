@@ -12,13 +12,13 @@ import org.eclipse.osee.framework.jdk.core.text.change.ChangeSet;
 
 public class ManifestVersionRule extends Rule {
    private static final Pattern exportPattern = Pattern.compile("<export ");
-   private static final Pattern versionPattern = Pattern.compile("exportVersion=\"([^\"]+)");
+   public static final Pattern versionPattern = Pattern.compile("exportVersion=\"([^\"]+)");
 
-   private final String version;
+   private String version;
+   private boolean replaceVersion;
 
-   public ManifestVersionRule(String version) {
+   public ManifestVersionRule() {
       super(null);
-      this.version = version;
    }
 
    @Override
@@ -28,8 +28,12 @@ public class ManifestVersionRule extends Rule {
 
       Matcher versionMatcher = versionPattern.matcher(seq);
       if (versionMatcher.find()) {
-         changeSet.replace(versionMatcher.start(1), versionMatcher.end(1), version);
-      } else {
+         if (replaceVersion) {
+            changeSet.replace(versionMatcher.start(1), versionMatcher.end(1), version);
+         } else {
+            version = versionMatcher.group(1);
+         }
+      } else if (replaceVersion) {
          Matcher exportMatcher = exportPattern.matcher(seq);
          while (exportMatcher.find()) {
             changeSet.insertBefore(exportMatcher.end(), "exportVersion=\"" + version + "\" ");
@@ -37,5 +41,17 @@ public class ManifestVersionRule extends Rule {
       }
 
       return changeSet;
+   }
+
+   public void setVersion(String version) {
+      this.version = version;
+   }
+
+   public String getVersion() {
+      return version;
+   }
+
+   public void setReplaceVersion(boolean replaceVersion) {
+      this.replaceVersion = replaceVersion;
    }
 }

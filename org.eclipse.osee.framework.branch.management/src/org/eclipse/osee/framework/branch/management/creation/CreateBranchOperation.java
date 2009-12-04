@@ -16,7 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.logging.Level;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.osee.framework.branch.management.internal.InternalBranchActivator;
+import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.BranchCreationRequest;
@@ -80,7 +80,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
    public CreateBranchOperation(IOseeDatabaseServiceProvider provider, IOseeModelFactoryServiceProvider factoryService, IOseeCachingServiceProvider cachingService, BranchCreationRequest request, BranchCreationResponse response) {
       super(provider,
             String.format("Create Branch: [%s from %s]", request.getBranchName(), request.getParentBranchId()),
-            InternalBranchActivator.PLUGIN_ID);
+            Activator.PLUGIN_ID);
       this.cachingService = cachingService;
       this.factoryService = factoryService;
       this.request = request;
@@ -95,7 +95,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
             systemUserId =
                   getDatabaseService().runPreparedQueryFetchObject(-1, USER_ID_QUERY, SystemUser.OseeSystem.getUserID());
          } catch (OseeDataStoreException ex) {
-            OseeLog.log(InternalBranchActivator.class, Level.WARNING, "Unable to retrieve the system user");
+            OseeLog.log(Activator.class, Level.WARNING, "Unable to retrieve the system user");
          }
       }
       return systemUserId;
@@ -189,7 +189,7 @@ public class CreateBranchOperation extends AbstractDbTxOperation {
             branchCache.storeItems(branch);
             branchCache.decache(branch);
          } catch (OseeCoreException ex1) {
-            OseeLog.log(InternalBranchActivator.class, Level.SEVERE, ex1);
+            OseeLog.log(Activator.class, Level.SEVERE, ex1);
          }
       }
    }

@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 /**
  * @author Ryan D. Brooks
  */
-public class V0_8_3_LegacyExportTransformer implements IOseeDbExportTransformer {
+public class V0_8_3Transformer implements IOseeDbExportTransformer {
 
    @Override
    public String applyTransform(ImportController importController) throws OseeCoreException {

@@ -14,9 +14,6 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
  * @author Ryan D. Brooks
  */
 public enum ExportItemId implements IExportItem {
-   OSEE_ARTIFACT_TYPE(""),
-   OSEE_RELATION_TYPE(""),
-   OSEE_ATTRIBUTE_TYPE(""),
    EXPORT_MANIFEST(""),
    EXPORT_DB_SCHEMA("db.metadata"),
    OSEE_BRANCH_DATA("osee_branch"),
