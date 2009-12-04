@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.search.engine.internal;
 
 import java.io.InputStream;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.io.xml.AbstractSaxHandler;
@@ -53,15 +54,11 @@ final class InputStreamTagProcessor extends InputToTagQueueTx {
       }
 
       @Override
-      public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
+      public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException, NumberFormatException, OseeDataStoreException {
          if (name.equalsIgnoreCase("entry")) {
             String gammaId = attributes.getValue("gammaId");
             if (Strings.isValid(gammaId)) {
-               try {
-                  addEntry(connection, Long.parseLong(gammaId));
-               } catch (Exception ex) {
-                  throw new RuntimeException("Error Processing Attribute Xml - ", ex);
-               }
+               addEntry(connection, Long.parseLong(gammaId));
             }
          }
       }

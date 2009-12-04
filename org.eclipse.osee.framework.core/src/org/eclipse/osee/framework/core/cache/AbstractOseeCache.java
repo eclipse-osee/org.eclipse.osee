@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import org.eclipse.osee.framework.core.enums.OseeCacheEnum;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.exception.OseeTypeDoesNotExist;
@@ -192,6 +193,15 @@ public abstract class AbstractOseeCache<T extends IOseeStorableType> implements 
          types.addAll(values);
       }
       return types;
+   }
+
+   public T getBySoleName(String typeName) throws OseeCoreException {
+      ensurePopulated();
+      Collection<T> types = getByName(typeName);
+      if (types.size() != 1) {
+         throw new OseeArgumentException("Expected 1 type but found " + types.size() + " types for " + typeName);
+      }
+      return types.iterator().next();
    }
 
    public T getByGuid(String typeGuid) throws OseeCoreException {

@@ -18,17 +18,14 @@ import org.xml.sax.helpers.DefaultHandler;
 
 /**
  * @author Ryan D. Brooks
- * 
- * If you want to preserve CDATA sections you need to follow this pattern:
- * 
- * XMLReader xmlReader = XMLReaderFactory.createXMLReader();
- * xmlReader.setContentHandler(this);
- * xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", this); //This is the important part
- * 
+ *         If you want to preserve CDATA sections you need to follow this pattern:
+ *         XMLReader xmlReader = XMLReaderFactory.createXMLReader();
+ *         xmlReader.setContentHandler(this);
+ *         xmlReader.setProperty("http://xml.org/sax/properties/lexical-handler", this); //This is the important part
  */
-public abstract class AbstractSaxHandler extends DefaultHandler implements LexicalHandler{
-// Buffer for collecting data from the "characters" SAX event.
-   private StringBuilder contents;
+public abstract class AbstractSaxHandler extends DefaultHandler implements LexicalHandler {
+   // Buffer for collecting data from the "characters" SAX event.
+   private final StringBuilder contents;
    private final int maxContentLength;
 
    protected AbstractSaxHandler() {
@@ -50,19 +47,27 @@ public abstract class AbstractSaxHandler extends DefaultHandler implements Lexic
 
    @Override
    public void endElement(String uri, String localName, String qName) throws SAXException {
-      endElementFound(uri, localName, qName);
+      try {
+         endElementFound(uri, localName, qName);
+      } catch (Exception ex) {
+         throw new SAXException(ex);
+      }
       contents.setLength(0); // efficiently reset the StringBuilder to be empty (but preserve its capacity)
    }
 
    @Override
    public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-      startElementFound(uri, localName, qName, attributes);
+      try {
+         startElementFound(uri, localName, qName, attributes);
+      } catch (Exception ex) {
+         throw new SAXException(ex);
+      }
       contents.setLength(0); // efficiently reset the StringBuilder to be empty (but preserve its capacity)
    }
 
-   public abstract void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException;
+   public abstract void startElementFound(String uri, String localName, String qName, Attributes attributes) throws Exception;
 
-   public abstract void endElementFound(String uri, String localName, String qName) throws SAXException;
+   public abstract void endElementFound(String uri, String localName, String qName) throws Exception;
 
    public String getContents() {
       return contents.toString();
@@ -71,28 +76,27 @@ public abstract class AbstractSaxHandler extends DefaultHandler implements Lexic
    public void addContentsTo(Appendable appendable) throws IOException {
       appendable.append(contents);
    }
-   
-	public void comment(char[] ch, int start, int length) throws SAXException {
-	}
 
-	public void endCDATA() throws SAXException {
-		contents.append("]]>");
-	}
+   public void comment(char[] ch, int start, int length) throws SAXException {
+   }
 
-	public void endDTD() throws SAXException {
-	}
+   public void endCDATA() throws SAXException {
+      contents.append("]]>");
+   }
 
-	public void endEntity(String name) throws SAXException {
-	}
+   public void endDTD() throws SAXException {
+   }
 
-	public void startCDATA() throws SAXException {
-		contents.append("<![CDATA[");
-	}
+   public void endEntity(String name) throws SAXException {
+   }
 
-	public void startDTD(String name, String publicId, String systemId)
-			throws SAXException {
-	}
+   public void startCDATA() throws SAXException {
+      contents.append("<![CDATA[");
+   }
 
-	public void startEntity(String name) throws SAXException {
-	}
+   public void startDTD(String name, String publicId, String systemId) throws SAXException {
+   }
+
+   public void startEntity(String name) throws SAXException {
+   }
 }

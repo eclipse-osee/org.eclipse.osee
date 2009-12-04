@@ -31,14 +31,10 @@ public class SaxTransformer extends AbstractSaxHandler {
    }
 
    @Override
-   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-      try {
-         writer.writeStartElement(localName);
-         for (int i = 0; i < attributes.getLength(); i++) {
-            writer.writeAttribute(attributes.getLocalName(i), attributes.getValue(i));
-         }
-      } catch (XMLStreamException ex) {
-         throw new SAXException(ex);
+   public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws Exception {
+      writer.writeStartElement(localName);
+      for (int i = 0; i < attributes.getLength(); i++) {
+         writer.writeAttribute(attributes.getLocalName(i), attributes.getValue(i));
       }
    }
 

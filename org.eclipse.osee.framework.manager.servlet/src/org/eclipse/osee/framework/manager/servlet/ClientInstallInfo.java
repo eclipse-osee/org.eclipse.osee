@@ -60,6 +60,7 @@ class ClientInstallInfo {
       return comment;
    }
 
+   @Override
    public String toString() {
       return String.format("name:[%s] os:[%s] isActive:[%s] comment:[%s] location:[%s]", name, os, isActive, comment,
             execPath);
@@ -81,7 +82,7 @@ class ClientInstallInfo {
    }
 
    private final static class Parser extends AbstractSaxHandler {
-      private ClientInstallInfo info;
+      private final ClientInstallInfo info;
 
       private Parser(ClientInstallInfo info) {
          this.info = info;
@@ -89,18 +90,14 @@ class ClientInstallInfo {
 
       @Override
       public void startElementFound(String uri, String localName, String name, Attributes attributes) throws SAXException {
-         try {
-            if (localName.equalsIgnoreCase("install")) {
-               info.os = attributes.getValue("os");
-               if (info.os != null) {
-                  info.os = info.os.toLowerCase();
-               } else {
-                  info.os = EMPTY_STRING;
-               }
-               info.isActive = Boolean.valueOf(attributes.getValue("isActive"));
+         if (localName.equalsIgnoreCase("install")) {
+            info.os = attributes.getValue("os");
+            if (info.os != null) {
+               info.os = info.os.toLowerCase();
+            } else {
+               info.os = EMPTY_STRING;
             }
-         } catch (Exception ex) {
-            throw new IllegalStateException(ex);
+            info.isActive = Boolean.valueOf(attributes.getValue("isActive"));
          }
       }
 
