@@ -12,12 +12,16 @@ package org.eclipse.osee.framework.osee;
 
 import java.util.Calendar;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.compare.diff.metamodel.ComparisonResourceSnapshot;
 import org.eclipse.emf.compare.diff.metamodel.DiffModel;
 import org.eclipse.emf.compare.diff.service.DiffService;
 import org.eclipse.emf.compare.match.metamodel.MatchModel;
 import org.eclipse.emf.compare.match.service.MatchService;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
+import org.eclipse.osee.framework.OseeTypesStandaloneSetup;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
 import org.eclipse.osee.framework.internal.InternalTypesActivator;
 
@@ -39,14 +43,18 @@ public class EMFCompareOperation extends AbstractOperation {
 
    @Override
    protected void doWork(IProgressMonitor monitor) throws Exception {
-      //      URI uri = URI.createURI("http://org.eclipse/osee/types/oseetypecache");
+      OseeTypesStandaloneSetup.doSetup();
+      URI uri = URI.createURI("http://org.eclipse/osee/types/oseetypecache2");
+      //      URI uri = URI.createURI("dummy:/ancestor.osee");
       //      final ResourceSet resourceSet1 = new ResourceSetImpl();
-      //      Resource resource1 = resourceSet1.createResource(uri);
-      //      resource1.getContents().add(baseModel);
-      //
+      //    Resource resource1 = resourceSet1.createResource(uri);
+      Resource resource1 = new ResourceImpl(uri);
+      resource1.getContents().add(ancestor);
+
       //      final ResourceSet resourceSet2 = new ResourceSetImpl();
       //      Resource resource2 = resourceSet2.createResource(uri);
-      //      resource2.getContents().add(changedModel);
+      Resource resource2 = new ResourceImpl(uri);
+      resource2.getContents().add(modified);
 
       final MatchModel match = MatchService.doMatch(ancestor, modified, ancestor, null);
       monitor.worked(calculateWork(0.40));

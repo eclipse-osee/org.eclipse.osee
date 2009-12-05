@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.internal;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.compare.diff.metamodel.ComparisonResourceSnapshot;
@@ -124,12 +125,14 @@ public class OseeModelingServiceImpl implements IOseeModelingService {
       }
       response.setReportData(reportData);
 
-      response.setComparisonSnapshotModelName("");
-      response.setComparisonSnapshotModel("");
-      //   TODO   ModelUtil.modelToString(comparisonSnapshot,
-      //            Collections.<String, Boolean> emptyMap()));
+      if (request.isCreateCompareReport()) {
+         response.setComparisonSnapshotModelName("osee_compare.diff");
+         String modelString =
+               ModelUtil.modelToString(comparisonSnapshot, "osee:/osee_compare.diff",
+               Collections.<String, Boolean> emptyMap());
+         response.setComparisonSnapshotModel(modelString);
+      }
    }
-
    //      Map<String, OseeTypeModel> changedModels = new HashMap<String, OseeTypeModel>();
    //      doSubWork(new OseeToXtextOperation(modifiedCache, changedModels), monitor, 0.20);
    //

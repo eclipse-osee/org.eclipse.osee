@@ -15,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
 import org.eclipse.osee.framework.core.enums.RelationTypeMultiplicity;
@@ -170,17 +171,17 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
       String artifactTypeName = removeQuotes(artifactType.getName());
 
       org.eclipse.osee.framework.core.model.ArtifactType type =
-            getFactory().getArtifactTypeFactory().create(artifactType.getTypeGuid(), artifactType.isAbstract(),
-                  artifactTypeName);
+            getFactory().getArtifactTypeFactory().createOrUpdate(getCache().getArtifactTypeCache(),
+                  artifactType.getTypeGuid(), artifactType.isAbstract(), artifactTypeName);
       artifactType.setTypeGuid(type.getGuid());
-      getCache().getArtifactTypeCache().cache(type);
    }
 
    private void handleOseeEnumType(OseeEnumType modelEnumType) throws OseeCoreException {
       String enumTypeName = removeQuotes(modelEnumType.getName());
 
       org.eclipse.osee.framework.core.model.OseeEnumType oseeEnumType =
-            getFactory().getOseeEnumTypeFactory().createEnumType(modelEnumType.getTypeGuid(), enumTypeName);
+            getFactory().getOseeEnumTypeFactory().createOrUpdate(getCache().getEnumTypeCache(),
+                  modelEnumType.getTypeGuid(), enumTypeName);
 
       int lastOrdinal = 0;
       List<org.eclipse.osee.framework.core.model.OseeEnumEntry> modelEntries =
@@ -197,7 +198,6 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          lastOrdinal++;
       }
       oseeEnumType.setEntries(modelEntries);
-      getCache().getEnumTypeCache().cache(oseeEnumType);
    }
 
    private void handleEnumOverride(OseeEnumOverride enumOverride) throws OseeCoreException {
@@ -234,21 +234,21 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
          oseeEnumType = getCache().getEnumTypeCache().getByGuid(enumType.getTypeGuid());
       }
 
+      AttributeTypeCache cache = getCache().getAttributeTypeCache();
       org.eclipse.osee.framework.core.model.AttributeType type =
-            getFactory().getAttributeTypeFactory().create(attributeType.getTypeGuid(), //
+            getFactory().getAttributeTypeFactory().createOrUpdate(cache, attributeType.getTypeGuid(), //
                   removeQuotes(attributeType.getName()), //
                   attributeType.getBaseAttributeType(), // 
                   attributeType.getDataProvider(), // 
                   attributeType.getFileExtension(), //
                   attributeType.getDefaultValue(), //
+                  oseeEnumType, //
                   Integer.parseInt(attributeType.getMin()), //
                   max, //
                   attributeType.getDescription(), //
                   attributeType.getTaggerId()//
             );
-      type.setOseeEnumType(oseeEnumType);
       attributeType.setTypeGuid(type.getGuid());
-      getCache().getAttributeTypeCache().cache(type);
    }
 
    private void handleRelationType(RelationType relationType) throws OseeCoreException {
@@ -256,7 +256,8 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
             RelationTypeMultiplicity.getFromString(relationType.getMultiplicity().name());
 
       org.eclipse.osee.framework.core.model.RelationType type =
-            getFactory().getRelationTypeFactory().create(
+            getFactory().getRelationTypeFactory().createOrUpdate(
+                  getCache().getRelationTypeCache(),
                   relationType.getTypeGuid(),
                   removeQuotes(relationType.getName()), //
                   relationType.getSideAName(), //
@@ -271,7 +272,6 @@ public class XTextToOseeTypeOperation extends AbstractOperation {
 
       relationType.setTypeGuid(//
       type.getGuid());
-      getCache().getRelationTypeCache().cache(type);
    }
 
    private String convertOrderTypeNameToGuid(String orderTypeName) throws OseeArgumentException {

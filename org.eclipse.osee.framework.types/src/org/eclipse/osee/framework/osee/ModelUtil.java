@@ -26,8 +26,8 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.resource.ResourceSet;
 import org.eclipse.emf.ecore.resource.Resource.Diagnostic;
-import org.eclipse.emf.ecore.resource.impl.ResourceImpl;
 import org.eclipse.emf.ecore.resource.impl.ResourceSetImpl;
+import org.eclipse.emf.ecore.xmi.impl.XMLResourceImpl;
 import org.eclipse.osee.framework.OseeTypesStandaloneSetup;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
@@ -153,7 +153,7 @@ public final class ModelUtil {
    }
 
    private static void storeModel(OutputStream outputStream, EObject object, String uri, Map<String, Boolean> options) throws OseeCoreException {
-      Resource resource = new ResourceImpl();
+      Resource resource = new XMLResourceImpl();
       try {
          resource.setURI(URI.createURI(uri));
          resource.getContents().add(object);

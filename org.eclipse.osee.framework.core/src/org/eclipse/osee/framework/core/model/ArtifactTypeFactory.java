@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
+import org.eclipse.osee.framework.core.cache.ArtifactTypeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -28,6 +29,19 @@ public class ArtifactTypeFactory implements IOseeTypeFactory {
       Conditions.checkNotNullOrEmpty(name, "artifact type name");
       String checkedGuid = Conditions.checkGuidCreateIfNeeded(guid);
       return new ArtifactType(checkedGuid, name, isAbstract);
+   }
+
+   public ArtifactType createOrUpdate(ArtifactTypeCache cache, String guid, boolean isAbstract, String name) throws OseeCoreException {
+      ArtifactType artifactType = cache.getByGuid(guid);
+      if (artifactType == null) {
+         artifactType = create(guid, isAbstract, name);
+      } else {
+         cache.decache(artifactType);
+         artifactType.setName(name);
+         artifactType.setAbstract(isAbstract);
+      }
+      cache.cache(artifactType);
+      return artifactType;
    }
 
    public ArtifactType createOrUpdate(IOseeCache<ArtifactType> cache, int uniqueId, ModificationType modificationType, String guid, boolean isAbstract, String name) throws OseeCoreException {

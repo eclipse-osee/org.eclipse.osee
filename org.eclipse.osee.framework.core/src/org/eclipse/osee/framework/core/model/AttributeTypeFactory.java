@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.model;
 
-import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
+import org.eclipse.osee.framework.core.cache.AttributeTypeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
 import org.eclipse.osee.framework.core.enums.ModificationType;
@@ -42,20 +42,17 @@ public class AttributeTypeFactory implements IOseeTypeFactory {
             defaultValue, minOccurrences, maxOccurrences, tipText, taggerId);
    }
 
-   public AttributeType createOrUpdate(AbstractOseeCache<AttributeType> cache, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
+   public AttributeType createOrUpdate(AttributeTypeCache cache, String guid, String typeName, String baseAttributeTypeId, String attributeProviderNameId, String fileTypeExtension, String defaultValue, OseeEnumType oseeEnumType, int minOccurrences, int maxOccurrences, String description, String taggerId) throws OseeCoreException {
       AttributeType attributeType = cache.getByGuid(guid);
-
-      String resolvedBaseAttributeType = null;
-      String resolvedProviderType = null;
 
       if (attributeType == null) {
          attributeType =
-               create(guid, typeName, resolvedBaseAttributeType, resolvedProviderType, fileTypeExtension, defaultValue,
+               create(guid, typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension, defaultValue,
                      minOccurrences, maxOccurrences, description, taggerId);
          attributeType.setOseeEnumType(oseeEnumType);
       } else {
          cache.decache(attributeType);
-         attributeType.setFields(typeName, resolvedBaseAttributeType, resolvedProviderType, fileTypeExtension,
+         attributeType.setFields(typeName, baseAttributeTypeId, attributeProviderNameId, fileTypeExtension,
                defaultValue, oseeEnumType, minOccurrences, maxOccurrences, description, taggerId);
       }
       cache.cache(attributeType);

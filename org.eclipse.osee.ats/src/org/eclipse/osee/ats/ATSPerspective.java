@@ -52,8 +52,8 @@ public class ATSPerspective implements IPerspectiveFactory {
       final String editorArea = layout.getEditorArea();
 
       final IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, 0.3f, editorArea);
-      final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, .6f, editorArea);
       final IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.75f, editorArea);
+      final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, .6f, editorArea);
 
       left.addView(NavigateView.VIEW_ID);
 
@@ -65,11 +65,11 @@ public class ATSPerspective implements IPerspectiveFactory {
       bottom.addView(BranchView.VIEW_ID);
       bottom.addView(GroupExplorer.VIEW_ID);
 
-      final IFolderLayout bottomRight =
-            layout.createFolder("bottomRight", IPageLayout.BOTTOM, 0.6f, ArtifactExplorer.VIEW_ID);
+      //      final IFolderLayout bottomRight =
+      //            layout.createFolder("bottomRight", IPageLayout.BOTTOM, 0.6f, ArtifactExplorer.VIEW_ID);
       final IFolderLayout bottomLeft =
             layout.createFolder("bottomLeft", IPageLayout.BOTTOM, 0.6f, NavigateView.VIEW_ID);
       bottomLeft.addView(QuickSearchView.VIEW_ID);
-      bottomRight.addView(ActionHyperView.VIEW_ID);
+      //      bottomRight.addView(ActionHyperView.VIEW_ID);
    }
 }

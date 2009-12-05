@@ -13,6 +13,7 @@ package org.eclipse.osee.framework.core.model;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.IOseeTypeFactory;
+import org.eclipse.osee.framework.core.cache.OseeEnumTypeCache;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.util.Conditions;
@@ -44,6 +45,18 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
          oseeEnumType = createEnumType(guid, enumTypeName);
          oseeEnumType.setId(enumTypeId);
          oseeEnumType.setModificationType(modificationType);
+      } else {
+         cache.decache(oseeEnumType);
+         oseeEnumType.setName(enumTypeName);
+      }
+      cache.cache(oseeEnumType);
+      return oseeEnumType;
+   }
+
+   public OseeEnumType createOrUpdate(OseeEnumTypeCache cache, String guid, String enumTypeName) throws OseeCoreException {
+      OseeEnumType oseeEnumType = cache.getByGuid(guid);
+      if (oseeEnumType == null) {
+         oseeEnumType = createEnumType(guid, enumTypeName);
       } else {
          cache.decache(oseeEnumType);
          oseeEnumType.setName(enumTypeName);
