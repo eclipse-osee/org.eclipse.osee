@@ -712,11 +712,11 @@ public final class Lib {
    }
 
    public static String getCharacter(char c, int length) {
-      String out = "";
+      StringBuilder out = new StringBuilder();
       for (int i = 0; i < length; i++) {
-         out += c;
+         out.append(c);
       }
-      return out;
+      return out.toString();
    }
 
    public static String padLeading(String str, char c, int n) {
