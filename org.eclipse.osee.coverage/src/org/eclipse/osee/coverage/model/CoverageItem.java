@@ -47,7 +47,9 @@ public class CoverageItem implements ICoverage {
       this.coverageUnit = coverageUnit;
       this.coverageMethod = coverageMethod;
       this.orderNumber = orderNumber;
-      ((ICoverageItemProvider) coverageUnit).addCoverageItem(this);
+      if (coverageUnit != null) {
+         ((ICoverageItemProvider) coverageUnit).addCoverageItem(this);
+      }
    }
 
    public CoverageItem(CoverageUnit parentCoverageUnit, String xml) throws OseeCoreException {
@@ -90,13 +92,6 @@ public class CoverageItem implements ICoverage {
          for (String testName : testUnitNames.split(";"))
             addTestUnitName(testName);
       }
-
-      // Backward compatible from old storage of order
-      String executeNum = store.get("executeNum");
-      if (Strings.isValid(executeNum)) setOrderNumber(executeNum);
-      String text = store.get("text");
-      if (Strings.isValid(text)) setName(text);
-
    }
 
    public Set<String> getTestUnits() {
