@@ -21,6 +21,7 @@ import java.sql.SQLException;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.logging.Level;
+
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
@@ -152,7 +153,7 @@ public final class OseeStatementImpl implements IOseeStatement {
             connection.close();
             connection = null;// this allows for multiple calls to runPreparedQuery to have an open connection
          }
-      } catch (SQLException ex) {
+      } catch (OseeDataStoreException ex) {
          OseeLog.log(InternalActivator.class, Level.SEVERE, ex);
       }
    }
@@ -163,22 +164,27 @@ public final class OseeStatementImpl implements IOseeStatement {
     * @throws SQLException
     * @throws OseeDataStoreException
     */
-   private void allowReuse() throws SQLException, OseeDataStoreException {
+   private void allowReuse() throws OseeDataStoreException {
       if (connection == null) {
          connection = connectionPool.getConnection();
       }
       closePreviousResources();
    }
 
-   private void closePreviousResources() throws SQLException {
-      if (rSet != null) {
-         rSet.close();
+   private void closePreviousResources() throws OseeDataStoreException {
+      try{
+         if (rSet != null) {
+               rSet.close();
+         }
+         if (preparedStatement != null) {
+            preparedStatement.close();
+         }
+         if (callableStatement != null) {
+            callableStatement.close();
+         }
       }
-      if (preparedStatement != null) {
-         preparedStatement.close();
-      }
-      if (callableStatement != null) {
-         callableStatement.close();
+      catch (SQLException ex) {
+         throw new OseeDataStoreException(ex);
       }
    }
 
@@ -422,6 +428,7 @@ public final class OseeStatementImpl implements IOseeStatement {
 
    @Override
    public String getComplementSql() throws OseeDataStoreException {
+      allowReuse();
       return SupportedDatabase.getComplementSql(connection.getMetaData());
    }
 
