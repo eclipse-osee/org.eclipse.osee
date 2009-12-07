@@ -222,6 +222,9 @@ public class DatabaseArtifactTypeAccessor extends AbstractDatabaseAccessor<Artif
       storeAttributeTypeValidity(types);
 
       for (ArtifactType type : types) {
+         if (type.getModificationType() == ModificationType.NEW) {
+            type.setModificationType(ModificationType.MODIFIED);
+         }
          type.clearDirty();
       }
    }

@@ -129,6 +129,9 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
 
       storeOseeEnumEntries(dirtyEntries);
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
+         if (oseeEnumType.getModificationType() == ModificationType.NEW) {
+            oseeEnumType.setModificationType(ModificationType.MODIFIED);
+         }
          oseeEnumType.clearDirty();
       }
 
@@ -138,6 +141,9 @@ public class DatabaseOseeEnumTypeAccessor extends AbstractDatabaseAccessor<OseeE
 
       for (OseeEnumType oseeEnumType : oseeEnumTypes) {
          for (OseeEnumEntry entry : oseeEnumType.values()) {
+            if (entry.getModificationType() == ModificationType.NEW) {
+               entry.setModificationType(ModificationType.MODIFIED);
+            }
             entry.clearDirty();
          }
       }

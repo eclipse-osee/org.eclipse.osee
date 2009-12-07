@@ -53,6 +53,26 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       this.branches = branches;
    }
 
+   private Object[] toInsertValues(Branch type) throws OseeCoreException {
+      Branch parentBranch = type.getParentBranch();
+      int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
+      return new Object[] {type.getId(), type.getGuid(), type.getName(), parentBranchId,
+            type.getSourceTransaction().getId(), type.getArchiveState().getValue(),
+            type.getAssociatedArtifact().getArtId(), type.getBranchType().getValue(), type.getBranchState().getValue()};
+   }
+
+   private Object[] toUpdateValues(Branch type) throws OseeCoreException {
+      Branch parentBranch = type.getParentBranch();
+      int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
+      return new Object[] {type.getName(), parentBranchId, type.getSourceTransaction().getId(),
+            type.getArchiveState().getValue(), type.getAssociatedArtifact().getArtId(),
+            type.getBranchType().getValue(), type.getBranchState().getValue(), type.getId()};
+   }
+
+   private Object[] toDeleteValues(Branch branch) throws OseeDataStoreException {
+      return new Object[] {branch.getId()};
+   }
+
    @Override
    protected void doTxWork(IProgressMonitor monitor, OseeConnection connection) throws OseeCoreException {
       Collection<Branch> dirtyAliases = new HashSet<Branch>();
@@ -92,22 +112,13 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH, deleteData);
 
       storeAliases(connection, dirtyAliases);
-      sendChangeEvents(branches);
-
       for (Branch branch : branches) {
          if (branch.getModificationType() == ModificationType.NEW) {
             branch.setModificationType(ModificationType.MODIFIED);
          }
          branch.clearDirty();
       }
-   }
-
-   private Object[] toInsertValues(Branch type) throws OseeCoreException {
-      Branch parentBranch = type.getParentBranch();
-      int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
-      return new Object[] {type.getId(), type.getGuid(), type.getName(), parentBranchId,
-            type.getSourceTransaction().getId(), type.getArchiveState().getValue(),
-            type.getAssociatedArtifact().getArtId(), type.getBranchType().getValue(), type.getBranchState().getValue()};
+      sendChangeEvents(branches);
    }
 
    public void moveBranchAddressing(OseeConnection connection, Branch branch, boolean archive) throws OseeDataStoreException {
@@ -139,15 +150,15 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
          if (!branch.getModificationType().isDeleted()) {
             for (String alias : branch.getAliases()) {
                if (Strings.isValid(alias)) {
-               insertData.add(new Object[] {branch.getId(), alias});
+                  insertData.add(new Object[] {branch.getId(), alias});
+               }
             }
          }
       }
-      }
       getDatabaseService().runBatchUpdate(connection, DELETE_BRANCH_ALIASES, deleteData);
       if (!insertData.isEmpty()) {
-      getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH_ALIASES, insertData);
-   }
+         getDatabaseService().runBatchUpdate(connection, INSERT_BRANCH_ALIASES, insertData);
+      }
    }
 
    private void sendChangeEvents(Collection<Branch> branches) {
@@ -170,17 +181,4 @@ public class BranchStoreOperation extends AbstractDbTxOperation {
       //         }
       //      }
    }
-
-   private Object[] toUpdateValues(Branch type) throws OseeCoreException {
-      Branch parentBranch = type.getParentBranch();
-      int parentBranchId = parentBranch != null ? parentBranch.getId() : NULL_PARENT_BRANCH_ID;
-      return new Object[] {type.getName(), parentBranchId, type.getBaseTransaction().getId(),
-            type.getArchiveState().getValue(), type.getAssociatedArtifact().getArtId(),
-            type.getBranchType().getValue(), type.getBranchState().getValue(), type.getId()};
-   }
-
-   private Object[] toDeleteValues(Branch branch) throws OseeDataStoreException {
-      return new Object[] {branch.getId()};
-   }
-
 }

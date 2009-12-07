@@ -80,8 +80,8 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
       for (Branch branch : cache.getAll()) {
          branch.clearDirty();
       }
-      OseeLog.log(Activator.class, Level.INFO, String.format("Branch Cache loaded [%s]",
-            Lib.getElapseString(startTime)));
+      OseeLog.log(Activator.class, Level.INFO,
+            String.format("Branch Cache loaded [%s]", Lib.getElapseString(startTime)));
    }
 
    private void loadBranches(BranchCache cache, Map<Branch, Integer> childToParent, Map<Branch, Integer> branchToBaseTx, Map<Branch, Integer> branchToSourceTx, Map<Branch, Integer> associatedArtifact) throws OseeCoreException {
@@ -106,8 +106,8 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
                if (parentBranchId != BranchStoreOperation.NULL_PARENT_BRANCH_ID) {
                   childToParent.put(branch, parentBranchId);
                }
-               branchToBaseTx.put(branch, chStmt.getInt("transaction_id"));
                branchToSourceTx.put(branch, chStmt.getInt("parent_transaction_id"));
+               branchToBaseTx.put(branch, chStmt.getInt("transaction_id"));
                associatedArtifact.put(branch, chStmt.getInt("associated_art_id"));
             } catch (OseeCoreException ex) {
                OseeLog.log(Activator.class, Level.SEVERE, ex);

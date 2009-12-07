@@ -116,6 +116,9 @@ public class DatabaseRelationTypeAccessor extends AbstractDatabaseAccessor<Relat
          connection.close();
       }
       for (RelationType type : relationTypes) {
+         if (type.getModificationType() == ModificationType.NEW) {
+            type.setModificationType(ModificationType.MODIFIED);
+         }
          type.clearDirty();
       }
    }
