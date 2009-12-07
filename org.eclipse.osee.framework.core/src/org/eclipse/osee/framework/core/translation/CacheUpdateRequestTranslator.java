@@ -35,7 +35,9 @@ public class CacheUpdateRequestTranslator implements ITranslator<CacheUpdateRequ
       List<Integer> itemIds = new ArrayList<Integer>();
       if (itemId != null && itemId.length > 0) {
          for (String item : itemId) {
-            itemIds.add(Integer.valueOf(item));
+            if (item != null) {
+               itemIds.add(Integer.valueOf(item));
+            }
          }
       }
       return new CacheUpdateRequest(cacheId, itemIds);
@@ -51,7 +53,7 @@ public class CacheUpdateRequestTranslator implements ITranslator<CacheUpdateRequ
          String[] itemStr = new String[itemIds.size()];
          int index = 0;
          for (Integer item : itemIds) {
-            itemStr[index] = (String.valueOf(item));
+            itemStr[index++] = (String.valueOf(item));
          }
          store.put(Entry.ITEM_IDS.name(), itemStr);
       }
