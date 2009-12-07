@@ -63,7 +63,7 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerTransaction(TransactionRecord transactionId, IProgressMonitor monitor) throws OseeCoreException {
-      return new ChangeReportDataLoader().getChanges(null, transactionId, monitor);
+      return new ChangeDataLoader().getChanges(null, transactionId, monitor);
    }
 
    /**
@@ -75,7 +75,7 @@ public class ChangeManager {
     * @throws OseeCoreException
     */
    public static Collection<Change> getChangesPerBranch(Branch sourceBranch, IProgressMonitor monitor) throws OseeCoreException {
-      return new ChangeReportDataLoader().getChanges(sourceBranch, null, monitor);
+      return new ChangeDataLoader().getChanges(sourceBranch, null, monitor);
    }
 
    /**

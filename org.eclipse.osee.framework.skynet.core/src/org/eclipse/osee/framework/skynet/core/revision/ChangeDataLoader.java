@@ -51,7 +51,7 @@ import org.eclipse.osee.framework.skynet.core.transaction.TransactionManager;
 /**
  * @author Jeff C. Phillips
  */
-public class ChangeReportDataLoader {
+public class ChangeDataLoader {
 
    public Collection<Change> getChanges(Branch sourceBranch, TransactionRecord transactionId, IProgressMonitor monitor) throws OseeCoreException {
       boolean isHistorical = sourceBranch == null;
@@ -79,7 +79,6 @@ public class ChangeReportDataLoader {
                artifact = ArtifactCache.getHistorical(item.getArtId(), transactionId.getId());
             } else {
                artifact = ArtifactQuery.getArtifactFromId(item.getArtId(), branch, true);
-
                ChangeVersion netChange = item.getNetChange();
                if (ChangeItemUtil.isNew(netChange) || ChangeItemUtil.isIntroduced(netChange)) {
                   fromTransactionId = toTransactionId;
