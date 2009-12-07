@@ -20,6 +20,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -154,7 +155,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
       }
    }
 
-   private Collection<BranchData> getAllBranchData() throws OseeDataStoreException {
+   private Collection<BranchData> getAllBranchData() throws OseeDataStoreException, OseeArgumentException {
       Map<Integer, BranchData> data = new HashMap<Integer, BranchData>();
       IOseeStatement chStmt = ConnectionHandler.getStatement();
       try {
@@ -168,7 +169,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
                   ConnectionHandler.runPreparedQueryFetchInt(0,
                         "select count(1) from osee_tx_details where branch_id = ?", branchId);
             data.put(branchId, new BranchData(branchId, chStmt.getString("branch_name"),
-                  BranchType.getBranchType(branchType), BranchState.getBranchState(branchState), isArchived,
+                  BranchType.valueOf(branchType), BranchState.getBranchState(branchState), isArchived,
                   numberOfTxs));
          }
       } finally {
@@ -263,7 +264,7 @@ public class BranchStateHealthCheck extends DatabaseHealthOperation {
          return hasCommitTransactionId;
       }
    }
-   
+
    @Override
    public String getCheckDescription() {
       return "Enter Check Description Here";

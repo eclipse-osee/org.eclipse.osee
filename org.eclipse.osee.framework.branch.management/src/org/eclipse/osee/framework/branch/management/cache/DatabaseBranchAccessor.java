@@ -95,7 +95,7 @@ public class DatabaseBranchAccessor extends AbstractDatabaseAccessor<Branch> {
 
                String branchName = chStmt.getString("branch_name");
                BranchState branchState = BranchState.getBranchState(chStmt.getInt("branch_state"));
-               BranchType branchType = BranchType.getBranchType(chStmt.getInt("branch_type"));
+               BranchType branchType = BranchType.valueOf(chStmt.getInt("branch_type"));
                boolean isArchived = BranchArchivedState.valueOf(chStmt.getInt("archived")).isArchived();
                String branchGuid = chStmt.getString("branch_guid");
                Branch branch =

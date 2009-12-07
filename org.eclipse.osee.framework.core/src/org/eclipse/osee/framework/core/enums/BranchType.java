@@ -10,11 +10,16 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.enums;
 
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+
 /**
  * @author Ryan D. Brooks
  */
 public enum BranchType {
-   WORKING(0), BASELINE(2), MERGE(3), SYSTEM_ROOT(4);
+   WORKING(0),
+   BASELINE(2),
+   MERGE(3),
+   SYSTEM_ROOT(4);
    private final int value;
 
    BranchType(int value) {
@@ -50,12 +55,12 @@ public enum BranchType {
       return false;
    }
 
-   public static BranchType getBranchType(int value) {
+   public static BranchType valueOf(int value) throws OseeArgumentException {
       for (BranchType type : values()) {
          if (type.getValue() == value) {
             return type;
          }
       }
-      return null;
+      throw new OseeArgumentException("No branch type with value " + value);
    }
 }
