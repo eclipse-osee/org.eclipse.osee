@@ -21,7 +21,6 @@ import java.util.Set;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.client.ClientSessionManager;
-import org.eclipse.osee.framework.core.enums.BranchState;
 import org.eclipse.osee.framework.core.enums.ConflictStatus;
 import org.eclipse.osee.framework.core.enums.ModificationType;
 import org.eclipse.osee.framework.core.exception.BranchMergeException;
@@ -152,11 +151,11 @@ public class ConflictManagerInternal {
                destinationBranch == null ? "NULL" : destinationBranch.getId()));
       }
 
-      BranchState sourceBranchState = sourceBranch.getBranchState();
-      if (!sourceBranchState.isCreationInProgress() && !sourceBranchState.isCommitted() && !sourceBranchState.isRebaselined() && !sourceBranchState.isRebaselineInProgress()) {
-         sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
-         BranchManager.persist(sourceBranch);
-      }
+      //      BranchState sourceBranchState = sourceBranch.getBranchState();
+      //      if (!sourceBranchState.isCreationInProgress() && !sourceBranchState.isCommitted() && !sourceBranchState.isRebaselined() && !sourceBranchState.isRebaselineInProgress()) {
+      //         sourceBranch.setBranchState(BranchState.COMMIT_IN_PROGRESS);
+      //         BranchManager.persist(sourceBranch);
+      //      }
 
       int transactionId = findCommonTransaction(sourceBranch, destinationBranch);
       loadArtifactVersionConflictsNew(sourceBranch, destinationBranch, baselineTransaction, conflictBuilders, artIdSet,

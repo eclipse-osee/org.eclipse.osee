@@ -55,6 +55,7 @@ public class HttpCommitDataRequester {
             TransactionManager.cacheCommittedArtifactTransaction((IArtifact) sourceBranch.getAssociatedArtifact(),
                   newTransaction);
          }
+         BranchManager.getCache().reloadCache();
          // reload the committed artifacts since the commit changed them on the destination branch
          Object[] queryData =
                new Object[] {newTransaction.getBranchId(), newTransaction.getId(), newTransaction.getBranchId(),
