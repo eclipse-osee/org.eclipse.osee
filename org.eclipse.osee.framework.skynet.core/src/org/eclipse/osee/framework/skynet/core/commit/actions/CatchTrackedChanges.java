@@ -61,7 +61,7 @@ public class CatchTrackedChanges implements CommitAction {
          }
       }
 
-      int severityMask = IStatus.ERROR; // Only catch Errors not Warnings | IStatus.WARNING;
+      int severityMask = IStatus.ERROR;
       OseeValidator validator = OseeValidator.getInstance();
       for (Artifact artifactChanged : changedArtifacts) {
          if (!artifactChanged.isDeleted()) {
