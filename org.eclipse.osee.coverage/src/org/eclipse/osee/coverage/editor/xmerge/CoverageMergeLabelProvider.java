@@ -14,7 +14,8 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.xcover.CoverageLabelProvider;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewerFactory;
-import org.eclipse.osee.coverage.merge.MergeItem;
+import org.eclipse.osee.coverage.merge.IMergeItem;
+import org.eclipse.osee.coverage.merge.MergeItemGroup;
 import org.eclipse.osee.coverage.merge.MessageMergeItem;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
@@ -43,11 +44,11 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
          return getCoverageItemUserImage(coverageItem);
       }
       if (xCol.equals(CoverageMergeXViewerFactory.Name)) return ImageManager.getImage(coverageItem.getOseeImage());
-      if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof MergeItem) {
-         if (!((MergeItem) element).isImportAllowed()) {
+      if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof IMergeItem) {
+         if (!((IMergeItem) element).isImportAllowed() || !((IMergeItem) element).isCheckable()) {
             return null;
          }
-         if (((MergeItem) element).isChecked()) {
+         if (((IMergeItem) element).isChecked()) {
             return ImageManager.getImage(FrameworkImage.CHECKBOX_ENABLED);
          }
          return ImageManager.getImage(FrameworkImage.CHECKBOX_DISABLED);
@@ -75,11 +76,17 @@ public class CoverageMergeLabelProvider extends CoverageLabelProvider {
          return "";
       }
 
-      if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof MergeItem) {
-         if (!((MergeItem) element).isImportAllowed()) {
+      if (xCol.equals(CoverageMergeXViewerFactoryImport.Import) && element instanceof IMergeItem) {
+         if (!((IMergeItem) element).isImportAllowed()) {
             return "";
          }
-         return ((MergeItem) element).getMergeType().toString();
+         return ((IMergeItem) element).getMergeType().toString();
+      }
+      if (coverage instanceof MergeItemGroup) {
+         if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) {
+            ICoverage cov = ((MergeItemGroup) coverage).getParent();
+            return super.getColumnText(cov, xCol, columnIndex);
+         }
       }
 
       return super.getColumnText(element, xCol, columnIndex);

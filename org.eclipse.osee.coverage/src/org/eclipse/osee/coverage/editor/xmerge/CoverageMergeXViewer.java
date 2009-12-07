@@ -13,9 +13,13 @@ import org.eclipse.nebula.widgets.xviewer.IXViewerFactory;
 import org.eclipse.nebula.widgets.xviewer.XViewerColumn;
 import org.eclipse.osee.coverage.editor.xcover.CoverageXViewer;
 import org.eclipse.osee.coverage.editor.xcover.XCoverageViewer.TableType;
-import org.eclipse.osee.coverage.merge.MergeItem;
+import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -43,11 +47,15 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    public boolean handleLeftClickInIconArea(TreeColumn treeColumn, TreeItem treeItem) {
       XViewerColumn xCol = (XViewerColumn) treeColumn.getData();
       if (xCol.equals(CoverageMergeXViewerFactoryImport.Import)) {
-         if (treeItem.getData() instanceof MergeItem) {
-            ((MergeItem) treeItem.getData()).setChecked(!((MergeItem) treeItem.getData()).isChecked());
-            xCoverageViewer.getXViewer().update(treeItem.getData());
+         try {
+            if (treeItem.getData() instanceof IMergeItem && ((IMergeItem) treeItem.getData()).isCheckable()) {
+               ((IMergeItem) treeItem.getData()).setChecked(!((IMergeItem) treeItem.getData()).isChecked());
+               xCoverageViewer.getXViewer().update(treeItem.getData());
+            }
+            return true;
+         } catch (OseeCoreException ex) {
+            OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
          }
-         return true;
       }
       return super.handleLeftClickInIconArea(treeColumn, treeItem);
    }
@@ -71,7 +79,7 @@ public class CoverageMergeXViewer extends CoverageXViewer {
    private boolean isToggleImportEnabled() {
       if (xCoverageViewer.getSelectedCoverageItems().size() == 0) return false;
       for (ICoverage item : xCoverageViewer.getSelectedCoverageItems()) {
-         if (item.isEditable().isFalse() || !(item instanceof MergeItem) || !((MergeItem) item).isImportAllowed()) {
+         if (item.isEditable().isFalse() || !(item instanceof IMergeItem) || !((IMergeItem) item).isImportAllowed()) {
             return false;
          }
       }
@@ -85,11 +93,15 @@ public class CoverageMergeXViewer extends CoverageXViewer {
       toggleImport = new Action("Toggle Import", Action.AS_PUSH_BUTTON) {
          @Override
          public void run() {
-            for (ICoverage coverageItem : xCoverageViewer.getSelectedCoverageItems()) {
-               if (coverageItem instanceof MergeItem) {
-                  ((MergeItem) coverageItem).setChecked(!((MergeItem) coverageItem).isChecked());
-                  xCoverageViewer.getXViewer().update(coverageItem);
+            try {
+               for (ICoverage coverageItem : xCoverageViewer.getSelectedCoverageItems()) {
+                  if (coverageItem instanceof IMergeItem && ((IMergeItem) coverageItem).isCheckable()) {
+                     ((IMergeItem) coverageItem).setChecked(!((IMergeItem) coverageItem).isChecked());
+                     xCoverageViewer.getXViewer().update(coverageItem);
+                  }
                }
+            } catch (OseeCoreException ex) {
+               OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
             }
          }
       };

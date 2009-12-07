@@ -14,6 +14,7 @@ import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.editor.CoverageEditorInput;
 import org.eclipse.osee.coverage.model.CoveragePackage;
 import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.coverage.util.dialog.CoveragePackageArtifactListDialog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.AWorkbench;
@@ -35,6 +36,7 @@ public class CpSelectAndImportItem extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws Exception {
+      CoverageUtil.getBranchFromUser(false);
       CoveragePackageArtifactListDialog dialog =
             new CoveragePackageArtifactListDialog("Open Coverage Package", "Select Coverage Package");
       dialog.setInput(OseeCoveragePackageStore.getCoveragePackageArtifacts());

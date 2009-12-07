@@ -14,22 +14,15 @@ import org.eclipse.osee.framework.ui.skynet.OseeImage;
 /**
  * @author Donald G. Dunne
  */
-public class MergeItem implements IMergeItem {
+public class MergeItem extends MergeItemBase {
 
-   private final MergeType mergeType;
    private final ICoverage packageItem;
    private final ICoverage importItem;
-   private boolean checked = false;
-   private boolean importAllowed = true;
 
-   public MergeItem(MergeType mergeType, ICoverage packageItem, ICoverage importItem) {
-      this.mergeType = mergeType;
+   public MergeItem(MergeType mergeType, ICoverage packageItem, ICoverage importItem, boolean isCheckable) {
+      super(mergeType, isCheckable);
       this.packageItem = packageItem;
       this.importItem = importItem;
-   }
-
-   public MergeType getMergeType() {
-      return mergeType;
    }
 
    public ICoverage getPackageItem() {
@@ -125,25 +118,9 @@ public class MergeItem implements IMergeItem {
       return importItem.isFolder();
    }
 
-   public boolean isChecked() {
-      return checked;
-   }
-
-   public void setChecked(boolean checked) {
-      this.checked = checked;
-   }
-
-   public boolean isImportAllowed() {
-      return importAllowed;
-   }
-
-   public void setImportAllowed(boolean importAllowed) {
-      this.importAllowed = importAllowed;
-   }
-
    @Override
    public String toString() {
-      return mergeType.toString() + " - " + importItem.toString();
+      return getMergeType().toString() + " - " + importItem.toString();
    }
 
    @Override

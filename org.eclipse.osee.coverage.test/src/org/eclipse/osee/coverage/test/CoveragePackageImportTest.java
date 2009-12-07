@@ -394,12 +394,12 @@ public class CoveragePackageImportTest {
       Assert.assertEquals(0, resultData.getNumErrors());
 
       // CoveragePackage should now have imported results
-      Assert.assertEquals(67, coveragePackage.getCoverageItemsCovered().size());
-      Assert.assertEquals(133, coveragePackage.getCoverageItems().size());
+      Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered().size());
+      Assert.assertEquals(134, coveragePackage.getCoverageItems().size());
       Assert.assertEquals(50, coveragePackage.getCoveragePercent());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageMethodEnum.Deactivated_Code).size());
       Assert.assertEquals(0, coveragePackage.getCoverageItemsCovered(CoverageMethodEnum.Exception_Handling).size());
-      Assert.assertEquals(67, coveragePackage.getCoverageItemsCovered(CoverageMethodEnum.Test_Unit).size());
+      Assert.assertEquals(68, coveragePackage.getCoverageItemsCovered(CoverageMethodEnum.Test_Unit).size());
       Assert.assertEquals(66, coveragePackage.getCoverageItemsCovered(CoverageMethodEnum.Not_Covered).size());
 
       CoveragePackage loadedCp = null;
@@ -422,12 +422,12 @@ public class CoveragePackageImportTest {
          loadedCp = coveragePackage;
       }
 
-      Assert.assertEquals(67, loadedCp.getCoverageItemsCovered().size());
-      Assert.assertEquals(133, loadedCp.getCoverageItems().size());
+      Assert.assertEquals(68, loadedCp.getCoverageItemsCovered().size());
+      Assert.assertEquals(134, loadedCp.getCoverageItems().size());
       Assert.assertEquals(50, loadedCp.getCoveragePercent());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageMethodEnum.Deactivated_Code).size());
       Assert.assertEquals(0, loadedCp.getCoverageItemsCovered(CoverageMethodEnum.Exception_Handling).size());
-      Assert.assertEquals(67, loadedCp.getCoverageItemsCovered(CoverageMethodEnum.Test_Unit).size());
+      Assert.assertEquals(68, loadedCp.getCoverageItemsCovered(CoverageMethodEnum.Test_Unit).size());
       Assert.assertEquals(66, loadedCp.getCoverageItemsCovered(CoverageMethodEnum.Not_Covered).size());
 
    }

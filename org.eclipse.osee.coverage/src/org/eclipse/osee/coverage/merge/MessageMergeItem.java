@@ -17,7 +17,7 @@ public class MessageMergeItem extends MergeItem {
    private final String message;
 
    public MessageMergeItem(String message) {
-      super(MergeType.Error__Message, null, null);
+      super(MergeType.Error__Message, null, null, false);
       this.message = message;
    }
 

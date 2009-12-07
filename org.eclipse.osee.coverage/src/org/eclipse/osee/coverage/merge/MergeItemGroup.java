@@ -17,37 +17,18 @@ import org.eclipse.osee.framework.ui.skynet.OseeImage;
 /**
  * @author Donald G. Dunne
  */
-public class MergeItemGroup implements IMergeItem {
+public class MergeItemGroup extends MergeItemBase {
 
-   private final MergeType mergeType;
-   private boolean checked = false;
-   private boolean importAllowed = true;
    private final Collection<IMergeItem> mergeItems;
 
-   public MergeItemGroup(MergeType mergeType, Collection<IMergeItem> mergeItems) {
-      this.mergeType = mergeType;
+   public MergeItemGroup(MergeType mergeType, Collection<IMergeItem> mergeItems, boolean isCheckable) {
+      super(mergeType, isCheckable);
       this.mergeItems = mergeItems;
-   }
-
-   public MergeType getMergeType() {
-      return mergeType;
-   }
-
-   public void setChecked(boolean checked) {
-      this.checked = checked;
-   }
-
-   public boolean isImportAllowed() {
-      return importAllowed;
-   }
-
-   public void setImportAllowed(boolean importAllowed) {
-      this.importAllowed = importAllowed;
    }
 
    @Override
    public String toString() {
-      return mergeType.toString() + " - " + mergeItems.toString();
+      return getMergeType().toString() + " - " + mergeItems.toString();
    }
 
    @Override
@@ -103,7 +84,7 @@ public class MergeItemGroup implements IMergeItem {
 
    @Override
    public String getName() {
-      return mergeType.toString();
+      return getMergeType().toString() + " - " + getParent().getParent().getName();
    }
 
    @Override
@@ -123,7 +104,7 @@ public class MergeItemGroup implements IMergeItem {
 
    @Override
    public ICoverage getParent() {
-      return mergeItems.iterator().next().getParent();
+      return mergeItems.iterator().next();
    }
 
    @Override
@@ -143,16 +124,12 @@ public class MergeItemGroup implements IMergeItem {
 
    @Override
    public Result isEditable() {
-      return null;
+      return mergeItems.iterator().next().isEditable();
    }
 
    @Override
    public boolean isFolder() {
       return false;
-   }
-
-   public boolean isChecked() {
-      return checked;
    }
 
    public Collection<IMergeItem> getMergeItems() {
@@ -163,5 +140,4 @@ public class MergeItemGroup implements IMergeItem {
    public String getOrderNumber() {
       return "";
    }
-
 }
