@@ -70,6 +70,7 @@ public class OseeEnumTypeFactory implements IOseeTypeFactory {
       OseeEnumEntry enumEntry = oseeEnumType.getEntryByGuid(enumEntryGuid);
       if (enumEntry == null) {
          enumEntry = createEnumEntry(enumEntryGuid, enumEntryName, ordinal);
+         oseeEnumType.addEntry(enumEntry);
       } else {
          enumEntry.setName(enumEntryName);
          enumEntry.setOrdinal(ordinal);
