@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.io.File;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeUtil;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.xml.sax.ContentHandler;
@@ -33,12 +32,12 @@ public class StandardOseeDbExportDataProvider implements IOseeDbExportDataProvid
    }
 
    @Override
-   public void saxParse(IExportItem exportItem, ContentHandler handler) throws OseeCoreException {
+   public void saxParse(IExportItem exportItem, ContentHandler handler) throws Exception {
       ExchangeUtil.readExchange(getFile(exportItem), handler);
    }
 
    @Override
-   public void saxParse(String fileName, ContentHandler handler) throws OseeCoreException {
+   public void saxParse(String fileName, ContentHandler handler) throws Exception {
       ExchangeUtil.readExchange(new File(exportDataRootPath, fileName), handler);
    }
 

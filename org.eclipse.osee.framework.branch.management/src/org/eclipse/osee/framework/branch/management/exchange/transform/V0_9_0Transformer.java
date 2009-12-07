@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.transform;
 import java.util.HashMap;
 import javax.xml.stream.XMLStreamException;
 import org.eclipse.osee.framework.branch.management.exchange.ImportController;
-import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.cache.AbstractOseeCache;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
@@ -27,34 +27,34 @@ import org.eclipse.osee.framework.jdk.core.util.io.xml.SaxTransformer;
 public class V0_9_0Transformer implements IOseeDbExportTransformer {
 
    @Override
-   public String applyTransform(ImportController importController) throws OseeCoreException {
+   public String applyTransform(ImportController importController) throws Exception {
       IOseeCachingService service = Activator.getInstance().getOseeCachingService();
       try {
-         replaceDataTypeIdsWithGuids(importController, service.getArtifactTypeCache(), ExportItemId.OSEE_ARTIFACT_DATA,
+         replaceDataTypeIdsWithGuids(importController, service.getArtifactTypeCache(), ExportItem.OSEE_ARTIFACT_DATA,
                "art_type_id", "name");
-         replaceDataTypeIdsWithGuids(importController, service.getAttributeTypeCache(),
-               ExportItemId.OSEE_ATTRIBUTE_DATA, "attr_type_id", "name");
+         replaceDataTypeIdsWithGuids(importController, service.getAttributeTypeCache(), ExportItem.OSEE_ATTRIBUTE_DATA,
+               "attr_type_id", "name");
          replaceDataTypeIdsWithGuids(importController, service.getRelationTypeCache(),
-               ExportItemId.OSEE_RELATION_LINK_DATA, "rel_link_type_id", "type_name");
+               ExportItem.OSEE_RELATION_LINK_DATA, "rel_link_type_id", "type_name");
 
          V0_9_0TxDetailsHandler txdHandler = new V0_9_0TxDetailsHandler();
-         importController.parseExportItem(ExportItemId.OSEE_TX_DETAILS_DATA, txdHandler);
+         importController.parseExportItem(ExportItem.OSEE_TX_DETAILS_DATA, txdHandler);
 
          SaxTransformer txsTransformer = new V0_9_0TxsTransformer(txdHandler.getBranchIdMap());
-         importController.transformExportItem(ExportItemId.OSEE_TXS_DATA, txsTransformer);
+         importController.transformExportItem(ExportItem.OSEE_TXS_DATA, txsTransformer);
 
          txsTransformer.finish();
       } catch (XMLStreamException ex) {
          throw new OseeWrappedException(ex);
       }
 
-      importController.transformExportItem(ExportItemId.EXPORT_MANIFEST, new V0_9_0_ManifestRule());
+      importController.transformExportItem(ExportItem.EXPORT_MANIFEST, new V0_9_0_ManifestRule());
 
       return "0.9.0";
    }
 
-   private void replaceDataTypeIdsWithGuids(ImportController importController, AbstractOseeCache<?> cache, ExportItemId exportItem, String typeIdColumn, String typeNameColumn) throws OseeCoreException, XMLStreamException {
-      V0_9_0TypeHandler typeHandler = new V0_9_0TypeHandler(cache, typeNameColumn, typeIdColumn);
+   private void replaceDataTypeIdsWithGuids(ImportController importController, AbstractOseeCache<?> cache, ExportItem exportItem, String typeIdColumn, String typeNameColumn) throws Exception {
+      V0_9_0TypeHandler typeHandler = new V0_9_0TypeHandler(cache, typeIdColumn, typeNameColumn);
       importController.parseExportItem(exportItem + ".type.xml", typeHandler);
       HashMap<Integer, String> typeIdMap = typeHandler.getTypeIdMap();
       SaxTransformer typeTransformer = new V0_9_0TypeTransformer(typeIdMap, typeIdColumn);

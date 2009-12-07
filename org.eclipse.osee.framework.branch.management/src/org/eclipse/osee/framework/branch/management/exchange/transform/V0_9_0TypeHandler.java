@@ -39,7 +39,11 @@ public class V0_9_0TypeHandler extends AbstractSaxHandler {
    @Override
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException, OseeCoreException {
       if (localName.equals("entry")) {
-         String guid = cache.getBySoleName(attributes.getValue(typeNameColumn)).getGuid();
+         String typeName = attributes.getValue(typeNameColumn);
+         if (typeName.equals("ats.Parent Branch Id")) {
+            typeName = "ats.Baseline Branch Guid";
+         }
+         String guid = cache.getBySoleName(typeName).getGuid();
          typeIdMap.put(Integer.parseInt(attributes.getValue(typeIdColumn)), guid);
       }
    }

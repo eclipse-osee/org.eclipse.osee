@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -25,17 +26,17 @@ import org.xml.sax.SAXException;
  */
 public class ManifestSaxHandler extends BaseExportImportSaxHandler {
 
-   private final List<ImportFile> filesToImport;
+   private final List<IExportItem> filesToImport;
    private String metadataFile;
-   private ImportFile branchFile;
-   private ImportFile branchDefinitionsFile;
+   private IExportItem branchFile;
+   private IExportItem branchDefinitionsFile;
    private String sourceDatabaseId;
    private Date sourceExportDate;
    private String exportVersion;
 
    public ManifestSaxHandler() {
       super();
-      this.filesToImport = new ArrayList<ImportFile>();
+      this.filesToImport = new ArrayList<IExportItem>();
       this.metadataFile = null;
       this.branchFile = null;
       this.branchDefinitionsFile = null;
@@ -75,11 +76,11 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       }
    }
 
-   public ImportFile getBranchFile() {
+   public IExportItem getBranchFile() {
       return branchFile;
    }
 
-   public ImportFile getBranchDefinitionsFile() {
+   public IExportItem getBranchDefinitionsFile() {
       return branchDefinitionsFile;
    }
 
@@ -99,12 +100,18 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
       return exportVersion;
    }
 
-   public List<ImportFile> getImportFiles() {
-      Collections.sort(filesToImport);
+   public List<IExportItem> getImportFiles() {
+      Collections.sort(filesToImport, new Comparator<IExportItem>() {
+         @Override
+         public int compare(IExportItem item1, IExportItem item2) {
+            return item1.getPriority() - item2.getPriority();
+         }
+
+      });
       return filesToImport;
    }
 
-   public class ImportFile implements Comparable<ImportFile>, IExportItem {
+   public class ImportFile implements IExportItem {
       private final String fileName;
       private final String source;
       private final int priority;
@@ -135,21 +142,16 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
          if (obj == this) {
             return true;
          }
-         if (!(obj instanceof ImportFile)) {
+         if (!(obj instanceof IExportItem)) {
             return false;
          }
-         ImportFile other = (ImportFile) obj;
-         return this.priority == other.priority && this.fileName.equals(other.fileName);
+         IExportItem other = (IExportItem) obj;
+         return this.priority == other.getPriority() && this.fileName.equals(other.getFileName());
       }
 
       @Override
       public int hashCode() {
          return 37 * priority;
-      }
-
-      @Override
-      public int compareTo(ImportFile other) {
-         return priority - other.priority;
       }
    }
 }

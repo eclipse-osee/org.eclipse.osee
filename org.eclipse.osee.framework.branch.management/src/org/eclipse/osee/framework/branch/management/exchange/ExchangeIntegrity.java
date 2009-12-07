@@ -17,11 +17,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Level;
-import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
+import org.eclipse.osee.framework.branch.management.exchange.handler.IExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.handler.IOseeDbExportDataProvider;
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
-import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler.ImportFile;
 import org.eclipse.osee.framework.core.enums.ConflictType;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -47,15 +47,15 @@ public class ExchangeIntegrity {
       long startTime = System.currentTimeMillis();
       try {
          ManifestSaxHandler manifestSaxHandler = new ManifestSaxHandler();
-         exportDataProvider.saxParse(ExportItemId.EXPORT_MANIFEST, manifestSaxHandler);
+         exportDataProvider.saxParse(ExportItem.EXPORT_MANIFEST, manifestSaxHandler);
 
-         List<ImportFile> filesToCheck = new ArrayList<ImportFile>();
+         List<IExportItem> filesToCheck = new ArrayList<IExportItem>();
          filesToCheck.addAll(manifestSaxHandler.getImportFiles());
          filesToCheck.add(manifestSaxHandler.getBranchFile());
          filesToCheck.add(manifestSaxHandler.getBranchDefinitionsFile());
 
          final List<IndexCollector> checkList = ExchangeDb.createCheckList();
-         for (final ImportFile importFile : filesToCheck) {
+         for (final IExportItem importFile : filesToCheck) {
             exportDataProvider.saxParse(importFile, new CheckSaxHandler(exportDataProvider, checkList,
                   importFile.getFileName()));
          }

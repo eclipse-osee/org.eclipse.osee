@@ -18,7 +18,7 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
-import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -41,7 +41,7 @@ public class RelationalExportItem extends AbstractDbExportItem {
    private final StringBuffer branchNameBuffer;
    private final StringBuffer rationaleBuffer;
 
-   public RelationalExportItem(ExportItemId id, String query) {
+   public RelationalExportItem(ExportItem id, String query) {
       super(id);
       this.query = query;
       this.binaryContentBuffer = new StringBuffer();

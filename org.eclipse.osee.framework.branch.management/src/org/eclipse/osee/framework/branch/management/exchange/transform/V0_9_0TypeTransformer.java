@@ -32,13 +32,11 @@ public class V0_9_0TypeTransformer extends SaxTransformer {
    public void startElementFound(String uri, String localName, String qName, Attributes attributes) throws SAXException, XMLStreamException {
       writer.writeStartElement(localName);
       for (int i = 0; i < attributes.getLength(); i++) {
-         String value;
          if (attributes.getLocalName(i).equals(typeIdColumn)) {
-            value = typeIdMap.get(Integer.parseInt(attributes.getValue(i)));
+            writer.writeAttribute("type_guid", typeIdMap.get(Integer.parseInt(attributes.getValue(i))));
          } else {
-            value = attributes.getValue(i);
+            writer.writeAttribute(attributes.getLocalName(i), attributes.getValue(i));
          }
-         writer.writeAttribute(attributes.getLocalName(i), value);
       }
    }
 }

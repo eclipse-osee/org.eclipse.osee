@@ -10,7 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.branch.management.exchange.export;
 
-import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 
 /**
@@ -21,7 +21,7 @@ public abstract class AbstractDbExportItem extends AbstractExportItem {
    private OseeConnection connection;
    private int joinQueryId;
 
-   public AbstractDbExportItem(ExportItemId id) {
+   public AbstractDbExportItem(ExportItem id) {
       super(id);
       this.joinQueryId = -1;
       this.connection = null;

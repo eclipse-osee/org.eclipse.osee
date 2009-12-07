@@ -18,7 +18,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
-import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.SQL3DataType;
 import org.eclipse.osee.framework.database.core.SupportedDatabase;
@@ -31,7 +31,7 @@ public class MetadataExportItem extends AbstractDbExportItem {
    private final List<AbstractExportItem> exportItems;
 
    public MetadataExportItem(List<AbstractExportItem> exportItems) {
-      super(ExportItemId.EXPORT_DB_SCHEMA);
+      super(ExportItem.EXPORT_DB_SCHEMA);
       this.exportItems = exportItems;
    }
 

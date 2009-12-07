@@ -15,7 +15,7 @@ import java.util.Date;
 import java.util.List;
 import org.eclipse.osee.framework.branch.management.ExportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
-import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.core.data.OseeCodeVersion;
 import org.eclipse.osee.framework.database.core.OseeInfo;
 
@@ -26,7 +26,7 @@ public class ManifestExportItem extends AbstractExportItem {
    private final List<AbstractExportItem> exportItems;
 
    public ManifestExportItem(List<AbstractExportItem> exportItems) {
-      super(ExportItemId.EXPORT_MANIFEST);
+      super(ExportItem.EXPORT_MANIFEST);
       this.exportItems = exportItems;
    }
 

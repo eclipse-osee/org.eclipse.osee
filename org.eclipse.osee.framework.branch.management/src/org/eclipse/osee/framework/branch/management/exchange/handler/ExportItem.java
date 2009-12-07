@@ -13,7 +13,7 @@ package org.eclipse.osee.framework.branch.management.exchange.handler;
 /**
  * @author Ryan D. Brooks
  */
-public enum ExportItemId implements IExportItem {
+public enum ExportItem implements IExportItem {
    EXPORT_MANIFEST(""),
    EXPORT_DB_SCHEMA("db.metadata"),
    OSEE_BRANCH_DATA("osee_branch"),
@@ -31,7 +31,7 @@ public enum ExportItemId implements IExportItem {
 
    private final String source;
 
-   private ExportItemId(String source) {
+   private ExportItem(String source) {
       this.source = source;
    }
 

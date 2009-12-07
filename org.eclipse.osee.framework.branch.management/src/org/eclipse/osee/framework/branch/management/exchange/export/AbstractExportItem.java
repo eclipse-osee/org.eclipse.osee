@@ -19,14 +19,14 @@ import java.util.Set;
 import org.eclipse.osee.framework.branch.management.IExchangeTaskListener;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeUtil;
 import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
-import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.resource.management.Options;
 
 /**
  * @author Roberto E. Escobar
  */
 public abstract class AbstractExportItem implements Runnable {
-   private final ExportItemId id;
+   private final ExportItem id;
    private final String fileName;
    private final Set<IExchangeTaskListener> exportListeners;
 
@@ -34,7 +34,7 @@ public abstract class AbstractExportItem implements Runnable {
    private Options options;
    private boolean cancel;
 
-   public AbstractExportItem(ExportItemId id) {
+   public AbstractExportItem(ExportItem id) {
       this.id = id;
       this.fileName = id.toString() + ExportImportXml.XML_EXTENSION;
       this.options = null;

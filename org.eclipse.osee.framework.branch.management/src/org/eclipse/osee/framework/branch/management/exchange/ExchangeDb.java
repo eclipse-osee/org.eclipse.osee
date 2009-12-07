@@ -20,7 +20,7 @@ import org.eclipse.osee.framework.branch.management.exchange.export.AbstractExpo
 import org.eclipse.osee.framework.branch.management.exchange.export.ManifestExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.MetadataExportItem;
 import org.eclipse.osee.framework.branch.management.exchange.export.RelationalExportItem;
-import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItemId;
+import org.eclipse.osee.framework.branch.management.exchange.handler.ExportItem;
 import org.eclipse.osee.framework.database.core.IOseeSequence;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
@@ -130,18 +130,18 @@ public class ExchangeDb {
       List<AbstractExportItem> items = new ArrayList<AbstractExportItem>();
       items.add(new ManifestExportItem(items));
       items.add(new MetadataExportItem(items));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_BRANCH_DEFINITIONS, BRANCH_DEFINITION_QUERY));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_TXS_DATA, TXS_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_ARTIFACT_VERSION_DATA, ARTIFACT_VERSION_QUERY));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_MERGE_DATA, MERGE_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY));
-      items.add(new RelationalExportItem(ExportItemId.OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_BRANCH_DATA, BRANCH_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_BRANCH_DEFINITIONS, BRANCH_DEFINITION_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_TX_DETAILS_DATA, TX_DETAILS_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_TXS_DATA, TXS_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_ARTIFACT_DATA, ARTIFACT_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_ARTIFACT_VERSION_DATA, ARTIFACT_VERSION_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_ATTRIBUTE_DATA, ATTRIBUTE_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_RELATION_LINK_DATA, RELATION_LINK_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_MERGE_DATA, MERGE_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_CONFLICT_DATA, CONFLICT_TABLE_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_BRANCH_ACL_DATA, BRANCH_ACL_QUERY));
+      items.add(new RelationalExportItem(ExportItem.OSEE_ARTIFACT_ACL_DATA, ARTIFACT_ACL_QUERY));
 
       return items;
    }

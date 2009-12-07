@@ -17,7 +17,7 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
  * @author Ryan D. Brooks
  */
 public interface IOseeDbExportTransformer {
-   public abstract String applyTransform(ImportController importController) throws OseeCoreException;
+   public abstract String applyTransform(ImportController importController) throws Exception;
 
    public abstract boolean isApplicable(String exportVersion) throws OseeCoreException;
 }

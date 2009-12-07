@@ -15,14 +15,13 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.logging.Level;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ExchangeProvider;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
-import org.eclipse.osee.framework.core.exception.OseeCoreException;
-import org.eclipse.osee.framework.core.exception.OseeWrappedException;
 import org.eclipse.osee.framework.jdk.core.type.Pair;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -31,6 +30,7 @@ import org.eclipse.osee.framework.resource.management.IResourceLocator;
 import org.eclipse.osee.framework.resource.management.Options;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
+import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 
@@ -88,7 +88,7 @@ public class ExchangeUtil {
       return rootDirectory;
    }
 
-   public static void saxParseXml(InputStream byteStream, ContentHandler handler) throws Exception {
+   public static void saxParseXml(InputStream byteStream, ContentHandler handler) throws IOException, SAXException {
       try {
          XMLReader reader = XMLReaderFactory.createXMLReader();
          reader.setContentHandler(handler);
@@ -98,13 +98,8 @@ public class ExchangeUtil {
       }
    }
 
-   public static void readExchange(File entry, ContentHandler handler) throws OseeCoreException {
-      InputStream byteStream = null;
-      try {
-         byteStream = new BufferedInputStream(new FileInputStream(entry));
-         saxParseXml(byteStream, handler);
-      } catch (Exception ex) {
-         throw new OseeWrappedException(String.format("Error reading: [%s]", entry), ex);
-      }
+   public static void readExchange(File entry, ContentHandler handler) throws IOException, SAXException {
+      InputStream byteStream = new BufferedInputStream(new FileInputStream(entry));
+      saxParseXml(byteStream, handler);
    }
 }
