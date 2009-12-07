@@ -12,10 +12,10 @@ package org.eclipse.osee.framework.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+
 import org.eclipse.osee.framework.core.cache.BranchCache;
 import org.eclipse.osee.framework.core.cache.IOseeCache;
 import org.eclipse.osee.framework.core.cache.TransactionCache;
@@ -117,15 +117,12 @@ public final class BranchCacheUpdateUtil {
    }
 
    public static void loadFromCache(AbstractBranchCacheMessage message, BranchCache cache, Collection<Branch> types) throws OseeCoreException {
-      List<BranchRow> rowData = new ArrayList<BranchRow>();
-      Map<Integer, Integer> childToParent = new HashMap<Integer, Integer>();
-
       for (Branch br : types) {
          Integer branchId = br.getId();
-         rowData.add(new BranchRow(br.getId(), br.getGuid(), br.getName(), br.getBranchType(), br.getBranchState(),
+         message.getBranchRows().add(new BranchRow(br.getId(), br.getGuid(), br.getName(), br.getBranchType(), br.getBranchState(),
                br.getArchiveState(), br.getModificationType()));
          if (br.hasParentBranch()) {
-            childToParent.put(branchId, br.getParentBranch().getId());
+            message.getChildToParent().put(branchId, br.getParentBranch().getId());
          }
          addAliases(message.getBranchAliases(), branchId, br.getAliases());
          addTxRecord(message.getBranchToBaseTx(), branchId, br.getBaseTransaction());
