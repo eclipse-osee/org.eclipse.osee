@@ -57,7 +57,7 @@ public class PublishWithSpecifiedTemplate extends AbstractBlam {
 
       WordTemplateRenderer renderer = new WordTemplateRenderer();
 
-      SkynetTransaction transaction = new SkynetTransaction(branch);
+      SkynetTransaction transaction = new SkynetTransaction(branch, "BLAM: Publish with specified template");
 
       renderer.setOptions(new VariableMap(WordTemplateRenderer.UPDATE_PARAGRAPH_NUMBER_OPTION, updateParagraphNumber,
             ITemplateRenderer.TRANSACTION_OPTION, transaction));

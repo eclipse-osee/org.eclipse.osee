@@ -59,7 +59,9 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
 
    @Override
    public void run(TableLoadOption... tableLoadOptions) throws OseeCoreException {
-      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) return;
+      if (!MessageDialog.openConfirm(Display.getCurrent().getActiveShell(), getName(), getName())) {
+         return;
+      }
 
       SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch(), "Admin Cleanup");
       //      Artifact verArt =
@@ -107,7 +109,8 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
       int listsCount = 0;
       int artifactsCount = 0;
       boolean fix = true;
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(AtsUtil.getAtsBranch(), "Delete duplicate common branch relations");
 
       // Break artifacts into blocks so don't run out of memory
       List<Collection<Integer>> artIdLists = ValidateAtsDatabase.loadAtsBranchArtifactIds(rd, null);
@@ -120,12 +123,16 @@ public class DoesNotWorkItemAts extends XNavigateItemAction {
             List<RelationLink> relLinks = artifact.getRelationsAll(false);
             for (RelationLink relLink : relLinks) {
                // Only handle relations where this artifact is SIDEA (so don't handle same relation twice)
-               if (!relLink.getArtifactA().equals(artifact)) continue;
+               if (!relLink.getArtifactA().equals(artifact)) {
+                  continue;
+               }
                // Find all duplicates
                List<RelationLink> duplicates = new ArrayList<RelationLink>();
                duplicates.add(relLink);
                for (RelationLink otherRelLink : relLinks) {
-                  if (relLink == otherRelLink) continue;
+                  if (relLink == otherRelLink) {
+                     continue;
+                  }
                   if (relLink.equalsConceptually(otherRelLink)) {
                      duplicates.add(otherRelLink);
                   }

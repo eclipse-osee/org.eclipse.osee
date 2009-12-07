@@ -124,7 +124,8 @@ public final class Artifacts {
    }
 
    public static void persistInTransaction(Artifact... artifacts) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(artifacts[0].getBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(artifacts[0].getBranch(), "Artifacts.persistInTransaction(Artifact... artifacts)");
       for (Artifact art : artifacts) {
          art.persist(transaction);
       }

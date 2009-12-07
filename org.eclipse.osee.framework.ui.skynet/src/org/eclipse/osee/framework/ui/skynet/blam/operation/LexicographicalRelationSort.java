@@ -29,11 +29,13 @@ public class LexicographicalRelationSort extends AbstractBlam {
       return "Lexicographical Relation Sort";
    }
 
+   @Override
    public void runOperation(VariableMap variableMap, IProgressMonitor monitor) throws Exception {
       List<Artifact> artifacts = variableMap.getArtifacts("Artifacts");
 
       ArtifactNameComparator nameComparator = new ArtifactNameComparator();
-      SkynetTransaction transaction = new SkynetTransaction(artifacts.get(0).getBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(artifacts.get(0).getBranch(), "Lexicographical relation sort");
 
       for (Artifact parent : artifacts) {
 //         RelationManager.sortRelatedArtifacts(parent, CoreRelationEnumeration.DEFAULT_HIERARCHICAL__CHILD,
@@ -55,6 +57,7 @@ public class LexicographicalRelationSort extends AbstractBlam {
       return "Alphebetically sorts children of the given artifacts";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Util");
    }

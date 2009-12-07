@@ -151,7 +151,8 @@ public class GlobalMenu {
                }
 
                Artifact[] artifactsArray = artifactsToBeDeleted.toArray(new Artifact[artifactsToBeDeleted.size()]);
-               SkynetTransaction transaction = new SkynetTransaction(artifactsArray[0].getBranch());
+               SkynetTransaction transaction =
+                     new SkynetTransaction(artifactsArray[0].getBranch(), "Delete artifact action");
                ArtifactPersistenceManager.deleteArtifact(transaction, false, artifactsArray);
                transaction.execute();
 

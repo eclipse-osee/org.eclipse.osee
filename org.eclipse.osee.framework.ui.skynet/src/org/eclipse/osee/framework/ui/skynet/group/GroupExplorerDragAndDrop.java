@@ -295,7 +295,7 @@ public class GroupExplorerDragAndDrop extends SkynetDragAndDrop {
          return;
       }
       try {
-         SkynetTransaction transaction = new SkynetTransaction(branch);
+         SkynetTransaction transaction = new SkynetTransaction(branch, "Drag and drop: copy artifacts to group");
 
          for (Artifact art : artsToRelate) {
             if (!dragOverExplorerItem.contains(art)) {

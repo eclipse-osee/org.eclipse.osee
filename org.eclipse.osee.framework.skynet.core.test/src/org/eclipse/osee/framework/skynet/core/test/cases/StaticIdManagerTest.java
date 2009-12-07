@@ -52,7 +52,8 @@ public class StaticIdManagerTest {
    @BeforeClass
    @AfterClass
    public static void testCleanupForReRun() throws OseeCoreException, InterruptedException {
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(BranchManager.getCommonBranch(), "Static ID Manager test cleanup for re-run");
       for (String staticIdValue : ALL_STATIC_IDS) {
          for (Artifact artifact : ArtifactQuery.getArtifactListFromAttribute(StaticIdManager.STATIC_ID_ATTRIBUTE,
                staticIdValue, BranchManager.getCommonBranch())) {
@@ -161,7 +162,8 @@ public class StaticIdManagerTest {
     */
    @org.junit.Test
    public void testGetArtifacts() throws OseeCoreException, InterruptedException {
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(BranchManager.getCommonBranch(), "Static Id Manager: create test artifacts");
       // Create three artifacts with ccc staticId
 
       for (int index = 0; index < 3; index++) {
@@ -199,7 +201,8 @@ public class StaticIdManagerTest {
       }
 
       Collection<Artifact> artifacts = new ArrayList<Artifact>();
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(BranchManager.getCommonBranch(), "testGetSingletonArtifactOrException");
       for (int index = 0; index < 2; index++) {
          Artifact artifact =
                ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
@@ -227,7 +230,8 @@ public class StaticIdManagerTest {
          if (toDelete.size() == 1) {
             toDelete.iterator().next().deleteAndPersist();
          } else {
-            SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+            SkynetTransaction transaction =
+                  new SkynetTransaction(BranchManager.getCommonBranch(), "Delete collection of artifacts");
             for (Artifact artifact : toDelete) {
                artifact.delete();
             }
@@ -254,7 +258,8 @@ public class StaticIdManagerTest {
       List<Artifact> itemsCreated = new ArrayList<Artifact>();
 
       // create single artifact with eee staticId
-      SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(BranchManager.getCommonBranch(), "create single artifact with eee staticId");
       Artifact artifact =
             StaticIdManager.getOrCreateSingletonArtifact(GeneralData.ARTIFACT_TYPE, STATIC_ID_EEE,
                   BranchManager.getCommonBranch());
@@ -271,7 +276,7 @@ public class StaticIdManagerTest {
       assertNotNull(artifact);
 
       // create another artifact with eee staticId
-      transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+      transaction = new SkynetTransaction(BranchManager.getCommonBranch(), "create another artifact with eee staticId");
       artifact = ArtifactTypeManager.addArtifact(GeneralData.ARTIFACT_TYPE, BranchManager.getCommonBranch());
       StaticIdManager.setSingletonAttributeValue(artifact, STATIC_ID_EEE);
       artifact.persist(transaction);

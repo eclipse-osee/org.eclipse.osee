@@ -245,7 +245,8 @@ public class AtsBranchConfigurationTest {
 
       // create action, 
       OseeLog.log(AtsPlugin.class, Level.INFO, "Create new Action");
-      SkynetTransaction transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(AtsUtil.getAtsBranch(), "Test branch via team definition: create action");
       ActionArtifact actionArt =
             ActionManager.createAction(null, TestType.BranchViaTeamDef.name() + " Req Changes", "description",
                   ChangeType.Problem, PriorityType.Priority_1, false, null,
@@ -258,7 +259,9 @@ public class AtsBranchConfigurationTest {
 
       // Transition to desired state
       OseeLog.log(AtsPlugin.class, Level.INFO, "Transitioning to Implement state");
-      transaction = new SkynetTransaction(AtsUtil.getAtsBranch());
+      transaction =
+            new SkynetTransaction(AtsUtil.getAtsBranch(),
+                  "Test branch via team definition: Transition to desired state");
       dtwm.transitionTo(DefaultTeamState.Implement, null, false, transaction);
       teamWf.persist(transaction);
       transaction.execute();

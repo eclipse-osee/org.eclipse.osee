@@ -591,7 +591,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                   // If nothing was selected, then the child belongs at the root
                   IRelationSorterId sorterId = RelationOrderBaseTypes.USER_DEFINED;
 
-                  SkynetTransaction transaction = new SkynetTransaction(branch);
+                  SkynetTransaction transaction = new SkynetTransaction(branch, "Create new item in artifact explorer");
                   if (!itemsIter.hasNext()) {
                      exploreRoot.addNewChild(sorterId, descriptor, name);
                      exploreRoot.persist(transaction);

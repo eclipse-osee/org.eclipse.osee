@@ -1157,7 +1157,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    }
 
    public final void persist() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(branch);
+      SkynetTransaction transaction = new SkynetTransaction(branch, "artifact.persist() default transaction");
       persist(transaction);
       transaction.execute();
    }
@@ -1218,7 +1218,7 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * Removes artifact from a specific branch
     */
    public void deleteAndPersist() throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(branch);
+      SkynetTransaction transaction = new SkynetTransaction(branch, "Delete artifact from a specific branch");
       deleteAndPersist(transaction);
       transaction.execute();
    }

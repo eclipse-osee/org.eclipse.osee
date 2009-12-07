@@ -40,7 +40,7 @@ public class DeleteUnneededUnspecifiedAttributes extends AbstractBlam {
       AttributeType attributeType = variableMap.getAttributeType("Attribute Type");
       List<Artifact> artifacts =
             ArtifactQuery.getArtifactListFromAttribute(attributeType, EnumeratedAttribute.UNSPECIFIED_VALUE, branch);
-      SkynetTransaction transaction = new SkynetTransaction(branch);
+      SkynetTransaction transaction = new SkynetTransaction(branch, "BLAM: Delete unneeded unspecified attributes");
 
       for (Artifact artifact : artifacts) {
          Collection<Attribute<String>> attributes = artifact.getAttributes(attributeType.getName());
@@ -64,6 +64,7 @@ public class DeleteUnneededUnspecifiedAttributes extends AbstractBlam {
       return "<xWidgets><XWidget xwidgetType=\"XAttributeTypeListViewer\" displayName=\"Attribute Type\" /><XWidget xwidgetType=\"XBranchSelectWidget\" displayName=\"Branch\" /></xWidgets>";
    }
 
+   @Override
    public Collection<String> getCategories() {
       return Arrays.asList("Admin");
    }

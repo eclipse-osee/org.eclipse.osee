@@ -65,7 +65,8 @@ final class ClientUser {
                setCurrentUser(BootStrapUser.getInstance());
             } else {
                if (ClientSessionManager.isUserCreationRequired()) {
-                  SkynetTransaction transaction = new SkynetTransaction(BranchManager.getCommonBranch());
+                  SkynetTransaction transaction =
+                        new SkynetTransaction(BranchManager.getCommonBranch(), "Populate current user");
                   UserManager.createMainUser(ClientSessionManager.getCurrentUserInfo(), transaction);
                   setCurrentUser(UserManager.getUserByUserId(ClientSessionManager.getCurrentUserInfo().getUserID()));
                   transaction.execute();

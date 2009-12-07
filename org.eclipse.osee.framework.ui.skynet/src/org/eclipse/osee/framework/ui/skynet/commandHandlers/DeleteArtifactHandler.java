@@ -47,7 +47,8 @@ public class DeleteArtifactHandler extends CommandHandler {
                         MessageDialog.QUESTION, new String[] {IDialogConstants.YES_LABEL, IDialogConstants.NO_LABEL}, 1);
             if (dialog.open() == 0) {
                Artifact[] artifactsArray = artifacts.toArray(new Artifact[artifacts.size()]);
-               SkynetTransaction transaction = new SkynetTransaction(artifactsArray[0].getBranch());
+               SkynetTransaction transaction =
+                     new SkynetTransaction(artifactsArray[0].getBranch(), "Delete artifact handler");
                ArtifactPersistenceManager.deleteArtifact(transaction, false, artifactsArray);
                transaction.execute();
             }

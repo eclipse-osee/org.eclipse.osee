@@ -71,7 +71,7 @@ public class BranchPurgeTest {
       TestUtil.sleep(4000);
 
       // create some software artifacts      
-      SkynetTransaction transaction = new SkynetTransaction(branch);
+      SkynetTransaction transaction = new SkynetTransaction(branch, "Test purge branch");
       Collection<Artifact> softArts =
             FrameworkTestUtil.createSimpleArtifacts(Requirements.SOFTWARE_REQUIREMENT, 10, getClass().getSimpleName(),
                   branch);

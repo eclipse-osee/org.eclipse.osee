@@ -29,8 +29,8 @@ import org.eclipse.osee.framework.core.model.AttributeType;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
-import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.DbTransaction;
+import org.eclipse.osee.framework.database.core.IOseeStatement;
 import org.eclipse.osee.framework.database.core.OseeConnection;
 import org.eclipse.osee.framework.database.core.SequenceManager;
 import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
@@ -75,12 +75,6 @@ public class SkynetTransaction extends DbTransaction {
    private boolean madeChanges = false;
    private boolean executedWithException = false;
    private final String comment;
-
-   @Deprecated
-   // please provide a more meaningful comment than empty quote
-   public SkynetTransaction(Branch branch) {
-      this(branch, "");
-   }
 
    public SkynetTransaction(Branch branch, String comment) {
       this.branch = branch;

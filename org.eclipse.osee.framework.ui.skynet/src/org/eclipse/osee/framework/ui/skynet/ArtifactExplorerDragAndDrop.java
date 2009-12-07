@@ -57,8 +57,9 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
       Object[] objects = selection.toArray();
       Artifact[] artifacts = new Artifact[objects.length];
 
-      for (int index = 0; index < objects.length; index++)
+      for (int index = 0; index < objects.length; index++) {
          artifacts[index] = (Artifact) objects[index];
+      }
 
       return artifacts;
    }
@@ -131,7 +132,8 @@ public class ArtifactExplorerDragAndDrop extends SkynetDragAndDrop {
                   "Confirm Move",
                   "Are you sure you want to make each of the selected artifacts a child of " + parentArtifact.getName() + "?")) {
                try {
-                  SkynetTransaction transaction = new SkynetTransaction(parentArtifact.getBranch());
+                  SkynetTransaction transaction =
+                        new SkynetTransaction(parentArtifact.getBranch(), "Artifact explorer drag & drop");
                   // Replace all of the parent relations
                   for (Artifact artifact : artifactsToBeRelated) {
                      Artifact currentParent = artifact.getParent();

@@ -125,7 +125,8 @@ public class ArtifactPromptChange {
          }
 
          if (persist) {
-            SkynetTransaction transaction = new SkynetTransaction(artifacts.iterator().next().getBranch());
+            SkynetTransaction transaction =
+                  new SkynetTransaction(artifacts.iterator().next().getBranch(), "Persist artifact date change");
             for (Artifact artifact : artifacts) {
                artifact.persist(transaction);
             }
@@ -156,7 +157,8 @@ public class ArtifactPromptChange {
          }
          if (artifacts.size() > 0) {
             SkynetTransaction transaction =
-                  !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch());
+                  !persist ? null : new SkynetTransaction(artifacts.iterator().next().getBranch(),
+                        "Change enumerated attribute");
             for (Artifact artifact : artifacts) {
                List<String> current = artifact.getAttributesToStringList(attributeName);
                if (diag.getSelected() == Selection.AddSelection) {
@@ -242,7 +244,8 @@ public class ArtifactPromptChange {
    }
 
    private static void persistSmaAttributes(final Collection<? extends Artifact> smas) throws OseeCoreException {
-      SkynetTransaction transaction = new SkynetTransaction(smas.iterator().next().getBranch());
+      SkynetTransaction transaction =
+            new SkynetTransaction(smas.iterator().next().getBranch(), "Persist SMA attributes");
       for (Artifact sma : smas) {
          sma.persist(transaction);
       }
@@ -267,7 +270,8 @@ public class ArtifactPromptChange {
       int result = md.open();
       if (result == 256) {
          if (smas.size() > 0) {
-            SkynetTransaction transaction = !persist ? null : new SkynetTransaction(smas.iterator().next().getBranch());
+            SkynetTransaction transaction =
+                  !persist ? null : new SkynetTransaction(smas.iterator().next().getBranch(), "Prompt change boolean");
             for (Artifact sma : smas) {
                sma.setSoleAttributeValue(attributeName, md.getToggleState());
                if (persist) {
