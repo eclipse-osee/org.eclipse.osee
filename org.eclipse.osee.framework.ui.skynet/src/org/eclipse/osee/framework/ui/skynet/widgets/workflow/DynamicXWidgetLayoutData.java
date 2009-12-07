@@ -10,6 +10,7 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.ui.skynet.widgets.workflow;
 
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOption;
 import org.eclipse.osee.framework.ui.skynet.widgets.XOptionHandler;
 import org.eclipse.osee.framework.ui.skynet.widgets.XWidget;
@@ -103,7 +104,7 @@ public class DynamicXWidgetLayoutData implements Cloneable {
    }
 
    // TODO This method will need to be removed
-   public XWidget getXWidget() {
+   public XWidget getXWidget() throws OseeArgumentException {
       if (xWidget == null) {
          xWidget = xWidgetFactory.createXWidget(this);
       }
@@ -132,10 +133,18 @@ public class DynamicXWidgetLayoutData implements Cloneable {
     * @return Returns the beginComposite.
     */
    public int getBeginComposite() {
-      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_10)) return 10;
-      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_8)) return 8;
-      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_6)) return 6;
-      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_4)) return 4;
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_10)) {
+         return 10;
+      }
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_8)) {
+         return 8;
+      }
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_6)) {
+         return 6;
+      }
+      if (xOptionHandler.contains(XOption.BEGIN_COMPOSITE_4)) {
+         return 4;
+      }
       return beginComposite;
    }
 

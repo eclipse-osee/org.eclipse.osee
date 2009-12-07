@@ -20,6 +20,7 @@ import java.util.Set;
 import javax.xml.parsers.ParserConfigurationException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Jaxp;
@@ -71,12 +72,6 @@ public class DynamicXWidgetLayout {
    public DynamicXWidgetLayout(IDynamicWidgetLayoutListener dynamicWidgetLayoutListener, IXWidgetOptionResolver optionResolver) {
       this.dynamicWidgetLayoutListener = dynamicWidgetLayoutListener;
       this.optionResolver = optionResolver;
-   }
-
-   public void dispose() {
-      for (DynamicXWidgetLayoutData layoutData : getLayoutDatas()) {
-         layoutData.getXWidget().dispose();
-      }
    }
 
    private Composite createComposite(Composite parent, FormToolkit toolkit) {
@@ -147,7 +142,7 @@ public class DynamicXWidgetLayout {
             dynamicWidgetLayoutListener.widgetCreating(xWidget, toolkit, artifact, this, xModListener, isEditable);
          }
 
-         if (artifact != null && (xWidget instanceof IArtifactWidget)) {
+         if (artifact != null && xWidget instanceof IArtifactWidget) {
             try {
                ((IArtifactWidget) xWidget).setArtifact(artifact, xWidgetLayoutData.getStorageName());
             } catch (Exception ex) {
@@ -220,16 +215,24 @@ public class DynamicXWidgetLayout {
       Display.getDefault().asyncExec(new Runnable() {
 
          public void run() {
-            for (DynamicXWidgetLayoutData xWidgetLayoutData : getLayoutDatas()) {
-               xWidgetLayoutData.getXWidget().validate();
+            try {
+               for (DynamicXWidgetLayoutData xWidgetLayoutData : getLayoutDatas()) {
+                  xWidgetLayoutData.getXWidget().validate();
+               }
+               refreshOrAndXOrRequiredFlags();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
             }
-            refreshOrAndXOrRequiredFlags();
          }
       });
    }
    private final XModifiedListener refreshRequiredModListener = new XModifiedListener() {
       public void widgetModified(XWidget widget) {
-         refreshOrAndXOrRequiredFlags();
+         try {
+            refreshOrAndXOrRequiredFlags();
+         } catch (OseeCoreException ex) {
+            OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+         }
       }
    };
 
@@ -237,8 +240,10 @@ public class DynamicXWidgetLayout {
     * Required flags are set per XWidget and the labels change from Red to Black when the widget has been edited
     * successfully. When a page is made up of two or more widgets that need to work together, these required flags need
     * to be set/unset whenever a widget from the group gets modified.
+    * 
+    * @throws OseeArgumentException
     */
-   private void refreshOrAndXOrRequiredFlags() {
+   private void refreshOrAndXOrRequiredFlags() throws OseeArgumentException {
       // Handle orRequired
       for (ArrayList<String> orReq : orRequired) {
          // If group is complete, change all to black, else all red
@@ -246,8 +251,9 @@ public class DynamicXWidgetLayout {
          for (String aName : orReq) {
             DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
             Label label = layoutData.getXWidget().getLabelWidget();
-            if (label != null && !label.isDisposed()) label.setForeground(isComplete ? null : Display.getCurrent().getSystemColor(
-                  SWT.COLOR_RED));
+            if (label != null && !label.isDisposed()) {
+               label.setForeground(isComplete ? null : Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+            }
          }
       }
       // Handle xorRequired
@@ -257,19 +263,26 @@ public class DynamicXWidgetLayout {
          for (String aName : xorReq) {
             DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
             Label label = layoutData.getXWidget().getLabelWidget();
-            if (label != null && !label.isDisposed()) label.setForeground(isComplete ? null : Display.getCurrent().getSystemColor(
-                  SWT.COLOR_RED));
+            if (label != null && !label.isDisposed()) {
+               label.setForeground(isComplete ? null : Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+            }
          }
       }
    }
 
    public IStatus isPageComplete() {
-      for (DynamicXWidgetLayoutData data : datas) {
-         IStatus valid = data.getXWidget().isValid();
-         if (!valid.isOK()) {
-            // Check to see if widget is part of a completed OR or XOR group
-            if (!isOrGroupFromAttrNameComplete(data.getStorageName()) && !isXOrGroupFromAttrNameComplete(data.getStorageName())) return valid;
+      try {
+         for (DynamicXWidgetLayoutData data : datas) {
+            IStatus valid = data.getXWidget().isValid();
+            if (!valid.isOK()) {
+               // Check to see if widget is part of a completed OR or XOR group
+               if (!isOrGroupFromAttrNameComplete(data.getStorageName()) && !isXOrGroupFromAttrNameComplete(data.getStorageName())) {
+                  return valid;
+               }
+            }
          }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return Status.OK_STATUS;
    }
@@ -291,17 +304,20 @@ public class DynamicXWidgetLayout {
    }
 
    public DynamicXWidgetLayoutData getLayoutData(String attrName) {
-      for (DynamicXWidgetLayoutData layoutData : datas)
-         if (layoutData.getStorageName().equals(attrName)) return layoutData;
+      for (DynamicXWidgetLayoutData layoutData : datas) {
+         if (layoutData.getStorageName().equals(attrName)) {
+            return layoutData;
+         }
+      }
       return null;
    }
 
    public boolean isOrRequired(String attrName) {
-      return (getOrRequiredGroup(attrName)).size() > 0;
+      return getOrRequiredGroup(attrName).size() > 0;
    }
 
    public boolean isXOrRequired(String attrName) {
-      return (getXOrRequiredGroup(attrName)).size() > 0;
+      return getXOrRequiredGroup(attrName).size() > 0;
    }
 
    public ArrayList<String> getOrRequiredGroup(String attrName) {
@@ -313,20 +329,27 @@ public class DynamicXWidgetLayout {
    }
 
    private ArrayList<String> getRequiredGroup(ArrayList<ArrayList<String>> requiredList, String attrName) {
-      for (ArrayList<String> list : requiredList)
-         for (String aName : list)
-            if (aName.equals(attrName)) return list;
+      for (ArrayList<String> list : requiredList) {
+         for (String aName : list) {
+            if (aName.equals(attrName)) {
+               return list;
+            }
+         }
+      }
       return new ArrayList<String>();
    }
 
    /**
     * @param name
     * @return true if ANY item in group is entered
+    * @throws OseeArgumentException
     */
-   public boolean isOrGroupFromAttrNameComplete(String name) {
+   public boolean isOrGroupFromAttrNameComplete(String name) throws OseeArgumentException {
       for (String aName : getOrRequiredGroup(name)) {
          DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
-         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK()) return true;
+         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK()) {
+            return true;
+         }
       }
       return false;
    }
@@ -334,32 +357,41 @@ public class DynamicXWidgetLayout {
    /**
     * @param attrName
     * @return true if only ONE item in group is entered
+    * @throws OseeArgumentException
     */
-   public boolean isXOrGroupFromAttrNameComplete(String attrName) {
+   public boolean isXOrGroupFromAttrNameComplete(String attrName) throws OseeArgumentException {
       boolean oneFound = false;
       for (String aName : getXOrRequiredGroup(attrName)) {
          DynamicXWidgetLayoutData layoutData = getLayoutData(aName);
-         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK())
-         // If already found one, return false
-         if (oneFound)
-            return false;
-         else
-            oneFound = true;
+         if (layoutData.getXWidget() != null && layoutData.getXWidget().isValid().isOK()) {
+            // If already found one, return false
+            if (oneFound) {
+               return false;
+            } else {
+               oneFound = true;
+            }
+         }
       }
       return oneFound;
    }
 
    protected void processOrRequired(String instr) {
       ArrayList<String> names = new ArrayList<String>();
-      for (String attr : instr.split(";"))
-         if (!attr.contains("[ \\s]*")) names.add(attr);
+      for (String attr : instr.split(";")) {
+         if (!attr.contains("[ \\s]*")) {
+            names.add(attr);
+         }
+      }
       orRequired.add(names);
    }
 
    protected void processXOrRequired(String instr) {
       ArrayList<String> names = new ArrayList<String>();
-      for (String attr : instr.split(";"))
-         if (!attr.contains("[ \\s]*")) names.add(attr);
+      for (String attr : instr.split(";")) {
+         if (!attr.contains("[ \\s]*")) {
+            names.add(attr);
+         }
+      }
       xorRequired.add(names);
    }
 

@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtension;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLevel;
@@ -78,7 +79,7 @@ public class XWidgetFactory {
       return reference;
    }
 
-   public XWidget createXWidget(DynamicXWidgetLayoutData xWidgetLayoutData) {
+   public XWidget createXWidget(DynamicXWidgetLayoutData xWidgetLayoutData) throws OseeArgumentException {
       String xWidgetName = xWidgetLayoutData.getXWidgetName();
       String name = xWidgetLayoutData.getName();
       XWidget xWidget = null;
@@ -160,8 +161,9 @@ public class XWidgetFactory {
       } else if (xWidgetName.equals("XCheckBox")) {
          XCheckBox checkBox = new XCheckBox(name);
          checkBox.setLabelAfter(xWidgetLayoutData.getXOptionHandler().contains(XOption.LABEL_AFTER));
-         if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) checkBox.set(xWidgetLayoutData.getDefaultValue().equals(
-               "true"));
+         if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) {
+            checkBox.set(xWidgetLayoutData.getDefaultValue().equals("true"));
+         }
          xWidget = checkBox;
       } else if (xWidgetName.equals("XCheckBoxDam")) {
          XCheckBoxDam checkBox = new XCheckBoxDam(name);
@@ -182,9 +184,10 @@ public class XWidgetFactory {
                   combo.setDefaultSelectionAllowed(true);
                }
                xWidget = combo;
-            } else
-               throw new IllegalArgumentException(
+            } else {
+               throw new OseeArgumentException(
                      "Invalid XComboDam.  " + "Must be \"XComboDam(option1,option2,option3)\"");
+            }
          }
       } else if (xWidgetName.startsWith("XSelectFromMultiChoiceDam")) {
          if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
@@ -195,7 +198,7 @@ public class XWidgetFactory {
                widget.setSelectableItems(Arrays.asList(values));
                xWidget = widget;
             } else {
-               throw new IllegalArgumentException(
+               throw new OseeArgumentException(
                      "Invalid XSelectFromMultiChoiceDam.  " + "Must be \"XSelectFromMultiChoiceDam(option1,option2,option3)\"");
             }
          }
@@ -210,14 +213,15 @@ public class XWidgetFactory {
          xWidget = combo;
          if (xWidgetLayoutData.getDefaultValue() != null && !xWidgetLayoutData.getDefaultValue().equals("")) {
             String value = xWidgetLayoutData.getDefaultValue();
-            if (value == null)
+            if (value == null) {
                combo.set("");
-            else if (value.equals("true") || value.equals("yes"))
+            } else if (value.equals("true") || value.equals("yes")) {
                combo.set("yes");
-            else if (value.equals("false") || value.equals("no"))
+            } else if (value.equals("false") || value.equals("no")) {
                combo.set("no");
-            else
+            } else {
                combo.set("");
+            }
          }
          if (xWidgetLayoutData.getXOptionHandler().contains(XOption.NO_DEFAULT_VALUE)) {
             combo.setDefaultSelectionAllowed(false);
@@ -241,8 +245,9 @@ public class XWidgetFactory {
                combo.setDefaultSelectionAllowed(true);
             }
             xWidget = combo;
-         } else
-            throw new IllegalArgumentException("Invalid XCombo.  " + "Must be \"XCombo(option1,option2,option3)\"");
+         } else {
+            throw new OseeArgumentException("Invalid XCombo.  " + "Must be \"XCombo(option1,option2,option3)\"");
+         }
       } else if (xWidgetName.startsWith("XListDam")) {
          if (xWidgetLayoutData.getDynamicXWidgetLayout() != null) {
             String values[] =
@@ -251,8 +256,9 @@ public class XWidgetFactory {
                XListDam list = new XListDam(name);
                list.add(values);
                xWidget = list;
-            } else
-               throw new IllegalArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
+            } else {
+               throw new OseeArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
+            }
          }
       } else if (xWidgetName.equals("XHyperlabelMemberSelDam")) {
          xWidget = new XHyperlabelMemberSelDam(name);
@@ -277,9 +283,12 @@ public class XWidgetFactory {
             list.add(values);
             xWidget = list;
             String defaultValue = xWidgetLayoutData.getDefaultValue();
-            if (Strings.isValid(defaultValue)) list.setSelected(Arrays.asList(defaultValue.split(",")));
-         } else
-            throw new IllegalArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
+            if (Strings.isValid(defaultValue)) {
+               list.setSelected(Arrays.asList(defaultValue.split(",")));
+            }
+         } else {
+            throw new OseeArgumentException("Invalid XList.  " + "Must be \"XList(option1,option2,option3)\"");
+         }
       } else if (xWidgetName.startsWith("XArtifactList")) {
          XArtifactList artifactList = new XArtifactList(name);
          artifactList.setMultiSelect(xWidgetLayoutData.getXOptionHandler().contains(XOption.MULTI_SELECT));

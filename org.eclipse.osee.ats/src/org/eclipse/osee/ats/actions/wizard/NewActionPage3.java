@@ -24,6 +24,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
@@ -59,8 +60,9 @@ public class NewActionPage3 extends WizardPage {
    public void notifyAtsWizardItemExtensions(ActionArtifact action, SkynetTransaction transaction) {
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
-            if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) item.wizardCompleted(
-                  action, wizard, transaction);
+            if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) {
+               item.wizardCompleted(action, wizard, transaction);
+            }
          } catch (Exception ex) {
             OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
          }
@@ -90,8 +92,9 @@ public class NewActionPage3 extends WizardPage {
             // + ATSAttributes.DESCRIPTION_ATTRIBUTE.getDescription() + "\"/>");
             for (IAtsWizardItem item : wizardExtensionItems) {
                try {
-                  if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) item.getWizardXWidgetExtensions(
-                        wizard.getSelectedActionableItemArtifacts(), sb);
+                  if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) {
+                     item.getWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts(), sb);
+                  }
                } catch (Exception ex) {
                   OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
                }
@@ -126,7 +129,9 @@ public class NewActionPage3 extends WizardPage {
 
    @Override
    public boolean isPageComplete() {
-      if (page == null || !page.isPageComplete().isTrue()) return false;
+      if (page == null || !page.isPageComplete().isTrue()) {
+         return false;
+      }
       // Check wizard extension item validation
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
@@ -145,13 +150,17 @@ public class NewActionPage3 extends WizardPage {
       return true;
    }
 
-   public XWidget getXWidget(String attrName) {
-      if (page == null) throw new IllegalArgumentException("WorkPage == null");
+   public XWidget getXWidget(String attrName) throws OseeArgumentException {
+      if (page == null) {
+         throw new IllegalArgumentException("WorkPage == null");
+      }
       return page.getLayoutData(attrName).getXWidget();
    }
 
    private static void getWizardXWidgetExtensions() {
-      if (wizardExtensionItems.size() > 0) return;
+      if (wizardExtensionItems.size() > 0) {
+         return;
+      }
 
       IExtensionPoint point = Platform.getExtensionRegistry().getExtensionPoint("org.eclipse.osee.ats.AtsWizardItem");
       if (point == null) {
@@ -187,7 +196,9 @@ public class NewActionPage3 extends WizardPage {
       getWizardXWidgetExtensions();
       for (IAtsWizardItem item : wizardExtensionItems) {
          try {
-            if (item.hasWizardXWidgetExtensions(aias)) return true;
+            if (item.hasWizardXWidgetExtensions(aias)) {
+               return true;
+            }
          } catch (Exception ex) {
             // DO NOTHING
          }
@@ -201,7 +212,9 @@ public class NewActionPage3 extends WizardPage {
          try {
             if (item.hasWizardXWidgetExtensions(wizard.getSelectedActionableItemArtifacts())) {
                Result result = item.isActionValidToCreate(wizard.getSelectedActionableItemArtifacts(), wizard);
-               if (result.isFalse()) return result;
+               if (result.isFalse()) {
+                  return result;
+               }
             }
          } catch (Exception ex) {
             // DO NOTHING

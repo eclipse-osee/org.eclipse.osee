@@ -24,6 +24,7 @@ import org.eclipse.osee.coverage.store.OseeCoveragePackageStore;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.operation.AbstractOperation;
@@ -162,7 +163,7 @@ public class CoverageEditor extends FormEditor implements IActionable, IFramewor
       coverageEditorImportTab.simulateImport(importName);
    }
 
-   public void simulateImportPostRun() {
+   public void simulateImportPostRun() throws OseeArgumentException {
       setActivePage(5);
       coverageEditorImportTab.simulateImportSearch();
    }

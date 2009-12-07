@@ -65,9 +65,10 @@ public class AtsWorkflowConfigCreationWizard extends Wizard implements INewWizar
 
    @Override
    public boolean performFinish() {
-      final String namespace = page1.getNamespace();
-      final String startingWorkflow = page1.getStartingWorkflow();
+
       try {
+         final String namespace = page1.getNamespace();
+         final String startingWorkflow = page1.getStartingWorkflow();
          try {
             if (WorkItemDefinitionFactory.getWorkItemDefinition(namespace) != null) {
                AWorkbench.popup("ERROR", "Namespace already used, choose a unique namespace.");

@@ -26,6 +26,7 @@ import org.eclipse.osee.ats.artifact.TeamDefinitionArtifact;
 import org.eclipse.osee.ats.util.widgets.dialog.AITreeContentProvider;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
 import org.eclipse.osee.framework.core.enums.Active;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -89,7 +90,7 @@ public class NewActionPage1 extends WizardPage {
          aiComp.setLayout(new GridLayout(1, false));
          aiComp.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-         (new Label(aiComp, SWT.NONE)).setText("Select Actionable Items:");
+         new Label(aiComp, SWT.NONE).setText("Select Actionable Items:");
          treeViewer =
                new OSEECheckedFilteredTree(aiComp,
                      SWT.CHECK | SWT.MULTI | SWT.READ_ONLY | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER, patternFilter);
@@ -108,7 +109,7 @@ public class NewActionPage1 extends WizardPage {
             }
          });
 
-         (new Label(aiComp, SWT.NONE)).setText("Description of highlighted Actionable Item (if any):");
+         new Label(aiComp, SWT.NONE).setText("Description of highlighted Actionable Item (if any):");
          descriptionLabel = new Text(aiComp, SWT.BORDER | SWT.WRAP);
          GridData gd = new GridData(GridData.FILL_BOTH);
          gd.heightHint = 30;
@@ -131,7 +132,9 @@ public class NewActionPage1 extends WizardPage {
 
          setControl(comp);
          setHelpContexts();
-         if (wizard.getInitialAias() != null) treeViewer.setInitalChecked(wizard.getInitialAias());
+         if (wizard.getInitialAias() != null) {
+            treeViewer.setInitalChecked(wizard.getInitialAias());
+         }
          ((XText) getXWidget("Title")).setFocus();
       } catch (Exception ex) {
          OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
@@ -141,7 +144,9 @@ public class NewActionPage1 extends WizardPage {
    private class SelectionChangedListener implements ISelectionChangedListener {
       public void selectionChanged(SelectionChangedEvent event) {
          IStructuredSelection sel = (IStructuredSelection) treeViewer.getViewer().getSelection();
-         if (sel.isEmpty()) return;
+         if (sel.isEmpty()) {
+            return;
+         }
          ActionableItemArtifact aia = (ActionableItemArtifact) sel.getFirstElement();
          try {
             descriptionLabel.setText(aia.getSoleAttributeValue(ATSAttributes.DESCRIPTION_ATTRIBUTE.getStoreName(), ""));
@@ -163,14 +168,18 @@ public class NewActionPage1 extends WizardPage {
       return selected;
    }
 
-   public XWidget getXWidget(String attrName) {
-      if (page == null) throw new IllegalArgumentException("WorkPage == null");
+   public XWidget getXWidget(String attrName) throws OseeArgumentException {
+      if (page == null) {
+         throw new IllegalArgumentException("WorkPage == null");
+      }
       return page.getLayoutData(attrName).getXWidget();
    }
 
    @Override
    public boolean isPageComplete() {
-      if (treeViewer.getChecked().size() == 0) return false;
+      if (treeViewer.getChecked().size() == 0) {
+         return false;
+      }
       try {
          for (ActionableItemArtifact aia : getSelectedActionableItemArtifacts()) {
             if (!aia.isActionable()) {
@@ -188,7 +197,9 @@ public class NewActionPage1 extends WizardPage {
          AWorkbench.popup("ERROR", ex.getLocalizedMessage());
          return false;
       }
-      if (!page.isPageComplete().isTrue()) return false;
+      if (!page.isPageComplete().isTrue()) {
+         return false;
+      }
       return true;
    }
 

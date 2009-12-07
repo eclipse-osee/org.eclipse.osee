@@ -15,6 +15,8 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ATSAttributes;
 import org.eclipse.osee.ats.workflow.ATSXWidgetOptionResolver;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.ui.skynet.widgets.XCombo;
@@ -50,12 +52,18 @@ public class NewActionPage2 extends WizardPage {
    @Override
    public void setVisible(boolean visible) {
       super.setVisible(visible);
-      if (wizard.getInitialDescription() != null && ((XText) getXWidget("Description")).get().equals("")) ((XText) getXWidget("Description")).set(wizard.getInitialDescription());
-      if (wizard.isTTAction()) {
-         handlePopulateWithDebugInfo();
+      try {
+         if (wizard.getInitialDescription() != null && ((XText) getXWidget("Description")).get().equals("")) {
+            ((XText) getXWidget("Description")).set(wizard.getInitialDescription());
+         }
+         if (wizard.isTTAction()) {
+            handlePopulateWithDebugInfo();
+         }
+         wizard.createPage3IfNecessary();
+         ((XText) getXWidget("Description")).getStyledText().setFocus();
+      } catch (Exception ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
-      wizard.createPage3IfNecessary();
-      ((XText) getXWidget("Description")).getStyledText().setFocus();
    }
 
    private final XModifiedListener xModListener = new XModifiedListener() {
@@ -102,23 +110,33 @@ public class NewActionPage2 extends WizardPage {
    }
 
    private void handlePopulateWithDebugInfo() {
-      if (debugPopulated) return;
-      ((XText) getXWidget("Description")).set("See title");
-      // Must use skynet attribute name cause these widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
-      ((XList) getXWidget("ats.User Community")).setSelected("Other");
-      ((XCombo) getXWidget("ats.Priority")).set("4");
-      ((XCombo) getXWidget("ats.Change Type")).set("Improvement");
-      debugPopulated = true;
+      if (debugPopulated) {
+         return;
+      }
+      try {
+         ((XText) getXWidget("Description")).set("See title");
+         // Must use skynet attribute name cause these widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
+         ((XList) getXWidget("ats.User Community")).setSelected("Other");
+         ((XCombo) getXWidget("ats.Priority")).set("4");
+         ((XCombo) getXWidget("ats.Change Type")).set("Improvement");
+         debugPopulated = true;
+      } catch (OseeCoreException ex) {
+         OseeLog.log(AtsPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+      }
    }
 
    @Override
    public boolean isPageComplete() {
-      if (page == null || !page.isPageComplete().isTrue()) return false;
+      if (page == null || !page.isPageComplete().isTrue()) {
+         return false;
+      }
       return true;
    }
 
-   protected XWidget getXWidget(String attrName) {
-      if (page == null) throw new IllegalArgumentException("WorkPage == null");
+   protected XWidget getXWidget(String attrName) throws OseeArgumentException {
+      if (page == null) {
+         throw new IllegalArgumentException("WorkPage == null");
+      }
       return page.getLayoutData(attrName).getXWidget();
    }
 

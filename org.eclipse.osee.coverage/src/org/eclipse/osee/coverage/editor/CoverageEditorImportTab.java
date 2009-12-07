@@ -32,6 +32,7 @@ import org.eclipse.osee.framework.ui.plugin.util.ArrayTreeContentProvider;
 import org.eclipse.osee.framework.ui.plugin.util.Displays;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.ImageManager;
+import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
 import org.eclipse.osee.framework.ui.skynet.blam.AbstractBlam;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamInputSection;
 import org.eclipse.osee.framework.ui.skynet.blam.sections.BlamOutputSection;
@@ -111,8 +112,9 @@ public class CoverageEditorImportTab extends FormPage {
    }
 
    public void simulateImport(String importName) throws OseeCoreException {
-      if (!Strings.isValid(importName)) throw new OseeStateException(String.format("Invalid importName [%s]",
-            importName));
+      if (!Strings.isValid(importName)) {
+         throw new OseeStateException(String.format("Invalid importName [%s]", importName));
+      }
       AbstractCoverageBlam blam = null;
       for (AbstractCoverageBlam abstractCoverageBlam : CoverageManager.getCoverageBlams()) {
          if (abstractCoverageBlam.getName().equals(importName)) {
@@ -129,7 +131,7 @@ public class CoverageEditorImportTab extends FormPage {
       isSimulateImput = true;
    }
 
-   public void simulateImportSearch() {
+   public void simulateImportSearch() throws OseeArgumentException {
       coverageEditorMergeTab.simulateSearchAll();
    }
 
@@ -143,7 +145,9 @@ public class CoverageEditorImportTab extends FormPage {
    }
 
    private void createDestroyableComposite() {
-      if (destroyableComposite != null) destroyableComposite.dispose();
+      if (destroyableComposite != null) {
+         destroyableComposite.dispose();
+      }
       destroyableComposite =
             getManagedForm().getToolkit().createComposite(getManagedForm().getForm().getBody(), SWT.NONE);
       destroyableComposite.setLayout(new GridLayout());
@@ -153,7 +157,9 @@ public class CoverageEditorImportTab extends FormPage {
 
    private void createBlamSections() {
       if (blamUsageSection != null) {
-         if (blamUsageSection != null) getManagedForm().removePart(blamUsageSection);
+         if (blamUsageSection != null) {
+            getManagedForm().removePart(blamUsageSection);
+         }
          blamUsageSection.dispose();
          if (blamInputSection != null) {
             getManagedForm().removePart(blamInputSection);
@@ -349,8 +355,12 @@ public class CoverageEditorImportTab extends FormPage {
                         Displays.ensureInDisplayThread(new Runnable() {
                            @Override
                            public void run() {
-                              coverageEditor.simulateImportPostRun();
-                              isSimulateImput = false;
+                              try {
+                                 coverageEditor.simulateImportPostRun();
+                                 isSimulateImput = false;
+                              } catch (OseeCoreException ex) {
+                                 OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+                              }
                            }
                         });
                      } catch (InterruptedException ex) {

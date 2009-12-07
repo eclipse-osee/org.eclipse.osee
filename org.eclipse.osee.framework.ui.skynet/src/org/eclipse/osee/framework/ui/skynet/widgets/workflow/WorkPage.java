@@ -15,8 +15,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import javax.xml.parsers.ParserConfigurationException;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.AHTML;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -59,7 +61,9 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    public WorkPage(WorkFlowDefinition workFlowDefinition, WorkPageDefinition workPageDefinition, String xWidgetsXml, IXWidgetOptionResolver optionResolver, IDynamicWidgetLayoutListener dynamicWidgetLayoutListener) {
       this(workFlowDefinition, workPageDefinition, optionResolver, dynamicWidgetLayoutListener);
       try {
-         if (xWidgetsXml != null) processXmlLayoutDatas(xWidgetsXml);
+         if (xWidgetsXml != null) {
+            processXmlLayoutDatas(xWidgetsXml);
+         }
       } catch (Exception ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, "Error processing attributes", ex);
       }
@@ -104,14 +108,20 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    }
 
    public void dispose() {
-      for (DynamicXWidgetLayoutData layoutData : getlayoutDatas()) {
-         layoutData.getXWidget().dispose();
+      try {
+         for (DynamicXWidgetLayoutData layoutData : getlayoutDatas()) {
+            layoutData.getXWidget().dispose();
+         }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
    }
 
    @Override
    public boolean equals(Object obj) {
-      if (obj instanceof WorkPage) return getId().equals(((WorkPage) obj).getId());
+      if (obj instanceof WorkPage) {
+         return getId().equals(((WorkPage) obj).getId());
+      }
       return false;
    }
 
@@ -121,22 +131,26 @@ public class WorkPage implements IDynamicWidgetLayoutListener {
    }
 
    public Result isPageComplete() {
-      for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
-         if (!layoutData.getXWidget().isValid().isOK()) {
-            // Check to see if widget is part of a completed OR or XOR group
-            if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStorageName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStorageName())) {
-               return new Result(layoutData.getXWidget().isValid().getMessage());
+      try {
+         for (DynamicXWidgetLayoutData layoutData : dynamicXWidgetLayout.getLayoutDatas()) {
+            if (!layoutData.getXWidget().isValid().isOK()) {
+               // Check to see if widget is part of a completed OR or XOR group
+               if (!dynamicXWidgetLayout.isOrGroupFromAttrNameComplete(layoutData.getStorageName()) && !dynamicXWidgetLayout.isXOrGroupFromAttrNameComplete(layoutData.getStorageName())) {
+                  return new Result(layoutData.getXWidget().isValid().getMessage());
+               }
             }
          }
+      } catch (OseeCoreException ex) {
+         OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
       }
       return Result.TrueResult;
    }
 
-   public String getHtml(String backgroundColor) {
+   public String getHtml(String backgroundColor) throws OseeArgumentException {
       return getHtml(backgroundColor, "", "");
    }
 
-   public String getHtml(String backgroundColor, String preHtml, String postHtml) {
+   public String getHtml(String backgroundColor, String preHtml, String postHtml) throws OseeArgumentException {
       StringBuffer sb = new StringBuffer();
       sb.append(AHTML.startBorderTable(100, backgroundColor, getName()));
       if (preHtml != null) {

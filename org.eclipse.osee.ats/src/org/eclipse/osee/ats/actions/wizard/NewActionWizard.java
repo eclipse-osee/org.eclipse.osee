@@ -21,6 +21,7 @@ import org.eclipse.osee.ats.AtsPlugin;
 import org.eclipse.osee.ats.artifact.ActionArtifact;
 import org.eclipse.osee.ats.artifact.ActionableItemArtifact;
 import org.eclipse.osee.ats.util.AtsPriority.PriorityType;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -99,11 +100,11 @@ public class NewActionWizard extends Wizard implements INewWizard {
       }
    }
 
-   public boolean isTTAction() {
+   public boolean isTTAction() throws OseeArgumentException {
       return getTitle().equals("tt");
    }
 
-   public String getTitle() {
+   public String getTitle() throws OseeArgumentException {
       return ((XText) page1.getXWidget("Title")).get();
    }
 
@@ -111,11 +112,11 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return page1.getSelectedActionableItemArtifacts();
    }
 
-   public String getDescription() {
+   public String getDescription() throws OseeArgumentException {
       return ((XText) page2.getXWidget("Description")).get();
    }
 
-   public Set<String> getUserCommunities() {
+   public Set<String> getUserCommunities() throws OseeArgumentException {
       Set<String> items = new HashSet<String>();
       // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
       for (XListItem item : ((XList) page2.getXWidget("ats.User Community")).getSelected()) {
@@ -129,16 +130,16 @@ public class NewActionWizard extends Wizard implements INewWizard {
       return PriorityType.getPriority(((XCombo) page2.getXWidget("ats.Priority")).get());
    }
 
-   public ChangeType getChangeType() {
+   public ChangeType getChangeType() throws OseeArgumentException {
       // Must use skynet attribute name cause this widget uses the OPTIONS_FROM_ATTRIBUTE_VALIDITY
       return ChangeType.getChangeType(((XCombo) page2.getXWidget("ats.Change Type")).get());
    }
 
-   public boolean getValidation() {
+   public boolean getValidation() throws OseeArgumentException {
       return ((XCheckBox) page2.getXWidget("Validation Required")).get();
    }
 
-   public Date getNeedBy() {
+   public Date getNeedBy() throws OseeArgumentException {
       return ((XDate) page2.getXWidget("Deadline")).getDate();
    }
 
@@ -148,7 +149,7 @@ public class NewActionWizard extends Wizard implements INewWizard {
       }
    }
 
-   public XWidget getExtendedXWidget(String attrName) {
+   public XWidget getExtendedXWidget(String attrName) throws OseeArgumentException {
       if (page3 == null) {
          return null;
       }

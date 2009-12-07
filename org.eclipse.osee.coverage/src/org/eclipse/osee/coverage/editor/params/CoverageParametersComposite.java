@@ -15,7 +15,9 @@ import java.util.logging.Level;
 import org.eclipse.osee.coverage.editor.CoverageEditor;
 import org.eclipse.osee.coverage.model.CoverageMethodEnum;
 import org.eclipse.osee.coverage.util.widget.XHyperlabelCoverageMethodSelection;
+import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.User;
 import org.eclipse.osee.framework.ui.skynet.SkynetGuiPlugin;
@@ -74,12 +76,16 @@ public class CoverageParametersComposite extends Composite {
       clearButton.addSelectionListener(new SelectionAdapter() {
          @Override
          public void widgetSelected(SelectionEvent e) {
-            getAssigeeCombo().clear();
-            getNotesXText().set("");
-            getNameXText().set("");
-            getNamespaceXText().set("");
-            getRationaleXText().set("");
-            getCoverageMethodHyperlinkSelection().clear();
+            try {
+               getAssigeeCombo().clear();
+               getNotesXText().set("");
+               getNameXText().set("");
+               getNamespaceXText().set("");
+               getRationaleXText().set("");
+               getCoverageMethodHyperlinkSelection().clear();
+            } catch (OseeCoreException ex) {
+               OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE_POPUP, ex);
+            }
          }
       });
       coverageEditor.getToolkit().adapt(clearButton, true, true);
@@ -92,128 +98,152 @@ public class CoverageParametersComposite extends Composite {
       try {
          page = new WorkPage(getWidgetXml(), new DefaultXWidgetOptionResolver());
          page.createBody(managedForm, paramComp, null, null, true);
+
+         getAssigeeCombo().addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               try {
+                  coverageParameters.setAssignee(getAssignee());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+         });
+         getNotesXText().addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               try {
+                  coverageParameters.setNotes(getNotesStr());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+         });
+         getNameXText().addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               try {
+                  coverageParameters.setName(getNameXText().get());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+         });
+         getNamespaceXText().addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               try {
+                  coverageParameters.setNamespace(getNamespaceStr());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+         });
+         getRationaleXText().addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               try {
+                  coverageParameters.setRationale(getRationaleStr());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+         });
+         getCoverageMethodHyperlinkSelection().addXModifiedListener(new XModifiedListener() {
+
+            @Override
+            public void widgetModified(XWidget widget) {
+               try {
+                  coverageParameters.setCoverageMethods(getCoverageMethodHyperlinkSelection().getSelectedCoverageMethods());
+               } catch (OseeCoreException ex) {
+                  OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
+               }
+            }
+         });
       } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, Level.SEVERE, ex);
       }
-
-      getAssigeeCombo().addXModifiedListener(new XModifiedListener() {
-
-         @Override
-         public void widgetModified(XWidget widget) {
-            coverageParameters.setAssignee(getAssignee());
-         }
-      });
-      getNotesXText().addXModifiedListener(new XModifiedListener() {
-
-         @Override
-         public void widgetModified(XWidget widget) {
-            coverageParameters.setNotes(getNotesStr());
-         }
-      });
-      getNameXText().addXModifiedListener(new XModifiedListener() {
-
-         @Override
-         public void widgetModified(XWidget widget) {
-            coverageParameters.setName(getNameXText().get());
-         }
-      });
-      getNamespaceXText().addXModifiedListener(new XModifiedListener() {
-
-         @Override
-         public void widgetModified(XWidget widget) {
-            coverageParameters.setNamespace(getNamespaceStr());
-         }
-      });
-      getRationaleXText().addXModifiedListener(new XModifiedListener() {
-
-         @Override
-         public void widgetModified(XWidget widget) {
-            coverageParameters.setRationale(getRationaleStr());
-         }
-      });
-      getCoverageMethodHyperlinkSelection().addXModifiedListener(new XModifiedListener() {
-
-         @Override
-         public void widgetModified(XWidget widget) {
-            coverageParameters.setCoverageMethods(getCoverageMethodHyperlinkSelection().getSelectedCoverageMethods());
-         }
-      });
    }
 
-   public boolean isShowAll() {
+   public boolean isShowAll() throws OseeArgumentException {
       if (getShowAllCheckbox() == null) {
          return false;
       }
       return getShowAllCheckbox().isSelected();
    }
 
-   public String getNotesStr() {
+   public String getNotesStr() throws OseeArgumentException {
       if (getNotesXText() != null) {
          return getNotesXText().get();
       }
       return "";
    }
 
-   public String getNameStr() {
+   public String getNameStr() throws OseeArgumentException {
       if (getNameXText() != null) {
          return getNameXText().get();
       }
       return "";
    }
 
-   public String getNamespaceStr() {
+   public String getNamespaceStr() throws OseeArgumentException {
       if (getNamespaceXText() != null) {
          return getNamespaceXText().get();
       }
       return "";
    }
 
-   public String getRationaleStr() {
+   public String getRationaleStr() throws OseeArgumentException {
       if (getRationaleXText() != null) {
          return getRationaleXText().get();
       }
       return "";
    }
 
-   public XMembersCombo getAssigeeCombo() {
+   public XMembersCombo getAssigeeCombo() throws OseeArgumentException {
       return (XMembersCombo) getXWidget("Coverage Unit Assignee");
    }
 
-   public XText getNotesXText() {
+   public XText getNotesXText() throws OseeArgumentException {
       return (XText) getXWidget("Coverage Unit Notes");
    }
 
-   public XText getNameXText() {
+   public XText getNameXText() throws OseeArgumentException {
       return (XText) getXWidget("Name");
    }
 
-   public XText getNamespaceXText() {
+   public XText getNamespaceXText() throws OseeArgumentException {
       return (XText) getXWidget("Namespace");
    }
 
-   public XText getRationaleXText() {
+   public XText getRationaleXText() throws OseeArgumentException {
       return (XText) getXWidget("Rationale");
    }
 
-   public XCheckBox getShowAllCheckbox() {
+   public XCheckBox getShowAllCheckbox() throws OseeArgumentException {
       return (XCheckBox) getXWidget("Show All");
    }
 
-   public User getAssignee() {
+   public User getAssignee() throws OseeArgumentException {
       if (getAssigeeCombo() == null) {
          return null;
       }
       return getAssigeeCombo().getUser();
    }
 
-   public Collection<CoverageMethodEnum> getSelectedCoverageMethods() {
+   public Collection<CoverageMethodEnum> getSelectedCoverageMethods() throws OseeArgumentException {
       if (getCoverageMethodHyperlinkSelection() == null) {
          return Collections.emptyList();
       }
       return getCoverageMethodHyperlinkSelection().getSelectedCoverageMethods();
    }
 
-   public XWidget getXWidget(String attrName) {
+   public XWidget getXWidget(String attrName) throws OseeArgumentException {
       if (page == null) {
          throw new IllegalArgumentException("WorkPage == null");
       }
@@ -223,7 +253,7 @@ public class CoverageParametersComposite extends Composite {
       return page.getLayoutData(attrName).getXWidget();
    }
 
-   public XHyperlabelCoverageMethodSelection getCoverageMethodHyperlinkSelection() {
+   public XHyperlabelCoverageMethodSelection getCoverageMethodHyperlinkSelection() throws OseeArgumentException {
       return (XHyperlabelCoverageMethodSelection) getXWidget("Coverage Method");
    }
 
