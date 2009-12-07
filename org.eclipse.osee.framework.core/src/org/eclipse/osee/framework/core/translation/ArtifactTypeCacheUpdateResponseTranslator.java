@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.translation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.ArtifactTypeCacheUpdateResponse;
@@ -34,17 +35,17 @@ public class ArtifactTypeCacheUpdateResponseTranslator implements ITranslator<Ar
    @Override
    public ArtifactTypeCacheUpdateResponse convert(PropertyStore store) throws OseeCoreException {
       List<ArtifactTypeRow> rows = new ArrayList<ArtifactTypeRow>();
+      Map<Integer, Integer[]> baseToSuper = new HashMap<Integer, Integer[]>();
+      List<Triplet<Integer, Integer, Integer>> artAttrs = new ArrayList<Triplet<Integer, Integer, Integer>>();
+
       int rowCount = store.getInt(Fields.ITEM_COUNT.name());
       for (int index = 0; index < rowCount; index++) {
          String[] rowData = store.getArray(createKey(Fields.ITEM_ROW, index));
          rows.add(ArtifactTypeRow.fromArray(rowData));
       }
 
-      Map<Integer, Integer[]> baseToSuper = TranslationUtil.getIntArrayMap(store, Fields.BASE_TO_SUPER_TYPES);
-
-      List<Triplet<Integer, Integer, Integer>> artAttrs =
-            TranslationUtil.getTripletList(store, Fields.BASE_BRANCH_ATTR);
-
+      TranslationUtil.loadIntArrayMap(baseToSuper, store, Fields.BASE_TO_SUPER_TYPES);
+      TranslationUtil.loadTripletList(artAttrs, store, Fields.BASE_BRANCH_ATTR);
       return new ArtifactTypeCacheUpdateResponse(rows, baseToSuper, artAttrs);
    }
 

@@ -11,6 +11,7 @@
 package org.eclipse.osee.framework.core.translation;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.core.data.AttributeTypeCacheUpdateResponse;
@@ -51,7 +52,8 @@ public class AttributeTypeCacheUpdateResponseTranslator implements ITranslator<A
          String[] rowData = store.getArray(createKey(Fields.ROW, index));
          rows.add(createfromArray(factory, rowData));
       }
-      Map<Integer, Integer> attrToEnum = TranslationUtil.getMap(store, Fields.ATTR_TO_ENUM);
+      Map<Integer, Integer> attrToEnum = new HashMap<Integer, Integer>();
+      TranslationUtil.loadMap(attrToEnum, store, Fields.ATTR_TO_ENUM);
       return new AttributeTypeCacheUpdateResponse(rows, attrToEnum);
    }
 

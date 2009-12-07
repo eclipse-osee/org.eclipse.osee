@@ -10,8 +10,6 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.translation;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -26,12 +24,12 @@ public final class TranslationUtil {
    private TranslationUtil() {
    }
 
-   public static Map<Integer, String[]> getArrayMap(PropertyStore store, Enum<?> key) {
-      return storeToArrayMap(store.getPropertyStore(key.name()));
+   public static void loadArrayMap(Map<Integer, String[]> map, PropertyStore store, Enum<?> key) {
+      storeToArrayMap(map, store.getPropertyStore(key.name()));
    }
 
-   public static Map<Integer, Integer> getMap(PropertyStore store, Enum<?> key) {
-      return storeToMap(store.getPropertyStore(key.name()));
+   public static void loadMap(Map<Integer, Integer> map, PropertyStore store, Enum<?> key) {
+      storeToMap(map, store.getPropertyStore(key.name()));
    }
 
    public static void putMap(PropertyStore store, Enum<?> key, Map<Integer, Integer> map) {
@@ -42,8 +40,8 @@ public final class TranslationUtil {
       store.put(key.name(), arrayMapToStore(map));
    }
 
-   public static List<Triplet<Integer, Integer, Integer>> getTripletList(PropertyStore store, Enum<?> key) {
-      return storeToTripletList(store.getPropertyStore(key.name()));
+   public static void loadTripletList(List<Triplet<Integer, Integer, Integer>> data, PropertyStore store, Enum<?> key) {
+      storeToTripletList(data, store.getPropertyStore(key.name()));
    }
 
    public static void putTripletList(PropertyStore store, Enum<?> key, List<Triplet<Integer, Integer, Integer>> list) {
@@ -79,28 +77,23 @@ public final class TranslationUtil {
       return innerStore;
    }
 
-   private static Map<Integer, Integer> storeToMap(PropertyStore innerStore) {
-      Map<Integer, Integer> map = new HashMap<Integer, Integer>();
+   private static void storeToMap(Map<Integer, Integer> map, PropertyStore innerStore) {
       for (String strkey : innerStore.keySet()) {
          Integer key = Integer.valueOf(strkey);
          Integer value = innerStore.getInt(strkey);
          map.put(key, value);
       }
-      return map;
    }
 
-   private static Map<Integer, String[]> storeToArrayMap(PropertyStore innerStore) {
-      Map<Integer, String[]> map = new HashMap<Integer, String[]>();
+   private static void storeToArrayMap(Map<Integer, String[]> map, PropertyStore innerStore) {
       for (String strkey : innerStore.arrayKeySet()) {
          Integer key = Integer.valueOf(strkey);
          String[] value = innerStore.getArray(strkey);
          map.put(key, value);
       }
-      return map;
    }
 
-   private static Map<Integer, Integer[]> storeToIntArrayMap(PropertyStore innerStore) {
-      Map<Integer, Integer[]> map = new HashMap<Integer, Integer[]>();
+   private static void storeToIntArrayMap(Map<Integer, Integer[]> map, PropertyStore innerStore) {
       for (String strkey : innerStore.arrayKeySet()) {
          Integer key = Integer.valueOf(strkey);
          String[] value = innerStore.getArray(strkey);
@@ -110,11 +103,9 @@ public final class TranslationUtil {
          }
          map.put(key, intValues);
       }
-      return map;
    }
 
-   private static List<Triplet<Integer, Integer, Integer>> storeToTripletList(PropertyStore innerStore) {
-      List<Triplet<Integer, Integer, Integer>> data = new ArrayList<Triplet<Integer, Integer, Integer>>();
+   private static void storeToTripletList(List<Triplet<Integer, Integer, Integer>> data, PropertyStore innerStore) {
       for (String strKey : innerStore.arrayKeySet()) {
          String[] value = innerStore.getArray(strKey);
          Integer first = Integer.valueOf(value[0]);
@@ -122,7 +113,6 @@ public final class TranslationUtil {
          Integer third = Integer.valueOf(value[2]);
          data.add(new Triplet<Integer, Integer, Integer>(first, second, third));
       }
-      return data;
    }
 
    private static PropertyStore tripletListToStore(List<Triplet<Integer, Integer, Integer>> list) {
@@ -139,8 +129,8 @@ public final class TranslationUtil {
       return innerStore;
    }
 
-   public static Map<Integer, Integer[]> getIntArrayMap(PropertyStore store, Enum<?> key) {
-      return storeToIntArrayMap(store.getPropertyStore(key.name()));
+   public static void loadIntArrayMap(Map<Integer, Integer[]> map, PropertyStore store, Enum<?> key) {
+      storeToIntArrayMap(map, store.getPropertyStore(key.name()));
    }
 
    public static void putIntArrayMap(PropertyStore store, Enum<?> key, Map<Integer, Integer[]> map) {

@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.framework.core.data;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
@@ -27,14 +29,14 @@ public abstract class AbstractBranchCacheMessage {
    private final Map<Integer, String[]> branchToAliases;
    private final List<Triplet<Integer, Integer, Integer>> srcDestMerge;
 
-   protected AbstractBranchCacheMessage(List<BranchRow> rows, Map<Integer, Integer> childToParent, Map<Integer, Integer> branchToBaseTx, Map<Integer, Integer> branchToSourceTx, Map<Integer, Integer> branchToAssocArt, Map<Integer, String[]> branchToAliases, List<Triplet<Integer, Integer, Integer>> srcDestMerge) {
-      this.rows = rows;
-      this.childToParent = childToParent;
-      this.branchToBaseTx = branchToBaseTx;
-      this.branchToSourceTx = branchToSourceTx;
-      this.branchToAssocArt = branchToAssocArt;
-      this.branchToAliases = branchToAliases;
-      this.srcDestMerge = srcDestMerge;
+   protected AbstractBranchCacheMessage() {
+      this.rows = new ArrayList<BranchRow>();
+      this.childToParent = new HashMap<Integer, Integer>();
+      this.branchToBaseTx = new HashMap<Integer, Integer>();
+      this.branchToSourceTx = new HashMap<Integer, Integer>();
+      this.branchToAssocArt = new HashMap<Integer, Integer>();
+      this.branchToAliases = new HashMap<Integer, String[]>();
+      this.srcDestMerge = new ArrayList<Triplet<Integer, Integer, Integer>>();
    }
 
    public List<BranchRow> getBranchRows() {

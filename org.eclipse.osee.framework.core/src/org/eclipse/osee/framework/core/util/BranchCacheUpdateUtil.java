@@ -12,6 +12,7 @@ package org.eclipse.osee.framework.core.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -21,16 +22,32 @@ import org.eclipse.osee.framework.core.cache.TransactionCache;
 import org.eclipse.osee.framework.core.data.AbstractBranchCacheMessage;
 import org.eclipse.osee.framework.core.data.BranchRow;
 import org.eclipse.osee.framework.core.data.IArtifactFactory;
+import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.core.model.BranchFactory;
 import org.eclipse.osee.framework.core.model.TransactionRecord;
+import org.eclipse.osee.framework.core.translation.TranslationUtil;
+import org.eclipse.osee.framework.jdk.core.type.CompositeKeyHashMap;
+import org.eclipse.osee.framework.jdk.core.type.Pair;
+import org.eclipse.osee.framework.jdk.core.type.PropertyStore;
 import org.eclipse.osee.framework.jdk.core.type.Triplet;
 
 /**
  * @author Megumi Telles
  */
-public class BranchCacheUpdateUtil {
+public final class BranchCacheUpdateUtil {
+
+   private enum Fields {
+      BRANCH_COUNT,
+      BRANCH_ROW,
+      CHILD_TO_PARENT,
+      BRANCH_TO_BASE_TX,
+      BRANCH_TO_SRC_TX,
+      BRANCH_TO_ASSOC_ART,
+      BRANCH_TO_ALIASES,
+      SRC_DEST_MERGE;
+   }
 
    private final BranchFactory factory;
    private final TransactionCache txCache;
@@ -47,9 +64,6 @@ public class BranchCacheUpdateUtil {
       List<Branch> updatedItems = new ArrayList<Branch>();
 
       Map<Integer, String[]> branchToAliases = cacheMessage.getBranchAliases();
-
-      Map<Integer, Integer> branchToBaseTx = cacheMessage.getBranchToBaseTx();
-      Map<Integer, Integer> branchToSourceTx = cacheMessage.getBranchToSourceTx();
       Map<Integer, Integer> branchToAssocArt = cacheMessage.getBranchToAssocArt();
 
       for (BranchRow srcItem : cacheMessage.getBranchRows()) {
@@ -59,24 +73,15 @@ public class BranchCacheUpdateUtil {
                      srcItem.getBranchName(), srcItem.getBranchType(), srcItem.getBranchState(),
                      srcItem.getBranchArchived().isArchived());
          updatedItems.add(updated);
+
          String[] aliases = branchToAliases.get(branchId);
          if (aliases != null && aliases.length > 0) {
             updated.setAliases(aliases);
          }
 
-         Integer baseTxId = branchToBaseTx.get(branchId);
-         if (baseTxId != null) {
-            TransactionRecord baseTx = txCache.getOrLoad(baseTxId);
-            updated.setBaseTransaction(baseTx);
-         }
+         updated.setBaseTransaction(getTx(cacheMessage.getBranchToBaseTx(), branchId));
+         updated.setSourceTransaction(getTx(cacheMessage.getBranchToSourceTx(), branchId));
 
-         Integer srcTxId = branchToSourceTx.get(branchId);
-         if (srcTxId != null) {
-            TransactionRecord srcTx = txCache.getOrLoad(srcTxId); //transactionCache.getById(srcTxId);
-            if (srcTx != null) {
-               updated.setSourceTransaction(srcTx);
-            }
-         }
          Integer artifactId = branchToAssocArt.get(branchId);
          if (artifactId != null) {
             updated.setAssociatedArtifact(artFactory.createArtifact(artifactId));
@@ -102,50 +107,93 @@ public class BranchCacheUpdateUtil {
       return updatedItems;
    }
 
-   //   public static AbstractBranchCacheMessage fromCache(BranchCache cache, Collection<Branch> types) throws OseeCoreException {
-   //      List<BranchRow> rowData = new ArrayList<BranchRow>();
-   //      Map<Integer, Integer> childToParent = new HashMap<Integer, Integer>();
-   //      Map<Integer, Integer> branchToBaseTx = new HashMap<Integer, Integer>();
-   //      Map<Integer, Integer> branchToSourceTx = new HashMap<Integer, Integer>();
-   //      Map<Integer, Integer> branchToAssocArt = new HashMap<Integer, Integer>();
-   //      Map<Integer, String[]> branchToAliases = new HashMap<Integer, String[]>();
-   //
-   //      for (Branch br : types) {
-   //         Integer branchId = br.getId();
-   //         rowData.add(new BranchRow(br.getId(), br.getGuid(), br.getName(), br.getBranchType(), br.getBranchState(),
-   //               br.getArchiveState(), br.getModificationType()));
-   //         Collection<String> aliases = br.getAliases();
-   //         if (!aliases.isEmpty()) {
-   //            branchToAliases.put(branchId, aliases.toArray(new String[aliases.size()]));
-   //         }
-   //
-   //         if (br.hasParentBranch()) {
-   //            childToParent.put(branchId, br.getParentBranch().getId());
-   //         }
-   //
-   //         TransactionRecord txBase = br.getBaseTransaction();
-   //         if (txBase != null) {
-   //            branchToBaseTx.put(branchId, txBase.getId());
-   //         }
-   //         TransactionRecord srcBase = br.getSourceTransaction();
-   //         if (srcBase != null) {
-   //            branchToSourceTx.put(branchId, srcBase.getId());
-   //         }
-   //
-   //         IBasicArtifact<?> art = br.getAssociatedArtifact();
-   //         if (art != null) {
-   //            branchToAssocArt.put(branchId, art.getArtId());
-   //         }
-   //      }
-   //
-   //      List<Triplet<Integer, Integer, Integer>> srcDestMerge = new ArrayList<Triplet<Integer, Integer, Integer>>();
-   //      for (Entry<Pair<Branch, Branch>, Branch> entry : cache.getMergeBranches().entrySet()) {
-   //         Integer src = entry.getKey().getFirst().getId();
-   //         Integer dest = entry.getKey().getSecond().getId();
-   //         Integer merge = entry.getValue().getId();
-   //         srcDestMerge.add(new Triplet<Integer, Integer, Integer>(src, dest, merge));
-   //      }
-   //      return new AbstractBranchCacheMessage(rowData, childToParent, branchToBaseTx, branchToSourceTx, branchToAssocArt,
-   //            branchToAliases, srcDestMerge);
-   //   }
+   private TransactionRecord getTx(Map<Integer, Integer> branchToTx, Integer branchId) throws OseeCoreException {
+      TransactionRecord tx = null;
+      Integer txId = branchToTx.get(branchId);
+      if (txId != null && txId > -1) {
+         tx = txCache.getOrLoad(txId);
+      }
+      return tx;
+   }
+
+   public static void loadFromCache(AbstractBranchCacheMessage message, BranchCache cache, Collection<Branch> types) throws OseeCoreException {
+      List<BranchRow> rowData = new ArrayList<BranchRow>();
+      Map<Integer, Integer> childToParent = new HashMap<Integer, Integer>();
+
+      for (Branch br : types) {
+         Integer branchId = br.getId();
+         rowData.add(new BranchRow(br.getId(), br.getGuid(), br.getName(), br.getBranchType(), br.getBranchState(),
+               br.getArchiveState(), br.getModificationType()));
+         if (br.hasParentBranch()) {
+            childToParent.put(branchId, br.getParentBranch().getId());
+         }
+         addAliases(message.getBranchAliases(), branchId, br.getAliases());
+         addTxRecord(message.getBranchToBaseTx(), branchId, br.getBaseTransaction());
+         addTxRecord(message.getBranchToSourceTx(), branchId, br.getSourceTransaction());
+         addAssocArtifact(message.getBranchToAssocArt(), branchId, br.getAssociatedArtifact());
+      }
+      loadMergeBranches(message.getMergeBranches(), cache.getMergeBranches());
+   }
+
+   private static void addAliases(Map<Integer, String[]> branchToAliases, Integer branchId, Collection<String> aliases) {
+      if (!aliases.isEmpty()) {
+         branchToAliases.put(branchId, aliases.toArray(new String[aliases.size()]));
+      }
+   }
+
+   private static void addAssocArtifact(Map<Integer, Integer> map, Integer branchId, IBasicArtifact<?> art) {
+      if (art != null) {
+         map.put(branchId, art.getArtId());
+      } else {
+         map.put(branchId, -1);
+      }
+   }
+
+   private static void loadMergeBranches(List<Triplet<Integer, Integer, Integer>> srcDestMerge, CompositeKeyHashMap<Branch, Branch, Branch> sourceDestMerge) {
+      for (Entry<Pair<Branch, Branch>, Branch> entry : sourceDestMerge.entrySet()) {
+         Integer src = entry.getKey().getFirst().getId();
+         Integer dest = entry.getKey().getSecond().getId();
+         Integer merge = entry.getValue().getId();
+         srcDestMerge.add(new Triplet<Integer, Integer, Integer>(src, dest, merge));
+      }
+   }
+
+   private static void addTxRecord(Map<Integer, Integer> map, Integer branchId, TransactionRecord toAdd) {
+      if (toAdd != null) {
+         map.put(branchId, toAdd.getId());
+      } else {
+         map.put(branchId, -1);
+      }
+   }
+
+   public static void loadMessage(AbstractBranchCacheMessage message, PropertyStore store) {
+      List<BranchRow> rows = message.getBranchRows();
+      int rowCount = store.getInt(Fields.BRANCH_COUNT.name());
+      for (int index = 0; index < rowCount; index++) {
+         String[] rowData = store.getArray(TranslationUtil.createKey(Fields.BRANCH_ROW, index));
+         rows.add(BranchRow.fromArray(rowData));
+      }
+      TranslationUtil.loadMap(message.getChildToParent(), store, Fields.CHILD_TO_PARENT);
+      TranslationUtil.loadMap(message.getBranchToBaseTx(), store, Fields.BRANCH_TO_BASE_TX);
+      TranslationUtil.loadMap(message.getBranchToSourceTx(), store, Fields.BRANCH_TO_SRC_TX);
+      TranslationUtil.loadMap(message.getBranchToAssocArt(), store, Fields.BRANCH_TO_ASSOC_ART);
+      TranslationUtil.loadArrayMap(message.getBranchAliases(), store, Fields.BRANCH_TO_ALIASES);
+      TranslationUtil.loadTripletList(message.getMergeBranches(), store, Fields.SRC_DEST_MERGE);
+   }
+
+   public static void loadStore(PropertyStore store, AbstractBranchCacheMessage message) throws OseeCoreException {
+      List<BranchRow> rows = message.getBranchRows();
+      for (int index = 0; index < rows.size(); index++) {
+         BranchRow row = rows.get(index);
+         store.put(TranslationUtil.createKey(Fields.BRANCH_ROW, index), row.toArray());
+      }
+      store.put(Fields.BRANCH_COUNT.name(), rows.size());
+
+      TranslationUtil.putMap(store, Fields.CHILD_TO_PARENT, message.getChildToParent());
+      TranslationUtil.putMap(store, Fields.BRANCH_TO_BASE_TX, message.getBranchToBaseTx());
+      TranslationUtil.putMap(store, Fields.BRANCH_TO_SRC_TX, message.getBranchToSourceTx());
+      TranslationUtil.putMap(store, Fields.BRANCH_TO_ASSOC_ART, message.getBranchToAssocArt());
+      TranslationUtil.putArrayMap(store, Fields.BRANCH_TO_ALIASES, message.getBranchAliases());
+      TranslationUtil.putTripletList(store, Fields.SRC_DEST_MERGE, message.getMergeBranches());
+   }
 }

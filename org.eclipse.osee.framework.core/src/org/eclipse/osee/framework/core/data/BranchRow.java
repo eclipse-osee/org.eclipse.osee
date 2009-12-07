@@ -15,7 +15,7 @@ public final class BranchRow {
    private final BranchArchivedState branchArchived;
    private final ModificationType modType;
 
-   protected BranchRow(int branchId, String branchGuid, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, ModificationType modType) {
+   public BranchRow(int branchId, String branchGuid, String branchName, BranchType branchType, BranchState branchState, BranchArchivedState branchArchived, ModificationType modType) {
       super();
       this.branchId = branchId;
       this.branchGuid = branchGuid;
