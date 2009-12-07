@@ -1019,11 +1019,11 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
    }
 
    public void explore(Artifact artifact) throws CoreException, IllegalArgumentException {
-      setPartName("Artifact Explorer: " + artifact.getBranch().getShortName());
       if (artifact == null) {
          throw new IllegalArgumentException("Can not explore a null artifact.");
       }
 
+      setPartName("Artifact Explorer: " + artifact.getBranch().getShortName());
       if (branch != null && branch != artifact.getBranch()) {
          explore(Arrays.asList(artifact));
          return;
@@ -1380,7 +1380,7 @@ public class ArtifactExplorer extends ViewPart implements IRebuildMenuListener, 
                         treeViewer.refresh(bArtifact);
                      }
                   } catch (Exception ex) {
-                     // do nothing
+                     OseeLog.log(SkynetGuiPlugin.class, OseeLevel.INFO, ex);
                   }
                }
             });

@@ -61,7 +61,6 @@ public class AttributesComposite extends Composite {
    private Artifact artifact;
    private final IDirtiableEditor editor;
    private Label warningLabel;
-   private final boolean displayNameAttribute = true;
    private final ArrayList<ModifyAttributesListener> modifyAttrListeners = new ArrayList<ModifyAttributesListener>();
    private MenuItem deleteItem;
    private final ToolBar toolBar;
@@ -311,10 +310,6 @@ public class AttributesComposite extends Composite {
          tableViewer.setInput(artifact);
          tableViewer.refresh();
       }
-   }
-
-   public boolean isDisplayNameAttribute() {
-      return displayNameAttribute;
    }
 
    public void addModifyAttributesListener(ModifyAttributesListener listener) {
