@@ -13,7 +13,6 @@ package org.eclipse.osee.framework.ui.skynet.commandHandlers.branch;
 
 import java.util.Collection;
 import java.util.List;
-
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -22,7 +21,6 @@ import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.logging.OseeLevel;
 import org.eclipse.osee.framework.logging.OseeLog;
-import org.eclipse.osee.framework.skynet.core.access.AccessControlManager;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.event.BranchEventType;
 import org.eclipse.osee.framework.skynet.core.event.OseeEventManager;
@@ -41,29 +39,30 @@ public class ArchiveBranchHandler extends CommandHandler {
       if (AWorkbench.getActivePage() == null) {
          return false;
       }
-      IStructuredSelection selection = (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection selection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
 
       List<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-      return !branches.isEmpty() && AccessControlManager.isOseeAdmin();
+      return !branches.isEmpty(); //&& AccessControlManager.isOseeAdmin();
    }
 
    @Override
    public Object execute(ExecutionEvent event) throws ExecutionException {
-      IStructuredSelection selection = (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
+      IStructuredSelection selection =
+            (IStructuredSelection) AWorkbench.getActivePage().getActivePart().getSite().getSelectionProvider().getSelection();
       Collection<Branch> branches = Handlers.getBranchesFromStructuredSelection(selection);
-      
+
       for (Branch branch : branches) {
          BranchArchivedState state = branch.getArchiveState();
          branch.setArchived(!state.isArchived());
       }
       try {
          BranchManager.persist(branches);
-         
+
          for (Branch branch : branches) {
             OseeEventManager.kickBranchEvent(this, BranchEventType.Committed, branch.getId());
          }
-      }
-      catch (OseeCoreException ex) {
+      } catch (OseeCoreException ex) {
          OseeLog.log(SkynetGuiPlugin.class, OseeLevel.SEVERE, ex);
       }
       return null;

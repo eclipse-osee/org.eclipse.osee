@@ -102,6 +102,7 @@ public class OseeCacheServlet extends OseeHttpServlet {
                break;
             case STORE:
                storeUpdates(req, resp);
+               break;
             default:
                throw new UnsupportedOperationException();
          }

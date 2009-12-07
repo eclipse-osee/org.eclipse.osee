@@ -21,6 +21,7 @@ import org.eclipse.osee.framework.core.data.BranchCacheUpdateResponse;
 import org.eclipse.osee.framework.core.data.IArtifactFactory;
 import org.eclipse.osee.framework.core.data.IBasicArtifact;
 import org.eclipse.osee.framework.core.data.OseeServerContext;
+import org.eclipse.osee.framework.core.enums.CacheOperation;
 import org.eclipse.osee.framework.core.enums.CoreTranslatorId;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -38,10 +39,17 @@ import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
 
    private final TransactionCache transactionCache;
+   private final IOseeModelFactoryServiceProvider factoryProvider;
+   private BranchCache branchCache;
 
    public ClientBranchAccessor(IOseeModelFactoryServiceProvider factoryProvider, TransactionCache transactionCache) {
       super(factoryProvider);
+      this.factoryProvider = factoryProvider;
       this.transactionCache = transactionCache;
+   }
+
+   public void setBranchCache(BranchCache branchCache) {
+      this.branchCache = branchCache;
    }
 
    protected BranchFactory getFactory() throws OseeCoreException {
@@ -62,9 +70,14 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
       return (new BranchCacheUpdateUtil(getFactory(), transactionCache, artFactory)).updateCache(response, cache);
    }
 
+   public void store(Collection<Branch> types) throws OseeCoreException {
+      store(branchCache, types);
+   }
+
    public void store(IOseeCache<Branch> cache, Collection<Branch> types) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
       parameters.put("request", "storage");
+      parameters.put("function", CacheOperation.STORE.name());
 
       BranchCacheStoreRequest request = BranchCacheStoreRequest.fromCache((BranchCache) cache, types);
       AcquireResult updateResponse =
