@@ -18,7 +18,7 @@ import org.eclipse.osee.framework.skynet.core.artifact.KeyValueArtifact;
 import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
 
-public class CoveragePackage extends CoveragePackageBase implements ICoverageUnitProvider, ICoverage {
+public class CoveragePackage extends CoveragePackageBase implements ICoverage {
 
    Date creationDate;
 

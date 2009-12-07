@@ -143,14 +143,14 @@ public class CoverageParametersTest {
       // Will match unit cause unit name contains word test
       Assert.assertTrue(coverageParameters.isNameMatch(unit));
       // Will match item cause item's getName is made up of text value
-      item.setText("this is a test");
+      item.setName("this is a test");
       Assert.assertTrue(coverageParameters.isNameMatch(item));
 
       unit.setName("alpha beta gamma");
       // Won't match unit cause unit name does not contain test
       Assert.assertFalse(coverageParameters.isNameMatch(unit));
       // Won't match item cause item's getName is made up of text value
-      item.setText("alpha beta gamma");
+      item.setName("alpha beta gamma");
       Assert.assertFalse(coverageParameters.isNameMatch(item));
    }
 
@@ -174,14 +174,14 @@ public class CoverageParametersTest {
       // Will match unit cause unit Namespace contains word test
       Assert.assertTrue(coverageParameters.isNamespaceMatch(unit));
       // Will match item cause item's getNamespace is made up of text value
-      item.setText("this is a test");
+      item.setName("this is a test");
       Assert.assertTrue(coverageParameters.isNamespaceMatch(item));
 
       unit.setNamespace("alpha beta gamma");
       // Won't match unit cause unit Namespace does not contain test
       Assert.assertFalse(coverageParameters.isNamespaceMatch(unit));
       // Won't match item cause item's getNamespace is made up of text value
-      item.setText("alpha beta gamma");
+      item.setName("alpha beta gamma");
       Assert.assertFalse(coverageParameters.isNamespaceMatch(item));
    }
 

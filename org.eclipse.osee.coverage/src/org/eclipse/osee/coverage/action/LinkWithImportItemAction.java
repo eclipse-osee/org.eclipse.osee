@@ -32,8 +32,7 @@ public class LinkWithImportItemAction extends Action {
    private XCoverageMergeViewer packageXViewer;
    private XCoverageMergeViewer importXViewer;
    private CoveragePackage coveragePackage;
-   private Collection<MatchType> matchTypes =
-         Arrays.asList(MatchType.Match__Name_And_Method, MatchType.Match__Name_Only);
+   private Collection<MatchType> matchTypes = Arrays.asList(MatchType.Match__Name_And_Order_Num);
 
    public LinkWithImportItemAction() {
       super("Link with Import Item", Action.AS_CHECK_BOX);

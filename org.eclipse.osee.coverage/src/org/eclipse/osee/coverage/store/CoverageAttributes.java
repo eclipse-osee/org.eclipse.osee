@@ -32,6 +32,7 @@ public class CoverageAttributes {
    public static final CoverageAttributes ASSIGNEES = new CoverageAttributes(Namespace.Coverage, "Assignees");
    public static final CoverageAttributes NAMESPACE = new CoverageAttributes(Namespace.Coverage, "Namespace");
    public static final CoverageAttributes LOCATION = new CoverageAttributes(Namespace.Coverage, "Location");
+   public static final CoverageAttributes ORDER = new CoverageAttributes(Namespace.Coverage, "Order");
    public static final CoverageAttributes COVERAGE_ITEM = new CoverageAttributes(Namespace.Coverage, "Coverage Item");
 
    protected CoverageAttributes(String displayName, String storeName, String description) {

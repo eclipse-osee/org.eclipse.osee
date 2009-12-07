@@ -85,15 +85,15 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                   CoverageUnit methodCoverageUnit =
                         new CoverageUnit(fileCoverageUnit, coverageDataSubProgram.getName(), "");
                   fileCoverageUnit.addCoverageUnit(methodCoverageUnit);
+                  methodCoverageUnit.setOrderNumber(String.valueOf(methodNum));
                   for (LineNumToBranches lineNumToBranches : coverageDataSubProgram.getLineNumToBranches()) {
                      CoverageItem coverageItem =
                            new CoverageItem(methodCoverageUnit, CoverageMethodEnum.Not_Covered,
                                  String.valueOf(lineNumToBranches.getLineNum()));
-                     coverageItem.setMethodNum(String.valueOf(methodNum));
                      Pair<String, Boolean> lineData =
                            vcpSourceLisFile.getExecutionLine(String.valueOf(methodNum),
                                  String.valueOf(lineNumToBranches.getLineNum()));
-                     coverageItem.setText(lineData.getFirst());
+                     coverageItem.setName(lineData.getFirst());
                      if (lineData.getSecond()) {
                         coverageItem.setCoverageMethod(CoverageMethodEnum.Exception_Handling);
                      }
@@ -125,7 +125,7 @@ public class VectorCastAdaCoverageImporter implements ICoverageImporter {
                Set<String> executeNums = methodExecutionPair.getSecond();
                for (String executeNum : executeNums) {
                   // Find or create new coverage item for method num /execution line
-                  CoverageItem coverageItem = coverageUnit.getCoverageItem(methodNum, executeNum);
+                  CoverageItem coverageItem = coverageUnit.getCoverageItem(executeNum);
                   if (coverageItem == null) {
                      coverageImport.getLog().logError(
                            String.format("Can't retrieve method [%s] from coverageUnit [%s] for test unit [%s]",

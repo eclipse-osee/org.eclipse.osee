@@ -49,6 +49,7 @@ public class XViewerGradient {
             XViewerColumn xViewerColumn =
                   ((XViewerLabelProvider) xViewer.getLabelProvider()).getTreeColumnOffIndex(event.index);
             TreeItem item = (TreeItem) event.item;
+            if (item.getData() == null) return;
             int percent =
                   ((XViewerLabelProvider) xViewer.getLabelProvider()).getColumnGradient(item.getData(), xViewerColumn,
                         event.index);

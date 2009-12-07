@@ -86,10 +86,9 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
 
       if (coverage instanceof CoverageItem) {
          CoverageItem coverageItem = (CoverageItem) coverage;
-         if (xCol.equals(CoverageXViewerFactory.Line_Number)) return coverageItem.getLineNum();
          if (xCol.equals(CoverageXViewerFactory.Coverage_Rationale)) return coverageItem.getRationale();
-         if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageItem.getMethodNum();
-         if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return coverageItem.getExecuteNum();
+         if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageItem.getParent().getOrderNumber();
+         if (xCol.equals(CoverageXViewerFactory.Execution_Number)) return coverageItem.getOrderNumber();
          if (xCol.equals(CoverageXViewerFactory.Coverage_Method)) return coverageItem.getCoverageMethod().toString();
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageItem.getCoverageUnit().getName();
          if (xCol.equals(CoverageXViewerFactory.Coverage_Test_Units)) return Collections.toString(", ",
@@ -106,7 +105,7 @@ public class CoverageLabelProvider extends XViewerLabelProvider {
             coverageUnit = (CoverageUnit) ((MergeItem) coverage).getImportItem();
          }
          if (xCol.equals(CoverageXViewerFactory.Parent_Coverage_Unit)) return coverageUnit.getParentCoverageUnit() == null ? "" : coverageUnit.getParentCoverageUnit().getName();
-         if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageUnit.getMethodNumber();
+         if (xCol.equals(CoverageXViewerFactory.Method_Number)) return coverageUnit.getOrderNumber();
       }
       return "";
 

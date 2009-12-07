@@ -24,7 +24,7 @@ import org.eclipse.osee.framework.ui.skynet.results.XResultData;
 /**
  * @author Donald G. Dunne
  */
-public abstract class CoveragePackageBase implements ICoverage {
+public abstract class CoveragePackageBase implements ICoverage, ICoverageUnitProvider {
    List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    final XResultData logResultData = new XResultData(false);
    String guid = GUID.create();
@@ -39,7 +39,9 @@ public abstract class CoveragePackageBase implements ICoverage {
 
    public void addCoverageUnit(CoverageUnit coverageUnit) {
       coverageUnit.setParent(this);
-      coverageUnits.add(coverageUnit);
+      if (!coverageUnits.contains(coverageUnit)) {
+         coverageUnits.add(coverageUnit);
+      }
    }
 
    public List<CoverageUnit> getCoverageUnits() {
@@ -280,6 +282,11 @@ public abstract class CoveragePackageBase implements ICoverage {
    @Override
    public boolean isFolder() {
       return false;
+   }
+
+   @Override
+   public String getOrderNumber() {
+      return "";
    }
 
 }

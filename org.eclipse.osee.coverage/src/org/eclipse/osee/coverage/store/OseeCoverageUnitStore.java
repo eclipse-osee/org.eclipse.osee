@@ -78,10 +78,10 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
                ""));
          coverageUnit.setNamespace(artifact.getSoleAttributeValueAsString(CoverageAttributes.NAMESPACE.getStoreName(),
                ""));
+         coverageUnit.setOrderNumber(artifact.getSoleAttributeValueAsString(CoverageAttributes.ORDER.getStoreName(), ""));
          coverageUnit.setLocation(artifact.getSoleAttributeValueAsString(CoverageAttributes.LOCATION.getStoreName(), ""));
          for (Artifact childArt : artifact.getChildren()) {
-            if (childArt.isOfType(ARTIFACT_NAME) || childArt.isOfType(
-                  ARTIFACT_FOLDER_NAME)) {
+            if (childArt.isOfType(ARTIFACT_NAME) || childArt.isOfType(ARTIFACT_FOLDER_NAME)) {
                coverageUnit.addCoverageUnit(OseeCoverageUnitStore.get(coverageUnit, childArt));
             }
          }
@@ -106,6 +106,9 @@ public class OseeCoverageUnitStore extends OseeCoverageStore {
       if (Strings.isValid(coverageUnit.getFileContents())) {
          artifact.setSoleAttributeFromString(CoverageAttributes.FILE_CONTENTS.getStoreName(),
                coverageUnit.getFileContents());
+      }
+      if (Strings.isValid(coverageUnit.getOrderNumber())) {
+         artifact.setSoleAttributeFromString(CoverageAttributes.ORDER.getStoreName(), coverageUnit.getOrderNumber());
       }
       if (Strings.isValid(coverageUnit.getAssignees())) {
          artifact.setSoleAttributeFromString(CoverageAttributes.ASSIGNEES.getStoreName(), coverageUnit.getAssignees());

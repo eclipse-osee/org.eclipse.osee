@@ -107,4 +107,9 @@ public class MessageCoverageItem implements ICoverage {
       return false;
    }
 
+   @Override
+   public String getOrderNumber() {
+      return "";
+   }
+
 }

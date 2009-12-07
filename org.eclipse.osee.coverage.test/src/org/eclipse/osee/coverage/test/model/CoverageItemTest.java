@@ -25,7 +25,7 @@ public class CoverageItemTest {
    public static void testSetup() {
       parent = new CoverageUnit(null, "Top", "C:/UserData/");
       ci1 = new CoverageItem(parent, CoverageMethodEnum.Deactivated_Code, "1");
-      ci1.setText("this is text");
+      ci1.setName("this is text");
    }
 
    /**
@@ -57,7 +57,7 @@ public class CoverageItemTest {
       CoverageItem ci = new CoverageItem(parent, xml);
       Assert.assertEquals(ci1.getParent(), ci.getParent());
       Assert.assertEquals(ci1.getCoverageMethod(), ci.getCoverageMethod());
-      Assert.assertEquals(ci1.getExecuteNum(), ci.getExecuteNum());
+      Assert.assertEquals(ci1.getOrderNumber(), ci.getOrderNumber());
    }
 
    /**
@@ -90,26 +90,8 @@ public class CoverageItemTest {
     * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getExecuteNum()}.
     */
    @Test
-   public void testGetExecuteNum() {
-      Assert.assertEquals("1", ci1.getExecuteNum());
-   }
-
-   /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#setLineNum(java.lang.String)}.
-    */
-   @Test
-   public void testSetGetLineNum() {
-      ci1.setLineNum("55");
-      Assert.assertEquals("55", ci1.getLineNum());
-   }
-
-   /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getMethodNum()}.
-    */
-   @Test
-   public void testSetGetMethodNum() {
-      ci1.setMethodNum("33");
-      Assert.assertEquals("33", ci1.getMethodNum());
+   public void testGetOrderNum() {
+      Assert.assertEquals("1", ci1.getOrderNumber());
    }
 
    /**
@@ -133,7 +115,16 @@ public class CoverageItemTest {
     */
    @Test
    public void testGetName() {
-      Assert.assertEquals(ci1.getName(), "33:1 [this is text]");
+      Assert.assertEquals("this is text", ci1.getName());
+   }
+
+   /**
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getName()}.
+    */
+   @Test
+   public void testGetNameFull() {
+      parent.setOrderNumber("33");
+      Assert.assertEquals("33:1 [this is text]", ci1.getNameFull());
    }
 
    /**
@@ -197,13 +188,13 @@ public class CoverageItemTest {
    }
 
    /**
-    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#setText(java.lang.String)}.
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#setName(java.lang.String)}.
     */
    @Test
    public void testSetGetText() {
-      ci1.setText("this is text2");
+      ci1.setName("this is text2");
       Assert.assertEquals("this is text2", ci1.getFileContents());
-      ci1.setText("this is text");
+      ci1.setName("this is text");
       Assert.assertEquals("this is text", ci1.getFileContents());
    }
 
@@ -230,9 +221,7 @@ public class CoverageItemTest {
    public void testToXml() throws OseeCoreException {
       CoverageItem ci = new CoverageItem(parent, ci1.toXml());
       Assert.assertEquals(ci1.getGuid(), ci.getGuid());
-      Assert.assertEquals(ci1.getMethodNum(), ci.getMethodNum());
-      Assert.assertEquals(ci1.getExecuteNum(), ci.getExecuteNum());
-      Assert.assertEquals(ci1.getLineNum(), ci.getLineNum());
+      Assert.assertEquals(ci1.getOrderNumber(), ci.getOrderNumber());
       Assert.assertEquals(ci1.getCoverageMethod(), ci.getCoverageMethod());
       Assert.assertEquals(ci1.getFileContents(), ci.getFileContents());
       Assert.assertEquals(ci1.getRationale(), ci.getRationale());

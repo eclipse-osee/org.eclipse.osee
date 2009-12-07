@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.coverage.util.CoverageImage;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeArgumentException;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeWrappedException;
@@ -33,20 +34,19 @@ public class CoverageItem implements ICoverage {
 
    CoverageMethodEnum coverageMethod = CoverageMethodEnum.Not_Covered;
    String rationale;
-   String executeNum;
+   String orderNumber;
    String lineNum;
-   String methodNum;
-   String text;
+   String name;
    private final CoverageUnit coverageUnit;
    final Set<String> testUnitNames = new HashSet<String>();
    String guid = GUID.create();
    private static String PROPERTY_STORE_ID = "coverage.item";
 
-   public CoverageItem(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethod, String executeNum) {
+   public CoverageItem(CoverageUnit coverageUnit, CoverageMethodEnum coverageMethod, String orderNumber) {
       super();
       this.coverageUnit = coverageUnit;
       this.coverageMethod = coverageMethod;
-      this.executeNum = executeNum;
+      this.orderNumber = orderNumber;
       ((ICoverageItemProvider) coverageUnit).addCoverageItem(this);
    }
 
@@ -59,11 +59,10 @@ public class CoverageItem implements ICoverage {
     * Copies the coverage unit. Does not copy test units.
     */
    public CoverageItem copy(CoverageUnit parent) throws OseeCoreException {
-      CoverageItem coverageitem = new CoverageItem(parent, coverageMethod, executeNum);
+      CoverageItem coverageitem = new CoverageItem(parent, coverageMethod, orderNumber);
       coverageitem.setGuid(guid);
-      coverageitem.setLineNum(lineNum);
-      coverageitem.setText(text);
-      coverageitem.setMethodNum(methodNum);
+      coverageitem.setName(name);
+      coverageitem.setOrderNumber(orderNumber);
       coverageitem.setRationale(rationale);
 
       return coverageitem;
@@ -81,21 +80,23 @@ public class CoverageItem implements ICoverage {
          throw new OseeArgumentException(String.format("Invalid store id [%s] for CoverageItem", store.getId()));
       }
       setCoverageMethod(CoverageMethodEnum.valueOf(store.get("methodType")));
-      this.executeNum = store.get("executeNum");
+      setOrderNumber(store.get("order"));
       setGuid(store.get("guid"));
-      String lineNum = store.get("line");
-      if (Strings.isValid(lineNum)) setLineNum(lineNum);
-      String text = store.get("text");
-      if (Strings.isValid(text)) setText(text);
+      setName(store.get("name"));
       String rationale = store.get("rationale");
       if (Strings.isValid(rationale)) setRationale(rationale);
-      String methodNum = store.get("methodNum");
-      if (Strings.isValid(methodNum)) setMethodNum(methodNum);
       String testUnitNames = store.get("testUnits");
       if (Strings.isValid(testUnitNames)) {
-         for (String name : testUnitNames.split(";"))
-            addTestUnitName(name);
+         for (String testName : testUnitNames.split(";"))
+            addTestUnitName(testName);
       }
+
+      // Backward compatible from old storage of order
+      String executeNum = store.get("executeNum");
+      if (Strings.isValid(executeNum)) setOrderNumber(executeNum);
+      String text = store.get("text");
+      if (Strings.isValid(text)) setName(text);
+
    }
 
    public Set<String> getTestUnits() {
@@ -114,33 +115,14 @@ public class CoverageItem implements ICoverage {
       this.coverageMethod = coverageMethod;
    }
 
-   public String getExecuteNum() {
-      return executeNum;
-   }
-
-   public String getLineNum() {
-      return lineNum;
-   }
-
-   public void setLineNum(String lineNum) {
-      this.lineNum = lineNum;
-   }
-
    public CoverageUnit getCoverageUnit() {
       return coverageUnit;
    }
 
-   public String getMethodNum() {
-      return methodNum;
-   }
-
-   public void setMethodNum(String methodNum) {
-      this.methodNum = methodNum;
-   }
-
    @Override
    public String toString() {
-      return String.format("Item [%s,%s,%s,%s]", getCoverageMethod(), getMethodNum(), getExecuteNum(), getGuid());
+      return String.format("[Item : [%s][M: %s][E: %s][%s][Name: %s][Path: %s]]", getCoverageMethod(),
+            getCoverageUnit().getOrderNumber(), getOrderNumber(), getGuid(), getName(), CoverageUtil.getFullPath(this));
    }
 
    @Override
@@ -148,8 +130,12 @@ public class CoverageItem implements ICoverage {
       return Result.FalseResult;
    }
 
+   public String getNameFull() {
+      return String.format("%s:%s [%s]", getCoverageUnit().getOrderNumber(), orderNumber, name);
+   }
+
    public String getName() {
-      return String.format("%s:%s [%s]", methodNum, executeNum, text);
+      return name;
    }
 
    @Override
@@ -201,15 +187,14 @@ public class CoverageItem implements ICoverage {
    public String toXml() throws OseeCoreException {
       PropertyStore store = new PropertyStore(PROPERTY_STORE_ID);
       store.put("guid", guid);
-      store.put("methodNum", methodNum);
       store.put("line", lineNum);
       if (Strings.isValid(getRationale())) {
          store.put("rationale", rationale);
       }
-      store.put("executeNum", executeNum);
+      store.put("order", orderNumber);
       store.put("methodType", coverageMethod.toString());
       store.put("testUnits", Collections.toString(";", testUnitNames));
-      store.put("text", text);
+      store.put("name", name);
       try {
          return store.save();
       } catch (Exception ex) {
@@ -234,11 +219,11 @@ public class CoverageItem implements ICoverage {
    }
 
    public String getFileContents() {
-      return text;
+      return name;
    }
 
-   public void setText(String text) {
-      this.text = text;
+   public void setName(String name) {
+      this.name = name;
    }
 
    @Override
@@ -292,6 +277,15 @@ public class CoverageItem implements ICoverage {
    @Override
    public boolean isFolder() {
       return false;
+   }
+
+   @Override
+   public String getOrderNumber() {
+      return orderNumber;
+   }
+
+   public void setOrderNumber(String orderNumber) {
+      this.orderNumber = orderNumber;
    }
 
 }

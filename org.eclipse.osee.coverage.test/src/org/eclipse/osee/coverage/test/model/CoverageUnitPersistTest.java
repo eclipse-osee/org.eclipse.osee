@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
@@ -92,9 +93,9 @@ public class CoverageUnitPersistTest {
       try {
          saveCoveragePackage = new CoveragePackage("CU Test");
          MergeManager mergeManager = new MergeManager(saveCoveragePackage, coverageImport);
-         List<MergeItem> mergeItems = new ArrayList<MergeItem>();
-         for (MergeItem mergeItem : mergeManager.getMergeItems()) {
-            mergeItem.setChecked(true);
+         List<IMergeItem> mergeItems = new ArrayList<IMergeItem>();
+         for (IMergeItem mergeItem : mergeManager.getMergeItems()) {
+            ((MergeItem) mergeItem).setChecked(true);
          }
          CoveragePackageImportManager importer = new CoveragePackageImportManager(mergeManager);
          importer.importItems(new ISaveable() {

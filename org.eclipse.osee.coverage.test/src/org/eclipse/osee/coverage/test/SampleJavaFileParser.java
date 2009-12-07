@@ -63,13 +63,16 @@ public class SampleJavaFileParser {
             if (m.find()) {
                String name = m.group(3);
                coverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
+               // Note: CoverageUnit's orderNumber is set by executeLine match below
                fileCoverageUnit.addCoverageUnit(coverageUnit);
                // Duplicate this method as error case for importing
                if (filename.contains("AuxPowerUnit2") && name.equals("clear")) {
                   CoverageUnit duplicateCoverageUnit = new CoverageUnit(fileCoverageUnit, name, "Line " + lineNum);
+                  duplicateCoverageUnit.setOrderNumber("2");
                   fileCoverageUnit.addCoverageUnit(duplicateCoverageUnit);
-                  duplicateCoverageUnit.addCoverageItem(new CoverageItem(duplicateCoverageUnit,
-                        CoverageMethodEnum.Not_Covered, "2"));
+                  CoverageItem item = new CoverageItem(duplicateCoverageUnit, CoverageMethodEnum.Not_Covered, "1");
+                  item.setName("return super.getColumn(index)");
+                  duplicateCoverageUnit.addCoverageItem(item);
                }
             }
             // Determine if executable coverage line; store as CoverageItem
@@ -83,9 +86,9 @@ public class SampleJavaFileParser {
                CoverageItem coverageItem =
                      new CoverageItem(coverageUnit,
                            covered ? CoverageMethodEnum.Test_Unit : CoverageMethodEnum.Not_Covered, executeNum);
-               coverageItem.setLineNum(String.valueOf(lineNum));
-               coverageItem.setText(lineText);
-               coverageItem.setMethodNum(methodNum);
+               coverageUnit.setOrderNumber(methodNum);
+               coverageItem.setName(lineText);
+               coverageItem.setOrderNumber(executeNum);
                coverageUnit.addCoverageItem(coverageItem);
                if (covered) {
                   for (String testUnitName : testUnits.split("\\|")) {

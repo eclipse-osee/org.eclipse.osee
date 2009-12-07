@@ -49,4 +49,6 @@ public interface ICoverage {
 
    public boolean isFolder();
 
+   public String getOrderNumber();
+
 }

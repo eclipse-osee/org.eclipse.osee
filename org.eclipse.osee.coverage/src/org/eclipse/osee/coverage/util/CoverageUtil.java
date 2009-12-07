@@ -12,18 +12,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.eclipse.osee.coverage.internal.Activator;
+import org.eclipse.osee.coverage.merge.MatchItem;
+import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.model.CoverageImport;
+import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
 import org.eclipse.osee.coverage.model.CoverageUnit;
 import org.eclipse.osee.coverage.model.ICoverage;
+import org.eclipse.osee.coverage.model.ICoverageItemProvider;
+import org.eclipse.osee.coverage.model.ICoverageUnitProvider;
 import org.eclipse.osee.framework.core.enums.BranchArchivedState;
 import org.eclipse.osee.framework.core.enums.BranchControlled;
 import org.eclipse.osee.framework.core.enums.BranchType;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
+import org.eclipse.osee.framework.core.exception.OseeStateException;
 import org.eclipse.osee.framework.core.model.Branch;
-import org.eclipse.osee.framework.jdk.core.util.Collections;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
-import org.eclipse.osee.framework.logging.OseeLevel;
+import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.logging.OseeLog;
 import org.eclipse.osee.framework.skynet.core.SystemGroup;
 import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
@@ -132,6 +136,52 @@ public class CoverageUtil {
       } catch (OseeCoreException ex) {
          OseeLog.log(Activator.class, Level.SEVERE, ex);
          return false;
+      }
+   }
+
+   /**
+    * Returns string of all parent ICoverage items up the tree
+    */
+   public static String getFullPath(ICoverage coverage) {
+      StringBuffer sb = new StringBuffer();
+      getFullPathRecurse(coverage.getParent(), sb);
+      return sb.toString();
+   }
+
+   public static void getFullPathRecurse(ICoverage coverage, StringBuffer sb) {
+      if (coverage == null) return;
+      sb.append("[" + coverage.getName() + "]");
+      getFullPathRecurse(coverage.getParent(), sb);
+   }
+
+   public static void printCoverageItemDiffs(CoveragePackageBase coveragePackage, CoveragePackageBase coverageImport) throws OseeStateException {
+      for (CoverageItem importItem : coverageImport.getCoverageItems()) {
+         MatchItem item = MergeManager.getPackageCoverageItem(coveragePackage, importItem);
+         if (!item.isMatch()) {
+            System.out.println(String.format("No Match for item [%s] path [%s]", importItem,
+                  CoverageUtil.getFullPath(importItem)));
+         }
+      }
+   }
+
+   public static String printTree(ICoverage coverage) throws OseeStateException {
+      StringBuffer sb = new StringBuffer();
+      printTreeRecurse(coverage, sb, 0);
+      return sb.toString();
+   }
+
+   public static void printTreeRecurse(ICoverage coverage, StringBuffer sb, int pad) throws OseeStateException {
+      if (coverage == null) return;
+      sb.append(Lib.getSpace(pad * 3) + coverage.toString() + "\n");
+      if (coverage instanceof ICoverageUnitProvider) {
+         for (CoverageUnit childCoverageUnit : ((ICoverageUnitProvider) coverage).getCoverageUnits()) {
+            printTreeRecurse(childCoverageUnit, sb, pad + 1);
+         }
+      }
+      if (coverage instanceof ICoverageItemProvider) {
+         for (CoverageItem childCoverageItem : ((ICoverageItemProvider) coverage).getCoverageItems()) {
+            printTreeRecurse(childCoverageItem, sb, pad + 1);
+         }
       }
    }
 

@@ -16,7 +16,7 @@ public class MatchItem {
    private final MatchType matchType;
    private final ICoverage packageItem;
    private final ICoverage importItem;
-   public static MatchItem No_Match_Item = new MatchItem(MatchType.No_Match__Name_Or_Method_Num, null, null);
+   public static MatchItem No_Match_Item = new MatchItem(MatchType.No_Match__Name_Or_Order_Num, null, null);
 
    public MatchItem(MatchType matchType, ICoverage packageItem, ICoverage importItem) {
       this.matchType = matchType;
@@ -48,6 +48,13 @@ public class MatchItem {
          }
       }
       return true;
+   }
+
+   public boolean isMatch() {
+      if (matchType.toString().startsWith("Match__")) {
+         return true;
+      }
+      return false;
    }
 
    public boolean isMatchType(Collection<MatchType> matchTypes) {

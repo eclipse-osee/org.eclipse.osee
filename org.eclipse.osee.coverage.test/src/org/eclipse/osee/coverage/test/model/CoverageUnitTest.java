@@ -26,17 +26,15 @@ public class CoverageUnitTest {
    @Before
    public void testSetup() {
       cu = new CoverageUnit(null, "Top CU", "C:/UserData/");
+      cu.setOrderNumber("33");
       ci1 = new CoverageItem(cu, CoverageMethodEnum.Test_Unit, "1");
-      ci1.setText("this is text");
+      ci1.setName("this is text");
       childCu = new CoverageUnit(cu, "Child Coverage Unit", "C:\\UserData\\");
       CoverageItem item = new CoverageItem(childCu, CoverageMethodEnum.Exception_Handling, "1");
-      item.setMethodNum("1");
       childCu.addCoverageItem(item);
       item = new CoverageItem(childCu, CoverageMethodEnum.Test_Unit, "2");
-      item.setMethodNum("1");
       childCu.addCoverageItem(item);
       item = new CoverageItem(childCu, CoverageMethodEnum.Not_Covered, "3");
-      item.setMethodNum("1");
       childCu.addCoverageItem(item);
       cu.addCoverageUnit(childCu);
    }
@@ -61,6 +59,15 @@ public class CoverageUnitTest {
    @Test
    public void testAddCoverageItem() {
       Assert.assertEquals(1, cu.getCoverageItems().size());
+   }
+
+   /**
+    * Test method for {@link org.eclipse.osee.coverage.model.CoverageItem#getMethodNum()}.
+    */
+   @Test
+   public void testSetGetOrderNum() {
+      cu.setOrderNumber("33");
+      Assert.assertEquals("33", cu.getOrderNumber());
    }
 
    /**
@@ -104,9 +111,8 @@ public class CoverageUnitTest {
     */
    @Test
    public void testGetCoverageItem() {
-      Assert.assertNotNull(childCu.getCoverageItem("1", "1"));
-      Assert.assertNull(childCu.getCoverageItem("1", "5"));
-      Assert.assertNull(childCu.getCoverageItem("2", "1"));
+      Assert.assertNotNull(childCu.getCoverageItem("1"));
+      Assert.assertNull(childCu.getCoverageItem("5"));
    }
 
    /**

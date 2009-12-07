@@ -28,7 +28,7 @@ import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryImport
 import org.eclipse.osee.coverage.editor.xmerge.CoverageMergeXViewerFactoryPackage;
 import org.eclipse.osee.coverage.editor.xmerge.XCoverageMergeViewer;
 import org.eclipse.osee.coverage.internal.Activator;
-import org.eclipse.osee.coverage.merge.MergeItem;
+import org.eclipse.osee.coverage.merge.IMergeItem;
 import org.eclipse.osee.coverage.merge.MergeManager;
 import org.eclipse.osee.coverage.merge.MessageMergeItem;
 import org.eclipse.osee.coverage.model.CoverageImport;
@@ -148,7 +148,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
    }
 
    private void handleImportSelected() {
-      Collection<MergeItem> mergeItems = getSelectedMergeItems();
+      Collection<IMergeItem> mergeItems = getSelectedMergeItems();
       if (mergeItems.size() == 0) {
          AWorkbench.popup("Select Items to Import via Import Column");
          return;
@@ -168,11 +168,11 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
       titleLabel2.setText(coverageImport.getName());
    }
 
-   private Collection<MergeItem> getSelectedMergeItems() {
-      Collection<MergeItem> selected = new ArrayList<MergeItem>();
+   private Collection<IMergeItem> getSelectedMergeItems() {
+      Collection<IMergeItem> selected = new ArrayList<IMergeItem>();
       for (Object obj : ((Collection<?>) xImportViewer2.getXViewer().getInput())) {
-         if (obj instanceof MergeItem && ((MergeItem) obj).isChecked()) {
-            selected.add((MergeItem) obj);
+         if (obj instanceof IMergeItem && ((IMergeItem) obj).isChecked()) {
+            selected.add((IMergeItem) obj);
          }
       }
       return selected;
@@ -282,7 +282,7 @@ public class CoverageEditorMergeTab extends FormPage implements ISaveable {
 
       @Override
       protected void doWork(IProgressMonitor monitor) throws Exception {
-         final List<MergeItem> mergeItems = mergeManager.getMergeItems();
+         final List<IMergeItem> mergeItems = mergeManager.getMergeItems();
          Displays.ensureInDisplayThread(new Runnable() {
             @Override
             public void run() {

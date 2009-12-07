@@ -707,6 +707,18 @@ public final class Lib {
       }
    }
 
+   public static String getSpace(int length) {
+      return getCharacter(' ', length);
+   }
+
+   public static String getCharacter(char c, int length) {
+      String out = "";
+      for (int i = 0; i < length; i++) {
+         out += c;
+      }
+      return out;
+   }
+
    public static String padLeading(String str, char c, int n) {
       char[] chars = new char[n];
       int pos = Math.min(n, str.length());

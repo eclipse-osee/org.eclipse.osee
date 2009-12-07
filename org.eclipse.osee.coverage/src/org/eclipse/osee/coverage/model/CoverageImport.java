@@ -23,7 +23,7 @@ import org.eclipse.osee.framework.ui.skynet.widgets.XDate;
  * 
  * @author Donald G. Dunne
  */
-public class CoverageImport extends CoveragePackageBase implements ICoverageUnitProvider, ICoverage {
+public class CoverageImport extends CoveragePackageBase implements ICoverage {
 
    private Date runDate;
    private String location = "";

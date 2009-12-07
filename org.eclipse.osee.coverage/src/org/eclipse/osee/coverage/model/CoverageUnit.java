@@ -17,10 +17,10 @@ import java.util.List;
 import java.util.Set;
 import org.eclipse.osee.coverage.util.CoverageImage;
 import org.eclipse.osee.coverage.util.CoverageMetrics;
+import org.eclipse.osee.coverage.util.CoverageUtil;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Collections;
 import org.eclipse.osee.framework.jdk.core.util.GUID;
-import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
 import org.eclipse.osee.framework.ui.skynet.FrameworkImage;
 import org.eclipse.osee.framework.ui.skynet.OseeImage;
@@ -41,6 +41,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
    String fileContents;
    final List<CoverageItem> coverageItems = new ArrayList<CoverageItem>();
    String location;
+   String orderNumber = "";
    final List<CoverageUnit> coverageUnits = new ArrayList<CoverageUnit>();
    ICoverage parent;
 
@@ -49,6 +50,9 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.parent = parent;
       this.name = name;
       this.location = location;
+      if (parent != null && parent instanceof ICoverageUnitProvider) {
+         ((ICoverageUnitProvider) parent).addCoverageUnit(this);
+      }
    }
 
    public void clearCoverageUnits() {
@@ -61,7 +65,9 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
 
    public void addCoverageUnit(CoverageUnit coverageUnit) {
       coverageUnit.setParent(this);
-      coverageUnits.add(coverageUnit);
+      if (!coverageUnits.contains(coverageUnit)) {
+         coverageUnits.add(coverageUnit);
+      }
    }
 
    public List<CoverageUnit> getCoverageUnits() {
@@ -94,9 +100,9 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       return items;
    }
 
-   public CoverageItem getCoverageItem(String methodNum, String executionLine) {
+   public CoverageItem getCoverageItem(String orderNumber) {
       for (CoverageItem coverageItem : getCoverageItems(true)) {
-         if (coverageItem.getMethodNum().equals(methodNum) && coverageItem.getExecuteNum().equals(executionLine)) {
+         if (coverageItem.getOrderNumber().equals(orderNumber)) {
             return coverageItem;
          }
       }
@@ -140,7 +146,8 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
 
    @Override
    public String toString() {
-      return getName();
+      return String.format("[Unit [%s][M: %s][%s][Path: %s]]", getName(), getOrderNumber(), getGuid(),
+            CoverageUtil.getFullPath(this));
    }
 
    @Override
@@ -286,6 +293,7 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       coverageUnit.setGuid(guid);
       coverageUnit.setNamespace(namespace);
       coverageUnit.setNotes(notes);
+      coverageUnit.setOrderNumber(orderNumber);
       coverageUnit.setFileContents(fileContents);
       coverageUnit.setFolder(folder);
       coverageUnit.setAssignees(assignees);
@@ -324,13 +332,12 @@ public class CoverageUnit implements ICoverage, ICoverageUnitProvider, ICoverage
       this.parent = parent;
    }
 
-   public String getMethodNumber() {
-      for (CoverageItem coverageItem : coverageItems) {
-         if (Strings.isValid(coverageItem.getMethodNum())) {
-            return coverageItem.getMethodNum();
-         }
-      }
-      return "";
+   public String getOrderNumber() {
+      return orderNumber;
+   }
+
+   public void setOrderNumber(String orderNumber) {
+      this.orderNumber = orderNumber;
    }
 
 }

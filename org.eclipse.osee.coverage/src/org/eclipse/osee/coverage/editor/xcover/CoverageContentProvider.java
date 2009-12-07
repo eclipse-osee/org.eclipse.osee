@@ -15,6 +15,7 @@ import org.apache.commons.lang.ArrayUtils;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.osee.coverage.merge.MergeItem;
+import org.eclipse.osee.coverage.merge.MergeItemGroup;
 import org.eclipse.osee.coverage.merge.MessageMergeItem;
 import org.eclipse.osee.coverage.model.CoverageItem;
 import org.eclipse.osee.coverage.model.CoveragePackageBase;
@@ -39,6 +40,10 @@ public class CoverageContentProvider implements ITreeContentProvider {
       }
       if (parentElement instanceof MergeItem) {
          Collection<?> children = ((MergeItem) parentElement).getChildren();
+         return children.toArray(new Object[children.size()]);
+      }
+      if (parentElement instanceof MergeItemGroup) {
+         Collection<?> children = ((MergeItemGroup) parentElement).getChildren();
          return children.toArray(new Object[children.size()]);
       }
       if (parentElement instanceof Object[]) {

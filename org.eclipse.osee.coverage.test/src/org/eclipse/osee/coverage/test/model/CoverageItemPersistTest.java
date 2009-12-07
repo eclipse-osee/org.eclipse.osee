@@ -50,11 +50,9 @@ public class CoverageItemPersistTest {
       for (int x = 0; x < 10; x++) {
          ci.addTestUnitName("Test Unit " + x);
       }
-      ci.setLineNum("55");
-      ci.setMethodNum("33");
       ci.setGuid("asdf");
       ci.setRationale("this is rationale");
-      ci.setText("this is text");
+      ci.setName("this is text");
       guid = ci.getGuid();
    }
 
@@ -100,9 +98,7 @@ public class CoverageItemPersistTest {
       OseeCoverageStore.get(parentCu).load();
       CoverageItem ci = parentCu.getCoverageItems().iterator().next();
       Assert.assertEquals(guid, ci.getGuid());
-      Assert.assertEquals("33", ci.getMethodNum());
-      Assert.assertEquals("1", ci.getExecuteNum());
-      Assert.assertEquals("55", ci.getLineNum());
+      Assert.assertEquals("1", ci.getOrderNumber());
       Assert.assertEquals(CoverageMethodEnum.Deactivated_Code, ci.getCoverageMethod());
       Assert.assertEquals(10, ci.getTestUnits().size());
       Assert.assertEquals("this is text", ci.getFileContents());

@@ -17,7 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 @RunWith(Suite.class)
-@Suite.SuiteClasses( {CoverageItemTest.class, CoverageUnitTest.class})
+@Suite.SuiteClasses( {CoverageItemTest.class, CoverageUnitTest.class, MatchTypeTest.class})
 /**
  * @author Donald G. Dunne
  */

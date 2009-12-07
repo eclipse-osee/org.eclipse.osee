@@ -14,7 +14,7 @@ import org.eclipse.osee.framework.ui.skynet.OseeImage;
 /**
  * @author Donald G. Dunne
  */
-public class MergeItem implements ICoverage {
+public class MergeItem implements IMergeItem {
 
    private final MergeType mergeType;
    private final ICoverage packageItem;
@@ -144,6 +144,11 @@ public class MergeItem implements ICoverage {
    @Override
    public String toString() {
       return mergeType.toString() + " - " + importItem.toString();
+   }
+
+   @Override
+   public String getOrderNumber() {
+      return importItem.getOrderNumber();
    }
 
 }
