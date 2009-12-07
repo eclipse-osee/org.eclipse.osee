@@ -52,7 +52,7 @@ public class ATSPerspective implements IPerspectiveFactory {
       final String editorArea = layout.getEditorArea();
 
       final IFolderLayout left = layout.createFolder("left", IPageLayout.LEFT, 0.2f, editorArea);
-      final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, .7f, editorArea);
+      final IFolderLayout right = layout.createFolder("right", IPageLayout.RIGHT, .75f, editorArea);
       final IFolderLayout bottom = layout.createFolder("bottom", IPageLayout.BOTTOM, 0.75f, editorArea);
 
       left.addView(NavigateView.VIEW_ID);
