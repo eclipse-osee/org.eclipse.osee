@@ -32,15 +32,15 @@ public class CoverageItemPersistTest {
    public static String parentGuid = null;
    public static String guid = null;
 
-   @BeforeClass
    @AfterClass
    public static void testCleanup() throws OseeCoreException {
-      CoverageUtil.setBranch(BranchManager.getCommonBranch());
       CoverageTestUtil.cleanupCoverageTests();
    }
 
    @BeforeClass
    public static void testSetup() throws OseeCoreException {
+      CoverageUtil.setBranch(BranchManager.getCommonBranch());
+      CoverageTestUtil.cleanupCoverageTests();
       // If this fails, cleanup didn't happen.  Must DbInit
       Assert.assertEquals(0, CoverageTestUtil.getAllCoverageArtifacts().size());
 

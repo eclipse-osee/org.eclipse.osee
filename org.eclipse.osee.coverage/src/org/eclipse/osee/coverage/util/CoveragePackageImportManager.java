@@ -117,7 +117,7 @@ public class CoveragePackageImportManager {
     * Takes import items from coverageImport and applies them to coveragePackage
     */
    private void importCoverageUnitItem(XResultData rd, CoverageUnit importItem) {
-      System.err.println("importItemsRecurse => " + importItem + " path " + CoverageUtil.getFullPath(importItem));
+      System.out.println("importItemsRecurse => " + importItem + " path " + CoverageUtil.getFullPath(importItem));
       if (importItem.getName().equals("clear") && importItem.getParent() != null && importItem.getParent().getName().startsWith(
             "AuxPowerUnit2")) {
          System.out.println("here");
@@ -136,11 +136,9 @@ public class CoveragePackageImportManager {
          if (MatchType.isMatch(matchItem.getMatchType())) {
             // save assignees and notes and RATIONALE before child overwrites
             // ((CoverageUnit) importItem).updateAssigneesAndNotes((CoverageUnit) packageItem);
-            System.err.println("FOUND MATCH type " + matchItem.getMatchType());
-            System.err.println("FOUND MATCH pack " + matchItem.getPackageItem() + " path " + CoverageUtil.getFullPath(matchItem.getPackageItem()));
-            System.err.println("FOUND MATCH impt " + matchItem.getImportItem() + " path " + CoverageUtil.getFullPath(matchItem.getImportItem()));
-            MatchItem debugMatchItem = mergeManager.getPackageCoverageItem(importItem);
-            System.out.println("why");
+            System.out.println("FOUND MATCH type " + matchItem.getMatchType());
+            System.out.println("FOUND MATCH pack " + matchItem.getPackageItem() + " path " + CoverageUtil.getFullPath(matchItem.getPackageItem()));
+            System.out.println("FOUND MATCH impt " + matchItem.getImportItem() + " path " + CoverageUtil.getFullPath(matchItem.getImportItem()));
          }
          // This is new item
          else if (MatchType.isNoMatch(matchItem.getMatchType())) {

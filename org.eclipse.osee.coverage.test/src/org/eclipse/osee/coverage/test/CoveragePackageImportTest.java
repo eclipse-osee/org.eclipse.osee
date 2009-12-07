@@ -27,6 +27,7 @@ import org.eclipse.osee.coverage.util.ISaveable;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
+import org.eclipse.osee.framework.skynet.core.artifact.BranchManager;
 import org.eclipse.osee.framework.skynet.core.artifact.search.ArtifactQuery;
 import org.eclipse.osee.framework.skynet.core.transaction.SkynetTransaction;
 import org.eclipse.osee.framework.ui.plugin.util.Result;
@@ -42,12 +43,16 @@ public class CoveragePackageImportTest {
 
    public static CoveragePackage coveragePackage = null;
    public static CoverageImport coverageImport = null;
-   private static boolean testWithDb = false;
+   private static boolean testWithDb = true;
 
    @BeforeClass
    @AfterClass
    public static void testCleanup() throws OseeCoreException {
-      if (testWithDb) CoverageTestUtil.cleanupCoverageTests();
+      if (testWithDb) {
+         CoverageUtil.setBranch(BranchManager.getCommonBranch());
+         CoverageTestUtil.cleanupCoverageTests();
+      } else
+         System.err.println("Test with Db Disabled...re-inenable");
    }
 
    @Test
