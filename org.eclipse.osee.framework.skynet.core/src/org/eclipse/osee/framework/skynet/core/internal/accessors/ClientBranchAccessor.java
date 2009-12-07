@@ -39,12 +39,10 @@ import org.eclipse.osee.framework.skynet.core.types.ShallowArtifact;
 public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
 
    private final TransactionCache transactionCache;
-   private final IOseeModelFactoryServiceProvider factoryProvider;
    private BranchCache branchCache;
 
    public ClientBranchAccessor(IOseeModelFactoryServiceProvider factoryProvider, TransactionCache transactionCache) {
       super(factoryProvider);
-      this.factoryProvider = factoryProvider;
       this.transactionCache = transactionCache;
    }
 
@@ -67,16 +65,16 @@ public class ClientBranchAccessor extends AbstractClientDataAccessor<Branch> {
       BranchCacheUpdateResponse response = requestUpdateMessage(cache, CoreTranslatorId.BRANCH_CACHE_UPDATE_RESPONSE);
       ShallowArtifactFactory artFactory = new ShallowArtifactFactory((BranchCache) cache);
 
-      return (new BranchCacheUpdateUtil(getFactory(), transactionCache, artFactory)).updateCache(response, cache);
+      return new BranchCacheUpdateUtil(getFactory(), transactionCache, artFactory).updateCache(response, cache);
    }
 
+   @Override
    public void store(Collection<Branch> types) throws OseeCoreException {
       store(branchCache, types);
    }
 
    public void store(IOseeCache<Branch> cache, Collection<Branch> types) throws OseeCoreException {
       Map<String, String> parameters = new HashMap<String, String>();
-      parameters.put("request", "storage");
       parameters.put("function", CacheOperation.STORE.name());
 
       BranchCacheStoreRequest request = BranchCacheStoreRequest.fromCache((BranchCache) cache, types);
