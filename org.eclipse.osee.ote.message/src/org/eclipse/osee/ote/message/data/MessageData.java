@@ -81,7 +81,6 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
       this.defaultDataByteSize = dataByteSize;
       this.currentLength = dataByteSize;
       this.memType = memType;
-      GCHelper.getGCHelper().addRefWatch(this);
    }
 
    public MessageData(String typeName, String name, MemoryResource mem, MemType memType) {
