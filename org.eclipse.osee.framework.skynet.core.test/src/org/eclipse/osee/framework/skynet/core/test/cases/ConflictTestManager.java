@@ -16,10 +16,10 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.osee.framework.core.enums.CoreRelationTypes;
 import org.eclipse.osee.framework.core.enums.RelationOrderBaseTypes;
+import org.eclipse.osee.framework.core.exception.BranchDoesNotExist;
 import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.model.ArtifactType;
 import org.eclipse.osee.framework.core.model.Branch;
@@ -218,9 +218,11 @@ public class ConflictTestManager {
          ArtifactType artType = ArtifactTypeManager.getType(conflictDefs[i].artifactType);
          if (conflictDefs[i].rootArtifact > 0 && conflictDefs[i].rootArtifact < i) {
             destArtifacts[i] =
-                  destArtifacts[conflictDefs[i].rootArtifact].addNewChild(RelationOrderBaseTypes.USER_DEFINED, artType, "Test Artifact Number " + i);
+                  destArtifacts[conflictDefs[i].rootArtifact].addNewChild(RelationOrderBaseTypes.USER_DEFINED, artType,
+                        "Test Artifact Number " + i);
          } else {
-            destArtifacts[i] = rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, artType, "Test Artifact Number " + i);
+            destArtifacts[i] =
+                  rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, artType, "Test Artifact Number " + i);
          }
          for (AttributeValue value : conflictDefs[i].newAttributes) {
             destArtifacts[i].addAttribute(value.attributeName, stringToObject(value.clas, value.sourceValue));
@@ -287,9 +289,6 @@ public class ConflictTestManager {
       performModifications();
    }
 
-   /**
-    * 
-    */
    private static void performModifications() throws OseeCoreException {
       createModifications();
       for (ArtifactModification modification : modifications) {
@@ -353,7 +352,8 @@ public class ConflictTestManager {
             rootArtifact = sourceArtifacts[rootArtifactId];
          }
       }
-      Artifact child = rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, ArtifactTypeManager.getType(type), name);
+      Artifact child =
+            rootArtifact.addNewChild(RelationOrderBaseTypes.USER_DEFINED, ArtifactTypeManager.getType(type), name);
       child.persist();
       return child;
    }
@@ -370,68 +370,43 @@ public class ConflictTestManager {
       return artifact.getRelations(CoreRelationTypes.Dependency__Dependency).get(0);
    }
 
-   public static void cleanUpConflictTest() throws Exception {
-      //delete the destination, source and merge branch's
-      Branch sBranch = null;
-      Branch dBranch = null;
-      Branch mBranch = null;
-      try {
-         sBranch = BranchManager.getBranch(SOURCE_BRANCH);
-      } catch (Exception ex) {
-      }
-      if (sBranch == null) {
-         for (Branch branch : BranchManager.getArchivedBranches()) {
-            if (branch.getName().equals(SOURCE_BRANCH)) {
-               sBranch = branch;
-               break;
-            }
-         }
-      }
-      try {
-         dBranch = BranchManager.getBranch(DEST_BRANCH);
-      } catch (Exception ex) {
-      }
-      if (dBranch == null) {
-         for (Branch branch : BranchManager.getArchivedBranches()) {
-            if (branch.getName().equals(DEST_BRANCH)) {
-               dBranch = branch;
-               break;
-            }
-         }
-      }
-      try {
-         mBranch = BranchManager.getMergeBranch(sBranch, dBranch);
-      } catch (Exception ex) {
-      }
+   public static void cleanUpConflictTest() throws OseeCoreException {
+      Branch sBranch = getArchivedBranch(SOURCE_BRANCH);
+      Branch dBranch = getArchivedBranch(DEST_BRANCH);
+      Branch mBranch = BranchManager.getMergeBranch(sBranch, dBranch);
+      purgeBranch(sBranch);
+      purgeBranch(mBranch);
+      purgeBranch(dBranch);
+   }
 
-      if (mBranch != null) {
-         BranchManager.purgeBranch(mBranch);
-      }
-      if (sBranch != null) {
-         BranchManager.purgeBranch(sBranch);
-      }
-      if (dBranch != null) {
-         BranchManager.purgeBranch(dBranch);
+   private static Branch getArchivedBranch(String branchName) throws OseeCoreException {
+      try {
+         return BranchManager.getBranch(branchName);
+      } catch (BranchDoesNotExist e) {
+         Collection<Branch> archivedBranches = BranchManager.getArchivedBranches();
+         for (Branch archivedBranch : archivedBranches) {
+            if (archivedBranch.getName().equals(branchName)) {
+               return archivedBranch;
+            }
+         }
+         return null;
       }
    }
 
-   /**
-    * @return the sourceBranchID
-    */
+   private static void purgeBranch(Branch branch) throws OseeCoreException {
+      if (branch != null) {
+         BranchManager.purgeBranch(branch);
+      }
+   }
+
    public static Branch getSourceBranch() {
       return sourceBranch;
    }
 
-   /**
-    * @return the destBranchID
-    */
    public static Branch getDestBranch() {
       return destBranch;
    }
 
-   /**
-    * @return the sourceBranchID
-    */
    public static Artifact getSourceArtifact(int position) {
       if (position >= 0 && position < NUMBER_OF_ARTIFACTS) {
          return sourceArtifacts[position];
@@ -439,9 +414,6 @@ public class ConflictTestManager {
       return null;
    }
 
-   /**
-    * @return the destBranchID
-    */
    public static Artifact getDestArtifact(int position) {
       if (position >= 0 && position < NUMBER_OF_ARTIFACTS) {
          return destArtifacts[position];

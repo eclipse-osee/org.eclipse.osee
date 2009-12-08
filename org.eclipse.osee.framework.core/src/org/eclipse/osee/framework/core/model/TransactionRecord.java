@@ -46,7 +46,12 @@ public final class TransactionRecord implements IAdaptable {
    }
 
    public Branch getBranch() throws OseeCoreException {
-      return branchCache.getById(getBranchId());
+      try {
+         return branchCache.getById(getBranchId());
+      } catch (NullPointerException e) {
+         System.out.print("");
+         throw e;
+      }
    }
 
    public int getId() {

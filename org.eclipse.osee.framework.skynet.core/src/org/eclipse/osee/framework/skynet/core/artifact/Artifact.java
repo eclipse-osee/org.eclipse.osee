@@ -1778,19 +1778,6 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
    }
 
    /**
-    * @return all artifacts related to this artifact.
-    * @throws ArtifactDoesNotExist
-    */
-   public List<Artifact> getRelatedArtifactsAll() throws OseeCoreException {
-      List<Artifact> relatedArtifacts = new ArrayList<Artifact>();
-      for (RelationType relatedType : RelationTypeManager.getAllTypes()) {
-         relatedArtifacts.addAll(RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relatedType,
-               RelationSide.SIDE_B)));
-      }
-      return relatedArtifacts;
-   }
-
-   /**
     * This method should never be called from outside the OSEE Application Framework
     */
    void internalSetPersistenceData(int gammaId, TransactionRecord transactionId, ModificationType modType, boolean historical) {

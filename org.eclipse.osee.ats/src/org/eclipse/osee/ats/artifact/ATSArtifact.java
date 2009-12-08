@@ -10,6 +10,8 @@
  *******************************************************************************/
 package org.eclipse.osee.ats.artifact;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import org.eclipse.osee.ats.hyper.IHyperArtifact;
@@ -21,6 +23,7 @@ import org.eclipse.osee.framework.core.model.Branch;
 import org.eclipse.osee.framework.skynet.core.artifact.Artifact;
 import org.eclipse.osee.framework.skynet.core.artifact.ArtifactFactory;
 import org.eclipse.osee.framework.skynet.core.artifact.IATSArtifact;
+import org.eclipse.osee.framework.skynet.core.relation.RelationLink;
 
 public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IATSArtifact {
 
@@ -40,7 +43,7 @@ public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IA
    }
 
    /**
-    * Recursively retrieve artifacts and all it's ATS related artifacts such as tasks, notes, subscriptions, etc... for
+    * Recursively retrieve artifacts and all its ATS related artifacts such as tasks, notes, subscriptions, etc... for
     * deletion
     * 
     * @param deleteArts
@@ -49,8 +52,21 @@ public abstract class ATSArtifact extends Artifact implements IHyperArtifact, IA
     */
    public void atsDelete(Set<Artifact> deleteArts, Map<Artifact, Object> allRelated) throws OseeCoreException {
       deleteArts.add(this);
-      for (Artifact artifact : getRelatedArtifactsAll()) {
-         allRelated.put(artifact, this);
+      for (Artifact relative : getBSideArtifacts()) {
+         allRelated.put(relative, this);
       }
+   }
+
+   private List<Artifact> getBSideArtifacts() throws OseeCoreException {
+      List<Artifact> sideBArtifacts = new ArrayList<Artifact>();
+      List<RelationLink> relatives = getRelationsAll(false);
+      for (RelationLink link : relatives) {
+         Artifact sideB = link.getArtifactB();
+         if (!sideB.equals(this)) {
+            sideBArtifacts.add(sideB);
+         }
+      }
+
+      return sideBArtifacts;
    }
 }
