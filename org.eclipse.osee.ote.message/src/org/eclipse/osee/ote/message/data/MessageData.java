@@ -223,7 +223,7 @@ public abstract class MessageData implements DataReaderListener, DataWriterListe
          setCurrentLength(destOffset + length);
          mem.copyData(destOffset, data, length);
       } catch (MessageSystemException e) {
-		   OseeLog.log(MessageSystemTestEnvironment.class,Level.WARNING, 
+		   OseeLog.log(MessageSystemTestEnvironment.class,Level.INFO, 
 				   String.format(
 						   "increasing backing store for %s to %d. prev length: %d, recv cnt: %d", 
 						   getName(), 

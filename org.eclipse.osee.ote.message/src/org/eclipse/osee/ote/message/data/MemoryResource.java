@@ -14,6 +14,7 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.logging.Level;
+
 import org.eclipse.osee.ote.message.MessageSystemException;
 
 /**
@@ -407,7 +408,7 @@ public class MemoryResource {
     */
    public void copyData(int destOffset, ByteBuffer src, int length) throws MessageSystemException {
       if (length + destOffset > byteArray.get().length) {
-         throw new MessageSystemException("backing byte[] is too small for copy operation", Level.SEVERE);
+         throw new MessageSystemException("backing byte[] is too small for copy operation", Level.INFO);
       }
       src.mark();
       src.get(byteArray.get(), destOffset, length);
