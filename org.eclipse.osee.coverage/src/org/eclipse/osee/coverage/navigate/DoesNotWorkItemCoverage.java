@@ -49,7 +49,7 @@ public class DoesNotWorkItemCoverage extends XNavigateItemAction {
       }
 
       try {
-         fixCoverageInformation();
+         //         fixCoverageInformation();
       } catch (Exception ex) {
          OseeLog.log(Activator.class, OseeLevel.SEVERE_POPUP, ex);
       }
