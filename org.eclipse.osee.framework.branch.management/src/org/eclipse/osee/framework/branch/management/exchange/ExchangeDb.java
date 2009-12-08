@@ -42,6 +42,7 @@ public class ExchangeDb {
    private static final String BRANCH_ID = "branch_id";
    public static final String CONFLICT_ID = "conflict_id";
    public static final String CONFLICT_TYPE = "conflict_type";
+   public static final String TYPE_GUID = "type_guid";
 
    private static final String[] BRANCH_ID_NEG_ONE_ALIASES = new String[] {"parent_branch_id"};
 

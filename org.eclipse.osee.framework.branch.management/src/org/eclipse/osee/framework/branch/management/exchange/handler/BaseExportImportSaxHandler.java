@@ -87,13 +87,9 @@ public abstract class BaseExportImportSaxHandler extends AbstractSaxHandler {
       this.dataMap.put(BINARY_CONTENT_LOCATION, attributes.getValue("location"));
    }
 
-   private void finishEntry() {
+   private void finishEntry() throws Exception {
       if (this.dataMap.isEmpty() != true) {
-         try {
-            processData(this.dataMap);
-         } catch (Exception ex) {
-            throw new IllegalStateException("Processing data - ", ex);
-         }
+         processData(this.dataMap);
       }
       this.dataMap.clear();
    }

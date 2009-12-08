@@ -213,11 +213,7 @@ public final class ImportController {
          importBranchesTx.execute();
 
          currentSavePoint = "init.relational.objects";
-         RelationalSaxHandler relationalSaxHandler =
-               RelationalSaxHandler.createWithLimitedCache(exportDataProvider, 50000);
-         relationalSaxHandler.setSelectedBranchIds(branchesToImport);
-
-         processImportFiles(manifestHandler.getImportFiles(), relationalSaxHandler);
+         processImportFiles(manifestHandler.getImportFiles());
 
          importBranchesTx.updateBranchParentTransactionId();
 
@@ -238,20 +234,18 @@ public final class ImportController {
       handler.setTranslator(translator);
    }
 
-   private void process(BaseDbSaxHandler handler, OseeConnection connection, IExportItem importSourceFile) throws OseeCoreException {
-      MetaData metadata = checkMetadata(importSourceFile);
+   private void process(BaseDbSaxHandler handler, OseeConnection connection, IExportItem exportItem) throws OseeCoreException {
+      MetaData metadata = checkMetadata(exportItem);
       initializeHandler(connection, handler, metadata);
-      if (importSourceFile.getPriority() > 0) {
-         boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
-         cleanDataTable &= !doesSavePointExist(currentSavePoint);
-         OseeLog.log(this.getClass(), Level.INFO, String.format("Importing: [%s] %s Meta: %s",
-               importSourceFile.getSource(), cleanDataTable ? "clean before import" : "", metadata.getColumnNames()));
-         if (cleanDataTable) {
-            handler.clearDataTable();
-         }
+      boolean cleanDataTable = options.getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name());
+      cleanDataTable &= !doesSavePointExist(currentSavePoint);
+      OseeLog.log(this.getClass(), Level.INFO, String.format("Importing: [%s] %s Meta: %s", exportItem.getSource(),
+            cleanDataTable ? "clean before import" : "", metadata.getColumnNames()));
+      if (cleanDataTable) {
+         handler.clearDataTable();
       }
       try {
-         exportDataProvider.saxParse(importSourceFile, handler);
+         exportDataProvider.saxParse(exportItem, handler);
       } catch (Exception ex) {
          if (ex instanceof OseeCoreException) {
             throw (OseeCoreException) ex;
@@ -268,9 +262,13 @@ public final class ImportController {
       return metadata;
    }
 
-   private void processImportFiles(Collection<IExportItem> importFiles, final RelationalSaxHandler handler) throws Exception {
-      for (final IExportItem item : importFiles) {
+   private void processImportFiles(Collection<IExportItem> importItems) throws Exception {
+      final RelationalSaxHandler handler = RelationalSaxHandler.createWithLimitedCache(exportDataProvider, 50000);
+      handler.setSelectedBranchIds(branchesToImport);
+
+      for (final IExportItem item : importItems) {
          currentSavePoint = item.getSource();
+         handler.setExportItem(item);
          if (!doesSavePointExist(currentSavePoint)) {
             DbTransaction importTx = new DbTransaction() {
                @Override

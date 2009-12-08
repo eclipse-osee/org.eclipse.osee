@@ -20,6 +20,7 @@ import java.util.Set;
 import org.eclipse.osee.framework.branch.management.ImportOptions;
 import org.eclipse.osee.framework.branch.management.exchange.ExchangeDb;
 import org.eclipse.osee.framework.core.enums.BranchType;
+import org.eclipse.osee.framework.core.enums.CoreBranches;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.database.core.ConnectionHandler;
 import org.eclipse.osee.framework.database.core.IOseeStatement;
@@ -110,10 +111,16 @@ public class BranchDataSaxHandler extends BaseDbSaxHandler {
    public int[] store(boolean writeToDb, int... branchesToImport) throws OseeDataStoreException {
       checkSelectedBranches(branchesToImport);
       Collection<BranchData> branchesToStore = getSelectedBranchesToImport(branchesToImport);
+
       branchesToStore = checkTargetDbBranches(branchesToStore);
       int[] toReturn = new int[branchesToStore.size()];
       int index = 0;
       for (BranchData branchData : branchesToStore) {
+         if (!getOptions().getBoolean(ImportOptions.CLEAN_BEFORE_IMPORT.name()) && branchData.getBranchGuid().equals(
+               CoreBranches.SYSTEM_ROOT.getGuid())) {
+            continue;
+         }
+
          toReturn[index] = branchData.getId();
          if (getOptions().getBoolean(ImportOptions.ALL_AS_ROOT_BRANCHES.name())) {
             branchData.setParentBranchId(1);

@@ -146,7 +146,7 @@ public class ManifestSaxHandler extends BaseExportImportSaxHandler {
             return false;
          }
          IExportItem other = (IExportItem) obj;
-         return this.priority == other.getPriority() && this.fileName.equals(other.getFileName());
+         return getSource().equals(other.getSource());
       }
 
       @Override

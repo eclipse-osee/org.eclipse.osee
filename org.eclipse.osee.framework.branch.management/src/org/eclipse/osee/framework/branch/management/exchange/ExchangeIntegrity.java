@@ -23,6 +23,7 @@ import org.eclipse.osee.framework.branch.management.exchange.handler.IOseeDbExpo
 import org.eclipse.osee.framework.branch.management.exchange.handler.ManifestSaxHandler;
 import org.eclipse.osee.framework.branch.management.exchange.handler.RelationalSaxHandler;
 import org.eclipse.osee.framework.core.enums.ConflictType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.jdk.core.util.xml.Xml;
@@ -112,7 +113,7 @@ public class ExchangeIntegrity {
       private final List<IndexCollector> checkList;
       private final String fileBeingProcessed;
 
-      protected CheckSaxHandler(IOseeDbExportDataProvider exportDataProvider, List<IndexCollector> checkList, String fileBeingProcessed) {
+      protected CheckSaxHandler(IOseeDbExportDataProvider exportDataProvider, List<IndexCollector> checkList, String fileBeingProcessed) throws OseeCoreException {
          super(exportDataProvider, true, 0);
          this.checkList = checkList;
          this.fileBeingProcessed = Lib.removeExtension(fileBeingProcessed);

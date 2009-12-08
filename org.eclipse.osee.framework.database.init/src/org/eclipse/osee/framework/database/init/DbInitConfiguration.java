@@ -41,6 +41,7 @@ public class DbInitConfiguration {
       oseeTypes.add("org.eclipse.osee.framework.skynet.core.OseeTypes_Framework");
       oseeTypes.add("org.eclipse.osee.ats.OseeTypes_ATS");
       oseeTypes.add("org.eclipse.osee.coverage.OseeTypes_Coverage");
+      oseeTypes.add("org.eclipse.osee.ote.define.OseeTypesOTE");
       oseeTypes.addAll(oseeTypeIds);
       return oseeTypes;
    }

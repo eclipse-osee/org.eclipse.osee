@@ -17,10 +17,6 @@ package org.eclipse.osee.framework.database.init;
 public class AddBaseDbInitChoice implements IAddDbInitChoice {
    public void addDbInitChoice(GroupSelection groupSelection) {
       DbInitConfiguration config = new DbInitConfiguration(true);
-
-      config.addOseeType("org.eclipse.osee.ote.define.OseeTypesOTE");
-      config.addOseeType("org.eclipse.osee.ats.OseeTypes_ATS");
-
       groupSelection.addChoice("Base - for importing branches", config);
    }
 }

@@ -22,8 +22,10 @@ import org.eclipse.osee.framework.branch.management.exchange.ExportImportXml;
 import org.eclipse.osee.framework.branch.management.exchange.resource.ZipBinaryResource;
 import org.eclipse.osee.framework.branch.management.internal.Activator;
 import org.eclipse.osee.framework.core.enums.ConflictType;
+import org.eclipse.osee.framework.core.exception.OseeCoreException;
 import org.eclipse.osee.framework.core.exception.OseeDataStoreException;
 import org.eclipse.osee.framework.core.exception.OseeStateException;
+import org.eclipse.osee.framework.core.services.IOseeCachingService;
 import org.eclipse.osee.framework.jdk.core.util.Lib;
 import org.eclipse.osee.framework.jdk.core.util.Strings;
 import org.eclipse.osee.framework.logging.OseeLog;
@@ -35,24 +37,23 @@ import org.eclipse.osee.framework.resource.management.Options;
  * @author Roberto E. Escobar
  */
 public class RelationalSaxHandler extends BaseDbSaxHandler {
+   private final IOseeCachingService service;
 
-   public static RelationalSaxHandler createWithCacheAll(IOseeDbExportDataProvider exportDataProvider) {
-      return new RelationalSaxHandler(exportDataProvider, true, 0);
-   }
-
-   public static RelationalSaxHandler createWithLimitedCache(IOseeDbExportDataProvider exportDataProvider, int cacheLimit) {
+   public static RelationalSaxHandler createWithLimitedCache(IOseeDbExportDataProvider exportDataProvider, int cacheLimit) throws OseeCoreException {
       return new RelationalSaxHandler(exportDataProvider, false, cacheLimit);
    }
 
    private final List<IResourceLocator> transferredBinaryContent;
    private final Set<Integer> branchesToImport;
    private final IOseeDbExportDataProvider exportDataProvider;
+   private IExportItem exportItem;
 
-   protected RelationalSaxHandler(IOseeDbExportDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) {
+   protected RelationalSaxHandler(IOseeDbExportDataProvider exportDataProvider, boolean isCacheAll, int cacheLimit) throws OseeCoreException {
       super(isCacheAll, cacheLimit);
       this.branchesToImport = new HashSet<Integer>();
       this.transferredBinaryContent = new ArrayList<IResourceLocator>();
       this.exportDataProvider = exportDataProvider;
+      service = Activator.getInstance().getOseeCachingService();
    }
 
    public void setSelectedBranchIds(int... branchIds) {
@@ -77,12 +78,11 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
 
             String name = uriValue.substring(uriValue.lastIndexOf('\\') + 1, uriValue.length());
             IResourceLocator locatorHint =
-                  Activator.getInstance().getResourceLocatorManager().generateResourceLocator("attr",
-                  gammaId, name);
+                  Activator.getInstance().getResourceLocatorManager().generateResourceLocator("attr", gammaId, name);
 
             IResourceLocator locator =
                   Activator.getInstance().getResourceManager().save(locatorHint,
-                  new ZipBinaryResource(entry, locatorHint), new Options());
+                        new ZipBinaryResource(entry, locatorHint), new Options());
             transferredBinaryContent.add(locator);
             return locator.getLocation().toASCIIString();
          } else {
@@ -118,6 +118,21 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
             String stringValue = fieldMap.get(STRING_CONTENT);
             if (Strings.isValid(stringValue)) {
                fieldMap.put("value", stringValue);
+            }
+
+            if (exportItem.equals(ExportItem.OSEE_ARTIFACT_DATA)) {
+               int typeId = service.getArtifactTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
+               fieldMap.put("art_type_id", String.valueOf(typeId));
+            }
+
+            if (exportItem.equals(ExportItem.OSEE_ATTRIBUTE_DATA)) {
+               int typeId = service.getAttributeTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
+               fieldMap.put("attr_type_id", String.valueOf(typeId));
+            }
+
+            if (exportItem.getSource().equals(ExportItem.OSEE_RELATION_LINK_DATA)) {
+               int typeId = service.getRelationTypeCache().getByGuid(fieldMap.get(ExchangeDb.TYPE_GUID)).getId();
+               fieldMap.put("rel_link_type_id", String.valueOf(typeId));
             }
 
             String conflictId = fieldMap.get(ExchangeDb.CONFLICT_ID);
@@ -189,5 +204,12 @@ public class RelationalSaxHandler extends BaseDbSaxHandler {
       if (!getMetaData().getTableName().equals("osee_tx_details")) {
          super.clearDataTable();
       }
+   }
+
+   /**
+    * @param exportItem the exportItem to set
+    */
+   public void setExportItem(IExportItem exportItem) {
+      this.exportItem = exportItem;
    }
 }
