@@ -1782,7 +1782,12 @@ public class Artifact implements IArtifact, IAdaptable, Comparable<Artifact>, IA
     * @throws ArtifactDoesNotExist
     */
    public List<Artifact> getRelatedArtifactsAll() throws OseeCoreException {
-      return RelationManager.getRelatedArtifacts(this, new RelationTypeSide(null, RelationSide.SIDE_B));
+      List<Artifact> relatedArtifacts = new ArrayList<Artifact>();
+      for (RelationType relatedType : RelationTypeManager.getAllTypes()) {
+         relatedArtifacts.addAll(RelationManager.getRelatedArtifacts(this, new RelationTypeSide(relatedType,
+               RelationSide.SIDE_B)));
+      }
+      return relatedArtifacts;
    }
 
    /**
